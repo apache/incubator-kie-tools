@@ -26,7 +26,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.BusinessKnowledgeModel;
 import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.AbstractToolboxAction;
+import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ToolboxAction;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.resources.StunnerCommonImageResources;
@@ -77,8 +77,8 @@ public class DMNEditBusinessKnowledgeModelToolboxAction implements ToolboxAction
         // Notice the toolbox factory ensure this action is only being included
         // for BusinessKnowledgeModel definitions, next cast is safe.
         final Node<View<? extends BusinessKnowledgeModel>, Edge> bkmNode
-                = (Node<View<? extends BusinessKnowledgeModel>, Edge>) AbstractToolboxAction.getElement(canvasHandler,
-                                                                                                        uuid)
+                = (Node<View<? extends BusinessKnowledgeModel>, Edge>) CanvasLayoutUtils.getElement(canvasHandler,
+                                                                                                    uuid)
                 .asNode();
         final BusinessKnowledgeModel bkm = bkmNode.getContent().getDefinition();
         editExpressionEvent.fire(new EditExpressionEvent(sessionManager.getCurrentSession(),

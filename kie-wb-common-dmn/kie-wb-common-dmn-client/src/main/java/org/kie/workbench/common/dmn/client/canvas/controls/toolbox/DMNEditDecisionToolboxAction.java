@@ -26,7 +26,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
 import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.AbstractToolboxAction;
+import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ToolboxAction;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.resources.StunnerCommonImageResources;
@@ -77,8 +77,8 @@ public class DMNEditDecisionToolboxAction implements ToolboxAction<AbstractCanva
         // Notice the toolbox factory ensure this action is only being included
         // for Decision definitions, next cast is safe.
         final Node<View<? extends Decision>, Edge> decisionNode
-                = (Node<View<? extends Decision>, Edge>) AbstractToolboxAction.getElement(canvasHandler,
-                                                                                          uuid)
+                = (Node<View<? extends Decision>, Edge>) CanvasLayoutUtils.getElement(canvasHandler,
+                                                                                      uuid)
                 .asNode();
         final Decision decision = decisionNode.getContent().getDefinition();
         editExpressionEvent.fire(new EditExpressionEvent(sessionManager.getCurrentSession(),

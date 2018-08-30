@@ -27,6 +27,7 @@ import javax.inject.Inject;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
@@ -90,8 +91,8 @@ public class MorphNodeAction extends AbstractToolboxAction {
                                                              final String uuid,
                                                              final MouseClickEvent event) {
         final String ssid = canvasHandler.getDiagram().getMetadata().getShapeSetId();
-        final Node<View<?>, Edge> sourceNode = (Node<View<?>, Edge>) getElement(canvasHandler,
-                                                                                uuid).asNode();
+        final Node<View<?>, Edge> sourceNode = (Node<View<?>, Edge>) CanvasLayoutUtils.getElement(canvasHandler,
+                                                                                                  uuid).asNode();
 
         //deselect node to be morphed, to avoid showing toolbar while morphing
         clearSelectionEventEvent.fire(new CanvasClearSelectionEvent(canvasHandler));
@@ -107,10 +108,11 @@ public class MorphNodeAction extends AbstractToolboxAction {
             LOGGER.log(Level.SEVERE,
                        result.toString());
         } else {
-            fireElementSelectedEvent(selectionEvent,
-                                     canvasHandler,
-                                     uuid);
+            CanvasLayoutUtils.fireElementSelectedEvent(selectionEvent,
+                                                       canvasHandler,
+                                                       uuid);
         }
+
         return this;
     }
 

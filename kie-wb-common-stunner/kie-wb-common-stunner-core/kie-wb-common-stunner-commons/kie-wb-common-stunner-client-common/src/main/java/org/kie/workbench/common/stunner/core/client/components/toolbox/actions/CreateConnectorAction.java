@@ -33,6 +33,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.Edge
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.request.EdgeBuildRequestImpl;
 import org.kie.workbench.common.stunner.core.client.canvas.event.CancelCanvasAction;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasHighlight;
+import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.components.drag.ConnectorDragProxy;
 import org.kie.workbench.common.stunner.core.client.components.drag.DragProxy;
@@ -123,8 +124,8 @@ public class CreateConnectorAction extends AbstractToolboxAction {
                                                              final String uuid,
                                                              final MouseClickEvent event) {
         // Obtain the connector and source node instances for proxying.
-        final Element<?> element = getElement(canvasHandler,
-                                              uuid);
+        final Element<?> element = CanvasLayoutUtils.getElement(canvasHandler,
+                                                                uuid);
         final Node<View<?>, Edge> sourceNode = (Node<View<?>, Edge>) element.asNode();
         final Edge<? extends ViewConnector<?>, Node> connector =
                 (Edge<? extends ViewConnector<?>, Node>) clientFactoryManager

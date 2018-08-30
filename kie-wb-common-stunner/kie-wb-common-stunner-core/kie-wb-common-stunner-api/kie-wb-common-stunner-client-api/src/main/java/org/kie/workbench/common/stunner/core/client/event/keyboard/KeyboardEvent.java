@@ -28,6 +28,11 @@ public interface KeyboardEvent {
         ARROW_LEFT(37),
         ARROW_RIGHT(39),
         C(67),
+        D(68),
+        E(69),
+        G(71),
+        S(83),
+        T(84),
         V(86),
         X(88),
         Z(90);

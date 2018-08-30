@@ -17,18 +17,11 @@
 package org.kie.workbench.common.dmn.client.canvas.controls.toolbox;
 
 import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
-import org.kie.workbench.common.stunner.core.client.api.ClientFactoryManager;
-import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
-import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
-import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
-import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.GeneralCreateNodeAction;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
-import org.kie.workbench.common.stunner.core.client.session.Session;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 @Dependent
@@ -37,18 +30,10 @@ public class CreateNodeAction extends org.kie.workbench.common.stunner.core.clie
 
     @Inject
     public CreateNodeAction(final DefinitionUtils definitionUtils,
-                            final ClientFactoryManager clientFactoryManager,
-                            final CanvasLayoutUtils canvasLayoutUtils,
-                            final Event<CanvasSelectionEvent> selectionEvent,
                             final ClientTranslationService translationService,
-                            final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                            final @DMNEditor CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory) {
+                            final @DMNEditor GeneralCreateNodeAction generalCreateNodeAction) {
         super(definitionUtils,
-              clientFactoryManager,
-              canvasLayoutUtils,
-              selectionEvent,
               translationService,
-              sessionCommandManager,
-              canvasCommandFactory);
+              generalCreateNodeAction);
     }
 }

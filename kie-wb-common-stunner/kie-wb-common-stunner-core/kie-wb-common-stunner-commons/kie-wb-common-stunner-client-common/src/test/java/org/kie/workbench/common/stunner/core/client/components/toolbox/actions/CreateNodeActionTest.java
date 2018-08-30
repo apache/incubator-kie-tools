@@ -24,11 +24,7 @@ import org.kie.workbench.common.stunner.core.client.api.ClientFactoryManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Layer;
-import org.kie.workbench.common.stunner.core.client.canvas.command.AddConnectorCommand;
-import org.kie.workbench.common.stunner.core.client.canvas.command.AddNodeCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.command.DefaultCanvasCommandFactory;
-import org.kie.workbench.common.stunner.core.client.canvas.command.SetConnectionTargetNodeCommand;
-import org.kie.workbench.common.stunner.core.client.canvas.command.UpdateElementPositionCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
@@ -38,8 +34,6 @@ import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationServic
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseClickEvent;
 import org.kie.workbench.common.stunner.core.command.Command;
-import org.kie.workbench.common.stunner.core.command.impl.DeferredCommand;
-import org.kie.workbench.common.stunner.core.command.impl.DeferredCompositeCommand;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -48,18 +42,15 @@ import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
-import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.uberfire.mocks.EventSourceMock;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.anyString;
@@ -136,6 +127,9 @@ public class CreateNodeActionTest {
     @Mock
     private Index<Node<View<?>, Edge>, Edge<ViewConnector<?>, Node>> graphIndex;
 
+    @Mock
+    private BPMNCreateNodeAction bpmnCreateNodeAction;
+
     private CreateNodeAction tested;
 
     @Before
@@ -185,12 +179,8 @@ public class CreateNodeActionTest {
         CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory = new DefaultCanvasCommandFactory(null,
                                                                                                            null);
         this.tested = new CreateNodeAction(definitionUtils,
-                                           clientFactoryManager,
-                                           canvasLayoutUtils,
-                                           canvasElementSelectedEvent,
                                            translationService,
-                                           sessionCommandManager,
-                                           canvasCommandFactory)
+                                           bpmnCreateNodeAction)
                 .setEdgeId(EDGE_ID)
                 .setNodeId(TARGET_NODE_ID);
     }
@@ -237,38 +227,9 @@ public class CreateNodeActionTest {
         assertEquals(tested,
                      cascade);
 
-        ArgumentCaptor<Command> commandArgumentCaptor = ArgumentCaptor.forClass(Command.class);
-        verify(sessionCommandManager, times(1)).execute(eq(canvasHandler),
-                                                        commandArgumentCaptor.capture());
-        DeferredCompositeCommand command = (DeferredCompositeCommand) commandArgumentCaptor.getValue();
-        DeferredCommand c0 = (DeferredCommand) command.getCommands().get(0);
-        DeferredCommand c1 = (DeferredCommand) command.getCommands().get(1);
-        DeferredCommand c2 = (DeferredCommand) command.getCommands().get(2);
-        DeferredCommand c3 = (DeferredCommand) command.getCommands().get(3);
-        AddNodeCommand addNodeCommand = (AddNodeCommand) c0.getCommand();
-        UpdateElementPositionCommand updateElementPositionCommand = (UpdateElementPositionCommand) c1.getCommand();
-        AddConnectorCommand addConnectorCommand = (AddConnectorCommand) c2.getCommand();
-        SetConnectionTargetNodeCommand setTargetNodeCommand = (SetConnectionTargetNodeCommand) c3.getCommand();
-        assertEquals(targetNode, addNodeCommand.getCandidate());
-        assertEquals("ss1", addNodeCommand.getShapeSetId());
-        assertEquals(edge, addConnectorCommand.getCandidate());
-        assertEquals(element, addConnectorCommand.getSource());
-        assertEquals("ss1", addConnectorCommand.getShapeSetId());
-        assertEquals(edge, setTargetNodeCommand.getEdge());
-        assertEquals(targetNode, setTargetNodeCommand.getNode());
-        assertEquals(targetNode, updateElementPositionCommand.getElement());
-        assertEquals(new Point2D(100d, 500d), updateElementPositionCommand.getLocation());
-        final ArgumentCaptor<CanvasSelectionEvent> eventArgumentCaptor =
-                ArgumentCaptor.forClass(CanvasSelectionEvent.class);
-        verify(canvasElementSelectedEvent,
-               times(1)).fire(eventArgumentCaptor.capture());
-        final CanvasSelectionEvent eCaptured = eventArgumentCaptor.getValue();
-        assertEquals(TARGET_NODE_UUID,
-                     eCaptured.getIdentifiers().iterator().next());
-
-        assertTrue(addConnectorCommand.getConnection() instanceof MagnetConnection);
-        assertEquals(((MagnetConnection) addConnectorCommand.getConnection()).getMagnetIndex().getAsInt(), MagnetConnection.MAGNET_RIGHT);
-        assertTrue(setTargetNodeCommand.getConnection() instanceof MagnetConnection);
-        assertEquals(((MagnetConnection) setTargetNodeCommand.getConnection()).getMagnetIndex().getAsInt(), MagnetConnection.MAGNET_LEFT);
+        verify(bpmnCreateNodeAction).executeAction(canvasHandler,
+                                                   NODE_UUID,
+                                                   TARGET_NODE_ID,
+                                                   EDGE_ID);
     }
 }

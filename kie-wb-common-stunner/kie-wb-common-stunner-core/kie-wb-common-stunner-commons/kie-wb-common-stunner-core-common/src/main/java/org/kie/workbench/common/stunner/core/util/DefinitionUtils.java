@@ -41,7 +41,9 @@ import org.kie.workbench.common.stunner.core.definition.property.type.StringType
 import org.kie.workbench.common.stunner.core.factory.graph.EdgeFactory;
 import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
+import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
+import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.registry.factory.FactoryRegistry;
@@ -304,5 +306,13 @@ public class DefinitionUtils {
 
     public static Class<? extends PropertyType> getDefaultPropertyType(final Class<?> clazz) {
         return DEFAULT_PROPERTY_TYPES.get(clazz);
+    }
+
+    public static Object getElementDefinition(final Element element) {
+        if (element != null && element.getContent() instanceof Definition) {
+            return ((Definition) element.getContent()).getDefinition();
+        } else {
+            return null;
+        }
     }
 }

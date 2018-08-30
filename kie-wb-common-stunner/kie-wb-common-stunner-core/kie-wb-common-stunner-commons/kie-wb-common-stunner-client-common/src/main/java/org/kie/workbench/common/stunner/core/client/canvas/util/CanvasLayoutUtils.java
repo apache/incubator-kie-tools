@@ -20,10 +20,14 @@ import java.util.Optional;
 
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.Timer;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
@@ -398,5 +402,28 @@ public class CanvasLayoutUtils {
         final double lrX = lrBound.getX();
         final double lrY = ulBound.getY();
         return new double[]{lrX + relativePositionTo.getX(), lrY + relativePositionTo.getY()};
+    }
+
+    public static Element<?> getElement(final AbstractCanvasHandler canvasHandler,
+                                        final String uuid) {
+        return canvasHandler.getGraphIndex().get(uuid);
+    }
+
+    // TODO: This is a work around. If enabling canvas handlers just here ( without using the timer )
+    //       the layer receives a click event, so it fires a clear selection event and it results
+    //       on the element just added not being selected.
+    public static void fireElementSelectedEvent(final Event<CanvasSelectionEvent> selectionEvent,
+                                                final CanvasHandler canvasHandler,
+                                                final String uuid) {
+        canvasHandler.getCanvas().getLayer().disableHandlers();
+        selectionEvent.fire(new CanvasSelectionEvent(canvasHandler,
+                                                     uuid));
+        final Timer t = new Timer() {
+            @Override
+            public void run() {
+                canvasHandler.getCanvas().getLayer().enableHandlers();
+            }
+        };
+        t.schedule(500);
     }
 }

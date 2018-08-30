@@ -16,15 +16,10 @@
 
 package org.kie.workbench.common.stunner.core.client.components.toolbox.actions;
 
-import javax.enterprise.event.Event;
-
-import com.google.gwt.user.client.Timer;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
-import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 public abstract class AbstractToolboxAction implements ToolboxAction<AbstractCanvasHandler> {
@@ -69,28 +64,5 @@ public abstract class AbstractToolboxAction implements ToolboxAction<AbstractCan
         final ShapeFactory shapeFactory = canvasHandler.getShapeFactory(ssid);
         return shapeFactory.getGlyph(getGlyphId(canvasHandler, uuid),
                                      ToolboxGlyphConsumer.class);
-    }
-
-    public static Element<?> getElement(final AbstractCanvasHandler canvasHandler,
-                                        final String uuid) {
-        return canvasHandler.getGraphIndex().get(uuid);
-    }
-
-    // TODO: This is a work around. If enabling canvas handlers just here ( without using the timer )
-    //       the layer receives a click event, so it fires a clear selection event and it results
-    //       on the element just added not being selected.
-    public static void fireElementSelectedEvent(final Event<CanvasSelectionEvent> selectionEvent,
-                                                final AbstractCanvasHandler canvasHandler,
-                                                final String uuid) {
-        canvasHandler.getCanvas().getLayer().disableHandlers();
-        selectionEvent.fire(new CanvasSelectionEvent(canvasHandler,
-                                                     uuid));
-        final Timer t = new Timer() {
-            @Override
-            public void run() {
-                canvasHandler.getCanvas().getLayer().enableHandlers();
-            }
-        };
-        t.schedule(500);
     }
 }

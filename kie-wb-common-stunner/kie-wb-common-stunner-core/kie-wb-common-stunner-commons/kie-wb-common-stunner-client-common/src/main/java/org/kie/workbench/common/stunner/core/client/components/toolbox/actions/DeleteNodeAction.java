@@ -24,6 +24,7 @@ import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
@@ -89,7 +90,7 @@ public class DeleteNodeAction implements ToolboxAction<AbstractCanvasHandler> {
                                                              final String uuid,
                                                              final MouseClickEvent event) {
         if (confirmDelete.test(this)) {
-            final Node<?, Edge> node = AbstractToolboxAction.getElement(canvasHandler, uuid).asNode();
+            final Node<?, Edge> node = CanvasLayoutUtils.getElement(canvasHandler, uuid).asNode();
 
             clearSelectionEvent.fire(new CanvasClearSelectionEvent(canvasHandler));
 
