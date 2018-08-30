@@ -17,6 +17,7 @@
 package org.kie.workbench.common.services.backend.compiler;
 
 import java.util.Map;
+import java.util.Properties;
 
 import org.kie.workbench.common.services.backend.compiler.impl.WorkspaceCompilationInfo;
 import org.kie.workbench.common.services.backend.compiler.impl.external339.AFCliRequest;
@@ -83,4 +84,10 @@ public interface CompilationRequest {
      * @return
      */
     Boolean getRestoreOverride();
+
+    /**
+     * Properties with the banned env vars who could prevent the correct build
+     * @return
+     */
+    Properties getBannedEnvVars();
 }

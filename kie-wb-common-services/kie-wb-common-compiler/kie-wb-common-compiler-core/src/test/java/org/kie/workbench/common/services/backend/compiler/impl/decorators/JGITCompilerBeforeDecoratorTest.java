@@ -31,6 +31,7 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
+import org.kie.workbench.common.services.backend.compiler.BaseCompilerTest;
 import org.kie.workbench.common.services.backend.compiler.CompilationRequest;
 import org.kie.workbench.common.services.backend.compiler.CompilationResponse;
 import org.kie.workbench.common.services.backend.compiler.TestUtilGit;
@@ -62,6 +63,7 @@ public class JGITCompilerBeforeDecoratorTest {
     @Rule
     public TestName testName = new TestName();
 
+
     @BeforeClass
     public static void setupSystemProperties() {
         //These are not needed for the tests
@@ -78,6 +80,7 @@ public class JGITCompilerBeforeDecoratorTest {
         System.clearProperty("org.uberfire.sys.repo.monitor.disabled");
         System.clearProperty("org.uberfire.nio.git.daemon.enabled");
         System.clearProperty("org.uberfire.nio.git.ssh.enabled");
+        System.clearProperty("org.uberfire.sys.repo.monitor.disabled");
     }
 
     @Before
@@ -89,7 +92,7 @@ public class JGITCompilerBeforeDecoratorTest {
     }
 
     @After
-    public void tearDown() throws IOException {
+    public void tearDown() {
         fileSystemTestingUtils.cleanup();
         TestUtil.rm(new File("src/../.security/"));
     }

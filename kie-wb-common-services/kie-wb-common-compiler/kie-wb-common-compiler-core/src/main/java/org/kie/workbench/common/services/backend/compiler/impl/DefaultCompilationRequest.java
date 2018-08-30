@@ -17,6 +17,7 @@ package org.kie.workbench.common.services.backend.compiler.impl;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.UUID;
 
 import org.kie.workbench.common.services.backend.compiler.CompilationRequest;
@@ -35,6 +36,7 @@ public class DefaultCompilationRequest implements CompilationRequest {
     private String mavenRepo;
     private Boolean skipPrjDependenciesCreationList;
     private Boolean restoreOverride;
+    private Properties bannedEnvVars;
 
     /***
      * @param mavenRepo a string representation of the Path
@@ -96,14 +98,15 @@ public class DefaultCompilationRequest implements CompilationRequest {
         this.skipPrjDependenciesCreationList = skipPrjDependenciesCreationList;
         this.requestUUID = uuid.trim().isEmpty() ? UUID.randomUUID().toString() : uuid;
         this.restoreOverride = restoreOverride;
-
         this.originalArgs = args;
+        this.bannedEnvVars = info.getBennedEnvVars();
         Map internalMap = new HashMap();
         internalMap.put(MavenConfig.COMPILATION_ID, this.requestUUID);
         this.req = new AFCliRequest(this.info.getPrjPath().toAbsolutePath().toString(),
                                     args,
                                     internalMap,
-                                    this.requestUUID);
+                                    this.requestUUID,
+                                    this.bannedEnvVars);
     }
 
     public DefaultCompilationRequest(String mavenRepo,
@@ -162,4 +165,10 @@ public class DefaultCompilationRequest implements CompilationRequest {
     public Boolean getRestoreOverride() {
         return restoreOverride;
     }
+
+    @Override
+    public Properties getBannedEnvVars() {
+        return bannedEnvVars;
+    }
+
 }

@@ -190,7 +190,8 @@ public class ReusableAFMavenCli {
 
     static void populateProperties(CommandLine commandLine,
                                    Properties systemProperties,
-                                   Properties userProperties) {
+                                   Properties userProperties,
+                                   Properties bannedEnvVars) {
 
         EnvironmentUtils.addEnvVars(systemProperties);
 
@@ -212,6 +213,7 @@ public class ReusableAFMavenCli {
         }
 
         SystemProperties.addSystemProperties(systemProperties);
+        purgeBannedProperties(systemProperties, bannedEnvVars);// purged from the env vars who breaks the build
 
         // ----------------------------------------------------------------------
         // Properties containing info about the currently running version of Maven
@@ -227,6 +229,12 @@ public class ReusableAFMavenCli {
         String mavenBuildVersion = AFCLIReportingUtils.createMavenVersionString(buildProperties);
         systemProperties.setProperty("maven.build.version",
                                      mavenBuildVersion);
+    }
+
+    private static void purgeBannedProperties(Properties toPurge, Properties itemsToRemove){
+        for(Object key: itemsToRemove.keySet()){
+            toPurge.remove(key);
+        }
     }
 
     protected static void setCliProperty(String property,
@@ -445,7 +453,8 @@ public class ReusableAFMavenCli {
     protected void properties(AFCliRequest cliRequest) {
         populateProperties(cliRequest.getCommandLine(),
                            cliRequest.getSystemProperties(),
-                           cliRequest.getUserProperties());
+                           cliRequest.getUserProperties(),
+                           cliRequest.getBannedEnvVars());
     }
 
     protected PlexusContainer container(AFCliRequest cliRequest,

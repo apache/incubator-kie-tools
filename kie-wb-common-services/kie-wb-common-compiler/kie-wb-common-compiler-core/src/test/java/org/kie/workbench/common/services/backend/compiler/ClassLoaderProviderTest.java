@@ -55,9 +55,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ClassLoaderProviderTest {
 
     private String mavenRepo;
-    Path tmpRoot;
-    Path tmp;
-    Path uberfireTmp;
+    private Path tmpRoot;
+    private Path tmp;
+    private Path uberfireTmp;
+    private final String MAVEN_MAIN_SKIP = "maven.main.skip";
     private Logger logger = LoggerFactory.getLogger(ClassLoaderProviderTest.class);
 
     @Rule
@@ -70,6 +71,7 @@ public class ClassLoaderProviderTest {
 
     @After
     public void clean() {
+        System.clearProperty(MAVEN_MAIN_SKIP);
         if (tmpRoot != null) {
             TestUtil.rm(tmpRoot.toFile());
         }
@@ -202,11 +204,11 @@ public class ClassLoaderProviderTest {
 
         List<String> resources = CompilerClassloaderUtils.getStringFromTargets(tmpRoot);
         assertThat(resources).hasSize(3);
-        TestUtil.rm(tmpRoot.toFile());
     }
 
     @Test
     public void getResourcesFromADroolsPRJWithError() throws Exception {
+
         /**
          * If the test fail check if the Drools core classes used, KieModuleMetaInfo and TypeMetaInfo implements Serializable
          * */
@@ -242,6 +244,45 @@ public class ClassLoaderProviderTest {
         assertThat(kieModuleOptional).isPresent();
         List<String> classloaderOptional = CompilerClassloaderUtils.getStringFromTargets(tmpRoot);
         assertThat(classloaderOptional).hasSize(3);
-        TestUtil.rm(tmpRoot.toFile());
+    }
+
+    @Test
+    public void getResourcesFromADroolsPRJWithErrorWithMavenSkip() throws Exception {
+        System.setProperty(MAVEN_MAIN_SKIP, Boolean.TRUE.toString());
+        /**
+         * If the test fail check if the Drools core classes used, KieModuleMetaInfo and TypeMetaInfo implements Serializable
+         * */
+        Path tmpRoot = Files.createTempDirectory("repo");
+        Path tmp = TestUtil.createAndCopyToDirectory(tmpRoot, "dummy", ResourcesConstants.KJAR_2_SINGLE_RESOURCES_WITH_ERROR);
+
+        AFCompiler compiler = KieMavenCompilerFactory.getCompiler(KieDecorator.KIE_AFTER);
+        WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(Paths.get(tmp.toUri()));
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
+                                                               info,
+                                                               new String[]{MavenCLIArgs.INSTALL},
+                                                               Boolean.FALSE);
+        KieCompilationResponse res = (KieCompilationResponse) compiler.compile(req);
+        TestUtil.saveMavenLogIfCompilationResponseNotSuccessfull(tmp, res, this.getClass(), testName);
+        if (!res.isSuccessful()) {
+            List<String> msgs = res.getMavenOutput();
+            for (String msg : msgs) {
+                logger.info(msg);
+            }
+        }
+
+        assertThat(res.isSuccessful()).isTrue();
+
+        Optional<KieModuleMetaInfo> metaDataOptional = res.getKieModuleMetaInfo();
+        assertThat(metaDataOptional).isPresent();
+        KieModuleMetaInfo kieModuleMetaInfo = metaDataOptional.get();
+        assertThat(kieModuleMetaInfo).isNotNull();
+
+        Map<String, Set<String>> rulesBP = kieModuleMetaInfo.getRulesByPackage();
+        assertThat(rulesBP).hasSize(1);
+
+        Optional<KieModule> kieModuleOptional = res.getKieModule();
+        assertThat(kieModuleOptional).isPresent();
+        List<String> classloaderOptional = CompilerClassloaderUtils.getStringFromTargets(tmpRoot);
+        assertThat(classloaderOptional).hasSize(3);
     }
 }

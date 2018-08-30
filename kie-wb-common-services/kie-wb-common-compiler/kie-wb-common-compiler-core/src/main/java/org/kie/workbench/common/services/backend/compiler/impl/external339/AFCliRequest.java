@@ -46,17 +46,20 @@ public class AFCliRequest {
     private MavenExecutionRequest request;
     private Map<String, Object> map;
     private String requestUUID;
+    private Properties bannedEnvVars;
 
     public AFCliRequest(String multiModuleProjectDirectory,
                         String[] args,
                         Map<String, Object> map,
-                        String requestUUID) {
+                        String requestUUID,
+                        Properties bannedEnvVars) {
         this.multiModuleProjectDirectory = multiModuleProjectDirectory;
         this.workingDirectory = multiModuleProjectDirectory;
         this.request = new DefaultMavenExecutionRequest();
         this.args = args;
         this.map = new HashMap<>(map);
         this.requestUUID = requestUUID;
+        this.bannedEnvVars = bannedEnvVars;
     }
 
     public String getRequestUUID() {
@@ -143,6 +146,10 @@ public class AFCliRequest {
         return request;
     }
 
+    public Properties getBannedEnvVars(){
+        return bannedEnvVars;
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("AFCliRequest{");
@@ -154,6 +161,7 @@ public class AFCliRequest {
         sb.append(", debug=").append(debug);
         sb.append(", quiet=").append(quiet);
         sb.append(", showErrors=").append(showErrors);
+        sb.append(", bannedEnvVars=").append(bannedEnvVars);
         sb.append(", userProperties=").append(userProperties);
         sb.append(", systemProperties=").append(systemProperties);
         sb.append(", request=").append(request);
