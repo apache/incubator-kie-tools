@@ -22,9 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-
 import javax.enterprise.event.Event;
-import javax.inject.Inject;
 
 import org.ext.uberfire.social.activities.model.ExtendedTypes;
 import org.ext.uberfire.social.activities.model.SocialFileSelectedEvent;
@@ -43,6 +41,7 @@ import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.exception.UnauthorizedException;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
@@ -52,6 +51,7 @@ import org.kie.workbench.common.screens.examples.model.ImportProject;
 import org.kie.workbench.common.screens.explorer.model.URIStructureExplorerModel;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.api.ProjectAssetListUpdated;
+import org.kie.workbench.common.screens.library.api.preferences.LibraryInternalPreferences;
 import org.kie.workbench.common.screens.library.client.events.AssetDetailEvent;
 import org.kie.workbench.common.screens.library.client.events.WorkbenchProjectMetricsEvent;
 import org.kie.workbench.common.screens.library.client.perspective.LibraryPerspective;
@@ -64,10 +64,10 @@ import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.kie.workbench.common.workbench.client.docks.AuthoringWorkbenchDocks;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.stubbing.Answer;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
@@ -84,17 +84,19 @@ import org.uberfire.ext.preferences.client.event.PreferencesCentralUndoChangesEv
 import org.uberfire.ext.widgets.common.client.breadcrumbs.UberfireBreadcrumbs;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mvp.Command;
+import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
+import org.uberfire.rpc.SessionInfo;
+import org.uberfire.spaces.Space;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singleton;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -171,7 +173,16 @@ public class LibraryPlacesTest {
     @Mock
     private ProjectBranchBreadcrumb projectBranchBreadcrumb;
 
+    @Mock
+    private SessionInfo sessionInfo;
+
+    @Mock
+    private User user;
+
     private LibraryBreadcrumbs libraryBreadcrumbs;
+
+    @Mock
+    private LibraryInternalPreferences libraryInternalPreferences;
 
     @Captor
     private ArgumentCaptor<WorkspaceProjectContextChangeEvent> projectContextChangeEventArgumentCaptor;
@@ -179,6 +190,7 @@ public class LibraryPlacesTest {
     private LibraryPlaces libraryPlaces;
 
     private OrganizationalUnit activeOrganizationalUnit;
+    private Space activeSpace;
     private Repository activeRepository;
     private Branch activeBranch;
     private Module activeModule;
@@ -187,6 +199,9 @@ public class LibraryPlacesTest {
 
     @Before
     public void setup() {
+        when(user.getIdentifier()).thenReturn("user");
+        when(sessionInfo.getIdentity()).thenReturn(user);
+
         windowParameters = new HashMap<>();
         libraryServiceCaller = new CallerMock<>(libraryService);
         vfsServiceCaller = new CallerMock<>(vfsService);
@@ -214,7 +229,9 @@ public class LibraryPlacesTest {
                                               assetListUpdateEvent,
                                               closeUnsavedProjectAssetsPopUpPresenter,
                                               projectsSetupEvent,
-                                              libraryBreadcrumbs) {
+                                              libraryBreadcrumbs,
+                                              sessionInfo,
+                                              libraryInternalPreferences) {
 
             @Override
             protected Map<String, List<String>> getParameterMap() {
@@ -226,6 +243,7 @@ public class LibraryPlacesTest {
         libraryPlaces.init(mock(LibraryPerspective.class));
 
         activeOrganizationalUnit = mock(OrganizationalUnit.class);
+        activeSpace = mock(Space.class);
         activeRepository = mock(Repository.class);
         activeBranch = new Branch("master",
                                   mock(Path.class));
@@ -245,6 +263,10 @@ public class LibraryPlacesTest {
         when(current.getWorkspaceProject()).thenReturn(activeProject);
         when(current.getModule()).thenReturn(activeModule);
 
+        when(activeOrganizationalUnit.getSpace()).thenReturn(activeSpace);
+        when(activeRepository.getAlias()).thenReturn("repository");
+        when(activeRepository.getSpace()).thenReturn(activeSpace);
+
         final URIStructureExplorerModel model = mock(URIStructureExplorerModel.class);
         doReturn(mock(Repository.class)).when(model).getRepository();
         doReturn(mock(Module.class)).when(model).getModule();
@@ -256,6 +278,16 @@ public class LibraryPlacesTest {
         doReturn(pathPlaceRequest).when(libraryPlaces).createPathPlaceRequest(any());
 
         doReturn(importRepositoryPopUpPresenter).when(importRepositoryPopUpPresenters).get();
+
+        doAnswer(invocationOnMock -> {
+            invocationOnMock.getArgumentAt(0, ParameterizedCommand.class).execute(libraryInternalPreferences);
+            return null;
+        }).when(libraryInternalPreferences).load(any(ParameterizedCommand.class), any(ParameterizedCommand.class));
+
+        doAnswer(invocationOnMock -> {
+            invocationOnMock.getArgumentAt(0, Command.class).execute();
+            return null;
+        }).when(libraryInternalPreferences).save(any(Command.class), any(ParameterizedCommand.class));
     }
 
     @Test
@@ -706,20 +738,23 @@ public class LibraryPlacesTest {
 
     @Test
     public void goToNewProject() {
-
         final WorkspaceProject project = new WorkspaceProject(activeOrganizationalUnit,
                                                               activeRepository,
                                                               activeBranch,
                                                               mock(Module.class));
+        final Branch lastOpenedBranch = new Branch("master", mock(Path.class));
+        doReturn(Optional.of(lastOpenedBranch)).when(libraryInternalPreferences).getLastBranchOpened(project);
+        doReturn(activeProject).when(projectService).resolveProject(activeSpace, lastOpenedBranch);
+
         libraryPlaces.goToProject(project);
 
+        verify(libraryPlaces).goToProject(project, lastOpenedBranch);
         verify(projectContextChangeEvent).fire(any(WorkspaceProjectContextChangeEvent.class));
         verify(placeManager).closeAllPlaces();
     }
 
     @Test
     public void goToSameProjectTest() {
-
         final WorkspaceProject project = new WorkspaceProject(activeOrganizationalUnit,
                                                               activeRepository,
                                                               activeBranch,
@@ -730,6 +765,44 @@ public class LibraryPlacesTest {
                never()).fire(any(WorkspaceProjectContextChangeEvent.class));
         verify(placeManager,
                never()).forceCloseAllPlaces();
+    }
+
+    @Test
+    public void goToProjectDifferentBranch() {
+        final WorkspaceProject project = new WorkspaceProject(activeOrganizationalUnit,
+                                                              activeRepository,
+                                                              activeBranch,
+                                                              mock(Module.class));
+        final Branch lastOpenedBranch = new Branch("master", mock(Path.class));
+        final Branch otherBranch = new Branch("other-branch", mock(Path.class));
+
+        doReturn(Optional.of(lastOpenedBranch)).when(libraryInternalPreferences).getLastBranchOpened(project);
+        doReturn(activeProject).when(projectService).resolveProject(activeSpace, otherBranch);
+
+        libraryPlaces.goToProject(project,
+                                  otherBranch);
+
+        verify(libraryInternalPreferences).setLastBranchOpened(project, otherBranch);
+        verify(libraryInternalPreferences).save(any(Command.class), any());
+        verify(libraryPlaces).goToProject(activeProject);
+    }
+
+    @Test
+    public void goToProjectSameBranch() {
+        final WorkspaceProject project = new WorkspaceProject(activeOrganizationalUnit,
+                                                              activeRepository,
+                                                              activeBranch,
+                                                              mock(Module.class));
+
+        doReturn(Optional.of(activeBranch)).when(libraryInternalPreferences).getLastBranchOpened(project);
+        doReturn(activeProject).when(projectService).resolveProject(activeSpace, activeBranch);
+
+        libraryPlaces.goToProject(project,
+                                  activeBranch);
+
+        verify(libraryInternalPreferences, never()).setLastBranchOpened(any(), any());
+        verify(libraryInternalPreferences, never()).save(any(Command.class), any());
+        verify(libraryPlaces).goToProject(activeProject);
     }
 
     @Test
@@ -848,5 +921,35 @@ public class LibraryPlacesTest {
                              any(),
                              any(),
                              any());
+    }
+
+    @Test
+    public void loggedUserAccessingRepositoryTest() {
+        assertTrue(libraryPlaces.isThisUserAccessingThisRepository(user, activeRepository));
+    }
+
+    @Test
+    public void loggedUserAccessingAnotherRepositoryTest() {
+        final Repository repository = mock(Repository.class);
+        when(repository.getAlias()).thenReturn("another-repository");
+        when(repository.getSpace()).thenReturn(activeSpace);
+
+        assertFalse(libraryPlaces.isThisUserAccessingThisRepository(user,
+                                                                    repository));
+    }
+
+    @Test
+    public void anotherUserAccessingRepositoryTest() {
+        assertFalse(libraryPlaces.isThisUserAccessingThisRepository(mock(User.class), activeRepository));
+    }
+
+    @Test
+    public void anotherUserAccessingAnotherRepositoryTest() {
+        final Repository repository = mock(Repository.class);
+        when(repository.getAlias()).thenReturn("another-repository");
+        when(repository.getSpace()).thenReturn(activeSpace);
+
+        assertFalse(libraryPlaces.isThisUserAccessingThisRepository(mock(User.class),
+                                                                    repository));
     }
 }

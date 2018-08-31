@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -46,6 +47,7 @@ import org.guvnor.structure.repositories.RepositoryRemovedEvent;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.exception.UnauthorizedException;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.soup.commons.validation.PortablePreconditions;
@@ -55,6 +57,7 @@ import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.api.ProjectAssetListUpdated;
 import org.kie.workbench.common.screens.library.api.Remote;
 import org.kie.workbench.common.screens.library.api.Routed;
+import org.kie.workbench.common.screens.library.api.preferences.LibraryInternalPreferences;
 import org.kie.workbench.common.screens.library.client.events.AssetDetailEvent;
 import org.kie.workbench.common.screens.library.client.perspective.LibraryPerspective;
 import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
@@ -84,6 +87,8 @@ import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
+import org.uberfire.rpc.SessionInfo;
+import org.uberfire.spaces.Space;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.events.ResourceDeletedEvent;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
@@ -158,6 +163,10 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
 
     private LibraryBreadcrumbs libraryBreadcrumbs;
 
+    private SessionInfo sessionInfo;
+
+    private LibraryInternalPreferences libraryInternalPreferences;
+
     private boolean docksReady = false;
 
     private boolean docksHidden = true;
@@ -187,7 +196,9 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
                          final @Routed Event<ProjectAssetListUpdated> assetListUpdatedEvent,
                          final CloseUnsavedProjectAssetsPopUpPresenter closeUnsavedProjectAssetsPopUpPresenter,
                          final @Source(Source.Kind.EXTERNAL) Event<ImportProjectsSetupEvent> importProjectsSetupEvent,
-                         final LibraryBreadcrumbs libraryBreadcrumbs) {
+                         final LibraryBreadcrumbs libraryBreadcrumbs,
+                         final SessionInfo sessionInfo,
+                         final LibraryInternalPreferences libraryInternalPreferences) {
         this.breadcrumbs = breadcrumbs;
         this.ts = ts;
         this.assetDetailEvent = assetDetailEvent;
@@ -206,6 +217,8 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
         this.closeUnsavedProjectAssetsPopUpPresenter = closeUnsavedProjectAssetsPopUpPresenter;
         this.importProjectsSetupEvent = importProjectsSetupEvent;
         this.libraryBreadcrumbs = libraryBreadcrumbs;
+        this.sessionInfo = sessionInfo;
+        this.libraryInternalPreferences = libraryInternalPreferences;
     }
 
     @PostConstruct
@@ -497,10 +510,14 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
         if (projectContext.getActiveWorkspaceProject()
                 .map(activeProject -> !activeProject.equals(project))
                 .orElse(true)) {
-            closeAllPlacesOrNothing(() -> {
-                projectContextChangeEvent.fire(new WorkspaceProjectContextChangeEvent(project,
-                                                                                      project.getMainModule()));
-                goToProject();
+            libraryInternalPreferences.load(loadedLibraryInternalPreferences -> {
+                closeAllPlacesOrNothing(() -> {
+                    projectContextChangeEvent.fire(new WorkspaceProjectContextChangeEvent(project,
+                                                                                          project.getMainModule()));
+                    goToProject(project, loadedLibraryInternalPreferences.getLastBranchOpened(project).orElse(project.getBranch()));
+                });
+            },
+            error -> {
             });
         } else {
             goToProject();
@@ -509,7 +526,22 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
 
     public void goToProject(final WorkspaceProject project,
                             final Branch branch) {
-        projectService.call((RemoteCallback<WorkspaceProject>) this::goToProject).resolveProject(project.getSpace(), branch);
+        libraryInternalPreferences.load(loadedLibraryInternalPreferences -> {
+                                            final Optional<Branch> lastBranchOpened = loadedLibraryInternalPreferences.getLastBranchOpened(project);
+                                            final Command goToProjectCommand = () -> projectService.call((RemoteCallback<WorkspaceProject>) this::goToProject).resolveProject(project.getSpace(), branch);
+
+                                            if (!lastBranchOpened.isPresent() || !lastBranchOpened.get().equals(branch)) {
+                                                loadedLibraryInternalPreferences.setLastBranchOpened(project,
+                                                                                                     branch);
+                                                loadedLibraryInternalPreferences.save(goToProjectCommand,
+                                                                                      error -> {
+                                                                                      });
+                                            } else {
+                                                goToProjectCommand.execute();
+                                            }
+                                        },
+                                        error -> {
+                                        });
     }
 
     void goToProject() {
@@ -690,6 +722,18 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
 
     public OrganizationalUnit getActiveSpace() {
         return this.projectContext.getActiveOrganizationalUnit().orElseThrow(() -> new IllegalStateException("No active space found"));
+    }
+
+    public boolean isThisUserAccessingThisRepository(final User user,
+                                                     final Repository repository) {
+        final Space space = repository.getSpace();
+        final String repositoryAlias = repository.getAlias();
+
+        final Space activeSpace = getActiveSpace().getSpace();
+        final Repository activeRepository = getActiveWorkspace().getRepository();
+        final String activeRepositoryAlias = activeRepository.getAlias();
+
+        return space.equals(activeSpace) && repositoryAlias.equals(activeRepositoryAlias) && sessionInfo.getIdentity().equals(user);
     }
 
     public void init(final LibraryPerspective libraryPerspective) {

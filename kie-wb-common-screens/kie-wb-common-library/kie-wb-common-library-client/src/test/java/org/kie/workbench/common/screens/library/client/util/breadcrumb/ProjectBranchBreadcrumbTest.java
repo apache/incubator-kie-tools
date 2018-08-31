@@ -68,9 +68,6 @@ public class ProjectBranchBreadcrumbTest {
     private WorkspaceProject project;
 
     @Mock
-    private SessionInfo sessionInfo;
-
-    @Mock
     private User user;
 
     private Branch newBranch;
@@ -79,12 +76,8 @@ public class ProjectBranchBreadcrumbTest {
 
     @Before
     public void setup() {
-        when(user.getIdentifier()).thenReturn("user");
-        when(sessionInfo.getIdentity()).thenReturn(user);
-
         presenter = spy(new ProjectBranchBreadcrumb(view,
-                                                    libraryPlaces,
-                                                    sessionInfo));
+                                                    libraryPlaces));
 
         newBranch = makeBranch("new-branch", "repository");
 
@@ -128,6 +121,8 @@ public class ProjectBranchBreadcrumbTest {
 
     @Test
     public void newBranchCreatedByUserShouldBeOpened() {
+        doReturn(true).when(libraryPlaces).isThisUserAccessingThisRepository(user, repository);
+
         presenter.newBranchEvent(new NewBranchEvent(repository, newBranch.getName(), user));
 
         verify(presenter).setup(any());
@@ -138,8 +133,10 @@ public class ProjectBranchBreadcrumbTest {
     public void newBranchCreatedByOtherUserShouldNotBeOpened() {
         final User otherUser = mock(User.class);
         when(otherUser.getIdentifier()).thenReturn("otherUser");
-        presenter.newBranchEvent(new NewBranchEvent(repository, newBranch.getName(),
-                                                    otherUser));
+
+        doReturn(false).when(libraryPlaces).isThisUserAccessingThisRepository(otherUser, repository);
+
+        presenter.newBranchEvent(new NewBranchEvent(repository, newBranch.getName(), otherUser));
 
         verify(presenter, never()).setup(any());
         verify(libraryPlaces, never()).goToProject(project, newBranch);

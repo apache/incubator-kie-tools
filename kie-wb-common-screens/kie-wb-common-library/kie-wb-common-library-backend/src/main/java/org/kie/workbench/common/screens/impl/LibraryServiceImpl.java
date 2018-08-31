@@ -43,6 +43,7 @@ import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.guvnor.structure.backend.repositories.ConfiguredRepositories;
+import org.guvnor.structure.config.SystemRepositoryChangedEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.Branch;
@@ -114,6 +115,7 @@ public class LibraryServiceImpl implements LibraryService {
     private PathUtil pathUtil;
     private Event<NewBranchEvent> newBranchEvent;
     private ConfiguredRepositories configuredRepositories;
+    private Event<SystemRepositoryChangedEvent> systemRepositoryChangedEvent;
 
     public LibraryServiceImpl() {
     }
@@ -135,7 +137,8 @@ public class LibraryServiceImpl implements LibraryService {
                               final RepositoryService repoService,
                               final PathUtil pathUtil,
                               final Event<NewBranchEvent> newBranchEvent,
-                              final ConfiguredRepositories configuredRepositories) {
+                              final ConfiguredRepositories configuredRepositories,
+                              @org.guvnor.structure.backend.config.Repository final Event<SystemRepositoryChangedEvent> systemRepositoryChangedEvent) {
         this.ouService = ouService;
         this.refactoringQueryService = refactoringQueryService;
         this.preferences = preferences;
@@ -153,6 +156,7 @@ public class LibraryServiceImpl implements LibraryService {
         this.pathUtil = pathUtil;
         this.newBranchEvent = newBranchEvent;
         this.configuredRepositories = configuredRepositories;
+        this.systemRepositoryChangedEvent = systemRepositoryChangedEvent;
     }
 
     @Override
@@ -383,6 +387,13 @@ public class LibraryServiceImpl implements LibraryService {
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public void removeBranch(Branch branch) {
+        final org.uberfire.java.nio.file.Path branchPath = pathUtil.convert(branch.getPath());
+        ioService.delete(branchPath);
+        systemRepositoryChangedEvent.fire(new SystemRepositoryChangedEvent());
     }
 
     private void fireNewBranchEvent(final Path targetRoot,

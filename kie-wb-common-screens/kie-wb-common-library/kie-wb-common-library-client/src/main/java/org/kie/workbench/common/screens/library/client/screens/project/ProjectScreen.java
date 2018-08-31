@@ -42,6 +42,7 @@ import org.kie.workbench.common.screens.library.client.screens.assets.AssetsScre
 import org.kie.workbench.common.screens.library.client.screens.assets.events.UpdatedAssetsEvent;
 import org.kie.workbench.common.screens.library.client.screens.organizationalunit.contributors.edit.EditContributorsPopUpPresenter;
 import org.kie.workbench.common.screens.library.client.screens.organizationalunit.contributors.tab.ContributorsListPresenter;
+import org.kie.workbench.common.screens.library.client.screens.project.branch.delete.DeleteBranchPopUpScreen;
 import org.kie.workbench.common.screens.library.client.screens.project.delete.DeleteProjectPopUpScreen;
 import org.kie.workbench.common.screens.library.client.screens.project.rename.RenameProjectPopUpScreen;
 import org.kie.workbench.common.screens.library.client.settings.SettingsPresenter;
@@ -95,6 +96,8 @@ public class ProjectScreen {
 
         void setDeleteProjectVisible(boolean visible);
 
+        void setDeleteBranchVisible(boolean visible);
+
         void setBuildEnabled(boolean enabled);
 
         void setDeployEnabled(boolean enabled);
@@ -121,6 +124,7 @@ public class ProjectScreen {
     private BuildExecutor buildExecutor;
     private ManagedInstance<EditContributorsPopUpPresenter> editContributorsPopUpPresenter;
     private ManagedInstance<DeleteProjectPopUpScreen> deleteProjectPopUpScreen;
+    private ManagedInstance<DeleteBranchPopUpScreen> deleteBranchPopUpScreen;
     private ManagedInstance<RenameProjectPopUpScreen> renameProjectPopUpScreen;
     private Caller<LibraryService> libraryService;
     private ProjectScreen.View view;
@@ -145,6 +149,7 @@ public class ProjectScreen {
                          final BuildExecutor buildExecutor,
                          final ManagedInstance<EditContributorsPopUpPresenter> editContributorsPopUpPresenter,
                          final ManagedInstance<DeleteProjectPopUpScreen> deleteProjectPopUpScreen,
+                         final ManagedInstance<DeleteBranchPopUpScreen> deleteBranchPopUpScreen,
                          final ManagedInstance<RenameProjectPopUpScreen> renameProjectPopUpScreen,
                          final Caller<LibraryService> libraryService,
                          final Caller<ProjectScreenService> projectScreenService,
@@ -166,6 +171,7 @@ public class ProjectScreen {
         this.buildExecutor = buildExecutor;
         this.editContributorsPopUpPresenter = editContributorsPopUpPresenter;
         this.deleteProjectPopUpScreen = deleteProjectPopUpScreen;
+        this.deleteBranchPopUpScreen = deleteBranchPopUpScreen;
         this.renameProjectPopUpScreen = renameProjectPopUpScreen;
         this.libraryService = libraryService;
         this.projectScreenService = projectScreenService;
@@ -191,6 +197,7 @@ public class ProjectScreen {
         final boolean userCanUpdateProject = this.userCanUpdateProject();
         final boolean userCanEditContributors = this.canEditContributors();
         final boolean userCanDeleteProject = this.userCanDeleteProject();
+        final boolean userCanDeleteBranch = this.userCanDeleteBranch();
         final boolean userCanBuildProject = this.userCanBuildProject();
         final boolean userCanCreateProjects = this.userCanCreateProjects();
 
@@ -200,6 +207,7 @@ public class ProjectScreen {
         this.view.setDuplicateVisible(userCanCreateProjects);
         this.view.setReimportVisible(userCanUpdateProject);
         this.view.setDeleteProjectVisible(userCanDeleteProject);
+        this.view.setDeleteBranchVisible(userCanDeleteBranch);
         this.view.setBuildEnabled(userCanBuildProject);
         this.view.setDeployEnabled(userCanBuildProject);
 
@@ -273,10 +281,17 @@ public class ProjectScreen {
         return this.libraryPlaces.getActiveWorkspace().getName();
     }
 
-    public void delete() {
+    public void deleteProject() {
         if (userCanDeleteProject()) {
             final DeleteProjectPopUpScreen popUp = deleteProjectPopUpScreen.get();
             popUp.show(this.workspaceProject);
+        }
+    }
+
+    public void deleteBranch() {
+        if (userCanDeleteBranch()) {
+            final DeleteBranchPopUpScreen popUp = deleteBranchPopUpScreen.get();
+            popUp.show(this.libraryPlaces.getActiveWorkspace().getBranch());
         }
     }
 
@@ -384,6 +399,10 @@ public class ProjectScreen {
 
     public boolean userCanDeleteProject() {
         return projectController.canDeleteProject(this.workspaceProject);
+    }
+
+    public boolean userCanDeleteBranch() {
+        return userCanDeleteProject() && !workspaceProject.getBranch().getName().equals("master");
     }
 
     public boolean userCanBuildProject() {

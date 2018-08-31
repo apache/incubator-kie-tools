@@ -27,6 +27,7 @@ import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.messageconsole.client.console.widget.button.ViewHideAlertsButtonPresenter;
 import org.guvnor.structure.client.security.OrganizationalUnitController;
+import org.guvnor.structure.repositories.Branch;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
@@ -38,6 +39,7 @@ import org.kie.workbench.common.screens.library.client.screens.ProjectScreenTest
 import org.kie.workbench.common.screens.library.client.screens.assets.AssetsScreen;
 import org.kie.workbench.common.screens.library.client.screens.organizationalunit.contributors.edit.EditContributorsPopUpPresenter;
 import org.kie.workbench.common.screens.library.client.screens.organizationalunit.contributors.tab.ContributorsListPresenter;
+import org.kie.workbench.common.screens.library.client.screens.project.branch.delete.DeleteBranchPopUpScreen;
 import org.kie.workbench.common.screens.library.client.screens.project.delete.DeleteProjectPopUpScreen;
 import org.kie.workbench.common.screens.library.client.screens.project.rename.RenameProjectPopUpScreen;
 import org.kie.workbench.common.screens.library.client.settings.SettingsPresenter;
@@ -49,6 +51,7 @@ import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.client.file.CommandWithFileNameAndCommitMessage;
 import org.uberfire.ext.editor.commons.client.file.FileNameAndCommitMessage;
 import org.uberfire.ext.editor.commons.client.file.popups.CopyPopUpPresenter;
@@ -121,6 +124,12 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
     private DeleteProjectPopUpScreen deleteProjectPopUpScreen;
 
     @Mock
+    private ManagedInstance<DeleteBranchPopUpScreen> deleteBranchPopUpScreenInstance;
+
+    @Mock
+    private DeleteBranchPopUpScreen deleteBranchPopUpScreen;
+
+    @Mock
     private ManagedInstance<RenameProjectPopUpScreen> renameProjectPopUpScreenInstance;
 
     @Mock
@@ -151,9 +160,6 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
     @Mock
     private ViewHideAlertsButtonPresenter.View viewHideAlertsButtonView;
 
-    @Mock
-    private WorkspaceProject workspaceProject;
-
     private SyncPromises promises;
 
     @Before
@@ -166,12 +172,8 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
 
         when(editContributorsPopUpPresenterInstance.get()).thenReturn(editContributorsPopUpPresenter);
         when(deleteProjectPopUpScreenInstance.get()).thenReturn(deleteProjectPopUpScreen);
+        when(deleteBranchPopUpScreenInstance.get()).thenReturn(deleteBranchPopUpScreen);
         when(renameProjectPopUpScreenInstance.get()).thenReturn(renameProjectPopUpScreen);
-
-        final Module module = mock(Module.class);
-        when(workspaceProject.getName()).thenReturn("module-name");
-        when(workspaceProject.getMainModule()).thenReturn(module);
-        when(libraryPlaces.getActiveWorkspace()).thenReturn(workspaceProject);
 
         final WorkspaceProjectContext projectContext = mock(WorkspaceProjectContext.class);
         when(libraryPlaces.getWorkbenchContext()).thenReturn(projectContext);
@@ -189,6 +191,7 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
                                                               this.buildExecutor,
                                                               this.editContributorsPopUpPresenterInstance,
                                                               this.deleteProjectPopUpScreenInstance,
+                                                              this.deleteBranchPopUpScreenInstance,
                                                               this.renameProjectPopUpScreenInstance,
                                                               new CallerMock<>(this.libraryService),
                                                               projectScreenServiceCaller,
@@ -199,7 +202,8 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
                                                               viewHideAlertsButtonPresenter);
         this.presenter = spy(projectScreen);
 
-        this.presenter.workspaceProject = createProject();
+        this.presenter.workspaceProject = spy(createProject());
+        when(libraryPlaces.getActiveWorkspace()).thenReturn(this.presenter.workspaceProject);
     }
 
     @Test
@@ -208,7 +212,7 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
 
         verify(view).init(presenter);
         verify(buildExecutor).init(view);
-        verify(view).setTitle("module-name");
+        verify(view).setTitle("mainModuleName");
         verify(view).addMainAction(viewHideAlertsButtonView);
     }
 
@@ -224,6 +228,7 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
         verify(view).setDuplicateVisible(false);
         verify(view).setReimportVisible(true);
         verify(view).setDeleteProjectVisible(false);
+        verify(view).setDeleteBranchVisible(false);
         verify(view).setBuildEnabled(false);
         verify(view).setDeployEnabled(false);
         verify(view).setActionsVisible(true);
@@ -241,6 +246,7 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
         verify(view).setDuplicateVisible(false);
         verify(view).setReimportVisible(false);
         verify(view).setDeleteProjectVisible(false);
+        verify(view).setDeleteBranchVisible(false);
         verify(view).setBuildEnabled(false);
         verify(view).setDeployEnabled(false);
         verify(view).setActionsVisible(true);
@@ -258,6 +264,7 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
         verify(view).setDuplicateVisible(false);
         verify(view).setReimportVisible(false);
         verify(view).setDeleteProjectVisible(true);
+        verify(view).setDeleteBranchVisible(false);
         verify(view).setBuildEnabled(false);
         verify(view).setDeployEnabled(false);
         verify(view).setActionsVisible(true);
@@ -275,6 +282,7 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
         verify(view).setDuplicateVisible(false);
         verify(view).setReimportVisible(false);
         verify(view).setDeleteProjectVisible(false);
+        verify(view).setDeleteBranchVisible(false);
         verify(view).setBuildEnabled(true);
         verify(view).setDeployEnabled(true);
         verify(view).setActionsVisible(true);
@@ -292,6 +300,7 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
         verify(view).setDuplicateVisible(true);
         verify(view).setReimportVisible(false);
         verify(view).setDeleteProjectVisible(false);
+        verify(view).setDeleteBranchVisible(false);
         verify(view).setBuildEnabled(false);
         verify(view).setDeployEnabled(false);
         verify(view).setActionsVisible(true);
@@ -307,9 +316,29 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
         verify(view).setDuplicateVisible(false);
         verify(view).setReimportVisible(false);
         verify(view).setDeleteProjectVisible(false);
+        verify(view).setDeleteBranchVisible(false);
         verify(view).setBuildEnabled(false);
         verify(view).setDeployEnabled(false);
         verify(view).setActionsVisible(false);
+    }
+
+    @Test
+    public void testActionsVisibilityWithPermissionToDeleteProjectInCreatedBranch() {
+        doReturn(true).when(this.presenter).userCanDeleteProject();
+        doReturn(new Branch("other-branch", mock(Path.class))).when(presenter.workspaceProject).getBranch();
+
+        presenter.initialize();
+
+        verify(view).setAddAssetVisible(false);
+        verify(view).setImportAssetVisible(false);
+        verify(view).setEditContributorsVisible(false);
+        verify(view).setDuplicateVisible(false);
+        verify(view).setReimportVisible(false);
+        verify(view).setDeleteProjectVisible(true);
+        verify(view).setDeleteBranchVisible(true);
+        verify(view).setBuildEnabled(false);
+        verify(view).setDeployEnabled(false);
+        verify(view).setActionsVisible(true);
     }
 
     @Test
@@ -485,28 +514,28 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
     }
 
     @Test
-    public void canBuild() throws Exception {
+    public void canBuild() {
         doReturn(true).when(projectController).canBuildProject(any(WorkspaceProject.class));
         assertTrue(presenter.userCanBuildProject());
     }
 
     @Test
-    public void notAllowedToBuild() throws Exception {
+    public void notAllowedToBuild() {
         doReturn(false).when(projectController).canBuildProject(any(WorkspaceProject.class));
         assertFalse(presenter.userCanBuildProject());
     }
 
     @Test
-    public void allowedToBuildButNoModule() throws Exception {
-        doReturn(null).when(workspaceProject).getMainModule();
+    public void allowedToBuildButNoModule() {
+        doReturn(null).when(presenter.workspaceProject).getMainModule();
         presenter.initialize();
-        doReturn(true).when(projectController).canBuildProject(workspaceProject);
+        doReturn(true).when(projectController).canBuildProject(presenter.workspaceProject);
 
         assertFalse(presenter.userCanBuildProject());
     }
 
     @Test
-    public void titleIsUpdatedWhenContextModuleIsUpdated() throws Exception {
+    public void titleIsUpdatedWhenContextModuleIsUpdated() {
         final WorkspaceProject workspaceProject = mock(WorkspaceProject.class);
         doReturn("module name").when(workspaceProject).getName();
 
@@ -516,7 +545,7 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
     }
 
     @Test
-    public void shouldNotChangeProjectAndTitleWhenContextChange() throws Exception {
+    public void shouldNotChangeProjectAndTitleWhenContextChange() {
 
         presenter.changeProjectAndTitleWhenContextChange(new WorkspaceProjectContextChangeEvent() {
             @Override

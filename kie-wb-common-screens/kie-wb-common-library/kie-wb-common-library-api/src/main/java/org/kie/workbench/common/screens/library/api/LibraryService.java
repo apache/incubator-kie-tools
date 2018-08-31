@@ -25,6 +25,7 @@ import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
+import org.guvnor.structure.repositories.Branch;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.workbench.common.screens.examples.model.ImportProject;
 
@@ -75,4 +76,6 @@ public interface LibraryService {
     void addBranch(final String newBranchName,
                    final String baseBranchName,
                    final WorkspaceProject project);
+
+    void removeBranch(final Branch branch);
 }

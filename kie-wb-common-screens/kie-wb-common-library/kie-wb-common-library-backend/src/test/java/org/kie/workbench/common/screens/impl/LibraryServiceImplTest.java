@@ -38,6 +38,7 @@ import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.guvnor.structure.backend.repositories.ConfiguredRepositories;
+import org.guvnor.structure.config.SystemRepositoryChangedEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.Branch;
@@ -142,6 +143,9 @@ public class LibraryServiceImplTest {
     private ConfiguredRepositories configuredRepositories;
 
     @Mock
+    private Event<SystemRepositoryChangedEvent> systemRepositoryChangedEvent;
+
+    @Mock
     private Event<NewBranchEvent> newBranchEvent;
 
     @Mock
@@ -215,7 +219,8 @@ public class LibraryServiceImplTest {
                                                     repositoryService,
                                                     pathUtil,
                                                     newBranchEvent,
-                                                    configuredRepositories
+                                                    configuredRepositories,
+                                                    systemRepositoryChangedEvent
         ));
     }
 
@@ -697,6 +702,22 @@ public class LibraryServiceImplTest {
         final NewBranchEvent newBranchEvent = newBranchEventArgumentCaptor.getValue();
         assertEquals("new-branch", newBranchEvent.getNewBranchName());
         assertEquals(repo1, newBranchEvent.getRepository());
+    }
+
+    @Test
+    public void removeBranchTest() {
+        final Branch masterBranch = makeBranch("master", "repo1");
+        final org.uberfire.java.nio.file.Path baseBranchPath = mock(org.uberfire.java.nio.file.Path.class);
+        final FileSystem fileSystem = mock(FileSystem.class);
+        final FileSystemProvider fileSystemProvider = mock(FileSystemProvider.class);
+        doReturn(fileSystemProvider).when(fileSystem).provider();
+        doReturn(fileSystem).when(baseBranchPath).getFileSystem();
+        doReturn(baseBranchPath).when(pathUtil).convert(masterBranch.getPath());
+
+        libraryService.removeBranch(masterBranch);
+
+        verify(ioService).delete(baseBranchPath);
+        verify(systemRepositoryChangedEvent).fire(any());
     }
 
     private Branch makeBranch(final String branchName,

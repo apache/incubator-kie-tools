@@ -27,6 +27,7 @@ import javax.inject.Inject;
 import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.NewBranchEvent;
 import org.guvnor.structure.repositories.Repository;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.services.datamodel.util.SortHelper;
 import org.uberfire.client.mvp.UberElemental;
@@ -47,15 +48,11 @@ public class ProjectBranchBreadcrumb implements BreadcrumbPresenter {
 
     private LibraryPlaces libraryPlaces;
 
-    private SessionInfo sessionInfo;
-
     @Inject
     public ProjectBranchBreadcrumb(final View view,
-                                   final LibraryPlaces libraryPlaces,
-                                   final SessionInfo sessionInfo) {
+                                   final LibraryPlaces libraryPlaces) {
         this.view = view;
         this.libraryPlaces = libraryPlaces;
-        this.sessionInfo = sessionInfo;
     }
 
     public ProjectBranchBreadcrumb setup(final Collection<Branch> branches) {
@@ -91,17 +88,12 @@ public class ProjectBranchBreadcrumb implements BreadcrumbPresenter {
     }
 
     public void newBranchEvent(@Observes final NewBranchEvent newBranchEvent) {
+        final User user = newBranchEvent.getUser();
         final Repository repository = newBranchEvent.getRepository();
-        final Space space = repository.getSpace();
-        final String repositoryAlias = repository.getAlias();
 
-        final Space activeSpace = libraryPlaces.getActiveSpace().getSpace();
-        final Repository activeRepository = libraryPlaces.getActiveWorkspace().getRepository();
-        final String activeRepositoryAlias = activeRepository.getAlias();
-
-        if (space.equals(activeSpace) && repositoryAlias.equals(activeRepositoryAlias) && sessionInfo.getIdentity().equals(newBranchEvent.getUser())) {
+        if (libraryPlaces.isThisUserAccessingThisRepository(user, repository)) {
             setup(repository.getBranches());
-            libraryPlaces.goToProject(libraryPlaces.getActiveWorkspace(), newBranchEvent.getRepository().getBranch(newBranchEvent.getNewBranchName()).get());
+            libraryPlaces.goToProject(libraryPlaces.getActiveWorkspace(), repository.getBranch(newBranchEvent.getNewBranchName()).get());
         }
     }
 

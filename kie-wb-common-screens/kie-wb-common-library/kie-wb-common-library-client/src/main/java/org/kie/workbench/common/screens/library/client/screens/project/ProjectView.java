@@ -109,6 +109,10 @@ public class ProjectView implements ProjectScreen.View,
     private HTMLAnchorElement deleteProject;
 
     @Inject
+    @DataField("delete-branch")
+    private HTMLAnchorElement deleteBranch;
+
+    @Inject
     @DataField("import-asset-action")
     private HTMLAnchorElement importAsset;
 
@@ -211,6 +215,11 @@ public class ProjectView implements ProjectScreen.View,
     }
 
     @Override
+    public void setDeleteBranchVisible(boolean visible) {
+        this.deleteBranch.hidden = !visible;
+    }
+
+    @Override
     public void setActionsVisible(boolean visible) {
         this.actionsDropdown.hidden = !visible;
     }
@@ -264,8 +273,13 @@ public class ProjectView implements ProjectScreen.View,
     }
 
     @EventHandler("delete-project")
-    public void delete(final ClickEvent event) {
-        presenter.delete();
+    public void deleteProject(final ClickEvent event) {
+        presenter.deleteProject();
+    }
+
+    @EventHandler("delete-branch")
+    public void deleteBranch(final ClickEvent event) {
+        presenter.deleteBranch();
     }
 
     @EventHandler("import-asset-action")

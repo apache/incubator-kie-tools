@@ -472,4 +472,23 @@ public class LibraryConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String InvalidBranchName = "InvalidBranchName";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DeleteBranchDescription = "DeleteBranchDescription";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ConfirmBranchName = "ConfirmBranchName";
+
+    @TranslationKey(defaultValue = "")
+    public static final String WrongBranchConfirmedName = "WrongBranchConfirmedName";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DeletingBranch = "DeletingBranch";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DeleteBranch = "DeleteBranch";
+
+    @TranslationKey(defaultValue = "")
+    public static final String BranchDeletedSuccessfully = "BranchDeletedSuccessfully";
+
 }
