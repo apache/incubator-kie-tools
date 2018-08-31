@@ -425,12 +425,22 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
     @Override
     public void delete(final Path path,
                        final DeleteOption... options) throws IllegalArgumentException, NoSuchFileException, DirectoryNotEmptyException, IOException, SecurityException {
+        cleanupIfDeletedFileSystem(path);
+        cleanupIfDeletedBranch(path);
+        deleteRepositoryFiles(path, options);
+    }
+
+    void cleanupIfDeletedFileSystem(Path path) {
         if (path instanceof FSPath) {
             FileSystem fileSystem = path.getFileSystem();
             cleanupDeletedFS(fileSystem);
         }
-        deleteRepositoryFiles(path,
-                              options);
+    }
+
+    void cleanupIfDeletedBranch(Path path) {
+        if (path.equals(path.getRoot())) {
+            indexEngine.delete(KObjectUtil.toKCluster(path));
+        }
     }
 
     void deleteRepositoryFiles(Path path,

@@ -17,6 +17,7 @@
 package org.uberfire.ext.metadata.io;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -37,6 +38,7 @@ import org.uberfire.ext.metadata.io.IndexersFactory;
 import org.uberfire.ext.metadata.io.common.util.TestFileSystemProvider;
 import org.uberfire.ext.metadata.io.common.util.TestFileSystemProvider.MockFileSystem;
 import org.uberfire.ext.metadata.model.KCluster;
+import org.uberfire.java.nio.base.AttrsStorage;
 import org.uberfire.java.nio.base.FSPath;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Path;
@@ -53,6 +55,7 @@ import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -71,7 +74,7 @@ public class IOServiceIndexedTest {
     FileSystemProvider mockProvider;
 
     @Before
-    public void setup() {
+    public void setup() throws URISyntaxException {
         TestFileSystemProvider testProvider = FileSystemProviders.installedProviders()
                                                                  .stream()
                                                                  .filter(provider -> provider instanceof TestFileSystemProvider)
@@ -94,6 +97,7 @@ public class IOServiceIndexedTest {
         Map<String, ?> env = Collections.emptyMap();
 
         FileSystem fs1 = ioService.newFileSystem(uri, env);
+
         verify(fs1).newWatchService();
 
         FSPath fsPath = mock(FSPath.class);
@@ -109,25 +113,63 @@ public class IOServiceIndexedTest {
 
     @Test
     public void deleteFSTest() throws Exception {
-        URI uri = new URI("test:///some/path");
-        Map<String, ?> env = Collections.emptyMap();
-
-        final Path fsRootDirectory1 = mock(JGitPathImpl.class);
-        final Path fsRootDirectory2 = mock(JGitPathImpl.class);
-        final Collection<Path> fsRootDirectories = Arrays.asList(fsRootDirectory1, fsRootDirectory2);
-
-        FileSystem fs1 = ioService.newFileSystem(uri, env);
-        doReturn(fsRootDirectories).when(fs1).getRootDirectories();
-        when(fsRootDirectory1.getFileSystem()).thenReturn(fs1);
-        when(fsRootDirectory2.getFileSystem()).thenReturn(fs1);
+        final FileSystem fileSystem = getFileSystem();
 
         FSPath fsPath = mock(FSPath.class);
-        when(fsPath.getFileSystem()).thenReturn(fs1);
+        when(fsPath.getFileSystem()).thenReturn(fileSystem);
 
         ioService.delete(fsPath);
 
-        InOrder inOrder = Mockito.inOrder(ioService, indexEngine, fs1);
+        InOrder inOrder = Mockito.inOrder(ioService, indexEngine, fileSystem);
         inOrder.verify(indexEngine).delete(any(KCluster.class));
         inOrder.verify(ioService).deleteRepositoryFiles(eq(fsPath), any());
+    }
+
+    @Test
+    public void deleteBranchTest() throws Exception {
+        final FileSystem fileSystem = getFileSystem();
+
+        final Path branchPath = fileSystem.getRootDirectories().iterator().next();
+
+        ioService.delete(branchPath);
+
+        InOrder inOrder = Mockito.inOrder(ioService, indexEngine, fileSystem);
+        inOrder.verify(indexEngine).delete(any(KCluster.class));
+        inOrder.verify(ioService).deleteRepositoryFiles(eq(branchPath), any());
+    }
+
+    @Test
+    public void deleteFileTest() throws Exception {
+        final FileSystem fileSystem = getFileSystem();
+
+        final Path file = mock(Path.class);
+        when(file.getFileSystem()).thenReturn(fileSystem);
+
+        ioService.delete(file);
+
+        verify(indexEngine, never()).delete(any(KCluster.class));
+        verify(ioService).deleteRepositoryFiles(eq(file), any());
+    }
+
+    private FileSystem getFileSystem() throws URISyntaxException {
+        URI uri = new URI("test:///some/path");
+        Map<String, ?> env = Collections.emptyMap();
+
+        final FileSystem fileSystem = ioService.newFileSystem(uri, env);
+
+        final Path fsRootDirectory1 = mock(JGitPathImpl.class);
+        when(fsRootDirectory1.getFileSystem()).thenReturn(fileSystem);
+        when(fsRootDirectory1.getRoot()).thenReturn(fsRootDirectory1);
+        when(((JGitPathImpl) fsRootDirectory1).getAttrStorage()).thenReturn(mock(AttrsStorage.class));
+
+        final Path fsRootDirectory2 = mock(JGitPathImpl.class);
+        when(fsRootDirectory2.getFileSystem()).thenReturn(fileSystem);
+        when(fsRootDirectory2.getRoot()).thenReturn(fsRootDirectory2);
+        when(((JGitPathImpl) fsRootDirectory2).getAttrStorage()).thenReturn(mock(AttrsStorage.class));
+
+        final Collection<Path> fsRootDirectories = Arrays.asList(fsRootDirectory1, fsRootDirectory2);
+        doReturn(fsRootDirectories).when(fileSystem).getRootDirectories();
+
+        return fileSystem;
     }
 }
