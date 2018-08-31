@@ -16,15 +16,16 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.function.supplementary;
 
+import org.kie.workbench.common.dmn.client.editors.expressions.types.context.InformationItemCell;
+import org.kie.workbench.common.dmn.client.widgets.grid.columns.NameAndDataTypeColumnRenderer;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.impl.StringColumnRenderer;
 
-public class NameColumn extends DMNGridColumn<FunctionSupplementaryGrid, String> {
+public class NameColumn extends DMNGridColumn<FunctionSupplementaryGrid, InformationItemCell.HasNameCell> {
 
     public NameColumn(final FunctionSupplementaryGrid gridWidget) {
         super(new BaseHeaderMetaData(""),
-              new StringColumnRenderer(),
+              new NameAndDataTypeColumnRenderer(),
               gridWidget);
 
         setMovable(false);

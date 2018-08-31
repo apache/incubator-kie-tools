@@ -103,7 +103,7 @@ public class NameAndDataTypeHeaderMetaDataTest {
         decision.setName(NAME);
         setup(Optional.of(decision));
 
-        assertThat(metaData.getDisplayName()).isEqualTo(NAME.getValue());
+        assertThat(metaData.getName()).isEqualTo(NAME);
     }
 
     @Test
@@ -117,7 +117,7 @@ public class NameAndDataTypeHeaderMetaDataTest {
     public void testGetDisplayNameWithoutHasName() {
         setup(Optional.empty());
 
-        assertThat(metaData.getDisplayName()).isEqualTo(HasName.NOP.getName().getValue());
+        assertThat(metaData.getName()).isEqualTo(HasName.NOP.getName());
     }
 
     @Test
@@ -134,7 +134,7 @@ public class NameAndDataTypeHeaderMetaDataTest {
         final Decision decision = new Decision();
         setup(Optional.of(decision));
 
-        metaData.setDisplayName(NAME.getValue());
+        metaData.setName(NAME);
 
         verify(setDisplayNameConsumer).accept(eq(decision), eq(NAME));
     }
@@ -145,7 +145,7 @@ public class NameAndDataTypeHeaderMetaDataTest {
         decision.setName(NAME);
         setup(Optional.of(decision));
 
-        metaData.setDisplayName("");
+        metaData.setName(new Name());
 
         verify(clearDisplayNameConsumer).accept(eq(decision));
     }
@@ -156,7 +156,7 @@ public class NameAndDataTypeHeaderMetaDataTest {
         decision.setName(NAME);
         setup(Optional.of(decision));
 
-        metaData.setDisplayName(NAME.getValue());
+        metaData.setName(NAME);
 
         verify(clearDisplayNameConsumer, never()).accept(any(HasName.class));
         verify(setDisplayNameConsumer, never()).accept(any(HasName.class), any(Name.class));
@@ -166,7 +166,7 @@ public class NameAndDataTypeHeaderMetaDataTest {
     public void testSetDisplayNameWithoutHasName() {
         setup(Optional.empty());
 
-        metaData.setDisplayName(NAME.getValue());
+        metaData.setName(NAME);
 
         verify(setDisplayNameConsumer, never()).accept(any(HasName.class), any(Name.class));
     }

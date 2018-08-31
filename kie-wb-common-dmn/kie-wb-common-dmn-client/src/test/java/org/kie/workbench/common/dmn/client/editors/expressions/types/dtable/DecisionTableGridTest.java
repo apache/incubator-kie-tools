@@ -920,15 +920,15 @@ public class DecisionTableGridTest {
     public void testGetDisplayName() {
         setupGrid(makeHasNameForDecision(), 0);
 
-        assertThat(extractHeaderMetaData(0, 1).getDisplayName()).isEqualTo(INPUT_CLAUSE_NAME);
-        assertThat(extractHeaderMetaData(0, 2).getDisplayName()).isEqualTo(HASNAME_NAME);
+        assertThat(extractHeaderMetaData(0, 1).getName().getValue()).isEqualTo(INPUT_CLAUSE_NAME);
+        assertThat(extractHeaderMetaData(0, 2).getName().getValue()).isEqualTo(HASNAME_NAME);
 
         addOutputClause(3);
 
-        assertThat(extractHeaderMetaData(0, 2).getDisplayName()).isEqualTo(HASNAME_NAME);
-        assertThat(extractHeaderMetaData(1, 2).getDisplayName()).isEqualTo(OUTPUT_CLAUSE_NAME1);
-        assertThat(extractHeaderMetaData(0, 3).getDisplayName()).isEqualTo(HASNAME_NAME);
-        assertThat(extractHeaderMetaData(1, 3).getDisplayName()).isEqualTo(OUTPUT_CLAUSE_NAME2);
+        assertThat(extractHeaderMetaData(0, 2).getName().getValue()).isEqualTo(HASNAME_NAME);
+        assertThat(extractHeaderMetaData(1, 2).getName().getValue()).isEqualTo(OUTPUT_CLAUSE_NAME1);
+        assertThat(extractHeaderMetaData(0, 3).getName().getValue()).isEqualTo(HASNAME_NAME);
+        assertThat(extractHeaderMetaData(1, 3).getName().getValue()).isEqualTo(OUTPUT_CLAUSE_NAME2);
     }
 
     private NameAndDataTypeHeaderMetaData extractHeaderMetaData(final int uiHeaderRowIndex,
@@ -941,22 +941,22 @@ public class DecisionTableGridTest {
     public void testSetDisplayNameWithNoChange() {
         setupGrid(makeHasNameForDecision(), 0);
 
-        assertHeaderMetaDataTest(0, 1, (md) -> md.setDisplayName(INPUT_CLAUSE_NAME));
-        assertHeaderMetaDataTest(0, 2, (md) -> md.setDisplayName(HASNAME_NAME));
+        assertHeaderMetaDataTest(0, 1, (md) -> md.setName(new Name(INPUT_CLAUSE_NAME)));
+        assertHeaderMetaDataTest(0, 2, (md) -> md.setName(new Name(HASNAME_NAME)));
 
         addOutputClause(3);
 
-        assertHeaderMetaDataTest(0, 2, (md) -> md.setDisplayName(HASNAME_NAME));
-        assertHeaderMetaDataTest(1, 2, (md) -> md.setDisplayName(OUTPUT_CLAUSE_NAME1));
-        assertHeaderMetaDataTest(0, 3, (md) -> md.setDisplayName(HASNAME_NAME));
-        assertHeaderMetaDataTest(1, 3, (md) -> md.setDisplayName(OUTPUT_CLAUSE_NAME2));
+        assertHeaderMetaDataTest(0, 2, (md) -> md.setName(new Name(HASNAME_NAME)));
+        assertHeaderMetaDataTest(1, 2, (md) -> md.setName(new Name(OUTPUT_CLAUSE_NAME1)));
+        assertHeaderMetaDataTest(0, 3, (md) -> md.setName(new Name(HASNAME_NAME)));
+        assertHeaderMetaDataTest(1, 3, (md) -> md.setName(new Name(OUTPUT_CLAUSE_NAME2)));
     }
 
     @Test
     public void testSetDisplayNameWithEmptyValue() {
         setupGrid(makeHasNameForDecision(), 0);
 
-        final Consumer<NameAndDataTypeHeaderMetaData> test = (md) -> md.setDisplayName("");
+        final Consumer<NameAndDataTypeHeaderMetaData> test = (md) -> md.setName(new Name());
 
         assertHeaderMetaDataTest(0, 1, test, DeleteHasNameCommand.class);
         assertHeaderMetaDataTest(0, 2, test, DeleteHasNameCommand.class, UpdateElementPropertyCommand.class);
@@ -973,7 +973,7 @@ public class DecisionTableGridTest {
     public void testSetDisplayNameWithNullValue() {
         setupGrid(makeHasNameForDecision(), 0);
 
-        final Consumer<NameAndDataTypeHeaderMetaData> test = (md) -> md.setDisplayName(null);
+        final Consumer<NameAndDataTypeHeaderMetaData> test = (md) -> md.setName(null);
 
         assertHeaderMetaDataTest(0, 1, test, DeleteHasNameCommand.class);
         assertHeaderMetaDataTest(0, 2, test, DeleteHasNameCommand.class, UpdateElementPropertyCommand.class);
@@ -991,7 +991,7 @@ public class DecisionTableGridTest {
     public void testSetDisplayNameWithNonEmptyValue() {
         setupGrid(makeHasNameForDecision(), 0);
 
-        final Consumer<NameAndDataTypeHeaderMetaData> test = (md) -> md.setDisplayName(NAME_NEW);
+        final Consumer<NameAndDataTypeHeaderMetaData> test = (md) -> md.setName(new Name(NAME_NEW));
 
         assertHeaderMetaDataTest(0, 1, test, SetHasNameCommand.class);
         assertHeaderMetaDataTest(0, 2, test, SetHasNameCommand.class, UpdateElementPropertyCommand.class);
@@ -1091,7 +1091,7 @@ public class DecisionTableGridTest {
 
         assertThat(dtable.getInput().get(0).getInputExpression().getText()).isEqualTo(grid.getModel().getColumns().get(1).getHeaderMetaData().get(0).getTitle());
 
-        extractHeaderMetaData(0, 1).setDisplayName(NAME_NEW);
+        extractHeaderMetaData(0, 1).setName(new Name(NAME_NEW));
 
         verify(sessionCommandManager).execute(eq(canvasHandler),
                                               compositeCommandCaptor.capture());
@@ -1115,7 +1115,7 @@ public class DecisionTableGridTest {
 
         reset(sessionCommandManager);
 
-        extractHeaderMetaData(1, 2).setDisplayName(NAME_NEW);
+        extractHeaderMetaData(1, 2).setName(new Name(NAME_NEW));
 
         verify(sessionCommandManager).execute(eq(canvasHandler),
                                               compositeCommandCaptor.capture());

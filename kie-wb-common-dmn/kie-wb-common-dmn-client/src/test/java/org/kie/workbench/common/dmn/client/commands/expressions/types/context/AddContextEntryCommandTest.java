@@ -31,6 +31,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.context.Con
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ContextUIModelMapper;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.context.InformationItemCell;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.NameColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
@@ -332,7 +333,7 @@ public class AddContextEntryCommandTest {
         assertEquals(1,
                      uiModel.getCell(0, 0).getValue().getValue());
         assertEquals(ContextEntryDefaultValueUtilities.PREFIX + "1",
-                     uiModel.getCell(0, 1).getValue().getValue());
+                     ((InformationItemCell.HasNameAndDataTypeCell) uiModel.getCell(0, 1).getValue().getValue()).getName().getValue());
         assertTrue(uiModel.getCell(0, 2).getValue() instanceof ExpressionCellValue);
 
         //Default row
@@ -401,7 +402,7 @@ public class AddContextEntryCommandTest {
         assertEquals(1,
                      uiModel.getCell(0, 0).getValue().getValue());
         assertEquals(ContextEntryDefaultValueUtilities.PREFIX + "1",
-                     uiModel.getCell(0, 1).getValue().getValue());
+                     ((InformationItemCell.HasNameAndDataTypeCell) uiModel.getCell(0, 1).getValue().getValue()).getName().getValue());
         assertTrue(uiModel.getCell(0, 2).getValue() instanceof ExpressionCellValue);
 
         assertEquals(3,
@@ -409,7 +410,7 @@ public class AddContextEntryCommandTest {
         assertEquals(2,
                      uiModel.getCell(1, 0).getValue().getValue());
         assertEquals(ContextEntryDefaultValueUtilities.PREFIX + "2",
-                     uiModel.getCell(1, 1).getValue().getValue());
+                     ((InformationItemCell.HasNameAndDataTypeCell) uiModel.getCell(1, 1).getValue().getValue()).getName().getValue());
         assertTrue(uiModel.getCell(1, 2).getValue() instanceof ExpressionCellValue);
 
         //Default row

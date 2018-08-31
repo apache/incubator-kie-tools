@@ -181,7 +181,7 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
 
     @Override
     @SuppressWarnings("unchecked")
-    protected Consumer<HasName> clearDisplayNameConsumer() {
+    public Consumer<HasName> clearDisplayNameConsumer() {
         return (hn) -> {
             final CompositeCommand.Builder commandBuilder = newHasNameHasNoValueCommand(hn);
             getUpdateStunnerTitleCommand("").ifPresent(commandBuilder::addCommand);
@@ -192,7 +192,7 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
 
     @Override
     @SuppressWarnings("unchecked")
-    protected BiConsumer<HasName, Name> setDisplayNameConsumer() {
+    public BiConsumer<HasName, Name> setDisplayNameConsumer() {
         return (hn, name) -> {
             final CompositeCommand.Builder commandBuilder = newHasNameHasValueCommand(hn, name);
             getUpdateStunnerTitleCommand(name.getValue()).ifPresent(commandBuilder::addCommand);

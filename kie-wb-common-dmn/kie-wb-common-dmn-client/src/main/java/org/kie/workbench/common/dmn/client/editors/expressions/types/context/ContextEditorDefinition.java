@@ -34,6 +34,7 @@ import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.BaseEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
+import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypeEditorView;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
@@ -52,6 +53,7 @@ import org.kie.workbench.common.stunner.forms.client.event.RefreshFormProperties
 public class ContextEditorDefinition extends BaseEditorDefinition<Context, ContextGridData> {
 
     private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
+    private NameAndDataTypeEditorView.Presenter headerEditor;
 
     public ContextEditorDefinition() {
         //CDI proxy
@@ -66,7 +68,8 @@ public class ContextEditorDefinition extends BaseEditorDefinition<Context, Conte
                                    final Event<RefreshFormProperties> refreshFormPropertiesEvent,
                                    final ListSelectorView.Presenter listSelector,
                                    final TranslationService translationService,
-                                   final @DMNEditor Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier) {
+                                   final @DMNEditor Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
+                                   final NameAndDataTypeEditorView.Presenter headerEditor) {
         super(definitionUtils,
               sessionManager,
               sessionCommandManager,
@@ -76,6 +79,7 @@ public class ContextEditorDefinition extends BaseEditorDefinition<Context, Conte
               listSelector,
               translationService);
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
+        this.headerEditor = headerEditor;
     }
 
     @Override
@@ -142,7 +146,8 @@ public class ContextEditorDefinition extends BaseEditorDefinition<Context, Conte
                                            listSelector,
                                            translationService,
                                            nesting,
-                                           expressionEditorDefinitionsSupplier));
+                                           expressionEditorDefinitionsSupplier,
+                                           headerEditor));
     }
 
     @Override

@@ -693,7 +693,7 @@ public class RelationGridTest {
     public void testGetDisplayName() {
         setupGrid(0);
 
-        assertThat(extractHeaderMetaData().getDisplayName()).isEqualTo(NAME);
+        assertThat(extractHeaderMetaData().getName().getValue()).isEqualTo(NAME);
     }
 
     private RelationColumnHeaderMetaData extractHeaderMetaData() {
@@ -706,7 +706,7 @@ public class RelationGridTest {
     public void testSetDisplayNameWithNoChange() {
         setupGrid(0);
 
-        extractHeaderMetaData().setDisplayName(NAME);
+        extractHeaderMetaData().setName(new Name(NAME));
 
         verify(sessionCommandManager, never()).execute(any(AbstractCanvasHandler.class),
                                                        any(org.kie.workbench.common.stunner.core.command.Command.class));
@@ -717,7 +717,7 @@ public class RelationGridTest {
     public void testSetDisplayNameWithEmptyValue() {
         setupGrid(0);
 
-        extractHeaderMetaData().setDisplayName("");
+        extractHeaderMetaData().setName(new Name());
 
         verify(sessionCommandManager).execute(eq(canvasHandler),
                                               compositeCommandCaptor.capture());
@@ -731,7 +731,7 @@ public class RelationGridTest {
     public void testSetDisplayNameWithNullValue() {
         setupGrid(0);
 
-        extractHeaderMetaData().setDisplayName(null);
+        extractHeaderMetaData().setName(null);
 
         verify(sessionCommandManager).execute(eq(canvasHandler),
                                               compositeCommandCaptor.capture());
@@ -745,7 +745,7 @@ public class RelationGridTest {
     public void testSetDisplayNameWithNonEmptyValue() {
         setupGrid(0);
 
-        extractHeaderMetaData().setDisplayName(NAME_NEW);
+        extractHeaderMetaData().setName(new Name(NAME_NEW));
 
         verify(sessionCommandManager).execute(eq(canvasHandler),
                                               compositeCommandCaptor.capture());

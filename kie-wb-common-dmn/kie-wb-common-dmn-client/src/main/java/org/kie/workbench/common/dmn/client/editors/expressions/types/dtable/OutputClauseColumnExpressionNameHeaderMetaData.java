@@ -65,7 +65,7 @@ public class OutputClauseColumnExpressionNameHeaderMetaData extends NameAndDataT
 
         final OutputClauseColumnExpressionNameHeaderMetaData that = (OutputClauseColumnExpressionNameHeaderMetaData) o;
 
-        if (!getDisplayName().equals(that.getDisplayName())) {
+        if (!getName().equals(that.getName())) {
             return false;
         }
         if (!getTypeRef().equals(that.getTypeRef())) {
@@ -76,7 +76,7 @@ public class OutputClauseColumnExpressionNameHeaderMetaData extends NameAndDataT
 
     @Override
     public int hashCode() {
-        return HashUtil.combineHashCodes(getDisplayName().hashCode(),
+        return HashUtil.combineHashCodes(getName().hashCode(),
                                          getTypeRef().hashCode(),
                                          getColumnGroup().hashCode());
     }

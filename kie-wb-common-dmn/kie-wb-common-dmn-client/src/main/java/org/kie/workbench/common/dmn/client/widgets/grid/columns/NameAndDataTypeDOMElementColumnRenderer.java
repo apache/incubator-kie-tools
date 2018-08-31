@@ -20,18 +20,20 @@ import java.util.List;
 
 import com.ait.lienzo.client.core.shape.Group;
 import com.google.gwt.core.client.GWT;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.context.InformationItemCell;
+import org.gwtbootstrap3.client.ui.base.TextBoxBase;
 import org.kie.workbench.common.dmn.client.editors.expressions.util.RendererUtils;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridHeaderColumnRenderContext;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.impl.BaseGridColumnRenderer;
+import org.uberfire.ext.wires.core.grids.client.widget.dom.impl.BaseDOMElement;
+import org.uberfire.ext.wires.core.grids.client.widget.dom.single.impl.BaseSingletonDOMElementFactory;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.single.impl.BaseGridColumnSingletonDOMElementRenderer;
 
-public class NameAndDataTypeColumnRenderer extends BaseGridColumnRenderer<InformationItemCell.HasNameCell> {
+public class NameAndDataTypeDOMElementColumnRenderer<W extends TextBoxBase, E extends BaseDOMElement<String, W>> extends BaseGridColumnSingletonDOMElementRenderer<String, W, E> {
 
-    public NameAndDataTypeColumnRenderer() {
-        super();
+    public NameAndDataTypeDOMElementColumnRenderer(final BaseSingletonDOMElementFactory<String, W, E> factory) {
+        super(factory);
     }
 
     @Override
@@ -62,13 +64,12 @@ public class NameAndDataTypeColumnRenderer extends BaseGridColumnRenderer<Inform
     }
 
     @Override
-    public Group renderCell(final GridCell<InformationItemCell.HasNameCell> cell,
+    public Group renderCell(final GridCell<String> cell,
                             final GridBodyCellRenderContext context) {
         if (cell == null || cell.getValue() == null) {
             return null;
         }
 
-        final InformationItemCell.HasNameCell hasNameCell = cell.getValue().getValue();
-        return hasNameCell.render(context);
+        return RendererUtils.getExpressionCellText(context, cell);
     }
 }

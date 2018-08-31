@@ -17,10 +17,12 @@ package org.kie.workbench.common.dmn.api.definition.v1_1;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
+import org.kie.workbench.common.dmn.api.definition.HasVariable;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
-public class Binding extends DMNModelInstrumentedBase implements HasExpression {
+public class Binding extends DMNModelInstrumentedBase implements HasExpression,
+                                                                 HasVariable {
 
     private InformationItem parameter;
     private Expression expression;
@@ -31,6 +33,18 @@ public class Binding extends DMNModelInstrumentedBase implements HasExpression {
 
     public void setParameter(final InformationItem value) {
         this.parameter = value;
+    }
+
+    @Override
+    //Proxy for getParameter() to allow use as HasVariable
+    public InformationItem getVariable() {
+        return getParameter();
+    }
+
+    @Override
+    //Proxy for setParameter(..) to allow use as HasVariable
+    public void setVariable(final InformationItem informationItem) {
+        setParameter(informationItem);
     }
 
     @Override

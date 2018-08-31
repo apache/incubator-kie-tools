@@ -26,7 +26,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.Invocation;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.context.InformationItemNameCell;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.context.InformationItemCell;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
@@ -84,8 +84,8 @@ public class InvocationUIModelMapper extends BaseUIModelMapper<Invocation> {
                     final InformationItem variable = invocation.getBinding().get(rowIndex).getParameter();
                     uiModel.get().setCell(rowIndex,
                                           columnIndex,
-                                          () -> new InformationItemNameCell(() -> variable,
-                                                                            listSelector));
+                                          () -> new InformationItemCell(() -> InformationItemCell.HasNameAndDataTypeCell.wrap(variable),
+                                                                        listSelector));
                     break;
                 case BINDING_EXPRESSION_COLUMN_INDEX:
                     final Binding binding = invocation.getBinding().get(rowIndex);

@@ -22,13 +22,14 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.jboss.errai.common.client.dom.HTMLElement;
+import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 
 @ApplicationScoped
 public class NameAndDataTypeEditorImpl implements NameAndDataTypeEditorView.Presenter {
 
     private NameAndDataTypeEditorView view;
-    private Optional<HasNameAndDataTypeControl> binding = Optional.empty();
+    private Optional<HasNameAndTypeRef> binding = Optional.empty();
 
     public NameAndDataTypeEditorImpl() {
         //CDI proxy
@@ -47,7 +48,7 @@ public class NameAndDataTypeEditorImpl implements NameAndDataTypeEditorView.Pres
     }
 
     @Override
-    public void bind(final HasNameAndDataTypeControl bound,
+    public void bind(final HasNameAndTypeRef bound,
                      final int uiRowIndex,
                      final int uiColumnIndex) {
         binding = Optional.ofNullable(bound);
@@ -57,14 +58,14 @@ public class NameAndDataTypeEditorImpl implements NameAndDataTypeEditorView.Pres
     private void refresh() {
         binding.ifPresent(b -> {
             view.setDMNModel(b.asDMNModelInstrumentedBase());
-            view.initName(b.getDisplayName());
+            view.initName(b.getName().getValue());
             view.initSelectedTypeRef(b.getTypeRef());
         });
     }
 
     @Override
     public void setName(final String name) {
-        binding.ifPresent(b -> b.setDisplayName(name));
+        binding.ifPresent(b -> b.setName(new Name(name)));
     }
 
     @Override

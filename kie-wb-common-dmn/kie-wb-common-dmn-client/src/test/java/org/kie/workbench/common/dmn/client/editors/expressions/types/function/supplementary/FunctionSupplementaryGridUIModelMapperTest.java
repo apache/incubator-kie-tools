@@ -21,6 +21,7 @@ import java.util.Optional;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.BaseContextUIModelMapperTest;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.context.InformationItemCell;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.impl.RowSelectionStrategy;
 
@@ -60,6 +61,6 @@ public class FunctionSupplementaryGridUIModelMapperTest extends BaseContextUIMod
         mapper.fromDMNModel(0, 1);
 
         assertEquals("ii1",
-                     uiModel.getCell(0, 1).getValue().getValue());
+                     ((InformationItemCell.HasNameAndDataTypeCell) uiModel.getCell(0, 1).getValue().getValue()).getName().getValue());
     }
 }

@@ -16,24 +16,40 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.context;
 
+import java.util.Optional;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
-import org.gwtbootstrap3.client.ui.TextBox;
-import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableTextHeaderMetaData;
-import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.dom.TextBoxDOMElement;
-import org.uberfire.ext.wires.core.grids.client.widget.dom.single.SingletonDOMElementFactory;
+import org.kie.workbench.common.dmn.api.definition.HasName;
+import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
+import org.kie.workbench.common.dmn.api.property.dmn.Name;
+import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypeEditorView;
+import org.kie.workbench.common.dmn.client.widgets.grid.columns.NameAndDataTypeHeaderMetaData;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 
-public class NameColumnHeaderMetaData extends EditableTextHeaderMetaData<TextBox, TextBoxDOMElement> {
+public class NameColumnHeaderMetaData extends NameAndDataTypeHeaderMetaData {
 
-    private static final String NAME_COLUMN_GROUP = "NameColumnHeaderMetaData$NameColumn";
+    private static final String NAME_DATA_TYPE_COLUMN_GROUP = "NameColumnHeaderMetaData$NameAndDataTypeColumn";
 
-    public NameColumnHeaderMetaData(final Supplier<String> titleGetter,
-                                    final Consumer<String> titleSetter,
-                                    final SingletonDOMElementFactory<TextBox, TextBoxDOMElement> factory) {
-        super(titleGetter,
-              titleSetter,
-              factory,
-              NAME_COLUMN_GROUP);
+    public NameColumnHeaderMetaData(final Optional<HasName> hasName,
+                                    final HasTypeRef hasTypeRef,
+                                    final Consumer<HasName> clearDisplayNameConsumer,
+                                    final BiConsumer<HasName, Name> setDisplayNameConsumer,
+                                    final BiConsumer<HasTypeRef, QName> setTypeRefConsumer,
+                                    final CellEditorControlsView.Presenter cellEditorControls,
+                                    final NameAndDataTypeEditorView.Presenter headerEditor) {
+        super(hasName,
+              hasTypeRef,
+              clearDisplayNameConsumer,
+              setDisplayNameConsumer,
+              setTypeRefConsumer,
+              cellEditorControls,
+              headerEditor);
+    }
+
+    @Override
+    public String getColumnGroup() {
+        return NAME_DATA_TYPE_COLUMN_GROUP;
     }
 }

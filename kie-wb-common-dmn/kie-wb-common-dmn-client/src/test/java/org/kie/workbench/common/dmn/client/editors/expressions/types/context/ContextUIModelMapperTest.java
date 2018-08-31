@@ -59,9 +59,9 @@ public class ContextUIModelMapperTest extends BaseContextUIModelMapperTest<Conte
         mapper.fromDMNModel(1, 1);
 
         assertEquals("ii1",
-                     uiModel.getCell(0, 1).getValue().getValue());
+                     ((InformationItemCell.HasNameCell) uiModel.getCell(0, 1).getValue().getValue()).getName().getValue());
         assertEquals(ContextUIModelMapper.DEFAULT_ROW_CAPTION,
-                     uiModel.getCell(1, 1).getValue().getValue());
+                     ((InformationItemCell.HasNameCell) uiModel.getCell(1, 1).getValue().getValue()).getName().getValue());
     }
 
     @Test

@@ -16,14 +16,10 @@
 
 package org.kie.workbench.common.dmn.client.editors.types;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
-import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.dmn.api.definition.HasName;
+import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 
-public interface HasDataTypeControl {
+public interface HasNameAndTypeRef extends HasName,
+                                           HasTypeRef {
 
-    QName getTypeRef();
-
-    void setTypeRef(final QName typeRef);
-
-    DMNModelInstrumentedBase asDMNModelInstrumentedBase();
 }

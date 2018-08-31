@@ -23,7 +23,7 @@ import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridWidgetRegistry;
 
 @RunWith(LienzoMockitoTestRunner.class)
-public class FunctionColumnRendererTest extends BaseNameAndDataTypeColumnRendererTest<FunctionColumnRenderer> {
+public class FunctionColumnRendererTest extends BaseNameAndDataTypeColumnRendererTest<FunctionColumnRenderer, String> {
 
     @Mock
     private GridWidgetRegistry registry;

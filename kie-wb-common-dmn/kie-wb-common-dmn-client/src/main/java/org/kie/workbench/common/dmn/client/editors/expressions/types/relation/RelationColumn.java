@@ -22,7 +22,7 @@ import java.util.function.Consumer;
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
-import org.kie.workbench.common.dmn.client.widgets.grid.columns.NameAndDataTypeColumnRenderer;
+import org.kie.workbench.common.dmn.client.widgets.grid.columns.NameAndDataTypeDOMElementColumnRenderer;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNSimpleGridColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
@@ -43,7 +43,7 @@ public class RelationColumn extends DMNSimpleGridColumn<RelationGrid, String> im
                           final TextAreaSingletonDOMElementFactory factory,
                           final RelationGrid gridWidget) {
         super(headerMetaData,
-              new NameAndDataTypeColumnRenderer<>(factory),
+              new NameAndDataTypeDOMElementColumnRenderer<>(factory),
               gridWidget);
         this.factory = PortablePreconditions.checkNotNull("factory",
                                                           factory);

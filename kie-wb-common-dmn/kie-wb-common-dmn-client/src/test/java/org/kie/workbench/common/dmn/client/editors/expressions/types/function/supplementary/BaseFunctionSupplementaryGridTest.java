@@ -32,6 +32,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionE
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.context.InformationItemCell;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
@@ -182,7 +183,7 @@ public abstract class BaseFunctionSupplementaryGridTest<D extends ExpressionEdit
             assertEquals(i + 1,
                          uiModel.getCell(i, 0).getValue().getValue());
             assertEquals(expectedNames[i],
-                         uiModel.getCell(i, 1).getValue().getValue());
+                         ((InformationItemCell.HasNameAndDataTypeCell) uiModel.getCell(i, 1).getValue().getValue()).getName().getValue());
             assertTrue(uiModel.getCell(i, 2).getValue() instanceof ExpressionCellValue);
             final ExpressionCellValue dcv = (ExpressionCellValue) uiModel.getCell(i, 2).getValue();
             assertEquals(literalExpressionEditor,

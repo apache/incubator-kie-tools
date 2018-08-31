@@ -28,6 +28,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.Invocation;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.context.InformationItemCell;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.NameColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.invocation.InvocationDefaultValueUtilities;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.invocation.InvocationUIModelMapper;
@@ -174,7 +175,7 @@ public class AddParameterBindingCommandTest {
         assertEquals(rowNumberValue,
                      uiModel.getCell(rowNumberIndex, ROW_NUMBER_COLUMN_INDEX).getValue().getValue());
         assertEquals(nameColumnValue,
-                     uiModel.getCell(rowNumberIndex, BINDING_PARAMETER_COLUMN_INDEX).getValue().getValue());
+                     ((InformationItemCell.HasNameAndDataTypeCell) uiModel.getCell(rowNumberIndex, BINDING_PARAMETER_COLUMN_INDEX).getValue().getValue()).getName().getValue());
         assertNull(uiModel.getCell(rowNumberIndex, BINDING_EXPRESSION_COLUMN_INDEX));
     }
 
@@ -381,7 +382,7 @@ public class AddParameterBindingCommandTest {
         assertEquals(1,
                      uiModel.getCell(0, ROW_NUMBER_COLUMN_INDEX).getValue().getValue());
         assertEquals(InvocationDefaultValueUtilities.PREFIX + "1",
-                     uiModel.getCell(0, BINDING_PARAMETER_COLUMN_INDEX).getValue().getValue());
+                     ((InformationItemCell.HasNameAndDataTypeCell) uiModel.getCell(0, BINDING_PARAMETER_COLUMN_INDEX).getValue().getValue()).getName().getValue());
         assertNull(uiModel.getCell(0, BINDING_EXPRESSION_COLUMN_INDEX));
 
         verify(canvasOperation).execute();

@@ -161,8 +161,13 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGri
                                                                                                                                     cellEditorControls,
                                                                                                                                     headerEditor),
                                                                                                  expressionHeaderMetaData),
-                                                                                   getBodyTextBoxFactory(),
-                                                                                   this);
+                                                                                   this,
+                                                                                   rowIndex -> true,
+                                                                                   superClearDisplayNameConsumer(),
+                                                                                   superSetDisplayNameConsumer(),
+                                                                                   setTypeRefConsumer(),
+                                                                                   cellEditorControls,
+                                                                                   headerEditor);
         final ExpressionEditorColumn expressionColumn = new ExpressionEditorColumn(gridLayer,
                                                                                    Arrays.asList(new BaseHeaderMetaData("",
                                                                                                                         EXPRESSION_COLUMN_GROUP),
@@ -178,7 +183,7 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGri
 
     @Override
     @SuppressWarnings("unchecked")
-    protected Consumer<HasName> clearDisplayNameConsumer() {
+    public Consumer<HasName> clearDisplayNameConsumer() {
         return (hn) -> {
             final CompositeCommand.Builder commandBuilder = newHasNameHasNoValueCommand(hn);
             getUpdateStunnerTitleCommand("").ifPresent(commandBuilder::addCommand);
@@ -189,13 +194,21 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGri
 
     @Override
     @SuppressWarnings("unchecked")
-    protected BiConsumer<HasName, Name> setDisplayNameConsumer() {
+    public BiConsumer<HasName, Name> setDisplayNameConsumer() {
         return (hn, name) -> {
             final CompositeCommand.Builder commandBuilder = newHasNameHasValueCommand(hn, name);
             getUpdateStunnerTitleCommand(name.getValue()).ifPresent(commandBuilder::addCommand);
             sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
                                           commandBuilder.build());
         };
+    }
+
+    Consumer<HasName> superClearDisplayNameConsumer() {
+        return super.clearDisplayNameConsumer();
+    }
+
+    BiConsumer<HasName, Name> superSetDisplayNameConsumer() {
+        return super.setDisplayNameConsumer();
     }
 
     private String getExpressionText() {

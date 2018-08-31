@@ -26,11 +26,11 @@ import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
-import org.kie.workbench.common.dmn.client.editors.types.HasNameAndDataTypeControl;
+import org.kie.workbench.common.dmn.client.editors.types.HasNameAndTypeRef;
 import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypeEditorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 
-public abstract class NameAndDataTypeHeaderMetaData extends EditablePopupHeaderMetaData<HasNameAndDataTypeControl, NameAndDataTypeEditorView.Presenter> implements HasNameAndDataTypeControl {
+public abstract class NameAndDataTypeHeaderMetaData extends EditablePopupHeaderMetaData<HasNameAndTypeRef, NameAndDataTypeEditorView.Presenter> implements HasNameAndTypeRef {
 
     private final Optional<HasName> hasName;
     private final HasTypeRef hasTypeRef;
@@ -55,32 +55,32 @@ public abstract class NameAndDataTypeHeaderMetaData extends EditablePopupHeaderM
     }
 
     @Override
-    protected HasNameAndDataTypeControl getPresenter() {
+    protected HasNameAndTypeRef getPresenter() {
         return this;
     }
 
     @Override
     public String getTitle() {
-        return getDisplayName();
+        return getName().getValue();
     }
 
     @Override
-    public String getDisplayName() {
-        return hasName.orElse(HasName.NOP).getName().getValue();
+    public Name getName() {
+        return hasName.orElse(HasName.NOP).getName();
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public void setDisplayName(final String name) {
+    public void setName(final Name name) {
         hasName.ifPresent(hn -> {
-            if (Objects.equals(name, getDisplayName())) {
+            if (Objects.equals(name, getName())) {
                 return;
             }
 
-            if (name == null || name.trim().isEmpty()) {
+            if (name == null || name.getValue() == null || name.getValue().trim().isEmpty()) {
                 clearDisplayNameConsumer.accept(hn);
             } else {
-                setDisplayNameConsumer.accept(hn, new Name(name));
+                setDisplayNameConsumer.accept(hn, name);
             }
         });
     }

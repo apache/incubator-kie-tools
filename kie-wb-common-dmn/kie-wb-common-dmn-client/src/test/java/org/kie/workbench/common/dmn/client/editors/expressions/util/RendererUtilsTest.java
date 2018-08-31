@@ -21,13 +21,16 @@ import java.util.Collections;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.shape.Text;
+import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.shared.core.types.TextAlign;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.google.gwtmockito.GwtMock;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.context.InformationItemCell;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.literal.LiteralExpressionColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridTheme;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.NameAndDataTypeHeaderMetaData;
@@ -86,11 +89,16 @@ public class RendererUtilsTest {
     @Mock
     private Text headerText2;
 
+    @Mock
+    private Transform transform;
+
     @GwtMock
     @SuppressWarnings("unused")
     private Group headerGroup;
 
     private GridHeaderColumnRenderContext headerContext;
+
+    private GridBodyCellRenderContext bodyContext;
 
     @Before
     @SuppressWarnings("unchecked")
@@ -102,6 +110,17 @@ public class RendererUtilsTest {
                                                           0,
                                                           uiModel,
                                                           gridRenderer);
+        bodyContext = new GridBodyCellRenderContext(0,
+                                                    0,
+                                                    BLOCK_WIDTH,
+                                                    ROW_HEIGHT,
+                                                    0,
+                                                    0,
+                                                    0,
+                                                    0,
+                                                    false,
+                                                    transform,
+                                                    gridRenderer);
 
         when(cellContext.getRenderer()).thenReturn(gridRenderer);
         when(gridRenderer.getTheme()).thenReturn(gridTheme);
@@ -152,6 +171,24 @@ public class RendererUtilsTest {
                                              BLOCK_WIDTH,
                                              ROW_HEIGHT);
 
+        assertHasNameAndDataTypeRendering();
+    }
+
+    @Test
+    public void testRenderHeaderContentWithInformationItemCell() {
+        final InformationItemCell.HasNameAndDataTypeCell informationItemCell = mock(InformationItemCell.HasNameAndDataTypeCell.class);
+        final Name name = new Name(TITLE);
+
+        when(informationItemCell.getName()).thenReturn(name);
+        when(informationItemCell.getTypeRef()).thenReturn(TYPE_REF);
+
+        RendererUtils.getNameAndDataTypeText(informationItemCell,
+                                             bodyContext);
+
+        assertHasNameAndDataTypeRendering();
+    }
+
+    private void assertHasNameAndDataTypeRendering() {
         verify(headerText1).setText(eq(TITLE));
         verify(headerText1).setX(BLOCK_WIDTH / 2);
         verify(headerText1).setY(ROW_HEIGHT / 2 - RendererUtils.SPACING);

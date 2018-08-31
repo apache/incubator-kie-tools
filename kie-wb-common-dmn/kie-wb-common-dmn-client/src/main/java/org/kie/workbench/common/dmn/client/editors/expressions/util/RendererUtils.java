@@ -21,6 +21,8 @@ import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.client.core.shape.TextLineBreakWrap;
 import com.ait.lienzo.shared.core.types.TextAlign;
 import com.google.gwt.core.client.GWT;
+import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.context.InformationItemCell;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridTheme;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.NameAndDataTypeHeaderMetaData;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
@@ -40,14 +42,14 @@ public class RendererUtils {
         final GridRenderer gridRenderer = context.getRenderer();
         final GridRendererTheme theme = gridRenderer.getTheme();
 
-        final Group g = new Group();
-        final Text t = theme.getBodyText()
-                .setText(gridCell.getValue().getValue())
-                .setListening(false)
-                .setX(5)
-                .setY(5)
-                .setFontFamily(BaseExpressionGridTheme.FONT_FAMILY_EXPRESSION)
-                .setTextAlign(TextAlign.LEFT);
+        final Group g = GWT.create(Group.class);
+        final Text t = theme.getBodyText();
+        t.setText(gridCell.getValue().getValue());
+        t.setListening(false);
+        t.setX(5);
+        t.setY(5);
+        t.setFontFamily(BaseExpressionGridTheme.FONT_FAMILY_EXPRESSION);
+        t.setTextAlign(TextAlign.LEFT);
         t.setWrapper(new TextLineBreakWrap(t));
         g.add(t);
 
@@ -59,12 +61,12 @@ public class RendererUtils {
         final GridRenderer gridRenderer = context.getRenderer();
         final GridRendererTheme theme = gridRenderer.getTheme();
 
-        final Group g = new Group();
-        final Text t = theme.getBodyText()
-                .setText(gridCell.getValue().getValue())
-                .setListening(false)
-                .setX(context.getCellWidth() / 2)
-                .setY(context.getCellHeight() / 2);
+        final Group g = GWT.create(Group.class);
+        final Text t = theme.getBodyText();
+        t.setText(gridCell.getValue().getValue());
+        t.setListening(false);
+        t.setX(context.getCellWidth() / 2);
+        t.setY(context.getCellHeight() / 2);
         g.add(t);
         return g;
     }
@@ -72,25 +74,46 @@ public class RendererUtils {
     public static Group getNameAndDataTypeText(final NameAndDataTypeHeaderMetaData headerMetaData,
                                                final GridHeaderColumnRenderContext context,
                                                final double blockWidth,
-                                               final double rowHeight) {
+                                               final double blockHeight) {
+        return getNameAndDataTypeText(context.getRenderer().getTheme(),
+                                      headerMetaData.getTitle(),
+                                      headerMetaData.getTypeRef(),
+                                      blockWidth,
+                                      blockHeight);
+    }
+
+    public static Group getNameAndDataTypeText(final InformationItemCell.HasNameAndDataTypeCell hasNameAndDataTypeCell,
+                                               final GridBodyCellRenderContext context) {
+        return getNameAndDataTypeText(context.getRenderer().getTheme(),
+                                      hasNameAndDataTypeCell.getName().getValue(),
+                                      hasNameAndDataTypeCell.getTypeRef(),
+                                      context.getCellWidth(),
+                                      context.getCellHeight());
+    }
+
+    private static Group getNameAndDataTypeText(final GridRendererTheme theme,
+                                                final String name,
+                                                final QName typeRef,
+                                                final double blockWidth,
+                                                final double blockHeight) {
         final Group headerGroup = GWT.create(Group.class);
 
-        final Text name = context.getRenderer().getTheme().getHeaderText();
-        name.setText(headerMetaData.getTitle());
-        name.setListening(false);
-        name.setX(blockWidth / 2);
-        name.setY(rowHeight / 2 - SPACING);
+        final Text tName = theme.getHeaderText();
+        tName.setText(name);
+        tName.setListening(false);
+        tName.setX(blockWidth / 2);
+        tName.setY(blockHeight / 2 - SPACING);
 
-        final Text typeRef = context.getRenderer().getTheme().getHeaderText();
-        typeRef.setFontStyle(FONT_STYLE_TYPE_REF);
-        typeRef.setFontSize(BaseExpressionGridTheme.FONT_SIZE - 2.0);
-        typeRef.setText("(" + headerMetaData.getTypeRef() + ")");
-        typeRef.setListening(false);
-        typeRef.setX(blockWidth / 2);
-        typeRef.setY(rowHeight / 2 + SPACING);
+        final Text tTypeRef = theme.getHeaderText();
+        tTypeRef.setFontStyle(FONT_STYLE_TYPE_REF);
+        tTypeRef.setFontSize(BaseExpressionGridTheme.FONT_SIZE - 2.0);
+        tTypeRef.setText("(" + typeRef.toString() + ")");
+        tTypeRef.setListening(false);
+        tTypeRef.setX(blockWidth / 2);
+        tTypeRef.setY(blockHeight / 2 + SPACING);
 
-        headerGroup.add(name);
-        headerGroup.add(typeRef);
+        headerGroup.add(tName);
+        headerGroup.add(tTypeRef);
 
         return headerGroup;
     }

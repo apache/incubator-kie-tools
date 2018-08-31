@@ -19,6 +19,8 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.context;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import javax.enterprise.event.Event;
@@ -27,8 +29,11 @@ import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
+import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
+import org.kie.workbench.common.dmn.api.definition.HasVariable;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ContextEntry;
+import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.context.AddContextEntryCommand;
@@ -37,6 +42,7 @@ import org.kie.workbench.common.dmn.client.commands.expressions.types.context.De
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionGrid;
 import org.kie.workbench.common.dmn.client.editors.expressions.util.SelectionUtils;
+import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypeEditorView;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
@@ -54,6 +60,7 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
+import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormProperties;
@@ -70,6 +77,7 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextGridData, Co
     private static final String EXPRESSION_COLUMN_GROUP = "ContextGrid$ExpressionColumn1";
 
     private final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
+    private final NameAndDataTypeEditorView.Presenter headerEditor;
 
     public ContextGrid(final GridCellTuple parent,
                        final Optional<String> nodeUUID,
@@ -89,7 +97,8 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextGridData, Co
                        final ListSelectorView.Presenter listSelector,
                        final TranslationService translationService,
                        final int nesting,
-                       final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier) {
+                       final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
+                       final NameAndDataTypeEditorView.Presenter headerEditor) {
         super(parent,
               nodeUUID,
               hasExpression,
@@ -110,6 +119,7 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextGridData, Co
               translationService,
               nesting);
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
+        this.headerEditor = headerEditor;
 
         setEventPropagationMode(EventPropagationMode.NO_ANCESTORS);
 
@@ -134,11 +144,27 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextGridData, Co
 
     @Override
     public void initialiseUiColumns() {
-        final NameColumn nameColumn = new NameColumn(new NameColumnHeaderMetaData(() -> hasName.orElse(HasName.NOP).getName().getValue(),
-                                                                                  (s) -> hasName.orElse(HasName.NOP).getName().setValue(s),
-                                                                                  getHeaderHasNameTextBoxFactory()),
-                                                     getBodyTextBoxFactory(),
-                                                     this);
+        HasTypeRef hasTypeRef = expression.get();
+        final DMNModelInstrumentedBase base = hasExpression.asDMNModelInstrumentedBase();
+        if (base instanceof HasVariable) {
+            final HasVariable hasVariable = (HasVariable) base;
+            hasTypeRef = hasVariable.getVariable();
+        }
+
+        final NameColumn nameColumn = new NameColumn(new NameColumnHeaderMetaData(hasName,
+                                                                                  hasTypeRef,
+                                                                                  clearDisplayNameConsumer(),
+                                                                                  setDisplayNameConsumer(),
+                                                                                  setTypeRefConsumer(),
+                                                                                  cellEditorControls,
+                                                                                  headerEditor),
+                                                     this,
+                                                     (rowIndex) -> rowIndex != getModel().getRowCount() - 1,
+                                                     superClearDisplayNameConsumer(),
+                                                     superSetDisplayNameConsumer(),
+                                                     setTypeRefConsumer(),
+                                                     cellEditorControls,
+                                                     headerEditor);
         final ExpressionEditorColumn expressionColumn = new ExpressionEditorColumn(gridLayer,
                                                                                    new BaseHeaderMetaData("",
                                                                                                           EXPRESSION_COLUMN_GROUP),
@@ -149,6 +175,36 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextGridData, Co
         model.appendColumn(expressionColumn);
 
         getRenderer().setColumnRenderConstraint((isSelectionLayer, gridColumn) -> !isSelectionLayer || gridColumn.equals(expressionColumn));
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Consumer<HasName> clearDisplayNameConsumer() {
+        return (hn) -> {
+            final CompositeCommand.Builder commandBuilder = newHasNameHasNoValueCommand(hn);
+            getUpdateStunnerTitleCommand("").ifPresent(commandBuilder::addCommand);
+            sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
+                                          commandBuilder.build());
+        };
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public BiConsumer<HasName, Name> setDisplayNameConsumer() {
+        return (hn, name) -> {
+            final CompositeCommand.Builder commandBuilder = newHasNameHasValueCommand(hn, name);
+            getUpdateStunnerTitleCommand(name.getValue()).ifPresent(commandBuilder::addCommand);
+            sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
+                                          commandBuilder.build());
+        };
+    }
+
+    Consumer<HasName> superClearDisplayNameConsumer() {
+        return super.clearDisplayNameConsumer();
+    }
+
+    BiConsumer<HasName, Name> superSetDisplayNameConsumer() {
+        return super.setDisplayNameConsumer();
     }
 
     @Override

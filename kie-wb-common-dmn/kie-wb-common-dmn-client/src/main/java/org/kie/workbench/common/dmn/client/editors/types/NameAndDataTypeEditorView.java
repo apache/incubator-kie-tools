@@ -24,7 +24,7 @@ import org.uberfire.client.mvp.UberElement;
 public interface NameAndDataTypeEditorView extends org.jboss.errai.ui.client.local.api.IsElement,
                                                    UberElement<NameAndDataTypeEditorView.Presenter> {
 
-    interface Presenter extends HasCellEditorControls.Editor<HasNameAndDataTypeControl> {
+    interface Presenter extends HasCellEditorControls.Editor<HasNameAndTypeRef> {
 
         void setName(final String name);
 

@@ -88,12 +88,13 @@ public class ContextUIModelMapper extends BaseUIModelMapper<Context> {
                         final InformationItem variable = context.getContextEntry().get(rowIndex).getVariable();
                         uiModel.get().setCell(rowIndex,
                                               columnIndex,
-                                              () -> new InformationItemNameCell(() -> variable,
-                                                                                listSelector));
+                                              () -> new InformationItemCell(() -> InformationItemCell.HasNameAndDataTypeCell.wrap(variable),
+                                                                            listSelector));
                     } else {
                         uiModel.get().setCell(rowIndex,
                                               columnIndex,
-                                              () -> new DMNGridCell<>(new BaseGridCellValue<>(DEFAULT_ROW_CAPTION)));
+                                              () -> new InformationItemCell(() -> InformationItemCell.HasNameCell.wrap(DEFAULT_ROW_CAPTION),
+                                                                            listSelector));
                     }
                     break;
                 case EXPRESSION:

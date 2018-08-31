@@ -16,75 +16,36 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.invocation;
 
-import java.util.Collections;
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
-import org.kie.soup.commons.validation.PortablePreconditions;
-import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextBoxSingletonDOMElementFactory;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNSimpleGridColumn;
-import org.uberfire.ext.wires.core.grids.client.model.GridCell;
-import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
-import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
-import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
-import org.uberfire.ext.wires.core.grids.client.widget.dom.HasDOMElementResources;
-import org.uberfire.ext.wires.core.grids.client.widget.dom.single.HasSingletonDOMElementResource;
+import org.kie.workbench.common.dmn.api.definition.HasName;
+import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
+import org.kie.workbench.common.dmn.api.property.dmn.Name;
+import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypeEditorView;
+import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableNameAndDataTypeColumn;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 
-public class InvocationParameterColumn extends DMNSimpleGridColumn<InvocationGrid, String> implements HasSingletonDOMElementResource {
-
-    private final TextBoxSingletonDOMElementFactory factory;
-
-    public InvocationParameterColumn(final HeaderMetaData headerMetaData,
-                                     final TextBoxSingletonDOMElementFactory factory,
-                                     final InvocationGrid gridWidget) {
-        this(Collections.singletonList(headerMetaData),
-             factory,
-             gridWidget);
-    }
+public class InvocationParameterColumn extends EditableNameAndDataTypeColumn<InvocationGrid> {
 
     public InvocationParameterColumn(final List<HeaderMetaData> headerMetaData,
-                                     final TextBoxSingletonDOMElementFactory factory,
-                                     final InvocationGrid gridWidget) {
+                                     final InvocationGrid gridWidget,
+                                     final Predicate<Integer> isEditable,
+                                     final Consumer<HasName> clearDisplayNameConsumer,
+                                     final BiConsumer<HasName, Name> setDisplayNameConsumer,
+                                     final BiConsumer<HasTypeRef, QName> setTypeRefConsumer,
+                                     final CellEditorControlsView.Presenter cellEditorControls,
+                                     final NameAndDataTypeEditorView.Presenter editor) {
         super(headerMetaData,
-              new InvocationParameterColumnRenderer(factory),
-              gridWidget);
-        this.factory = PortablePreconditions.checkNotNull("factory",
-                                                          factory);
-        setMovable(false);
-        setResizable(true);
-    }
-
-    @Override
-    public void edit(final GridCell<String> cell,
-                     final GridBodyCellRenderContext context,
-                     final Consumer<GridCellValue<String>> callback) {
-        factory.attachDomElement(context,
-                                 (e) -> e.setValue(assertCellValue(assertCell(cell).getValue()).getValue()),
-                                 (e) -> e.setFocus(true));
-    }
-
-    @Override
-    protected GridCellValue<String> makeDefaultCellValue() {
-        return new BaseGridCellValue<>("");
-    }
-
-    @Override
-    public void flush() {
-        factory.flush();
-    }
-
-    @Override
-    public void destroyResources() {
-        factory.destroyResources();
-        getHeaderMetaData().stream()
-                .filter(md -> md instanceof HasDOMElementResources)
-                .map(md -> (HasDOMElementResources) md)
-                .forEach(HasDOMElementResources::destroyResources);
-    }
-
-    @Override
-    public void setWidth(final double width) {
-        super.setWidth(width);
-        updateWidthOfPeers();
+              gridWidget,
+              isEditable,
+              clearDisplayNameConsumer,
+              setDisplayNameConsumer,
+              setTypeRefConsumer,
+              cellEditorControls,
+              editor);
     }
 }

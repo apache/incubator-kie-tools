@@ -22,13 +22,14 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.jboss.errai.common.client.dom.HTMLElement;
+import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 
 @ApplicationScoped
 public class DataTypeEditorImpl implements DataTypeEditorView.Presenter {
 
     private DataTypeEditorView view;
-    private Optional<HasDataTypeControl> binding = Optional.empty();
+    private Optional<HasTypeRef> binding = Optional.empty();
 
     public DataTypeEditorImpl() {
         //CDI proxy
@@ -47,7 +48,7 @@ public class DataTypeEditorImpl implements DataTypeEditorView.Presenter {
     }
 
     @Override
-    public void bind(final HasDataTypeControl bound,
+    public void bind(final HasTypeRef bound,
                      final int uiRowIndex,
                      final int uiColumnIndex) {
         binding = Optional.ofNullable(bound);

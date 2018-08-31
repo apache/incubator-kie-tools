@@ -228,18 +228,18 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
     }
 
     @SuppressWarnings("unchecked")
-    protected Consumer<HasName> clearDisplayNameConsumer() {
+    public Consumer<HasName> clearDisplayNameConsumer() {
         return (hn) -> sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
                                                      newHasNameHasNoValueCommand(hn).build());
     }
 
     @SuppressWarnings("unchecked")
-    protected BiConsumer<HasName, Name> setDisplayNameConsumer() {
+    public BiConsumer<HasName, Name> setDisplayNameConsumer() {
         return (hn, name) -> sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
                                                            newHasNameHasValueCommand(hn, name).build());
     }
 
-    protected BiConsumer<HasTypeRef, QName> setTypeRefConsumer() {
+    public BiConsumer<HasTypeRef, QName> setTypeRefConsumer() {
         return (htr, typeRef) -> sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
                                                                new SetTypeRefCommand(htr,
                                                                                      typeRef,

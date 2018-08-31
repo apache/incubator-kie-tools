@@ -20,6 +20,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
+import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -37,7 +38,7 @@ public class NameAndDataTypeEditorImplTest {
     private NameAndDataTypeEditorView view;
 
     @Mock
-    private HasNameAndDataTypeControl bound;
+    private HasNameAndTypeRef bound;
 
     @Mock
     private Decision decision;
@@ -52,7 +53,7 @@ public class NameAndDataTypeEditorImplTest {
         this.editor = new NameAndDataTypeEditorImpl(view);
 
         when(bound.asDMNModelInstrumentedBase()).thenReturn(decision);
-        when(bound.getDisplayName()).thenReturn(NAME);
+        when(bound.getName()).thenReturn(new Name(NAME));
         when(bound.getTypeRef()).thenReturn(typeRef);
     }
 
@@ -98,7 +99,7 @@ public class NameAndDataTypeEditorImplTest {
 
         editor.setName(NAME);
 
-        verify(bound).setDisplayName(eq(NAME));
+        verify(bound).setName(eq(new Name(NAME)));
     }
 
     @Test

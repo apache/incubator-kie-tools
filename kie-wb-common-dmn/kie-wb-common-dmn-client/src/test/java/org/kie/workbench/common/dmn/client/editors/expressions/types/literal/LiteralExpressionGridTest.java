@@ -416,7 +416,7 @@ public class LiteralExpressionGridTest {
     public void testGetDisplayName() {
         setupGrid(0);
 
-        assertThat(extractHeaderMetaData().getDisplayName()).isEqualTo(NAME);
+        assertThat(extractHeaderMetaData().getName().getValue()).isEqualTo(NAME);
     }
 
     private LiteralExpressionColumnHeaderMetaData extractHeaderMetaData() {
@@ -429,7 +429,7 @@ public class LiteralExpressionGridTest {
     public void testSetDisplayNameWithNoChange() {
         setupGrid(0);
 
-        extractHeaderMetaData().setDisplayName(NAME);
+        extractHeaderMetaData().setName(new Name(NAME));
 
         verify(sessionCommandManager, never()).execute(any(AbstractCanvasHandler.class),
                                                        any(org.kie.workbench.common.stunner.core.command.Command.class));
@@ -440,7 +440,7 @@ public class LiteralExpressionGridTest {
     public void testSetDisplayNameWithEmptyValue() {
         setupGrid(0);
 
-        extractHeaderMetaData().setDisplayName("");
+        extractHeaderMetaData().setName(new Name());
 
         verify(sessionCommandManager).execute(eq(canvasHandler),
                                               compositeCommandCaptor.capture());
@@ -455,7 +455,7 @@ public class LiteralExpressionGridTest {
     public void testSetDisplayNameWithNullValue() {
         setupGrid(0);
 
-        extractHeaderMetaData().setDisplayName(null);
+        extractHeaderMetaData().setName(null);
 
         verify(sessionCommandManager).execute(eq(canvasHandler),
                                               compositeCommandCaptor.capture());
@@ -470,7 +470,7 @@ public class LiteralExpressionGridTest {
     public void testSetDisplayNameWithNonEmptyValue() {
         setupGrid(0);
 
-        extractHeaderMetaData().setDisplayName(NAME_NEW);
+        extractHeaderMetaData().setName(new Name(NAME_NEW));
 
         verify(sessionCommandManager).execute(eq(canvasHandler),
                                               compositeCommandCaptor.capture());
