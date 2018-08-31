@@ -113,7 +113,7 @@ public class DataTypePickerWidgetTest {
     public void setup() {
         this.definitions = new Definitions();
         this.definitions.getItemDefinition().add(new ItemDefinition());
-        this.qNameConverter = spy(new QNameConverter(dmnGraphUtils));
+        this.qNameConverter = spy(new QNameConverter());
 
         when(typeSelector.getElement()).thenReturn(typeSelectorElement);
         when(option.getElement()).thenReturn(optionElement);

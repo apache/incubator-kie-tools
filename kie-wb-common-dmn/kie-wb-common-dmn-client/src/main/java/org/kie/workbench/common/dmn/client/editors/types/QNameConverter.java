@@ -21,14 +21,11 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Definitions;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
-import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 
 @Dependent
 public class QNameConverter {
@@ -40,17 +37,10 @@ public class QNameConverter {
 
     protected static final String QNAME_DECODING_PATTERN = "^\\[(.*?)\\]\\[(.*?)\\]\\[(.*?)\\]$";
 
-    private DMNGraphUtils dmnGraphUtils;
-
     private DMNModelInstrumentedBase dmnModel;
 
     public QNameConverter() {
         //CDI proxy
-    }
-
-    @Inject
-    public QNameConverter(final DMNGraphUtils dmnGraphUtils) {
-        this.dmnGraphUtils = dmnGraphUtils;
     }
 
     public void setDMNModel(final DMNModelInstrumentedBase dmnModel) {
@@ -94,22 +84,11 @@ public class QNameConverter {
         String localPart = modelValue.getLocalPart();
         String prefix = modelValue.getPrefix();
 
-        // We should be able to lookup the prefix from the DMN Model however until
-        // https://issues.jboss.org/browse/DROOLS-2549 is implemented we can only examine
-        // the node being edited itself or fallback to DMNs root Definitions.
         if (dmnModel != null) {
             Optional<String> nsPrefix = dmnModel.getPrefixForNamespaceURI(namespace);
             if (nsPrefix.isPresent()) {
                 prefix = nsPrefix.get();
                 namespace = "";
-            } else {
-                //Fallback..
-                final Definitions definitions = dmnGraphUtils.getDefinitions();
-                nsPrefix = definitions.getPrefixForNamespaceURI(namespace);
-                if (nsPrefix.isPresent()) {
-                    prefix = nsPrefix.get();
-                    namespace = "";
-                }
             }
         }
 

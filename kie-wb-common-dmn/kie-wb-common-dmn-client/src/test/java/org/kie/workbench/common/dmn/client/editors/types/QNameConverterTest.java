@@ -29,12 +29,9 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Definitions;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
-import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
-import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class QNameConverterTest {
@@ -45,14 +42,11 @@ public class QNameConverterTest {
             "[unknown]" +
             "[" + DMNModelInstrumentedBase.Namespace.DMN.getPrefix() + "]";
 
-    @Mock
-    private DMNGraphUtils dmnGraphUtils;
-
     private QNameConverter converter;
 
     @Before
     public void setup() {
-        this.converter = new QNameConverter(dmnGraphUtils) {
+        this.converter = new QNameConverter() {
             @Override
             protected List<String> getRegexGroups(final String componentValue) {
                 final List<String> regExGroups = new ArrayList<>();
@@ -66,12 +60,6 @@ public class QNameConverterTest {
                 return regExGroups;
             }
         };
-
-        final Definitions definitions = new Definitions();
-        definitions.getNsContext().put(DMNModelInstrumentedBase.Namespace.FEEL.getPrefix(),
-                                       DMNModelInstrumentedBase.Namespace.FEEL.getUri());
-
-        when(dmnGraphUtils.getDefinitions()).thenReturn(definitions);
     }
 
     @Test
@@ -87,7 +75,13 @@ public class QNameConverterTest {
 
     @Test
     public void testToWidgetValueWhenDMNDiagramDefinesNameSpaces() {
+        final Definitions definitions = new Definitions();
+        definitions.getNsContext().put(DMNModelInstrumentedBase.Namespace.FEEL.getPrefix(),
+                                       DMNModelInstrumentedBase.Namespace.FEEL.getUri());
+
         final Decision decision = new Decision();
+        decision.setParent(definitions);
+
         converter.setDMNModel(decision);
 
         final String encoding = converter.toWidgetValue(BuiltInType.DATE.asQName());
