@@ -98,6 +98,9 @@ public class DMNEditorConstants {
     public static final String FunctionEditor_PMML = "FunctionEditor.PMML";
 
     @TranslationKey(defaultValue = "")
+    public static final String FunctionEditor_Undefined = "FunctionEditor.Undefined";
+
+    @TranslationKey(defaultValue = "")
     public static final String DecisionTableEditor_DescriptionColumnHeader = "DecisionTableEditor.DescriptionColumnHeader";
 
     @TranslationKey(defaultValue = "")

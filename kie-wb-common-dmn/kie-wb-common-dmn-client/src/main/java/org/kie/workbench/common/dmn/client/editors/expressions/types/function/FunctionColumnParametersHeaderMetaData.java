@@ -20,10 +20,12 @@ import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.v1_1.FunctionDefinition;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.parameters.HasParametersControl;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.parameters.ParametersEditorView;
+import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditablePopupHeaderMetaData;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 
@@ -33,14 +35,17 @@ public class FunctionColumnParametersHeaderMetaData extends EditablePopupHeaderM
 
     private final Supplier<FunctionDefinition> functionSupplier;
     private final FunctionGrid gridWidget;
+    private final TranslationService translationService;
 
     public FunctionColumnParametersHeaderMetaData(final Supplier<FunctionDefinition> functionSupplier,
+                                                  final TranslationService translationService,
                                                   final CellEditorControlsView.Presenter cellEditorControls,
                                                   final ParametersEditorView.Presenter editor,
                                                   final FunctionGrid gridWidget) {
         super(cellEditorControls,
               editor);
         this.functionSupplier = functionSupplier;
+        this.translationService = translationService;
         this.gridWidget = gridWidget;
     }
 
@@ -64,7 +69,8 @@ public class FunctionColumnParametersHeaderMetaData extends EditablePopupHeaderM
     }
 
     String getExpressionLanguageTitle() {
-        return KindUtilities.getKind(functionSupplier.get()).code();
+        final FunctionDefinition.Kind kind = KindUtilities.getKind(functionSupplier.get());
+        return kind == null ? translationService.getTranslation(DMNEditorConstants.FunctionEditor_Undefined) : kind.code();
     }
 
     String getFormalParametersTitle() {

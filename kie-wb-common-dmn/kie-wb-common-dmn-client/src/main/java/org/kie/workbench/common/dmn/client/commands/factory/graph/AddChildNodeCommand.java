@@ -40,6 +40,11 @@ public class AddChildNodeCommand extends org.kie.workbench.common.stunner.core.g
     }
 
     @Override
+    protected RegisterNodeCommand getRegisterNodeCommand(Node candidate) {
+        return new RegisterNodeCommand(candidate);
+    }
+
+    @Override
     protected SetChildNodeCommand getSetChildNodeCommand(final Node<?, Edge> parent,
                                                          final Node candidate) {
         return new SetChildNodeCommand(parent,

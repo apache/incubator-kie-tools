@@ -168,6 +168,7 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
                                                                                                                   cellEditorControls,
                                                                                                                   headerEditor),
                                                                              new FunctionColumnParametersHeaderMetaData(expression::get,
+                                                                                                                        translationService,
                                                                                                                         cellEditorControls,
                                                                                                                         parametersEditor,
                                                                                                                         this)),

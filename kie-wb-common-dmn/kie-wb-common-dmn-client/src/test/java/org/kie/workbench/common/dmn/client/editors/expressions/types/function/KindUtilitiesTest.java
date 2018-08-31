@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.function;
 
+import java.util.Map;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase.Namespace;
@@ -57,6 +59,26 @@ public class KindUtilitiesTest {
     @Test
     public void testSetKindPMML() {
         assertSetKind(FunctionDefinition.Kind.PMML);
+    }
+
+    @Test
+    public void testSetKindNullWithNSSet() {
+        final Map<String, String> nsContext = function.getNsContext();
+        nsContext.put(FunctionDefinition.DROOLS_PREFIX,
+                      Namespace.KIE.getUri());
+
+        KindUtilities.setKind(function, null);
+
+        assertThat(function.getNsContext().get(FunctionDefinition.DROOLS_PREFIX)).isEqualTo(Namespace.KIE.getUri());
+        assertThat(function.getAdditionalAttributes().get(FunctionDefinition.KIND_QNAME)).isNull();
+    }
+
+    @Test
+    public void testSetKindNullWithNSNotSet() {
+        KindUtilities.setKind(function, null);
+
+        assertThat(function.getNsContext().get(FunctionDefinition.DROOLS_PREFIX)).isNull();
+        assertThat(function.getAdditionalAttributes().get(FunctionDefinition.KIND_QNAME)).isNull();
     }
 
     private void assertSetKind(final FunctionDefinition.Kind kind) {

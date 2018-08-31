@@ -17,11 +17,13 @@
 package org.kie.workbench.common.dmn.client.canvas.controls.toolbox;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.BusinessKnowledgeModel;
-import org.kie.workbench.common.dmn.api.definition.v1_1.FunctionDefinition;
+import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
 import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -44,8 +46,8 @@ import org.mockito.Mock;
 import org.uberfire.mocks.EventSourceMock;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -73,17 +75,17 @@ public class DMNEditBusinessKnowledgeModelToolboxActionTest {
     @Mock
     private EventSourceMock<EditExpressionEvent> editExpressionEvent;
 
+    @Mock
+    private MouseClickEvent mouseClickEvent;
+
     private DMNEditBusinessKnowledgeModelToolboxAction tested;
     private BusinessKnowledgeModel bkm;
-    private FunctionDefinition bkmFunction;
     private Node<View<BusinessKnowledgeModel>, Edge> bkmNode;
 
     @Before
     public void setup() throws Exception {
         bkmNode = new NodeImpl<>(E_UUID);
         bkm = new BusinessKnowledgeModel();
-        bkmFunction = new FunctionDefinition();
-        bkm.setEncapsulatedLogic(bkmFunction);
         final Bounds bounds = new BoundsImpl(new BoundImpl(0d,
                                                            0d),
                                              new BoundImpl(100d,
@@ -111,10 +113,9 @@ public class DMNEditBusinessKnowledgeModelToolboxActionTest {
 
     @Test
     public void testAction() {
-        final MouseClickEvent event = mock(MouseClickEvent.class);
-        ToolboxAction<AbstractCanvasHandler> cascade = tested.onMouseClick(canvasHandler,
-                                                                           E_UUID,
-                                                                           event);
+        final ToolboxAction<AbstractCanvasHandler> cascade = tested.onMouseClick(canvasHandler,
+                                                                                 E_UUID,
+                                                                                 mouseClickEvent);
         assertEquals(tested,
                      cascade);
 
@@ -125,11 +126,33 @@ public class DMNEditBusinessKnowledgeModelToolboxActionTest {
         final EditExpressionEvent editExprEvent = eventCaptor.getValue();
         assertEquals(E_UUID,
                      editExprEvent.getNodeUUID());
-        assertEquals(bkmFunction,
-                     editExprEvent.getHasExpression());
+        final HasExpression hasExpression = editExprEvent.getHasExpression();
+        assertEquals(bkm.getEncapsulatedLogic(),
+                     hasExpression.getExpression());
+        assertEquals(bkm.getEncapsulatedLogic(),
+                     hasExpression.asDMNModelInstrumentedBase());
+        assertFalse(hasExpression.isClearSupported());
         assertEquals(bkm,
                      editExprEvent.getHasName().get());
         assertEquals(session,
                      editExprEvent.getSession());
+    }
+
+    @Test
+    public void testActionSetExpression() {
+        tested.onMouseClick(canvasHandler,
+                            E_UUID,
+                            mouseClickEvent);
+
+        final ArgumentCaptor<EditExpressionEvent> eventCaptor = ArgumentCaptor.forClass(EditExpressionEvent.class);
+        verify(editExpressionEvent,
+               times(1)).fire(eventCaptor.capture());
+
+        final EditExpressionEvent editExprEvent = eventCaptor.getValue();
+        final HasExpression hasExpression = editExprEvent.getHasExpression();
+
+        Assertions.assertThatThrownBy(() -> hasExpression.setExpression(new DecisionTable()))
+                .isInstanceOf(UnsupportedOperationException.class)
+                .hasMessage("It is not possible to set the EncapsulatedLogic of a BusinessKnowledgeModel.");
     }
 }

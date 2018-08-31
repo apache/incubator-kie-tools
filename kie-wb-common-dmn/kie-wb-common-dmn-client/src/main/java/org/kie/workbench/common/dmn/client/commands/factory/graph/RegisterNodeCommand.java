@@ -16,10 +16,11 @@
 
 package org.kie.workbench.common.dmn.client.commands.factory.graph;
 
-import org.jboss.errai.common.client.api.annotations.MapsTo;
-import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.workbench.common.dmn.api.definition.v1_1.BusinessKnowledgeModel;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
-import org.kie.workbench.common.dmn.client.property.dmn.DefaultValueUtilities;
+import org.kie.workbench.common.dmn.api.definition.v1_1.FunctionDefinition;
+import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.function.KindUtilities;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -28,19 +29,10 @@ import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecution
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
-@Portable
-public class SetChildNodeCommand extends org.kie.workbench.common.stunner.core.graph.command.impl.SetChildNodeCommand {
+public class RegisterNodeCommand extends org.kie.workbench.common.stunner.core.graph.command.impl.RegisterNodeCommand {
 
-    public SetChildNodeCommand(final @MapsTo("parentUUID") String parentUUID,
-                               final @MapsTo("candidateUUID") String candidateUUID) {
-        super(parentUUID,
-              candidateUUID);
-    }
-
-    public SetChildNodeCommand(final Node<?, Edge> parent,
-                               final Node<?, Edge> candidate) {
-        super(parent,
-              candidate);
+    public RegisterNodeCommand(final Node candidate) {
+        super(candidate);
     }
 
     @Override
@@ -48,16 +40,16 @@ public class SetChildNodeCommand extends org.kie.workbench.common.stunner.core.g
     public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext context) {
         final CommandResult<RuleViolation> results = super.execute(context);
         if (!CommandUtils.isError(results)) {
-            final Node<?, Edge> parent = getParent(context);
-            final Node<?, Edge> candidate = getCandidate(context);
-            if (parent.getContent() instanceof View) {
-                final DMNModelInstrumentedBase parentDMNModel = (DMNModelInstrumentedBase) ((View) parent.getContent()).getDefinition();
-                if (candidate.getContent() instanceof View) {
-                    final DMNModelInstrumentedBase childDMNModel = (DMNModelInstrumentedBase) ((View) candidate.getContent()).getDefinition();
-                    childDMNModel.setParent(parentDMNModel);
-
-                    DefaultValueUtilities.updateNewNodeName(getGraph(context),
-                                                            childDMNModel);
+            final Node<?, Edge> candidate = getCandidate();
+            if (candidate.getContent() instanceof View) {
+                final DMNModelInstrumentedBase dmnModel = (DMNModelInstrumentedBase) ((View) candidate.getContent()).getDefinition();
+                if (dmnModel instanceof BusinessKnowledgeModel) {
+                    final FunctionDefinition function = ((BusinessKnowledgeModel) dmnModel).getEncapsulatedLogic();
+                    KindUtilities.setKind(function,
+                                          FunctionDefinition.Kind.FEEL);
+                    final LiteralExpression le = new LiteralExpression();
+                    function.setExpression(le);
+                    le.setParent(function);
                 }
             }
         }

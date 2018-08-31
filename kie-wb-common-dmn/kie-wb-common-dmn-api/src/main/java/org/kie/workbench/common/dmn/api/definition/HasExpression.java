@@ -25,4 +25,12 @@ public interface HasExpression {
     void setExpression(final Expression expression);
 
     DMNModelInstrumentedBase asDMNModelInstrumentedBase();
+
+    /**
+     * Can the Expression be cleared on the HasExpression instance.
+     * @return true if the Expression can be cleared.
+     */
+    default boolean isClearSupported() {
+        return true;
+    }
 }

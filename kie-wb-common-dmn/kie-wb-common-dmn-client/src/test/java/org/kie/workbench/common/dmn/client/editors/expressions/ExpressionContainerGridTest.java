@@ -301,7 +301,9 @@ public class ExpressionContainerGridTest {
     }
 
     @Test
-    public void testGetItems() {
+    public void testGetItemsWithClearEnabled() {
+        when(hasExpression.isClearSupported()).thenReturn(true);
+
         grid.setExpression(NODE_UUID,
                            hasExpression,
                            Optional.of(hasName));
@@ -321,6 +323,18 @@ public class ExpressionContainerGridTest {
     }
 
     @Test
+    public void testGetItemsWithClearDisabled() {
+        when(hasExpression.isClearSupported()).thenReturn(false);
+
+        grid.setExpression(NODE_UUID,
+                           hasExpression,
+                           Optional.of(hasName));
+        final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
+
+        assertThat(items).isEmpty();
+    }
+
+    @Test
     public void testOnItemSelected() {
         final Command command = mock(Command.class);
         final HasListSelectorControl.ListSelectorTextItem listSelectorItem = mock(HasListSelectorControl.ListSelectorTextItem.class);
@@ -335,6 +349,7 @@ public class ExpressionContainerGridTest {
     public void testOnClearExpressionItemSelected() {
         //Emulate User setting expression and resizing column
         when(hasExpression.getExpression()).thenReturn(literalExpression);
+        when(hasExpression.isClearSupported()).thenReturn(true);
 
         grid.setExpression(NODE_UUID,
                            hasExpression,

@@ -21,6 +21,7 @@ import java.util.function.Supplier;
 
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,11 +29,14 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.FunctionDefinition;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.parameters.ParametersEditorView;
+import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class FunctionColumnParametersHeaderMetaDataTest {
@@ -52,6 +56,9 @@ public class FunctionColumnParametersHeaderMetaDataTest {
     @Mock
     private GridRenderer renderer;
 
+    @Mock
+    private TranslationService translationService;
+
     private FunctionDefinition function;
 
     private Supplier<FunctionDefinition> functionSupplier;
@@ -63,9 +70,12 @@ public class FunctionColumnParametersHeaderMetaDataTest {
         this.function = new FunctionDefinition();
         this.functionSupplier = () -> function;
         this.header = new FunctionColumnParametersHeaderMetaData(functionSupplier,
+                                                                 translationService,
                                                                  cellEditorControls,
                                                                  parametersEditor,
                                                                  gridWidget);
+
+        when(translationService.getTranslation(anyString())).thenAnswer((i) -> i.getArguments()[0]);
     }
 
     @Test(expected = UnsupportedOperationException.class)
@@ -84,6 +94,12 @@ public class FunctionColumnParametersHeaderMetaDataTest {
                               FunctionDefinition.Kind.FEEL);
 
         assertEquals(FunctionDefinition.Kind.FEEL.code(),
+                     header.getExpressionLanguageTitle());
+    }
+
+    @Test
+    public void testGetExpressionLanguageTitleWhenKindIsNull() {
+        assertEquals(DMNEditorConstants.FunctionEditor_Undefined,
                      header.getExpressionLanguageTitle());
     }
 

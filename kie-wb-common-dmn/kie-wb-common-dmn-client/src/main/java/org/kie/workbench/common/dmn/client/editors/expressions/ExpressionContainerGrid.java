@@ -164,6 +164,11 @@ public class ExpressionContainerGrid extends BaseGridWidget implements HasListSe
             public DMNModelInstrumentedBase asDMNModelInstrumentedBase() {
                 return hasExpression.asDMNModelInstrumentedBase();
             }
+
+            @Override
+            public boolean isClearSupported() {
+                return hasExpression.isClearSupported();
+            }
         };
 
         return spy;
@@ -206,12 +211,16 @@ public class ExpressionContainerGrid extends BaseGridWidget implements HasListSe
     @Override
     public List<ListSelectorItem> getItems(final int uiRowIndex,
                                            final int uiColumnIndex) {
-        return Collections.singletonList(ListSelectorTextItem.build(translationService.format(DMNEditorConstants.ExpressionEditor_Clear),
-                                                                    true,
-                                                                    () -> {
-                                                                        cellEditorControls.hide();
-                                                                        clearExpressionType();
-                                                                    }));
+        if (hasExpression.isClearSupported()) {
+            return Collections.singletonList(ListSelectorTextItem
+                                                     .build(translationService.format(DMNEditorConstants.ExpressionEditor_Clear),
+                                                            true,
+                                                            () -> {
+                                                                cellEditorControls.hide();
+                                                                clearExpressionType();
+                                                            }));
+        }
+        return Collections.emptyList();
     }
 
     @Override

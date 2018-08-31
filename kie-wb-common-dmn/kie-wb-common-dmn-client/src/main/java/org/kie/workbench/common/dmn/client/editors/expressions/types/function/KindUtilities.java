@@ -31,11 +31,15 @@ public class KindUtilities {
 
     public static void setKind(final FunctionDefinition function,
                                final FunctionDefinition.Kind kind) {
-        final Map<String, String> nsContext = function.getNsContext();
-        nsContext.put(FunctionDefinition.DROOLS_PREFIX,
-                      Namespace.KIE.getUri());
         final Map<QName, String> attributes = function.getAdditionalAttributes();
-        attributes.put(FunctionDefinition.KIND_QNAME,
-                       kind.code());
+        if (kind == null) {
+            attributes.remove(FunctionDefinition.KIND_QNAME);
+        } else {
+            final Map<String, String> nsContext = function.getNsContext();
+            nsContext.put(FunctionDefinition.DROOLS_PREFIX,
+                          Namespace.KIE.getUri());
+            attributes.put(FunctionDefinition.KIND_QNAME,
+                           kind.code());
+        }
     }
 }
