@@ -16,72 +16,82 @@
 
 package org.kie.workbench.common.dmn.client.editors.types;
 
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
-import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeFactory;
 import org.kie.workbench.common.dmn.client.editors.types.common.ItemDefinitionUtils;
-import org.kie.workbench.common.dmn.client.editors.types.treegrid.DataTypeTreeGrid;
+import org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeList;
+import org.kie.workbench.common.dmn.client.editors.types.persistence.DataTypeStore;
+import org.kie.workbench.common.dmn.client.editors.types.persistence.ItemDefinitionStore;
 import org.uberfire.ext.editor.commons.client.file.popups.elemental2.Elemental2Modal;
 
 @ApplicationScoped
 public class DataTypeModal extends Elemental2Modal<DataTypeModal.View> {
 
-    private final DataTypeTreeGrid treeGrid;
+    private static final String MODAL_WIDTH = "800px";
+
+    private final DataTypeList treeList;
 
     private final ItemDefinitionUtils itemDefinitionUtils;
 
     private final DataTypeFactory dataTypeFactory;
 
-    private final QNameConverter qNameConverter;
+    private final ItemDefinitionStore definitionStore;
+
+    private final DataTypeStore dataTypeStore;
 
     @Inject
     public DataTypeModal(final View view,
-                         final DataTypeTreeGrid treeGrid,
+                         final DataTypeList treeList,
                          final ItemDefinitionUtils itemDefinitionUtils,
                          final DataTypeFactory dataTypeFactory,
-                         final QNameConverter qNameConverter) {
+                         final ItemDefinitionStore definitionStore,
+                         final DataTypeStore dataTypeStore) {
         super(view);
-        this.treeGrid = treeGrid;
+
+        this.treeList = treeList;
         this.itemDefinitionUtils = itemDefinitionUtils;
         this.dataTypeFactory = dataTypeFactory;
-        this.qNameConverter = qNameConverter;
+        this.definitionStore = definitionStore;
+        this.dataTypeStore = dataTypeStore;
     }
 
     @PostConstruct
     public void setup() {
         super.setup();
-        getView().setup(treeGrid);
+        setWidth(MODAL_WIDTH);
+        getView().setup(treeList);
     }
 
-    public void show(final String value) {
+    public void show() {
+        cleanDataTypeStore();
+        loadDataTypes();
+        superShow();
+    }
 
-        final String dataTypeName = extractItemDefinitionName(value);
-        final Optional<ItemDefinition> itemDefinition = itemDefinitionUtils.findByName(dataTypeName);
+    void cleanDataTypeStore() {
+        definitionStore.clear();
+        dataTypeStore.clear();
+    }
 
-        itemDefinition.ifPresent(i -> {
-            final DataType dataType = dataTypeFactory.makeDataType(i);
-            treeGrid.setupItems(dataType);
-            superShow();
-        });
+    void loadDataTypes() {
+        treeList.setupItems(itemDefinitionUtils
+                                    .all()
+                                    .stream()
+                                    .map(dataTypeFactory::makeStandardDataType)
+                                    .collect(Collectors.toList()));
     }
 
     void superShow() {
         super.show();
     }
 
-    private String extractItemDefinitionName(final String value) {
-        final QName qName = qNameConverter.toModelValue(value);
-        return qName.getLocalPart();
-    }
-
     public interface View extends Elemental2Modal.View<DataTypeModal> {
 
-        void setup(final DataTypeTreeGrid treeGrid);
+        void setup(final DataTypeList treeGrid);
     }
 }

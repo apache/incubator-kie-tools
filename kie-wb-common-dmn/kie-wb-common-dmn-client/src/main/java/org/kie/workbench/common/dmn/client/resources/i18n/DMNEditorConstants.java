@@ -156,10 +156,4 @@ public class DMNEditorConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String DataTypeSelectView_CustomTitle = "DataTypeSelectView.CustomTitle";
-
-    @TranslationKey(defaultValue = "")
-    public static final String DataTypeTreeGridView_AttributeTooltip = "DataTypeTreeGridView.AttributeTooltip";
-
-    @TranslationKey(defaultValue = "")
-    public static final String DataTypeTreeGridView_TypeTooltip = "DataTypeTreeGridView.TypeTooltip";
 }

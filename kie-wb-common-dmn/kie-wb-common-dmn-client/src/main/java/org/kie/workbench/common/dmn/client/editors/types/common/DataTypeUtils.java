@@ -16,8 +16,10 @@
 
 package org.kie.workbench.common.dmn.client.editors.types.common;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -36,17 +38,21 @@ public class DataTypeUtils {
 
     private final DMNGraphUtils dmnGraphUtils;
 
+    private final ItemDefinitionUtils itemDefinitionUtils;
+
     @Inject
     public DataTypeUtils(final DataTypeFactory dataTypeFactory,
-                         final DMNGraphUtils dmnGraphUtils) {
+                         final DMNGraphUtils dmnGraphUtils,
+                         final ItemDefinitionUtils itemDefinitionUtils) {
         this.dataTypeFactory = dataTypeFactory;
         this.dmnGraphUtils = dmnGraphUtils;
+        this.itemDefinitionUtils = itemDefinitionUtils;
     }
 
     public List<DataType> defaultDataTypes() {
         return Stream
                 .of(BuiltInType.values())
-                .map(dataTypeFactory::makeDataType)
+                .map(dataTypeFactory::makeDefaultDataType)
                 .sorted(Comparator.comparing(DataType::getType))
                 .collect(Collectors.toList());
     }
@@ -57,8 +63,25 @@ public class DataTypeUtils {
 
         return getItemDefinition
                 .stream()
-                .map(dataTypeFactory::makeDataType)
+                .map(dataTypeFactory::makeStandardDataType)
                 .sorted(Comparator.comparing(DataType::getName))
                 .collect(Collectors.toList());
+    }
+
+    public List<DataType> externalDataTypes(final DataType parent,
+                                            final String typeName) {
+
+        final Optional<ItemDefinition> existingItemDefinition = itemDefinitionUtils.findByName(typeName);
+
+        if (existingItemDefinition.isPresent()) {
+            return existingItemDefinition
+                    .get()
+                    .getItemComponent()
+                    .stream()
+                    .map((ItemDefinition item) -> dataTypeFactory.makeExternalDataType(parent.getUUID(), item))
+                    .collect(Collectors.toList());
+        } else {
+            return new ArrayList<>();
+        }
     }
 }

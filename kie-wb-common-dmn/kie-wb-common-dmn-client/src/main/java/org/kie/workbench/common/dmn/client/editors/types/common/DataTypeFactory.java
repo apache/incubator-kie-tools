@@ -32,6 +32,10 @@ import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.kie.workbench.common.dmn.client.editors.types.DataType;
+import org.kie.workbench.common.dmn.client.editors.types.persistence.DataTypeStore;
+import org.kie.workbench.common.dmn.client.editors.types.persistence.ItemDefinitionRecordEngine;
+import org.kie.workbench.common.dmn.client.editors.types.persistence.ItemDefinitionStore;
+import org.uberfire.commons.uuid.UUID;
 
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeFactory_None;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeFactory_Structure;
@@ -39,41 +43,68 @@ import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConsta
 @Dependent
 public class DataTypeFactory {
 
+    private static final String ROOT_UUID = "";
+
     private final ItemDefinitionUtils itemDefinitionUtils;
 
     private final TranslationService translationService;
 
+    private final ItemDefinitionRecordEngine recordEngine;
+
+    private final ItemDefinitionStore itemDefinitionStore;
+
+    private final DataTypeStore dataTypeStore;
+
     @Inject
     public DataTypeFactory(final ItemDefinitionUtils itemDefinitionUtils,
-                           final TranslationService translationService) {
+                           final TranslationService translationService,
+                           final ItemDefinitionRecordEngine recordEngine,
+                           final ItemDefinitionStore itemDefinitionStore,
+                           final DataTypeStore dataTypeStore) {
         this.itemDefinitionUtils = itemDefinitionUtils;
         this.translationService = translationService;
+        this.recordEngine = recordEngine;
+        this.itemDefinitionStore = itemDefinitionStore;
+        this.dataTypeStore = dataTypeStore;
     }
 
-    public DataType makeDataType(final ItemDefinition itemDefinition) {
-        return new DataType(extractName(itemDefinition),
-                            extractType(itemDefinition),
-                            extractSubDataTypes(itemDefinition),
-                            isBasic(itemDefinition),
-                            false,
-                            isDefault(extractType(itemDefinition)));
+    public DataType makeStandardDataType(final ItemDefinition itemDefinition) {
+        final boolean isExternal = false;
+        return makeDataType(ROOT_UUID, itemDefinition, isExternal);
     }
 
-    DataType makeDataType(final BuiltInType builtInType) {
-        return new DataType(none(),
-                            builtInType.getName(),
-                            new ArrayList<>(),
-                            false,
-                            false,
-                            true);
+    public DataType makeStandardDataType(final String parentUUID,
+                                         final ItemDefinition itemDefinition) {
+        final boolean isExternal = false;
+        return makeDataType(parentUUID, itemDefinition, isExternal);
     }
 
-    private DataType makeExternalDataType(final ItemDefinition itemDefinition) {
-        return new DataType(extractName(itemDefinition),
-                            extractType(itemDefinition),
-                            extractSubDataTypes(itemDefinition), isBasic(itemDefinition),
-                            true,
-                            isDefault(extractType(itemDefinition)));
+    public DataType makeExternalDataType(final String parentUUID,
+                                         final ItemDefinition itemDefinition) {
+        final boolean isExternal = true;
+        return makeDataType(parentUUID, itemDefinition, isExternal);
+    }
+
+    public DataType makeDefaultDataType(final BuiltInType builtInType) {
+        return new DataType(none(), builtInType.getName());
+    }
+
+    private DataType makeDataType(final String parentUUID,
+                                  final ItemDefinition itemDefinition,
+                                  final boolean isExternal) {
+
+        final String uuid = UUID.uuid();
+        final String name = extractName(itemDefinition);
+        final String type = extractType(itemDefinition);
+        final List<DataType> subTypes = extractSubDataTypes(uuid, itemDefinition);
+        final boolean isBasic = isBasic(itemDefinition);
+        final boolean isDefault = isDefault(itemDefinition);
+        final DataType dataType = new DataType(uuid, parentUUID, name, type, subTypes, isBasic, isExternal, isDefault, recordEngine);
+
+        itemDefinitionStore.index(dataType.getUUID(), itemDefinition);
+        dataTypeStore.index(dataType.getUUID(), dataType);
+
+        return dataType;
     }
 
     private String extractName(final ItemDefinition itemDefinition) {
@@ -90,13 +121,15 @@ public class DataTypeFactory {
         return Optional.ofNullable(itemDefinition.getTypeRef()).isPresent();
     }
 
-    public boolean isDefault(final String type) {
+    public boolean isDefault(final ItemDefinition itemDefinition) {
+        final String type = extractType(itemDefinition);
         return Stream
                 .of(BuiltInType.values())
                 .anyMatch(dataType -> Objects.equals(dataType.getName(), type));
     }
 
-    private List<DataType> extractSubDataTypes(final ItemDefinition itemDefinition) {
+    private List<DataType> extractSubDataTypes(final String patternUUID,
+                                               final ItemDefinition itemDefinition) {
 
         final List<ItemDefinition> itemComponent = itemDefinition.getItemComponent();
         final Optional<ItemDefinition> existingItemDefinition = findItemDefinition(itemDefinition);
@@ -108,7 +141,7 @@ public class DataTypeFactory {
                         .get()
                         .getItemComponent()
                         .stream()
-                        .map(this::makeExternalDataType)
+                        .map(item -> makeExternalDataType(patternUUID, item))
                         .collect(Collectors.toList());
             } else {
                 return new ArrayList<>();
@@ -116,7 +149,7 @@ public class DataTypeFactory {
         } else {
             return itemComponent
                     .stream()
-                    .map(this::makeDataType)
+                    .map(definition -> makeStandardDataType(patternUUID, definition))
                     .collect(Collectors.toList());
         }
     }

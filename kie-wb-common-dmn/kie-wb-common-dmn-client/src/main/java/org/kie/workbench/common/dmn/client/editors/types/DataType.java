@@ -16,51 +16,86 @@
 
 package org.kie.workbench.common.dmn.client.editors.types;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.kie.workbench.common.dmn.client.editors.types.persistence.ActiveRecord;
+import org.kie.workbench.common.dmn.client.editors.types.persistence.RecordEngine;
 import org.uberfire.commons.uuid.UUID;
 
-public class DataType {
+public class DataType extends ActiveRecord<DataType> {
 
-    private final String uuid;
+    private String uuid;
 
-    private final String name;
+    private String parentUUID;
 
-    private final String type;
+    private String name;
 
-    private final List<DataType> subDataTypes;
+    private String type;
 
-    private final boolean isBasic;
+    private List<DataType> subDataTypes;
 
-    private final boolean isExternal;
+    private boolean isBasic;
 
-    private final boolean isDefault;
+    private boolean isExternal;
 
-    public DataType(final String name,
+    private boolean isDefault;
+
+    public DataType(final String uuid,
+                    final String parentUUID,
+                    final String name,
                     final String type,
                     final List<DataType> subDataTypes,
                     final boolean isBasic,
                     final boolean isExternal,
-                    final boolean isDefault) {
+                    final boolean isDefault,
+                    final RecordEngine<DataType> recordEngine) {
+        super(recordEngine);
+
+        this.uuid = uuid;
+        this.parentUUID = parentUUID;
+        this.name = name;
+        this.type = type;
+        this.subDataTypes = subDataTypes;
+        this.isBasic = isBasic;
+        this.isExternal = isExternal;
+        this.isDefault = isDefault;
+    }
+
+    public DataType(final String name,
+                    final String type) {
+
         this.uuid = UUID.uuid();
         this.name = name;
         this.type = type;
-        this.isBasic = isBasic;
-        this.subDataTypes = subDataTypes;
-        this.isExternal = isExternal;
-        this.isDefault = isDefault;
+        this.subDataTypes = new ArrayList<>();
+        this.isBasic = false;
+        this.isExternal = false;
+        this.isDefault = true;
     }
 
     public String getUUID() {
         return uuid;
     }
 
+    public String getParentUUID() {
+        return parentUUID;
+    }
+
     public String getName() {
         return name;
     }
 
+    public void setName(final String name) {
+        this.name = name;
+    }
+
     public String getType() {
         return type;
+    }
+
+    public void setType(final String type) {
+        this.type = type;
     }
 
     public List<DataType> getSubDataTypes() {
@@ -71,8 +106,16 @@ public class DataType {
         return isBasic;
     }
 
+    public void setBasic(final boolean isBasic) {
+        this.isBasic = isBasic;
+    }
+
     public boolean isDefault() {
         return isDefault;
+    }
+
+    public void setDefault(final boolean isDefault) {
+        this.isDefault = isDefault;
     }
 
     public boolean isExternal() {
@@ -81,5 +124,10 @@ public class DataType {
 
     public boolean hasSubDataTypes() {
         return !subDataTypes.isEmpty();
+    }
+
+    @Override
+    protected DataType getRecord() {
+        return this;
     }
 }

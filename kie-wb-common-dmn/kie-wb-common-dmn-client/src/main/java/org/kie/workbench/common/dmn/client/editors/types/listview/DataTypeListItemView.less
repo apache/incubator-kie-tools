@@ -1,0 +1,96 @@
+/*
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+[data-i18n-prefix="DataTypeListView."] {
+  .list-group-item:hover {
+    background: #eff8ff;
+  }
+
+  .list-group-item {
+    border-color: #e2e4e3;
+    height: 50px;
+    padding: 0;
+  }
+
+  [data-field="arrow-button"] {
+    cursor: pointer;
+  }
+
+  .data-type-icon {
+    border: 2px solid #39a5dc;
+    font-size: 1.3em;
+    height: 30px;
+    line-height: 30px;
+    width: 30px;
+    border-radius: 50%;
+    padding-left: 4px;
+    margin-left: 20px;
+    position: relative;
+  }
+
+  .data-type-icon:before {
+    top: -1px;
+    color: #adadad;
+    position: absolute;
+  }
+
+  .fa-caret-right:before,
+  .fa-caret-down:before {
+    font-size: 1.4em;
+    top: 15px;
+    position: absolute;
+  }
+
+  .list-view-pf-actions button:hover,
+  .list-view-pf-actions .dropdown-kebab-pf .btn.btn-link.dropdown-toggle {
+    outline: none;
+  }
+
+  .list-view-pf-main-info {
+    padding-top: 8px;
+
+    [data-field="level"] {
+      height: 32px;
+    }
+
+    [data-field="arrow-button"] {
+      margin-left: -20px;
+      width: 55px;
+      display: inline-block
+    }
+  }
+
+  .list-view-pf-actions {
+    float: right;
+    padding: 10px;
+    margin: 0;
+  }
+
+  .name-text {
+    font-weight: bold;
+    padding: 0 5px;
+  }
+
+  .focused-data-type {
+    background: #eff8ff;
+  }
+
+  .close-button {
+    background: none;
+    box-shadow: none;
+    border: none;
+  }
+}

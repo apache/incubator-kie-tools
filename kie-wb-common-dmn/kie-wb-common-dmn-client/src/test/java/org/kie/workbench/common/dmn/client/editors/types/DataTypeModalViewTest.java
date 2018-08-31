@@ -20,7 +20,7 @@ import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.dmn.client.editors.types.treegrid.DataTypeTreeGrid;
+import org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeList;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -41,7 +41,7 @@ public class DataTypeModalViewTest {
     private HTMLDivElement footer;
 
     @Mock
-    private DataTypeTreeGrid treeGrid;
+    private DataTypeList treeGrid;
 
     @Test
     public void testSetup() {

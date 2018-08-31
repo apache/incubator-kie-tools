@@ -312,13 +312,10 @@ public class DataTypePickerWidgetTest {
     @Test
     public void testOnClickTypeButton() {
 
-        final String value = "value";
         final ClickEvent clickEvent = mock(ClickEvent.class);
-
-        when(typeSelector.getValue()).thenReturn(value);
 
         picker.onClickTypeButton(clickEvent);
 
-        verify(dataTypeModal).show(value);
+        verify(dataTypeModal).show();
     }
 }

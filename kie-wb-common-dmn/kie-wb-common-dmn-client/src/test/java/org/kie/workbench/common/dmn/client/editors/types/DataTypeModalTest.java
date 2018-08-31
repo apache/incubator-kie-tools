@@ -16,23 +16,31 @@
 
 package org.kie.workbench.common.dmn.client.editors.types;
 
-import java.util.Optional;
+import java.util.List;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
-import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeFactory;
 import org.kie.workbench.common.dmn.client.editors.types.common.ItemDefinitionUtils;
-import org.kie.workbench.common.dmn.client.editors.types.treegrid.DataTypeTreeGrid;
+import org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeList;
+import org.kie.workbench.common.dmn.client.editors.types.persistence.DataTypeStore;
+import org.kie.workbench.common.dmn.client.editors.types.persistence.ItemDefinitionStore;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.InOrder;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 
-import static org.mockito.Matchers.any;
+import static java.util.Arrays.asList;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -44,7 +52,7 @@ public class DataTypeModalTest {
     private DataTypeModal.View view;
 
     @Mock
-    private DataTypeTreeGrid treeGrid;
+    private DataTypeList treeList;
 
     @Mock
     private ItemDefinitionUtils itemDefinitionUtils;
@@ -53,13 +61,19 @@ public class DataTypeModalTest {
     private DataTypeFactory dataTypeFactory;
 
     @Mock
-    private QNameConverter qNameConverter;
+    private ItemDefinitionStore definitionStore;
 
-    private DataTypeModal modal;
+    @Mock
+    private DataTypeStore dataTypeStore;
+
+    @Captor
+    private ArgumentCaptor<List<DataType>> dataTypesCaptor;
+
+    private FakeDataTypeModal modal;
 
     @Before
     public void setup() {
-        modal = spy(new DataTypeModal(view, treeGrid, itemDefinitionUtils, dataTypeFactory, qNameConverter));
+        modal = spy(new FakeDataTypeModal());
 
         doNothing().when(modal).superSetup();
         doNothing().when(modal).superShow();
@@ -67,44 +81,83 @@ public class DataTypeModalTest {
 
     @Test
     public void testSetup() {
+
+        final String expectedWidgetWidth = "800px";
+
         modal.setup();
-        verify(view).setup(treeGrid);
+
+        verify(modal).setWidth(eq(expectedWidgetWidth));
+        verify(view).setup(treeList);
     }
 
     @Test
-    public void testShowWhenItemDefinitionIsPresent() {
+    public void testShow() {
 
-        final String selectedType = "item";
-        final String selectedValue = "[][item][]";
-        final QName qName = mock(QName.class);
+        modal.show();
+
+        final InOrder inOrder = Mockito.inOrder(modal);
+
+        inOrder.verify(modal).cleanDataTypeStore();
+        inOrder.verify(modal).loadDataTypes();
+        inOrder.verify(modal).superShow();
+    }
+
+    @Test
+    public void testCleanDataTypeStore() {
+        modal.cleanDataTypeStore();
+
+        verify(definitionStore).clear();
+        verify(dataTypeStore).clear();
+    }
+
+    @Test
+    public void testLoadDataTypes() {
+
+        final ItemDefinition itemDefinition1 = makeItem("itemDefinition1");
+        final ItemDefinition itemDefinition2 = makeItem("itemDefinition2");
+        final ItemDefinition itemDefinition3 = makeItem("itemDefinition3");
+        final DataType dataType1 = mock(DataType.class);
+        final DataType dataType2 = mock(DataType.class);
+        final DataType dataType3 = mock(DataType.class);
+
+        final List<ItemDefinition> itemDefinitions = asList(itemDefinition1, itemDefinition2, itemDefinition3);
+
+        when(itemDefinitionUtils.all()).thenReturn(itemDefinitions);
+        doReturn(dataType1).when(dataTypeFactory).makeStandardDataType(itemDefinition1);
+        doReturn(dataType2).when(dataTypeFactory).makeStandardDataType(itemDefinition2);
+        doReturn(dataType3).when(dataTypeFactory).makeStandardDataType(itemDefinition3);
+
+        modal.loadDataTypes();
+
+        verify(treeList).setupItems(dataTypesCaptor.capture());
+
+        final List<DataType> dataTypes = dataTypesCaptor.getValue();
+
+        assertEquals(3, dataTypes.size());
+        assertEquals(dataType1, dataTypes.get(0));
+        assertEquals(dataType2, dataTypes.get(1));
+        assertEquals(dataType3, dataTypes.get(2));
+    }
+
+    private ItemDefinition makeItem(final String itemName) {
         final ItemDefinition itemDefinition = mock(ItemDefinition.class);
-        final DataType dataType = mock(DataType.class);
+        final Name name = mock(Name.class);
 
-        when(dataTypeFactory.makeDataType(itemDefinition)).thenReturn(dataType);
-        when(itemDefinitionUtils.findByName(selectedType)).thenReturn(Optional.of(itemDefinition));
-        when(qNameConverter.toModelValue(selectedValue)).thenReturn(qName);
-        when(qName.getLocalPart()).thenReturn(selectedType);
+        when(name.getValue()).thenReturn(itemName);
+        when(itemDefinition.getName()).thenReturn(name);
 
-        modal.show(selectedValue);
-
-        verify(treeGrid).setupItems(dataType);
-        verify(modal).superShow();
+        return itemDefinition;
     }
 
-    @Test
-    public void testShowWhenItemDefinitionIsNotPresent() {
+    class FakeDataTypeModal extends DataTypeModal {
 
-        final String selectedType = "item";
-        final String selectedValue = "[][item][]";
-        final QName qName = mock(QName.class);
+        public FakeDataTypeModal() {
+            super(view, treeList, itemDefinitionUtils, dataTypeFactory, definitionStore, dataTypeStore);
+        }
 
-        when(itemDefinitionUtils.findByName(selectedType)).thenReturn(Optional.empty());
-        when(qNameConverter.toModelValue(selectedValue)).thenReturn(qName);
-        when(qName.getLocalPart()).thenReturn(selectedType);
-
-        modal.show(selectedValue);
-
-        verify(treeGrid, never()).setupItems(any());
-        verify(modal, never()).superShow();
+        @Override
+        protected void setWidth(final String width) {
+            // Nothing.
+        }
     }
 }

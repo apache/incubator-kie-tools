@@ -23,7 +23,7 @@ import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.kie.workbench.common.dmn.client.editors.types.treegrid.DataTypeTreeGrid;
+import org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeList;
 
 @Templated
 @ApplicationScoped
@@ -55,7 +55,7 @@ public class DataTypeModalView implements DataTypeModal.View {
     }
 
     @Override
-    public void setup(final DataTypeTreeGrid treeGrid) {
+    public void setup(final DataTypeList treeGrid) {
         body.appendChild(treeGrid.getElement());
     }
 

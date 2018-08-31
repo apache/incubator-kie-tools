@@ -13,15 +13,16 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
 <div>
-    <div data-field="view">
-        <div data-field="header" data-i18n-key="Header"></div>
-
-        <div data-field="body">
-        </div>
-
-        <div data-field="footer">
-        </div>
-    </div>
+    <div data-field="type-text"></div>
+    <select data-field="type-select" class="selectpicker">
+        <optgroup data-field="type-select-optgroup">
+            <option data-field="type-select-option"></option>
+        </optgroup>
+        <optgroup data-field="type-select-structure-optgroup">
+            <option class="option-structure fa fa-object-group" value="Structure">
+                Structure
+            </option>
+        </optgroup>
+    </select>
 </div>

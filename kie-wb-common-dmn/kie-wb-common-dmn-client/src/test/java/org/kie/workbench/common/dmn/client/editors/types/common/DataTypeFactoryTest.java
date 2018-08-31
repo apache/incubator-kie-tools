@@ -31,6 +31,9 @@ import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.kie.workbench.common.dmn.client.editors.types.DataType;
+import org.kie.workbench.common.dmn.client.editors.types.persistence.DataTypeStore;
+import org.kie.workbench.common.dmn.client.editors.types.persistence.ItemDefinitionRecordEngine;
+import org.kie.workbench.common.dmn.client.editors.types.persistence.ItemDefinitionStore;
 import org.mockito.Mock;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -39,12 +42,14 @@ import org.uberfire.commons.uuid.UUID;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeFactory_None;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeFactory_Structure;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
@@ -58,6 +63,15 @@ public class DataTypeFactoryTest {
     @Mock
     private TranslationService translationService;
 
+    @Mock
+    private ItemDefinitionRecordEngine recordEngine;
+
+    @Mock
+    private ItemDefinitionStore itemDefinitionStore;
+
+    @Mock
+    private DataTypeStore dataTypeStore;
+
     private DataTypeFactory factory;
 
     @Before
@@ -68,7 +82,7 @@ public class DataTypeFactoryTest {
         when(translationService.format(DataTypeFactory_None)).thenReturn("--");
         when(translationService.format(DataTypeFactory_Structure)).thenReturn("(Structure)");
 
-        factory = new DataTypeFactory(itemDefinitionUtils, translationService);
+        factory = new DataTypeFactory(itemDefinitionUtils, translationService, recordEngine, itemDefinitionStore, dataTypeStore);
     }
 
     @Test
@@ -97,7 +111,7 @@ public class DataTypeFactoryTest {
         when(itemDefinitionUtils.findByName(any())).thenReturn(Optional.empty());
         when(itemDefinitionUtils.findByName(eq("tAddress"))).thenReturn(Optional.of(existingDataTypeWithFields));
 
-        final DataType tPerson = factory.makeDataType(mainDataType);
+        final DataType tPerson = factory.makeStandardDataType(mainDataType);
 
         assertEquals("uuid", tPerson.getUUID());
         assertEquals("tPerson", tPerson.getName());
@@ -114,9 +128,22 @@ public class DataTypeFactoryTest {
         final DataType employee = tPerson.getSubDataTypes().get(2);
         final DataType company = employee.getSubDataTypes().get(0);
 
+        verify(itemDefinitionStore).index(tPerson.getUUID(), mainDataType);
+        verify(itemDefinitionStore).index(address.getUUID(), existingDataType);
+        verify(itemDefinitionStore).index(street.getUUID(), simpleDataTypeFromExistingDataTye);
+        verify(itemDefinitionStore).index(employee.getUUID(), structureDataType);
+        verify(itemDefinitionStore).index(company.getUUID(), simpleDataTypeFromStructureDataType);
+
+        verify(dataTypeStore).index(tPerson.getUUID(), tPerson);
+        verify(dataTypeStore).index(address.getUUID(), address);
+        verify(dataTypeStore).index(street.getUUID(), street);
+        verify(dataTypeStore).index(employee.getUUID(), employee);
+        verify(dataTypeStore).index(company.getUUID(), company);
+
         assertEquals("uuid", name.getUUID());
         assertEquals("name", name.getName());
         assertEquals("Text", name.getType());
+        assertSame(tPerson.getUUID(), name.getParentUUID());
         assertEquals(0, name.getSubDataTypes().size());
         assertTrue(name.isBasic());
         assertFalse(name.hasSubDataTypes());
@@ -126,6 +153,7 @@ public class DataTypeFactoryTest {
         assertEquals("uuid", address.getUUID());
         assertEquals("address", address.getName());
         assertEquals("tAddress", address.getType());
+        assertSame(tPerson.getUUID(), address.getParentUUID());
         assertEquals(1, address.getSubDataTypes().size());
         assertTrue(address.isBasic());
         assertTrue(address.hasSubDataTypes());
@@ -135,6 +163,7 @@ public class DataTypeFactoryTest {
         assertEquals("uuid", street.getUUID());
         assertEquals("street", street.getName());
         assertEquals("Text", street.getType());
+        assertSame(address.getUUID(), street.getParentUUID());
         assertEquals(0, street.getSubDataTypes().size());
         assertTrue(street.isBasic());
         assertFalse(street.hasSubDataTypes());
@@ -144,6 +173,7 @@ public class DataTypeFactoryTest {
         assertEquals("uuid", employee.getUUID());
         assertEquals("employee", employee.getName());
         assertEquals("(Structure)", employee.getType());
+        assertSame(tPerson.getUUID(), address.getParentUUID());
         assertEquals(1, employee.getSubDataTypes().size());
         assertFalse(employee.isBasic());
         assertTrue(employee.hasSubDataTypes());
@@ -153,6 +183,7 @@ public class DataTypeFactoryTest {
         assertEquals("uuid", company.getUUID());
         assertEquals("company", company.getName());
         assertEquals("Text", company.getType());
+        assertSame(employee.getUUID(), company.getParentUUID());
         assertEquals(0, company.getSubDataTypes().size());
         assertTrue(company.isBasic());
         assertFalse(company.hasSubDataTypes());
@@ -164,7 +195,7 @@ public class DataTypeFactoryTest {
     public void testMakeDataTypeFromBuiltInType() {
 
         final BuiltInType builtInType = BuiltInType.values()[0];
-        final DataType dataType = factory.makeDataType(builtInType);
+        final DataType dataType = factory.makeDefaultDataType(builtInType);
 
         assertEquals("uuid", dataType.getUUID());
         assertEquals("--", dataType.getName());
@@ -178,17 +209,20 @@ public class DataTypeFactoryTest {
 
     @Test
     public void testIsDefaultNull() {
-        assertFalse(factory.isDefault(null));
+        final ItemDefinition itemDefinition = makeItem("level", null);
+        assertFalse(factory.isDefault(itemDefinition));
     }
 
     @Test
     public void testIsDefaultUnknown() {
-        assertFalse(factory.isDefault("unknown"));
+        final ItemDefinition itemDefinition = makeItem("level", "unknown");
+        assertFalse(factory.isDefault(itemDefinition));
     }
 
     @Test
     public void testIsDefault() {
-        assertTrue(factory.isDefault(BuiltInType.ANY.getName()));
+        final ItemDefinition itemDefinition = makeItem("name", BuiltInType.ANY.getName());
+        assertTrue(factory.isDefault(itemDefinition));
     }
 
     private ItemDefinition makeItem(final String itemName,

@@ -36,12 +36,13 @@ public class ItemDefinitionUtils {
     }
 
     public Optional<ItemDefinition> findByName(final String name) {
-
-        final List<ItemDefinition> getItemDefinition = dmnGraphUtils.getDefinitions().getItemDefinition();
-
-        return getItemDefinition
+        return all()
                 .stream()
                 .filter(itemDefinition -> itemDefinition.getName().getValue().equals(name))
                 .findFirst();
+    }
+
+    public List<ItemDefinition> all() {
+        return dmnGraphUtils.getDefinitions().getItemDefinition();
     }
 }

@@ -159,8 +159,7 @@ public class DataTypePickerWidget extends Composite implements HasValue<QName>,
     @EventHandler("typeButton")
     @SuppressWarnings("unused")
     public void onClickTypeButton(final ClickEvent clickEvent) {
-        final String value = typeSelector.getValue();
-        dataTypeModal.show(value);
+        dataTypeModal.show();
     }
 
     @Override
