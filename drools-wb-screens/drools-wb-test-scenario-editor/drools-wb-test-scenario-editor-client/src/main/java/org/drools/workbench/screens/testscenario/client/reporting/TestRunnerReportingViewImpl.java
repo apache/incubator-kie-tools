@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,120 +20,130 @@ import java.util.Date;
 
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Widget;
+import elemental2.dom.HTMLDivElement;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.drools.workbench.screens.testscenario.client.service.TestRuntimeReportingService;
 import org.guvnor.common.services.shared.message.Level;
 import org.guvnor.common.services.shared.test.Failure;
 import org.guvnor.messageconsole.client.console.widget.MessageTableWidget;
-import org.gwtbootstrap3.client.ui.Label;
-import org.gwtbootstrap3.client.ui.Row;
 import org.gwtbootstrap3.client.ui.constants.ColumnSize;
+import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
+import org.jboss.errai.common.client.ui.ElementWrapperWidget;
+import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.jboss.errai.ui.shared.api.annotations.Templated;
 
+@Templated
 public class TestRunnerReportingViewImpl
-        extends Composite
         implements TestRunnerReportingView {
 
-    private static Binder uiBinder = GWT.create( Binder.class );
     private Presenter presenter;
 
-    interface Binder extends UiBinder<Widget, TestRunnerReportingViewImpl> {
+    @DataField
+    private HTMLDivElement resultPanel;
 
-    }
+    @DataField
+    private HTMLDivElement resultTitle;
 
-    @UiField
-    Row dataGridHost;
+    @DataField
+    private HTMLDivElement resultStats;
 
-    @UiField
-    Label successPanel;
-
-    @UiField
-    Label failurePanel;
-
-    @UiField
-    InlineLabel stats;
+    @DataField
+    private HTMLDivElement resultDetails;
 
     protected final MessageTableWidget<Failure> dataGrid = new MessageTableWidget<Failure>() {{
-        setToolBarVisible( false );
+        setToolBarVisible(false);
     }};
 
     @Inject
-    public TestRunnerReportingViewImpl() {
-        initWidget( uiBinder.createAndBindUi( this ) );
+    public TestRunnerReportingViewImpl(HTMLDivElement resultPanel,
+                                       HTMLDivElement resultTitle,
+                                       HTMLDivElement resultStats,
+                                       HTMLDivElement resultDetails,
+                                       Elemental2DomUtil domUtils) {
+        this.resultPanel = resultPanel;
+        this.resultTitle = resultTitle;
+        this.resultStats = resultStats;
+        this.resultDetails = resultDetails;
 
-        dataGridHost.add( dataGrid );
+        domUtils.appendWidgetToElement(resultDetails,
+                                       dataGrid);
 
         addSuccessColumn();
         addTextColumn();
 
-        dataGrid.addStyleName( ColumnSize.MD_12.getCssName() );
+        dataGrid.addStyleName(ColumnSize.MD_12.getCssName());
     }
 
     private void addSuccessColumn() {
-        dataGrid.addLevelColumn( 10, new MessageTableWidget.ColumnExtractor<Level>() {
-            @Override
-            public Level getValue( final Object row ) {
-                presenter.onAddingFailure( (Failure) row );
-                return Level.ERROR;
-            }
-        } );
+        dataGrid.addLevelColumn(10,
+                                new MessageTableWidget.ColumnExtractor<Level>() {
+                                    @Override
+                                    public Level getValue(final Object row) {
+                                        presenter.onAddingFailure((Failure) row);
+                                        return Level.ERROR;
+                                    }
+                                });
     }
 
     private void addTextColumn() {
-        dataGrid.addTextColumn( 90, new MessageTableWidget.ColumnExtractor<String>() {
-            @Override
-            public String getValue( final Object row ) {
+        dataGrid.addTextColumn(90,
+                               new MessageTableWidget.ColumnExtractor<String>() {
+                                   @Override
+                                   public String getValue(final Object row) {
 
-                return makeMessage( (Failure) row );
-            }
-        } );
+                                       return makeMessage((Failure) row);
+                                   }
+                               });
     }
 
-    private String makeMessage( Failure failure ) {
+    private String makeMessage(Failure failure) {
         final String displayName = failure.getDisplayName();
         final String message = failure.getMessage();
-        return displayName + ( !( message == null || message.isEmpty() ) ? " : " + message : "" );
+        return displayName + (!(message == null || message.isEmpty()) ? " : " + message : "");
     }
 
     @Override
-    public void setPresenter( Presenter presenter ) {
+    public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
     }
 
     @Override
-    public void bindDataGridToService( TestRuntimeReportingService testRuntimeReportingService ) {
-        testRuntimeReportingService.addDataDisplay( dataGrid );
+    public void bindDataGridToService(TestRuntimeReportingService testRuntimeReportingService) {
+        testRuntimeReportingService.addDataDisplay(dataGrid);
     }
 
     @Override
     public void showSuccess() {
-        successPanel.setVisible( true );
-        failurePanel.setVisible( false );
+        resultTitle.textContent = TestScenarioConstants.INSTANCE.Success();
+        resultTitle.className = "label col-md-12 label-success";
     }
 
     @Override
     public void showFailure() {
-        failurePanel.setVisible( true );
-        successPanel.setVisible( false );
+        resultTitle.textContent = TestScenarioConstants.INSTANCE.ThereWereTestFailures();
+        resultTitle.className = "label col-md-12 label-danger";
     }
 
     @Override
-    public void setExplanation( String explanation ) {
+    public void setExplanation(String explanation) {
     }
 
     @Override
-    public void setRunStatus( int runCount,
-                              long runTime ) {
-        Date date = new Date( runTime );
-        DateTimeFormat minutesFormat = DateTimeFormat.getFormat( "m" );
-        DateTimeFormat secondsFormat = DateTimeFormat.getFormat( "s" );
+    public void setRunStatus(int runCount,
+                             long runTime) {
+        Date date = new Date(runTime);
+        DateTimeFormat minutesFormat = DateTimeFormat.getFormat("m");
+        DateTimeFormat secondsFormat = DateTimeFormat.getFormat("s");
 
-        stats.setText( TestScenarioConstants.INSTANCE.XTestsRanInYMinutesZSeconds( runCount, minutesFormat.format( date ), secondsFormat.format( date ) ) );
+        resultStats.textContent = TestScenarioConstants.INSTANCE.XTestsRanInYMinutesZSeconds(runCount,
+                                                                                             minutesFormat.format(date),
+                                                                                             secondsFormat.format(date));
+    }
+
+    @Override
+    public Widget asWidget() {
+        return ElementWrapperWidget.getWidget(resultPanel);
     }
 }

@@ -18,6 +18,7 @@ package org.drools.workbench.screens.testscenario.client.reporting;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
+
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Widget;
