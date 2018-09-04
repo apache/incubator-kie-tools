@@ -40,6 +40,7 @@ import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
+import org.kie.workbench.common.dmn.api.definition.v1_1.Definitions;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
@@ -118,8 +119,24 @@ public class DataTypePickerWidget extends Composite implements HasValue<QName>,
     Optional<Option> makeTypeSelector(final BuiltInType bit) {
         final Option o = GWT.create(Option.class);
         o.setText(bit.getName());
-        o.setValue(qNameConverter.toWidgetValue(bit.asQName()));
+
+        o.setValue(qNameConverter.toWidgetValue(normaliseBuiltInTypeTypeRef(bit.asQName())));
         return Optional.of(o);
+    }
+
+    QName normaliseBuiltInTypeTypeRef(final QName typeRef) {
+        String namespace = typeRef.getNamespaceURI();
+        String localPart = typeRef.getLocalPart();
+        String prefix = typeRef.getPrefix();
+
+        final Definitions definitions = dmnGraphUtils.getDefinitions();
+        final Optional<String> nsPrefix = definitions == null ? Optional.empty() : definitions.getPrefixForNamespaceURI(namespace);
+        if (nsPrefix.isPresent()) {
+            prefix = nsPrefix.get();
+            namespace = "";
+        }
+
+        return new QName(namespace, localPart, prefix);
     }
 
     private void addItemDefinitions() {

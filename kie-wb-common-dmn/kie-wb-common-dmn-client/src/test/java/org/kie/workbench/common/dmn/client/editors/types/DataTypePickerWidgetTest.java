@@ -33,6 +33,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
+import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase.Namespace;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Definitions;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
@@ -113,6 +114,9 @@ public class DataTypePickerWidgetTest {
     public void setup() {
         this.definitions = new Definitions();
         this.definitions.getItemDefinition().add(new ItemDefinition());
+        this.definitions.getNsContext().put(Namespace.FEEL.getPrefix(),
+                                            Namespace.FEEL.getUri());
+
         this.qNameConverter = spy(new QNameConverter());
 
         when(typeSelector.getElement()).thenReturn(typeSelectorElement);
@@ -212,17 +216,21 @@ public class DataTypePickerWidgetTest {
 
         final ArgumentCaptor<String> optionTextCaptor = ArgumentCaptor.forClass(String.class);
         final ArgumentCaptor<String> optionValueCaptor = ArgumentCaptor.forClass(String.class);
-
-        doReturn(bit.getName()).when(qNameConverter).toWidgetValue(any(QName.class));
+        final ArgumentCaptor<QName> qNameCaptor = ArgumentCaptor.forClass(QName.class);
 
         final Optional<Option> oo = picker.makeTypeSelector(bit);
         verify(option).setText(optionTextCaptor.capture());
         verify(option).setValue(optionValueCaptor.capture());
-        verify(qNameConverter).toWidgetValue(eq(bit.asQName()));
+        verify(qNameConverter).toWidgetValue(qNameCaptor.capture());
+
+        final QName normalisedQName = qNameCaptor.getValue();
+        assertEquals("", normalisedQName.getNamespaceURI());
+        assertEquals(Namespace.FEEL.getPrefix(), normalisedQName.getPrefix());
+        assertEquals(bit.getName(), normalisedQName.getLocalPart());
 
         assertTrue(oo.isPresent());
         assertEquals(bit.getName(), optionTextCaptor.getValue());
-        assertEquals(bit.getName(), optionValueCaptor.getValue());
+        assertEquals("[][any][feel]", optionValueCaptor.getValue());
     }
 
     @Test
