@@ -41,7 +41,7 @@ public class AppendDecisionShortcut extends AbstractAppendNodeShortcut implement
     @Inject
     public AppendDecisionShortcut(final ToolboxDomainLookups toolboxDomainLookups,
                                   final DefinitionsCacheRegistry definitionsCacheRegistry,
-                                  final GeneralCreateNodeAction generalCreateNodeAction) {
+                                  final @DMNEditor GeneralCreateNodeAction generalCreateNodeAction) {
         super(toolboxDomainLookups, definitionsCacheRegistry, generalCreateNodeAction);
     }
 
