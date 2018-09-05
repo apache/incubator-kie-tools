@@ -16,13 +16,14 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.ext;
 
+import java.util.Optional;
+
 import com.ait.lienzo.client.core.shape.AbstractDirectionalMultiPointShape;
 import com.ait.lienzo.client.core.shape.MultiPathDecorator;
 import com.ait.lienzo.client.core.shape.Shape;
-import com.ait.lienzo.client.core.shape.Text;
-import com.ait.lienzo.client.core.shape.wires.LayoutContainer;
-import com.ait.lienzo.client.core.shape.wires.WiresLayoutContainer;
 import com.ait.lienzo.client.core.shape.wires.WiresMagnet;
+import com.ait.lienzo.client.core.shape.wires.util.WiresConnectorLabel;
+import com.ait.lienzo.client.core.shape.wires.util.WiresConnectorLabelFactory;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.ViewEventHandlerManager;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresConnectorView;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasEventHandlers;
@@ -30,7 +31,6 @@ import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEvent;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewHandler;
-import org.uberfire.mvp.Command;
 
 // TODO: (Roger) Refactor use of inner text child as done in WiresShapeViewExt.
 public class WiresConnectorViewExt<T>
@@ -40,8 +40,7 @@ public class WiresConnectorViewExt<T>
         HasEventHandlers<T, Shape<?>> {
 
     protected ViewEventHandlerManager eventHandlerManager;
-    protected Text text;
-    protected WiresLayoutContainer.Layout textPosition;
+    protected Optional<WiresConnectorLabel> label;
     protected double textRotationDegrees;
 
     public WiresConnectorViewExt(final ViewEventType[] supportedEventTypes,
@@ -69,7 +68,7 @@ public class WiresConnectorViewExt<T>
     }
 
     protected void init(final ViewEventType[] supportedEventTypes) {
-        this.textPosition = WiresLayoutContainer.Layout.CENTER;
+        this.label = Optional.empty();
         this.textRotationDegrees = 0;
         this.eventHandlerManager = new ViewEventHandlerManager(getLine().asShape(),
                                                                getLine().asShape(),
@@ -119,11 +118,13 @@ public class WiresConnectorViewExt<T>
     @Override
     @SuppressWarnings("unchecked")
     public T setTitle(final String title) {
-        if (null != text) {
-            text.removeFromParent();
-        }
-        if (null != title) {
-            // TODO
+        if (null == title || title.trim().length() == 0) {
+            destroyLabel();
+        } else {
+            if (!label.isPresent()) {
+                label = Optional.of(createLabel(title));
+            }
+            label.get().configure(text -> text.setText(title));
         }
         return cast();
     }
@@ -131,17 +132,7 @@ public class WiresConnectorViewExt<T>
     @Override
     @SuppressWarnings("unchecked")
     public T setTitlePosition(final Position position) {
-        if (Position.BOTTOM.equals(position)) {
-            this.textPosition = LayoutContainer.Layout.BOTTOM;
-        } else if (Position.TOP.equals(position)) {
-            this.textPosition = LayoutContainer.Layout.TOP;
-        } else if (Position.LEFT.equals(position)) {
-            this.textPosition = LayoutContainer.Layout.LEFT;
-        } else if (Position.RIGHT.equals(position)) {
-            this.textPosition = LayoutContainer.Layout.RIGHT;
-        } else if (Position.CENTER.equals(position)) {
-            this.textPosition = LayoutContainer.Layout.CENTER;
-        }
+        // Do not apply here...
         return cast();
     }
 
@@ -154,19 +145,22 @@ public class WiresConnectorViewExt<T>
 
     @Override
     public T setTitleStrokeColor(final String color) {
-        return updateTextIfAny(() -> text.setStrokeColor(color));
+        label.ifPresent(l -> l.configure(text -> text.setStrokeColor(color)));
+        return cast();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public T setTitleFontFamily(final String fontFamily) {
-        return updateTextIfAny(() -> text.setFontFamily(fontFamily));
+        label.ifPresent(l -> l.configure(text -> text.setFontFamily(fontFamily)));
+        return cast();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public T setTitleFontSize(final double fontSize) {
-        return updateTextIfAny(() -> text.setFontSize(fontSize));
+        label.ifPresent(l -> l.configure(text -> text.setFontSize(fontSize)));
+        return cast();
     }
 
     @Override
@@ -177,19 +171,22 @@ public class WiresConnectorViewExt<T>
     @Override
     @SuppressWarnings("unchecked")
     public T setTitleStrokeWidth(final double strokeWidth) {
-        return updateTextIfAny(() -> text.setStrokeWidth(strokeWidth));
+        label.ifPresent(l -> l.configure(text -> text.setStrokeWidth(strokeWidth)));
+        return cast();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public T moveTitleToTop() {
-        return updateTextIfAny(() -> text.moveToTop());
+        label.ifPresent(l -> l.configure(Shape::moveToTop));
+        return cast();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public T setTitleAlpha(final double alpha) {
-        return updateTextIfAny(() -> text.setAlpha(alpha));
+        label.ifPresent(l -> l.configure(text -> text.setAlpha(alpha)));
+        return cast();
     }
 
     @Override
@@ -200,17 +197,16 @@ public class WiresConnectorViewExt<T>
             eventHandlerManager.destroy();
             eventHandlerManager = null;
         }
-        // Nullify.
-        this.text = null;
-        this.textPosition = null;
+        destroyLabel();
     }
 
-    @SuppressWarnings("unchecked")
-    private T updateTextIfAny(final Command callback) {
-        if (null != text) {
-            callback.execute();
-        }
-        return cast();
+    protected WiresConnectorLabel createLabel(final String title) {
+        return WiresConnectorLabelFactory.newLabelOnFirstSegment(title, this);
+    }
+
+    private void destroyLabel() {
+        this.label.ifPresent(WiresConnectorLabel::destroy);
+        this.label = Optional.empty();
     }
 
     @SuppressWarnings("unchecked")

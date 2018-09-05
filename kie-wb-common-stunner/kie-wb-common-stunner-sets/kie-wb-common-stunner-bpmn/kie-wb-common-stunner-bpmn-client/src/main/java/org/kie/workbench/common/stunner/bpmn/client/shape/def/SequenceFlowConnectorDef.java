@@ -18,7 +18,6 @@ package org.kie.workbench.common.stunner.bpmn.client.shape.def;
 
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNGlyphFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.SequenceFlow;
-import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.client.shape.view.handler.FontHandler;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
@@ -28,10 +27,20 @@ public final class SequenceFlowConnectorDef
         implements BPMNShapeDef<SequenceFlow, ShapeView>,
                    ConnectorShapeDef<SequenceFlow, ShapeView> {
 
+    private static final String FONT_FAMILY = "Open Sans";
+    private static final String FONT_COLOR = "#000000";
+    private static final String FONT_STROKE_COLOR = "#393f44";
+    private static final double FONT_SIZE = 10d;
+    private static final double STROKE_SIZE = 0.5d;
+
     @Override
     public FontHandler<SequenceFlow, ShapeView> newFontHandler() {
         return newFontHandlerBuilder()
-                .positon(c -> HasTitle.Position.BOTTOM)
+                .fontFamily(c -> FONT_FAMILY)
+                .fontSize(c -> FONT_SIZE)
+                .fontColor(c -> FONT_COLOR)
+                .strokeColor(c -> FONT_STROKE_COLOR)
+                .strokeSize(c -> STROKE_SIZE)
                 .build();
     }
 
