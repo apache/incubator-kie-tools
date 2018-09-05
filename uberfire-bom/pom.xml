@@ -23,7 +23,7 @@
     <groupId>org.jboss.integration-platform</groupId>
     <artifactId>jboss-integration-platform-parent</artifactId>
     <!-- Keep in sync with the parent version of ../pom.xml -->
-    <version>8.1.0.CR2</version>
+    <version>8.1.0.Final</version>
     <relativePath/>
   </parent>
 
