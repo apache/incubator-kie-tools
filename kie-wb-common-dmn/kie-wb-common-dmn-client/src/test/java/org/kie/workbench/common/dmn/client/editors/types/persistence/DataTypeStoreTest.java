@@ -57,13 +57,18 @@ public class DataTypeStoreTest {
 
     @Test
     public void testIndex() {
+        // initial state
+        assertEquals(1, store.size());
 
-        final DataType dataType = mock(DataType.class);
-        final String uuid = "789";
+        // index new data type
+        final DataType secondDataType = mock(DataType.class);
+        final String secondUuid = "789";
 
-        store.index(uuid, dataType);
+        store.index(secondUuid, secondDataType);
 
+        assertEquals(2, store.size());
         assertEquals(dataType, store.get(uuid));
+        assertEquals(secondDataType, store.get(secondUuid));
     }
 
     @Test

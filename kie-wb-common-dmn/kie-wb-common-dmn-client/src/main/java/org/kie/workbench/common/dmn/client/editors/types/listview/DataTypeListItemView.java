@@ -52,7 +52,7 @@ public class DataTypeListItemView implements DataTypeListItem.View {
 
     static final String UUID_ATTR = "data-row-uuid";
 
-    private static final String PARENT_UUID_ATTR = "data-parent-row-uuid";
+    static final String PARENT_UUID_ATTR = "data-parent-row-uuid";
 
     private static final int PIXELS_PER_LEVEL = 35;
 

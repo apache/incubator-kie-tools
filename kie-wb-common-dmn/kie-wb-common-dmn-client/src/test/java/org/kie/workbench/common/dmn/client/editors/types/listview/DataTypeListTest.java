@@ -57,12 +57,6 @@ public class DataTypeListTest {
     @Mock
     private DataTypeListItem treeGridItem;
 
-    @Mock
-    private DataTypeListItem.View listItemView;
-
-    @Mock
-    private DataTypeSelect typeSelect;
-
     @Captor
     private ArgumentCaptor<List<DataTypeListItem>> listItemsCaptor;
 

@@ -36,7 +36,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
@@ -133,10 +133,7 @@ public class DataTypeModalTest {
 
         final List<DataType> dataTypes = dataTypesCaptor.getValue();
 
-        assertEquals(3, dataTypes.size());
-        assertEquals(dataType1, dataTypes.get(0));
-        assertEquals(dataType2, dataTypes.get(1));
-        assertEquals(dataType3, dataTypes.get(2));
+        assertThat(dataTypes).containsExactly(dataType1, dataType2, dataType3);
     }
 
     private ItemDefinition makeItem(final String itemName) {

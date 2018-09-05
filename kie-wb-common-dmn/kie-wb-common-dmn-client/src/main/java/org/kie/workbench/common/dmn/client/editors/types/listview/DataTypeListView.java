@@ -33,6 +33,7 @@ import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.dmn.client.editors.types.DataType;
 
+import static org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItemView.PARENT_UUID_ATTR;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItemView.UUID_ATTR;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ElementHelper.insertAfter;
 
@@ -104,7 +105,7 @@ public class DataTypeListView implements DataTypeList.View {
 
     void cleanSubTypes(final String uuid) {
 
-        final String selector = "[data-parent-row-uuid=\"" + uuid + "\"]";
+        final String selector = "[" + PARENT_UUID_ATTR + "=\"" + uuid + "\"]";
         final NodeList<Element> subDataTypeRows = getElement().querySelectorAll(selector);
 
         for (int i = 0; i < subDataTypeRows.length; i++) {
@@ -139,6 +140,6 @@ public class DataTypeListView implements DataTypeList.View {
     }
 
     private Element getDataTypeRow(final DataType dataType) {
-        return getElement().querySelector("[data-row-uuid=\"" + dataType.getUUID() + "\"]");
+        return getElement().querySelector("[" + UUID_ATTR + "=\"" + dataType.getUUID() + "\"]");
     }
 }

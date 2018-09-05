@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.dmn.client.editors.types;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -46,6 +45,7 @@ import org.mockito.Captor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -57,6 +57,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -144,10 +145,12 @@ public class DataTypePickerWidgetTest {
 
     @Test
     public void testSetDMNModel_BasicInitialisation() {
+        reset(typeSelector);
         picker.setDMNModel(dmnModel);
 
         verify(qNameConverter).setDMNModel(eq(dmnModel));
         verify(typeSelector).clear();
+        verify(typeSelector).refresh();
     }
 
     @Test
@@ -158,11 +161,11 @@ public class DataTypePickerWidgetTest {
         verify(picker, times(bits.length)).makeTypeSelector(builtInTypeCaptor.capture());
 
         //Checks all BuiltInTypes were handled by makeTypeSelector(BuiltInType)
-        final List<BuiltInType> builtInTypes = new ArrayList<>(Arrays.asList(bits));
+        final List<BuiltInType> builtInTypes = Arrays.asList(bits);
         assertFalse(builtInTypes.isEmpty());
         final List<BuiltInType> builtInTypesAddedToWidget = builtInTypeCaptor.getAllValues();
-        builtInTypes.removeAll(builtInTypesAddedToWidget);
-        assertTrue(builtInTypes.isEmpty());
+
+        assertThat(builtInTypes).hasSameElementsAs(builtInTypesAddedToWidget);
 
         //Check the items were sorted correctly
         assertTrue(Ordering.from(DataTypePickerWidget.BUILT_IN_TYPE_COMPARATOR).isOrdered(builtInTypesAddedToWidget));

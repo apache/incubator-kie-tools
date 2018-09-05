@@ -35,6 +35,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static java.util.Arrays.asList;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
@@ -136,10 +137,7 @@ public class DataTypeUtilsTest {
 
         final List<DataType> dataTypes = utils.externalDataTypes(parent, type);
 
-        assertEquals(3, dataTypes.size());
-        assertEquals(dataType1, dataTypes.get(0));
-        assertEquals(dataType2, dataTypes.get(1));
-        assertEquals(dataType3, dataTypes.get(2));
+        assertThat(dataTypes).containsExactly(dataType1, dataType2, dataType3);
     }
 
     @Test
