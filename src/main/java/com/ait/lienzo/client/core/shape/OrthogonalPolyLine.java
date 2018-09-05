@@ -785,14 +785,6 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
     }
 
     @Override
-    public OrthogonalPolyLine refresh()
-    {
-        getPathPartList().clear();
-
-        return this;
-    }
-
-    @Override
     protected boolean fill(Context2D context, Attributes attr, double alpha)
     {
         return false;

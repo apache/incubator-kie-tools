@@ -32,7 +32,7 @@ public class WiresConnection extends AbstractControlHandle
 
     private WiresConnector                        m_connector;
 
-    private IDirectionalMultiPointShape<?> m_line;
+    private final IDirectionalMultiPointShape<?> m_line;
 
     private MultiPath                             m_endPath;
 
@@ -54,11 +54,6 @@ public class WiresConnection extends AbstractControlHandle
         m_end = end;
         m_point = (end == ArrowEnd.HEAD) ? m_line.getPoint2DArray().get(0) : m_line.getPoint2DArray().get(m_line.getPoint2DArray().size() - 1);
         m_end = end;
-    }
-
-    public WiresConnection(final boolean active)
-    {
-        setActive(active);
     }
 
     public WiresConnection move(final double x, final double y)
@@ -89,6 +84,7 @@ public class WiresConnection extends AbstractControlHandle
         {
             m_line.getLayer().batch();
         }
+        m_connector.firePointsUpdated();
         return this;
     }
 
@@ -105,11 +101,6 @@ public class WiresConnection extends AbstractControlHandle
     public IDirectionalMultiPointShape<?> getLine()
     {
         return m_line;
-    }
-
-    public void setLine(IDirectionalMultiPointShape<?> line)
-    {
-        m_line = line;
     }
 
     public MultiPath getEndPath()

@@ -150,14 +150,6 @@ public class Polygon extends AbstractMultiPointShape<Polygon>
         return refresh();
     }
 
-    @Override
-    public Polygon refresh()
-    {
-        m_list.clear();
-
-        return this;
-    }
-
     /**
      * Gets this polygon's points.
      * 

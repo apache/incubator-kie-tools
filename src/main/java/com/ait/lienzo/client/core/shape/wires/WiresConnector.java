@@ -19,6 +19,8 @@ package com.ait.lienzo.client.core.shape.wires;
 
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.*;
+import com.ait.lienzo.client.core.shape.wires.event.WiresConnectorPointsChangedEvent;
+import com.ait.lienzo.client.core.shape.wires.event.WiresConnectorPointsChangedHandler;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
 import com.ait.lienzo.client.core.types.*;
 import com.ait.lienzo.client.core.util.Geometry;
@@ -28,6 +30,10 @@ import com.ait.lienzo.shared.core.types.Direction;
 import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import com.ait.tooling.nativetools.client.collection.NFastDoubleArrayJSO;
 import com.ait.tooling.nativetools.client.collection.NFastStringMap;
+import com.google.gwt.event.shared.HandlerManager;
+import com.google.gwt.event.shared.HandlerRegistration;
+
+import java.util.Objects;
 
 import static com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleStandardType.POINT;
 
@@ -35,21 +41,23 @@ public class WiresConnector
 {
     public static final int MINIMUM_STROKE_WITH = 4;
 
-    private WiresConnection                       m_headConnection;
+    private       WiresConnection                m_headConnection;
 
-    private WiresConnection                       m_tailConnection;
+    private       WiresConnection                m_tailConnection;
 
-    private IControlHandleList                    m_pointHandles;
+    private       IControlHandleList             m_pointHandles;
 
-    private IDirectionalMultiPointShape<?>        m_line;
+    private       IDirectionalMultiPointShape<?> m_line;
 
-    private MultiPathDecorator                    m_headDecorator;
+    private       MultiPathDecorator             m_headDecorator;
 
-    private MultiPathDecorator                    m_tailDecorator;
+    private       MultiPathDecorator             m_tailDecorator;
 
-    private Group                                 m_group;
+    private       Group                          m_group;
 
-    private WiresConnectorControl                 m_connectorControl;
+    private       WiresConnectorControl          m_connectorControl;
+
+    private final HandlerManager                 m_events = new HandlerManager(this);
 
     public WiresConnector(IDirectionalMultiPointShape<?> line, MultiPathDecorator headDecorator, MultiPathDecorator tailDecorator)
     {
@@ -72,6 +80,7 @@ public class WiresConnector
         m_line.setEventPropagationMode(EventPropagationMode.FIRST_ANCESTOR);
 
         m_group = new Group();
+        // m_group = new GroupContainer();
         m_group.add(m_line);
         m_group.add(m_headDecorator.getPath());
         m_group.add(m_tailDecorator.getPath());
@@ -104,6 +113,13 @@ public class WiresConnector
         return this;
     }
 
+    public final HandlerRegistration addWiresConnectorPointsChangedHandler(final WiresConnectorPointsChangedHandler handler)
+    {
+        Objects.requireNonNull(handler);
+
+        return m_events.addHandler(WiresConnectorPointsChangedEvent.TYPE, handler);
+
+    }
 
     public void select()
     {
@@ -668,7 +684,7 @@ public class WiresConnector
                 }
                 newPoints.push(oldPoints.get(i));
             }
-            m_line.setPoint2DArray(newPoints);
+            setPoints(newPoints);
         }
     }
 
@@ -680,17 +696,7 @@ public class WiresConnector
                 newPoints.push(oldPoints.get(i));
             }
         }
-        getLine().setPoint2DArray(newPoints);
-    }
-
-    private static boolean contains(final int[] indexes,
-                                    final int index) {
-        for (int i : indexes) {
-            if (i == index) {
-                return true;
-            }
-        }
-        return false;
+        setPoints(newPoints);
     }
 
     public void moveControlPoint(final int index,
@@ -699,13 +705,23 @@ public class WiresConnector
         final IPrimitive<?> point = getControlPoint(index);
         if (null != point) {
             point.setLocation(location);
+            firePointsUpdated();
         }
+    }
+
+    private void setPoints(final Point2DArray points) {
+        getLine().setPoint2DArray(points);
+        firePointsUpdated();
+    }
+
+    public void firePointsUpdated() {
+        m_events.fireEvent(new WiresConnectorPointsChangedEvent(this));
     }
 
     private IPrimitive<?> getControlPoint(final int index) {
         return index < getPointHandles().size() ?
-                getPointHandles().getHandle(index).getControl() :
-                null;
+               getPointHandles().getHandle(index).getControl() :
+               null;
     }
 
     public int getControlPointIndex(final double x,
@@ -724,6 +740,16 @@ public class WiresConnector
     public int getIndexForSelectedSegment(final int x,
                                           final int y) {
         return getIndexForSelectedSegment(this, x, y, getControlPoints());
+    }
+
+    private static boolean contains(final int[] indexes,
+                                    final int index) {
+        for (int i : indexes) {
+            if (i == index) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static int getIndexForSelectedSegment(final WiresConnector connector,

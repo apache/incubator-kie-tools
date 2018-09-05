@@ -57,6 +57,7 @@ public class WiresControlPointHandlerImpl implements WiresControlPointHandler {
             primitive.setX(location.getX());
             primitive.setY(location.getY());
         }
+        m_connector.firePointsUpdated();
     }
 
     @Override

@@ -92,14 +92,6 @@ public class Spline extends AbstractMultiPointShape<Spline>
         return false;
     }
 
-    @Override
-    public Spline refresh()
-    {
-        m_list.clear();
-
-        return this;
-    }
-
     private final void parse(final Attributes attr)
     {
         final PathPoint[] points = getPathPoints(attr.getControlPoints());

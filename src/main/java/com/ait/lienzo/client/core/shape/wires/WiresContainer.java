@@ -356,7 +356,6 @@ public class WiresContainer
         m_registrationManager.removeHandler();
         m_container.setAttributesChangedBatcher(null);
         attributesChangedBatcher.cancelAttributesChangedBatcher();
-        // TODO: m_events.removeHandler();
         m_container.removeFromParent();
         m_parent = null;
         dockedTo = null;

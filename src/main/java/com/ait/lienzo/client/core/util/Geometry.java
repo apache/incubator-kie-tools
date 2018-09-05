@@ -588,6 +588,10 @@ public final class Geometry
         return (Math.abs(dx) > Math.abs(dy)) ? (dy / dx) : (dx / dy);
     }
 
+    public static final double distance(final Point2D p0, final Point2D p1) {
+        return distance(p0.getX(), p0.getY(), p1.getX(), p1.getY());
+    }
+
     public static final double distance(final double x0, final double y0, double x1, double y1)
     {
         return distance(x1 - x0, y1 - y0);
@@ -1697,6 +1701,18 @@ public final class Geometry
             }
         }
         return nearest;
+    }
+
+    public static double findAngle(final Point2D p0,
+                                    final Point2D p1)
+    {
+        return getClockwiseAngleBetweenThreePoints(new Point2D(p0.getX() + p1.getX(), p0.getY()), p0, p1);
+    }
+
+    public static Point2D findCenter(final Point2D p0,
+                                      final Point2D p1)
+    {
+        return Geometry.findCenter(new BoundingBox(p0, p1));
     }
 
     public static Point2D findCenter(BoundingBox box)

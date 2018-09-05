@@ -69,18 +69,31 @@ public class TextBoundsWrap extends TextNoWrap {
         return this;
     }
 
+    public BoundingBox getTextBoundaries() {
+        final double[] boundaries = calculateWrapBoundaries();
+        return new BoundingBox().addX(0).addX(boundaries[0]).addY(0).addY(boundaries[1]);
+    }
+
     @Override
     public BoundingBox getBoundingBox() {
+        final double[] boundaries = calculateWrapBoundaries();
+        return new BoundingBox().addX(0).addX(wrapBoundaries.getWidth()).addY(0).addY(boundaries[1]);
+    }
+
+    private double[] calculateWrapBoundaries() {
         final String[] words = textSupplier.get().split("\\s");
         if (words.length < 1) {
-            return wrapBoundaries;
+            return new double[] { wrapBoundaries.getX(), wrapBoundaries.getY() };
         }
 
+        final double wrapWidth = wrapBoundaries.getWidth();
+        final String firstWord = words[0];
+        double width = getBoundingBoxForString(firstWord).getWidth();
+        final StringBuilder nextLine = new StringBuilder(firstWord);
         int numOfLines = 1;
-        final double width = wrapBoundaries.getWidth();
-        final StringBuilder nextLine = new StringBuilder(words[0]);
         for (int i = 1; i < words.length; i++) {
-            if (getBoundingBoxForString(nextLine + " " + words[i]).getWidth() <= wrapBoundaries.getWidth()) {
+            width = getBoundingBoxForString(nextLine + " " + words[i]).getWidth();
+            if (width <= wrapWidth) {
                 nextLine.append(" ").append(words[i]);
             } else {
                 nextLine.setLength(words[i].length());
@@ -90,9 +103,8 @@ public class TextBoundsWrap extends TextNoWrap {
                 numOfLines++;
             }
         }
-        double height = getBoundingBoxForString(textSupplier.get()).getHeight();
-        height = height * numOfLines;
-        return new BoundingBox().addX(0).addX(width).addY(0).addY(height);
+        final double height = getBoundingBoxForString(textSupplier.get()).getHeight() * numOfLines;
+        return new double[] {width, height};
     }
 
     @Override

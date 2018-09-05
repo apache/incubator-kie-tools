@@ -132,14 +132,6 @@ public class PolyLine extends AbstractDirectionalMultiPointShape<PolyLine>
     }
 
     @Override
-    public PolyLine refresh()
-    {
-        getPathPartList().clear();
-
-        return this;
-    }
-
-    @Override
     protected boolean fill(Context2D context, Attributes attr, double alpha)
     {
         return false;

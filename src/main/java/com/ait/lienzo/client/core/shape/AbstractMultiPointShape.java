@@ -111,6 +111,13 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
         return new DefaultMultiPointShapeHandleFactory(this);
     }
 
+    @Override
+    public T refresh()
+    {
+        getPathPartList().clear();
+        return super.refresh();
+    }
+
     private static final class DefaultMultiPointShapeHandleFactory implements IControlHandleFactory
     {
         private static final double              R0                 = 5;

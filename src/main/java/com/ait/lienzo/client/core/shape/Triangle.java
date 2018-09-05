@@ -70,14 +70,6 @@ public class Triangle extends AbstractMultiPointShape<Triangle>
         return new BoundingBox(getPoints());
     }
 
-    @Override
-    public Triangle refresh()
-    {
-        m_list.clear();
-
-        return this;
-    }
-
     /**
      * Draws this polygon.
      * 

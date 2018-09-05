@@ -76,7 +76,7 @@ public class Line extends AbstractOffsetMultiPointShape<Line>
     @Override
     public Line refresh()
     {
-        return this;
+        return cast();
     }
 
     @Override
@@ -225,7 +225,6 @@ public class Line extends AbstractOffsetMultiPointShape<Line>
      * @param x2
      * @param y2
      * @param da
-     * @param state
      * @param plus
      */
     protected void drawDashedLine(final Context2D context, double x, double y, final double x2, final double y2, final double[] da, final double plus)
