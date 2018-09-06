@@ -129,4 +129,10 @@ public class LienzoPanel implements IsWidget {
         }
         return null;
     }
+
+    public void focus() {
+        if (getView() instanceof LienzoPanelView) {
+            ((LienzoPanelView) getView()).setFocus(true);
+        }
+    }
 }

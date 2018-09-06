@@ -334,8 +334,15 @@ public class TreeExplorer implements IsWidget {
                                       && event.getIdentifiers().size() == 1) {
                                   final String uuid = event.getIdentifiers().iterator().next();
                                   select(uuid);
+                                  focusCanvasToActivateKeyboardCanvasControl();
                               }
                           });
+    }
+
+    private void focusCanvasToActivateKeyboardCanvasControl() {
+        if (getCanvasHandler().getCanvas() != null) {
+            getCanvasHandler().getCanvas().focus();
+        }
     }
 
     private boolean select(final String uuid) {

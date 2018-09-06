@@ -260,5 +260,10 @@ public class AbstractCanvasTest {
                                           final double y) {
             return Optional.empty();
         }
+
+        @Override
+        public void focus() {
+
+        }
     }
 }

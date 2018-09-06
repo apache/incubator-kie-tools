@@ -26,6 +26,7 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.shortcut.KeyboardShortcut;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
@@ -49,6 +50,9 @@ import static org.mockito.Mockito.when;
 public class AbstractCanvasShortcutsControlImplTest {
 
     @Mock
+    private AbstractCanvas canvas;
+
+    @Mock
     private AbstractCanvasHandler canvasHandlerMock;
 
     @Mock
@@ -68,6 +72,41 @@ public class AbstractCanvasShortcutsControlImplTest {
                 this.canvasHandler = canvasHandlerMock;
             }
         };
+    }
+
+    @Test
+    public void testRegisterCauseCanvasFocus_SessionIsNull() {
+        final Element element = mock(Element.class);
+        canvasShortcutsControl.register(element);
+
+        verify(canvas, never()).focus();
+    }
+
+    @Test
+    public void testRegisterCauseCanvasFocus_CanvasIsNull() {
+        final EditorSession session = mock(EditorSession.class);
+        final KeyboardControl keyboardControl = mock(KeyboardControl.class);
+        doReturn(keyboardControl).when(session).getKeyboardControl();
+        canvasShortcutsControl.bind(session);
+
+        final Element element = mock(Element.class);
+        canvasShortcutsControl.register(element);
+
+        verify(canvas, never()).focus();
+    }
+
+    @Test
+    public void testRegisterCauseCanvasFocus() {
+        final EditorSession session = mock(EditorSession.class);
+        final KeyboardControl keyboardControl = mock(KeyboardControl.class);
+        doReturn(canvas).when(session).getCanvas();
+        doReturn(keyboardControl).when(session).getKeyboardControl();
+        canvasShortcutsControl.bind(session);
+
+        final Element element = mock(Element.class);
+        canvasShortcutsControl.register(element);
+
+        verify(canvas).focus();
     }
 
     @Test

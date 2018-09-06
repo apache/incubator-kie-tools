@@ -117,4 +117,9 @@ public class WiresCanvasPresenter extends WiresCanvas implements IsWidget {
     public LienzoPanel getLienzoPanel() {
         return lienzoPanel;
     }
+
+    @Override
+    public void focus() {
+        lienzoPanel.focus();
+    }
 }

@@ -129,6 +129,11 @@ public class WiresCanvasTest {
                 }
                 return null;
             }
+
+            @Override
+            public void focus() {
+
+            }
         };
 
         this.canvas = spy(wrapped);

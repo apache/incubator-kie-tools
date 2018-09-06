@@ -16,8 +16,10 @@
 
 package org.kie.workbench.common.stunner.client.widgets.canvas.view;
 
+import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.canvas.event.mouse.CanvasMouseDownEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.mouse.CanvasMouseUpEvent;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyDownEvent;
@@ -28,10 +30,15 @@ import org.mockito.Mock;
 import org.uberfire.mocks.EventSourceMock;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+@RunWith(LienzoMockitoTestRunner.class)
 public class LienzoPanelTest {
 
     @Mock
@@ -54,11 +61,11 @@ public class LienzoPanelTest {
     @Before
     public void setup() {
         initMocks(this);
-        lienzoPanel = new LienzoPanel(keyPressEvent,
-                                      keyDownEvent,
-                                      keyUpEvent,
-                                      mouseDownEvent,
-                                      mouseUpEvent);
+        lienzoPanel = spy(new LienzoPanel(keyPressEvent,
+                                          keyDownEvent,
+                                          keyUpEvent,
+                                          mouseDownEvent,
+                                          mouseUpEvent));
     }
 
     @Test
@@ -89,5 +96,25 @@ public class LienzoPanelTest {
     public void testOnKeyUp() {
         lienzoPanel.onKeyUp(KeyboardEvent.Key.DELETE.getUnicharCode());
         verify(keyUpEvent, times(1)).fire(any(KeyUpEvent.class));
+    }
+
+    @Test
+    public void testFocus() {
+        final LienzoPanel.View view = mock(LienzoPanelView.class);
+        doReturn(view).when(lienzoPanel).getView();
+
+        lienzoPanel.focus();
+
+        verify((LienzoPanelView) view).setFocus(true);
+    }
+
+    @Test
+    public void testFocusNotProperViewInstance() {
+        final LienzoPanel.View view = mock(LienzoPanel.View.class);
+        doReturn(view).when(lienzoPanel).getView();
+
+        lienzoPanel.focus();
+
+        verifyZeroInteractions(view);
     }
 }
