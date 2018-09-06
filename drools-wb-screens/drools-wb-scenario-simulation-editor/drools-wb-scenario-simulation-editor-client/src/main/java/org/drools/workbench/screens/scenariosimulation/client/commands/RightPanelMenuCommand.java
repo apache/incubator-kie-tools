@@ -18,15 +18,17 @@ package org.drools.workbench.screens.scenariosimulation.client.commands;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.drools.workbench.screens.scenariosimulation.client.rightpanel.RightPanelPresenter;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.PlaceStatus;
 import org.uberfire.mvp.Command;
+import org.uberfire.mvp.PlaceRequest;
 
 @Dependent
 public class RightPanelMenuCommand implements Command {
 
     private PlaceManager placeManager;
+
+    PlaceRequest rightPanelRequest;
 
     public RightPanelMenuCommand() {
     }
@@ -36,12 +38,16 @@ public class RightPanelMenuCommand implements Command {
         this.placeManager = placeManager;
     }
 
+    public void init(PlaceRequest rightPanelRequest) {
+        this.rightPanelRequest = rightPanelRequest;
+    }
+
     @Override
     public void execute() {
-        if (PlaceStatus.OPEN.equals(placeManager.getStatus(RightPanelPresenter.IDENTIFIER))) {
-            placeManager.closePlace(RightPanelPresenter.IDENTIFIER);
+        if (PlaceStatus.OPEN.equals(placeManager.getStatus(rightPanelRequest))) {
+            placeManager.closePlace(rightPanelRequest);
         } else {
-            placeManager.goTo(RightPanelPresenter.IDENTIFIER);
+            placeManager.goTo(rightPanelRequest);
         }
     }
 

@@ -16,14 +16,19 @@
 
 package org.drools.workbench.screens.scenariosimulation.client.rightpanel;
 
+import com.google.gwt.dom.client.ButtonElement;
+import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -36,26 +41,63 @@ public class RightPanelViewImplTest {
     @Mock
     private RightPanelPresenter mockRightPanelPresenter;
 
+    @Mock
+    private InputElement mockInputSearch;
+
+    @Mock
+    private InputElement mockNameField;
+
+    @Mock
+    private ButtonElement mockClearSearchButton;
+
     @Before
     public void setup() {
         this.rightPanelView = spy(new RightPanelViewImpl() {
             {
-
+                this.inputSearch = mockInputSearch;
+                this.clearSearchButton = mockClearSearchButton;
+                this.nameField = mockNameField;
             }
         });
         rightPanelView.init(mockRightPanelPresenter);
     }
 
     @Test
-    public void onEditorTabClick() {
-        rightPanelView.onEditorTabClick(mock(ClickEvent.class));
-        verify(mockRightPanelPresenter, times(1)).onEditorTabActivated();
+    public void onClearSearchButtonClick() {
+        reset(mockRightPanelPresenter);
+        rightPanelView.onClearSearchButtonClick(mock(ClickEvent.class));
+        verify(mockRightPanelPresenter, times(1)).onClearSearch();
     }
 
     @Test
-    public void onCheatSheetTabClick() {
-        rightPanelView.onCheatSheetTabClick(mock(ClickEvent.class));
-        verify(mockRightPanelPresenter, times(1)).onCheatSheetTabActivated();
+    public void onInputSearchKeyUp() {
+        rightPanelView.onInputSearchKeyUp(mock(KeyUpEvent.class));
+        verify(mockRightPanelPresenter, times(1)).onShowClearButton();
     }
 
+    @Test
+    public void clearInputSearch() {
+        rightPanelView.clearInputSearch();
+        verify(mockInputSearch, times(1)).setValue(eq(""));
+    }
+
+    @Test
+    public void clearNameField() {
+        rightPanelView.clearNameField();
+        verify(mockNameField, times(1)).setValue(eq(""));
+    }
+
+    @Test
+    public void hideClearButton() {
+        rightPanelView.hideClearButton();
+        verify(mockClearSearchButton, times(1)).setDisabled(eq(true));
+        verify(mockClearSearchButton, times(1)).setAttribute(eq("style"), eq("display: none;"));
+    }
+
+    @Test
+    public void showClearButton() {
+        rightPanelView.showClearButton();
+        verify(mockClearSearchButton, times(1)).setDisabled(eq(false));
+        verify(mockClearSearchButton, times(1)).removeAttribute(eq("style"));
+    }
 }

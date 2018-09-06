@@ -18,18 +18,22 @@ package org.drools.workbench.screens.scenariosimulation.client.rightpanel;
 
 import javax.enterprise.context.Dependent;
 
+import com.google.gwt.dom.client.ButtonElement;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.LIElement;
+import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.dom.client.UListElement;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.user.client.ui.Composite;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 @Dependent
-@Templated
+@Templated(stylesheet = "/org/drools/workbench/screens/scenariosimulation/client/resources/css/ScenarioSimulationEditorStyles.css")
 public class RightPanelViewImpl
         extends Composite
         implements RightPanelView {
@@ -39,17 +43,20 @@ public class RightPanelViewImpl
     @DataField("rightPanelTabs")
     private UListElement rightPanelTabs = Document.get().createULElement();
 
-    @DataField("editorTab")
-    protected LIElement editorTab = Document.get().createLIElement();  // protected for test purpose
+    @DataField("clearSearchButton")
+    ButtonElement clearSearchButton = Document.get().createButtonElement();
 
-    @DataField("cheatSheetTab")
-    protected LIElement cheatSheetTab = Document.get().createLIElement();  // protected for test purpose
+    @DataField("searchButton")
+    ButtonElement searchButton = Document.get().createButtonElement();
 
-    @DataField("editorTabContent")
-    protected DivElement editorTabContent = Document.get().createDivElement();  // protected for test purpose
+    @DataField("inputSearch")
+    InputElement inputSearch = Document.get().createTextInputElement();
 
-    @DataField("cheatSheetTabContent")
-    protected DivElement cheatSheetTabContent = Document.get().createDivElement(); // protected for test purpose
+    @DataField("nameField")
+    InputElement nameField = Document.get().createTextInputElement();
+
+    @DataField("listContainer")
+    DivElement listContainer = Document.get().createDivElement();
 
     public RightPanelViewImpl() {
 
@@ -60,43 +67,57 @@ public class RightPanelViewImpl
         this.presenter = presenter;
     }
 
-    @EventHandler("editorTab")
-    public void onEditorTabClick(ClickEvent event) {
-        presenter.onEditorTabActivated();
+    @Override
+    public Presenter getPresenter() {
+        return presenter;
     }
 
-    @EventHandler("cheatSheetTab")
-    public void onCheatSheetTabClick(ClickEvent event) {
-        presenter.onCheatSheetTabActivated();
+    @EventHandler("clearSearchButton")
+    public void onClearSearchButtonClick(ClickEvent event) {
+        presenter.onClearSearch();
+    }
+
+    @EventHandler("inputSearch")
+    public void onInputSearchKeyUp(KeyUpEvent event) {
+        presenter.onShowClearButton();
+    }
+
+    @EventHandler("inputSearch")
+    public void onInputSearchKeyDownEvent(KeyDownEvent event) {
+        if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+            presenter.onSearchedEvent(inputSearch.getValue());
+        }
+    }
+
+    @EventHandler("searchButton")
+    public void onSearchButtonClicked(ClickEvent event) {
+        presenter.onSearchedEvent(inputSearch.getValue());
     }
 
     @Override
-    public void showEditorTab() {
-        showTab(editorTab, editorTabContent);
+    public void clearInputSearch() {
+        inputSearch.setValue("");
     }
 
     @Override
-    public void hideCheatSheetTab() {
-        hideTab(cheatSheetTab, cheatSheetTabContent);
+    public void clearNameField() {
+        nameField.setValue("");
     }
 
     @Override
-    public void showCheatSheetTab() {
-        showTab(cheatSheetTab, cheatSheetTabContent);
+    public void hideClearButton() {
+        clearSearchButton.setDisabled(true);
+        clearSearchButton.setAttribute("style", "display: none;");
     }
 
     @Override
-    public void hideEditorTab() {
-        hideTab(editorTab, editorTabContent);
+    public void showClearButton() {
+        clearSearchButton.setDisabled(false);
+        clearSearchButton.removeAttribute("style");
     }
 
-    private void showTab(LIElement tab, DivElement content) {
-        tab.setAttribute("class", "active");
-        content.removeAttribute("hidden");
-    }
-
-    private void hideTab(LIElement tab, DivElement content) {
-        tab.removeClassName("active");
-        content.setAttribute("hidden", null);
+    @Override
+    public DivElement getListContainer() {
+        return listContainer;
     }
 }

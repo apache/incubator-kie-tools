@@ -14,33 +14,21 @@
  * limitations under the License.
  */
 
-package org.drools.workbench.screens.scenariosimulation.client.editor.menu;
+package org.drools.workbench.screens.scenariosimulation.client.rightpanel;
 
 import com.google.gwt.dom.client.LIElement;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.user.client.Command;
 
-public interface MenuItemView {
+public interface FieldItemView {
 
     interface Presenter {
 
-        void executeCommand(LIElement clickedElement);
-
-        LIElement getLIElement(String id, String innerText, Command command);
-
-        void onEnableElement(boolean toEnable);
-
-        void onClickEvent(ClickEvent event);
+        LIElement getLIElement(String factName, String fieldName, String className);
 
     }
 
-    void setPresenter(MenuItemPresenter menuItemPresenter);
+    void setPresenter(FieldItemView.Presenter fieldItemPresenter);
 
-    void setId(String id);
-
-    void setDataI18nKey(String dataI18nKey);
-
-    void setLabel(String label);
+    void setFieldData(String factName, String fieldName, String className);
 
     LIElement getLIElement();
 }

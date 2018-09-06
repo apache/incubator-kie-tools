@@ -13,50 +13,47 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.drools.workbench.screens.scenariosimulation.client.rightpanel;
 
-import java.util.SortedMap;
-
 import com.google.gwt.dom.client.DivElement;
+import com.google.gwt.dom.client.LIElement;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.screens.scenariosimulation.client.models.FactModelTree;
 import org.uberfire.client.mvp.HasPresenter;
 
-public interface RightPanelView
-        extends IsWidget,
-                HasPresenter<RightPanelView.Presenter> {
+public interface ListGroupItemView extends IsWidget,
+                                           HasPresenter<ListGroupItemView.Presenter> {
 
-    void clearInputSearch();
+    void setToExpand(boolean toExpand);
 
-    void clearNameField();
+    boolean isToExpand();
 
-    void hideClearButton();
+    void setFactName(String factName);
 
-    void showClearButton();
+    void setFactNameAndType(String factName, String factType);
 
-    DivElement getListContainer();
+    String getFactName();
 
-    Presenter getPresenter();
+    String getFactType();
+
+    void addFactField(LIElement fieldElement);
+
+    void addExpandableFactField(DivElement fieldElement);
+
+    DivElement getDivElement();
+
+    void closeRow();
+
+    void expandRow();
 
     interface Presenter {
 
-        void onClearSearch();
+        DivElement getDivElement(String factName, FactModelTree factModelTree);
 
-        void onClearNameField();
+        DivElement getDivElement(String factName, String factModelTreeClass);
 
-        void onClearStatus();
+        void onToggleRowExpansion(ListGroupItemView listGroupItemView, boolean currentlyShown);
 
-        void onShowClearButton();
-
-        void onSearchedEvent(String search);
-
-        void clearList();
-
-        void addListGroupItemView(String factName , FactModelTree factModelTree);
-
-        void setFactTypeFieldsMap(SortedMap<String, FactModelTree> factTypeFieldsMap);
-
-        FactModelTree getFactModelTree(String factName);
+        void init(RightPanelView.Presenter rightPanelPresenter);
     }
 }

@@ -14,28 +14,90 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<div id="right-panel">
-    <ul data-field="rightPanelTabs" class="nav nav-tabs">
-        <li data-field="editorTab" class="active">
-            <a data-i18n-key="testEditor" href="#">Test Editor</a>
+
+<!-- SECOND DOCK TAB - TEST TOOLS -->
+<div id="right-panel" class="tab-pane kie-dock active" >
+    <hr class="kie-dock__divider"/>
+
+    <ul data-field="rightPanelTabs" class="nav nav-tabs nav-tabs-pf" id="kieTestTools" role="tablist">
+        <li class="nav-item active">
+            <a class="nav-link"
+               id="editorTab"
+               data-toggle="tab"
+               href="#kieTestEditorTabContent"
+               role="tab" aria-controls="Test Editor"
+               aria-selected="true">Test Editor</a>
         </li>
-        <li data-field="cheatSheetTab">
-            <a data-i18n-key="scenarioCheatSheet" href="#">Scenario Cheatsheet</a>
+        <li class="nav-item">
+            <a class="nav-link"
+               id="cheatSheetTab"
+               data-toggle="tab"
+               href="#kieScenarioCheatsheetTabContent"
+               role="tab" aria-controls="Test Editor"
+               aria-selected="true">Scenario Cheatsheet</a>
         </li>
     </ul>
-    <div data-field="editorTabContent">To create a test template define "Given" and
-        "Expect" columns by entering an expression or
-        use the expression editor below.
-    </div>
-    <div data-field="cheatSheetTabContent" hidden>Create a row for each scenario, and input
-        values using the following syntax.
+
+    <div class="tab-content" id="kieTestToolsContent">
+        <!-- content for the test editor tab -->
+        <div id="kieTestEditorTabContent"
+             class="tab-pane fade in active"
+             aria-labelledby="Test Editor">
+            <br/>
+            <p>To create a test template, define "Given" and "Expect" columns by entering an expression or use the expression editor below.</p>
+
+            <label for="kie-search">Select Data Object</label>
+            <div id="kie-search" class="kie-test-tools-content__box"><!-- outlined data object box -->
+                <!-- search box -->
+                <form role="form" class="search-pf has-button">
+                    <div class="form-group has-clear">
+                        <div class="search-pf-input-group">
+                            <!-- <label for="search1" class="sr-only">Search</label> -->
+                            <input id="search1" type="search" class="form-control" data-field="inputSearch" placeholder="Search">
+                            <button type="button" class="clear" data-field="clearSearchButton" aria-hidden="true">
+                                <span class="pficon pficon-close"></span></button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-default" type="button" data-field="searchButton"><span class="fa fa-search"></span></button>
+                    </div>
+                </form>
+                <!-- end search box -->
+
+                <!-- list expansion -->
+                <div id="pf-list-simple-expansion" class="list-group tree-list-view-pf-view kie-tree-list-view-pf-view--compact" data-field="listContainer"> </div>
+                <!-- end list expansion -->
+            </div><!-- end outlined data object box -->
+
+            <label for="kie-name">Name Field</label>
+            <input id="kie-name" type="text" class="form-control" placeholder="Name" data-field="nameField">
+
+            <br/>
+
+            <label for="kieDropdownConditions">Set Conditions</label>
+            <div class="dropdown">
+                <button class="btn btn-default dropdown-toggle" type="button" id="kieDropdownConditions" data-toggle="dropdown">
+                    Condition
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="kieDropdownConditions">
+                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Required</a></li>
+                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Preferred</a></li>
+                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Other options here</a></li>
+                </ul>
+            </div>
+
+            <hr/>
+            <button class="btn btn-default" type="button">Add</button>
+            &nbsp;&nbsp;&nbsp;
+            <a href="#0" role="button">Clear</a>
+        </div>
         <br/>
-        [2, 8] // between 2 and 8
-        <br/>
-        ["A", "B", "C"]
-        <br/>
-        !["A", "B", "C"]
-        <br/>
-        <, <=, >... etc
+        <!-- content for cheatsheet tab -->
+        <div id="kieScenarioCheatsheetTabContent"
+             class="tab-pane fade"
+             aria-labelledby="Scenario Cheatsheet">
+            <p>Create a row for each scenario, and input values using the following syntax.</p>
+        </div>
     </div>
 </div>

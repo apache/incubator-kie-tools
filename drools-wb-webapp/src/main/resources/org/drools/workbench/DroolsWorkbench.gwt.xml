@@ -106,7 +106,7 @@
   <set-property name="locale" value="default"/>
 
   <!-- To change the default logLevel -->
-  <set-property name="gwt.logging.logLevel" value="FINE"/>
+  <set-property name="gwt.logging.logLevel" value="INFO"/>
   <!-- To enable logging -->
   <set-property name="gwt.logging.enabled" value="TRUE"/>
 

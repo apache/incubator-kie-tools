@@ -19,17 +19,17 @@ package org.drools.workbench.screens.scenariosimulation.client.editor.menu;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import com.google.gwt.dom.client.LIElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.Command;
+import org.drools.workbench.screens.scenariosimulation.client.utils.ViewsProvider;
 
 public class MenuItemPresenter implements MenuItemView.Presenter {
 
     @Inject
-    private Instance<MenuItemView> instance;
+    ViewsProvider viewsProvider;
 
     protected Map<LIElement, Command> menuItemsCommandMap = new HashMap<>();
 
@@ -48,7 +48,7 @@ public class MenuItemPresenter implements MenuItemView.Presenter {
 
     @Override
     public LIElement getLIElement(String id, String label, Command command) {
-        MenuItemView menuItemView = getMenuItemView();
+        MenuItemView menuItemView = viewsProvider.getMenuItemView();
         menuItemView.setId(id);
         menuItemView.setLabel(label);
         menuItemView.setPresenter(this);
@@ -58,12 +58,8 @@ public class MenuItemPresenter implements MenuItemView.Presenter {
     }
 
     @Override
-    public void enableElement(boolean toEnable) {
+    public void onEnableElement(boolean toEnable) {
 
     }
 
-    protected MenuItemView getMenuItemView() {  // This is needed for test because Mockito can not mock Instance
-        return instance.get(); 
-
-    }
 }

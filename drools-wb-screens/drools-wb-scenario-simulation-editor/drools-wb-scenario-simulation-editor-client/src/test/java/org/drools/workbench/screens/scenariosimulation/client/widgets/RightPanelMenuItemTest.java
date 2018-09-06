@@ -27,13 +27,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.PlaceStatus;
-import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
@@ -51,13 +47,6 @@ public class RightPanelMenuItemTest {
     public void setup() {
         this.rightPanelMenuItem = new RightPanelMenuItem(mockPlaceManager, mockRightPanelMenuCommand);
         when(mockPlaceManager.getStatus(RightPanelPresenter.IDENTIFIER)).thenReturn(PlaceStatus.OPEN);
-    }
-
-    @Test
-    public void init() {
-        rightPanelMenuItem.init();
-        verify(mockPlaceManager, times(1)).registerOnOpenCallback(any(DefaultPlaceRequest.class), any());
-        verify(mockPlaceManager, times(1)).registerOnCloseCallback(any(DefaultPlaceRequest.class), any());
     }
 
     @Test

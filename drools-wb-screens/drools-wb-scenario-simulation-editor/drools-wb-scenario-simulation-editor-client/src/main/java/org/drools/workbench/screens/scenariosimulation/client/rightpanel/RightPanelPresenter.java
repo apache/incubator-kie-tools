@@ -16,16 +16,23 @@
 
 package org.drools.workbench.screens.scenariosimulation.client.rightpanel;
 
+import java.util.Map;
+import java.util.SortedMap;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.workbench.screens.scenariosimulation.client.models.FactModelTree;
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.uberfire.client.annotations.DefaultPosition;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
+import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.Position;
 
@@ -40,15 +47,23 @@ public class RightPanelPresenter implements RightPanelView.Presenter {
 
     public static final String IDENTIFIER = "org.drools.scenariosimulation.RightPanel";
 
+    public static final PlaceRequest PLACE_REQUEST = new DefaultPlaceRequest(IDENTIFIER);
+
     private RightPanelView view;
+
+    private ListGroupItemPresenter listGroupItemPresenter;
+
+    Map<String, FactModelTree> factTypeFieldsMap;
 
     public RightPanelPresenter() {
         //Zero argument constructor for CDI
     }
 
     @Inject
-    public RightPanelPresenter(RightPanelView view) {
+    public RightPanelPresenter(RightPanelView view, ListGroupItemPresenter listGroupItemPresenter) {
         this.view = view;
+        this.listGroupItemPresenter = listGroupItemPresenter;
+        this.listGroupItemPresenter.init(this);
     }
 
     @PostConstruct
@@ -66,22 +81,68 @@ public class RightPanelPresenter implements RightPanelView.Presenter {
         return ScenarioSimulationEditorConstants.INSTANCE.testTools();
     }
 
-
     @WorkbenchPartView
     public Widget asWidget() {
         return view.asWidget();
     }
 
     @Override
-    public void onEditorTabActivated() {
-        view.showEditorTab();
-        view.hideCheatSheetTab();
+    public void onClearSearch() {
+        view.clearInputSearch();
+        view.hideClearButton();
+        onSearchedEvent("");
     }
 
     @Override
-    public void onCheatSheetTabActivated() {
-        view.showCheatSheetTab();
-        view.hideEditorTab();
-
+    public void onClearNameField() {
+        view.clearNameField();
     }
+
+    @Override
+    public void onClearStatus() {
+        onClearSearch();
+        onClearNameField();
+    }
+
+    @Override
+    public void clearList() {
+        view.getListContainer().removeAllChildren();
+    }
+
+    @Override
+    public FactModelTree getFactModelTree(String factName) {
+        return factTypeFieldsMap.get(factName);
+    }
+
+    @Override
+    public void setFactTypeFieldsMap(SortedMap<String, FactModelTree> factTypeFieldsMap) {
+        clearList();
+        this.factTypeFieldsMap = factTypeFieldsMap;
+        this.factTypeFieldsMap.forEach(this::addListGroupItemView);
+    }
+
+    @Override
+    public void onShowClearButton() {
+        view.showClearButton();
+    }
+
+    @Override
+    public void onSearchedEvent(String search) {
+        clearList();
+        if(factTypeFieldsMap.isEmpty()) {
+            return;
+        }
+        factTypeFieldsMap
+                        .entrySet()
+                        .stream()
+                        .filter(entry -> entry.getKey().toLowerCase().contains(search.toLowerCase()))
+                .forEach(filteredEntry -> addListGroupItemView(filteredEntry.getKey(), filteredEntry.getValue()));
+    }
+
+    @Override
+    public void addListGroupItemView(String factName, FactModelTree factModelTree) {
+        DivElement toAdd = listGroupItemPresenter.getDivElement(factName, factModelTree);
+        view.getListContainer().appendChild(toAdd);
+    }
+
 }

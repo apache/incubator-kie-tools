@@ -21,4 +21,47 @@ import com.google.gwt.resources.client.CssResource;
 public interface ScenarioSimulationEditorStylesCss extends CssResource {
 
     String disabled();
+
+    @ClassName("list-group")
+    String listGroup();
+
+    @ClassName("fa-angle-right")
+    String faAngleRight();
+
+    String hidden();
+
+    @ClassName("list-group-item-header")
+    String listGroupItemHeader();
+
+    @ClassName("list-group-item-container")
+    String listGroupItemContainer();
+
+    @ClassName("container-fluid")
+    String containerFluid();
+
+    @ClassName("kie-tree-list-view-pf-view--compact")
+    String kieTreeListViewPfViewCompact();
+
+    @ClassName("list-view-pf-main-info")
+    String listViewPfMainInfo();
+
+    @ClassName("list-group-item")
+    String listGroupItem();
+
+    @ClassName("ul--plain")
+    String ulPlain();
+
+    @ClassName("list-view-pf-top-align")
+    String listViewPfTopAlign();
+
+    @ClassName("list-view-pf-expand")
+    String listViewPfExpand();
+
+    String fa();
+
+    @ClassName("list-view-pf-body")
+    String listViewPfBody();
+
+    @ClassName("list-view-pf-checkbox")
+    String listViewPfCheckbox();
 }

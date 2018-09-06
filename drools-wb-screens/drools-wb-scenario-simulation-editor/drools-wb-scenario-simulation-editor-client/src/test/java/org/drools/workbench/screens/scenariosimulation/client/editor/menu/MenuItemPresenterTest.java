@@ -22,6 +22,7 @@ import com.google.gwt.dom.client.LIElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.Command;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.drools.workbench.screens.scenariosimulation.client.utils.ViewsProvider;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,10 +50,14 @@ public class MenuItemPresenterTest {
     @Mock
     private Command mockCommand;
 
+    @Mock
+    private ViewsProvider mockViewsProvider;
+
     private MenuItemPresenter menuItemPresenter;
 
     @Before
     public void setup() {
+        when(mockViewsProvider.getMenuItemView()).thenReturn(mockMenuItemView);
         when(mockMenuItemView.getLIElement()).thenReturn(mockLIElement);
         when(mockMenuItemsCommandMap.containsKey(mockLIElement)).thenReturn(true);
         when(mockMenuItemsCommandMap.get(mockLIElement)).thenReturn(mockCommand);
@@ -60,11 +65,7 @@ public class MenuItemPresenterTest {
         this.menuItemPresenter = spy(new MenuItemPresenter() {
             {
                 menuItemsCommandMap = mockMenuItemsCommandMap;
-            }
-
-            @Override
-            protected MenuItemView getMenuItemView() {
-                return mockMenuItemView;
+                viewsProvider = mockViewsProvider;
             }
         });
     }
