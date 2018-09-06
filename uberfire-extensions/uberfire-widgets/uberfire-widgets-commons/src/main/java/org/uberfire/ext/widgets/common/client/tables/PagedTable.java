@@ -42,7 +42,7 @@ public class PagedTable<T>
 
     public static final int DEFAULT_PAGE_SIZE = 10;
     public static final int ROW_HEIGHT_PX = 33;
-    public static final int HEIGHT_OFFSET_PX = 56;
+    public static final int HEIGHT_OFFSET_PX = 45;
     private static Binder uiBinder = GWT.create(Binder.class);
 
     @UiField
@@ -57,7 +57,6 @@ public class PagedTable<T>
     protected boolean showPageSizesSelector = false;
     private int pageSize;
     private AbstractDataProvider<T> dataProvider;
-    private boolean useFixedHeight = true;
 
     public PagedTable() {
         this(DEFAULT_PAGE_SIZE);
@@ -103,25 +102,8 @@ public class PagedTable<T>
                       final boolean showPageSizesSelector,
                       final boolean showFFButton,
                       final boolean showLButton) {
-        this(pageSize,
-             providesKey,
-             gridGlobalPreferences,
-             showPageSizesSelector,
-             showFFButton,
-             showLButton,
-             true);
-    }
-
-    public PagedTable(final int pageSize,
-                      final ProvidesKey<T> providesKey,
-                      final GridGlobalPreferences gridGlobalPreferences,
-                      final boolean showPageSizesSelector,
-                      final boolean showFFButton,
-                      final boolean showLButton,
-                      final boolean useFixedHeight) {
         super(providesKey,
               gridGlobalPreferences);
-        this.useFixedHeight = useFixedHeight;
         this.showPageSizesSelector = showPageSizesSelector;
         this.pageSize = pageSize;
         this.dataGrid.setPageStart(0);
@@ -136,24 +118,22 @@ public class PagedTable<T>
         });
         loadPageSizePreferences();
 
-        if (useFixedHeight == false) {
-            dataGrid.addRangeChangeHandler(e -> Scheduler.get().scheduleDeferred(() -> setTableHeight()));
-            dataGrid.addRowCountChangeHandler(e -> Scheduler.get().scheduleDeferred(() -> setTableHeight()));
-            dataGrid.getElement().getStyle().setMarginBottom(0,
-                                                             Style.Unit.PX);
-            if (columnPicker != null) {
-                columnPicker.addColumnChangedHandler(new ColumnChangedHandler() {
-                    @Override
-                    public void beforeColumnChanged() {
+        dataGrid.addRangeChangeHandler(e -> Scheduler.get().scheduleDeferred(() -> setTableHeight()));
+        dataGrid.addRowCountChangeHandler(e -> Scheduler.get().scheduleDeferred(() -> setTableHeight()));
+        dataGrid.getElement().getStyle().setMarginBottom(0,
+                                                         Style.Unit.PX);
+        if (columnPicker != null) {
+            columnPicker.addColumnChangedHandler(new ColumnChangedHandler() {
+                @Override
+                public void beforeColumnChanged() {
 
-                    }
+                }
 
-                    @Override
-                    public void afterColumnChanged() {
-                        Scheduler.get().scheduleDeferred(() -> setTableHeight());
-                    }
-                });
-            }
+                @Override
+                public void afterColumnChanged() {
+                    Scheduler.get().scheduleDeferred(() -> setTableHeight());
+                }
+            });
         }
     }
 
@@ -189,7 +169,8 @@ public class PagedTable<T>
     }
 
     protected void setTableHeight() {
-        int base = useFixedHeight ? pageSize : dataGrid.getRowCount() - dataGrid.getVisibleRange().getStart();
+        final int items = dataGrid.getRowCount() - dataGrid.getVisibleRange().getStart();
+        int base = items > pageSize ? pageSize : items;
         int height = ((base <= 0 ? 1 : base) * ROW_HEIGHT_PX) + HEIGHT_OFFSET_PX;
         this.dataGrid.setHeight(height + "px");
     }
