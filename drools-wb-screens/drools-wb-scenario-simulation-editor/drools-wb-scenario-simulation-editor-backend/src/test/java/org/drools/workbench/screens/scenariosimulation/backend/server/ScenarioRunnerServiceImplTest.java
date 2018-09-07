@@ -16,10 +16,13 @@
 package org.drools.workbench.screens.scenariosimulation.backend.server;
 
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
-import org.drools.workbench.screens.scenariosimulation.service.ScenarioRunnerService;
 import org.guvnor.common.services.shared.test.TestResultMessage;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runner.Runner;
+import org.kie.workbench.common.services.backend.builder.service.BuildInfo;
+import org.kie.workbench.common.services.backend.builder.service.BuildInfoService;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -30,6 +33,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ScenarioRunnerServiceImplTest {
@@ -37,8 +41,20 @@ public class ScenarioRunnerServiceImplTest {
     @Mock
     private EventSourceMock<TestResultMessage> defaultTestResultMessageEvent;
 
+    @Mock
+    private Runner runnerMock;
+
+    @Mock
+    private KieModuleService moduleService;
+
+    @Mock
+    private BuildInfoService buildInfoService;
+
+    @Mock
+    private BuildInfo buildInfo;
+
     @InjectMocks
-    private ScenarioRunnerService scenarioRunnerService = new ScenarioRunnerServiceImpl();
+    private ScenarioRunnerServiceImpl scenarioRunnerService = new ScenarioRunnerServiceImpl();
 
     @Test
     public void runAllTests() throws Exception {
@@ -49,6 +65,7 @@ public class ScenarioRunnerServiceImplTest {
 
     @Test
     public void runTest() throws Exception {
+        when(buildInfoService.getBuildInfo(any())).thenReturn(buildInfo);
         scenarioRunnerService.runTest("test", mock(Path.class), new ScenarioSimulationModel());
 
         verify(defaultTestResultMessageEvent).fire(any());
@@ -57,6 +74,8 @@ public class ScenarioRunnerServiceImplTest {
     @Test
     public void runAllTestsSpecifiedEvent() throws Exception {
         final EventSourceMock customTestResultEvent = mock(EventSourceMock.class);
+
+        scenarioRunnerService.setRunnerSupplier((kieContainer, simulation) -> runnerMock);
 
         scenarioRunnerService.runAllTests("test", mock(Path.class), customTestResultEvent);
 
