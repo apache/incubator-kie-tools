@@ -110,12 +110,15 @@ public class DecisionNavigatorBaseItemFactory {
 
     Command makeOnClickCommand(final Node<View, Edge> node) {
 
-        final CanvasHandler canvas = decisionNavigatorPresenter.getHandler();
+        final CanvasHandler canvasHandler = decisionNavigatorPresenter.getHandler();
         final String uuid = node.getUUID();
 
         return () -> {
-            canvasSelectionEvent.fire(makeCanvasSelectionEvent(canvas, uuid));
-            canvasFocusedSelectionEvent.fire(makeCanvasFocusedShapeEvent(canvas, uuid));
+            canvasSelectionEvent.fire(makeCanvasSelectionEvent(canvasHandler, uuid));
+            canvasFocusedSelectionEvent.fire(makeCanvasFocusedShapeEvent(canvasHandler, uuid));
+            if (canvasHandler != null && canvasHandler.getCanvas() != null) {
+                canvasHandler.getCanvas().focus();
+            }
         };
     }
 

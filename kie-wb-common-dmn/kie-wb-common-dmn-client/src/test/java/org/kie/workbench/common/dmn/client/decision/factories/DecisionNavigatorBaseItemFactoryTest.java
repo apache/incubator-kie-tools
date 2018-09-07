@@ -27,6 +27,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorItem;
 import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorPresenter;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
+import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.TextPropertyProvider;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.TextPropertyProviderFactory;
@@ -153,20 +154,23 @@ public class DecisionNavigatorBaseItemFactoryTest {
     @Test
     public void testMakeOnClickCommand() {
 
-        final CanvasHandler canvas = mock(CanvasHandler.class);
+        final CanvasHandler canvasHandler = mock(CanvasHandler.class);
+        final Canvas canvas = mock(Canvas.class);
         final String uuid = "uuid";
-        final CanvasSelectionEvent canvasSelection = new CanvasSelectionEvent(canvas, uuid);
-        final CanvasFocusedShapeEvent canvasFocusedShape = new CanvasFocusedShapeEvent(canvas, uuid);
+        final CanvasSelectionEvent canvasSelection = new CanvasSelectionEvent(canvasHandler, uuid);
+        final CanvasFocusedShapeEvent canvasFocusedShape = new CanvasFocusedShapeEvent(canvasHandler, uuid);
 
         when(node.getUUID()).thenReturn(uuid);
-        when(decisionNavigatorPresenter.getHandler()).thenReturn(canvas);
-        doReturn(canvasSelection).when(factory).makeCanvasSelectionEvent(canvas, uuid);
-        doReturn(canvasFocusedShape).when(factory).makeCanvasFocusedShapeEvent(canvas, uuid);
+        when(decisionNavigatorPresenter.getHandler()).thenReturn(canvasHandler);
+        doReturn(canvasSelection).when(factory).makeCanvasSelectionEvent(canvasHandler, uuid);
+        doReturn(canvasFocusedShape).when(factory).makeCanvasFocusedShapeEvent(canvasHandler, uuid);
+        doReturn(canvas).when(canvasHandler).getCanvas();
 
         factory.makeOnClickCommand(node).execute();
 
         verify(canvasSelectionEvent).fire(canvasSelection);
         verify(canvasFocusedSelectionEvent).fire(canvasFocusedShape);
+        verify(canvas).focus();
     }
 
     @Test
