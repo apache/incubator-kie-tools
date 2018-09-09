@@ -200,6 +200,11 @@ public class PagedTable<T>
         return pageSize;
     }
 
+    public void setPageSizesSelectorDropup(boolean forceDropup, boolean dropupAuto){
+        this.pageSizesSelector.setForceDropup(forceDropup);
+        this.pageSizesSelector.setDropupAuto(dropupAuto);
+    }
+
     private void resetPageSize() {
         GridPreferencesStore gridPreferencesStore = super.getGridPreferencesStore();
 

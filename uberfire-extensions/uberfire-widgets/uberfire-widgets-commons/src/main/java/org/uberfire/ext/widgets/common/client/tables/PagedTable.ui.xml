@@ -84,16 +84,14 @@
       </b:Column>
     </b:Row>
     <b:Row addStyleNames="{style.pager-row}">
-      <b:Column size="MD_6">
+      <b:Column size="MD_12">
+        <uf:UberfireSimplePager ui:field="pager" addStyleNames="pagination pagination-right pull-right {style.pager}"/>
         <s:Select ui:field="pageSizesSelector" width="100px">
           <s:Option text="5 {i18n.Items}"  value="5"/>
           <s:Option text="10 {i18n.Items}"  value="10"/>
           <s:Option text="15 {i18n.Items}"  value="15"/>
           <s:Option text="20 {i18n.Items}"  value="20"/>
         </s:Select>
-      </b:Column>
-      <b:Column size="MD_6">
-        <uf:UberfireSimplePager ui:field="pager" addStyleNames="pagination pagination-right pull-right {style.pager}"/>
       </b:Column>
     </b:Row>
   </g:FlowPanel>
