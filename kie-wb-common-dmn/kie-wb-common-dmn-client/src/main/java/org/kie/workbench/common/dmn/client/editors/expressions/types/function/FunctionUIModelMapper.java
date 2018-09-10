@@ -65,6 +65,10 @@ public class FunctionUIModelMapper extends BaseUIModelMapper<FunctionDefinition>
             final FunctionDefinition.Kind kind = extractExpressionLanguage(function);
             final Optional<Expression> expression = Optional.ofNullable(function.getExpression());
 
+            if (kind == null) {
+                return;
+            }
+
             switch (kind) {
                 case FEEL:
                     final Optional<ExpressionEditorDefinition<Expression>> expressionEditorDefinition = expressionEditorDefinitionsSupplier.get().getExpressionEditorDefinition(expression);

@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.editors.types.common;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,6 +44,10 @@ public class ItemDefinitionUtils {
     }
 
     public List<ItemDefinition> all() {
-        return dmnGraphUtils.getDefinitions().getItemDefinition();
+        if (dmnGraphUtils.getDefinitions() != null) {
+            return dmnGraphUtils.getDefinitions().getItemDefinition();
+        } else {
+            return Collections.emptyList();
+        }
     }
 }

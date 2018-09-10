@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.editors.types;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -140,7 +141,8 @@ public class DataTypePickerWidget extends Composite implements HasValue<QName>,
     }
 
     private void addItemDefinitions() {
-        final List<ItemDefinition> itemDefinitions = dmnGraphUtils.getDefinitions().getItemDefinition();
+        final Definitions definitions = dmnGraphUtils.getDefinitions();
+        final List<ItemDefinition> itemDefinitions = definitions != null ? definitions.getItemDefinition() : Collections.emptyList();
 
         //There will always be BuiltInTypes so it safe to add a divider
         if (itemDefinitions.size() > 0) {
