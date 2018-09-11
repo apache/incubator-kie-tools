@@ -26,6 +26,7 @@ import org.drools.workbench.screens.scenariosimulation.client.renderers.Scenario
 import org.drools.workbench.screens.scenariosimulation.client.values.ScenarioGridCellValue;
 import org.drools.workbench.screens.scenariosimulation.model.ExpressionIdentifier;
 import org.drools.workbench.screens.scenariosimulation.model.FactIdentifier;
+import org.drools.workbench.screens.scenariosimulation.model.FactMapping;
 import org.drools.workbench.screens.scenariosimulation.model.Scenario;
 import org.drools.workbench.screens.scenariosimulation.model.Simulation;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidget;
@@ -50,8 +51,6 @@ public class ScenarioGrid extends BaseGridWidget {
     public void setContent(Simulation simulation) {
         ((ScenarioGridModel) model).clear();
         ((ScenarioGridModel) model).bindContent(simulation);
-        // sort based on columnPosition to restore previous order
-        simulation.getSimulationDescriptor().sortByLogicalPosition();
         setHeaderColumns(simulation);
         appendRows(simulation);
     }
@@ -66,11 +65,13 @@ public class ScenarioGrid extends BaseGridWidget {
     }
 
     private void setHeaderColumns(Simulation simulation) {
-        simulation.getSimulationDescriptor().getFactMappings().forEach(fact -> {
+        List<FactMapping> factMappings = simulation.getSimulationDescriptor().getFactMappings();
+        IntStream.range(0, factMappings.size()).forEach(i -> {
+            FactMapping fact = factMappings.get(i);
             String columnId = fact.getExpressionIdentifier().getName();
             String columnTitle = fact.getExpressionAlias();
             String columnGroup = fact.getExpressionIdentifier().getType().name();
-            model.insertColumn(fact.getLogicalPosition(),
+            model.insertColumn(i,
                                getScenarioGridColumn(columnId, columnTitle, columnGroup, scenarioGridPanel, scenarioGridLayer));
         });
     }

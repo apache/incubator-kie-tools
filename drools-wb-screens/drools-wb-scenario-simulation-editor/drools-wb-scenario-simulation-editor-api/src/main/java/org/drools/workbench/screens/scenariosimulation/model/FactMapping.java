@@ -47,26 +47,20 @@ public class FactMapping {
      */
     private String className;
 
-    /**
-     * Used to store logical position (like UI) so it can be saved and restore
-     */
-    private int logicalPosition;
-
     private String expressionAlias;
 
     public FactMapping() {
     }
 
-    public FactMapping(FactIdentifier factIdentifier, ExpressionIdentifier expressionIdentifier, int logicalPosition) {
-        this(expressionIdentifier.getName(), factIdentifier, expressionIdentifier, logicalPosition);
+    public FactMapping(FactIdentifier factIdentifier, ExpressionIdentifier expressionIdentifier) {
+        this(expressionIdentifier.getName(), factIdentifier, expressionIdentifier);
     }
 
-    public FactMapping(String expressionAlias, FactIdentifier factIdentifier, ExpressionIdentifier expressionIdentifier, int logicalPosition) {
+    public FactMapping(String expressionAlias, FactIdentifier factIdentifier, ExpressionIdentifier expressionIdentifier) {
         this.expressionAlias = expressionAlias;
         this.expressionIdentifier = expressionIdentifier;
         this.className = factIdentifier.getClassName();
         this.factIdentifier = factIdentifier;
-        this.logicalPosition = logicalPosition;
     }
 
     public String getFullExpression() {
@@ -92,14 +86,6 @@ public class FactMapping {
 
     public FactIdentifier getFactIdentifier() {
         return factIdentifier;
-    }
-
-    public void setLogicalPosition(int logicalPosition) {
-        this.logicalPosition = logicalPosition;
-    }
-
-    public int getLogicalPosition() {
-        return logicalPosition;
     }
 
     public String getExpressionAlias() {

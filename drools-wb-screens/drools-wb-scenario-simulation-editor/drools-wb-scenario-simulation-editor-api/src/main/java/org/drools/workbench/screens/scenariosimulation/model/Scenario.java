@@ -46,6 +46,13 @@ public class Scenario {
         this.simulationDescriptor = simulationDescriptor;
     }
 
+    /**
+     * NOTE: list order could not be aligned to factMapping order. Use {@link Scenario#sort()} before call this method
+     * to ensure the order.
+     * Best way to have ordered factMappingValues is to iterate over {@link SimulationDescriptor#factMappings} and use
+     * {@link #getFactMappingValue(FactIdentifier, ExpressionIdentifier)}
+     * @return not modifiable list of FactMappingValues
+     */
     public List<FactMappingValue> getFactMappingValues() {
         return Collections.unmodifiableList(factMappingValues);
     }
@@ -74,17 +81,6 @@ public class Scenario {
                 e.getExpressionIdentifier().equals(expressionIdentifier)).findFirst();
     }
 
-    public Optional<FactMappingValue> getFactMappingValueByIndex(int index) {
-        FactMapping factMappingByIndex;
-        try {
-            factMappingByIndex = simulationDescriptor.getFactMappingByIndex(index);
-        } catch (IndexOutOfBoundsException e) {
-            throw new IllegalArgumentException(
-                    new StringBuilder().append("Impossible to retrieve FactMapping at index ").append(index).toString(), e);
-        }
-        return getFactMappingValue(factMappingByIndex.getFactIdentifier(), factMappingByIndex.getExpressionIdentifier());
-    }
-
     public List<FactMappingValue> getFactMappingValuesByFactIdentifier(FactIdentifier factIdentifier) {
         return factMappingValues.stream().filter(e -> e.getFactIdentifier().equals(factIdentifier)).collect(toList());
     }
@@ -102,5 +98,13 @@ public class Scenario {
 
     public Collection<String> getFactNames() {
         return factMappingValues.stream().map(e -> e.getFactIdentifier().getName()).collect(toSet());
+    }
+
+    public void sort() {
+        factMappingValues.sort((a, b) -> {
+            Integer aIndex = simulationDescriptor.getIndexByIdentifier(a.getFactIdentifier(), a.getExpressionIdentifier());
+            Integer bIndex = simulationDescriptor.getIndexByIdentifier(b.getFactIdentifier(), b.getExpressionIdentifier());
+            return aIndex.compareTo(bIndex);
+        });
     }
 }

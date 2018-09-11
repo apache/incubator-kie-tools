@@ -17,11 +17,14 @@
 package org.drools.workbench.screens.scenariosimulation.client.models;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.IntStream;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridRow;
+import org.drools.workbench.screens.scenariosimulation.model.FactMapping;
+import org.drools.workbench.screens.scenariosimulation.model.FactMappingValue;
 import org.drools.workbench.screens.scenariosimulation.model.Scenario;
 import org.drools.workbench.screens.scenariosimulation.model.Simulation;
 import org.junit.Before;
@@ -133,7 +136,11 @@ public class ScenarioGridModelTest {
         assertEquals(mockGridCell, scenarioGridModel.getCell(insertedRowIndex, insertedColumnIndex));
         Scenario scenarioByIndex = simulation.getScenarioByIndex(insertedRowIndex);
         assertNotNull(scenarioByIndex);
-        String insertedString = (String) scenarioByIndex.getFactMappingValueByIndex(insertedColumnIndex).get().getRawValue();
+
+        FactMapping factMappingByIndex = simulation.getSimulationDescriptor().getFactMappingByIndex(insertedColumnIndex);
+        Optional<FactMappingValue> factMappingValue = scenarioByIndex
+                .getFactMappingValue(factMappingByIndex.getFactIdentifier(), factMappingByIndex.getExpressionIdentifier());
+        String insertedString = (String) factMappingValue.get().getRawValue();
         assertNotNull(insertedString);
         assertNotNull(insertedString);
         assertEquals(insertedString, GRID_CELL_TEXT);
