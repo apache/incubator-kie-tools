@@ -64,4 +64,12 @@ public class FactMappingValue {
     public FactMappingValueOperator getOperator() {
         return operator;
     }
+
+    FactMappingValue cloneFactMappingValue() {
+        FactMappingValue cloned = new FactMappingValue();
+        cloned.expressionIdentifier = expressionIdentifier;
+        cloned.factIdentifier = factIdentifier;
+        cloned.rawValue = rawValue;
+        return cloned;
+    }
 }

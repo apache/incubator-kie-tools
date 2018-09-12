@@ -49,9 +49,29 @@ public class Simulation {
     }
 
     public Scenario addScenario() {
+        return addScenario(scenarios.size());
+    }
+
+    public Scenario addScenario(int index) {
+        if (index < 0 || index > scenarios.size()) {
+            throw new IllegalArgumentException(new StringBuilder().append("Index out of range ").append(index).toString());
+        }
         Scenario scenario = new Scenario(simulationDescriptor);
-        scenarios.add(scenario);
+        scenarios.add(index, scenario);
         return scenario;
+    }
+
+    public Scenario cloneScenario(int sourceIndex, int targetIndex) {
+        if (sourceIndex < 0 || sourceIndex >= scenarios.size()) {
+            throw new IllegalArgumentException(new StringBuilder().append("SourceIndex out of range ").append(sourceIndex).toString());
+        }
+        if (targetIndex < 0 || targetIndex > scenarios.size()) {
+            throw new IllegalArgumentException(new StringBuilder().append("TargetIndex out of range ").append(targetIndex).toString());
+        }
+        Scenario scenarioByIndex = getScenarioByIndex(sourceIndex);
+        Scenario clonedScenario = scenarioByIndex.cloneScenario();
+        scenarios.add(targetIndex, clonedScenario);
+        return clonedScenario;
     }
 
     public void clear() {
