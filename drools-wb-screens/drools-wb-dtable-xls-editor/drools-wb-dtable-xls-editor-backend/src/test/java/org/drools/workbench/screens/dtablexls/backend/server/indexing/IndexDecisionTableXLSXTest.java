@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,45 +24,49 @@ import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.lucene.search.Query;
-import org.drools.workbench.screens.dtablexls.type.DecisionTableXLSResourceTypeDefinition;
+import org.drools.workbench.screens.dtablexls.type.DecisionTableXLSXResourceTypeDefinition;
 import org.guvnor.common.services.project.categories.Decision;
 import org.junit.Test;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.query.builder.SingleTermQueryBuilder;
-import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm.TermSearchType;
-import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueSharedPartIndexTerm;
-import org.kie.workbench.common.services.refactoring.service.PartType;
+import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm;
+import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueResourceIndexTerm;
+import org.kie.workbench.common.services.refactoring.service.ResourceType;
 import org.uberfire.ext.metadata.io.KObjectUtil;
 import org.uberfire.java.nio.file.Path;
 
-public class IndexDecisionTableXLSAttributeNameTest extends BaseIndexingTest<DecisionTableXLSResourceTypeDefinition> {
+public class IndexDecisionTableXLSXTest extends BaseIndexingTest<DecisionTableXLSXResourceTypeDefinition> {
 
     @Test
-    public void testIndexDecisionTableXLSAttributeName() throws IOException, InterruptedException {
+    public void testIndexDecisionTableXLSMultipleTypes() throws IOException, InterruptedException {
         //Add test files
-        final Path path1 = loadXLSFile(basePath,
-                                       "dtable1.xls");
+        final Path path = loadXLSFile(basePath,
+                                      "xlsxrule.xlsx");
 
         Thread.sleep(5000); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
 
         List<String> index = Arrays.asList(KObjectUtil.toKCluster(basePath).getClusterId());
 
         {
-            final Query query = new SingleTermQueryBuilder(new ValueSharedPartIndexTerm("*", PartType.RULEFLOW_GROUP, TermSearchType.WILDCARD))
+            final Query query = new SingleTermQueryBuilder(
+                    new ValueResourceIndexTerm("*", ResourceType.RULE, ValueIndexTerm.TermSearchType.WILDCARD)
+
+            )
                     .build();
-            searchFor(index, query, 1, path1);
+            // Rule name found from xlsxrule
+            searchFor(index, query, 1, path);
         }
     }
 
     @Override
     protected TestIndexer getIndexer() {
-        return new TestDecisionTableXLSFileIndexer();
+        return new TestDecisionTableXLSXFileIndexer();
     }
 
     @Override
-    protected DecisionTableXLSResourceTypeDefinition getResourceTypeDefinition() {
-        return new DecisionTableXLSResourceTypeDefinition(new Decision());
+    protected DecisionTableXLSXResourceTypeDefinition getResourceTypeDefinition() {
+        return new DecisionTableXLSXResourceTypeDefinition(new Decision());
     }
 
     @Override
