@@ -21,7 +21,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -37,7 +37,7 @@ import org.uberfire.client.mvp.UberView;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.*;
 
-@ApplicationScoped
+@Dependent
 public class ServerNavigationPresenter {
 
     public interface View extends UberView<ServerNavigationPresenter> {

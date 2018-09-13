@@ -18,7 +18,7 @@ package org.kie.workbench.common.screens.server.management.client.remote;
 
 import java.util.Collection;
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -39,7 +39,7 @@ import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.kie.workbench.common.screens.server.management.client.util.Convert.*;
 
-@ApplicationScoped
+@Dependent
 public class RemotePresenter {
 
     public interface View extends UberView<RemotePresenter> {

@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -56,7 +56,7 @@ import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.workbench.events.NotificationEvent;
 
-@ApplicationScoped
+@Dependent
 @WorkbenchScreen(identifier = "ServerManagementBrowser")
 public class ServerManagementBrowserPresenter {
 

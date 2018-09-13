@@ -133,8 +133,8 @@ public class ContainerPresenter {
         if (content != null &&
                 content.getContainerSpec() != null &&
                 content.getContainers() != null &&
-                containerSpec!=null &&
-                containerSpec.getId()!=null &&
+                containerSpec != null &&
+                containerSpec.getId() != null &&
                 containerSpec.getId().equals(content.getContainerSpec().getId())) {
             setup(content.getContainerSpec(),
                   content.getContainers());

@@ -17,14 +17,14 @@
 package org.kie.workbench.common.screens.server.management.client.empty;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.screens.server.management.client.events.AddNewServerTemplate;
 import org.uberfire.client.mvp.UberView;
 
-@ApplicationScoped
+@Dependent
 public class ServerEmptyPresenter {
 
     public interface View extends UberView<ServerEmptyPresenter> {

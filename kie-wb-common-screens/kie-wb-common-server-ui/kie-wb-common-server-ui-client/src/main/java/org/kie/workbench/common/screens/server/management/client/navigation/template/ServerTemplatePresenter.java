@@ -19,7 +19,7 @@ package org.kie.workbench.common.screens.server.management.client.navigation.tem
 import java.util.HashSet;
 import java.util.Set;
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -46,7 +46,7 @@ import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.workbench.events.NotificationEvent;
 
-@ApplicationScoped
+@Dependent
 public class ServerTemplatePresenter {
 
     public interface View extends UberView<ServerTemplatePresenter> {
