@@ -39,6 +39,7 @@ import org.guvnor.common.services.project.social.ModuleEventType;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.Repository;
+import org.guvnor.structure.repositories.RepositoryRemovedEvent;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.security.shared.api.identity.User;
@@ -64,6 +65,7 @@ import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.kie.workbench.common.workbench.client.docks.AuthoringWorkbenchDocks;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -265,6 +267,7 @@ public class LibraryPlacesTest {
 
         when(activeOrganizationalUnit.getSpace()).thenReturn(activeSpace);
         when(activeRepository.getAlias()).thenReturn("repository");
+        when(activeRepository.getIdentifier()).thenReturn("repository");
         when(activeRepository.getSpace()).thenReturn(activeSpace);
 
         final URIStructureExplorerModel model = mock(URIStructureExplorerModel.class);
@@ -951,5 +954,32 @@ public class LibraryPlacesTest {
 
         assertFalse(libraryPlaces.isThisUserAccessingThisRepository(mock(User.class),
                                                                     repository));
+    }
+
+    @Test
+    public void onOpenedProjectDeleted() {
+        doReturn(PlaceStatus.OPEN).when(placeManager).getStatus(anyString());
+
+        libraryPlaces.onProjectDeleted(new RepositoryRemovedEvent(activeRepository));
+
+        final InOrder inOrder = inOrder(projectContextChangeEvent, libraryPlaces, notificationEvent);
+        inOrder.verify(projectContextChangeEvent).fire(any());
+        inOrder.verify(libraryPlaces).closeAllPlaces();
+        inOrder.verify(libraryPlaces).goToLibrary();
+        inOrder.verify(notificationEvent).fire(any());
+    }
+
+    @Test
+    public void onClosedProjectDeleted() {
+        doReturn(PlaceStatus.OPEN).when(placeManager).getStatus(anyString());
+
+        final Repository anotherRepository = mock(Repository.class);
+        doReturn("anotherRepository").when(anotherRepository).getIdentifier();
+        libraryPlaces.onProjectDeleted(new RepositoryRemovedEvent(anotherRepository));
+
+        verify(projectContextChangeEvent, never()).fire(any());
+        verify(libraryPlaces, never()).closeAllPlaces();
+        verify(libraryPlaces, never()).goToLibrary();
+        verify(notificationEvent, never()).fire(any());
     }
 }

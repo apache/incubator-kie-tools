@@ -17,7 +17,6 @@
 package org.kie.workbench.common.screens.datamodeller.client;
 
 import java.util.List;
-
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -261,7 +260,7 @@ public class DataModelerScreenPresenter
 
     @OnFocus
     public void onFocus() {
-        if (!loading && context != null) {
+        if (!loading && context != null && workbenchContext.getActiveModule().isPresent()) {
             view.redraw();
             setActiveContext();
             showDataModellerDocks();

@@ -318,11 +318,11 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
 
     public void onProjectDeleted(@Observes final RepositoryRemovedEvent repositoryRemovedEvent) {
         if (isLibraryPerspectiveOpen() && isRepoForActiveProject(repositoryRemovedEvent)) {
-            closeAllPlaces();
             WorkspaceProjectContextChangeEvent contextChangeEvent = projectContext.getActiveOrganizationalUnit()
                     .map(ou -> new WorkspaceProjectContextChangeEvent(ou))
                     .orElseGet(() -> new WorkspaceProjectContextChangeEvent());
             projectContextChangeEvent.fire(contextChangeEvent);
+            closeAllPlaces();
             goToLibrary();
             notificationEvent.fire(new NotificationEvent(ts.getTranslation(LibraryConstants.ProjectDeleted),
                                                          NotificationEvent.NotificationType.DEFAULT));

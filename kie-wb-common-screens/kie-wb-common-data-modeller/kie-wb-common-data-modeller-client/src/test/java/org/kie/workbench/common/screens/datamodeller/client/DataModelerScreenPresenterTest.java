@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
 
+import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.guvnor.messageconsole.events.PublishBatchMessagesEvent;
@@ -628,5 +629,39 @@ public class DataModelerScreenPresenterTest
         verify(fileMenuBuilder,
                never()).addDelete(any(Command.class));
         verify(fileMenuBuilder).addNewTopLevelMenu(alertsButtonMenuItem);
+    }
+
+    @Test
+    public void onFocusDoesNotRedrawViewWhenModuleIsNotActive() {
+        doReturn(Optional.empty()).when(workbenchContext).getActiveModule();
+
+        final DataModelerScreenPresenter presenter = spy(this.presenter);
+        presenter.context = mock(DataModelerContext.class);
+
+        assertFalse(presenter.loading);
+        assertNotNull(presenter.context);
+
+        presenter.onFocus();
+
+        verify(view, never()).redraw();
+        verify(dataModelerWBContext, never()).setActiveContext(any());
+        verify(dataModelerFocusEvent, never()).fire(any());
+    }
+
+    @Test
+    public void onFocusRedrawsViewWhenModuleIsActive() {
+        doReturn(Optional.of(mock(Module.class))).when(workbenchContext).getActiveModule();
+
+        final DataModelerScreenPresenter presenter = spy(this.presenter);
+        presenter.context = mock(DataModelerContext.class);
+
+        assertFalse(presenter.loading);
+        assertNotNull(presenter.context);
+
+        presenter.onFocus();
+
+        verify(view).redraw();
+        verify(dataModelerWBContext).setActiveContext(any());
+        verify(dataModelerFocusEvent).fire(any());
     }
 }
