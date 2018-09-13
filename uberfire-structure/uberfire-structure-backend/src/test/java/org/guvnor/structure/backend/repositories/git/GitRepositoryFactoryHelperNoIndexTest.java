@@ -53,7 +53,8 @@ public class GitRepositoryFactoryHelperNoIndexTest {
         spacesAPI = new SpacesAPIImpl();
         helper = new GitRepositoryFactoryHelper(indexed,
                                                 notIndexed,
-                                                spacesAPI);
+                                                spacesAPI,
+                                                null);
 
         fileSystem = mock(FileSystem.class);
         when(

@@ -28,12 +28,15 @@ import org.eclipse.jgit.transport.CredentialsProvider;
 import org.junit.Assume;
 import org.junit.Test;
 import org.uberfire.java.nio.file.FileSystem;
+import org.uberfire.java.nio.file.extensions.FileSystemHooks;
 import org.uberfire.java.nio.fs.jgit.util.commands.Commit;
 import org.uberfire.java.nio.security.FileSystemAuthenticator;
 import org.uberfire.java.nio.security.FileSystemAuthorizer;
 import org.uberfire.java.nio.security.FileSystemUser;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 public class JGitFileSystemImplProviderSSHTest extends AbstractTestInfra {
 
@@ -56,6 +59,13 @@ public class JGitFileSystemImplProviderSSHTest extends AbstractTestInfra {
 
     @Test
     public void testSSHPostReceiveHook() throws IOException {
+        FileSystemHooks.FileSystemHook<String> hook = spy(new FileSystemHooks.FileSystemHook<String>() {
+            @Override
+            public void execute(String s) {
+                assertEquals("repo", s);
+            }
+        });
+
         Assume.assumeFalse("UF-511",
                            System.getProperty("java.vendor").equals("IBM Corporation"));
         //Setup Authorization/Authentication
@@ -75,7 +85,9 @@ public class JGitFileSystemImplProviderSSHTest extends AbstractTestInfra {
         //Setup origin
         final URI originRepo = URI.create("git://repo");
         final JGitFileSystem origin = (JGitFileSystem) provider.newFileSystem(originRepo,
-                                                                              Collections.emptyMap());
+                                                                              new HashMap<String, Object>() {{
+                                                                                  put(FileSystemHooks.ExternalUpdate.name(), hook);
+                                                                              }});
 
         //Write a file to origin that we won't amend in the clone
         new Commit(origin.getGit(),
@@ -105,5 +117,8 @@ public class JGitFileSystemImplProviderSSHTest extends AbstractTestInfra {
 
         //Push clone back to origin
         provider.getFileSystem(URI.create("git://repo-clone?push=ssh://admin@localhost:" + gitSSHPort + "/repo"));
+
+        verify(hook).execute("repo");
+
     }
 }

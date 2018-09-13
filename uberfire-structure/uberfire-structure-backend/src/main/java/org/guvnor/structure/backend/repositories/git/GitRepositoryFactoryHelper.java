@@ -16,11 +16,13 @@
 package org.guvnor.structure.backend.repositories.git;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.guvnor.structure.repositories.EnvironmentParameters;
 import org.guvnor.structure.repositories.Repository;
+import org.guvnor.structure.repositories.RepositoryExternalUpdateEvent;
 import org.guvnor.structure.server.config.ConfigGroup;
 import org.guvnor.structure.server.config.ConfigItem;
 import org.guvnor.structure.server.config.PasswordService;
@@ -40,6 +42,8 @@ public class GitRepositoryFactoryHelper implements RepositoryFactoryHelper {
 
     private SpacesAPI spacesAPI;
 
+    private Event<RepositoryExternalUpdateEvent> repositoryExternalUpdate;
+
     @Inject
     private PasswordService secureService;
 
@@ -49,10 +53,12 @@ public class GitRepositoryFactoryHelper implements RepositoryFactoryHelper {
     @Inject
     public GitRepositoryFactoryHelper(@Named("ioStrategy") IOService indexedIOService,
                                       @Named("configIO") IOService notIndexedIOService,
-                                      SpacesAPI spacesAPI) {
+                                      SpacesAPI spacesAPI,
+                                      Event<RepositoryExternalUpdateEvent> repositoryExternalUpdate) {
         this.indexedIOService = indexedIOService;
         this.notIndexedIOService = notIndexedIOService;
         this.spacesAPI = spacesAPI;
+        this.repositoryExternalUpdate = repositoryExternalUpdate;
     }
 
     @Override
@@ -75,12 +81,14 @@ public class GitRepositoryFactoryHelper implements RepositoryFactoryHelper {
         if (sValue != null && Boolean.valueOf(sValue.getValue())) {
             return new GitRepositoryBuilder(notIndexedIOService,
                                             secureService,
-                                            spacesAPI).build(repoConfig);
+                                            spacesAPI,
+                                            repositoryExternalUpdate).build(repoConfig);
         }
 
         return new GitRepositoryBuilder(indexedIOService,
                                         secureService,
-                                        spacesAPI).build(repoConfig);
+                                        spacesAPI,
+                                        repositoryExternalUpdate).build(repoConfig);
     }
 
     private void validate(ConfigGroup repoConfig) {

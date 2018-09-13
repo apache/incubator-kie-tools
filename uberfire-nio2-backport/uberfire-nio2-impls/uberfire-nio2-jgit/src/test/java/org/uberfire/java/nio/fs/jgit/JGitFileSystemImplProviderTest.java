@@ -65,6 +65,7 @@ import org.uberfire.java.nio.file.WatchService;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributeView;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 import org.uberfire.java.nio.file.attribute.FileTime;
+import org.uberfire.java.nio.file.extensions.FileSystemHooks;
 import org.uberfire.java.nio.fs.jgit.util.Git;
 import org.uberfire.java.nio.fs.jgit.util.GitImpl;
 import org.uberfire.java.nio.fs.jgit.util.commands.Commit;
@@ -2132,6 +2133,20 @@ public class JGitFileSystemImplProviderTest extends AbstractTestInfra {
 
         assertEquals(fsComposedName1,
                      objectRepositoryResolver.resolveFileSystem(fsComposedName1.getGit().getRepository()));
+    }
+
+    @Test
+    public void extractFSHooksTest() {
+        Map<String, Object> env = new HashMap<>();
+        Object hook = (FileSystemHooks.FileSystemHook<String>) fsName -> { };
+        env.put("dora", "bento");
+        env.put(FileSystemHooks.ExternalUpdate.name(), hook);
+
+        Map<FileSystemHooks, ?> fileSystemHooksMap = JGitFileSystemProvider.extractFSHooks(env);
+
+        assertEquals(1, fileSystemHooksMap.size());
+        assertTrue(fileSystemHooksMap.keySet().contains(FileSystemHooks.ExternalUpdate));
+        assertEquals(hook, fileSystemHooksMap.get(FileSystemHooks.ExternalUpdate));
     }
 
     private interface MyAttrs extends BasicFileAttributes {

@@ -45,6 +45,8 @@ import java.util.TimeZone;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.UserInfo;
@@ -134,6 +136,7 @@ import org.uberfire.java.nio.fs.jgit.daemon.ssh.BaseGitCommand;
 import org.uberfire.java.nio.fs.jgit.daemon.ssh.GitSSHService;
 import org.uberfire.java.nio.fs.jgit.manager.JGitFileSystemsManager;
 import org.uberfire.java.nio.fs.jgit.util.Git;
+import org.uberfire.java.nio.file.extensions.FileSystemHooks;
 import org.uberfire.java.nio.fs.jgit.util.ProxyAuthenticator;
 import org.uberfire.java.nio.fs.jgit.util.commands.Clone;
 import org.uberfire.java.nio.fs.jgit.util.commands.PathUtil;
@@ -429,6 +432,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
 
             setPostReceiveHook((rp, commands) -> {
                 fs.unlock();
+                fs.notifyExternalUpdate();
                 final String userName = req.getUser().getName();
                 for (Map.Entry<String, RevCommit> oldTreeRef : oldTreeRefs.entrySet()) {
                     final List<RevCommit> commits = fs.getGit().listCommits(oldTreeRef.getValue(),
@@ -560,7 +564,8 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
                                 () -> fsName,
                                 () -> buildCredential(envUsername,
                                                       envPassword),
-                                () -> fsEventsManager);
+                                () -> fsEventsManager,
+                                () -> extractFSHooks(env));
 
         JGitFileSystem fs = fsManager.get(fsName);
 
@@ -598,6 +603,13 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
         }
 
         return fs;
+    }
+
+    static Map<FileSystemHooks, ?> extractFSHooks(Map<String, ?> env) {
+
+        return Arrays.stream(FileSystemHooks.values())
+                .filter(h -> env.get(h.name()) != null)
+                .collect(Collectors.toMap(Function.identity(), k -> env.get(k.name())));
     }
 
     private void validateFSName(URI uri,

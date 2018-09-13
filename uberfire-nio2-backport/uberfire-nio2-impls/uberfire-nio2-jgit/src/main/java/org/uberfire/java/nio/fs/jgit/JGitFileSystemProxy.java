@@ -177,6 +177,11 @@ public class JGitFileSystemProxy implements JGitFileSystem {
     }
 
     @Override
+    public void notifyExternalUpdate() {
+        cachedSupplier.get().notifyExternalUpdate();
+    }
+
+    @Override
     public FileSystemProvider provider() {
         return cachedSupplier.get().provider();
     }

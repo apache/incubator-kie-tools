@@ -48,4 +48,6 @@ public interface ConfiguredRepositories {
 
     void update(Space space,
                 Repository updatedRepo);
+
+    void refreshRepository(final Repository repository);
 }

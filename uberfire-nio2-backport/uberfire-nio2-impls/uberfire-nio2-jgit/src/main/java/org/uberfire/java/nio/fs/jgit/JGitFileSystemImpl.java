@@ -16,6 +16,7 @@
 
 package org.uberfire.java.nio.fs.jgit;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -46,6 +47,8 @@ import org.uberfire.java.nio.file.WatchService;
 import org.uberfire.java.nio.file.attribute.UserPrincipalLookupService;
 import org.uberfire.java.nio.file.spi.FileSystemProvider;
 import org.uberfire.java.nio.fs.jgit.util.Git;
+import org.uberfire.java.nio.file.extensions.FileSystemHooks;
+import org.uberfire.java.nio.fs.jgit.util.extensions.JGitFSHooks;
 import org.uberfire.java.nio.fs.jgit.util.model.CommitInfo;
 import org.uberfire.java.nio.fs.jgit.ws.JGitFileSystemsEventsManager;
 
@@ -67,6 +70,7 @@ public class JGitFileSystemImpl implements JGitFileSystem {
     private final FileStore fileStore;
     private final String name;
     private final CredentialsProvider credential;
+    private final Map<FileSystemHooks, ?> fsHooks;
     private final AtomicInteger numberOfCommitsSinceLastGC = new AtomicInteger(0);
     private FileSystemState state = FileSystemState.NORMAL;
     private CommitInfo batchCommitInfo = null;
@@ -82,7 +86,8 @@ public class JGitFileSystemImpl implements JGitFileSystem {
                               final JGitFileSystemLock lock,
                               final String name,
                               final CredentialsProvider credential,
-                              JGitFileSystemsEventsManager fsEventsManager) {
+                              JGitFileSystemsEventsManager fsEventsManager,
+                              Map<FileSystemHooks, ?> fsHooks) {
         this.fsEventsManager = fsEventsManager;
         this.provider = checkNotNull("provider",
                                      provider);
@@ -95,6 +100,7 @@ public class JGitFileSystemImpl implements JGitFileSystem {
                                  lock);
         this.credential = checkNotNull("credential",
                                        credential);
+        this.fsHooks = fsHooks;
         this.fileStore = new JGitFileStore(this.git.getRepository());
         if (fullHostNames != null && !fullHostNames.isEmpty()) {
             final StringBuilder sb = new StringBuilder();
@@ -476,7 +482,7 @@ public class JGitFileSystemImpl implements JGitFileSystem {
         lock.unlock();
     }
 
-    public JGitFileSystemLock getLock(){
+    public JGitFileSystemLock getLock() {
         return lock;
     }
 
@@ -503,5 +509,13 @@ public class JGitFileSystemImpl implements JGitFileSystem {
     @Override
     public boolean hasBeenInUse() {
         return lock.hasBeenInUse();
+    }
+
+    @Override
+    public void notifyExternalUpdate() {
+        Object hook = fsHooks.get(FileSystemHooks.ExternalUpdate);
+        if(hook != null){
+            JGitFSHooks.executeFSHooks(hook, FileSystemHooks.ExternalUpdate, name);
+        }
     }
 }

@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -33,6 +32,7 @@ import org.uberfire.java.nio.fs.jgit.JGitFileSystemLock;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration;
 import org.uberfire.java.nio.fs.jgit.util.Git;
+import org.uberfire.java.nio.file.extensions.FileSystemHooks;
 import org.uberfire.java.nio.fs.jgit.ws.JGitFileSystemsEventsManager;
 
 import static org.eclipse.jgit.lib.Constants.DOT_GIT_EXT;
@@ -62,13 +62,15 @@ public class JGitFileSystemsManager {
                               Supplier<Git> git,
                               Supplier<String> fsName,
                               Supplier<CredentialsProvider> credential,
-                              Supplier<JGitFileSystemsEventsManager> fsManager) {
+                              Supplier<JGitFileSystemsEventsManager> fsManager,
+                              Supplier<Map<FileSystemHooks, ?>> fsHooks) {
 
         Supplier<JGitFileSystem> fsSupplier = createFileSystemSupplier(fullHostNames,
                                                                        git,
                                                                        fsName,
                                                                        credential,
-                                                                       fsManager);
+                                                                       fsManager,
+                                                                       fsHooks);
 
         fsCache.addSupplier(fsName.get(),
                             fsSupplier);
@@ -105,20 +107,23 @@ public class JGitFileSystemsManager {
                                                               Supplier<Git> git,
                                                               Supplier<String> fsName,
                                                               Supplier<CredentialsProvider> credential,
-                                                              Supplier<JGitFileSystemsEventsManager> fsManager) {
+                                                              Supplier<JGitFileSystemsEventsManager> fsManager,
+                                                              Supplier<Map<FileSystemHooks, ?>> fsHooks) {
 
         return () -> newFileSystem(fullHostNames.get(),
                                    git.get(),
                                    fsName.get(),
                                    credential.get(),
-                                   fsManager.get());
+                                   fsManager.get(),
+                                   fsHooks.get());
     }
 
     private JGitFileSystem newFileSystem(Map<String, String> fullHostNames,
                                          Git git,
                                          String fsName,
                                          CredentialsProvider credential,
-                                         JGitFileSystemsEventsManager fsEventsManager) {
+                                         JGitFileSystemsEventsManager fsEventsManager,
+                                         Map<FileSystemHooks, ?> fsHooks) {
         fileSystemsLocks.putIfAbsent(fsName, createLock(git));
         final JGitFileSystem fs = new JGitFileSystemImpl(jGitFileSystemProvider,
                                                          fullHostNames,
@@ -126,7 +131,8 @@ public class JGitFileSystemsManager {
                                                          fileSystemsLocks.get(fsName),
                                                          fsName,
                                                          credential,
-                                                         fsEventsManager);
+                                                         fsEventsManager,
+                                                         fsHooks);
 
         fs.getGit().gc();
 

@@ -21,8 +21,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.enterprise.event.Event;
+
 import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.Repository;
+import org.guvnor.structure.repositories.RepositoryUpdatedEvent;
 import org.guvnor.structure.repositories.impl.git.GitRepository;
 import org.guvnor.structure.server.config.ConfigGroup;
 import org.guvnor.structure.server.config.ConfigurationService;
@@ -51,11 +54,15 @@ public class ConfiguredRepositoriesTest {
     public static final String REPO1S2 = "singles2";
     public static final String REPO2S2 = "multibranchs2";
     public static final String REPO2S3 = "multibranchs3";
+
     @Mock
     ConfigurationService configurationService;
 
     @Mock
     RepositoryFactory repositoryFactory;
+
+    @Mock
+    Event<RepositoryUpdatedEvent> repositoryUpdatedEvent;
 
     private ConfiguredRepositories configuredRepositories;
 
@@ -96,7 +103,8 @@ public class ConfiguredRepositoriesTest {
 
         configuredRepositories = new ConfiguredRepositoriesImpl(configurationService,
                                                                 repositoryFactory,
-                                                                SystemRepository.SYSTEM_REPO);
+                                                                SystemRepository.SYSTEM_REPO,
+                                                                repositoryUpdatedEvent);
 
         configuredRepositories.reloadRepositories();
     }

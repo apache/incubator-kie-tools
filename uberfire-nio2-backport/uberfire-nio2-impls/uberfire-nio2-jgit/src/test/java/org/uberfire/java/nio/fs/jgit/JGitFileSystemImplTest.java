@@ -56,6 +56,7 @@ public class JGitFileSystemImplTest extends AbstractTestInfra {
                                                                      createFSLock(git),
                                                                      "my-repo",
                                                                      CredentialsProvider.getDefault(),
+                                                                     null,
                                                                      null);
 
         assertThat(fileSystem.isReadOnly()).isFalse();
@@ -82,6 +83,7 @@ public class JGitFileSystemImplTest extends AbstractTestInfra {
                                                                      createFSLock(git),
                                                                      "my-repo",
                                                                      CredentialsProvider.getDefault(),
+                                                                     null,
                                                                      null);
 
         assertThat(fileSystem.isReadOnly()).isFalse();
@@ -113,6 +115,7 @@ public class JGitFileSystemImplTest extends AbstractTestInfra {
                                                                      createFSLock(git),
                                                                      "my-repo",
                                                                      CredentialsProvider.getDefault(),
+                                                                     null,
                                                                      null);
 
         assertThat(fileSystem.getName()).isEqualTo("my-repo");
@@ -134,6 +137,7 @@ public class JGitFileSystemImplTest extends AbstractTestInfra {
                                                                      createFSLock(git),
                                                                      "my-repo",
                                                                      CredentialsProvider.getDefault(),
+                                                                     null,
                                                                      null);
 
         assertThat(fileSystem.isReadOnly()).isFalse();
@@ -159,6 +163,7 @@ public class JGitFileSystemImplTest extends AbstractTestInfra {
                                                                      createFSLock(git),
                                                                      "my-repo",
                                                                      CredentialsProvider.getDefault(),
+                                                                     null,
                                                                      null);
 
         assertThat(fileSystem.isReadOnly()).isFalse();
@@ -183,6 +188,7 @@ public class JGitFileSystemImplTest extends AbstractTestInfra {
                                                                      createFSLock(git),
                                                                      "my-repo",
                                                                      CredentialsProvider.getDefault(),
+                                                                     null,
                                                                      null);
 
         final Path path = fileSystem.getPath("/path/to/some/place.txt");
@@ -212,6 +218,7 @@ public class JGitFileSystemImplTest extends AbstractTestInfra {
                                                                      createFSLock(git),
                                                                      "my-repo",
                                                                      CredentialsProvider.getDefault(),
+                                                                     null,
                                                                      null);
 
         final Path path = fileSystem.getPath("path/to/some/place.txt");
@@ -241,6 +248,7 @@ public class JGitFileSystemImplTest extends AbstractTestInfra {
                                                                      createFSLock(git),
                                                                      "my-repo",
                                                                      CredentialsProvider.getDefault(),
+                                                                     null,
                                                                      null);
 
         final Path path = fileSystem.getPath("test-branch",
@@ -271,6 +279,7 @@ public class JGitFileSystemImplTest extends AbstractTestInfra {
                                                                      createFSLock(git),
                                                                      "my-repo",
                                                                      CredentialsProvider.getDefault(),
+                                                                     null,
                                                                      null);
 
         final Path path = fileSystem.getPath("test-branch",
@@ -301,6 +310,7 @@ public class JGitFileSystemImplTest extends AbstractTestInfra {
                                                                      createFSLock(git),
                                                                      "my-repo",
                                                                      CredentialsProvider.getDefault(),
+                                                                     null,
                                                                      null);
 
         final Path path = fileSystem.getPath("test-branch",
@@ -332,6 +342,7 @@ public class JGitFileSystemImplTest extends AbstractTestInfra {
                                                                      createFSLock(git),
                                                                      "my-repo",
                                                                      CredentialsProvider.getDefault(),
+                                                                     null,
                                                                      null);
 
         final Path path = fileSystem.getPath("test-branch",
@@ -362,6 +373,7 @@ public class JGitFileSystemImplTest extends AbstractTestInfra {
                                                                      createFSLock(git),
                                                                      "my-repo",
                                                                      CredentialsProvider.getDefault(),
+                                                                     null,
                                                                      null);
 
         assertThat(fileSystem.getFileStores()).hasSize(1);
@@ -384,6 +396,7 @@ public class JGitFileSystemImplTest extends AbstractTestInfra {
                                                                       createFSLock(git1),
                                                                       "my-repo1",
                                                                       CredentialsProvider.getDefault(),
+                                                                      null,
                                                                       null);
 
         final Git git2 = setupGit();
@@ -394,6 +407,7 @@ public class JGitFileSystemImplTest extends AbstractTestInfra {
                                                                       createFSLock(git2),
                                                                       "my-repo2",
                                                                       CredentialsProvider.getDefault(),
+                                                                      null,
                                                                       null);
 
         final Path path1 = fileSystem1.getPath("master",
@@ -419,6 +433,7 @@ public class JGitFileSystemImplTest extends AbstractTestInfra {
                                                                      createFSLock(git),
                                                                      "my-repo",
                                                                      CredentialsProvider.getDefault(),
+                                                                     null,
                                                                      null);
         fileSystem.newWatchService();
     }
@@ -435,6 +450,7 @@ public class JGitFileSystemImplTest extends AbstractTestInfra {
                                                                      createFSLock(git),
                                                                      "my-repo",
                                                                      CredentialsProvider.getDefault(),
+                                                                     null,
                                                                      null);
         fileSystem.getUserPrincipalLookupService();
     }
@@ -451,6 +467,7 @@ public class JGitFileSystemImplTest extends AbstractTestInfra {
                                                                      createFSLock(git),
                                                                      "my-repo",
                                                                      CredentialsProvider.getDefault(),
+                                                                     null,
                                                                      null);
         fileSystem.getPathMatcher("*");
     }
@@ -467,6 +484,7 @@ public class JGitFileSystemImplTest extends AbstractTestInfra {
                                                                      createFSLock(git),
                                                                      "my-repo",
                                                                      CredentialsProvider.getDefault(),
+                                                                     null,
                                                                      null);
 
         fileSystem.lock();

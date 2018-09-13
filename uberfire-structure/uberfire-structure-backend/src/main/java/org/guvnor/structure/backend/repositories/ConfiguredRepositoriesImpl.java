@@ -23,12 +23,16 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.guvnor.structure.config.SystemRepositoryChangedEvent;
+import org.guvnor.structure.repositories.NewBranchEvent;
 import org.guvnor.structure.repositories.Repository;
+import org.guvnor.structure.repositories.RepositoryExternalUpdateEvent;
+import org.guvnor.structure.repositories.RepositoryUpdatedEvent;
 import org.guvnor.structure.server.config.ConfigGroup;
 import org.guvnor.structure.server.config.ConfigurationService;
 import org.guvnor.structure.server.repositories.RepositoryFactory;
@@ -54,6 +58,7 @@ public class ConfiguredRepositoriesImpl implements ConfiguredRepositories {
     private ConfigurationService configurationService;
     private RepositoryFactory repositoryFactory;
     private Repository systemRepository;
+    private Event<RepositoryUpdatedEvent> repositoryUpdatedEvent;
     private Map<Space, ConfiguredRepositoriesBySpace> repositoriesBySpace = Collections.synchronizedMap(new HashMap<>());
 
     public ConfiguredRepositoriesImpl() {
@@ -62,10 +67,12 @@ public class ConfiguredRepositoriesImpl implements ConfiguredRepositories {
     @Inject
     public ConfiguredRepositoriesImpl(final ConfigurationService configurationService,
                                       final RepositoryFactory repositoryFactory,
-                                      final @Named("system") Repository systemRepository) {
+                                      final @Named("system") Repository systemRepository,
+                                      final Event<RepositoryUpdatedEvent> repositoryUpdatedEvent) {
         this.configurationService = configurationService;
         this.repositoryFactory = repositoryFactory;
         this.systemRepository = systemRepository;
+        this.repositoryUpdatedEvent = repositoryUpdatedEvent;
     }
 
     @SuppressWarnings("unchecked")
@@ -172,11 +179,28 @@ public class ConfiguredRepositoriesImpl implements ConfiguredRepositories {
         ConfiguredRepositoriesBySpace configuredRepositoriesBySpace = getConfiguredRepositoriesBySpace(space);
         configuredRepositoriesBySpace.remove(updatedRepo.getAlias());
         configuredRepositoriesBySpace.add(updatedRepo);
+        repositoryUpdatedEvent.fire(new RepositoryUpdatedEvent(updatedRepo));
     }
 
     public void flush(final @Observes
                       @org.guvnor.structure.backend.config.Repository
                               SystemRepositoryChangedEvent changedEvent) {
         reloadRepositories();
+    }
+
+    public void repositoryExternalUpdateEvent(final @Observes RepositoryExternalUpdateEvent event) {
+        refreshRepository(event.getRepository());
+    }
+
+    public void refreshRepository(final Repository repository) {
+        final Space space = repository.getSpace();
+
+        final Map<String, List<ConfigGroup>> repoConfigsBySpace = configurationService.getConfigurationByNamespace(REPOSITORY);
+        final List<ConfigGroup> repoConfigs = repoConfigsBySpace.get(space.getName());
+
+        repoConfigs.stream().filter(c -> c.getName().equals(repository.getAlias())).findFirst().ifPresent(repoConfig -> {
+            final Repository updatedRepo = repositoryFactory.newRepository(repoConfig);
+            update(space, updatedRepo);
+        });
     }
 }

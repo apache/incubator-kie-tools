@@ -21,10 +21,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.enterprise.event.Event;
+
 import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.EnvironmentParameters;
 import org.guvnor.structure.repositories.PublicURI;
 import org.guvnor.structure.repositories.Repository;
+import org.guvnor.structure.repositories.RepositoryExternalUpdateEvent;
 import org.guvnor.structure.repositories.impl.DefaultPublicURI;
 import org.guvnor.structure.repositories.impl.git.GitRepository;
 import org.guvnor.structure.server.config.ConfigGroup;
@@ -34,6 +37,7 @@ import org.guvnor.structure.server.config.SecureConfigItem;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
+import org.uberfire.java.nio.file.extensions.FileSystemHooks;
 import org.uberfire.spaces.SpacesAPI;
 
 import static org.uberfire.backend.server.util.Paths.convert;
@@ -43,14 +47,17 @@ public class GitRepositoryBuilder {
     private final IOService ioService;
     private final PasswordService secureService;
     private SpacesAPI spacesAPI;
+    private Event<RepositoryExternalUpdateEvent> repositoryExternalUpdate;
     private GitRepository repo;
 
     public GitRepositoryBuilder(final IOService ioService,
                                 final PasswordService secureService,
-                                final SpacesAPI spacesAPI) {
+                                final SpacesAPI spacesAPI,
+                                Event<RepositoryExternalUpdateEvent> repositoryExternalUpdate) {
         this.ioService = ioService;
         this.secureService = secureService;
         this.spacesAPI = spacesAPI;
+        this.repositoryExternalUpdate = repositoryExternalUpdate;
     }
 
     public Repository build(final ConfigGroup repoConfig) {
@@ -146,7 +153,12 @@ public class GitRepositoryBuilder {
                                                put("init",
                                                    true);
                                            }
+                                           put(FileSystemHooks.ExternalUpdate.name(), externalUpdatedCallBack());
                                        }});
+    }
+
+    private FileSystemHooks.FileSystemHook<String> externalUpdatedCallBack() {
+        return fsName -> repositoryExternalUpdate.fire(new RepositoryExternalUpdateEvent(repo));
     }
 
     /**

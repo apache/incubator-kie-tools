@@ -64,13 +64,15 @@ public class JGitFileSystemsManagerTest {
                               () -> git,
                               () -> fs.getName(),
                               () -> mock(CredentialsProvider.class),
-                              () -> mock(JGitFileSystemsEventsManager.class));
+                              () -> mock(JGitFileSystemsEventsManager.class),
+                              () -> null);
 
         manager.newFileSystem(() -> new HashMap<>(),
                               () -> git,
                               () -> fs1.getName(),
                               () -> mock(CredentialsProvider.class),
-                              () -> mock(JGitFileSystemsEventsManager.class));
+                              () -> mock(JGitFileSystemsEventsManager.class),
+                              () -> null);
 
         assertTrue(manager.containsKey("fs"));
 
@@ -131,13 +133,15 @@ public class JGitFileSystemsManagerTest {
                               () -> git,
                               () -> fs.getName(),
                               () -> mock(CredentialsProvider.class),
-                              () -> mock(JGitFileSystemsEventsManager.class));
+                              () -> mock(JGitFileSystemsEventsManager.class),
+                              () -> null);
 
         manager.newFileSystem(() -> new HashMap<>(),
                               () -> git,
                               () -> fs1.getName(),
                               () -> mock(CredentialsProvider.class),
-                              () -> mock(JGitFileSystemsEventsManager.class));
+                              () -> mock(JGitFileSystemsEventsManager.class),
+                              () -> null);
 
         assertTrue(manager.containsKey("fs1"));
         assertTrue(manager.containsRoot("fs1"));
