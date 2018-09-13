@@ -52,9 +52,6 @@ public class DeleteBranchPopUpScreenTest {
     @Mock
     private LibraryPlaces libraryPlaces;
 
-    @Mock
-    private Event<NotificationEvent> notificationEvent;
-
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private WorkspaceProject project;
 
@@ -69,8 +66,7 @@ public class DeleteBranchPopUpScreenTest {
 
         presenter = spy(new DeleteBranchPopUpScreen(view,
                                                     new CallerMock<>(libraryService),
-                                                    libraryPlaces,
-                                                    notificationEvent));
+                                                    libraryPlaces));
     }
 
     @Test
@@ -96,7 +92,7 @@ public class DeleteBranchPopUpScreenTest {
         this.presenter.delete();
 
         verify(this.view, never()).showError(anyString());
-        verify(this.libraryService).removeBranch(branch);
+        verify(this.libraryService).removeBranch(project, branch);
         verify(libraryPlaces).goToProject(project, branch);
         verify(libraryPlaces, never()).goToLibrary();
     }
@@ -109,7 +105,7 @@ public class DeleteBranchPopUpScreenTest {
         this.presenter.delete();
 
         verify(this.view, never()).showError(anyString());
-        verify(this.libraryService).removeBranch(branch);
+        verify(this.libraryService).removeBranch(project, branch);
         verify(libraryPlaces, never()).goToProject(project, branch);
         verify(libraryPlaces).goToLibrary();
     }

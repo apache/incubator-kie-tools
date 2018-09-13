@@ -932,6 +932,18 @@ public class LibraryPlacesTest {
     }
 
     @Test
+    public void loggedUserWithNoActiveSpaceTest() {
+        doReturn(Optional.empty()).when(projectContext).getActiveOrganizationalUnit();
+        assertFalse(libraryPlaces.isThisUserAccessingThisRepository(user, activeRepository));
+    }
+
+    @Test
+    public void loggedUserWithNoActiveWorkspaceProjectTest() {
+        doReturn(Optional.empty()).when(projectContext).getActiveWorkspaceProject();
+        assertFalse(libraryPlaces.isThisUserAccessingThisRepository(user, activeRepository));
+    }
+
+    @Test
     public void loggedUserAccessingAnotherRepositoryTest() {
         final Repository repository = mock(Repository.class);
         when(repository.getAlias()).thenReturn("another-repository");

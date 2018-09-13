@@ -67,4 +67,10 @@ public class ProjectBranchBreadcrumbView implements ProjectBranchBreadcrumb.View
         branchesDropdown.setup(items,
                                currentBranch.getName());
     }
+
+    @Override
+    public String getBranchDeletedMessage(final String branchName) {
+        return ts.format(LibraryConstants.BranchDeleted, branchName);
+    }
+
 }

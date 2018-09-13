@@ -17,12 +17,14 @@
 package org.kie.workbench.common.project.config;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.guvnor.structure.backend.repositories.ConfiguredRepositoriesImpl;
 import org.guvnor.structure.repositories.Repository;
+import org.guvnor.structure.repositories.RepositoryUpdatedEvent;
 import org.guvnor.structure.server.repositories.RepositoryFactory;
 
 @Alternative
@@ -36,9 +38,11 @@ public class MigrationConfiguredRepositories extends ConfiguredRepositoriesImpl 
     @Inject
     public MigrationConfiguredRepositories(final MigrationConfigurationServiceImpl configurationService,
                                            final RepositoryFactory repositoryFactory,
-                                           final @Named("system") Repository systemRepository) {
+                                           final @Named("system") Repository systemRepository,
+                                           final Event<RepositoryUpdatedEvent> repositoryUpdatedEvent) {
         super(configurationService,
               repositoryFactory,
-              systemRepository);
+              systemRepository,
+              repositoryUpdatedEvent);
     }
 }

@@ -143,9 +143,6 @@ public class LibraryServiceImplTest {
     private ConfiguredRepositories configuredRepositories;
 
     @Mock
-    private Event<SystemRepositoryChangedEvent> systemRepositoryChangedEvent;
-
-    @Mock
     private Event<NewBranchEvent> newBranchEvent;
 
     @Mock
@@ -219,8 +216,7 @@ public class LibraryServiceImplTest {
                                                     repositoryService,
                                                     pathUtil,
                                                     newBranchEvent,
-                                                    configuredRepositories,
-                                                    systemRepositoryChangedEvent
+                                                    configuredRepositories
         ));
     }
 
@@ -697,8 +693,9 @@ public class LibraryServiceImplTest {
         libraryService.addBranch("new-branch", "repo1-branch1", project);
 
         verify(fileSystemProvider).copy(baseBranchPath, newBranchPath);
-
+        verify(configuredRepositories).refreshRepository(repo1);
         verify(newBranchEvent).fire(newBranchEventArgumentCaptor.capture());
+
         final NewBranchEvent newBranchEvent = newBranchEventArgumentCaptor.getValue();
         assertEquals("new-branch", newBranchEvent.getNewBranchName());
         assertEquals(repo1, newBranchEvent.getRepository());
@@ -714,10 +711,13 @@ public class LibraryServiceImplTest {
         doReturn(fileSystem).when(baseBranchPath).getFileSystem();
         doReturn(baseBranchPath).when(pathUtil).convert(masterBranch.getPath());
 
-        libraryService.removeBranch(masterBranch);
+        final WorkspaceProject project = mock(WorkspaceProject.class);
+        doReturn(repo1).when(project).getRepository();
+
+        libraryService.removeBranch(project, masterBranch);
 
         verify(ioService).delete(baseBranchPath);
-        verify(systemRepositoryChangedEvent).fire(any());
+        verify(configuredRepositories).refreshRepository(repo1);
     }
 
     private Branch makeBranch(final String branchName,

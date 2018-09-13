@@ -21,11 +21,14 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+import javax.enterprise.event.Event;
+
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.NewBranchEvent;
 import org.guvnor.structure.repositories.Repository;
+import org.guvnor.structure.repositories.RepositoryUpdatedEvent;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,8 +37,10 @@ import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.spaces.Space;
+import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
@@ -56,6 +61,9 @@ public class ProjectBranchBreadcrumbTest {
     private LibraryPlaces libraryPlaces;
 
     @Mock
+    private EventSourceMock<NotificationEvent> notificationEvent;
+
+    @Mock
     private OrganizationalUnit organizationalUnit;
 
     @Mock
@@ -72,26 +80,31 @@ public class ProjectBranchBreadcrumbTest {
 
     private Branch newBranch;
 
+    private Branch branch1;
+
     private ProjectBranchBreadcrumb presenter;
 
     @Before
     public void setup() {
         presenter = spy(new ProjectBranchBreadcrumb(view,
-                                                    libraryPlaces));
+                                                    libraryPlaces,
+                                                    notificationEvent));
 
         newBranch = makeBranch("new-branch", "repository");
-
+        branch1 = makeBranch("branch1", "repo");
         final List<Branch> branches = Arrays.asList(makeBranch("branch3", "repo"),
                                                     makeBranch("branch2", "repo"),
                                                     makeBranch("branch4", "repo"),
-                                                    makeBranch("branch1", "repo"));
+                                                    branch1);
 
         when(organizationalUnit.getSpace()).thenReturn(space);
         when(repository.getAlias()).thenReturn("repository");
         when(repository.getSpace()).thenReturn(space);
         when(repository.getBranches()).thenReturn(branches);
         when(repository.getBranch("new-branch")).thenReturn(Optional.of(newBranch));
+        when(repository.getDefaultBranch()).thenReturn(Optional.of(branch1));
         when(project.getRepository()).thenReturn(repository);
+        when(project.getBranch()).thenReturn(branch1);
 
         when(libraryPlaces.getActiveSpace()).thenReturn(organizationalUnit);
         when(libraryPlaces.getActiveWorkspace()).thenReturn(project);
@@ -125,7 +138,6 @@ public class ProjectBranchBreadcrumbTest {
 
         presenter.newBranchEvent(new NewBranchEvent(repository, newBranch.getName(), user));
 
-        verify(presenter).setup(any());
         verify(libraryPlaces).goToProject(project, newBranch);
     }
 
@@ -138,8 +150,52 @@ public class ProjectBranchBreadcrumbTest {
 
         presenter.newBranchEvent(new NewBranchEvent(repository, newBranch.getName(), otherUser));
 
-        verify(presenter, never()).setup(any());
         verify(libraryPlaces, never()).goToProject(project, newBranch);
+    }
+
+    @Test
+    public void repositoryUpdatedEventUpdatesBranchListTest() {
+        doReturn(true).when(libraryPlaces).isThisRepositoryBeingAccessed(repository);
+
+        presenter.repositoryUpdatedEvent(new RepositoryUpdatedEvent(repository));
+
+        verify(presenter).setup(any());
+    }
+
+    @Test
+    public void repositoryUpdatedEventRemovedCurrentBranchTest() {
+        when(project.getBranch()).thenReturn(newBranch);
+        doReturn(true).when(libraryPlaces).isThisRepositoryBeingAccessed(repository);
+
+        presenter.repositoryUpdatedEvent(new RepositoryUpdatedEvent(repository));
+
+        verify(notificationEvent).fire(any());
+        verify(libraryPlaces).goToProject(project, branch1);
+        verify(libraryPlaces, never()).goToLibrary();
+        verify(presenter, never()).setup(any());
+    }
+
+    @Test
+    public void repositoryUpdatedEventRemovedCurrentBranchAndRepositoryHasNoDefaultBranchTest() {
+        when(repository.getDefaultBranch()).thenReturn(Optional.empty());
+        when(project.getBranch()).thenReturn(newBranch);
+        doReturn(true).when(libraryPlaces).isThisRepositoryBeingAccessed(repository);
+
+        presenter.repositoryUpdatedEvent(new RepositoryUpdatedEvent(repository));
+
+        verify(notificationEvent).fire(any());
+        verify(libraryPlaces).goToLibrary();
+        verify(libraryPlaces, never()).goToProject(any(), any());
+        verify(presenter, never()).setup(any());
+    }
+
+    @Test
+    public void repositoryUpdatedEventOfAnotherRepositoryTest() {
+        doReturn(false).when(libraryPlaces).isThisRepositoryBeingAccessed(repository);
+
+        presenter.repositoryUpdatedEvent(new RepositoryUpdatedEvent(repository));
+
+        verify(presenter, never()).setup(any());
     }
 
     private Branch makeBranch(final String branchName,

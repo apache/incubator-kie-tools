@@ -726,14 +726,23 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
 
     public boolean isThisUserAccessingThisRepository(final User user,
                                                      final Repository repository) {
+        return isThisRepositoryBeingAccessed(repository) && sessionInfo.getIdentity().equals(user);
+    }
+
+    public boolean isThisRepositoryBeingAccessed(final Repository repository) {
         final Space space = repository.getSpace();
         final String repositoryAlias = repository.getAlias();
 
-        final Space activeSpace = getActiveSpace().getSpace();
-        final Repository activeRepository = getActiveWorkspace().getRepository();
-        final String activeRepositoryAlias = activeRepository.getAlias();
+        if (this.projectContext.getActiveOrganizationalUnit().isPresent()
+                && this.projectContext.getActiveWorkspaceProject().isPresent()) {
+            final Space activeSpace = this.projectContext.getActiveOrganizationalUnit().get().getSpace();
+            final Repository activeRepository = this.projectContext.getActiveWorkspaceProject().get().getRepository();
+            final String activeRepositoryAlias = activeRepository.getAlias();
 
-        return space.equals(activeSpace) && repositoryAlias.equals(activeRepositoryAlias) && sessionInfo.getIdentity().equals(user);
+            return space.equals(activeSpace) && repositoryAlias.equals(activeRepositoryAlias);
+        }
+
+        return false;
     }
 
     public void init(final LibraryPerspective libraryPerspective) {

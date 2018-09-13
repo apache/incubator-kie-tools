@@ -116,11 +116,6 @@ public class DeleteBranchPopUpView implements DeleteBranchPopUpScreen.View,
                          this.getConfirmedName());
     }
 
-    @Override
-    public String getBranchDeletedSuccessfullyMessage() {
-        return ts.format(LibraryConstants.BranchDeletedSuccessfully);
-    }
-
     private void modalSetup() {
         this.modal = new CommonModalBuilder()
                 .addHeader(ts.format(LibraryConstants.DeleteBranch))

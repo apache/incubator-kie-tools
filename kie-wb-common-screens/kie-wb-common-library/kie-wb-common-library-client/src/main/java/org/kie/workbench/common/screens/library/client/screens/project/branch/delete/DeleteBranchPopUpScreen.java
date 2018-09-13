@@ -49,8 +49,6 @@ public class DeleteBranchPopUpScreen {
 
         String getDeletingMessage();
 
-        String getBranchDeletedSuccessfullyMessage();
-
     }
 
     private Branch branch;
@@ -61,17 +59,13 @@ public class DeleteBranchPopUpScreen {
 
     private LibraryPlaces libraryPlaces;
 
-    private Event<NotificationEvent> notificationEvent;
-
     @Inject
     public DeleteBranchPopUpScreen(final DeleteBranchPopUpScreen.View view,
                                    final Caller<LibraryService> libraryService,
-                                   final LibraryPlaces libraryPlaces,
-                                   final Event<NotificationEvent> notificationEvent) {
+                                   final LibraryPlaces libraryPlaces) {
         this.view = view;
         this.libraryService = libraryService;
         this.libraryPlaces = libraryPlaces;
-        this.notificationEvent = notificationEvent;
     }
 
     @PostConstruct
@@ -95,8 +89,6 @@ public class DeleteBranchPopUpScreen {
         libraryService.call(v -> {
                                 view.hideBusyIndicator();
                                 view.hide();
-                                notificationEvent.fire(new NotificationEvent(view.getBranchDeletedSuccessfullyMessage(),
-                                                                             NotificationEvent.NotificationType.SUCCESS));
 
                                 final Optional<Branch> defaultBranch = libraryPlaces.getActiveWorkspace().getRepository().getDefaultBranch();
                                 if (defaultBranch.isPresent()) {
@@ -105,7 +97,7 @@ public class DeleteBranchPopUpScreen {
                                     libraryPlaces.goToLibrary();
                                 }
                             },
-                            new HasBusyIndicatorDefaultErrorCallback(view)).removeBranch(branch);
+                            new HasBusyIndicatorDefaultErrorCallback(view)).removeBranch(libraryPlaces.getActiveWorkspace(), branch);
     }
 
     public void cancel() {

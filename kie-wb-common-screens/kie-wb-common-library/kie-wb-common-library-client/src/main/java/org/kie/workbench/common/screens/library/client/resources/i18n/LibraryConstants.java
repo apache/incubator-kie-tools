@@ -489,6 +489,6 @@ public class LibraryConstants {
     public static final String DeleteBranch = "DeleteBranch";
 
     @TranslationKey(defaultValue = "")
-    public static final String BranchDeletedSuccessfully = "BranchDeletedSuccessfully";
+    public static final String BranchDeleted = "BranchDeleted";
 
 }

@@ -77,5 +77,6 @@ public interface LibraryService {
                    final String baseBranchName,
                    final WorkspaceProject project);
 
-    void removeBranch(final Branch branch);
+    void removeBranch(final WorkspaceProject project,
+                      final Branch branch);
 }
