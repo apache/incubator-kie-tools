@@ -51,8 +51,14 @@ public class JGitFileSystemProviderConfiguration {
     public static final String GIT_SSH_ALGORITHM = "org.uberfire.nio.git.ssh.algorithm";
     public static final String GIT_SSH_PASSPHRASE = "org.uberfire.nio.git.ssh.passphrase";
     public static final String GIT_GC_LIMIT = "org.uberfire.nio.git.gc.limit";
+    public static final String SSH_OVER_HTTP = "org.uberfire.nio.git.proxy.ssh.over.http";
+    public static final String HTTP_PROXY_HOST = "http.proxyHost";
+    public static final String HTTP_PROXY_PORT = "http.proxyPort";
     public static final String HTTP_PROXY_USER = "http.proxyUser";
     public static final String HTTP_PROXY_PASSWORD = "http.proxyPassword";
+    public static final String SSH_OVER_HTTPS = "org.uberfire.nio.git.proxy.ssh.over.https";
+    public static final String HTTPS_PROXY_HOST = "https.proxyHost";
+    public static final String HTTPS_PROXY_PORT = "https.proxyPort";
     public static final String HTTPS_PROXY_USER = "https.proxyUser";
     public static final String HTTPS_PROXY_PASSWORD = "https.proxyPassword";
     public static final String USER_DIR = "user.dir";
@@ -70,9 +76,11 @@ public class JGitFileSystemProviderConfiguration {
     public static final String SCHEME = "git";
     public static final int SCHEME_SIZE = (SCHEME + "://").length();
     public static final int DEFAULT_SCHEME_SIZE = ("default://").length();
+    public static final String DEFAULT_HOST_NAME = "localhost";
     public static final String REPOSITORIES_CONTAINER_DIR = ".niogit";
     public static final String SSH_FILE_CERT_CONTAINER_DIR = ".security";
-    public static final String DEFAULT_HOST_NAME = "localhost";
+    public static final String DEFAULT_SSH_OVER_HTTP = "false";
+    public static final String DEFAULT_SSH_OVER_HTTPS = "false";
     public static final String DEFAULT_HOST_ADDR = "127.0.0.1";
     public static final String DEFAULT_DAEMON_DEFAULT_ENABLED = "true";
     public static final String DEFAULT_DAEMON_DEFAULT_PORT = "9418";
@@ -110,8 +118,14 @@ public class JGitFileSystemProviderConfiguration {
     private File hookDir;
 
     boolean enableKetch = false;
+    private boolean sshOverHttpProxy;
+    private String httpProxyHost;
+    private int httpProxyPort;
     private String httpProxyUser;
     private String httpProxyPassword;
+    private boolean sshOverHttpsProxy;
+    private String httpsProxyHost;
+    private int httpsProxyPort;
     private String httpsProxyUser;
     private String httpsProxyPassword;
 
@@ -165,10 +179,22 @@ public class JGitFileSystemProviderConfiguration {
         final ConfigProperties.ConfigProperty commitLimitProp = systemConfig.get(GIT_GC_LIMIT,
                                                                                  DEFAULT_COMMIT_LIMIT_TO_GC);
 
+        final ConfigProperties.ConfigProperty sshOverHttpProxyProp = systemConfig.get(SSH_OVER_HTTP,
+                                                                                      DEFAULT_SSH_OVER_HTTP);
+        final ConfigProperties.ConfigProperty httpProxyHostProp = systemConfig.get(HTTP_PROXY_HOST,
+                                                                                   null);
+        final ConfigProperties.ConfigProperty httpProxyPortProp = systemConfig.get(HTTP_PROXY_PORT,
+                                                                                   null);
         final ConfigProperties.ConfigProperty httpProxyUserProp = systemConfig.get(HTTP_PROXY_USER,
                                                                                    null);
         final ConfigProperties.ConfigProperty httpProxyPasswordProp = systemConfig.get(HTTP_PROXY_PASSWORD,
                                                                                        null);
+        final ConfigProperties.ConfigProperty sshOverHttpsProxyProp = systemConfig.get(SSH_OVER_HTTPS,
+                                                                                       DEFAULT_SSH_OVER_HTTPS);
+        final ConfigProperties.ConfigProperty httpsProxyHostProp = systemConfig.get(HTTPS_PROXY_HOST,
+                                                                                    null);
+        final ConfigProperties.ConfigProperty httpsProxyPortProp = systemConfig.get(HTTPS_PROXY_PORT,
+                                                                                    null);
         final ConfigProperties.ConfigProperty httpsProxyUserProp = systemConfig.get(HTTPS_PROXY_USER,
                                                                                     null);
         final ConfigProperties.ConfigProperty httpsProxyPasswordProp = systemConfig.get(HTTPS_PROXY_PASSWORD,
@@ -189,8 +215,18 @@ public class JGitFileSystemProviderConfiguration {
         final ConfigProperties.ConfigProperty jgitCacheEvictThresoldTimeUnitProp = systemConfig.get(JGIT_CACHE_EVICT_THRESHOLD_TIME_UNIT,
                                                                                                     DEFAULT_JGIT_CACHE_EVICT_THRESHOLD_TIME_UNIT.name());
 
+        sshOverHttpProxy = sshOverHttpProxyProp.getBooleanValue();
+        if (sshOverHttpProxy) {
+            httpProxyHost = httpProxyHostProp.getValue();
+            httpProxyPort = httpProxyPortProp.getIntValue();
+        }
         httpProxyUser = httpProxyUserProp.getValue();
         httpProxyPassword = httpProxyPasswordProp.getValue();
+        sshOverHttpsProxy = sshOverHttpsProxyProp.getBooleanValue();
+        if (sshOverHttpsProxy) {
+            httpsProxyHost = httpsProxyHostProp.getValue();
+            httpsProxyPort = httpsProxyPortProp.getIntValue();
+        }
         httpsProxyUser = httpsProxyUserProp.getValue();
         httpsProxyPassword = httpsProxyPasswordProp.getValue();
 
@@ -245,8 +281,6 @@ public class JGitFileSystemProviderConfiguration {
                      validValues,
                      DEFAULT_JGIT_CACHE_EVICT_THRESHOLD_TIME_UNIT);
             jgitCacheEvictThresholdTimeUnit = DEFAULT_JGIT_CACHE_EVICT_THRESHOLD_TIME_UNIT;
-
-
         }
 
         daemonEnabled = enabledProp.getBooleanValue();
@@ -346,12 +380,36 @@ public class JGitFileSystemProviderConfiguration {
         return enableKetch;
     }
 
+    public boolean isSshOverHttpProxy() {
+        return sshOverHttpProxy;
+    }
+
+    public String getHttpProxyHost() {
+        return httpProxyHost;
+    }
+
+    public int getHttpProxyPort() {
+        return httpProxyPort;
+    }
+
     public String getHttpProxyUser() {
         return httpProxyUser;
     }
 
     public String getHttpProxyPassword() {
         return httpProxyPassword;
+    }
+
+    public boolean isSshOverHttpsProxy() {
+        return sshOverHttpsProxy;
+    }
+
+    public String getHttpsProxyHost() {
+        return httpsProxyHost;
+    }
+
+    public int getHttpsProxyPort() {
+        return httpsProxyPort;
     }
 
     public String getHttpsProxyUser() {
