@@ -27,6 +27,7 @@
     <module>kie-wb-common-ala</module>
     <module>kie-wb-common-cli</module>
     <module>kie-wb-common-dev</module>
+    <module>kie-wb-common-command-api</module>
   </modules>
 
   <properties>
