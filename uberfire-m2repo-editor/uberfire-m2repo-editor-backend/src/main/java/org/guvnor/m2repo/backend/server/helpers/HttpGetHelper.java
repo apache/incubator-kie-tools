@@ -75,6 +75,11 @@ public class HttpGetHelper {
         final File file = new File(mavenRootDir,
                                    requestedFile);
 
+        if (file == null) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
+
         if (!file.exists()) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
