@@ -362,7 +362,7 @@ public final class WiresManager
 
     private AlignAndDistributeControl addToIndex(final WiresShape shape)
     {
-        return m_index.addShape(shape.getGroup(), false);
+        return m_index.addShape(shape.getGroup(), true);
     }
 
     private void removeFromIndex(final WiresShape shape)
