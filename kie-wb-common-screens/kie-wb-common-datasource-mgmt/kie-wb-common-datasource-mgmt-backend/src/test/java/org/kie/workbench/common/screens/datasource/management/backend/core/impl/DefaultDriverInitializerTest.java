@@ -1,11 +1,11 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.datasource.management.backend.core;
+package org.kie.workbench.common.screens.datasource.management.backend.core.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,7 +91,8 @@ public class DefaultDriverInitializerTest {
     }
 
     @Test
-    public void testInitializeDefaultDrivers() {
+    public void testInitializeDefaultDriversEnabled() {
+        doReturn(false).when(driverInitializer).areDriversDisabledByDefault();
 
         driverInitializer.initializeDefaultDrivers();
 
@@ -108,6 +109,16 @@ public class DefaultDriverInitializerTest {
                    times(1)).setEntry(Paths.convert(globalNioPaths[i]),
                                       expectedDrivers.get(i));
         }
+    }
+
+    @Test
+    public void testInitializeDefaultDriversDisabled() {
+        doReturn(true).when(driverInitializer).areDriversDisabledByDefault();
+
+        driverInitializer.initializeDefaultDrivers();
+
+        verify(ioService, never()).write(any(org.uberfire.java.nio.file.Path.class), anyString(), any(CommentedOption.class));
+        verify(defRegistry, never()).setEntry(any(Path.class), any(DriverDef.class));
     }
 
     @Test

@@ -82,14 +82,19 @@ public class DefaultDriverInitializerImpl
 
     @Override
     public void initializeDefaultDrivers() {
-        boolean disableDefaultDrivers = Boolean.valueOf(getManagedProperty(DataSourceSettings.getInstance().getProperties(),
-                                                                           DISABLE_DEFAULT_DRIVERS));
+        boolean disableDefaultDrivers = areDriversDisabledByDefault();
         if (disableDefaultDrivers) {
             logger.debug("Default drivers initialization was disabled by using the " + DISABLE_DEFAULT_DRIVERS + " configuration property.");
         } else {
             initializeFromSystemProperties();
             initializeFromConfigFile();
         }
+    }
+
+    boolean areDriversDisabledByDefault() {
+        return Boolean.valueOf(getManagedProperty(DataSourceSettings.getInstance().getProperties(),
+                                                  DISABLE_DEFAULT_DRIVERS,
+                                                  "true"));
     }
 
     protected void initializeFromSystemProperties() {
