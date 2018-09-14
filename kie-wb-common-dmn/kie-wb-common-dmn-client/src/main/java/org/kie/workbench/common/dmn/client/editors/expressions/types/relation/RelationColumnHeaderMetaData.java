@@ -23,13 +23,14 @@ import java.util.function.Consumer;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
+import org.kie.workbench.common.dmn.api.definition.v1_1.Relation;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypeEditorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.NameAndDataTypeHeaderMetaData;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 
-public class RelationColumnHeaderMetaData extends NameAndDataTypeHeaderMetaData {
+public class RelationColumnHeaderMetaData extends NameAndDataTypeHeaderMetaData<Relation> {
 
     private static final String NAME_DATA_TYPE_COLUMN_GROUP = "RelationColumnHeaderMetaData$NameAndDataTypeColumn";
 

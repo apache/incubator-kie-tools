@@ -21,22 +21,42 @@ import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
+import org.kie.workbench.common.dmn.api.definition.HasVariable;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
+import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.client.editors.types.HasNameAndTypeRef;
 import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypeEditorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 
-public abstract class NameAndDataTypeHeaderMetaData extends EditablePopupHeaderMetaData<HasNameAndTypeRef, NameAndDataTypeEditorView.Presenter> implements HasNameAndTypeRef {
+public abstract class NameAndDataTypeHeaderMetaData<E extends Expression> extends EditablePopupHeaderMetaData<HasNameAndTypeRef, NameAndDataTypeEditorView.Presenter> implements HasNameAndTypeRef {
 
     private final Optional<HasName> hasName;
     private final HasTypeRef hasTypeRef;
     private final Consumer<HasName> clearDisplayNameConsumer;
     private final BiConsumer<HasName, Name> setDisplayNameConsumer;
     private final BiConsumer<HasTypeRef, QName> setTypeRefConsumer;
+
+    public NameAndDataTypeHeaderMetaData(final HasExpression hasExpression,
+                                         final Optional<E> expression,
+                                         final Optional<HasName> hasName,
+                                         final Consumer<HasName> clearDisplayNameConsumer,
+                                         final BiConsumer<HasName, Name> setDisplayNameConsumer,
+                                         final BiConsumer<HasTypeRef, QName> setTypeRefConsumer,
+                                         final CellEditorControlsView.Presenter cellEditorControls,
+                                         final NameAndDataTypeEditorView.Presenter headerEditor) {
+        this(hasName,
+             getTypeRefOfExpression(expression, hasExpression),
+             clearDisplayNameConsumer,
+             setDisplayNameConsumer,
+             setTypeRefConsumer,
+             cellEditorControls,
+             headerEditor);
+    }
 
     public NameAndDataTypeHeaderMetaData(final Optional<HasName> hasName,
                                          final HasTypeRef hasTypeRef,
@@ -52,6 +72,18 @@ public abstract class NameAndDataTypeHeaderMetaData extends EditablePopupHeaderM
         this.clearDisplayNameConsumer = clearDisplayNameConsumer;
         this.setDisplayNameConsumer = setDisplayNameConsumer;
         this.setTypeRefConsumer = setTypeRefConsumer;
+    }
+
+    private static <E extends Expression> HasTypeRef getTypeRefOfExpression(final Optional<E> expression,
+                                                                            final HasExpression hasExpression) {
+        HasTypeRef hasTypeRef = expression.orElseThrow(() -> new UnsupportedOperationException("'expression' should never be null for grids supporting NameAndDataTypeHeaderMetaData."));
+        final DMNModelInstrumentedBase base = hasExpression.asDMNModelInstrumentedBase();
+        if (base instanceof HasVariable) {
+            final HasVariable hasVariable = (HasVariable) base;
+            hasTypeRef = hasVariable.getVariable();
+        }
+
+        return hasTypeRef;
     }
 
     @Override

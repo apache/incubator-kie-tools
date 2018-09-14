@@ -20,8 +20,10 @@ import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
+import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypeEditorView;
@@ -29,19 +31,21 @@ import org.kie.workbench.common.dmn.client.widgets.grid.columns.NameAndDataTypeH
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
-public class OutputClauseColumnExpressionNameHeaderMetaData extends NameAndDataTypeHeaderMetaData {
+public class OutputClauseColumnExpressionNameHeaderMetaData extends NameAndDataTypeHeaderMetaData<DecisionTable> {
 
     private static final String NAME_DATA_TYPE_COLUMN_GROUP = "OutputClauseColumnExpressionNameHeaderMetaData$NameAndDataTypeColumn";
 
-    public OutputClauseColumnExpressionNameHeaderMetaData(final HasName hasName,
-                                                          final HasTypeRef hasTypeRef,
+    public OutputClauseColumnExpressionNameHeaderMetaData(final HasExpression hasExpression,
+                                                          final Optional<DecisionTable> expression,
+                                                          final Optional<HasName> hasName,
                                                           final Consumer<HasName> clearDisplayNameConsumer,
                                                           final BiConsumer<HasName, Name> setDisplayNameConsumer,
                                                           final BiConsumer<HasTypeRef, QName> setTypeRefConsumer,
                                                           final CellEditorControlsView.Presenter cellEditorControls,
                                                           final NameAndDataTypeEditorView.Presenter headerEditor) {
-        super(Optional.of(hasName),
-              hasTypeRef,
+        super(hasExpression,
+              expression,
+              hasName,
               clearDisplayNameConsumer,
               setDisplayNameConsumer,
               setTypeRefConsumer,

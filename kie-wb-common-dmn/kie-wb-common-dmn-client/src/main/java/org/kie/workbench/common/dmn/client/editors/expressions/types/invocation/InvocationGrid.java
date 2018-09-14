@@ -20,8 +20,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import javax.enterprise.event.Event;
@@ -30,10 +28,7 @@ import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
-import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
-import org.kie.workbench.common.dmn.api.definition.HasVariable;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Binding;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Invocation;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
@@ -63,7 +58,6 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
-import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormProperties;
@@ -143,28 +137,22 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGri
 
     @Override
     protected void initialiseUiColumns() {
-        HasTypeRef hasTypeRef = expression.get();
-        final DMNModelInstrumentedBase base = hasExpression.asDMNModelInstrumentedBase();
-        if (base instanceof HasVariable) {
-            final HasVariable hasVariable = (HasVariable) base;
-            hasTypeRef = hasVariable.getVariable();
-        }
-
         final InvocationColumnExpressionHeaderMetaData expressionHeaderMetaData = new InvocationColumnExpressionHeaderMetaData(this::getExpressionText,
                                                                                                                                this::setExpressionText,
                                                                                                                                getHeaderTextAreaFactory());
-        final InvocationParameterColumn nameColumn = new InvocationParameterColumn(Arrays.asList(new InvocationColumnHeaderMetaData(hasName,
-                                                                                                                                    hasTypeRef,
-                                                                                                                                    clearDisplayNameConsumer(),
-                                                                                                                                    setDisplayNameConsumer(),
+        final InvocationParameterColumn nameColumn = new InvocationParameterColumn(Arrays.asList(new InvocationColumnHeaderMetaData(hasExpression,
+                                                                                                                                    expression,
+                                                                                                                                    hasName,
+                                                                                                                                    clearDisplayNameConsumer(true),
+                                                                                                                                    setDisplayNameConsumer(true),
                                                                                                                                     setTypeRefConsumer(),
                                                                                                                                     cellEditorControls,
                                                                                                                                     headerEditor),
                                                                                                  expressionHeaderMetaData),
                                                                                    this,
                                                                                    rowIndex -> true,
-                                                                                   superClearDisplayNameConsumer(),
-                                                                                   superSetDisplayNameConsumer(),
+                                                                                   clearDisplayNameConsumer(false),
+                                                                                   setDisplayNameConsumer(false),
                                                                                    setTypeRefConsumer(),
                                                                                    cellEditorControls,
                                                                                    headerEditor);
@@ -179,36 +167,6 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGri
         model.appendColumn(expressionColumn);
 
         getRenderer().setColumnRenderConstraint((isSelectionLayer, gridColumn) -> !isSelectionLayer || gridColumn.equals(expressionColumn));
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public Consumer<HasName> clearDisplayNameConsumer() {
-        return (hn) -> {
-            final CompositeCommand.Builder commandBuilder = newHasNameHasNoValueCommand(hn);
-            getUpdateStunnerTitleCommand("").ifPresent(commandBuilder::addCommand);
-            sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
-                                          commandBuilder.build());
-        };
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public BiConsumer<HasName, Name> setDisplayNameConsumer() {
-        return (hn, name) -> {
-            final CompositeCommand.Builder commandBuilder = newHasNameHasValueCommand(hn, name);
-            getUpdateStunnerTitleCommand(name.getValue()).ifPresent(commandBuilder::addCommand);
-            sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
-                                          commandBuilder.build());
-        };
-    }
-
-    Consumer<HasName> superClearDisplayNameConsumer() {
-        return super.clearDisplayNameConsumer();
-    }
-
-    BiConsumer<HasName, Name> superSetDisplayNameConsumer() {
-        return super.setDisplayNameConsumer();
     }
 
     private String getExpressionText() {

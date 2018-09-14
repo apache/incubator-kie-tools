@@ -20,8 +20,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import javax.enterprise.event.Event;
@@ -30,9 +28,6 @@ import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
-import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
-import org.kie.workbench.common.dmn.api.definition.HasVariable;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.FunctionDefinition;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
@@ -66,7 +61,6 @@ import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
-import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormProperties;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
@@ -152,18 +146,12 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
 
     @Override
     protected void initialiseUiColumns() {
-        HasTypeRef hasTypeRef = expression.get();
-        final DMNModelInstrumentedBase base = hasExpression.asDMNModelInstrumentedBase();
-        if (base instanceof HasVariable) {
-            final HasVariable hasVariable = (HasVariable) base;
-            hasTypeRef = hasVariable.getVariable();
-        }
-
         final GridColumn expressionColumn = new FunctionColumn(gridLayer,
-                                                               Arrays.asList(new FunctionColumnNameHeaderMetaData(hasName,
-                                                                                                                  hasTypeRef,
-                                                                                                                  clearDisplayNameConsumer(),
-                                                                                                                  setDisplayNameConsumer(),
+                                                               Arrays.asList(new FunctionColumnNameHeaderMetaData(hasExpression,
+                                                                                                                  expression,
+                                                                                                                  hasName,
+                                                                                                                  clearDisplayNameConsumer(true),
+                                                                                                                  setDisplayNameConsumer(true),
                                                                                                                   setTypeRefConsumer(),
                                                                                                                   cellEditorControls,
                                                                                                                   headerEditor),
@@ -177,28 +165,6 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
         model.appendColumn(expressionColumn);
 
         getRenderer().setColumnRenderConstraint((isSelectionLayer, gridColumn) -> !isSelectionLayer || gridColumn.equals(expressionColumn));
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public Consumer<HasName> clearDisplayNameConsumer() {
-        return (hn) -> {
-            final CompositeCommand.Builder commandBuilder = newHasNameHasNoValueCommand(hn);
-            getUpdateStunnerTitleCommand("").ifPresent(commandBuilder::addCommand);
-            sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
-                                          commandBuilder.build());
-        };
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public BiConsumer<HasName, Name> setDisplayNameConsumer() {
-        return (hn, name) -> {
-            final CompositeCommand.Builder commandBuilder = newHasNameHasValueCommand(hn, name);
-            getUpdateStunnerTitleCommand(name.getValue()).ifPresent(commandBuilder::addCommand);
-            sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
-                                          commandBuilder.build());
-        };
     }
 
     @Override

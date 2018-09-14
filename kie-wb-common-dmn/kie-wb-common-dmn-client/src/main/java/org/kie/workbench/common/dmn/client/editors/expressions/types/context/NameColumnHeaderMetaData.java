@@ -20,27 +20,31 @@ import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
+import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypeEditorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.NameAndDataTypeHeaderMetaData;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 
-public class NameColumnHeaderMetaData extends NameAndDataTypeHeaderMetaData {
+public class NameColumnHeaderMetaData extends NameAndDataTypeHeaderMetaData<Context> {
 
     private static final String NAME_DATA_TYPE_COLUMN_GROUP = "NameColumnHeaderMetaData$NameAndDataTypeColumn";
 
-    public NameColumnHeaderMetaData(final Optional<HasName> hasName,
-                                    final HasTypeRef hasTypeRef,
+    public NameColumnHeaderMetaData(final HasExpression hasExpression,
+                                    final Optional<Context> expression,
+                                    final Optional<HasName> hasName,
                                     final Consumer<HasName> clearDisplayNameConsumer,
                                     final BiConsumer<HasName, Name> setDisplayNameConsumer,
                                     final BiConsumer<HasTypeRef, QName> setTypeRefConsumer,
                                     final CellEditorControlsView.Presenter cellEditorControls,
                                     final NameAndDataTypeEditorView.Presenter headerEditor) {
-        super(hasName,
-              hasTypeRef,
+        super(hasExpression,
+              expression,
+              hasName,
               clearDisplayNameConsumer,
               setDisplayNameConsumer,
               setTypeRefConsumer,

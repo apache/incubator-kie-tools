@@ -50,8 +50,13 @@ import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorCh
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellValueTuple;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.command.UpdateElementPropertyCommand;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.command.Command;
+import org.kie.workbench.common.stunner.core.graph.Element;
+import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
+import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.core.util.UUID;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormProperties;
 import org.mockito.ArgumentCaptor;
@@ -87,6 +92,10 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
 
     private static final QName TYPE_REF = new QName();
 
+    private static final String DEFINITION = "definition";
+
+    private static final String NAME_ID = "nameId";
+
     private GridCellTuple tupleWithoutValue;
 
     private GridCellValueTuple tupleWithValue;
@@ -96,6 +105,18 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
 
     @Mock
     private AbstractCanvasHandler canvasHandler;
+
+    @Mock
+    private Index<?, ?> index;
+
+    @Mock
+    private Element element;
+
+    @Mock
+    private Definition definition;
+
+    @Mock
+    private UpdateElementPropertyCommand updateElementPropertyCommand;
 
     @Captor
     private ArgumentCaptor<GridLayerRedrawManager.PrioritizedCommand> redrawCommandCaptor;
@@ -117,6 +138,12 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
 
         when(sessionManager.getCurrentSession()).thenReturn(session);
         when(session.getCanvasHandler()).thenReturn(canvasHandler);
+
+        when(canvasHandler.getGraphIndex()).thenReturn(index);
+        when(element.getContent()).thenReturn(definition);
+        when(definition.getDefinition()).thenReturn(DEFINITION);
+        when(definitionUtils.getNameIdentifier(DEFINITION)).thenReturn(NAME_ID);
+        when(updateElementPropertyCommand.execute(canvasHandler)).thenReturn(CanvasCommandResultBuilder.SUCCESS);
     }
 
     @Override
@@ -420,7 +447,8 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
 
     @Test
     public void testClearDisplayNameConsumer() {
-        doTestClearDisplayNameConsumer();
+        doTestClearDisplayNameConsumer(false,
+                                       DeleteHasNameCommand.class);
 
         verify(gridLayer).batch();
     }
@@ -430,7 +458,8 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
         final String uuid = UUID.uuid();
         doReturn(Optional.of(uuid)).when(grid).getNodeUUID();
 
-        doTestClearDisplayNameConsumer();
+        doTestClearDisplayNameConsumer(false,
+                                       DeleteHasNameCommand.class);
 
         verify(gridLayer).batch();
         verify(refreshFormPropertiesEvent).fire(refreshFormPropertiesCaptor.capture());
@@ -440,23 +469,53 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
         assertThat(refreshFormProperties.getSession()).isEqualTo(session);
     }
 
+    @Test
+    public void testClearDisplayNameConsumerAndUpdateStunnerTitle() {
+        doTestClearDisplayNameConsumer(true,
+                                       DeleteHasNameCommand.class);
+
+        verify(gridLayer).batch();
+    }
+
+    @Test
+    public void testClearDisplayNameConsumerWhenNotNestedAndUpdateStunnerTitle() {
+        final String uuid = UUID.uuid();
+        doReturn(Optional.of(uuid)).when(grid).getNodeUUID();
+        when(index.get(uuid)).thenReturn(element);
+        when(canvasCommandFactory.updatePropertyValue(element, NAME_ID, "")).thenReturn(updateElementPropertyCommand);
+
+        doTestClearDisplayNameConsumer(true,
+                                       DeleteHasNameCommand.class,
+                                       UpdateElementPropertyCommand.class);
+
+        verify(gridLayer).batch();
+        verify(updateElementPropertyCommand).execute(eq(canvasHandler));
+        verify(refreshFormPropertiesEvent).fire(refreshFormPropertiesCaptor.capture());
+
+        final RefreshFormProperties refreshFormProperties = refreshFormPropertiesCaptor.getValue();
+        assertThat(refreshFormProperties.getUuid()).isEqualTo(uuid);
+        assertThat(refreshFormProperties.getSession()).isEqualTo(session);
+    }
+
     @SuppressWarnings("unchecked")
-    private void doTestClearDisplayNameConsumer() {
-        grid.clearDisplayNameConsumer().accept(decision);
+    private void doTestClearDisplayNameConsumer(final boolean updateStunnerTitle,
+                                                final Class... expectedCommandClasses) {
+        grid.clearDisplayNameConsumer(updateStunnerTitle).accept(decision);
 
         verify(sessionCommandManager).execute(eq(canvasHandler),
                                               commandCaptor.capture());
 
         final Command command = commandCaptor.getValue();
         GridFactoryCommandUtils.assertCommands(command,
-                                               DeleteHasNameCommand.class);
+                                               expectedCommandClasses);
 
         command.execute(canvasHandler);
     }
 
     @Test
     public void testSetDisplayNameConsumer() {
-        doTestSetDisplayNameConsumer();
+        doTestSetDisplayNameConsumer(false,
+                                     SetHasNameCommand.class);
 
         verify(gridLayer).batch();
     }
@@ -466,7 +525,8 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
         final String uuid = UUID.uuid();
         doReturn(Optional.of(uuid)).when(grid).getNodeUUID();
 
-        doTestSetDisplayNameConsumer();
+        doTestSetDisplayNameConsumer(false,
+                                     SetHasNameCommand.class);
 
         verify(gridLayer).batch();
         verify(refreshFormPropertiesEvent).fire(refreshFormPropertiesCaptor.capture());
@@ -476,16 +536,45 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
         assertThat(refreshFormProperties.getSession()).isEqualTo(session);
     }
 
+    @Test
+    public void testSetDisplayNameConsumerAndUpdateStunnerTitle() {
+        doTestSetDisplayNameConsumer(true,
+                                     SetHasNameCommand.class);
+
+        verify(gridLayer).batch();
+    }
+
+    @Test
+    public void testSetDisplayNameConsumerWhenNotNestedAndUpdateStunnerTitle() {
+        final String uuid = UUID.uuid();
+        doReturn(Optional.of(uuid)).when(grid).getNodeUUID();
+        when(index.get(uuid)).thenReturn(element);
+        when(canvasCommandFactory.updatePropertyValue(element, NAME_ID, NAME.getValue())).thenReturn(updateElementPropertyCommand);
+
+        doTestSetDisplayNameConsumer(true,
+                                     SetHasNameCommand.class,
+                                     UpdateElementPropertyCommand.class);
+
+        verify(gridLayer).batch();
+        verify(updateElementPropertyCommand).execute(eq(canvasHandler));
+        verify(refreshFormPropertiesEvent).fire(refreshFormPropertiesCaptor.capture());
+
+        final RefreshFormProperties refreshFormProperties = refreshFormPropertiesCaptor.getValue();
+        assertThat(refreshFormProperties.getUuid()).isEqualTo(uuid);
+        assertThat(refreshFormProperties.getSession()).isEqualTo(session);
+    }
+
     @SuppressWarnings("unchecked")
-    private void doTestSetDisplayNameConsumer() {
-        grid.setDisplayNameConsumer().accept(decision, NAME);
+    private void doTestSetDisplayNameConsumer(final boolean updateStunnerTitle,
+                                              final Class... expectedCommandClasses) {
+        grid.setDisplayNameConsumer(updateStunnerTitle).accept(decision, NAME);
 
         verify(sessionCommandManager).execute(eq(canvasHandler),
                                               commandCaptor.capture());
 
         final Command command = commandCaptor.getValue();
         GridFactoryCommandUtils.assertCommands(command,
-                                               SetHasNameCommand.class);
+                                               expectedCommandClasses);
 
         command.execute(canvasHandler);
     }

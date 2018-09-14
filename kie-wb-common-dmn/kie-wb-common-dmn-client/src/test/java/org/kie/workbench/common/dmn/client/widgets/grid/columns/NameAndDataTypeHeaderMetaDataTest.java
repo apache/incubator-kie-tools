@@ -17,54 +17,13 @@
 package org.kie.workbench.common.dmn.client.widgets.grid.columns;
 
 import java.util.Optional;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasName;
-import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
-import org.kie.workbench.common.dmn.api.property.dmn.Name;
-import org.kie.workbench.common.dmn.api.property.dmn.QName;
-import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypeEditorView;
-import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
-import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 @RunWith(MockitoJUnitRunner.class)
-public class NameAndDataTypeHeaderMetaDataTest {
-
-    private static final String NAME_DATA_TYPE_COLUMN_GROUP = "NameAndDataTypeHeaderMetaDataTest$NameAndDataTypeColumn";
-
-    private static final Name NAME = new Name("name");
-
-    @Mock
-    private HasTypeRef hasTypeRef;
-
-    @Mock
-    private Consumer<HasName> clearDisplayNameConsumer;
-
-    @Mock
-    private BiConsumer<HasName, Name> setDisplayNameConsumer;
-
-    @Mock
-    private BiConsumer<HasTypeRef, QName> setTypeRefConsumer;
-
-    @Mock
-    private CellEditorControlsView.Presenter cellEditorControls;
-
-    @Mock
-    private NameAndDataTypeEditorView.Presenter headerEditor;
-
-    private NameAndDataTypeHeaderMetaData metaData;
+public class NameAndDataTypeHeaderMetaDataTest extends BaseNameAndDataTypeHeaderMetaDataTest {
 
     public void setup(final Optional<HasName> hasName) {
         this.metaData = new NameAndDataTypeHeaderMetaData(hasName,
@@ -79,128 +38,5 @@ public class NameAndDataTypeHeaderMetaDataTest {
                 return NAME_DATA_TYPE_COLUMN_GROUP;
             }
         };
-    }
-
-    @Test
-    public void testGetPresenter() {
-        setup(Optional.empty());
-
-        assertThat(metaData.getPresenter()).isEqualTo(metaData);
-    }
-
-    @Test
-    public void testGetTitleWithHasName() {
-        final Decision decision = new Decision();
-        decision.setName(NAME);
-        setup(Optional.of(decision));
-
-        assertThat(metaData.getTitle()).isEqualTo(NAME.getValue());
-    }
-
-    @Test
-    public void testGetDisplayNameWithHasName() {
-        final Decision decision = new Decision();
-        decision.setName(NAME);
-        setup(Optional.of(decision));
-
-        assertThat(metaData.getName()).isEqualTo(NAME);
-    }
-
-    @Test
-    public void testGetTitleWithoutHasName() {
-        setup(Optional.empty());
-
-        assertThat(metaData.getTitle()).isEqualTo(HasName.NOP.getName().getValue());
-    }
-
-    @Test
-    public void testGetDisplayNameWithoutHasName() {
-        setup(Optional.empty());
-
-        assertThat(metaData.getName()).isEqualTo(HasName.NOP.getName());
-    }
-
-    @Test
-    public void testGetTypeRef() {
-        setup(Optional.empty());
-
-        metaData.getTypeRef();
-
-        verify(hasTypeRef).getTypeRef();
-    }
-
-    @Test
-    public void testSetDisplayNameWithHasName() {
-        final Decision decision = new Decision();
-        setup(Optional.of(decision));
-
-        metaData.setName(NAME);
-
-        verify(setDisplayNameConsumer).accept(eq(decision), eq(NAME));
-    }
-
-    @Test
-    public void testSetDisplayNameWithHasNameWithEmptyValue() {
-        final Decision decision = new Decision();
-        decision.setName(NAME);
-        setup(Optional.of(decision));
-
-        metaData.setName(new Name());
-
-        verify(clearDisplayNameConsumer).accept(eq(decision));
-    }
-
-    @Test
-    public void testSetDisplayNameWithHasNameWithoutChange() {
-        final Decision decision = new Decision();
-        decision.setName(NAME);
-        setup(Optional.of(decision));
-
-        metaData.setName(NAME);
-
-        verify(clearDisplayNameConsumer, never()).accept(any(HasName.class));
-        verify(setDisplayNameConsumer, never()).accept(any(HasName.class), any(Name.class));
-    }
-
-    @Test
-    public void testSetDisplayNameWithoutHasName() {
-        setup(Optional.empty());
-
-        metaData.setName(NAME);
-
-        verify(setDisplayNameConsumer, never()).accept(any(HasName.class), any(Name.class));
-    }
-
-    @Test
-    public void testSetTypeRef() {
-        setup(Optional.empty());
-
-        final QName typeRef = new QName();
-
-        metaData.setTypeRef(typeRef);
-
-        verify(setTypeRefConsumer).accept(eq(hasTypeRef), eq(typeRef));
-    }
-
-    @Test
-    public void testSetTypeRefWithoutChange() {
-        setup(Optional.empty());
-
-        final QName typeRef = new QName();
-        when(hasTypeRef.getTypeRef()).thenReturn(typeRef);
-
-        metaData.setTypeRef(typeRef);
-
-        verify(setTypeRefConsumer, never()).accept(any(HasTypeRef.class), any(QName.class));
-    }
-
-    @Test
-    public void testAsDMNModelInstrumentedBase() {
-        final Decision decision = new Decision();
-        setup(Optional.empty());
-
-        when(hasTypeRef.asDMNModelInstrumentedBase()).thenReturn(decision);
-
-        assertThat(metaData.asDMNModelInstrumentedBase()).isEqualTo(decision);
     }
 }

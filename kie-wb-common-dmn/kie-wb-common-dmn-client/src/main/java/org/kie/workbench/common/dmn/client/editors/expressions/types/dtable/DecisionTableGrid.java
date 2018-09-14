@@ -19,8 +19,6 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.dtable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import javax.enterprise.event.Event;
@@ -29,10 +27,7 @@ import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
-import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
-import org.kie.workbench.common.dmn.api.definition.HasVariable;
 import org.kie.workbench.common.dmn.api.definition.v1_1.BuiltinAggregator;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionRule;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTableOrientation;
@@ -187,8 +182,8 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
     private InputClauseColumn makeInputClauseColumn(final InputClause ic) {
         final InputClauseColumn column = new InputClauseColumn(new InputClauseColumnHeaderMetaData(wrapInputClauseIntoHasName(ic),
                                                                                                    ic.getInputExpression(),
-                                                                                                   clearDisplayNameConsumer(),
-                                                                                                   setDisplayNameConsumer(),
+                                                                                                   clearDisplayNameConsumer(false),
+                                                                                                   setDisplayNameConsumer(false),
                                                                                                    setTypeRefConsumer(),
                                                                                                    cellEditorControls,
                                                                                                    headerEditor),
@@ -224,19 +219,11 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
             final List<GridColumn.HeaderMetaData> metaData = new ArrayList<>();
             expression.ifPresent(dtable -> {
                 if (hasName.isPresent()) {
-                    final HasName name = hasName.get();
-
-                    HasTypeRef hasTypeRef = dtable;
-                    final DMNModelInstrumentedBase base = hasExpression.asDMNModelInstrumentedBase();
-                    if (base instanceof HasVariable) {
-                        final HasVariable hasVariable = (HasVariable) base;
-                        hasTypeRef = hasVariable.getVariable();
-                    }
-
-                    metaData.add(new OutputClauseColumnExpressionNameHeaderMetaData(name,
-                                                                                    hasTypeRef,
-                                                                                    clearExpressionDisplayNameConsumer(),
-                                                                                    setExpressionDisplayNameConsumer(),
+                    metaData.add(new OutputClauseColumnExpressionNameHeaderMetaData(hasExpression,
+                                                                                    expression,
+                                                                                    hasName,
+                                                                                    clearDisplayNameConsumer(true),
+                                                                                    setDisplayNameConsumer(true),
                                                                                     setTypeRefConsumer(),
                                                                                     cellEditorControls,
                                                                                     headerEditor));
@@ -246,8 +233,8 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
                 if (dtable.getOutput().size() > 1) {
                     metaData.add(new OutputClauseColumnHeaderMetaData(wrapOutputClauseIntoHasName(oc),
                                                                       oc,
-                                                                      clearDisplayNameConsumer(),
-                                                                      setDisplayNameConsumer(),
+                                                                      clearDisplayNameConsumer(false),
+                                                                      setDisplayNameConsumer(false),
                                                                       setTypeRefConsumer(),
                                                                       cellEditorControls,
                                                                       headerEditor));
@@ -269,26 +256,6 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
             public void setName(final Name name) {
                 outputClause.setName(name.getValue());
             }
-        };
-    }
-
-    @SuppressWarnings("unchecked")
-    protected Consumer<HasName> clearExpressionDisplayNameConsumer() {
-        return (hn) -> {
-            final CompositeCommand.Builder commandBuilder = newHasNameHasNoValueCommand(hn);
-            getUpdateStunnerTitleCommand("").ifPresent(commandBuilder::addCommand);
-            sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
-                                          commandBuilder.build());
-        };
-    }
-
-    @SuppressWarnings("unchecked")
-    protected BiConsumer<HasName, Name> setExpressionDisplayNameConsumer() {
-        return (hn, name) -> {
-            final CompositeCommand.Builder commandBuilder = newHasNameHasValueCommand(hn, name);
-            getUpdateStunnerTitleCommand(name.getValue()).ifPresent(commandBuilder::addCommand);
-            sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
-                                          commandBuilder.build());
         };
     }
 

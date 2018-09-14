@@ -137,8 +137,8 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
 
     private RelationColumn makeRelationColumn(final InformationItem informationItem) {
         final RelationColumn relationColumn = new RelationColumn(new RelationColumnHeaderMetaData(informationItem,
-                                                                                                  clearDisplayNameConsumer(),
-                                                                                                  setDisplayNameConsumer(),
+                                                                                                  clearDisplayNameConsumer(false),
+                                                                                                  setDisplayNameConsumer(false),
                                                                                                   setTypeRefConsumer(),
                                                                                                   cellEditorControls,
                                                                                                   headerEditor),
