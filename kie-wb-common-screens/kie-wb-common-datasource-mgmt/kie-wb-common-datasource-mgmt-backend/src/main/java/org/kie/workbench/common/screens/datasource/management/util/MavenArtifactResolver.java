@@ -16,64 +16,85 @@
 
 package org.kie.workbench.common.screens.datasource.management.util;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
-import java.nio.charset.StandardCharsets;
 import javax.enterprise.context.ApplicationScoped;
 
-import org.apache.maven.artifact.Artifact;
-import org.apache.maven.project.MavenProject;
-import org.appformer.maven.integration.embedder.MavenProjectLoader;
-import org.guvnor.common.services.project.backend.server.utils.POMContentHandler;
-import org.guvnor.common.services.project.model.Dependency;
+import org.apache.maven.repository.internal.MavenRepositorySystemUtils;
+import org.appformer.maven.integration.Aether;
+import org.eclipse.aether.DefaultRepositorySystemSession;
+import org.eclipse.aether.RepositorySystem;
+import org.eclipse.aether.RepositorySystemSession;
+import org.eclipse.aether.artifact.DefaultArtifact;
+import org.eclipse.aether.connector.basic.BasicRepositoryConnectorFactory;
+import org.eclipse.aether.impl.DefaultServiceLocator;
+import org.eclipse.aether.repository.LocalRepository;
+import org.eclipse.aether.resolution.ArtifactRequest;
+import org.eclipse.aether.resolution.ArtifactResult;
+import org.eclipse.aether.spi.connector.RepositoryConnectorFactory;
+import org.eclipse.aether.spi.connector.transport.TransporterFactory;
+import org.eclipse.aether.transport.file.FileTransporterFactory;
+import org.eclipse.aether.transport.http.HttpTransporterFactory;
 import org.guvnor.common.services.project.model.GAV;
-import org.guvnor.common.services.project.model.POM;
+import org.guvnor.m2repo.preferences.ArtifactRepositoryPreference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @ApplicationScoped
 public class MavenArtifactResolver {
 
-    private static final Logger logger = LoggerFactory.getLogger( MavenArtifactResolver.class );
-
-    private POMContentHandler pomContentHandler = new POMContentHandler();
+    private static final Logger logger = LoggerFactory.getLogger(MavenArtifactResolver.class);
+    private static final String JAR_ARTIFACT = "jar";
 
     public MavenArtifactResolver() {
     }
 
-    public URI resolve( final String groupId, final String artifactId, final String version ) throws Exception {
-
-        final POM projectPom = new POM( new GAV( "resolver-dummy-group",
-                "resolver-dummy-artifact",
-                "resolver-dummy-version" ) );
-
-        projectPom.getDependencies().add( new Dependency( new GAV( groupId, artifactId, version ) ) );
-
-        try {
-
-            final String pomXML = pomContentHandler.toString( projectPom );
-
-            final InputStream pomStream = new ByteArrayInputStream( pomXML.getBytes( StandardCharsets.UTF_8 ) );
-            final MavenProject mavenProject = MavenProjectLoader.parseMavenPom( pomStream );
-
-            for ( Artifact mavenArtifact : mavenProject.getArtifacts() ) {
-                if ( groupId.equals( mavenArtifact.getGroupId() ) &&
-                        artifactId.equals( mavenArtifact.getArtifactId() ) &&
-                        version.equals( mavenArtifact.getVersion() ) &&
-                        mavenArtifact.getFile().exists() ) {
-                    return mavenArtifact.getFile().toURI();
-                }
-            }
-
-            return null;
-        } catch ( IOException e ) {
-            logger.error( "Unable to get artifact: " + groupId + ":" + artifactId + ":" + version +
-                    " from maven repository", e );
-            throw new Exception( "Unable to get artifact: " + groupId + ":" + artifactId + ":" + version +
-                    " from maven repository", e );
-        }
+    public static RepositorySystemSession getAetherSessionWithGlobalRepo() {
+        return newSession(newRepositorySystem());
     }
 
+    private static RepositorySystemSession newSession(RepositorySystem system) {
+        DefaultRepositorySystemSession session = MavenRepositorySystemUtils.newSession();
+        LocalRepository localRepo = new LocalRepository(ArtifactRepositoryPreference.getGlobalM2RepoDirWithFallback());
+        session.setLocalRepositoryManager(system.newLocalRepositoryManager(session,
+                                                                           localRepo));
+        return session;
+    }
+
+    private static RepositorySystem newRepositorySystem() {
+        DefaultServiceLocator locator = MavenRepositorySystemUtils.newServiceLocator();
+        locator.addService(RepositoryConnectorFactory.class,
+                           BasicRepositoryConnectorFactory.class);
+        locator.addService(TransporterFactory.class,
+                           FileTransporterFactory.class);
+        locator.addService(TransporterFactory.class,
+                           HttpTransporterFactory.class);
+        return locator.getService(RepositorySystem.class);
+    }
+
+    public URI resolve(final String groupId,
+                       final String artifactId,
+                       final String version) throws Exception {
+        try {
+            GAV gav = new GAV(groupId,
+                              artifactId,
+                              version);
+            org.eclipse.aether.artifact.Artifact jarArtifact = new DefaultArtifact(gav.getGroupId(),
+                                                                                   gav.getArtifactId(),
+                                                                                   JAR_ARTIFACT,
+                                                                                   gav.getVersion());
+            RepositorySystemSession session = newSession(newRepositorySystem());
+            ArtifactRequest artifactReq = new ArtifactRequest();
+            artifactReq.setArtifact(jarArtifact);
+            ArtifactResult result = Aether.getAether().getSystem().resolveArtifact(session,
+                                                                                   artifactReq);
+            return result.getArtifact().getFile().toURI();
+        } catch (Exception e) {
+            logger.error("Unable to get artifact: " + groupId + ":" + artifactId + ":" + version +
+                                 " from maven repository",
+                         e);
+            throw new Exception("Unable to get artifact: " + groupId + ":" + artifactId + ":" + version +
+                                        " from maven repository",
+                                e);
+        }
+    }
 }
