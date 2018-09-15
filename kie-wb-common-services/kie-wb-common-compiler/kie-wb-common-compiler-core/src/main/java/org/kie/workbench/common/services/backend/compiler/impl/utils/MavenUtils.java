@@ -136,19 +136,19 @@ public class MavenUtils {
     }
 
     private static String getGlobalRepo(Collection<RemoteRepository> remoteRepos) {
-        String mavenRepo = "";
+        String mavenRepoPath = "";
         for (RemoteRepository item : remoteRepos) {
             if (item.getId().startsWith(ArtifactRepositoryService.GLOBAL_M2_REPO_NAME)) {
-                mavenRepo = item.getUrl();
+                mavenRepoPath = item.getUrl();
                 break;
             }
         }
-        if (mavenRepo.isEmpty()) {
+        if (mavenRepoPath.isEmpty()) {
             String envVar = System.getProperty(ArtifactRepositoryService.GLOBAL_M2_REPO_NAME);
             if (envVar != null) {
-                mavenRepo = envVar;
+                mavenRepoPath = envVar;
             }
         }
-        return mavenRepo;
+        return mavenRepoPath;
     }
 }

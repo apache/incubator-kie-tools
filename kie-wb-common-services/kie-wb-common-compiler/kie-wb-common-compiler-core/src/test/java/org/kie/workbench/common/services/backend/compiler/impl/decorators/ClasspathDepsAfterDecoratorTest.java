@@ -42,7 +42,7 @@ public class ClasspathDepsAfterDecoratorTest extends BaseCompilerTest {
     @Test
     public void compileTest() {
 
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepoPath,
                                                                info,
                                                                new String[]{
                                                                        MavenCLIArgs.COMPILE,
@@ -60,7 +60,7 @@ public class ClasspathDepsAfterDecoratorTest extends BaseCompilerTest {
 
     @Test
     public void failCompileTest() throws IOException {
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepoPath,
                                                                createdNewPrjInRepo("dummy-fail", ResourcesConstants.DUMMY_FAIL_DEPS_SIMPLE),
                                                                new String[]{
                                                                        MavenCLIArgs.COMPILE,

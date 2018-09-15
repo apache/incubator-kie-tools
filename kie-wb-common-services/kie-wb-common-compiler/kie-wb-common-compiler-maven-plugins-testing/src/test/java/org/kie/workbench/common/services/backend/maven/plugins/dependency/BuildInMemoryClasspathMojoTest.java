@@ -47,7 +47,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class BuildInMemoryClasspathMojoTest {
 
     private static Path tmpRoot;
-    private String mavenRepo;
+    private String mavenRepoPath;
     private static Logger logger = LoggerFactory.getLogger(BuildInMemoryClasspathMojoTest.class);
     private String alternateSettingsAbsPath;
 
@@ -59,7 +59,7 @@ public class BuildInMemoryClasspathMojoTest {
 
     @Before
     public void setUp() throws Exception {
-        mavenRepo = TestUtilMaven.getMavenRepo();
+        mavenRepoPath = TestUtilMaven.getMavenRepo();
         tmpRoot = Files.createTempDirectory("repo");
         alternateSettingsAbsPath = TestUtilMaven.getSettingsFile();
     }
@@ -71,7 +71,7 @@ public class BuildInMemoryClasspathMojoTest {
         Path path = Paths.get(".").resolve("target/test-classes/dummy_deps_simple");
         final AFCompiler compiler = KieMavenCompilerFactory.getCompiler(EnumSet.of(KieDecorator.STORE_BUILD_CLASSPATH ));
         WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(path);
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepoPath,
                                                                info,
                                                                new String[]{ MavenCLIArgs.ALTERNATE_USER_SETTINGS + alternateSettingsAbsPath, MavenConfig.DEPS_IN_MEMORY_BUILD_CLASSPATH},
                                                                Boolean.FALSE);
@@ -88,7 +88,7 @@ public class BuildInMemoryClasspathMojoTest {
         Path path = Paths.get(".").resolve("target/test-classes/dummy_deps_complex");
         final AFCompiler compiler = KieMavenCompilerFactory.getCompiler(EnumSet.of(KieDecorator.STORE_BUILD_CLASSPATH ));
         WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(path);
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepoPath,
                                                                info,
                                                                new String[]{MavenCLIArgs.ALTERNATE_USER_SETTINGS + alternateSettingsAbsPath, MavenConfig.DEPS_IN_MEMORY_BUILD_CLASSPATH},
                                                                Boolean.FALSE);
@@ -103,7 +103,8 @@ public class BuildInMemoryClasspathMojoTest {
     public void testCompilerClassloaderUtilsTests(){
         Path path = Paths.get(".").resolve("target/test-classes//dummy_deps_complex");
         Optional<ClassLoader> classloaderOptional = CompilerClassloaderUtils.getClassloaderFromAllDependencies(path.toAbsolutePath().toString(),
-                                                                                                               mavenRepo);
+                                                                                                               mavenRepoPath,
+                                                                                                               TestUtilMaven.getSettingsFile());
         assertThat(classloaderOptional).isPresent();
         ClassLoader classloader = classloaderOptional.get();
         URLClassLoader urlsc = (URLClassLoader) classloader;

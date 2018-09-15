@@ -60,7 +60,7 @@ public class DefaultPomEditorTest extends BaseCompilerTest {
     @Test
     public void writeTest() {
         assertThat(editor.getHistory()).isEmpty();
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepoPath,
                                                                info,
                                                                new String[]{MavenCLIArgs.COMPILE, MavenCLIArgs.ALTERNATE_USER_SETTINGS + alternateSettingsAbsPath},
                                                                Boolean.FALSE);
@@ -71,7 +71,7 @@ public class DefaultPomEditorTest extends BaseCompilerTest {
     @Test
     public void cleanHistoryTest() {
         assertThat(editor.getHistory()).isEmpty();
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepoPath,
                                                                info,
                                                                new String[]{MavenCLIArgs.COMPILE, MavenCLIArgs.ALTERNATE_USER_SETTINGS + alternateSettingsAbsPath},
                                                                Boolean.FALSE);

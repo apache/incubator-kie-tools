@@ -38,11 +38,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class DefaultIncrementalCompilerEnablerTest {
 
-    private String mavenRepo;
+    private String mavenRepoPath;
 
     @Before
     public void setUp() throws Exception {
-        mavenRepo = TestUtilMaven.getMavenRepo();
+        mavenRepoPath = TestUtilMaven.getMavenRepo();
     }
 
     @Test
@@ -69,7 +69,7 @@ public class DefaultIncrementalCompilerEnablerTest {
                                          StandardCharsets.UTF_8);
         assertThat(pomAsAstring).doesNotContain(TestConstants.TAKARI_LIFECYCLE_ARTIFACT);
         WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(tmp);
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepoPath,
                                                                info,
                                                                new String[]{MavenCLIArgs.COMPILE},
                                                                Boolean.FALSE);
@@ -116,7 +116,7 @@ public class DefaultIncrementalCompilerEnablerTest {
         assertThat(pomAsAstringDummyB).contains("<packaging>kjar</packaging>");
 
         WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(tmp);
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepoPath,
                                                                info,
                                                                new String[]{MavenCLIArgs.COMPILE},
                                                                Boolean.FALSE);

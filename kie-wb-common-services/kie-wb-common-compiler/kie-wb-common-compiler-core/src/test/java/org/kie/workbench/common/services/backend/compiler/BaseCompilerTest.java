@@ -38,7 +38,7 @@ import org.uberfire.java.nio.file.Paths;
 public class BaseCompilerTest {
 
     protected static Path tmpRoot;
-    protected String mavenRepo;
+    protected String mavenRepoPath;
     protected static Logger logger = LoggerFactory.getLogger(BaseCompilerTest.class);
     protected String alternateSettingsAbsPath;
     protected WorkspaceCompilationInfo info;
@@ -65,7 +65,7 @@ public class BaseCompilerTest {
 
     public BaseCompilerTest(String prjName) {
         try {
-            mavenRepo = TestUtilMaven.getMavenRepo();
+            mavenRepoPath = TestUtilMaven.getMavenRepo();
             tmpRoot = Files.createTempDirectory("repo");
             alternateSettingsAbsPath = TestUtilMaven.getSettingsFile();
             Path tmp = TestUtil.createAndCopyToDirectory(tmpRoot, "dummy", prjName);
@@ -79,7 +79,7 @@ public class BaseCompilerTest {
         this(prjName);
         try {
             compiler = KieMavenCompilerFactory.getCompiler(decorators);
-            CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
+            CompilationRequest req = new DefaultCompilationRequest(mavenRepoPath,
                                                                    info,
                                                                    new String[]{MavenCLIArgs.COMPILE, MavenCLIArgs.ALTERNATE_USER_SETTINGS + alternateSettingsAbsPath},
                                                                    Boolean.FALSE);

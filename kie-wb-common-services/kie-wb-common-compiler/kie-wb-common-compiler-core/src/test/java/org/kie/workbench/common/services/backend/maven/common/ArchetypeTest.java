@@ -39,7 +39,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ArchetypeTest {
 
-    private Path mavenRepo;
+    private Path mavenRepoPath;
 
     private String groupId = "org.kie.wonderland";
     private String artifactId = "maven.archetype";
@@ -50,11 +50,10 @@ public class ArchetypeTest {
 
     @Before
     public void setUp() throws Exception {
-        mavenRepo = Paths.get(System.getProperty("user.home"),
-                              "/.m2/repository");
+        mavenRepoPath = Paths.get(System.getProperty("user.home"), ".m2", "repository");
 
-        if (!Files.exists(mavenRepo)) {
-            if (!Files.exists(Files.createDirectories(mavenRepo))) {
+        if (!Files.exists(mavenRepoPath)) {
+            if (!Files.exists(Files.createDirectories(mavenRepoPath))) {
                 throw new Exception("Folder not writable in the project");
             }
         }
@@ -69,7 +68,7 @@ public class ArchetypeTest {
 
         final AFCompiler compiler = KieMavenCompilerFactory.getCompiler(EnumSet.of(KieDecorator.ENABLE_LOGGING ));
         WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(tmp);
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo.toAbsolutePath().toString(),
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepoPath.toAbsolutePath().toString(),
                                                                info,
                                                                new String[]{
                                                                        MavenConfig.ARCHETYPE_GENERATE,

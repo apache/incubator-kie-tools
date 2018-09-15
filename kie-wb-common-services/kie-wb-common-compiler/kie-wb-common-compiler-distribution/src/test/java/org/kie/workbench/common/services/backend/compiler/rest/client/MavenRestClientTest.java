@@ -47,6 +47,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.backend.compiler.HttpCompilationResponse;
 import org.kie.workbench.common.services.backend.compiler.TestUtil;
+import org.kie.workbench.common.services.backend.compiler.TestUtilMaven;
 import org.kie.workbench.common.services.backend.compiler.rest.MVELEvaluatorProducer;
 import org.kie.workbench.common.services.backend.compiler.rest.RestUtils;
 import org.kie.workbench.common.services.backend.compiler.rest.server.MavenRestHandler;
@@ -62,10 +63,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class MavenRestClientTest {
 
     private static Path tmpRoot;
-    private static Path mavenRepo;
+    private static Path mavenRepoPath;
     private static FileSystemTestingUtils fileSystemTestingUtils = new FileSystemTestingUtils();
     private static IOService ioService;
     private static String maven = "Apache Maven";
+    private static String mavenSettingsPath;
     /**
      * Maven use as current dir the current module, arquillian w/junit the top level module kie-wb-common
      */
@@ -90,6 +92,7 @@ public class MavenRestClientTest {
         setRunIntoMavenCLI();
         fileSystemTestingUtils.setup();
         ioService = fileSystemTestingUtils.getIoService();
+        mavenSettingsPath = TestUtilMaven.getSettingsFile();
     }
 
     public static void tearDown() {
@@ -223,14 +226,16 @@ public class MavenRestClientTest {
             final Git cloned = Git.cloneRepository().setURI(fs.getGit().getRepository().getDirectory().toURI().toString()).setBare(false).setDirectory(gitClonedFolder).call();
 
             assertThat(cloned).isNotNull();
-            mavenRepo = Paths.get(System.getProperty("user.home"), "/.m2/repository");
+            mavenRepoPath = Paths.get(System.getProperty("user.home"), ".m2", "repository");
             tmpRoot = Paths.get(gitClonedFolder + "/dummy/");
 
             Client client = ClientBuilder.newClient();
             WebTarget target = client.target(deploymentUrl.toString() + "rest/maven/");
             MultivaluedMap headersMap = new MultivaluedHashMap();
             headersMap.add("project", tmpRoot.toAbsolutePath().toString() + "/dummy");
-            headersMap.add("mavenrepo", mavenRepo.toAbsolutePath().toString());
+            headersMap.add("mavenrepo", mavenRepoPath.toAbsolutePath().toString());
+            headersMap.add("settings_xml",
+                           mavenSettingsPath);
             Future<Response> responseFuture = target.request().headers(headersMap).async().post(Entity.entity(String.class, MediaType.TEXT_PLAIN));
             Response response = responseFuture.get();
             assertThat(response.getStatusInfo().getStatusCode()).isEqualTo(200);

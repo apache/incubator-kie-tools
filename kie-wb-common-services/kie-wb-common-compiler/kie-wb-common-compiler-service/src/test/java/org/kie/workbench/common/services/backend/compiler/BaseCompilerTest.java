@@ -30,7 +30,7 @@ import org.uberfire.java.nio.file.Paths;
 public class BaseCompilerTest implements Serializable {
 
     protected static Path tmpRoot;
-    protected String mavenRepo;
+    protected String mavenRepoPath;
     protected static Logger logger = LoggerFactory.getLogger(BaseCompilerTest.class);
     protected String alternateSettingsAbsPath;
     protected WorkspaceCompilationInfo info;
@@ -44,7 +44,7 @@ public class BaseCompilerTest implements Serializable {
 
     public BaseCompilerTest(String prjName) {
         try {
-            mavenRepo = TestUtilMaven.getMavenRepo();
+            mavenRepoPath = TestUtilMaven.getMavenRepo();
             tmpRoot = Files.createTempDirectory("repo");
             alternateSettingsAbsPath = new File("src/test/settings.xml").getAbsolutePath();
             Path tmp = Files.createDirectories(Paths.get(tmpRoot.toString(), "dummy"));

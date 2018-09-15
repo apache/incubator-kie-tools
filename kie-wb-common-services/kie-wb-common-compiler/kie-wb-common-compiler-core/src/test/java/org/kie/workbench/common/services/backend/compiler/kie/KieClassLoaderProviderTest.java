@@ -48,7 +48,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class KieClassLoaderProviderTest {
 
-    private String mavenRepo;
+    private String mavenRepoPath;
     private Path tmpRoot;
     private Path uberfireTmp;
     private Path tmp;
@@ -58,7 +58,7 @@ public class KieClassLoaderProviderTest {
 
     @Before
     public void setUp() throws Exception {
-        mavenRepo = TestUtilMaven.getMavenRepo();
+        mavenRepoPath = TestUtilMaven.getMavenRepo();
     }
 
     @After
@@ -76,7 +76,7 @@ public class KieClassLoaderProviderTest {
 
         final AFCompiler compiler = KieMavenCompilerFactory.getCompiler(new HashSet<>());
         WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(uberfireTmp);
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepoPath,
                                                                info,
                                                                mavenPhases,
                                                                Boolean.FALSE);
@@ -92,7 +92,7 @@ public class KieClassLoaderProviderTest {
 
         List<String> pomList = MavenUtils.searchPoms(Paths.get(ResourcesConstants.DUMMY_KIE_MULTIMODULE_CLASSLOADER_DIR));
         Optional<ClassLoader> clazzLoader = CompilerClassloaderUtils.loadDependenciesClassloaderFromProject(pomList,
-                                                                                                            mavenRepo);
+                                                                                                            mavenRepoPath);
         assertThat(clazzLoader).isPresent();
         ClassLoader prjClassloader = clazzLoader.get();
 
@@ -107,7 +107,7 @@ public class KieClassLoaderProviderTest {
         assertThat(res.isSuccessful()).isTrue();
 
         Optional<ClassLoader> clazzLoader = CompilerClassloaderUtils.loadDependenciesClassloaderFromProject(uberfireTmp.toAbsolutePath().toString(),
-                                                                                                            mavenRepo);
+                                                                                                            mavenRepoPath);
         assertThat(clazzLoader).isPresent();
 
         LoadProjectDependencyUtil.loadLoggerFactory(clazzLoader.get());
@@ -131,7 +131,8 @@ public class KieClassLoaderProviderTest {
     public void getClassloaderFromAllDependenciesTestSimple() {
         Path path = Paths.get(".").resolve(ResourcesConstants.DUMMY_DEPS_SIMPLE_DIR);
         Optional<ClassLoader> classloaderOptional = CompilerClassloaderUtils.getClassloaderFromAllDependencies(path.toAbsolutePath().toString(),
-                                                                                                               mavenRepo);
+                                                                                                               mavenRepoPath,
+                                                                                                               TestUtilMaven.getSettingsFile());
         assertThat(classloaderOptional).isPresent();
         ClassLoader classloader = classloaderOptional.get();
         URLClassLoader urlsc = (URLClassLoader) classloader;
@@ -142,7 +143,8 @@ public class KieClassLoaderProviderTest {
     public void getClassloaderFromAllDependenciesTestComplex() {
         Path path = Paths.get(".").resolve(ResourcesConstants.DUMMY_DEPS_COMPLEX_DIR);
         Optional<ClassLoader> classloaderOptional = CompilerClassloaderUtils.getClassloaderFromAllDependencies(path.toAbsolutePath().toString(),
-                                                                                                               mavenRepo);
+                                                                                                               mavenRepoPath,
+                                                                                                               TestUtilMaven.getSettingsFile());
         assertThat(classloaderOptional).isPresent();
         ClassLoader classloader = classloaderOptional.get();
         URLClassLoader urlsc = (URLClassLoader) classloader;

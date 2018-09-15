@@ -42,7 +42,7 @@ public class DefaultIncrementalCompilerEnablerTest extends BaseCompilerTest {
 
     @Test
     public void processTest() {
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepoPath,
                                                                info,
                                                                new String[]{MavenCLIArgs.COMPILE, MavenCLIArgs.ALTERNATE_USER_SETTINGS + alternateSettingsAbsPath},
                                                                Boolean.FALSE);
@@ -69,7 +69,7 @@ public class DefaultIncrementalCompilerEnablerTest extends BaseCompilerTest {
     public void processDisabledMavenDefaultCompilerTest() {
 
         Properties props = loadProperties("IncrementalCompiler.properties");
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepoPath,
                                                                info,
                                                                new String[]{MavenCLIArgs.COMPILE, MavenCLIArgs.ALTERNATE_USER_SETTINGS + alternateSettingsAbsPath},
                                                                Boolean.FALSE);

@@ -26,6 +26,7 @@ import java.util.concurrent.Executors;
 
 import org.junit.Test;
 import org.kie.workbench.common.services.backend.compiler.BaseCompilerTest;
+import org.kie.workbench.common.services.backend.compiler.TestUtilMaven;
 import org.kie.workbench.common.services.backend.compiler.configuration.MavenCLIArgs;
 import org.kie.workbench.common.services.backend.compiler.impl.kie.KieCompilationResponse;
 import org.uberfire.java.nio.file.Paths;
@@ -45,7 +46,8 @@ public class DefaultLocalExecutorTest extends BaseCompilerTest {
 
         DefaultLocalExecutor executor = new DefaultLocalExecutor(executorService);
         CompletableFuture<KieCompilationResponse> futureRes = executor.build(tmpRoot,
-                                                                             mavenRepo);
+                                                                             mavenRepoPath,
+                                                                             TestUtilMaven.getSettingsFile());
         KieCompilationResponse res = futureRes.get();
         assertThat(res.isSuccessful()).isFalse();
     }
@@ -54,7 +56,8 @@ public class DefaultLocalExecutorTest extends BaseCompilerTest {
     public void buildAndSkipDepsNonExistentProject() throws Exception{
         DefaultLocalExecutor executor = new DefaultLocalExecutor(executorService);
         CompletableFuture<KieCompilationResponse> futureRes = executor.build(tmpRoot,
-                                                                             mavenRepo,
+                                                                             mavenRepoPath,
+                                                                             TestUtilMaven.getSettingsFile(),
                                                                              Boolean.FALSE);
         KieCompilationResponse res = futureRes.get();
         assertThat(res.isSuccessful()).isFalse();
@@ -64,7 +67,9 @@ public class DefaultLocalExecutorTest extends BaseCompilerTest {
     @Test
     public void buildAndInstallNonExistentProject() throws Exception{
         DefaultLocalExecutor executor = new DefaultLocalExecutor(executorService);
-        CompletableFuture<KieCompilationResponse> futureRes = executor.buildAndInstall(tmpRoot, mavenRepo);
+        CompletableFuture<KieCompilationResponse> futureRes = executor.buildAndInstall(tmpRoot,
+                                                                                       mavenRepoPath,
+                                                                                       TestUtilMaven.getSettingsFile());
         KieCompilationResponse res = futureRes.get();
         assertThat(res.isSuccessful()).isFalse();
     }
@@ -73,7 +78,8 @@ public class DefaultLocalExecutorTest extends BaseCompilerTest {
     public void buildAndInstallSkipDepsNonExistentProject() throws Exception{
         DefaultLocalExecutor executor = new DefaultLocalExecutor(executorService);
         CompletableFuture<KieCompilationResponse> futureRes = executor.buildAndInstall(tmpRoot,
-                                                                                       mavenRepo,
+                                                                                       mavenRepoPath,
+                                                                                       TestUtilMaven.getSettingsFile(),
                                                                                        Boolean.FALSE);
         KieCompilationResponse res = futureRes.get();
         assertThat(res.isSuccessful()).isFalse();
@@ -84,7 +90,7 @@ public class DefaultLocalExecutorTest extends BaseCompilerTest {
     public void buildExistentProject() throws Exception{
         DefaultLocalExecutor executor = new DefaultLocalExecutor(executorService);
         CompletableFuture<KieCompilationResponse> futureRes = executor.build(Paths.get(tmpRoot.toAbsolutePath()+"/dummy"),
-                                                                             mavenRepo);
+                                                                             mavenRepoPath, TestUtilMaven.getSettingsFile());
         KieCompilationResponse res = futureRes.get();
         assertThat(res.isSuccessful()).isTrue();
     }
@@ -95,7 +101,7 @@ public class DefaultLocalExecutorTest extends BaseCompilerTest {
     public void buildAndInstallExistentProject() throws Exception{
         DefaultLocalExecutor executor = new DefaultLocalExecutor(executorService);
         CompletableFuture<KieCompilationResponse> futureRes = executor.buildAndInstall(Paths.get(tmpRoot.toAbsolutePath()+"/dummy"),
-                                                                                       mavenRepo);
+                                                                                       mavenRepoPath, TestUtilMaven.getSettingsFile());
         KieCompilationResponse res = futureRes.get();
         assertThat(res.isSuccessful()).isTrue();
         assertThat(res.getDependencies()).isNotEmpty();
@@ -106,7 +112,8 @@ public class DefaultLocalExecutorTest extends BaseCompilerTest {
     public void buildAndInstallSkipDepsExistentProject() throws Exception{
         DefaultLocalExecutor executor = new DefaultLocalExecutor(executorService);
         CompletableFuture<KieCompilationResponse> futureRes = executor.buildAndInstall(Paths.get(tmpRoot.toAbsolutePath()+"/dummy"),
-                                                                                       mavenRepo,
+                                                                                       mavenRepoPath,
+                                                                                       TestUtilMaven.getSettingsFile(),
                                                                                        Boolean.TRUE);
         KieCompilationResponse res = futureRes.get();
         assertThat(res.isSuccessful()).isTrue();
@@ -117,8 +124,9 @@ public class DefaultLocalExecutorTest extends BaseCompilerTest {
     public void buildSpecializedNonExistentProject() throws Exception{
         DefaultLocalExecutor executor = new DefaultLocalExecutor(executorService);
         CompletableFuture<KieCompilationResponse> futureRes = executor.buildSpecialized(tmpRoot,
-                                                                                        mavenRepo,
-                                                                                        new String[]{MavenCLIArgs.COMPILE});
+                                                                                        mavenRepoPath,
+                                                                                        new String[]{MavenCLIArgs.ALTERNATE_USER_SETTINGS+ TestUtilMaven.getSettingsFile(),
+                                                                                                MavenCLIArgs.COMPILE});
         KieCompilationResponse res = futureRes.get();
         assertThat(res.isSuccessful()).isFalse();
     }
@@ -127,8 +135,9 @@ public class DefaultLocalExecutorTest extends BaseCompilerTest {
     public void buildSpecializedSkipDepsExistentProject() throws Exception{
         DefaultLocalExecutor executor = new DefaultLocalExecutor(executorService);
         CompletableFuture<KieCompilationResponse> futureRes = executor.buildSpecialized(Paths.get(tmpRoot.toAbsolutePath()+"/dummy"),
-                                                                                        mavenRepo,
-                                                                                        new String[]{MavenCLIArgs.COMPILE},
+                                                                                        mavenRepoPath,
+                                                                                        new String[]{MavenCLIArgs.ALTERNATE_USER_SETTINGS+ TestUtilMaven.getSettingsFile(),
+                                                                                                MavenCLIArgs.COMPILE},
                                                                                         Boolean.TRUE);
         KieCompilationResponse res = futureRes.get();
         assertThat(res.isSuccessful()).isTrue();
@@ -138,8 +147,9 @@ public class DefaultLocalExecutorTest extends BaseCompilerTest {
     public void buildSpecializedSkipDepsNonExistentProject() throws Exception{
         DefaultLocalExecutor executor = new DefaultLocalExecutor(executorService);
         CompletableFuture<KieCompilationResponse> futureRes = executor.buildSpecialized(tmpRoot,
-                                                                                        mavenRepo,
-                                                                                        new String[]{MavenCLIArgs.COMPILE},
+                                                                                        mavenRepoPath,
+                                                                                        new String[]{MavenCLIArgs.ALTERNATE_USER_SETTINGS+ TestUtilMaven.getSettingsFile(),
+                                                                                                MavenCLIArgs.COMPILE},
                                                                                         Boolean.TRUE);
         KieCompilationResponse res = futureRes.get();
         assertThat(res.isSuccessful()).isFalse();
@@ -159,7 +169,9 @@ public class DefaultLocalExecutorTest extends BaseCompilerTest {
 
         DefaultLocalExecutor executor = new DefaultLocalExecutor(executorService);
         CompletableFuture<KieCompilationResponse> futureRes = executor.build(tmpRoot,
-                                                                             mavenRepo, override);
+                                                                             mavenRepoPath,
+                                                                             TestUtilMaven.getSettingsFile(),
+                                                                             override);
         KieCompilationResponse res = futureRes.get();
         assertThat(res.isSuccessful()).isFalse();
     }
@@ -176,7 +188,8 @@ public class DefaultLocalExecutorTest extends BaseCompilerTest {
 
         DefaultLocalExecutor executor = new DefaultLocalExecutor(executorService);
         CompletableFuture<KieCompilationResponse> futureRes = executor.build(Paths.get(tmpRoot.toAbsolutePath()+"/dummy"),
-                                                                             mavenRepo,
+                                                                             mavenRepoPath,
+                                                                             TestUtilMaven.getSettingsFile(),
                                                                              override);
         KieCompilationResponse res = futureRes.get();
         assertThat(res.isSuccessful()).isTrue();

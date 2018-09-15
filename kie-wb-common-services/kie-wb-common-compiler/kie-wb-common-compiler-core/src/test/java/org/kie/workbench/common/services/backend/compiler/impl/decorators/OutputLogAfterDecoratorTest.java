@@ -47,7 +47,7 @@ public class OutputLogAfterDecoratorTest extends BaseCompilerTest {
     @Test
     public void compileTest() {
 
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepoPath,
                                                                info,
                                                                new String[]{MavenCLIArgs.COMPILE, MavenCLIArgs.ALTERNATE_USER_SETTINGS + alternateSettingsAbsPath},
                                                                Boolean.FALSE);
@@ -68,7 +68,7 @@ public class OutputLogAfterDecoratorTest extends BaseCompilerTest {
         InputStream input = new FileInputStream(new File(ResourcesConstants.DUMMY_OVERRIDE + "/src/main/java/dummy/DummyOverride.java"));
         override.put(path, input);
 
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepoPath,
                                                                info,
                                                                new String[]{MavenCLIArgs.COMPILE, MavenCLIArgs.ALTERNATE_USER_SETTINGS + alternateSettingsAbsPath},
                                                                Boolean.FALSE);
@@ -83,7 +83,7 @@ public class OutputLogAfterDecoratorTest extends BaseCompilerTest {
 
     @Test
     public void compileFailedTest() throws Exception {
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepoPath,
                                                                createdNewPrjInRepo("dummy-fail", ResourcesConstants.DUMMY_FAIL_DEPS_SIMPLE),
                                                                new String[]{MavenCLIArgs.COMPILE, MavenCLIArgs.ALTERNATE_USER_SETTINGS + alternateSettingsAbsPath},
                                                                Boolean.FALSE);

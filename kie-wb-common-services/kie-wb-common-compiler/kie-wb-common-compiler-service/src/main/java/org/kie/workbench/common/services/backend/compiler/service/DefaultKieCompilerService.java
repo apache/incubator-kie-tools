@@ -43,69 +43,69 @@ public class DefaultKieCompilerService implements AFCompilerService {
     /************************************ Suitable for the Local Builds ***********************************************/
 
     @Override
-    public CompletableFuture<KieCompilationResponse> build(Path projectPath, String mavenRepo) {
-        return localExecutor.build(projectPath, mavenRepo);
+    public CompletableFuture<KieCompilationResponse> build(Path projectPath, String mavenRepoPath, String settingXML) {
+        return localExecutor.build(projectPath, mavenRepoPath, settingXML);
     }
 
     @Override
-    public CompletableFuture<KieCompilationResponse> build(Path projectPath, String mavenRepo, Map<Path, InputStream> override) {
-        return localExecutor.build(projectPath, mavenRepo, override);
+    public CompletableFuture<KieCompilationResponse> build(Path projectPath, String mavenRepoPath, String settingXML, Map<Path, InputStream> override) {
+        return localExecutor.build(projectPath, mavenRepoPath, settingXML, override);
     }
 
     @Override
-    public CompletableFuture<KieCompilationResponse> build(Path projectPath, String mavenRepo, Boolean skipPrjDependenciesCreationList) {
-        return localExecutor.build(projectPath, mavenRepo, skipPrjDependenciesCreationList);
+    public CompletableFuture<KieCompilationResponse> build(Path projectPath, String mavenRepoPath, String settingXML, Boolean skipPrjDependenciesCreationList) {
+        return localExecutor.build(projectPath, mavenRepoPath, settingXML, skipPrjDependenciesCreationList);
     }
 
     @Override
-    public CompletableFuture<KieCompilationResponse> buildAndInstall(Path projectPath, String mavenRepo) {
-        return localExecutor.buildAndInstall(projectPath, mavenRepo);
+    public CompletableFuture<KieCompilationResponse> buildAndInstall(Path projectPath, String mavenRepoPath, String settingXML) {
+        return localExecutor.buildAndInstall(projectPath, mavenRepoPath, settingXML);
     }
 
     @Override
-    public CompletableFuture<KieCompilationResponse> buildAndInstall(Path projectPath, String mavenRepo, Boolean skipPrjDependenciesCreationList) {
-        return localExecutor.buildAndInstall(projectPath, mavenRepo, skipPrjDependenciesCreationList);
+    public CompletableFuture<KieCompilationResponse> buildAndInstall(Path projectPath, String mavenRepoPath, String settingXML, Boolean skipPrjDependenciesCreationList) {
+        return localExecutor.buildAndInstall(projectPath, mavenRepoPath, settingXML, skipPrjDependenciesCreationList);
     }
 
     @Override
-    public CompletableFuture<KieCompilationResponse> buildSpecialized(Path projectPath, String mavenRepo, String[] args) {
-        return localExecutor.buildSpecialized(projectPath, mavenRepo, args);
+    public CompletableFuture<KieCompilationResponse> buildSpecialized(Path projectPath, String mavenRepoPath, String[] args) {
+        return localExecutor.buildSpecialized(projectPath, mavenRepoPath, args);
     }
 
     @Override
-    public CompletableFuture<KieCompilationResponse> buildSpecialized(Path projectPath, String mavenRepo, String[] args, Boolean skipPrjDependenciesCreationList) {
-        return localExecutor.buildSpecialized(projectPath, mavenRepo, args, skipPrjDependenciesCreationList);
+    public CompletableFuture<KieCompilationResponse> buildSpecialized(Path projectPath, String mavenRepoPath, String[] args, Boolean skipPrjDependenciesCreationList) {
+        return localExecutor.buildSpecialized(projectPath, mavenRepoPath, args, skipPrjDependenciesCreationList);
     }
 
     /************************************ Suitable for the REST Builds ************************************************/
 
     @Override
-    public CompletableFuture<KieCompilationResponse> build(String projectPath, String mavenRepo, Boolean skipPrjDependenciesCreationList) {
-        return remoteExecutor.build(projectPath, mavenRepo, skipPrjDependenciesCreationList);
+    public CompletableFuture<KieCompilationResponse> build(String projectPath, String mavenRepoPath, String settingXML, Boolean skipPrjDependenciesCreationList) {
+        return remoteExecutor.build(projectPath, mavenRepoPath, settingXML, skipPrjDependenciesCreationList);
     }
 
     @Override
-    public CompletableFuture<KieCompilationResponse> build(String projectPath, String mavenRepo) {
-        return remoteExecutor.build(projectPath, mavenRepo);
+    public CompletableFuture<KieCompilationResponse> build(String projectPath, String mavenRepoPath, String settingXML) {
+        return remoteExecutor.build(projectPath, mavenRepoPath, settingXML);
     }
 
     @Override
-    public CompletableFuture<KieCompilationResponse> buildAndInstall(String projectPath, String mavenRepo) {
-        return remoteExecutor.buildAndInstall(projectPath, mavenRepo);
+    public CompletableFuture<KieCompilationResponse> buildAndInstall(String projectPath, String mavenRepoPath, String settingXML) {
+        return remoteExecutor.buildAndInstall(projectPath, mavenRepoPath, settingXML);
     }
 
     @Override
-    public CompletableFuture<KieCompilationResponse> buildAndInstall(String projectPath, String mavenRepo, Boolean skipPrjDependenciesCreationList) {
-        return remoteExecutor.buildAndInstall(projectPath, mavenRepo, skipPrjDependenciesCreationList);
+    public CompletableFuture<KieCompilationResponse> buildAndInstall(String projectPath, String mavenRepoPath, String settingXML, Boolean skipPrjDependenciesCreationList) {
+        return remoteExecutor.buildAndInstall(projectPath, mavenRepoPath, settingXML, skipPrjDependenciesCreationList);
     }
 
     @Override
-    public CompletableFuture<KieCompilationResponse> buildSpecialized(String projectPath, String mavenRepo, String[] args) {
-        return remoteExecutor.buildSpecialized(projectPath, mavenRepo, args);
+    public CompletableFuture<KieCompilationResponse> buildSpecialized(String projectPath, String mavenRepoPath, String settingXML, String[] args) {
+        return remoteExecutor.buildSpecialized(projectPath, mavenRepoPath, args);
     }
 
     @Override
-    public CompletableFuture<KieCompilationResponse> buildSpecialized(String projectPath, String mavenRepo, String[] args, Boolean skipPrjDependenciesCreationList) {
-        return remoteExecutor.buildSpecialized(projectPath, mavenRepo, args, skipPrjDependenciesCreationList);
+    public CompletableFuture<KieCompilationResponse> buildSpecialized(String projectPath, String mavenRepoPath, String[] args, Boolean skipPrjDependenciesCreationList) {
+        return remoteExecutor.buildSpecialized(projectPath, mavenRepoPath, args, skipPrjDependenciesCreationList);
     }
 }

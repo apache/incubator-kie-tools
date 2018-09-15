@@ -46,6 +46,7 @@ import org.kie.workbench.common.services.backend.compiler.AFCompiler;
 import org.kie.workbench.common.services.backend.compiler.CompilationRequest;
 import org.kie.workbench.common.services.backend.compiler.CompilationResponse;
 import org.kie.workbench.common.services.backend.compiler.configuration.KieDecorator;
+import org.kie.workbench.common.services.backend.compiler.configuration.MavenCLIArgs;
 import org.kie.workbench.common.services.backend.compiler.configuration.MavenConfig;
 import org.kie.workbench.common.services.backend.compiler.impl.CommonConstants;
 import org.kie.workbench.common.services.backend.compiler.impl.DefaultCompilationRequest;
@@ -74,14 +75,23 @@ public class CompilerClassloaderUtils {
      * @return
      */
     public static Optional<ClassLoader> getClassloaderFromAllDependencies(String prjPath,
-                                                                          String localRepo) {
+                                                                          String localRepo,
+                                                                          String settingsXmlPath) {
 
         AFCompiler compiler = KieMavenCompilerFactory.getCompiler(EnumSet.of(KieDecorator.STORE_BUILD_CLASSPATH));
         WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(Paths.get(URI.create(CommonConstants.FILE_URI + prjPath)));
-        CompilationRequest req = new DefaultCompilationRequest(localRepo,
-                                                               info,
-                                                               new String[]{MavenConfig.DEPS_IN_MEMORY_BUILD_CLASSPATH},
-                                                               Boolean.FALSE);
+        CompilationRequest req;
+        if (settingsXmlPath != null) {
+            req = new DefaultCompilationRequest(localRepo,
+                                                info,
+                                                new String[]{MavenConfig.DEPS_IN_MEMORY_BUILD_CLASSPATH, MavenCLIArgs.ALTERNATE_USER_SETTINGS + settingsXmlPath},
+                                                Boolean.FALSE);
+        } else {
+            req = new DefaultCompilationRequest(localRepo,
+                                                info,
+                                                new String[]{MavenConfig.DEPS_IN_MEMORY_BUILD_CLASSPATH},
+                                                Boolean.FALSE);
+        }
         CompilationResponse res = compiler.compile(req);
         if (res.isSuccessful()) {
             /** Maven dependency plugin is not able to append the modules classpath using an absolute path in -Dmdep.outputFile,
@@ -98,19 +108,24 @@ public class CompilerClassloaderUtils {
         return Optional.empty();
     }
 
-    public static Map<String, byte[]> getMapClasses(String path, Map<String, byte[]> store) {
+    public static Map<String, byte[]> getMapClasses(String path,
+                                                    Map<String, byte[]> store) {
 
-        final List<String> keys = IoUtils.recursiveListFile(new File(path), "", filterClasses());
+        final List<String> keys = IoUtils.recursiveListFile(new File(path),
+                                                            "",
+                                                            filterClasses());
         final Map<String, byte[]> classes = new HashMap<>(keys.size() + store.size());
 
         for (String item : keys) {
             byte[] bytez = getBytes(path + CommonConstants.SEPARATOR + item);
             String fqn = item.substring(item.lastIndexOf(CommonConstants.MAVEN_TARGET) + CommonConstants.MAVEN_TARGET.length());
-            classes.put(fqn, bytez);
+            classes.put(fqn,
+                        bytez);
         }
         if (!store.isEmpty()) {
             for (Map.Entry<String, byte[]> entry : store.entrySet()) {
-                classes.put(entry.getKey(), entry.getValue());
+                classes.put(entry.getKey(),
+                            entry.getValue());
             }
         }
         return classes;
@@ -260,7 +275,8 @@ public class CompilerClassloaderUtils {
                                              CommonConstants.SCENARIO_EXT);
     }
 
-    public static List<String> getStringFromTargetWithStream(Path pathIn, String... extensions) {
+    public static List<String> getStringFromTargetWithStream(Path pathIn,
+                                                             String... extensions) {
         java.nio.file.Path prjPath = java.nio.file.Paths.get(pathIn.toAbsolutePath().toString());
         List<String> joined = Collections.emptyList();
         try (Stream<java.nio.file.Path> stream = java.nio.file.Files.walk(prjPath)) {
@@ -269,7 +285,8 @@ public class CompilerClassloaderUtils {
                     .filter(path -> Stream.of(extensions).anyMatch(path::endsWith) && path.contains(CommonConstants.MAVEN_TARGET))
                     .collect(Collectors.toList());
         } catch (IOException ex) {
-            logger.error(ex.getMessage(), ex);
+            logger.error(ex.getMessage(),
+                         ex);
         }
         return joined;
     }
@@ -323,15 +340,19 @@ public class CompilerClassloaderUtils {
         }
     }
 
-    public static Set<String> filterPathClasses(Collection<String> paths, String mavenRepo) {
-        return paths.stream().collect(new FilterPathClassesCollector(mavenRepo, mavenRepo.length()));
+    public static Set<String> filterPathClasses(Collection<String> paths,
+                                                String mavenRepoPath) {
+        return paths.stream().collect(new FilterPathClassesCollector(mavenRepoPath));
     }
 
-    public static List<String> filterClassesByPackage(Collection<String> items, String packageName) {
+    public static List<String> filterClassesByPackage(Collection<String> items,
+                                                      String packageName) {
         return items.stream().collect(new FilterClassesByPackageCollector(packageName));
     }
 
-    public static Class<?> getClass(String pkgName, String className, ClassLoader classloader) {
+    public static Class<?> getClass(String pkgName,
+                                    String className,
+                                    ClassLoader classloader) {
         try {
             String input;
             if (pkgName != null && pkgName.trim().length() != 0) {

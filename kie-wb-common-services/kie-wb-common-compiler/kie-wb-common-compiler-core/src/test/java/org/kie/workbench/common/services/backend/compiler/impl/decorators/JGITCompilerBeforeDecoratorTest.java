@@ -56,7 +56,7 @@ public class JGITCompilerBeforeDecoratorTest {
 
     private FileSystemTestingUtils fileSystemTestingUtils = new FileSystemTestingUtils();
     private IOService ioService;
-    private String mavenRepo;
+    private String mavenRepoPath;
     private static Logger logger = LoggerFactory.getLogger(JGITCompilerBeforeDecoratorTest.class);
 
     @Rule
@@ -87,7 +87,7 @@ public class JGITCompilerBeforeDecoratorTest {
         fileSystemTestingUtils.setup();
         ioService = fileSystemTestingUtils.getIoService();
 
-        mavenRepo = TestUtilMaven.getMavenRepo();
+        mavenRepoPath = TestUtilMaven.getMavenRepo();
     }
 
     @After
@@ -103,7 +103,7 @@ public class JGITCompilerBeforeDecoratorTest {
         //Compile the repo
         JGITCompilerBeforeDecorator compiler = new JGITCompilerBeforeDecorator(new BaseMavenCompiler(true,false));
         WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(fileSystem.getPath("/"));
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepoPath,
                                                                info,
                                                                new String[]{MavenCLIArgs.COMPILE},
                                                                Boolean.TRUE);
@@ -126,7 +126,7 @@ public class JGITCompilerBeforeDecoratorTest {
 
         //Compile the repo
         WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(fileSystem.getPath("/"));
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepoPath,
                                                                info,
                                                                new String[]{MavenCLIArgs.COMPILE},
                                                                Boolean.TRUE);
@@ -157,7 +157,7 @@ public class JGITCompilerBeforeDecoratorTest {
         //Compile the repo
 
         WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(fileSystem.getPath("/"));
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepoPath,
                                                                info,
                                                                new String[]{MavenCLIArgs.COMPILE},
                                                                Boolean.TRUE);

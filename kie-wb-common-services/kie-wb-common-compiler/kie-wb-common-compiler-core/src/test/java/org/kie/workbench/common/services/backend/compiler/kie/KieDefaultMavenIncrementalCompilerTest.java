@@ -45,7 +45,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class KieDefaultMavenIncrementalCompilerTest {
 
-    private String mavenRepo;
+    private String mavenRepoPath;
     private Path tmpRoot;
     private Path temp;
 
@@ -54,7 +54,7 @@ public class KieDefaultMavenIncrementalCompilerTest {
 
     @Before
     public void setUp() throws Exception {
-        mavenRepo = TestUtilMaven.getMavenRepo();
+        mavenRepoPath = TestUtilMaven.getMavenRepo();
     }
 
     @After
@@ -70,7 +70,7 @@ public class KieDefaultMavenIncrementalCompilerTest {
 
         final AFCompiler compiler = KieMavenCompilerFactory.getCompiler(EnumSet.of(KieDecorator.ENABLE_INCREMENTAL_BUILD ));
         WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(temp);
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepoPath,
                                                                info,
                                                                mavenPhases,
                                                                Boolean.FALSE);
@@ -105,7 +105,7 @@ public class KieDefaultMavenIncrementalCompilerTest {
         final AFCompiler compiler = KieMavenCompilerFactory.getCompiler(EnumSet.of(KieDecorator.ENABLE_INCREMENTAL_BUILD ));
 
         WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(tmp);
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepoPath,
                                                                info,
                                                                new String[]{MavenCLIArgs.COMPILE},
                                                                Boolean.FALSE);
@@ -136,7 +136,7 @@ public class KieDefaultMavenIncrementalCompilerTest {
         final AFCompiler compiler = KieMavenCompilerFactory.getCompiler(EnumSet.of(KieDecorator.ENABLE_LOGGING ));
 
         WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(temp);
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepoPath,
                                                                info,
                                                                new String[]{MavenCLIArgs.COMPILE, MavenCLIArgs.ALTERNATE_USER_SETTINGS + alternateSettingsAbsPath},
                                                                Boolean.TRUE);

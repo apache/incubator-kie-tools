@@ -41,7 +41,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class DefaultMavenIncrementalCompilerTest {
 
-    private String mavenRepo;
+    private String mavenRepoPath;
     private Path tmpRoot;
 
     @Rule
@@ -49,7 +49,7 @@ public class DefaultMavenIncrementalCompilerTest {
 
     @Before
     public void setUp() throws Exception {
-        mavenRepo = TestUtilMaven.getMavenRepo();
+        mavenRepoPath = TestUtilMaven.getMavenRepo();
         tmpRoot = Files.createTempDirectory("repo");
     }
 
@@ -66,7 +66,7 @@ public class DefaultMavenIncrementalCompilerTest {
 
         final AFCompiler compiler = KieMavenCompilerFactory.getCompiler(new HashSet<>());
         WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(temp);
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepoPath,
                                                                info,
                                                                new String[]{MavenCLIArgs.VERSION},
                                                                Boolean.TRUE);
@@ -81,7 +81,7 @@ public class DefaultMavenIncrementalCompilerTest {
 
         final AFCompiler compiler = KieMavenCompilerFactory.getCompiler(EnumSet.of(KieDecorator.ENABLE_LOGGING, KieDecorator.ENABLE_INCREMENTAL_BUILD ));
         WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(temp);
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepoPath,
                                                                info,
                                                                new String[]{MavenCLIArgs.COMPILE},
                                                                Boolean.TRUE);
@@ -100,7 +100,7 @@ public class DefaultMavenIncrementalCompilerTest {
 
         final AFCompiler compiler = KieMavenCompilerFactory.getCompiler(EnumSet.of(KieDecorator.ENABLE_LOGGING, KieDecorator.ENABLE_INCREMENTAL_BUILD ));
         WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(temp);
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepoPath,
                                                                info,
                                                                new String[]{MavenCLIArgs.COMPILE},
                                                                Boolean.TRUE);
@@ -126,7 +126,7 @@ public class DefaultMavenIncrementalCompilerTest {
         //compiler
         final AFCompiler compiler = KieMavenCompilerFactory.getCompiler(EnumSet.of(KieDecorator.ENABLE_LOGGING, KieDecorator.ENABLE_INCREMENTAL_BUILD ));
         WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(temp);
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepoPath,
                                                                info,
                                                                new String[]{MavenCLIArgs.COMPILE},
                                                                Boolean.TRUE);
@@ -197,7 +197,7 @@ public class DefaultMavenIncrementalCompilerTest {
         //compiler
         final AFCompiler compiler = KieMavenCompilerFactory.getCompiler(EnumSet.of(KieDecorator.ENABLE_LOGGING, KieDecorator.ENABLE_INCREMENTAL_BUILD ));
         WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(temp);
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepoPath,
                                                                info,
                                                                new String[]{MavenCLIArgs.CLEAN, MavenCLIArgs.COMPILE, MavenCLIArgs.FAIL_NEVER},
                                                                Boolean.TRUE);

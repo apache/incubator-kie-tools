@@ -29,13 +29,13 @@ import org.kie.workbench.common.services.backend.compiler.impl.kie.KieCompilatio
  */
 public class MavenRestClient {
 
-    public CompletableFuture<KieCompilationResponse> call(String projectPath, String mavenRepo, String url) {
+    public CompletableFuture<KieCompilationResponse> call(String projectPath, String mavenRepoPath, String settingsXmlPath, String url) {
 
         final CompletableFuture<KieCompilationResponse> cfInternal = new CompletableFuture<>();
 
         Future<?> future = ClientBuilder.newBuilder().build()
                 .target(url)
-                .request().header("project", projectPath).header("mavenrepo", mavenRepo)
+                .request().header("project", projectPath).header("mavenrepo", mavenRepoPath).header("settings_xml",settingsXmlPath)
                 .accept(MediaType.APPLICATION_OCTET_STREAM)
                 .async()
                 .post(null, new InvocationCallback<KieCompilationResponse>() {

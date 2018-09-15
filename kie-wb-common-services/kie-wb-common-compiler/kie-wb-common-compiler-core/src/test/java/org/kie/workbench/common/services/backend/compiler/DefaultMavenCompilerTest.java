@@ -44,8 +44,6 @@ import org.kie.workbench.common.services.backend.compiler.impl.kie.KieMavenCompi
 import org.kie.workbench.common.services.backend.constants.ResourcesConstants;
 import org.kie.workbench.common.services.backend.constants.TestConstants;
 import org.kie.workbench.common.services.backend.utils.TestUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Files;
 import org.uberfire.java.nio.file.Path;
@@ -57,22 +55,23 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class DefaultMavenCompilerTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(DefaultMavenCompilerTest.class);
     private FileSystemTestingUtils fileSystemTestingUtils = new FileSystemTestingUtils();
     private IOService ioService;
-    private String mavenRepo;
+    private String mavenRepoPath;
 
 
     @BeforeClass
     public static void setupSystemProperties() {
-        int freePort = TestUtilGit.findFreePort();
-        System.setProperty("org.uberfire.nio.git.daemon.port", String.valueOf(freePort));
-        logger.info("Git port used:{}", freePort);
+        System.setProperty("org.uberfire.nio.git.daemon.enabled", "false");
+        System.setProperty("org.uberfire.nio.git.ssh.enabled", "false");
+        System.setProperty("org.uberfire.sys.repo.monitor.disabled", "true");
     }
 
     @AfterClass
     public static void tearDownClass() {
-        System.clearProperty("org.uberfire.nio.git.daemon.port");
+        System.clearProperty("org.uberfire.nio.git.daemon.enabled");
+        System.clearProperty("org.uberfire.nio.git.ssh.enabled");
+        System.clearProperty("org.uberfire.sys.repo.monitor.disabled");
     }
 
     @Rule
@@ -82,7 +81,7 @@ public class DefaultMavenCompilerTest {
     public void setUp() throws Exception {
         fileSystemTestingUtils.setup();
         ioService = fileSystemTestingUtils.getIoService();
-        mavenRepo = TestUtilMaven.getMavenRepo();
+        mavenRepoPath = TestUtilMaven.getMavenRepo();
     }
 
     @After
@@ -138,7 +137,7 @@ public class DefaultMavenCompilerTest {
 
         final AFCompiler compiler = KieMavenCompilerFactory.getCompiler(EnumSet.of(KieDecorator.ENABLE_LOGGING, KieDecorator.ENABLE_INCREMENTAL_BUILD ));
         WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(prjFolder);
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepoPath,
                                                                info,
                                                                new String[]{MavenCLIArgs.COMPILE},
                                                                Boolean.TRUE);
@@ -215,7 +214,7 @@ public class DefaultMavenCompilerTest {
         Path prjFolder = Paths.get(tmpCloned + "/");
 
         WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(prjFolder);
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepoPath,
                                                                info,
                                                                new String[]{MavenCLIArgs.COMPILE},
                                                                Boolean.TRUE);
@@ -274,7 +273,7 @@ public class DefaultMavenCompilerTest {
         assertThat(lastCommit).isNotNull();
 
         WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(origin.getPath("/"));
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepoPath,
                                                                info,
                                                                new String[]{MavenCLIArgs.COMPILE},
                                                                Boolean.FALSE);
@@ -342,9 +341,9 @@ public class DefaultMavenCompilerTest {
         assertThat(cloned).isNotNull();
 
         WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(Paths.get(tmpCloned + "/"));
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepoPath,
                                                                info,
-                                                               new String[]{MavenCLIArgs.COMPILE},
+                                                               new String[]{MavenCLIArgs.COMPILE, MavenCLIArgs.ALTERNATE_USER_SETTINGS + TestUtilMaven.getSettingsFile()},
                                                                Boolean.TRUE);
         CompilationResponse res = compiler.compile(req);
         TestUtil.saveMavenLogIfCompilationResponseNotSuccessfull(tmpCloned, res, this.getClass(), testName);
@@ -397,7 +396,7 @@ public class DefaultMavenCompilerTest {
                 .doesNotContain("<target>1.8</target>");
 
         WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(tmp);
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepoPath,
                                                                info,
                                                                new String[]{MavenCLIArgs.COMPILE},
                                                                Boolean.FALSE);
@@ -453,7 +452,7 @@ public class DefaultMavenCompilerTest {
         assertThat(lastCommit).isNotNull();
 
         WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(origin.getPath("/"));
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepoPath,
                                                                info,
                                                                new String[]{MavenCLIArgs.COMPILE},
                                                                Boolean.FALSE);

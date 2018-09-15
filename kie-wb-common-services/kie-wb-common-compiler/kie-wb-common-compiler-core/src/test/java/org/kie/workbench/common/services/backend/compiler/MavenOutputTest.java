@@ -36,14 +36,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class MavenOutputTest {
 
-    private String mavenRepo;
+    private String mavenRepoPath;
 
     @Rule
     public TestName testName = new TestName();
 
     @Before
     public void setUp() throws Exception {
-        mavenRepo = TestUtilMaven.getMavenRepo();
+        mavenRepoPath = TestUtilMaven.getMavenRepo();
     }
 
     @Test
@@ -57,7 +57,7 @@ public class MavenOutputTest {
         Path tmp = Paths.get(tmpNio.toAbsolutePath().toString());
         final AFCompiler compiler = KieMavenCompilerFactory.getCompiler(EnumSet.of(KieDecorator.ENABLE_LOGGING, KieDecorator.ENABLE_INCREMENTAL_BUILD ));
         WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(tmp);
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepoPath,
                                                                info,
                                                                new String[]{MavenCLIArgs.COMPILE},
                                                                Boolean.TRUE);

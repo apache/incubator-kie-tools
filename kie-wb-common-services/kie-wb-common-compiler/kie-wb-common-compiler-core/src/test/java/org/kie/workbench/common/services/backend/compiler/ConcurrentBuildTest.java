@@ -51,14 +51,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ConcurrentBuildTest {
 
-    private String mavenRepo;
+    private String mavenRepoPath;
     private Logger logger = LoggerFactory.getLogger(ConcurrentBuildTest.class);
 
     private CountDownLatch latch = new CountDownLatch(4);
 
     @Before
     public void setUp() throws Exception {
-        mavenRepo = TestUtilMaven.getMavenRepo();
+        mavenRepoPath = TestUtilMaven.getMavenRepo();
     }
 
     @Test
@@ -169,7 +169,7 @@ public class ConcurrentBuildTest {
 
         final AFCompiler compiler = KieMavenCompilerFactory.getCompiler(EnumSet.of(KieDecorator.STORE_KIE_OBJECTS, KieDecorator.ENABLE_LOGGING ));
         final WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(Paths.get(tmp.toUri()));
-        final CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
+        final CompilationRequest req = new DefaultCompilationRequest(mavenRepoPath,
                                                                      info,
                                                                      new String[]{
                                                                              MavenCLIArgs.COMPILE,
@@ -204,7 +204,7 @@ public class ConcurrentBuildTest {
 
         final AFCompiler compiler = KieMavenCompilerFactory.getCompiler(EnumSet.of(KieDecorator.STORE_KIE_OBJECTS, KieDecorator.ENABLE_LOGGING ));
         final WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(tmp);
-        final CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
+        final CompilationRequest req = new DefaultCompilationRequest(mavenRepoPath,
                                                                      info,
                                                                      new String[]{
                                                                              MavenCLIArgs.COMPILE,

@@ -67,7 +67,7 @@ public class KieDefaultMavenCompilerTest {
     private static final Logger logger = LoggerFactory.getLogger(KieDefaultMavenCompilerTest.class);
     private FileSystemTestingUtils fileSystemTestingUtils = new FileSystemTestingUtils();
     private IOService ioService;
-    private String mavenRepo;
+    private String mavenRepoPath;
 
     @Rule
     public TestName testName = new TestName();
@@ -88,7 +88,7 @@ public class KieDefaultMavenCompilerTest {
     public void setUp() throws Exception {
         fileSystemTestingUtils.setup();
         ioService = fileSystemTestingUtils.getIoService();
-        mavenRepo = TestUtilMaven.getMavenRepo();
+        mavenRepoPath = TestUtilMaven.getMavenRepo();
     }
 
     @After
@@ -145,7 +145,7 @@ public class KieDefaultMavenCompilerTest {
 
         final AFCompiler compiler = KieMavenCompilerFactory.getCompiler(EnumSet.of(KieDecorator.ENABLE_LOGGING, KieDecorator.ENABLE_INCREMENTAL_BUILD ));
         WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(prjFolder);
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepoPath,
                                                                info,
                                                                new String[]{MavenCLIArgs.COMPILE},
                                                                Boolean.FALSE);
@@ -218,7 +218,7 @@ public class KieDefaultMavenCompilerTest {
 
         final AFCompiler compiler = KieMavenCompilerFactory.getCompiler(EnumSet.of(KieDecorator.ENABLE_LOGGING, KieDecorator.ENABLE_INCREMENTAL_BUILD ));
         WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(prjFolder);
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepoPath,
                                                                info,
                                                                new String[]{MavenCLIArgs.COMPILE},
                                                                Boolean.TRUE);
@@ -275,7 +275,7 @@ public class KieDefaultMavenCompilerTest {
 
         final AFCompiler compiler = KieMavenCompilerFactory.getCompiler(EnumSet.of(KieDecorator.UPDATE_JGIT_BEFORE_BUILD));
         WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(origin.getPath("/"));
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepoPath,
                                                                info,
                                                                new String[]{MavenCLIArgs.COMPILE},
                                                                Boolean.FALSE);
@@ -343,7 +343,7 @@ public class KieDefaultMavenCompilerTest {
 
         final AFCompiler compiler = KieMavenCompilerFactory.getCompiler(EnumSet.of(KieDecorator.UPDATE_JGIT_BEFORE_BUILD, KieDecorator.ENABLE_LOGGING ));
         WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(Paths.get(tmpCloned + "/"));
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepoPath,
                                                                info,
                                                                new String[]{MavenCLIArgs.COMPILE, MavenCLIArgs.ALTERNATE_USER_SETTINGS + alternateSettingsAbsPath},
                                                                Boolean.TRUE);
@@ -393,7 +393,7 @@ public class KieDefaultMavenCompilerTest {
 
         final AFCompiler compiler = KieMavenCompilerFactory.getCompiler(EnumSet.of(KieDecorator.ENABLE_LOGGING ));
         WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(temp);
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepoPath,
                                                                info,
                                                                new String[]{MavenCLIArgs.COMPILE, MavenCLIArgs.ALTERNATE_USER_SETTINGS + alternateSettingsAbsPath},
                                                                Boolean.TRUE);
@@ -466,7 +466,7 @@ public class KieDefaultMavenCompilerTest {
 
         final AFCompiler compiler = KieMavenCompilerFactory.getCompiler(EnumSet.of(KieDecorator.UPDATE_JGIT_BEFORE_BUILD, KieDecorator.ENABLE_LOGGING ));
         WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(origin.getPath("master", "/")); // git://buildCompileWithOverrideOnGitVFS/dummy/
-        CompilationRequest req = new DefaultCompilationRequest(mavenRepo,
+        CompilationRequest req = new DefaultCompilationRequest(mavenRepoPath,
                                                                info,
                                                                new String[]{MavenCLIArgs.COMPILE, MavenCLIArgs.ALTERNATE_USER_SETTINGS + alternateSettingsAbsPath},
                                                                Boolean.TRUE);

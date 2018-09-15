@@ -46,7 +46,7 @@ public class JGitUtilsTest {
     private static final Logger logger = LoggerFactory.getLogger(DefaultMavenCompilerTest.class);
     private FileSystemTestingUtils fileSystemTestingUtils = new FileSystemTestingUtils();
     private IOService ioService;
-    private Path mavenRepo;
+    private Path mavenRepoPath;
 
     @BeforeClass
     public static void setupSystemProperties() {
@@ -69,13 +69,12 @@ public class JGitUtilsTest {
     public void setUp() throws Exception {
         fileSystemTestingUtils.setup();
         ioService = fileSystemTestingUtils.getIoService();
+        
+        mavenRepoPath = Paths.get(System.getProperty("user.home"), ".m2", "repository");
 
-        mavenRepo = Paths.get(System.getProperty("user.home"),
-                              "/.m2/repository");
-
-        if (!Files.exists(mavenRepo)) {
-            logger.info("Creating a m2_repo into " + mavenRepo);
-            if (!Files.exists(Files.createDirectories(mavenRepo))) {
+        if (!Files.exists(mavenRepoPath)) {
+            logger.info("Creating a m2_repo into " + mavenRepoPath);
+            if (!Files.exists(Files.createDirectories(mavenRepoPath))) {
                 throw new Exception("Folder not writable in the project");
             }
         }
