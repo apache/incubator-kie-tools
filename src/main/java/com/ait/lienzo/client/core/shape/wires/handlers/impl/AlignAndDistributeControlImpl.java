@@ -159,7 +159,7 @@ public class AlignAndDistributeControlImpl implements AlignAndDistributeControl
     {
         if (m_horizontalDistEntries == null)
         {
-            m_horizontalDistEntries = new HashSet<AlignAndDistribute.DistributionEntry>();
+            m_horizontalDistEntries = new HashSet<>();
         }
         return m_horizontalDistEntries;
     }
@@ -168,7 +168,7 @@ public class AlignAndDistributeControlImpl implements AlignAndDistributeControl
     {
         if (m_verticalDistEntries == null)
         {
-            m_verticalDistEntries = new HashSet<AlignAndDistribute.DistributionEntry>();
+            m_verticalDistEntries = new HashSet<>();
         }
         return m_verticalDistEntries;
     }
@@ -522,7 +522,7 @@ public class AlignAndDistributeControlImpl implements AlignAndDistributeControl
         if (handler != null && handler.isIndexed())
         {
             m_alignAndDistribute.indexOnWithoutChangingStatus(handler);
-            ((AlignAndDistributeControlImpl)handler).m_indexedButRemoved = true;
+            ((AlignAndDistributeControlImpl)handler).m_indexedButRemoved = false;
             handler.updateIndex();
         }
     }
