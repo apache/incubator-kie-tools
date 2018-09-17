@@ -473,6 +473,55 @@ public class ProjectImportServiceImplTest {
     }
 
     @Test
+    public void importDefaultProjectInWindowsTest() {
+        final OrganizationalUnit organizationalUnit = new OrganizationalUnitImpl("myteam",
+                                                                                 "admin",
+                                                                                 "org.whatever");
+        organizationalUnit.getRepositories();
+
+        final Path exampleRoot = mock(Path.class);
+        final org.uberfire.java.nio.file.Path exampleRootNioPath = mock(org.uberfire.java.nio.file.Path.class);
+        when(pathUtil.convert(exampleRoot)).thenReturn(exampleRootNioPath);
+        String repoURL = "file:///C:/some/repo/url";
+        final ImportProject importProject = new ImportProject(exampleRoot,
+                                                              "example",
+                                                              "description",
+                                                              repoURL,
+                                                              emptyList());
+
+        when(pathUtil.getNiogitRepoPath(any())).thenReturn(repoURL);
+
+        final Repository repository = new GitRepository("example",
+                                                        new Space("myteam"));
+        final WorkspaceProject project = new WorkspaceProject(organizationalUnit,
+                                                              repository,
+                                                              new Branch("master",
+                                                                         mock(Path.class)),
+                                                              new Module());
+        when(projectService.resolveProject(repository)).thenReturn(project);
+        when(repoService.createRepository(same(organizationalUnit),
+                                          eq(GitRepository.SCHEME.toString()),
+                                          any(),
+                                          any())).thenReturn(repository);
+
+        final WorkspaceProject importedProject = service.importProject(organizationalUnit,
+                                                                       importProject);
+
+        assertSame(project,
+                   importedProject);
+        final ArgumentCaptor<RepositoryEnvironmentConfigurations> configsCaptor = ArgumentCaptor.forClass(RepositoryEnvironmentConfigurations.class);
+        verify(repoService).createRepository(same(organizationalUnit),
+                                             eq(GitRepository.SCHEME.toString()),
+                                             any(),
+                                             configsCaptor.capture());
+        final RepositoryEnvironmentConfigurations configs = configsCaptor.getValue();
+        assertEquals(repoURL,
+                     configs.getOrigin());
+        assertNull(configs.getSubdirectory());
+        verify(projectService).resolveProject(repository);
+    }
+
+    @Test
     public void importProjectInSubdirectory() {
         final OrganizationalUnit organizationalUnit = new OrganizationalUnitImpl("myteam",
                                                                                  "admin",

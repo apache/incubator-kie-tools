@@ -17,6 +17,10 @@
 
 package org.kie.workbench.common.screens.examples.backend.server;
 
+import static java.util.stream.Collectors.toList;
+
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +30,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -47,8 +52,8 @@ import org.guvnor.structure.server.config.ConfigurationFactory;
 import org.guvnor.structure.server.repositories.RepositoryFactory;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.soup.commons.validation.PortablePreconditions;
-import org.kie.workbench.common.screens.examples.model.ImportProject;
 import org.kie.workbench.common.screens.examples.model.ExampleRepository;
+import org.kie.workbench.common.screens.examples.model.ImportProject;
 import org.kie.workbench.common.screens.examples.service.ProjectImportService;
 import org.kie.workbench.common.screens.examples.validation.ImportProjectValidators;
 import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenService;
@@ -62,8 +67,6 @@ import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.NoSuchFileException;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 import org.uberfire.java.nio.file.spi.FileSystemProvider;
-
-import static java.util.stream.Collectors.toList;
 
 @Service
 @ApplicationScoped
@@ -258,12 +261,13 @@ public class ProjectImportServiceImpl extends BaseProjectImportService implement
     }
 
     private String inferProjectName(String repositoryURL) {
-        return Optional.of(repositoryURL)
-                .map(url -> java.nio.file.Paths.get(repositoryURL))
-                .map(path -> path.getFileName().toString())
-                .map(fileName -> STRIP_DOT_GIT.matcher(fileName))
-                .map(matcher -> matcher.replaceFirst(""))
-                .orElse("new-project");
+            URI repositoryURI = URI.create(repositoryURL);
+            return Optional.of(repositoryURI)
+                    .map(uri -> java.nio.file.Paths.get(uri))
+                    .map(path -> path.getFileName().toString())
+                    .map(fileName -> STRIP_DOT_GIT.matcher(fileName))
+                    .map(matcher -> matcher.replaceFirst(""))
+                    .orElse("new-project");
     }
 
     private org.uberfire.java.nio.file.Path getProjectRoot(final ImportProject importProject) {
