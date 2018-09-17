@@ -268,12 +268,28 @@ public class DecisionNavigatorTreeViewTest {
 
         final DecisionNavigatorItem item = makeItem("uuid");
         final Element element = mock(Element.class);
+        final Element parentElement = mock(Element.class);
+        element.parentNode = parentElement;
 
         doReturn(element).when(treeView).findItem(item);
 
         treeView.remove(item);
 
-        verify(element).remove();
+        verify(parentElement).removeChild(element);
+        verify(element, never()).remove();
+    }
+
+    @Test
+    public void testRemoveItemWhenDoesNotHaveParent() {
+
+        final DecisionNavigatorItem item = makeItem("uuid");
+        final Element element = mock(Element.class);
+
+        doReturn(element).when(treeView).findItem(item);
+
+        treeView.remove(item);
+
+        verify(element, never()).remove();
     }
 
     @Test
