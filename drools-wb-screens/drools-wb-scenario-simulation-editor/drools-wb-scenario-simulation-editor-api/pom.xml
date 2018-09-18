@@ -65,6 +65,11 @@
       <artifactId>kie-wb-common-datamodel-api</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>com.thoughtworks.xstream</groupId>
+      <artifactId>xstream</artifactId>
+    </dependency>
+    
   </dependencies>
 
 </project>

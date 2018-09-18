@@ -19,6 +19,7 @@ package org.drools.workbench.screens.scenariosimulation.model;
 import java.util.Random;
 import java.util.stream.IntStream;
 
+import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.soup.project.datamodel.imports.HasImports;
 import org.kie.soup.project.datamodel.imports.Imports;
@@ -26,6 +27,9 @@ import org.kie.soup.project.datamodel.imports.Imports;
 @Portable
 public class ScenarioSimulationModel
         implements HasImports {
+
+    @XStreamAsAttribute()
+    private String version = "1.0";
 
     private Simulation simulation;
 

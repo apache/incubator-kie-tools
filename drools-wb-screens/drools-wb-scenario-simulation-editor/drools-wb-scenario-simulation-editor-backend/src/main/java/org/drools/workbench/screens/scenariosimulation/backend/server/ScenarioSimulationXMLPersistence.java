@@ -18,8 +18,20 @@ package org.drools.workbench.screens.scenariosimulation.backend.server;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
+import org.drools.workbench.screens.scenariosimulation.model.ExpressionElement;
+import org.drools.workbench.screens.scenariosimulation.model.ExpressionIdentifier;
+import org.drools.workbench.screens.scenariosimulation.model.FactIdentifier;
+import org.drools.workbench.screens.scenariosimulation.model.FactMapping;
+import org.drools.workbench.screens.scenariosimulation.model.FactMappingType;
+import org.drools.workbench.screens.scenariosimulation.model.FactMappingValue;
+import org.drools.workbench.screens.scenariosimulation.model.FactMappingValueOperator;
+import org.drools.workbench.screens.scenariosimulation.model.Scenario;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
+import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModelContent;
+import org.drools.workbench.screens.scenariosimulation.model.Simulation;
+import org.drools.workbench.screens.scenariosimulation.model.SimulationDescriptor;
 import org.kie.soup.commons.xstream.XStreamUtils;
+import org.kie.soup.project.datamodel.imports.Import;
 
 public class ScenarioSimulationXMLPersistence {
 
@@ -28,17 +40,34 @@ public class ScenarioSimulationXMLPersistence {
 
     private ScenarioSimulationXMLPersistence() {
         xt = XStreamUtils.createTrustingXStream(new DomDriver());
+
+        xt.autodetectAnnotations(true);
+
+        xt.alias("ExpressionElement", ExpressionElement.class);
+        xt.alias("ExpressionIdentifier", ExpressionIdentifier.class);
+        xt.alias("FactIdentifier", FactIdentifier.class);
+        xt.alias("FactMapping", FactMapping.class);
+        xt.alias("FactMappingType", FactMappingType.class);
+        xt.alias("FactMappingValue", FactMappingValue.class);
+        xt.alias("FactMappingValueOperator", FactMappingValueOperator.class);
+        xt.alias("Scenario", Scenario.class);
+        xt.alias("ScenarioSimulationModel", ScenarioSimulationModel.class);
+        xt.alias("ScenarioSimulationModelContent", ScenarioSimulationModelContent.class);
+        xt.alias("Simulation", Simulation.class);
+        xt.alias("SimulationDescriptor", SimulationDescriptor.class);
+
+        xt.alias("Import", Import.class);
     }
 
     public static ScenarioSimulationXMLPersistence getInstance() {
         return INSTANCE;
     }
 
-    public String marshal(ScenarioSimulationModel sc) {
+    public String marshal(final ScenarioSimulationModel sc) {
         return xt.toXML(sc);
     }
 
-    public ScenarioSimulationModel unmarshal(String xml) {
+    public ScenarioSimulationModel unmarshal(final String xml) {
         if (xml == null) {
             return new ScenarioSimulationModel();
         }
