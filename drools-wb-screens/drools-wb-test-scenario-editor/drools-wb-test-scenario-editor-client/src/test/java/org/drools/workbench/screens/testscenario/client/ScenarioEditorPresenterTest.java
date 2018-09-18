@@ -39,7 +39,7 @@ import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
-import org.guvnor.common.services.shared.test.TestService;
+import org.guvnor.common.services.shared.test.TestRunnerService;
 import org.guvnor.messageconsole.client.console.widget.button.AlertsButtonMenuItemBuilder;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
@@ -126,7 +126,7 @@ public class ScenarioEditorPresenterTest {
     private ScenarioTestEditorService service;
 
     @Mock
-    private TestService testService;
+    private TestRunnerService testService;
 
     @Mock
     private BasicFileMenuBuilder menuBuilder;

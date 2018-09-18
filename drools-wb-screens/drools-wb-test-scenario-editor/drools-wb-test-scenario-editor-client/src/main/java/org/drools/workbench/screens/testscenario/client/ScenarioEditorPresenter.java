@@ -33,7 +33,7 @@ import org.drools.workbench.screens.testscenario.model.TestScenarioModelContent;
 import org.drools.workbench.screens.testscenario.model.TestScenarioResult;
 import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
-import org.guvnor.common.services.shared.test.TestService;
+import org.guvnor.common.services.shared.test.TestRunnerService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.security.shared.api.identity.User;
@@ -64,7 +64,7 @@ public class ScenarioEditorPresenter
     private final ScenarioEditorView view;
     private final Caller<ScenarioTestEditorService> service;
     private final AsyncPackageDataModelOracleFactory oracleFactory;
-    private final Caller<TestService> testService;
+    private final Caller<TestRunnerService> testService;
     private final ImportsWidgetPresenter importsWidget;
     private User user;
     private final SettingsPage settingsPage;
@@ -79,7 +79,7 @@ public class ScenarioEditorPresenter
                                    final User user,
                                    final ImportsWidgetPresenter importsWidget,
                                    final Caller<ScenarioTestEditorService> service,
-                                   final Caller<TestService> testService,
+                                   final Caller<TestRunnerService> testService,
                                    final TestScenarioResourceType type,
                                    final AsyncPackageDataModelOracleFactory oracleFactory,
                                    final SettingsPage settingsPage,
