@@ -16,8 +16,10 @@ package org.guvnor.common.services.shared.test;
 
 import javax.enterprise.event.Event;
 
+import org.jboss.errai.bus.server.annotations.Remote;
 import org.uberfire.backend.vfs.Path;
 
+@Remote
 public interface TestRunnerService {
 
     void runAllTests(final String identifier,

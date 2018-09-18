@@ -24,7 +24,6 @@ import org.uberfire.backend.vfs.Path;
 /**
  * Service definition for running JUnit tests
  */
-@Remote
 public interface TestService {
 
     void runAllTests(final String identifier,

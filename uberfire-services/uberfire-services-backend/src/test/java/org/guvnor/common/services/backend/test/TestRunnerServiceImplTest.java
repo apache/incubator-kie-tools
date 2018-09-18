@@ -19,14 +19,23 @@ import java.util.ArrayList;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 
+import org.guvnor.common.services.shared.test.Failure;
+import org.guvnor.common.services.shared.test.TestResultMessage;
 import org.guvnor.common.services.shared.test.TestService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -35,10 +44,16 @@ import static org.mockito.Mockito.verify;
 public class TestRunnerServiceImplTest {
 
     @Mock
-    TestService testService1;
+    private TestService testService1;
 
     @Mock
-    TestService testService2;
+    private TestService testService2;
+
+    @Mock
+    private Event<TestResultMessage> defaultTestResultMessageEvent;
+
+    @Captor
+    private ArgumentCaptor<TestResultMessage> testResultMessageArgumentCaptor;
 
     private TestRunnerServiceImpl testRunnerService;
 
@@ -52,25 +67,70 @@ public class TestRunnerServiceImplTest {
         list.add(testService2);
         doReturn(list.iterator()).when(services).iterator();
 
-        testRunnerService = new TestRunnerServiceImpl(services);
+        testRunnerService = new TestRunnerServiceImpl(services,
+                                                      defaultTestResultMessageEvent);
     }
 
     @Test
     public void runAllTests() throws Exception {
+
+        setUpTestService(testService1, 1, 200, 1);
+        setUpTestService(testService2, 2, 300, 2);
+
         final Path path = mock(Path.class);
         testRunnerService.runAllTests("id", path);
 
-        verify(testService1).runAllTests("id", path);
-        verify(testService2).runAllTests("id", path);
+        verify(defaultTestResultMessageEvent).fire(testResultMessageArgumentCaptor.capture());
+
+        final TestResultMessage testResultMessage = testResultMessageArgumentCaptor.getValue();
+        assertEquals("id", testResultMessage.getIdentifier());
+        assertEquals(3, testResultMessage.getRunCount());
+        assertEquals(500, testResultMessage.getRunTime());
+        assertEquals(3, testResultMessage.getFailures().size());
+
+        verify(testService1).runAllTests(eq("id"), eq(path), any());
+        verify(testService2).runAllTests(eq("id"), eq(path), any());
     }
 
     @Test
     public void runAllTestsCustomTestResultEvent() throws Exception {
+        setUpTestService(testService1, 2, 500, 1);
+        setUpTestService(testService2, 2, 300, 0);
+
         final Path path = mock(Path.class);
         final Event event = mock(Event.class);
         testRunnerService.runAllTests("id", path, event);
 
-        verify(testService1).runAllTests("id", path, event);
-        verify(testService2).runAllTests("id", path, event);
+        verify(event).fire(testResultMessageArgumentCaptor.capture());
+
+        final TestResultMessage testResultMessage = testResultMessageArgumentCaptor.getValue();
+        assertEquals("id", testResultMessage.getIdentifier());
+        assertEquals(4, testResultMessage.getRunCount());
+        assertEquals(800, testResultMessage.getRunTime());
+        assertEquals(1, testResultMessage.getFailures().size());
+
+        verify(testService1).runAllTests(eq("id"), eq(path), any());
+        verify(testService2).runAllTests(eq("id"), eq(path), any());
+    }
+
+    private void setUpTestService(final TestService testService,
+                                  final int runCount,
+                                  final int runTime,
+                                  final int failureCount) {
+        doAnswer(invocationOnMock -> {
+            final Event<TestResultMessage> event = (Event<TestResultMessage>) invocationOnMock.getArguments()[2];
+
+            final ArrayList<Failure> failures = new ArrayList<>();
+
+            for (int i = 0; i < failureCount; i++) {
+                failures.add(new Failure());
+            }
+            event.fire(new TestResultMessage((String) invocationOnMock.getArguments()[0],
+                                             runCount,
+                                             runTime,
+                                             failures));
+
+            return null;
+        }).when(testService).runAllTests(anyString(), any(), any());
     }
 }
