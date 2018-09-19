@@ -41,6 +41,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -98,20 +99,29 @@ public class DataTypeListViewTest {
     public void testCleanSubTypes() {
 
         final String parentUUID = "parentUUID";
+        final Element parentElement = makeHTMLElement();
         final NodeList<Element> children = spy(new NodeList<>());
         final Element child1 = makeElement("child1UUID");
+        child1.parentNode = parentElement;
         final Element child2 = makeElement("child2UUID");
+        child2.parentNode = parentElement;
+        final Element child3NoParent = makeElement("child3UUID");
+        final Element child4Null = null;
 
         doReturn(child1).when(children).getAt(0);
         doReturn(child2).when(children).getAt(1);
-        children.length = 2;
+        doReturn(child3NoParent).when(children).getAt(2);
+        doReturn(child4Null).when(children).getAt(3);
+        children.length = 4;
 
         mockDOMElementsByParentUUID(parentUUID, children);
 
         view.cleanSubTypes(parentUUID);
 
-        verify(child1).remove();
-        verify(child2).remove();
+        verify(parentElement).removeChild(child1);
+        verify(parentElement).removeChild(child2);
+        verify(parentElement, never()).removeChild(child3NoParent);
+        verify(parentElement, never()).removeChild(child4Null);
     }
 
     @Test

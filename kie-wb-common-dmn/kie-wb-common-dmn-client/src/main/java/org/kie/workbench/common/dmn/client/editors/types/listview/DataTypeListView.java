@@ -110,8 +110,10 @@ public class DataTypeListView implements DataTypeList.View {
 
         for (int i = 0; i < subDataTypeRows.length; i++) {
             final Element item = subDataTypeRows.getAt(i);
-            cleanSubTypes(item.getAttribute(UUID_ATTR));
-            item.remove();
+            if (item != null && item.parentNode != null) {
+                cleanSubTypes(item.getAttribute(UUID_ATTR));
+                item.parentNode.removeChild(item);
+            }
         }
     }
 
