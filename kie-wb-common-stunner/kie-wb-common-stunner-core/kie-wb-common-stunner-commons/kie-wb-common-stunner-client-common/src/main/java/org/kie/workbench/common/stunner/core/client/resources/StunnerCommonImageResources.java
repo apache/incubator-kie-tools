@@ -19,16 +19,14 @@ package org.kie.workbench.common.stunner.core.client.resources;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ClientBundleWithLookup;
-import com.google.gwt.resources.client.DataResource;
 import com.google.gwt.resources.client.ImageResource;
 
 public interface StunnerCommonImageResources extends ClientBundleWithLookup {
 
     StunnerCommonImageResources INSTANCE = GWT.create(StunnerCommonImageResources.class);
 
-    @Source("images/edit.svg")
-    @DataResource.MimeType("image/svg+xml")
-    DataResource edit();
+    @Source("images/edit.png")
+    ImageResource edit();
 
     @Source("images/delete.png")
     ImageResource delete();

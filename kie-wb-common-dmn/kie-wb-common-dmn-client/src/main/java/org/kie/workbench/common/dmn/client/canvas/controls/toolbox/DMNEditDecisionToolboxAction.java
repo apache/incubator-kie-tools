@@ -30,7 +30,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtil
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ToolboxAction;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.resources.StunnerCommonImageResources;
-import org.kie.workbench.common.stunner.core.client.shape.SvgDataUriGlyph;
+import org.kie.workbench.common.stunner.core.client.shape.ImageDataUriGlyph;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseClickEvent;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -41,8 +41,8 @@ import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
 @Dependent
 public class DMNEditDecisionToolboxAction implements ToolboxAction<AbstractCanvasHandler> {
 
-    private static final SvgDataUriGlyph GLYPH =
-            SvgDataUriGlyph.Builder.build(StunnerCommonImageResources.INSTANCE.edit().getSafeUri());
+    private static final ImageDataUriGlyph  GLYPH =
+            ImageDataUriGlyph.create(StunnerCommonImageResources.INSTANCE.edit().getSafeUri());
 
     private final SessionManager sessionManager;
     private final ClientTranslationService translationService;
