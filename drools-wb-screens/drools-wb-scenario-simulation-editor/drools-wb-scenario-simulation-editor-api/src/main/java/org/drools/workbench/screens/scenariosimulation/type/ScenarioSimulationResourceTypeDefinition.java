@@ -53,7 +53,7 @@ public class ScenarioSimulationResourceTypeDefinition implements ResourceTypeDef
 
     @Override
     public String getDescription() {
-        return "Scenario Simulation definition";
+        return "Test Scenarios (Preview)";
     }
 
     @Override

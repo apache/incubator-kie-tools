@@ -37,7 +37,7 @@ import static org.drools.workbench.screens.scenariosimulation.backend.server.run
 
 public class ScenarioRunner extends Runner {
 
-    private final Description desc = Description.createSuiteDescription("Scenario Simulation tests");
+    private final Description desc = Description.createSuiteDescription("Test Scenarios (Preview) tests");
     private final KieContainer kieContainer;
     private final SimulationDescriptor simulationDescriptor;
     private List<Scenario> scenarios;
