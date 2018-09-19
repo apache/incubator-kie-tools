@@ -27,18 +27,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 import com.google.common.io.Resources;
-import org.apache.maven.repository.internal.MavenRepositorySystemUtils;
 import org.drools.core.rule.TypeMetaInfo;
-import org.eclipse.aether.DefaultRepositorySystemSession;
-import org.eclipse.aether.RepositorySystem;
-import org.eclipse.aether.RepositorySystemSession;
-import org.eclipse.aether.connector.basic.BasicRepositoryConnectorFactory;
-import org.eclipse.aether.impl.DefaultServiceLocator;
-import org.eclipse.aether.repository.LocalRepository;
-import org.eclipse.aether.spi.connector.RepositoryConnectorFactory;
-import org.eclipse.aether.spi.connector.transport.TransporterFactory;
-import org.eclipse.aether.transport.file.FileTransporterFactory;
-import org.eclipse.aether.transport.http.HttpTransporterFactory;
 import org.guvnor.common.services.project.builder.model.BuildMessage;
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.model.GAV;
@@ -46,7 +35,6 @@ import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.guvnor.m2repo.backend.server.M2ServletContextListener;
-import org.guvnor.m2repo.preferences.ArtifactRepositoryPreference;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -177,11 +165,9 @@ public class BuilderTest
         GAV gav = new GAV("org.kie.workbench.common.services.builder.tests",
                           "dependency-test1-snapshot",
                           "1.0-SNAPSHOT");
-        RepositorySystemSession session = newSession(newRepositorySystem());
         URL urlJar = this.getClass().getResource("/dependency-test1-snapshot-1.0-SNAPSHOT.jar");
         context.deploy(gav,
-                       urlJar.getPath(),
-                       session);
+                       urlJar.getPath());
         URL url = this.getClass().getResource("/GuvnorM2RepoDependencyExample2Snapshot");
         SimpleFileSystemProvider p = new SimpleFileSystemProvider();
         org.uberfire.java.nio.file.Path path = p.getPath(url.toURI());
@@ -208,25 +194,6 @@ public class BuilderTest
         }
 
         assertTrue(results.getMessages().isEmpty());
-    }
-
-    private RepositorySystemSession newSession(RepositorySystem system) {
-        DefaultRepositorySystemSession session = MavenRepositorySystemUtils.newSession();
-        LocalRepository localRepo = new LocalRepository(ArtifactRepositoryPreference.getGlobalM2RepoDirWithFallback());
-        session.setLocalRepositoryManager(system.newLocalRepositoryManager(session,
-                                                                           localRepo));
-        return session;
-    }
-
-    private RepositorySystem newRepositorySystem() {
-        DefaultServiceLocator locator = MavenRepositorySystemUtils.newServiceLocator();
-        locator.addService(RepositoryConnectorFactory.class,
-                           BasicRepositoryConnectorFactory.class);
-        locator.addService(TransporterFactory.class,
-                           FileTransporterFactory.class);
-        locator.addService(TransporterFactory.class,
-                           HttpTransporterFactory.class);
-        return locator.getService(RepositorySystem.class);
     }
 
     @Test

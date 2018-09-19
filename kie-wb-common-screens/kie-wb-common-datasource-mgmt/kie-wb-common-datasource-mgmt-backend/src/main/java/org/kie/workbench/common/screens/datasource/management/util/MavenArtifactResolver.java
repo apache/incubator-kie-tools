@@ -48,29 +48,6 @@ public class MavenArtifactResolver {
     public MavenArtifactResolver() {
     }
 
-    public static RepositorySystemSession getAetherSessionWithGlobalRepo() {
-        return newSession(newRepositorySystem());
-    }
-
-    private static RepositorySystemSession newSession(RepositorySystem system) {
-        DefaultRepositorySystemSession session = MavenRepositorySystemUtils.newSession();
-        LocalRepository localRepo = new LocalRepository(ArtifactRepositoryPreference.getGlobalM2RepoDirWithFallback());
-        session.setLocalRepositoryManager(system.newLocalRepositoryManager(session,
-                                                                           localRepo));
-        return session;
-    }
-
-    private static RepositorySystem newRepositorySystem() {
-        DefaultServiceLocator locator = MavenRepositorySystemUtils.newServiceLocator();
-        locator.addService(RepositoryConnectorFactory.class,
-                           BasicRepositoryConnectorFactory.class);
-        locator.addService(TransporterFactory.class,
-                           FileTransporterFactory.class);
-        locator.addService(TransporterFactory.class,
-                           HttpTransporterFactory.class);
-        return locator.getService(RepositorySystem.class);
-    }
-
     public URI resolve(final String groupId,
                        final String artifactId,
                        final String version) throws Exception {
@@ -82,7 +59,7 @@ public class MavenArtifactResolver {
                                                                                    gav.getArtifactId(),
                                                                                    JAR_ARTIFACT,
                                                                                    gav.getVersion());
-            RepositorySystemSession session = newSession(newRepositorySystem());
+            RepositorySystemSession session = Aether.getAether().getSession();
             ArtifactRequest artifactReq = new ArtifactRequest();
             artifactReq.setArtifact(jarArtifact);
             ArtifactResult result = Aether.getAether().getSystem().resolveArtifact(session,
