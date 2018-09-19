@@ -29,6 +29,7 @@ import org.uberfire.mocks.MockInstanceImpl;
 import static org.kie.workbench.common.workbench.client.EditorIds.DMN_DESIGNER;
 import static org.kie.workbench.common.workbench.client.EditorIds.GUIDED_DECISION_TREE;
 import static org.kie.workbench.common.workbench.client.EditorIds.GUIDED_SCORE_CARD;
+import static org.kie.workbench.common.workbench.client.EditorIds.SCENARIO_SIMULATION_DESIGNER;
 import static org.kie.workbench.common.workbench.client.EditorIds.STUNNER_DESIGNER;
 import static org.kie.workbench.common.workbench.client.EditorIds.XLS_SCORE_CARD;
 import static org.kie.workbench.common.workbench.client.PerspectiveIds.ADMIN;
@@ -167,6 +168,8 @@ public class PermissionTreeSetupTest {
                                                   eq("StunnerDesigner"));
         verify(editorTreeProvider).registerEditor(eq(DMN_DESIGNER),
                                                   eq("DMNDesigner"));
+        verify(editorTreeProvider).registerEditor(eq(SCENARIO_SIMULATION_DESIGNER),
+                                                  eq("ScenarioSimulationEditor"));
     }
 
     @Test

@@ -164,4 +164,7 @@ public interface DefaultWorkbenchConstants
     String ErrorDetailsSuccessfullyCopiedToClipboard();
 
     String ErrorDetailsFailedToBeCopiedToClipboard();
+
+    String ScenarioSimulationEditor();
+
 }

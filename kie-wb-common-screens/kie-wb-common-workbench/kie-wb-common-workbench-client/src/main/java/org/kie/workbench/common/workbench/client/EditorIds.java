@@ -23,4 +23,5 @@ public interface EditorIds {
     String XLS_SCORE_CARD = "ScoreCardXLSEditor";
     String STUNNER_DESIGNER = "BPMNDiagramEditor";
     String DMN_DESIGNER = "DMNDiagramEditor";
+    String SCENARIO_SIMULATION_DESIGNER = "ScenarioSimulationEditor";
 }
