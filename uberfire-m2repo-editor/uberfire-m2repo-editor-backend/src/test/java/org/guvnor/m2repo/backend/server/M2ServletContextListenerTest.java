@@ -17,51 +17,20 @@ package org.guvnor.m2repo.backend.server;
 
 import java.io.File;
 
-import org.apache.maven.repository.internal.MavenRepositorySystemUtils;
 import org.appformer.maven.integration.Aether;
-import org.eclipse.aether.DefaultRepositorySystemSession;
-import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
-import org.eclipse.aether.connector.basic.BasicRepositoryConnectorFactory;
-import org.eclipse.aether.impl.DefaultServiceLocator;
-import org.eclipse.aether.repository.LocalRepository;
 import org.eclipse.aether.resolution.ArtifactRequest;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.eclipse.aether.resolution.ArtifactResult;
-import org.eclipse.aether.spi.connector.RepositoryConnectorFactory;
-import org.eclipse.aether.spi.connector.transport.TransporterFactory;
-import org.eclipse.aether.transport.file.FileTransporterFactory;
-import org.eclipse.aether.transport.http.HttpTransporterFactory;
 import org.guvnor.common.services.project.model.GAV;
-import org.guvnor.m2repo.preferences.ArtifactRepositoryPreference;
 import org.junit.After;
 import org.junit.Test;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class M2ServletContextListenerTest {
-
-    private static RepositorySystemSession newSession(RepositorySystem system) {
-        DefaultRepositorySystemSession session = MavenRepositorySystemUtils.newSession();
-        LocalRepository localRepo = new LocalRepository(ArtifactRepositoryPreference.getGlobalM2RepoDirWithFallback());
-        session.setLocalRepositoryManager(system.newLocalRepositoryManager(session,
-                                                                           localRepo));
-
-        return session;
-    }
-
-    private static RepositorySystem newRepositorySystem() {
-        DefaultServiceLocator locator = MavenRepositorySystemUtils.newServiceLocator();
-        locator.addService(RepositoryConnectorFactory.class,
-                           BasicRepositoryConnectorFactory.class);
-        locator.addService(TransporterFactory.class,
-                           FileTransporterFactory.class);
-        locator.addService(TransporterFactory.class,
-                           HttpTransporterFactory.class);
-        return locator.getService(RepositorySystem.class);
-    }
 
     @After
     public void tearDown() throws Exception {
@@ -71,11 +40,12 @@ public class M2ServletContextListenerTest {
     private void deleteArtifactIFPresent() throws ArtifactResolutionException {
         ArtifactRequest artifactRequest = new ArtifactRequest();
         artifactRequest.setArtifact(getArtifact());
-        ArtifactResult result = Aether.getAether().getSystem().resolveArtifact(newSession(newRepositorySystem()),
-                                                                               artifactRequest);
-        if (!result.isMissing()) {
+        try {
+            ArtifactResult result = Aether.getAether().getSystem().resolveArtifact(Aether.getAether().getSession(),
+                                                                                   artifactRequest);
             File artifactFile = result.getArtifact().getFile();
             assertThat(artifactFile.delete()).isTrue();
+        } catch (ArtifactResolutionException ex) {
         }
     }
 
@@ -89,15 +59,14 @@ public class M2ServletContextListenerTest {
 
     @Test
     public void deployJarsFrowWar() throws Exception {
-        RepositorySystemSession session = newSession(newRepositorySystem());
+        RepositorySystemSession session = Aether.getAether().getSession();
         assertThat(checksIfArtifactIsPresent(session)).isFalse();
 
         File file = new File("target/test-classes/org/guvnor/m2repo/backend/server/uberfire-m2repo-editor-backend-100-SNAPSHOT.jar");
         assertThat(file).exists();
 
         M2ServletContextListener listener = new M2ServletContextListener();
-        GAV deployed = listener.deployJar(file.getAbsolutePath(),
-                                          session);
+        GAV deployed = listener.deployJar(file.getAbsolutePath());
         assertThat(deployed.getGroupId()).isEqualTo("org.uberfire");
         assertThat(deployed.getArtifactId()).isEqualTo("uberfire-m2repo-editor-backend");
         assertThat(deployed.getVersion()).isEqualTo("100-SNAPSHOT");

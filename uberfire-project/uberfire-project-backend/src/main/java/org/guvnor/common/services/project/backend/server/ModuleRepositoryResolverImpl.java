@@ -29,25 +29,20 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.repository.internal.MavenRepositorySystemUtils;
 import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
 import org.appformer.maven.integration.Aether;
 import org.appformer.maven.integration.embedder.MavenEmbedder;
 import org.appformer.maven.integration.embedder.MavenProjectLoader;
 import org.appformer.maven.integration.embedder.MavenSettings;
-import org.eclipse.aether.DefaultRepositorySystemSession;
-import org.eclipse.aether.RepositorySystem;
-import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
-import org.eclipse.aether.connector.basic.BasicRepositoryConnectorFactory;
-import org.eclipse.aether.impl.DefaultServiceLocator;
 import org.eclipse.aether.repository.ArtifactRepository;
 import org.eclipse.aether.repository.Authentication;
 import org.eclipse.aether.repository.LocalRepository;
@@ -56,10 +51,6 @@ import org.eclipse.aether.repository.RepositoryPolicy;
 import org.eclipse.aether.resolution.ArtifactRequest;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.eclipse.aether.resolution.ArtifactResult;
-import org.eclipse.aether.spi.connector.RepositoryConnectorFactory;
-import org.eclipse.aether.spi.connector.transport.TransporterFactory;
-import org.eclipse.aether.transport.file.FileTransporterFactory;
-import org.eclipse.aether.transport.http.HttpTransporterFactory;
 import org.guvnor.common.services.project.backend.server.utils.POMContentHandler;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.MavenRepositoryMetadata;
@@ -70,7 +61,6 @@ import org.guvnor.common.services.project.preferences.GAVPreferences;
 import org.guvnor.common.services.project.service.ModuleRepositoryResolver;
 import org.guvnor.common.services.shared.preferences.GuvnorPreferenceScopes;
 import org.guvnor.common.services.shared.preferences.WorkbenchPreferenceScopeResolutionStrategies;
-import org.guvnor.m2repo.preferences.ArtifactRepositoryPreference;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -141,7 +131,7 @@ public class ModuleRepositoryResolverImpl
             return Collections.emptySet();
         }
 
-        final Set<MavenRepositoryMetadata> repositories = new HashSet<MavenRepositoryMetadata>();
+        final Set<MavenRepositoryMetadata> repositories = new HashSet<>();
 
         try {
             //Load Project's pom.xml
@@ -154,7 +144,7 @@ public class ModuleRepositoryResolverImpl
             final Map<MavenRepositorySource, Collection<RemoteRepository>> remoteRepositories = getRemoteRepositories(mavenProject);
 
             //Local Repository
-            repositories.add(makeRepositoryMetaData(newSession(newRepositorySystem()).getLocalRepository(),
+            repositories.add(makeRepositoryMetaData(Aether.getAether().getSession().getLocalRepository(),
                                                     MavenRepositorySource.LOCAL));
 
             if (remoteRepositories.isEmpty()) {
@@ -180,25 +170,6 @@ public class ModuleRepositoryResolverImpl
         }
 
         return repositories;
-    }
-
-    private RepositorySystemSession newSession(RepositorySystem system) {
-        DefaultRepositorySystemSession session = MavenRepositorySystemUtils.newSession();
-        LocalRepository localRepo = new LocalRepository(ArtifactRepositoryPreference.getGlobalM2RepoDirWithFallback());
-        session.setLocalRepositoryManager(system.newLocalRepositoryManager(session,
-                                                                           localRepo));
-        return session;
-    }
-
-    private RepositorySystem newRepositorySystem() {
-        DefaultServiceLocator locator = MavenRepositorySystemUtils.newServiceLocator();
-        locator.addService(RepositoryConnectorFactory.class,
-                           BasicRepositoryConnectorFactory.class);
-        locator.addService(TransporterFactory.class,
-                           FileTransporterFactory.class);
-        locator.addService(TransporterFactory.class,
-                           HttpTransporterFactory.class);
-        return locator.getService(RepositorySystem.class);
     }
 
     private Set<MavenRepositoryMetadata> makeRepositoriesMetaData(final Collection<? extends ArtifactRepository> repositories,
