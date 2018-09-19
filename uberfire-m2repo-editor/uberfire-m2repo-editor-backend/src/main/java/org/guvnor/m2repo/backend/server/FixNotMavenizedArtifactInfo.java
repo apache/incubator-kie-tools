@@ -11,6 +11,7 @@ import org.guvnor.common.services.project.model.GAV;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static java.util.Comparator.naturalOrder;
 import static org.guvnor.m2repo.backend.server.M2ServletContextListener.ARTIFACT_ID;
 import static org.guvnor.m2repo.backend.server.M2ServletContextListener.GROUP_ID;
 import static org.guvnor.m2repo.backend.server.M2ServletContextListener.VERSION;
