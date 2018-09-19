@@ -22,6 +22,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.drools.workbench.screens.scenariosimulation.client.editor.ScenarioSimulationEditorPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.resources.ScenarioSimulationEditorResources;
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.drools.workbench.screens.scenariosimulation.client.type.ScenarioSimulationResourceType;
@@ -36,7 +37,12 @@ import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
+import org.uberfire.rpc.SessionInfo;
+import org.uberfire.security.ResourceAction;
+import org.uberfire.security.ResourceRef;
+import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.workbench.events.NotificationEvent;
+import org.uberfire.workbench.model.ActivityResourceType;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 /**
@@ -50,14 +56,21 @@ public class NewScenarioSimulationHandler
 
     private ScenarioSimulationResourceType resourceType;
 
+    private final AuthorizationManager authorizationManager;
+    private final SessionInfo sessionInfo;
+
     @Inject
     public NewScenarioSimulationHandler(final ScenarioSimulationResourceType resourceType,
                                         final BusyIndicatorView busyIndicatorView,
                                         final Event<NotificationEvent> notificationEvent,
                                         final Event<NewResourceSuccessEvent> newResourceSuccessEvent,
                                         final PlaceManager placeManager,
-                                        final Caller<ScenarioSimulationService> scenarioSimulationService) {
+                                        final Caller<ScenarioSimulationService> scenarioSimulationService,
+                                        final AuthorizationManager authorizationManager,
+                                        final SessionInfo sessionInfo) {
         this.resourceType = resourceType;
+        this.authorizationManager = authorizationManager;
+        this.sessionInfo = sessionInfo;
         this.newResourceSuccessEvent = newResourceSuccessEvent;
         this.busyIndicatorView = busyIndicatorView;
         this.scenarioSimulationService = scenarioSimulationService;
@@ -78,6 +91,14 @@ public class NewScenarioSimulationHandler
     @Override
     public ResourceTypeDefinition getResourceType() {
         return resourceType;
+    }
+
+    @Override
+    public boolean canCreate() {
+        return authorizationManager.authorize(new ResourceRef(ScenarioSimulationEditorPresenter.IDENTIFIER,
+                                                              ActivityResourceType.EDITOR),
+                                              ResourceAction.READ,
+                                              sessionInfo.getIdentity());
     }
 
     @Override
