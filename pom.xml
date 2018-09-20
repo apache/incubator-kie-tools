@@ -969,6 +969,13 @@
         </exclusions>
       </dependency>
 
+      <!-- RHDM-588 freemarker -->
+      <dependency>
+        <groupId>org.freemarker</groupId>
+        <artifactId>freemarker</artifactId>
+        <version>${version.org.freemarker}</version>
+      </dependency>
+
       <dependency>
         <groupId>com.allen-sauer.gwt.dnd</groupId>
         <artifactId>gwt-dnd</artifactId>
