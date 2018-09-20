@@ -112,7 +112,7 @@ public class DecisionNavigatorTreeView implements DecisionNavigatorTreePresenter
         final Element refChild = findItem(nextItem);
 
         if (oldChild != null) {
-            oldChild.remove();
+            parentElement.removeChild(oldChild);
         }
 
         parentElement.insertBefore(newChild, refChild);

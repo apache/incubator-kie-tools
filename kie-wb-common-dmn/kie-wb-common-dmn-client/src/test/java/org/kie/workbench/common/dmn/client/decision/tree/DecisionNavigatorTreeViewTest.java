@@ -155,7 +155,8 @@ public class DecisionNavigatorTreeViewTest {
 
         treeView.update(item, nextItem);
 
-        verify(oldChild).remove();
+        verify(parentElement).removeChild(oldChild);
+        verify(oldChild, never()).remove();
         verify(parentElement).insertBefore(newChild, refChild);
     }
 
