@@ -46,7 +46,6 @@ import org.uberfire.java.nio.base.WatchContext;
 import org.uberfire.java.nio.base.dotfiles.DotFileUtils;
 import org.uberfire.java.nio.file.DeleteOption;
 import org.uberfire.java.nio.file.DirectoryNotEmptyException;
-import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
 import org.uberfire.java.nio.file.FileSystemNotFoundException;
@@ -365,7 +364,10 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
 
                         private void queueDeleteEvent(WatchEvent object, final WatchContext context, final IndexerDispatcher dispatcher) throws DisposedException {
                             final Path oldPath = context.getOldPath();
-                            dispatcher.offer(new DeletedFileEvent(oldPath));
+                            // ignore delete events for dot files, because dot files are not indexed
+                            if(!oldPath.getFileName().toString().startsWith(".")){
+                                dispatcher.offer(new DeletedFileEvent(oldPath));
+                            }
                         }
 
                         private void queueRenameEvent(final WatchContext context, final IndexerDispatcher dispatcher) throws DisposedException {
