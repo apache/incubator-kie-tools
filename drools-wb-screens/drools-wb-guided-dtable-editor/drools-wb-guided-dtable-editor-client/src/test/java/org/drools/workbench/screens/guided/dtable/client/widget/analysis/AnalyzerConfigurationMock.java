@@ -18,35 +18,34 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis;
 import java.util.Date;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
-import org.drools.workbench.services.verifier.api.client.configuration.AnalyzerConfiguration;
-import org.drools.workbench.services.verifier.api.client.configuration.CheckConfiguration;
-import org.drools.workbench.services.verifier.api.client.configuration.DateTimeFormatProvider;
-import org.drools.workbench.services.verifier.api.client.configuration.RunnerType;
-import org.drools.workbench.services.verifier.api.client.index.keys.UUIDKeyProvider;
+import org.drools.verifier.core.checks.base.JavaCheckRunner;
+import org.drools.verifier.core.configuration.AnalyzerConfiguration;
+import org.drools.verifier.core.configuration.CheckConfiguration;
+import org.drools.verifier.core.configuration.DateTimeFormatProvider;
+import org.drools.verifier.core.index.keys.UUIDKeyProvider;
 
 public class AnalyzerConfigurationMock
         extends AnalyzerConfiguration {
 
-
     public AnalyzerConfigurationMock() {
-        super( "UUID",
-               new DateTimeFormatProvider() {
-                   @Override
-                   public String format( final Date dateValue ) {
-                       return DateTimeFormat.getFormat( "dd-MMM-yyyy" )
-                               .format( dateValue );
-                   }
-               },
-               new UUIDKeyProvider() {
+        super("UUID",
+              new DateTimeFormatProvider() {
+                  @Override
+                  public String format(final Date dateValue) {
+                      return DateTimeFormat.getFormat("dd-MMM-yyyy")
+                              .format(dateValue);
+                  }
+              },
+              new UUIDKeyProvider() {
 
-                   private long index = Long.SIZE;
+                  private long index = Long.SIZE;
 
-                   @Override
-                   protected String newUUID() {
-                       return Long.toString( index-- );
-                   }
-               },
-               CheckConfiguration.newDefault(),
-               RunnerType.JAVA );
+                  @Override
+                  protected String newUUID() {
+                      return Long.toString(index--);
+                  }
+              },
+              CheckConfiguration.newDefault(),
+              new JavaCheckRunner());
     }
 }

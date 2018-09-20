@@ -50,7 +50,7 @@ public class DecisionTableAnalyzerTest {
     private Pattern52 pattern;
 
     private VerifierWebWorkerConnection connection;
-    private DTableUpdateManagerImpl updateManager;
+    private DTableUpdateManager updateManager;
     private GuidedDecisionTable52 model;
     private DecisionTableAnalyzer decisionTableAnalyzer;
 
@@ -61,31 +61,30 @@ public class DecisionTableAnalyzerTest {
         patterns = new ArrayList<>();
         pattern = new Pattern52();
 
-        connection = mock( VerifierWebWorkerConnection.class );
-        updateManager = mock( DTableUpdateManagerImpl.class );
+        connection = mock(VerifierWebWorkerConnection.class);
+        updateManager = mock(DTableUpdateManager.class);
         model = new GuidedDecisionTable52();
-        decisionTableAnalyzer = new DecisionTableAnalyzer( model,
-                                                            updateManager,
-                                                            connection );
-
+        decisionTableAnalyzer = new DecisionTableAnalyzer(model,
+                                                          updateManager,
+                                                          connection);
     }
 
     @Test
     public void testOnFocus() throws Exception {
         final List<Coordinate> updates = Collections.emptyList();
-        decisionTableAnalyzer.analyze( updates );
+        decisionTableAnalyzer.analyze(updates);
 
-        final ArgumentCaptor<List> argumentCaptor = ArgumentCaptor.forClass( List.class );
+        final ArgumentCaptor<List> argumentCaptor = ArgumentCaptor.forClass(List.class);
 
-        verify( updateManager ).update( eq( model ),
-                                        argumentCaptor.capture() );
+        verify(updateManager).update(eq(model),
+                                     argumentCaptor.capture());
 
-        assertTrue( argumentCaptor.getValue()
-                            .isEmpty() );
+        assertTrue(argumentCaptor.getValue()
+                           .isEmpty());
 
         decisionTableAnalyzer.activate();
 
-        verify( connection ).activate();
+        verify(connection).activate();
     }
 
     @Test
@@ -93,15 +92,15 @@ public class DecisionTableAnalyzerTest {
 
         ConditionCol52 a = new ConditionCol52();
         ConditionCol52 b = new ConditionCol52();
-        conditionColumns.add( a );
-        conditionColumns.add( b );
-        pattern.setChildColumns( conditionColumns );
-        patterns.add( pattern );
+        conditionColumns.add(a);
+        conditionColumns.add(b);
+        pattern.setChildColumns(conditionColumns);
+        patterns.add(pattern);
 
-        model.getConditions().addAll( patterns );
+        model.getConditions().addAll(patterns);
 
-        decisionTableAnalyzer.insertColumn( a );
-        verify( updateManager ).newColumn( model, 2 );
+        decisionTableAnalyzer.insertColumn(a);
+        verify(updateManager).newColumn(model, 2);
     }
 
     @Test
@@ -109,13 +108,13 @@ public class DecisionTableAnalyzerTest {
 
         ActionCol52 a = new ActionCol52();
         ActionCol52 b = new ActionCol52();
-        actionColumns.add( a );
-        actionColumns.add( b );
-        model.setActionCols( actionColumns );
+        actionColumns.add(a);
+        actionColumns.add(b);
+        model.setActionCols(actionColumns);
 
-        decisionTableAnalyzer.insertColumn( b );
+        decisionTableAnalyzer.insertColumn(b);
 
-        verify( updateManager ).newColumn( model, 3 );
+        verify(updateManager).newColumn(model, 3);
     }
 
     @Test
@@ -128,13 +127,13 @@ public class DecisionTableAnalyzerTest {
         BRLConditionVariableColumn c = new BRLConditionVariableColumn();
         BRLConditionVariableColumn d = new BRLConditionVariableColumn();
 
-        brlConditionOne.setChildColumns( Arrays.asList( a, b ) );
-        brlConditionTwo.setChildColumns( Arrays.asList( c, d ) );
+        brlConditionOne.setChildColumns(Arrays.asList(a, b));
+        brlConditionTwo.setChildColumns(Arrays.asList(c, d));
 
-        model.getConditions().addAll( Arrays.asList( brlConditionOne, brlConditionTwo ) );
+        model.getConditions().addAll(Arrays.asList(brlConditionOne, brlConditionTwo));
 
-        decisionTableAnalyzer.insertColumn( brlConditionTwo );
-        verify( updateManager ).newColumn( model, 4 );
+        decisionTableAnalyzer.insertColumn(brlConditionTwo);
+        verify(updateManager).newColumn(model, 4);
     }
 
     @Test
@@ -147,48 +146,45 @@ public class DecisionTableAnalyzerTest {
         BRLActionVariableColumn c = new BRLActionVariableColumn();
         BRLActionVariableColumn d = new BRLActionVariableColumn();
 
-        brlActionOne.setChildColumns( Arrays.asList( a, b ) );
-        brlActionTwo.setChildColumns( Arrays.asList( c, d ) );
+        brlActionOne.setChildColumns(Arrays.asList(a, b));
+        brlActionTwo.setChildColumns(Arrays.asList(c, d));
 
-        model.setActionCols( Arrays.asList( brlActionOne, brlActionTwo ) );
+        model.setActionCols(Arrays.asList(brlActionOne, brlActionTwo));
 
-        decisionTableAnalyzer.insertColumn( brlActionOne );
-        verify( updateManager ).newColumn( model, 2 );
-
+        decisionTableAnalyzer.insertColumn(brlActionOne);
+        verify(updateManager).newColumn(model, 2);
     }
 
     @Test
     public void testInsertBRLVariableColumn() throws Exception {
         ConditionCol52 a = new ConditionCol52();
         ConditionCol52 b = new ConditionCol52();
-        pattern.setChildColumns( Arrays.asList( a, b ) );
+        pattern.setChildColumns(Arrays.asList(a, b));
 
         BRLConditionColumn brlCondition = new BRLConditionColumn();
         BRLConditionVariableColumn c = new BRLConditionVariableColumn();
         BRLConditionVariableColumn d = new BRLConditionVariableColumn();
-        brlCondition.setChildColumns( Arrays.asList( c, d ) );
+        brlCondition.setChildColumns(Arrays.asList(c, d));
 
-        model.getConditions().addAll( Arrays.asList( pattern, brlCondition ) );
+        model.getConditions().addAll(Arrays.asList(pattern, brlCondition));
 
-        decisionTableAnalyzer.insertColumn( d );
-        verify( updateManager ).newColumn( model, 5 );
-
+        decisionTableAnalyzer.insertColumn(d);
+        verify(updateManager).newColumn(model, 5);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testInsertNonExistingColumn() throws Exception {
         ConditionCol52 a = new ConditionCol52();
         ConditionCol52 b = new ConditionCol52();
-        pattern.setChildColumns( Arrays.asList( a ) );
+        pattern.setChildColumns(Arrays.asList(a));
 
         BRLConditionColumn brlCondition = new BRLConditionColumn();
         BRLConditionVariableColumn c = new BRLConditionVariableColumn();
         BRLConditionVariableColumn d = new BRLConditionVariableColumn();
-        brlCondition.setChildColumns( Arrays.asList( c, d ) );
+        brlCondition.setChildColumns(Arrays.asList(c, d));
 
-        model.getConditions().addAll( Arrays.asList( pattern, brlCondition ) );
+        model.getConditions().addAll(Arrays.asList(pattern, brlCondition));
 
-        decisionTableAnalyzer.insertColumn( b );
-
+        decisionTableAnalyzer.insertColumn(b);
     }
 }

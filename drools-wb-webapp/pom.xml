@@ -622,12 +622,27 @@
     <!-- Drools Verifier Web Worker -->
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-wb-verifier-client</artifactId>
+      <artifactId>drools-verifier-core</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-wb-verifier-backend</artifactId>
+      <artifactId>drools-wb-verifier-guided-decision-table-adapter</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-wb-verifier-webworker</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.workbench.services</groupId>
+      <artifactId>kie-wb-common-verifier-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.workbench.services</groupId>
+      <artifactId>kie-wb-common-verifier-reporting</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <!-- Drools Workbench Screens -->
@@ -1335,8 +1350,11 @@
             <compileSourcesArtifact>org.drools:drools-wb-drl-text-editor-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.drools:drools-wb-drl-text-editor-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.drools:drools-wb-factmodel-editor-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.drools:drools-wb-verifier-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.drools:drools-wb-verifier-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.drools:drools-verifier-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.drools:drools-verifier-core</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.workbench.services:kie-wb-common-verifier-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.workbench.services:kie-wb-common-verifier-reporting</compileSourcesArtifact>
+            <compileSourcesArtifact>org.drools:drools-wb-verifier-guided-decision-table-adapter</compileSourcesArtifact>
             <compileSourcesArtifact>org.drools:drools-wb-guided-rule-editor-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.drools:drools-wb-guided-rule-editor-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.drools:drools-wb-guided-template-editor-api</compileSourcesArtifact>

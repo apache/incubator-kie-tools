@@ -173,12 +173,20 @@
 
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-wb-verifier-api</artifactId>
+      <artifactId>drools-verifier-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.workbench.services</groupId>
+      <artifactId>kie-wb-common-verifier-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.workbench.services</groupId>
+      <artifactId>kie-wb-common-verifier-reporting</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-wb-verifier-client</artifactId>
+      <artifactId>drools-wb-verifier-guided-decision-table-adapter</artifactId>
     </dependency>
 
     <dependency>

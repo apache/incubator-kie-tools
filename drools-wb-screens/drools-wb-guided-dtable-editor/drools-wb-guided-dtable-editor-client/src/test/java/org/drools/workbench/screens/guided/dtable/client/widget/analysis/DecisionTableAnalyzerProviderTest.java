@@ -23,11 +23,11 @@ import com.google.gwt.event.shared.EventBus;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.controller.AnalyzerController;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.controller.AnalyzerControllerImpl;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.AnalysisReportScreen;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEditorService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
+import org.kie.workbench.common.services.verifier.reporting.client.panel.AnalysisReportScreen;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleImpl;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -49,71 +49,66 @@ public class DecisionTableAnalyzerProviderTest {
 
     @Test
     public void defaultAnalyserSetting() throws
-                                         Exception {
+            Exception {
 
         final Map<String, String> preferences = new HashMap<>();
-        preferences.put( ApplicationPreferences.DATE_FORMAT,
-                         "dd-MMM-yyyy" );
-        ApplicationPreferences.setUp( preferences );
+        preferences.put(ApplicationPreferences.DATE_FORMAT,
+                        "dd-MMM-yyyy");
+        ApplicationPreferences.setUp(preferences);
 
-
-        assertTrue( constructAnalyzer() instanceof AnalyzerControllerImpl );
-
+        assertTrue(constructAnalyzer() instanceof AnalyzerControllerImpl);
     }
 
     @Test
     public void verificationDisabledWithSetting() throws
-                                                  Exception {
+            Exception {
         final Map<String, String> preferences = new HashMap<String, String>() {{
-            put( GuidedDecisionTableEditorService.DTABLE_VERIFICATION_DISABLED,
-                 "true" );
-            put( ApplicationPreferences.DATE_FORMAT,
-                 "dd-MMM-yyyy" );
+            put(GuidedDecisionTableEditorService.DTABLE_VERIFICATION_DISABLED,
+                "true");
+            put(ApplicationPreferences.DATE_FORMAT,
+                "dd-MMM-yyyy");
         }};
 
-        ApplicationPreferences.setUp( preferences );
+        ApplicationPreferences.setUp(preferences);
 
-        assertFalse( constructAnalyzer() instanceof AnalyzerControllerImpl );
-
+        assertFalse(constructAnalyzer() instanceof AnalyzerControllerImpl);
     }
 
     @Test
     public void verificationEnabledByWrongSetting() throws
             Exception {
         final Map<String, String> preferences = new HashMap<String, String>() {{
-            put( GuidedDecisionTableEditorService.DTABLE_VERIFICATION_DISABLED,
-                 "nonBooleanValue" );
-            put( ApplicationPreferences.DATE_FORMAT,
-                 "dd-MMM-yyyy" );
+            put(GuidedDecisionTableEditorService.DTABLE_VERIFICATION_DISABLED,
+                "nonBooleanValue");
+            put(ApplicationPreferences.DATE_FORMAT,
+                "dd-MMM-yyyy");
         }};
 
-        ApplicationPreferences.setUp( preferences );
+        ApplicationPreferences.setUp(preferences);
 
-        assertTrue( constructAnalyzer() instanceof AnalyzerControllerImpl );
-
+        assertTrue(constructAnalyzer() instanceof AnalyzerControllerImpl);
     }
 
     @Test
     public void verificationEnabledWithSetting() throws
-                                                 Exception {
+            Exception {
         final Map<String, String> preferences = new HashMap<String, String>() {{
-            put( GuidedDecisionTableEditorService.DTABLE_VERIFICATION_DISABLED,
-                 "false" );
-            put( ApplicationPreferences.DATE_FORMAT,
-                 "dd-MMM-yyyy" );
+            put(GuidedDecisionTableEditorService.DTABLE_VERIFICATION_DISABLED,
+                "false");
+            put(ApplicationPreferences.DATE_FORMAT,
+                "dd-MMM-yyyy");
         }};
 
-        ApplicationPreferences.setUp( preferences );
+        ApplicationPreferences.setUp(preferences);
 
-        assertTrue( constructAnalyzer() instanceof AnalyzerControllerImpl );
-
+        assertTrue(constructAnalyzer() instanceof AnalyzerControllerImpl);
     }
 
     private AnalyzerController constructAnalyzer() {
-        return new DecisionTableAnalyzerProvider( analysisReportScreen,
-                                                  placeManager  ).newAnalyzer( mock( PlaceRequest.class ),
-                                                                               mock( AsyncPackageDataModelOracleImpl.class ),
-                                                                               mock( GuidedDecisionTable52.class ),
-                                                                               mock( EventBus.class ) );
+        return new DecisionTableAnalyzerProvider(analysisReportScreen,
+                                                 placeManager).newAnalyzer(mock(PlaceRequest.class),
+                                                                           mock(AsyncPackageDataModelOracleImpl.class),
+                                                                           mock(GuidedDecisionTable52.class),
+                                                                           mock(EventBus.class));
     }
 }

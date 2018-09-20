@@ -18,9 +18,9 @@ package org.drools.workbench.screens.guided.dtable.client;
 import javax.annotation.PostConstruct;
 
 import org.drools.workbench.screens.guided.dtable.client.resources.GuidedDecisionTableResources;
-import org.drools.workbench.services.verifier.api.client.resources.AnalyzerResources;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ui.shared.api.annotations.Bundle;
+import org.kie.workbench.common.services.verifier.reporting.client.resources.AnalyzerResources;
 
 @EntryPoint
 @Bundle("resources/i18n/GuidedDecisionTableErraiConstants.properties")

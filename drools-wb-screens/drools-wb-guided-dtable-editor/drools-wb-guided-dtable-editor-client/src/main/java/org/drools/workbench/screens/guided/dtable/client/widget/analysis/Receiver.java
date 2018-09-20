@@ -21,12 +21,12 @@ import java.util.logging.Logger;
 import com.google.gwt.webworker.client.MessageEvent;
 import com.google.gwt.webworker.client.MessageHandler;
 import com.google.gwt.webworker.client.Worker;
-import org.drools.workbench.services.verifier.api.client.Status;
-import org.drools.workbench.services.verifier.api.client.reporting.Issues;
-import org.drools.workbench.services.verifier.plugin.client.api.WebWorkerException;
-import org.drools.workbench.services.verifier.plugin.client.api.WebWorkerLogMessage;
+import org.drools.verifier.api.Status;
+import org.drools.verifier.api.reporting.Issues;
 import org.jboss.errai.enterprise.client.jaxrs.MarshallingWrapper;
 import org.kie.soup.commons.validation.PortablePreconditions;
+import org.kie.workbench.common.services.verifier.api.client.api.WebWorkerException;
+import org.kie.workbench.common.services.verifier.api.client.api.WebWorkerLogMessage;
 
 public class Receiver {
 

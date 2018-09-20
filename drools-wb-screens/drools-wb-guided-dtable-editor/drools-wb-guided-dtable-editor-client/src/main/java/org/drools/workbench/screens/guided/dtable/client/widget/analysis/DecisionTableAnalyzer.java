@@ -26,7 +26,6 @@ import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionVariab
 import org.drools.workbench.models.guided.dtable.shared.model.BRLVariableColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.drools.workbench.services.verifier.plugin.client.DTableUpdateManager;
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.Coordinate;
 

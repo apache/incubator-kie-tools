@@ -23,10 +23,10 @@ import java.util.List;
 
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import org.drools.verifier.api.reporting.Severity;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.GuidedDecisionTableUiModel;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
-import org.drools.workbench.services.verifier.api.client.reporting.Severity;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

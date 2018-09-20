@@ -32,6 +32,7 @@ import javax.inject.Inject;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.Command;
+import org.drools.verifier.api.reporting.Issue;
 import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
 import org.drools.workbench.models.guided.dtable.shared.auditlog.DeleteColumnAuditLogEntry;
 import org.drools.workbench.models.guided.dtable.shared.auditlog.DeleteRowAuditLogEntry;
@@ -59,7 +60,6 @@ import org.drools.workbench.screens.guided.dtable.client.editor.clipboard.impl.D
 import org.drools.workbench.screens.guided.dtable.client.type.GuidedDTableResourceType;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.DecisionTableAnalyzerProvider;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.controller.AnalyzerController;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.IssueSelectedEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.auditlog.AuditLog;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.BooleanUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableColumnSelectedEvent;
@@ -87,7 +87,6 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableLinkManager;
 import org.drools.workbench.screens.guided.rule.client.util.GWTDateConverter;
-import org.drools.workbench.services.verifier.api.client.reporting.Issue;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -98,6 +97,7 @@ import org.kie.soup.project.datamodel.oracle.DateConverter;
 import org.kie.soup.project.datamodel.oracle.DropDownData;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
+import org.kie.workbench.common.services.verifier.reporting.client.panel.IssueSelectedEvent;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleFactory;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
@@ -1085,9 +1085,9 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
                 uiModel.setCellValueInternal(rowIndex,
                                              iModelColumn,
                                              gridWidgetCellFactory.convertCell(modelCell,
-                                                                          modelColumn,
-                                                                          cellUtilities,
-                                                                          columnUtilities));
+                                                                               modelColumn,
+                                                                               cellUtilities,
+                                                                               columnUtilities));
 
                 //Set-up SelectionManager for Row Number column, to select entire row.
                 if (modelColumn instanceof RowNumberCol52) {

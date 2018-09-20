@@ -18,11 +18,11 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis;
 
 import java.util.Set;
 
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.AnalysisReport;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.AnalysisReportScreen;
-import org.drools.workbench.services.verifier.api.client.Reporter;
-import org.drools.workbench.services.verifier.api.client.Status;
-import org.drools.workbench.services.verifier.api.client.reporting.Issue;
+import org.drools.verifier.api.Reporter;
+import org.drools.verifier.api.Status;
+import org.drools.verifier.api.reporting.Issue;
+import org.kie.workbench.common.services.verifier.reporting.client.panel.AnalysisReport;
+import org.kie.workbench.common.services.verifier.reporting.client.panel.AnalysisReportScreen;
 import org.uberfire.mvp.PlaceRequest;
 
 public class AnalysisReporter
@@ -31,30 +31,29 @@ public class AnalysisReporter
     private PlaceRequest place;
     private AnalysisReportScreen reportScreen;
 
-    public AnalysisReporter( final PlaceRequest place,
-                             final AnalysisReportScreen reportScreen ) {
+    public AnalysisReporter(final PlaceRequest place,
+                            final AnalysisReportScreen reportScreen) {
         this.place = place;
         this.reportScreen = reportScreen;
     }
 
-    public void sendReport( final AnalysisReport report ) {
-        reportScreen.showReport( report );
+    public void sendReport(final AnalysisReport report) {
+        reportScreen.showReport(report);
     }
 
     @Override
-    public void sendReport( final Set<Issue> issues ) {
-        sendReport( new AnalysisReport( place,
-                                        issues ) );
+    public void sendReport(final Set<Issue> issues) {
+        sendReport(new AnalysisReport(place,
+                                      issues));
     }
 
     @Override
-    public void sendStatus( final Status status ) {
-        reportScreen.showStatus( status );
+    public void sendStatus(final Status status) {
+        reportScreen.showStatus(status);
     }
 
     @Override
     public void activate() {
-        reportScreen.setCurrentPlace( place );
+        reportScreen.setCurrentPlace(place);
     }
-
 }
