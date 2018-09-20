@@ -31,7 +31,7 @@ public class OutputClausePropertyConverter {
         UnaryTests outputValues = UnaryTestsPropertyConverter.wbFromDMN(dmn.getOutputValues());
         LiteralExpression defaultOutputEntry = LiteralExpressionPropertyConverter.wbFromDMN(dmn.getDefaultOutputEntry());
         QName typeRef = QNamePropertyConverter.wbFromDMN(dmn.getTypeRef());
-        
+
         OutputClause result = new OutputClause();
         result.setId(id);
         result.setName(dmn.getName());

@@ -28,11 +28,11 @@ public class ImportedValues extends Import implements DMNPropertySet {
     protected String expressionLanguage;
 
     public ImportedValues() {
-        this("",
+        this(null,
              new LocationURI(),
-             "",
-             "",
-             "");
+             null,
+             null,
+             null);
     }
 
     public ImportedValues(final String namespace,

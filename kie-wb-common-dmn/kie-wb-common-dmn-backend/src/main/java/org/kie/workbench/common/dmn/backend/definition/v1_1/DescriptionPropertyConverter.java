@@ -22,7 +22,7 @@ public class DescriptionPropertyConverter {
 
     public static Description wbFromDMN(final String dmn) {
         if (dmn == null) {
-            return new Description("");
+            return new Description(null);
         } else {
             return new Description(dmn);
         }

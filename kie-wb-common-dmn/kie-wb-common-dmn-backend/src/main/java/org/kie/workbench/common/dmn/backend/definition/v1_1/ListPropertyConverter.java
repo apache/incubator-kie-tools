@@ -49,7 +49,7 @@ public class ListPropertyConverter {
     public static org.kie.dmn.model.api.List dmnFromWB(final List wb) {
         org.kie.dmn.model.api.List result = new org.kie.dmn.model.v1_1.TList();
         result.setId(wb.getId().getValue());
-        result.setDescription(wb.getDescription().getValue());
+        result.setDescription(DescriptionPropertyConverter.dmnFromWB(wb.getDescription()));
         QNamePropertyConverter.setDMNfromWB(wb.getTypeRef(),
                                             result::setTypeRef);
 

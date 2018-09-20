@@ -65,15 +65,15 @@ public class DMNDiagram extends DMNModelInstrumentedBase implements DMNDefinitio
         add("dmn_diagram");
     }};
 
-    @PropertySet
-    @FormField
-    @Valid
-    protected Definitions definitions;
-
     @Property
     @FormField(readonly = true)
     @Valid
     protected Id id;
+
+    @PropertySet
+    @FormField
+    @Valid
+    protected Definitions definitions;
 
     public DMNDiagram() {
         this(new Id(),

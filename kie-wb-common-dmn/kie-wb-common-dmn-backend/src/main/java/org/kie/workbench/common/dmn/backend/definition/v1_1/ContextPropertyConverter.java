@@ -44,7 +44,7 @@ public class ContextPropertyConverter {
     public static org.kie.dmn.model.api.Context dmnFromWB(final Context wb) {
         org.kie.dmn.model.api.Context result = new org.kie.dmn.model.v1_1.TContext();
         result.setId(wb.getId().getValue());
-        result.setDescription(wb.getDescription().getValue());
+        result.setDescription(DescriptionPropertyConverter.dmnFromWB(wb.getDescription()));
         QNamePropertyConverter.setDMNfromWB(wb.getTypeRef(),
                                             result::setTypeRef);
         for (ContextEntry ce : wb.getContextEntry()) {

@@ -55,7 +55,7 @@ public class RelationPropertyConverter {
     public static org.kie.dmn.model.api.Relation dmnFromWB(final Relation wb) {
         org.kie.dmn.model.api.Relation result = new org.kie.dmn.model.v1_1.TRelation();
         result.setId(wb.getId().getValue());
-        result.setDescription(wb.getDescription().getValue());
+        result.setDescription(DescriptionPropertyConverter.dmnFromWB(wb.getDescription()));
         QNamePropertyConverter.setDMNfromWB(wb.getTypeRef(),
                                             result::setTypeRef);
 

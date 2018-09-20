@@ -34,7 +34,7 @@ public class OrganizationalUnit extends BusinessContextElement {
         this(new Id(),
              new Description(),
              new Name(),
-             "",
+             null,
              null,
              null);
     }

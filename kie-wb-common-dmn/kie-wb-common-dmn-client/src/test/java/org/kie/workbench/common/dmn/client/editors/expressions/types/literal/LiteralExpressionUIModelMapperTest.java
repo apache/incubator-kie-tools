@@ -34,6 +34,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.CellSelectionStrategy;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
@@ -99,7 +100,7 @@ public class LiteralExpressionUIModelMapperTest {
     public void testFromDmn_Empty() throws Exception {
         mapper.fromDMNModel(0, 0);
 
-        assertEquals("", ((BaseGridCellValue) uiModel.getCell(0, 0).getValue()).getValue());
+        assertNull(((BaseGridCellValue) uiModel.getCell(0, 0).getValue()).getValue());
     }
 
     @Test
@@ -130,6 +131,13 @@ public class LiteralExpressionUIModelMapperTest {
                                                                       eq(PARENT_COLUMN_INDEX),
                                                                       eq(true),
                                                                       eq(false));
+    }
+
+    @Test
+    public void testToDmn_Null() throws Exception {
+        mapper.toDMNModel(0, 0, () -> Optional.of(new BaseGridCellValue<>(null)));
+
+        assertNull(literalExpression.getText());
     }
 
     @Test

@@ -344,7 +344,7 @@ public class RelationGridTest {
         assertThat(uiModel.getRowCount()).isEqualTo(1);
 
         assertThat(uiModel.getCell(0, 0).getValue().getValue()).isEqualTo(1);
-        assertThat(uiModel.getCell(0, 1).getValue().getValue()).isEqualTo("");
+        assertThat(uiModel.getCell(0, 1).getValue().getValue()).isNull();
     }
 
     @Test

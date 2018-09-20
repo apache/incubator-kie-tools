@@ -52,7 +52,7 @@ public class LiteralExpressionPropertyConverter {
         }
         org.kie.dmn.model.api.LiteralExpression result = new org.kie.dmn.model.v1_1.TLiteralExpression();
         result.setId(wb.getId().getValue());
-        result.setDescription(wb.getDescription().getValue());
+        result.setDescription(DescriptionPropertyConverter.dmnFromWB(wb.getDescription()));
         QNamePropertyConverter.setDMNfromWB(wb.getTypeRef(),
                                             result::setTypeRef);
         result.setText(wb.getText());

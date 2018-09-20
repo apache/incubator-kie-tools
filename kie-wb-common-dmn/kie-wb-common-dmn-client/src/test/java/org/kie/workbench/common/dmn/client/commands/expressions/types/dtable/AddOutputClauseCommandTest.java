@@ -50,6 +50,7 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -189,8 +190,7 @@ public class AddOutputClauseCommandTest {
         assertEquals(2, dtable.getOutput().size());
         assertEquals(DecisionTableDefaultValueUtilities.OUTPUT_CLAUSE_PREFIX + "1",
                      dtable.getOutput().get(0).getName());
-        assertEquals("",
-                     dtable.getOutput().get(1).getName());
+        assertNull(dtable.getOutput().get(1).getName());
 
         // first rule
         final List<LiteralExpression> outputEntriesRuleOne = dtable.getRule().get(0).getOutputEntry();
@@ -230,12 +230,10 @@ public class AddOutputClauseCommandTest {
                      graphCommand.execute(graphCommandExecutionContext));
 
         assertEquals(3, dtable.getOutput().size());
-        assertEquals("",
-                     dtable.getOutput().get(0).getName());
+        assertNull(dtable.getOutput().get(0).getName());
         assertEquals(DecisionTableDefaultValueUtilities.OUTPUT_CLAUSE_PREFIX + "1",
                      dtable.getOutput().get(1).getName());
-        assertEquals("",
-                     dtable.getOutput().get(2).getName());
+        assertNull(dtable.getOutput().get(2).getName());
 
         final List<LiteralExpression> ruleOutputs = dtable.getRule().get(0).getOutputEntry();
 

@@ -47,7 +47,7 @@ public class AssociationConverter {
 
                     org.kie.dmn.model.api.Association adding = new org.kie.dmn.model.v1_1.TAssociation();
                     adding.setId(((View<Association>) e.getContent()).getDefinition().getId().getValue());
-                    adding.setDescription(((View<Association>) e.getContent()).getDefinition().getDescription().getValue());
+                    adding.setDescription(DescriptionPropertyConverter.dmnFromWB(((View<Association>) e.getContent()).getDefinition().getDescription()));
                     adding.setSourceRef(sourceRef);
                     adding.setTargetRef(ta_elementReference);
                     result.add(adding);
@@ -66,7 +66,7 @@ public class AssociationConverter {
 
                     org.kie.dmn.model.api.Association adding = new org.kie.dmn.model.v1_1.TAssociation();
                     adding.setId(((View<Association>) e.getContent()).getDefinition().getId().getValue());
-                    adding.setDescription(((View<Association>) e.getContent()).getDefinition().getDescription().getValue());
+                    adding.setDescription(DescriptionPropertyConverter.dmnFromWB(((View<Association>) e.getContent()).getDefinition().getDescription()));
                     adding.setSourceRef(ta_elementReference);
                     adding.setTargetRef(targetRef);
                     result.add(adding);

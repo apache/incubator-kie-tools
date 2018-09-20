@@ -29,7 +29,7 @@ public class InputClausePropertyConverter {
         Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
         LiteralExpression inputExpression = LiteralExpressionPropertyConverter.wbFromDMN(dmn.getInputExpression());
         UnaryTests inputValues = UnaryTestsPropertyConverter.wbFromDMN(dmn.getInputValues());
-        
+
         InputClause result = new InputClause(id, description, inputExpression, inputValues);
 
         if (inputExpression != null) {

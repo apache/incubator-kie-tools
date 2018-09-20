@@ -29,8 +29,8 @@ public class UnaryTests extends DMNElement {
     public UnaryTests() {
         this(new Id(),
              new Description(),
-             "",
-             "");
+             null,
+             null);
     }
 
     public UnaryTests(final Id id,

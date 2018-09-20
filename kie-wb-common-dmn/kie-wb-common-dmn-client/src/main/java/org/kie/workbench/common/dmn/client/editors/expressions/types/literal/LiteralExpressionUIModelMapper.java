@@ -71,6 +71,6 @@ public class LiteralExpressionUIModelMapper extends BaseUIModelMapper<LiteralExp
     public void toDMNModel(final int rowIndex,
                            final int columnIndex,
                            final Supplier<Optional<GridCellValue<?>>> cell) {
-        dmnModel.get().ifPresent(literalExpression -> literalExpression.setText(cell.get().orElse(new BaseGridCellValue<>("")).getValue().toString()));
+        dmnModel.get().ifPresent(literalExpression -> literalExpression.setText((String) cell.get().orElse(new BaseGridCellValue<>("")).getValue()));
     }
 }

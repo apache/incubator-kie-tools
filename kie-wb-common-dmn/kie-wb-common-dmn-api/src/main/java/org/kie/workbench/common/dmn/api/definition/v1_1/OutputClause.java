@@ -33,9 +33,9 @@ public class OutputClause extends DMNElement implements HasTypeRef {
     public OutputClause() {
         this(new Id(),
              new Description(),
-             new UnaryTests(),
-             new LiteralExpression(),
-             "",
+             null,
+             null,
+             null,
              new QName());
     }
 

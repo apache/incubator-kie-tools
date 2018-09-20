@@ -81,7 +81,8 @@ public class AddInputClauseCommand extends AbstractCanvasGraphCommand implements
             public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext context) {
                 final int clauseIndex = uiColumnIndex - DecisionTableUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT;
                 dtable.getInput().add(clauseIndex, inputClause);
-                final LiteralExpression le = inputClause.getInputExpression();
+                final LiteralExpression le = new LiteralExpression();
+                inputClause.setInputExpression(le);
                 le.setText(name);
 
                 dtable.getRule().forEach(rule -> {

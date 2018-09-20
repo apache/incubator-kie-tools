@@ -39,10 +39,10 @@ public class ItemDefinition extends NamedElement implements HasTypeRef {
         this(new Id(),
              new Description(),
              new Name(),
-             new QName(),
-             new UnaryTests(),
              null,
-             "",
+             null,
+             null,
+             null,
              false);
     }
 

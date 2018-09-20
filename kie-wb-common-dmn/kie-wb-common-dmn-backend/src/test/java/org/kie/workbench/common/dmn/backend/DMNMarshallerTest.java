@@ -23,6 +23,7 @@ import java.math.BigDecimal;
 import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -175,6 +176,7 @@ public class DMNMarshallerTest {
     TestScopeModelFactory testScopeModelFactory;
 
     @Before
+    @SuppressWarnings("unchecked")
     public void setup() throws Exception {
         // Graph utils.
         when(definitionManager.adapters()).thenReturn(adapterManager);
@@ -306,7 +308,7 @@ public class DMNMarshallerTest {
     public void test_diamond() throws IOException {
         // round trip test
         roundTripUnmarshalThenMarshalUnmarshal(this.getClass().getResourceAsStream("/diamond.dmn"),
-                                               this::checkDiamongGraph);
+                                               this::checkDiamondGraph);
 
         // additionally, check the marshalled is still DMN executable as expected
 
@@ -342,7 +344,7 @@ public class DMNMarshallerTest {
 
         // additionally, check DMN DD/DI for version 1.1
 
-        org.kie.dmn.api.marshalling.v1_1.DMNMarshaller dmnMarshaller = new XStreamMarshaller(Arrays.asList(new DDExtensionsRegister()));
+        org.kie.dmn.api.marshalling.v1_1.DMNMarshaller dmnMarshaller = new XStreamMarshaller(Collections.singletonList(new DDExtensionsRegister()));
         Definitions definitions = dmnMarshaller.unmarshal(mString);
 
         assertNotNull(definitions.getExtensionElements());
@@ -406,7 +408,7 @@ public class DMNMarshallerTest {
     @Test
     public void test_potpourri_drawing() throws IOException {
         roundTripUnmarshalThenMarshalUnmarshal(this.getClass().getResourceAsStream("/potpourri_drawing.dmn"),
-                                               this::checkPotpourryGraph);
+                                               this::checkPotpourriGraph);
     }
 
     @Test
@@ -433,6 +435,7 @@ public class DMNMarshallerTest {
                                                this::checkDecisionWithContext);
     }
 
+    @SuppressWarnings("unchecked")
     private void checkTextAnnotationGraph(Graph<?, Node<?, ?>> graph) {
         Node<?, ?> textAnnotation = graph.getNode("60915990-9E1D-42DF-B7F6-0D28383BE9D1");
         assertNodeContentDefinitionIs(textAnnotation,
@@ -531,6 +534,7 @@ public class DMNMarshallerTest {
                           AuthorityRequirement.class);
     }
 
+    @SuppressWarnings("unchecked")
     private void checkDecisionWithContext(Graph<?, Node<?, ?>> g) {
         Node<?, ?> decisionNode = g.getNode("_30810b88-8416-4c02-8ed1-8c19b7606243");
         assertNodeContentDefinitionIs(decisionNode,
@@ -562,7 +566,8 @@ public class DMNMarshallerTest {
                              .getParent()).getId().getValue());
     }
 
-    private void checkDiamongGraph(Graph<?, Node<?, ?>> g) {
+    @SuppressWarnings("unchecked")
+    private void checkDiamondGraph(Graph<?, Node<?, ?>> g) {
         Node<?, ?> idNode = g.getNode("_4cd17e52-6253-41d6-820d-5824bf5197f3");
         assertNodeContentDefinitionIs(idNode,
                                       InputData.class);
@@ -606,6 +611,7 @@ public class DMNMarshallerTest {
                                   myDecisionNode);
     }
 
+    @SuppressWarnings("unchecked")
     private void checkAssociationsGraph(Graph<?, Node<?, ?>> g) {
         Node<?, ?> inputData = g.getNode("BD168F8B-4398-4478-8BEA-E67AA5F90FAF");
         assertNodeContentDefinitionIs(inputData,
@@ -652,7 +658,8 @@ public class DMNMarshallerTest {
                      ((View<Association>) fromKnowledgeSource.getContent()).getDefinition().getDescription().getValue());
     }
 
-    private void checkPotpourryGraph(Graph<?, Node<?, ?>> g) {
+    @SuppressWarnings("unchecked")
+    private void checkPotpourriGraph(Graph<?, Node<?, ?>> g) {
         Node<?, ?> _My_Input_Data = g.getNode("_My_Input_Data");
         assertNodeContentDefinitionIs(_My_Input_Data,
                                       InputData.class);
@@ -1031,6 +1038,7 @@ public class DMNMarshallerTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void test_wrong_context() throws IOException {
         // DROOLS-2217
         // SPECIAL CASE: to represent a partially edited DMN file.
@@ -1055,10 +1063,8 @@ public class DMNMarshallerTest {
         assertEquals(null, ((org.kie.dmn.model.api.LiteralExpression) contextEntryValue).getText());
 
         // -- Stunner side.
-
         DMNMarshaller m = new DMNMarshaller(new XMLEncoderDiagramMetadataMarshaller(), applicationFactoryManager);
         Graph<?, ?> g = m.unmarshall(null, this.getClass().getResourceAsStream("/wrong_context.dmn"));
-        DiagramImpl diagram = new DiagramImpl("", null);
 
         Node<?, ?> decisionNode = g.getNode("_653b3426-933a-4050-9568-ab2a66b43c36");
         assertNodeContentDefinitionIs(decisionNode, Decision.class);
@@ -1131,6 +1137,7 @@ public class DMNMarshallerTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testContextEntryDataType() throws Exception {
         final DMNMarshaller marshaller = new DMNMarshaller(new XMLEncoderDiagramMetadataMarshaller(),
                                                            applicationFactoryManager);
@@ -1141,6 +1148,7 @@ public class DMNMarshallerTest {
         final ContextEntry contextEntry = new ContextEntry();
         final LiteralExpression literalExpression = new LiteralExpression();
         literalExpression.setTypeRef(BuiltInType.BOOLEAN.asQName());
+        literalExpression.setText("feel");
         contextEntry.setExpression(literalExpression);
         context.getContextEntry().add(contextEntry);
 
@@ -1155,6 +1163,20 @@ public class DMNMarshallerTest {
         checkDecisionExpression(unmarshalledGraph, context);
     }
 
+    @Test
+    public void testDefaultObjectsAreNotCreated() throws IOException {
+        final DMNRuntime dmnRuntime = roundTripUnmarshalMarshalThenUnmarshalDMN(this.getClass().getResourceAsStream("/DROOLS-2941.dmn"));
+        final List<DMNMessage> dmn_messages = dmnRuntime.getModels().get(0).getMessages();
+        assertThat(dmn_messages).isEmpty();
+
+        assertThat(dmnRuntime.getModels()).hasSize(1);
+        final DMNModel dmnModel = dmnRuntime.getModels().get(0);
+        final DMNContext context = dmnRuntime.newContext();
+        final DMNResult result = dmnRuntime.evaluateAll(dmnModel, context);
+        assertThat(result.getDecisionResultByName("A Vowel").getResult()).isEqualTo("a");
+    }
+
+    @SuppressWarnings("unchecked")
     private static Diagram<Graph, Metadata> newDiagramDecisionWithExpression(final Expression expression) {
         final Diagram<Graph, Metadata> diagram = new DiagramImpl("dmn graph", null);
         final Graph<DefinitionSet, Node> graph = mock(Graph.class);
@@ -1191,7 +1213,8 @@ public class DMNMarshallerTest {
                 .findFirst().get();
     }
 
-    private XPath namespaceAwareXPath(Map.Entry<String, String>... pfxAndURI) {
+    @SafeVarargs
+    private final XPath namespaceAwareXPath(Map.Entry<String, String>... pfxAndURI) {
         XPath result = XPathFactory.newInstance().newXPath();
         result.setNamespaceContext(new NamespaceContext() {
             final Map<String, String> pfxToURI = new HashMap<String, String>() {{

@@ -24,27 +24,27 @@ import org.kie.workbench.common.dmn.api.property.dmn.QName;
 
 public final class ImportConverter {
 
-  public static Import nodeFromDMN(org.kie.dmn.model.api.Import source) {
-    LocationURI locationURI = new LocationURI(source.getLocationURI());
-    Import result = new Import(source.getNamespace(), locationURI, source.getImportType());
-    Map<QName, String> additionalAttributes = new HashMap<>();
-    for (Map.Entry<javax.xml.namespace.QName, String> entry : source.getAdditionalAttributes().entrySet()) {
-      additionalAttributes.put(QNamePropertyConverter.wbFromDMN(entry.getKey()), entry.getValue());
+    public static Import nodeFromDMN(org.kie.dmn.model.api.Import source) {
+        LocationURI locationURI = new LocationURI(source.getLocationURI());
+        Import result = new Import(source.getNamespace(), locationURI, source.getImportType());
+        Map<QName, String> additionalAttributes = new HashMap<>();
+        for (Map.Entry<javax.xml.namespace.QName, String> entry : source.getAdditionalAttributes().entrySet()) {
+            additionalAttributes.put(QNamePropertyConverter.wbFromDMN(entry.getKey()), entry.getValue());
+        }
+        result.setAdditionalAttributes(additionalAttributes);
+        return result;
     }
-    result.setAdditionalAttributes(additionalAttributes);
-    return result;
-  }
 
-  public static org.kie.dmn.model.api.Import dmnFromNode(Import source) {
-    org.kie.dmn.model.api.Import result = new org.kie.dmn.model.v1_1.TImport();
-    result.setImportType(source.getImportType());
-    result.setLocationURI(source.getLocationURI().getValue());
-    result.setNamespace(source.getNamespace());
-    Map<javax.xml.namespace.QName, String> additionalAttributes = new HashMap<>();
-    for (Map.Entry<QName, String> entry : source.getAdditionalAttributes().entrySet()) {
-      additionalAttributes.put(QNamePropertyConverter.dmnFromWB(entry.getKey()).get(), entry.getValue());
+    public static org.kie.dmn.model.api.Import dmnFromNode(Import source) {
+        org.kie.dmn.model.api.Import result = new org.kie.dmn.model.v1_1.TImport();
+        result.setImportType(source.getImportType());
+        result.setLocationURI(source.getLocationURI().getValue());
+        result.setNamespace(source.getNamespace());
+        Map<javax.xml.namespace.QName, String> additionalAttributes = new HashMap<>();
+        for (Map.Entry<QName, String> entry : source.getAdditionalAttributes().entrySet()) {
+            additionalAttributes.put(QNamePropertyConverter.dmnFromWB(entry.getKey()).get(), entry.getValue());
+        }
+        result.setAdditionalAttributes(additionalAttributes);
+        return result;
     }
-    result.setAdditionalAttributes(additionalAttributes);
-    return result;
-  }
 }

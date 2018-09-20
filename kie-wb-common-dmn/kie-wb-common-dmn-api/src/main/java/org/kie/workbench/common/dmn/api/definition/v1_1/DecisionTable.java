@@ -45,7 +45,7 @@ public class DecisionTable extends Expression {
              HitPolicy.ANY,
              null,
              DecisionTableOrientation.RULE_AS_ROW,
-             "");
+             null);
     }
 
     public DecisionTable(final Id id,

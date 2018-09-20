@@ -34,9 +34,9 @@ public class LiteralExpression extends Expression {
         this(new Id(),
              new Description(),
              new QName(),
-             "",
-             new ImportedValues(),
-             "");
+             null,
+             null,
+             null);
     }
 
     public LiteralExpression(final Id id,

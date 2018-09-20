@@ -29,8 +29,8 @@ public class InputClause extends DMNElement {
     public InputClause() {
         this(new Id(),
              new Description(),
-             new LiteralExpression(),
-             new UnaryTests());
+             null,
+             null);
     }
 
     public InputClause(final Id id,

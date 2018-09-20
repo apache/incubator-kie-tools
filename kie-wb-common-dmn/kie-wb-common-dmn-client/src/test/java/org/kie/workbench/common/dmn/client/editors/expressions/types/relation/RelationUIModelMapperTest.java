@@ -39,6 +39,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.impl.RowS
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.doReturn;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -150,6 +151,25 @@ public class RelationUIModelMapperTest {
         assertThat(uiModel.getCell(1, 0)).isInstanceOf(RelationGridCell.class);
         assertThat(uiModel.getCell(1, 1)).isInstanceOf(RelationGridCell.class);
         assertThat(uiModel.getCell(1, 2)).isInstanceOf(RelationGridCell.class);
+    }
+
+    @Test
+    public void testToDMNModelLiteralExpressionsNullValue() {
+        cellValueSupplier = () -> Optional.of(new BaseGridCellValue<>(null));
+        for (int uiRowIndex = 0; uiRowIndex < uiModel.getRowCount(); uiRowIndex++) {
+            for (int uiColumnIndex = 1; uiColumnIndex < uiModel.getColumnCount(); uiColumnIndex++) {
+                mapper.toDMNModel(uiRowIndex,
+                                  uiColumnIndex,
+                                  cellValueSupplier);
+                final LiteralExpression le = (LiteralExpression) relation
+                        .getRow()
+                        .get(uiRowIndex)
+                        .getExpression()
+                        .get(uiColumnIndex - RelationUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT);
+
+                assertNull(le.getText());
+            }
+        }
     }
 
     @Test

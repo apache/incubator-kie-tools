@@ -47,6 +47,7 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -173,8 +174,7 @@ public class AddInputClauseCommandTest {
         assertEquals(2, dtable.getInput().size());
         assertEquals(DecisionTableDefaultValueUtilities.INPUT_CLAUSE_PREFIX + "1",
                      dtable.getInput().get(0).getInputExpression().getText());
-        assertEquals("",
-                     dtable.getInput().get(1).getInputExpression().getText());
+        assertNull(dtable.getInput().get(1).getInputExpression());
 
         // first rule
         final List<UnaryTests> inputEntriesRuleOne = dtable.getRule().get(0).getInputEntry();
@@ -214,12 +214,10 @@ public class AddInputClauseCommandTest {
                      graphCommand.execute(graphCommandExecutionContext));
 
         assertEquals(3, dtable.getInput().size());
-        assertEquals("",
-                     dtable.getInput().get(0).getInputExpression().getText());
+        assertNull(dtable.getInput().get(0).getInputExpression());
         assertEquals(DecisionTableDefaultValueUtilities.INPUT_CLAUSE_PREFIX + "1",
                      dtable.getInput().get(1).getInputExpression().getText());
-        assertEquals("",
-                     dtable.getInput().get(2).getInputExpression().getText());
+        assertNull(dtable.getInput().get(2).getInputExpression());
 
         final List<UnaryTests> ruleInputs = dtable.getRule().get(0).getInputEntry();
 

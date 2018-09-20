@@ -85,7 +85,7 @@ public class BusinessKnowledgeModel extends DRGElement implements HasVariable,
              new org.kie.workbench.common.dmn.api.property.dmn.Description(),
              new Name(),
              new InformationItem(),
-             new FunctionDefinition(),
+             null,
              new BackgroundSet(),
              new FontSet(),
              new RectangleDimensionsSet());

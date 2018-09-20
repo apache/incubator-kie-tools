@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<dmn11:definitions xmlns="http://www.trisotech.com/dmn/definitions/_cbbece1a-e91f-4610-a2bf-ee334bdd574b" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="6.1.6.1" id="_cbbece1a-e91f-4610-a2bf-ee334bdd574b" name="Drawing 1" namespace="http://www.trisotech.com/dmn/definitions/_cbbece1a-e91f-4610-a2bf-ee334bdd574b" triso:logoChoice="Default" xmlns:dmn11="http://www.omg.org/spec/DMN/20151101/dmn.xsd">
+  <dmn11:extensionElements/>
+  <dmn11:itemDefinition label="tVowel" name="tVowel">
+    <dmn11:typeRef>feel:string</dmn11:typeRef>
+    <dmn11:allowedValues triso:constraintsType="enumeration">
+      <dmn11:text>"a","e","i","o","u"</dmn11:text>
+    </dmn11:allowedValues>
+  </dmn11:itemDefinition>
+  <dmn11:itemDefinition label="tText" name="tText">
+    <dmn11:typeRef>feel:string</dmn11:typeRef>
+  </dmn11:itemDefinition>
+  <dmn11:decision id="_d3370226-84bc-4a93-838e-409afd9b3d84" name="A Vowel">
+    <dmn11:variable id="_5774b0ea-6eef-46be-bbde-fc1a729888cd" name="A Vowel" typeRef="tVowel"/>
+    <dmn11:literalExpression id="_a6976ac8-7e5b-415b-8131-3d4ef8073ae9" typeRef="tVowel">
+      <dmn11:text>"a"</dmn11:text>
+    </dmn11:literalExpression>
+  </dmn11:decision>
+</dmn11:definitions>

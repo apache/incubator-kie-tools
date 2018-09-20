@@ -149,6 +149,7 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Graph unmarshall(final Metadata metadata,
                             final InputStream input) throws IOException {
         org.kie.dmn.model.api.Definitions dmnXml = marshaller.unmarshal(new InputStreamReader(input));
@@ -302,14 +303,13 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
         Graph graph = factoryManager.newDiagram("prova",
                                                 BindableAdapterUtils.getDefinitionSetId(DMNDefinitionSet.class),
                                                 metadata).getGraph();
-        elems.values().stream().map(kv -> kv.getValue()).forEach(graph::addNode);
+        elems.values().stream().map(Map.Entry::getValue).forEach(graph::addNode);
         textAnnotations.values().forEach(graph::addNode);
 
-        @SuppressWarnings("unchecked")
-        Node<View<DMNDiagram>, ?> dmnDiagramRoot = findDMNDiagramRoot(graph);
+        Node<?, ?> dmnDiagramRoot = findDMNDiagramRoot(graph);
         Definitions definitionsStunnerPojo = DefinitionsConverter.wbFromDMN(dmnXml);
-        dmnDiagramRoot.getContent().getDefinition().setDefinitions(definitionsStunnerPojo);
-        elems.values().stream().map(kv -> kv.getValue()).forEach(node -> connectRootWithChild(dmnDiagramRoot,
+        ((View<DMNDiagram>) dmnDiagramRoot.getContent()).getDefinition().setDefinitions(definitionsStunnerPojo);
+        elems.values().stream().map(Map.Entry::getValue).forEach(node -> connectRootWithChild(dmnDiagramRoot,
                                                                                               node));
         textAnnotations.values().stream().forEach(node -> connectRootWithChild(dmnDiagramRoot,
                                                                                node));
@@ -381,13 +381,13 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public String marshall(final Diagram<Graph, Metadata> diagram) throws IOException {
         Graph<?, Node<View, ?>> g = diagram.getGraph();
 
         Map<String, org.kie.dmn.model.api.DRGElement> nodes = new HashMap<>();
         Map<String, org.kie.dmn.model.api.TextAnnotation> textAnnotations = new HashMap<>();
 
-        @SuppressWarnings("unchecked")
         Node<View<DMNDiagram>, ?> dmnDiagramRoot = (Node<View<DMNDiagram>, ?>) findDMNDiagramRoot(g);
         Definitions definitionsStunnerPojo = dmnDiagramRoot.getContent().getDefinition().getDefinitions();
         org.kie.dmn.model.api.Definitions definitions = DefinitionsConverter.dmnFromWB(definitionsStunnerPojo);
@@ -426,9 +426,7 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
         nodes.values().forEach(definitions.getDrgElement()::add);
         textAnnotations.values().forEach(definitions.getArtifact()::add);
 
-        String marshalled = marshaller.marshal(definitions);
-
-        return marshalled;
+        return marshaller.marshal(definitions);
     }
 
     private void ddExtAugmentStunner(Optional<org.kie.workbench.common.dmn.backend.definition.v1_1.dd.DMNDiagram> dmnDDDiagram, Node currentNode) {
@@ -550,6 +548,7 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
         }
     }
 
+    @SuppressWarnings("unchecked")
     private org.kie.dmn.model.api.DRGElement stunnerToDMN(final Node<?, ?> node) {
         if (node.getContent() instanceof View<?>) {
             View<?> view = (View<?>) node.getContent();

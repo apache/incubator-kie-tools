@@ -44,9 +44,10 @@ public class RegisterNodeCommand extends org.kie.workbench.common.stunner.core.g
             if (candidate.getContent() instanceof View) {
                 final DMNModelInstrumentedBase dmnModel = (DMNModelInstrumentedBase) ((View) candidate.getContent()).getDefinition();
                 if (dmnModel instanceof BusinessKnowledgeModel) {
-                    final FunctionDefinition function = ((BusinessKnowledgeModel) dmnModel).getEncapsulatedLogic();
-                    KindUtilities.setKind(function,
-                                          FunctionDefinition.Kind.FEEL);
+                    final FunctionDefinition function = new FunctionDefinition();
+                    KindUtilities.setKind(function, FunctionDefinition.Kind.FEEL);
+                    ((BusinessKnowledgeModel) dmnModel).setEncapsulatedLogic(function);
+
                     final LiteralExpression le = new LiteralExpression();
                     function.setExpression(le);
                     le.setParent(function);

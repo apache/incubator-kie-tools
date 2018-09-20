@@ -39,7 +39,7 @@ public class UnaryTestsPropertyConverter {
         }
         org.kie.dmn.model.api.UnaryTests result = new org.kie.dmn.model.v1_1.TUnaryTests();
         result.setId(wb.getId().getValue());
-        result.setDescription(wb.getDescription().getValue());
+        result.setDescription(DescriptionPropertyConverter.dmnFromWB(wb.getDescription()));
         result.setText(wb.getText());
         result.setExpressionLanguage(wb.getExpressionLanguage());
 

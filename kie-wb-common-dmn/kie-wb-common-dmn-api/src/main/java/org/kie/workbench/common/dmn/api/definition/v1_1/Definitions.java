@@ -73,11 +73,11 @@ public class Definitions extends DMNElement implements HasName,
              new ArrayList<>(),
              new ArrayList<>(),
              new ArrayList<>(),
-             "",
-             "",
-             "",
-             "",
-             "");
+             null,
+             null,
+             null,
+             null,
+             null);
     }
 
     public Definitions(final Id id,

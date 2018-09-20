@@ -33,7 +33,7 @@ public class PerformanceIndicator extends BusinessContextElement {
         this(new Id(),
              new Description(),
              new Name(),
-             "",
+             null,
              null);
     }
 

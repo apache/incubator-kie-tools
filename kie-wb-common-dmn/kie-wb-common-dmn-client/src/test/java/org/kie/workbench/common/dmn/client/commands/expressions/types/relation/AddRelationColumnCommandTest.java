@@ -45,6 +45,7 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -318,8 +319,7 @@ public class AddRelationColumnCommandTest {
                      uiModel.getRows().get(0).getCells().size());
         assertEquals(1,
                      uiModel.getCell(0, 0).getValue().getValue());
-        assertEquals("",
-                     uiModel.getCell(0, 1).getValue().getValue());
+        assertNull(uiModel.getCell(0, 1).getValue().getValue());
 
         verify(command).updateParentInformation();
 
