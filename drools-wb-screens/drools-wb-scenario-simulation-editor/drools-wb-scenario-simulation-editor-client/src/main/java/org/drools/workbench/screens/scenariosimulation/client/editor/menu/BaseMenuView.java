@@ -17,9 +17,10 @@
 package org.drools.workbench.screens.scenariosimulation.client.editor.menu;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.LIElement;
 import com.google.gwt.dom.client.UListElement;
 import com.google.gwt.event.dom.client.ContextMenuEvent;
-import com.google.gwt.user.client.Command;
+import com.google.web.bindery.event.shared.Event;
 import org.drools.workbench.screens.scenariosimulation.client.events.RefreshMenusEvent;
 import org.uberfire.client.mvp.UberView;
 
@@ -34,13 +35,49 @@ public interface BaseMenuView<M extends BaseMenu> extends UberView<M> {
         void initialise();
 
         /**
-         * Add a menu voice in form of <code>LIElement</code> to the underlying view
+         * Add a <i>label</i> menu voice in form of <code>LIElement</code> to the underlying view
          * @param id
          * @param label
          * @param i18n
-         * @param command
+         * @return
          */
-        void addMenuItem(String id, String label, String i18n, Command command);
+        LIElement addMenuItem(String id, String label, String i18n);
+
+        /**
+         * Add an <i>executable</i> menu voice in form of <code>LIElement</code> to the underlying view
+         * @param id
+         * @param label
+         * @param i18n
+         * @param event the <code>Event</code> to fire on click
+         */
+        void addExecutableMenuItem(String id, String label, String i18n, Event event);
+
+        /**
+         * This method retrieve an <b>EXECUTABLE</b> element (i.e. with a behaviour) to be put inside the menu
+         * It is an <b>overload</b> of {@link #getLExecutableMenuElement(String, String, Event)} to dynamically provide
+         * an event at runtime
+         * @param id
+         * @param innerText
+         * @return
+         */
+
+        /**
+         * Add an <i>executable</i> menu voice in form of <code>LIElement</code> to the underlying view
+         * It is an <b>overload</b> of {@link #addExecutableMenuItem(String, String, String, Event)} to dynamically provide
+         * an event at runtime
+         * @param id
+         * @param label
+         * @param i18n
+         */
+        LIElement addExecutableMenuItem(String id, String label, String i18n);
+
+        /**
+         * Method to map an <code>Event</code> to a given <b>EXECUTABLE</b> <code>LIElement</code>.
+         * To be used when <code>LIElement</code> has been retrieved with {@link #addExecutableMenuItem(String, String, String)}
+         * @param executableMenuItem
+         * @param toBeMapped
+         */
+        void mapEvent(LIElement executableMenuItem, Event toBeMapped);
 
         void onRefreshMenusEvent(final RefreshMenusEvent event);
 
@@ -54,7 +91,6 @@ public interface BaseMenuView<M extends BaseMenu> extends UberView<M> {
         void enableElement(final Element element, final boolean enabled);
 
         boolean isDisabled(final Element element);
-
 
         /**
          * Method to retrieve the visibility state of the view

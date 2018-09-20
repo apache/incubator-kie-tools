@@ -72,4 +72,16 @@ public class FactMappingValue {
         cloned.rawValue = rawValue;
         return cloned;
     }
+
+    public static String getPlaceHolder() {
+        return "Empty value";
+    }
+
+    public static String getPlaceHolder(int index) {
+        return getPlaceHolder() + " " + index;
+    }
+
+    public static String getPlaceHolder(int rowIndex, int colIndex) {
+        return getPlaceHolder() + " " + rowIndex + " " + colIndex;
+    }
 }

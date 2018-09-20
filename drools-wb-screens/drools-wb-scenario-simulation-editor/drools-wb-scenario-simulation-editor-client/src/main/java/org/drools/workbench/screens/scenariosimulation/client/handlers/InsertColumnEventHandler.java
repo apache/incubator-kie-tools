@@ -13,9 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.drools.workbench.screens.scenariosimulation.client.handlers;
 
-package org.drools.workbench.screens.scenariosimulation.client.editor.menu;
+import com.google.gwt.event.shared.EventHandler;
+import org.drools.workbench.screens.scenariosimulation.client.events.InsertColumnEvent;
 
-public class HeaderContextMenu extends BaseMenu {
-
+/**
+ * <code>EventHandler</code> for {@link InsertColumnEvent}
+ */
+public interface InsertColumnEventHandler extends EventHandler {
+    void onEvent(InsertColumnEvent event);
 }

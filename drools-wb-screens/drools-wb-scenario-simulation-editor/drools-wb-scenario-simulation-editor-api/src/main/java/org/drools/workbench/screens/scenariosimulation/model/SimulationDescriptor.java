@@ -34,7 +34,11 @@ public class SimulationDescriptor {
 
     private final List<FactMapping> factMappings = new ArrayList<>();
 
-    public List<FactMapping> getFactMappings() {
+    /**
+     * Returns an <b>unmodifiable</b> list wrapping the backed one
+     * @return
+     */
+    public List<FactMapping> getUnmodifiableFactMappings() {
         return Collections.unmodifiableList(factMappings);
     }
 
@@ -58,6 +62,14 @@ public class SimulationDescriptor {
 
     public FactMapping getFactMappingByIndex(int index) {
         return factMappings.get(index);
+    }
+
+    void removeFactMappingByIndex(int index) {
+        factMappings.remove(index);
+    }
+
+    void removeFactMapping(FactMapping toRemove) {
+        factMappings.remove(toRemove);
     }
 
     public int getIndexByIdentifier(FactIdentifier factIdentifier, ExpressionIdentifier expressionIdentifier) {

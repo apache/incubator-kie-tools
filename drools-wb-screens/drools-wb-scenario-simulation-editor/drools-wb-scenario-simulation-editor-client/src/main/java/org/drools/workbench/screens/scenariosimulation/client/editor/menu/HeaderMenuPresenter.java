@@ -13,11 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.workbench.screens.scenariosimulation.client.handlers;
+package org.drools.workbench.screens.scenariosimulation.client.editor.menu;
 
-import com.google.gwt.event.shared.EventHandler;
-import org.drools.workbench.screens.scenariosimulation.client.events.ScenarioGridBodyDoubleClickEvent;
+/**
+ * This is the first <i>ScenaraioSimulation</i> specific interface - i.e. it is bound to a specific use case. Not every implementation
+ * would need this. Menu initialization may be done in other different ways
+ */
+public interface HeaderMenuPresenter extends BaseMenuView.BaseMenuPresenter {
 
-public interface ScenarioGridBodyDoubleClickHandler extends EventHandler {
-    void onDoubleClick(ScenarioGridBodyDoubleClickEvent event);
+    /**
+     * This method is required to initialze the menus
+     */
+    void initMenu();
+    
 }

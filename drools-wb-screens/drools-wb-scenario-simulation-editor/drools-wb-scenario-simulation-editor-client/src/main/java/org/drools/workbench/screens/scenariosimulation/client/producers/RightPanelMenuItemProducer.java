@@ -13,11 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.workbench.screens.scenariosimulation.client.handlers;
+package org.drools.workbench.screens.scenariosimulation.client.producers;
 
-import com.google.gwt.event.shared.EventHandler;
-import org.drools.workbench.screens.scenariosimulation.client.events.ScenarioGridHeaderDoubleClickEvent;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
-public interface ScenarioGridHeaderDoubleClickHandler extends EventHandler {
-    void onDoubleClick(ScenarioGridHeaderDoubleClickEvent event);
+import org.drools.workbench.screens.scenariosimulation.client.widgets.RightPanelMenuItem;
+
+/**
+ * <code>@Dependent</code> <i>Producer</i> for a given {@link RightPanelMenuItem}
+ */
+@Dependent
+public class RightPanelMenuItemProducer {
+
+    @Inject
+    private RightPanelMenuItem rightPanelMenuItem;
+
+    public RightPanelMenuItem getRightPanelMenuItem() {
+        return rightPanelMenuItem;
+    }
 }

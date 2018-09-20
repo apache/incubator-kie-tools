@@ -97,7 +97,6 @@ public class ListGroupItemPresenterTest extends AbstractRightPanelTest {
 
     @Test
     public void populateListGroupItemView() {
-        // factName.equals(factModelTree.getFactName())
         listGroupItemPresenter.populateListGroupItemView(mockListGroupItemView, FACT_NAME, FACT_MODEL_TREE);
         verify(mockListGroupItemView, times(1)).setFactName(eq(FACT_NAME));
         Map<String, String> simpleProperties = FACT_MODEL_TREE.getSimpleProperties();

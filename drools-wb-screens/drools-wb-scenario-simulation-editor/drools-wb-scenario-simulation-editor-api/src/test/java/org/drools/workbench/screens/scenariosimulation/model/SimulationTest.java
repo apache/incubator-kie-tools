@@ -61,12 +61,12 @@ public class SimulationTest {
         Scenario clonedScenario = simulation.cloneScenario(0, 1);
 
         assertEquals(originalScenario.getDescription(), clonedScenario.getDescription());
-        assertEquals(originalScenario.getFactMappingValues().size(), clonedScenario.getFactMappingValues().size());
+        assertEquals(originalScenario.getUnmodifiableFactMappingValues().size(), clonedScenario.getUnmodifiableFactMappingValues().size());
         assertEquals(originalScenario, simulation.getScenarioByIndex(0));
         assertEquals(clonedScenario, simulation.getScenarioByIndex(1));
 
         assertNotEquals(originalScenario, clonedScenario);
-        assertNotEquals(originalScenario.getFactMappingValues().get(0), clonedScenario.getFactMappingValues().get(0));
+        assertNotEquals(originalScenario.getUnmodifiableFactMappingValues().get(0), clonedScenario.getUnmodifiableFactMappingValues().get(0));
     }
 
     @Test
@@ -96,6 +96,23 @@ public class SimulationTest {
                       },
                       IllegalArgumentException.class);
     }
+
+    @Test
+    public void removeFactMappingByIndex() {
+        assertEquals(2, simulation.getUnmodifiableScenarios().get(0).getUnmodifiableFactMappingValues().size());
+        assertEquals(1, simulation.getSimulationDescriptor().getUnmodifiableFactMappings().size());
+        simulation.removeFactMappingByIndex(0);
+        assertEquals(1, simulation.getUnmodifiableScenarios().get(0).getUnmodifiableFactMappingValues().size());
+        assertEquals(0, simulation.getSimulationDescriptor().getUnmodifiableFactMappings().size());
+    }
+
+    @Test
+    public void removeFactMapping() {
+        assertEquals(2, simulation.getUnmodifiableScenarios().get(0).getUnmodifiableFactMappingValues().size());
+        assertEquals(1, simulation.getSimulationDescriptor().getUnmodifiableFactMappings().size());
+        simulation.removeFactMapping(simulation.getSimulationDescriptor().getFactMappingByIndex(0));
+        assertEquals(1, simulation.getUnmodifiableScenarios().get(0).getUnmodifiableFactMappingValues().size());
+        assertEquals(0, simulation.getSimulationDescriptor().getUnmodifiableFactMappings().size());    }
 
     private <T extends Throwable> void muteException(Runnable toBeExecuted, Class<T> expected) {
         try {

@@ -36,7 +36,8 @@ public class MenuItemViewImpl implements MenuItemView {
     private MenuItemPresenter menuItemPresenter;
 
     @Override
-    public LIElement getLIElement() {
+    public LIElement getLabelMenuElement() {
+        liElement.addClassName("disabled");
         return liElement;
     }
 
@@ -57,7 +58,8 @@ public class MenuItemViewImpl implements MenuItemView {
 
     @Override
     public void setLabel(String label) {
-        spanElement.setInnerText(label);
+        String innerHtml = "<b>" + label.toUpperCase() + "</b>";
+        spanElement.setInnerHTML(innerHtml);
     }
 
     @EventHandler("liElement")

@@ -23,9 +23,9 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.DefaultGridLay
 /**
  * ScenarioSimulation implementation of <code>DefaultGridLayer</code>.
  *
- * This layer contains a <code>ScenarioGrid</code> and it is instantiated only once by the <code>ScenarioSimulationGridLayerProducer</code>.
- * It alsa has a reference to the containing <code>ScenarioGridPanel</code> to avoid circular references by CDI
- * It can't be auto-created with CDI beacause some inherited methods (.e.g. equals and hashCode) are final in <code>com.ait.lienzo.client.core.shape.Node</code>
+ * This layer contains a <code>ScenarioGrid</code>.
+ * It also has a reference to the containing <code>ScenarioGridPanel</code> to avoid circular references by CDI
+ * It can't be auto-created with CDI because some inherited methods (.e.g. equals and hashCode) are final in <code>com.ait.lienzo.client.core.shape.Node</code>
  *
  */
 public class ScenarioGridLayer extends DefaultGridLayer {

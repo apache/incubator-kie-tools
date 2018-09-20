@@ -15,8 +15,11 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.widgets;
 
+import javax.enterprise.context.Dependent;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ContextMenuEvent;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.RootPanel;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioSimulationGridPanelClickHandler;
@@ -28,11 +31,14 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPane
  * This panel contains a <code>ScenarioGridLayer</code> and it is instantiated only once.
  * The Clicks are managed by the injected <code>ScenarioSimulationGridPanelClickHandler</code>
  */
+@Dependent
 public class ScenarioGridPanel extends GridLienzoPanel {
 
     public static final int LIENZO_PANEL_WIDTH = 1000;
 
     public static final int LIENZO_PANEL_HEIGHT = 800;
+
+    private EventBus eventBus;
 
     public ScenarioGridPanel() {
         super(LIENZO_PANEL_WIDTH, LIENZO_PANEL_HEIGHT);
@@ -44,7 +50,16 @@ public class ScenarioGridPanel extends GridLienzoPanel {
         return RootPanel.get().addDomHandler(clickHandler, ClickEvent.getType());
     }
 
+    public ScenarioGridLayer getScenarioGridLayer() {
+        return (ScenarioGridLayer) getDefaultGridLayer();
+    }
+
     public ScenarioGrid getScenarioGrid() {
         return ((ScenarioGridLayer) getDefaultGridLayer()).getScenarioGrid();
+    }
+
+    public void setEventBus(EventBus eventBus) {
+        this.eventBus = eventBus;
+        getScenarioGrid().getModel().setEventBus(eventBus);
     }
 }

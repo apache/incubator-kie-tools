@@ -17,6 +17,7 @@
 package org.drools.workbench.screens.scenariosimulation.client.editor;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.drools.workbench.screens.scenariosimulation.client.producers.ScenarioSimulationProducer;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.RightPanelPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.RightPanelView;
 import org.drools.workbench.screens.scenariosimulation.client.type.ScenarioSimulationResourceType;
@@ -89,6 +90,9 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
     private ScenarioSimulationView mockScenarioSimulationView;
 
     @Mock
+    private ScenarioSimulationProducer mockScenarioSimulationProducer;
+
+    @Mock
     private ImportsWidgetPresenter mockImportsWidget;
 
     @Mock
@@ -118,10 +122,19 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
     @Mock
     private ObservablePath mockPath;
 
+    @Mock
+    private Command mockSetButtonTextFalse;
+
+    @Mock
+    private Command mockSetButtonTextTrue;
+
     @Before
     public void setup() {
         super.setup();
 
+        when(mockRightPanelMenuItem.getSetButtonTextFalse()).thenReturn(mockSetButtonTextFalse);
+        when(mockRightPanelMenuItem.getSetButtonTextTrue()).thenReturn(mockSetButtonTextTrue);
+        when(mockScenarioSimulationProducer.getScenarioSimulationView()).thenReturn(mockScenarioSimulationView);
         when(mockPlaceRequest.getIdentifier()).thenReturn(ScenarioSimulationEditorPresenter.IDENTIFIER);
 
         when(mockOracleFactory.makeAsyncPackageDataModelOracle(anyObject(), anyObject(), anyObject())).thenReturn(mockOracle);
@@ -134,11 +147,10 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
         when(mockPlaceRequest.getPath()).thenReturn(mockPath);
 
         this.presenter = new ScenarioSimulationEditorPresenter(new CallerMock<>(scenarioSimulationService),
-                                                               mockScenarioSimulationView,
+                                                               mockScenarioSimulationProducer,
                                                                mock(ScenarioSimulationResourceType.class),
                                                                mockImportsWidget,
                                                                mockOracleFactory,
-                                                               mockRightPanelMenuItem,
                                                                mockPlaceManager) {
             {
                 this.kieView = mockKieView;
@@ -151,6 +163,7 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
                 this.alertsButtonMenuItemBuilder = mockAlertsButtonMenuItemBuilder;
                 this.rightPanelRequest = mockPlaceRequest;
                 this.path = mockPath;
+                this.rightPanelMenuItem = mockRightPanelMenuItem;
             }
 
             @Override
@@ -165,7 +178,7 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
 
             @Override
             void populateRightPanel() {
-                // 
+                //
             }
 
             @Override
@@ -262,14 +275,6 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
         when(mockPlaceManager.getStatus(mockPlaceRequest)).thenReturn(PlaceStatus.CLOSE);
         presenter.onClose();
         onClosePlaceStatusClose();
-    }
-
-    @Test
-    public void menusAdded() throws Exception {
-        verify(mockScenarioSimulationView).addGridMenuItem(eq("one"), eq("ONE"), eq(""), any(com.google.gwt.user.client.Command.class));
-        verify(mockScenarioSimulationView).addGridMenuItem(eq("two"), eq("TWO"), eq(""), any(com.google.gwt.user.client.Command.class));
-        verify(mockScenarioSimulationView).addHeaderMenuItem(eq("one"), eq("HEADER-ONE"), eq(""), any(com.google.gwt.user.client.Command.class));
-        verify(mockScenarioSimulationView).addHeaderMenuItem(eq("two"), eq("HEADER-TWO"), eq(""), any(com.google.gwt.user.client.Command.class));
     }
 
     @Test

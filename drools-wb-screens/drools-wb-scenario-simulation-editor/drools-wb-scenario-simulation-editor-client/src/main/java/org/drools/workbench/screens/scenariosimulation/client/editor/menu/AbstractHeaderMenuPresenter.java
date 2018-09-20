@@ -1,0 +1,54 @@
+/*
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.drools.workbench.screens.scenariosimulation.client.editor.menu;
+
+import com.google.gwt.event.shared.EventBus;
+import org.drools.workbench.screens.scenariosimulation.client.events.AppendRowEvent;
+import org.drools.workbench.screens.scenariosimulation.client.events.PrependRowEvent;
+import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
+import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
+
+/**
+ * This is the first <i>ScenarioSimulation</i> specific abstract class - i.e. it is bound to a specific use case. Not every implementation
+ * would need this. Menu initialization may be done in other different ways. It is provided to avoid code duplication in concrete implementations
+ */
+public abstract class AbstractHeaderMenuPresenter extends BaseMenu implements HeaderMenuPresenter {
+
+    protected ScenarioSimulationEditorConstants constants = ScenarioSimulationEditorConstants.INSTANCE;
+
+    protected ScenarioGridModel model;
+
+    String HEADERCONTEXTMENU_SCENARIO;
+    String HEADERCONTEXTMENU_PREPEND_ROW;
+    String HEADERCONTEXTMENU_APPEND_ROW;
+
+    PrependRowEvent prependRowEvent = new PrependRowEvent();
+    AppendRowEvent appendRowEvent = new AppendRowEvent();
+
+    public void setEventBus(EventBus eventBus) {
+        this.executableMenuItemPresenter.setEventBus(eventBus);
+    }
+
+    /**
+     * This method set common <b>SCENARIO</b> menu items
+     */
+    public void initMenu() {
+        // SCENARIO
+        addMenuItem(HEADERCONTEXTMENU_SCENARIO, constants.scenario(), "scenario");
+        addExecutableMenuItem(HEADERCONTEXTMENU_PREPEND_ROW, constants.prependRow(), "prependRow", prependRowEvent);
+        addExecutableMenuItem(HEADERCONTEXTMENU_APPEND_ROW, constants.appendRow(), "appendRow", appendRowEvent);
+    }
+}

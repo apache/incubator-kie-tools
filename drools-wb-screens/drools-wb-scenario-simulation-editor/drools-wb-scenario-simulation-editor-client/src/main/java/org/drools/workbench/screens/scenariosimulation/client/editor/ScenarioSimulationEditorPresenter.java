@@ -29,9 +29,10 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.drools.workbench.screens.scenariosimulation.client.commands.CommandExecutor;
 import org.drools.workbench.screens.scenariosimulation.client.models.FactModelTree;
+import org.drools.workbench.screens.scenariosimulation.client.producers.ScenarioSimulationProducer;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.RightPanelPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.RightPanelView;
 import org.drools.workbench.screens.scenariosimulation.client.type.ScenarioSimulationResourceType;
@@ -83,6 +84,7 @@ public class ScenarioSimulationEditorPresenter
     private AsyncPackageDataModelOracleFactory oracleFactory;
 
     private ScenarioSimulationModel model;
+
     private Caller<ScenarioSimulationService> service;
 
     private ScenarioSimulationResourceType type;
@@ -91,9 +93,11 @@ public class ScenarioSimulationEditorPresenter
 
     private ScenarioSimulationView view;
 
-    private RightPanelMenuItem rightPanelMenuItem;
+    private CommandExecutor commandExecutor;
 
     private Command populateRightPanelCommand;
+
+    RightPanelMenuItem rightPanelMenuItem;
 
     PlaceRequest rightPanelRequest;
 
@@ -105,30 +109,23 @@ public class ScenarioSimulationEditorPresenter
 
     @Inject
     public ScenarioSimulationEditorPresenter(final Caller<ScenarioSimulationService> service,
-                                             final ScenarioSimulationView view,
+                                             final ScenarioSimulationProducer scenarioSimulationProducer,
                                              final ScenarioSimulationResourceType type,
                                              final ImportsWidgetPresenter importsWidget,
                                              final AsyncPackageDataModelOracleFactory oracleFactory,
-                                             final RightPanelMenuItem rightPanelMenuItem,
                                              final PlaceManager placeManager) {
-        super(view);
-        this.view = view;
+        super(scenarioSimulationProducer.getScenarioSimulationView());
+        this.view = scenarioSimulationProducer.getScenarioSimulationView();
         this.baseView = view;
         this.service = service;
         this.type = type;
         this.importsWidget = importsWidget;
         this.oracleFactory = oracleFactory;
-        this.rightPanelMenuItem = rightPanelMenuItem;
         this.placeManager = placeManager;
-
-        addMenuItems();
+        this.rightPanelMenuItem = scenarioSimulationProducer.getRightPanelMenuItem();
+        this.commandExecutor = scenarioSimulationProducer.getCommandExecutor();
 
         view.init(this);
-
-        rightPanelRequest = new DefaultPlaceRequest(RightPanelPresenter.IDENTIFIER);
-        rightPanelRequest.addParameter("ScenarioSimulationEditorPresenter", this.toString());
-
-        rightPanelMenuItem.init(rightPanelRequest);
 
         populateRightPanelCommand = getPopulateRightPanelCommand();
     }
@@ -140,6 +137,10 @@ public class ScenarioSimulationEditorPresenter
                    place,
                    type);
         this.path = path;
+        rightPanelRequest = new DefaultPlaceRequest(RightPanelPresenter.IDENTIFIER);
+        rightPanelRequest.addParameter("ScenarioSimulationEditorPresenter", path.toString());
+
+        rightPanelMenuItem.init(rightPanelRequest);
     }
 
     @OnClose
@@ -274,7 +275,6 @@ public class ScenarioSimulationEditorPresenter
     }
 
     void populateRightPanel(RightPanelView.Presenter rightPanelPresenter) {
-        GWT.log("ScenarioSimulationPResenter " + this.toString() + " populateRightPanel rightPanelPresenter " + rightPanelPresenter.toString());
         // Instantiate a container map
         SortedMap<String, FactModelTree> factTypeFieldsMap = new TreeMap<>();
         // Execute only when oracle has been set
@@ -302,13 +302,6 @@ public class ScenarioSimulationEditorPresenter
 
     void clearRightPanelStatus() {
         getRightPanelPresenter().ifPresent(RightPanelView.Presenter::onClearStatus);
-    }
-
-    private void addMenuItems() {
-        view.addGridMenuItem("one", "ONE", "", () -> GWT.log("ONE COMMAND"));
-        view.addGridMenuItem("two", "TWO", "", () -> GWT.log("TWO COMMAND"));
-        view.addHeaderMenuItem("one", "HEADER-ONE", "", () -> GWT.log("HEADER-ONE COMMAND"));
-        view.addHeaderMenuItem("two", "HEADER-TWO", "", () -> GWT.log("HEADER-TWO COMMAND"));
     }
 
     private RemoteCallback<ScenarioSimulationModelContent> getModelSuccessCallback() {

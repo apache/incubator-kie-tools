@@ -18,20 +18,22 @@ package org.drools.workbench.screens.scenariosimulation.client.editor.menu;
 
 import com.google.gwt.dom.client.LIElement;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.user.client.Command;
 
 public interface MenuItemView {
 
     interface Presenter {
 
-        void executeCommand(LIElement clickedElement);
-
-        LIElement getLIElement(String id, String innerText, Command command);
+        /**
+         * This method retrieve a <b>LABEL</b> element (i.e. without behaviour) to be put inside the menu
+         * @param id
+         * @param innerText
+         * @return
+         */
+        LIElement getLabelMenuElement(String id, String innerText);
 
         void onEnableElement(boolean toEnable);
 
         void onClickEvent(ClickEvent event);
-
     }
 
     void setPresenter(MenuItemPresenter menuItemPresenter);
@@ -42,5 +44,10 @@ public interface MenuItemView {
 
     void setLabel(String label);
 
-    LIElement getLIElement();
+    /**
+     * This method retrieve a <b>LABEL</b> element (i.e. without behaviour) to be put inside the menu
+     *
+     * @return
+     */
+    LIElement getLabelMenuElement();
 }

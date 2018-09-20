@@ -16,22 +16,16 @@
 
 package org.drools.workbench.screens.scenariosimulation.client.editor.menu;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.inject.Inject;
 
 import com.google.gwt.dom.client.LIElement;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.user.client.Command;
 import org.drools.workbench.screens.scenariosimulation.client.utils.ViewsProvider;
 
 public class MenuItemPresenter implements MenuItemView.Presenter {
 
     @Inject
     ViewsProvider viewsProvider;
-
-    protected Map<LIElement, Command> menuItemsCommandMap = new HashMap<>();
 
     @Override
     public void onClickEvent(ClickEvent event) {
@@ -40,21 +34,12 @@ public class MenuItemPresenter implements MenuItemView.Presenter {
     }
 
     @Override
-    public void executeCommand(LIElement clickedElement) {
-        if (menuItemsCommandMap.containsKey(clickedElement)) {
-            menuItemsCommandMap.get(clickedElement).execute();
-        }
-    }
-
-    @Override
-    public LIElement getLIElement(String id, String label, Command command) {
+    public LIElement getLabelMenuElement(String id, String label) {
         MenuItemView menuItemView = viewsProvider.getMenuItemView();
         menuItemView.setId(id);
         menuItemView.setLabel(label);
         menuItemView.setPresenter(this);
-        LIElement toReturn = menuItemView.getLIElement();
-        menuItemsCommandMap.put(toReturn, command);
-        return toReturn;
+        return menuItemView.getLabelMenuElement();
     }
 
     @Override

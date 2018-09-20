@@ -115,32 +115,32 @@ public class ScenarioRunnerHelperTest {
 
     @Test
     public void extractGivenValuesTest() {
-        List<ScenarioInput> scenario1Inputs = extractGivenValues(simulation.getSimulationDescriptor(), scenario1.getFactMappingValues());
+        List<ScenarioInput> scenario1Inputs = extractGivenValues(simulation.getSimulationDescriptor(), scenario1.getUnmodifiableFactMappingValues());
         assertEquals(1, scenario1Inputs.size());
 
-        List<ScenarioInput> scenario2Inputs = extractGivenValues(simulation.getSimulationDescriptor(), scenario2.getFactMappingValues());
+        List<ScenarioInput> scenario2Inputs = extractGivenValues(simulation.getSimulationDescriptor(), scenario2.getUnmodifiableFactMappingValues());
         assertEquals(2, scenario2Inputs.size());
     }
 
     @Test
     public void extractExpectedValuesTest() {
-        List<ScenarioOutput> scenario1Outputs = extractExpectedValues(scenario1.getFactMappingValues());
+        List<ScenarioOutput> scenario1Outputs = extractExpectedValues(scenario1.getUnmodifiableFactMappingValues());
         assertEquals(1, scenario1Outputs.size());
 
-        List<ScenarioOutput> scenario2Outputs = extractExpectedValues(scenario2.getFactMappingValues());
+        List<ScenarioOutput> scenario2Outputs = extractExpectedValues(scenario2.getUnmodifiableFactMappingValues());
         assertEquals(2, scenario2Outputs.size());
     }
 
     @Test
     public void verifyConditionsTest() {
-        List<ScenarioInput> scenario1Inputs = extractGivenValues(simulation.getSimulationDescriptor(), scenario1.getFactMappingValues());
-        List<ScenarioOutput> scenario1Outputs = extractExpectedValues(scenario1.getFactMappingValues());
+        List<ScenarioInput> scenario1Inputs = extractGivenValues(simulation.getSimulationDescriptor(), scenario1.getUnmodifiableFactMappingValues());
+        List<ScenarioOutput> scenario1Outputs = extractExpectedValues(scenario1.getUnmodifiableFactMappingValues());
 
         List<ScenarioResult> scenario1Results = verifyConditions(simulation.getSimulationDescriptor(), scenario1Inputs, scenario1Outputs);
         assertEquals(1, scenario1Results.size());
 
-        List<ScenarioInput> scenario2Inputs = extractGivenValues(simulation.getSimulationDescriptor(), scenario2.getFactMappingValues());
-        List<ScenarioOutput> scenario2Outputs = extractExpectedValues(scenario2.getFactMappingValues());
+        List<ScenarioInput> scenario2Inputs = extractGivenValues(simulation.getSimulationDescriptor(), scenario2.getUnmodifiableFactMappingValues());
+        List<ScenarioOutput> scenario2Outputs = extractExpectedValues(scenario2.getUnmodifiableFactMappingValues());
 
         List<ScenarioResult> scenario2Results = verifyConditions(simulation.getSimulationDescriptor(), scenario2Inputs, scenario2Outputs);
         assertEquals(2, scenario2Results.size());
@@ -148,8 +148,8 @@ public class ScenarioRunnerHelperTest {
 
     @Test
     public void getScenarioResultsTest() {
-        List<ScenarioInput> scenario1Inputs = extractGivenValues(simulation.getSimulationDescriptor(), scenario1.getFactMappingValues());
-        List<ScenarioOutput> scenario1Outputs = extractExpectedValues(scenario1.getFactMappingValues());
+        List<ScenarioInput> scenario1Inputs = extractGivenValues(simulation.getSimulationDescriptor(), scenario1.getUnmodifiableFactMappingValues());
+        List<ScenarioOutput> scenario1Outputs = extractExpectedValues(scenario1.getUnmodifiableFactMappingValues());
 
         assertTrue(scenario1Inputs.size() > 0);
 
@@ -160,8 +160,8 @@ public class ScenarioRunnerHelperTest {
 
         assertEquals(1, scenario1Results.size());
 
-        List<ScenarioInput> scenario2Inputs = extractGivenValues(simulation.getSimulationDescriptor(), scenario2.getFactMappingValues());
-        List<ScenarioOutput> scenario2Outputs = extractExpectedValues(scenario2.getFactMappingValues());
+        List<ScenarioInput> scenario2Inputs = extractGivenValues(simulation.getSimulationDescriptor(), scenario2.getUnmodifiableFactMappingValues());
+        List<ScenarioOutput> scenario2Outputs = extractExpectedValues(scenario2.getUnmodifiableFactMappingValues());
 
         assertTrue(scenario2Inputs.size() > 0);
 
@@ -197,10 +197,10 @@ public class ScenarioRunnerHelperTest {
 
     @Test
     public void groupByFactIdentifierAndFilterTest() {
-        Map<FactIdentifier, List<FactMappingValue>> scenario1Given = groupByFactIdentifierAndFilter(scenario1.getFactMappingValues(), FactMappingType.GIVEN);
-        Map<FactIdentifier, List<FactMappingValue>> scenario1Expected = groupByFactIdentifierAndFilter(scenario1.getFactMappingValues(), FactMappingType.EXPECTED);
-        Map<FactIdentifier, List<FactMappingValue>> scenario2Given = groupByFactIdentifierAndFilter(scenario2.getFactMappingValues(), FactMappingType.GIVEN);
-        Map<FactIdentifier, List<FactMappingValue>> scenario2Expected = groupByFactIdentifierAndFilter(scenario2.getFactMappingValues(), FactMappingType.EXPECTED);
+        Map<FactIdentifier, List<FactMappingValue>> scenario1Given = groupByFactIdentifierAndFilter(scenario1.getUnmodifiableFactMappingValues(), FactMappingType.GIVEN);
+        Map<FactIdentifier, List<FactMappingValue>> scenario1Expected = groupByFactIdentifierAndFilter(scenario1.getUnmodifiableFactMappingValues(), FactMappingType.EXPECTED);
+        Map<FactIdentifier, List<FactMappingValue>> scenario2Given = groupByFactIdentifierAndFilter(scenario2.getUnmodifiableFactMappingValues(), FactMappingType.GIVEN);
+        Map<FactIdentifier, List<FactMappingValue>> scenario2Expected = groupByFactIdentifierAndFilter(scenario2.getUnmodifiableFactMappingValues(), FactMappingType.EXPECTED);
 
         assertEquals(1, scenario1Given.keySet().size());
         assertEquals(1, scenario1Expected.keySet().size());

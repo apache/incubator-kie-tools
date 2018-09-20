@@ -95,4 +95,12 @@ public class FactMapping {
     public void setExpressionAlias(String expressionAlias) {
         this.expressionAlias = expressionAlias;
     }
+
+    public static String getPlaceHolder(FactMappingType factMappingType) {
+        return factMappingType.name();
+    }
+
+    public static String getPlaceHolder(FactMappingType factMappingType, int index) {
+        return getPlaceHolder(factMappingType) + " " + index;
+    }
 }

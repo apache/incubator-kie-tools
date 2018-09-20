@@ -13,7 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.workbench.screens.scenariosimulation.client.factories;
+package org.drools.workbench.screens.scenariosimulation.client.producers;
+
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
 import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
 import org.drools.workbench.screens.scenariosimulation.client.renderers.ScenarioGridRenderer;
@@ -22,20 +25,26 @@ import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGr
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
 
 /**
- * Class used to instantiate a <code>ScenarioSimulationViewImpl</code> with all the contents/handlers required, avoiding CDI as much as possible
+ * <code>@Dependent</code> <i>Producer</i> for a given {@link ScenarioGridPanel}
  */
-public class ScenarioSimulationViewProvider {
+@Dependent
+public class ScenarioGridPanelProducer {
 
-    public static ScenarioGridPanel newScenarioGridPanel(final ScenarioGridLayer scenarioGridLayer) {
-        final ScenarioGridPanel toReturn = new ScenarioGridPanel();
-        scenarioGridLayer.addScenarioGrid(newScenarioGrid(toReturn,
+    @Inject
+    private ScenarioGridLayer scenarioGridLayer;
+
+    @Inject
+    private ScenarioGridPanel scenarioGridPanel;
+
+    public ScenarioGridPanel getScenarioGridPanel() {
+        scenarioGridLayer.addScenarioGrid(newScenarioGrid(scenarioGridPanel,
                                                           scenarioGridLayer));
-        toReturn.add(scenarioGridLayer);
-        return toReturn;
+        scenarioGridPanel.add(scenarioGridLayer);
+        return scenarioGridPanel;
     }
 
-    private static ScenarioGrid newScenarioGrid(final ScenarioGridPanel scenarioGridPanel,
-                                                final ScenarioGridLayer scenarioGridLayer) {
+    private ScenarioGrid newScenarioGrid(final ScenarioGridPanel scenarioGridPanel,
+                                         final ScenarioGridLayer scenarioGridLayer) {
         return new ScenarioGrid(new ScenarioGridModel(),
                                 scenarioGridLayer,
                                 new ScenarioGridRenderer(false),

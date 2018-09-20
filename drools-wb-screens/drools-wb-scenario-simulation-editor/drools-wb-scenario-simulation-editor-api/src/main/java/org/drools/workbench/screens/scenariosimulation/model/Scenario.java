@@ -47,14 +47,24 @@ public class Scenario {
     }
 
     /**
+     * Returns an <b>unmodifiable</b> list wrapping the backed one
+
      * NOTE: list order could not be aligned to factMapping order. Use {@link Scenario#sort()} before call this method
      * to ensure the order.
      * Best way to have ordered factMappingValues is to iterate over {@link SimulationDescriptor#factMappings} and use
      * {@link #getFactMappingValue(FactIdentifier, ExpressionIdentifier)}
      * @return not modifiable list of FactMappingValues
      */
-    public List<FactMappingValue> getFactMappingValues() {
+    public List<FactMappingValue> getUnmodifiableFactMappingValues() {
         return Collections.unmodifiableList(factMappingValues);
+    }
+
+    public void removeFactMappingValueByIdentifiers(FactIdentifier factIdentifier, ExpressionIdentifier expressionIdentifier) {
+        getFactMappingValue(factIdentifier, expressionIdentifier).ifPresent(factMappingValues::remove);
+    }
+
+    public void removeFactMappingValue(FactMappingValue toRemove) {
+        factMappingValues.remove(toRemove);
     }
 
     public FactMappingValue addMappingValue(FactIdentifier factIdentifier, ExpressionIdentifier expressionIdentifier, Object value) {
@@ -77,7 +87,7 @@ public class Scenario {
     }
 
     public Optional<FactMappingValue> getFactMappingValue(FactIdentifier factIdentifier, ExpressionIdentifier expressionIdentifier) {
-        return factMappingValues.stream().filter(e -> e.getFactIdentifier().getName().equalsIgnoreCase(factIdentifier.getName()) &&
+        return factMappingValues.stream().filter(e -> e.getFactIdentifier().equals(factIdentifier) &&
                 e.getExpressionIdentifier().equals(expressionIdentifier)).findFirst();
     }
 

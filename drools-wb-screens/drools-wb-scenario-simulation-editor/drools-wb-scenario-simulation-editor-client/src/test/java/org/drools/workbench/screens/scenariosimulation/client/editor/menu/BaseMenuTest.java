@@ -20,9 +20,9 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.UListElement;
 import com.google.gwt.event.dom.client.ContextMenuEvent;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import com.google.web.bindery.event.shared.Event;
 import org.drools.workbench.screens.scenariosimulation.client.events.RefreshMenusEvent;
 import org.gwtbootstrap3.client.ui.constants.Styles;
 import org.junit.Before;
@@ -50,6 +50,9 @@ public class BaseMenuTest {
     private MenuItemPresenter mockMenuItemPresenter;
 
     @Mock
+    private ExecutableMenuItemPresenter mockExecutableMenuItemPresenter;
+
+    @Mock
     private BaseMenuView mockView;
 
     @Mock
@@ -68,6 +71,7 @@ public class BaseMenuTest {
             {
                 this.view = mockView;
                 this.menuItemPresenter = mockMenuItemPresenter;
+                this.executableMenuItemPresenter = mockExecutableMenuItemPresenter;
             }
 
             @Override
@@ -85,12 +89,21 @@ public class BaseMenuTest {
 
     @Test
     public void addMenuItem() {
-        Command mockCommand = mock(Command.class);
         String id = "TEST-ID";
         String label = "TEST-LABEL";
         String i18n = "TEST-i18n";
-        baseMenu.addMenuItem(id, label, i18n, mockCommand);
-        verify(mockContextMenuDropdown, times(1)).appendChild(mockMenuItemPresenter.getLIElement(id, label, mockCommand));
+        baseMenu.addMenuItem(id, label, i18n);
+        verify(mockContextMenuDropdown, times(1)).appendChild(mockMenuItemPresenter.getLabelMenuElement(id, label));
+    }
+
+    @Test
+    public void addExecutableMenuItem() {
+        Event mockEvent = mock(Event.class);
+        String id = "TEST-ID";
+        String label = "TEST-LABEL";
+        String i18n = "TEST-i18n";
+        baseMenu.addExecutableMenuItem(id, label, i18n, mockEvent);
+        verify(mockContextMenuDropdown, times(1)).appendChild(mockExecutableMenuItemPresenter.getLExecutableMenuElement(id, label, mockEvent));
     }
 
     @Test
@@ -162,5 +175,4 @@ public class BaseMenuTest {
         baseMenu.enableElement(mockElement, false);
         verify(mockElement, times(1)).addClassName(Styles.DISABLED);
     }
-
 }

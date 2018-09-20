@@ -23,12 +23,13 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.LIElement;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ContextMenuEvent;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.web.bindery.event.shared.Event;
 import org.drools.workbench.screens.scenariosimulation.client.events.RefreshMenusEvent;
 import org.gwtbootstrap3.client.ui.constants.Styles;
 
@@ -42,17 +43,40 @@ public abstract class BaseMenu implements IsWidget,
     protected MenuItemPresenter menuItemPresenter;
 
     @Inject
+    protected ExecutableMenuItemPresenter executableMenuItemPresenter;
+
+    @Inject
     protected BaseMenuView view;
 
     @PostConstruct
     @Override
     public void initialise() {
         view.init(this);
+        executableMenuItemPresenter.init(this);
     }
 
     @Override
-    public void addMenuItem(String id, String label, String i18n, Command command) {
-        view.getContextMenuDropdown().appendChild(menuItemPresenter.getLIElement(id, label, command));
+    public LIElement addMenuItem(String id, String label, String i18n) {
+        final LIElement toReturn = menuItemPresenter.getLabelMenuElement(id, label);
+        view.getContextMenuDropdown().appendChild(toReturn);
+        return toReturn;
+    }
+
+    @Override
+    public void addExecutableMenuItem(String id, String label, String i18n, Event event) {
+        view.getContextMenuDropdown().appendChild(executableMenuItemPresenter.getLExecutableMenuElement(id, label, event));
+    }
+
+    @Override
+    public LIElement addExecutableMenuItem(String id, String label, String i18n) {
+        LIElement toReturn = executableMenuItemPresenter.getLExecutableMenuElement(id, label);
+        view.getContextMenuDropdown().appendChild(toReturn);
+        return toReturn;
+    }
+
+    @Override
+    public void mapEvent(LIElement executableMenuItem, Event toBeMapped) {
+        executableMenuItemPresenter.mapEvent(executableMenuItem, toBeMapped);
     }
 
     @Override
@@ -116,7 +140,6 @@ public abstract class BaseMenu implements IsWidget,
         event.stopPropagation();
         hide();
     }
-
 
     protected RootPanel getRootPanel() {
         return RootPanel.get();

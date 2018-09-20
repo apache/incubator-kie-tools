@@ -16,14 +16,9 @@
 
 package org.drools.workbench.screens.scenariosimulation.client.editor;
 
-import javax.inject.Inject;
+import javax.enterprise.context.Dependent;
 
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.Command;
-import org.drools.workbench.screens.scenariosimulation.client.editor.menu.GridContextMenu;
-import org.drools.workbench.screens.scenariosimulation.client.editor.menu.HeaderContextMenu;
-import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioSimulationViewProvider;
-import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioSimulationGridPanelClickHandler;
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridLayer;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
@@ -36,6 +31,7 @@ import org.uberfire.workbench.model.menu.MenuItem;
  * <p>
  * This view contains a <code>ScenarioGridPanel</code>.
  */
+@Dependent
 public class ScenarioSimulationViewImpl
         extends KieEditorViewImpl
         implements ScenarioSimulationView {
@@ -44,28 +40,32 @@ public class ScenarioSimulationViewImpl
 
     private ScenarioSimulationEditorPresenter presenter;
 
-    @Inject
     private ScenarioGridLayer scenarioGridLayer;
 
-    @Inject
-    private GridContextMenu gridContextMenu;
-
-    @Inject
-    private HeaderContextMenu headerContextMenu;
-
     private HandlerRegistration clickHandlerRegistration;
+
+    /**
+     * This method also set <code>ScenarioGridLayer</code> taken the instance from given <code>ScenarioGridPanel</code>
+     * @param scenarioGridPanel
+     */
+    @Override
+    public void setScenarioGridPanel(ScenarioGridPanel scenarioGridPanel) {
+        this.scenarioGridPanel = scenarioGridPanel;
+        this.scenarioGridLayer = scenarioGridPanel.getScenarioGridLayer();
+    }
+
+    @Override
+    public void setClickHandlerRegistration(HandlerRegistration clickHandlerRegistration) {
+        this.clickHandlerRegistration = clickHandlerRegistration;
+    }
+
+
 
     @Override
     public void init(final ScenarioSimulationEditorPresenter presenter) {
         this.presenter = presenter;
-
-        this.scenarioGridPanel = ScenarioSimulationViewProvider.newScenarioGridPanel(scenarioGridLayer);
-        clickHandlerRegistration = this.scenarioGridPanel.addClickHandler(new ScenarioSimulationGridPanelClickHandler(scenarioGridPanel.getScenarioGrid(),
-                                                                                                                      gridContextMenu,
-                                                                                                                      headerContextMenu));
         scenarioGridLayer.enterPinnedMode(scenarioGridLayer.getScenarioGrid(), () -> {
         });  // Hack to overcome default implementation
-
         initWidget(scenarioGridPanel);
     }
 
@@ -82,18 +82,18 @@ public class ScenarioSimulationViewImpl
     }
 
     @Override
-    public void addGridMenuItem(String id, String label, String i18n, Command command) {
-        gridContextMenu.addMenuItem(id, label, i18n, command);
-    }
-
-    @Override
-    public void addHeaderMenuItem(String id, String label, String i18n, Command command) {
-        headerContextMenu.addMenuItem(id, label, i18n, command);
-    }
-
-    @Override
     public MenuItem getRunScenarioMenuItem() {
         return new RunScenarioMenuItem(ScenarioSimulationEditorConstants.INSTANCE.runScenarioSimulation(),
                                        () -> presenter.onRunScenario());
+    }
+
+    @Override
+    public ScenarioGridPanel getScenarioGridPanel() {
+        return scenarioGridPanel;
+    }
+
+    @Override
+    public ScenarioGridLayer getScenarioGridLayer() {
+        return scenarioGridLayer;
     }
 }

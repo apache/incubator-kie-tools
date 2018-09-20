@@ -15,11 +15,15 @@
  */
 package org.drools.workbench.screens.scenariosimulation.model;
 
+import java.util.Optional;
+
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 
 public class ScenarioTest {
 
@@ -36,6 +40,26 @@ public class ScenarioTest {
         scenario = simulation.addScenario();
         factIdentifier = FactIdentifier.create("test fact", String.class.getCanonicalName());
         expressionIdentifier = ExpressionIdentifier.create("test expression", FactMappingType.EXPECTED);
+    }
+
+    @Test
+    public void removeFactMappingValueByIdentifiersTest() {
+        scenario.addMappingValue(factIdentifier, expressionIdentifier, "test value");
+        Optional<FactMappingValue> retrieved = scenario.getFactMappingValue(factIdentifier, expressionIdentifier);
+        assertTrue(retrieved.isPresent());
+        scenario.removeFactMappingValueByIdentifiers(factIdentifier, expressionIdentifier);
+        retrieved = scenario.getFactMappingValue(factIdentifier, expressionIdentifier);
+        assertFalse(retrieved.isPresent());
+    }
+
+    @Test
+    public void removeFactMappingValue() {
+        scenario.addMappingValue(factIdentifier, expressionIdentifier, "test value");
+        Optional<FactMappingValue> retrieved = scenario.getFactMappingValue(factIdentifier, expressionIdentifier);
+        assertTrue(retrieved.isPresent());
+        scenario.removeFactMappingValue(retrieved.get());
+        retrieved = scenario.getFactMappingValue(factIdentifier, expressionIdentifier);
+        assertFalse(retrieved.isPresent());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -75,10 +99,10 @@ public class ScenarioTest {
         scenario.addMappingValue(factIdentifier, expressionIdentifier2, "Test 2");
         FactMappingValue factMappingValue1 = scenario.addMappingValue(factIdentifier, this.expressionIdentifier, "Test");
 
-        assertEquals(scenario.getFactMappingValues().get(1), factMappingValue1);
+        assertEquals(scenario.getUnmodifiableFactMappingValues().get(1), factMappingValue1);
 
         scenario.sort();
-        assertNotEquals(scenario.getFactMappingValues().get(1), factMappingValue1);
-        assertEquals(scenario.getFactMappingValues().get(0), factMappingValue1);
+        assertNotEquals(scenario.getUnmodifiableFactMappingValues().get(1), factMappingValue1);
+        assertEquals(scenario.getUnmodifiableFactMappingValues().get(0), factMappingValue1);
     }
 }

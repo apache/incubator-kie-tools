@@ -16,19 +16,32 @@
 package org.drools.workbench.screens.scenariosimulation.client.events;
 
 import com.google.gwt.event.shared.GwtEvent;
-import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioGridBodyRightClickHandler;
+import org.drools.workbench.screens.scenariosimulation.client.handlers.DeleteRowEventHandler;
 
-public class ScenarioGridBodyRightClickEvent extends GwtEvent<ScenarioGridBodyRightClickHandler> {
+/**
+ * <code>GwtEvent</code> to <b>delete</b> a row
+ */
+public class DeleteRowEvent extends GwtEvent<DeleteRowEventHandler> {
 
-    public static Type<ScenarioGridBodyRightClickHandler> TYPE = new Type<>();
-    
-    @Override
-    public Type<ScenarioGridBodyRightClickHandler> getAssociatedType() {
-        return TYPE;
+    public static Type<DeleteRowEventHandler> TYPE = new Type<>();
+
+    private int rowIndex;
+
+    public DeleteRowEvent(int rowIndex) {
+        this.rowIndex = rowIndex;
     }
 
     @Override
-    protected void dispatch(ScenarioGridBodyRightClickHandler handler) {
-        handler.onRightClick(this);
+    public Type<DeleteRowEventHandler> getAssociatedType() {
+        return TYPE;
+    }
+
+    public int getRowIndex() {
+        return rowIndex;
+    }
+
+    @Override
+    protected void dispatch(DeleteRowEventHandler handler) {
+        handler.onEvent(this);
     }
 }

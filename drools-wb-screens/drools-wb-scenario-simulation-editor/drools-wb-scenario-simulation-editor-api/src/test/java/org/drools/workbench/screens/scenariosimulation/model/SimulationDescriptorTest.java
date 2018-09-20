@@ -23,6 +23,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 public class SimulationDescriptorTest {
@@ -52,6 +55,23 @@ public class SimulationDescriptorTest {
         simulationDescriptor.addFactMapping(1, factIdentifier, expressionIdentifier);
     }
 
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void removeFactMappingByIndex() {
+        int testingIndex = 0;
+        simulationDescriptor.addFactMapping(factIdentifier, expressionIdentifier);
+        assertNotNull(simulationDescriptor.getFactMappingByIndex(testingIndex));
+        simulationDescriptor.removeFactMappingByIndex(testingIndex);
+        simulationDescriptor.getFactMappingByIndex(testingIndex);
+    }
+
+    @Test
+    public void removeFactMapping() {
+        FactMapping retrieved = simulationDescriptor.addFactMapping(factIdentifier, expressionIdentifier);
+        assertTrue(simulationDescriptor.getUnmodifiableFactMappings().contains(retrieved));
+        simulationDescriptor.removeFactMapping(retrieved);
+        assertFalse(simulationDescriptor.getUnmodifiableFactMappings().contains(retrieved));
+    }
+
     @Test
     public void getIndexByIdentifierTest() {
         List<FactMapping> originalFactMappings = IntStream.range(0, 2).boxed()
@@ -73,7 +93,7 @@ public class SimulationDescriptorTest {
         FactMapping factMapping1 = simulationDescriptor.addFactMapping(factIdentifier, expressionIdentifier);
         FactMapping factMapping2 = simulationDescriptor.addFactMapping(factIdentifier, expressionIdentifier2);
         FactMapping factMapping3 = simulationDescriptor.addFactMapping(factIdentifier, expressionIdentifier3);
-        List<FactMapping> factMappings = simulationDescriptor.getFactMappings();
+        List<FactMapping> factMappings = simulationDescriptor.getUnmodifiableFactMappings();
 
         assertEquals(factMappings.get(0), factMapping1);
         assertEquals(factMappings.get(1), factMapping2);
@@ -81,21 +101,21 @@ public class SimulationDescriptorTest {
 
         simulationDescriptor.moveFactMapping(0, 1);
 
-        factMappings = simulationDescriptor.getFactMappings();
+        factMappings = simulationDescriptor.getUnmodifiableFactMappings();
         assertEquals(factMappings.get(0), factMapping2);
         assertEquals(factMappings.get(1), factMapping1);
         assertEquals(factMappings.get(2), factMapping3);
 
         simulationDescriptor.moveFactMapping(2, 1);
 
-        factMappings = simulationDescriptor.getFactMappings();
+        factMappings = simulationDescriptor.getUnmodifiableFactMappings();
         assertEquals(factMappings.get(0), factMapping2);
         assertEquals(factMappings.get(1), factMapping3);
         assertEquals(factMappings.get(2), factMapping1);
 
         simulationDescriptor.moveFactMapping(2, 2);
 
-        factMappings = simulationDescriptor.getFactMappings();
+        factMappings = simulationDescriptor.getUnmodifiableFactMappings();
         assertEquals(factMappings.get(0), factMapping2);
         assertEquals(factMappings.get(1), factMapping3);
         assertEquals(factMappings.get(2), factMapping1);
@@ -136,6 +156,7 @@ public class SimulationDescriptorTest {
         try {
             toBeExecuted.run();
         } catch (Throwable t) {
+            //noinspection NonJREEmulationClassesInClientCode
             if (!t.getClass().isAssignableFrom(expected)) {
                 throw t;
             }

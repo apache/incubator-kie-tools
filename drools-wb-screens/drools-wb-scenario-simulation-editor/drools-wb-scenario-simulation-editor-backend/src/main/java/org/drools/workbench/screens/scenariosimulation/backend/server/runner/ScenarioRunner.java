@@ -43,7 +43,7 @@ public class ScenarioRunner extends Runner {
     private List<Scenario> scenarios;
 
     public ScenarioRunner(KieContainer kieContainer, Simulation simulation) {
-        this(kieContainer, simulation.getSimulationDescriptor(), simulation.getScenarios());
+        this(kieContainer, simulation.getSimulationDescriptor(), simulation.getUnmodifiableScenarios());
     }
 
     public ScenarioRunner(KieContainer kieContainer, SimulationDescriptor simulationDescriptor, List<Scenario> scenarios) {
@@ -78,8 +78,8 @@ public class ScenarioRunner extends Runner {
         singleNotifier.fireTestStarted();
 
         try {
-            extractGivenValues(simulationDescriptor, scenario.getFactMappingValues()).forEach(scenarioRunnerData::addInput);
-            extractExpectedValues(scenario.getFactMappingValues()).forEach(scenarioRunnerData::addOutput);
+            extractGivenValues(simulationDescriptor, scenario.getUnmodifiableFactMappingValues()).forEach(scenarioRunnerData::addInput);
+            extractExpectedValues(scenario.getUnmodifiableFactMappingValues()).forEach(scenarioRunnerData::addOutput);
 
             executeScenario(kieContainer, scenarioRunnerData.getInputData());
             List<ScenarioResult> scenarioResults = verifyConditions(simulationDescriptor,
