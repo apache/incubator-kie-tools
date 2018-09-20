@@ -61,6 +61,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextBoxS
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellValueTuple;
@@ -326,6 +327,10 @@ public class ContextGridTest {
                                                            expression,
                                                            hasName,
                                                            nesting).get());
+
+        when(parent.getGridWidget()).thenReturn(gridWidget);
+        when(parent.getRowIndex()).thenReturn(0);
+        when(parent.getColumnIndex()).thenReturn(2);
     }
 
     @Test
@@ -617,7 +622,7 @@ public class ContextGridTest {
 
         addContextEntry(0);
 
-        verify(parent).proposeContainingColumnWidth(eq(grid.getWidth() + grid.getPadding() * 2));
+        verify(parent).proposeContainingColumnWidth(eq(grid.getWidth() + grid.getPadding() * 2), eq(BaseExpressionGrid.RESIZE_EXISTING));
 
         verify(gridLayer).batch(redrawCommandCaptor.capture());
         verify(gridPanel).refreshScrollPosition();
@@ -638,6 +643,7 @@ public class ContextGridTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testAddContextEntryAutoEditContextEntryName() {
         setupGrid(0);
         final InOrder inOrder = Mockito.inOrder(grid);
@@ -696,7 +702,30 @@ public class ContextGridTest {
         final ClearExpressionTypeCommand clearExpressionTypeCommand = clearExpressionTypeCommandCaptor.getValue();
         clearExpressionTypeCommand.execute(canvasHandler);
 
-        verify(undefinedExpressionEditor).resizeWhenExpressionEditorChanged();
+        verify(grid).resize(BaseExpressionGrid.RESIZE_EXISTING_MINIMUM);
+        verify(gridLayer).select(gridWidget);
+        verify(gridWidget).selectCell(eq(0),
+                                      eq(2),
+                                      eq(false),
+                                      eq(false));
+        verify(gridLayer).batch(redrawCommandCaptor.capture());
+        redrawCommandCaptor.getValue().execute();
+        verify(gridLayer).draw();
+
+        //Check undo operation
+        reset(grid, gridLayer);
+        clearExpressionTypeCommand.undo(canvasHandler);
+
+        //Verify Expression has been restored and UndefinedExpressionEditor resized
+        assertThat(grid.getModel().getColumns().get(2).getWidth()).isEqualTo(DMNGridColumn.DEFAULT_WIDTH);
+        verify(grid).resize(BaseExpressionGrid.RESIZE_EXISTING_MINIMUM);
+        verify(gridLayer).select(grid);
+        verify(grid).selectFirstCell();
+
+        verify(gridLayer).batch(redrawCommandCaptor.capture());
+        assertThat(redrawCommandCaptor.getAllValues()).hasSize(2);
+        redrawCommandCaptor.getAllValues().get(1).execute();
+        verify(gridLayer).draw();
     }
 
     @Test

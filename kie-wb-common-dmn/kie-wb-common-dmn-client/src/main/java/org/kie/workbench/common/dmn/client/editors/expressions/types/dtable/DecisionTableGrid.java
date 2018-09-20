@@ -399,7 +399,8 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
                                                                                                                   inputClauseColumn,
                                                                                                                   index,
                                                                                                                   uiModelMapper,
-                                                                                                                  this::resize));
+                                                                                                                  () -> resize(BaseExpressionGrid.RESIZE_EXISTING),
+                                                                                                                  () -> resize(BaseExpressionGrid.RESIZE_EXISTING_MINIMUM)));
 
             if (!CommandUtils.isError(result)) {
                 inputClauseColumn.startEditingHeaderCell(0);
@@ -414,7 +415,8 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
                                                                        model,
                                                                        index,
                                                                        uiModelMapper,
-                                                                       this::resize));
+                                                                       () -> resize(BaseExpressionGrid.RESIZE_EXISTING_MINIMUM),
+                                                                       () -> resize(BaseExpressionGrid.RESIZE_EXISTING)));
         });
     }
 
@@ -430,7 +432,8 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
                                                                                                                    outputClauseColumn,
                                                                                                                    index,
                                                                                                                    uiModelMapper,
-                                                                                                                   this::resize));
+                                                                                                                   () -> resize(BaseExpressionGrid.RESIZE_EXISTING),
+                                                                                                                   () -> resize(BaseExpressionGrid.RESIZE_EXISTING_MINIMUM)));
 
             if (!CommandUtils.isError(result)) {
                 outputClauseColumn.startEditingHeaderCell(1);
@@ -445,7 +448,8 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
                                                                         model,
                                                                         index,
                                                                         uiModelMapper,
-                                                                        this::resize));
+                                                                        () -> resize(BaseExpressionGrid.RESIZE_EXISTING_MINIMUM),
+                                                                        () -> resize(BaseExpressionGrid.RESIZE_EXISTING)));
         });
     }
 
@@ -458,7 +462,7 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
                                                                      new DMNGridRow(),
                                                                      index,
                                                                      uiModelMapper,
-                                                                     this::resize));
+                                                                     () -> resize(BaseExpressionGrid.RESIZE_EXISTING)));
         });
     }
 
@@ -468,7 +472,7 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
                                           new DeleteDecisionRuleCommand(dtable,
                                                                         model,
                                                                         index,
-                                                                        this::resize));
+                                                                        () -> resize(BaseExpressionGrid.RESIZE_EXISTING)));
         });
     }
 

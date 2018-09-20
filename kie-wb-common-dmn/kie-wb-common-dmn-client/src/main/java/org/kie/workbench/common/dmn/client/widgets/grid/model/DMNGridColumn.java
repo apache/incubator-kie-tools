@@ -65,8 +65,10 @@ public abstract class DMNGridColumn<G extends GridWidget, T> extends BaseGridCol
             final int parentColumnIndex = beg.getParentInformation().getColumnIndex();
             final GridData parentGridData = beg.getParentInformation().getGridWidget().getModel();
             if (parentGridData != null) {
-                final GridColumn<?> parentColumn = parentGridData.getColumns().get(parentColumnIndex);
-                parentColumn.setWidth(beg.getWidth() + beg.getPadding() * 2);
+                if (parentColumnIndex < parentGridData.getColumnCount()) {
+                    final GridColumn<?> parentColumn = parentGridData.getColumns().get(parentColumnIndex);
+                    parentColumn.setWidth(beg.getWidth() + beg.getPadding() * 2);
+                }
             }
         }
     }

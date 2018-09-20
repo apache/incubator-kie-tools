@@ -49,7 +49,8 @@ public class AddInputClauseCommand extends AbstractCanvasGraphCommand implements
     private final InputClauseColumn uiModelColumn;
     private final int uiColumnIndex;
     private final DecisionTableUIModelMapper uiModelMapper;
-    private final org.uberfire.mvp.Command canvasOperation;
+    private final org.uberfire.mvp.Command executeCanvasOperation;
+    private final org.uberfire.mvp.Command undoCanvasOperation;
     private final String name;
 
     public AddInputClauseCommand(final DecisionTable dtable,
@@ -58,14 +59,16 @@ public class AddInputClauseCommand extends AbstractCanvasGraphCommand implements
                                  final InputClauseColumn uiModelColumn,
                                  final int uiColumnIndex,
                                  final DecisionTableUIModelMapper uiModelMapper,
-                                 final org.uberfire.mvp.Command canvasOperation) {
+                                 final org.uberfire.mvp.Command executeCanvasOperation,
+                                 final org.uberfire.mvp.Command undoCanvasOperation) {
         this.dtable = dtable;
         this.inputClause = inputClause;
         this.uiModel = uiModel;
         this.uiModelColumn = uiModelColumn;
         this.uiColumnIndex = uiColumnIndex;
         this.uiModelMapper = uiModelMapper;
-        this.canvasOperation = canvasOperation;
+        this.executeCanvasOperation = executeCanvasOperation;
+        this.undoCanvasOperation = undoCanvasOperation;
         this.name = DecisionTableDefaultValueUtilities.getNewInputClauseName(dtable);
     }
 
@@ -123,7 +126,7 @@ public class AddInputClauseCommand extends AbstractCanvasGraphCommand implements
 
                 updateParentInformation();
 
-                canvasOperation.execute();
+                executeCanvasOperation.execute();
 
                 return CanvasCommandResultBuilder.SUCCESS;
             }
@@ -134,7 +137,7 @@ public class AddInputClauseCommand extends AbstractCanvasGraphCommand implements
 
                 updateParentInformation();
 
-                canvasOperation.execute();
+                undoCanvasOperation.execute();
 
                 return CanvasCommandResultBuilder.SUCCESS;
             }

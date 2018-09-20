@@ -47,7 +47,8 @@ public class SetKindCommand extends AbstractCanvasGraphCommand implements VetoEx
     private final FunctionDefinition function;
     private final FunctionDefinition.Kind kind;
     private final Optional<Expression> expression;
-    private final org.uberfire.mvp.Command canvasOperation;
+    private final org.uberfire.mvp.Command executeCanvasOperation;
+    private final org.uberfire.mvp.Command undoCanvasOperation;
 
     private final FunctionDefinition.Kind oldKind;
     private final Optional<Expression> oldExpression;
@@ -57,12 +58,14 @@ public class SetKindCommand extends AbstractCanvasGraphCommand implements VetoEx
                           final FunctionDefinition function,
                           final FunctionDefinition.Kind kind,
                           final Optional<Expression> expression,
-                          final org.uberfire.mvp.Command canvasOperation) {
+                          final org.uberfire.mvp.Command executeCanvasOperation,
+                          final org.uberfire.mvp.Command undoCanvasOperation) {
         this.cellTuple = cellTuple;
         this.function = function;
         this.kind = kind;
         this.expression = expression;
-        this.canvasOperation = canvasOperation;
+        this.executeCanvasOperation = executeCanvasOperation;
+        this.undoCanvasOperation = undoCanvasOperation;
 
         this.oldKind = KindUtilities.getKind(function);
         this.oldExpression = Optional.ofNullable(function.getExpression());
@@ -105,7 +108,7 @@ public class SetKindCommand extends AbstractCanvasGraphCommand implements VetoEx
                                       cellTuple.getColumnIndex(),
                                       cellTuple.getValue());
 
-                canvasOperation.execute();
+                executeCanvasOperation.execute();
 
                 return CanvasCommandResultBuilder.SUCCESS;
             }
@@ -121,7 +124,7 @@ public class SetKindCommand extends AbstractCanvasGraphCommand implements VetoEx
                                                                     cellTuple.getColumnIndex());
                 }
 
-                canvasOperation.execute();
+                undoCanvasOperation.execute();
 
                 return CanvasCommandResultBuilder.SUCCESS;
             }

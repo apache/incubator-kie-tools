@@ -23,7 +23,6 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.client.commands.VetoExecutionCommand;
 import org.kie.workbench.common.dmn.client.commands.VetoUndoCommand;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
-import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
@@ -49,9 +48,6 @@ public abstract class BaseClearExpressionCommandTest<C extends BaseClearExpressi
     protected static final int COLUMN_INDEX = 1;
 
     @Mock
-    protected DMNGridLayer gridLayer;
-
-    @Mock
     protected GridWidget gridWidget;
 
     @Mock
@@ -74,6 +70,12 @@ public abstract class BaseClearExpressionCommandTest<C extends BaseClearExpressi
 
     @Mock
     protected HasExpression hasExpression;
+
+    @Mock
+    protected org.uberfire.mvp.Command executeCanvasOperation;
+
+    @Mock
+    protected org.uberfire.mvp.Command undoCanvasOperation;
 
     protected E expression;
 
@@ -163,7 +165,7 @@ public abstract class BaseClearExpressionCommandTest<C extends BaseClearExpressi
         verify(uiModelMapper).fromDMNModel(eq(ROW_INDEX),
                                            eq(COLUMN_INDEX));
 
-        verify(gridLayer).batch();
+        verify(executeCanvasOperation).execute();
     }
 
     @Test
@@ -177,7 +179,7 @@ public abstract class BaseClearExpressionCommandTest<C extends BaseClearExpressi
                                       eq(COLUMN_INDEX),
                                       eq(gridCellValue));
 
-        verify(gridLayer).batch();
+        verify(undoCanvasOperation).execute();
     }
 
     @Test

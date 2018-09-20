@@ -26,10 +26,12 @@ public class ClearExpressionTypeCommand extends BaseClearExpressionCommand {
     public ClearExpressionTypeCommand(final GridCellTuple cellTuple,
                                       final HasExpression hasExpression,
                                       final ContextUIModelMapper uiModelMapper,
-                                      final org.uberfire.mvp.Command canvasOperation) {
+                                      final org.uberfire.mvp.Command executeCanvasOperation,
+                                      final org.uberfire.mvp.Command undoCanvasOperation) {
         super(cellTuple,
               hasExpression,
               uiModelMapper,
-              canvasOperation);
+              executeCanvasOperation,
+              undoCanvasOperation);
     }
 }

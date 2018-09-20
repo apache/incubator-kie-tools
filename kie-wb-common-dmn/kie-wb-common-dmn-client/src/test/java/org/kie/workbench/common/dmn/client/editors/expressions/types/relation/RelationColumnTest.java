@@ -42,6 +42,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class RelationColumnTest extends BaseDOMElementSingletonColumnTest<TextAreaSingletonDOMElementFactory, TextAreaDOMElement, TextArea, RelationColumn, RelationGrid> {
@@ -95,6 +96,7 @@ public class RelationColumnTest extends BaseDOMElementSingletonColumnTest<TextAr
         parentUiModel = new BaseGridData();
         parentUiModel.appendRow(new BaseGridRow());
         parentUiModel.appendRow(new BaseGridRow());
+        parentUiModel.appendRow(new BaseGridRow());
         parentUiModel.appendColumn(mock(ExpressionEditorColumn.class));
         final GridCellTuple parent = new GridCellTuple(0, 0, parentGridWidget);
 
@@ -112,47 +114,32 @@ public class RelationColumnTest extends BaseDOMElementSingletonColumnTest<TextAr
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testGetMinimumWidthWithPeerNarrowerThanThisGrid() {
         final double PEER_WIDTH = 50.0;
         final double RELATION_GRID_WIDTH = 100.0;
 
-        assertMinimumWidth(Optional.of(peerExpressionEditor),
-                           PEER_WIDTH,
+        assertMinimumWidth(PEER_WIDTH,
                            RELATION_GRID_WIDTH,
-                           DMNGridColumn.DEFAULT_WIDTH);
+                           DMNGridColumn.DEFAULT_WIDTH,
+                           Optional.of(peerExpressionEditor));
     }
 
     @Test
-    public void testGetMinimumWidthWithPeerWiderThanThisGrid() {
-        final double PEER_WIDTH = 150.0;
+    @SuppressWarnings("unchecked")
+    public void testGetMinimumWidthWithMultiplePeersNarrowerThanThisGrid() {
+        final double PEER_WIDTH = 50.0;
         final double RELATION_GRID_WIDTH = 100.0;
 
-        assertMinimumWidth(Optional.of(peerExpressionEditor),
-                           PEER_WIDTH,
+        final RelationColumn peerRelationColumn = getColumn();
+        final RelationGrid peerRelationEditor = mock(RelationGrid.class);
+        when(peerRelationEditor.getMinimumWidth()).thenAnswer(i -> peerRelationColumn.getMinimumWidth());
+
+        assertMinimumWidth(PEER_WIDTH,
                            RELATION_GRID_WIDTH,
-                           PEER_WIDTH);
-    }
-
-    @Test
-    public void testGetMinimumWidthWithPeerNarrowerThanThisGridThatIsWiderThanThisColumn() {
-        final double PEER_WIDTH = 200.0;
-        final double RELATION_GRID_WIDTH = 150.0;
-
-        assertMinimumWidth(Optional.of(peerExpressionEditor),
-                           PEER_WIDTH,
-                           RELATION_GRID_WIDTH,
-                           PEER_WIDTH - (RELATION_GRID_WIDTH - DMNGridColumn.DEFAULT_WIDTH));
-    }
-
-    @Test
-    public void testGetMinimumWidthWithPeerWiderThanThisGridThatIsWiderThanThisColumn() {
-        final double PEER_WIDTH = 150.0;
-        final double RELATION_GRID_WIDTH = 100.0;
-
-        assertMinimumWidth(Optional.of(peerExpressionEditor),
-                           PEER_WIDTH,
-                           RELATION_GRID_WIDTH,
-                           PEER_WIDTH);
+                           DMNGridColumn.DEFAULT_WIDTH,
+                           Optional.of(peerExpressionEditor),
+                           Optional.of(peerRelationEditor));
     }
 
     @Test
@@ -165,14 +152,17 @@ public class RelationColumnTest extends BaseDOMElementSingletonColumnTest<TextAr
         verify(mockHeaderMetaData).destroyResources();
     }
 
-    private void assertMinimumWidth(final Optional<BaseExpressionGrid> peer,
-                                    final double peerWidth,
-                                    final double relationGridWidth,
-                                    final double expectedMinimumWidth) {
+    @SafeVarargs
+    private final void assertMinimumWidth(final double peerWidth,
+                                          final double relationGridWidth,
+                                          final double expectedMinimumWidth,
+                                          final Optional<BaseExpressionGrid>... peers) {
         doReturn(peerWidth).when(peerExpressionEditor).getMinimumWidth();
         doReturn(relationGridWidth).when(gridWidget).getWidth();
 
-        parentUiModel.setCellValue(1, 0, new ExpressionCellValue(peer));
+        for (int i = 0; i < peers.length; i++) {
+            parentUiModel.setCellValue(i + 1, 0, new ExpressionCellValue(peers[i]));
+        }
 
         assertEquals(expectedMinimumWidth,
                      column.getMinimumWidth(),

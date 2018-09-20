@@ -62,6 +62,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
@@ -98,6 +99,7 @@ import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -188,6 +190,9 @@ public class FunctionGridTest {
     private EventSourceMock<RefreshFormProperties> refreshFormPropertiesEvent;
 
     @Mock
+    private LiteralExpressionGrid literalExpressionEditor;
+
+    @Mock
     private ExpressionEditorDefinition supplementaryLiteralExpressionEditorDefinition;
 
     @Mock
@@ -221,7 +226,7 @@ public class FunctionGridTest {
     private ArgumentCaptor<Optional<BaseExpressionGrid>> gridWidgetCaptor;
 
     @Captor
-    private ArgumentCaptor<GridLayerRedrawManager.PrioritizedCommand> redrawCaptor;
+    private ArgumentCaptor<GridLayerRedrawManager.PrioritizedCommand> redrawCommandCaptor;
 
     @Captor
     private ArgumentCaptor<GridCellTuple> parentCaptor;
@@ -305,6 +310,9 @@ public class FunctionGridTest {
                                                                                                                                    any(Optional.class),
                                                                                                                                    any(Optional.class),
                                                                                                                                    anyInt());
+        when(supplementaryLiteralExpressionEditor.getLayer()).thenReturn(gridLayer);
+        when(supplementaryLiteralExpressionEditor.getModel()).thenReturn(new BaseGridData(false));
+        doCallRealMethod().when(supplementaryLiteralExpressionEditor).selectFirstCell();
 
         doReturn(canvasHandler).when(session).getCanvasHandler();
 
@@ -317,8 +325,6 @@ public class FunctionGridTest {
                                                       anyString(),
                                                       any())).thenReturn(mock(UpdateElementPropertyCommand.class));
 
-        when(parent.getGridWidget()).thenReturn(mock(GridWidget.class));
-
         doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).format(anyString());
     }
 
@@ -329,6 +335,10 @@ public class FunctionGridTest {
                                                             expression,
                                                             hasName,
                                                             nesting).get());
+
+        when(parent.getGridWidget()).thenReturn(gridWidget);
+        when(parent.getRowIndex()).thenReturn(0);
+        when(parent.getColumnIndex()).thenReturn(0);
     }
 
     @Test
@@ -563,10 +573,22 @@ public class FunctionGridTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testSetKindFEEL() {
         setupGrid(0);
 
         reset(literalExpressionEditorDefinition);
+
+        doReturn(Optional.of(literalExpressionEditor)).when(literalExpressionEditorDefinition).getEditor(any(GridCellTuple.class),
+                                                                                                         any(Optional.class),
+                                                                                                         any(HasExpression.class),
+                                                                                                         any(Optional.class),
+                                                                                                         any(Optional.class),
+                                                                                                         anyInt());
+        when(literalExpressionEditor.getLayer()).thenReturn(gridLayer);
+        when(literalExpressionEditor.getParentInformation()).thenReturn(parent);
+        when(literalExpressionEditor.getModel()).thenReturn(new BaseGridData(false));
+        doCallRealMethod().when(literalExpressionEditor).selectFirstCell();
 
         grid.setKind(FunctionDefinition.Kind.FEEL);
 
@@ -582,6 +604,7 @@ public class FunctionGridTest {
         assertTrue(literalExpression.isPresent());
 
         assertSetKind(literalExpressionEditorDefinition,
+                      literalExpressionEditor,
                       FunctionDefinition.Kind.FEEL,
                       LiteralExpression.class,
                       LiteralExpressionGrid.class);
@@ -608,6 +631,7 @@ public class FunctionGridTest {
         assertEquals(supplementaryLiteralExpression, contextExpression.get());
 
         assertSetKind(supplementaryLiteralExpressionEditorDefinition,
+                      supplementaryLiteralExpressionEditor,
                       FunctionDefinition.Kind.JAVA,
                       Context.class,
                       FunctionSupplementaryGrid.class);
@@ -634,6 +658,7 @@ public class FunctionGridTest {
         assertEquals(supplementaryLiteralExpression, contextExpression.get());
 
         assertSetKind(supplementaryLiteralExpressionEditorDefinition,
+                      supplementaryLiteralExpressionEditor,
                       FunctionDefinition.Kind.PMML,
                       Context.class,
                       FunctionSupplementaryGrid.class);
@@ -641,6 +666,7 @@ public class FunctionGridTest {
 
     @SuppressWarnings("unchecked")
     private void assertSetKind(final ExpressionEditorDefinition definition,
+                               final BaseExpressionGrid editor,
                                final FunctionDefinition.Kind expectedKind,
                                final Class<?> expectedExpressionType,
                                final Class<?> expectedEditorType) {
@@ -649,8 +675,10 @@ public class FunctionGridTest {
                                expressionCaptor.capture(),
                                gridWidgetCaptor.capture());
         verify(definition).enrich(any(Optional.class), any(Optional.class));
-        assertTrue(expectedExpressionType.isAssignableFrom(expressionCaptor.getValue().get().getClass()));
-        assertTrue(expectedEditorType.isAssignableFrom(gridWidgetCaptor.getValue().get().getClass()));
+        final Expression expression = expressionCaptor.getValue().get();
+        final BaseExpressionGrid gridWidget = gridWidgetCaptor.getValue().get();
+        assertThat(expectedExpressionType).isAssignableFrom(expression.getClass());
+        assertThat(expectedEditorType).isAssignableFrom(gridWidget.getClass());
 
         verify(sessionCommandManager).execute(eq(canvasHandler),
                                               setKindCommandCaptor.capture());
@@ -658,12 +686,29 @@ public class FunctionGridTest {
         final SetKindCommand setKindCommand = setKindCommandCaptor.getValue();
         setKindCommand.execute(canvasHandler);
 
-        verify(grid).resizeBasedOnCellExpressionEditor(eq(0), eq(0));
+        verify(grid).resize(eq(BaseExpressionGrid.RESIZE_EXISTING_MINIMUM));
+        verify(editor).selectFirstCell();
+
+        verify(gridLayer).batch(redrawCommandCaptor.capture());
+        redrawCommandCaptor.getValue().execute();
+        verify(gridLayer).draw();
 
         final GridCellTuple parent = parentCaptor.getValue();
         assertEquals(grid, parent.getGridWidget());
         assertEquals(0, parent.getRowIndex());
         assertEquals(0, parent.getColumnIndex());
+
+        //Check undo operation
+        reset(grid, gridLayer);
+        setKindCommand.undo(canvasHandler);
+
+        verify(grid).resize(BaseExpressionGrid.RESIZE_EXISTING_MINIMUM);
+        verify(grid).selectFirstCell();
+
+        verify(gridLayer).batch(redrawCommandCaptor.capture());
+        assertThat(redrawCommandCaptor.getAllValues()).hasSize(2);
+        redrawCommandCaptor.getAllValues().get(1).execute();
+        verify(gridLayer).draw();
     }
 
     @Test
@@ -678,8 +723,30 @@ public class FunctionGridTest {
         final ClearExpressionTypeCommand clearExpressionTypeCommand = clearExpressionTypeCommandCaptor.getValue();
         clearExpressionTypeCommand.execute(canvasHandler);
 
-        verify(grid).resizeBasedOnCellExpressionEditor(eq(0),
-                                                       eq(0));
+        verify(grid).resize(BaseExpressionGrid.RESIZE_EXISTING_MINIMUM);
+        verify(gridLayer).select(gridWidget);
+        verify(gridWidget).selectCell(eq(0),
+                                      eq(0),
+                                      eq(false),
+                                      eq(false));
+        verify(gridLayer).batch(redrawCommandCaptor.capture());
+        redrawCommandCaptor.getValue().execute();
+        verify(gridLayer).draw();
+
+        //Check undo operation
+        reset(grid, gridLayer);
+        clearExpressionTypeCommand.undo(canvasHandler);
+
+        //Verify Expression has been restored and UndefinedExpressionEditor resized
+        assertThat(grid.getModel().getColumns().get(0).getWidth()).isEqualTo(DMNGridColumn.DEFAULT_WIDTH);
+        verify(grid).resize(BaseExpressionGrid.RESIZE_EXISTING_MINIMUM);
+        verify(gridLayer).select(grid);
+        verify(grid).selectFirstCell();
+
+        verify(gridLayer).batch(redrawCommandCaptor.capture());
+        assertThat(redrawCommandCaptor.getAllValues()).hasSize(2);
+        redrawCommandCaptor.getAllValues().get(1).execute();
+        verify(gridLayer).draw();
     }
 
     @Test
@@ -691,19 +758,18 @@ public class FunctionGridTest {
 
         grid.getModel().getColumns().get(0).setWidth(literalWidth);
 
-        grid.resizeWhenExpressionEditorChanged();
+        grid.resize(BaseExpressionGrid.RESIZE_EXISTING);
 
         verify(parent).onResize();
-        verify(parent).proposeContainingColumnWidth(columnWidth);
+        verify(parent).proposeContainingColumnWidth(eq(columnWidth), eq(BaseExpressionGrid.RESIZE_EXISTING));
         verify(gridPanel).refreshScrollPosition();
         verify(gridPanel).updatePanelSize();
-        verify(gridLayer).batch(redrawCaptor.capture());
+        verify(gridLayer).batch(redrawCommandCaptor.capture());
 
-        final GridLayerRedrawManager.PrioritizedCommand command = redrawCaptor.getValue();
+        final GridLayerRedrawManager.PrioritizedCommand command = redrawCommandCaptor.getValue();
         command.execute();
 
         verify(gridLayer).draw();
-        verify(gridLayer).select(eq(grid));
     }
 
     @Test

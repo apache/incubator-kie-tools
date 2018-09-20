@@ -45,7 +45,8 @@ public abstract class BaseClearExpressionCommand extends AbstractCanvasGraphComm
     protected final GridCellTuple cellTuple;
     protected final HasExpression hasExpression;
     protected final UIModelMapper uiModelMapper;
-    protected final org.uberfire.mvp.Command canvasOperation;
+    protected final org.uberfire.mvp.Command executeCanvasOperation;
+    protected final org.uberfire.mvp.Command undoCanvasOperation;
 
     protected final Expression oldExpression;
     protected final Optional<GridCellValue<?>> oldCellValue;
@@ -53,11 +54,13 @@ public abstract class BaseClearExpressionCommand extends AbstractCanvasGraphComm
     public BaseClearExpressionCommand(final GridCellTuple cellTuple,
                                       final HasExpression hasExpression,
                                       final UIModelMapper uiModelMapper,
-                                      final org.uberfire.mvp.Command canvasOperation) {
+                                      final org.uberfire.mvp.Command executeCanvasOperation,
+                                      final org.uberfire.mvp.Command undoCanvasOperation) {
         this.cellTuple = cellTuple;
         this.hasExpression = hasExpression;
         this.uiModelMapper = uiModelMapper;
-        this.canvasOperation = canvasOperation;
+        this.executeCanvasOperation = executeCanvasOperation;
+        this.undoCanvasOperation = undoCanvasOperation;
 
         this.oldExpression = hasExpression.getExpression();
         this.oldCellValue = extractGridCellValue(cellTuple);
@@ -96,7 +99,7 @@ public abstract class BaseClearExpressionCommand extends AbstractCanvasGraphComm
                 uiModelMapper.fromDMNModel(cellTuple.getRowIndex(),
                                            cellTuple.getColumnIndex());
 
-                canvasOperation.execute();
+                executeCanvasOperation.execute();
 
                 return CanvasCommandResultBuilder.SUCCESS;
             }
@@ -108,7 +111,7 @@ public abstract class BaseClearExpressionCommand extends AbstractCanvasGraphComm
                                                                                               cellTuple.getColumnIndex(),
                                                                                               v));
 
-                canvasOperation.execute();
+                undoCanvasOperation.execute();
 
                 return CanvasCommandResultBuilder.SUCCESS;
             }

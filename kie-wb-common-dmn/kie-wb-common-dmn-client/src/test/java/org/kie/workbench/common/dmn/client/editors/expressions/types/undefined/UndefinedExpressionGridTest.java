@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.undefined;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import com.ait.lienzo.client.core.event.NodeMouseClickEvent;
@@ -37,7 +38,6 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionE
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ContextGrid;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.literal.LiteralExpressionCell;
 import org.kie.workbench.common.dmn.client.session.DMNEditorSession;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
@@ -63,7 +63,6 @@ import org.kie.workbench.common.stunner.forms.client.event.RefreshFormProperties
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCell;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
@@ -79,6 +78,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -91,6 +91,10 @@ import static org.mockito.Mockito.when;
 public class UndefinedExpressionGridTest {
 
     private static final String NODE_UUID = "uuid";
+
+    private static final int PARENT_ROW_INDEX = 0;
+
+    private static final int PARENT_COLUMN_INDEX = 1;
 
     @Mock
     private DMNGridPanel gridPanel;
@@ -210,6 +214,9 @@ public class UndefinedExpressionGridTest {
         doReturn(expressionEditorDefinitions).when(expressionEditorDefinitionsSupplier).get();
         doReturn(ExpressionType.LITERAL_EXPRESSION).when(literalExpressionEditorDefinition).getType();
         doReturn(LiteralExpression.class.getSimpleName()).when(literalExpressionEditorDefinition).getName();
+        doCallRealMethod().when(literalExpressionEditor).selectFirstCell();
+        doReturn(gridLayer).when(literalExpressionEditor).getLayer();
+        doReturn(mock(GridData.class)).when(literalExpressionEditor).getModel();
         doReturn(Optional.of(literalExpression)).when(literalExpressionEditorDefinition).getModelClass();
         doReturn(Optional.of(literalExpressionEditor)).when(literalExpressionEditorDefinition).getEditor(any(GridCellTuple.class),
                                                                                                          any(Optional.class),
@@ -221,9 +228,13 @@ public class UndefinedExpressionGridTest {
         doReturn(handler).when(session).getCanvasHandler();
 
         when(parentGridWidget.getModel()).thenReturn(parentGridUiModel);
+        setupParent();
+    }
+
+    private void setupParent() {
         when(parent.getGridWidget()).thenReturn(parentGridWidget);
-        when(parent.getRowIndex()).thenReturn(0);
-        when(parent.getColumnIndex()).thenReturn(1);
+        when(parent.getRowIndex()).thenReturn(PARENT_ROW_INDEX);
+        when(parent.getColumnIndex()).thenReturn(PARENT_COLUMN_INDEX);
     }
 
     private void setupGrid(final int nesting) {
@@ -254,6 +265,7 @@ public class UndefinedExpressionGridTest {
 
         verify(parentGridUiModel).clearSelections();
         verify(parentGridUiModel).selectCell(eq(0), eq(1));
+        verify(gridLayer).select(parentGridWidget);
     }
 
     @Test
@@ -261,17 +273,9 @@ public class UndefinedExpressionGridTest {
     public void testResizeBasedOnCellExpressionEditor() {
         setupGrid(0);
 
-        final GridCell parentCell = mock(GridCell.class);
-        final ExpressionCellValue parentValue = mock(ExpressionCellValue.class);
-        final BaseExpressionGrid parentGrid = mock(BaseExpressionGrid.class);
+        grid.resize(BaseExpressionGrid.RESIZE_EXISTING);
 
-        when(parentGridUiModel.getCell(0, 1)).thenReturn(parentCell);
-        when(parentCell.getValue()).thenReturn(parentValue);
-        when(parentValue.getValue()).thenReturn(Optional.of(parentGrid));
-
-        grid.resizeBasedOnCellExpressionEditor(0, 1);
-
-        verify(parentGrid).resizeWhenExpressionEditorChanged();
+        assertResize(BaseExpressionGrid.RESIZE_EXISTING);
     }
 
     @Test
@@ -453,16 +457,22 @@ public class UndefinedExpressionGridTest {
         verify(expressionGridCache).getExpressionGrid(eq(NODE_UUID));
     }
 
+    private void assertResize(final Function<BaseExpressionGrid, Double> expectedResizer) {
+        verify(parent).proposeContainingColumnWidth(eq(grid.getWidth()), eq(expectedResizer));
+        verify(gridPanel).refreshScrollPosition();
+        verify(gridPanel).updatePanelSize();
+        verify(parent).onResize();
+
+        verify(gridLayer).batch(redrawCommandArgumentCaptor.capture());
+
+        redrawCommandArgumentCaptor.getValue().execute();
+
+        verify(gridLayer).draw();
+    }
+
     @SuppressWarnings("unchecked")
     private void assertOnExpressionTypeChanged(final int nesting) {
         setupGrid(nesting);
-
-        final GridCell parentCell = mock(GridCell.class);
-        final ExpressionCellValue parentCellValue = mock(ExpressionCellValue.class);
-        final BaseExpressionGrid parentGridEditor = mock(BaseExpressionGrid.class);
-        when(parentGridUiModel.getCell(anyInt(), anyInt())).thenReturn(parentCell);
-        when(parentCell.getValue()).thenReturn(parentCellValue);
-        when(parentCellValue.getValue()).thenReturn(Optional.of(parentGridEditor));
 
         grid.onExpressionTypeChanged(ExpressionType.LITERAL_EXPRESSION);
 
@@ -479,6 +489,20 @@ public class UndefinedExpressionGridTest {
         final SetCellValueCommand setCellValueCommand = setCellValueCommandArgumentCaptor.getValue();
         setCellValueCommand.execute(handler);
 
-        verify(parentGridEditor).resizeWhenExpressionEditorChanged();
+        assertResize(BaseExpressionGrid.RESIZE_EXISTING);
+        verify(gridLayer).select(eq(literalExpressionEditor));
+        verify(literalExpressionEditor).selectFirstCell();
+
+        reset(gridPanel, gridLayer, parent);
+        setupParent();
+
+        setCellValueCommand.undo(handler);
+
+        assertResize(BaseExpressionGrid.RESIZE_EXISTING_MINIMUM);
+        verify(gridLayer).select(parentGridWidget);
+        verify(parentGridWidget).selectCell(eq(PARENT_ROW_INDEX),
+                                            eq(PARENT_COLUMN_INDEX),
+                                            eq(false),
+                                            eq(false));
     }
 }

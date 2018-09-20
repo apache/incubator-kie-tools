@@ -63,7 +63,7 @@ public class GridCellTupleTest {
     public void testProposeContainingColumnWidthWhenLargerThanExisting() {
         when(gridColumn.getWidth()).thenReturn(100.0);
 
-        tuple.proposeContainingColumnWidth(200.0);
+        tuple.proposeContainingColumnWidth(200.0, BaseExpressionGrid.RESIZE_EXISTING);
 
         verify(gridColumn).setWidth(200.0);
     }
@@ -72,7 +72,7 @@ public class GridCellTupleTest {
     public void testProposeContainingColumnWidthWhenSmallerThanExisting() {
         when(gridColumn.getWidth()).thenReturn(100.0);
 
-        tuple.proposeContainingColumnWidth(50.0);
+        tuple.proposeContainingColumnWidth(50.0, BaseExpressionGrid.RESIZE_EXISTING);
 
         verify(gridColumn).setWidth(50.0);
     }
@@ -84,9 +84,9 @@ public class GridCellTupleTest {
         when(existingEditor.getMinimumWidth()).thenReturn(200.0);
         when(gridColumn.getWidth()).thenReturn(100.0);
 
-        tuple.proposeContainingColumnWidth(50.0);
+        tuple.proposeContainingColumnWidth(50.0, BaseExpressionGrid.RESIZE_EXISTING_MINIMUM);
 
-        verify(gridColumn).setWidth(200.0);
+        verify(gridColumn).setWidth(220.0);
     }
 
     @Test
@@ -96,7 +96,7 @@ public class GridCellTupleTest {
         when(existingEditor.getMinimumWidth()).thenReturn(200.0);
         when(gridColumn.getWidth()).thenReturn(100.0);
 
-        tuple.proposeContainingColumnWidth(300.0);
+        tuple.proposeContainingColumnWidth(300.0, BaseExpressionGrid.RESIZE_EXISTING);
 
         verify(gridColumn).setWidth(300.0);
     }

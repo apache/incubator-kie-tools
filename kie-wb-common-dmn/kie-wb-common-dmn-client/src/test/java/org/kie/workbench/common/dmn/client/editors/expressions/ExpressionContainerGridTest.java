@@ -78,6 +78,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -218,6 +219,10 @@ public class ExpressionContainerGridTest {
         doReturn(graphExecutionContext).when(canvasHandler).getGraphExecutionContext();
         doReturn(mock(Bounds.class)).when(gridLayer).getVisibleBounds();
 
+        doReturn(grid).when(parent).getGridWidget();
+        doReturn(0).when(parent).getRowIndex();
+        doReturn(0).when(parent).getColumnIndex();
+
         doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).format(anyString());
     }
 
@@ -289,7 +294,7 @@ public class ExpressionContainerGridTest {
         grid.setExpression(NODE_UUID,
                            hasExpression,
                            Optional.of(hasName));
-        grid.getModel().getColumns().get(0).setWidth(COLUMN_NEW_WIDTH);
+        when(literalExpressionEditor.getWidth()).thenReturn(COLUMN_NEW_WIDTH);
 
         //Emulate re-opening editor
         grid.setExpression(NODE_UUID,
@@ -348,16 +353,16 @@ public class ExpressionContainerGridTest {
     @Test
     public void testOnClearExpressionItemSelected() {
         //Emulate User setting expression and resizing column
+        when(literalExpressionEditor.getWidth()).thenReturn(COLUMN_NEW_WIDTH);
         when(hasExpression.getExpression()).thenReturn(literalExpression);
         when(hasExpression.isClearSupported()).thenReturn(true);
 
         grid.setExpression(NODE_UUID,
                            hasExpression,
                            Optional.of(hasName));
+        verify(gridLayer).select(literalExpressionEditor);
         verify(literalExpressionEditor).selectFirstCell();
         verify(gridLayer).batch();
-
-        grid.getModel().getColumns().get(0).setWidth(COLUMN_NEW_WIDTH);
 
         //Get and select ClearExpression item
         final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
@@ -366,6 +371,7 @@ public class ExpressionContainerGridTest {
 
         ti.getCommand().execute();
 
+        assertThat(grid.getModel().getColumns().get(0).getWidth()).isEqualTo(COLUMN_NEW_WIDTH);
         verify(sessionCommandManager).execute(eq(canvasHandler),
                                               clearExpressionTypeCommandCaptor.capture());
 
@@ -375,10 +381,20 @@ public class ExpressionContainerGridTest {
 
         clearExpressionTypeCommand.execute(canvasHandler);
 
-        //Verify Expression has been cleared and UndefinedExpressionEditor
+        //Verify Expression has been cleared and UndefinedExpressionEditor resized
         assertThat(grid.getModel().getColumns().get(0).getWidth()).isEqualTo(DMNGridColumn.DEFAULT_WIDTH);
+        verify(gridLayer).select(undefinedExpressionEditor);
         verify(undefinedExpressionEditor).selectFirstCell();
         verify(gridLayer).batch();
+
+        //Check undo operation
+        clearExpressionTypeCommand.undo(canvasHandler);
+
+        //Verify Expression has been restored and UndefinedExpressionEditor resized
+        assertThat(grid.getModel().getColumns().get(0).getWidth()).isEqualTo(COLUMN_NEW_WIDTH);
+        verify(gridLayer).select(literalExpressionEditor);
+        verify(literalExpressionEditor, times(2)).selectFirstCell();
+        verify(gridLayer, times(2)).batch();
     }
 
     @Test

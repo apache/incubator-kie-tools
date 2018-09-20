@@ -258,6 +258,7 @@ public class LiteralExpressionGridTest {
 
         verify(parentGridUiModel).clearSelections();
         verify(parentGridUiModel).selectCell(eq(0), eq(1));
+        verify(gridLayer).select(parentGridWidget);
     }
 
     @Test

@@ -97,6 +97,12 @@ public class SetCellValueCommandTest {
     @Mock
     private BaseUIModelMapper<?> uiModelMapper;
 
+    @Mock
+    private org.uberfire.mvp.Command executeCanvasOperation;
+
+    @Mock
+    private org.uberfire.mvp.Command undoCanvasOperation;
+
     @Captor
     private ArgumentCaptor<Supplier<Optional<GridCellValue<?>>>> gridCellValueSupplierCaptor;
 
@@ -122,8 +128,6 @@ public class SetCellValueCommandTest {
         when(newGridCellValue.getValue()).thenReturn(NEW_CELL_VALUE);
         when(gridWidget.getModel()).thenReturn(gridModel);
 
-//        when(expressionGridCache.getExpressionGrid(eq(UUID))).thenReturn(Optional.empty());
-
         this.command = new SetCellValueCommand(new GridCellValueTuple(ROW_INDEX,
                                                                       COLUMN_INDEX,
                                                                       gridWidget,
@@ -131,7 +135,8 @@ public class SetCellValueCommandTest {
                                                uuid,
                                                () -> uiModelMapper,
                                                expressionGridCache,
-                                               gridLayer::batch);
+                                               executeCanvasOperation,
+                                               undoCanvasOperation);
     }
 
     @Test
@@ -220,7 +225,8 @@ public class SetCellValueCommandTest {
 
         verify(expressionGridCache).putExpressionGrid(eq(UUID), eq(NEW_CELL_VALUE));
 
-        assertCanvasMutation(newGridCellValue);
+        assertCanvasMutation(newGridCellValue,
+                             executeCanvasOperation);
     }
 
     @Test
@@ -235,7 +241,8 @@ public class SetCellValueCommandTest {
 
         verify(expressionGridCache, never()).putExpressionGrid(anyString(), any(Optional.class));
 
-        assertCanvasMutation(newGridCellValue);
+        assertCanvasMutation(newGridCellValue,
+                             executeCanvasOperation);
     }
 
     @Test
@@ -249,7 +256,8 @@ public class SetCellValueCommandTest {
 
         verify(expressionGridCache).removeExpressionGrid(eq(UUID));
 
-        assertCanvasMutation(oldGridCellValue);
+        assertCanvasMutation(oldGridCellValue,
+                             undoCanvasOperation);
     }
 
     @Test
@@ -263,7 +271,8 @@ public class SetCellValueCommandTest {
 
         verify(expressionGridCache, never()).removeExpressionGrid(anyString());
 
-        assertCanvasMutation(oldGridCellValue);
+        assertCanvasMutation(oldGridCellValue,
+                             undoCanvasOperation);
     }
 
     @Test
@@ -276,16 +285,17 @@ public class SetCellValueCommandTest {
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      command.getCanvasCommand(canvasHandler).execute(canvasHandler));
 
-        assertCanvasMutation(newGridCellValue);
+        assertCanvasMutation(newGridCellValue,
+                             executeCanvasOperation);
 
-        reset(gridModel, gridLayer);
+        reset(gridModel);
 
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      command.getCanvasCommand(canvasHandler).undo(canvasHandler));
 
         verify(gridModel).deleteCell(eq(ROW_INDEX),
                                      eq(COLUMN_INDEX));
-        verify(gridLayer).batch();
+        verify(undoCanvasOperation).execute();
     }
 
     @Test
@@ -298,19 +308,21 @@ public class SetCellValueCommandTest {
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      command.getCanvasCommand(canvasHandler).execute(canvasHandler));
 
-        assertCanvasMutation(newGridCellValue);
+        assertCanvasMutation(newGridCellValue,
+                             executeCanvasOperation);
 
-        reset(gridModel, gridLayer);
+        reset(gridModel);
 
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      command.getCanvasCommand(canvasHandler).undo(canvasHandler));
 
         verify(gridModel).deleteCell(eq(ROW_INDEX),
                                      eq(COLUMN_INDEX));
-        verify(gridLayer).batch();
+        verify(undoCanvasOperation).execute();
     }
 
-    private void assertCanvasMutation(final GridCellValue gridCellValue) {
+    private void assertCanvasMutation(final GridCellValue gridCellValue,
+                                      final org.uberfire.mvp.Command expectedCommand) {
         verify(gridModel).setCellValue(eq(ROW_INDEX),
                                        eq(COLUMN_INDEX),
                                        expressionCellValueCaptor.capture());
@@ -318,7 +330,7 @@ public class SetCellValueCommandTest {
         assertEquals(gridCellValue,
                      expressionCellValueCaptor.getValue());
 
-        verify(gridLayer).batch();
+        verify(expectedCommand).execute();
     }
 
     @Test

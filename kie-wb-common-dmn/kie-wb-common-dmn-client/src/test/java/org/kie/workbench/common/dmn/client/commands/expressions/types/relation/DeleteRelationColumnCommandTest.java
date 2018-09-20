@@ -65,7 +65,10 @@ public class DeleteRelationColumnCommandTest {
     private ListSelectorView.Presenter listSelector;
 
     @Mock
-    private org.uberfire.mvp.Command canvasOperation;
+    private org.uberfire.mvp.Command executeCanvasOperation;
+
+    @Mock
+    private org.uberfire.mvp.Command undoCanvasOperation;
 
     @Mock
     private AbstractCanvasHandler handler;
@@ -109,7 +112,8 @@ public class DeleteRelationColumnCommandTest {
                                                            uiModel,
                                                            uiColumnIndex,
                                                            uiModelMapper,
-                                                           canvasOperation));
+                                                           executeCanvasOperation,
+                                                           undoCanvasOperation));
     }
 
     private void makeCommand() {
@@ -270,7 +274,7 @@ public class DeleteRelationColumnCommandTest {
 
         verify(command).updateParentInformation();
 
-        verify(canvasOperation).execute();
+        verify(executeCanvasOperation).execute();
     }
 
     @Test
@@ -290,7 +294,7 @@ public class DeleteRelationColumnCommandTest {
 
         verify(command).updateParentInformation();
 
-        verify(canvasOperation).execute();
+        verify(executeCanvasOperation).execute();
     }
 
     @Test
@@ -310,7 +314,7 @@ public class DeleteRelationColumnCommandTest {
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      cc.execute(handler));
 
-        reset(command, canvasOperation);
+        reset(command);
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      cc.undo(handler));
 
@@ -328,9 +332,8 @@ public class DeleteRelationColumnCommandTest {
                      uiModel.getCell(0, 1).getValue().getValue());
 
         verify(command).updateParentInformation();
-        verify(command).restoreColumnWidths();
 
-        verify(canvasOperation).execute();
+        verify(undoCanvasOperation).execute();
     }
 
     @Test
@@ -343,7 +346,7 @@ public class DeleteRelationColumnCommandTest {
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      cc.execute(handler));
 
-        reset(command, canvasOperation);
+        reset(command);
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      cc.undo(handler));
 
@@ -357,8 +360,7 @@ public class DeleteRelationColumnCommandTest {
                      uiModel.getRowCount());
 
         verify(command).updateParentInformation();
-        verify(command).restoreColumnWidths();
 
-        verify(canvasOperation).execute();
+        verify(undoCanvasOperation).execute();
     }
 }

@@ -49,28 +49,29 @@ public class DeleteRelationColumnCommand extends AbstractCanvasGraphCommand impl
     private final GridData uiModel;
     private final int uiColumnIndex;
     private final RelationUIModelMapper uiModelMapper;
-    private final org.uberfire.mvp.Command canvasOperation;
+    private final org.uberfire.mvp.Command executeCanvasOperation;
+    private final org.uberfire.mvp.Command undoCanvasOperation;
 
     private final InformationItem oldInformationItem;
     private final List<Expression> oldColumnData;
     private final GridColumn<?> oldUiModelColumn;
-    private final List<Double> oldColumnWidths;
 
     public DeleteRelationColumnCommand(final Relation relation,
                                        final GridData uiModel,
                                        final int uiColumnIndex,
                                        final RelationUIModelMapper uiModelMapper,
-                                       final org.uberfire.mvp.Command canvasOperation) {
+                                       final org.uberfire.mvp.Command executeCanvasOperation,
+                                       final org.uberfire.mvp.Command undoCanvasOperation) {
         this.relation = relation;
         this.uiModel = uiModel;
         this.uiColumnIndex = uiColumnIndex;
         this.uiModelMapper = uiModelMapper;
-        this.canvasOperation = canvasOperation;
+        this.executeCanvasOperation = executeCanvasOperation;
+        this.undoCanvasOperation = undoCanvasOperation;
 
         this.oldInformationItem = relation.getColumn().get(uiColumnIndex - RelationUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT);
         this.oldColumnData = extractColumnData(uiColumnIndex);
         this.oldUiModelColumn = uiModel.getColumns().get(uiColumnIndex);
-        this.oldColumnWidths = CommandUtils.extractColumnWidths(uiModel);
     }
 
     private List<Expression> extractColumnData(final int uiColumnIndex) {
@@ -125,7 +126,7 @@ public class DeleteRelationColumnCommand extends AbstractCanvasGraphCommand impl
 
                 updateParentInformation();
 
-                canvasOperation.execute();
+                executeCanvasOperation.execute();
 
                 return CanvasCommandResultBuilder.SUCCESS;
             }
@@ -141,9 +142,8 @@ public class DeleteRelationColumnCommand extends AbstractCanvasGraphCommand impl
                 }
 
                 updateParentInformation();
-                restoreColumnWidths();
 
-                canvasOperation.execute();
+                undoCanvasOperation.execute();
 
                 return CanvasCommandResultBuilder.SUCCESS;
             }
@@ -152,9 +152,5 @@ public class DeleteRelationColumnCommand extends AbstractCanvasGraphCommand impl
 
     public void updateParentInformation() {
         CommandUtils.updateParentInformation(uiModel);
-    }
-
-    public void restoreColumnWidths() {
-        CommandUtils.restoreColumnWidths(uiModel, oldColumnWidths);
     }
 }

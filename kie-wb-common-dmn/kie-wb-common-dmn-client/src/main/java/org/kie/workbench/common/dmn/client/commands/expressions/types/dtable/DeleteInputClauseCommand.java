@@ -49,28 +49,29 @@ public class DeleteInputClauseCommand extends AbstractCanvasGraphCommand impleme
     private final GridData uiModel;
     private final int uiColumnIndex;
     private final DecisionTableUIModelMapper uiModelMapper;
-    private final org.uberfire.mvp.Command canvasOperation;
+    private final org.uberfire.mvp.Command executeCanvasOperation;
+    private final org.uberfire.mvp.Command undoCanvasOperation;
 
     private final InputClause oldInputClause;
     private final List<UnaryTests> oldColumnData;
     private final GridColumn<?> oldUiModelColumn;
-    private final List<Double> oldColumnWidths;
 
     public DeleteInputClauseCommand(final DecisionTable dtable,
                                     final GridData uiModel,
                                     final int uiColumnIndex,
                                     final DecisionTableUIModelMapper uiModelMapper,
-                                    final org.uberfire.mvp.Command canvasOperation) {
+                                    final org.uberfire.mvp.Command executeCanvasOperation,
+                                    final org.uberfire.mvp.Command undoCanvasOperation) {
         this.dtable = dtable;
         this.uiModel = uiModel;
         this.uiColumnIndex = uiColumnIndex;
         this.uiModelMapper = uiModelMapper;
-        this.canvasOperation = canvasOperation;
+        this.executeCanvasOperation = executeCanvasOperation;
+        this.undoCanvasOperation = undoCanvasOperation;
 
         this.oldInputClause = dtable.getInput().get(uiColumnIndex - DecisionTableUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT);
         this.oldColumnData = extractColumnData();
         this.oldUiModelColumn = uiModel.getColumns().get(uiColumnIndex);
-        this.oldColumnWidths = CommandUtils.extractColumnWidths(uiModel);
     }
 
     private List<UnaryTests> extractColumnData() {
@@ -129,7 +130,7 @@ public class DeleteInputClauseCommand extends AbstractCanvasGraphCommand impleme
 
                 updateParentInformation();
 
-                canvasOperation.execute();
+                executeCanvasOperation.execute();
 
                 return CanvasCommandResultBuilder.SUCCESS;
             }
@@ -145,9 +146,8 @@ public class DeleteInputClauseCommand extends AbstractCanvasGraphCommand impleme
                 }
 
                 updateParentInformation();
-                restoreColumnWidths();
 
-                canvasOperation.execute();
+                undoCanvasOperation.execute();
 
                 return CanvasCommandResultBuilder.SUCCESS;
             }
@@ -156,9 +156,5 @@ public class DeleteInputClauseCommand extends AbstractCanvasGraphCommand impleme
 
     public void updateParentInformation() {
         CommandUtils.updateParentInformation(uiModel);
-    }
-
-    public void restoreColumnWidths() {
-        CommandUtils.restoreColumnWidths(uiModel, oldColumnWidths);
     }
 }

@@ -16,10 +16,12 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.dtable;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import com.ait.lienzo.client.core.shape.Viewport;
@@ -44,6 +46,8 @@ import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.AddDecisionRuleCommand;
+import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.AddInputClauseCommand;
+import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.AddOutputClauseCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.DeleteDecisionRuleCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.DeleteInputClauseCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.DeleteOutputClauseCommand;
@@ -62,6 +66,7 @@ import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypeEditorVi
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
+import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.NameAndDataTypeHeaderMetaData;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextBoxSingletonDOMElementFactory;
@@ -216,7 +221,13 @@ public class DecisionTableGridTest {
     private NameAndDataTypeEditorView.Presenter headerEditor;
 
     @Mock
-    private GridCellTuple parent;
+    private GridWidget parentGridWidget;
+
+    @Mock
+    private GridData parentGridData;
+
+    @Mock
+    private GridColumn parentGridColumn;
 
     @Mock
     private Command command;
@@ -226,6 +237,12 @@ public class DecisionTableGridTest {
 
     @Mock
     private EventSourceMock<RefreshFormProperties> refreshFormPropertiesEvent;
+
+    @Captor
+    private ArgumentCaptor<AddInputClauseCommand> addInputClauseCommandCaptor;
+
+    @Captor
+    private ArgumentCaptor<AddOutputClauseCommand> addOutputClauseCommandCaptor;
 
     @Captor
     private ArgumentCaptor<DeleteInputClauseCommand> deleteInputClauseCommandCaptor;
@@ -253,6 +270,8 @@ public class DecisionTableGridTest {
 
     @Captor
     private ArgumentCaptor<CompositeCommand> compositeCommandCaptor;
+
+    private GridCellTuple parent;
 
     private Decision hasExpression = new Decision();
 
@@ -288,6 +307,10 @@ public class DecisionTableGridTest {
 
         doReturn(canvasHandler).when(session).getCanvasHandler();
         doReturn(graphCommandContext).when(canvasHandler).getGraphExecutionContext();
+        doReturn(parentGridData).when(parentGridWidget).getModel();
+        doReturn(Collections.singletonList(parentGridColumn)).when(parentGridData).getColumns();
+
+        parent = spy(new GridCellTuple(0, 0, parentGridWidget));
 
         when(gridWidget.getModel()).thenReturn(new BaseGridData(false));
         when(gridLayer.getDomElementContainer()).thenReturn(gridLayerDomElementContainer);
@@ -669,15 +692,24 @@ public class DecisionTableGridTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testAddInputClause() {
         setupGrid(makeHasNameForDecision(), 0);
 
         addInputClause(1);
 
-        verify(parent).proposeContainingColumnWidth(eq(grid.getWidth() + grid.getPadding() * 2));
-        verifyGridPanelRefreshAndEditHeaderCell(InputClauseColumnHeaderMetaData.class,
-                                                0,
-                                                1);
+        verifyCommandExecuteOperation(BaseExpressionGrid.RESIZE_EXISTING);
+
+        verifyEditHeaderCell(InputClauseColumnHeaderMetaData.class,
+                             0,
+                             1);
+
+        //Check undo operation
+        reset(gridPanel, gridLayer, grid, parentGridColumn);
+        verify(sessionCommandManager).execute(eq(canvasHandler), addInputClauseCommandCaptor.capture());
+        addInputClauseCommandCaptor.getValue().undo(canvasHandler);
+
+        verifyCommandUndoOperation(BaseExpressionGrid.RESIZE_EXISTING_MINIMUM);
     }
 
     private void addInputClause(final int index) {
@@ -696,7 +728,32 @@ public class DecisionTableGridTest {
         });
     }
 
+    private void verifyCommandExecuteOperation(final Function<BaseExpressionGrid, Double> resizeFunction) {
+        verify(parent).proposeContainingColumnWidth(eq(grid.getWidth() + grid.getPadding() * 2), eq(resizeFunction));
+        verify(parentGridColumn).setWidth(grid.getWidth() + grid.getPadding() * 2);
+        verify(gridLayer).batch(redrawCommandCaptor.capture());
+        verify(gridPanel).refreshScrollPosition();
+        verify(gridPanel).updatePanelSize();
+
+        final GridLayerRedrawManager.PrioritizedCommand redrawCommand = redrawCommandCaptor.getValue();
+        redrawCommand.execute();
+        verify(gridLayer).draw();
+    }
+
+    private void verifyCommandUndoOperation(final Function<BaseExpressionGrid, Double> resizeFunction) {
+        verify(parent).proposeContainingColumnWidth(eq(grid.getWidth() + grid.getPadding() * 2), eq(resizeFunction));
+        verify(parentGridColumn).setWidth(grid.getWidth() + grid.getPadding() * 2);
+        verify(gridLayer).batch(redrawCommandCaptor.capture());
+        verify(gridPanel).refreshScrollPosition();
+        verify(gridPanel).updatePanelSize();
+
+        assertThat(redrawCommandCaptor.getAllValues()).hasSize(2);
+        redrawCommandCaptor.getAllValues().get(1).execute();
+        verify(gridLayer).draw();
+    }
+
     @Test
+    @SuppressWarnings("unchecked")
     public void testDeleteInputClause() {
         setupGrid(makeHasNameForDecision(), 0);
 
@@ -708,8 +765,13 @@ public class DecisionTableGridTest {
         final DeleteInputClauseCommand deleteInputClauseCommand = deleteInputClauseCommandCaptor.getValue();
         deleteInputClauseCommand.execute(canvasHandler);
 
-        verify(parent).proposeContainingColumnWidth(eq(grid.getWidth() + grid.getPadding() * 2));
-        verifyGridPanelRefresh();
+        verifyCommandExecuteOperation(BaseExpressionGrid.RESIZE_EXISTING_MINIMUM);
+
+        //Check undo operation
+        reset(gridPanel, gridLayer, grid, parentGridColumn);
+        deleteInputClauseCommand.undo(canvasHandler);
+
+        verifyCommandUndoOperation(BaseExpressionGrid.RESIZE_EXISTING);
     }
 
     @Test
@@ -718,10 +780,18 @@ public class DecisionTableGridTest {
 
         addOutputClause(2);
 
-        verify(parent).proposeContainingColumnWidth(eq(grid.getWidth() + grid.getPadding() * 2));
-        verifyGridPanelRefreshAndEditHeaderCell(OutputClauseColumnHeaderMetaData.class,
-                                                1,
-                                                2);
+        verifyCommandExecuteOperation(BaseExpressionGrid.RESIZE_EXISTING);
+
+        verifyEditHeaderCell(OutputClauseColumnHeaderMetaData.class,
+                             1,
+                             2);
+
+        //Check undo operation
+        reset(gridPanel, gridLayer, grid, parentGridColumn);
+        verify(sessionCommandManager).execute(eq(canvasHandler), addOutputClauseCommandCaptor.capture());
+        addOutputClauseCommandCaptor.getValue().undo(canvasHandler);
+
+        verifyCommandUndoOperation(BaseExpressionGrid.RESIZE_EXISTING_MINIMUM);
     }
 
     private void addOutputClause(final int index) {
@@ -742,8 +812,13 @@ public class DecisionTableGridTest {
         final DeleteOutputClauseCommand deleteOutputClauseCommand = deleteOutputClauseCommandCaptor.getValue();
         deleteOutputClauseCommand.execute(canvasHandler);
 
-        verify(parent).proposeContainingColumnWidth(eq(grid.getWidth() + grid.getPadding() * 2));
-        verifyGridPanelRefresh();
+        verifyCommandExecuteOperation(BaseExpressionGrid.RESIZE_EXISTING_MINIMUM);
+
+        //Check undo operation
+        reset(gridPanel, gridLayer, grid, parentGridColumn);
+        deleteOutputClauseCommand.undo(canvasHandler);
+
+        verifyCommandUndoOperation(BaseExpressionGrid.RESIZE_EXISTING);
     }
 
     @Test
@@ -752,7 +827,7 @@ public class DecisionTableGridTest {
 
         addDecisionRule(0);
 
-        verifyGridPanelRefresh();
+        verifyCommandExecuteOperation(BaseExpressionGrid.RESIZE_EXISTING);
     }
 
     private void addDecisionRule(final int index) {
@@ -777,7 +852,7 @@ public class DecisionTableGridTest {
         final DeleteDecisionRuleCommand deleteDecisionRuleCommand = deleteDecisionRuleCommandCaptor.getValue();
         deleteDecisionRuleCommand.execute(canvasHandler);
 
-        verifyGridPanelRefresh();
+        verifyCommandExecuteOperation(BaseExpressionGrid.RESIZE_EXISTING);
     }
 
     @Test
@@ -841,25 +916,9 @@ public class DecisionTableGridTest {
         verify(gridLayer).batch();
     }
 
-    private void verifyGridPanelRefresh() {
-        verify(gridLayer).batch(any(GridLayerRedrawManager.PrioritizedCommand.class));
-        verify(gridPanel).refreshScrollPosition();
-        verify(gridPanel).updatePanelSize();
-    }
-
-    private void verifyGridPanelRefreshAndEditHeaderCell(final Class<? extends NameAndDataTypeHeaderMetaData> headerMetaDataClass,
-                                                         final int uiHeaderRowIndex,
-                                                         final int uiColumnIndex) {
-        verify(gridLayer).batch(redrawCommandCaptor.capture());
-        verify(gridPanel).refreshScrollPosition();
-        verify(gridPanel).updatePanelSize();
-
-        final GridLayerRedrawManager.PrioritizedCommand redrawCommand = redrawCommandCaptor.getValue();
-
-        redrawCommand.execute();
-
-        verify(gridLayer).draw();
-
+    private void verifyEditHeaderCell(final Class<? extends NameAndDataTypeHeaderMetaData> headerMetaDataClass,
+                                      final int uiHeaderRowIndex,
+                                      final int uiColumnIndex) {
         verify(headerEditor).bind(any(headerMetaDataClass),
                                   eq(uiHeaderRowIndex),
                                   eq(uiColumnIndex));

@@ -69,7 +69,8 @@ public class ClearExpressionTypeCommandTest extends BaseClearExpressionCommandTe
                                               hasExpression,
                                               uiModelMapper,
                                               expressionGridCache,
-                                              gridLayer::batch);
+                                              executeCanvasOperation,
+                                              undoCanvasOperation);
     }
 
     @Override

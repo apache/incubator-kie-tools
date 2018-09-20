@@ -338,7 +338,14 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
                                                          function,
                                                          kind,
                                                          expression,
-                                                         () -> resizeBasedOnCellExpressionEditor(0, 0)));
+                                                         () -> {
+                                                             resize(BaseExpressionGrid.RESIZE_EXISTING_MINIMUM);
+                                                             editor.ifPresent(BaseExpressionGrid::selectFirstCell);
+                                                         },
+                                                         () -> {
+                                                             resize(BaseExpressionGrid.RESIZE_EXISTING_MINIMUM);
+                                                             selectFirstCell();
+                                                         }));
     }
 
     void clearExpressionType() {
@@ -350,7 +357,14 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
                                           new ClearExpressionTypeCommand(gc,
                                                                          function,
                                                                          uiModelMapper,
-                                                                         () -> resizeBasedOnCellExpressionEditor(0, 0)));
+                                                                         () -> {
+                                                                             resize(BaseExpressionGrid.RESIZE_EXISTING_MINIMUM);
+                                                                             selectParentCell();
+                                                                         },
+                                                                         () -> {
+                                                                             resize(BaseExpressionGrid.RESIZE_EXISTING_MINIMUM);
+                                                                             selectFirstCell();
+                                                                         }));
         });
     }
 }

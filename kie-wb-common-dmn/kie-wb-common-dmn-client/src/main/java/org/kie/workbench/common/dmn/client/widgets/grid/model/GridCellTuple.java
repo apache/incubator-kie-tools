@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.client.widgets.grid.model;
 
 import java.util.Optional;
+import java.util.function.Function;
 
 import com.google.gwt.user.client.ui.RequiresResize;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
@@ -62,14 +63,16 @@ public class GridCellTuple implements RequiresResize {
         return gridWidget;
     }
 
-    public void proposeContainingColumnWidth(final double proposedWidth) {
+    public void proposeContainingColumnWidth(final double proposedWidth,
+                                             final Function<BaseExpressionGrid, Double> requiredWidthSupplier) {
         final GridColumn<?> parentColumn = gridWidget.getModel().getColumns().get(columnIndex);
-        final double requiredWidth = Math.max(proposedWidth, getMinimumParentColumnWidth(proposedWidth));
+        final double requiredWidth = Math.max(proposedWidth, getRequiredParentColumnWidth(proposedWidth, requiredWidthSupplier));
         parentColumn.setWidth(requiredWidth);
     }
 
-    private double getMinimumParentColumnWidth(final double proposedWidth) {
-        double minimumWidth = proposedWidth;
+    private double getRequiredParentColumnWidth(final double proposedWidth,
+                                                final Function<BaseExpressionGrid, Double> requiredWidthSupplier) {
+        double width = proposedWidth;
         final GridData uiModel = gridWidget.getModel();
         for (GridRow row : uiModel.getRows()) {
             final GridCell<?> cell = row.getCells().get(columnIndex);
@@ -80,12 +83,12 @@ public class GridCellTuple implements RequiresResize {
                     final Optional<BaseExpressionGrid> editor = ecv.getValue();
                     if (editor.isPresent()) {
                         final BaseExpressionGrid beg = editor.get();
-                        minimumWidth = Math.max(minimumWidth, beg.getMinimumWidth());
+                        width = Math.max(width, requiredWidthSupplier.apply(beg));
                     }
                 }
             }
         }
-        return minimumWidth;
+        return width;
     }
 
     @Override

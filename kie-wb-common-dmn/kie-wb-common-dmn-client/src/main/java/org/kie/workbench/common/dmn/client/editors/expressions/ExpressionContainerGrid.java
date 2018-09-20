@@ -22,7 +22,6 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import com.ait.lienzo.client.core.event.INodeXYEvent;
-import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
@@ -40,6 +39,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCache;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
@@ -47,6 +47,7 @@ import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
@@ -142,9 +143,26 @@ public class ExpressionContainerGrid extends BaseGridWidget implements HasListSe
 
         uiModelMapper.fromDMNModel(0, 0);
 
-        final double width = expressionColumn.getWidth();
-        final double minWidth = expressionColumn.getMinimumWidth();
-        resizeBasedOnCellExpressionEditor(Math.max(width, minWidth));
+        expressionColumn.setWidth(getExistingEditorWidth());
+        selectFirstCell();
+    }
+
+    double getExistingEditorWidth() {
+        double existingWidth = DMNGridColumn.DEFAULT_WIDTH;
+        final GridCell<?> cell = model.getRow(0).getCells().get(0);
+        if (cell != null) {
+            final GridCellValue<?> value = cell.getValue();
+            if (value instanceof ExpressionCellValue) {
+                final ExpressionCellValue ecv = (ExpressionCellValue) value;
+                final Optional<BaseExpressionGrid> editor = ecv.getValue();
+                if (editor.isPresent()) {
+                    final BaseExpressionGrid beg = editor.get();
+                    existingWidth = Math.max(existingWidth,
+                                             beg.getWidth() + beg.getPadding() * 2);
+                }
+            }
+        }
+        return existingWidth;
     }
 
     HasExpression spyHasExpression(final HasExpression hasExpression) {
@@ -237,18 +255,22 @@ public class ExpressionContainerGrid extends BaseGridWidget implements HasListSe
                                                                      uiModelMapper,
                                                                      expressionGridCache.get(),
                                                                      () -> {
-                                                                         final double minWidth = expressionColumn.getMinimumWidth();
-                                                                         resizeBasedOnCellExpressionEditor(minWidth);
+                                                                         expressionColumn.setWidth(getExistingEditorWidth());
+                                                                         selectFirstCell();
+                                                                     },
+                                                                     () -> {
+                                                                         expressionColumn.setWidth(getExistingEditorWidth());
+                                                                         selectFirstCell();
                                                                      }));
     }
 
-    private void resizeBasedOnCellExpressionEditor(final double width) {
-        expressionColumn.setWidth(width);
-
+    void selectFirstCell() {
         final GridCellValue<?> value = model.getCell(0, 0).getValue();
         final Optional<BaseExpressionGrid> grid = ((ExpressionCellValue) value).getValue();
-        grid.ifPresent(BaseExpressionGrid::selectFirstCell);
-
-        Optional.ofNullable(getLayer()).ifPresent(Layer::batch);
+        grid.ifPresent(beg -> {
+            //It's not possible to set-up GridLayer for ExpressionContainerGrid in Unit Tests so defensively handle nulls
+            Optional.ofNullable(getLayer()).ifPresent(layer -> ((DMNGridLayer) layer).select(beg));
+            beg.selectFirstCell();
+        });
     }
 }

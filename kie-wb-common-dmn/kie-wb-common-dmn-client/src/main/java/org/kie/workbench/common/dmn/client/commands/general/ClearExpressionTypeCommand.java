@@ -41,11 +41,13 @@ public class ClearExpressionTypeCommand extends BaseClearExpressionCommand {
                                       final HasExpression hasExpression,
                                       final ExpressionContainerUIModelMapper uiModelMapper,
                                       final ExpressionGridCache expressionGridCache,
-                                      final org.uberfire.mvp.Command canvasOperation) {
+                                      final org.uberfire.mvp.Command executeCanvasOperation,
+                                      final org.uberfire.mvp.Command undoCanvasOperation) {
         super(cellTuple,
               hasExpression,
               uiModelMapper,
-              canvasOperation);
+              executeCanvasOperation,
+              undoCanvasOperation);
         this.nodeUUID = nodeUUID;
         this.expressionGridCache = expressionGridCache;
         this.oldExpressionGrid = expressionGridCache.getExpressionGrid(nodeUUID);
@@ -63,7 +65,7 @@ public class ClearExpressionTypeCommand extends BaseClearExpressionCommand {
                 uiModelMapper.fromDMNModel(cellTuple.getRowIndex(),
                                            cellTuple.getColumnIndex());
 
-                canvasOperation.execute();
+                executeCanvasOperation.execute();
 
                 return CanvasCommandResultBuilder.SUCCESS;
             }
@@ -77,7 +79,7 @@ public class ClearExpressionTypeCommand extends BaseClearExpressionCommand {
                                                                                               cellTuple.getColumnIndex(),
                                                                                               v));
 
-                canvasOperation.execute();
+                undoCanvasOperation.execute();
 
                 return CanvasCommandResultBuilder.SUCCESS;
             }

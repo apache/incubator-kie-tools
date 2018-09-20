@@ -66,7 +66,10 @@ public class AddRelationColumnCommandTest {
     private ListSelectorView.Presenter listSelector;
 
     @Mock
-    private org.uberfire.mvp.Command canvasOperation;
+    private org.uberfire.mvp.Command executeCanvasOperation;
+
+    @Mock
+    private org.uberfire.mvp.Command undoCanvasOperation;
 
     @Mock
     private AbstractCanvasHandler handler;
@@ -111,7 +114,8 @@ public class AddRelationColumnCommandTest {
                                                    uiModelColumn,
                                                    uiColumnIndex,
                                                    uiModelMapper,
-                                                   canvasOperation));
+                                                   executeCanvasOperation,
+                                                   undoCanvasOperation));
     }
 
     @Test
@@ -323,7 +327,7 @@ public class AddRelationColumnCommandTest {
 
         verify(command).updateParentInformation();
 
-        verify(canvasOperation).execute();
+        verify(executeCanvasOperation).execute();
     }
 
     @Test
@@ -373,7 +377,7 @@ public class AddRelationColumnCommandTest {
 
         verify(command).updateParentInformation();
 
-        verify(canvasOperation).execute();
+        verify(executeCanvasOperation).execute();
     }
 
     @Test
@@ -391,7 +395,7 @@ public class AddRelationColumnCommandTest {
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      cc.execute(handler));
 
-        reset(command, canvasOperation);
+        reset(command);
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      cc.undo(handler));
 
@@ -408,7 +412,7 @@ public class AddRelationColumnCommandTest {
 
         verify(command).updateParentInformation();
 
-        verify(canvasOperation).execute();
+        verify(undoCanvasOperation).execute();
     }
 
     @Test
@@ -422,7 +426,7 @@ public class AddRelationColumnCommandTest {
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      cc.execute(handler));
 
-        reset(command, canvasOperation);
+        reset(command);
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      cc.undo(handler));
 
@@ -435,6 +439,6 @@ public class AddRelationColumnCommandTest {
 
         verify(command).updateParentInformation();
 
-        verify(canvasOperation).execute();
+        verify(undoCanvasOperation).execute();
     }
 }

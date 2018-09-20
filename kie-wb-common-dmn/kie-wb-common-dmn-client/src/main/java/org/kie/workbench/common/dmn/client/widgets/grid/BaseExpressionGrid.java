@@ -46,7 +46,6 @@ import org.kie.workbench.common.dmn.client.commands.general.SetCellValueCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetHasNameCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetHeaderValueCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetTypeRefCommand;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableHeaderGridWidgetMouseDoubleClickHandler;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableHeaderMetaData;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
@@ -72,8 +71,6 @@ import org.kie.workbench.common.stunner.core.graph.content.definition.Definition
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormProperties;
 import org.uberfire.commons.data.Pair;
-import org.uberfire.ext.wires.core.grids.client.model.GridCell;
-import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
@@ -87,6 +84,10 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.GridPinnedM
 public abstract class BaseExpressionGrid<E extends Expression, D extends GridData, M extends BaseUIModelMapper<E>> extends BaseGridWidget implements ExpressionGridCache.IsCacheable {
 
     public static final double DEFAULT_PADDING = 10.0;
+
+    public static final Function<BaseExpressionGrid, Double> RESIZE_EXISTING = (beg) -> beg.getWidth() + beg.getPadding() * 2;
+
+    public static final Function<BaseExpressionGrid, Double> RESIZE_EXISTING_MINIMUM = (beg) -> beg.getMinimumWidth() + beg.getPadding() * 2;
 
     protected final GridCellTuple parent;
     protected final Optional<String> nodeUUID;
@@ -444,29 +445,20 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
         return minimumWidth;
     }
 
-    public void resize() {
+    public void resize(final Function<BaseExpressionGrid, Double> requiredWidthSupplier) {
         doResize(new GridLayerRedrawManager.PrioritizedCommand(0) {
-            @Override
-            public void execute() {
-                gridLayer.draw();
-            }
-        });
+                     @Override
+                     public void execute() {
+                         gridLayer.draw();
+                     }
+                 },
+                 requiredWidthSupplier);
     }
 
-    public void resizeWhenExpressionEditorChanged() {
-        doResize(new GridLayerRedrawManager.PrioritizedCommand(0) {
-            @Override
-            public void execute() {
-                gridLayer.select(BaseExpressionGrid.this);
-                selectFirstCell();
-                gridLayer.draw();
-            }
-        });
-    }
-
-    private void doResize(final GridLayerRedrawManager.PrioritizedCommand command) {
+    protected void doResize(final GridLayerRedrawManager.PrioritizedCommand command,
+                            final Function<BaseExpressionGrid, Double> requiredWidthSupplier) {
         final double proposedWidth = getWidth() + getPadding() * 2;
-        parent.proposeContainingColumnWidth(proposedWidth);
+        parent.proposeContainingColumnWidth(proposedWidth, requiredWidthSupplier);
 
         gridPanel.refreshScrollPosition();
         gridPanel.updatePanelSize();
@@ -475,19 +467,10 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
         gridLayer.batch(command);
     }
 
-    public void resizeBasedOnCellExpressionEditor(final int uiRowIndex,
-                                                  final int uiColumnIndex) {
-        final Optional<GridCell<?>> cell = Optional.ofNullable(model.getCell(uiRowIndex, uiColumnIndex));
-        cell.ifPresent(c -> {
-            final GridCellValue<?> value = c.getValue();
-            if (value instanceof ExpressionCellValue) {
-                final Optional<BaseExpressionGrid> grid = ((ExpressionCellValue) value).getValue();
-                grid.ifPresent(BaseExpressionGrid::resizeWhenExpressionEditorChanged);
-            }
-        });
-    }
-
     public void selectFirstCell() {
+        final DMNGridLayer gridLayer = (DMNGridLayer) getLayer();
+        gridLayer.select(this);
+
         final GridData uiModel = getModel();
         if (uiModel.getRowCount() == 0 || uiModel.getColumnCount() == 0) {
             return;
@@ -499,6 +482,19 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
                 .map(c -> uiModel.getColumns().indexOf(c))
                 .findFirst()
                 .ifPresent(index -> uiModel.selectCell(0, index));
+    }
+
+    public void selectParentCell() {
+        final int parentUiRowIndex = parent.getRowIndex();
+        final int parentUiColumnIndex = parent.getColumnIndex();
+        final Optional<GridWidget> parentGridWidget = Optional.ofNullable(parent.getGridWidget());
+        parentGridWidget.ifPresent(pgw -> {
+            ((DMNGridLayer) getLayer()).select(pgw);
+            pgw.selectCell(parentUiRowIndex,
+                           parentUiColumnIndex,
+                           false,
+                           false);
+        });
     }
 
     public Optional<BaseExpressionGrid> findParentGrid() {

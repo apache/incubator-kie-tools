@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.relation;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Optional;
+import java.util.function.Function;
 
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Transform;
@@ -38,6 +39,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.Relation;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
+import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.AddRelationColumnCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.AddRelationRowCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.DeleteRelationColumnCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.DeleteRelationRowCommand;
@@ -50,6 +52,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.GridFactory
 import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypeEditorView;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
+import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
@@ -94,6 +97,7 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -187,6 +191,9 @@ public class RelationGridTest {
 
     @Mock
     private NameAndDataTypeEditorView.Presenter headerEditor;
+
+    @Captor
+    private ArgumentCaptor<AddRelationColumnCommand> addColumnCommand;
 
     @Captor
     private ArgumentCaptor<DeleteRelationColumnCommand> deleteColumnCommand;
@@ -584,17 +591,7 @@ public class RelationGridTest {
 
         addColumn(0);
 
-        verify(parent).proposeContainingColumnWidth(grid.getWidth() + grid.getPadding() * 2);
-        verify(parentGridColumn).setWidth(grid.getWidth() + grid.getPadding() * 2);
-        verify(gridLayer).batch(redrawCommandCaptor.capture());
-        verify(gridPanel).refreshScrollPosition();
-        verify(gridPanel).updatePanelSize();
-
-        final GridLayerRedrawManager.PrioritizedCommand redrawCommand = redrawCommandCaptor.getValue();
-
-        redrawCommand.execute();
-
-        verify(gridLayer).draw();
+        verifyCommandExecuteOperation(BaseExpressionGrid.RESIZE_EXISTING);
 
         verify(headerEditor).bind(any(RelationColumnHeaderMetaData.class),
                                   eq(0),
@@ -602,6 +599,13 @@ public class RelationGridTest {
         verify(cellEditorControls).show(eq(headerEditor),
                                         anyInt(),
                                         anyInt());
+
+        //Check undo operation
+        reset(gridPanel, gridLayer, grid, parentGridColumn);
+        verify(sessionCommandManager).execute(eq(canvasHandler), addColumnCommand.capture());
+        addColumnCommand.getValue().undo(canvasHandler);
+
+        verifyCommandUndoOperation(BaseExpressionGrid.RESIZE_EXISTING_MINIMUM);
     }
 
     private void addColumn(final int index) {
@@ -619,6 +623,30 @@ public class RelationGridTest {
         });
     }
 
+    private void verifyCommandExecuteOperation(final Function<BaseExpressionGrid, Double> resizeFunction) {
+        verify(parent).proposeContainingColumnWidth(eq(grid.getWidth() + grid.getPadding() * 2), eq(resizeFunction));
+        verify(parentGridColumn).setWidth(grid.getWidth() + grid.getPadding() * 2);
+        verify(gridLayer).batch(redrawCommandCaptor.capture());
+        verify(gridPanel).refreshScrollPosition();
+        verify(gridPanel).updatePanelSize();
+
+        final GridLayerRedrawManager.PrioritizedCommand redrawCommand = redrawCommandCaptor.getValue();
+        redrawCommand.execute();
+        verify(gridLayer).draw();
+    }
+
+    private void verifyCommandUndoOperation(final Function<BaseExpressionGrid, Double> resizeFunction) {
+        verify(parent).proposeContainingColumnWidth(eq(grid.getWidth() + grid.getPadding() * 2), eq(resizeFunction));
+        verify(parentGridColumn).setWidth(grid.getWidth() + grid.getPadding() * 2);
+        verify(gridLayer).batch(redrawCommandCaptor.capture());
+        verify(gridPanel).refreshScrollPosition();
+        verify(gridPanel).updatePanelSize();
+
+        assertThat(redrawCommandCaptor.getAllValues()).hasSize(2);
+        redrawCommandCaptor.getAllValues().get(1).execute();
+        verify(gridLayer).draw();
+    }
+
     @Test
     public void testDeleteColumn() throws Exception {
         relation.getColumn().add(new InformationItem());
@@ -628,13 +656,16 @@ public class RelationGridTest {
         grid.deleteColumn(RelationUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT);
 
         verify(sessionCommandManager).execute(eq(canvasHandler), deleteColumnCommand.capture());
-
         deleteColumnCommand.getValue().execute(canvasHandler);
-        verify(parent).proposeContainingColumnWidth(grid.getWidth() + grid.getPadding() * 2);
-        verify(parentGridColumn).setWidth(grid.getWidth() + grid.getPadding() * 2);
-        verify(gridLayer).batch(any(GridLayerRedrawManager.PrioritizedCommand.class));
-        verify(gridPanel).refreshScrollPosition();
-        verify(gridPanel).updatePanelSize();
+
+        verifyCommandExecuteOperation(BaseExpressionGrid.RESIZE_EXISTING_MINIMUM);
+
+        //Check undo operation
+        reset(gridPanel, gridLayer, grid, parentGridColumn);
+        verify(sessionCommandManager).execute(eq(canvasHandler), deleteColumnCommand.capture());
+        deleteColumnCommand.getValue().undo(canvasHandler);
+
+        verifyCommandUndoOperation(BaseExpressionGrid.RESIZE_EXISTING);
     }
 
     @Test
@@ -643,9 +674,7 @@ public class RelationGridTest {
 
         addRow(0);
 
-        verify(gridLayer).batch(any(GridLayerRedrawManager.PrioritizedCommand.class));
-        verify(gridPanel).refreshScrollPosition();
-        verify(gridPanel).updatePanelSize();
+        verifyCommandExecuteOperation(BaseExpressionGrid.RESIZE_EXISTING);
     }
 
     private void addRow(final int index) {
@@ -666,9 +695,8 @@ public class RelationGridTest {
         verify(sessionCommandManager).execute(eq(canvasHandler), deleteRowCommand.capture());
 
         deleteRowCommand.getValue().execute(canvasHandler);
-        verify(gridLayer).batch(any(GridLayerRedrawManager.PrioritizedCommand.class));
-        verify(gridPanel).refreshScrollPosition();
-        verify(gridPanel).updatePanelSize();
+
+        verifyCommandExecuteOperation(BaseExpressionGrid.RESIZE_EXISTING);
     }
 
     @Test

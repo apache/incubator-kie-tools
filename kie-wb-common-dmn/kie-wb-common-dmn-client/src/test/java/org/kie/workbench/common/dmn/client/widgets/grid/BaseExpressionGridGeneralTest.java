@@ -39,7 +39,6 @@ import org.kie.workbench.common.dmn.client.commands.general.SetHasNameCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetHeaderValueCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetTypeRefCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.GridFactoryCommandUtils;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableHeaderMetaData;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
@@ -62,11 +61,9 @@ import org.kie.workbench.common.stunner.forms.client.event.RefreshFormProperties
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
-import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.GridColumnRenderer;
@@ -326,6 +323,29 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
     }
 
     @Test
+    public void testSelectParentCellWithNullParent() {
+        grid.selectParentCell();
+
+        verify(gridLayer, never()).select(any(GridWidget.class));
+    }
+
+    @Test
+    public void testSelectParentCellWithNonNullParent() {
+        final GridWidget parentGrid = mock(BaseExpressionGrid.class);
+        when(parentCell.getGridWidget()).thenReturn(parentGrid);
+        when(parentCell.getRowIndex()).thenReturn(0);
+        when(parentCell.getColumnIndex()).thenReturn(1);
+
+        grid.selectParentCell();
+
+        verify(gridLayer).select(parentGrid);
+        verify(parentGrid).selectCell(eq(0),
+                                      eq(1),
+                                      eq(false),
+                                      eq(false));
+    }
+
+    @Test
     public void testPaddingWithParent() {
         doReturn(Optional.of(mock(BaseExpressionGrid.class))).when(grid).findParentGrid();
 
@@ -384,7 +404,7 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
 
     @Test
     public void testResizeWhenExpressionEditorChanged() {
-        grid.resizeWhenExpressionEditorChanged();
+        grid.resize(BaseExpressionGrid.RESIZE_EXISTING);
 
         verify(gridPanel).refreshScrollPosition();
         verify(gridPanel).updatePanelSize();
@@ -395,32 +415,11 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
         redrawCommand.execute();
 
         verify(gridLayer).draw();
-        verify(gridLayer).select(eq(grid));
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void testResizeBasedOnCellExpressionEditor() {
-        final GridCell cell = mock(GridCell.class);
-        final GridColumn column = mock(GridColumn.class);
-        final ExpressionCellValue value = mock(ExpressionCellValue.class);
-        final BaseExpressionGrid childGrid = mock(BaseExpressionGrid.class);
-
-        grid.getModel().appendColumn(column);
-        grid.getModel().appendRow(new BaseGridRow());
-        grid.getModel().setCell(0, 0, () -> cell);
-
-        when(cell.getValue()).thenReturn(value);
-        when(value.getValue()).thenReturn(Optional.of(childGrid));
-
-        grid.resizeBasedOnCellExpressionEditor(0, 0);
-
-        verify(childGrid).resizeWhenExpressionEditorChanged();
     }
 
     @Test
     public void testResize() {
-        grid.resize();
+        grid.resize(BaseExpressionGrid.RESIZE_EXISTING);
 
         verify(gridPanel).refreshScrollPosition();
         verify(gridPanel).updatePanelSize();
@@ -629,6 +628,7 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
         doReturn(parentGridData).when(parentGrid).getModel();
         doReturn(Collections.singletonList(parentColumn)).when(parentGridData).getColumns();
         doReturn(Collections.singleton(parentGrid)).when(gridLayer).getGridWidgets();
+        doReturn(widthsOfNestedColumns.length).when(parentGridData).getColumnCount();
 
         // nested columns
         final List<DMNGridColumn> columns = Arrays.stream(widthsOfNestedColumns)

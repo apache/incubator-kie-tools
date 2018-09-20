@@ -73,7 +73,10 @@ public class DeleteOutputClauseCommandTest {
     private GraphCommandExecutionContext graphCommandExecutionContext;
 
     @Mock
-    private org.uberfire.mvp.Command canvasOperation;
+    private org.uberfire.mvp.Command executeCanvasOperation;
+
+    @Mock
+    private org.uberfire.mvp.Command undoCanvasOperation;
 
     private DecisionTable dtable;
 
@@ -112,7 +115,8 @@ public class DeleteOutputClauseCommandTest {
                                                          uiModel,
                                                          uiColumnIndex,
                                                          uiModelMapper,
-                                                         canvasOperation));
+                                                         executeCanvasOperation,
+                                                         undoCanvasOperation));
     }
 
     @Test
@@ -213,7 +217,7 @@ public class DeleteOutputClauseCommandTest {
         assertThat(uiModel.getColumns()).containsOnly(uiRowNumberColumn,
                                                       uiDescriptionColumn);
 
-        verify(canvasOperation).execute();
+        verify(executeCanvasOperation).execute();
         verify(command).updateParentInformation();
     }
 
@@ -226,7 +230,7 @@ public class DeleteOutputClauseCommandTest {
         assertThat(uiModel.getColumns()).containsOnly(uiRowNumberColumn,
                                                       uiDescriptionColumn);
 
-        reset(canvasOperation, command);
+        reset(command);
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      canvasAddRuleCommand.undo(canvasHandler));
 
@@ -234,8 +238,7 @@ public class DeleteOutputClauseCommandTest {
                                                       uiOutputClauseColumn,
                                                       uiDescriptionColumn);
 
-        verify(canvasOperation).execute();
+        verify(undoCanvasOperation).execute();
         verify(command).updateParentInformation();
-        verify(command).restoreColumnWidths();
     }
 }

@@ -49,6 +49,7 @@ import org.kie.workbench.common.stunner.forms.client.event.RefreshFormProperties
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridSelectionManager;
 
 public class LiteralExpressionGrid extends BaseExpressionGrid<LiteralExpression, DMNGridData, LiteralExpressionUIModelMapper> implements HasListSelectorControl {
@@ -109,10 +110,15 @@ public class LiteralExpressionGrid extends BaseExpressionGrid<LiteralExpression,
 
     @Override
     public void selectFirstCell() {
-        final GridData uiModel = parent.getGridWidget().getModel();
-        uiModel.clearSelections();
-        uiModel.selectCell(parent.getRowIndex(),
-                           parent.getColumnIndex());
+        final GridCellTuple parent = getParentInformation();
+        final GridWidget parentGridWidget = parent.getGridWidget();
+        final GridData parentUiModel = parentGridWidget.getModel();
+        parentUiModel.clearSelections();
+        parentUiModel.selectCell(parent.getRowIndex(),
+                                 parent.getColumnIndex());
+
+        final DMNGridLayer gridLayer = (DMNGridLayer) getLayer();
+        gridLayer.select(parentGridWidget);
     }
 
     @Override

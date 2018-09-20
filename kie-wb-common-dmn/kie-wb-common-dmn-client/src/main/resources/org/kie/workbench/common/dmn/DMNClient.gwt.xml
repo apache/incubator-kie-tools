@@ -24,6 +24,7 @@
   <inherits name="org.kie.workbench.common.stunner.svg.StunnerSvgClient"/>
   <inherits name="org.kie.workbench.common.stunner.shapes.StunnerShapesClient"/>
   <inherits name="org.kie.workbench.common.stunner.client.StunnerWidgets"/>
+  <inherits name="org.kie.workbench.common.stunner.forms.StunnerFormsClient"/>
 
   <inherits name="org.uberfire.ext.wires.core.grids.WiresCoreGrids"/>
 

@@ -274,7 +274,7 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextGridData, Co
                                                                                                                    new DMNGridRow(),
                                                                                                                    index,
                                                                                                                    uiModelMapper,
-                                                                                                                   this::resize));
+                                                                                                                   () -> resize(BaseExpressionGrid.RESIZE_EXISTING)));
 
             if (!CommandUtils.isError(result)) {
                 selectCell(index, ContextUIModelMapperHelper.NAME_COLUMN_INDEX, false, false);
@@ -289,7 +289,7 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextGridData, Co
                                           new DeleteContextEntryCommand(c,
                                                                         model,
                                                                         index,
-                                                                        this::resize));
+                                                                        () -> resize(BaseExpressionGrid.RESIZE_EXISTING)));
         });
     }
 
@@ -302,7 +302,13 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextGridData, Co
                                       new ClearExpressionTypeCommand(gc,
                                                                      hasExpression,
                                                                      uiModelMapper,
-                                                                     () -> resizeBasedOnCellExpressionEditor(uiRowIndex,
-                                                                                                             ContextUIModelMapperHelper.EXPRESSION_COLUMN_INDEX)));
+                                                                     () -> {
+                                                                         resize(BaseExpressionGrid.RESIZE_EXISTING_MINIMUM);
+                                                                         selectParentCell();
+                                                                     },
+                                                                     () -> {
+                                                                         resize(BaseExpressionGrid.RESIZE_EXISTING_MINIMUM);
+                                                                         selectFirstCell();
+                                                                     }));
     }
 }

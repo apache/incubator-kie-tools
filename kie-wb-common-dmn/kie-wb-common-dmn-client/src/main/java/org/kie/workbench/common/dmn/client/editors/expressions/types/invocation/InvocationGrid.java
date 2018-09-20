@@ -271,7 +271,7 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGri
                                                                                                                        new DMNGridRow(),
                                                                                                                        index,
                                                                                                                        uiModelMapper,
-                                                                                                                       this::resize));
+                                                                                                                       () -> resize(BaseExpressionGrid.RESIZE_EXISTING)));
 
             if (!CommandUtils.isError(result)) {
                 selectCell(index, InvocationUIModelMapper.BINDING_PARAMETER_COLUMN_INDEX, false, false);
@@ -286,7 +286,7 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGri
                                           new DeleteParameterBindingCommand(invocation,
                                                                             model,
                                                                             index,
-                                                                            this::resize));
+                                                                            () -> resize(BaseExpressionGrid.RESIZE_EXISTING)));
         });
     }
 
@@ -299,7 +299,13 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGri
                                       new ClearExpressionTypeCommand(gc,
                                                                      hasExpression,
                                                                      uiModelMapper,
-                                                                     () -> resizeBasedOnCellExpressionEditor(uiRowIndex,
-                                                                                                             InvocationUIModelMapper.BINDING_EXPRESSION_COLUMN_INDEX)));
+                                                                     () -> {
+                                                                         resize(BaseExpressionGrid.RESIZE_EXISTING_MINIMUM);
+                                                                         selectParentCell();
+                                                                     },
+                                                                     () -> {
+                                                                         resize(BaseExpressionGrid.RESIZE_EXISTING_MINIMUM);
+                                                                         selectFirstCell();
+                                                                     }));
     }
 }

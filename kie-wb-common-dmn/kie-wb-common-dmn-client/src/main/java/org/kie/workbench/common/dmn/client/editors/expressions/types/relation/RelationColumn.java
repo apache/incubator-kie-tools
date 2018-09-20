@@ -16,20 +16,14 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.relation;
 
-import java.util.Optional;
 import java.util.function.Consumer;
 
 import org.kie.soup.commons.validation.PortablePreconditions;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
-import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.NameAndDataTypeDOMElementColumnRenderer;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNSimpleGridColumn;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
-import org.uberfire.ext.wires.core.grids.client.model.GridData;
-import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.HasDOMElementResources;
@@ -49,45 +43,6 @@ public class RelationColumn extends DMNSimpleGridColumn<RelationGrid, String> im
                                                           factory);
         setMovable(true);
         setResizable(false);
-    }
-
-    @Override
-    public Double getMinimumWidth() {
-        final double minimumWidth = super.getMinimumWidth();
-        final double minimumWidthOfPeers = getMinimumWidthOfPeers();
-        final double widthOfThisEditor = gridWidget.getWidth();
-        final double widthOfThisColumn = getWidth();
-
-        return Math.max(minimumWidth,
-                        minimumWidthOfPeers - (widthOfThisEditor - widthOfThisColumn));
-    }
-
-    private double getMinimumWidthOfPeers() {
-        final GridCellTuple parent = gridWidget.getParentInformation();
-        final GridData parentUiModel = parent.getGridWidget().getModel();
-        final int parentUiRowIndex = parent.getRowIndex();
-        final int parentUiColumnIndex = parent.getColumnIndex();
-
-        double minimumWidth = super.getMinimumWidth();
-
-        for (int uiRowIndex = 0; uiRowIndex < parentUiModel.getRowCount(); uiRowIndex++) {
-            if (uiRowIndex != parentUiRowIndex) {
-                final GridRow row = parentUiModel.getRow(uiRowIndex);
-                final GridCell<?> cell = row.getCells().get(parentUiColumnIndex);
-                if (cell != null) {
-                    final GridCellValue<?> value = cell.getValue();
-                    if (value instanceof ExpressionCellValue) {
-                        final ExpressionCellValue ecv = (ExpressionCellValue) value;
-                        final Optional<BaseExpressionGrid> editor = ecv.getValue();
-                        final double padding = editor.map(BaseExpressionGrid::getPadding).get();
-                        minimumWidth = Math.max(minimumWidth,
-                                                ecv.getMinimumWidth().orElse(0.0) + padding * 2);
-                    }
-                }
-            }
-        }
-
-        return minimumWidth;
     }
 
     @Override

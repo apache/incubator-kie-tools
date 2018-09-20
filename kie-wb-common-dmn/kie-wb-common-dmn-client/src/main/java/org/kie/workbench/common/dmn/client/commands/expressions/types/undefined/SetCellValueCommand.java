@@ -48,7 +48,8 @@ public class SetCellValueCommand extends AbstractCanvasGraphCommand implements V
     private final Optional<String> nodeUUID;
     private final Supplier<UIModelMapper> uiModelMapper;
     private final ExpressionGridCache expressionGridCache;
-    private final org.uberfire.mvp.Command canvasOperation;
+    private final org.uberfire.mvp.Command executeCanvasOperation;
+    private final org.uberfire.mvp.Command undoCanvasOperation;
 
     private final Optional<GridCellValue<?>> oldCellValue;
 
@@ -56,12 +57,14 @@ public class SetCellValueCommand extends AbstractCanvasGraphCommand implements V
                                final Optional<String> nodeUUID,
                                final Supplier<UIModelMapper> uiModelMapper,
                                final ExpressionGridCache expressionGridCache,
-                               final org.uberfire.mvp.Command canvasOperation) {
+                               final org.uberfire.mvp.Command executeCanvasOperation,
+                               final org.uberfire.mvp.Command undoCanvasOperation) {
         this.cellTuple = cellTuple;
         this.nodeUUID = nodeUUID;
         this.uiModelMapper = uiModelMapper;
         this.expressionGridCache = expressionGridCache;
-        this.canvasOperation = canvasOperation;
+        this.executeCanvasOperation = executeCanvasOperation;
+        this.undoCanvasOperation = undoCanvasOperation;
 
         this.oldCellValue = extractGridCellValue(cellTuple);
     }
@@ -110,7 +113,7 @@ public class SetCellValueCommand extends AbstractCanvasGraphCommand implements V
                                       cellTuple.getColumnIndex(),
                                       cellTuple.getValue());
 
-                canvasOperation.execute();
+                executeCanvasOperation.execute();
 
                 return CanvasCommandResultBuilder.SUCCESS;
             }
@@ -128,7 +131,7 @@ public class SetCellValueCommand extends AbstractCanvasGraphCommand implements V
                                                                     cellTuple.getColumnIndex());
                 }
 
-                canvasOperation.execute();
+                undoCanvasOperation.execute();
 
                 return CanvasCommandResultBuilder.SUCCESS;
             }

@@ -54,10 +54,10 @@ import org.kie.workbench.common.stunner.core.client.command.SessionCommandManage
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormProperties;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
-import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridSelectionManager;
 
 public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, DMNGridData, UndefinedExpressionUIModelMapper> implements HasListSelectorControl {
@@ -126,23 +126,15 @@ public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, DMNG
 
     @Override
     public void selectFirstCell() {
-        final GridData uiModel = parent.getGridWidget().getModel();
-        uiModel.clearSelections();
-        uiModel.selectCell(parent.getRowIndex(),
-                           parent.getColumnIndex());
-    }
+        final GridCellTuple parent = getParentInformation();
+        final GridWidget parentGridWidget = parent.getGridWidget();
+        final GridData parentUiModel = parentGridWidget.getModel();
+        parentUiModel.clearSelections();
+        parentUiModel.selectCell(parent.getRowIndex(),
+                                 parent.getColumnIndex());
 
-    @Override
-    public void resizeBasedOnCellExpressionEditor(final int uiRowIndex,
-                                                  final int uiColumnIndex) {
-        final Optional<GridCell<?>> parentCell = Optional.ofNullable(parent.getGridWidget().getModel().getCell(uiRowIndex, uiColumnIndex));
-        parentCell.ifPresent(cell -> {
-            final GridCellValue<?> value = cell.getValue();
-            if (value instanceof ExpressionCellValue) {
-                final Optional<BaseExpressionGrid> grid = ((ExpressionCellValue) value).getValue();
-                grid.ifPresent(BaseExpressionGrid::resizeWhenExpressionEditorChanged);
-            }
-        });
+        final DMNGridLayer gridLayer = (DMNGridLayer) getLayer();
+        gridLayer.select(parentGridWidget);
     }
 
     @Override
@@ -254,6 +246,7 @@ public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, DMNG
                                       nesting);
             }
 
+            final BaseExpressionGrid _editor = editor.get();
             final GridCellValueTuple<ExpressionCellValue> gcv = new GridCellValueTuple<>(parent.getRowIndex(),
                                                                                          parent.getColumnIndex(),
                                                                                          parent.getGridWidget(),
@@ -264,8 +257,14 @@ public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, DMNG
                                                                   nodeUUID,
                                                                   () -> uiModelMapper,
                                                                   expressionGridCache,
-                                                                  () -> resizeBasedOnCellExpressionEditor(parent.getRowIndex(),
-                                                                                                          parent.getColumnIndex())));
+                                                                  () -> {
+                                                                      resize(BaseExpressionGrid.RESIZE_EXISTING);
+                                                                      _editor.selectFirstCell();
+                                                                  },
+                                                                  () -> {
+                                                                      resize(BaseExpressionGrid.RESIZE_EXISTING_MINIMUM);
+                                                                      selectParentCell();
+                                                                  }));
         });
     }
 }

@@ -48,7 +48,8 @@ public class AddRelationColumnCommand extends AbstractCanvasGraphCommand impleme
     private final RelationColumn uiModelColumn;
     private final int uiColumnIndex;
     private final RelationUIModelMapper uiModelMapper;
-    private final org.uberfire.mvp.Command canvasOperation;
+    private final org.uberfire.mvp.Command executeCanvasOperation;
+    private final org.uberfire.mvp.Command undoCanvasOperation;
     private final String name;
 
     public AddRelationColumnCommand(final Relation relation,
@@ -57,14 +58,16 @@ public class AddRelationColumnCommand extends AbstractCanvasGraphCommand impleme
                                     final RelationColumn uiModelColumn,
                                     final int uiColumnIndex,
                                     final RelationUIModelMapper uiModelMapper,
-                                    final org.uberfire.mvp.Command canvasOperation) {
+                                    final org.uberfire.mvp.Command executeCanvasOperation,
+                                    final org.uberfire.mvp.Command undoCanvasOperation) {
         this.relation = relation;
         this.informationItem = informationItem;
         this.uiModel = uiModel;
         this.uiModelColumn = uiModelColumn;
         this.uiColumnIndex = uiColumnIndex;
         this.uiModelMapper = uiModelMapper;
-        this.canvasOperation = canvasOperation;
+        this.executeCanvasOperation = executeCanvasOperation;
+        this.undoCanvasOperation = undoCanvasOperation;
         this.name = RelationDefaultValueUtilities.getNewColumnName(relation);
     }
 
@@ -118,7 +121,7 @@ public class AddRelationColumnCommand extends AbstractCanvasGraphCommand impleme
 
                 updateParentInformation();
 
-                canvasOperation.execute();
+                executeCanvasOperation.execute();
 
                 return CanvasCommandResultBuilder.SUCCESS;
             }
@@ -130,7 +133,7 @@ public class AddRelationColumnCommand extends AbstractCanvasGraphCommand impleme
 
                 updateParentInformation();
 
-                canvasOperation.execute();
+                undoCanvasOperation.execute();
 
                 return CanvasCommandResultBuilder.SUCCESS;
             }

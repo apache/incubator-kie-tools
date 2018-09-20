@@ -50,7 +50,8 @@ public class ClearExpressionTypeCommandTest extends BaseClearExpressionCommandTe
                                                                 gridWidget),
                                               expression,
                                               uiModelMapper,
-                                              gridLayer::batch);
+                                              executeCanvasOperation,
+                                              undoCanvasOperation);
     }
 
     @Override

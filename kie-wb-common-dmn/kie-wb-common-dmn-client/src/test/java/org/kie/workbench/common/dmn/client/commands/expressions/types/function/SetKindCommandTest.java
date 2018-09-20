@@ -45,7 +45,6 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -58,7 +57,10 @@ public class SetKindCommandTest {
     private GridColumn mockColumn;
 
     @Mock
-    private org.uberfire.mvp.Command canvasOperation;
+    private org.uberfire.mvp.Command executeCanvasOperation;
+
+    @Mock
+    private org.uberfire.mvp.Command undoCanvasOperation;
 
     @Mock
     private AbstractCanvasHandler handler;
@@ -116,7 +118,8 @@ public class SetKindCommandTest {
                                           function,
                                           newKind,
                                           Optional.of(newExpression),
-                                          canvasOperation);
+                                          executeCanvasOperation,
+                                          undoCanvasOperation);
     }
 
     @Test
@@ -202,7 +205,7 @@ public class SetKindCommandTest {
         assertEquals(newEditor,
                      ((ExpressionCellValue) uiModel.getCell(0, 0).getValue()).getValue().get());
 
-        verify(canvasOperation).execute();
+        verify(executeCanvasOperation).execute();
     }
 
     @Test
@@ -220,7 +223,6 @@ public class SetKindCommandTest {
         assertEquals(originalEditor,
                      ((ExpressionCellValue) uiModel.getCell(0, 0).getValue()).getValue().get());
 
-        //Once for execute, once for undo
-        verify(canvasOperation, times(2)).execute();
+        verify(undoCanvasOperation).execute();
     }
 }

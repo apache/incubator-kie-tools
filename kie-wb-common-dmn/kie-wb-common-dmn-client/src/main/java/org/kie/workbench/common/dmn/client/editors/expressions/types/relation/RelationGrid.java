@@ -235,7 +235,8 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
                                                                                                                      relationColumn,
                                                                                                                      index,
                                                                                                                      uiModelMapper,
-                                                                                                                     this::resize));
+                                                                                                                     () -> resize(BaseExpressionGrid.RESIZE_EXISTING),
+                                                                                                                     () -> resize(BaseExpressionGrid.RESIZE_EXISTING_MINIMUM)));
 
             if (!CommandUtils.isError(result)) {
                 relationColumn.startEditingHeaderCell(0);
@@ -250,7 +251,8 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
                                                                           model,
                                                                           index,
                                                                           uiModelMapper,
-                                                                          this::resize));
+                                                                          () -> resize(BaseExpressionGrid.RESIZE_EXISTING_MINIMUM),
+                                                                          () -> resize(BaseExpressionGrid.RESIZE_EXISTING)));
         });
     }
 
@@ -263,7 +265,7 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
                                                                     new DMNGridRow(),
                                                                     index,
                                                                     uiModelMapper,
-                                                                    this::resize));
+                                                                    () -> resize(BaseExpressionGrid.RESIZE_EXISTING)));
         });
     }
 
@@ -273,7 +275,7 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
                                           new DeleteRelationRowCommand(relation,
                                                                        model,
                                                                        index,
-                                                                       this::resize));
+                                                                       () -> resize(BaseExpressionGrid.RESIZE_EXISTING)));
         });
     }
 }
