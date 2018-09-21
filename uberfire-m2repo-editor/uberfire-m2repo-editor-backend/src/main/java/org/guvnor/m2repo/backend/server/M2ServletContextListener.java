@@ -56,6 +56,8 @@ public class M2ServletContextListener implements ServletContextListener {
 
     private static final Logger logger = LoggerFactory.getLogger(M2ServletContextListener.class);
 
+    private static final String FORCE_OFFLINE = "kie.maven.offline.force";
+
     static final String GROUP_ID = "groupId";
     static final String ARTIFACT_ID = "artifactId";
     static final String VERSION = "version";
@@ -81,23 +83,27 @@ public class M2ServletContextListener implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
-        logger.info("M2ServletContextListener contextInitialized started");
-        final ServletContext ctx = servletContextEvent.getServletContext();
-        final String jarsPath = ctx.getRealPath(JARS_FOLDER);
-        final long startTime = System.nanoTime();
-        final int jarsDeployed = deployJarsFromWar(jarsPath);
-        final long endTime = System.nanoTime();
-        final long totalTime = TimeUnit.NANOSECONDS.toSeconds(endTime - startTime);
-        logger.info("M2ServletContextListener contextInitialized deployed {} jars in {} sec ",
-                    jarsDeployed,
-                    totalTime);
+        if (Boolean.valueOf(System.getProperty(FORCE_OFFLINE, "false"))) {
+            logger.info("M2ServletContextListener contextInitialized started");
+            final ServletContext ctx = servletContextEvent.getServletContext();
+            final String jarsPath = ctx.getRealPath(JARS_FOLDER);
+            final long startTime = System.nanoTime();
+            final int jarsDeployed = deployJarsFromWar(jarsPath);
+            final long endTime = System.nanoTime();
+            final long totalTime = TimeUnit.NANOSECONDS.toSeconds(endTime - startTime);
+            logger.info("M2ServletContextListener contextInitialized deployed {} jars in {} sec ",
+                        jarsDeployed,
+                        totalTime);
+        } else {
+            logger.debug("M2ServletContextListener not executed, offline `{}` options set to false.", FORCE_OFFLINE);
+        }
     }
 
     @Override
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
     }
 
-    private int deployJarsFromWar(final String path) {
+    int deployJarsFromWar(final String path) {
         int i = 0;
         try (DirectoryStream<Path> ds = Files.newDirectoryStream(Paths.get(path))) {
             for (Path p : ds) {
@@ -112,7 +118,7 @@ public class M2ServletContextListener implements ServletContextListener {
         return i;
     }
 
-    public GAV deployJar(final String file) {
+    GAV deployJar(final String file) {
         GAV gav = new GAV();
         Properties props = readZipFile(file);
         if (!props.isEmpty()) {
@@ -120,8 +126,6 @@ public class M2ServletContextListener implements ServletContextListener {
                           props.getProperty(ARTIFACT_ID),
                           props.getProperty(VERSION));
             deploy(gav, file);
-        } else {
-            logger.info("Maven Artifact deployed from WEB-INF: {} ", gav.toString());
         }
         return gav;
     }
@@ -149,16 +153,17 @@ public class M2ServletContextListener implements ServletContextListener {
         return fixNotMavenizedArtifact.getProperties(zipFilePath);
     }
 
-    public void deploy(final GAV gav,
-                       final String jarPath) {
+    private void deploy(final GAV gav,
+                        final String jarPath) {
 
         final Artifact artifact = MavenRepository.getMavenRepository().resolveArtifact(new AFReleaseIdImpl(gav.getGroupId(), gav.getArtifactId(), gav.getVersion()));
 
         if (artifact != null) {
+            logger.info("Maven Artifact {} already exists in local Maven repository.", gav.toString());
             return;
         }
 
-        logger.warn("Maven Artifact deployed from WEB-INF: " + gav.toString());
+        logger.warn("Maven Artifact {} deployed from WEB-INF.", gav.toString());
 
         Artifact jarArtifact = new DefaultArtifact(gav.getGroupId(),
                                                    gav.getArtifactId(),

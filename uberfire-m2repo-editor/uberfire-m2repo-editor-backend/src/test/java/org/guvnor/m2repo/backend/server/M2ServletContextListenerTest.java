@@ -17,6 +17,9 @@ package org.guvnor.m2repo.backend.server;
 
 import java.io.File;
 
+import javax.servlet.ServletContext;
+import javax.servlet.ServletContextEvent;
+
 import org.appformer.maven.integration.Aether;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.artifact.Artifact;
@@ -29,12 +32,19 @@ import org.junit.After;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class M2ServletContextListenerTest {
 
     @After
     public void tearDown() throws Exception {
         deleteArtifactIFPresent();
+        System.clearProperty("kie.maven.offline.force");
     }
 
     private void deleteArtifactIFPresent() throws ArtifactResolutionException {
@@ -86,6 +96,30 @@ public class M2ServletContextListenerTest {
         assertThat(metadata.exists()).isTrue();
         File pom = new File(folder + File.separator + "uberfire-m2repo-editor-backend-100-SNAPSHOT.pom");
         assertThat(pom.exists()).isTrue();
+    }
+
+    @Test
+    public void checkRegularExecution() {
+        System.setProperty("kie.maven.offline.force", "false");
+        final M2ServletContextListener listener = spy(new M2ServletContextListener());
+        final ServletContextEvent contextEvent = mock(ServletContextEvent.class);
+        final ServletContext servletContext = mock(ServletContext.class);
+        when(servletContext.getRealPath(any())).thenReturn(".");
+        when(contextEvent.getServletContext()).thenReturn(servletContext);
+        listener.contextInitialized(contextEvent);
+        verify(listener, times(0)).deployJarsFromWar(any());
+    }
+
+    @Test
+    public void checkOfflineExecution() {
+        System.setProperty("kie.maven.offline.force", "true");
+        final M2ServletContextListener listener = spy(new M2ServletContextListener());
+        final ServletContextEvent contextEvent = mock(ServletContextEvent.class);
+        final ServletContext servletContext = mock(ServletContext.class);
+        when(servletContext.getRealPath(any())).thenReturn(".");
+        when(contextEvent.getServletContext()).thenReturn(servletContext);
+        listener.contextInitialized(contextEvent);
+        verify(listener, times(1)).deployJarsFromWar(any());
     }
 
     private boolean checksIfArtifactIsPresent(RepositorySystemSession session) {
