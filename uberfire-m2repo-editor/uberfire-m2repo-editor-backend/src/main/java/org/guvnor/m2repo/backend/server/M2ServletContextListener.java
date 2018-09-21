@@ -153,8 +153,8 @@ public class M2ServletContextListener implements ServletContextListener {
         return fixNotMavenizedArtifact.getProperties(zipFilePath);
     }
 
-    private void deploy(final GAV gav,
-                        final String jarPath) {
+    public void deploy(final GAV gav,
+                       final String jarPath) {
 
         final Artifact artifact = MavenRepository.getMavenRepository().resolveArtifact(new AFReleaseIdImpl(gav.getGroupId(), gav.getArtifactId(), gav.getVersion()));
 
