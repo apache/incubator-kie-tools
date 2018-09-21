@@ -25,6 +25,7 @@ import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.di.BPMNPlane;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomAttribute;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
@@ -63,6 +64,10 @@ public class ProcessPropertyReader extends BasePropertyReader {
 
     public String getProcessVariables() {
         return ProcessVariableReader.getProcessVariables(process.getProperties());
+    }
+
+    public String getCaseRoles() {
+        return CustomElement.caseRole.of(process).get();
     }
 
     public FlowElement getFlowElement(String id) {

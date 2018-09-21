@@ -67,7 +67,5 @@ public class DefinitionsConverterTest {
 
         assertThat(definitions.getExporter()).isNotBlank();
         assertThat(definitions.getExporterVersion()).isNotBlank();
-
     }
-
 }

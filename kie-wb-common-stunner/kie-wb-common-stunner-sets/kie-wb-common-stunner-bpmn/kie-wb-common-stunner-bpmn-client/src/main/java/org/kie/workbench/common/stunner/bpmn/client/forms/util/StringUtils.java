@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.bpmn.client.forms.util;
 
 import java.util.List;
+import java.util.Objects;
 
 import com.google.gwt.http.client.URL;
 
@@ -130,5 +131,9 @@ public class StringUtils {
         formattedDataType.append(" [").append(dataType.substring(0,
                                                                  i)).append("]");
         return formattedDataType.toString();
+    }
+
+    public static boolean isBlank(String input) {
+        return Objects.isNull(input) || Objects.equals("", input);
     }
 }

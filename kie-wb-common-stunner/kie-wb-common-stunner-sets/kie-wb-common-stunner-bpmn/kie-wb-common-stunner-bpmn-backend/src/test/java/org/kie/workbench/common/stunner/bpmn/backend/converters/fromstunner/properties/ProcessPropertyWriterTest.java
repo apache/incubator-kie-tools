@@ -21,12 +21,17 @@ import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
+import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseRoles;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpmn2;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.di;
 
+@RunWith(MockitoJUnitRunner.class)
 public class ProcessPropertyWriterTest {
 
     ProcessPropertyWriter p ;
@@ -82,5 +87,13 @@ public class ProcessPropertyWriterTest {
         assertThatThrownBy(() -> p.addChildEdge(bpmnEdge))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageStartingWith("Cannot add the same edge twice");
+    }
+
+    @Test
+    public void caseRoles() {
+        CaseRoles caseRole = new CaseRoles("role");
+        p.setCaseRoles(caseRole);
+        String cdata = CustomElement.caseRole.of(p.getProcess()).get();
+        assertThat("role").isEqualTo(CustomElement.caseRole.stripCData(cdata));
     }
 }

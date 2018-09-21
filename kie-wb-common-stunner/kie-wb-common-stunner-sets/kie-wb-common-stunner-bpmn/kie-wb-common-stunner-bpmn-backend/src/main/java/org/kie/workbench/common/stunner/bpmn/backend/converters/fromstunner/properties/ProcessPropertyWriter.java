@@ -46,6 +46,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.DeclarationList;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.ElementContainer;
+import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseRoles;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessVariables;
 
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpmn2;
@@ -184,6 +185,10 @@ public class ProcessPropertyWriter extends BasePropertyWriter implements Element
             properties.add(variable.getTypedIdentifier());
             this.itemDefinitions.add(variable.getTypeDeclaration());
         });
+    }
+
+    public void setCaseRoles(CaseRoles roles) {
+        CustomElement.caseRole.of(process).set(roles.getValue());
     }
 
     public void addLaneSet(Collection<LanePropertyWriter> lanes) {

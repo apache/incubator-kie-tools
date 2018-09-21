@@ -178,6 +178,12 @@
       <scope>provided</scope>
     </dependency>
 
+    <dependency>
+      <groupId>com.google.elemental2</groupId>
+      <artifactId>elemental2-dom</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
     <!-- Uberfire & Errai. -->
 
     <dependency>
@@ -278,11 +284,12 @@
     <!-- TODO:
     Lienzo mockito is not compatible with PowerMock, once running both
     in same classpath the build does not work - the use of power mock must be removed.
+    -->
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>lienzo-tests</artifactId>
       <scope>test</scope>
-    </dependency> -->
+    </dependency>
 
     <dependency>
       <groupId>org.mockito</groupId>
@@ -328,7 +335,6 @@
       <artifactId>powermock-api-mockito</artifactId>
       <scope>test</scope>
     </dependency>
-
   </dependencies>
 
 </project>
