@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
@@ -46,6 +47,8 @@ public class ScenarioGridModel extends BaseGridData {
 
     EventBus eventBus;
 
+    AtomicInteger columnCounter = new AtomicInteger(0);
+
     public ScenarioGridModel() {
     }
 
@@ -60,10 +63,15 @@ public class ScenarioGridModel extends BaseGridData {
     public void bindContent(Simulation simulation) {
         this.simulation = simulation;
         checkSimulation();
+        columnCounter.set(simulation.getSimulationDescriptor().getUnmodifiableFactMappings().size());
     }
 
     public void setEventBus(EventBus eventBus) {
         this.eventBus = eventBus;
+    }
+
+    public int nextColumnCount() {
+        return columnCounter.getAndIncrement();
     }
 
     /**

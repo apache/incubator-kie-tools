@@ -15,8 +15,29 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.renderers;
 
+import java.util.List;
+import java.util.function.BiFunction;
+
+import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
+import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyColumnRenderContext;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.impl.ColumnRenderingStrategyFlattened;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.impl.StringColumnRenderer;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
 
 public class ScenarioGridColumnRenderer extends StringColumnRenderer {
 
+    @Override
+    public List<GridRenderer.RendererCommand> renderColumn(final GridColumn<?> column,
+                                                           final GridBodyColumnRenderContext context,
+                                                           final BaseGridRendererHelper rendererHelper,
+                                                           final BaseGridRendererHelper.RenderingInformation renderingInformation,
+                                                           final BiFunction<Boolean, GridColumn<?>, Boolean> columnRenderingConstraint) {
+        return ColumnRenderingStrategyFlattened.render(column,
+                                                       context,
+                                                       rendererHelper,
+                                                       renderingInformation,
+                                                       columnRenderingConstraint);
     }
+
+}
