@@ -41,7 +41,7 @@ public class OutputClauseColumnHeaderMetaData extends NameAndDataTypeHeaderMetaD
                                             final CellEditorControlsView.Presenter cellEditorControls,
                                             final NameAndDataTypeEditorView.Presenter headerEditor) {
         super(Optional.of(hasName),
-              hasTypeRef,
+              () -> hasTypeRef,
               clearDisplayNameConsumer,
               setDisplayNameConsumer,
               setTypeRefConsumer,

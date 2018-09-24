@@ -20,6 +20,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
@@ -36,7 +37,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellE
 public abstract class NameAndDataTypeHeaderMetaData<E extends Expression> extends EditablePopupHeaderMetaData<HasNameAndTypeRef, NameAndDataTypeEditorView.Presenter> implements HasNameAndTypeRef {
 
     private final Optional<HasName> hasName;
-    private final HasTypeRef hasTypeRef;
+    private final Supplier<HasTypeRef> hasTypeRef;
     private final Consumer<HasName> clearDisplayNameConsumer;
     private final BiConsumer<HasName, Name> setDisplayNameConsumer;
     private final BiConsumer<HasTypeRef, QName> setTypeRefConsumer;
@@ -50,7 +51,7 @@ public abstract class NameAndDataTypeHeaderMetaData<E extends Expression> extend
                                          final CellEditorControlsView.Presenter cellEditorControls,
                                          final NameAndDataTypeEditorView.Presenter headerEditor) {
         this(hasName,
-             getTypeRefOfExpression(expression, hasExpression),
+             () -> getTypeRefOfExpression(expression, hasExpression),
              clearDisplayNameConsumer,
              setDisplayNameConsumer,
              setTypeRefConsumer,
@@ -59,7 +60,7 @@ public abstract class NameAndDataTypeHeaderMetaData<E extends Expression> extend
     }
 
     public NameAndDataTypeHeaderMetaData(final Optional<HasName> hasName,
-                                         final HasTypeRef hasTypeRef,
+                                         final Supplier<HasTypeRef> hasTypeRef,
                                          final Consumer<HasName> clearDisplayNameConsumer,
                                          final BiConsumer<HasName, Name> setDisplayNameConsumer,
                                          final BiConsumer<HasTypeRef, QName> setTypeRefConsumer,
@@ -119,7 +120,7 @@ public abstract class NameAndDataTypeHeaderMetaData<E extends Expression> extend
 
     @Override
     public QName getTypeRef() {
-        return hasTypeRef.getTypeRef();
+        return hasTypeRef.get().getTypeRef();
     }
 
     @Override
@@ -128,11 +129,11 @@ public abstract class NameAndDataTypeHeaderMetaData<E extends Expression> extend
             return;
         }
 
-        setTypeRefConsumer.accept(hasTypeRef, typeRef);
+        setTypeRefConsumer.accept(hasTypeRef.get(), typeRef);
     }
 
     @Override
     public DMNModelInstrumentedBase asDMNModelInstrumentedBase() {
-        return hasTypeRef.asDMNModelInstrumentedBase();
+        return hasTypeRef.get().asDMNModelInstrumentedBase();
     }
 }

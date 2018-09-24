@@ -41,7 +41,7 @@ public class RelationColumnHeaderMetaData extends NameAndDataTypeHeaderMetaData<
                                         final CellEditorControlsView.Presenter cellEditorControls,
                                         final NameAndDataTypeEditorView.Presenter headerEditor) {
         super(Optional.ofNullable(variable),
-              variable,
+              () -> variable,
               clearDisplayNameConsumer,
               setDisplayNameConsumer,
               setTypeRefConsumer,

@@ -181,7 +181,7 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
 
     private InputClauseColumn makeInputClauseColumn(final InputClause ic) {
         final InputClauseColumn column = new InputClauseColumn(new InputClauseColumnHeaderMetaData(wrapInputClauseIntoHasName(ic),
-                                                                                                   ic.getInputExpression(),
+                                                                                                   ic::getInputExpression,
                                                                                                    clearDisplayNameConsumer(false),
                                                                                                    setDisplayNameConsumer(false),
                                                                                                    setTypeRefConsumer(),

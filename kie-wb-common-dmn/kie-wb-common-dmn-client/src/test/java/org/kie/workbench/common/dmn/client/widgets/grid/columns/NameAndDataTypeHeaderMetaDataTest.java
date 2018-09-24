@@ -27,7 +27,7 @@ public class NameAndDataTypeHeaderMetaDataTest extends BaseNameAndDataTypeHeader
 
     public void setup(final Optional<HasName> hasName) {
         this.metaData = new NameAndDataTypeHeaderMetaData(hasName,
-                                                          hasTypeRef,
+                                                          () -> hasTypeRef,
                                                           clearDisplayNameConsumer,
                                                           setDisplayNameConsumer,
                                                           setTypeRefConsumer,

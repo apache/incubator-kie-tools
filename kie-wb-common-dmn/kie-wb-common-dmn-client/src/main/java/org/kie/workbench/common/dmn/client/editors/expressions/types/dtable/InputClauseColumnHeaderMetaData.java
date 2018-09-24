@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.dtable;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
@@ -34,7 +35,7 @@ public class InputClauseColumnHeaderMetaData extends NameAndDataTypeHeaderMetaDa
     private static final String NAME_DATA_TYPE_COLUMN_GROUP = "InputClauseColumnHeaderMetaData$NameAndDataTypeColumn";
 
     public InputClauseColumnHeaderMetaData(final HasName hasName,
-                                           final LiteralExpression hasTypeRef,
+                                           final Supplier<LiteralExpression> hasTypeRef,
                                            final Consumer<HasName> clearDisplayNameConsumer,
                                            final BiConsumer<HasName, Name> setDisplayNameConsumer,
                                            final BiConsumer<HasTypeRef, QName> setTypeRefConsumer,
