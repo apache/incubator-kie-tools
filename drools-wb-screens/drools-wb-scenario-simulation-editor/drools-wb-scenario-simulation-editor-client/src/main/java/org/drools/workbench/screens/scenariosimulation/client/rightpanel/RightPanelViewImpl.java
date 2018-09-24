@@ -58,6 +58,9 @@ public class RightPanelViewImpl
     @DataField("listContainer")
     DivElement listContainer = Document.get().createDivElement();
 
+    @DataField("conditionsButton")
+    ButtonElement conditionsButton = Document.get().createButtonElement();
+
     public RightPanelViewImpl() {
 
     }
@@ -65,6 +68,7 @@ public class RightPanelViewImpl
     @Override
     public void init(Presenter presenter) {
         this.presenter = presenter;
+        disableEditorTab();
     }
 
     @Override
@@ -120,4 +124,32 @@ public class RightPanelViewImpl
     public DivElement getListContainer() {
         return listContainer;
     }
+
+    @Override
+    public void enableEditorTab() {
+        setDisabledStatus(false);
+    }
+
+    @Override
+    public void disableEditorTab() {
+        setDisabledStatus(true);
+    }
+
+    protected void setDisabledStatus(boolean disabled) {
+        clearSearchButton.setDisabled(disabled);
+        searchButton.setDisabled(disabled);
+        inputSearch.setDisabled(disabled);
+        nameField.setDisabled(disabled);
+        conditionsButton.setDisabled(disabled);
+        setListContainerDisabledStatus(disabled);
+    }
+
+    protected void setListContainerDisabledStatus(boolean disabled) {
+        if (disabled) {
+            listContainer.addClassName("disabled");
+        } else {
+            listContainer.removeClassName("disabled");
+        }
+    }
+
 }

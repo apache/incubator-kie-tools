@@ -29,6 +29,7 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.screens.scenariosimulation.client.commands.CommandExecutor;
 import org.drools.workbench.screens.scenariosimulation.client.models.FactModelTree;
@@ -97,11 +98,16 @@ public class ScenarioSimulationEditorPresenter
 
     private Command populateRightPanelCommand;
 
+    //Package for which this Scenario Simulation relates
+    private String packageName = "";
+
     RightPanelMenuItem rightPanelMenuItem;
 
     PlaceRequest rightPanelRequest;
 
     ObservablePath path;
+
+    EventBus eventBus;
 
     public ScenarioSimulationEditorPresenter() {
         //Zero-parameter constructor for CDI proxies
@@ -115,8 +121,7 @@ public class ScenarioSimulationEditorPresenter
                                              final AsyncPackageDataModelOracleFactory oracleFactory,
                                              final PlaceManager placeManager) {
         super(scenarioSimulationProducer.getScenarioSimulationView());
-        this.view = scenarioSimulationProducer.getScenarioSimulationView();
-        this.baseView = view;
+        this.view = (ScenarioSimulationView) baseView;
         this.service = service;
         this.type = type;
         this.importsWidget = importsWidget;
@@ -124,6 +129,9 @@ public class ScenarioSimulationEditorPresenter
         this.placeManager = placeManager;
         this.rightPanelMenuItem = scenarioSimulationProducer.getRightPanelMenuItem();
         this.commandExecutor = scenarioSimulationProducer.getCommandExecutor();
+        this.eventBus = scenarioSimulationProducer.getEventBus();
+
+        commandExecutor.setScenarioGridPanel(view.getScenarioGridPanel());
 
         view.init(this);
 
@@ -200,11 +208,13 @@ public class ScenarioSimulationEditorPresenter
         }
         PathPlaceRequest placeRequest = (PathPlaceRequest) placeHiddenEvent.getPlace();
         if (placeRequest.getIdentifier().equals(ScenarioSimulationEditorPresenter.IDENTIFIER)
-                && placeRequest.getPath().equals(this.path)
-                && PlaceStatus.OPEN.equals(placeManager.getStatus(rightPanelRequest))) {
-            unRegisterRightPanelCallback();
-            clearRightPanelStatus();
-            placeManager.closePlace(rightPanelRequest);
+                && placeRequest.getPath().equals(this.path)) {
+            view.getScenarioGridLayer().getScenarioGrid().clearSelections();
+            if (PlaceStatus.OPEN.equals(placeManager.getStatus(rightPanelRequest))) {
+                unRegisterRightPanelCallback();
+                clearRightPanelStatus();
+                placeManager.closePlace(rightPanelRequest);
+            }
         }
     }
 
@@ -271,7 +281,12 @@ public class ScenarioSimulationEditorPresenter
 
     void populateRightPanel() {
         // Execute only when RightPanelPresenter is actually available
-        getRightPanelPresenter().ifPresent(this::populateRightPanel);
+        getRightPanelPresenter().ifPresent(presenter -> {
+            presenter.onDisableEditorTab();
+            commandExecutor.setRightPanelPresenter(presenter);
+            presenter.setEventBus(eventBus);
+            populateRightPanel(presenter);
+        });
     }
 
     void populateRightPanel(RightPanelView.Presenter rightPanelPresenter) {
@@ -311,6 +326,7 @@ public class ScenarioSimulationEditorPresenter
                 return;
             }
 
+            packageName = content.getDataModel().getPackageName();
             resetEditorPages(content.getOverview());
             model = content.getModel();
             oracle = oracleFactory.makeAsyncPackageDataModelOracle(versionRecordManager.getCurrentPath(),
@@ -347,7 +363,7 @@ public class ScenarioSimulationEditorPresenter
                     simpleProperties.put(modelField.getName(), modelField.getClassName());
                 }
             }
-            FactModelTree toSend = new FactModelTree(factName, simpleProperties);
+            FactModelTree toSend = new FactModelTree(factName, packageName, simpleProperties);
             aggregatorCallback.callback(toSend);
         };
     }

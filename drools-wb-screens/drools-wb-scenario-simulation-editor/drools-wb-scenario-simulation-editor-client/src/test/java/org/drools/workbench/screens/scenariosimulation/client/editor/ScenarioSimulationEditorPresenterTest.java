@@ -17,11 +17,14 @@
 package org.drools.workbench.screens.scenariosimulation.client.editor;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.drools.workbench.screens.scenariosimulation.client.commands.CommandExecutor;
 import org.drools.workbench.screens.scenariosimulation.client.producers.ScenarioSimulationProducer;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.RightPanelPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.RightPanelView;
 import org.drools.workbench.screens.scenariosimulation.client.type.ScenarioSimulationResourceType;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.RightPanelMenuItem;
+import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGrid;
+import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridLayer;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModelContent;
 import org.guvnor.common.services.shared.metadata.model.Overview;
@@ -87,6 +90,12 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
     private EventSourceMock<NotificationEvent> mockNotification;
 
     @Mock
+    private ScenarioGrid mockScenarioGrid;
+
+    @Mock
+    private ScenarioGridLayer mockScenarioGridLayer;
+
+    @Mock
     private ScenarioSimulationView mockScenarioSimulationView;
 
     @Mock
@@ -128,21 +137,24 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
     @Mock
     private Command mockSetButtonTextTrue;
 
+    @Mock
+    private CommandExecutor mockCommandExecutor;
+
     @Before
     public void setup() {
         super.setup();
-
+        when(mockScenarioGridLayer.getScenarioGrid()).thenReturn(mockScenarioGrid);
+        when(mockScenarioSimulationView.getScenarioGridLayer()).thenReturn(mockScenarioGridLayer);
         when(mockRightPanelMenuItem.getSetButtonTextFalse()).thenReturn(mockSetButtonTextFalse);
         when(mockRightPanelMenuItem.getSetButtonTextTrue()).thenReturn(mockSetButtonTextTrue);
         when(mockScenarioSimulationProducer.getScenarioSimulationView()).thenReturn(mockScenarioSimulationView);
+        when(mockScenarioSimulationProducer.getCommandExecutor()).thenReturn(mockCommandExecutor);
         when(mockPlaceRequest.getIdentifier()).thenReturn(ScenarioSimulationEditorPresenter.IDENTIFIER);
 
         when(mockOracleFactory.makeAsyncPackageDataModelOracle(anyObject(), anyObject(), anyObject())).thenReturn(mockOracle);
 
         when(mockRightPanelView.getPresenter()).thenReturn(mockRightPanelPresenter);
         when(mockRightPanelActivity.getWidget()).thenReturn(mockRightPanelView);
-
-        when(mockPlaceManager.getActivity(RightPanelPresenter.PLACE_REQUEST)).thenReturn(mockRightPanelActivity);
 
         when(mockPlaceRequest.getPath()).thenReturn(mockPath);
 
@@ -261,6 +273,7 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
         when(mockPlaceManager.getStatus(mockPlaceRequest)).thenReturn(PlaceStatus.OPEN);
         presenter.onPlaceHiddenEvent(mockPlaceHiddenEvent);
         verify(mockPlaceManager, times(1)).closePlace(mockPlaceRequest);
+        verify(mockScenarioGrid, times(1)).clearSelections();
     }
 
     @Test

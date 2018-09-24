@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.workbench.screens.scenariosimulation.client.rightpanel;
+package org.drools.workbench.screens.scenariosimulation.client.commands;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
@@ -22,34 +22,25 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class FieldItemViewTest extends AbstractRightPanelTest {
+public class EnableRightPanelCommandTest extends AbstractCommandTest {
 
-    private FieldItemViewImpl fieldItemView;
 
-    private String INNER_HTML;
-    private String ID_ATTRIBUTE;
+
+    private EnableRightPanelCommand enableRightPanelCommand;
 
     @Before
     public void setup() {
         super.setup();
-        INNER_HTML = "<a title=\"" + FACT_NAME + "\" href=\"#\">"  + FACT_NAME + "</a> " + FACT_MODEL_TREE.getFactName();
-        ID_ATTRIBUTE = "fieldElement-" + FACT_NAME + "-" + FACT_MODEL_TREE.getFactName();
-        this.fieldItemView = spy(new FieldItemViewImpl() {
-            {
-                this.fieldElement = mockLIElement;
-            }
-        });
+        enableRightPanelCommand = new EnableRightPanelCommand(mockRightPanelPresenter, COLUMN_INDEX);
     }
 
     @Test
-    public void setFieldData() {
-        fieldItemView.setFieldData("", FACT_NAME, FACT_NAME, FACT_MODEL_TREE.getFactName());
-        verify(mockLIElement, times(1)).setInnerHTML(eq(INNER_HTML));
-        verify(mockLIElement, times(1)).setAttribute(eq("id"), eq(ID_ATTRIBUTE));
+    public void execute() {
+        enableRightPanelCommand.execute();
+        verify(mockRightPanelPresenter, times(1)).onEnableEditorTab(eq(COLUMN_INDEX));
     }
 }

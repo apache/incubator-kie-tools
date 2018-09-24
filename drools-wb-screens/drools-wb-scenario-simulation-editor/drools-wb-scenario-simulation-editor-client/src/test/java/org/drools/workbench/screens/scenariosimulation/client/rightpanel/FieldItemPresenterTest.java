@@ -50,9 +50,9 @@ public class FieldItemPresenterTest extends AbstractRightPanelTest {
 
     @Test
     public void getLIElement() {
-        fieldItemPresenter.getLIElement(FACT_NAME, FACT_NAME, FACT_MODEL_TREE.getFactName());
+        fieldItemPresenter.getLIElement("", FACT_NAME, FACT_NAME, FACT_MODEL_TREE.getFactName());
         verify(mockViewsProvider, times(1)).getFieldItemView();
-        verify(mockFieldItemView, times(1)).setFieldData(eq(FACT_NAME), eq(FACT_NAME), eq(FACT_MODEL_TREE.getFactName()));
+        verify(mockFieldItemView, times(1)).setFieldData(eq(""), eq(FACT_NAME), eq(FACT_NAME), eq(FACT_MODEL_TREE.getFactName()));
         verify(mockFieldItemView, times(1)).setPresenter(eq(fieldItemPresenter));
     }
 }

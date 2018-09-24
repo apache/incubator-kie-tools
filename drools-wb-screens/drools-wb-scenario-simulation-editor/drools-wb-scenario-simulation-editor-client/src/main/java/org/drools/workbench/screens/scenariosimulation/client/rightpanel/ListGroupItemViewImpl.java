@@ -28,6 +28,9 @@ import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
+/**
+ * This class is used to represent a <b>complex</b> (i.e. expandable) property, i.e. a class containing other properties
+ */
 @Dependent
 @Templated
 public class ListGroupItemViewImpl implements ListGroupItemView {
@@ -55,6 +58,8 @@ public class ListGroupItemViewImpl implements ListGroupItemView {
     UListElement factProperties = Document.get().createULElement();
 
     Presenter presenter;
+
+    String parentPath = "";
 
     String factName;
 
@@ -106,7 +111,20 @@ public class ListGroupItemViewImpl implements ListGroupItemView {
                 .append(factType)
                 .toString();
         fullClassName.setInnerHTML(innerHtml);
+        fullClassName.setAttribute("factName", factName);
+        fullClassName.setAttribute("factType", factType);
+        fullClassName.setAttribute("parentPath", parentPath);
         listGroupItem.setAttribute("id", "listGroupItem-" + factName);
+    }
+
+    @Override
+    public void setParentPath(String parentPath) {
+        this.parentPath = this.parentPath.isEmpty() ? parentPath : this.parentPath + "." + parentPath;
+    }
+
+    @Override
+    public String getParentPath() {
+        return parentPath;
     }
 
     @Override

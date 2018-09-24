@@ -20,6 +20,7 @@ import java.util.List;
 
 import com.google.gwt.event.shared.EventBus;
 import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
+import org.drools.workbench.screens.scenariosimulation.client.rightpanel.RightPanelPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGrid;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridLayer;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
@@ -42,6 +43,10 @@ public abstract class AbstractCommandTest {
     protected ScenarioGridLayer mockScenarioGridLayer;
     @Mock
     protected ScenarioGrid mockScenarioGrid;
+
+    @Mock
+    protected RightPanelPresenter mockRightPanelPresenter;
+
     @Mock
     protected EventBus mockEventBus;
 
@@ -59,6 +64,12 @@ public abstract class AbstractCommandTest {
     protected final String COLUMN_ID = "COLUMN ID";
 
     protected final String COLUMN_GROUP = FactMappingType.EXPECTED.name();
+
+    protected final String FULL_PACKAGE = "test.scesim";
+
+    protected final String VALUE = "VALUE";
+
+    protected final String VALUE_CLASS_NAME = String.class.getName();
 
     protected final int ROW_INDEX = 2;
     protected final int COLUMN_INDEX = 3;

@@ -28,13 +28,23 @@ public class FieldItemPresenter implements FieldItemView.Presenter {
     @Inject
     ViewsProvider viewsProvider;
 
+    RightPanelView.Presenter rightPanelPresenter;
+
     @Override
-    public LIElement getLIElement(String factName, String fieldName, String className) {
+    public LIElement getLIElement(String parentPath, String factName, String fieldName, String className) {
         FieldItemView fieldItemView = viewsProvider.getFieldItemView();
-        fieldItemView.setFieldData(factName, fieldName, className);
+        fieldItemView.setFieldData(parentPath, factName, fieldName, className);
         fieldItemView.setPresenter(this);
         LIElement toReturn = fieldItemView.getLIElement();
         return toReturn;
     }
 
+    @Override
+    public void setRightPanelPresenter(RightPanelView.Presenter rightPanelPresenter) {
+        this.rightPanelPresenter = rightPanelPresenter;
+    }
+
+    public void onFieldElementDoubleClick(String fullPath, String fieldName, String className) {
+        rightPanelPresenter.onModifyColumn(fullPath, fieldName, className);
+    }
 }

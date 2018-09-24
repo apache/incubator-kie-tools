@@ -91,6 +91,17 @@ public class Scenario {
                 e.getExpressionIdentifier().equals(expressionIdentifier)).findFirst();
     }
 
+    public Optional<FactMappingValue> getFactMappingValueByIndex(int index) {
+        FactMapping factMappingByIndex;
+        try {
+            factMappingByIndex = simulationDescriptor.getFactMappingByIndex(index);
+        } catch (IndexOutOfBoundsException e) {
+            throw new IllegalArgumentException(
+                    new StringBuilder().append("Impossible to retrieve FactMapping at index ").append(index).toString(), e);
+        }
+        return getFactMappingValue(factMappingByIndex.getFactIdentifier(), factMappingByIndex.getExpressionIdentifier());
+    }
+
     public List<FactMappingValue> getFactMappingValuesByFactIdentifier(FactIdentifier factIdentifier) {
         return factMappingValues.stream().filter(e -> e.getFactIdentifier().equals(factIdentifier)).collect(toList());
     }

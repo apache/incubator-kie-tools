@@ -89,6 +89,7 @@ public class RightPanelViewImplTest {
 
     @Test
     public void hideClearButton() {
+        reset(mockClearSearchButton);
         rightPanelView.hideClearButton();
         verify(mockClearSearchButton, times(1)).setDisabled(eq(true));
         verify(mockClearSearchButton, times(1)).setAttribute(eq("style"), eq("display: none;"));
@@ -96,6 +97,7 @@ public class RightPanelViewImplTest {
 
     @Test
     public void showClearButton() {
+        reset(mockClearSearchButton);
         rightPanelView.showClearButton();
         verify(mockClearSearchButton, times(1)).setDisabled(eq(false));
         verify(mockClearSearchButton, times(1)).removeAttribute(eq("style"));

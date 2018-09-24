@@ -57,6 +57,29 @@ public class ScenarioGrid extends BaseGridWidget {
         return (ScenarioGridModel) model;
     }
 
+    /**
+     * Unselect all cells/columns from model {@see GridData.clearSelections()}
+     */
+    public void clearSelections() {
+        model.clearSelections();
+    }
+
+    /**
+     * Select all the cells of the given column
+     * @param columnIndex
+     */
+    public void selectColumn(int columnIndex) {
+        ((ScenarioGridModel) model).selectColumn(columnIndex);
+    }
+
+    /**
+     * Select all the cells of the given row
+     * @param rowIndex
+     */
+    public void selectRow(int rowIndex) {
+        ((ScenarioGridModel) model).selectRow(rowIndex);
+    }
+
     @Override
     protected NodeMouseDoubleClickHandler getGridMouseDoubleClickHandler(final GridSelectionManager selectionManager,
                                                                          final GridPinnedModeManager pinnedModeManager) {

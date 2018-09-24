@@ -22,13 +22,29 @@ public interface FieldItemView {
 
     interface Presenter {
 
-        LIElement getLIElement(String factName, String fieldName, String className);
+        /**
+         * @param parentPath The parent path (empty if the properties belongs to a <b>top-level</b> element)
+         * @param factName
+         * @param fieldName
+         * @param className
+         * @return
+         */
+        LIElement getLIElement(String parentPath, String factName, String fieldName, String className);
 
+        void onFieldElementDoubleClick(String fullPath, String fieldName, String className);
+
+        void setRightPanelPresenter(RightPanelView.Presenter rightPanelPresenter);
     }
 
     void setPresenter(FieldItemView.Presenter fieldItemPresenter);
 
-    void setFieldData(String factName, String fieldName, String className);
+    /**
+     * @param fullPath The parent path (empty if the properties belongs to a <b>top-level</b> element)
+     * @param factName
+     * @param fieldName
+     * @param className
+     */
+    void setFieldData(String fullPath, String factName, String fieldName, String className);
 
     LIElement getLIElement();
 }

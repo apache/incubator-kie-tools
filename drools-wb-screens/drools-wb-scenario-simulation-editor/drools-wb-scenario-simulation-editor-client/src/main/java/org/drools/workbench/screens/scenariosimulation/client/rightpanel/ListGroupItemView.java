@@ -30,7 +30,18 @@ public interface ListGroupItemView extends IsWidget,
 
     void setFactName(String factName);
 
+    /**
+     * @param parentPath the <b>parent</b>' path
+     */
+    void setParentPath(String parentPath);
+
+    /**
+     * @param factName the property' name
+     * @param factType the property' type
+     */
     void setFactNameAndType(String factName, String factType);
+
+    String getParentPath();
 
     String getFactName();
 
@@ -38,6 +49,10 @@ public interface ListGroupItemView extends IsWidget,
 
     void addFactField(LIElement fieldElement);
 
+    /**
+     * This add and a <b>complex</b> (i.e. expandable) property, i.e. a class containing other properties
+     * @param fieldElement
+     */
     void addExpandableFactField(DivElement fieldElement);
 
     DivElement getDivElement();
@@ -48,9 +63,20 @@ public interface ListGroupItemView extends IsWidget,
 
     interface Presenter {
 
+        /**
+         * This method returns a <b>top-level</b> <code>DivElement</code> representing a <b>complex</b> (i.e. expandable) property, i.e. a class containing other properties
+         * @param factName
+         * @param factModelTree
+         */
         DivElement getDivElement(String factName, FactModelTree factModelTree);
 
-        DivElement getDivElement(String factName, String factModelTreeClass);
+        /**
+         * This method returns a <b>nested</b> <code>DivElement</code> representing a <b>complex</b> (i.e. expandable) property, i.e. a class containing other properties
+         * @param parentPath the <b>parent</b> path
+         * @param factName the property' name
+         * @param factModelTreeClass the property' type
+         */
+        DivElement getDivElement(String parentPath, String factName, String factModelTreeClass);
 
         void onToggleRowExpansion(ListGroupItemView listGroupItemView, boolean currentlyShown);
 

@@ -38,9 +38,20 @@ abstract class AbstractRightPanelTest {
     @Mock
     protected ViewsProvider mockViewsProvider;
 
-    SortedMap<String, FactModelTree> mockTopLevelMap;
-    String FACT_NAME;
-    FactModelTree FACT_MODEL_TREE;
+    protected SortedMap<String, FactModelTree> mockTopLevelMap;
+    protected String FACT_NAME;
+    protected String FACT_PACKAGE = "test.scesim.package";
+    protected final String GRID_COLUMN_TITLE = "GRID_COLUMN_TITLE";
+    protected final String GRID_COLUMN_GROUP = "GIVEN";
+    protected final String GRID_COLUMN_ID = "GRID_COLUMN_ID";
+    protected final String GRID_CELL_TEXT = "GRID_CELL_TEXT";
+    protected final String FULL_PACKAGE = "test.scesim";
+    protected final String VALUE = "VALUE";
+    protected final String VALUE_CLASS_NAME = String.class.getName();
+    protected final int ROW_COUNT = 4;
+    protected final int ROW_INDEX = 3;
+    protected final int COLUMN_INDEX = 5;
+    protected FactModelTree FACT_MODEL_TREE;
 
     @Before
     public void setup() {
@@ -53,13 +64,13 @@ abstract class AbstractRightPanelTest {
         return new ArrayList<>(source.keySet()).get(position);
     }
 
-    private SortedMap<String, FactModelTree> getMockTopLevelMap() {
+    protected SortedMap<String, FactModelTree> getMockTopLevelMap() {
         SortedMap<String, FactModelTree> toReturn = new TreeMap<>();
         IntStream
                 .range(0, 3)
                 .forEach(id -> {
                     String key = getRandomString();
-                    FactModelTree value = new FactModelTree(key, getMockSimpleProperties());
+                    FactModelTree value = new FactModelTree(key, FACT_PACKAGE, getMockSimpleProperties());
                     toReturn.put(key, value);
                     if (id == 1) {
                         value.addSimpleProperty(getRandomString(), getRandomFactModelTree(toReturn, 0));
@@ -73,7 +84,7 @@ abstract class AbstractRightPanelTest {
         return toReturn;
     }
 
-    private Map<String, String> getMockSimpleProperties() {
+    protected Map<String, String> getMockSimpleProperties() {
         Map<String, String> toReturn = new HashMap<>();
         IntStream
                 .range(0, +3)
@@ -81,7 +92,7 @@ abstract class AbstractRightPanelTest {
         return toReturn;
     }
 
-    private String getRandomString() {
+    protected String getRandomString() {
         String letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         StringBuilder builder = new StringBuilder();
         int numberOfLetters = letters.length();
@@ -93,7 +104,7 @@ abstract class AbstractRightPanelTest {
         return builder.toString();
     }
 
-    private String getRandomType() {
+    protected String getRandomType() {
         int type = new Random().nextInt(4);
         switch (type) {
             case 0:

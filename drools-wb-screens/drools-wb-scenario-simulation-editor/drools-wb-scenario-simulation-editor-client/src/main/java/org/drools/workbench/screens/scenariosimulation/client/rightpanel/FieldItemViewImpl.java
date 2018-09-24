@@ -18,9 +18,14 @@ package org.drools.workbench.screens.scenariosimulation.client.rightpanel;
 
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.LIElement;
+import com.google.gwt.event.dom.client.DoubleClickEvent;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
+/**
+ * This class is used to represent a <b>simple</b> (i.e. not expandable) property, like for example java primitives
+ */
 @Templated
 public class FieldItemViewImpl implements FieldItemView {
 
@@ -29,25 +34,44 @@ public class FieldItemViewImpl implements FieldItemView {
 
     private Presenter fieldItemPresenter;
 
+    private String fullPath;
+    private String factName;
+    private String fieldName;
+    private String className;
+
+    @Override
+    public void setFieldData(String fullPath, String factName, String fieldName, String className) {
+        String innerHtml = new StringBuilder()
+                .append("<a title=\"")
+                .append(fieldName)
+                .append("\" href=\"#\">")
+                .append(fieldName)
+                .append("</a> ")
+                .append(className)
+                .toString();
+        fieldElement.setInnerHTML(innerHtml);
+        fieldElement.setAttribute("id", "fieldElement-" + factName + "-" + fieldName);
+        fieldElement.setAttribute("fieldName", fieldName);
+        fieldElement.setAttribute("className", className);
+        fieldElement.setAttribute("fullPath", fullPath);
+        this.factName = factName;
+        this.fieldName = fieldName;
+        this.className = className;
+        this.fullPath = fullPath;
+    }
+
     @Override
     public void setPresenter(Presenter fieldItemPresenter) {
         this.fieldItemPresenter = fieldItemPresenter;
     }
 
     @Override
-    public void setFieldData(String factName, String fieldName, String className) {
-        String innerHtml = new StringBuilder()
-                .append("<b>")
-                .append(fieldName)
-                .append("</b> ")
-                .append(className)
-                .toString();
-        fieldElement.setInnerHTML(innerHtml);
-        fieldElement.setAttribute("id", "fieldElement-" + factName + "-" + fieldName);
-    }
-
-    @Override
     public LIElement getLIElement() {
         return fieldElement;
+    }
+
+    @EventHandler("fieldElement")
+    public void onFieldElementDoubleClick(DoubleClickEvent clickEvent) {
+        fieldItemPresenter.onFieldElementDoubleClick(fullPath, fieldName, className);
     }
 }

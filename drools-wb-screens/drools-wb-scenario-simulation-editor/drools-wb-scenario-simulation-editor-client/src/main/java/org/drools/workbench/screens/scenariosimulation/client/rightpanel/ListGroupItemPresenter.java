@@ -17,6 +17,7 @@ package org.drools.workbench.screens.scenariosimulation.client.rightpanel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -38,34 +39,47 @@ public class ListGroupItemPresenter implements ListGroupItemView.Presenter {
 
     List<ListGroupItemView> listGroupItemViewList = new ArrayList<>();
 
+    private AtomicBoolean disabled = new AtomicBoolean(true);
+
+    public void setDisabled(boolean disabled) {
+        this.disabled.set(disabled);
+        if (disabled) {
+            listGroupItemViewList.forEach(ListGroupItemView::closeRow);
+        }
+    }
+
     @Override
     public void init(RightPanelView.Presenter rightPanelPresenter) {
         this.rightPanelPresenter = rightPanelPresenter;
+        fieldItemPresenter.setRightPanelPresenter(rightPanelPresenter);
     }
 
     @Override
     public DivElement getDivElement(String factName, FactModelTree factModelTree) {
-        ListGroupItemView listGroupItemView = commonGetListGroupItemView(false);
-        populateListGroupItemView(listGroupItemView, factName, factModelTree);
+        ListGroupItemView listGroupItemView = commonGetListGroupItemView("", false);
+        populateListGroupItemView(listGroupItemView, "", factName, factModelTree);
         return listGroupItemView.getDivElement();
     }
 
     @Override
-    public DivElement getDivElement(String factName, String factModelTreeClass) {
-        ListGroupItemView listGroupItemView = commonGetListGroupItemView(true);
+    public DivElement getDivElement(String fullPath, String factName, String factModelTreeClass) {
+        ListGroupItemView listGroupItemView = commonGetListGroupItemView(fullPath, true);
         populateListGroupItemView(listGroupItemView, factName, factModelTreeClass);
         return listGroupItemView.getDivElement();
     }
 
     @Override
     public void onToggleRowExpansion(ListGroupItemView listGroupItemView, boolean currentlyShown) {
+        if (disabled.get()) {
+            return;
+        }
         if (listGroupItemViewList.contains(listGroupItemView)) {
             if (currentlyShown) {
                 listGroupItemView.closeRow();
             } else {
                 if (listGroupItemView.isToExpand()) {
                     FactModelTree factModelTree = rightPanelPresenter.getFactModelTree(listGroupItemView.getFactType());
-                    populateListGroupItemView(listGroupItemView, listGroupItemView.getFactName(), factModelTree);
+                    populateListGroupItemView(listGroupItemView, listGroupItemView.getParentPath(), listGroupItemView.getFactName(), factModelTree);
                     listGroupItemView.setToExpand(false);
                 }
                 listGroupItemView.expandRow();
@@ -73,29 +87,45 @@ public class ListGroupItemPresenter implements ListGroupItemView.Presenter {
         }
     }
 
-    protected void populateListGroupItemView(ListGroupItemView toPopulate, String factName, FactModelTree factModelTree) {
-        if (factName.equals(factModelTree.getFactName())) {
+    /**
+     * Populate the "Assets" list. When
+     * @param toPopulate
+     * @param parentPath
+     * @param factName
+     * @param factModelTree the <code>FactModelTree</code> with all properties of a given type
+     */
+    protected void populateListGroupItemView(ListGroupItemView toPopulate, String parentPath, String factName, FactModelTree factModelTree) {
+        if (factName.equals(factModelTree.getFactName())) {  // the name of the property equals the type of the factModelTree: this means that we are populating the "root" of the class
             toPopulate.setFactName(factName);
         } else {
-            toPopulate.setFactNameAndType(factName, factModelTree.getFactName());
+            toPopulate.setFactNameAndType(factName, factModelTree.getFactName()); // the name of the property differ from the type of the factModelTree: this means that we are populating children of the class
         }
-        factModelTree.getSimpleProperties().forEach((key, value) -> toPopulate.addFactField(fieldItemPresenter.getLIElement(factName, key, value)));
+        String fullPath = parentPath.isEmpty() ? factName : parentPath + "." + factName;
+        factModelTree.getSimpleProperties().forEach((key, value) -> toPopulate.addFactField(fieldItemPresenter.getLIElement(fullPath, factName, key, value)));
         factModelTree.getExpandableProperties().forEach(
-                (key, value) -> toPopulate.addExpandableFactField(getDivElement(key, value)));
-    }
-
-    protected void populateListGroupItemView(ListGroupItemView toPopulate, String factName, String factModelTreeClass) {
-        toPopulate.setFactNameAndType(factName, factModelTreeClass);
+                (key, value) -> toPopulate.addExpandableFactField(getDivElement(fullPath, key, value)));
     }
 
     /**
-     * @param toExpand If <code>true</code>, on onToggleRowExpansion inner properties will be populated
+     * Set the property' <b>name</b> (factName) and <b>type</b> (factModelTreeClass) of a given <code>ListGroupItemView</code>
+     * @param toPopulate
+     * @param factName the property' name
+     * @param factType the property' type
+     */
+    protected void populateListGroupItemView(ListGroupItemView toPopulate, String factName, String factType) {
+        toPopulate.setFactNameAndType(factName, factType);
+    }
+
+    /**
+     * @param parentPath the parent' path - empty for <b>top-level</b> elements
+     * @param toExpand If <code>true</code>, on {@link #onToggleRowExpansion(ListGroupItemView, boolean)} inner properties will be populated
      * @return
      */
-    protected ListGroupItemView commonGetListGroupItemView(boolean toExpand) {
+    protected ListGroupItemView commonGetListGroupItemView(String parentPath, boolean toExpand) {
         ListGroupItemView listGroupItemView = viewsProvider.getListGroupItemView();
         listGroupItemView.init(this);
         listGroupItemView.setToExpand(toExpand);
+        listGroupItemView.setParentPath(parentPath);
         listGroupItemViewList.add(listGroupItemView);
         return listGroupItemView;
     }

@@ -15,6 +15,8 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.producers;
 
+import java.util.Set;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -49,9 +51,9 @@ public class ScenarioSimulationViewProducer {
         scenarioSimulationGridPanelClickHandler.setScenarioGrid(scenarioGridPanel.getScenarioGrid());
         scenarioSimulationGridPanelClickHandler.setEventBus(eventBus);
 
-        HandlerRegistration clickHandlerRegistration = scenarioGridPanel.addClickHandler(scenarioSimulationGridPanelClickHandler);
+        Set<HandlerRegistration> handlerRegistrations = scenarioGridPanel.addClickHandler(scenarioSimulationGridPanelClickHandler);
         scenarioSimulationView.setScenarioGridPanel(scenarioGridPanel);
-        scenarioSimulationView.setClickHandlerRegistration(clickHandlerRegistration);
+        scenarioSimulationView.setHandlerRegistrations(handlerRegistrations);
         return scenarioSimulationView;
     }
 

@@ -24,17 +24,23 @@ import java.util.Map;
 public class FactModelTree {
 
     private final String factName;  // The name of the asset
+    private final String fullPackage;  // The package of the asset
 
     private final Map<String, String> simpleProperties; // Map of the properties: key = property name, value = property value
     private final Map<String, String> expandableProperties = new HashMap<>(); // Map of the expandable properties: key = property name, value = property value
 
-    public FactModelTree(String factName, Map<String, String> simpleProperties) {
+    public FactModelTree(String factName, String fullPackage, Map<String, String> simpleProperties) {
         this.factName = factName;
+        this.fullPackage = fullPackage;
         this.simpleProperties = simpleProperties;
     }
 
     public String getFactName() {
         return factName;
+    }
+
+    public String getFullPackage() {
+        return fullPackage;
     }
 
     public Map<String, String> getSimpleProperties() {

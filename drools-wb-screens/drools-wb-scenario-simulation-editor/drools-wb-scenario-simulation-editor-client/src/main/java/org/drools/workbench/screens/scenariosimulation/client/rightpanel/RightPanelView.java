@@ -19,6 +19,7 @@ package org.drools.workbench.screens.scenariosimulation.client.rightpanel;
 import java.util.SortedMap;
 
 import com.google.gwt.dom.client.DivElement;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.screens.scenariosimulation.client.models.FactModelTree;
 import org.uberfire.client.mvp.HasPresenter;
@@ -39,6 +40,18 @@ public interface RightPanelView
 
     Presenter getPresenter();
 
+    /**
+     * By default the <b>Editor Tab</b> is disabled (no user interaction allowed).
+     * It is enabled only by click on grid' header
+     */
+    void enableEditorTab();
+
+    /**
+     * By default the <b>Editor Tab</b> must be disabled (no user interaction allowed).
+     * It is enabled only by click on grid' header
+     */
+    void disableEditorTab();
+
     interface Presenter {
 
         void onClearSearch();
@@ -53,10 +66,34 @@ public interface RightPanelView
 
         void clearList();
 
-        void addListGroupItemView(String factName , FactModelTree factModelTree);
+        void addListGroupItemView(String factName, FactModelTree factModelTree);
 
         void setFactTypeFieldsMap(SortedMap<String, FactModelTree> factTypeFieldsMap);
 
+        void setEventBus(EventBus eventBus);
+
         FactModelTree getFactModelTree(String factName);
+
+        /**
+         * By default the <b>Editor Tab</b> is disabled (no user interaction allowed).
+         * It is enabled only by click on grid' header
+         *
+         * @param columnIndex the column being edited
+         */
+        void onEnableEditorTab(int columnIndex);
+
+        /**
+         * By default the <b>Editor Tab</b> must be disabled (no user interaction allowed).
+         * It is enabled only by click on grid' header
+         */
+        void onDisableEditorTab();
+
+        /**
+         * Method to fire a <code>SetColumnValueCommand</code>
+         * @param factName
+         * @param fieldName
+         * @param className
+         */
+        void onModifyColumn(String factName, String fieldName, String className);
     }
 }

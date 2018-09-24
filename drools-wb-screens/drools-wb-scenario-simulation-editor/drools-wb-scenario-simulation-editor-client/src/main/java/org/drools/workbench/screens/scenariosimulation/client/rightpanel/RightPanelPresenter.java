@@ -24,15 +24,15 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.dom.client.DivElement;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.workbench.screens.scenariosimulation.client.events.SetColumnValueEvent;
 import org.drools.workbench.screens.scenariosimulation.client.models.FactModelTree;
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.uberfire.client.annotations.DefaultPosition;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.Position;
 
@@ -47,13 +47,15 @@ public class RightPanelPresenter implements RightPanelView.Presenter {
 
     public static final String IDENTIFIER = "org.drools.scenariosimulation.RightPanel";
 
-    public static final PlaceRequest PLACE_REQUEST = new DefaultPlaceRequest(IDENTIFIER);
-
     private RightPanelView view;
 
     private ListGroupItemPresenter listGroupItemPresenter;
 
     Map<String, FactModelTree> factTypeFieldsMap;
+
+    EventBus eventBus;
+
+    int editingColumnIndex = -1;
 
     public RightPanelPresenter() {
         //Zero argument constructor for CDI
@@ -127,15 +129,20 @@ public class RightPanelPresenter implements RightPanelView.Presenter {
     }
 
     @Override
+    public void setEventBus(EventBus eventBus) {
+        this.eventBus = eventBus;
+    }
+
+    @Override
     public void onSearchedEvent(String search) {
         clearList();
-        if(factTypeFieldsMap.isEmpty()) {
+        if (factTypeFieldsMap.isEmpty()) {
             return;
         }
         factTypeFieldsMap
-                        .entrySet()
-                        .stream()
-                        .filter(entry -> entry.getKey().toLowerCase().contains(search.toLowerCase()))
+                .entrySet()
+                .stream()
+                .filter(entry -> entry.getKey().toLowerCase().contains(search.toLowerCase()))
                 .forEach(filteredEntry -> addListGroupItemView(filteredEntry.getKey(), filteredEntry.getValue()));
     }
 
@@ -145,4 +152,27 @@ public class RightPanelPresenter implements RightPanelView.Presenter {
         view.getListContainer().appendChild(toAdd);
     }
 
+    @Override
+    public void onEnableEditorTab(int columnIndex) {
+        listGroupItemPresenter.setDisabled(false);
+        editingColumnIndex = columnIndex;
+        view.enableEditorTab();
+    }
+
+    @Override
+    public void onDisableEditorTab() {
+        listGroupItemPresenter.setDisabled(true);
+        editingColumnIndex = -1;
+        view.disableEditorTab();
+    }
+
+    @Override
+    public void onModifyColumn(String factName, String fieldName, String valueClassName) {
+        if (editingColumnIndex > -1) {
+            String value = factName + "." + fieldName;
+            String baseClass = factName.split("\\.")[0];
+            String fullPackage = getFactModelTree(baseClass).getFullPackage();
+            eventBus.fireEvent(new SetColumnValueEvent(editingColumnIndex, fullPackage, value, valueClassName));
+        }
+    }
 }

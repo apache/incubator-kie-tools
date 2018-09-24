@@ -16,6 +16,8 @@
 
 package org.drools.workbench.screens.scenariosimulation.client.editor;
 
+import java.util.Set;
+
 import javax.enterprise.context.Dependent;
 
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -42,7 +44,7 @@ public class ScenarioSimulationViewImpl
 
     private ScenarioGridLayer scenarioGridLayer;
 
-    private HandlerRegistration clickHandlerRegistration;
+    private Set<HandlerRegistration> handlerRegistrations;
 
     /**
      * This method also set <code>ScenarioGridLayer</code> taken the instance from given <code>ScenarioGridPanel</code>
@@ -55,11 +57,9 @@ public class ScenarioSimulationViewImpl
     }
 
     @Override
-    public void setClickHandlerRegistration(HandlerRegistration clickHandlerRegistration) {
-        this.clickHandlerRegistration = clickHandlerRegistration;
+    public void setHandlerRegistrations(Set<HandlerRegistration> handlerRegistrations) {
+        this.handlerRegistrations = handlerRegistrations;
     }
-
-
 
     @Override
     public void init(final ScenarioSimulationEditorPresenter presenter) {
@@ -76,8 +76,8 @@ public class ScenarioSimulationViewImpl
 
     @Override
     public void clear() {
-        if (clickHandlerRegistration != null) {
-            clickHandlerRegistration.removeHandler();
+        if (handlerRegistrations != null) {
+            handlerRegistrations.forEach(HandlerRegistration::removeHandler);
         }
     }
 
