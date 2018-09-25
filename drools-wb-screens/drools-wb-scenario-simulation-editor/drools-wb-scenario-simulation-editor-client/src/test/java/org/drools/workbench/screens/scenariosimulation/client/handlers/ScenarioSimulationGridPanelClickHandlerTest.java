@@ -32,6 +32,7 @@ import org.drools.workbench.screens.scenariosimulation.client.editor.menu.GridCo
 import org.drools.workbench.screens.scenariosimulation.client.editor.menu.HeaderExpectedContextMenu;
 import org.drools.workbench.screens.scenariosimulation.client.editor.menu.HeaderGivenContextMenu;
 import org.drools.workbench.screens.scenariosimulation.client.editor.menu.OtherContextMenu;
+import org.drools.workbench.screens.scenariosimulation.client.editor.menu.UnmodifiableColumnGridContextMenu;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGrid;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
 import org.junit.Before;
@@ -70,6 +71,8 @@ public class ScenarioSimulationGridPanelClickHandlerTest {
     private ExpectedContextMenu mockExpectedContextMenu;
     @Mock
     private GridContextMenu mockGridContextMenu;
+    @Mock
+    private UnmodifiableColumnGridContextMenu mockUnmodifiableColumnGridContextMenu;
 
     @Mock
     private Element mockTarget;
@@ -101,12 +104,14 @@ public class ScenarioSimulationGridPanelClickHandlerTest {
                 givenContextMenu = mockGivenContextMenu;
                 expectedContextMenu = mockExpectedContextMenu;
                 gridContextMenu = mockGridContextMenu;
+                unmodifiableColumnGridContextMenu = mockUnmodifiableColumnGridContextMenu;
                 managedMenus.add(mockOtherContextMenu);
                 managedMenus.add(mockHeaderGivenContextMenu);
                 managedMenus.add(mockHeaderExpectedContextMenu);
                 managedMenus.add(mockGivenContextMenu);
                 managedMenus.add(mockExpectedContextMenu);
                 managedMenus.add(mockGridContextMenu);
+                managedMenus.add(mockUnmodifiableColumnGridContextMenu);
             }
 
             @Override
@@ -179,6 +184,11 @@ public class ScenarioSimulationGridPanelClickHandlerTest {
         assertEquals(mockGridContextMenu, scenarioSimulationGridPanelClickHandler.gridContextMenu);
     }
 
+    public void setUnmodifiableColumnGridContextMenu() {
+        scenarioSimulationGridPanelClickHandler.setUnmodifiableColumnGridContextMenu(mockUnmodifiableColumnGridContextMenu);
+        assertEquals(mockUnmodifiableColumnGridContextMenu, scenarioSimulationGridPanelClickHandler.unmodifiableColumnGridContextMenu);
+    }
+
     @Test
     public void setEventBus() {
         scenarioSimulationGridPanelClickHandler.setEventBus(mockEventBus);
@@ -188,6 +198,7 @@ public class ScenarioSimulationGridPanelClickHandlerTest {
         verify(mockGivenContextMenu, times(1)).setEventBus(eq(mockEventBus));
         verify(mockExpectedContextMenu, times(1)).setEventBus(eq(mockEventBus));
         verify(mockGridContextMenu, times(1)).setEventBus(eq(mockEventBus));
+        verify(mockUnmodifiableColumnGridContextMenu, times(1)).setEventBus(eq(mockEventBus));
     }
 
     @Test
@@ -211,6 +222,7 @@ public class ScenarioSimulationGridPanelClickHandlerTest {
         verify(mockGivenContextMenu, times(1)).hide();
         verify(mockExpectedContextMenu, times(1)).hide();
         verify(mockGridContextMenu, times(1)).hide();
+        verify(mockUnmodifiableColumnGridContextMenu, times(1)).hide();
     }
 
     @Test

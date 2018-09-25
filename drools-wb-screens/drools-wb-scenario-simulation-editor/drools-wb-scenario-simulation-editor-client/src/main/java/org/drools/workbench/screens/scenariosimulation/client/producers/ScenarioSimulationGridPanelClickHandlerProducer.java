@@ -24,6 +24,7 @@ import org.drools.workbench.screens.scenariosimulation.client.editor.menu.GridCo
 import org.drools.workbench.screens.scenariosimulation.client.editor.menu.HeaderExpectedContextMenu;
 import org.drools.workbench.screens.scenariosimulation.client.editor.menu.HeaderGivenContextMenu;
 import org.drools.workbench.screens.scenariosimulation.client.editor.menu.OtherContextMenu;
+import org.drools.workbench.screens.scenariosimulation.client.editor.menu.UnmodifiableColumnGridContextMenu;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioSimulationGridPanelClickHandler;
 
 /**
@@ -44,6 +45,8 @@ public class ScenarioSimulationGridPanelClickHandlerProducer {
     private ExpectedContextMenu expectedContextMenu;
     @Inject
     private GridContextMenu gridContextMenu;
+    @Inject
+    private UnmodifiableColumnGridContextMenu unmodifiableColumnGridContextMenu;
 
     @Inject
     private ScenarioSimulationGridPanelClickHandler scenarioSimulationGridPanelClickHandler;
@@ -52,6 +55,7 @@ public class ScenarioSimulationGridPanelClickHandlerProducer {
         scenarioSimulationGridPanelClickHandler.setExpectedContextMenu(expectedContextMenu);
         scenarioSimulationGridPanelClickHandler.setGivenContextMenu(givenContextMenu);
         scenarioSimulationGridPanelClickHandler.setGridContextMenu(gridContextMenu);
+        scenarioSimulationGridPanelClickHandler.setUnmodifiableColumnGridContextMenu(unmodifiableColumnGridContextMenu);
         scenarioSimulationGridPanelClickHandler.setHeaderExpectedContextMenu(headerExpectedContextMenu);
         scenarioSimulationGridPanelClickHandler.setHeaderGivenContextMenu(headerGivenContextMenu);
         scenarioSimulationGridPanelClickHandler.setOtherContextMenu(otherContextMenu);

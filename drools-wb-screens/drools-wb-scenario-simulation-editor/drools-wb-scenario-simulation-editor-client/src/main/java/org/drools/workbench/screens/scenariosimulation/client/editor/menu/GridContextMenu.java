@@ -25,7 +25,7 @@ import org.drools.workbench.screens.scenariosimulation.client.events.DuplicateRo
 import org.drools.workbench.screens.scenariosimulation.client.events.InsertRowEvent;
 
 /**
- * The contextual menu of a any <i>ROW</i> cell. It has the same items has {@link AbstractColumnMenuPresenter} and specific ones (?)
+ * The contextual menu of a a <i>ROW</i> cell whose <b>GROUP</b> does <b>allow</b> column modification (insert/delete). It has the same items has {@link AbstractColumnMenuPresenter} and specific ones (?)
  */
 @Dependent
 public class GridContextMenu extends AbstractColumnMenuPresenter {
@@ -69,7 +69,7 @@ public class GridContextMenu extends AbstractColumnMenuPresenter {
     }
 
     public void show(final int mx, final int my, int columnIndex, int rowIndex, String group) {
-        super.show(mx, my, columnIndex);
+        super.show(mx, my, columnIndex, group);
         columnContextLIElement
                 .getChild(1) //  a  element
                 .getChild(3) // span element

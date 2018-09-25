@@ -26,9 +26,11 @@ public class DeleteColumnEvent extends GwtEvent<DeleteColumnEventHandler> {
     public static Type<DeleteColumnEventHandler> TYPE = new Type<>();
 
     private int columnIndex;
+    private String columnGroup;
 
-    public DeleteColumnEvent(int columnIndex) {
+    public DeleteColumnEvent(int columnIndex, String columnGroup) {
         this.columnIndex = columnIndex;
+        this.columnGroup = columnGroup;
     }
 
     @Override
@@ -38,6 +40,10 @@ public class DeleteColumnEvent extends GwtEvent<DeleteColumnEventHandler> {
 
     public int getColumnIndex() {
         return columnIndex;
+    }
+
+    public String getColumnGroup() {
+        return columnGroup;
     }
 
     @Override

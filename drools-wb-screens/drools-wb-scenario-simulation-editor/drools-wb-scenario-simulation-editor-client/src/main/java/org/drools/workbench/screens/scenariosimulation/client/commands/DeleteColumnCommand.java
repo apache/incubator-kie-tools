@@ -15,34 +15,57 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.commands;
 
+import java.util.Date;
+
 import javax.enterprise.context.Dependent;
 
 import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
+import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridLayer;
+import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
+import org.drools.workbench.screens.scenariosimulation.model.FactMapping;
+import org.drools.workbench.screens.scenariosimulation.model.FactMappingType;
 import org.uberfire.mvp.Command;
 
+import static org.drools.workbench.screens.scenariosimulation.client.utils.ScenarioSimulationUtils.getScenarioGridColumn;
+
 /**
- * <code>Command</code> to <b>delete</b> a column.
+ * <code>Command</code> to <b>delete</b> a column. <b>Eventually</b> add a ne column if the deleted one is the last of its group.
  */
 @Dependent
 public class DeleteColumnCommand implements Command {
 
     private ScenarioGridModel model;
     private int columnIndex;
+    private String columnGroup;
+    private ScenarioGridPanel scenarioGridPanel;
+    private ScenarioGridLayer scenarioGridLayer;
 
     public DeleteColumnCommand() {
     }
 
     /**
+     *
      * @param model
      * @param columnIndex
+     * @param columnGroup
+     * @param scenarioGridPanel
+     * @param scenarioGridLayer
      */
-    public DeleteColumnCommand(ScenarioGridModel model, int columnIndex) {
+    public DeleteColumnCommand(ScenarioGridModel model, int columnIndex, String columnGroup, ScenarioGridPanel scenarioGridPanel, ScenarioGridLayer scenarioGridLayer) {
         this.model = model;
         this.columnIndex = columnIndex;
+        this.columnGroup = columnGroup;
+        this.scenarioGridPanel = scenarioGridPanel;
+        this.scenarioGridLayer = scenarioGridLayer;
     }
 
     @Override
     public void execute() {
         model.deleteNewColumn(columnIndex);
+        if (model.getGroupSize(columnGroup) <1) {
+            FactMappingType factMappingType = FactMappingType.valueOf(columnGroup.toUpperCase());
+            String columnTitle = FactMapping.getPlaceHolder(factMappingType, model.nextColumnCount());
+            model.insertNewColumn(columnIndex, getScenarioGridColumn(String.valueOf(new Date().getTime()), columnTitle, columnGroup, scenarioGridPanel, scenarioGridLayer));
+        }
     }
 }

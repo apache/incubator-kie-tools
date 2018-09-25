@@ -20,10 +20,17 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class DeleteColumnCommandTest extends AbstractCommandTest {
@@ -35,12 +42,19 @@ public class DeleteColumnCommandTest extends AbstractCommandTest {
     @Before
     public void setup() {
         super.setup();
-        deleteColumnCommand = new DeleteColumnCommand(mockScenarioGridModel, COLUMN_INDEX);
+        deleteColumnCommand = new DeleteColumnCommand(mockScenarioGridModel, COLUMN_INDEX,  COLUMN_GROUP, mockScenarioGridPanel, mockScenarioGridLayer);
     }
 
     @Test
     public void execute() {
+        when(mockScenarioGridModel.getGroupSize(COLUMN_GROUP)).thenReturn(4L);
         deleteColumnCommand.execute();
         verify(mockScenarioGridModel, times(1)).deleteNewColumn(eq(COLUMN_INDEX));
+        verify(mockScenarioGridModel,never()).insertNewColumn(anyInt(),anyObject());
+        reset(mockScenarioGridModel);
+        when(mockScenarioGridModel.getGroupSize(COLUMN_GROUP)).thenReturn(0L);
+        deleteColumnCommand.execute();
+        verify(mockScenarioGridModel, times(1)).deleteNewColumn(eq(COLUMN_INDEX));
+        verify(mockScenarioGridModel,times(1)).insertNewColumn(eq(COLUMN_INDEX),isA(GridColumn.class));
     }
 }

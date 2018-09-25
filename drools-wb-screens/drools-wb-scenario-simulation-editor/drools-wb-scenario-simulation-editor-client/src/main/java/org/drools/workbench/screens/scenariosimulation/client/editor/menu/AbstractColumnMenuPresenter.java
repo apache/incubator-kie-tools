@@ -48,10 +48,10 @@ public abstract class AbstractColumnMenuPresenter extends AbstractHeaderMenuPres
         super.initMenu();
     }
 
-    public void show(final int mx, final int my, int columnIndex) {
+    public void show(final int mx, final int my, int columnIndex, String group) {
         super.show(mx, my);
         mapEvent(insertColumnLeftLIElement, new InsertColumnEvent(columnIndex, false));
         mapEvent(insertColumnRightLIElement, new InsertColumnEvent(columnIndex, true));
-        mapEvent(deleteColumnLIElement, new DeleteColumnEvent(columnIndex));
+        mapEvent(deleteColumnLIElement, new DeleteColumnEvent(columnIndex, group));
     }
 }
