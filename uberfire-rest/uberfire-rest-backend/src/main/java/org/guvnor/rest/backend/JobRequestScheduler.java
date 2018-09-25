@@ -1,18 +1,18 @@
 /*
-* Copyright 2013 Red Hat, Inc. and/or its affiliates.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*      http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+ * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.guvnor.rest.backend;
 
 import java.util.HashMap;
@@ -26,8 +26,8 @@ import org.guvnor.rest.backend.cmd.AbstractJobCommand;
 import org.guvnor.rest.backend.cmd.AddProjectToSpaceCmd;
 import org.guvnor.rest.backend.cmd.CloneRepositoryCmd;
 import org.guvnor.rest.backend.cmd.CompileProjectCmd;
-import org.guvnor.rest.backend.cmd.CreateSpaceCmd;
 import org.guvnor.rest.backend.cmd.CreateProjectCmd;
+import org.guvnor.rest.backend.cmd.CreateSpaceCmd;
 import org.guvnor.rest.backend.cmd.DeleteProjectCmd;
 import org.guvnor.rest.backend.cmd.DeployProjectCmd;
 import org.guvnor.rest.backend.cmd.InstallProjectCmd;
@@ -47,7 +47,7 @@ import org.guvnor.rest.client.SpaceRequest;
 import org.guvnor.rest.client.TestProjectRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.uberfire.commons.concurrent.Managed;
+import org.uberfire.commons.concurrent.Unmanaged;
 
 import static org.guvnor.rest.backend.cmd.AbstractJobCommand.JOB_REQUEST_KEY;
 
@@ -69,8 +69,16 @@ public class JobRequestScheduler {
 
     }
 
+    /*
+    https://issues.jboss.org/browse/AF-1587
+    Workbench Rest API - deleting space sometimes randomly takes more than 60 seconds
+
+    There's a significative improvement on timeouts by using an @Unmanaged ExecutorService.
+    The @Unmanaged tends to be more available and likely that it won't share the Async execution
+    of the operations itself. 
+    */
     @Inject
-    public JobRequestScheduler(@Managed ExecutorService executorService,
+    public JobRequestScheduler(@Unmanaged ExecutorService executorService,
                                JobResultManager jobResultManager,
                                JobRequestHelper jobRequestHelper) {
         this.executorService = executorService;
