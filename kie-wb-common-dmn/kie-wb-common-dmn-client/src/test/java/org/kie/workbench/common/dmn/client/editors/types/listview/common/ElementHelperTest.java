@@ -39,4 +39,17 @@ public class ElementHelperTest {
 
         verify(parentNode).insertBefore(newNode, nextSibling);
     }
+
+    @Test
+    public void testRemove() {
+
+        final Node node = mock(Node.class);
+        final Node parentNode = mock(Node.class);
+
+        node.parentNode = parentNode;
+
+        ElementHelper.remove(node);
+
+        verify(parentNode).removeChild(node);
+    }
 }

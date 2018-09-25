@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.google.gwt.event.dom.client.ClickEvent;
+import elemental2.dom.DOMTokenList;
 import elemental2.dom.Element;
 import elemental2.dom.HTMLAnchorElement;
 import elemental2.dom.HTMLDivElement;
@@ -29,7 +30,7 @@ import elemental2.dom.NodeList;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.dmn.client.editors.types.DataType;
+import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.ElementHelper;
 import org.mockito.Mock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -37,6 +38,13 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItemView.ARROW_BUTTON_SELECTOR;
+import static org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItemView.PARENT_UUID_ATTR;
+import static org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItemView.UUID_ATTR;
+import static org.kie.workbench.common.dmn.client.editors.types.listview.common.HiddenHelper.HIDDEN_CSS_CLASS;
+import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper.RIGHT_ARROW_CSS_CLASS;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
@@ -136,18 +144,141 @@ public class DataTypeListViewTest {
         final HTMLElement listItemElement2 = makeHTMLElement();
         final List<DataTypeListItem> listItems = Arrays.asList(listItem1, listItem2);
 
+        when(this.listItems.querySelector("[data-row-uuid=\"" + dataTypeUUID + "\"]")).thenReturn(dataTypeRow);
         when(dataType.getUUID()).thenReturn(dataTypeUUID);
-        when(element.querySelector("[data-row-uuid=\"" + dataTypeUUID + "\"]")).thenReturn(dataTypeRow);
         when(listItem1.getElement()).thenReturn(listItemElement1);
         when(listItem2.getElement()).thenReturn(listItemElement2);
-        doNothing().when(view).cleanSubTypes(dataTypeUUID);
+
+        doNothing().when(view).cleanSubTypes(anyString());
+        doNothing().when(view).hideItemElementIfParentIsCollapsed(any(), any());
+        doNothing().when(view).showArrowIconIfDataTypeHasChildren(any());
+
         mockStatic(ElementHelper.class);
 
         view.addSubItems(dataType, listItems);
 
+        verify(view).hideItemElementIfParentIsCollapsed(listItemElement1, dataTypeRow);
+        verify(view).hideItemElementIfParentIsCollapsed(listItemElement2, listItemElement1);
+        verify(view).showArrowIconIfDataTypeHasChildren(dataType);
+
         verifyStatic();
         ElementHelper.insertAfter(listItemElement1, dataTypeRow);
         ElementHelper.insertAfter(listItemElement2, listItemElement1);
+    }
+
+    @Test
+    public void testHideItemElementIfParentIsCollapsedWhenParentIsCollapsed() {
+
+        final HTMLElement itemElement = mock(HTMLElement.class);
+        final Element parent = mock(Element.class);
+        final Element arrow = mock(Element.class);
+        final DOMTokenList itemElementClassList = mock(DOMTokenList.class);
+        final DOMTokenList parentClassList = mock(DOMTokenList.class);
+        final DOMTokenList arrowClassList = mock(DOMTokenList.class);
+
+        itemElement.classList = itemElementClassList;
+        parent.classList = parentClassList;
+        arrow.classList = arrowClassList;
+
+        when(arrowClassList.contains(RIGHT_ARROW_CSS_CLASS)).thenReturn(true);
+        when(parentClassList.contains(HIDDEN_CSS_CLASS)).thenReturn(false);
+        when(parent.querySelector(ARROW_BUTTON_SELECTOR)).thenReturn(arrow);
+
+        view.hideItemElementIfParentIsCollapsed(itemElement, parent);
+
+        verify(itemElementClassList).add(HIDDEN_CSS_CLASS);
+    }
+
+    @Test
+    public void testHideItemElementIfParentIsCollapsedWhenParentIsCollapsedByAnotherParent() {
+
+        final HTMLElement itemElement = mock(HTMLElement.class);
+        final Element parent = mock(Element.class);
+        final Element arrow = mock(Element.class);
+        final DOMTokenList itemElementClassList = mock(DOMTokenList.class);
+        final DOMTokenList parentClassList = mock(DOMTokenList.class);
+        final DOMTokenList arrowClassList = mock(DOMTokenList.class);
+
+        itemElement.classList = itemElementClassList;
+        parent.classList = parentClassList;
+        arrow.classList = arrowClassList;
+
+        when(arrowClassList.contains(RIGHT_ARROW_CSS_CLASS)).thenReturn(false);
+        when(parentClassList.contains(HIDDEN_CSS_CLASS)).thenReturn(true);
+        when(parent.querySelector(ARROW_BUTTON_SELECTOR)).thenReturn(arrow);
+
+        view.hideItemElementIfParentIsCollapsed(itemElement, parent);
+
+        verify(itemElementClassList).add(HIDDEN_CSS_CLASS);
+    }
+
+    @Test
+    public void testHideItemElementIfParentIsCollapsedWhenParentIsNotCollapsed() {
+
+        final HTMLElement itemElement = mock(HTMLElement.class);
+        final Element parent = mock(Element.class);
+        final Element arrow = mock(Element.class);
+        final DOMTokenList itemElementClassList = mock(DOMTokenList.class);
+        final DOMTokenList parentClassList = mock(DOMTokenList.class);
+        final DOMTokenList arrowClassList = mock(DOMTokenList.class);
+
+        itemElement.classList = itemElementClassList;
+        parent.classList = parentClassList;
+        arrow.classList = arrowClassList;
+
+        when(arrowClassList.contains(RIGHT_ARROW_CSS_CLASS)).thenReturn(false);
+        when(parentClassList.contains(HIDDEN_CSS_CLASS)).thenReturn(false);
+        when(parent.querySelector(ARROW_BUTTON_SELECTOR)).thenReturn(arrow);
+
+        view.hideItemElementIfParentIsCollapsed(itemElement, parent);
+
+        verify(itemElementClassList).remove(HIDDEN_CSS_CLASS);
+    }
+
+    @Test
+    public void testShowArrowIconIfDataTypeHasChildrenWhenDataTypeHasChildren() {
+
+        final DataType dataType = mock(DataType.class);
+        final NodeList<Element> elementNodeList = new NodeList<>();
+        final Element dataTypeRow = mock(Element.class);
+        final Element dataTypeRowArrow = mock(Element.class);
+        final DOMTokenList arrowClassList = mock(DOMTokenList.class);
+        final String uuid = "uuid";
+
+        dataTypeRowArrow.classList = arrowClassList;
+        elementNodeList.length = 1d;
+
+        when(dataType.getUUID()).thenReturn(uuid);
+        when(listItems.querySelectorAll("[" + PARENT_UUID_ATTR + "=\"uuid\"]")).thenReturn(elementNodeList);
+        when(listItems.querySelector("[" + UUID_ATTR + "=\"uuid\"]")).thenReturn(dataTypeRow);
+        when(dataTypeRow.querySelector(ARROW_BUTTON_SELECTOR)).thenReturn(dataTypeRowArrow);
+
+        view.showArrowIconIfDataTypeHasChildren(dataType);
+
+        verify(arrowClassList).remove(HIDDEN_CSS_CLASS);
+    }
+
+    @Test
+    public void testShowArrowIconIfDataTypeHasChildrenWhenDataTypeDoesNotHaveChildren() {
+
+        final DataType dataType = mock(DataType.class);
+        final NodeList<Element> elementNodeList = new NodeList<>();
+        final Element dataTypeRow = mock(Element.class);
+        final Element dataTypeRowArrow = mock(Element.class);
+        final DOMTokenList arrowClassList = mock(DOMTokenList.class);
+        final String uuid = "uuid";
+
+        dataTypeRowArrow.classList = arrowClassList;
+        elementNodeList.length = 0d;
+
+        when(dataType.getUUID()).thenReturn(uuid);
+        when(listItems.querySelectorAll("[" + PARENT_UUID_ATTR + "=\"uuid\"]")).thenReturn(elementNodeList);
+        when(listItems.querySelector("[" + UUID_ATTR + "=\"uuid\"]")).thenReturn(dataTypeRow);
+        when(dataTypeRow.querySelector(ARROW_BUTTON_SELECTOR)).thenReturn(dataTypeRowArrow);
+
+        view.showArrowIconIfDataTypeHasChildren(dataType);
+
+        verify(arrowClassList).add(HIDDEN_CSS_CLASS);
     }
 
     @Test
@@ -187,6 +318,25 @@ public class DataTypeListViewTest {
         assertTrue(expandedDescription.hidden);
     }
 
+    @Test
+    public void testRemoveItem() {
+
+        final DataType dataType = mock(DataType.class);
+        final Element dataTypeElement = mock(Element.class);
+        final Node parentNode = mock(Node.class);
+        final String uuid = "uuid";
+
+        when(dataType.getUUID()).thenReturn(uuid);
+        doReturn(dataTypeElement).when(view).getDataTypeRow(dataType);
+        doNothing().when(view).cleanSubTypes(anyString());
+        dataTypeElement.parentNode = parentNode;
+
+        view.removeItem(dataType);
+
+        verify(view).cleanSubTypes(uuid);
+        verify(parentNode).removeChild(dataTypeElement);
+    }
+
     private HTMLElement makeHTMLElement() {
         final HTMLElement element = mock(HTMLElement.class);
         element.parentNode = mock(Node.class);
@@ -205,6 +355,6 @@ public class DataTypeListViewTest {
 
     private void mockDOMElementsByParentUUID(final String parentUUID,
                                              final NodeList<Element> rowElements) {
-        when(element.querySelectorAll("[data-parent-row-uuid=\"" + parentUUID + "\"]")).thenReturn(rowElements);
+        when(listItems.querySelectorAll("[data-parent-row-uuid=\"" + parentUUID + "\"]")).thenReturn(rowElements);
     }
 }

@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.dmn.client.editors.types.persistence;
 
+import java.util.List;
+
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -106,13 +108,13 @@ public class ActiveRecordTest {
     private RecordEngine<Data> makeRecordEngine() {
         return spy(new RecordEngine<Data>() {
             @Override
-            public void update(final Data record) {
-
+            public List<Data> update(final Data record) {
+                return null;
             }
 
             @Override
-            public void destroy(final Data record) {
-
+            public List<Data> destroy(final Data record) {
+                return null;
             }
 
             @Override

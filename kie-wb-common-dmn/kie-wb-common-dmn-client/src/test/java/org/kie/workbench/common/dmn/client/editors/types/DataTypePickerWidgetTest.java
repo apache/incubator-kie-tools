@@ -38,6 +38,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
+import org.kie.workbench.common.dmn.client.editors.types.common.ItemDefinitionUtils;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.mockito.ArgumentCaptor;
@@ -99,6 +100,8 @@ public class DataTypePickerWidgetTest {
     @Mock
     private DMNModelInstrumentedBase dmnModel;
 
+    private ItemDefinitionUtils itemDefinitionUtils;
+
     @Captor
     private ArgumentCaptor<BuiltInType> builtInTypeCaptor;
 
@@ -119,6 +122,7 @@ public class DataTypePickerWidgetTest {
                                             Namespace.FEEL.getUri());
 
         this.qNameConverter = spy(new QNameConverter());
+        this.itemDefinitionUtils = spy(new ItemDefinitionUtils(dmnGraphUtils));
 
         when(typeSelector.getElement()).thenReturn(typeSelectorElement);
         when(option.getElement()).thenReturn(optionElement);
@@ -131,7 +135,8 @@ public class DataTypePickerWidgetTest {
                                                    translationService,
                                                    qNameConverter,
                                                    dmnGraphUtils,
-                                                   dataTypeModal));
+                                                   dataTypeModal,
+                                                   itemDefinitionUtils));
     }
 
     @Test
@@ -328,5 +333,18 @@ public class DataTypePickerWidgetTest {
         picker.onClickTypeButton(clickEvent);
 
         verify(dataTypeModal).show();
+    }
+
+    @Test
+    public void testNormaliseBuiltInTypeTypeRef() {
+
+        final QName typeRef = mock(QName.class);
+        final QName expectedTypeRef = mock(QName.class);
+
+        doReturn(expectedTypeRef).when(itemDefinitionUtils).normaliseTypeRef(typeRef);
+
+        final QName actualTypeRef = picker.normaliseBuiltInTypeTypeRef(typeRef);
+
+        assertEquals(expectedTypeRef, actualTypeRef);
     }
 }

@@ -17,29 +17,20 @@
 package org.kie.workbench.common.dmn.client.editors.types.common;
 
 import java.util.List;
-import java.util.Optional;
 
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Definitions;
-import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
-import org.kie.workbench.common.dmn.api.property.dmn.Name;
-import org.kie.workbench.common.dmn.client.editors.types.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.DataTypeStore;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.ItemDefinitionRecordEngine;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.ItemDefinitionStore;
-import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static java.util.Arrays.asList;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
@@ -51,10 +42,10 @@ public class DataTypeUtilsTest {
     private ItemDefinitionUtils itemDefinitionUtils;
 
     @Mock
-    private TranslationService translationService;
+    private DataTypeStore dataTypeStore;
 
     @Mock
-    private DMNGraphUtils dmnGraphUtils;
+    private TranslationService translationService;
 
     @Mock
     private ItemDefinitionRecordEngine recordEngine;
@@ -63,17 +54,16 @@ public class DataTypeUtilsTest {
     private ItemDefinitionStore itemDefinitionStore;
 
     @Mock
-    private DataTypeStore dataTypeStore;
+    private ManagedInstance<DataTypeManager> dataTypeManagers;
 
-    @Mock
-    private DataTypeFactory dataTypeFactory;
+    private DataTypeManager dataTypeManager;
 
     private DataTypeUtils utils;
 
     @Before
     public void setup() {
-        dataTypeFactory = spy(new DataTypeFactory(itemDefinitionUtils, translationService, recordEngine, itemDefinitionStore, dataTypeStore));
-        utils = new DataTypeUtils(dataTypeFactory, dmnGraphUtils, itemDefinitionUtils);
+        dataTypeManager = spy(new DataTypeManager(translationService, recordEngine, itemDefinitionStore, dataTypeStore, itemDefinitionUtils, dataTypeManagers));
+        utils = spy(new DataTypeUtils(dataTypeStore, dataTypeManager));
     }
 
     @Test
@@ -97,71 +87,14 @@ public class DataTypeUtilsTest {
     @Test
     public void testCustomDataTypes() {
 
-        final ItemDefinition item1 = makeItem("itemB");
-        final ItemDefinition item2 = makeItem("itemA");
-        final Definitions definitions = mock(Definitions.class);
-        final List<ItemDefinition> itemDefinitions = asList(item1, item2);
-
-        when(itemDefinitionUtils.findByName(any())).thenReturn(Optional.empty());
-        when(dmnGraphUtils.getDefinitions()).thenReturn(definitions);
-        when(definitions.getItemDefinition()).thenReturn(itemDefinitions);
-
-        final List<DataType> dataTypes = utils.customDataTypes();
-
-        assertEquals(2, dataTypes.size());
-        assertEquals("itemA", dataTypes.get(0).getName());
-        assertEquals("itemB", dataTypes.get(1).getName());
-    }
-
-    @Test
-    public void testExternalDataTypesWhenTypeExists() {
-
-        final DataType parent = mock(DataType.class);
-        final ItemDefinition itemDefinition0 = makeItem("itemDefinition0");
-        final ItemDefinition itemDefinition1 = makeItem("itemDefinition1");
-        final ItemDefinition itemDefinition2 = makeItem("itemDefinition2");
-        final ItemDefinition itemDefinition3 = makeItem("itemDefinition3");
         final DataType dataType1 = mock(DataType.class);
         final DataType dataType2 = mock(DataType.class);
-        final DataType dataType3 = mock(DataType.class);
-        final String type = "type";
-        final String parentUUID = "parentUUID";
-        final List<ItemDefinition> itemDefinitions = asList(itemDefinition1, itemDefinition2, itemDefinition3);
+        final List<DataType> expectedDataType = asList(dataType1, dataType2);
 
-        when(parent.getUUID()).thenReturn(parentUUID);
-        when(itemDefinition0.getItemComponent()).thenReturn(itemDefinitions);
-        when(itemDefinitionUtils.findByName(type)).thenReturn(Optional.of(itemDefinition0));
-        doReturn(dataType1).when(dataTypeFactory).makeExternalDataType(parentUUID, itemDefinition1);
-        doReturn(dataType2).when(dataTypeFactory).makeExternalDataType(parentUUID, itemDefinition2);
-        doReturn(dataType3).when(dataTypeFactory).makeExternalDataType(parentUUID, itemDefinition3);
+        when(dataTypeStore.getTopLevelDataTypes()).thenReturn(expectedDataType);
 
-        final List<DataType> dataTypes = utils.externalDataTypes(parent, type);
+        final List<DataType> actualDataTypes = utils.customDataTypes();
 
-        assertThat(dataTypes).containsExactly(dataType1, dataType2, dataType3);
-    }
-
-    @Test
-    public void testExternalDataTypesWhenTypeDoesNotExist() {
-
-        final DataType parent = mock(DataType.class);
-        final String type = "type";
-        final String parentUUID = "parentUUID";
-
-        when(parent.getUUID()).thenReturn(parentUUID);
-        when(itemDefinitionUtils.findByName(type)).thenReturn(Optional.empty());
-
-        final List<DataType> dataTypes = utils.externalDataTypes(parent, type);
-
-        assertTrue(dataTypes.isEmpty());
-    }
-
-    private ItemDefinition makeItem(final String itemName) {
-        final ItemDefinition itemDefinition = mock(ItemDefinition.class);
-        final Name name = mock(Name.class);
-
-        when(name.getValue()).thenReturn(itemName);
-        when(itemDefinition.getName()).thenReturn(name);
-
-        return itemDefinition;
+        assertEquals(expectedDataType, actualDataTypes);
     }
 }

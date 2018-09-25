@@ -18,6 +18,8 @@ package org.kie.workbench.common.dmn.client.editors.types.listview;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -26,7 +28,7 @@ import javax.inject.Inject;
 import elemental2.dom.HTMLElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
-import org.kie.workbench.common.dmn.client.editors.types.DataType;
+import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.uberfire.client.mvp.UberElemental;
 
 @ApplicationScoped
@@ -35,6 +37,8 @@ public class DataTypeList {
     private final View view;
 
     private final ManagedInstance<DataTypeListItem> listItems;
+
+    private List<DataTypeListItem> items;
 
     @Inject
     public DataTypeList(final DataTypeList.View view,
@@ -53,18 +57,19 @@ public class DataTypeList {
     }
 
     public void setupItems(final List<DataType> dataTypes) {
-
-        final List<DataTypeListItem> gridItems = new ArrayList<>();
-
-        dataTypes.forEach(dt -> gridItems.addAll(makeTreeGridItems(dt, 1)));
-
-        view.setupListItems(gridItems);
-
-        gridItems.stream().filter(gi -> gi.getLevel() == 1).forEach(DataTypeListItem::collapse);
+        setListItems(makeDataTypeListItems(dataTypes));
+        setupViewItems();
+        collapseItemsInTheFirstLevel();
     }
 
-    void refreshSubItems(final DataTypeListItem listItem,
-                         final List<DataType> subDataTypes) {
+    List<DataTypeListItem> makeDataTypeListItems(final List<DataType> dataTypes) {
+        final List<DataTypeListItem> listItems = new ArrayList<>();
+        dataTypes.forEach(dt -> listItems.addAll(makeTreeGridItems(dt, 1)));
+        return listItems;
+    }
+
+    void refreshSubItemsFromListItem(final DataTypeListItem listItem,
+                                     final List<DataType> subDataTypes) {
 
         final DataType dataType = listItem.getDataType();
         final int level = listItem.getLevel();
@@ -73,6 +78,8 @@ public class DataTypeList {
         for (final DataType subDataType : subDataTypes) {
             gridItems.addAll(makeTreeGridItems(subDataType, level + 1));
         }
+
+        refreshItemsList(subDataTypes, gridItems);
 
         view.addSubItems(dataType, gridItems);
     }
@@ -100,6 +107,55 @@ public class DataTypeList {
         return listItem;
     }
 
+    void refreshItemsList(final List<DataType> subDataTypes,
+                          final List<DataTypeListItem> gridItems) {
+
+        getItems().removeIf(item -> subDataTypes.stream().anyMatch(dataType -> {
+            return Objects.equals(item.getDataType().getUUID(), dataType.getUUID());
+        }));
+
+        getItems().addAll(gridItems);
+    }
+
+    void removeItem(final DataType dataType) {
+        view.removeItem(dataType);
+    }
+
+    void refreshItemsByUpdatedDataTypes(final List<DataType> updateDataTypes) {
+        for (final DataType dataType : updateDataTypes) {
+            findItem(dataType).ifPresent(listItem -> {
+                listItem.refresh();
+                refreshSubItemsFromListItem(listItem, dataType.getSubDataTypes());
+            });
+        }
+    }
+
+    Optional<DataTypeListItem> findItem(final DataType dataType) {
+        return getItems()
+                .stream()
+                .filter(item -> Objects.equals(item.getDataType().getUUID(), dataType.getUUID()))
+                .findFirst();
+    }
+
+    void setupViewItems() {
+        view.setupListItems(getItems());
+    }
+
+    List<DataTypeListItem> getItems() {
+        return items;
+    }
+
+    void setListItems(final List<DataTypeListItem> items) {
+        this.items = items;
+    }
+
+    void collapseItemsInTheFirstLevel() {
+        getItems()
+                .stream()
+                .filter(typeListItem -> typeListItem.getLevel() == 1)
+                .forEach(DataTypeListItem::collapse);
+    }
+
     public interface View extends UberElemental<DataTypeList>,
                                   IsElement {
 
@@ -107,5 +163,7 @@ public class DataTypeList {
 
         void addSubItems(final DataType dataType,
                          final List<DataTypeListItem> treeGridItems);
+
+        void removeItem(final DataType dataType);
     }
 }

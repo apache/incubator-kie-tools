@@ -37,6 +37,7 @@ import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorItem;
+import org.kie.workbench.common.dmn.client.editors.types.listview.common.ElementHelper;
 
 import static java.util.Optional.ofNullable;
 
@@ -126,8 +127,8 @@ public class DecisionNavigatorTreeView implements DecisionNavigatorTreePresenter
     @Override
     public void remove(final DecisionNavigatorItem item) {
         ofNullable(findItem(item)).ifPresent(element -> {
-            if (element.parentNode != null) {
-                element.parentNode.removeChild(element);
+            if (element.parentNode != null){
+                ElementHelper.remove(element);
             }
         });
     }

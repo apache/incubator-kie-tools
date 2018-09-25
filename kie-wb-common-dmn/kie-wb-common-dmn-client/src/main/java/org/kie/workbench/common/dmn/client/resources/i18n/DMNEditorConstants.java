@@ -146,10 +146,10 @@ public class DMNEditorConstants {
     public static final String TypePickerWidget_Choose = "TypePickerWidget.Choose";
 
     @TranslationKey(defaultValue = "")
-    public static final String DataTypeFactory_None = "DataTypeFactory.None";
+    public static final String DataTypeManager_None = "DataTypeManager.None";
 
     @TranslationKey(defaultValue = "")
-    public static final String DataTypeFactory_Structure = "DataTypeFactory.Structure";
+    public static final String DataTypeManager_Structure = "DataTypeManager.Structure";
 
     @TranslationKey(defaultValue = "")
     public static final String DataTypeSelectView_DefaultTitle = "DataTypeSelectView.DefaultTitle";

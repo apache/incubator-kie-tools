@@ -17,12 +17,15 @@
 package org.kie.workbench.common.dmn.client.editors.types.listview;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import elemental2.dom.HTMLElement;
-import org.kie.workbench.common.dmn.client.editors.types.DataType;
+import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
+import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManager;
 import org.uberfire.client.mvp.UberElemental;
 
 public class DataTypeListItem {
@@ -30,6 +33,8 @@ public class DataTypeListItem {
     private final View view;
 
     private final DataTypeSelect dataTypeSelectComponent;
+
+    private final DataTypeManager dataTypeManager;
 
     private DataType dataType;
 
@@ -39,9 +44,11 @@ public class DataTypeListItem {
 
     @Inject
     public DataTypeListItem(final View view,
-                            final DataTypeSelect dataTypeSelectComponent) {
+                            final DataTypeSelect dataTypeSelectComponent,
+                            final DataTypeManager dataTypeManager) {
         this.view = view;
         this.dataTypeSelectComponent = dataTypeSelectComponent;
+        this.dataTypeManager = dataTypeManager;
     }
 
     @PostConstruct
@@ -77,6 +84,12 @@ public class DataTypeListItem {
         view.setDataType(getDataType());
     }
 
+    void refresh() {
+        dataTypeSelectComponent.refresh();
+        dataTypeSelectComponent.init(this, getDataType());
+        view.setName(getDataType().getName());
+    }
+
     DataType getDataType() {
         return dataType;
     }
@@ -103,7 +116,7 @@ public class DataTypeListItem {
 
     public void refreshSubItems(final List<DataType> dataTypes) {
 
-        dataTypeList.refreshSubItems(this, dataTypes);
+        dataTypeList.refreshSubItemsFromListItem(this, dataTypes);
 
         view.enableFocusMode();
         view.toggleArrow(!dataTypes.isEmpty());
@@ -147,14 +160,43 @@ public class DataTypeListItem {
 
     void saveNewDataType() {
 
-        final DataType dataType = getDataType();
+        final List<DataType> updatedDataTypes = update(getDataType());
 
-        dataType.setName(view.getName());
-        dataType.setType(dataTypeSelectComponent.getValue());
-        dataType.getSubDataTypes().clear();
-        dataType.getSubDataTypes().addAll(dataTypeSelectComponent.getSubDataTypes());
+        dataTypeList.refreshItemsByUpdatedDataTypes(updatedDataTypes);
+    }
 
-        dataType.update();
+    public void remove() {
+
+        final List<DataType> destroyedDataTypes = getDataType().destroy();
+        final List<DataType> removedDataTypes = removeTopLevelDataTypes(destroyedDataTypes);
+        destroyedDataTypes.removeAll(removedDataTypes);
+
+        dataTypeList.refreshItemsByUpdatedDataTypes(destroyedDataTypes);
+    }
+
+    List<DataType> removeTopLevelDataTypes(final List<DataType> destroyedDataTypes) {
+
+        final String destroyedType = getDataType().getName();
+
+        return destroyedDataTypes
+                .stream()
+                .filter(dt -> dt.isTopLevel() && (Objects.equals(dt.getName(), destroyedType) || Objects.equals(dt.getType(), destroyedType)))
+                .peek(dataTypeList::removeItem)
+                .collect(Collectors.toList());
+    }
+
+    List<DataType> update(final DataType dataType) {
+        return dataTypeManager
+                .from(dataType)
+                .withName(view.getName())
+                .withType(dataTypeSelectComponent.getValue())
+                .withSubDataTypes(dataTypeSelectComponent.getSubDataTypes())
+                .get()
+                .update();
+    }
+
+    public DataTypeList getDataTypeList() {
+        return dataTypeList;
     }
 
     public interface View extends UberElemental<DataTypeListItem> {
@@ -184,5 +226,7 @@ public class DataTypeListItem {
         void disableFocusMode();
 
         String getName();
+
+        void setName(final String name);
     }
 }

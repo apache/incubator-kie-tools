@@ -14,15 +14,20 @@
  * limitations under the License.
  */
 
-[data-i18n-prefix="DataTypeListView."] {
-  .list-group-item:hover {
+[data-i18n-prefix="DataTypeListItemView."] {
+
+  &.list-group-item:hover {
     background: #eff8ff;
   }
 
-  .list-group-item {
+  &.list-group-item {
     border-color: #e2e4e3;
     height: 50px;
     padding: 0;
+  }
+
+  &.focused-data-type {
+    background: #eff8ff;
   }
 
   [data-field="arrow-button"] {
@@ -84,13 +89,13 @@
     padding: 0 5px;
   }
 
-  .focused-data-type {
-    background: #eff8ff;
-  }
-
   .close-button {
     background: none;
     box-shadow: none;
     border: none;
+  }
+
+  ul.dropdown-menu {
+    padding: 3px 0;
   }
 }

@@ -71,4 +71,11 @@ public class ItemDefinitionStoreTest {
         store.clear();
         assertEquals(0, store.size());
     }
+
+    @Test
+    public void testUnIndex() {
+        store.unIndex(uuid);
+
+        assertNull(store.get(uuid));
+    }
 }

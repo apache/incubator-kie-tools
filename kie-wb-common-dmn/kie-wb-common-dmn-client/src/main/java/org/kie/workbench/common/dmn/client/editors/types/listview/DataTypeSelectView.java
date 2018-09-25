@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.client.editors.types.listview;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 
 import javax.enterprise.context.Dependent;
@@ -30,7 +31,8 @@ import elemental2.dom.HTMLSelectElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.kie.workbench.common.dmn.client.editors.types.DataType;
+import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
+import org.kie.workbench.common.dmn.client.editors.types.listview.common.JQuerySelectPickerEvent;
 
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.HiddenHelper.hide;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.HiddenHelper.show;
@@ -61,6 +63,8 @@ public class DataTypeSelectView implements DataTypeSelect.View {
 
     private DataTypeSelect presenter;
 
+    private String value;
+
     @Inject
     public DataTypeSelectView(final HTMLDivElement typeText,
                               final HTMLSelectElement typeSelect,
@@ -82,7 +86,8 @@ public class DataTypeSelectView implements DataTypeSelect.View {
         setupDropdown();
     }
 
-    void setupDropdown() {
+    @Override
+    public void setupDropdown() {
         setupDropdownItems();
         setupSelectPicker();
         hideSelectPicker();
@@ -141,7 +146,7 @@ public class DataTypeSelectView implements DataTypeSelect.View {
 
     @Override
     public void disableEditMode() {
-        typeText.textContent = "(" + typeSelect.value + ")";
+        typeText.textContent = "(" + presenter.getDataType().getType() + ")";
         hideSelectPicker();
         show(typeText);
     }
@@ -151,17 +156,24 @@ public class DataTypeSelectView implements DataTypeSelect.View {
         typeText.textContent = "(" + dataType.getType() + ")";
     }
 
-    public void onSelectChange() {
-        presenter.refreshView(typeSelect.value);
+    public void onSelectChange(final JQuerySelectPickerEvent event) {
+
+        final String newValue = event.target.value;
+
+        if (!Objects.equals(newValue, getValue())) {
+            setPickerValue(newValue);
+            presenter.refreshView(newValue);
+        }
     }
 
     @Override
     public String getValue() {
-        return typeSelect.value;
+        return value;
     }
 
     void setPickerValue(final String value) {
         setPickerValue(getSelectPicker(), value);
+        this.value = value;
     }
 
     HTMLOptionElement makeHTMLOptionElement() {
@@ -188,10 +200,6 @@ public class DataTypeSelectView implements DataTypeSelect.View {
 
     void setupSelectPicker() {
         triggerPickerAction(getSelectPicker(), "refresh");
-    }
-
-    void openSelectPicker() {
-        triggerPickerAction(getSelectPicker(), "toggle");
     }
 
     Element getSelectPicker() {

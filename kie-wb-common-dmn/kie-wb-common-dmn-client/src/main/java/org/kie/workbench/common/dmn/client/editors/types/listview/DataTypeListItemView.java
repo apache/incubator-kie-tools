@@ -26,6 +26,7 @@ import javax.inject.Named;
 import com.google.gwt.event.dom.client.ClickEvent;
 import elemental2.dom.CSSProperties.MarginLeftUnionType;
 import elemental2.dom.Element;
+import elemental2.dom.HTMLAnchorElement;
 import elemental2.dom.HTMLButtonElement;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
@@ -34,7 +35,7 @@ import elemental2.dom.NodeList;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.kie.workbench.common.dmn.client.editors.types.DataType;
+import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.HiddenHelper;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper;
 
@@ -53,6 +54,8 @@ public class DataTypeListItemView implements DataTypeListItem.View {
     static final String UUID_ATTR = "data-row-uuid";
 
     static final String PARENT_UUID_ATTR = "data-parent-row-uuid";
+
+    static final String ARROW_BUTTON_SELECTOR = "[data-field=\"arrow-button\"]";
 
     private static final int PIXELS_PER_LEVEL = 35;
 
@@ -83,6 +86,9 @@ public class DataTypeListItemView implements DataTypeListItem.View {
     @DataField("close-button")
     private final HTMLButtonElement closeButton;
 
+    @DataField("remove-button")
+    private final HTMLAnchorElement removeButton;
+
     private DataTypeListItem presenter;
 
     @Inject
@@ -91,10 +97,11 @@ public class DataTypeListItemView implements DataTypeListItem.View {
                                 final @Named("span") HTMLElement arrow,
                                 final @Named("span") HTMLElement nameText,
                                 final HTMLInputElement nameInput,
-                                final @Named("td") HTMLElement type,
+                                final @Named("span") HTMLElement type,
                                 final HTMLButtonElement editButton,
                                 final HTMLButtonElement saveButton,
-                                final HTMLButtonElement closeButton) {
+                                final HTMLButtonElement closeButton,
+                                final HTMLAnchorElement removeButton) {
         this.view = view;
         this.level = level;
         this.arrow = arrow;
@@ -104,6 +111,7 @@ public class DataTypeListItemView implements DataTypeListItem.View {
         this.editButton = editButton;
         this.saveButton = saveButton;
         this.closeButton = closeButton;
+        this.removeButton = removeButton;
     }
 
     @Override
@@ -117,12 +125,6 @@ public class DataTypeListItemView implements DataTypeListItem.View {
     }
 
     void setupRowMetadata(final DataType dataType) {
-
-        getElement().setAttribute("class", "list-group-item");
-        getElement().classList.add(dataType.isBasic() ? "basic-row" : "structure-row");
-        getElement().classList.add(dataType.isDefault() ? "default-row" : "custom-row");
-        getElement().classList.add(dataType.isExternal() ? "external-row" : "nested-row");
-
         getElement().setAttribute(UUID_ATTR, dataType.getUUID());
         getElement().setAttribute(PARENT_UUID_ATTR, dataType.getParentUUID());
     }
@@ -141,18 +143,17 @@ public class DataTypeListItemView implements DataTypeListItem.View {
 
     void setupNameComponent(final DataType dataType) {
         hide(nameInput);
-        nameText.textContent = dataType.getName();
-        nameInput.value = dataType.getName();
+        setName(dataType.getName());
     }
 
-    void setupActionButtons(final DataType dataType) {
-        hide(editButton);
-        hide(saveButton);
-        hide(closeButton);
+    @Override
+    public void setName(final String name) {
+        nameText.textContent = name;
+        nameInput.value = name;
+    }
 
-        if (!dataType.isExternal()) {
-            showEditButton();
-        }
+    void setupActionButtons() {
+        showEditButton();
     }
 
     @Override
@@ -172,7 +173,7 @@ public class DataTypeListItemView implements DataTypeListItem.View {
         asDownArrow(getArrow());
         forEachChildElement(parent, child -> {
             show(child);
-            return !isCollapsed(child.querySelector("[data-field=\"arrow-button\"]"));
+            return !isCollapsed(child.querySelector(ARROW_BUTTON_SELECTOR));
         });
     }
 
@@ -219,6 +220,11 @@ public class DataTypeListItemView implements DataTypeListItem.View {
         presenter.expandOrCollapseSubTypes();
     }
 
+    @EventHandler("remove-button")
+    public void onRemoveButton(final ClickEvent e) {
+        presenter.remove();
+    }
+
     @Override
     public void enableFocusMode() {
         final Element rowElement = getRowElement(getDataType());
@@ -229,8 +235,10 @@ public class DataTypeListItemView implements DataTypeListItem.View {
     @Override
     public void disableFocusMode() {
         final Element rowElement = getRowElement(getDataType());
-        asNonFocusedDataType(rowElement);
-        forEachChildElement(rowElement, ListItemViewCssHelper::asNonFocusedDataType);
+        if (rowElement != null) {
+            asNonFocusedDataType(rowElement);
+            forEachChildElement(rowElement, ListItemViewCssHelper::asNonFocusedDataType);
+        }
     }
 
     @Override
@@ -302,12 +310,16 @@ public class DataTypeListItemView implements DataTypeListItem.View {
     }
 
     private Element getRowElement(final String uuid) {
-        return getElement().parentNode.querySelector("[" + UUID_ATTR + "=\"" + uuid + "\"]");
+        return dataTypeListElement().querySelector("[" + UUID_ATTR + "=\"" + uuid + "\"]");
     }
 
     private NodeList<Element> getChildren(final Element parent) {
         final String childrenSelector = "[" + PARENT_UUID_ATTR + "=\"" + parent.getAttribute(UUID_ATTR) + "\"]";
-        return getElement().parentNode.querySelectorAll(childrenSelector);
+        return dataTypeListElement().querySelectorAll(childrenSelector);
+    }
+
+    HTMLElement dataTypeListElement() {
+        return presenter.getDataTypeList().getElement();
     }
 
     DataType getDataType() {
@@ -320,6 +332,6 @@ public class DataTypeListItemView implements DataTypeListItem.View {
         setupArrow(dataType);
         setupIndentationLevel();
         setupNameComponent(dataType);
-        setupActionButtons(dataType);
+        setupActionButtons();
     }
 }

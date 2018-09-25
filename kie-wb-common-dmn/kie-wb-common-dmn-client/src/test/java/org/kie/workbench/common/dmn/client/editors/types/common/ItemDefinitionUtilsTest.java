@@ -19,22 +19,27 @@ package org.kie.workbench.common.dmn.client.editors.types.common;
 import java.util.List;
 import java.util.Optional;
 
+import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Definitions;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
+import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase.Namespace.FEEL;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(GwtMockitoTestRunner.class)
 public class ItemDefinitionUtilsTest {
 
     @Mock
@@ -44,7 +49,7 @@ public class ItemDefinitionUtilsTest {
 
     @Before
     public void setup() {
-        utils = new ItemDefinitionUtils(dmnGraphUtils);
+        utils = spy(new ItemDefinitionUtils(dmnGraphUtils));
     }
 
     @Test
@@ -63,6 +68,82 @@ public class ItemDefinitionUtilsTest {
         final Optional<ItemDefinition> expected = Optional.of(item1);
 
         assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testGetPrefixForNamespaceURIWhenDefinitionsIsNull() {
+
+        final String namespaceURI = FEEL.getUri();
+
+        when(dmnGraphUtils.getDefinitions()).thenReturn(null);
+
+        final Optional<String> prefix = utils.getPrefixForNamespaceURI(namespaceURI);
+
+        assertFalse(prefix.isPresent());
+    }
+
+    @Test
+    public void testGetPrefixForNamespaceURIWhenPrefixForNamespaceURIIsNotPresent() {
+
+        final String namespaceURI = FEEL.getUri();
+        final Definitions definitions = mock(Definitions.class);
+
+        when(dmnGraphUtils.getDefinitions()).thenReturn(definitions);
+        when(definitions.getPrefixForNamespaceURI(namespaceURI)).thenReturn(Optional.empty());
+
+        final Optional<String> prefix = utils.getPrefixForNamespaceURI(namespaceURI);
+
+        assertFalse(prefix.isPresent());
+    }
+
+    @Test
+    public void testGetPrefixForNamespaceURIWhenPrefixForNamespaceURIIsPresent() {
+
+        final String namespaceURI = FEEL.getUri();
+        final Definitions definitions = mock(Definitions.class);
+        final Optional<String> expectedPrefix = Optional.of("prefix");
+
+        when(dmnGraphUtils.getDefinitions()).thenReturn(definitions);
+        when(definitions.getPrefixForNamespaceURI(namespaceURI)).thenReturn(expectedPrefix);
+
+        final Optional<String> actualPrefix = utils.getPrefixForNamespaceURI(namespaceURI);
+
+        assertEquals(expectedPrefix, actualPrefix);
+    }
+
+    @Test
+    public void testNormaliseTypeRefWhenPrefixForNamespaceURIIsNotPresent() {
+
+        final String expectedNamespace = FEEL.getUri();
+        final String expectedLocalPart = "string";
+        final String expectedPrefix = "";
+        final QName qName = new QName(expectedNamespace, expectedLocalPart);
+
+        doReturn(Optional.empty()).when(utils).getPrefixForNamespaceURI(expectedNamespace);
+
+        final QName actualQName = utils.normaliseTypeRef(qName);
+
+        assertEquals(expectedLocalPart, actualQName.getLocalPart());
+        assertEquals(expectedNamespace, actualQName.getNamespaceURI());
+        assertEquals(expectedPrefix, actualQName.getPrefix());
+    }
+
+    @Test
+    public void testNormaliseTypeRefWhenPrefixForNamespaceURIIsPresent() {
+
+        final String expectedLocalPart = "string";
+        final String expectedPrefix = "feel";
+        final String expectedNamespace = "";
+        final String namespaceURI = FEEL.getUri();
+        final QName qName = new QName(namespaceURI, expectedLocalPart);
+
+        doReturn(Optional.of(expectedPrefix)).when(utils).getPrefixForNamespaceURI(namespaceURI);
+
+        final QName actualQName = utils.normaliseTypeRef(qName);
+
+        assertEquals(expectedLocalPart, actualQName.getLocalPart());
+        assertEquals(expectedNamespace, actualQName.getNamespaceURI());
+        assertEquals(expectedPrefix, actualQName.getPrefix());
     }
 
     private ItemDefinition makeItem(final String itemName) {

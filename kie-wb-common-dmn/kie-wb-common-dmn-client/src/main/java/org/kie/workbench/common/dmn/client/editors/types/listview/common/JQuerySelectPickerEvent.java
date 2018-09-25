@@ -16,16 +16,10 @@
 
 package org.kie.workbench.common.dmn.client.editors.types.listview.common;
 
-import elemental2.dom.Node;
+import jsinterop.annotations.JsType;
 
-public class ElementHelper {
+@JsType(isNative = true)
+public abstract class JQuerySelectPickerEvent {
 
-    public static void insertAfter(final Node newNode,
-                                   final Node referenceNode) {
-        referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
-    }
-
-    public static void remove(final Node element) {
-        element.parentNode.removeChild(element);
-    }
+    public JQuerySelectPickerTarget target;
 }

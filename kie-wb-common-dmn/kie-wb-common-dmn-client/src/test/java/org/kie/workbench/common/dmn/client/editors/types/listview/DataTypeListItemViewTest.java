@@ -26,12 +26,11 @@ import elemental2.dom.HTMLButtonElement;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLInputElement;
-import elemental2.dom.Node;
 import elemental2.dom.NodeList;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.dmn.client.editors.types.DataType;
+import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -39,6 +38,8 @@ import org.mockito.Mock;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItemView.PARENT_UUID_ATTR;
+import static org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItemView.UUID_ATTR;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.HiddenHelper.HIDDEN_CSS_CLASS;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper.DOWN_ARROW_CSS_CLASS;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper.FOCUSED_CSS_CLASS;
@@ -49,7 +50,6 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -87,19 +87,20 @@ public class DataTypeListItemViewTest {
     @Mock
     private DataTypeListItem presenter;
 
-    @Mock
-    private Node parentNode;
-
     @Captor
     private ArgumentCaptor<Integer> integerCaptor;
+
+    @Mock
+    private HTMLElement dataTypeListElement;
 
     private DataTypeListItemView view;
 
     @Before
     public void setup() {
-        view = spy(new DataTypeListItemView(row, level, arrow, nameText, nameInput, type, editButton, saveButton, closeButton));
+        view = spy(new DataTypeListItemView(row, level, arrow, nameText, nameInput, type, editButton, saveButton, closeButton, null));
         view.init(presenter);
-        row.parentNode = parentNode;
+
+        doReturn(dataTypeListElement).when(view).dataTypeListElement();
     }
 
     @Test
@@ -111,7 +112,7 @@ public class DataTypeListItemViewTest {
         doNothing().when(view).setupArrow(dataType);
         doNothing().when(view).setupIndentationLevel();
         doNothing().when(view).setupNameComponent(dataType);
-        doNothing().when(view).setupActionButtons(dataType);
+        doNothing().when(view).setupActionButtons();
 
         view.setDataType(dataType);
 
@@ -119,63 +120,23 @@ public class DataTypeListItemViewTest {
         verify(view).setupArrow(dataType);
         verify(view).setupIndentationLevel();
         verify(view).setupNameComponent(dataType);
-        verify(view).setupActionButtons(dataType);
+        verify(view).setupActionButtons();
     }
 
     @Test
-    public void testSetupRowMetadataWhenDataTypeIsBasicAndDefaultAndExternal() {
+    public void testSetupRowMetadata() {
 
         final DataType dataType = mock(DataType.class);
         final DOMTokenList classList = mock(DOMTokenList.class);
 
-        when(dataType.isBasic()).thenReturn(true);
-        when(dataType.isDefault()).thenReturn(true);
-        when(dataType.isExternal()).thenReturn(true);
         when(dataType.getUUID()).thenReturn("1234");
+        when(dataType.getParentUUID()).thenReturn("4567");
         row.classList = classList;
 
         view.setupRowMetadata(dataType);
 
-        verify(row).setAttribute("data-row-uuid", "1234");
-        verify(classList).add("basic-row");
-        verify(classList).add("default-row");
-        verify(classList).add("external-row");
-    }
-
-    @Test
-    public void testSetupRowMetadataWhenDataTypeIsNotBasicNeitherDefaultNeitherExternal() {
-
-        final DataType dataType = mock(DataType.class);
-        final DOMTokenList classList = mock(DOMTokenList.class);
-
-        when(dataType.isBasic()).thenReturn(false);
-        when(dataType.isDefault()).thenReturn(false);
-        when(dataType.isExternal()).thenReturn(false);
-        when(dataType.getUUID()).thenReturn("1234");
-        row.classList = classList;
-
-        view.setupRowMetadata(dataType);
-
-        verify(row).setAttribute("data-row-uuid", "1234");
-        verify(classList).add("structure-row");
-        verify(classList).add("custom-row");
-        verify(classList).add("nested-row");
-    }
-
-    @Test
-    public void testSetupRowMetadataWhenDataTypeIsNotBasic() {
-
-        final DataType dataType = mock(DataType.class);
-        final DOMTokenList classList = mock(DOMTokenList.class);
-
-        when(dataType.isBasic()).thenReturn(false);
-        when(dataType.getUUID()).thenReturn("1234");
-        row.classList = classList;
-
-        view.setupRowMetadata(dataType);
-
-        verify(row).setAttribute("data-row-uuid", "1234");
-        verify(classList).add("structure-row");
+        verify(row).setAttribute(UUID_ATTR, "1234");
+        verify(row).setAttribute(PARENT_UUID_ATTR, "4567");
     }
 
     @Test
@@ -272,6 +233,13 @@ public class DataTypeListItemViewTest {
     }
 
     @Test
+    public void testOnRemoveButton() {
+        view.onRemoveButton(mock(ClickEvent.class));
+
+        verify(presenter).remove();
+    }
+
+    @Test
     public void testOnEditClick() {
         view.onEditClick(mock(ClickEvent.class));
 
@@ -308,45 +276,12 @@ public class DataTypeListItemViewTest {
     }
 
     @Test
-    public void testSetupActionButtonsWhenDataTypeIsExternal() {
+    public void testSetupActionButtons() {
 
-        final DataType dataType = mock(DataType.class);
-        final DOMTokenList editClassList = mock(DOMTokenList.class);
-        final DOMTokenList saveClassList = mock(DOMTokenList.class);
-        final DOMTokenList closeClassList = mock(DOMTokenList.class);
-
-        editButton.classList = editClassList;
-        saveButton.classList = saveClassList;
-        closeButton.classList = closeClassList;
-        when(dataType.isExternal()).thenReturn(true);
-
-        view.setupActionButtons(dataType);
-
-        verify(editClassList).add(HIDDEN_CSS_CLASS);
-        verify(saveClassList).add(HIDDEN_CSS_CLASS);
-        verify(closeClassList).add(HIDDEN_CSS_CLASS);
-        verify(view, never()).showEditButton();
-    }
-
-    @Test
-    public void testSetupActionButtonsWhenDataTypeIsNotExternal() {
-
-        final DataType dataType = mock(DataType.class);
-        final DOMTokenList editClassList = mock(DOMTokenList.class);
-        final DOMTokenList saveClassList = mock(DOMTokenList.class);
-        final DOMTokenList closeClassList = mock(DOMTokenList.class);
-
-        editButton.classList = editClassList;
-        saveButton.classList = saveClassList;
-        closeButton.classList = closeClassList;
-        when(dataType.isExternal()).thenReturn(false);
         doNothing().when(view).showEditButton();
 
-        view.setupActionButtons(dataType);
+        view.setupActionButtons();
 
-        verify(editClassList).add(HIDDEN_CSS_CLASS);
-        verify(saveClassList).add(HIDDEN_CSS_CLASS);
-        verify(closeClassList).add(HIDDEN_CSS_CLASS);
         verify(view).showEditButton();
     }
 
@@ -631,11 +566,11 @@ public class DataTypeListItemViewTest {
 
     private void mockDOMElementByUUID(final String uuid,
                                       final Element element) {
-        when(parentNode.querySelector("[data-row-uuid=\"" + uuid + "\"]")).thenReturn(element);
+        when(dataTypeListElement.querySelector("[data-row-uuid=\"" + uuid + "\"]")).thenReturn(element);
     }
 
     private void mockDOMElementsByParentUUID(final String parentUUID,
                                              final NodeList<Element> elements) {
-        when(parentNode.querySelectorAll("[data-parent-row-uuid=\"" + parentUUID + "\"]")).thenReturn(elements);
+        when(dataTypeListElement.querySelectorAll("[data-parent-row-uuid=\"" + parentUUID + "\"]")).thenReturn(elements);
     }
 }

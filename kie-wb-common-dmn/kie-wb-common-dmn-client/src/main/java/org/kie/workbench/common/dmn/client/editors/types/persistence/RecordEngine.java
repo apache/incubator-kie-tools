@@ -16,11 +16,30 @@
 
 package org.kie.workbench.common.dmn.client.editors.types.persistence;
 
+import java.util.List;
+
+/**
+ * A Record Engine persists a given record.
+ */
 public interface RecordEngine<T> {
 
-    void update(T record);
+    /**
+     * Updates a record
+     * @param record
+     * @return returning an array of all affected records by the update operation.
+     */
+    List<T> update(final T record);
 
-    void destroy(T record);
+    /**
+     * Destroys a record
+     * @param record
+     * @return returning an array of all affected records by the destroy operation.
+     */
+    List<T> destroy(final T record);
 
-    void create(T record);
+    /**
+     * Create a record
+     * @param record
+     */
+    void create(final T record);
 }

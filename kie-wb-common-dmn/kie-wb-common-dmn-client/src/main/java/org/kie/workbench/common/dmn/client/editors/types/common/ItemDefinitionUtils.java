@@ -23,7 +23,9 @@ import java.util.Optional;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.kie.workbench.common.dmn.api.definition.v1_1.Definitions;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
+import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 
 @Dependent
@@ -49,5 +51,22 @@ public class ItemDefinitionUtils {
         } else {
             return Collections.emptyList();
         }
+    }
+
+    public QName normaliseTypeRef(final QName typeRef) {
+
+        final String namespace = typeRef.getNamespaceURI();
+        final String localPart = typeRef.getLocalPart();
+        final String typeRefPrefix = typeRef.getPrefix();
+        final Optional<String> nsPrefix = getPrefixForNamespaceURI(namespace);
+
+        return nsPrefix
+                .map(prefix -> new QName("", localPart, prefix))
+                .orElseGet(() -> new QName(namespace, localPart, typeRefPrefix));
+    }
+
+    Optional<String> getPrefixForNamespaceURI(final String namespace) {
+        final Definitions definitions = dmnGraphUtils.getDefinitions();
+        return definitions == null ? Optional.empty() : definitions.getPrefixForNamespaceURI(namespace);
     }
 }

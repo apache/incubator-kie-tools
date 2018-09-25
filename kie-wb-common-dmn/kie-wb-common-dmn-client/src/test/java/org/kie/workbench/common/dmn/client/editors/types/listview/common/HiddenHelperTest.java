@@ -79,4 +79,3 @@ public class HiddenHelperTest {
         assertFalse(HiddenHelper.isHidden(element));
     }
 }
-

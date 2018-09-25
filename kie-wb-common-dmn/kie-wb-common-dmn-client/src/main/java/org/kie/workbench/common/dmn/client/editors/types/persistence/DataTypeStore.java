@@ -16,20 +16,29 @@
 
 package org.kie.workbench.common.dmn.client.editors.types.persistence;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import org.kie.workbench.common.dmn.client.editors.types.DataType;
+import org.kie.workbench.common.dmn.client.editors.types.DataTypeModal;
+import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 
+/**
+ * Stores all Data Types loaded in the {@link DataTypeModal}.
+ * <p>
+ * All entries are indexed by their own UUID.
+ */
 @ApplicationScoped
 public class DataTypeStore {
 
     private Map<String, DataType> dataTypes = new HashMap<>();
 
-    public DataType get(final String id) {
-        return dataTypes.get(id);
+    public DataType get(final String uuid) {
+        return dataTypes.get(uuid);
     }
 
     public void index(final String uuid,
@@ -41,7 +50,19 @@ public class DataTypeStore {
         dataTypes.clear();
     }
 
-    int size() {
+    public int size() {
         return dataTypes.size();
+    }
+
+    public List<DataType> getTopLevelDataTypes() {
+        return all().stream().filter(DataType::isTopLevel).collect(Collectors.toList());
+    }
+
+    private Collection<DataType> all() {
+        return dataTypes.values();
+    }
+
+    public void unIndex(final String uuid) {
+        dataTypes.remove(uuid);
     }
 }

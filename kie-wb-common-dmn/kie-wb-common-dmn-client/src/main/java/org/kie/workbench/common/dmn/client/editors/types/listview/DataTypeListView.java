@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.client.editors.types.listview;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -31,11 +32,18 @@ import elemental2.dom.NodeList;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.kie.workbench.common.dmn.client.editors.types.DataType;
+import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
+import org.kie.workbench.common.dmn.client.editors.types.listview.common.ElementHelper;
 
+import static org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItemView.ARROW_BUTTON_SELECTOR;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItemView.PARENT_UUID_ATTR;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItemView.UUID_ATTR;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ElementHelper.insertAfter;
+import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ElementHelper.remove;
+import static org.kie.workbench.common.dmn.client.editors.types.listview.common.HiddenHelper.hide;
+import static org.kie.workbench.common.dmn.client.editors.types.listview.common.HiddenHelper.isHidden;
+import static org.kie.workbench.common.dmn.client.editors.types.listview.common.HiddenHelper.show;
+import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper.isRightArrow;
 
 @Templated
 @ApplicationScoped
@@ -96,25 +104,69 @@ public class DataTypeListView implements DataTypeList.View {
         Element parent = getDataTypeRow(dataType);
 
         for (final DataTypeListItem item : listItems) {
+
             final HTMLElement itemElement = item.getElement();
+
+            hideItemElementIfParentIsCollapsed(itemElement, parent);
 
             insertAfter(itemElement, parent);
             parent = itemElement;
         }
+
+        showArrowIconIfDataTypeHasChildren(dataType);
+    }
+
+    void hideItemElementIfParentIsCollapsed(final HTMLElement itemElement,
+                                            final Element parent) {
+
+        final boolean isCollapsedParent = isCollapsed(parent.querySelector(ARROW_BUTTON_SELECTOR));
+        final boolean isHiddenParent = isHidden(parent);
+
+        if (isCollapsedParent || isHiddenParent) {
+            hide(itemElement);
+        } else {
+            show(itemElement);
+        }
+    }
+
+    void showArrowIconIfDataTypeHasChildren(final DataType dataType) {
+        if (hasChildren(dataType)) {
+            show(getDataTypeRow(dataType).querySelector(ARROW_BUTTON_SELECTOR));
+        } else {
+            hide(getDataTypeRow(dataType).querySelector(ARROW_BUTTON_SELECTOR));
+        }
+    }
+
+    private boolean hasChildren(final DataType dataType) {
+        return listItems.querySelectorAll("[" + PARENT_UUID_ATTR + "=\"" + dataType.getUUID() + "\"]").length > 0;
+    }
+
+    @Override
+    public void removeItem(final DataType dataType) {
+
+        cleanSubTypes(dataType.getUUID());
+
+        final Optional<Element> dataTypeRow = Optional.ofNullable(getDataTypeRow(dataType));
+
+        dataTypeRow.ifPresent(ElementHelper::remove);
     }
 
     void cleanSubTypes(final String uuid) {
 
         final String selector = "[" + PARENT_UUID_ATTR + "=\"" + uuid + "\"]";
-        final NodeList<Element> subDataTypeRows = getElement().querySelectorAll(selector);
+        final NodeList<Element> subDataTypeRows = listItems.querySelectorAll(selector);
 
         for (int i = 0; i < subDataTypeRows.length; i++) {
             final Element item = subDataTypeRows.getAt(i);
             if (item != null && item.parentNode != null) {
                 cleanSubTypes(item.getAttribute(UUID_ATTR));
-                item.parentNode.removeChild(item);
+                remove(item);
             }
         }
+    }
+
+    boolean isCollapsed(final Element arrow) {
+        return isRightArrow(arrow);
     }
 
     @EventHandler("view-more")
@@ -141,7 +193,7 @@ public class DataTypeListView implements DataTypeList.View {
         expandedDescription.hidden = true;
     }
 
-    private Element getDataTypeRow(final DataType dataType) {
-        return getElement().querySelector("[" + UUID_ATTR + "=\"" + dataType.getUUID() + "\"]");
+    Element getDataTypeRow(final DataType dataType) {
+        return listItems.querySelector("[" + UUID_ATTR + "=\"" + dataType.getUUID() + "\"]");
     }
 }

@@ -16,17 +16,21 @@
 
 package org.kie.workbench.common.dmn.client.editors.types.persistence;
 
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.dmn.client.editors.types.DataType;
+import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DataTypeStoreTest {
@@ -62,18 +66,43 @@ public class DataTypeStoreTest {
 
         // index new data type
         final DataType secondDataType = mock(DataType.class);
-        final String secondUuid = "789";
+        final String secondUUID = "789";
 
-        store.index(secondUuid, secondDataType);
+        store.index(secondUUID, secondDataType);
 
         assertEquals(2, store.size());
         assertEquals(dataType, store.get(uuid));
-        assertEquals(secondDataType, store.get(secondUuid));
+        assertEquals(secondDataType, store.get(secondUUID));
     }
 
     @Test
     public void testClear() {
         store.clear();
         assertEquals(0, store.size());
+    }
+
+    @Test
+    public void testGetTopLevelDataTypes() {
+
+        final String secondUUID = "789";
+        final String thirdUUID = "012";
+        final DataType secondDataType = mock(DataType.class);
+        final DataType thirdDataType = mock(DataType.class);
+
+        when(secondDataType.isTopLevel()).thenReturn(true);
+
+        store.index(secondUUID, secondDataType);
+        store.index(thirdUUID, thirdDataType);
+
+        final List<DataType> topLevelDataTypes = store.getTopLevelDataTypes();
+
+        assertEquals(topLevelDataTypes, singletonList(secondDataType));
+    }
+
+    @Test
+    public void testUnIndex() {
+        store.unIndex(uuid);
+
+        assertNull(store.get(uuid));
     }
 }

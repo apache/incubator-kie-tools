@@ -24,7 +24,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
-import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeFactory;
+import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
+import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManager;
 import org.kie.workbench.common.dmn.client.editors.types.common.ItemDefinitionUtils;
 import org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeList;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.DataTypeStore;
@@ -37,6 +38,7 @@ import org.mockito.Mockito;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
@@ -58,13 +60,13 @@ public class DataTypeModalTest {
     private ItemDefinitionUtils itemDefinitionUtils;
 
     @Mock
-    private DataTypeFactory dataTypeFactory;
-
-    @Mock
     private ItemDefinitionStore definitionStore;
 
     @Mock
     private DataTypeStore dataTypeStore;
+
+    @Mock
+    private DataTypeManager dataTypeManager;
 
     @Captor
     private ArgumentCaptor<List<DataType>> dataTypesCaptor;
@@ -123,9 +125,9 @@ public class DataTypeModalTest {
         final List<ItemDefinition> itemDefinitions = asList(itemDefinition1, itemDefinition2, itemDefinition3);
 
         when(itemDefinitionUtils.all()).thenReturn(itemDefinitions);
-        doReturn(dataType1).when(dataTypeFactory).makeStandardDataType(itemDefinition1);
-        doReturn(dataType2).when(dataTypeFactory).makeStandardDataType(itemDefinition2);
-        doReturn(dataType3).when(dataTypeFactory).makeStandardDataType(itemDefinition3);
+        doReturn(dataType1).when(modal).makeDataType(itemDefinition1);
+        doReturn(dataType2).when(modal).makeDataType(itemDefinition2);
+        doReturn(dataType3).when(modal).makeDataType(itemDefinition3);
 
         modal.loadDataTypes();
 
@@ -134,6 +136,20 @@ public class DataTypeModalTest {
         final List<DataType> dataTypes = dataTypesCaptor.getValue();
 
         assertThat(dataTypes).containsExactly(dataType1, dataType2, dataType3);
+    }
+
+    @Test
+    public void testMakeDataType() {
+
+        final ItemDefinition itemDefinition = mock(ItemDefinition.class);
+        final DataType expectedDataType = mock(DataType.class);
+
+        when(dataTypeManager.from(itemDefinition)).thenReturn(dataTypeManager);
+        when(dataTypeManager.get()).thenReturn(expectedDataType);
+
+        final DataType actualDataType = modal.makeDataType(itemDefinition);
+
+        assertEquals(expectedDataType, actualDataType);
     }
 
     private ItemDefinition makeItem(final String itemName) {
@@ -148,8 +164,8 @@ public class DataTypeModalTest {
 
     class FakeDataTypeModal extends DataTypeModal {
 
-        public FakeDataTypeModal() {
-            super(view, treeList, itemDefinitionUtils, dataTypeFactory, definitionStore, dataTypeStore);
+        FakeDataTypeModal() {
+            super(view, treeList, itemDefinitionUtils, definitionStore, dataTypeStore, dataTypeManager);
         }
 
         @Override

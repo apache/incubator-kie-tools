@@ -24,7 +24,8 @@ import javax.inject.Inject;
 
 import elemental2.dom.HTMLElement;
 import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
-import org.kie.workbench.common.dmn.client.editors.types.DataType;
+import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
+import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManager;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeUtils;
 import org.uberfire.client.mvp.UberElemental;
 
@@ -35,6 +36,8 @@ public class DataTypeSelect {
 
     private final DataTypeUtils dataTypeUtils;
 
+    private final DataTypeManager dataTypeManager;
+
     private DataType dataType;
 
     private DataTypeListItem listItem;
@@ -43,9 +46,11 @@ public class DataTypeSelect {
 
     @Inject
     public DataTypeSelect(final View view,
-                          final DataTypeUtils dataTypeUtils) {
+                          final DataTypeUtils dataTypeUtils,
+                          final DataTypeManager dataTypeManager) {
         this.view = view;
         this.dataTypeUtils = dataTypeUtils;
+        this.dataTypeManager = dataTypeManager;
     }
 
     @PostConstruct
@@ -63,6 +68,10 @@ public class DataTypeSelect {
         this.dataType = dataType;
         this.view.setDataType(dataType);
         this.subDataTypes = dataType.getSubDataTypes();
+    }
+
+    void refresh() {
+        view.setupDropdown();
     }
 
     DataType getDataType() {
@@ -86,7 +95,7 @@ public class DataTypeSelect {
     }
 
     void refreshView(final String typeName) {
-        subDataTypes = dataTypeUtils.externalDataTypes(getDataType(), typeName);
+        subDataTypes = dataTypeManager.from(getDataType()).makeExternalDataTypes(typeName);
         listItem.refreshSubItems(subDataTypes);
     }
 
@@ -100,6 +109,8 @@ public class DataTypeSelect {
 
     public interface View extends UberElemental<DataTypeSelect>,
                                   IsElement {
+
+        void setupDropdown();
 
         void enableEditMode();
 

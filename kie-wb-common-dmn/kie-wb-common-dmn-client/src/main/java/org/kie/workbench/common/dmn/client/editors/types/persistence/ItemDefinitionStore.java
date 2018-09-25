@@ -22,7 +22,13 @@ import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
+import org.kie.workbench.common.dmn.client.editors.types.DataTypeModal;
 
+/**
+ * Stores all Item Definitions loaded in the {@link DataTypeModal}.
+ * <p>
+ * All entries are indexed by the UUID from the correspondent Data Type.
+ */
 @ApplicationScoped
 public class ItemDefinitionStore {
 
@@ -43,5 +49,9 @@ public class ItemDefinitionStore {
 
     int size() {
         return itemDefinitions.size();
+    }
+
+    public void unIndex(final String uuid) {
+        itemDefinitions.remove(uuid);
     }
 }

@@ -16,25 +16,26 @@
 
 package org.kie.workbench.common.dmn.client.editors.types.persistence;
 
+import java.util.List;
 import java.util.Optional;
 
+/**
+ * Implements base operations for an Active Record (update, destroy and create).
+ */
 public abstract class ActiveRecord<T> {
 
     private RecordEngine<T> recordEngine;
-
-    public ActiveRecord() {
-    }
 
     public ActiveRecord(final RecordEngine<T> recordEngine) {
         this.recordEngine = recordEngine;
     }
 
-    public void update() {
-        getRecordEngine().update(getRecord());
+    public List<T> update() {
+        return getRecordEngine().update(getRecord());
     }
 
-    public void destroy() {
-        getRecordEngine().destroy(getRecord());
+    public List<T> destroy() {
+        return getRecordEngine().destroy(getRecord());
     }
 
     public void create() {

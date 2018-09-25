@@ -16,72 +16,41 @@
 
 package org.kie.workbench.common.dmn.client.editors.types.common;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
-import org.kie.workbench.common.dmn.client.editors.types.DataType;
-import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
+import org.kie.workbench.common.dmn.client.editors.types.persistence.DataTypeStore;
+
+import static java.util.stream.Collectors.toList;
 
 @Dependent
 public class DataTypeUtils {
 
-    private final DataTypeFactory dataTypeFactory;
+    private final DataTypeStore dataTypeStore;
 
-    private final DMNGraphUtils dmnGraphUtils;
-
-    private final ItemDefinitionUtils itemDefinitionUtils;
+    private final DataTypeManager dataTypeManager;
 
     @Inject
-    public DataTypeUtils(final DataTypeFactory dataTypeFactory,
-                         final DMNGraphUtils dmnGraphUtils,
-                         final ItemDefinitionUtils itemDefinitionUtils) {
-        this.dataTypeFactory = dataTypeFactory;
-        this.dmnGraphUtils = dmnGraphUtils;
-        this.itemDefinitionUtils = itemDefinitionUtils;
+    public DataTypeUtils(final DataTypeStore dataTypeStore,
+                         final DataTypeManager dataTypeManager) {
+        this.dataTypeStore = dataTypeStore;
+        this.dataTypeManager = dataTypeManager;
     }
 
     public List<DataType> defaultDataTypes() {
         return Stream
                 .of(BuiltInType.values())
-                .map(dataTypeFactory::makeDefaultDataType)
+                .map(bit -> dataTypeManager.from(bit).get())
                 .sorted(Comparator.comparing(DataType::getType))
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     public List<DataType> customDataTypes() {
-
-        final List<ItemDefinition> getItemDefinition = dmnGraphUtils.getDefinitions().getItemDefinition();
-
-        return getItemDefinition
-                .stream()
-                .map(dataTypeFactory::makeStandardDataType)
-                .sorted(Comparator.comparing(DataType::getName))
-                .collect(Collectors.toList());
-    }
-
-    public List<DataType> externalDataTypes(final DataType parent,
-                                            final String typeName) {
-
-        final Optional<ItemDefinition> existingItemDefinition = itemDefinitionUtils.findByName(typeName);
-
-        if (existingItemDefinition.isPresent()) {
-            return existingItemDefinition
-                    .get()
-                    .getItemComponent()
-                    .stream()
-                    .map((ItemDefinition item) -> dataTypeFactory.makeExternalDataType(parent.getUUID(), item))
-                    .collect(Collectors.toList());
-        } else {
-            return new ArrayList<>();
-        }
+        return dataTypeStore.getTopLevelDataTypes();
     }
 }

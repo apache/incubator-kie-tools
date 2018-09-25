@@ -20,22 +20,25 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.google.gwtmockito.GwtMockitoTestRunner;
 import elemental2.dom.HTMLElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.dmn.client.editors.types.DataType;
+import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
+import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManager;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeUtils;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(GwtMockitoTestRunner.class)
 public class DataTypeSelectTest {
 
     @Mock
@@ -47,11 +50,14 @@ public class DataTypeSelectTest {
     @Mock
     private DataTypeListItem listItem;
 
+    @Mock
+    private DataTypeManager dataTypeManager;
+
     private DataTypeSelect dataTypeSelect;
 
     @Before
     public void setup() {
-        dataTypeSelect = new DataTypeSelect(view, dataTypeUtils);
+        dataTypeSelect = spy(new DataTypeSelect(view, dataTypeUtils, dataTypeManager));
     }
 
     @Test
@@ -131,13 +137,22 @@ public class DataTypeSelectTest {
     }
 
     @Test
+    public void testRefresh() {
+        dataTypeSelect.refresh();
+
+        verify(view).setupDropdown();
+    }
+
+    @Test
     public void testRefreshView() {
 
         final String typeName = "typeName";
         final DataType parent = mock(DataType.class);
         final List<DataType> expectedDataTypes = Collections.singletonList(mock(DataType.class));
 
-        when(dataTypeUtils.externalDataTypes(parent, typeName)).thenReturn(expectedDataTypes);
+        doReturn(parent).when(dataTypeSelect).getDataType();
+        when(dataTypeManager.from(parent)).thenReturn(dataTypeManager);
+        when(dataTypeManager.makeExternalDataTypes(typeName)).thenReturn(expectedDataTypes);
 
         dataTypeSelect.init(listItem, parent);
         dataTypeSelect.refreshView(typeName);

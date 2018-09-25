@@ -37,9 +37,11 @@ public abstract class JQuerySelectPicker {
     public native JQuerySelectPicker on(final String event,
                                         final CallbackFunction callbackFunction);
 
+    public native String val();
+
     @JsFunction
     public interface CallbackFunction {
 
-        void call();
+        void call(final JQuerySelectPickerEvent event);
     }
 }

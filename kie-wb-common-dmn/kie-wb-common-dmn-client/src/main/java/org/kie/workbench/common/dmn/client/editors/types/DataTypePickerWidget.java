@@ -46,6 +46,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
+import org.kie.workbench.common.dmn.client.editors.types.common.ItemDefinitionUtils;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 
@@ -70,6 +71,8 @@ public class DataTypePickerWidget extends Composite implements HasValue<QName>,
 
     private DataTypeModal dataTypeModal;
 
+    private ItemDefinitionUtils itemDefinitionUtils;
+
     private QName type;
 
     private boolean enabled;
@@ -83,12 +86,14 @@ public class DataTypePickerWidget extends Composite implements HasValue<QName>,
                                 final TranslationService translationService,
                                 final QNameConverter qNameConverter,
                                 final DMNGraphUtils dmnGraphUtils,
-                                final DataTypeModal dataTypeModal) {
+                                final DataTypeModal dataTypeModal,
+                                final ItemDefinitionUtils itemDefinitionUtils) {
         this.typeButton = typeButton;
         this.typeSelector = GWT.create(Select.class);
         this.qNameConverter = qNameConverter;
         this.dmnGraphUtils = dmnGraphUtils;
         this.dataTypeModal = dataTypeModal;
+        this.itemDefinitionUtils = itemDefinitionUtils;
 
         this.typeSelector.setShowTick(true);
         this.typeSelector.setLiveSearch(true);
@@ -126,18 +131,7 @@ public class DataTypePickerWidget extends Composite implements HasValue<QName>,
     }
 
     QName normaliseBuiltInTypeTypeRef(final QName typeRef) {
-        String namespace = typeRef.getNamespaceURI();
-        String localPart = typeRef.getLocalPart();
-        String prefix = typeRef.getPrefix();
-
-        final Definitions definitions = dmnGraphUtils.getDefinitions();
-        final Optional<String> nsPrefix = definitions == null ? Optional.empty() : definitions.getPrefixForNamespaceURI(namespace);
-        if (nsPrefix.isPresent()) {
-            prefix = nsPrefix.get();
-            namespace = "";
-        }
-
-        return new QName(namespace, localPart, prefix);
+        return itemDefinitionUtils.normaliseTypeRef(typeRef);
     }
 
     private void addItemDefinitions() {

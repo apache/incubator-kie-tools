@@ -32,7 +32,9 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.dmn.client.editors.types.DataType;
+import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
+import org.kie.workbench.common.dmn.client.editors.types.listview.common.JQuerySelectPickerEvent;
+import org.kie.workbench.common.dmn.client.editors.types.listview.common.JQuerySelectPickerTarget;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
@@ -47,6 +49,7 @@ import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -173,10 +176,43 @@ public class DataTypeSelectViewTest {
     }
 
     @Test
-    public void testOnSelectChange() {
-        view.onSelectChange();
+    public void testOnSelectChangeWhenOtherValueIsSet() {
 
-        verify(presenter).refreshView(typeSelect.value);
+        final JQuerySelectPickerEvent event = mock(JQuerySelectPickerEvent.class);
+        final JQuerySelectPickerTarget target = mock(JQuerySelectPickerTarget.class);
+        final String newValue = "newValue";
+        final String oldValue = "oldValue";
+
+        doNothing().when(view).setPickerValue(newValue);
+        doReturn(oldValue).when(view).getValue();
+
+        event.target = target;
+        target.value = newValue;
+
+        view.onSelectChange(event);
+
+        verify(view).setPickerValue(newValue);
+        verify(presenter).refreshView(newValue);
+    }
+
+    @Test
+    public void testOnSelectChangeWhenTheSameValueIsSet() {
+
+        final JQuerySelectPickerEvent event = mock(JQuerySelectPickerEvent.class);
+        final JQuerySelectPickerTarget target = mock(JQuerySelectPickerTarget.class);
+        final String newValue = "value";
+        final String oldValue = "value";
+
+        doNothing().when(view).setPickerValue(newValue);
+        doReturn(oldValue).when(view).getValue();
+
+        event.target = target;
+        target.value = newValue;
+
+        view.onSelectChange(event);
+
+        verify(view, never()).setPickerValue(newValue);
+        verify(presenter, never()).refreshView(newValue);
     }
 
     @Test
@@ -237,17 +273,6 @@ public class DataTypeSelectViewTest {
     }
 
     @Test
-    public void testOpenSelectPicker() {
-
-        final Element element = mock(Element.class);
-        doReturn(element).when(view).getSelectPicker();
-
-        view.openSelectPicker();
-
-        verify(view).triggerPickerAction(element, "toggle");
-    }
-
-    @Test
     public void testGetSelectPicker() {
 
         final HTMLElement element = mock(HTMLElement.class);
@@ -289,7 +314,6 @@ public class DataTypeSelectViewTest {
         doNothing().when(view).hideSelectPicker();
         when(presenter.getDataType()).thenReturn(dataType);
         typeText.classList = mock(DOMTokenList.class);
-        typeSelect.value = type;
 
         view.disableEditMode();
 
@@ -298,19 +322,15 @@ public class DataTypeSelectViewTest {
         verify(view).hideSelectPicker();
     }
 
-    @Test
-    public void testGetValue() {
-
-        final String expectedValue = "type";
-
-        typeSelect.value = expectedValue;
-
-        final String actualValue = view.getValue();
-
-        assertEquals(expectedValue, actualValue);
-    }
-
     private DataType makeDataType(final String name) {
-        return new DataType("uuid", "parentUUID", name, name, new ArrayList<>(), false, false, false, null);
+
+        final DataType dataType = spy(new DataType(null));
+
+        doReturn("uuid").when(dataType).getUUID();
+        doReturn("parentUUID").when(dataType).getParentUUID();
+        doReturn(name).when(dataType).getName();
+        doReturn(name).when(dataType).getType();
+
+        return dataType;
     }
 }

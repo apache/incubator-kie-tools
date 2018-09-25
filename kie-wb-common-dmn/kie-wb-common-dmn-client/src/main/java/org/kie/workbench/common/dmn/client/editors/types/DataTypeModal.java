@@ -22,7 +22,9 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeFactory;
+import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
+import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
+import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManager;
 import org.kie.workbench.common.dmn.client.editors.types.common.ItemDefinitionUtils;
 import org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeList;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.DataTypeStore;
@@ -38,26 +40,26 @@ public class DataTypeModal extends Elemental2Modal<DataTypeModal.View> {
 
     private final ItemDefinitionUtils itemDefinitionUtils;
 
-    private final DataTypeFactory dataTypeFactory;
-
     private final ItemDefinitionStore definitionStore;
 
     private final DataTypeStore dataTypeStore;
+
+    private final DataTypeManager dataTypeManager;
 
     @Inject
     public DataTypeModal(final View view,
                          final DataTypeList treeList,
                          final ItemDefinitionUtils itemDefinitionUtils,
-                         final DataTypeFactory dataTypeFactory,
                          final ItemDefinitionStore definitionStore,
-                         final DataTypeStore dataTypeStore) {
+                         final DataTypeStore dataTypeStore,
+                         final DataTypeManager dataTypeManager) {
         super(view);
 
         this.treeList = treeList;
         this.itemDefinitionUtils = itemDefinitionUtils;
-        this.dataTypeFactory = dataTypeFactory;
         this.definitionStore = definitionStore;
         this.dataTypeStore = dataTypeStore;
+        this.dataTypeManager = dataTypeManager;
     }
 
     @PostConstruct
@@ -82,8 +84,12 @@ public class DataTypeModal extends Elemental2Modal<DataTypeModal.View> {
         treeList.setupItems(itemDefinitionUtils
                                     .all()
                                     .stream()
-                                    .map(dataTypeFactory::makeStandardDataType)
+                                    .map(this::makeDataType)
                                     .collect(Collectors.toList()));
+    }
+
+    DataType makeDataType(final ItemDefinition itemDefinition) {
+        return dataTypeManager.from(itemDefinition).get();
     }
 
     void superShow() {
