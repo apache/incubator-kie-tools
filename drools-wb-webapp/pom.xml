@@ -1311,7 +1311,7 @@
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-wb-verifier-api</artifactId>
+      <artifactId>drools-verifier-api</artifactId>
       <scope>compile</scope>
     </dependency>
     <dependency>
