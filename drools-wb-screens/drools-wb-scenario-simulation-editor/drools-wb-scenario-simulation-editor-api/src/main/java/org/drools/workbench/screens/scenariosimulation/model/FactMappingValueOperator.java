@@ -15,15 +15,41 @@
  */
 package org.drools.workbench.screens.scenariosimulation.model;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
  * @see org.drools.workbench.screens.scenariosimulation.backend.server.OperatorEvaluator
- *
  */
 @Portable
 public enum FactMappingValueOperator {
 
-    EQUALS
+    EQUALS("="),
+    NOT_EQUALS("!", "!=", "<>");
 
+    final List<String> symbols;
+
+    FactMappingValueOperator(String... symbols) {
+        this.symbols = Arrays.asList(symbols);
+        // sort symbols by descending length to match longer symbols first
+        this.symbols.sort((a, b) -> Integer.compare(a.length(), b.length()) * -1);
+    }
+
+    public List<String> getSymbols() {
+        return symbols;
+    }
+
+    public static FactMappingValueOperator findOperator(String rawValue) {
+        String value = rawValue.trim();
+        for (FactMappingValueOperator factMappingValueOperator : FactMappingValueOperator.values()) {
+            if (factMappingValueOperator.getSymbols().stream().anyMatch(value::startsWith)) {
+                return factMappingValueOperator;
+            }
+        }
+
+        // Equals is the default
+        return FactMappingValueOperator.EQUALS;
+    }
 }

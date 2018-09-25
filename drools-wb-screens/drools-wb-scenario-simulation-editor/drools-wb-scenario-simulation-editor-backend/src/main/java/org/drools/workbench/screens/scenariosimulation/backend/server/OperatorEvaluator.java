@@ -25,10 +25,15 @@ public class OperatorEvaluator {
     public Boolean evaluate(FactMappingValueOperator operator, Object resultValue, Object expectedValue) {
         switch (operator) {
             case EQUALS:
-                if(areComparable(resultValue, expectedValue)) {
+                if (areComparable(resultValue, expectedValue)) {
                     return ((Comparable) resultValue).compareTo(expectedValue) == 0;
                 }
                 return Objects.equals(resultValue, expectedValue);
+            case NOT_EQUALS:
+                if (areComparable(resultValue, expectedValue)) {
+                    return ((Comparable) resultValue).compareTo(expectedValue) != 0;
+                }
+                return !Objects.equals(resultValue, expectedValue);
             default:
                 throw new UnsupportedOperationException(new StringBuilder().append("Operator ").append(operator.name())
                                                                 .append(" is not supported").toString());

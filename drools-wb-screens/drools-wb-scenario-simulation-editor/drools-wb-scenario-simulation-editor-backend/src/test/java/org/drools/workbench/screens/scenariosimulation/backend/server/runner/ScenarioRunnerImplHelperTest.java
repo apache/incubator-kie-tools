@@ -40,6 +40,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static java.util.stream.Collectors.toList;
+import static org.drools.workbench.screens.scenariosimulation.backend.server.runner.ScenarioRunnerHelper.convertValue;
 import static org.drools.workbench.screens.scenariosimulation.backend.server.runner.ScenarioRunnerHelper.extractExpectedValues;
 import static org.drools.workbench.screens.scenariosimulation.backend.server.runner.ScenarioRunnerHelper.extractGivenValues;
 import static org.drools.workbench.screens.scenariosimulation.backend.server.runner.ScenarioRunnerHelper.getScenarioResults;
@@ -55,11 +56,12 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ScenarioRunnerHelperTest {
+public class ScenarioRunnerImplHelperTest {
 
     private static final String NAME = "NAME";
     private static final double AMOUNT = 10;
     private static final String TEST_DESCRIPTION = "Test description";
+    private static final ClassLoader classLoader = ScenarioRunnerImplHelperTest.class.getClassLoader();
 
     private Simulation simulation;
     private FactIdentifier personFactIdentifier;
@@ -115,10 +117,10 @@ public class ScenarioRunnerHelperTest {
 
     @Test
     public void extractGivenValuesTest() {
-        List<ScenarioInput> scenario1Inputs = extractGivenValues(simulation.getSimulationDescriptor(), scenario1.getUnmodifiableFactMappingValues());
+        List<ScenarioInput> scenario1Inputs = extractGivenValues(simulation.getSimulationDescriptor(), scenario1.getUnmodifiableFactMappingValues(), classLoader);
         assertEquals(1, scenario1Inputs.size());
 
-        List<ScenarioInput> scenario2Inputs = extractGivenValues(simulation.getSimulationDescriptor(), scenario2.getUnmodifiableFactMappingValues());
+        List<ScenarioInput> scenario2Inputs = extractGivenValues(simulation.getSimulationDescriptor(), scenario2.getUnmodifiableFactMappingValues(), classLoader);
         assertEquals(2, scenario2Inputs.size());
     }
 
@@ -133,13 +135,13 @@ public class ScenarioRunnerHelperTest {
 
     @Test
     public void verifyConditionsTest() {
-        List<ScenarioInput> scenario1Inputs = extractGivenValues(simulation.getSimulationDescriptor(), scenario1.getUnmodifiableFactMappingValues());
+        List<ScenarioInput> scenario1Inputs = extractGivenValues(simulation.getSimulationDescriptor(), scenario1.getUnmodifiableFactMappingValues(), classLoader);
         List<ScenarioOutput> scenario1Outputs = extractExpectedValues(scenario1.getUnmodifiableFactMappingValues());
 
         List<ScenarioResult> scenario1Results = verifyConditions(simulation.getSimulationDescriptor(), scenario1Inputs, scenario1Outputs);
         assertEquals(1, scenario1Results.size());
 
-        List<ScenarioInput> scenario2Inputs = extractGivenValues(simulation.getSimulationDescriptor(), scenario2.getUnmodifiableFactMappingValues());
+        List<ScenarioInput> scenario2Inputs = extractGivenValues(simulation.getSimulationDescriptor(), scenario2.getUnmodifiableFactMappingValues(), classLoader);
         List<ScenarioOutput> scenario2Outputs = extractExpectedValues(scenario2.getUnmodifiableFactMappingValues());
 
         List<ScenarioResult> scenario2Results = verifyConditions(simulation.getSimulationDescriptor(), scenario2Inputs, scenario2Outputs);
@@ -148,7 +150,7 @@ public class ScenarioRunnerHelperTest {
 
     @Test
     public void getScenarioResultsTest() {
-        List<ScenarioInput> scenario1Inputs = extractGivenValues(simulation.getSimulationDescriptor(), scenario1.getUnmodifiableFactMappingValues());
+        List<ScenarioInput> scenario1Inputs = extractGivenValues(simulation.getSimulationDescriptor(), scenario1.getUnmodifiableFactMappingValues(), classLoader);
         List<ScenarioOutput> scenario1Outputs = extractExpectedValues(scenario1.getUnmodifiableFactMappingValues());
 
         assertTrue(scenario1Inputs.size() > 0);
@@ -160,7 +162,7 @@ public class ScenarioRunnerHelperTest {
 
         assertEquals(1, scenario1Results.size());
 
-        List<ScenarioInput> scenario2Inputs = extractGivenValues(simulation.getSimulationDescriptor(), scenario2.getUnmodifiableFactMappingValues());
+        List<ScenarioInput> scenario2Inputs = extractGivenValues(simulation.getSimulationDescriptor(), scenario2.getUnmodifiableFactMappingValues(), classLoader);
         List<ScenarioOutput> scenario2Outputs = extractExpectedValues(scenario2.getUnmodifiableFactMappingValues());
 
         assertTrue(scenario2Inputs.size() > 0);
@@ -218,5 +220,39 @@ public class ScenarioRunnerHelperTest {
         List<FactMappingValue> fail = new ArrayList<>();
         fail.add(new FactMappingValue(personFactIdentifier, null, null));
         groupByFactIdentifierAndFilter(fail, FactMappingType.GIVEN);
+    }
+
+    @Test
+    public void convertValueTest() {
+        assertEquals("Test", convertValue(String.class.getCanonicalName(), "Test", classLoader));
+        assertEquals(1, convertValue(int.class.getCanonicalName(), "1", classLoader));
+        assertEquals(1, convertValue(Integer.class.getCanonicalName(), "1", classLoader));
+        assertEquals(1L, convertValue(long.class.getCanonicalName(), "1", classLoader));
+        assertEquals(1L, convertValue(Long.class.getCanonicalName(), "1", classLoader));
+        assertEquals(1.0D, convertValue(double.class.getCanonicalName(), "1.0", classLoader));
+        assertEquals(1.0D, convertValue(Double.class.getCanonicalName(), "1.0", classLoader));
+        assertEquals(1.0F, convertValue(float.class.getCanonicalName(), "1.0", classLoader));
+        assertEquals(1.0F, convertValue(Float.class.getCanonicalName(), "1.0", classLoader));
+        assertEquals(null, convertValue(Float.class.getCanonicalName(), null, classLoader));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void convertValueFailLoadClassTest() {
+        convertValue("my.NotExistingClass", "Test", classLoader);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void convertValueFailUnsupportedTest() {
+        convertValue(ScenarioRunnerImplHelperTest.class.getCanonicalName(), "Test", classLoader);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void convertValueFailPrimitiveNullTest() {
+        convertValue("int", null, classLoader);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void convertValueFailNotStringOrTypeTest() {
+        convertValue(ScenarioRunnerImplHelperTest.class.getCanonicalName(), 1, classLoader);
     }
 }

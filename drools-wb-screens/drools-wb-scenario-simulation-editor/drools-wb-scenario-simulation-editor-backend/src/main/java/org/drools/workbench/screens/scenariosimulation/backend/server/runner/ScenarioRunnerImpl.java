@@ -25,7 +25,6 @@ import org.drools.workbench.screens.scenariosimulation.model.Simulation;
 import org.drools.workbench.screens.scenariosimulation.model.SimulationDescriptor;
 import org.junit.internal.runners.model.EachTestNotifier;
 import org.junit.runner.Description;
-import org.junit.runner.Runner;
 import org.junit.runner.notification.RunNotifier;
 import org.kie.api.runtime.KieContainer;
 
@@ -35,18 +34,18 @@ import static org.drools.workbench.screens.scenariosimulation.backend.server.run
 import static org.drools.workbench.screens.scenariosimulation.backend.server.runner.ScenarioRunnerHelper.validateAssertion;
 import static org.drools.workbench.screens.scenariosimulation.backend.server.runner.ScenarioRunnerHelper.verifyConditions;
 
-public class ScenarioRunner extends Runner {
+public class ScenarioRunnerImpl extends AbstractScenarioRunner {
 
     private final Description desc = Description.createSuiteDescription("Test Scenarios (Preview) tests");
     private final KieContainer kieContainer;
     private final SimulationDescriptor simulationDescriptor;
     private List<Scenario> scenarios;
 
-    public ScenarioRunner(KieContainer kieContainer, Simulation simulation) {
+    public ScenarioRunnerImpl(KieContainer kieContainer, Simulation simulation) {
         this(kieContainer, simulation.getSimulationDescriptor(), simulation.getUnmodifiableScenarios());
     }
 
-    public ScenarioRunner(KieContainer kieContainer, SimulationDescriptor simulationDescriptor, List<Scenario> scenarios) {
+    public ScenarioRunnerImpl(KieContainer kieContainer, SimulationDescriptor simulationDescriptor, List<Scenario> scenarios) {
         this.kieContainer = kieContainer;
         this.simulationDescriptor = simulationDescriptor;
         this.scenarios = scenarios;
@@ -78,7 +77,7 @@ public class ScenarioRunner extends Runner {
         singleNotifier.fireTestStarted();
 
         try {
-            extractGivenValues(simulationDescriptor, scenario.getUnmodifiableFactMappingValues()).forEach(scenarioRunnerData::addInput);
+            extractGivenValues(simulationDescriptor, scenario.getUnmodifiableFactMappingValues(), getClassLoader()).forEach(scenarioRunnerData::addInput);
             extractExpectedValues(scenario.getUnmodifiableFactMappingValues()).forEach(scenarioRunnerData::addOutput);
 
             executeScenario(kieContainer, scenarioRunnerData.getInputData());

@@ -18,6 +18,7 @@ package org.drools.workbench.screens.scenariosimulation.backend.server.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +36,7 @@ public class ScenarioBeanUtilTest {
 
     private static String FIRST_NAME = "firstNameToSet";
     private static int AGE = 10;
+    private static ClassLoader classLoader = ScenarioBeanUtilTest.class.getClassLoader();
 
     @Test
     public void fillBeanTest() {
@@ -42,7 +44,7 @@ public class ScenarioBeanUtilTest {
         paramsToSet.put(Arrays.asList("creator", "firstName"), FIRST_NAME);
         paramsToSet.put(Arrays.asList("creator", "age"), AGE);
 
-        Object result = ScenarioBeanUtil.fillBean(Dispute.class.getCanonicalName(), paramsToSet);
+        Object result = ScenarioBeanUtil.fillBean(Dispute.class.getCanonicalName(), paramsToSet, classLoader);
 
         assertTrue(result instanceof Dispute);
 
@@ -53,7 +55,7 @@ public class ScenarioBeanUtilTest {
 
     @Test(expected = ScenarioException.class)
     public void fillBeanLoadClassTest() {
-        ScenarioBeanUtil.fillBean("FakeCanonicalName", new HashMap<>());
+        ScenarioBeanUtil.fillBean("FakeCanonicalName", new HashMap<>(), classLoader);
     }
 
     @Test(expected = ScenarioException.class)
@@ -61,7 +63,7 @@ public class ScenarioBeanUtilTest {
         Map<List<String>, Object> paramsToSet = new HashMap<>();
         paramsToSet.put(Arrays.asList("name"), null);
 
-        ScenarioBeanUtil.fillBean(NotEmptyConstructor.class.getCanonicalName(), paramsToSet);
+        ScenarioBeanUtil.fillBean(NotEmptyConstructor.class.getCanonicalName(), paramsToSet, classLoader);
     }
 
     @Test(expected = ScenarioException.class)
@@ -69,7 +71,15 @@ public class ScenarioBeanUtilTest {
         Map<List<String>, Object> paramsToSet = new HashMap<>();
         paramsToSet.put(Arrays.asList("fakeField"), null);
 
-        ScenarioBeanUtil.fillBean(Dispute.class.getCanonicalName(), paramsToSet);
+        ScenarioBeanUtil.fillBean(Dispute.class.getCanonicalName(), paramsToSet, classLoader);
+    }
+
+    @Test
+    public void fillBeanSimpleObjectTest() {
+        Map<List<String>, Object> paramsToSet = new HashMap<>();
+        paramsToSet.put(Collections.emptyList(), "Test");
+
+        ScenarioBeanUtil.fillBean(String.class.getCanonicalName(), paramsToSet, classLoader);
     }
 
     @Test

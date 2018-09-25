@@ -15,13 +15,15 @@
  */
 package org.drools.workbench.screens.scenariosimulation.backend.server;
 
+import org.drools.workbench.screens.scenariosimulation.backend.server.runner.AbstractScenarioRunner;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
 import org.guvnor.common.services.shared.test.TestResultMessage;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runner.Runner;
 import org.kie.workbench.common.services.backend.builder.service.BuildInfo;
 import org.kie.workbench.common.services.backend.builder.service.BuildInfoService;
+import org.kie.workbench.common.services.backend.project.ModuleClassLoaderHelper;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -36,13 +38,13 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ScenarioRunnerServiceImplTest {
+public class ScenarioRunnerImplServiceImplTest {
 
     @Mock
     private EventSourceMock<TestResultMessage> defaultTestResultMessageEvent;
 
     @Mock
-    private Runner runnerMock;
+    private AbstractScenarioRunner runnerMock;
 
     @Mock
     private KieModuleService moduleService;
@@ -53,8 +55,16 @@ public class ScenarioRunnerServiceImplTest {
     @Mock
     private BuildInfo buildInfo;
 
+    @Mock
+    private ModuleClassLoaderHelper classLoaderHelper;
+
     @InjectMocks
     private ScenarioRunnerServiceImpl scenarioRunnerService = new ScenarioRunnerServiceImpl();
+
+    @Before
+    public void setup() {
+        when(classLoaderHelper.getModuleClassLoader(any())).thenReturn(ClassLoader.getSystemClassLoader());
+    }
 
     @Test
     public void runAllTests() throws Exception {

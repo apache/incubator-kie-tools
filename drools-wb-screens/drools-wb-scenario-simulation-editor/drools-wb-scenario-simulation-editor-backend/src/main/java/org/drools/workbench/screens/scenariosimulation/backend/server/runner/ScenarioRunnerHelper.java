@@ -46,11 +46,20 @@ import static org.drools.workbench.screens.scenariosimulation.backend.server.uti
 
 public class ScenarioRunnerHelper {
 
+    private static final Map<String, Class<?>> primitiveMap = new HashMap<>();
+    static {
+        primitiveMap.put("int", int.class);
+        primitiveMap.put("long", long.class);
+        primitiveMap.put("double", double.class);
+        primitiveMap.put("float", float.class);
+    }
+
+
     private ScenarioRunnerHelper() {
 
     }
 
-    public static List<ScenarioInput> extractGivenValues(SimulationDescriptor simulationDescriptor, List<FactMappingValue> factMappingValues) {
+    public static List<ScenarioInput> extractGivenValues(SimulationDescriptor simulationDescriptor, List<FactMappingValue> factMappingValues, ClassLoader classLoader) {
         List<ScenarioInput> scenarioInput = new ArrayList<>();
 
         Map<FactIdentifier, List<FactMappingValue>> groupByFactIdentifier =
@@ -63,9 +72,10 @@ public class ScenarioRunnerHelper {
             // for each fact, create a map of path to fields and values to set
             Map<List<String>, Object> paramsForBean = getParamsForBean(simulationDescriptor,
                                                                        factIdentifier,
-                                                                       entry.getValue());
+                                                                       entry.getValue(),
+                                                                       classLoader);
 
-            Object bean = fillBean(factIdentifier.getClassName(), paramsForBean);
+            Object bean = fillBean(factIdentifier.getClassName(), paramsForBean, classLoader);
 
             scenarioInput.add(new ScenarioInput(factIdentifier, bean));
         }
@@ -131,7 +141,7 @@ public class ScenarioRunnerHelper {
                         .orElseThrow(() -> new IllegalStateException("Wrong expression, this should not happen"));
 
                 List<String> pathToValue = factMapping.getExpressionElements().stream().map(ExpressionElement::getStep).collect(toList());
-                Object expectedValue = expectedResult.getRawValue();
+                Object expectedValue = expectedResult.getCleanValue();
                 Object resultValue = ScenarioBeanUtil.navigateToObject(factInstance, pathToValue);
 
                 Boolean conditionResult = new OperatorEvaluator().evaluate(operator, resultValue, expectedValue);
@@ -158,7 +168,10 @@ public class ScenarioRunnerHelper {
         }
     }
 
-    public static Map<List<String>, Object> getParamsForBean(SimulationDescriptor simulationDescriptor, FactIdentifier factIdentifier, List<FactMappingValue> factMappingValues) {
+    public static Map<List<String>, Object> getParamsForBean(SimulationDescriptor simulationDescriptor,
+                                                             FactIdentifier factIdentifier,
+                                                             List<FactMappingValue> factMappingValues,
+                                                             ClassLoader classLoader) {
         Map<List<String>, Object> paramsForBean = new HashMap<>();
 
         for (FactMappingValue factMappingValue : factMappingValues) {
@@ -170,7 +183,8 @@ public class ScenarioRunnerHelper {
             List<String> pathToField = factMapping.getExpressionElements().stream()
                     .map(ExpressionElement::getStep).collect(toList());
 
-            paramsForBean.put(pathToField, factMappingValue.getRawValue());
+            Object parsedValue = convertValue(factMapping.getClassName(), factMappingValue.getCleanValue(), classLoader);
+            paramsForBean.put(pathToField, parsedValue);
         }
 
         return paramsForBean;
@@ -194,5 +208,54 @@ public class ScenarioRunnerHelper {
                     .add(factMappingValue);
         }
         return groupByFactIdentifier;
+    }
+
+    public static Object convertValue(String className, Object cleanValue, ClassLoader classLoader) {
+        try {
+            Class<?> clazz = loadClass(className, classLoader);
+
+            // if it is not a String, it has to be an instance of the desired type
+            if (!(cleanValue instanceof String)) {
+                if (clazz.isInstance(cleanValue)) {
+                    return cleanValue;
+                }
+                if (!isPrimitive(className) && cleanValue == null) {
+                    return cleanValue;
+                }
+                throw new IllegalArgumentException(new StringBuilder().append("Object ").append(cleanValue)
+                                                           .append(" is not a String or an instance of ").append(className).toString());
+            }
+
+            String value = (String) cleanValue;
+
+            if (clazz.isAssignableFrom(String.class)) {
+                return value;
+            } else if (clazz.isAssignableFrom(Integer.class) || clazz.isAssignableFrom(int.class)) {
+                return Integer.parseInt(value);
+            } else if (clazz.isAssignableFrom(Long.class) || clazz.isAssignableFrom(long.class)) {
+                return Long.parseLong(value);
+            } else if (clazz.isAssignableFrom(Double.class) || clazz.isAssignableFrom(double.class)) {
+                return Double.parseDouble(value);
+            } else if (clazz.isAssignableFrom(Float.class) || clazz.isAssignableFrom(float.class)) {
+                return Float.parseFloat(value);
+            }
+
+            throw new IllegalArgumentException(new StringBuilder().append("Class ").append(className)
+                                                       .append(" is not supported").toString());
+        } catch (ClassNotFoundException e) {
+            throw new IllegalArgumentException(new StringBuilder().append("Class ").append(className)
+                                                       .append(" cannot be resolved").toString(), e);
+        }
+    }
+
+    private static Class<?> loadClass(String className, ClassLoader classLoader) throws ClassNotFoundException {
+        if(primitiveMap.containsKey(className)) {
+            return primitiveMap.get(className);
+        }
+        return classLoader.loadClass(className);
+    }
+
+    private static boolean isPrimitive(String className) {
+        return primitiveMap.containsKey(className);
     }
 }

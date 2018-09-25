@@ -15,6 +15,8 @@
  */
 package org.drools.workbench.screens.scenariosimulation.model;
 
+import java.util.Optional;
+
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
@@ -62,7 +64,11 @@ public class FactMappingValue {
     }
 
     public FactMappingValueOperator getOperator() {
-        return operator;
+        return operator != null ? operator : extractOperator(rawValue);
+    }
+
+    public Object getCleanValue() {
+        return cleanValue(rawValue);
     }
 
     FactMappingValue cloneFactMappingValue() {
@@ -71,6 +77,33 @@ public class FactMappingValue {
         cloned.factIdentifier = factIdentifier;
         cloned.rawValue = rawValue;
         return cloned;
+    }
+
+    public static Object cleanValue(Object rawValue) {
+        if (!(rawValue instanceof String)) {
+            return rawValue;
+        }
+        String value = ((String) rawValue).trim();
+
+        FactMappingValueOperator operator = FactMappingValueOperator.findOperator(value);
+        Optional<String> first = operator.getSymbols().stream().filter(value::startsWith).findFirst();
+        if (first.isPresent()) {
+            String symbolToRemove = first.get();
+            int index = value.indexOf(symbolToRemove);
+            value = value.substring(index + symbolToRemove.length()).trim();
+        }
+
+        return value.trim();
+    }
+
+    public static FactMappingValueOperator extractOperator(Object rawValue) {
+        if (!(rawValue instanceof String)) {
+            return FactMappingValueOperator.EQUALS;
+        }
+
+        String value = (String) rawValue;
+
+        return FactMappingValueOperator.findOperator(value);
     }
 
     public static String getPlaceHolder() {
