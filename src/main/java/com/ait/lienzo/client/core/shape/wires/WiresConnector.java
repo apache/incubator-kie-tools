@@ -39,7 +39,7 @@ import static com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandl
 
 public class WiresConnector
 {
-    public static final int MINIMUM_STROKE_WITH = 4;
+    public static final int                       MINIMUM_STROKE_WITH = 15;
 
     private       WiresConnection                m_headConnection;
 

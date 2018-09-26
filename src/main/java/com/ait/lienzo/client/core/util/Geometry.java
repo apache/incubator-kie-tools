@@ -1726,4 +1726,64 @@ public final class Geometry
 
         return center.add(unit.mul(length));
     }
+
+    /**
+     * Find the closest point on a given line defined by the points on the {@link Point2DArray},given a reference point x,y.
+     * @param x reference point x
+     * @param y reference point y
+     * @param linePoints points of segments that compose the line
+     * @return
+     */
+    public static Point2D findClosestPointOnLine(double x, double y, Point2DArray linePoints) {
+        Double lowestDistance = null;
+        Point2D nearstPoint = null;
+        for (int i = 0; i < linePoints.size() - 1; i++) {
+            Point2D start = linePoints.get(i);
+            Point2D end = linePoints.get(i + 1);
+            Point2D point = findClosestPointOnLine(x, y, start, end);
+            if (point == null) {
+                continue;
+            }
+            double distance = Geometry.distance(point.getX(), point.getY(), x, y);
+            if (lowestDistance == null || lowestDistance > distance) {
+                lowestDistance = distance;
+                nearstPoint = point;
+            }
+        }
+        return nearstPoint;
+    }
+
+    /**
+     * Find the closest point on a given line defined by two the points, given a reference point (x,y).
+     * @param x reference point x
+     * @param y reference point y
+     * @param linePoint1 points of segments that compose the line
+     * @param linePoint2 an offset to disconsider points close to @param linePoints
+     * @return
+     */
+    public static Point2D findClosestPointOnLine(double x, double y, Point2D linePoint1, Point2D linePoint2) {
+        final double x0 = linePoint1.getX();
+        final double y0 = linePoint1.getY();
+        final double x1 = linePoint2.getX();
+        final double y1 = linePoint2.getY();
+        final double dx = x1 - x0;
+        final double dy = y1 - y0;
+        final double t = ((x - x0) * dx + (y - y0) * dy) / (dx * dx + dy * dy);
+        final double lineX = lerp(x0, x1, t);
+        final double lineY = lerp(y0, y1, t);
+        final double maxX = Math.max(x0, x1);
+        final double maxY = Math.max(y0, y1);
+        final double minX = Math.min(x0, x1);
+        final double minY = Math.min(y0, y1);
+
+        //avoid to return a point out of boundary
+        if ((lineX > maxX || lineX < minX || lineY > maxY || lineY < minY)) {
+            return null;
+        }
+        return new Point2D(lineX, lineY);
+    }
+
+    private static double lerp(double a, double b, double x) {
+        return (a + x * (b - a));
+    }
 }

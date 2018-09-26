@@ -1,7 +1,9 @@
 package com.ait.lienzo.client.core.shape.wires.handlers;
 
+import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.types.Point2D;
+import com.ait.tooling.common.api.java.util.function.Consumer;
 
 /**
  * Connector control handler provides user interaction common functions/logic in a way that they're decoupled
@@ -36,4 +38,9 @@ public interface WiresConnectorControl extends WiresMoveControl, WiresControl {
 
     WiresConnectionControl getTailConnectionControl();
 
+    Shape<?> createTransientControlHandle(Consumer<Point2D> addControlPointConsumer);
+
+    Shape<?> getTransientControlHandle();
+
+    void destroyTransientControlHandle();
 }

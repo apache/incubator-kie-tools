@@ -47,7 +47,10 @@ import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 
 public final class WiresManager
 {
+
     private static final NFastStringMap<WiresManager>        MANAGER_MAP           = new NFastStringMap<WiresManager>();
+
+    public static final int CONNECTOR_SELECTION_OFFSET =     5;
 
     private final MagnetManager                              m_magnetManager       = new MagnetManager();
 
@@ -279,10 +282,16 @@ public final class WiresManager
         m_registrationManager.register(connector.getGroup().addNodeDragStartHandler(handler));
         m_registrationManager.register(connector.getGroup().addNodeDragMoveHandler(handler));
         m_registrationManager.register(connector.getGroup().addNodeDragEndHandler(handler));
+
         m_registrationManager.register(connector.getLine().addNodeMouseClickHandler(handler));
-        m_registrationManager.register(connector.getLine().addNodeMouseDoubleClickHandler(handler));
+        m_registrationManager.register(getLayer().getLayer().addNodeMouseMoveHandler(handler));
+
         m_registrationManager.register(connector.getHead().addNodeMouseClickHandler(handler));
         m_registrationManager.register(connector.getTail().addNodeMouseClickHandler(handler));
+
+        //increase the selection area
+        connector.getLine().getAttributes().setSelectionStrokeOffset(CONNECTOR_SELECTION_OFFSET);
+        connector.getLine().getAttributes().setSelectionBoundsOffset(CONNECTOR_SELECTION_OFFSET);
 
         getConnectorList().add(connector);
         m_shapeHandlersMap.put(uuid, m_registrationManager);
