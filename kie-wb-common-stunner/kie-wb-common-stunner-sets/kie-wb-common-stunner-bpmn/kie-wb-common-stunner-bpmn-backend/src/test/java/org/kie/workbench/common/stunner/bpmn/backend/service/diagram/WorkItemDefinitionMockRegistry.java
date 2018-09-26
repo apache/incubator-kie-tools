@@ -29,6 +29,7 @@ public class WorkItemDefinitionMockRegistry implements WorkItemDefinitionRegistr
 
     public static final String WID_EMAIL = "Email";
     public static final String WID_LOG = "Log";
+    public static final String WID_REST = "Rest";
     private static final String EMAIL_ICON_URI = "email.png";
     private static final String LOG_ICON_URI = "log.png";
     private static final String EMAIL_ICON_DATA = "data:image/png;base64,R0lGODlhEAAQANUAAChilmd9qW2DrXeMtJiYkZuajqGeiqZrEKehh6m30qyjhK1yErCmgbOpfrZ8FLmter2EFr+wd8HG2ca0ceDq9+Ps+Ojv+Ovx+fL1+vb4+/j5/Pvll/vusPvyufz62/797wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAkAACAALAAAAAAQABAAAAaAQJBwSCwaJ8ikclLUOJ9QJtEpqVolGekQAsl4v16tEPKBYKpnCSYC4ro/ZYx8/oB47vi7GcDHPBwdgYKBHA4DAgEXDQsbjY6NCxd8ABcMIAeYmI0HFp2eCkUHGwcVCQmlpwihpBUVFK2vBkWtprWmFbJEFK+7rrsUBUUEw8TFBUEAOw==";
@@ -57,10 +58,16 @@ public class WorkItemDefinitionMockRegistry implements WorkItemDefinitionRegistr
                                                .setIconData(LOG_ICON_DATA))
                     .setDefaultHandler("org.jbpm.process.workitem.log.LogWorkItemHandler")
                     .setParameters("|Message:String|||");
+    public static final WorkItemDefinition REST =
+            new WorkItemDefinition()
+                .setName(WID_REST)
+                .setDescription("Rest task")
+                .setDisplayName("Rest");
 
     public static final Map<String, WorkItemDefinition> MOCK_DEFINITIONS = new HashMap<String, WorkItemDefinition>(2) {{
         put(WID_EMAIL, EMAIL);
         put(WID_LOG, LOG);
+        put(WID_REST, REST);
     }};
 
     @Override
