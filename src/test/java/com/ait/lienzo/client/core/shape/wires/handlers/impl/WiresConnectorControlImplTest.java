@@ -17,28 +17,49 @@
  */
 package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 
+import com.ait.lienzo.client.core.Context2D;
+import com.ait.lienzo.client.core.event.NodeDragEndEvent;
+import com.ait.lienzo.client.core.event.NodeDragEndHandler;
+import com.ait.lienzo.client.core.event.NodeDragMoveHandler;
+import com.ait.lienzo.client.core.event.NodeDragStartEvent;
+import com.ait.lienzo.client.core.event.NodeDragStartHandler;
+import com.ait.lienzo.client.core.event.NodeMouseClickHandler;
+import com.ait.lienzo.client.core.event.NodeMouseDoubleClickHandler;
+import com.ait.lienzo.client.core.shape.Circle;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.MultiPathDecorator;
 import com.ait.lienzo.client.core.shape.PolyLine;
+import com.ait.lienzo.client.core.shape.Shape;
+import com.ait.lienzo.client.core.shape.wires.IControlHandle;
 import com.ait.lienzo.client.core.shape.wires.IControlHandleList;
 import com.ait.lienzo.client.core.shape.wires.IControlPointsAcceptor;
 import com.ait.lienzo.client.core.shape.wires.MagnetManager;
+import com.ait.lienzo.client.core.shape.wires.WiresConnection;
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.shape.wires.WiresLayer;
 import com.ait.lienzo.client.core.shape.wires.WiresMagnet;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
+import com.ait.lienzo.client.core.shape.wires.decorator.IShapeDecorator.ShapeState;
+import com.ait.lienzo.client.core.shape.wires.decorator.PointHandleDecorator;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresControlPointHandler;
 import com.ait.lienzo.client.core.types.DragBounds;
+import com.ait.lienzo.client.core.types.ImageData;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
+import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.lienzo.client.widget.DefaultDragConstraintEnforcer;
+import com.ait.lienzo.client.widget.DragConstraintEnforcer;
+import com.ait.lienzo.client.widget.DragContext;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
@@ -48,6 +69,7 @@ import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyDouble;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -63,7 +85,7 @@ public class WiresConnectorControlImplTest {
     private static final Point2D CP2_INIT = new Point2D(100, 50);
     private static final Point2D CP3_INIT = new Point2D(150, 50);
     private static final Point2D CP4_INIT = new Point2D(200, 50);
-    private static final MultiPath headPath = new MultiPath().circle(10);
+    private static final MultiPath headPath = spy(new MultiPath().circle(10));
     private static final MultiPath tailPath = new MultiPath().circle(10);
     private static final MultiPath shapePath = new MultiPath().rect(CP0_INIT.getX(), CP0_INIT.getY(), CP4_INIT.getX(), CP4_INIT.getY());
     private static final DragBounds DRAG_BOUNDS = new DragBounds(0, 0, 1000, 1000);
@@ -84,6 +106,8 @@ public class WiresConnectorControlImplTest {
     private WiresMagnet tailMagnet;
 
     private WiresManager wiresManager;
+
+    @Mock
     private Layer layer;
     private PolyLine line;
     private WiresConnector connector;
@@ -107,6 +131,82 @@ public class WiresConnectorControlImplTest {
     @Mock
     private WiresShape shape;
 
+    @Mock
+    private IControlHandleList pointHandles;
+
+    @Mock
+    private HandlerRegistrationManager registrationManager;
+
+    @Mock
+    private IControlHandle point0;
+
+    @Mock
+    private IControlHandle point1;
+
+    @Mock
+    private IControlHandle point2;
+
+    @Mock
+    private IControlHandle point3;
+
+    @Mock
+    private IControlHandle point4;
+
+    private Shape cpShape0;
+
+    private Shape cpShape1;
+
+    private Shape cpShape2;
+
+    private Shape cpShape3;
+
+    private Shape cpShape4;
+
+    @Mock
+    private PointHandleDecorator pointHandleDecorator;
+
+    @Captor
+    private ArgumentCaptor<NodeDragEndHandler> nodeDragEndHandlerCaptor;
+
+    @Captor
+    private ArgumentCaptor<NodeDragStartHandler> nodeDragStartHandlerCaptor;
+
+    @Captor
+    private ArgumentCaptor<NodeDragEndHandler> tailDragEndHandlerCaptor;
+
+    @Captor
+    private ArgumentCaptor<NodeDragEndHandler> headDragEndHandlerCaptor;
+
+    @Mock
+    private NodeDragEndEvent nodeDragEndEvent;
+
+    @Mock
+    private DragContext dragContext;
+
+    @Mock
+    private NodeDragStartEvent nodeDragStartEvent;
+
+    @Mock
+    private WiresConnection headConnection;
+
+    @Mock
+    private WiresConnection tailConnection;
+
+    @Captor
+    private ArgumentCaptor<DragConstraintEnforcer> headDragConstraintsCaptor;
+
+    @Captor
+    private ArgumentCaptor<DragConstraintEnforcer> tailDragConstraintscaptor;
+
+    @Mock
+    private ScratchPad scratchPad;
+
+    @Mock
+    private Context2D context;
+
+    @Mock
+    private ImageData imageData;
+
     @Before
     public void setup() {
         CP0 = new Point2D(CP0_INIT);
@@ -114,9 +214,28 @@ public class WiresConnectorControlImplTest {
         CP2 = new Point2D(CP2_INIT);
         CP3 = new Point2D(CP3_INIT);
         CP4 = new Point2D(CP4_INIT);
-        layer = new Layer();
-        wiresManager = WiresManager.get(layer);
-        wiresManager.setControlPointsAcceptor(IControlPointsAcceptor.ALL);
+        cpShape0 = spy(new Circle(1));
+        cpShape1 = spy(new Circle(1));
+        cpShape2 = spy(new Circle(1));
+        cpShape3 = spy(new Circle(1));
+        cpShape4 = spy(new Circle(1));
+        when(pointHandles.size()).thenReturn(5);
+        when(pointHandles.getHandle(0)).thenReturn(point0);
+        when(pointHandles.getHandle(1)).thenReturn(point1);
+        when(pointHandles.getHandle(2)).thenReturn(point2);
+        when(pointHandles.getHandle(3)).thenReturn(point3);
+        when(pointHandles.getHandle(4)).thenReturn(point4);
+        when(point0.getControl()).thenReturn(cpShape0);
+        when(point1.getControl()).thenReturn(cpShape1);
+        when(point2.getControl()).thenReturn(cpShape2);
+        when(point3.getControl()).thenReturn(cpShape3);
+        when(point4.getControl()).thenReturn(cpShape4);
+        when(layer.uuid()).thenReturn("uuid");
+        when(layer.getLayer()).thenReturn(layer);
+        when(layer.getScratchPad()).thenReturn(scratchPad);
+        when(layer.getContext()).thenReturn(context);
+        when(scratchPad.getContext()).thenReturn(context);
+        when(context.getImageData(anyInt(), anyInt(), anyInt(), anyInt())).thenReturn(imageData);
         when(wiresLayer.getLayer()).thenReturn(layer);
         when(headDecorator.getPath()).thenReturn(headPath);
         when(tailDecorator.getPath()).thenReturn(tailPath);
@@ -130,29 +249,19 @@ public class WiresConnectorControlImplTest {
         when(tailMagnet.getIndex()).thenReturn(1);
         when(magnets.getWiresShape()).thenReturn(shape);
         when(shape.getPath()).thenReturn(shapePath);
-
+        when(pointHandles.getHandlerRegistrationManager()).thenReturn(registrationManager);
+        when(nodeDragEndEvent.getDragContext()).thenReturn(dragContext);
+        when(nodeDragStartEvent.getDragContext()).thenReturn(dragContext);
         line = spy(new PolyLine(CP0, CP1, CP2, CP3, CP4));
-
+        when(line.getOverLayer()).thenReturn(layer);
         connector = spy(new WiresConnector(headMagnet, tailMagnet, line, headDecorator, tailDecorator));
-        connector.addToLayer(layer);
-        connector.getGroup().setDragBounds(DRAG_BOUNDS);
+        when(headConnection.getControl()).thenReturn(cpShape0);
+        when(tailConnection.getControl()).thenReturn(cpShape4);
+        when(headConnection.getConnector()).thenReturn(connector);
+        when(tailConnection.getConnector()).thenReturn(connector);
+        wiresManager = WiresManager.get(layer);
+        wiresManager.setControlPointsAcceptor(IControlPointsAcceptor.ALL);
         tested = new WiresConnectorControlImpl(connector, wiresManager);
-    }
-
-    @Test
-    public void testShowPointHandles() {
-        tested.showPointHandles();
-        IControlHandleList pointHandles = connector.getPointHandles();
-        assertEquals(pointHandles.getHandle(0).getControl().getDragBounds(), DRAG_BOUNDS);
-        assertEquals(pointHandles.getHandle(1).getControl().getDragBounds(), DRAG_BOUNDS);
-        assertEquals(pointHandles.getHandle(2).getControl().getDragBounds(), DRAG_BOUNDS);
-        assertEquals(pointHandles.getHandle(3).getControl().getDragBounds(), DRAG_BOUNDS);
-        assertEquals(pointHandles.getHandle(4).getControl().getDragBounds(), DRAG_BOUNDS);
-        assertTrue(pointHandles.getHandle(0).getControl().getDragConstraints() instanceof WiresConnectorControlImpl.ConnectionHandler);
-        assertTrue(pointHandles.getHandle(1).getControl().getDragConstraints() instanceof DefaultDragConstraintEnforcer);
-        assertTrue(pointHandles.getHandle(2).getControl().getDragConstraints() instanceof DefaultDragConstraintEnforcer);
-        assertTrue(pointHandles.getHandle(3).getControl().getDragConstraints() instanceof DefaultDragConstraintEnforcer);
-        assertTrue(pointHandles.getHandle(4).getControl().getDragConstraints() instanceof WiresConnectorControlImpl.ConnectionHandler);
     }
 
     @Test
@@ -308,5 +417,84 @@ public class WiresConnectorControlImplTest {
         assertEquals(CP0, points.get(0));
         assertEquals(CP1, points.get(1));
         assertEquals(CP2, points.get(2));
+    }
+
+    @Test
+    public void testShowPointHandles() {
+        connector.addToLayer(layer);
+        connector.getGroup().setDragBounds(DRAG_BOUNDS);
+        connector.setHeadConnection(headConnection);
+        connector.setTailConnection(tailConnection);
+        connector.setPointHandles(pointHandles);
+        tested.setPointHandleDecorator(pointHandleDecorator);
+
+        tested.showPointHandles();
+        verify(pointHandles).show();
+
+        //connections
+        verify(cpShape0).addNodeDragEndHandler(headDragEndHandlerCaptor.capture());
+        verify(cpShape4).addNodeDragEndHandler(tailDragEndHandlerCaptor.capture());
+        verify(cpShape0).setDragConstraints(headDragConstraintsCaptor.capture());
+        verify(cpShape4).setDragConstraints(tailDragConstraintscaptor.capture());
+
+        NodeDragEndHandler headDragEndHandler = headDragEndHandlerCaptor.getValue();
+        NodeDragEndHandler tailDragEndHandler = tailDragEndHandlerCaptor.getValue();
+        DragConstraintEnforcer headDragConstraint = headDragConstraintsCaptor.getValue();
+        DragConstraintEnforcer tailDragConstraint = tailDragConstraintscaptor.getValue();
+
+        when(dragContext.getNode()).thenReturn(cpShape0);
+        headDragConstraint.startDrag(dragContext);
+        verify(pointHandleDecorator).decorate(cpShape0, ShapeState.INVALID);
+        headDragConstraint.adjust(new Point2D(1, 1));
+        verify(pointHandleDecorator, times(2)).decorate(cpShape0, ShapeState.INVALID);
+        headDragEndHandler.onNodeDragEnd(nodeDragEndEvent);
+        verify(pointHandleDecorator, times(3)).decorate(cpShape0, ShapeState.INVALID);
+
+        when(dragContext.getNode()).thenReturn(cpShape4);
+        tailDragConstraint.startDrag(dragContext);
+        verify(pointHandleDecorator).decorate(cpShape4, ShapeState.INVALID);
+        tailDragConstraint.adjust(new Point2D(1, 1));
+        verify(pointHandleDecorator, times(2)).decorate(cpShape4, ShapeState.INVALID);
+        tailDragEndHandler.onNodeDragEnd(nodeDragEndEvent);
+        verify(pointHandleDecorator, times(3)).decorate(cpShape4, ShapeState.INVALID);
+
+        //control points
+        verifyControlPointShapeHandlers(cpShape1);
+        verifyControlPointShapeHandlers(cpShape2);
+        verifyControlPointShapeHandlers(cpShape3);
+
+        //drag bounds
+        assertEquals(pointHandles.getHandle(1).getControl().getDragBounds(), DRAG_BOUNDS);
+        assertEquals(pointHandles.getHandle(2).getControl().getDragBounds(), DRAG_BOUNDS);
+        assertEquals(pointHandles.getHandle(3).getControl().getDragBounds(), DRAG_BOUNDS);
+        assertTrue(pointHandles.getHandle(0).getControl().getDragConstraints() instanceof WiresConnectorControlImpl.ConnectionHandler);
+        assertTrue(pointHandles.getHandle(1).getControl().getDragConstraints() instanceof DefaultDragConstraintEnforcer);
+        assertTrue(pointHandles.getHandle(2).getControl().getDragConstraints() instanceof DefaultDragConstraintEnforcer);
+        assertTrue(pointHandles.getHandle(3).getControl().getDragConstraints() instanceof DefaultDragConstraintEnforcer);
+        assertTrue(pointHandles.getHandle(4).getControl().getDragConstraints() instanceof WiresConnectorControlImpl.ConnectionHandler);
+    }
+
+    private void verifyControlPointShapeHandlers(Shape shape) {
+        when(dragContext.getNode()).thenReturn(shape);
+        verify(shape, times(1)).addNodeMouseClickHandler(any(NodeMouseClickHandler.class));
+        verify(shape, times(1)).addNodeMouseDoubleClickHandler(any(NodeMouseDoubleClickHandler.class));
+        verify(shape, times(2)).addNodeDragStartHandler(nodeDragStartHandlerCaptor.capture());
+        verify(shape, times(2)).addNodeDragEndHandler(nodeDragEndHandlerCaptor.capture());
+        verify(shape, times(1)).addNodeDragMoveHandler(any(NodeDragMoveHandler.class));
+        verify(pointHandleDecorator, times(1)).decorate(shape, ShapeState.VALID);
+
+        NodeDragEndHandler nodeDragEndHandler = nodeDragEndHandlerCaptor.getAllValues().get(0);
+        NodeDragEndHandler nodeDragEndHandler1 = nodeDragEndHandlerCaptor.getAllValues().get(1);
+        NodeDragStartHandler nodeDragStartHandler = nodeDragStartHandlerCaptor.getAllValues().get(0);
+        NodeDragStartHandler nodeDragStartHandler1 = nodeDragStartHandlerCaptor.getAllValues().get(1);
+
+        assertTrue(nodeDragEndHandler instanceof WiresControlPointHandler);
+        assertTrue(nodeDragStartHandler instanceof WiresControlPointHandler);
+
+        nodeDragEndHandler1.onNodeDragEnd(nodeDragEndEvent);
+        verify(pointHandleDecorator, atLeastOnce()).decorate(shape, ShapeState.VALID);
+
+        nodeDragStartHandler1.onNodeDragStart(nodeDragStartEvent);
+        verify(pointHandleDecorator, times(1)).decorate(shape, ShapeState.INVALID);
     }
 }

@@ -25,6 +25,8 @@ import com.ait.lienzo.client.core.shape.wires.WiresContainerTest;
 import com.ait.lienzo.client.core.shape.wires.WiresManagerTest;
 import com.ait.lienzo.client.core.shape.wires.WiresShapeControlHandleListTest;
 import com.ait.lienzo.client.core.shape.wires.WiresShapeTest;
+import com.ait.lienzo.client.core.shape.wires.decorator.MagnetDecoratorTest;
+import com.ait.lienzo.client.core.shape.wires.decorator.PointHandleDecoratorTest;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeHandlerImplTest;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.AlignAndDistributeControlImplTest;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresCompositeControlImplTest;
@@ -71,8 +73,9 @@ import org.junit.runners.Suite;
         AlignAndDistributeControlImplTest.class,
         WiresContainmentControlImplTest.class,
         BackingColorMapUtilsTest.class,
-        ColorMapBackedPickerTest.class
-
+        ColorMapBackedPickerTest.class,
+        MagnetDecoratorTest.class,
+        PointHandleDecoratorTest.class
 })
 public class WiresTestSuite {
 

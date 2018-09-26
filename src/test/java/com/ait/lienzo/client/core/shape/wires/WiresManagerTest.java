@@ -20,6 +20,7 @@ package com.ait.lienzo.client.core.shape.wires;
 
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.AbstractDirectionalMultiPointShape;
+import com.ait.lienzo.client.core.shape.Attributes;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.MultiPath;
@@ -185,6 +186,7 @@ public class WiresManagerTest
         final WiresHandlerFactory wiresHandlerFactory = mock(WiresHandlerFactory.class);
         final WiresConnectorHandler wiresConnectorHandler = mock(WiresConnectorHandler.class);
         final WiresConnectorControl wiresConnectorControl = mock(WiresConnectorControl.class);
+        final Attributes attributes = mock(Attributes.class);
         doReturn(shapeGroup).when(connector).getGroup();
         doReturn(line).when(connector).getLine();
         doReturn(head).when(connector).getHead();
@@ -192,6 +194,7 @@ public class WiresManagerTest
         doReturn(group.uuid()).when(connector).uuid();
         doReturn(wiresConnectorHandler).when(wiresHandlerFactory).newConnectorHandler(connector, spied);
         doReturn(wiresConnectorControl).when(wiresConnectorHandler).getControl();
+        when(line.getAttributes()).thenReturn(attributes);
 
         spied.setWiresHandlerFactory(wiresHandlerFactory);
         assertEquals(spied.getWiresHandlerFactory(), wiresHandlerFactory);
@@ -215,11 +218,13 @@ public class WiresManagerTest
         final MultiPath head = mock(MultiPath.class);
         final MultiPath tail = mock(MultiPath.class);
         final WiresConnector connector = mock(WiresConnector.class);
+        final Attributes attributes = mock(Attributes.class);
         doReturn(shapeGroup).when(connector).getGroup();
         doReturn(line).when(connector).getLine();
         doReturn(head).when(connector).getHead();
         doReturn(tail).when(connector).getTail();
         doReturn(group.uuid()).when(connector).uuid();
+        when(line.getAttributes()).thenReturn(attributes);
         spied.register(connector);
         spied.deregister(connector);
         assertTrue(spied.getConnectorList().isEmpty());

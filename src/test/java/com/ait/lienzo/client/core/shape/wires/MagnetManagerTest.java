@@ -18,24 +18,29 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
+import com.ait.lienzo.client.core.Context2D;
+import com.ait.lienzo.client.core.shape.Circle;
+import com.ait.lienzo.client.core.shape.IPrimitive;
+import com.ait.lienzo.client.core.shape.MultiPath;
+import com.ait.lienzo.client.core.shape.wires.decorator.IShapeDecorator;
+import com.ait.lienzo.client.core.shape.wires.decorator.MagnetDecorator;
+import com.ait.lienzo.client.core.util.ScratchPad;
+import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import com.ait.tooling.nativetools.client.collection.NFastStringMap;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-
-import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.shape.IPrimitive;
-import com.ait.lienzo.client.core.util.ScratchPad;
-import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.ait.tooling.nativetools.client.collection.NFastStringMap;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class MagnetManagerTest
@@ -51,6 +56,16 @@ public class MagnetManagerTest
 
     @Mock
     private NFastStringMap<WiresMagnet> magnetsColors;
+
+    @Mock
+    private MagnetDecorator magnetDecorator;
+
+    private MagnetManager tested;
+
+    @Before
+    public void setUp(){
+        tested = spy(new MagnetManager());
+    }
 
     @Test
     public void testDrawMagnetsToBack()
@@ -73,16 +88,15 @@ public class MagnetManagerTest
         // We are not able to mock static method, so let's prepare all staff used by
 
         // Test starts here
-        final MagnetManager manager = spy(new MagnetManager());
-        doNothing().when(manager).drawShapeToBacking(magnets, shapesColors, context);
-        doNothing().when(manager).drawMagnet(eq(magnetsColors), eq(context), any(WiresMagnet.class));
-        manager.drawMagnetsToBack(magnets, shapesColors, magnetsColors, scratchPad);
+        doNothing().when(tested).drawShapeToBacking(magnets, shapesColors, context);
+        doNothing().when(tested).drawMagnet(eq(magnetsColors), eq(context), any(WiresMagnet.class));
+        tested.drawMagnetsToBack(magnets, shapesColors, magnetsColors, scratchPad);
 
         verify(magnetsColors).clear();
 
-        verify(manager).drawMagnet(magnetsColors, context, magnet1);
-        verify(manager).drawMagnet(magnetsColors, context, magnet2);
-        verify(manager).drawMagnet(magnetsColors, context, magnet3);
+        verify(tested).drawMagnet(magnetsColors, context, magnet1);
+        verify(tested).drawMagnet(magnetsColors, context, magnet2);
+        verify(tested).drawMagnet(magnetsColors, context, magnet3);
 
         verify(context).getImageData(0, 0, 121, 132);
     }
@@ -97,8 +111,7 @@ public class MagnetManagerTest
         when(magnet.getControl()).thenReturn(primitive);
 
         // Test starts here
-        final MagnetManager manager = new MagnetManager();
-        manager.drawMagnet(magnetsColors, context, magnet);
+        tested.drawMagnet(magnetsColors, context, magnet);
 
         // Magnet is registered in colors map
         verify(magnetsColors).put(anyString(), eq(magnet));
@@ -110,5 +123,14 @@ public class MagnetManagerTest
         // Magnet is drawn
         verify(context).beginPath();
         verify(context).stroke();
+    }
+
+    @Test
+    public void testCreateMagnets() {
+        WiresShape shape = new WiresShape(new MultiPath().rect(0, 0, 10, 10));
+        tested.setMagnetDecorator(magnetDecorator);
+        tested.createMagnets(shape);
+        verify(magnetDecorator, times(9)).decorate(any(Circle.class),
+                                                   eq(IShapeDecorator.ShapeState.VALID));
     }
 }
