@@ -2,6 +2,7 @@ package org.dashbuilder.client.widgets.dataset.editor;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.dashbuilder.dataprovider.DataSetProviderType;
+import org.dashbuilder.dataset.ColumnType;
 import org.dashbuilder.dataset.DataSet;
 import org.dashbuilder.dataset.DataSetFactory;
 import org.dashbuilder.dataset.def.DataColumnDef;
@@ -110,5 +111,30 @@ public class DataSetDefPreviewTableTest extends AbstractDisplayerTest {
         assertEquals(settings.getColumnSettings("date").getValuePattern(), "dd/MM/yyyy");
         assertEquals(settings.getColumnSettings("number").getValuePattern(), "#,###");
         assertEquals(settings.isTableColumnPickerEnabled(), false);
+    }
+
+    @Test
+    public void testSQLConfig() throws Exception {
+        DataSetDef dataSetDef = DataSetDefFactory.newSQLDataSetDef()
+                .column("date", ColumnType.DATE)
+                .column("number", ColumnType.NUMBER)
+                .buildDef();
+
+        DataSet dataSet = DataSetFactory.newDataSetBuilder()
+                .date("date")
+                .number("number")
+                .row(new Date(), 1d)
+                .buildDataSet();
+
+        when(dataSetLookupServices.lookupDataSet(any(), any())).thenReturn(dataSet);
+        tested.show(dataSetDef, null, displayerListener);
+
+        ArgumentCaptor<Displayer> argumentCaptor = ArgumentCaptor.forClass(Displayer.class);
+        verify(displayerListener).onDataLoaded(argumentCaptor.capture());
+        Displayer displayer = argumentCaptor.getValue();
+        DisplayerSettings settings = displayer.getDisplayerSettings();
+        assertFalse(settings.isTableColumnPickerEnabled());
+        assertEquals(settings.getTablePageSize(), 10);
+        assertTrue(settings.isTableSortEnabled());
     }
 }

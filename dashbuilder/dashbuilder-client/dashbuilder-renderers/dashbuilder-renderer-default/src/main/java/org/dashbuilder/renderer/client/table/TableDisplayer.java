@@ -18,7 +18,6 @@ package org.dashbuilder.renderer.client.table;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -27,19 +26,19 @@ import org.dashbuilder.common.client.error.ClientRuntimeError;
 import org.dashbuilder.common.client.widgets.FilterLabel;
 import org.dashbuilder.common.client.widgets.FilterLabelSet;
 import org.dashbuilder.dataset.ColumnType;
+import org.dashbuilder.dataset.DataColumn;
+import org.dashbuilder.dataset.DataSet;
 import org.dashbuilder.dataset.DataSetLookupConstraints;
 import org.dashbuilder.dataset.client.DataSetReadyCallback;
+import org.dashbuilder.dataset.def.DataSetDef;
 import org.dashbuilder.dataset.filter.DataSetFilter;
 import org.dashbuilder.dataset.group.DataSetGroup;
 import org.dashbuilder.dataset.group.Interval;
+import org.dashbuilder.dataset.sort.SortOrder;
 import org.dashbuilder.displayer.ColumnSettings;
 import org.dashbuilder.displayer.DisplayerAttributeDef;
 import org.dashbuilder.displayer.DisplayerAttributeGroupDef;
 import org.dashbuilder.displayer.DisplayerConstraints;
-import org.dashbuilder.dataset.DataColumn;
-import org.dashbuilder.dataset.DataSet;
-
-import org.dashbuilder.dataset.sort.SortOrder;
 import org.dashbuilder.displayer.client.AbstractGwtDisplayer;
 import org.dashbuilder.displayer.client.Displayer;
 import org.dashbuilder.displayer.client.export.ExportCallback;
@@ -66,7 +65,7 @@ public class TableDisplayer extends AbstractGwtDisplayer<TableDisplayer.View> {
 
         void setSortEnabled(boolean enabled);
 
-        void setTotalRows(int rows);
+        void setTotalRows(int rows, boolean isExact);
 
         void setPagerEnabled(boolean enabled);
 
@@ -81,6 +80,8 @@ public class TableDisplayer extends AbstractGwtDisplayer<TableDisplayer.View> {
         void gotoFirstPage();
 
         int getLastOffset();
+
+        int getPageSize();
 
         void exportNoData();
 
@@ -184,13 +185,17 @@ public class TableDisplayer extends AbstractGwtDisplayer<TableDisplayer.View> {
             sortApply(lastOrderedColumn, lastSortOrder);
         }
         // Lookup only the target rows
-        dataSetHandler.limitDataSetRows(view.getLastOffset(), displayerSettings.getTablePageSize());
+        dataSetHandler.limitDataSetRows(view.getLastOffset(), getPageSize());
+    }
 
+    protected int getPageSize() {
+        return view.getPageSize() == 0 ? displayerSettings.getTablePageSize() : view.getPageSize();
     }
 
     @Override
     protected void afterDataSetLookup(DataSet dataSet) {
         totalRows = dataSet.getRowCountNonTrimmed();
+        view.setTotalRows(totalRows, isTotalRowsExact(dataSet, totalRows));
     }
 
     @Override
@@ -205,8 +210,8 @@ public class TableDisplayer extends AbstractGwtDisplayer<TableDisplayer.View> {
         view.createTable(displayerSettings.getTablePageSize(), filterLabelSet);
         view.setWidth(width == 0 ? dataColumns.size() * 100 + 40 : width);
         view.setSortEnabled(displayerSettings.isTableSortEnabled());
-        view.setTotalRows(totalRows);
-        view.setPagerEnabled(displayerSettings.getTablePageSize() < dataSet.getRowCountNonTrimmed());
+        view.setTotalRows(totalRows, isTotalRowsExact(dataSet, totalRows));
+        view.setPagerEnabled(isPagerEnabled(dataSet, totalRows));
         view.setColumnPickerEnabled(displayerSettings.isTableColumnPickerEnabled());
         view.setExportToCsvEnabled(displayerSettings.isCSVExportAllowed());
         view.setExportToXlsEnabled(displayerSettings.isExcelExportAllowed());
@@ -231,10 +236,25 @@ public class TableDisplayer extends AbstractGwtDisplayer<TableDisplayer.View> {
         view.gotoFirstPage();
     }
 
+    protected boolean isTotalRowsExact(DataSet dataSet,
+                                       int totalRows) {
+        return isRemoteProvider(dataSet) ? totalRows < getPageSize() : true;
+    }
+
+    protected boolean isPagerEnabled(DataSet dataSet,
+                                     int totalRows) {
+        return isRemoteProvider(dataSet) ? totalRows == getPageSize() : getPageSize() < dataSet.getRowCountNonTrimmed();
+    }
+
+    protected boolean isRemoteProvider(DataSet dataSet) {
+        final DataSetDef def = dataSet.getDefinition();
+        return def == null || def.getProvider() == null ? false : def.getProvider().getName().equals("REMOTE");
+    }
+
     @Override
     protected void updateVisualization() {
-        view.setTotalRows(totalRows);
-        view.setPagerEnabled(displayerSettings.getTablePageSize() < dataSet.getRowCountNonTrimmed());
+        view.setTotalRows(totalRows, isTotalRowsExact(dataSet, totalRows));
+        view.setPagerEnabled(isPagerEnabled(dataSet, totalRows));
         view.gotoFirstPage();
         view.redrawTable();
         updateFilterStatus();

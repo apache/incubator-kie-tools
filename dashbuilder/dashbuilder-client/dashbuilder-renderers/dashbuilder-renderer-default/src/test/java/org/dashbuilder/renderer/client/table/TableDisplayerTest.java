@@ -17,8 +17,10 @@ package org.dashbuilder.renderer.client.table;
 import org.dashbuilder.common.client.error.ClientRuntimeError;
 import org.dashbuilder.common.client.widgets.FilterLabel;
 import org.dashbuilder.common.client.widgets.FilterLabelSet;
+import org.dashbuilder.dataprovider.DataSetProviderType;
 import org.dashbuilder.dataset.ColumnType;
 import org.dashbuilder.dataset.DataSet;
+import org.dashbuilder.dataset.def.DataSetDef;
 import org.dashbuilder.dataset.filter.FilterFactory;
 import org.dashbuilder.dataset.sort.SortOrder;
 import org.dashbuilder.displayer.DisplayerSettings;
@@ -33,8 +35,10 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.mvp.Command;
 
 import static org.dashbuilder.dataset.ExpenseReportsData.*;
-import static org.dashbuilder.dataset.group.AggregateFunctionType.*;
-import static org.dashbuilder.dataset.sort.SortOrder.*;
+import static org.dashbuilder.dataset.group.AggregateFunctionType.COUNT;
+import static org.dashbuilder.dataset.group.AggregateFunctionType.MIN;
+import static org.dashbuilder.dataset.sort.SortOrder.ASCENDING;
+import static org.dashbuilder.dataset.sort.SortOrder.DESCENDING;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -80,7 +84,7 @@ public class TableDisplayerTest extends AbstractDisplayerTest {
 
         verify(tableView).setWidth(1000);
         verify(tableView).setSortEnabled(true);
-        verify(tableView).setTotalRows(50);
+        verify(tableView, times(2)).setTotalRows(50, true);
         verify(tableView).createTable(10, filterLabelSet);
         verify(tableView).addColumn(ColumnType.NUMBER, COLUMN_ID, COLUMN_ID, 0, false, true);
         verify(tableView).addColumn(ColumnType.LABEL, COLUMN_CITY, COLUMN_CITY, 1, true, true);
@@ -108,7 +112,7 @@ public class TableDisplayerTest extends AbstractDisplayerTest {
         table.draw();
 
         verify(tableView).createTable(10, filterLabelSet);
-        verify(tableView).setTotalRows(0);
+        verify(tableView, times(2)).setTotalRows(0, true);
         verify(tableView).setPagerEnabled(false);
         verify(tableView, never()).setPagerEnabled(true);
 
@@ -238,7 +242,7 @@ public class TableDisplayerTest extends AbstractDisplayerTest {
         verify(view, atLeastOnce()).gotoFirstPage();
         verify(view).redrawTable();
         verify(filterLabelSet, atLeastOnce()).addLabel(anyString());
-        verify(view).setTotalRows(11);
+        verify(view, times(2)).setTotalRows(11, true);
         verify(displayerListener).onRedraw(table);
         verify(selectCommand).execute();
         assertEquals(table.getSelectedCellColumn(), COLUMN_DEPARTMENT);
@@ -323,7 +327,6 @@ public class TableDisplayerTest extends AbstractDisplayerTest {
 
     @Test
     public void test_DASHBUILDE_20_Fix() {
-
         DisplayerSettings groupedTable = DisplayerSettingsFactory.newTableSettings()
                 .dataset(EXPENSES)
                 .group(COLUMN_CITY)
@@ -344,5 +347,110 @@ public class TableDisplayerTest extends AbstractDisplayerTest {
         table.draw();
         table.sortBy("#Expenses", ASCENDING);
         verify(displayerListener, never()).onError(eq(table), any(ClientRuntimeError.class));
+    }
+
+    @Test
+    public void testIsTotalRowsExactSQL() {
+        final DataSet dataSet = mock(DataSet.class);
+        final DataSetDef dataSetDef = new DataSetDef();
+        dataSetDef.setProvider(DataSetProviderType.SQL);
+        when(dataSet.getDefinition()).thenReturn(dataSetDef);
+
+        TableDisplayer table = createTableDisplayer(DisplayerSettingsFactory.newTableSettings().tablePageSize(10).buildSettings());
+
+        assertTrue(table.isTotalRowsExact(dataSet,
+                                          5));
+        assertTrue(table.isTotalRowsExact(dataSet,
+                                          10));
+        assertTrue(table.isTotalRowsExact(dataSet,
+                                          15));
+    }
+
+    @Test
+    public void testIsTotalRowsExactRemote() {
+        final DataSet dataSet = mock(DataSet.class);
+        final DataSetDef dataSetDef = new DataSetDef();
+        dataSetDef.setProvider(() -> "REMOTE");
+        when(dataSet.getDefinition()).thenReturn(dataSetDef);
+
+        TableDisplayer table = createTableDisplayer(DisplayerSettingsFactory.newTableSettings().tablePageSize(10).buildSettings());
+
+        assertTrue(table.isTotalRowsExact(dataSet,
+                                          5));
+        assertFalse(table.isTotalRowsExact(dataSet,
+                                           10));
+        assertFalse(table.isTotalRowsExact(dataSet,
+                                           15));
+    }
+
+    @Test
+    public void testIsPagerEnabledRemote() {
+        final DataSet dataSet = mock(DataSet.class);
+        final DataSetDef dataSetDef = new DataSetDef();
+        dataSetDef.setProvider(() -> "REMOTE");
+        when(dataSet.getDefinition()).thenReturn(dataSetDef);
+
+        TableDisplayer table = createTableDisplayer(DisplayerSettingsFactory.newTableSettings().tablePageSize(10).buildSettings());
+
+        assertFalse(table.isPagerEnabled(dataSet,
+                                         5));
+        assertTrue(table.isPagerEnabled(dataSet,
+                                        10));
+        verify(dataSet,
+               never()).getRowCountNonTrimmed();
+    }
+
+    @Test
+    public void testIsPagerEnabledSQL() {
+        final DataSet dataSet = mock(DataSet.class);
+        final DataSetDef dataSetDef = new DataSetDef();
+        dataSetDef.setProvider(DataSetProviderType.SQL);
+        when(dataSet.getDefinition()).thenReturn(dataSetDef);
+        when(dataSet.getRowCountNonTrimmed()).thenReturn(5,
+                                                         10,
+                                                         15);
+
+        TableDisplayer table = createTableDisplayer(DisplayerSettingsFactory.newTableSettings().tablePageSize(10).buildSettings());
+
+        assertFalse(table.isPagerEnabled(dataSet,
+                                         5));
+        assertFalse(table.isPagerEnabled(dataSet,
+                                         10));
+        assertTrue(table.isPagerEnabled(dataSet,
+                                        15));
+    }
+
+    @Test
+    public void testIsRemoteProvider() {
+        final DataSet dataSet = mock(DataSet.class);
+        final DataSetDef dataSetDefSQL = new DataSetDef();
+        dataSetDefSQL.setProvider(DataSetProviderType.SQL);
+        final DataSetDef dataSetDefRemote = new DataSetDef();
+        dataSetDefRemote.setProvider(() -> "REMOTE");
+        when(dataSet.getDefinition()).thenReturn(new DataSetDef(),
+                                                 dataSetDefSQL,
+                                                 dataSetDefRemote);
+
+        TableDisplayer table = createTableDisplayer(null);
+
+        //No provider set
+        assertFalse(table.isRemoteProvider(dataSet));
+        //Provider SQL
+        assertFalse(table.isRemoteProvider(dataSet));
+        //Provider REMOTE
+        assertTrue(table.isRemoteProvider(dataSet));
+    }
+
+    @Test
+    public void testPageSize() {
+        TableDisplayer table = createTableDisplayer(DisplayerSettingsFactory.newTableSettings().tablePageSize(10).buildSettings());
+
+        assertEquals(10,
+                     table.getPageSize());
+
+        when(table.getView().getPageSize()).thenReturn(20);
+
+        assertEquals(20,
+                     table.getPageSize());
     }
 }

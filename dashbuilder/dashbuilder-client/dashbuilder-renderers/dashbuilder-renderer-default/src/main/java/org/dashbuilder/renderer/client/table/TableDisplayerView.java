@@ -15,10 +15,11 @@
  */
 package org.dashbuilder.renderer.client.table;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.cell.client.ValueUpdater;
@@ -34,6 +35,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.HasData;
+import com.google.gwt.view.client.Range;
 import org.dashbuilder.common.client.widgets.FilterLabelSet;
 import org.dashbuilder.dataset.ColumnType;
 import org.dashbuilder.dataset.sort.SortOrder;
@@ -85,7 +87,10 @@ public class TableDisplayerView extends AbstractGwtDisplayerView<TableDisplayer>
         table = new PagedTable<>(pageSize);
         table.pageSizesSelector.setVisible(false);
         table.setEmptyTableCaption(TableConstants.INSTANCE.tableDisplayer_noDataAvailable());
+        table.pageSizesSelector.setForceDropup(true);
+        table.pageSizesSelector.setDropupAuto(false);
         tableProvider.addDataDisplay(table);
+        tableProvider.lastPageSize = pageSize;
 
         HTMLElement element = filterLabelSet.getElement();
         element.getStyle().setProperty("margin-bottom", "5px");
@@ -135,8 +140,10 @@ public class TableDisplayerView extends AbstractGwtDisplayerView<TableDisplayer>
     }
 
     @Override
-    public void setTotalRows(int rows) {
-        table.setRowCount(rows, true);
+    public void setTotalRows(int rows, boolean isExact) {
+        if(table != null) {
+            table.setRowCount(rows, isExact);
+        }
     }
 
     @Override
@@ -178,6 +185,11 @@ public class TableDisplayerView extends AbstractGwtDisplayerView<TableDisplayer>
     @Override
     public int getLastOffset() {
         return tableProvider.lastOffset;
+    }
+
+    @Override
+    public int getPageSize() {
+        return tableProvider.lastPageSize;
     }
 
     @Override
@@ -278,20 +290,13 @@ public class TableDisplayerView extends AbstractGwtDisplayerView<TableDisplayer>
     protected class TableProvider extends AsyncDataProvider<Integer> {
 
         protected int lastOffset = 0;
+        protected int lastPageSize = 0;
 
         protected List<Integer> getCurrentPageRows(HasData<Integer> display) {
-            final int start = ((PagedTable) display).getPageStart();
-            int pageSize = ((PagedTable) display).getPageSize();
-            int end = start + pageSize;
-            if (end > table.getRowCount()) {
-                end = table.getRowCount();
-            }
-
-            final List<Integer> rows = new ArrayList<Integer>(end-start);
-            for (int i = 0; i < end-start; i++) {
-                rows.add(i);
-            }
-            return rows;
+            final int start = display.getVisibleRange().getStart();
+            int pageSize =  display.getVisibleRange().getLength();
+            int items = Integer.min(pageSize, table.getRowCount() > start ? table.getRowCount() - start : table.getRowCount());
+            return IntStream.range(0, items).boxed().collect(Collectors.toList());
         }
 
         /**
@@ -300,11 +305,12 @@ public class TableDisplayerView extends AbstractGwtDisplayerView<TableDisplayer>
         public void gotoFirstPage() {
             // Avoid fetching the data set again
             lastOffset = 0;
+            lastPageSize = table.getVisibleRange().getLength();
 
             // This calls internally to onRangeChanged() when the page changes
             table.pager.setPage(0);
 
-            int start = table.getPageStart();
+            int start = table.getVisibleRange().getStart();
             final List<Integer> rows = getCurrentPageRows(table);
             updateRowData(start, rows);
         }
@@ -315,6 +321,7 @@ public class TableDisplayerView extends AbstractGwtDisplayerView<TableDisplayer>
         public void addDataDisplay(HasData<Integer> display) {
             // Avoid fetching the data set again
             lastOffset = 0;
+            lastPageSize = table.getVisibleRange().getLength();
 
             // This calls internally to onRangeChanged()
             super.addDataDisplay(display);
@@ -324,15 +331,18 @@ public class TableDisplayerView extends AbstractGwtDisplayerView<TableDisplayer>
          * This is invoked internally by the PagedTable on navigation actions.
          */
         protected void onRangeChanged(final HasData<Integer> display) {
-            int start = ((PagedTable) display).getPageStart();
-            final List<Integer> rows = getCurrentPageRows(display);
-
-            if (lastOffset == start) {
-                updateRowData(lastOffset, rows);
-            }
-            else {
-                lastOffset = start;
+            final Range range = display.getVisibleRange();
+            if (lastOffset == range.getStart() && range.getLength() <= lastPageSize) {
+                lastPageSize = range.getLength();
+                if(table.getRowCount() > range.getLength()) {
+                    setPagerEnabled(true);
+                }
+                updateRowData(lastOffset, getCurrentPageRows(display));
+            }  else {
+                lastOffset = range.getStart();
+                lastPageSize = range.getLength();
                 getPresenter().lookupCurrentPage(rowsFetched -> {
+                    final List<Integer> rows = getCurrentPageRows(display);
                     updateRowData(lastOffset, rows);
                     table.setHeight(calculateHeight(rowsFetched) + "px");
                 });

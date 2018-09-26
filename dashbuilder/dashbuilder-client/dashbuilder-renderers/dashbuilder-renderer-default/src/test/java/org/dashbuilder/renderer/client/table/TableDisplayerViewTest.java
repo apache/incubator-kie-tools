@@ -18,8 +18,11 @@ package org.dashbuilder.renderer.client.table;
 
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.view.client.HasData;
+import com.google.gwt.view.client.Range;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import com.google.gwtmockito.WithClassesToStub;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -27,6 +30,7 @@ import org.mockito.Mock;
 import org.uberfire.ext.widgets.common.client.tables.PagedTable;
 import org.uberfire.ext.widgets.table.client.DataGrid;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
@@ -62,5 +66,37 @@ public class TableDisplayerViewTest {
                              eq(0));
         verify(panel).insert(any(),
                              eq(1));
+    }
+
+    @Test
+    public void testCurrentPageForNextPageWithoutTotalCount(){
+        final HasData display = mock(HasData.class);
+        when(table.getRowCount()).thenReturn(1);
+        when(display.getVisibleRange()).thenReturn(new Range(10, 10));
+        assertEquals(1, tableDisplayerView.tableProvider.getCurrentPageRows(display).size());
+    }
+
+    @Test
+    public void testCurrentPageForNextPageWithTotalCount(){
+        final HasData display = mock(HasData.class);
+        when(table.getRowCount()).thenReturn(11);
+        when(display.getVisibleRange()).thenReturn(new Range(10, 10));
+        assertEquals(1, tableDisplayerView.tableProvider.getCurrentPageRows(display).size());
+    }
+
+    @Test
+    public void testCurrentPageForNextPageWithoutRows(){
+        final HasData display = mock(HasData.class);
+        when(table.getRowCount()).thenReturn(0);
+        when(display.getVisibleRange()).thenReturn(new Range(10, 10));
+        assertEquals(0, tableDisplayerView.tableProvider.getCurrentPageRows(display).size());
+    }
+
+    @Test
+    public void testCurrentPage(){
+        final HasData display = mock(HasData.class);
+        when(table.getRowCount()).thenReturn(5);
+        when(display.getVisibleRange()).thenReturn(new Range(0, 10));
+        assertEquals(5, tableDisplayerView.tableProvider.getCurrentPageRows(display).size());
     }
 }
