@@ -25,6 +25,7 @@ import org.junit.Test;
 import org.kie.workbench.common.services.backend.compiler.impl.utils.MavenRepos;
 import org.kie.workbench.common.services.backend.compiler.impl.utils.MavenUtils;
 import org.kie.workbench.common.services.backend.constants.ResourcesConstants;
+import org.uberfire.java.nio.file.Files;
 import org.uberfire.java.nio.file.Paths;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -68,13 +69,13 @@ public class MavenUtilsTest {
     @Test
     public void getMavenLocalRepoDirTest() {
         String testRepo = MavenUtils.getMavenRepoDir(MavenRepos.LOCAL);
-        assertThat(testRepo).endsWith(".m2/repository/");
+        assertThat(Files.isDirectory(Paths.get(testRepo))).isTrue();
     }
 
     @Test
     public void getMavenGlobalRepoDirTest() {
         System.setProperty(GLOBAL_M2_REPO_NAME, Aether.getAether().getLocalRepository().getUrl());
         String testRepo = MavenUtils.getMavenRepoDir(MavenRepos.GLOBAL);
-        assertThat(testRepo).endsWith(".m2/repository/");
+        assertThat(Files.isDirectory(Paths.get(testRepo))).isTrue();
     }
 }
