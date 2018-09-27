@@ -78,7 +78,7 @@ public class GoogleTableDisplayerTest extends GoogleDisplayerTest {
 
         DisplayerSettings allRows = DisplayerSettingsFactory.newTableSettings()
                 .dataset(EXPENSES)
-                .tablePageSize(5)
+                .tablePageSize(10)
                 .buildSettings();
 
         GoogleTableDisplayer table = createTableDisplayer(allRows);
@@ -86,9 +86,9 @@ public class GoogleTableDisplayerTest extends GoogleDisplayerTest {
         table.ready();
 
         // Initialization
-        verify(tableView).setPageSize(5);
+        verify(tableView).setPageSize(10);
         verify(tableView).setTotalRows(50);
-        verify(tableView).setTotalPages(10);
+        verify(tableView).setTotalPages(5);
         verify(tableView).setCurrentPage(1);
         verify(tableView).setPagerEnabled(true);
         verify(tableView).drawTable();
@@ -118,7 +118,7 @@ public class GoogleTableDisplayerTest extends GoogleDisplayerTest {
 
         DisplayerSettings allRows = DisplayerSettingsFactory.newTableSettings()
                 .dataset(EXPENSES)
-                .tablePageSize(5)
+                .tablePageSize(10)
                 .tableOrderDefault(COLUMN_ID, SortOrder.DESCENDING)
                 .buildSettings();
 

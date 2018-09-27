@@ -94,7 +94,7 @@ public class NewFilterPopup extends BaseModal {
     TabPane tab2;
     HashMap formValues = new HashMap();
     Command refreshFiltersCommand;
-    PagedTable<DataGridFilterSummary> existingFiltersGrid = new PagedTable<DataGridFilterSummary>(5);
+    PagedTable<DataGridFilterSummary> existingFiltersGrid = new PagedTable<DataGridFilterSummary>();
     @Inject
     private Event<NotificationEvent> notification;
     private GridPreferencesStore gridPreferenceStore;

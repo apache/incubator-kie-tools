@@ -183,7 +183,7 @@ public class SalesExpectedByDate extends Composite implements GalleryWidget {
                         .dataset(SALES_OPPS)
                         .title(AppConstants.INSTANCE.sales_bydate_title())
                         .titleVisible(false)
-                        .tablePageSize(5)
+                        .tablePageSize(10)
                         .tableWidth(800)
                         .tableOrderEnabled(true)
                         .tableOrderDefault(AMOUNT, DESCENDING)

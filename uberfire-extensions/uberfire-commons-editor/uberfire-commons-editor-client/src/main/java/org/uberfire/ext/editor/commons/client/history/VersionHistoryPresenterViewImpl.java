@@ -34,7 +34,7 @@ public class VersionHistoryPresenterViewImpl
         extends Composite
         implements VersionHistoryPresenterView {
 
-    private PagedTable table = new PagedTable(5);
+    private PagedTable table = new PagedTable();
 
     private Presenter presenter;
     private String version;

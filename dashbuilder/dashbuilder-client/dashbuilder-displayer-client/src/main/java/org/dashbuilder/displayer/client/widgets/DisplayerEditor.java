@@ -261,7 +261,7 @@ public class DisplayerEditor implements IsWidget {
                 DisplayerSettings tableSettings = displayerSettings.cloneInstance();
                 tableSettings.setTitleVisible(false);
                 tableSettings.setType(DisplayerType.TABLE);
-                tableSettings.setTablePageSize(8);
+                tableSettings.setTablePageSize(10);
                 tableSettings.setTableWidth(800);
                 tableSettings.setRenderer("default");
                 Displayer tableDisplayer = displayerLocator.lookupDisplayer(tableSettings);

@@ -122,7 +122,7 @@ public class SalesDistributionByCountry extends Composite implements GalleryWidg
                 .dataset(SALES_OPPS)
                 .title(AppConstants.INSTANCE.sales_bycountry_table_title())
                 .titleVisible(true)
-                .tablePageSize(8)
+                .tablePageSize(10)
                 .tableOrderEnabled(true)
                 .tableOrderDefault(AMOUNT, DESCENDING)
                 .tableColumnPickerEnabled(false)

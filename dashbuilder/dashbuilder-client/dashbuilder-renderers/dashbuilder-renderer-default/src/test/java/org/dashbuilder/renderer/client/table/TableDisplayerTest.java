@@ -126,7 +126,7 @@ public class TableDisplayerTest extends AbstractDisplayerTest {
 
         DisplayerSettings allRows = DisplayerSettingsFactory.newTableSettings()
                 .dataset(EXPENSES)
-                .tablePageSize(5)
+                .tablePageSize(10)
                 .tableOrderDefault(COLUMN_ID, SortOrder.DESCENDING)
                 .buildSettings();
 
@@ -162,7 +162,7 @@ public class TableDisplayerTest extends AbstractDisplayerTest {
 
         DisplayerSettings allRows = DisplayerSettingsFactory.newTableSettings()
                 .dataset(EXPENSES)
-                .tablePageSize(5)
+                .tablePageSize(10)
                 .tableOrderDefault(COLUMN_ID, SortOrder.DESCENDING)
                 .filterOff(false)
                 .buildSettings();
@@ -192,7 +192,7 @@ public class TableDisplayerTest extends AbstractDisplayerTest {
 
         DisplayerSettings allRows = DisplayerSettingsFactory.newTableSettings()
                 .dataset(EXPENSES)
-                .tablePageSize(5)
+                .tablePageSize(10)
                 .tableOrderDefault(COLUMN_ID, SortOrder.DESCENDING)
                 .filterOn(false, true, true)
                 .buildSettings();
@@ -222,7 +222,7 @@ public class TableDisplayerTest extends AbstractDisplayerTest {
 
         DisplayerSettings allRows = DisplayerSettingsFactory.newTableSettings()
                 .dataset(EXPENSES)
-                .tablePageSize(5)
+                .tablePageSize(10)
                 .tableOrderDefault(COLUMN_ID, SortOrder.DESCENDING)
                 .filterOn(true, true, true)
                 .buildSettings();
@@ -254,7 +254,7 @@ public class TableDisplayerTest extends AbstractDisplayerTest {
 
         DisplayerSettings allRows = DisplayerSettingsFactory.newTableSettings()
                 .dataset(EXPENSES)
-                .tablePageSize(5)
+                .tablePageSize(10)
                 .tableOrderDefault(COLUMN_ID, SortOrder.DESCENDING)
                 .filterOn(false, true, true)
                 .buildSettings();
@@ -286,7 +286,7 @@ public class TableDisplayerTest extends AbstractDisplayerTest {
     public void testSelectCellCommands() {
         DisplayerSettings allRows = DisplayerSettingsFactory.newTableSettings()
                 .dataset(EXPENSES)
-                .tablePageSize(5)
+                .tablePageSize(10)
                 .tableOrderDefault(COLUMN_ID, SortOrder.DESCENDING)
                 .filterOn(false, true, true)
                 .buildSettings();

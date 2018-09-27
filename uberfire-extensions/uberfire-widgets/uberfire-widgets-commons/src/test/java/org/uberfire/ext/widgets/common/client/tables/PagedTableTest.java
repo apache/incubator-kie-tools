@@ -43,7 +43,7 @@ public class PagedTableTest {
 
     @Test
     public void testSetDataProvider() throws Exception {
-        PagedTable pagedTable = new PagedTable(5);
+        PagedTable pagedTable = new PagedTable();
 
         pagedTable.setDataProvider(dataProvider);
         verify(dataProvider).addDataDisplay(pagedTable);

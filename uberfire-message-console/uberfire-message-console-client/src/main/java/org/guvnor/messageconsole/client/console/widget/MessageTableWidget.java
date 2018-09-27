@@ -32,7 +32,6 @@ import org.uberfire.ext.widgets.common.client.tables.SimpleTable;
 
 public class MessageTableWidget<T> extends Composite implements HasData<T> {
 
-    public static final int DEFAULT_PAGE_SIZE = 5;
     SimpleTable<T> dataGrid;
 
     public enum Mode {
@@ -54,7 +53,7 @@ public class MessageTableWidget<T> extends Composite implements HasData<T> {
         if (mode == Mode.SIMPLE) {
             dataGrid = new SimpleTable<T>();
         } else if (mode == Mode.PAGED) {
-            dataGrid = new PagedTable<T>(DEFAULT_PAGE_SIZE);
+            dataGrid = new PagedTable<T>();
             dataGrid.setHeight("165px");
             dataGrid.setAlwaysShowScrollBars(false);
         }

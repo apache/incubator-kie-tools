@@ -280,7 +280,7 @@ public class DisplayerPrototypes {
                 .format("Population", "#,### M")
                 .tableOrderEnabled(true)
                 .tableOrderDefault(POPULATION, SortOrder.DESCENDING)
-                .tablePageSize(8)
+                .tablePageSize(10)
                 .filterOn(false, true, true)
                 .buildSettings());
 

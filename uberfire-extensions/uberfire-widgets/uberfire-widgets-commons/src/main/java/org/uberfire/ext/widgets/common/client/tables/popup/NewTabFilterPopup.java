@@ -78,7 +78,7 @@ public class NewTabFilterPopup extends BaseModal {
     TabPane tab2;
     HashMap formValues = new HashMap();
     Command addfilterCommand;
-    PagedTable<DataGridFilterSummary> existingFiltersGrid = new PagedTable<DataGridFilterSummary>(5);
+    PagedTable<DataGridFilterSummary> existingFiltersGrid = new PagedTable<DataGridFilterSummary>();
     @Inject
     private Event<NotificationEvent> notification;
     private CommonImages images = GWT.create(CommonImages.class);

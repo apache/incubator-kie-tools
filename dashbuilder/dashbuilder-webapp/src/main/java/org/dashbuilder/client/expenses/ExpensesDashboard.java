@@ -160,7 +160,7 @@ public class ExpensesDashboard extends Composite implements GalleryWidget {
                         .dataset(EXPENSES)
                         .title(AppConstants.INSTANCE.expensesdb_table_title())
                         .titleVisible(false)
-                        .tablePageSize(8)
+                        .tablePageSize(10)
                         .tableOrderEnabled(true)
                         .tableOrderDefault(AMOUNT, DESCENDING)
                         .tableColumnPickerEnabled(false)
