@@ -106,7 +106,7 @@
 
   <servlet>
     <servlet-name>VerifierWebWorkerServlet</servlet-name>
-    <servlet-class>org.drools.workbench.services.verifier.plugin.backend.VerifierWebWorkerServlet</servlet-class>
+    <servlet-class>org.kie.workbench.common.services.verifier.service.VerifierWebWorkerServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>VerifierWebWorkerServlet</servlet-name>

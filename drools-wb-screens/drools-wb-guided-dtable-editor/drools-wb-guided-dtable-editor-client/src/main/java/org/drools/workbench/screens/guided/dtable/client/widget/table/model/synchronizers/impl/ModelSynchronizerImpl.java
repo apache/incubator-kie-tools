@@ -34,9 +34,6 @@ import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.controller.AfterColumnDeleted;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.controller.AfterColumnInserted;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.controller.ValidateEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTablePresenter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.GuidedDecisionTableUiModel;
@@ -48,8 +45,11 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.ColumnUtilities;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.DependentEnumsUtilities;
 import org.kie.soup.commons.validation.PortablePreconditions;
+import org.kie.workbench.common.services.verifier.reporting.client.controller.AfterColumnInserted;
+import org.kie.workbench.common.services.verifier.reporting.client.controller.ValidateEvent;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellValue;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.Coordinate;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.AfterColumnDeleted;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.AppendRowEvent;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.DeleteRowEvent;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.InsertRowEvent;
@@ -456,9 +456,9 @@ public class ModelSynchronizerImpl implements ModelSynchronizer {
             uiModel.setCellValueInternal(rowIndex,
                                          columnIndex,
                                          gridWidgetCellFactory.convertCell(modelCell,
-                                                                      modelColumn,
-                                                                      cellUtilities,
-                                                                      columnUtilities));
+                                                                           modelColumn,
+                                                                           cellUtilities,
+                                                                           columnUtilities));
         }
         uiModel.indexColumn(columnIndex);
     }

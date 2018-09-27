@@ -48,7 +48,7 @@ public class VerifierWebWorkerConnectionImpl
     }
 
     private void startWorker() {
-        worker = Worker.create("verifier/verifier.nocache.js");
+        worker = Worker.create("verifier/dtableVerifier/dtableVerifier.nocache.js");
 
         poster.setUp(worker);
         receiver.setUp(worker);

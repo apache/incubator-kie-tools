@@ -21,10 +21,10 @@ import javax.inject.Inject;
 
 import com.google.gwt.event.shared.EventBus;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.controller.AnalyzerController;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.controller.AnalyzerControllerImpl;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEditorService;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
+import org.kie.workbench.common.services.verifier.reporting.client.controller.AnalyzerController;
+import org.kie.workbench.common.services.verifier.reporting.client.controller.AnalyzerControllerImpl;
 import org.kie.workbench.common.services.verifier.reporting.client.panel.AnalysisReportScreen;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.client.mvp.PlaceManager;

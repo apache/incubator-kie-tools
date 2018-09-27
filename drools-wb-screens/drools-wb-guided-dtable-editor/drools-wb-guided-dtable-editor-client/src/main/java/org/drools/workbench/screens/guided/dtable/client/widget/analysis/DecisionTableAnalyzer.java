@@ -29,7 +29,8 @@ import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTabl
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.Coordinate;
 
-public class DecisionTableAnalyzer {
+public class DecisionTableAnalyzer
+        implements org.kie.workbench.common.services.verifier.reporting.client.analysis.DecisionTableAnalyzer<BaseColumn> {
 
     private final DTableUpdateManager updateManager;
     private final VerifierWebWorkerConnection analyzer;
@@ -48,6 +49,7 @@ public class DecisionTableAnalyzer {
                                                            connection);
     }
 
+    @Override
     public void analyze(final List<Coordinate> updates) {
         updateManager.update(model,
                              convert(updates));
@@ -64,12 +66,14 @@ public class DecisionTableAnalyzer {
         return result;
     }
 
+    @Override
     public void deleteColumns(final int firstColumnIndex,
                               final int numberOfColumns) {
         updateManager.deleteColumns(firstColumnIndex,
                                     numberOfColumns);
     }
 
+    @Override
     public void insertColumn(final BaseColumn baseColumn) {
         updateManager.newColumn(model,
                                 getColumnIndex(baseColumn));
@@ -118,6 +122,7 @@ public class DecisionTableAnalyzer {
         }
     }
 
+    @Override
     public void updateColumns(final int amountOfRows) {
         if (eventManager.rowDeleted != null) {
             updateManager.removeRule(eventManager.rowDeleted);
@@ -129,22 +134,27 @@ public class DecisionTableAnalyzer {
         eventManager.clear();
     }
 
+    @Override
     public void deleteRow(final int index) {
         eventManager.rowDeleted = index;
     }
 
+    @Override
     public void appendRow() {
         eventManager.rowAppended = true;
     }
 
+    @Override
     public void insertRow(final int index) {
         eventManager.rowInserted = index;
     }
 
+    @Override
     public void activate() {
         analyzer.activate();
     }
 
+    @Override
     public void terminate() {
         analyzer.terminate();
     }

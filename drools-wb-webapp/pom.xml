@@ -641,7 +641,7 @@
     </dependency>
     <dependency>
       <groupId>org.kie.workbench.services</groupId>
-      <artifactId>kie-wb-common-verifier-reporting</artifactId>
+      <artifactId>kie-wb-common-verifier-reporting-client</artifactId>
       <scope>provided</scope>
     </dependency>
 
@@ -1529,7 +1529,7 @@
             <compileSourcesArtifact>org.drools:drools-verifier-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.drools:drools-verifier-core</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.services:kie-wb-common-verifier-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.workbench.services:kie-wb-common-verifier-reporting</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.workbench.services:kie-wb-common-verifier-reporting-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.drools:drools-wb-verifier-guided-decision-table-adapter</compileSourcesArtifact>
             <compileSourcesArtifact>org.drools:drools-wb-guided-rule-editor-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.drools:drools-wb-guided-template-editor-api</compileSourcesArtifact>
