@@ -91,6 +91,8 @@
           <s:Option text="10 {i18n.Items}"  value="10"/>
           <s:Option text="15 {i18n.Items}"  value="15"/>
           <s:Option text="20 {i18n.Items}"  value="20"/>
+          <s:Option text="50 {i18n.Items}"  value="50"/>
+          <s:Option text="100 {i18n.Items}"  value="100"/>
         </s:Select>
       </b:Column>
     </b:Row>
