@@ -33,6 +33,7 @@
 
   <modules>
     <module>kie-wb-common-verifier-api</module>
-    <module>kie-wb-common-verifier-reporting</module>
+    <module>kie-wb-common-verifier-reporting-client</module>
+    <module>kie-wb-common-verifier-service</module>
   </modules>
 </project>
