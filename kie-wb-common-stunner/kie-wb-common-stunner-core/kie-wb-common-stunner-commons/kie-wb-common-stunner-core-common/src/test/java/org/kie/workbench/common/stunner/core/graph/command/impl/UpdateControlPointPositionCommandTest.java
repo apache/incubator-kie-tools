@@ -78,6 +78,8 @@ public class UpdateControlPointPositionCommandTest {
         final CommandResult<RuleViolation> allow1 = tested.allow(commandExecutionContext);
         assertFalse(CommandUtils.isError(allow1));
         content.setControlPoints(Collections.singletonList(mock(ControlPoint.class)));
+
+        tested = new UpdateControlPointPositionCommand(edge, null, TARGET_LOCATION);
         final CommandResult<RuleViolation> allow2 = tested.allow(commandExecutionContext);
         assertTrue(CommandUtils.isError(allow2));
     }

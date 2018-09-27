@@ -34,6 +34,7 @@ import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresConn
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ControlPointControl;
+import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
@@ -55,6 +56,7 @@ import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnectorImp
 import org.kie.workbench.common.stunner.core.graph.impl.EdgeImpl;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.uberfire.mocks.EventSourceMock;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -111,6 +113,9 @@ public class ControlPointControlImplTest {
     @Mock
     private DefinitionSet graphContent;
 
+    @Mock
+    private EventSourceMock<CanvasSelectionEvent> selectionEvent;
+
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
@@ -143,7 +148,7 @@ public class ControlPointControlImplTest {
         when(graphContent.getBounds()).thenReturn(GRAPH_BOUNDS);
         when(commandManager.allow(eq(canvasHandler), any(Command.class)))
                 .thenReturn(CanvasCommandResultBuilder.SUCCESS);
-        tested = new ControlPointControlImpl(canvasCommandFactory);
+        tested = new ControlPointControlImpl(canvasCommandFactory, selectionEvent);
         tested.setCommandManagerProvider(() -> commandManager);
     }
 

@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
+import java.util.Objects;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.soup.commons.validation.PortablePreconditions;
@@ -22,10 +24,12 @@ import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
-import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
+
+import static org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder.FAILED;
+import static org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder.SUCCESS;
 
 /**
  * A Command to update a given {@link ControlPoint} position on graph.
@@ -49,14 +53,22 @@ public class UpdateControlPointPositionCommand extends AbstractControlPointComma
     }
 
     @Override
+    protected CommandResult<RuleViolation> checkArguments() {
+        //just checking arguments, avoid checking it the edge contains the CPs, necessary in case of composite with AddControlPointCommand
+        return (Objects.nonNull(getControlPoint()) &&
+                Objects.nonNull(getControlPoint().getLocation()) &&
+                Objects.nonNull(position)) ? SUCCESS : FAILED;
+    }
+
+    @Override
     public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext context) {
         if (areArgumentsValid()) {
             final int index = getControlPoint().getIndex();
             oldPosition = Point2D.clone(getControlPoint().getLocation());
             getEdgeContent().getControlPoints().get(index).setLocation(position);
-            return GraphCommandResultBuilder.SUCCESS;
+            return SUCCESS;
         }
-        return GraphCommandResultBuilder.FAILED;
+        return FAILED;
     }
 
     private ControlPoint getControlPoint() {

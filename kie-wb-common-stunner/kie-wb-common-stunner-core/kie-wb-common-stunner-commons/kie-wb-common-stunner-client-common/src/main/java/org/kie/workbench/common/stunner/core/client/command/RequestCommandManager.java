@@ -216,7 +216,6 @@ public class RequestCommandManager extends AbstractSessionCommandManager {
                 LOGGER.log(Level.FINEST,
                            "Adding commands for current request into registry [size=" + commands.size() + "]");
                 getRegistry().register(new CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation>()
-                                               .forward()
                                                .addCommands(commands.stream().collect(Collectors.toList()))
                                                .build());
             }

@@ -24,6 +24,7 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
@@ -37,6 +38,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanvasHandlerRegistrationControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ControlPointControl;
+import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
@@ -61,16 +63,20 @@ public class ControlPointControlImpl
         implements ControlPointControl<AbstractCanvasHandler>,
                    CanvasControl.SessionAware<EditorSession> {
 
+    public static final int DRAG_BOUNDS_MARGIN = 10;
+
     private final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
     private final IControlPointsAcceptor cpAcceptor;
     private CommandManagerProvider<AbstractCanvasHandler> commandManagerProvider;
-    public static final int DRAG_BOUNDS_MARGIN = 10;
+    private final Event<CanvasSelectionEvent> selectionEvent;
 
     @Inject
-    public ControlPointControlImpl(final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory) {
+    public ControlPointControlImpl(final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
+                                   final Event<CanvasSelectionEvent> selectionEvent) {
         this.canvasCommandFactory = canvasCommandFactory;
         this.cpAcceptor = new StunnerControlPointsAcceptor(this,
                                                            this::getEdge);
+        this.selectionEvent = selectionEvent;
     }
 
     @Override
@@ -107,6 +113,7 @@ public class ControlPointControlImpl
 
     @Override
     public void addControlPoints(Edge candidate, ControlPoint... controlPoint) {
+        selectionEvent.fire(new CanvasSelectionEvent(canvasHandler, candidate.getUUID()));
         execute(canvasCommandFactory.addControlPoint(candidate, controlPoint));
     }
 

@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -189,7 +190,7 @@ public final class MapSelectionControl<H extends AbstractCanvasHandler>
     private void updateViewShapesState(Collection<String> uuids) {
         uuids.stream()
                 .map(uuid -> getCanvas().getShape(uuid))
-                .filter(shape -> shape != null)
+                .filter(Objects::nonNull)
                 .forEach(shape -> {
                     final boolean isSelected = isSelected(shape.getUUID());
                     if (isSelected && isReadonly()) {

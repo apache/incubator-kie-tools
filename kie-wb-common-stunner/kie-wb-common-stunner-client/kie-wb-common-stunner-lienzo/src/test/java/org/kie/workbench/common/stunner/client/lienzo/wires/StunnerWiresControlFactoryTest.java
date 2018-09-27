@@ -26,21 +26,24 @@ import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresCompositeControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectionControl;
-import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeHighlight;
+import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresConnectorControlImpl;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresControlFactoryImpl;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.client.lienzo.wires.decorator.StunnerPointHandleDecorator;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
@@ -62,7 +65,7 @@ public class StunnerWiresControlFactoryTest {
     private WiresShapeControl shapeControl;
 
     @Mock
-    private WiresConnectorControl connectorControl;
+    private WiresConnectorControlImpl connectorControl;
 
     @Mock
     private WiresConnectionControl connectionControl;
@@ -107,6 +110,7 @@ public class StunnerWiresControlFactoryTest {
         assertEquals(connectorControl,
                      tested.newConnectorControl(wiresConnector,
                                                 wiresManager));
+        verify(connectorControl).setPointHandleDecorator(any(StunnerPointHandleDecorator.class));
     }
 
     @Test

@@ -66,7 +66,7 @@ public class AddControlPointCommand extends AbstractControlPointCommand {
         //add on the right index position on the list
         getControlPointList().stream().forEach(cp -> {
             if (edgeContent.getControlPoints().size() > cp.getIndex()) {
-                edgeContent.getControlPoints().add(cp.getIndex(), cp);
+                edgeContent.getControlPoints().add(cp.getIndex(), new ControlPoint(cp.getLocation(), cp.getIndex()));
             } else {
                 edgeContent.getControlPoints().add(cp);
             }

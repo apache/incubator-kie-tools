@@ -24,6 +24,7 @@ import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresControlFactory;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresHandlerFactory;
+import org.kie.workbench.common.stunner.client.lienzo.wires.decorator.StunnerMagnetDecorator;
 
 @ApplicationScoped
 @Default
@@ -50,6 +51,8 @@ public class WiresManagerFactoryImpl implements WiresManagerFactory {
         WiresManager wiresManager = WiresManager.get(layer);
         wiresManager.setWiresHandlerFactory(wiresHandlerFactory);
         wiresManager.setWiresControlFactory(wiresControlFactory);
+        //injecting a custom MagnetDecorator
+        wiresManager.getMagnetManager().setMagnetDecorator(new StunnerMagnetDecorator());
         return wiresManager;
     }
 }
