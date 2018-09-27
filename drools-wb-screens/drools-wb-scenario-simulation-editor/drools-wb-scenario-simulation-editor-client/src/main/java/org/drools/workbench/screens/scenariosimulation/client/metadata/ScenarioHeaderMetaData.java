@@ -15,25 +15,33 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.metadata;
 
+import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioHeaderTextBoxDOMElement;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellEditContext;
-import org.uberfire.ext.wires.core.grids.client.widget.dom.impl.TextBoxDOMElement;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.single.SingletonDOMElementFactory;
 
 public class ScenarioHeaderMetaData extends BaseHeaderMetaData {
 
-    final SingletonDOMElementFactory<TextBox, TextBoxDOMElement> factory;
-
+    final SingletonDOMElementFactory<TextBox, ScenarioHeaderTextBoxDOMElement> factory;
     final String columnId;
+    final boolean readOnly;
 
-    public ScenarioHeaderMetaData(String columnId, String columnTitle, String columnGroup, final SingletonDOMElementFactory<TextBox, TextBoxDOMElement> factory) {
+    public ScenarioHeaderMetaData(String columnId, String columnTitle, String columnGroup, final SingletonDOMElementFactory<TextBox, ScenarioHeaderTextBoxDOMElement> factory, boolean readOnly) {
         super(columnTitle, columnGroup);
         this.columnId = columnId;
         this.factory = factory;
+        this.readOnly = readOnly;
+    }
+
+    public ScenarioHeaderMetaData(String columnId, String columnTitle, String columnGroup, final SingletonDOMElementFactory<TextBox, ScenarioHeaderTextBoxDOMElement> factory) {
+        this(columnId, columnTitle, columnGroup, factory, false);
     }
 
     public void edit(final GridBodyCellEditContext context) {
+        if (readOnly) {
+            throw new IllegalStateException("A read only header cannot be edited");
+        }
         factory.attachDomElement(context,
                                  (e) -> e.getWidget().setText(getTitle()),
                                  (e) -> e.getWidget().setFocus(true));
@@ -41,5 +49,9 @@ public class ScenarioHeaderMetaData extends BaseHeaderMetaData {
 
     public String getColumnId() {
         return columnId;
+    }
+
+    public boolean isReadOnly() {
+        return readOnly;
     }
 }

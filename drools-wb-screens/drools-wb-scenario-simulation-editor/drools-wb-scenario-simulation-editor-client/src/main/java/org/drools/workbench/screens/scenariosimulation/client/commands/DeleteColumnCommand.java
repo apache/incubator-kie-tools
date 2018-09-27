@@ -44,7 +44,6 @@ public class DeleteColumnCommand implements Command {
     }
 
     /**
-     *
      * @param model
      * @param columnIndex
      * @param columnGroup
@@ -62,10 +61,15 @@ public class DeleteColumnCommand implements Command {
     @Override
     public void execute() {
         model.deleteNewColumn(columnIndex);
-        if (model.getGroupSize(columnGroup) <1) {
+        if (model.getGroupSize(columnGroup) < 1) {
             FactMappingType factMappingType = FactMappingType.valueOf(columnGroup.toUpperCase());
             String columnTitle = FactMapping.getPlaceHolder(factMappingType, model.nextColumnCount());
-            model.insertNewColumn(columnIndex, getScenarioGridColumn(String.valueOf(new Date().getTime()), columnTitle, columnGroup, scenarioGridPanel, scenarioGridLayer));
+            model.insertNewColumn(columnIndex, getScenarioGridColumn(columnTitle,
+                                                                     String.valueOf(new Date().getTime()),
+                                                                     columnGroup,
+                                                                     factMappingType,
+                                                                     scenarioGridPanel,
+                                                                     scenarioGridLayer));
         }
     }
 }

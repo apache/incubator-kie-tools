@@ -16,59 +16,41 @@
 
 package org.drools.workbench.screens.scenariosimulation.client.utils;
 
-import java.util.List;
-
-import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
-import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridLayer;
-import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
+import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioHeaderTextBoxSingletonDOMElementFactory;
+import org.drools.workbench.screens.scenariosimulation.model.FactMappingType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
-@RunWith(GwtMockitoTestRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class ScenarioSimulationUtilsTest {
 
     @Mock
-    private ScenarioGridPanel mockScenarioGridPanel;
-
-    @Mock
-    private ScenarioGridLayer mockScenarioGridLayer;
-
-    private final String COLUMN_ID = "COLUMN ID";
-
-    private final String COLUMN_TITLE = "COLUMN TITLE";
-
-    private final String COLUMN_GROUP = "COLUMN GROUP";
+    private ScenarioHeaderTextBoxSingletonDOMElementFactory factory;
 
     @Test
-    public void getScenarioGridColumn() {
-        ScenarioGridColumn scenarioGridColumn = ScenarioSimulationUtils.getScenarioGridColumn(COLUMN_ID, COLUMN_TITLE, COLUMN_GROUP, mockScenarioGridPanel, mockScenarioGridLayer);
-        assertNotNull(scenarioGridColumn);
-        List<GridColumn.HeaderMetaData> headerMetaData = scenarioGridColumn.getHeaderMetaData();
-        assertNotNull(headerMetaData);
-        assertEquals(2, headerMetaData.size());
-        // Top-level header should have COLUMN_GROUP as title, and "" as column group
-        assertEquals(COLUMN_GROUP, headerMetaData.get(0).getTitle());
-        assertEquals("", headerMetaData.get(0).getColumnGroup());
-        // Column header should have COLUMN_TITLE as title, and COLUMN_GROUP as column group
-        assertEquals(COLUMN_TITLE, headerMetaData.get(1).getTitle());
-        assertEquals(COLUMN_GROUP, headerMetaData.get(1).getColumnGroup());
-    }
+    public void getColumnBuilder() {
 
-    @Test
-    public void getScenarioGridColumn1() {
-        ScenarioGridColumn scenarioGridColumn = ScenarioSimulationUtils.getScenarioGridColumn(COLUMN_ID, COLUMN_TITLE, mockScenarioGridPanel, mockScenarioGridLayer);
-        assertNotNull(scenarioGridColumn);
-        List<GridColumn.HeaderMetaData> headerMetaData = scenarioGridColumn.getHeaderMetaData();
-        assertNotNull(headerMetaData);
-        // Column header should have COLUMN_TITLE as title, and "" as column group
-        assertEquals(1, headerMetaData.size());
-        assertEquals("", headerMetaData.get(0).getColumnGroup());
-        assertEquals(COLUMN_TITLE, headerMetaData.get(0).getTitle());
+        String alias = "Alias";
+        String factName = "FactName";
+        String expressionName = "ExpressionName";
+
+//        ScenarioSimulationUtils.ColumnBuilder columnBuilderOther =
+//                ScenarioSimulationUtils.getTwoLevelHeaderBuilder(alias, factName, FactMappingType.OTHER.name(), FactMappingType.OTHER);
+//        assertEquals(1, columnBuilderOther.build(factory).size());
+//        assertEquals(FactMappingType.OTHER.name(), columnBuilderOther.columnGroup);
+//        assertNull(columnBuilderOther.nestedLevel);
+//        assertEquals(alias, columnBuilderOther.columnTitle);
+
+        ScenarioSimulationUtils.ColumnBuilder columnBuilderGiven =
+                ScenarioSimulationUtils.getTwoLevelHeaderBuilder(alias, factName, FactMappingType.GIVEN.name(), FactMappingType.GIVEN);
+        assertEquals(2, columnBuilderGiven.build(factory).size());
+        assertEquals("", columnBuilderGiven.columnGroup);
+        assertEquals(FactMappingType.GIVEN.name(), columnBuilderGiven.columnTitle);
+        assertEquals(alias, columnBuilderGiven.nestedLevel.columnTitle);
+        assertEquals(FactMappingType.GIVEN.name(), columnBuilderGiven.nestedLevel.columnGroup);
     }
 }

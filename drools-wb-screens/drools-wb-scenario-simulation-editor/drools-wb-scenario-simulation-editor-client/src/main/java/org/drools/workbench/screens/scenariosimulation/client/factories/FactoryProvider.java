@@ -17,14 +17,18 @@ package org.drools.workbench.screens.scenariosimulation.client.factories;
 
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridLayer;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
-import org.uberfire.ext.wires.core.grids.client.widget.dom.single.impl.TextBoxSingletonDOMElementFactory;
 
 public class FactoryProvider {
 
-    public static TextBoxSingletonDOMElementFactory getHeaderHasNameTextBoxFactory(ScenarioGridPanel scenarioGridPanel, ScenarioGridLayer gridLayer) {
-        return new TextBoxSingletonDOMElementFactory(scenarioGridPanel,
-                                                     gridLayer,
-                                                     gridLayer.getScenarioGrid());
+    public static ScenarioCellTextBoxSingletonDOMElementFactory getCellTextBoxFactory(ScenarioGridPanel scenarioGridPanel, ScenarioGridLayer gridLayer) {
+        return new ScenarioCellTextBoxSingletonDOMElementFactory(scenarioGridPanel,
+                                                                 gridLayer,
+                                                                 gridLayer.getScenarioGrid());
     }
 
+    public static ScenarioHeaderTextBoxSingletonDOMElementFactory getHeaderTextBoxFactory(ScenarioGridPanel scenarioGridPanel, ScenarioGridLayer gridLayer) {
+        return new ScenarioHeaderTextBoxSingletonDOMElementFactory(scenarioGridPanel,
+                                                                   gridLayer,
+                                                                   gridLayer.getScenarioGrid());
+    }
 }

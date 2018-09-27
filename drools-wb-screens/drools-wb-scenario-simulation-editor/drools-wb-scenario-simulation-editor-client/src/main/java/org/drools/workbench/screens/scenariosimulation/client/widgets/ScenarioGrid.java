@@ -90,7 +90,7 @@ public class ScenarioGrid extends BaseGridWidget {
     }
 
     void setHeaderColumns(Simulation simulation) {
-        // NOW USING INDEX OF FactMappings LIST FOR COLUMN POSITIONING INSIDE GRID
+
         final List<FactMapping> factMappings = simulation.getSimulationDescriptor().getUnmodifiableFactMappings();
         IntStream.range(0, factMappings.size())
                 .forEach(index -> {
@@ -98,7 +98,12 @@ public class ScenarioGrid extends BaseGridWidget {
                     String columnId = factMapping.getExpressionIdentifier().getName();
                     String columnTitle = factMapping.getExpressionAlias();
                     String columnGroup = factMapping.getExpressionIdentifier().getType().name();
-                    model.insertColumn(index, getScenarioGridColumn(columnId, columnTitle, columnGroup, scenarioGridPanel, scenarioGridLayer));
+                    model.insertColumn(index, getScenarioGridColumn(columnTitle,
+                                                                    columnId,
+                                                                    columnGroup,
+                                                                    factMapping.getExpressionIdentifier().getType(),
+                                                                    scenarioGridPanel,
+                                                                    scenarioGridLayer));
                 });
     }
 

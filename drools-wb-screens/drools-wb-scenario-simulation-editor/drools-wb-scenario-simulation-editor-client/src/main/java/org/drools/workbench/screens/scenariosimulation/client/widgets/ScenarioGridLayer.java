@@ -22,7 +22,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.DefaultGridLay
 
 /**
  * ScenarioSimulation implementation of <code>DefaultGridLayer</code>.
- *
+ * <p>
  * This layer contains a <code>ScenarioGrid</code>.
  * It also has a reference to the containing <code>ScenarioGridPanel</code> to avoid circular references by CDI
  *
@@ -62,5 +62,4 @@ public class ScenarioGridLayer extends DefaultGridLayer {
         this.scenarioGrid = scenarioGrid;
         return super.add(scenarioGrid);
     }
-
 }

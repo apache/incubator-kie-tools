@@ -45,7 +45,7 @@ public class ScenarioGridPanelProducer {
 
     private ScenarioGrid newScenarioGrid(final ScenarioGridPanel scenarioGridPanel,
                                          final ScenarioGridLayer scenarioGridLayer) {
-        return new ScenarioGrid(new ScenarioGridModel(),
+        return new ScenarioGrid(new ScenarioGridModel(false),
                                 scenarioGridLayer,
                                 new ScenarioGridRenderer(false),
                                 scenarioGridPanel);

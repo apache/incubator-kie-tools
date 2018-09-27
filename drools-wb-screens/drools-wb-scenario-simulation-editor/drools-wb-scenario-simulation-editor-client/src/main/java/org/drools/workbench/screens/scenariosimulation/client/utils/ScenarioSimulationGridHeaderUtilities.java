@@ -130,7 +130,8 @@ public class ScenarioSimulationGridHeaderUtilities {
 
     public static boolean isEditableHeader(final GridColumn<?> column,
                                            final Integer uiHeaderRowIndex) {
-        return column.getHeaderMetaData().get(uiHeaderRowIndex) instanceof ScenarioHeaderMetaData;
+        GridColumn.HeaderMetaData headerMetaData = column.getHeaderMetaData().get(uiHeaderRowIndex);
+        return headerMetaData instanceof ScenarioHeaderMetaData && !((ScenarioHeaderMetaData) headerMetaData).isReadOnly();
     }
 
     public static GridBodyCellEditContext makeRenderContext(final GridWidget gridWidget,

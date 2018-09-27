@@ -54,6 +54,11 @@ public class PrependColumnCommand implements Command {
         final int index = model.getFirstIndexLeftOfGroup(columnGroup);
         FactMappingType factMappingType = FactMappingType.valueOf(columnGroup.toUpperCase());
         String columnTitle = FactMapping.getPlaceHolder(factMappingType, model.nextColumnCount());
-        model.insertNewColumn(index, getScenarioGridColumn(columnId, columnTitle, columnGroup, scenarioGridPanel, scenarioGridLayer));
+        model.insertNewColumn(index, getScenarioGridColumn(columnTitle,
+                                                           columnId,
+                                                           columnGroup,
+                                                           factMappingType,
+                                                           scenarioGridPanel,
+                                                           scenarioGridLayer));
     }
 }

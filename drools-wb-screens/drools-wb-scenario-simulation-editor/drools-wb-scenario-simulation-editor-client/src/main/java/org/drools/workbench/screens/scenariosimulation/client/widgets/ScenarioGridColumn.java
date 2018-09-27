@@ -16,19 +16,44 @@
 package org.drools.workbench.screens.scenariosimulation.client.widgets;
 
 import java.util.List;
+import java.util.function.Consumer;
 
+import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioCellTextBoxSingletonDOMElementFactory;
+import org.uberfire.ext.wires.core.grids.client.model.GridCell;
+import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCell;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridColumn;
+import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.GridColumnRenderer;
 
 public class ScenarioGridColumn extends BaseGridColumn<String> {
 
-        public ScenarioGridColumn(HeaderMetaData headerMetaData, GridColumnRenderer<String> columnRenderer, double width, boolean isMovable) {
-            super(headerMetaData, columnRenderer, width);
-            this.setMovable(isMovable);
-        }
+    private final ScenarioCellTextBoxSingletonDOMElementFactory factory;
 
-        public ScenarioGridColumn(List<HeaderMetaData> headerMetaData, GridColumnRenderer<String> columnRenderer, double width, boolean isMovable) {
-            super(headerMetaData, columnRenderer, width);
-            this.setMovable(isMovable);
-        }
+    public ScenarioGridColumn(HeaderMetaData headerMetaData, GridColumnRenderer<String> columnRenderer, double width, boolean isMovable, ScenarioCellTextBoxSingletonDOMElementFactory factory) {
+        super(headerMetaData, columnRenderer, width);
+        this.setMovable(isMovable);
+        this.factory = factory;
     }
+
+    public ScenarioGridColumn(List<HeaderMetaData> headerMetaData, GridColumnRenderer<String> columnRenderer, double width, boolean isMovable, ScenarioCellTextBoxSingletonDOMElementFactory factory) {
+        super(headerMetaData, columnRenderer, width);
+        this.setMovable(isMovable);
+        this.factory = factory;
+    }
+
+    @Override
+    public void edit(GridCell<String> cell, GridBodyCellRenderContext context, Consumer<GridCellValue<String>> callback) {
+        factory.attachDomElement(context,
+                                 e -> e.getWidget().setValue(assertCell(cell).getValue().getValue()),
+                                 e -> e.getWidget().setFocus(true));
+    }
+
+    private GridCell<String> assertCell(final GridCell<String> cell) {
+        if (cell != null) {
+            return cell;
+        }
+        return new BaseGridCell<>(new BaseGridCellValue<>(""));
+    }
+}

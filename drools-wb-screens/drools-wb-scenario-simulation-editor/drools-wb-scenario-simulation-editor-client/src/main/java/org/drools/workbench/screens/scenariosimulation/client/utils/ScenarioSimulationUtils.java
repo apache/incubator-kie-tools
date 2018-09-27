@@ -15,35 +15,115 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.utils;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.workbench.screens.scenariosimulation.client.factories.FactoryProvider;
-import org.drools.workbench.screens.scenariosimulation.client.interfaces.TetraFunction;
+import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioCellTextBoxSingletonDOMElementFactory;
+import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioHeaderTextBoxSingletonDOMElementFactory;
 import org.drools.workbench.screens.scenariosimulation.client.metadata.ScenarioHeaderMetaData;
 import org.drools.workbench.screens.scenariosimulation.client.renderers.ScenarioGridColumnRenderer;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridLayer;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
+import org.drools.workbench.screens.scenariosimulation.model.FactMappingType;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
-import org.uberfire.ext.wires.core.grids.client.widget.dom.single.impl.TextBoxSingletonDOMElementFactory;
 
 public class ScenarioSimulationUtils {
 
-    private static final TetraFunction<String, String, String, TextBoxSingletonDOMElementFactory, ScenarioHeaderMetaData> SCENARIOHEADERMETADATA_FUNCTION =
-            ScenarioHeaderMetaData::new;
-    private static final TetraFunction<String, String, String, TextBoxSingletonDOMElementFactory, List<GridColumn.HeaderMetaData>> SCENARIOHEADERMETADATALIST_FUNCTION =
-            (columnId, columnTitle, columnGroup, factory) ->
-                    Arrays.asList(SCENARIOHEADERMETADATA_FUNCTION.apply(columnId, columnGroup, "", factory),
-                                  SCENARIOHEADERMETADATA_FUNCTION.apply(columnId, columnTitle, columnGroup, factory));
-
-    public static ScenarioGridColumn getScenarioGridColumn(String columnId, String columnTitle, String columnGroup, ScenarioGridPanel scenarioGridPanel, ScenarioGridLayer gridLayer) {
-        TextBoxSingletonDOMElementFactory factory = FactoryProvider.getHeaderHasNameTextBoxFactory(scenarioGridPanel, gridLayer);
-        return new ScenarioGridColumn(SCENARIOHEADERMETADATALIST_FUNCTION.apply(columnId, columnTitle, columnGroup, factory), new ScenarioGridColumnRenderer(), 100, false);
+    public static ScenarioGridColumn getScenarioGridColumn(String title,
+                                                           String columnId,
+                                                           String columnGroup,
+                                                           FactMappingType factMappingType,
+                                                           ScenarioGridPanel scenarioGridPanel,
+                                                           ScenarioGridLayer gridLayer) {
+        ScenarioHeaderTextBoxSingletonDOMElementFactory factoryHeader = FactoryProvider.getHeaderTextBoxFactory(scenarioGridPanel, gridLayer);
+        ScenarioCellTextBoxSingletonDOMElementFactory factoryCell = FactoryProvider.getCellTextBoxFactory(scenarioGridPanel, gridLayer);
+        return new ScenarioGridColumn(getTwoLevelHeaderBuilder(title, columnId, columnGroup, factMappingType).build(factoryHeader), new ScenarioGridColumnRenderer(), 150, false, factoryCell);
     }
 
-    public static ScenarioGridColumn getScenarioGridColumn(String columnId, String columnTitle, ScenarioGridPanel scenarioGridPanel, ScenarioGridLayer gridLayer) {
-        TextBoxSingletonDOMElementFactory factory = FactoryProvider.getHeaderHasNameTextBoxFactory(scenarioGridPanel, gridLayer);
-        return new ScenarioGridColumn(SCENARIOHEADERMETADATA_FUNCTION.apply(columnId, columnTitle, "", factory), new ScenarioGridColumnRenderer(), 100, false);
+    public static ColumnBuilder getTwoLevelHeaderBuilder(String title,
+                                                         String columnId,
+                                                         String columnGroup,
+                                                         FactMappingType factMappingType) {
+
+        ColumnBuilder columnBuilder = ColumnBuilder.get();
+
+        columnBuilder.setColumnId(columnId);
+
+        columnBuilder.setColumnTitle(columnGroup);
+        columnBuilder.setReadOnly(true);
+
+//        if (isOther(factMappingType)) {
+//            columnBuilder.setColumnTitle(title);
+//            columnBuilder.setColumnGroup(columnGroup);
+//            return columnBuilder;
+//        }
+
+        columnBuilder.newLevel()
+                .setColumnTitle(title)
+                .setColumnGroup(columnGroup).setReadOnly(false);
+
+        return columnBuilder;
+    }
+
+    private static boolean isOther(FactMappingType factMappingType) {
+        return FactMappingType.OTHER.equals(factMappingType);
+    }
+
+    public static class ColumnBuilder {
+
+        String columnId;
+        String columnTitle;
+        String columnGroup = "";
+        boolean readOnly = false;
+        ColumnBuilder nestedLevel;
+
+        public static ColumnBuilder get() {
+            return new ColumnBuilder();
+        }
+
+        public ColumnBuilder setColumnId(String columnId) {
+            this.columnId = columnId;
+            return this;
+        }
+
+        public ColumnBuilder setColumnTitle(String columnTitle) {
+            this.columnTitle = columnTitle;
+            return this;
+        }
+
+        public ColumnBuilder setColumnGroup(String columnGroup) {
+            this.columnGroup = columnGroup;
+            return this;
+        }
+
+        public ColumnBuilder setReadOnly(boolean readOnly) {
+            this.readOnly = readOnly;
+            return this;
+        }
+
+        public ColumnBuilder newLevel() {
+            this.nestedLevel = ColumnBuilder.get()
+                    .setColumnId(columnId)
+                    .setColumnTitle(columnTitle)
+                    .setColumnGroup(columnGroup)
+                    .setReadOnly(readOnly);
+            return this.nestedLevel;
+        }
+
+        public List<GridColumn.HeaderMetaData> build(ScenarioHeaderTextBoxSingletonDOMElementFactory factory) {
+            List<GridColumn.HeaderMetaData> toReturn = new ArrayList<>();
+            ColumnBuilder current = this;
+            do {
+                toReturn.add(current.internalBuild(factory));
+                current = current.nestedLevel;
+            } while (current != null);
+            return toReturn;
+        }
+
+        private GridColumn.HeaderMetaData internalBuild(ScenarioHeaderTextBoxSingletonDOMElementFactory factory) {
+            return new ScenarioHeaderMetaData(columnId, columnTitle, columnGroup, factory, readOnly);
+        }
     }
 }

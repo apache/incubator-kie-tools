@@ -92,7 +92,6 @@ public class RunMenuItem implements MenuCustom<Widget> {
         return null;
     }
 
-
     public void setCommand(Command command) {
         this.command = command;
     }
