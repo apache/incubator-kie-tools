@@ -39,12 +39,7 @@ import org.uberfire.security.authz.AuthorizationManager;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.RETURNS_DEFAULTS;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class DefaultAdminPageHelperTest {
@@ -52,6 +47,7 @@ public class DefaultAdminPageHelperTest {
     private static String LIBRARY_PREFERENCES = "LibraryPreferences";
     private static String ARTIFACT_REPOSITORY_PREFERENCES = "ArtifactRepositoryPreference";
     private static String STUNNER_PREFERENCES = "StunnerPreferences";
+    private static String MANAGE_PREFERENCES = "ManagePreferences";
 
     @Mock
     private AdminPage adminPage;
@@ -229,6 +225,7 @@ public class DefaultAdminPageHelperTest {
         defaultAdminPageHelper.setup();
         verifyLibraryPreferencesWasAddedInGlobalScope();
         verifyArtifactRepositoryPreferencesWasAddedInGlobalScope();
+        verifyManagePreferencesWasAddedInGlobalScope();
     }
 
     @Test
@@ -243,10 +240,12 @@ public class DefaultAdminPageHelperTest {
                                      true);
         verifyLibraryPreferencesWasAddedInGlobalScope();
         verifyArtifactRepositoryPreferencesWasAddedInGlobalScope();
+        verifyManagePreferencesWasAddedInGlobalScope();
     }
 
     @Test
     public void preferencesShouldNotBeAddedWhenUserHasPermissionAndDisabledTest() {
+        doReturn(globalScope).when(scopeFactory).createScope(GuvnorPreferenceScopes.GLOBAL);
         doReturn(true).when(authorizationManager).authorize(eq(WorkbenchFeatures.EDIT_GLOBAL_PREFERENCES),
                                                             any());
 
@@ -255,6 +254,7 @@ public class DefaultAdminPageHelperTest {
                                      false);
         verifyLibraryPreferencesWasNotAdded();
         verifyArtifactRepositoryPreferencesWasNotAdded();
+        verifyManagePreferencesWasAddedInGlobalScope();
     }
 
     @Test
@@ -265,6 +265,7 @@ public class DefaultAdminPageHelperTest {
         defaultAdminPageHelper.setup();
         verifyLibraryPreferencesWasNotAdded();
         verifyArtifactRepositoryPreferencesWasNotAdded();
+        verifyManagePreferencesWasNotAdded();
     }
 
     @Test
@@ -278,6 +279,7 @@ public class DefaultAdminPageHelperTest {
 
         verifyLibraryPreferencesWasNotAdded();
         verifyArtifactRepositoryPreferencesWasNotAdded();
+        verifyManagePreferencesWasNotAdded();
     }
 
     @Test
@@ -331,6 +333,28 @@ public class DefaultAdminPageHelperTest {
                                        anyString(),
                                        eq(globalScope),
                                        eq(AdminPageOptions.WITH_BREADCRUMBS));
+    }
+
+    private void verifyManagePreferencesWasAddedInGlobalScope() {
+        verify(adminPage,
+               times(1)).addPreference(eq("root"),
+                                       eq(MANAGE_PREFERENCES),
+                                       anyString(),
+                                       anyString(),
+                                       anyString(),
+                                       eq(globalScope),
+                                       eq(AdminPageOptions.WITH_BREADCRUMBS));
+    }
+
+    private void verifyManagePreferencesWasNotAdded() {
+        verify(adminPage,
+               never()).addPreference(eq("root"),
+                                      eq(MANAGE_PREFERENCES),
+                                      anyString(),
+                                      anyString(),
+                                      anyString(),
+                                      eq(globalScope),
+                                      eq(AdminPageOptions.WITH_BREADCRUMBS));
     }
 
     private void verifyArtifactRepositoryPreferencesWasNotAdded() {

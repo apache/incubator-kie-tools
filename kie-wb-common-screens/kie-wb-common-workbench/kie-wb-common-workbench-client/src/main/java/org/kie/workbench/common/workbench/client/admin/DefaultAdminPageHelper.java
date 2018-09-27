@@ -292,6 +292,14 @@ public class DefaultAdminPageHelper {
                                     scopeFactory.createScope(GuvnorPreferenceScopes.GLOBAL),
                                     AdminPageOptions.WITH_BREADCRUMBS);
         }
+
+        adminPage.addPreference("root",
+                                "ManagePreferences",
+                                constants.ProcessAdministration(),
+                                "pficon-storage-domain",
+                                "general",
+                                scopeFactory.createScope(GuvnorPreferenceScopes.GLOBAL),
+                                AdminPageOptions.WITH_BREADCRUMBS);
     }
 
     private void addAdminBreadcrumbs(final String perspective,

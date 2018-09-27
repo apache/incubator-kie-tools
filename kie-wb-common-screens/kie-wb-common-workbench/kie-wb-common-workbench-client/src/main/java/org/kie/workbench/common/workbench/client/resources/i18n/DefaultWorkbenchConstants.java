@@ -167,4 +167,5 @@ public interface DefaultWorkbenchConstants
 
     String ScenarioSimulationEditor();
 
+    String ProcessAdministration();
 }
