@@ -26,17 +26,17 @@ import org.jboss.errai.common.client.dom.HTMLElement;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
 
 @ApplicationScoped
-public class ParametersEditorImpl implements ParametersEditorView.Presenter {
+public class ParametersPopoverImpl implements ParametersPopoverView.Presenter {
 
-    private ParametersEditorView view;
+    private ParametersPopoverView view;
     private Optional<HasParametersControl> binding = Optional.empty();
 
-    public ParametersEditorImpl() {
+    public ParametersPopoverImpl() {
         //CDI proxy
     }
 
     @Inject
-    public ParametersEditorImpl(final ParametersEditorView view) {
+    public ParametersPopoverImpl(final ParametersPopoverView view) {
         this.view = view;
         view.init(this);
     }
@@ -64,9 +64,9 @@ public class ParametersEditorImpl implements ParametersEditorView.Presenter {
     }
 
     @Override
-    public void show() {
+    public void show(final Optional<String> editorTitle) {
         binding.ifPresent(b -> {
-            view.show();
+            view.show(editorTitle);
             focusLastParameter(b);
         });
     }

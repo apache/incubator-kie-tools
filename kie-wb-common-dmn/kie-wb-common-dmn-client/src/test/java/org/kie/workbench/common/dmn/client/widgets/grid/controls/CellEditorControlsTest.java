@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.dmn.client.widgets.grid.controls;
 
+import java.util.Optional;
+
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
@@ -34,6 +36,8 @@ import static org.mockito.Mockito.verify;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class CellEditorControlsTest {
+
+    private static final Optional<String> EDITOR_TITLE = Optional.of("editor");
 
     @Mock
     private DMNGridPanel gridPanel;
@@ -63,9 +67,10 @@ public class CellEditorControlsTest {
 
     @Test
     public void testShow() {
-        controls.show(editor, 10, 20);
+        controls.show(editor, EDITOR_TITLE, 10, 20);
 
         verify(view).show(eq(editor),
+                          eq(EDITOR_TITLE),
                           eq(10),
                           eq(20));
     }

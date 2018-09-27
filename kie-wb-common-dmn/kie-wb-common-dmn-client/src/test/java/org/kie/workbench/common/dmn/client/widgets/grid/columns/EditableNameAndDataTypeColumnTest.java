@@ -36,7 +36,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.context.Con
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.InformationItemCell;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.InformationItemCell.HasNameAndDataTypeCell;
 import org.kie.workbench.common.dmn.client.editors.types.HasNameAndTypeRef;
-import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypeEditorView;
+import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.mockito.ArgumentCaptor;
@@ -78,6 +78,8 @@ public class EditableNameAndDataTypeColumnTest {
 
     private static final String NEW_NAME = "new name";
 
+    private static final Optional<String> EDITOR_TITLE = Optional.of("editor");
+
     @Mock
     private GridColumn.HeaderMetaData headerMetaData;
 
@@ -100,7 +102,7 @@ public class EditableNameAndDataTypeColumnTest {
     private CellEditorControlsView.Presenter cellEditorControls;
 
     @Mock
-    private NameAndDataTypeEditorView.Presenter editor;
+    private NameAndDataTypePopoverView.Presenter editor;
 
     @Mock
     private GridBodyCellEditContext context;
@@ -131,7 +133,8 @@ public class EditableNameAndDataTypeColumnTest {
                                                                          setDisplayNameConsumer,
                                                                          setTypeRefConsumer,
                                                                          cellEditorControls,
-                                                                         editor) {
+                                                                         editor,
+                                                                         EDITOR_TITLE) {
             //Nothing to implement
         });
 
@@ -179,6 +182,7 @@ public class EditableNameAndDataTypeColumnTest {
                             eq(UI_COLUMN_INDEX));
 
         verify(cellEditorControls).show(eq(editor),
+                                        eq(EDITOR_TITLE),
                                         eq((int) RELATIVE_X),
                                         eq((int) RELATIVE_Y));
     }

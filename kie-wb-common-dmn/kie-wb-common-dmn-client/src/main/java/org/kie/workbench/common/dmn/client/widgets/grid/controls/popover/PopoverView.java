@@ -13,10 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-.kie-dmn-hit-policy-container {
-  padding: 5px 10px 10px 10px;
-}
 
-.kie-dmn-hit-policy-container .bootstrap-select {
-  margin-top: 5px;
+package org.kie.workbench.common.dmn.client.widgets.grid.controls.popover;
+
+import java.util.Optional;
+
+public interface PopoverView extends org.jboss.errai.ui.client.local.api.IsElement {
+
+    void show(final Optional<String> editorTitle);
+
+    void hide();
 }

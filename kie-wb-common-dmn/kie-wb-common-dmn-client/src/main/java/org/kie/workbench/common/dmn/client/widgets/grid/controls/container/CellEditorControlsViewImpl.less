@@ -16,4 +16,10 @@
 
 .kie-dmn-cell-editor-controls {
   position: absolute;
+  //Prevent text selection by double-click (of underlying cell and consequent display of editor controls)
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }

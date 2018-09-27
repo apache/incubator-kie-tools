@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.dtable;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import com.ait.lienzo.client.core.types.Transform;
@@ -25,7 +26,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.v1_1.BuiltinAggregator;
 import org.kie.workbench.common.dmn.api.definition.v1_1.HitPolicy;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.hitpolicy.HitPolicyEditorView;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.hitpolicy.HitPolicyPopoverView;
+import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
@@ -39,7 +41,7 @@ public class RowNumberColumnHeaderMetaDataTest {
     private CellEditorControlsView.Presenter cellEditorControls;
 
     @Mock
-    private HitPolicyEditorView.Presenter hitPolicyEditor;
+    private HitPolicyPopoverView.Presenter hitPolicyEditor;
 
     @Mock
     private DecisionTableGrid gridWidget;
@@ -62,6 +64,7 @@ public class RowNumberColumnHeaderMetaDataTest {
                                                         builtinAggregatorSupplier(),
                                                         cellEditorControls,
                                                         hitPolicyEditor,
+                                                        Optional.of(DMNEditorConstants.DecisionTableEditor_EditHitPolicy),
                                                         gridWidget);
     }
 

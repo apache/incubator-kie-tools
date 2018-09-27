@@ -51,11 +51,11 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionT
 import org.kie.workbench.common.dmn.client.editors.expressions.types.GridFactoryCommandUtils;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.function.parameters.ParametersEditorView;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.function.parameters.ParametersPopoverView;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.supplementary.FunctionSupplementaryGrid;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.literal.LiteralExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.literal.LiteralExpressionGrid;
-import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypeEditorView;
+import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
@@ -178,7 +178,7 @@ public class FunctionGridTest {
     private Supplier<ExpressionEditorDefinitions> supplementaryEditorDefinitionsSupplier;
 
     @Mock
-    private ParametersEditorView.Presenter parametersEditor;
+    private ParametersPopoverView.Presenter parametersEditor;
 
     @Mock
     private GridCellTuple parent;
@@ -202,7 +202,7 @@ public class FunctionGridTest {
     private Command onSuccess;
 
     @Mock
-    private NameAndDataTypeEditorView.Presenter headerEditor;
+    private NameAndDataTypePopoverView.Presenter headerEditor;
 
     @Captor
     private ArgumentCaptor<AddParameterCommand> addParameterCommandCaptor;
@@ -326,6 +326,7 @@ public class FunctionGridTest {
                                                       any())).thenReturn(mock(UpdateElementPropertyCommand.class));
 
         doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).format(anyString());
+        doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).getTranslation(anyString());
     }
 
     private void setupGrid(final int nesting) {

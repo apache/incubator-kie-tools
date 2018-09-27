@@ -28,18 +28,18 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTableOrientation
 import org.kie.workbench.common.dmn.api.definition.v1_1.HitPolicy;
 
 @ApplicationScoped
-public class HitPolicyEditorImpl implements HitPolicyEditorView.Presenter {
+public class HitPolicyPopoverImpl implements HitPolicyPopoverView.Presenter {
 
-    private HitPolicyEditorView view;
+    private HitPolicyPopoverView view;
     private Optional<HasHitPolicyControl> binding = Optional.empty();
 
-    public HitPolicyEditorImpl() {
+    public HitPolicyPopoverImpl() {
         //CDI proxy
     }
 
     @Inject
-    public HitPolicyEditorImpl(final HitPolicyEditorView view,
-                               final BuiltinAggregatorUtils builtinAggregatorUtils) {
+    public HitPolicyPopoverImpl(final HitPolicyPopoverView view,
+                                final BuiltinAggregatorUtils builtinAggregatorUtils) {
         this.view = view;
 
         view.init(this);
@@ -99,8 +99,8 @@ public class HitPolicyEditorImpl implements HitPolicyEditorView.Presenter {
     }
 
     @Override
-    public void show() {
-        binding.ifPresent(b -> view.show());
+    public void show(final Optional<String> editorTitle) {
+        binding.ifPresent(b -> view.show(editorTitle));
     }
 
     @Override

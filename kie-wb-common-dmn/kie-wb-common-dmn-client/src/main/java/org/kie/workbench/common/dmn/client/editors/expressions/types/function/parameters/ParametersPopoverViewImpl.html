@@ -13,9 +13,14 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<div>
-    <div class="dropdown-menu kie-dmn-parameters-container">
-        <button class="btn btn-default" type="button" data-field="addParameter" data-i18n-key="addParameter"></button>
-        <div data-field="parametersContainer"></div>
+<div data-field="popover" data-toggle="popover" data-trigger="manual" data-container="#popover-container" title="i18ned" data-close="true">
+    <div id="popover-container"></div>
+    <div id="popover-content">
+        <form id="#ParametersForm">
+            <button class="btn btn-default" type="button" data-field="addParameter" data-i18n-key="addParameter"></button>
+            <div class="kie-dmn-parameters-container">
+                <div data-field="parametersContainer"></div>
+            </div>
+        </form>
     </div>
 </div>

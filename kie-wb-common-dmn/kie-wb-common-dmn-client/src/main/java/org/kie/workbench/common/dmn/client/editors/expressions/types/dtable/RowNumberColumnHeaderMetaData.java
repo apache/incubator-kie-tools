@@ -16,16 +16,17 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.dtable;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.BuiltinAggregator;
 import org.kie.workbench.common.dmn.api.definition.v1_1.HitPolicy;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.hitpolicy.HasHitPolicyControl;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.hitpolicy.HitPolicyEditorView;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.hitpolicy.HitPolicyPopoverView;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditablePopupHeaderMetaData;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 
-class RowNumberColumnHeaderMetaData extends EditablePopupHeaderMetaData<HasHitPolicyControl, HitPolicyEditorView.Presenter> {
+class RowNumberColumnHeaderMetaData extends EditablePopupHeaderMetaData<HasHitPolicyControl, HitPolicyPopoverView.Presenter> {
 
     private static final String ROW_NUMBER_GROUP = "RowNumberColumn";
 
@@ -36,10 +37,12 @@ class RowNumberColumnHeaderMetaData extends EditablePopupHeaderMetaData<HasHitPo
     public RowNumberColumnHeaderMetaData(final Supplier<HitPolicy> hitPolicySupplier,
                                          final Supplier<BuiltinAggregator> builtinAggregatorSupplier,
                                          final CellEditorControlsView.Presenter cellEditorControls,
-                                         final HitPolicyEditorView.Presenter editor,
+                                         final HitPolicyPopoverView.Presenter editor,
+                                         final Optional<String> editorTitle,
                                          final DecisionTableGrid gridWidget) {
         super(cellEditorControls,
-              editor);
+              editor,
+              editorTitle);
         this.hitPolicySupplier = hitPolicySupplier;
         this.builtinAggregatorSupplier = builtinAggregatorSupplier;
         this.gridWidget = gridWidget;

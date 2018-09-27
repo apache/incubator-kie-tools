@@ -28,8 +28,8 @@ import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.BaseEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.hitpolicy.HitPolicyEditorView;
-import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypeEditorView;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.hitpolicy.HitPolicyPopoverView;
+import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
@@ -47,8 +47,8 @@ import org.kie.workbench.common.stunner.forms.client.event.RefreshFormProperties
 @ApplicationScoped
 public class DecisionTableEditorDefinition extends BaseEditorDefinition<DecisionTable, DecisionTableGridData> {
 
-    private HitPolicyEditorView.Presenter hitPolicyEditor;
-    private NameAndDataTypeEditorView.Presenter headerEditor;
+    private HitPolicyPopoverView.Presenter hitPolicyEditor;
+    private NameAndDataTypePopoverView.Presenter headerEditor;
     private DecisionTableEditorDefinitionEnricher enricher;
 
     public DecisionTableEditorDefinition() {
@@ -64,8 +64,8 @@ public class DecisionTableEditorDefinition extends BaseEditorDefinition<Decision
                                          final Event<RefreshFormProperties> refreshFormPropertiesEvent,
                                          final ListSelectorView.Presenter listSelector,
                                          final TranslationService translationService,
-                                         final HitPolicyEditorView.Presenter hitPolicyEditor,
-                                         final NameAndDataTypeEditorView.Presenter headerEditor,
+                                         final HitPolicyPopoverView.Presenter hitPolicyEditor,
+                                         final NameAndDataTypePopoverView.Presenter headerEditor,
                                          final DecisionTableEditorDefinitionEnricher enricher) {
         super(definitionUtils,
               sessionManager,

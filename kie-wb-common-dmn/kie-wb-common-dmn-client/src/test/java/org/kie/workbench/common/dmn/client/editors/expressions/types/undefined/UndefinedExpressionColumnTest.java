@@ -162,7 +162,7 @@ public class UndefinedExpressionColumnTest {
                     context,
                     callback);
 
-        verify(cellEditorControls, never()).show(any(HasCellEditorControls.Editor.class), anyInt(), anyInt());
+        verify(cellEditorControls, never()).show(any(HasCellEditorControls.Editor.class), any(Optional.class), anyInt(), anyInt());
     }
 
     @Test
@@ -175,7 +175,7 @@ public class UndefinedExpressionColumnTest {
                     context,
                     callback);
 
-        verify(cellEditorControls, never()).show(any(HasCellEditorControls.Editor.class), anyInt(), anyInt());
+        verify(cellEditorControls, never()).show(any(HasCellEditorControls.Editor.class), any(Optional.class), anyInt(), anyInt());
     }
 
     @Test
@@ -188,7 +188,7 @@ public class UndefinedExpressionColumnTest {
                     context,
                     callback);
 
-        verify(cellEditorControls, never()).show(any(HasCellEditorControls.Editor.class), anyInt(), anyInt());
+        verify(cellEditorControls, never()).show(any(HasCellEditorControls.Editor.class), any(Optional.class), anyInt(), anyInt());
     }
 
     @Test
@@ -206,7 +206,7 @@ public class UndefinedExpressionColumnTest {
                             eq(ROW_INDEX),
                             eq(COLUMN_INDEX));
 
-        verify(cellEditorControls).show(eq(editor), eq((int) ABSOLUTE_CELL_X), eq((int) ABSOLUTE_CELL_Y));
+        verify(cellEditorControls).show(eq(editor), any(Optional.class), eq(0), eq(0));
     }
 
     @Test
@@ -227,8 +227,31 @@ public class UndefinedExpressionColumnTest {
                             eq(COLUMN_INDEX));
 
         verify(cellEditorControls).show(eq(editor),
-                                        eq((int) (ABSOLUTE_CELL_X + RX)),
-                                        eq((int) (ABSOLUTE_CELL_Y + RY)));
+                                        any(Optional.class),
+                                        eq((int) (RX)),
+                                        eq((int) (RY)));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testEditWithDefinedCellEditorWithoutRelativeLocation() {
+        final DMNGridCell cell = mock(DMNGridCell.class);
+        final HasCellEditorControls.Editor editor = mock(HasCellEditorControls.Editor.class);
+        when(cell.getEditor()).thenReturn(Optional.of(editor));
+        when(context.getRelativeLocation()).thenReturn(Optional.empty());
+
+        column.edit(cell,
+                    context,
+                    callback);
+
+        verify(editor).bind(eq(column),
+                            eq(ROW_INDEX),
+                            eq(COLUMN_INDEX));
+
+        verify(cellEditorControls).show(eq(editor),
+                                        any(Optional.class),
+                                        eq((int) (ABSOLUTE_CELL_X)),
+                                        eq((int) (ABSOLUTE_CELL_Y)));
     }
 
     @Test

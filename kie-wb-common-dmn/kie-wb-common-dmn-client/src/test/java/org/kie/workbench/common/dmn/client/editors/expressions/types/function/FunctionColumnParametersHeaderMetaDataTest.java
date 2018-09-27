@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.client.editors.expressions.types.function;
 
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import com.ait.lienzo.client.core.types.Transform;
@@ -28,7 +29,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.v1_1.FunctionDefinition;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.function.parameters.ParametersEditorView;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.function.parameters.ParametersPopoverView;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.mockito.Mock;
@@ -45,7 +46,7 @@ public class FunctionColumnParametersHeaderMetaDataTest {
     private CellEditorControlsView.Presenter cellEditorControls;
 
     @Mock
-    private ParametersEditorView.Presenter parametersEditor;
+    private ParametersPopoverView.Presenter parametersEditor;
 
     @Mock
     private FunctionGrid gridWidget;
@@ -73,6 +74,7 @@ public class FunctionColumnParametersHeaderMetaDataTest {
                                                                  translationService,
                                                                  cellEditorControls,
                                                                  parametersEditor,
+                                                                 Optional.of(DMNEditorConstants.FunctionEditor_EditParameters),
                                                                  gridWidget);
 
         when(translationService.getTranslation(anyString())).thenAnswer((i) -> i.getArguments()[0]);

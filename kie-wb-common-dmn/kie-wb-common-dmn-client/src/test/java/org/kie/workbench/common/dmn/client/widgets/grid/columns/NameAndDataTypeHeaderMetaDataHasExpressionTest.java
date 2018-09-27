@@ -42,7 +42,8 @@ public class NameAndDataTypeHeaderMetaDataHasExpressionTest extends BaseNameAndD
                                                                              setDisplayNameConsumer,
                                                                              setTypeRefConsumer,
                                                                              cellEditorControls,
-                                                                             headerEditor) {
+                                                                             headerEditor,
+                                                                             EDITOR_TITLE) {
             @Override
             public String getColumnGroup() {
                 return NAME_DATA_TYPE_COLUMN_GROUP;

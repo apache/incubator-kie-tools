@@ -22,10 +22,11 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.BuiltinAggregator;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTableOrientation;
 import org.kie.workbench.common.dmn.api.definition.v1_1.HitPolicy;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.HasCellEditorControls;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.popover.PopoverView;
 import org.uberfire.client.mvp.UberElement;
 
-public interface HitPolicyEditorView extends org.jboss.errai.ui.client.local.api.IsElement,
-                                             UberElement<HitPolicyEditorView.Presenter> {
+public interface HitPolicyPopoverView extends PopoverView,
+                                              UberElement<HitPolicyPopoverView.Presenter> {
 
     interface Presenter extends HasCellEditorControls.Editor<HasHitPolicyControl> {
 
@@ -53,8 +54,4 @@ public interface HitPolicyEditorView extends org.jboss.errai.ui.client.local.api
     void enableBuiltinAggregators(final boolean enabled);
 
     void enableDecisionTableOrientation(final boolean enabled);
-
-    void show();
-
-    void hide();
 }

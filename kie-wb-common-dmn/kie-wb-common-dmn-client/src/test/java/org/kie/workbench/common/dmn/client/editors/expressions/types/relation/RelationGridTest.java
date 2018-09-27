@@ -49,7 +49,7 @@ import org.kie.workbench.common.dmn.client.commands.general.SetCellValueCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetHasNameCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetTypeRefCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.GridFactoryCommandUtils;
-import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypeEditorView;
+import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
@@ -190,7 +190,7 @@ public class RelationGridTest {
     private EventSourceMock<RefreshFormProperties> refreshFormPropertiesEvent;
 
     @Mock
-    private NameAndDataTypeEditorView.Presenter headerEditor;
+    private NameAndDataTypePopoverView.Presenter headerEditor;
 
     @Captor
     private ArgumentCaptor<AddRelationColumnCommand> addColumnCommand;
@@ -265,6 +265,7 @@ public class RelationGridTest {
         when(viewport.getTransform()).thenReturn(transform);
 
         doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).format(anyString());
+        doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).getTranslation(anyString());
     }
 
     private void setupGrid(final int nesting) {
@@ -597,6 +598,7 @@ public class RelationGridTest {
                                   eq(0),
                                   eq(0));
         verify(cellEditorControls).show(eq(headerEditor),
+                                        eq(Optional.of(DMNEditorConstants.RelationEditor_EditRelation)),
                                         anyInt(),
                                         anyInt());
 

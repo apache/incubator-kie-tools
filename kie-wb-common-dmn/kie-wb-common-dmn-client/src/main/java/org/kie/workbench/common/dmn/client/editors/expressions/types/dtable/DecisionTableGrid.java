@@ -45,9 +45,9 @@ import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.Set
 import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.SetHitPolicyCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.SetOrientationCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.hitpolicy.HasHitPolicyControl;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.hitpolicy.HitPolicyEditorView;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.hitpolicy.HitPolicyPopoverView;
 import org.kie.workbench.common.dmn.client.editors.expressions.util.SelectionUtils;
-import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypeEditorView;
+import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
@@ -79,8 +79,8 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
 
     public static final String DESCRIPTION_GROUP = "DecisionTable$Description";
 
-    private final HitPolicyEditorView.Presenter hitPolicyEditor;
-    private final NameAndDataTypeEditorView.Presenter headerEditor;
+    private final HitPolicyPopoverView.Presenter hitPolicyEditor;
+    private final NameAndDataTypePopoverView.Presenter headerEditor;
 
     private final TextBoxSingletonDOMElementFactory textBoxFactory = getBodyTextBoxFactory();
     private final TextAreaSingletonDOMElementFactory textAreaFactory = getBodyTextAreaFactory();
@@ -118,8 +118,8 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
                              final ListSelectorView.Presenter listSelector,
                              final TranslationService translationService,
                              final int nesting,
-                             final HitPolicyEditorView.Presenter hitPolicyEditor,
-                             final NameAndDataTypeEditorView.Presenter headerEditor) {
+                             final HitPolicyPopoverView.Presenter hitPolicyEditor,
+                             final NameAndDataTypePopoverView.Presenter headerEditor) {
         super(parent,
               nodeUUID,
               hasExpression,
@@ -167,6 +167,7 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
                                                                 e::getAggregation,
                                                                 cellEditorControls,
                                                                 hitPolicyEditor,
+                                                                Optional.of(translationService.getTranslation(DMNEditorConstants.DecisionTableEditor_EditHitPolicy)),
                                                                 this));
             e.getInput().forEach(ic -> model.appendColumn(makeInputClauseColumn(ic)));
             e.getOutput().forEach(oc -> model.appendColumn(makeOutputClauseColumn(oc)));
@@ -186,7 +187,8 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
                                                                                                    setDisplayNameConsumer(false),
                                                                                                    setTypeRefConsumer(),
                                                                                                    cellEditorControls,
-                                                                                                   headerEditor),
+                                                                                                   headerEditor,
+                                                                                                   Optional.of(translationService.getTranslation(DMNEditorConstants.DecisionTableEditor_EditInputClause))),
                                                                textAreaFactory,
                                                                this);
         return column;
@@ -226,7 +228,8 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
                                                                                     setDisplayNameConsumer(true),
                                                                                     setTypeRefConsumer(),
                                                                                     cellEditorControls,
-                                                                                    headerEditor));
+                                                                                    headerEditor,
+                                                                                    Optional.of(translationService.getTranslation(DMNEditorConstants.DecisionTableEditor_EditOutputClause))));
                 } else {
                     metaData.add(new BaseHeaderMetaData(translationService.format(DMNEditorConstants.DecisionTableEditor_OutputClauseHeader)));
                 }
@@ -237,7 +240,8 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
                                                                       setDisplayNameConsumer(false),
                                                                       setTypeRefConsumer(),
                                                                       cellEditorControls,
-                                                                      headerEditor));
+                                                                      headerEditor,
+                                                                      Optional.of(translationService.getTranslation(DMNEditorConstants.DecisionTableEditor_EditOutputClause))));
                 }
             });
             return metaData;

@@ -31,8 +31,8 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.InputClause;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.OutputClause;
 import org.kie.workbench.common.dmn.api.definition.v1_1.UnaryTests;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.hitpolicy.HitPolicyEditorView;
-import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypeEditorView;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.hitpolicy.HitPolicyPopoverView;
+import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
@@ -100,7 +100,7 @@ public abstract class BaseDecisionTableEditorDefinitionTest {
     private TranslationService translationService;
 
     @Mock
-    private HitPolicyEditorView.Presenter hitPolicyEditor;
+    private HitPolicyPopoverView.Presenter hitPolicyEditor;
 
     @Mock
     private EventSourceMock<ExpressionEditorChanged> editorSelectedEvent;
@@ -109,7 +109,7 @@ public abstract class BaseDecisionTableEditorDefinitionTest {
     private EventSourceMock<RefreshFormProperties> refreshFormPropertiesEvent;
 
     @Mock
-    private NameAndDataTypeEditorView.Presenter headerEditor;
+    private NameAndDataTypePopoverView.Presenter headerEditor;
 
     @Mock
     protected GridCellTuple parent;
@@ -150,6 +150,7 @@ public abstract class BaseDecisionTableEditorDefinitionTest {
         when(diagram.getGraph()).thenReturn(graph);
 
         doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).format(anyString());
+        doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).getTranslation(anyString());
     }
 
     protected void assertBasicEnrichment(final DecisionTable model) {

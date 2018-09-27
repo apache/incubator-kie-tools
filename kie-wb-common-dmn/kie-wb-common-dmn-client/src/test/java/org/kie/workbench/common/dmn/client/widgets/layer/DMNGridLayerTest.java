@@ -269,9 +269,10 @@ public class DMNGridLayerTest {
         assertThat(gridLayer.getSelectedGridWidget().get()).isEqualTo(expressionGrid);
 
         verify(expressionGrid).select();
+        verify(gridLayer).batch();
 
         //Select outer grid, deselecting nested grid
-        reset(gridWidget, expressionGrid);
+        reset(gridLayer, gridWidget, expressionGrid);
         when(gridWidget.getModel()).thenReturn(gridData);
         when(expressionGrid.getModel()).thenReturn(new BaseGridData(false));
         when(expressionGrid.isSelected()).thenReturn(true);
@@ -282,6 +283,19 @@ public class DMNGridLayerTest {
 
         verify(gridWidget).select();
         verify(expressionGrid).deselect();
+        verify(gridLayer).batch();
+
+        //Reselect outer grid, there should be no change in selections and the GridLayer should not be redrawn
+        reset(gridLayer, gridWidget, expressionGrid);
+        when(gridWidget.getModel()).thenReturn(gridData);
+        when(gridWidget.isSelected()).thenReturn(true);
+        when(expressionGrid.getModel()).thenReturn(new BaseGridData(false));
+        when(expressionGrid.isSelected()).thenReturn(false);
+        gridLayer.select(gridWidget);
+
+        verify(gridWidget, never()).select();
+        verify(expressionGrid, never()).deselect();
+        verify(gridLayer, never()).batch();
     }
 
     @Test

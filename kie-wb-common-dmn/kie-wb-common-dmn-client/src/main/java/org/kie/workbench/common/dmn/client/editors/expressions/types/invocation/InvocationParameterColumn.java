@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.client.editors.expressions.types.invocation;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -25,7 +26,7 @@ import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
-import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypeEditorView;
+import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableNameAndDataTypeColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 
@@ -38,7 +39,8 @@ public class InvocationParameterColumn extends EditableNameAndDataTypeColumn<Inv
                                      final BiConsumer<HasName, Name> setDisplayNameConsumer,
                                      final BiConsumer<HasTypeRef, QName> setTypeRefConsumer,
                                      final CellEditorControlsView.Presenter cellEditorControls,
-                                     final NameAndDataTypeEditorView.Presenter editor) {
+                                     final NameAndDataTypePopoverView.Presenter editor,
+                                     final Optional<String> editorTitle) {
         super(headerMetaData,
               gridWidget,
               isEditable,
@@ -46,6 +48,7 @@ public class InvocationParameterColumn extends EditableNameAndDataTypeColumn<Inv
               setDisplayNameConsumer,
               setTypeRefConsumer,
               cellEditorControls,
-              editor);
+              editor,
+              editorTitle);
     }
 }

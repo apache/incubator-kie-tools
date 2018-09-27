@@ -34,7 +34,7 @@ import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.BaseEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
-import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypeEditorView;
+import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
@@ -53,7 +53,7 @@ import org.kie.workbench.common.stunner.forms.client.event.RefreshFormProperties
 public class InvocationEditorDefinition extends BaseEditorDefinition<Invocation, InvocationGridData> {
 
     private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
-    private NameAndDataTypeEditorView.Presenter headerEditor;
+    private NameAndDataTypePopoverView.Presenter headerEditor;
 
     public InvocationEditorDefinition() {
         //CDI proxy
@@ -69,7 +69,7 @@ public class InvocationEditorDefinition extends BaseEditorDefinition<Invocation,
                                       final ListSelectorView.Presenter listSelector,
                                       final TranslationService translationService,
                                       final @DMNEditor Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
-                                      final NameAndDataTypeEditorView.Presenter headerEditor) {
+                                      final NameAndDataTypePopoverView.Presenter headerEditor) {
         super(definitionUtils,
               sessionManager,
               sessionCommandManager,

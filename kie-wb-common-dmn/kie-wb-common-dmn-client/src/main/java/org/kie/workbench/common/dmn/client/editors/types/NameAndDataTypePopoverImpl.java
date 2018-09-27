@@ -22,21 +22,21 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.jboss.errai.common.client.dom.HTMLElement;
-import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
+import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 
 @ApplicationScoped
-public class DataTypeEditorImpl implements DataTypeEditorView.Presenter {
+public class NameAndDataTypePopoverImpl implements NameAndDataTypePopoverView.Presenter {
 
-    private DataTypeEditorView view;
-    private Optional<HasTypeRef> binding = Optional.empty();
+    private NameAndDataTypePopoverView view;
+    private Optional<HasNameAndTypeRef> binding = Optional.empty();
 
-    public DataTypeEditorImpl() {
+    public NameAndDataTypePopoverImpl() {
         //CDI proxy
     }
 
     @Inject
-    public DataTypeEditorImpl(final DataTypeEditorView view) {
+    public NameAndDataTypePopoverImpl(final NameAndDataTypePopoverView view) {
         this.view = view;
 
         view.init(this);
@@ -48,7 +48,7 @@ public class DataTypeEditorImpl implements DataTypeEditorView.Presenter {
     }
 
     @Override
-    public void bind(final HasTypeRef bound,
+    public void bind(final HasNameAndTypeRef bound,
                      final int uiRowIndex,
                      final int uiColumnIndex) {
         binding = Optional.ofNullable(bound);
@@ -58,8 +58,14 @@ public class DataTypeEditorImpl implements DataTypeEditorView.Presenter {
     private void refresh() {
         binding.ifPresent(b -> {
             view.setDMNModel(b.asDMNModelInstrumentedBase());
+            view.initName(b.getName().getValue());
             view.initSelectedTypeRef(b.getTypeRef());
         });
+    }
+
+    @Override
+    public void setName(final String name) {
+        binding.ifPresent(b -> b.setName(new Name(name)));
     }
 
     @Override
@@ -68,8 +74,8 @@ public class DataTypeEditorImpl implements DataTypeEditorView.Presenter {
     }
 
     @Override
-    public void show() {
-        binding.ifPresent(b -> view.show());
+    public void show(final Optional<String> editorTitle) {
+        binding.ifPresent(b -> view.show(editorTitle));
     }
 
     @Override

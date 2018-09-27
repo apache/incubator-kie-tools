@@ -33,9 +33,10 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.HasValue;
-import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.extras.select.client.ui.Option;
 import org.gwtbootstrap3.extras.select.client.ui.Select;
+import org.jboss.errai.common.client.dom.Anchor;
+import org.jboss.errai.common.client.dom.Span;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
@@ -60,7 +61,10 @@ public class DataTypePickerWidget extends Composite implements HasValue<QName>,
     static final Comparator<ItemDefinition> ITEM_DEFINITION_COMPARATOR = Comparator.comparing(o -> o.getName().getValue());
 
     @DataField
-    private Button typeButton;
+    private Anchor typeButton;
+
+    @DataField
+    private Span manageLabel;
 
     @DataField
     private Select typeSelector;
@@ -82,13 +86,15 @@ public class DataTypePickerWidget extends Composite implements HasValue<QName>,
     }
 
     @Inject
-    public DataTypePickerWidget(final Button typeButton,
+    public DataTypePickerWidget(final Anchor typeButton,
+                                final Span manageLabel,
                                 final TranslationService translationService,
                                 final QNameConverter qNameConverter,
                                 final DMNGraphUtils dmnGraphUtils,
                                 final DataTypeModal dataTypeModal,
                                 final ItemDefinitionUtils itemDefinitionUtils) {
         this.typeButton = typeButton;
+        this.manageLabel = manageLabel;
         this.typeSelector = GWT.create(Select.class);
         this.qNameConverter = qNameConverter;
         this.dmnGraphUtils = dmnGraphUtils;
@@ -97,9 +103,11 @@ public class DataTypePickerWidget extends Composite implements HasValue<QName>,
 
         this.typeSelector.setShowTick(true);
         this.typeSelector.setLiveSearch(true);
-        this.typeSelector.setLiveSearchPlaceholder(translationService.getTranslation(DMNEditorConstants.TypePickerWidget_Choose));
         this.typeSelector.getElement().setAttribute("data-container", "body");
         this.typeSelector.refresh();
+
+        this.typeSelector.setLiveSearchPlaceholder(translationService.getTranslation(DMNEditorConstants.TypePickerWidget_Choose));
+        this.manageLabel.setTextContent(translationService.getTranslation(DMNEditorConstants.TypePickerWidget_Manage));
 
         this.typeSelector.addValueChangeHandler((event) -> setValue(qNameConverter.toModelValue(event.getValue()), true));
     }
@@ -218,7 +226,6 @@ public class DataTypePickerWidget extends Composite implements HasValue<QName>,
     @Override
     public void setEnabled(final boolean enabled) {
         this.enabled = enabled;
-        typeButton.setEnabled(enabled);
-        typeSelector.setEnabled(enabled);
+        this.typeSelector.setEnabled(enabled);
     }
 }

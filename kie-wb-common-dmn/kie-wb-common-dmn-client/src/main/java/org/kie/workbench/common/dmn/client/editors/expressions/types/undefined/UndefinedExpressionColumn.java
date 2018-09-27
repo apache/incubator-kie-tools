@@ -79,15 +79,16 @@ public class UndefinedExpressionColumn extends DMNGridColumn<UndefinedExpression
             final Optional<HasCellEditorControls.Editor> editor = hasControls.getEditor();
             editor.ifPresent(e -> {
                 e.bind(this, uiRowIndex, uiColumnIndex);
-                final double[] dxy = {0.0, 0.0};
+                final double[] dxy = {absoluteCellX, absoluteCellY};
                 final Optional<com.ait.lienzo.client.core.types.Point2D> rx = context.getRelativeLocation();
                 rx.ifPresent(r -> {
                     dxy[0] = r.getX();
                     dxy[1] = r.getY();
                 });
                 cellEditorControls.show(e,
-                                        (int) (absoluteCellX + dxy[0]),
-                                        (int) (absoluteCellY + dxy[1]));
+                                        Optional.empty(),
+                                        (int) (dxy[0]),
+                                        (int) (dxy[1]));
             });
         }
     }

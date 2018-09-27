@@ -41,7 +41,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.context.Exp
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionGrid;
 import org.kie.workbench.common.dmn.client.editors.expressions.util.SelectionUtils;
-import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypeEditorView;
+import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
@@ -70,7 +70,7 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGri
     private static final String EXPRESSION_COLUMN_GROUP = "InvocationGrid$ExpressionColumn1";
 
     private final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
-    private final NameAndDataTypeEditorView.Presenter headerEditor;
+    private final NameAndDataTypePopoverView.Presenter headerEditor;
 
     public InvocationGrid(final GridCellTuple parent,
                           final Optional<String> nodeUUID,
@@ -91,7 +91,7 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGri
                           final TranslationService translationService,
                           final int nesting,
                           final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
-                          final NameAndDataTypeEditorView.Presenter headerEditor) {
+                          final NameAndDataTypePopoverView.Presenter headerEditor) {
         super(parent,
               nodeUUID,
               hasExpression,
@@ -147,7 +147,8 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGri
                                                                                                                                     setDisplayNameConsumer(true),
                                                                                                                                     setTypeRefConsumer(),
                                                                                                                                     cellEditorControls,
-                                                                                                                                    headerEditor),
+                                                                                                                                    headerEditor,
+                                                                                                                                    Optional.of(translationService.getTranslation(DMNEditorConstants.InvocationEditor_EditExpression))),
                                                                                                  expressionHeaderMetaData),
                                                                                    this,
                                                                                    rowIndex -> true,
@@ -155,7 +156,8 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGri
                                                                                    setDisplayNameConsumer(false),
                                                                                    setTypeRefConsumer(),
                                                                                    cellEditorControls,
-                                                                                   headerEditor);
+                                                                                   headerEditor,
+                                                                                   Optional.of(translationService.getTranslation(DMNEditorConstants.InvocationEditor_EditParameter)));
         final ExpressionEditorColumn expressionColumn = new ExpressionEditorColumn(gridLayer,
                                                                                    Arrays.asList(new BaseHeaderMetaData("",
                                                                                                                         EXPRESSION_COLUMN_GROUP),

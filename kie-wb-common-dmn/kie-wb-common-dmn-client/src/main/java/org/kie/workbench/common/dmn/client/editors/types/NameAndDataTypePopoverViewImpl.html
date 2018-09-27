@@ -1,0 +1,29 @@
+<!--
+  ~ Copyright 2018 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<div data-field="popover" data-toggle="popover" data-trigger="manual" data-container="#popover-container" title="i18ned" data-close="true">
+    <div id="popover-container"></div>
+    <div id="popover-content">
+        <div class="kie-dmn-name-and-data-type-container">
+            <form id="#NameAndDataTypeForm">
+                <label for="kieName"><span data-field="nameLabel"></span></label>
+                <input data-field="nameEditor" class="form-control pf-c-form-control" type="text" aria-label="Name text input" id="kieName" placeholder="Name" aria-placeholder="Name">
+                <br/>
+                <label for="kieDataType"><span data-field="dataTypeLabel"></span></label>
+                <div data-field="typeRefSelector" id="kieDataType"></div>
+            </form>
+        </div>
+    </div>
+</div>

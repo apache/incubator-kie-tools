@@ -28,7 +28,7 @@ import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.BaseEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
-import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypeEditorView;
+import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
@@ -46,7 +46,7 @@ import org.kie.workbench.common.stunner.forms.client.event.RefreshFormProperties
 @ApplicationScoped
 public class LiteralExpressionEditorDefinition extends BaseEditorDefinition<LiteralExpression, DMNGridData> {
 
-    private NameAndDataTypeEditorView.Presenter headerEditor;
+    private NameAndDataTypePopoverView.Presenter headerEditor;
 
     public LiteralExpressionEditorDefinition() {
         //CDI proxy
@@ -61,7 +61,7 @@ public class LiteralExpressionEditorDefinition extends BaseEditorDefinition<Lite
                                              final Event<RefreshFormProperties> refreshFormPropertiesEvent,
                                              final ListSelectorView.Presenter listSelector,
                                              final TranslationService translationService,
-                                             final NameAndDataTypeEditorView.Presenter headerEditor) {
+                                             final NameAndDataTypePopoverView.Presenter headerEditor) {
         super(definitionUtils,
               sessionManager,
               sessionCommandManager,

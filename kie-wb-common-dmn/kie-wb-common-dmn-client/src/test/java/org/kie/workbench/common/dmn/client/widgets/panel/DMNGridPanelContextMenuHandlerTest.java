@@ -132,15 +132,18 @@ public class DMNGridPanelContextMenuHandlerTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void onContextMenu_NoGridWidgets() {
         handler.onContextMenu(event);
 
         verify(cellEditorControls, never()).show(any(HasCellEditorControls.Editor.class),
+                                                 any(Optional.class),
                                                  anyInt(),
                                                  anyInt());
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void onContextMenu_WithGridWidget_EventOutsideGridBounds() {
         when(nativeEvent.getClientX()).thenReturn((int) (COLUMN0_WIDTH + COLUMN1_WIDTH + 50));
         when(nativeEvent.getClientY()).thenReturn((int) ROW_HEIGHT + 50);
@@ -151,11 +154,13 @@ public class DMNGridPanelContextMenuHandlerTest {
         handler.onContextMenu(event);
 
         verify(cellEditorControls, never()).show(any(HasCellEditorControls.Editor.class),
+                                                 any(Optional.class),
                                                  anyInt(),
                                                  anyInt());
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void onContextMenu_WithGridWidget_WithNullCell() {
         when(nativeEvent.getClientX()).thenReturn((int) (COLUMN0_WIDTH / 2));
         when(nativeEvent.getClientY()).thenReturn((int) (ROW_HEIGHT + ROW_HEIGHT / 2));
@@ -166,11 +171,13 @@ public class DMNGridPanelContextMenuHandlerTest {
         handler.onContextMenu(event);
 
         verify(cellEditorControls, never()).show(any(HasCellEditorControls.Editor.class),
+                                                 any(Optional.class),
                                                  anyInt(),
                                                  anyInt());
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void onContextMenu_WithGridWidget_WithCellValueOfWrongType() {
         when(nativeEvent.getClientX()).thenReturn((int) (COLUMN0_WIDTH / 2));
         when(nativeEvent.getClientY()).thenReturn((int) (ROW_HEIGHT + ROW_HEIGHT / 2));
@@ -183,6 +190,7 @@ public class DMNGridPanelContextMenuHandlerTest {
         handler.onContextMenu(event);
 
         verify(cellEditorControls, never()).show(any(HasCellEditorControls.Editor.class),
+                                                 any(Optional.class),
                                                  anyInt(),
                                                  anyInt());
     }
@@ -209,6 +217,7 @@ public class DMNGridPanelContextMenuHandlerTest {
                             eq(0));
 
         verify(cellEditorControls).show(eq(editor),
+                                        eq(DMNGridPanelContextMenuHandler.EDITOR_TITLE),
                                         eq(EVENT_X),
                                         eq(EVENT_Y));
     }
@@ -296,6 +305,7 @@ public class DMNGridPanelContextMenuHandlerTest {
                             eq(0));
 
         verify(cellEditorControls).show(eq(editor),
+                                        any(Optional.class),
                                         eq(EVENT_X),
                                         eq(EVENT_Y));
     }

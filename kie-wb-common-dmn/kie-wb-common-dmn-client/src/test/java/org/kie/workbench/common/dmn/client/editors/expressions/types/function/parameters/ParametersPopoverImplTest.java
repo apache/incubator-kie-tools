@@ -18,6 +18,7 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.function.p
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -40,7 +41,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ParametersEditorImplTest {
+public class ParametersPopoverImplTest {
 
     private static final int ROW_INDEX = 0;
 
@@ -49,7 +50,7 @@ public class ParametersEditorImplTest {
     private static final String PARAMETER_NAME = "name";
 
     @Mock
-    private ParametersEditorView view;
+    private ParametersPopoverView view;
 
     @Mock
     private InformationItem parameter;
@@ -60,7 +61,7 @@ public class ParametersEditorImplTest {
     @Captor
     private ArgumentCaptor<String> parameterNameCaptor;
 
-    private ParametersEditorView.Presenter presenter;
+    private ParametersPopoverView.Presenter presenter;
 
     private final List<InformationItem> parameters = new ArrayList<>();
 
@@ -92,7 +93,7 @@ public class ParametersEditorImplTest {
 
     @Before
     public void setup() {
-        this.presenter = new ParametersEditorImpl(view);
+        this.presenter = new ParametersPopoverImpl(view);
     }
 
     @Test
@@ -122,10 +123,11 @@ public class ParametersEditorImplTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testShowNullControl() {
-        presenter.show();
+        presenter.show(Optional.empty());
 
-        verify(view, never()).show();
+        verify(view, never()).show(any(Optional.class));
         verify(view, never()).focusParameter(anyInt());
     }
 
@@ -134,9 +136,9 @@ public class ParametersEditorImplTest {
         presenter.bind(control,
                        ROW_INDEX,
                        COLUMN_INDEX);
-        presenter.show();
+        presenter.show(Optional.empty());
 
-        verify(view).show();
+        verify(view).show(eq(Optional.empty()));
         verify(view, never()).focusParameter(anyInt());
     }
 
@@ -147,9 +149,9 @@ public class ParametersEditorImplTest {
         presenter.bind(control,
                        ROW_INDEX,
                        COLUMN_INDEX);
-        presenter.show();
+        presenter.show(Optional.empty());
 
-        verify(view).show();
+        verify(view).show(eq(Optional.empty()));
         verify(view).focusParameter(0);
     }
 

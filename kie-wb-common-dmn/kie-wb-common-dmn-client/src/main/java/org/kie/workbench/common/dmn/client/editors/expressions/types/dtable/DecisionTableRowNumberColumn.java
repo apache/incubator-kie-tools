@@ -17,11 +17,12 @@
 package org.kie.workbench.common.dmn.client.editors.expressions.types.dtable;
 
 import java.util.Collections;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.BuiltinAggregator;
 import org.kie.workbench.common.dmn.api.definition.v1_1.HitPolicy;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.hitpolicy.HitPolicyEditorView;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.hitpolicy.HitPolicyPopoverView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 
@@ -30,12 +31,14 @@ public class DecisionTableRowNumberColumn extends RowNumberColumn {
     public DecisionTableRowNumberColumn(final Supplier<HitPolicy> hitPolicySupplier,
                                         final Supplier<BuiltinAggregator> builtinAggregatorSupplier,
                                         final CellEditorControlsView.Presenter cellEditorControls,
-                                        final HitPolicyEditorView.Presenter editor,
+                                        final HitPolicyPopoverView.Presenter editor,
+                                        final Optional<String> editorTitle,
                                         final DecisionTableGrid gridWidget) {
         super(Collections.singletonList(new RowNumberColumnHeaderMetaData(hitPolicySupplier,
                                                                           builtinAggregatorSupplier,
                                                                           cellEditorControls,
                                                                           editor,
+                                                                          editorTitle,
                                                                           gridWidget)));
     }
 }

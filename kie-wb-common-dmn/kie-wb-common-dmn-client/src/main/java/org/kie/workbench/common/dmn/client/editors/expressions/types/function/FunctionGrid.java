@@ -42,9 +42,9 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionE
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.parameters.HasParametersControl;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.function.parameters.ParametersEditorView;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.function.parameters.ParametersPopoverView;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionGrid;
-import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypeEditorView;
+import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
@@ -73,8 +73,8 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
     private final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
     private final Supplier<ExpressionEditorDefinitions> supplementaryEditorDefinitionsSupplier;
 
-    private final NameAndDataTypeEditorView.Presenter headerEditor;
-    private final ParametersEditorView.Presenter parametersEditor;
+    private final NameAndDataTypePopoverView.Presenter headerEditor;
+    private final ParametersPopoverView.Presenter parametersEditor;
 
     public FunctionGrid(final GridCellTuple parent,
                         final Optional<String> nodeUUID,
@@ -96,8 +96,8 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
                         final int nesting,
                         final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
                         final Supplier<ExpressionEditorDefinitions> supplementaryEditorDefinitionsSupplier,
-                        final NameAndDataTypeEditorView.Presenter headerEditor,
-                        final ParametersEditorView.Presenter parametersEditor) {
+                        final NameAndDataTypePopoverView.Presenter headerEditor,
+                        final ParametersPopoverView.Presenter parametersEditor) {
         super(parent,
               nodeUUID,
               hasExpression,
@@ -154,11 +154,13 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
                                                                                                                   setDisplayNameConsumer(true),
                                                                                                                   setTypeRefConsumer(),
                                                                                                                   cellEditorControls,
-                                                                                                                  headerEditor),
+                                                                                                                  headerEditor,
+                                                                                                                  Optional.of(translationService.getTranslation(DMNEditorConstants.FunctionEditor_EditExpression))),
                                                                              new FunctionColumnParametersHeaderMetaData(expression::get,
                                                                                                                         translationService,
                                                                                                                         cellEditorControls,
                                                                                                                         parametersEditor,
+                                                                                                                        Optional.of(translationService.getTranslation(DMNEditorConstants.FunctionEditor_EditParameters)),
                                                                                                                         this)),
                                                                this);
 

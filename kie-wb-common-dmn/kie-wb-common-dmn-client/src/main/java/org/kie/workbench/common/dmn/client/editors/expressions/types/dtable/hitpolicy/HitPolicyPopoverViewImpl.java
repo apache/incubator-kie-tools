@@ -22,19 +22,24 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.Scheduler;
+import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.common.client.dom.Span;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.dmn.api.definition.v1_1.BuiltinAggregator;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTableOrientation;
 import org.kie.workbench.common.dmn.api.definition.v1_1.HitPolicy;
+import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.popover.AbstractPopoverViewImpl;
+import org.uberfire.client.views.pfly.widgets.JQueryProducer;
+import org.uberfire.client.views.pfly.widgets.Popover;
 import org.uberfire.client.views.pfly.widgets.Select;
 import org.uberfire.mvp.Command;
 
 @Templated
 @ApplicationScoped
-public class HitPolicyEditorViewImpl implements HitPolicyEditorView {
-
-    private static final String OPEN = "open";
+public class HitPolicyPopoverViewImpl extends AbstractPopoverViewImpl implements HitPolicyPopoverView {
 
     @DataField("lstHitPolicies")
     private Select lstHitPolicies;
@@ -45,23 +50,51 @@ public class HitPolicyEditorViewImpl implements HitPolicyEditorView {
     @DataField("lstDecisionTableOrientation")
     private Select lstDecisionTableOrientation;
 
+    @DataField("hitPolicyLabel")
+    private Span hitPolicyLabel;
+
+    @DataField("builtinAggregatorLabel")
+    private Span builtinAggregatorLabel;
+
+    @DataField("decisionTableOrientationLabel")
+    private Span decisionTableOrientationLabel;
+
     private BuiltinAggregatorUtils builtinAggregatorUtils;
 
-    private HitPolicyEditorView.Presenter presenter;
+    private HitPolicyPopoverView.Presenter presenter;
 
-    public HitPolicyEditorViewImpl() {
+    public HitPolicyPopoverViewImpl() {
         //CDI proxy
     }
 
     @Inject
-    public HitPolicyEditorViewImpl(final Select lstHitPolicies,
-                                   final Select lstBuiltinAggregator,
-                                   final Select lstDecisionTableOrientation,
-                                   final BuiltinAggregatorUtils builtinAggregatorUtils) {
+    public HitPolicyPopoverViewImpl(final Select lstHitPolicies,
+                                    final Select lstBuiltinAggregator,
+                                    final Select lstDecisionTableOrientation,
+                                    final BuiltinAggregatorUtils builtinAggregatorUtils,
+                                    final Div popoverElement,
+                                    final Div popoverContentElement,
+                                    final Span hitPolicyLabel,
+                                    final Span builtinAggregatorLabel,
+                                    final Span decisionTableOrientationLabel,
+                                    final JQueryProducer.JQuery<Popover> jQueryPopover,
+                                    final TranslationService translationService) {
+        super(popoverElement,
+              popoverContentElement,
+              jQueryPopover);
+
         this.lstHitPolicies = lstHitPolicies;
         this.lstBuiltinAggregator = lstBuiltinAggregator;
         this.lstDecisionTableOrientation = lstDecisionTableOrientation;
         this.builtinAggregatorUtils = builtinAggregatorUtils;
+
+        this.hitPolicyLabel = hitPolicyLabel;
+        this.builtinAggregatorLabel = builtinAggregatorLabel;
+        this.decisionTableOrientationLabel = decisionTableOrientationLabel;
+
+        this.hitPolicyLabel.setTextContent(translationService.getTranslation(DMNEditorConstants.DecisionTableEditor_HitPolicyLabel));
+        this.builtinAggregatorLabel.setTextContent(translationService.getTranslation(DMNEditorConstants.DecisionTableEditor_BuiltinAggregatorLabel));
+        this.decisionTableOrientationLabel.setTextContent(translationService.getTranslation(DMNEditorConstants.DecisionTableEditor_DecisionTableOrientationLabel));
 
         setupHitPolicyEventHandler();
         setupBuiltinAggregatorEventHandler();
@@ -101,7 +134,7 @@ public class HitPolicyEditorViewImpl implements HitPolicyEditorView {
     }
 
     @Override
-    public void init(final HitPolicyEditorView.Presenter presenter) {
+    public void init(final HitPolicyPopoverView.Presenter presenter) {
         this.presenter = presenter;
     }
 
@@ -166,15 +199,5 @@ public class HitPolicyEditorViewImpl implements HitPolicyEditorView {
     @Override
     public void enableDecisionTableOrientation(final boolean enabled) {
         enableSelect(lstDecisionTableOrientation, enabled);
-    }
-
-    @Override
-    public void show() {
-        getElement().getClassList().add(OPEN);
-    }
-
-    @Override
-    public void hide() {
-        getElement().getClassList().remove(OPEN);
     }
 }

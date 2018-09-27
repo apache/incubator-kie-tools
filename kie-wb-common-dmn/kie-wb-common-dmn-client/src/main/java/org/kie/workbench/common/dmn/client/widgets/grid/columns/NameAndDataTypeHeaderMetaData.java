@@ -31,10 +31,10 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.client.editors.types.HasNameAndTypeRef;
-import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypeEditorView;
+import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 
-public abstract class NameAndDataTypeHeaderMetaData<E extends Expression> extends EditablePopupHeaderMetaData<HasNameAndTypeRef, NameAndDataTypeEditorView.Presenter> implements HasNameAndTypeRef {
+public abstract class NameAndDataTypeHeaderMetaData<E extends Expression> extends EditablePopupHeaderMetaData<HasNameAndTypeRef, NameAndDataTypePopoverView.Presenter> implements HasNameAndTypeRef {
 
     private final Optional<HasName> hasName;
     private final Supplier<HasTypeRef> hasTypeRef;
@@ -49,14 +49,16 @@ public abstract class NameAndDataTypeHeaderMetaData<E extends Expression> extend
                                          final BiConsumer<HasName, Name> setDisplayNameConsumer,
                                          final BiConsumer<HasTypeRef, QName> setTypeRefConsumer,
                                          final CellEditorControlsView.Presenter cellEditorControls,
-                                         final NameAndDataTypeEditorView.Presenter headerEditor) {
+                                         final NameAndDataTypePopoverView.Presenter editor,
+                                         final Optional<String> editorTitle) {
         this(hasName,
              () -> getTypeRefOfExpression(expression, hasExpression),
              clearDisplayNameConsumer,
              setDisplayNameConsumer,
              setTypeRefConsumer,
              cellEditorControls,
-             headerEditor);
+             editor,
+             editorTitle);
     }
 
     public NameAndDataTypeHeaderMetaData(final Optional<HasName> hasName,
@@ -65,9 +67,11 @@ public abstract class NameAndDataTypeHeaderMetaData<E extends Expression> extend
                                          final BiConsumer<HasName, Name> setDisplayNameConsumer,
                                          final BiConsumer<HasTypeRef, QName> setTypeRefConsumer,
                                          final CellEditorControlsView.Presenter cellEditorControls,
-                                         final NameAndDataTypeEditorView.Presenter headerEditor) {
+                                         final NameAndDataTypePopoverView.Presenter editor,
+                                         final Optional<String> editorTitle) {
         super(cellEditorControls,
-              headerEditor);
+              editor,
+              editorTitle);
         this.hasName = hasName;
         this.hasTypeRef = hasTypeRef;
         this.clearDisplayNameConsumer = clearDisplayNameConsumer;

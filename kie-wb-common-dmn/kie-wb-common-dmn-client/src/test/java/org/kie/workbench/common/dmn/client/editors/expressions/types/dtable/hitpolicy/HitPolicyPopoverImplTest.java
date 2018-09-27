@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.hitpolicy;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
@@ -43,14 +44,14 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
-public class HitPolicyEditorImplTest {
+public class HitPolicyPopoverImplTest {
 
     private static final int UI_ROW_INDEX = 0;
 
     private static final int UI_COLUMN_INDEX = 1;
 
     @Mock
-    private HitPolicyEditorView view;
+    private HitPolicyPopoverView view;
 
     @Mock
     private HasHitPolicyControl control;
@@ -70,15 +71,15 @@ public class HitPolicyEditorImplTest {
     @Captor
     private ArgumentCaptor<Command> commandCaptor;
 
-    private HitPolicyEditorView.Presenter editor;
+    private HitPolicyPopoverView.Presenter editor;
 
     private BuiltinAggregatorUtils builtinAggregatorUtils;
 
     @Before
     public void setup() {
         this.builtinAggregatorUtils = new BuiltinAggregatorUtils(translationService);
-        this.editor = new HitPolicyEditorImpl(view,
-                                              builtinAggregatorUtils);
+        this.editor = new HitPolicyPopoverImpl(view,
+                                               builtinAggregatorUtils);
 
         when(control.getHitPolicy()).thenReturn(null);
         when(control.getBuiltinAggregator()).thenReturn(null);
@@ -278,10 +279,11 @@ public class HitPolicyEditorImplTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testShowNullControl() {
-        editor.show();
+        editor.show(Optional.empty());
 
-        verify(view, never()).show();
+        verify(view, never()).show(any(Optional.class));
     }
 
     @Test
@@ -292,9 +294,9 @@ public class HitPolicyEditorImplTest {
 
         reset(view);
 
-        editor.show();
+        editor.show(Optional.empty());
 
-        verify(view).show();
+        verify(view).show(eq(Optional.empty()));
     }
 
     @Test

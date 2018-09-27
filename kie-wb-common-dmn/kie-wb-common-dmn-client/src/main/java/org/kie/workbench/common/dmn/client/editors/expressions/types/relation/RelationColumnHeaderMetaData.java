@@ -26,7 +26,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Relation;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
-import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypeEditorView;
+import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.NameAndDataTypeHeaderMetaData;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 
@@ -39,14 +39,16 @@ public class RelationColumnHeaderMetaData extends NameAndDataTypeHeaderMetaData<
                                         final BiConsumer<HasName, Name> setDisplayNameConsumer,
                                         final BiConsumer<HasTypeRef, QName> setTypeRefConsumer,
                                         final CellEditorControlsView.Presenter cellEditorControls,
-                                        final NameAndDataTypeEditorView.Presenter headerEditor) {
+                                        final NameAndDataTypePopoverView.Presenter editor,
+                                        final Optional<String> editorTitle) {
         super(Optional.ofNullable(variable),
               () -> variable,
               clearDisplayNameConsumer,
               setDisplayNameConsumer,
               setTypeRefConsumer,
               cellEditorControls,
-              headerEditor);
+              editor,
+              editorTitle);
     }
 
     @Override

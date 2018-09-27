@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.widgets.grid.controls.container;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import com.ait.lienzo.client.core.types.Transform;
@@ -35,10 +36,12 @@ public class CellEditorControls implements CellEditorControlsView.Presenter {
     }
 
     @Override
-    public void show(final HasCellEditorControls.Editor editor,
+    public void show(final HasCellEditorControls.Editor<?> editor,
+                     final Optional<String> editorTitle,
                      final int x,
                      final int y) {
         view.show(editor,
+                  editorTitle,
                   x,
                   y);
     }

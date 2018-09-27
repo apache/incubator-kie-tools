@@ -18,9 +18,10 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.function.p
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import com.google.gwt.user.client.Event;
-import org.jboss.errai.common.client.dom.DOMTokenList;
+import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
@@ -30,7 +31,8 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.client.views.pfly.widgets.JQueryProducer;
+import org.uberfire.client.views.pfly.widgets.Popover;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 
@@ -43,9 +45,10 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class ParametersEditorViewImplTest {
+@RunWith(GwtMockitoTestRunner.class)
+public class ParametersPopoverViewImplTest {
 
+    /**/
     private static final String PARAMETER1_NAME = "parameter1";
 
     private static final String PARAMETER2_NAME = "parameter2";
@@ -68,30 +71,42 @@ public class ParametersEditorViewImplTest {
     private ParameterView parameterView2;
 
     @Mock
-    private ParametersEditorView.Presenter presenter;
-
-    @Mock
-    private Event event;
+    private ParametersPopoverView.Presenter presenter;
 
     @Mock
     private HTMLElement element;
 
     @Mock
-    private DOMTokenList domTokenList;
+    private Div popoverElement;
 
-    private ParametersEditorViewImpl view;
+    @Mock
+    private Div popoverContentElement;
+
+    @Mock
+    private JQueryProducer.JQuery<Popover> jQueryProducer;
+
+    @Mock
+    private Popover popover;
+
+    @Mock
+    private Event event;
+
+    private ParametersPopoverViewImpl view;
 
     @Before
     public void setup() {
-        this.view = spy(new ParametersEditorViewImpl(parametersContainer,
-                                                     addParameter,
-                                                     parameterViews));
-        doReturn(element).when(view).getElement();
-
-        when(element.getClassList()).thenReturn(domTokenList);
+        this.view = spy(new ParametersPopoverViewImpl(parametersContainer,
+                                                      addParameter,
+                                                      parameterViews,
+                                                      popoverElement,
+                                                      popoverContentElement,
+                                                      jQueryProducer));
         when(parameterViews.get()).thenReturn(parameterView1, parameterView2);
         when(parameterView1.getElement()).thenReturn(element);
         when(parameterView2.getElement()).thenReturn(element);
+
+        doReturn(element).when(view).getElement();
+        when(jQueryProducer.wrap(element)).thenReturn(popover);
 
         this.view.init(presenter);
     }
@@ -170,16 +185,26 @@ public class ParametersEditorViewImplTest {
 
     @Test
     public void testShow() {
-        view.show();
+        view.show(Optional.empty());
 
-        verify(domTokenList).add(ParametersEditorViewImpl.OPEN);
+        verify(popover).show();
     }
 
     @Test
-    public void testHide() {
+    public void testHideBeforeShown() {
         view.hide();
 
-        verify(domTokenList).remove(ParametersEditorViewImpl.OPEN);
+        verify(popover, never()).hide();
+        verify(popover, never()).destroy();
+    }
+
+    @Test
+    public void testHideAfterShown() {
+        view.show(Optional.empty());
+        view.hide();
+
+        verify(popover).hide();
+        verify(popover).destroy();
     }
 
     @Test

@@ -127,7 +127,7 @@ public class DecisionNavigatorTreeView implements DecisionNavigatorTreePresenter
     @Override
     public void remove(final DecisionNavigatorItem item) {
         ofNullable(findItem(item)).ifPresent(element -> {
-            if (element.parentNode != null){
+            if (element.parentNode != null) {
                 ElementHelper.remove(element);
             }
         });

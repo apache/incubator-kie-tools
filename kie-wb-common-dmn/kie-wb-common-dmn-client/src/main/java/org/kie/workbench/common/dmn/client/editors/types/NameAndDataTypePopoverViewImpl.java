@@ -20,18 +20,23 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import com.google.gwt.event.dom.client.BlurEvent;
+import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.Input;
+import org.jboss.errai.common.client.dom.Span;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.popover.AbstractPopoverViewImpl;
+import org.uberfire.client.views.pfly.widgets.JQueryProducer;
+import org.uberfire.client.views.pfly.widgets.Popover;
 
 @Templated
 @ApplicationScoped
-public class NameAndDataTypeEditorViewImpl implements NameAndDataTypeEditorView {
-
-    private static final String OPEN = "open";
+public class NameAndDataTypePopoverViewImpl extends AbstractPopoverViewImpl implements NameAndDataTypePopoverView {
 
     @DataField("nameEditor")
     private Input nameEditor;
@@ -39,17 +44,41 @@ public class NameAndDataTypeEditorViewImpl implements NameAndDataTypeEditorView 
     @DataField("typeRefSelector")
     private DataTypePickerWidget typeRefEditor;
 
+    @DataField("nameLabel")
+    private Span nameLabel;
+
+    @DataField("dataTypeLabel")
+    private Span dataTypeLabel;
+
     private Presenter presenter;
 
-    public NameAndDataTypeEditorViewImpl() {
+    public NameAndDataTypePopoverViewImpl() {
         //CDI proxy
     }
 
     @Inject
-    public NameAndDataTypeEditorViewImpl(final Input nameEditor,
-                                         final DataTypePickerWidget typeRefEditor) {
+    public NameAndDataTypePopoverViewImpl(final Input nameEditor,
+                                          final DataTypePickerWidget typeRefEditor,
+                                          final Div popoverElement,
+                                          final Div popoverContentElement,
+                                          final Span nameLabel,
+                                          final Span dataTypeLabel,
+                                          final JQueryProducer.JQuery<Popover> jQueryPopover,
+                                          final TranslationService translationService) {
+        super(popoverElement,
+              popoverContentElement,
+              jQueryPopover);
+
         this.nameEditor = nameEditor;
         this.typeRefEditor = typeRefEditor;
+        this.popoverElement = popoverElement;
+        this.popoverContentElement = popoverContentElement;
+        this.nameLabel = nameLabel;
+        this.dataTypeLabel = dataTypeLabel;
+        this.jQueryPopover = jQueryPopover;
+
+        this.nameLabel.setTextContent(translationService.getTranslation(DMNEditorConstants.NameAndDataTypePopover_NameLabel));
+        this.dataTypeLabel.setTextContent(translationService.getTranslation(DMNEditorConstants.NameAndDataTypePopover_DataTypeLabel));
     }
 
     @Override
@@ -73,16 +102,6 @@ public class NameAndDataTypeEditorViewImpl implements NameAndDataTypeEditorView 
     public void initSelectedTypeRef(final QName typeRef) {
         typeRefEditor.setValue(typeRef,
                                false);
-    }
-
-    @Override
-    public void show() {
-        getElement().getClassList().add(OPEN);
-    }
-
-    @Override
-    public void hide() {
-        getElement().getClassList().remove(OPEN);
     }
 
     @EventHandler("nameEditor")

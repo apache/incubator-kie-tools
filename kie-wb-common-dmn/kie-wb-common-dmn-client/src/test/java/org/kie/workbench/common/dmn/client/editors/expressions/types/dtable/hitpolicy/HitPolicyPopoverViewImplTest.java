@@ -18,10 +18,13 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.hit
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.HTMLElement;
+import org.jboss.errai.common.client.dom.Span;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,15 +33,20 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.BuiltinAggregator;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTableOrientation;
 import org.kie.workbench.common.dmn.api.definition.v1_1.HitPolicy;
 import org.mockito.Mock;
+import org.uberfire.client.views.pfly.widgets.JQueryProducer;
+import org.uberfire.client.views.pfly.widgets.Popover;
 import org.uberfire.client.views.pfly.widgets.Select;
 
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class HitPolicyEditorViewImplTest {
+public class HitPolicyPopoverViewImplTest {
 
     @Mock
     private Select lstHitPolicies;
@@ -59,9 +67,33 @@ public class HitPolicyEditorViewImplTest {
     private HTMLElement lstDecisionTableOrientationElement;
 
     @Mock
+    private HTMLElement element;
+
+    @Mock
+    private Div popoverElement;
+
+    @Mock
+    private Div popoverContentElement;
+
+    @Mock
+    private Span hitPolicyLabel;
+
+    @Mock
+    private Span builtinAggregatorLabel;
+
+    @Mock
+    private Span decisionTableOrientationLabel;
+
+    @Mock
+    private JQueryProducer.JQuery<Popover> jQueryProducer;
+
+    @Mock
+    private Popover popover;
+
+    @Mock
     private TranslationService translationService;
 
-    private HitPolicyEditorViewImpl testedView;
+    private HitPolicyPopoverViewImpl view;
 
     private BuiltinAggregatorUtils builtinAggregatorUtils;
 
@@ -72,17 +104,27 @@ public class HitPolicyEditorViewImplTest {
         doReturn(lstDecisionTableOrientationElement).when(lstDecisionTableOrientation).getElement();
 
         builtinAggregatorUtils = new BuiltinAggregatorUtils(translationService);
-        testedView = new HitPolicyEditorViewImpl(lstHitPolicies,
-                                                 lstBuiltinAggregator,
-                                                 lstDecisionTableOrientation,
-                                                 builtinAggregatorUtils);
+        view = spy(new HitPolicyPopoverViewImpl(lstHitPolicies,
+                                                lstBuiltinAggregator,
+                                                lstDecisionTableOrientation,
+                                                builtinAggregatorUtils,
+                                                popoverElement,
+                                                popoverContentElement,
+                                                hitPolicyLabel,
+                                                builtinAggregatorLabel,
+                                                decisionTableOrientationLabel,
+                                                jQueryProducer,
+                                                translationService));
+
+        doReturn(element).when(view).getElement();
+        when(jQueryProducer.wrap(element)).thenReturn(popover);
 
         doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).getTranslation(anyString());
     }
 
     @Test
     public void testInitHitPolicies() throws Exception {
-        testedView.initHitPolicies(Arrays.asList(HitPolicy.values()));
+        view.initHitPolicies(Arrays.asList(HitPolicy.values()));
 
         Stream.of(HitPolicy.values()).forEach(policy -> verify(lstHitPolicies).addOption(policy.value()));
     }
@@ -90,7 +132,7 @@ public class HitPolicyEditorViewImplTest {
     @Test
     public void testInitAggregator() throws Exception {
         final List<BuiltinAggregator> aggregators = builtinAggregatorUtils.getAllValues();
-        testedView.initBuiltinAggregators(aggregators);
+        view.initBuiltinAggregators(aggregators);
 
         aggregators.stream().forEach(agg -> verify(lstBuiltinAggregator).addOption(builtinAggregatorUtils.toString(agg)));
     }
@@ -98,50 +140,74 @@ public class HitPolicyEditorViewImplTest {
     @Test
     public void testInitOrientations() throws Exception {
         final List<DecisionTableOrientation> orientations = Arrays.asList(DecisionTableOrientation.values());
-        testedView.initDecisionTableOrientations(orientations);
+        view.initDecisionTableOrientations(orientations);
 
         orientations.stream().forEach(orientation -> verify(lstDecisionTableOrientation).addOption(orientation.value()));
     }
 
     @Test
     public void testEnableHitPolicies() throws Exception {
-        testedView.enableHitPolicies(true);
+        view.enableHitPolicies(true);
 
         verify(lstHitPolicies).enable();
     }
 
     @Test
     public void testDisableHitPolicies() throws Exception {
-        testedView.enableHitPolicies(false);
+        view.enableHitPolicies(false);
 
         verify(lstHitPolicies).disable();
     }
 
     @Test
     public void testEnableAggregator() throws Exception {
-        testedView.enableBuiltinAggregators(true);
+        view.enableBuiltinAggregators(true);
 
         verify(lstBuiltinAggregator).enable();
     }
 
     @Test
     public void testDisableAggregator() throws Exception {
-        testedView.enableBuiltinAggregators(false);
+        view.enableBuiltinAggregators(false);
 
         verify(lstBuiltinAggregator).disable();
     }
 
     @Test
     public void testEnableOrientations() throws Exception {
-        testedView.enableDecisionTableOrientation(true);
+        view.enableDecisionTableOrientation(true);
 
         verify(lstDecisionTableOrientation).enable();
     }
 
     @Test
-    public void testDisbleOrientations() throws Exception {
-        testedView.enableDecisionTableOrientation(false);
+    public void testDisableOrientations() throws Exception {
+        view.enableDecisionTableOrientation(false);
 
         verify(lstDecisionTableOrientation).disable();
+    }
+
+    @Test
+    public void testShow() {
+        view.show(Optional.empty());
+
+        verify(popover).show();
+    }
+
+    @Test
+    public void testHideBeforeShown() {
+        view.hide();
+
+        verify(popover, never()).hide();
+        verify(popover, never()).destroy();
+    }
+
+    @Test
+    public void testHideAfterShown() {
+        view.show(Optional.empty());
+        view.hide();
+
+        verify(popover).hide();
+        verify(popover).destroy();
     }
 }

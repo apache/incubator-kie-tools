@@ -147,10 +147,10 @@ public class DMNGridLayer extends DefaultGridLayer {
         this.selectedGridWidget = Optional.of(selectedGridWidget);
         boolean selectionChanged = false;
         for (GridWidget gridWidget : getAllGridWidgets()) {
-            if (!Objects.equals(gridWidget, selectedGridWidget)) {
+            if (gridWidget.isSelected() && !Objects.equals(gridWidget, selectedGridWidget)) {
                 selectionChanged = true;
                 gridWidget.deselect();
-            } else if (Objects.equals(gridWidget, selectedGridWidget)) {
+            } else if (!gridWidget.isSelected() && Objects.equals(gridWidget, selectedGridWidget)) {
                 selectionChanged = true;
                 gridWidget.select();
             }

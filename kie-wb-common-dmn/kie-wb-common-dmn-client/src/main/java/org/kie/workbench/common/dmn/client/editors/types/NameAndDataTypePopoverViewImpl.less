@@ -13,27 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+[data-i18n-prefix="NameAndDataTypePopoverViewImpl."] {
 
-package org.kie.workbench.common.dmn.client.widgets.grid.controls;
+  #popover-container {
+    display: inline;
+  }
 
-import java.util.Optional;
+  #popover-container .popover {
+    min-width: 300px;
+  }
 
-import org.jboss.errai.common.client.api.IsElement;
+  .kie-dmn-name-and-data-type-container #kieName {
+    width: 100%;
+  }
 
-public interface HasCellEditorControls {
-
-    interface Editor<T> extends IsElement {
-
-        void show(final Optional<String> editorTitle);
-
-        void hide();
-
-        void bind(final T bound,
-                  final int uiRowIndex,
-                  final int uiColumnIndex);
-    }
-
-    default Optional<Editor> getEditor() {
-        return Optional.empty();
-    }
+  .kie-dmn-name-and-data-type-container #kieDataType {
+    width: 100%;
+  }
 }

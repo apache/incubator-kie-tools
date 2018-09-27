@@ -32,7 +32,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.InformationItemCell;
 import org.kie.workbench.common.dmn.client.editors.types.HasNameAndTypeRef;
-import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypeEditorView;
+import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNSimpleGridColumn;
@@ -49,7 +49,8 @@ public abstract class EditableNameAndDataTypeColumn<G extends BaseExpressionGrid
     private final BiConsumer<HasName, Name> setDisplayNameConsumer;
     private final BiConsumer<HasTypeRef, QName> setTypeRefConsumer;
     private final CellEditorControlsView.Presenter cellEditorControls;
-    private final NameAndDataTypeEditorView.Presenter editor;
+    private final NameAndDataTypePopoverView.Presenter editor;
+    private final Optional<String> editorTitle;
 
     public EditableNameAndDataTypeColumn(final HeaderMetaData headerMetaData,
                                          final G gridWidget,
@@ -58,7 +59,8 @@ public abstract class EditableNameAndDataTypeColumn<G extends BaseExpressionGrid
                                          final BiConsumer<HasName, Name> setDisplayNameConsumer,
                                          final BiConsumer<HasTypeRef, QName> setTypeRefConsumer,
                                          final CellEditorControlsView.Presenter cellEditorControls,
-                                         final NameAndDataTypeEditorView.Presenter editor) {
+                                         final NameAndDataTypePopoverView.Presenter editor,
+                                         final Optional<String> editorTitle) {
         this(Collections.singletonList(headerMetaData),
              gridWidget,
              isEditable,
@@ -66,7 +68,8 @@ public abstract class EditableNameAndDataTypeColumn<G extends BaseExpressionGrid
              setDisplayNameConsumer,
              setTypeRefConsumer,
              cellEditorControls,
-             editor);
+             editor,
+             editorTitle);
     }
 
     public EditableNameAndDataTypeColumn(final List<HeaderMetaData> headerMetaData,
@@ -76,7 +79,8 @@ public abstract class EditableNameAndDataTypeColumn<G extends BaseExpressionGrid
                                          final BiConsumer<HasName, Name> setDisplayNameConsumer,
                                          final BiConsumer<HasTypeRef, QName> setTypeRefConsumer,
                                          final CellEditorControlsView.Presenter cellEditorControls,
-                                         final NameAndDataTypeEditorView.Presenter editor) {
+                                         final NameAndDataTypePopoverView.Presenter editor,
+                                         final Optional<String> editorTitle) {
         super(headerMetaData,
               new NameAndDataTypeColumnRenderer(),
               gridWidget);
@@ -86,6 +90,7 @@ public abstract class EditableNameAndDataTypeColumn<G extends BaseExpressionGrid
         this.setTypeRefConsumer = setTypeRefConsumer;
         this.cellEditorControls = cellEditorControls;
         this.editor = editor;
+        this.editorTitle = editorTitle;
         setMovable(false);
         setResizable(true);
     }
@@ -101,6 +106,8 @@ public abstract class EditableNameAndDataTypeColumn<G extends BaseExpressionGrid
 
         final int uiRowIndex = context.getRowIndex();
         final int uiColumnIndex = context.getColumnIndex();
+        final double cellWidth = context.getCellWidth();
+        final double cellHeight = context.getCellHeight();
         final double absoluteCellX = context.getAbsoluteCellX();
         final double absoluteCellY = context.getAbsoluteCellY();
 
@@ -146,14 +153,14 @@ public abstract class EditableNameAndDataTypeColumn<G extends BaseExpressionGrid
                     },
                     uiRowIndex,
                     uiColumnIndex);
-        final double[] dxy = {absoluteCellX, absoluteCellY};
-        final double headerRowHeight = context.getCellHeight();
+        final double[] dxy = {absoluteCellX + cellWidth / 2, absoluteCellY + cellHeight / 2};
         final Optional<Point2D> rx = ((GridBodyCellEditContext) context).getRelativeLocation();
         rx.ifPresent(r -> {
             dxy[0] = r.getX();
-            dxy[1] = r.getY() - headerRowHeight * uiRowIndex;
+            dxy[1] = r.getY();
         });
         cellEditorControls.show(editor,
+                                editorTitle,
                                 (int) (dxy[0]),
                                 (int) (dxy[1]));
     }

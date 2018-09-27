@@ -27,11 +27,14 @@ public abstract class EditablePopupHeaderMetaData<G, E extends HasCellEditorCont
 
     protected CellEditorControlsView.Presenter cellEditorControls;
     protected E editor;
+    protected Optional<String> editorTitle;
 
     public EditablePopupHeaderMetaData(final CellEditorControlsView.Presenter cellEditorControls,
-                                       final E editor) {
+                                       final E editor,
+                                       final Optional<String> editorTitle) {
         this.cellEditorControls = cellEditorControls;
         this.editor = editor;
+        this.editorTitle = editorTitle;
     }
 
     protected abstract G getPresenter();
@@ -50,20 +53,22 @@ public abstract class EditablePopupHeaderMetaData<G, E extends HasCellEditorCont
     public void edit(final GridBodyCellEditContext context) {
         final int uiRowIndex = context.getRowIndex();
         final int uiColumnIndex = context.getColumnIndex();
+        final double cellWidth = context.getCellWidth();
+        final double cellHeight = context.getCellHeight();
         final double absoluteCellX = context.getAbsoluteCellX();
         final double absoluteCellY = context.getAbsoluteCellY();
 
         editor.bind(getPresenter(),
                     uiRowIndex,
                     uiColumnIndex);
-        final double[] dxy = {absoluteCellX, absoluteCellY};
-        final double headerRowHeight = context.getCellHeight();
+        final double[] dxy = {absoluteCellX + cellWidth / 2, absoluteCellY + cellHeight / 2};
         final Optional<Point2D> rx = context.getRelativeLocation();
         rx.ifPresent(r -> {
             dxy[0] = r.getX();
-            dxy[1] = r.getY() - headerRowHeight * uiRowIndex;
+            dxy[1] = r.getY();
         });
         cellEditorControls.show(editor,
+                                editorTitle,
                                 (int) (dxy[0]),
                                 (int) (dxy[1]));
     }

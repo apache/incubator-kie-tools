@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.context;
 
+import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -24,7 +25,7 @@ import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
-import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypeEditorView;
+import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableNameAndDataTypeColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 
@@ -37,7 +38,8 @@ public class NameColumn extends EditableNameAndDataTypeColumn<ContextGrid> {
                       final BiConsumer<HasName, Name> setDisplayNameConsumer,
                       final BiConsumer<HasTypeRef, QName> setTypeRefConsumer,
                       final CellEditorControlsView.Presenter cellEditorControls,
-                      final NameAndDataTypeEditorView.Presenter editor) {
+                      final NameAndDataTypePopoverView.Presenter editor,
+                      final Optional<String> editorTitle) {
         super(headerMetaData,
               gridWidget,
               isEditable,
@@ -45,6 +47,7 @@ public class NameColumn extends EditableNameAndDataTypeColumn<ContextGrid> {
               setDisplayNameConsumer,
               setTypeRefConsumer,
               cellEditorControls,
-              editor);
+              editor,
+              editorTitle);
     }
 }

@@ -41,7 +41,7 @@ import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
 @Dependent
 public class DMNEditDecisionToolboxAction implements ToolboxAction<AbstractCanvasHandler> {
 
-    private static final ImageDataUriGlyph  GLYPH =
+    private static final ImageDataUriGlyph GLYPH =
             ImageDataUriGlyph.create(StunnerCommonImageResources.INSTANCE.edit().getSafeUri());
 
     private final SessionManager sessionManager;

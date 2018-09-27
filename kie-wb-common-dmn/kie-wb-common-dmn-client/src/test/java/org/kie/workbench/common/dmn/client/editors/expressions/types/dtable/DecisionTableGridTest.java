@@ -61,8 +61,8 @@ import org.kie.workbench.common.dmn.client.commands.general.SetHasNameCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetTypeRefCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.GridFactoryCommandUtils;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.hitpolicy.HitPolicyEditorView;
-import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypeEditorView;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.hitpolicy.HitPolicyPopoverView;
+import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
@@ -215,10 +215,10 @@ public class DecisionTableGridTest {
     private TranslationService translationService;
 
     @Mock
-    private HitPolicyEditorView.Presenter hitPolicyEditor;
+    private HitPolicyPopoverView.Presenter hitPolicyEditor;
 
     @Mock
-    private NameAndDataTypeEditorView.Presenter headerEditor;
+    private NameAndDataTypePopoverView.Presenter headerEditor;
 
     @Mock
     private GridWidget parentGridWidget;
@@ -328,6 +328,7 @@ public class DecisionTableGridTest {
                                                       any())).thenReturn(mock(UpdateElementPropertyCommand.class));
 
         doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).format(anyString());
+        doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).getTranslation(anyString());
     }
 
     private void setupGrid(final Optional<HasName> hasName,
@@ -701,6 +702,7 @@ public class DecisionTableGridTest {
         verifyCommandExecuteOperation(BaseExpressionGrid.RESIZE_EXISTING);
 
         verifyEditHeaderCell(InputClauseColumnHeaderMetaData.class,
+                             Optional.of(DMNEditorConstants.DecisionTableEditor_EditInputClause),
                              0,
                              1);
 
@@ -783,6 +785,7 @@ public class DecisionTableGridTest {
         verifyCommandExecuteOperation(BaseExpressionGrid.RESIZE_EXISTING);
 
         verifyEditHeaderCell(OutputClauseColumnHeaderMetaData.class,
+                             Optional.of(DMNEditorConstants.DecisionTableEditor_EditOutputClause),
                              1,
                              2);
 
@@ -917,12 +920,14 @@ public class DecisionTableGridTest {
     }
 
     private void verifyEditHeaderCell(final Class<? extends NameAndDataTypeHeaderMetaData> headerMetaDataClass,
+                                      final Optional<String> editorTitle,
                                       final int uiHeaderRowIndex,
                                       final int uiColumnIndex) {
         verify(headerEditor).bind(any(headerMetaDataClass),
                                   eq(uiHeaderRowIndex),
                                   eq(uiColumnIndex));
         verify(cellEditorControls).show(eq(headerEditor),
+                                        eq(editorTitle),
                                         anyInt(),
                                         anyInt());
     }

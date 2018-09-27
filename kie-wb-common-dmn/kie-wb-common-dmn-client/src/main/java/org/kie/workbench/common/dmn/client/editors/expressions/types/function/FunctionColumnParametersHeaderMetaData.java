@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.client.editors.expressions.types.function;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -24,12 +25,12 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.v1_1.FunctionDefinition;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.parameters.HasParametersControl;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.function.parameters.ParametersEditorView;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.function.parameters.ParametersPopoverView;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditablePopupHeaderMetaData;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 
-public class FunctionColumnParametersHeaderMetaData extends EditablePopupHeaderMetaData<HasParametersControl, ParametersEditorView.Presenter> {
+public class FunctionColumnParametersHeaderMetaData extends EditablePopupHeaderMetaData<HasParametersControl, ParametersPopoverView.Presenter> {
 
     static final String PARAMETER_COLUMN_GROUP = "FunctionColumnParametersHeaderMetaData$Parameters";
 
@@ -40,10 +41,12 @@ public class FunctionColumnParametersHeaderMetaData extends EditablePopupHeaderM
     public FunctionColumnParametersHeaderMetaData(final Supplier<FunctionDefinition> functionSupplier,
                                                   final TranslationService translationService,
                                                   final CellEditorControlsView.Presenter cellEditorControls,
-                                                  final ParametersEditorView.Presenter editor,
+                                                  final ParametersPopoverView.Presenter editor,
+                                                  final Optional<String> editorTitle,
                                                   final FunctionGrid gridWidget) {
         super(cellEditorControls,
-              editor);
+              editor,
+              editorTitle);
         this.functionSupplier = functionSupplier;
         this.translationService = translationService;
         this.gridWidget = gridWidget;

@@ -110,7 +110,8 @@ public class CellEditorControlsViewImpl implements CellEditorControlsView {
     }
 
     @Override
-    public void show(final HasCellEditorControls.Editor editor,
+    public void show(final HasCellEditorControls.Editor<?> editor,
+                     final Optional<String> editorTitle,
                      final int x,
                      final int y) {
         DOMUtil.removeAllChildren(cellEditorControlsContainer);
@@ -124,7 +125,7 @@ public class CellEditorControlsViewImpl implements CellEditorControlsView {
 
         activeEditor = Optional.of(editor);
 
-        editor.show();
+        editor.show(editorTitle);
     }
 
     @Override

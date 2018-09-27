@@ -32,8 +32,8 @@ import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.BaseEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.function.parameters.ParametersEditorView;
-import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypeEditorView;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.function.parameters.ParametersPopoverView;
+import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
@@ -54,8 +54,8 @@ public class FunctionEditorDefinition extends BaseEditorDefinition<FunctionDefin
     private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
     private Supplier<ExpressionEditorDefinitions> supplementaryEditorDefinitionsSupplier;
 
-    private NameAndDataTypeEditorView.Presenter headerEditor;
-    private ParametersEditorView.Presenter parametersEditor;
+    private NameAndDataTypePopoverView.Presenter headerEditor;
+    private ParametersPopoverView.Presenter parametersEditor;
 
     public FunctionEditorDefinition() {
         //CDI proxy
@@ -72,8 +72,8 @@ public class FunctionEditorDefinition extends BaseEditorDefinition<FunctionDefin
                                     final TranslationService translationService,
                                     final @DMNEditor Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
                                     final @FunctionGridSupplementaryEditor Supplier<ExpressionEditorDefinitions> supplementaryEditorDefinitionsSupplier,
-                                    final NameAndDataTypeEditorView.Presenter headerEditor,
-                                    final ParametersEditorView.Presenter parametersEditor) {
+                                    final NameAndDataTypePopoverView.Presenter headerEditor,
+                                    final ParametersPopoverView.Presenter parametersEditor) {
         super(definitionUtils,
               sessionManager,
               sessionCommandManager,

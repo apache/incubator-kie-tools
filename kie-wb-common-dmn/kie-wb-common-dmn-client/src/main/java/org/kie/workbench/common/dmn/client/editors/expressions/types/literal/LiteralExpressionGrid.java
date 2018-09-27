@@ -28,7 +28,8 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
-import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypeEditorView;
+import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
+import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.HasCellEditorControls;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
@@ -56,7 +57,7 @@ public class LiteralExpressionGrid extends BaseExpressionGrid<LiteralExpression,
 
     public static final double PADDING = 0.0;
 
-    private final NameAndDataTypeEditorView.Presenter headerEditor;
+    private final NameAndDataTypePopoverView.Presenter headerEditor;
 
     public LiteralExpressionGrid(final GridCellTuple parent,
                                  final Optional<String> nodeUUID,
@@ -76,7 +77,7 @@ public class LiteralExpressionGrid extends BaseExpressionGrid<LiteralExpression,
                                  final ListSelectorView.Presenter listSelector,
                                  final TranslationService translationService,
                                  final int nesting,
-                                 final NameAndDataTypeEditorView.Presenter headerEditor) {
+                                 final NameAndDataTypePopoverView.Presenter headerEditor) {
         super(parent,
               nodeUUID,
               hasExpression,
@@ -144,7 +145,8 @@ public class LiteralExpressionGrid extends BaseExpressionGrid<LiteralExpression,
                                                                                                                          setDisplayNameConsumer(true),
                                                                                                                          setTypeRefConsumer(),
                                                                                                                          cellEditorControls,
-                                                                                                                         headerEditor),
+                                                                                                                         headerEditor,
+                                                                                                                         Optional.of(translationService.getTranslation(DMNEditorConstants.LiteralExpression_EditExpression))),
                                                                                getBodyTextAreaFactory(),
                                                                                this);
 

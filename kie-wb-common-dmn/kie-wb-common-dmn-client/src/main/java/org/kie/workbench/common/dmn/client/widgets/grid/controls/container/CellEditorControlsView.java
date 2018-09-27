@@ -16,13 +16,16 @@
 
 package org.kie.workbench.common.dmn.client.widgets.grid.controls.container;
 
+import java.util.Optional;
+
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.HasCellEditorControls;
 import org.uberfire.client.mvp.UberElement;
 
 public interface CellEditorControlsView extends org.jboss.errai.ui.client.local.api.IsElement,
                                                 UberElement<CellEditorControlsView.Presenter> {
 
-    void show(final HasCellEditorControls.Editor editor,
+    void show(final HasCellEditorControls.Editor<?> editor,
+              final Optional<String> editorTitle,
               final int x,
               final int y);
 
@@ -30,7 +33,8 @@ public interface CellEditorControlsView extends org.jboss.errai.ui.client.local.
 
     interface Presenter {
 
-        void show(final HasCellEditorControls.Editor editor,
+        void show(final HasCellEditorControls.Editor<?> editor,
+                  final Optional<String> editorTitle,
                   final int x,
                   final int y);
 

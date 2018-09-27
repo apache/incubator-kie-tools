@@ -13,7 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-.kie-dmn-parameters-container {
-  padding: 10px;
-}
+[data-i18n-prefix="DataTypePickerWidget."] {
 
+  .kie-data-type-container {
+    width: 100%;
+  }
+
+  //This is a workaround for positioning the 'manage' link on the same line as the label. The label is
+  //provided by a _consumer_ of this widget and consequentially we cannot interfere with the containing DIVs
+  //the _consumer_ uses for label and widget separation.
+  .kie-data-type-container #manage {
+    position: absolute;
+    top: -24px;
+    right: 0px;
+  }
+}

@@ -55,7 +55,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.context.Inf
 import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionGrid;
 import org.kie.workbench.common.dmn.client.editors.types.HasNameAndTypeRef;
-import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypeEditorView;
+import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
@@ -198,7 +198,7 @@ public class InvocationGridTest {
     private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
 
     @Mock
-    private NameAndDataTypeEditorView.Presenter headerEditor;
+    private NameAndDataTypePopoverView.Presenter headerEditor;
 
     @Mock
     private GridCellTuple parent;
@@ -323,6 +323,7 @@ public class InvocationGridTest {
                                                       any())).thenReturn(mock(UpdateElementPropertyCommand.class));
 
         doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).format(anyString());
+        doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).getTranslation(anyString());
     }
 
     private void setupGrid(final int nesting) {
@@ -638,6 +639,7 @@ public class InvocationGridTest {
                                   eq(0),
                                   eq(1));
         verify(cellEditorControls).show(eq(headerEditor),
+                                        eq(Optional.of(DMNEditorConstants.InvocationEditor_EditParameter)),
                                         anyInt(),
                                         anyInt());
     }

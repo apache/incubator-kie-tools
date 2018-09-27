@@ -32,7 +32,8 @@ public class NameAndDataTypeHeaderMetaDataTest extends BaseNameAndDataTypeHeader
                                                           setDisplayNameConsumer,
                                                           setTypeRefConsumer,
                                                           cellEditorControls,
-                                                          headerEditor) {
+                                                          headerEditor,
+                                                          EDITOR_TITLE) {
             @Override
             public String getColumnGroup() {
                 return NAME_DATA_TYPE_COLUMN_GROUP;

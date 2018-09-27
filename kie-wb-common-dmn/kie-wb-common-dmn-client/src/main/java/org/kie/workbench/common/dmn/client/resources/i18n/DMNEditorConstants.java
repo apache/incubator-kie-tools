@@ -53,6 +53,9 @@ public class DMNEditorConstants {
     public static final String ExpressionEditor_Clear = "ExpressionEditor.Clear";
 
     @TranslationKey(defaultValue = "")
+    public static final String LiteralExpression_EditExpression = "LiteralExpression.EditExpression";
+
+    @TranslationKey(defaultValue = "")
     public static final String ContextEditor_InsertContextEntryAbove = "ContextEditor.InsertContextEntryAbove";
 
     @TranslationKey(defaultValue = "")
@@ -60,6 +63,12 @@ public class DMNEditorConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String ContextEditor_DeleteContextEntry = "ContextEditor.DeleteContextEntry";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ContextEditor_EditExpression = "ContextEditor.EditExpression";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ContextEditor_EditContextEntry = "ContextEditor.EditContextEntry";
 
     @TranslationKey(defaultValue = "")
     public static final String RelationEditor_InsertRowAbove = "RelationEditor.InsertRowAbove";
@@ -80,6 +89,9 @@ public class DMNEditorConstants {
     public static final String RelationEditor_DeleteColumn = "RelationEditor.DeleteColumn";
 
     @TranslationKey(defaultValue = "")
+    public static final String RelationEditor_EditRelation = "RelationEditor.EditRelation";
+
+    @TranslationKey(defaultValue = "")
     public static final String InvocationEditor_InsertParameterAbove = "InvocationEditor.InsertParameterAbove";
 
     @TranslationKey(defaultValue = "")
@@ -87,6 +99,12 @@ public class DMNEditorConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String InvocationEditor_DeleteParameter = "InvocationEditor.DeleteParameter";
+
+    @TranslationKey(defaultValue = "")
+    public static final String InvocationEditor_EditExpression = "InvocationEditor.EditExpression";
+
+    @TranslationKey(defaultValue = "")
+    public static final String InvocationEditor_EditParameter = "InvocationEditor.EditParameter";
 
     @TranslationKey(defaultValue = "")
     public static final String FunctionEditor_FEEL = "FunctionEditor.FEEL";
@@ -99,6 +117,12 @@ public class DMNEditorConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String FunctionEditor_Undefined = "FunctionEditor.Undefined";
+
+    @TranslationKey(defaultValue = "")
+    public static final String FunctionEditor_EditExpression = "FunctionEditor.EditExpression";
+
+    @TranslationKey(defaultValue = "")
+    public static final String FunctionEditor_EditParameters = "FunctionEditor.EditParameters";
 
     @TranslationKey(defaultValue = "")
     public static final String DecisionTableEditor_DescriptionColumnHeader = "DecisionTableEditor.DescriptionColumnHeader";
@@ -137,6 +161,24 @@ public class DMNEditorConstants {
     public static final String DecisionTableEditor_NullBuiltinAggregator = "DecisionTableEditor.NullBuiltinAggregator";
 
     @TranslationKey(defaultValue = "")
+    public static final String DecisionTableEditor_EditHitPolicy = "DecisionTableEditor.EditHitPolicy";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DecisionTableEditor_EditInputClause = "DecisionTableEditor.EditInputClause";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DecisionTableEditor_EditOutputClause = "DecisionTableEditor.EditOutputClause";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DecisionTableEditor_HitPolicyLabel = "DecisionTableEditor.HitPolicyLabel";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DecisionTableEditor_BuiltinAggregatorLabel = "DecisionTableEditor.BuiltinAggregatorLabel";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DecisionTableEditor_DecisionTableOrientationLabel = "DecisionTableEditor.DecisionTableOrientationLabel";
+
+    @TranslationKey(defaultValue = "")
     public static final String DecisionNavigatorPresenter_DecisionNavigator = "DecisionNavigatorPresenter.DecisionNavigator";
 
     @TranslationKey(defaultValue = "")
@@ -144,6 +186,9 @@ public class DMNEditorConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String TypePickerWidget_Choose = "TypePickerWidget.Choose";
+
+    @TranslationKey(defaultValue = "")
+    public static final String TypePickerWidget_Manage = "TypePickerWidget.Manage";
 
     @TranslationKey(defaultValue = "")
     public static final String DataTypeManager_None = "DataTypeManager.None";
@@ -156,4 +201,10 @@ public class DMNEditorConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String DataTypeSelectView_CustomTitle = "DataTypeSelectView.CustomTitle";
+
+    @TranslationKey(defaultValue = "")
+    public static final String NameAndDataTypePopover_NameLabel = "NameAndDataTypePopover.NameLabel";
+
+    @TranslationKey(defaultValue = "")
+    public static final String NameAndDataTypePopover_DataTypeLabel = "NameAndDataTypePopover.DataTypeLabel";
 }

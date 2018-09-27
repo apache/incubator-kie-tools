@@ -30,7 +30,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Relation;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.BaseEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
-import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypeEditorView;
+import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
@@ -48,7 +48,7 @@ import org.kie.workbench.common.stunner.forms.client.event.RefreshFormProperties
 @ApplicationScoped
 public class RelationEditorDefinition extends BaseEditorDefinition<Relation, RelationGridData> {
 
-    private NameAndDataTypeEditorView.Presenter headerEditor;
+    private NameAndDataTypePopoverView.Presenter headerEditor;
 
     public RelationEditorDefinition() {
         //CDI proxy
@@ -63,7 +63,7 @@ public class RelationEditorDefinition extends BaseEditorDefinition<Relation, Rel
                                     final Event<RefreshFormProperties> refreshFormPropertiesEvent,
                                     final ListSelectorView.Presenter listSelector,
                                     final TranslationService translationService,
-                                    final NameAndDataTypeEditorView.Presenter headerEditor) {
+                                    final NameAndDataTypePopoverView.Presenter headerEditor) {
         super(definitionUtils,
               sessionManager,
               sessionCommandManager,

@@ -16,11 +16,13 @@
 
 package org.kie.workbench.common.dmn.client.editors.types;
 
+import java.util.Optional;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
+import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -30,13 +32,15 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class DataTypeEditorImplTest {
+public class NameAndDataTypePopoverImplTest {
+
+    private static final String NAME = "name";
 
     @Mock
-    private DataTypeEditorView view;
+    private NameAndDataTypePopoverView view;
 
     @Mock
-    private HasTypeRef bound;
+    private HasNameAndTypeRef bound;
 
     @Mock
     private Decision decision;
@@ -44,13 +48,14 @@ public class DataTypeEditorImplTest {
     @Mock
     private QName typeRef;
 
-    private DataTypeEditorView.Presenter editor;
+    private NameAndDataTypePopoverView.Presenter editor;
 
     @Before
     public void setup() {
-        this.editor = new DataTypeEditorImpl(view);
+        this.editor = new NameAndDataTypePopoverImpl(view);
 
         when(bound.asDMNModelInstrumentedBase()).thenReturn(decision);
+        when(bound.getName()).thenReturn(new Name(NAME));
         when(bound.getTypeRef()).thenReturn(typeRef);
     }
 
@@ -63,9 +68,9 @@ public class DataTypeEditorImplTest {
     public void testShow() {
         editor.bind(bound, 0, 0);
 
-        editor.show();
+        editor.show(Optional.empty());
 
-        verify(view).show();
+        verify(view).show(Optional.empty());
     }
 
     @Test
@@ -82,11 +87,21 @@ public class DataTypeEditorImplTest {
         editor.bind(bound, 0, 0);
 
         verify(view).setDMNModel(eq(decision));
+        verify(view).initName(eq(NAME));
         verify(view).initSelectedTypeRef(eq(typeRef));
 
-        editor.show();
+        editor.show(Optional.empty());
 
-        verify(view).show();
+        verify(view).show(Optional.empty());
+    }
+
+    @Test
+    public void testSetDisplayName() {
+        editor.bind(bound, 0, 0);
+
+        editor.setName(NAME);
+
+        verify(bound).setName(eq(new Name(NAME)));
     }
 
     @Test

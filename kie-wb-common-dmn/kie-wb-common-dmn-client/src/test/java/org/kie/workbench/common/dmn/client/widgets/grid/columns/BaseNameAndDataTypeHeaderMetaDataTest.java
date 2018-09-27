@@ -26,7 +26,7 @@ import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
-import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypeEditorView;
+import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.mockito.Mock;
 
@@ -40,6 +40,8 @@ import static org.mockito.Mockito.when;
 public abstract class BaseNameAndDataTypeHeaderMetaDataTest {
 
     protected static final String NAME_DATA_TYPE_COLUMN_GROUP = "NameAndDataTypeHeaderMetaDataTest$NameAndDataTypeColumn";
+
+    protected static final Optional<String> EDITOR_TITLE = Optional.of("editor");
 
     protected static final Name NAME = new Name("name");
 
@@ -59,7 +61,7 @@ public abstract class BaseNameAndDataTypeHeaderMetaDataTest {
     protected CellEditorControlsView.Presenter cellEditorControls;
 
     @Mock
-    protected NameAndDataTypeEditorView.Presenter headerEditor;
+    protected NameAndDataTypePopoverView.Presenter headerEditor;
 
     protected NameAndDataTypeHeaderMetaData metaData;
 

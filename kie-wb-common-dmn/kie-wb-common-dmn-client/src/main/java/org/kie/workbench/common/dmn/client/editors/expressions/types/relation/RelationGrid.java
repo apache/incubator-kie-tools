@@ -34,7 +34,7 @@ import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.A
 import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.DeleteRelationColumnCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.DeleteRelationRowCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.util.SelectionUtils;
-import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypeEditorView;
+import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
@@ -62,7 +62,7 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
 
     private final TextAreaSingletonDOMElementFactory factory = getBodyTextAreaFactory();
 
-    private final NameAndDataTypeEditorView.Presenter headerEditor;
+    private final NameAndDataTypePopoverView.Presenter headerEditor;
 
     public RelationGrid(final GridCellTuple parent,
                         final Optional<String> nodeUUID,
@@ -82,7 +82,7 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
                         final ListSelectorView.Presenter listSelector,
                         final TranslationService translationService,
                         final int nesting,
-                        final NameAndDataTypeEditorView.Presenter headerEditor) {
+                        final NameAndDataTypePopoverView.Presenter headerEditor) {
         super(parent,
               nodeUUID,
               hasExpression,
@@ -141,7 +141,8 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
                                                                                                   setDisplayNameConsumer(false),
                                                                                                   setTypeRefConsumer(),
                                                                                                   cellEditorControls,
-                                                                                                  headerEditor),
+                                                                                                  headerEditor,
+                                                                                                  Optional.of(translationService.getTranslation(DMNEditorConstants.RelationEditor_EditRelation))),
                                                                  factory,
                                                                  this);
         return relationColumn;

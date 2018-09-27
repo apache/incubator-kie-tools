@@ -13,13 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-[data-i18n-prefix="NameAndDataTypeEditorViewImpl."] {
-  .kie-dmn-name-and-data-type-container {
-    padding: 10px;
+[data-i18n-prefix="ParametersPopoverViewImpl."] {
+
+  #popover-container {
+    display: inline;
   }
 
-  .kie-dmn-name-and-data-type-container input {
+  #popover-container .popover {
+    min-width: 300px;
+  }
+
+  .kie-dmn-parameters-container {
     width: 100%;
-    margin-bottom: 5px;
+    height: 100px;
+    overflow-y: scroll;
+    margin-top: 10px;
+    border: 1px solid #cccccc;
+    padding: 0px 5px 5px 5px;
   }
 }
+
