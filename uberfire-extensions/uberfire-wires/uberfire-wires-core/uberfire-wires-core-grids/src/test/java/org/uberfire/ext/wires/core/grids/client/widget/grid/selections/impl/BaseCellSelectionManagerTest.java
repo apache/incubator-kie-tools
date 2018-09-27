@@ -28,6 +28,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.Bounds;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
@@ -60,7 +61,12 @@ import static org.mockito.Mockito.when;
 public class BaseCellSelectionManagerTest {
 
     private static final double HEADER_HEIGHT = 32.0;
+
     private static final double ROW_HEIGHT = 20.0;
+
+    private static final double GRID_ABSOLUTE_X = 15.0;
+
+    private static final double GRID_ABSOLUTE_Y = 30.0;
 
     @Mock
     private GridWidget gridWidget;
@@ -80,14 +86,18 @@ public class BaseCellSelectionManagerTest {
     @Mock
     private Transform transform;
 
+    @Captor
+    private ArgumentCaptor<GridBodyCellRenderContext> contextArgumentCaptor;
+
+    @Captor
+    private ArgumentCaptor<GridBodyCellEditContext> editContextArgumentCaptor;
+
     private GridData gridWidgetData;
 
     private GridColumn<String> col1 = spy(new BaseGridTest.MockMergableGridColumn<>("col1",
                                                                                     100));
     private GridColumn<String> col2 = spy(new BaseGridTest.MockMergableGridColumn<>("col2",
                                                                                     100));
-
-    private BaseGridRendererHelper gridWidgetRendererHelper;
 
     private Bounds visibleBounds = new BaseBounds(-1000,
                                                   -1000,
@@ -107,7 +117,7 @@ public class BaseCellSelectionManagerTest {
         when(gridWidget.getModel()).thenReturn(gridWidgetData);
 
         cellSelectionManager = new BaseCellSelectionManager(gridWidget);
-        gridWidgetRendererHelper = new BaseGridRendererHelper(gridWidget);
+        final BaseGridRendererHelper gridWidgetRendererHelper = new BaseGridRendererHelper(gridWidget);
 
         when(gridWidget.getRenderer()).thenReturn(gridWidgetRenderer);
         when(gridWidget.getRendererHelper()).thenReturn(gridWidgetRendererHelper);
@@ -118,6 +128,7 @@ public class BaseCellSelectionManagerTest {
         when(gridWidget.getViewport()).thenReturn(viewport);
         when(gridWidget.getX()).thenReturn(0.0);
         when(gridWidget.getY()).thenReturn(0.0);
+        when(gridWidget.getComputedLocation()).thenReturn(new Point2D(GRID_ABSOLUTE_X, GRID_ABSOLUTE_Y));
         when(gridLayer.getVisibleBounds()).thenReturn(visibleBounds);
         when(gridWidgetRenderer.getHeaderHeight()).thenReturn(HEADER_HEIGHT);
         when(viewport.getTransform()).thenReturn(transform);
@@ -524,9 +535,8 @@ public class BaseCellSelectionManagerTest {
     @Test
     @SuppressWarnings("unchecked")
     public void startEditingCellPointCoordinateWithinGridBounds() {
-        final ArgumentCaptor<GridBodyCellRenderContext> contextArgumentCaptor = ArgumentCaptor.forClass(GridBodyCellRenderContext.class);
-        final ArgumentCaptor<GridBodyCellEditContext> editContextArgumentCaptor = ArgumentCaptor.forClass(GridBodyCellEditContext.class);
-        final Point2D editedAtPoint = new Point2D(150, 42);
+        final Point2D editedAtPoint = new Point2D(col1.getWidth() + col2.getWidth() / 2,
+                                                  HEADER_HEIGHT + ROW_HEIGHT / 2);
 
         cellSelectionManager.startEditingCell(editedAtPoint);
 
@@ -547,7 +557,7 @@ public class BaseCellSelectionManagerTest {
 
         final GridBodyCellEditContext editContext = editContextArgumentCaptor.getValue();
         assertTrue(editContext.getRelativeLocation().isPresent());
-        assertEquals(editedAtPoint,
+        assertEquals(editedAtPoint.add(gridWidget.getComputedLocation()),
                      editContext.getRelativeLocation().get());
     }
 
@@ -587,9 +597,6 @@ public class BaseCellSelectionManagerTest {
 
     @SuppressWarnings("unchecked")
     private void assertStartEditingCoordinateWithinGridBounds(final Group header) {
-        final ArgumentCaptor<GridBodyCellRenderContext> contextArgumentCaptor = ArgumentCaptor.forClass(GridBodyCellRenderContext.class);
-        final ArgumentCaptor<GridBodyCellEditContext> editContextArgumentCaptor = ArgumentCaptor.forClass(GridBodyCellEditContext.class);
-
         when(gridWidget.getHeader()).thenReturn(header);
 
         cellSelectionManager.startEditingCell(0,
@@ -612,5 +619,7 @@ public class BaseCellSelectionManagerTest {
 
         final GridBodyCellEditContext editContext = editContextArgumentCaptor.getValue();
         assertFalse(editContext.getRelativeLocation().isPresent());
+
+        cellSelectionManager.startEditingCell(new Point2D(10, HEADER_HEIGHT + 1));
     }
 }

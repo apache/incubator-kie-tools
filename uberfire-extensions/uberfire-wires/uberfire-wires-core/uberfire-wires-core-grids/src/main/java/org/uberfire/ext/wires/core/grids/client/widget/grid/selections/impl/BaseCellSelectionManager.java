@@ -233,6 +233,7 @@ public class BaseCellSelectionManager implements CellSelectionManager {
         }
 
         //Get column information
+        final Point2D gridWidgetComputedLocation = gridWidget.getComputedLocation();
         final BaseGridRendererHelper rendererHelper = gridWidget.getRendererHelper();
         final BaseGridRendererHelper.ColumnInformation ci = rendererHelper.getColumnInformation(rp.getX());
         final GridColumn<?> column = ci.getColumn();
@@ -242,7 +243,7 @@ public class BaseCellSelectionManager implements CellSelectionManager {
 
         return edit(uiRowIndex,
                     ci,
-                    Optional.of(rp));
+                    Optional.of(rp.add(gridWidgetComputedLocation)));
     }
 
     @Override
@@ -320,16 +321,17 @@ public class BaseCellSelectionManager implements CellSelectionManager {
         final double floatingWidth = floatingBlockInformation.getWidth();
 
         //Construct context of MouseEvent
-        final double cellX = gridWidget.getAbsoluteX() + offsetX;
-        final double cellY = gridWidget.getAbsoluteY() + renderer.getHeaderHeight() + getRowOffset(uiRowIndex,
-                                                                                                   uiColumnIndex,
-                                                                                                   rendererHelper);
+        final Point2D gridWidgetComputedLocation = gridWidget.getComputedLocation();
+        final double cellX = gridWidgetComputedLocation.getX() + offsetX;
+        final double cellY = gridWidgetComputedLocation.getY() + renderer.getHeaderHeight() + getRowOffset(uiRowIndex,
+                                                                                                           uiColumnIndex,
+                                                                                                           rendererHelper);
         final double cellHeight = getCellHeight(uiRowIndex,
                                                 uiColumnIndex);
 
         final Group header = gridWidget.getHeader();
-        final double clipMinY = gridWidget.getAbsoluteY() + (header == null ? 0.0 : header.getY()) + renderer.getHeaderHeight();
-        final double clipMinX = gridWidget.getAbsoluteX() + floatingX + floatingWidth;
+        final double clipMinX = gridWidgetComputedLocation.getX() + floatingX + floatingWidth;
+        final double clipMinY = gridWidgetComputedLocation.getY() + (header == null ? 0.0 : header.getY()) + renderer.getHeaderHeight();
 
         final GridBodyCellEditContext context = new GridBodyCellEditContext(cellX,
                                                                             cellY,
@@ -432,11 +434,11 @@ public class BaseCellSelectionManager implements CellSelectionManager {
 
         column.edit(cell,
                     context,
-                    value-> {
-                            gridModel.setCellValue(uiRowIndex,
-                                                   uiColumnIndex,
-                                                   (GridCellValue<?>) value);
-                            gridWidget.getLayer().batch();
+                    value -> {
+                        gridModel.setCellValue(uiRowIndex,
+                                               uiColumnIndex,
+                                               (GridCellValue<?>) value);
+                        gridWidget.getLayer().batch();
                     });
     }
 }
