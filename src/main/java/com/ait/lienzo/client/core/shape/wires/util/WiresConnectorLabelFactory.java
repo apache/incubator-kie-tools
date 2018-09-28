@@ -7,6 +7,7 @@ import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.client.core.util.Geometry;
+import com.ait.lienzo.shared.core.types.TextAlign;
 import com.ait.tooling.common.api.java.util.function.BiConsumer;
 
 public class WiresConnectorLabelFactory
@@ -25,7 +26,7 @@ public class WiresConnectorLabelFactory
 
     public static class SegmentLabelExecutor
     {
-        private static final double TEXT_WRAP_MAX_WIDTH  = 150d;
+        private static final double TEXT_WRAP_MAX_WIDTH  = 350d;
 
         private static final double TEXT_WRAP_MAX_HEIGHT = 11d;
 
@@ -49,18 +50,17 @@ public class WiresConnectorLabelFactory
                     final double  sin      = Math.sin(rotation);
 
                     // Wrap the text.
-                    final double         maxDistanceX = distance > TEXT_WRAP_MAX_WIDTH ? TEXT_WRAP_MAX_WIDTH : distance;
+                    final double         maxDistanceX = TEXT_WRAP_MAX_WIDTH;
                     final double         maxDistanceY = distance > TEXT_WRAP_MAX_HEIGHT ? TEXT_WRAP_MAX_HEIGHT : distance;
                     final BoundingBox    wrap         = new BoundingBox(0, 0, maxDistanceX, maxDistanceY);
                     final TextBoundsWrap textWrap     = new TextBoundsWrap(text, wrap);
                     text.setWrapper(textWrap);
+                    text.setTextAlign(TextAlign.LEFT);
 
                     // Set the right location.
                     final BoundingBox tbb = textWrap.getTextBoundaries();
-                    final double  tbbw   = tbb.getWidth() / 2;
-                    final double  tox    = Math.abs(tbbw * cos);
                     final Point2D offset = new Point2D(Math.abs(OFFSET * sin), Math.abs(OFFSET * cos) * -1);
-                    text.setLocation(center.minus(tox, tbb.getHeight()).add(offset));
+                    text.setLocation(center.minus(0, tbb.getHeight()).add(offset));
                 }
             };
         }
