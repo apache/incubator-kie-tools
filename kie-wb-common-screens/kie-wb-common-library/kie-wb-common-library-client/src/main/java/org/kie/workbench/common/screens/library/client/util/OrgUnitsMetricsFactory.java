@@ -357,7 +357,7 @@ public class OrgUnitsMetricsFactory {
                         translationService.getTranslation(LibraryConstants.Message))
                 .sort(COLUMN_DATE,
                       DESCENDING)
-                .tablePageSize(5)
+                .tablePageSize(10)
                 .tableWidth(950)
                 .tableOrderEnabled(true)
                 .tableColumnPickerEnabled(true)

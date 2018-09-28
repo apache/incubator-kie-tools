@@ -53,7 +53,7 @@ public class DataSourceSelectorViewImpl
     private FlowPanel mainPanel;
 
     @Inject
-    private PagedTable<DataSourceSelectorPageRow> dataGrid = new PagedTable<>( 5 );
+    private PagedTable<DataSourceSelectorPageRow> dataGrid = new PagedTable<>();
 
     private DataSourceSelectorPageRow selectedRow;
 

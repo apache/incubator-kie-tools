@@ -121,7 +121,7 @@ public class ContributorsKPIs {
                 .column(COLUMN_MSG, i18n.commit())
                 .title(i18n.commits())
                 .titleVisible(false)
-                .tablePageSize(5)
+                .tablePageSize(10)
                 .tableWidth(950)
                 .tableOrderEnabled(true)
                 .renderer(DefaultRenderer.UUID)
