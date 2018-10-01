@@ -18,6 +18,7 @@ package org.kie.workbench.common.dmn.client.editors.types.common;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -142,6 +143,25 @@ public class DataTypeManagerTest {
         final List<DataType> actualDataTypes = dataType.getSubDataTypes();
 
         assertEquals(expectedDataTypes, actualDataTypes);
+    }
+
+    @Test
+    public void testWithSubDataTypes() {
+        final DataType topLevelDataType = mock(DataType.class);
+        final DataType subLevelDataType = mock(DataType.class);
+        final String subLevelDataTypeUuid = "subUuid";
+        when(subLevelDataType.getUUID()).thenReturn(subLevelDataTypeUuid);
+
+        final List<DataType> newSubDataTypes = Collections.singletonList(mock(DataType.class));
+
+        when(topLevelDataType.getSubDataTypes()).thenReturn(Arrays.asList(subLevelDataType));
+
+        manager.withDataType(topLevelDataType);
+        manager.withSubDataTypes(newSubDataTypes);
+
+        verify(dataTypeStore).unIndex(subLevelDataTypeUuid);
+        verify(itemDefinitionStore).unIndex(subLevelDataTypeUuid);
+        verify(topLevelDataType).setSubDataTypes(newSubDataTypes);
     }
 
     @Test
