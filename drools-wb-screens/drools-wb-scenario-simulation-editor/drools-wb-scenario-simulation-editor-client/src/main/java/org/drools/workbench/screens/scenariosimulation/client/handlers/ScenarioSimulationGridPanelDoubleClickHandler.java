@@ -45,6 +45,25 @@ public class ScenarioSimulationGridPanelDoubleClickHandler extends BaseGridWidge
     }
 
     @Override
+    public void onNodeMouseDoubleClick(final NodeMouseDoubleClickEvent event) {
+        if (!gridWidget.isVisible()) {
+            return;
+        }
+        if (manageDoubleClick(event)) {
+            event.stopPropagation();
+            event.getMouseEvent().stopPropagation();
+        }
+    }
+
+    protected boolean manageDoubleClick(final NodeMouseDoubleClickEvent event) {
+        if (!handleHeaderCellDoubleClick(event)) {
+           return handleBodyCellDoubleClick(event);
+        } else {
+            return true;
+        }
+    }
+
+    @Override
     protected boolean handleHeaderCellDoubleClick(final NodeMouseDoubleClickEvent event) {
         //Convert Canvas co-ordinate to Grid co-ordinate
         final Point2D rp = CoordinateUtilities.convertDOMToGridCoordinate(gridWidget,
@@ -95,7 +114,6 @@ public class ScenarioSimulationGridPanelDoubleClickHandler extends BaseGridWidge
                                                                                                         rp,
                                                                                                         uiHeaderRowIndex);
         headerMetaData.edit(context);
-
         return true;
     }
 }

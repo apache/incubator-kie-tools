@@ -21,7 +21,6 @@ import java.util.Set;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ContextMenuEvent;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -42,7 +41,6 @@ import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -120,7 +118,7 @@ public class ScenarioSimulationGridPanelClickHandlerTest {
             }
 
             @Override
-            protected boolean manageLeftClick(ClickEvent event) {
+            protected boolean manageLeftClick(final int canvasX,  final int canvasY, final boolean isShiftKeyDown, final boolean isControlKeyDown) {
                 return true;
             }
         });
@@ -223,15 +221,6 @@ public class ScenarioSimulationGridPanelClickHandlerTest {
         verify(mockExpectedContextMenu, times(1)).hide();
         verify(mockGridContextMenu, times(1)).hide();
         verify(mockUnmodifiableColumnGridContextMenu, times(1)).hide();
-    }
-
-    @Test
-    public void onClick() {
-        ClickEvent mockEvent = mock(ClickEvent.class);
-        when(mockEvent.getNativeEvent()).thenReturn(mockNativeEvent);
-        when(mockEvent.getRelativeElement()).thenReturn(mockTarget);
-        scenarioSimulationGridPanelClickHandler.onClick(mockEvent);
-        commonCheck();
     }
 
     @Test

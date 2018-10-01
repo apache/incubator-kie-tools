@@ -28,6 +28,7 @@ public class ExpressionIdentifier {
     private String name;
     private FactMappingType type;
 
+    public static ExpressionIdentifier INDEX = create("Index", FactMappingType.OTHER);
     public static ExpressionIdentifier DESCRIPTION = create("Description", FactMappingType.OTHER);
 
     public ExpressionIdentifier() {

@@ -50,6 +50,8 @@ public class ScenarioGridModel extends BaseGridData {
 
     AtomicInteger columnCounter = new AtomicInteger(0);
 
+    GridColumn<?> selectedColumn = null;
+
     public ScenarioGridModel() {
     }
 
@@ -109,10 +111,15 @@ public class ScenarioGridModel extends BaseGridData {
                 String stringValue = (String) value.getRawValue();
                 int columnIndex = simulation.getSimulationDescriptor().getIndexByIdentifier(factIdentifier, expressionIdentifier);
                 setCell(rowIndex, columnIndex, () -> new ScenarioGridCell(new ScenarioGridCellValue(stringValue)));
+            } else if (value.getRawValue() instanceof Integer) {
+                String stringValue = ((Integer) value.getRawValue()).toString();
+                int columnIndex = simulation.getSimulationDescriptor().getIndexByIdentifier(factIdentifier, expressionIdentifier);
+                setCell(rowIndex, columnIndex, () -> new ScenarioGridCell(new ScenarioGridCellValue(stringValue)));
             } else {
                 throw new UnsupportedOperationException("Only string is supported at the moment");
             }
         });
+        updateIndexColumn();
     }
 
     /**
@@ -133,6 +140,7 @@ public class ScenarioGridModel extends BaseGridData {
         checkSimulation();
         Range toReturn = super.deleteRow(rowIndex);
         simulation.removeScenarioByIndex(rowIndex);
+        updateIndexColumn();
         return toReturn;
     }
 
@@ -330,6 +338,12 @@ public class ScenarioGridModel extends BaseGridData {
         }
     }
 
+    @Override
+    public void clearSelections() {
+        super.clearSelections();
+        selectedColumn = null;
+    }
+
     /**
      * Select all the cells of the given column
      * @param columnIndex
@@ -338,6 +352,7 @@ public class ScenarioGridModel extends BaseGridData {
         if (columnIndex > getColumnCount() - 1) {
             return;
         }
+        selectedColumn = getColumns().get(columnIndex);
         int rows = getRowCount();
         IntStream.range(0, rows).forEach(rowIndex -> selectCell(rowIndex, columnIndex));
     }
@@ -352,6 +367,10 @@ public class ScenarioGridModel extends BaseGridData {
         }
         int columns = getColumnCount();
         IntStream.range(0, columns).forEach(columnIndex -> selectCell(rowIndex, columnIndex));
+    }
+
+    public GridColumn<?> getSelectedColumn() {
+        return selectedColumn;
     }
 
     public Optional<Simulation> getSimulation() {
@@ -408,12 +427,21 @@ public class ScenarioGridModel extends BaseGridData {
     protected void commonAddRow(int rowIndex) {
         Scenario scenario = simulation.addScenario(rowIndex);
         final SimulationDescriptor simulationDescriptor = simulation.getSimulationDescriptor();
-        IntStream.range(0, getColumnCount()).forEach(columnIndex -> {
+        IntStream.range(1, getColumnCount()).forEach(columnIndex -> {
             final FactMapping factMappingByIndex = simulationDescriptor.getFactMappingByIndex(columnIndex);
             String value = FactMappingValue.getPlaceHolder(rowIndex, columnIndex);
             scenario.addMappingValue(factMappingByIndex.getFactIdentifier(), factMappingByIndex.getExpressionIdentifier(), value);
             setNewCell(rowIndex, columnIndex, () -> new ScenarioGridCell(new ScenarioGridCellValue(value)));
         });
+        updateIndexColumn();
+    }
+
+    protected void updateIndexColumn() {
+        IntStream.range(0, getRowCount())
+                .forEach(rowIndex -> {
+                    String value = String.valueOf(rowIndex + 1);
+                    setCellValue(rowIndex, 0, new ScenarioGridCellValue(value));
+                });
     }
 
     void checkSimulation() {

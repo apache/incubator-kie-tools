@@ -55,7 +55,7 @@ public class RightPanelPresenter implements RightPanelView.Presenter {
 
     EventBus eventBus;
 
-    int editingColumnIndex = -1;
+    boolean editingColumnEnabled = false;
 
     public RightPanelPresenter() {
         //Zero argument constructor for CDI
@@ -153,26 +153,26 @@ public class RightPanelPresenter implements RightPanelView.Presenter {
     }
 
     @Override
-    public void onEnableEditorTab(int columnIndex) {
+    public void onEnableEditorTab() {
         listGroupItemPresenter.setDisabled(false);
-        editingColumnIndex = columnIndex;
+        editingColumnEnabled = true;
         view.enableEditorTab();
     }
 
     @Override
     public void onDisableEditorTab() {
         listGroupItemPresenter.setDisabled(true);
-        editingColumnIndex = -1;
+        editingColumnEnabled = false;
         view.disableEditorTab();
     }
 
     @Override
     public void onModifyColumn(String factName, String fieldName, String valueClassName) {
-        if (editingColumnIndex > -1) {
+        if (editingColumnEnabled) {
             String value = factName + "." + fieldName;
             String baseClass = factName.split("\\.")[0];
             String fullPackage = getFactModelTree(baseClass).getFullPackage();
-            eventBus.fireEvent(new SetColumnValueEvent(editingColumnIndex, fullPackage, value, valueClassName));
+            eventBus.fireEvent(new SetColumnValueEvent(fullPackage, value, valueClassName));
         }
     }
 }

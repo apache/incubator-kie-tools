@@ -183,7 +183,7 @@ public class CommandExecutorTest extends AbstractCommandTest {
 
     @Test
     public void onEnableRightPanelEvent() {
-        EnableRightPanelEvent event = new EnableRightPanelEvent(COLUMN_INDEX);
+        EnableRightPanelEvent event = new EnableRightPanelEvent();
         commandExecutor.onEvent(event);
         verify(commandExecutor, times(1)).commonExecute(isA(EnableRightPanelCommand.class));
     }
@@ -226,7 +226,7 @@ public class CommandExecutorTest extends AbstractCommandTest {
 
     @Test
     public void onSetColumnValueEvent() {
-        SetColumnValueEvent event = new SetColumnValueEvent(COLUMN_INDEX, FULL_PACKAGE, VALUE, VALUE_CLASS_NAME);
+        SetColumnValueEvent event = new SetColumnValueEvent(FULL_PACKAGE, VALUE, VALUE_CLASS_NAME);
         commandExecutor.onEvent(event);
         verify(commandExecutor, times(1)).commonExecute(isA(SetColumnValueCommand.class));
     }

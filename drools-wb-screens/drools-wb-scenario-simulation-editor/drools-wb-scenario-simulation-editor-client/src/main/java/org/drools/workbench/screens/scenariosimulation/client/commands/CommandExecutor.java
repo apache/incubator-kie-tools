@@ -54,6 +54,7 @@ import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGri
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.RightPanelView;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridLayer;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
+import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.mvp.Command;
 
 /**
@@ -126,8 +127,11 @@ public class CommandExecutor implements AppendColumnEventHandler,
 
     @Override
     public void onEvent(DeleteColumnEvent event) {
-        commonExecute(new DeleteColumnCommand(model, event.getColumnIndex(), event.getColumnGroup(), scenarioGridPanel, scenarioGridLayer));
-        if (rightPanelPresenter != null) {
+        int deletedColumnIndex = event.getColumnIndex();
+        GridColumn<?> selectedColumn = model.getSelectedColumn();
+        boolean toDisable = selectedColumn == null || model.getColumns().indexOf(selectedColumn) == deletedColumnIndex;
+        commonExecute(new DeleteColumnCommand(model, deletedColumnIndex, event.getColumnGroup(), scenarioGridPanel, scenarioGridLayer));
+        if (rightPanelPresenter != null && toDisable) {
             commonExecute(new DisableRightPanelCommand(rightPanelPresenter));
         }
     }
@@ -152,7 +156,7 @@ public class CommandExecutor implements AppendColumnEventHandler,
     @Override
     public void onEvent(EnableRightPanelEvent event) {
         if (rightPanelPresenter != null) {
-            commonExecute(new EnableRightPanelCommand(rightPanelPresenter, event.getColumnIndex()));
+            commonExecute(new EnableRightPanelCommand(rightPanelPresenter));
         }
     }
 
@@ -183,7 +187,7 @@ public class CommandExecutor implements AppendColumnEventHandler,
 
     @Override
     public void onEvent(SetColumnValueEvent event) {
-        commonExecute(new SetColumnValueCommand(model, event.getColumnIndex(), String.valueOf(new Date().getTime()), event.getFullPackage(), event.getValue(), event.getValueClassName(), scenarioGridPanel, scenarioGridLayer));
+        commonExecute(new SetColumnValueCommand(model, String.valueOf(new Date().getTime()), event.getFullPackage(), event.getValue(), event.getValueClassName(), scenarioGridPanel, scenarioGridLayer));
     }
 
     void commonExecute(Command toExecute) {

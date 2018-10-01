@@ -25,13 +25,11 @@ public class SetColumnValueEvent extends GwtEvent<SetColumnValueEventHandler> {
 
     public static Type<SetColumnValueEventHandler> TYPE = new Type<>();
 
-    private final int columnIndex;
     private String fullPackage;
     private final String value;
     private String valueClassName;
 
-    public SetColumnValueEvent(int columnIndex, String fullPackage, String value, String valueClassName) {
-        this.columnIndex = columnIndex;
+    public SetColumnValueEvent(String fullPackage, String value, String valueClassName) {
         this.fullPackage = fullPackage;
         this.value = value;
         this.valueClassName = valueClassName;
@@ -40,10 +38,6 @@ public class SetColumnValueEvent extends GwtEvent<SetColumnValueEventHandler> {
     @Override
     public Type<SetColumnValueEventHandler> getAssociatedType() {
         return TYPE;
-    }
-
-    public int getColumnIndex() {
-        return columnIndex;
     }
 
     public String getFullPackage() {

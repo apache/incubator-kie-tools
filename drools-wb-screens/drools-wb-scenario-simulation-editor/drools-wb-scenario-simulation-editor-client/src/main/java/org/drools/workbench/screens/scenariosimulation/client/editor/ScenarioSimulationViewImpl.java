@@ -16,11 +16,8 @@
 
 package org.drools.workbench.screens.scenariosimulation.client.editor;
 
-import java.util.Set;
-
 import javax.enterprise.context.Dependent;
 
-import com.google.gwt.event.shared.HandlerRegistration;
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridLayer;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
@@ -44,7 +41,6 @@ public class ScenarioSimulationViewImpl
 
     private ScenarioGridLayer scenarioGridLayer;
 
-    private Set<HandlerRegistration> handlerRegistrations;
 
     /**
      * This method also set <code>ScenarioGridLayer</code> taken the instance from given <code>ScenarioGridPanel</code>
@@ -54,11 +50,6 @@ public class ScenarioSimulationViewImpl
     public void setScenarioGridPanel(ScenarioGridPanel scenarioGridPanel) {
         this.scenarioGridPanel = scenarioGridPanel;
         this.scenarioGridLayer = scenarioGridPanel.getScenarioGridLayer();
-    }
-
-    @Override
-    public void setHandlerRegistrations(Set<HandlerRegistration> handlerRegistrations) {
-        this.handlerRegistrations = handlerRegistrations;
     }
 
     @Override
@@ -74,12 +65,6 @@ public class ScenarioSimulationViewImpl
         scenarioGridPanel.getScenarioGrid().setContent(simulation);
     }
 
-    @Override
-    public void clear() {
-        if (handlerRegistrations != null) {
-            handlerRegistrations.forEach(HandlerRegistration::removeHandler);
-        }
-    }
 
     @Override
     public MenuItem getRunScenarioMenuItem() {

@@ -135,9 +135,8 @@ public class RightPanelPresenterTest extends AbstractRightPanelTest {
 
     @Test
     public void onEnableEditorTab() {
-        rightPanelPresenter.onEnableEditorTab(COLUMN_INDEX);
+        rightPanelPresenter.onEnableEditorTab();
         verify(mockListGroupItemPresenter, times(1)).setDisabled(eq(false));
-        assertEquals(COLUMN_INDEX, rightPanelPresenter.editingColumnIndex);
         verify(mockRightPanelView, times(1)).enableEditorTab();
     }
 
@@ -145,13 +144,12 @@ public class RightPanelPresenterTest extends AbstractRightPanelTest {
     public void onDisableEditorTab() {
         rightPanelPresenter.onDisableEditorTab();
         verify(mockListGroupItemPresenter, times(1)).setDisabled(eq(true));
-        assertEquals(-1, rightPanelPresenter.editingColumnIndex);
         verify(mockRightPanelView, times(1)).disableEditorTab();
     }
 
     @Test
     public void onModifyColumn() {
-        rightPanelPresenter.editingColumnIndex = COLUMN_INDEX;
+        rightPanelPresenter.editingColumnEnabled = true;
         rightPanelPresenter.onModifyColumn(FACT_NAME, VALUE, VALUE_CLASS_NAME);
         verify(mockEventBus, times(1)).fireEvent(isA(SetColumnValueEvent.class));
     }

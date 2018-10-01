@@ -25,6 +25,7 @@ import org.drools.workbench.screens.scenariosimulation.client.type.ScenarioSimul
 import org.drools.workbench.screens.scenariosimulation.client.widgets.RightPanelMenuItem;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGrid;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridLayer;
+import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModelContent;
 import org.guvnor.common.services.shared.metadata.model.Overview;
@@ -96,6 +97,9 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
     private ScenarioGridLayer mockScenarioGridLayer;
 
     @Mock
+    private ScenarioGridPanel mockScenarioGridPanel;
+
+    @Mock
     private ScenarioSimulationView mockScenarioSimulationView;
 
     @Mock
@@ -144,6 +148,7 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
     public void setup() {
         super.setup();
         when(mockScenarioGridLayer.getScenarioGrid()).thenReturn(mockScenarioGrid);
+        when(mockScenarioSimulationView.getScenarioGridPanel()).thenReturn(mockScenarioGridPanel);
         when(mockScenarioSimulationView.getScenarioGridLayer()).thenReturn(mockScenarioGridLayer);
         when(mockRightPanelMenuItem.getSetButtonTextFalse()).thenReturn(mockSetButtonTextFalse);
         when(mockRightPanelMenuItem.getSetButtonTextTrue()).thenReturn(mockSetButtonTextTrue);
@@ -176,6 +181,7 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
                 this.rightPanelRequest = mockPlaceRequest;
                 this.path = mockPath;
                 this.rightPanelMenuItem = mockRightPanelMenuItem;
+                this.scenarioGridPanel = mockScenarioGridPanel;
             }
 
             @Override
@@ -197,8 +203,12 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
             void clearRightPanelStatus() {
 
             }
-        };
 
+            @Override
+            String getJsonModel(ScenarioSimulationModel model) {
+                return "";
+            }
+        };
         presenterSpy = spy(presenter);
     }
 
@@ -281,10 +291,10 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
         when(mockPlaceManager.getStatus(mockPlaceRequest)).thenReturn(PlaceStatus.OPEN);
         presenter.onClose();
         onClosePlaceStatusOpen();
+        reset(mockScenarioGridPanel);
         reset(mockVersionRecordManager);
         reset(mockPlaceManager);
         reset(mockScenarioSimulationView);
-
         when(mockPlaceManager.getStatus(mockPlaceRequest)).thenReturn(PlaceStatus.CLOSE);
         presenter.onClose();
         onClosePlaceStatusClose();
@@ -308,12 +318,12 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
         verify(mockVersionRecordManager, times(1)).clear();
         verify(mockPlaceManager, times(1)).closePlace(mockPlaceRequest);
         verify(presenter.getView()).showLoading();
-        verify(mockScenarioSimulationView, times(1)).clear();
+        verify(mockScenarioGridPanel, times(1)).unregister();
     }
 
     private void onClosePlaceStatusClose() {
         verify(mockVersionRecordManager, times(1)).clear();
         verify(mockPlaceManager, times(0)).closePlace(mockPlaceRequest);
-        verify(mockScenarioSimulationView, times(1)).clear();
+        verify(mockScenarioGridPanel, times(1)).unregister();
     }
 }

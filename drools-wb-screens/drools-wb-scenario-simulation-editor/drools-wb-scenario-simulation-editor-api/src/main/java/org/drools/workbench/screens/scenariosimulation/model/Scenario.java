@@ -48,7 +48,7 @@ public class Scenario {
 
     /**
      * Returns an <b>unmodifiable</b> list wrapping the backed one
-
+     * <p>
      * NOTE: list order could not be aligned to factMapping order. Use {@link Scenario#sort()} before call this method
      * to ensure the order.
      * Best way to have ordered factMappingValues is to iterate over {@link SimulationDescriptor#factMappings} and use

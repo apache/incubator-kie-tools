@@ -25,19 +25,13 @@ public class EnableRightPanelEvent extends GwtEvent<EnableRightPanelEventHandler
 
     public static Type<EnableRightPanelEventHandler> TYPE = new Type<>();
 
-    private final int columnIndex;
 
-    public EnableRightPanelEvent(int columnIndex) {
-        this.columnIndex = columnIndex;
+    public EnableRightPanelEvent() {
     }
 
     @Override
     public Type<EnableRightPanelEventHandler> getAssociatedType() {
         return TYPE;
-    }
-
-    public int getColumnIndex() {
-        return columnIndex;
     }
 
     @Override

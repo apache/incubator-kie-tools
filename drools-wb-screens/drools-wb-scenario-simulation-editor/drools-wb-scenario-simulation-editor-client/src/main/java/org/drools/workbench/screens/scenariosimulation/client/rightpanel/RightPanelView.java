@@ -78,9 +78,8 @@ public interface RightPanelView
          * By default the <b>Editor Tab</b> is disabled (no user interaction allowed).
          * It is enabled only by click on grid' header
          *
-         * @param columnIndex the column being edited
          */
-        void onEnableEditorTab(int columnIndex);
+        void onEnableEditorTab();
 
         /**
          * By default the <b>Editor Tab</b> must be disabled (no user interaction allowed).

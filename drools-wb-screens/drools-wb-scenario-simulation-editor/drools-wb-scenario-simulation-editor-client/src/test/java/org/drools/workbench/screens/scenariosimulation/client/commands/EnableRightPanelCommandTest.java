@@ -21,7 +21,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -35,12 +34,12 @@ public class EnableRightPanelCommandTest extends AbstractCommandTest {
     @Before
     public void setup() {
         super.setup();
-        enableRightPanelCommand = new EnableRightPanelCommand(mockRightPanelPresenter, COLUMN_INDEX);
+        enableRightPanelCommand = new EnableRightPanelCommand(mockRightPanelPresenter);
     }
 
     @Test
     public void execute() {
         enableRightPanelCommand.execute();
-        verify(mockRightPanelPresenter, times(1)).onEnableEditorTab(eq(COLUMN_INDEX));
+        verify(mockRightPanelPresenter, times(1)).onEnableEditorTab();
     }
 }

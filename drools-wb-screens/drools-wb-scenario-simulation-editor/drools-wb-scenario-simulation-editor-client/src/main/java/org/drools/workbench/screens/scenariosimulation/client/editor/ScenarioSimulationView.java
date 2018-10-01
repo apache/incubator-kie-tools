@@ -16,9 +16,6 @@
 
 package org.drools.workbench.screens.scenariosimulation.client.editor;
 
-import java.util.Set;
-
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridLayer;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
@@ -33,13 +30,9 @@ public interface ScenarioSimulationView extends KieEditorView,
 
     void setContent(final Simulation simulation);
 
-    void clear();
-
     MenuItem getRunScenarioMenuItem();
 
     void setScenarioGridPanel(ScenarioGridPanel scenarioGridPanel);
-
-    void setHandlerRegistrations(Set<HandlerRegistration> handlerRegistrations);
 
     ScenarioGridPanel getScenarioGridPanel();
 

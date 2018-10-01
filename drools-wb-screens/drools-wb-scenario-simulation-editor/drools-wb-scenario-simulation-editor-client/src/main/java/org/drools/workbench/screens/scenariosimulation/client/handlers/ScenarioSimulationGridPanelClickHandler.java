@@ -17,6 +17,7 @@ package org.drools.workbench.screens.scenariosimulation.client.handlers;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.enterprise.context.Dependent;
 
@@ -28,6 +29,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.ContextMenuEvent;
 import com.google.gwt.event.dom.client.ContextMenuHandler;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.Timer;
 import org.drools.workbench.screens.scenariosimulation.client.editor.menu.AbstractHeaderMenuPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.editor.menu.BaseMenu;
 import org.drools.workbench.screens.scenariosimulation.client.editor.menu.ExpectedContextMenu;
@@ -59,6 +61,7 @@ public class ScenarioSimulationGridPanelClickHandler implements ClickHandler,
     UnmodifiableColumnGridContextMenu unmodifiableColumnGridContextMenu;
     Set<AbstractHeaderMenuPresenter> managedMenus = new HashSet<>();
     EventBus eventBus;
+    AtomicInteger clickReceived= new AtomicInteger(0);
 
     public ScenarioSimulationGridPanelClickHandler() {
     }
@@ -113,14 +116,29 @@ public class ScenarioSimulationGridPanelClickHandler implements ClickHandler,
 
     @Override
     public void onClick(ClickEvent event) {
-        hideMenus();
-        scenarioGrid.clearSelections();
-        if (manageLeftClick(event)) {
-            event.preventDefault();
-            event.stopPropagation();
-        } else {
-            eventBus.fireEvent(new DisableRightPanelEvent());
-        }
+        clickReceived.getAndIncrement();
+        final int canvasX = getRelativeX(event);
+        final int canvasY = getRelativeY(event);
+        final boolean isShiftKeyDown = event.getNativeEvent().getShiftKey();
+        final boolean isControlKeyDown = event.getNativeEvent().getCtrlKey();
+        // Workaround to differentiate click and double click on the same element
+        // we wait 300 ms to see  if another click happen in the meantime: if so, it is a double click,
+        // and we ignore it
+        Timer t = new Timer() {
+            @Override
+            public void run() {
+                if (clickReceived.get() ==1) {
+                    hideMenus();
+                    scenarioGrid.clearSelections();
+                    if (manageLeftClick(canvasX, canvasY, isShiftKeyDown, isControlKeyDown)) {
+                    } else {
+                        eventBus.fireEvent(new DisableRightPanelEvent());
+                    }
+                }
+                clickReceived.set(0);
+            }
+        };
+        t.schedule(300);
     }
 
     @Override
@@ -257,14 +275,14 @@ public class ScenarioSimulationGridPanelClickHandler implements ClickHandler,
     }
 
     /**
-     * @param event
+     *
+     * @param canvasX
+     * @param canvasY
+     * @param isShiftKeyDown
+     * @param isControlKeyDown
      * @return
      */
-    protected boolean manageLeftClick(final ClickEvent event) {
-        final int canvasX = getRelativeX(event);
-        final int canvasY = getRelativeY(event);
-        final boolean isShiftKeyDown = event.getNativeEvent().getShiftKey();
-        final boolean isControlKeyDown = event.getNativeEvent().getCtrlKey();
+    protected boolean manageLeftClick(final int canvasX,  final int canvasY, final boolean isShiftKeyDown, final boolean isControlKeyDown) {
         final Point2D ap = CoordinateUtilities.convertDOMToGridCoordinate(scenarioGrid,
                                                                           new Point2D(canvasX,
                                                                                       canvasY));
@@ -273,7 +291,7 @@ public class ScenarioSimulationGridPanelClickHandler implements ClickHandler,
         if (uiColumnIndex == null) {
             return false;
         } else {
-            return manageHeaderLeftClick(scenarioGrid, event.getNativeEvent().getClientX(), event.getNativeEvent().getClientY(), ap.getY(), uiColumnIndex);
+            return manageHeaderLeftClick(scenarioGrid, ap.getY(), uiColumnIndex);
         }
     }
 
@@ -281,13 +299,11 @@ public class ScenarioSimulationGridPanelClickHandler implements ClickHandler,
      * This method check if the click happened on an <b>second level header</b> (i.e. the header of a specific column) cell. If it is so, manage it and returns <code>true</code>,
      * otherwise returns <code>false</code>
      * @param scenarioGrid
-     * @param left
-     * @param top
      * @param gridY
      * @param uiColumnIndex
      * @return
      */
-    private boolean manageHeaderLeftClick(ScenarioGrid scenarioGrid, int left, int top, double gridY, Integer uiColumnIndex) {
+    private boolean manageHeaderLeftClick(ScenarioGrid scenarioGrid, double gridY, Integer uiColumnIndex) {
         ScenarioHeaderMetaData columnMetadata = getColumnScenarioHeaderMetaData(scenarioGrid, scenarioGrid.getModel().getColumns().get(uiColumnIndex), gridY);
         if (columnMetadata == null) {
             return false;
@@ -297,7 +313,7 @@ public class ScenarioSimulationGridPanelClickHandler implements ClickHandler,
             case "GIVEN":
             case "EXPECTED":
                 scenarioGrid.selectColumn(uiColumnIndex);
-                eventBus.fireEvent(new EnableRightPanelEvent(uiColumnIndex));
+                eventBus.fireEvent(new EnableRightPanelEvent());
                 break;
             default:
                 return false;

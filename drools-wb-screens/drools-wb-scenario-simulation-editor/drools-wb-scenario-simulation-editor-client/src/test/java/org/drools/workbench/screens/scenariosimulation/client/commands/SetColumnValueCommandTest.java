@@ -16,26 +16,37 @@
 
 package org.drools.workbench.screens.scenariosimulation.client.commands;
 
+import java.util.List;
+
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class SetColumnValueCommandTest extends AbstractCommandTest {
 
     private SetColumnValueCommand setColumnValueCommand;
 
+    @Mock
+    private List<GridColumn<?>> mockGridColumns;
+
     @Before
     public void setup() {
         super.setup();
-        setColumnValueCommand = new SetColumnValueCommand(mockScenarioGridModel, COLUMN_INDEX, COLUMN_ID, FULL_PACKAGE, VALUE, VALUE_CLASS_NAME, mockScenarioGridPanel, mockScenarioGridLayer);
+        when(mockGridColumns.indexOf(mockGridColumn)).thenReturn(COLUMN_INDEX);
+        when(mockScenarioGridModel.getColumns()).thenReturn(mockGridColumns);
+        when(mockScenarioGridModel.getSelectedColumn()).thenReturn(mockGridColumn);
+        setColumnValueCommand = new SetColumnValueCommand(mockScenarioGridModel, COLUMN_ID, FULL_PACKAGE, VALUE, VALUE_CLASS_NAME, mockScenarioGridPanel, mockScenarioGridLayer);
     }
 
     @Test

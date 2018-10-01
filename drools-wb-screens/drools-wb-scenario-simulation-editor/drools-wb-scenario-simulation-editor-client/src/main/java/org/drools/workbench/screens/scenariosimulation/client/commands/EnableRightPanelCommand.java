@@ -27,7 +27,6 @@ import org.uberfire.mvp.Command;
 public class EnableRightPanelCommand implements Command {
 
     private RightPanelView.Presenter rightPanelPresenter;
-    private int columnIndex;
 
     public EnableRightPanelCommand() {
     }
@@ -35,13 +34,12 @@ public class EnableRightPanelCommand implements Command {
     /**
      * @param rightPanelPresenter
      */
-    public EnableRightPanelCommand(RightPanelView.Presenter rightPanelPresenter, int columnIndex) {
+    public EnableRightPanelCommand(RightPanelView.Presenter rightPanelPresenter) {
         this.rightPanelPresenter = rightPanelPresenter;
-        this.columnIndex = columnIndex;
     }
 
     @Override
     public void execute() {
-        rightPanelPresenter.onEnableEditorTab(columnIndex);
+        rightPanelPresenter.onEnableEditorTab();
     }
 }

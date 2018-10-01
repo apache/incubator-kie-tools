@@ -45,19 +45,20 @@ public class ScenarioGridPanel extends GridLienzoPanel implements NodeMouseOutHa
     private EventBus eventBus;
     private ScenarioSimulationGridPanelClickHandler clickHandler;
 
+    Set<HandlerRegistration> handlerRegistrations = new HashSet<>();
+
     public ScenarioGridPanel() {
         super(LIENZO_PANEL_WIDTH, LIENZO_PANEL_HEIGHT);
     }
 
-    public Set<HandlerRegistration> addClickHandler(final ScenarioSimulationGridPanelClickHandler clickHandler) {
+    public void addClickHandler(final ScenarioSimulationGridPanelClickHandler clickHandler) {
         this.clickHandler = clickHandler;
-        Set<HandlerRegistration> toReturn = new HashSet<>();
-        toReturn.add(getDomElementContainer().addDomHandler(clickHandler,
+        unregister();
+        handlerRegistrations.add(getDomElementContainer().addDomHandler(clickHandler,
                                                             ContextMenuEvent.getType()));
-        toReturn.add(getDomElementContainer().addDomHandler(clickHandler,
+        handlerRegistrations.add(getDomElementContainer().addDomHandler(clickHandler,
                                                             ClickEvent.getType()));
-        toReturn.add(getScenarioGridLayer().addNodeMouseOutHandler(this));
-        return toReturn;
+        handlerRegistrations.add(getScenarioGridLayer().addNodeMouseOutHandler(this));
     }
 
     public ScenarioGridLayer getScenarioGridLayer() {
@@ -83,5 +84,10 @@ public class ScenarioGridPanel extends GridLienzoPanel implements NodeMouseOutHa
         if (x < 0 || x > width || y < 0 || screenY > height) {
            clickHandler.hideMenus();
        }
+    }
+
+    public void unregister() {
+        handlerRegistrations.forEach(HandlerRegistration::removeHandler);
+        handlerRegistrations.clear();
     }
 }
