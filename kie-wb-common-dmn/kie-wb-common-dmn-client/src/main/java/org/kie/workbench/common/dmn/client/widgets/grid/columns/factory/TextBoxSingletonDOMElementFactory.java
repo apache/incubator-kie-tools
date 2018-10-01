@@ -67,10 +67,12 @@ public class TextBoxSingletonDOMElementFactory extends BaseSingletonDOMElementFa
 
     @Override
     public TextBox createWidget() {
-        return new TextBox() {{
-            addKeyDownHandler(KeyDownEvent::stopPropagation);
-            addMouseDownHandler(MouseDownEvent::stopPropagation);
-        }};
+        final TextBox textBox = new TextBox();
+
+        textBox.addKeyDownHandler(KeyDownEvent::stopPropagation);
+        textBox.addMouseDownHandler(MouseDownEvent::stopPropagation);
+
+        return textBox;
     }
 
     @Override

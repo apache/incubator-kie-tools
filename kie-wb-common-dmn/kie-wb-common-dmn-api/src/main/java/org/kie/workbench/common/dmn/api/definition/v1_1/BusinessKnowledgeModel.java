@@ -15,13 +15,13 @@
  */
 package org.kie.workbench.common.dmn.api.definition.v1_1;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
+import org.kie.soup.commons.util.Sets;
 import org.kie.workbench.common.dmn.api.definition.DMNViewDefinition;
 import org.kie.workbench.common.dmn.api.definition.HasVariable;
 import org.kie.workbench.common.dmn.api.property.background.BackgroundSet;
@@ -54,9 +54,9 @@ public class BusinessKnowledgeModel extends DRGElement implements HasVariable,
     public static final transient String stunnerCategory = Categories.NODES;
 
     @Labels
-    private final Set<String> stunnerLabels = new HashSet<String>() {{
-        add("business-knowledge-model");
-    }};
+    private final Set<String> stunnerLabels = new Sets.Builder<String>()
+            .add("business-knowledge-model")
+            .build();
 
     @PropertySet
     @FormField(afterElement = "name")

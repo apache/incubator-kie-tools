@@ -15,13 +15,13 @@
  */
 package org.kie.workbench.common.dmn.client.shape.factory;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.dmn.api.definition.DMNDefinition;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Association;
 import org.kie.workbench.common.dmn.api.definition.v1_1.AuthorityRequirement;
@@ -38,32 +38,32 @@ import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeDefFactor
 public class DMNConnectorShapeFactory implements ShapeDefFactory<DMNDefinition, DMNShapeDef, Shape> {
 
     private final Map<Class<? extends DMNDefinition>, Function<Double[], WiresConnectorViewExt>> VIEW_FACTORIES =
-            new HashMap<Class<? extends DMNDefinition>, Function<Double[], WiresConnectorViewExt>>() {{
-                put(Association.class,
-                    points -> getDMNConnectorShapeViewFactory()
-                            .association(points[0],
-                                         points[1],
-                                         points[2],
-                                         points[3]));
-                put(InformationRequirement.class,
-                    points -> getDMNConnectorShapeViewFactory()
-                            .informationRequirement(points[0],
-                                                    points[1],
-                                                    points[2],
-                                                    points[3]));
-                put(KnowledgeRequirement.class,
-                    points -> getDMNConnectorShapeViewFactory()
-                            .knowledgeRequirement(points[0],
-                                                  points[1],
-                                                  points[2],
-                                                  points[3]));
-                put(AuthorityRequirement.class,
-                    points -> getDMNConnectorShapeViewFactory()
-                            .authorityRequirement(points[0],
-                                                  points[1],
-                                                  points[2],
-                                                  points[3]));
-            }};
+            new Maps.Builder<Class<? extends DMNDefinition>, Function<Double[], WiresConnectorViewExt>>()
+                    .put(Association.class,
+                         points -> getDMNConnectorShapeViewFactory()
+                                 .association(points[0],
+                                              points[1],
+                                              points[2],
+                                              points[3]))
+                    .put(InformationRequirement.class,
+                         points -> getDMNConnectorShapeViewFactory()
+                                 .informationRequirement(points[0],
+                                                         points[1],
+                                                         points[2],
+                                                         points[3]))
+                    .put(KnowledgeRequirement.class,
+                         points -> getDMNConnectorShapeViewFactory()
+                                 .knowledgeRequirement(points[0],
+                                                       points[1],
+                                                       points[2],
+                                                       points[3]))
+                    .put(AuthorityRequirement.class,
+                         points -> getDMNConnectorShapeViewFactory()
+                                 .authorityRequirement(points[0],
+                                                       points[1],
+                                                       points[2],
+                                                       points[3]))
+                    .build();
 
     private final DMNConnectorShapeViewFactory dmnConnectorShapeViewFactory;
 

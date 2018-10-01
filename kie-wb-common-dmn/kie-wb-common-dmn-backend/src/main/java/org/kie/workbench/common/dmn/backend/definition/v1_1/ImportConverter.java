@@ -42,7 +42,8 @@ public final class ImportConverter {
         result.setNamespace(source.getNamespace());
         Map<javax.xml.namespace.QName, String> additionalAttributes = new HashMap<>();
         for (Map.Entry<QName, String> entry : source.getAdditionalAttributes().entrySet()) {
-            additionalAttributes.put(QNamePropertyConverter.dmnFromWB(entry.getKey()).get(), entry.getValue());
+            QNamePropertyConverter.dmnFromWB(entry.getKey())
+                    .ifPresent(qName -> additionalAttributes.put(qName, entry.getValue()));
         }
         result.setAdditionalAttributes(additionalAttributes);
         return result;

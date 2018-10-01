@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.dmn.client.components.palette;
 
-import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -24,6 +23,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.kie.soup.commons.util.Sets;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Categories;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -49,11 +49,11 @@ public class DMNPaletteDefinitionBuilder
         this.paletteDefinitionBuilder = paletteDefinitionBuilder;
     }
 
-    static final Set<String> EXCLUDED_CATEGORIES = new HashSet<String>(3) {{
-        add(Categories.DIAGRAM);
-        add(Categories.CONNECTORS);
-        add(Categories.MISCELLANEOUS);
-    }};
+    static final Set<String> EXCLUDED_CATEGORIES = new Sets.Builder<String>()
+            .add(Categories.DIAGRAM)
+            .add(Categories.CONNECTORS)
+            .add(Categories.MISCELLANEOUS)
+            .build();
 
     @PostConstruct
     public void init() {

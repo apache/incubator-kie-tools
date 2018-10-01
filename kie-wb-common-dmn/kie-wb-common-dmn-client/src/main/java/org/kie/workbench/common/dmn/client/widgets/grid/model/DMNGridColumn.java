@@ -16,9 +16,9 @@
 
 package org.kie.workbench.common.dmn.client.widgets.grid.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import org.kie.soup.commons.util.Lists;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableHeaderMetaData;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableHeaderUtilities;
@@ -39,9 +39,9 @@ public abstract class DMNGridColumn<G extends GridWidget, T> extends BaseGridCol
     public DMNGridColumn(final HeaderMetaData headerMetaData,
                          final GridColumnRenderer<T> columnRenderer,
                          final G gridWidget) {
-        this(new ArrayList<HeaderMetaData>() {{
-                 add(headerMetaData);
-             }},
+        this(new Lists.Builder<HeaderMetaData>()
+                     .add(headerMetaData)
+                     .build(),
              columnRenderer,
              gridWidget);
     }

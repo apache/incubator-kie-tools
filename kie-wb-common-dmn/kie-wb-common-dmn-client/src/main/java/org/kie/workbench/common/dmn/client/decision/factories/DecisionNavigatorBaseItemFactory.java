@@ -148,11 +148,11 @@ public class DecisionNavigatorBaseItemFactory {
     }
 
     List<DecisionNavigatorItem> makeNestedItems(final Node<View, Edge> node) {
-        return new ArrayList<DecisionNavigatorItem>() {{
-            if (hasNestedElement(node)) {
-                add(nestedItemFactory.makeItem(node));
-            }
-        }};
+        final List<DecisionNavigatorItem> nestedItems = new ArrayList<>();
+        if (hasNestedElement(node)) {
+            nestedItems.add(nestedItemFactory.makeItem(node));
+        }
+        return nestedItems;
     }
 
     CanvasSelectionEvent makeCanvasSelectionEvent(final CanvasHandler canvas,

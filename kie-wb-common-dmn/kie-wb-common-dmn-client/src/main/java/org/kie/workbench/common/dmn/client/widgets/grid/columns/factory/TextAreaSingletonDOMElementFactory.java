@@ -67,10 +67,12 @@ public class TextAreaSingletonDOMElementFactory extends BaseSingletonDOMElementF
 
     @Override
     public TextArea createWidget() {
-        return new TextArea() {{
-            addKeyDownHandler(KeyDownEvent::stopPropagation);
-            addMouseDownHandler(MouseDownEvent::stopPropagation);
-        }};
+        final TextArea textArea = new TextArea();
+
+        textArea.addKeyDownHandler(KeyDownEvent::stopPropagation);
+        textArea.addMouseDownHandler(MouseDownEvent::stopPropagation);
+
+        return textArea;
     }
 
     @Override

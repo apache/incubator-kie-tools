@@ -15,12 +15,12 @@
  */
 package org.kie.workbench.common.dmn.client.shape;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.enterprise.context.ApplicationScoped;
 
 import com.google.gwt.safehtml.shared.SafeUri;
+import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.dmn.client.resources.DMNImageResources;
 import org.kie.workbench.common.stunner.shapes.def.picture.PictureProvider;
 
@@ -30,20 +30,20 @@ import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull
 public class DMNPictureProvider implements PictureProvider<DMNPictures> {
 
     private static final Map<DMNPictures, SafeUri> PICTURE_URIS =
-            new HashMap<DMNPictures, SafeUri>() {{
-                put(DMNPictures.DIAGRAM,
-                    DMNImageResources.INSTANCE.diagramToolbox().getSafeUri());
-                put(DMNPictures.INPUT_DATA,
-                    DMNImageResources.INSTANCE.inputDataToolbox().getSafeUri());
-                put(DMNPictures.KNOWLEDGE_SOURCE,
-                    DMNImageResources.INSTANCE.knowledgeSourceToolbox().getSafeUri());
-                put(DMNPictures.BUSINESS_KNOWLEDGE_MODEL,
-                    DMNImageResources.INSTANCE.businessKnowledgeModelToolbox().getSafeUri());
-                put(DMNPictures.DECISION,
-                    DMNImageResources.INSTANCE.decisionToolbox().getSafeUri());
-                put(DMNPictures.TEXT_ANNOTATION,
-                    DMNImageResources.INSTANCE.textAnnotationToolbox().getSafeUri());
-            }};
+            new Maps.Builder<DMNPictures, SafeUri>()
+                    .put(DMNPictures.DIAGRAM,
+                         DMNImageResources.INSTANCE.diagramToolbox().getSafeUri())
+                    .put(DMNPictures.INPUT_DATA,
+                         DMNImageResources.INSTANCE.inputDataToolbox().getSafeUri())
+                    .put(DMNPictures.KNOWLEDGE_SOURCE,
+                         DMNImageResources.INSTANCE.knowledgeSourceToolbox().getSafeUri())
+                    .put(DMNPictures.BUSINESS_KNOWLEDGE_MODEL,
+                         DMNImageResources.INSTANCE.businessKnowledgeModelToolbox().getSafeUri())
+                    .put(DMNPictures.DECISION,
+                         DMNImageResources.INSTANCE.decisionToolbox().getSafeUri())
+                    .put(DMNPictures.TEXT_ANNOTATION,
+                         DMNImageResources.INSTANCE.textAnnotationToolbox().getSafeUri())
+                    .build();
 
     @Override
     public Class<DMNPictures> getSourceType() {

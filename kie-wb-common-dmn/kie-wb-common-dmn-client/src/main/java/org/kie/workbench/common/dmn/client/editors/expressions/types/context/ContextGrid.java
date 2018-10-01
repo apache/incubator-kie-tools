@@ -299,18 +299,20 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextGridData, Co
         final GridCellTuple gc = new GridCellTuple(uiRowIndex,
                                                    ContextUIModelMapperHelper.EXPRESSION_COLUMN_INDEX,
                                                    this);
-        final HasExpression hasExpression = expression.get().getContextEntry().get(uiRowIndex);
-        sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
-                                      new ClearExpressionTypeCommand(gc,
-                                                                     hasExpression,
-                                                                     uiModelMapper,
-                                                                     () -> {
-                                                                         resize(BaseExpressionGrid.RESIZE_EXISTING_MINIMUM);
-                                                                         selectParentCell();
-                                                                     },
-                                                                     () -> {
-                                                                         resize(BaseExpressionGrid.RESIZE_EXISTING_MINIMUM);
-                                                                         selectFirstCell();
-                                                                     }));
+        expression.ifPresent(context -> {
+            final HasExpression hasExpression = context.getContextEntry().get(uiRowIndex);
+            sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
+                                          new ClearExpressionTypeCommand(gc,
+                                                                         hasExpression,
+                                                                         uiModelMapper,
+                                                                         () -> {
+                                                                             resize(BaseExpressionGrid.RESIZE_EXISTING_MINIMUM);
+                                                                             selectParentCell();
+                                                                         },
+                                                                         () -> {
+                                                                             resize(BaseExpressionGrid.RESIZE_EXISTING_MINIMUM);
+                                                                             selectFirstCell();
+                                                                         }));
+        });
     }
 }

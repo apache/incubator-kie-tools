@@ -172,11 +172,13 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGri
     }
 
     private String getExpressionText() {
-        return ((LiteralExpression) expression.get().getExpression()).getText();
+        return expression.map(invocation -> (LiteralExpression) invocation.getExpression())
+                .map(literalExpression -> literalExpression.getText())
+                .orElse("");
     }
 
     private void setExpressionText(final String text) {
-        ((LiteralExpression) expression.get().getExpression()).setText(text);
+        expression.ifPresent(invocation -> ((LiteralExpression) invocation.getExpression()).setText(text));
     }
 
     @Override
@@ -296,18 +298,20 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGri
         final GridCellTuple gc = new GridCellTuple(uiRowIndex,
                                                    InvocationUIModelMapper.BINDING_EXPRESSION_COLUMN_INDEX,
                                                    this);
-        final HasExpression hasExpression = expression.get().getBinding().get(uiRowIndex);
-        sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
-                                      new ClearExpressionTypeCommand(gc,
-                                                                     hasExpression,
-                                                                     uiModelMapper,
-                                                                     () -> {
-                                                                         resize(BaseExpressionGrid.RESIZE_EXISTING_MINIMUM);
-                                                                         selectParentCell();
-                                                                     },
-                                                                     () -> {
-                                                                         resize(BaseExpressionGrid.RESIZE_EXISTING_MINIMUM);
-                                                                         selectFirstCell();
-                                                                     }));
+        expression.ifPresent(invocation -> {
+            final HasExpression hasExpression = invocation.getBinding().get(uiRowIndex);
+            sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
+                                          new ClearExpressionTypeCommand(gc,
+                                                                         hasExpression,
+                                                                         uiModelMapper,
+                                                                         () -> {
+                                                                             resize(BaseExpressionGrid.RESIZE_EXISTING_MINIMUM);
+                                                                             selectParentCell();
+                                                                         },
+                                                                         () -> {
+                                                                             resize(BaseExpressionGrid.RESIZE_EXISTING_MINIMUM);
+                                                                             selectFirstCell();
+                                                                         }));
+        });
     }
 }

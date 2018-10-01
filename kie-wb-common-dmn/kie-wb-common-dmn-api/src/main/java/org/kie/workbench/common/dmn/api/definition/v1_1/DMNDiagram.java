@@ -15,13 +15,13 @@
  */
 package org.kie.workbench.common.dmn.api.definition.v1_1;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
+import org.kie.soup.commons.util.Sets;
 import org.kie.workbench.common.dmn.api.definition.DMNDefinition;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
@@ -61,9 +61,9 @@ public class DMNDiagram extends DMNModelInstrumentedBase implements DMNDefinitio
     public static final transient String stunnerCategory = Categories.DIAGRAM;
 
     @Labels
-    public static final Set<String> stunnerLabels = new HashSet<String>() {{
-        add("dmn_diagram");
-    }};
+    public static final Set<String> stunnerLabels = new Sets.Builder<String>()
+            .add("dmn_diagram")
+            .build();
 
     @Property
     @FormField(readonly = true)

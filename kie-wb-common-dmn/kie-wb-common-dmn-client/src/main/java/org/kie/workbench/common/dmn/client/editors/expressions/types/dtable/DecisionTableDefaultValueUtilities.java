@@ -40,7 +40,7 @@ public class DecisionTableDefaultValueUtilities {
         return INPUT_CLAUSE_PREFIX + getMaxUnusedInputClauseIndex(dtable);
     }
 
-    private static long getMaxUnusedInputClauseIndex(final DecisionTable dtable) {
+    private static int getMaxUnusedInputClauseIndex(final DecisionTable dtable) {
         int maxIndex = 0;
         for (InputClause ic : dtable.getInput()) {
             final LiteralExpression le = ic.getInputExpression();
@@ -58,7 +58,7 @@ public class DecisionTableDefaultValueUtilities {
         return OUTPUT_CLAUSE_PREFIX + getMaxUnusedOutputClauseIndex(dtable);
     }
 
-    private static long getMaxUnusedOutputClauseIndex(final DecisionTable dtable) {
+    private static int getMaxUnusedOutputClauseIndex(final DecisionTable dtable) {
         int maxIndex = 0;
         for (OutputClause oc : dtable.getOutput()) {
             final Optional<Integer> index = DefaultValueUtilities.extractIndex(oc.getName(), OUTPUT_CLAUSE_PREFIX);

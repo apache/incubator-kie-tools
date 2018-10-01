@@ -15,13 +15,13 @@
  */
 package org.kie.workbench.common.dmn.api.definition.v1_1;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
+import org.kie.soup.commons.util.Sets;
 import org.kie.workbench.common.dmn.api.definition.DMNViewDefinition;
 import org.kie.workbench.common.dmn.api.property.background.BackgroundSet;
 import org.kie.workbench.common.dmn.api.property.dimensions.RectangleDimensionsSet;
@@ -55,9 +55,9 @@ public class KnowledgeSource extends DRGElement implements DMNViewDefinition {
     public static final transient String stunnerCategory = Categories.NODES;
 
     @Labels
-    private final Set<String> stunnerLabels = new HashSet<String>() {{
-        add("knowledge-source");
-    }};
+    private final Set<String> stunnerLabels = new Sets.Builder<String>()
+            .add("knowledge-source")
+            .build();
 
     @Property
     @FormField(afterElement = "name")

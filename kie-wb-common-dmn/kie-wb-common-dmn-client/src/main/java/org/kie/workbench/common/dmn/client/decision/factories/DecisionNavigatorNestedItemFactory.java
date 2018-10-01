@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.dmn.client.decision.factories;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -24,6 +23,7 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.BusinessKnowledgeModel;
@@ -60,15 +60,15 @@ import static org.kie.workbench.common.dmn.client.decision.DecisionNavigatorItem
 public class DecisionNavigatorNestedItemFactory {
 
     private static final Map<Class<? extends Expression>, DecisionNavigatorItem.Type> ITEM_TYPE_BY_EXPRESSION =
-            new HashMap<Class<? extends Expression>, DecisionNavigatorItem.Type>() {{
-                put(Context.class, CONTEXT);
-                put(DecisionTable.class, DECISION_TABLE);
-                put(FunctionDefinition.class, FUNCTION_DEFINITION);
-                put(Invocation.class, INVOCATION);
-                put(List.class, LIST);
-                put(LiteralExpression.class, LITERAL_EXPRESSION);
-                put(Relation.class, RELATION);
-            }};
+            new Maps.Builder<Class<? extends Expression>, DecisionNavigatorItem.Type>()
+                    .put(Context.class, CONTEXT)
+                    .put(DecisionTable.class, DECISION_TABLE)
+                    .put(FunctionDefinition.class, FUNCTION_DEFINITION)
+                    .put(Invocation.class, INVOCATION)
+                    .put(List.class, LIST)
+                    .put(LiteralExpression.class, LITERAL_EXPRESSION)
+                    .put(Relation.class, RELATION)
+                    .build();
 
     private final SessionManager sessionManager;
 

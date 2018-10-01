@@ -15,11 +15,11 @@
  */
 package org.kie.workbench.common.dmn.api.definition.v1_1;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
+import org.kie.soup.commons.util.Sets;
 import org.kie.workbench.common.dmn.api.rules.AcyclicDirectedGraphRule;
 import org.kie.workbench.common.dmn.api.rules.SingleConnectorPerTypeGraphRule;
 import org.kie.workbench.common.dmn.api.validation.NoValidation;
@@ -51,9 +51,9 @@ public class KnowledgeRequirement extends DMNModelInstrumentedBase {
     public static final transient String stunnerCategory = Categories.CONNECTORS;
 
     @Labels
-    private final Set<String> stunnerLabels = new HashSet<String>() {{
-        add("knowledge-requirement");
-    }};
+    private final Set<String> stunnerLabels = new Sets.Builder<String>()
+            .add("knowledge-requirement")
+            .build();
 
     public KnowledgeRequirement() {
     }

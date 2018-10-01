@@ -16,11 +16,11 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.relation;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import org.kie.soup.commons.util.Lists;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Relation;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.MoveColumnsCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.MoveRowsCommand;
@@ -76,9 +76,10 @@ public class RelationGridData extends DelegatingGridData {
     public void moveColumnTo(final int index,
                              final GridColumn<?> column) {
         moveColumnsTo(index,
-                      new ArrayList<GridColumn<?>>() {{
-                          add(column);
-                      }});
+                      new Lists.Builder<GridColumn<?>>()
+                              .add(column)
+                              .build()
+        );
     }
 
     @Override

@@ -16,9 +16,9 @@
 
 package org.kie.workbench.common.dmn.client.shape.def;
 
-import java.util.HashMap;
 import java.util.Map;
 
+import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.dmn.api.definition.DMNDefinition;
 import org.kie.workbench.common.dmn.api.definition.DMNViewDefinition;
 import org.kie.workbench.common.dmn.api.definition.v1_1.BusinessKnowledgeModel;
@@ -53,34 +53,34 @@ public class DMNSVGShapeDefImpl implements DMNSVGShapeDef<DMNViewDefinition> {
                          DMNSVGViewFactory::textAnnotation);
 
     public static final Map<Class<? extends DMNDefinition>, Glyph> GLYPHS_TOOLBOX =
-            new HashMap<Class<? extends DMNDefinition>, Glyph>() {{
-                put(BusinessKnowledgeModel.class,
-                    DMNSVGGlyphFactory.BUSINESS_KNOWLEDGE_MODEL_TOOLBOX);
-                put(Decision.class,
-                    DMNSVGGlyphFactory.DECISION_TOOLBOX);
-                put(DMNDiagram.class,
-                    DMNSVGGlyphFactory.DIAGRAM_TOOLBOX);
-                put(InputData.class,
-                    DMNSVGGlyphFactory.INPUT_DATA_TOOLBOX);
-                put(KnowledgeSource.class,
-                    DMNSVGGlyphFactory.KNOWLEDGE_SOURCE_TOOLBOX);
-                put(TextAnnotation.class,
-                    DMNSVGGlyphFactory.TEXT_ANNOTATION_TOOLBOX);
-            }};
+            new Maps.Builder<Class<? extends DMNDefinition>, Glyph>()
+                    .put(BusinessKnowledgeModel.class,
+                         DMNSVGGlyphFactory.BUSINESS_KNOWLEDGE_MODEL_TOOLBOX)
+                    .put(Decision.class,
+                         DMNSVGGlyphFactory.DECISION_TOOLBOX)
+                    .put(DMNDiagram.class,
+                         DMNSVGGlyphFactory.DIAGRAM_TOOLBOX)
+                    .put(InputData.class,
+                         DMNSVGGlyphFactory.INPUT_DATA_TOOLBOX)
+                    .put(KnowledgeSource.class,
+                         DMNSVGGlyphFactory.KNOWLEDGE_SOURCE_TOOLBOX)
+                    .put(TextAnnotation.class,
+                         DMNSVGGlyphFactory.TEXT_ANNOTATION_TOOLBOX)
+                    .build();
 
     public static final Map<Class<? extends DMNDefinition>, Glyph> GLYPHS_PALETTE =
-            new HashMap<Class<? extends DMNDefinition>, Glyph>() {{
-                put(BusinessKnowledgeModel.class,
-                    DMNSVGGlyphFactory.BUSINESS_KNOWLEDGE_MODEL_PALETTE);
-                put(Decision.class,
-                    DMNSVGGlyphFactory.DECISION_PALETTE);
-                put(InputData.class,
-                    DMNSVGGlyphFactory.INPUT_DATA_PALETTE);
-                put(KnowledgeSource.class,
-                    DMNSVGGlyphFactory.KNOWLEDGE_SOURCE_PALETTE);
-                put(TextAnnotation.class,
-                    DMNSVGGlyphFactory.TEXT_ANNOTATION_PALETTE);
-            }};
+            new Maps.Builder<Class<? extends DMNDefinition>, Glyph>()
+                    .put(BusinessKnowledgeModel.class,
+                         DMNSVGGlyphFactory.BUSINESS_KNOWLEDGE_MODEL_PALETTE)
+                    .put(Decision.class,
+                         DMNSVGGlyphFactory.DECISION_PALETTE)
+                    .put(InputData.class,
+                         DMNSVGGlyphFactory.INPUT_DATA_PALETTE)
+                    .put(KnowledgeSource.class,
+                         DMNSVGGlyphFactory.KNOWLEDGE_SOURCE_PALETTE)
+                    .put(TextAnnotation.class,
+                         DMNSVGGlyphFactory.TEXT_ANNOTATION_PALETTE)
+                    .build();
 
     @Override
     public SVGShapeView<?> newViewInstance(final DMNSVGViewFactory factory,

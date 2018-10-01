@@ -178,12 +178,14 @@ public class SessionDiagramPreviewScreen extends BaseSessionScreen {
     }
 
     private MenuItem buildRefreshMenuItem() {
-        return MenuUtils.buildItem(new Button() {{
-            setIcon(IconType.REFRESH);
-            setSize(ButtonSize.SMALL);
-            setTitle("Refresh");
-            addClickHandler(e -> SessionDiagramPreviewScreen.this.refresh());
-        }});
+        final Button button = new Button();
+
+        button.setIcon(IconType.REFRESH);
+        button.setSize(ButtonSize.SMALL);
+        button.setTitle("Refresh");
+        button.addClickHandler(e -> SessionDiagramPreviewScreen.this.refresh());
+
+        return MenuUtils.buildItem(button);
     }
 
     private void refresh() {

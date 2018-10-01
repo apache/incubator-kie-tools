@@ -127,11 +127,9 @@ public class ContextUIModelMapper extends BaseUIModelMapper<Context> {
     }
 
     protected boolean isLastRow(final int rowIndex) {
-        if (dmnModel.get().isPresent()) {
-            final Context context = dmnModel.get().get();
-            return rowIndex == context.getContextEntry().size() - 1;
-        }
-        return false;
+        return dmnModel.get()
+                .map(context -> rowIndex == context.getContextEntry().size() - 1)
+                .orElse(false);
     }
 
     @Override

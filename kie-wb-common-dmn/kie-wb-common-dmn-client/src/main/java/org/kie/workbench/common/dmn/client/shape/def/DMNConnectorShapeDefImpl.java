@@ -16,10 +16,10 @@
 
 package org.kie.workbench.common.dmn.client.shape.def;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
+import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.dmn.api.definition.DMNDefinition;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Association;
 import org.kie.workbench.common.dmn.api.definition.v1_1.AuthorityRequirement;
@@ -34,16 +34,16 @@ import org.kie.workbench.common.stunner.shapes.client.view.AbstractConnectorView
 public class DMNConnectorShapeDefImpl implements DMNConnectorShapeDef<DMNDefinition, AbstractConnectorView> {
 
     public static final Map<Class<? extends DMNDefinition>, Glyph> GLYPHS =
-            new HashMap<Class<? extends DMNDefinition>, Glyph>() {{
-                put(Association.class,
-                    DMNSVGGlyphFactory.ASSOCIATION_TOOLBOX);
-                put(AuthorityRequirement.class,
-                    DMNSVGGlyphFactory.AUTHORITY_REQUIREMENT_TOOLBOX);
-                put(InformationRequirement.class,
-                    DMNSVGGlyphFactory.INFORMATION_REQUIREMENT_TOOLBOX);
-                put(KnowledgeRequirement.class,
-                    DMNSVGGlyphFactory.KNOWLEDGE_REQUIREMENT_TOOLBOX);
-            }};
+            new Maps.Builder<Class<? extends DMNDefinition>, Glyph>()
+                    .put(Association.class,
+                         DMNSVGGlyphFactory.ASSOCIATION_TOOLBOX)
+                    .put(AuthorityRequirement.class,
+                         DMNSVGGlyphFactory.AUTHORITY_REQUIREMENT_TOOLBOX)
+                    .put(InformationRequirement.class,
+                         DMNSVGGlyphFactory.INFORMATION_REQUIREMENT_TOOLBOX)
+                    .put(KnowledgeRequirement.class,
+                         DMNSVGGlyphFactory.KNOWLEDGE_REQUIREMENT_TOOLBOX)
+                    .build();
 
     @Override
     public BiConsumer<DMNDefinition, AbstractConnectorView> viewHandler() {
