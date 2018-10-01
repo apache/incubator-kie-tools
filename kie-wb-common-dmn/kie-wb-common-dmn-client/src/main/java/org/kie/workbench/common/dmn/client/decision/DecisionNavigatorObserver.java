@@ -42,8 +42,12 @@ public class DecisionNavigatorObserver {
         this.presenter = presenter;
     }
 
+    @SuppressWarnings("unused")
     void onCanvasClear(final @Observes CanvasClearEvent event) {
-        getOptionalPresenter().ifPresent(DecisionNavigatorPresenter::removeAllElements);
+        getOptionalPresenter().ifPresent(p -> {
+            p.removeAllElements();
+            p.refreshTreeView();
+        });
     }
 
     void onCanvasElementAdded(final @Observes CanvasElementAddedEvent event) {
@@ -63,17 +67,17 @@ public class DecisionNavigatorObserver {
         setActiveParent(event);
     }
 
+    @SuppressWarnings("unused")
     void onNestedElementAdded(final @Observes ExpressionEditorChanged event) {
 
         final Node node = presenter.getGraph().getNode(getActiveParent().getUUID());
 
         presenter.updateElement(node);
 
-        getActiveParent().getChildren().forEach(e -> {
-            getTreePresenter().selectItem(e.getUUID());
-        });
+        getActiveParent().getChildren().forEach(e -> getTreePresenter().selectItem(e.getUUID()));
     }
 
+    @SuppressWarnings("unused")
     void onNestedElementLostFocus(final @Observes CanvasFocusedShapeEvent event) {
         getTreePresenter().deselectItem();
     }

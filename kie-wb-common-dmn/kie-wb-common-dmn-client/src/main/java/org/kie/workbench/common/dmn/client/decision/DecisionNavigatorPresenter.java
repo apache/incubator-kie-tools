@@ -152,7 +152,7 @@ public class DecisionNavigatorPresenter {
         view.setupMainTree(treePresenter.getView());
     }
 
-    void refreshTreeView() {
+    public void refreshTreeView() {
         treePresenter.setupItems(getItems());
     }
 

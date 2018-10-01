@@ -99,6 +99,7 @@ public class DecisionNavigatorObserverTest {
         observer.onCanvasClear(new CanvasClearEvent(canvas));
 
         verify(presenter).removeAllElements();
+        verify(presenter).refreshTreeView();
     }
 
     @Test
@@ -106,6 +107,7 @@ public class DecisionNavigatorObserverTest {
         observer.onCanvasClear(new CanvasClearEvent(canvas));
 
         verify(presenter, never()).removeAllElements();
+        verify(presenter, never()).refreshTreeView();
     }
 
     @Test
