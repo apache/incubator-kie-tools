@@ -40,19 +40,20 @@ public class DecisionTableVerifierWebWorkerProvider
     }
 
     public String loadResource(final String name) throws Exception {
-        final InputStream in = DecisionTableVerifierWebWorkerProvider.class.getResourceAsStream(name);
-        if (in == null) {
-            throw new FileNotFoundException("Could not find the verifier file " + name);
-        }
-        final Reader reader = new InputStreamReader(in,
-                                                    StandardCharsets.UTF_8);
         final StringBuilder text = new StringBuilder();
-        final char[] buf = new char[1024];
-        int len = 0;
-        while ((len = reader.read(buf)) >= 0) {
-            text.append(buf,
-                        0,
-                        len);
+
+        try (final InputStream in = DecisionTableVerifierWebWorkerProvider.class.getResourceAsStream(name);
+             final Reader reader = new InputStreamReader(in, StandardCharsets.UTF_8)) {
+
+            final char[] buf = new char[1024];
+            int len = 0;
+            while ((len = reader.read(buf)) >= 0) {
+                text.append(buf,
+                            0,
+                            len);
+            }
+        } catch (final NullPointerException npe) {
+            throw new FileNotFoundException("Could not find the verifier file " + name);
         }
         return text.toString();
     }

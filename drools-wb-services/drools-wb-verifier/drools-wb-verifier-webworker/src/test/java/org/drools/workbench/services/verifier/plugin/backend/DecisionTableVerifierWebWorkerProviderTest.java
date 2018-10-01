@@ -15,8 +15,7 @@
  */
 package org.drools.workbench.services.verifier.plugin.backend;
 
-import java.io.FileNotFoundException;
-
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -33,8 +32,10 @@ public class DecisionTableVerifierWebWorkerProviderTest {
         assertEquals("hello there", new DecisionTableVerifierWebWorkerProvider().loadResource("test.txt"));
     }
 
-    @Test(expected = FileNotFoundException.class)
-    public void fileDoesNotExist() throws Exception {
-        new DecisionTableVerifierWebWorkerProvider().loadResource("doesNotExists.txt");
+    @Test
+    public void fileDoesNotExist() {
+        final String filename = "doesNotExists.txt";
+        Assertions.assertThatThrownBy(() -> new DecisionTableVerifierWebWorkerProvider().loadResource(filename))
+                .hasMessage("Could not find the verifier file " + filename);
     }
 }
