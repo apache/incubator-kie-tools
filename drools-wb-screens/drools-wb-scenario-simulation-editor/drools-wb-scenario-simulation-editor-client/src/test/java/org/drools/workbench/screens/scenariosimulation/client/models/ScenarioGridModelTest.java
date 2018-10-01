@@ -22,6 +22,7 @@ import java.util.function.Supplier;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.screens.scenariosimulation.client.metadata.ScenarioHeaderMetaData;
+import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
 import org.drools.workbench.screens.scenariosimulation.model.ExpressionIdentifier;
 import org.drools.workbench.screens.scenariosimulation.model.FactIdentifier;
 import org.drools.workbench.screens.scenariosimulation.model.FactMapping;
@@ -54,7 +55,7 @@ public class ScenarioGridModelTest {
     private ScenarioGridModel scenarioGridModel;
 
     @Mock
-    private GridColumn<String> mockGridStringColumn;
+    private ScenarioGridColumn mockScenarioGridColumn;
 
     @Mock
     private GridColumn<?> mockGridColumn;
@@ -116,11 +117,12 @@ public class ScenarioGridModelTest {
 
     @Before
     public void setup() {
-        when(mockGridStringColumns.get(COLUMN_INDEX)).thenReturn(mockGridStringColumn);
+        when(mockGridStringColumns.get(COLUMN_INDEX)).thenReturn(mockScenarioGridColumn);
         when(mockRows.get(ROW_INDEX)).thenReturn(mockGridRow);
         when(mockSimulationDescriptor.getFactMappingByIndex(COLUMN_INDEX)).thenReturn(mockFactMapping);
         when(mockSimulation.getSimulationDescriptor()).thenReturn(mockSimulationDescriptor);
-        when(mockGridStringColumn.getHeaderMetaData()).thenReturn(mockHeaderMetaDataList);
+        when(mockScenarioGridColumn.getInformationHeaderMetaData()).thenReturn(mockHeaderMetaData);
+        when(mockScenarioGridColumn.getHeaderMetaData()).thenReturn(mockHeaderMetaDataList);
         when(mockHeaderMetaDataList.get(1)).thenReturn(mockHeaderMetaData);
         when(mockHeaderMetaData.getTitle()).thenReturn(GRID_COLUMN_TITLE);
         when(mockHeaderMetaData.getColumnGroup()).thenReturn(GRID_COLUMN_GROUP);
@@ -151,7 +153,6 @@ public class ScenarioGridModelTest {
 
             @Override
             public void deleteColumn(GridColumn<?> column) {
-                //
             }
         });
     }
@@ -170,8 +171,8 @@ public class ScenarioGridModelTest {
     @Test
     public void appendNewColumn() {
         reset(scenarioGridModel);
-        scenarioGridModel.appendNewColumn(mockGridStringColumn);
-        verify(scenarioGridModel, times(1)).commonAddColumn(eq(-1), eq(mockGridStringColumn));
+        scenarioGridModel.appendNewColumn(mockScenarioGridColumn);
+        verify(scenarioGridModel, times(1)).commonAddColumn(eq(-1), eq(mockScenarioGridColumn));
     }
 
     @Test
@@ -222,16 +223,16 @@ public class ScenarioGridModelTest {
     @Test
     public void insertColumn() {
         reset(scenarioGridModel);
-        scenarioGridModel.insertColumn(COLUMN_INDEX, mockGridStringColumn);
+        scenarioGridModel.insertColumn(COLUMN_INDEX, mockScenarioGridColumn);
         verify(scenarioGridModel, times(1)).checkSimulation();
     }
 
     @Test
     public void insertNewColumn() {
         reset(scenarioGridModel);
-        scenarioGridModel.insertNewColumn(COLUMN_INDEX, mockGridStringColumn);
+        scenarioGridModel.insertNewColumn(COLUMN_INDEX, mockScenarioGridColumn);
         verify(scenarioGridModel, times(1)).checkSimulation();
-        verify(scenarioGridModel, times(1)).commonAddColumn(eq(COLUMN_INDEX), eq(mockGridStringColumn));
+        verify(scenarioGridModel, times(1)).commonAddColumn(eq(COLUMN_INDEX), eq(mockScenarioGridColumn));
     }
 
     @Test
@@ -244,10 +245,10 @@ public class ScenarioGridModelTest {
     @Test
     public void updateColumnType() {
         reset(scenarioGridModel);
-        scenarioGridModel.updateColumnType(COLUMN_INDEX, mockGridColumn, FULL_PACKAGE, VALUE, VALUE_CLASS_NAME);
+        scenarioGridModel.updateColumnType(COLUMN_INDEX, mockScenarioGridColumn, FULL_PACKAGE, VALUE, VALUE_CLASS_NAME);
         verify(scenarioGridModel, times(2)).checkSimulation();
         verify(scenarioGridModel, times(1)).deleteNewColumn(eq(COLUMN_INDEX));
-        verify(scenarioGridModel, times(1)).commonAddColumn(eq(COLUMN_INDEX), eq(mockGridColumn), isA(FactIdentifier.class), isA(ExpressionIdentifier.class));
+        verify(scenarioGridModel, times(1)).commonAddColumn(eq(COLUMN_INDEX), eq(mockScenarioGridColumn), isA(FactIdentifier.class), isA(ExpressionIdentifier.class));
         verify(scenarioGridModel, times(1)).selectColumn(eq(COLUMN_INDEX));
 
     }
@@ -267,7 +268,7 @@ public class ScenarioGridModelTest {
     @Test
     public void commonAddColumn() {
         reset(scenarioGridModel);
-        scenarioGridModel.commonAddColumn(COLUMN_INDEX, mockGridStringColumn);
+        scenarioGridModel.commonAddColumn(COLUMN_INDEX, mockScenarioGridColumn);
         verify(scenarioGridModel, times(0)).checkSimulation();
     }
 

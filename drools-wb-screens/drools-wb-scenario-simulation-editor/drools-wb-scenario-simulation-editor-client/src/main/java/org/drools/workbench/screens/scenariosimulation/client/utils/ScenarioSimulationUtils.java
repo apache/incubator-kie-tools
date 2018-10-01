@@ -60,9 +60,12 @@ public class ScenarioSimulationUtils {
 //            return columnBuilder;
 //        }
 
+        boolean informationHeader = isOther(factMappingType) || isExpected(factMappingType) || isGiven(factMappingType);
         columnBuilder.newLevel()
                 .setColumnTitle(title)
-                .setColumnGroup(columnGroup).setReadOnly(false);
+                .setColumnGroup(columnGroup)
+                .setReadOnly(false)
+                .setInformationHeader(informationHeader);
 
         return columnBuilder;
     }
@@ -71,12 +74,21 @@ public class ScenarioSimulationUtils {
         return FactMappingType.OTHER.equals(factMappingType);
     }
 
+    private static boolean isExpected(FactMappingType factMappingType) {
+        return FactMappingType.EXPECTED.equals(factMappingType);
+    }
+
+    private static boolean isGiven(FactMappingType factMappingType) {
+        return FactMappingType.GIVEN.equals(factMappingType);
+    }
+
     public static class ColumnBuilder {
 
         String columnId;
         String columnTitle;
         String columnGroup = "";
         boolean readOnly = false;
+        boolean informationHeader = false;
         ColumnBuilder nestedLevel;
 
         public static ColumnBuilder get() {
@@ -103,6 +115,11 @@ public class ScenarioSimulationUtils {
             return this;
         }
 
+        public ColumnBuilder setInformationHeader(boolean informationHeader) {
+            this.informationHeader = informationHeader;
+            return this;
+        }
+
         public ColumnBuilder newLevel() {
             this.nestedLevel = ColumnBuilder.get()
                     .setColumnId(columnId)
@@ -123,7 +140,7 @@ public class ScenarioSimulationUtils {
         }
 
         private GridColumn.HeaderMetaData internalBuild(ScenarioHeaderTextBoxSingletonDOMElementFactory factory) {
-            return new ScenarioHeaderMetaData(columnId, columnTitle, columnGroup, factory, readOnly);
+            return new ScenarioHeaderMetaData(columnId, columnTitle, columnGroup, factory, readOnly, informationHeader);
         }
     }
 }

@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioCellTextBoxSingletonDOMElementFactory;
+import org.drools.workbench.screens.scenariosimulation.client.metadata.ScenarioHeaderMetaData;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCell;
@@ -31,14 +32,18 @@ public class ScenarioGridColumn extends BaseGridColumn<String> {
 
     private final ScenarioCellTextBoxSingletonDOMElementFactory factory;
 
+    final ScenarioHeaderMetaData informationHeaderMetaData;
+
     public ScenarioGridColumn(HeaderMetaData headerMetaData, GridColumnRenderer<String> columnRenderer, double width, boolean isMovable, ScenarioCellTextBoxSingletonDOMElementFactory factory) {
         super(headerMetaData, columnRenderer, width);
+        this.informationHeaderMetaData = (ScenarioHeaderMetaData) headerMetaData;
         this.setMovable(isMovable);
         this.factory = factory;
     }
 
     public ScenarioGridColumn(List<HeaderMetaData> headerMetaData, GridColumnRenderer<String> columnRenderer, double width, boolean isMovable, ScenarioCellTextBoxSingletonDOMElementFactory factory) {
         super(headerMetaData, columnRenderer, width);
+        this.informationHeaderMetaData = (ScenarioHeaderMetaData) headerMetaData.stream().filter(hdm -> ((ScenarioHeaderMetaData) hdm).isInformationHeader()).findFirst().orElse(headerMetaData.get(0));
         this.setMovable(isMovable);
         this.factory = factory;
     }
@@ -48,6 +53,10 @@ public class ScenarioGridColumn extends BaseGridColumn<String> {
         factory.attachDomElement(context,
                                  e -> e.getWidget().setValue(assertCell(cell).getValue().getValue()),
                                  e -> e.getWidget().setFocus(true));
+    }
+
+    public ScenarioHeaderMetaData getInformationHeaderMetaData() {
+        return informationHeaderMetaData;
     }
 
     private GridCell<String> assertCell(final GridCell<String> cell) {

@@ -76,7 +76,7 @@ public abstract class AbstractScenarioSimulationEditorTest {
 
     public void setup() {
 
-//        //Mock FileMenuBuilder usage since we cannot use FileMenuBuilderImpl either
+        // Mock FileMenuBuilder usage since we cannot use FileMenuBuilderImpl either
         when(mockFileMenuBuilder.addSave(any(MenuItem.class))).thenReturn(mockFileMenuBuilder);
         when(mockFileMenuBuilder.addCopy(any(ObservablePath.class), any(DefaultFileNameValidator.class))).thenReturn(mockFileMenuBuilder);
         when(mockFileMenuBuilder.addRename(any(Command.class))).thenReturn(mockFileMenuBuilder);

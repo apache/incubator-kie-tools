@@ -26,16 +26,19 @@ public class ScenarioHeaderMetaData extends BaseHeaderMetaData {
     final SingletonDOMElementFactory<TextBox, ScenarioHeaderTextBoxDOMElement> factory;
     final String columnId;
     final boolean readOnly;
+    // true if this header contains the column' main informations (group, title, id)
+    final boolean informationHeader;
 
-    public ScenarioHeaderMetaData(String columnId, String columnTitle, String columnGroup, final SingletonDOMElementFactory<TextBox, ScenarioHeaderTextBoxDOMElement> factory, boolean readOnly) {
+    public ScenarioHeaderMetaData(String columnId, String columnTitle, String columnGroup, final SingletonDOMElementFactory<TextBox, ScenarioHeaderTextBoxDOMElement> factory, boolean readOnly, boolean informationHeader) {
         super(columnTitle, columnGroup);
         this.columnId = columnId;
         this.factory = factory;
         this.readOnly = readOnly;
+        this.informationHeader = informationHeader;
     }
 
-    public ScenarioHeaderMetaData(String columnId, String columnTitle, String columnGroup, final SingletonDOMElementFactory<TextBox, ScenarioHeaderTextBoxDOMElement> factory) {
-        this(columnId, columnTitle, columnGroup, factory, false);
+    public ScenarioHeaderMetaData(String columnId, String columnTitle, String columnGroup, final SingletonDOMElementFactory<TextBox, ScenarioHeaderTextBoxDOMElement> factory,  boolean informationHeader) {
+        this(columnId, columnTitle, columnGroup, factory, false, informationHeader);
     }
 
     public void edit(final GridBodyCellEditContext context) {
@@ -53,5 +56,9 @@ public class ScenarioHeaderMetaData extends BaseHeaderMetaData {
 
     public boolean isReadOnly() {
         return readOnly;
+    }
+
+    public boolean isInformationHeader() {
+        return informationHeader;
     }
 }

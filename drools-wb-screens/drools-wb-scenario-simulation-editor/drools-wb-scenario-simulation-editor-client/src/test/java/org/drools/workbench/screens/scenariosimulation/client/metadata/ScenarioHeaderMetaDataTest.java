@@ -40,7 +40,7 @@ public class ScenarioHeaderMetaDataTest {
 
     @Test
     public void editTest() {
-        ScenarioHeaderMetaData scenarioHeaderMetaData = new ScenarioHeaderMetaData("", "", "", factory);
+        ScenarioHeaderMetaData scenarioHeaderMetaData = new ScenarioHeaderMetaData("", "", "", factory, false, false);
         scenarioHeaderMetaData.edit(null);
 
         verify(factory, times(1)).attachDomElement(any(), any(), any());
@@ -48,7 +48,7 @@ public class ScenarioHeaderMetaDataTest {
 
     @Test(expected = IllegalStateException.class)
     public void editFailTest() {
-        ScenarioHeaderMetaData scenarioHeaderMetaData = new ScenarioHeaderMetaData("", "", "", factory, true);
+        ScenarioHeaderMetaData scenarioHeaderMetaData = new ScenarioHeaderMetaData("", "", "", factory, true, false);
 
         scenarioHeaderMetaData.edit(null);
     }

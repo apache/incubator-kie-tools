@@ -25,9 +25,9 @@ import java.util.stream.IntStream;
 
 import com.google.gwt.event.shared.EventBus;
 import org.drools.workbench.screens.scenariosimulation.client.events.ScenarioGridReloadEvent;
-import org.drools.workbench.screens.scenariosimulation.client.metadata.ScenarioHeaderMetaData;
 import org.drools.workbench.screens.scenariosimulation.client.values.ScenarioGridCellValue;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridCell;
+import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
 import org.drools.workbench.screens.scenariosimulation.model.ExpressionIdentifier;
 import org.drools.workbench.screens.scenariosimulation.model.FactIdentifier;
 import org.drools.workbench.screens.scenariosimulation.model.FactMapping;
@@ -196,9 +196,8 @@ public class ScenarioGridModel extends BaseGridData {
     public void updateColumnType(int columnIndex, final GridColumn<?> column, String fullPackage, String value, String lastLevelClassName) {
         checkSimulation();
         deleteNewColumn(columnIndex);
-        ScenarioHeaderMetaData scenarioHeaderMetaData = (ScenarioHeaderMetaData) column.getHeaderMetaData().get(1);
-        String group = scenarioHeaderMetaData.getColumnGroup();
-        String columnId = scenarioHeaderMetaData.getColumnId();
+        String group = ((ScenarioGridColumn) column).getInformationHeaderMetaData().getColumnGroup();
+        String columnId = ((ScenarioGridColumn) column).getInformationHeaderMetaData().getColumnId();
 
         String[] elements = value.split("\\.");
         if (!fullPackage.endsWith(".")) {
@@ -269,7 +268,7 @@ public class ScenarioGridModel extends BaseGridData {
         // HORRIBLE TRICK BECAUSE gridColumn.getIndex() DOES NOT REFLECT ACTUAL POSITION, BUT ONLY ORDER OF INSERTION
         final Optional<Integer> first = this.getColumns()    // Retrieving the column list
                 .stream()  // streaming
-                .filter(gridColumn -> gridColumn.getHeaderMetaData().get(1).getColumnGroup().equals(groupName))  // filtering by group name
+                .filter(gridColumn -> ((ScenarioGridColumn) gridColumn).getInformationHeaderMetaData().getColumnGroup().equals(groupName))  // filtering by group name
                 .findFirst()
                 .map(gridColumn -> {
                     int indexOfColumn = this.getColumns().indexOf(gridColumn);
@@ -287,7 +286,7 @@ public class ScenarioGridModel extends BaseGridData {
         // HORRIBLE TRICK BECAUSE gridColumn.getIndex() DOES NOT REFLECT ACTUAL POSITION, BUT ONLY ORDER OF INSERTION
         final Optional<Integer> last = this.getColumns()    // Retrieving the column list
                 .stream()  // streaming
-                .filter(gridColumn -> gridColumn.getHeaderMetaData().get(1).getColumnGroup().equals(groupName))  // filtering by group name
+                .filter(gridColumn -> ((ScenarioGridColumn) gridColumn).getInformationHeaderMetaData().getColumnGroup().equals(groupName))  // filtering by group name
                 .reduce((first, second) -> second)  // reducing to have only the last element
                 .map(gridColumn -> {
                     int indexOfColumn = this.getColumns().indexOf(gridColumn);
@@ -304,7 +303,7 @@ public class ScenarioGridModel extends BaseGridData {
     public long getGroupSize(String groupName) {
         return this.getColumns()
                 .stream()
-                .filter(gridColumn -> gridColumn.getHeaderMetaData().get(1).getColumnGroup().equals(groupName))
+                .filter(gridColumn -> ((ScenarioGridColumn) gridColumn).getInformationHeaderMetaData().getColumnGroup().equals(groupName))
                 .count();
     }
 
@@ -384,9 +383,8 @@ public class ScenarioGridModel extends BaseGridData {
      * @param column
      */
     protected void commonAddColumn(final int index, final GridColumn<?> column) {
-        ScenarioHeaderMetaData scenarioHeaderMetaData = (ScenarioHeaderMetaData) column.getHeaderMetaData().get(1);
-        String group = scenarioHeaderMetaData.getColumnGroup();
-        String columnId = scenarioHeaderMetaData.getColumnId();
+        String group = ((ScenarioGridColumn) column).getInformationHeaderMetaData().getColumnGroup();
+        String columnId = ((ScenarioGridColumn) column).getInformationHeaderMetaData().getColumnId();
         FactIdentifier factIdentifier = FactIdentifier.create(columnId, String.class.getCanonicalName());
         ExpressionIdentifier ei = ExpressionIdentifier.create(columnId, FactMappingType.valueOf(group));
         commonAddColumn(index, column, factIdentifier, ei);
@@ -402,8 +400,7 @@ public class ScenarioGridModel extends BaseGridData {
      */
     protected void commonAddColumn(final int index, final GridColumn<?> column, FactIdentifier factIdentifier, ExpressionIdentifier ei) {
         SimulationDescriptor simulationDescriptor = simulation.getSimulationDescriptor();
-        ScenarioHeaderMetaData scenarioHeaderMetaData = (ScenarioHeaderMetaData) column.getHeaderMetaData().get(1);
-        String title = scenarioHeaderMetaData.getTitle();
+        String title = ((ScenarioGridColumn) column).getInformationHeaderMetaData().getTitle();
         final int columnIndex = index == -1 ? getColumnCount() : index;
         try {
             simulationDescriptor.addFactMapping(columnIndex, title, factIdentifier, ei);

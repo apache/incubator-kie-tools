@@ -18,6 +18,7 @@ package org.drools.workbench.screens.scenariosimulation.client.commands;
 import javax.enterprise.context.Dependent;
 
 import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
+import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridLayer;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
 import org.drools.workbench.screens.scenariosimulation.model.FactMapping;
@@ -61,7 +62,7 @@ public class InsertColumnCommand implements Command {
 
     @Override
     public void execute() {
-        String columnGroup = model.getColumns().get(columnIndex).getHeaderMetaData().get(1).getColumnGroup();
+        String columnGroup = ((ScenarioGridColumn) model.getColumns().get(columnIndex)).getInformationHeaderMetaData().getColumnGroup();
         int columnPosition = isRight ? columnIndex + 1 : columnIndex;
         FactMappingType factMappingType = FactMappingType.valueOf(columnGroup.toUpperCase());
         String columnTitle = FactMapping.getPlaceHolder(factMappingType, model.nextColumnCount());

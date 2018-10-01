@@ -28,6 +28,7 @@ import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -45,7 +46,7 @@ public class SetColumnValueCommandTest extends AbstractCommandTest {
         super.setup();
         when(mockGridColumns.indexOf(mockGridColumn)).thenReturn(COLUMN_INDEX);
         when(mockScenarioGridModel.getColumns()).thenReturn(mockGridColumns);
-        when(mockScenarioGridModel.getSelectedColumn()).thenReturn(mockGridColumn);
+        doReturn(mockGridColumn).when(mockScenarioGridModel).getSelectedColumn();
         setColumnValueCommand = new SetColumnValueCommand(mockScenarioGridModel, COLUMN_ID, FULL_PACKAGE, VALUE, VALUE_CLASS_NAME, mockScenarioGridPanel, mockScenarioGridLayer);
     }
 

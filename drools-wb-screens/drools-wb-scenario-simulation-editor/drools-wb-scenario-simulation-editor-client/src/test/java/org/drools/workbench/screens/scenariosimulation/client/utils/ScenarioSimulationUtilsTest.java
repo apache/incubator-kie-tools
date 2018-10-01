@@ -36,15 +36,6 @@ public class ScenarioSimulationUtilsTest {
 
         String alias = "Alias";
         String factName = "FactName";
-        String expressionName = "ExpressionName";
-
-//        ScenarioSimulationUtils.ColumnBuilder columnBuilderOther =
-//                ScenarioSimulationUtils.getTwoLevelHeaderBuilder(alias, factName, FactMappingType.OTHER.name(), FactMappingType.OTHER);
-//        assertEquals(1, columnBuilderOther.build(factory).size());
-//        assertEquals(FactMappingType.OTHER.name(), columnBuilderOther.columnGroup);
-//        assertNull(columnBuilderOther.nestedLevel);
-//        assertEquals(alias, columnBuilderOther.columnTitle);
-
         ScenarioSimulationUtils.ColumnBuilder columnBuilderGiven =
                 ScenarioSimulationUtils.getTwoLevelHeaderBuilder(alias, factName, FactMappingType.GIVEN.name(), FactMappingType.GIVEN);
         assertEquals(2, columnBuilderGiven.build(factory).size());

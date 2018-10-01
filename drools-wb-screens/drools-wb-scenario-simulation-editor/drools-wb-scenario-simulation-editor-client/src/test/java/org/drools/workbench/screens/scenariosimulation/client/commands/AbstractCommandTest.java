@@ -19,9 +19,11 @@ package org.drools.workbench.screens.scenariosimulation.client.commands;
 import java.util.List;
 
 import com.google.gwt.event.shared.EventBus;
+import org.drools.workbench.screens.scenariosimulation.client.metadata.ScenarioHeaderMetaData;
 import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.RightPanelPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGrid;
+import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridLayer;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
 import org.drools.workbench.screens.scenariosimulation.model.FactMappingType;
@@ -30,6 +32,7 @@ import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
 public abstract class AbstractCommandTest {
@@ -51,15 +54,15 @@ public abstract class AbstractCommandTest {
     protected EventBus mockEventBus;
 
     @Mock
-    protected List<GridColumn<?>> mockColumns;
+    protected List<ScenarioGridColumn> mockColumns;
 
     @Mock
-    protected GridColumn mockGridColumn;
+    protected ScenarioGridColumn mockGridColumn;
 
     @Mock
     protected List<GridColumn.HeaderMetaData> mockHeaderMetaDatas;
     @Mock
-    protected GridColumn.HeaderMetaData mockHeaderMetaData;
+    protected ScenarioHeaderMetaData mockHeaderMetaData;
 
     protected final String COLUMN_ID = "COLUMN ID";
 
@@ -82,8 +85,9 @@ public abstract class AbstractCommandTest {
         when(mockHeaderMetaData.getColumnGroup()).thenReturn(COLUMN_GROUP);
         when(mockHeaderMetaDatas.get(1)).thenReturn(mockHeaderMetaData);
         when(mockGridColumn.getHeaderMetaData()).thenReturn(mockHeaderMetaDatas);
+        when(mockGridColumn.getInformationHeaderMetaData()).thenReturn(mockHeaderMetaData);
         when(mockColumns.get(COLUMN_INDEX)).thenReturn(mockGridColumn);
-        when(mockScenarioGridModel.getColumns()).thenReturn(mockColumns);
+        doReturn(mockColumns).when(mockScenarioGridModel).getColumns();
         when(mockScenarioGrid.getModel()).thenReturn(mockScenarioGridModel);
         when(mockScenarioGridLayer.getScenarioGrid()).thenReturn(mockScenarioGrid);
         when(mockScenarioGridPanel.getScenarioGridLayer()).thenReturn(mockScenarioGridLayer);

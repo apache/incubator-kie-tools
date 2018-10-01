@@ -196,7 +196,6 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
 
             @Override
             void populateRightPanel() {
-                //
             }
 
             @Override

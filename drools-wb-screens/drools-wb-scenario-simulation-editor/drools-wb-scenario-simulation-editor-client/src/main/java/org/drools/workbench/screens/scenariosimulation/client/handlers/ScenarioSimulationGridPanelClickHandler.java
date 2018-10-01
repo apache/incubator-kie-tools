@@ -43,6 +43,7 @@ import org.drools.workbench.screens.scenariosimulation.client.events.DisableRigh
 import org.drools.workbench.screens.scenariosimulation.client.events.EnableRightPanelEvent;
 import org.drools.workbench.screens.scenariosimulation.client.metadata.ScenarioHeaderMetaData;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGrid;
+import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
 import org.uberfire.ext.wires.core.grids.client.util.CoordinateUtilities;
 
 import static org.drools.workbench.screens.scenariosimulation.client.utils.ScenarioSimulationGridHeaderUtilities.getColumnScenarioHeaderMetaData;
@@ -258,11 +259,11 @@ public class ScenarioSimulationGridPanelClickHandler implements ClickHandler,
         if (uiRowIndex == null) {
             return false;
         }
-        ScenarioHeaderMetaData columnMetadata = (ScenarioHeaderMetaData) scenarioGrid.getModel().getColumns().get(uiColumnIndex).getHeaderMetaData().get(1);
-        if (columnMetadata == null) {
+        ScenarioGridColumn scenarioGridColumn = (ScenarioGridColumn) scenarioGrid.getModel().getColumns().get(uiColumnIndex);
+        if (scenarioGridColumn == null) {
             return false;
         }
-        String group = columnMetadata.getColumnGroup();
+        String group = scenarioGridColumn.getInformationHeaderMetaData().getColumnGroup();
         switch (group) {
             case "GIVEN":
             case "EXPECTED":
