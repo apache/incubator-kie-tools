@@ -29,6 +29,7 @@ import elemental2.dom.HTMLElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
+import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManager;
 import org.uberfire.client.mvp.UberElemental;
 
 @ApplicationScoped
@@ -38,13 +39,17 @@ public class DataTypeList {
 
     private final ManagedInstance<DataTypeListItem> listItems;
 
+    private final DataTypeManager dataTypeManager;
+
     private List<DataTypeListItem> items;
 
     @Inject
     public DataTypeList(final DataTypeList.View view,
-                        final ManagedInstance<DataTypeListItem> listItems) {
+                        final ManagedInstance<DataTypeListItem> listItems,
+                        final DataTypeManager dataTypeManager) {
         this.view = view;
         this.listItems = listItems;
+        this.dataTypeManager = dataTypeManager;
     }
 
     @PostConstruct
@@ -64,7 +69,7 @@ public class DataTypeList {
 
     List<DataTypeListItem> makeDataTypeListItems(final List<DataType> dataTypes) {
         final List<DataTypeListItem> listItems = new ArrayList<>();
-        dataTypes.forEach(dt -> listItems.addAll(makeTreeGridItems(dt, 1)));
+        dataTypes.forEach(dt -> listItems.addAll(makeTreeListItems(dt, 1)));
         return listItems;
     }
 
@@ -76,7 +81,7 @@ public class DataTypeList {
         final List<DataTypeListItem> gridItems = new ArrayList<>();
 
         for (final DataType subDataType : subDataTypes) {
-            gridItems.addAll(makeTreeGridItems(subDataType, level + 1));
+            gridItems.addAll(makeTreeListItems(subDataType, level + 1));
         }
 
         refreshItemsList(subDataTypes, gridItems);
@@ -84,10 +89,10 @@ public class DataTypeList {
         view.addSubItems(dataType, gridItems);
     }
 
-    List<DataTypeListItem> makeTreeGridItems(final DataType dataType,
+    List<DataTypeListItem> makeTreeListItems(final DataType dataType,
                                              final int level) {
 
-        final DataTypeListItem listItem = makeGridItem();
+        final DataTypeListItem listItem = makeListItem();
         final List<DataType> subDataTypes = dataType.getSubDataTypes();
         final List<DataTypeListItem> gridItems = new ArrayList<>();
 
@@ -95,13 +100,13 @@ public class DataTypeList {
         gridItems.add(listItem);
 
         for (final DataType subDataType : subDataTypes) {
-            gridItems.addAll(makeTreeGridItems(subDataType, level + 1));
+            gridItems.addAll(makeTreeListItems(subDataType, level + 1));
         }
 
         return gridItems;
     }
 
-    DataTypeListItem makeGridItem() {
+    DataTypeListItem makeListItem() {
         final DataTypeListItem listItem = listItems.get();
         listItem.init(this);
         return listItem;
@@ -156,6 +161,18 @@ public class DataTypeList {
                 .forEach(DataTypeListItem::collapse);
     }
 
+    void addDataType() {
+
+        final DataTypeListItem listItem = makeListItem();
+        final DataType dataType = dataTypeManager.fromNew().get().create();
+
+        listItem.setupDataType(dataType, 1);
+
+        view.addSubItem(listItem);
+
+        listItem.enableEditMode();
+    }
+
     public interface View extends UberElemental<DataTypeList>,
                                   IsElement {
 
@@ -163,6 +180,8 @@ public class DataTypeList {
 
         void addSubItems(final DataType dataType,
                          final List<DataTypeListItem> treeGridItems);
+
+        void addSubItem(final DataTypeListItem listItem);
 
         void removeItem(final DataType dataType);
     }

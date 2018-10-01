@@ -14,32 +14,22 @@
  * limitations under the License.
  */
 
-[data-i18n-prefix="DataTypeListView."] {
-  h3 {
-    font-weight: 600;
-    font-size: 14px;
-    margin: 5px 0 10px;
-  }
+package org.kie.workbench.common.dmn.client.editors.types.common;
 
-  .description-buttons {
-    text-align: right;
-    margin-bottom: 15px;
+import org.junit.Test;
 
-    a {
-      float: left;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+public class BuiltInTypeUtilsTest {
+
+    @Test
+    public void testIsDefaultWhenItIsDefault() {
+        assertTrue(BuiltInTypeUtils.isDefault("string"));
     }
 
-    .btn {
-      padding-right: 15px;
-      padding-left: 15px;
-
-      i {
-        padding-right: 3px;
-      }
+    @Test
+    public void testIsDefaultWhenItIsNotDefault() {
+        assertFalse(BuiltInTypeUtils.isDefault("tAddress"));
     }
-  }
-
-  ul {
-    padding: 0 15px;
-  }
 }

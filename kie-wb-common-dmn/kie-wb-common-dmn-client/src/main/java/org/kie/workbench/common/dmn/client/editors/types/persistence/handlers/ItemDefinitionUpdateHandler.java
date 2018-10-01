@@ -17,7 +17,6 @@
 package org.kie.workbench.common.dmn.client.editors.types.persistence.handlers;
 
 import java.util.Objects;
-import java.util.stream.Stream;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -25,13 +24,13 @@ import javax.inject.Inject;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
-import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManager;
 import org.kie.workbench.common.dmn.client.editors.types.common.ItemDefinitionUtils;
 
 import static org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase.Namespace.FEEL;
 import static org.kie.workbench.common.dmn.api.property.dmn.QName.NULL_NS_URI;
+import static org.kie.workbench.common.dmn.client.editors.types.common.BuiltInTypeUtils.isDefault;
 
 @Dependent
 public class ItemDefinitionUpdateHandler {
@@ -74,12 +73,6 @@ public class ItemDefinitionUpdateHandler {
 
     QName normaliseTypeRef(final QName typeRef) {
         return itemDefinitionUtils.normaliseTypeRef(typeRef);
-    }
-
-    boolean isDefault(final String type) {
-        return Stream
-                .of(BuiltInType.values())
-                .anyMatch(dataType -> Objects.equals(dataType.getName(), type));
     }
 
     private boolean isStructure(final DataType dataType) {

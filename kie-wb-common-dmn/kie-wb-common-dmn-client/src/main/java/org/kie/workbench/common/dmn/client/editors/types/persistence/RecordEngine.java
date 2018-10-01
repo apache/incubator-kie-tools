@@ -41,5 +41,5 @@ public interface RecordEngine<T> {
      * Create a record
      * @param record
      */
-    void create(final T record);
+    T create(final T record);
 }

@@ -33,7 +33,6 @@ import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -108,16 +107,6 @@ public class ItemDefinitionUpdateHandlerTest {
     }
 
     @Test
-    public void testIsDefaultWhenItIsDefault() {
-        assertTrue(handler.isDefault("string"));
-    }
-
-    @Test
-    public void testIsDefaultWhenItIsNotDefault() {
-        assertFalse(handler.isDefault("tAddress"));
-    }
-
-    @Test
     public void testMakeName() {
 
         final DataType dataType = mock(DataType.class);
@@ -136,7 +125,6 @@ public class ItemDefinitionUpdateHandlerTest {
         final DataType dataType = mock(DataType.class);
         final String expectedName = "string";
 
-        doReturn(true).when(handler).isDefault(expectedName);
         when(dataType.getType()).thenReturn(expectedName);
 
         final QName name = handler.makeQName(dataType);
@@ -151,7 +139,6 @@ public class ItemDefinitionUpdateHandlerTest {
         final DataType dataType = mock(DataType.class);
         final String expectedName = "tAddress";
 
-        doReturn(false).when(handler).isDefault(expectedName);
         when(dataType.getType()).thenReturn(expectedName);
 
         final QName name = handler.makeQName(dataType);

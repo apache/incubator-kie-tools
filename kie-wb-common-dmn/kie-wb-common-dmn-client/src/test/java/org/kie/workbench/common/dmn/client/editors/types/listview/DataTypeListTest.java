@@ -28,6 +28,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
+import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManager;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InOrder;
@@ -58,10 +59,13 @@ public class DataTypeListTest {
     private DataTypeList.View view;
 
     @Mock
-    private ManagedInstance<DataTypeListItem> treeGridItems;
+    private ManagedInstance<DataTypeListItem> listItems;
 
     @Mock
     private DataTypeListItem treeGridItem;
+
+    @Mock
+    private DataTypeManager dataTypeManager;
 
     @Captor
     private ArgumentCaptor<List<DataTypeListItem>> listItemsCaptor;
@@ -70,8 +74,8 @@ public class DataTypeListTest {
 
     @Before
     public void setup() {
-        dataTypeList = spy(new DataTypeList(view, treeGridItems));
-        when(treeGridItems.get()).thenReturn(treeGridItem);
+        dataTypeList = spy(new DataTypeList(view, listItems, dataTypeManager));
+        when(listItems.get()).thenReturn(treeGridItem);
     }
 
     @Test
@@ -158,9 +162,9 @@ public class DataTypeListTest {
 
         dataTypeList.makeDataTypeListItems(dataTypes);
 
-        verify(dataTypeList).makeTreeGridItems(eq(dataType1), eq(1));
-        verify(dataTypeList).makeTreeGridItems(eq(dataType2), eq(1));
-        verify(dataTypeList, times(2)).makeTreeGridItems(any(), anyInt());
+        verify(dataTypeList).makeTreeListItems(eq(dataType1), eq(1));
+        verify(dataTypeList).makeTreeListItems(eq(dataType2), eq(1));
+        verify(dataTypeList, times(2)).makeTreeListItems(any(), anyInt());
     }
 
     @Test
@@ -174,25 +178,25 @@ public class DataTypeListTest {
 
         dataTypeList.makeDataTypeListItems(dataTypes);
 
-        verify(dataTypeList).makeTreeGridItems(eq(dataType), eq(1));
-        verify(dataTypeList).makeTreeGridItems(eq(subDataType1), eq(2));
-        verify(dataTypeList).makeTreeGridItems(eq(subDataType2), eq(2));
-        verify(dataTypeList).makeTreeGridItems(eq(subDataType3), eq(3));
-        verify(dataTypeList, times(4)).makeTreeGridItems(any(), anyInt());
+        verify(dataTypeList).makeTreeListItems(eq(dataType), eq(1));
+        verify(dataTypeList).makeTreeListItems(eq(subDataType1), eq(2));
+        verify(dataTypeList).makeTreeListItems(eq(subDataType2), eq(2));
+        verify(dataTypeList).makeTreeListItems(eq(subDataType3), eq(3));
+        verify(dataTypeList, times(4)).makeTreeListItems(any(), anyInt());
     }
 
     @Test
-    public void testMakeTreeGridItems() {
+    public void testMakeTreeListItems() {
 
         final DataType item1 = makeDataType("item1", "iITem1");
         final DataType item2 = makeDataType("item2", "iITem2");
         final DataType item3 = makeDataType("item", "iITem", item1, item2);
 
-        final List<DataTypeListItem> listItems = dataTypeList.makeTreeGridItems(item3, 1);
+        final List<DataTypeListItem> listItems = dataTypeList.makeTreeListItems(item3, 1);
 
-        verify(dataTypeList).makeTreeGridItems(item3, 1);
-        verify(dataTypeList).makeTreeGridItems(item1, 2);
-        verify(dataTypeList).makeTreeGridItems(item2, 2);
+        verify(dataTypeList).makeTreeListItems(item3, 1);
+        verify(dataTypeList).makeTreeListItems(item1, 2);
+        verify(dataTypeList).makeTreeListItems(item2, 2);
         assertEquals(3, listItems.size());
     }
 
@@ -210,8 +214,8 @@ public class DataTypeListTest {
 
         when(listItem.getDataType()).thenReturn(listItemDataType);
         when(listItem.getLevel()).thenReturn(listItemLevel);
-        doReturn(dataTypesX).when(dataTypeList).makeTreeGridItems(subDataType1, listItemLevel + 1);
-        doReturn(dataTypesX).when(dataTypeList).makeTreeGridItems(subDataType2, listItemLevel + 1);
+        doReturn(dataTypesX).when(dataTypeList).makeTreeListItems(subDataType1, listItemLevel + 1);
+        doReturn(dataTypesX).when(dataTypeList).makeTreeListItems(subDataType2, listItemLevel + 1);
         doReturn(new ArrayList<>()).when(dataTypeList).getItems();
 
         dataTypeList.refreshSubItemsFromListItem(listItem, subDataTypes);
@@ -259,14 +263,14 @@ public class DataTypeListTest {
     }
 
     @Test
-    public void testMakeGridItem() {
+    public void testMakeListItem() {
 
         final DataTypeListItem expectedListItem = mock(DataTypeListItem.class);
 
-        doCallRealMethod().when(dataTypeList).makeGridItem();
-        when(treeGridItems.get()).thenReturn(expectedListItem);
+        doCallRealMethod().when(dataTypeList).makeListItem();
+        when(listItems.get()).thenReturn(expectedListItem);
 
-        final DataTypeListItem actualListItem = dataTypeList.makeGridItem();
+        final DataTypeListItem actualListItem = dataTypeList.makeListItem();
 
         verify(expectedListItem).init(eq(dataTypeList));
         assertEquals(expectedListItem, actualListItem);
@@ -355,6 +359,25 @@ public class DataTypeListTest {
 
         verify(listItem).refresh();
         verify(dataTypeList).refreshSubItemsFromListItem(listItem, subDataTypes);
+    }
+
+    @Test
+    public void testAddDataType() {
+
+        final DataTypeListItem listItem = mock(DataTypeListItem.class);
+        final DataType dataType = mock(DataType.class);
+
+        when(dataType.create()).thenReturn(dataType);
+        when(dataTypeManager.fromNew()).thenReturn(dataTypeManager);
+        when(dataTypeManager.get()).thenReturn(dataType);
+        doReturn(listItem).when(dataTypeList).makeListItem();
+
+        dataTypeList.addDataType();
+
+        verify(dataType).create();
+        verify(listItem).setupDataType(dataType, 1);
+        verify(listItem).enableEditMode();
+        verify(view).addSubItem(listItem);
     }
 
     private DataType makeDataType(final String name,

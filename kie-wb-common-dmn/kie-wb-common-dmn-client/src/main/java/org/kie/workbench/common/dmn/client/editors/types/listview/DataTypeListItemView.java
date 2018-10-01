@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.client.editors.types.listview;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -37,6 +38,7 @@ import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.HiddenHelper;
+import org.kie.workbench.common.dmn.client.editors.types.listview.common.KebabMenuInitializer;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper;
 
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.HiddenHelper.hide;
@@ -89,6 +91,9 @@ public class DataTypeListItemView implements DataTypeListItem.View {
     @DataField("remove-button")
     private final HTMLAnchorElement removeButton;
 
+    @DataField("kebab-menu")
+    private HTMLDivElement kebabMenu;
+
     private DataTypeListItem presenter;
 
     @Inject
@@ -101,7 +106,8 @@ public class DataTypeListItemView implements DataTypeListItem.View {
                                 final HTMLButtonElement editButton,
                                 final HTMLButtonElement saveButton,
                                 final HTMLButtonElement closeButton,
-                                final HTMLAnchorElement removeButton) {
+                                final HTMLAnchorElement removeButton,
+                                final HTMLDivElement kebabMenu) {
         this.view = view;
         this.level = level;
         this.arrow = arrow;
@@ -112,6 +118,12 @@ public class DataTypeListItemView implements DataTypeListItem.View {
         this.saveButton = saveButton;
         this.closeButton = closeButton;
         this.removeButton = removeButton;
+        this.kebabMenu = kebabMenu;
+    }
+
+    @PostConstruct
+    public void setupKebabElement() {
+        new KebabMenuInitializer(kebabMenu).init();
     }
 
     @Override
@@ -144,12 +156,6 @@ public class DataTypeListItemView implements DataTypeListItem.View {
     void setupNameComponent(final DataType dataType) {
         hide(nameInput);
         setName(dataType.getName());
-    }
-
-    @Override
-    public void setName(final String name) {
-        nameText.textContent = name;
-        nameInput.value = name;
     }
 
     void setupActionButtons() {
@@ -244,6 +250,12 @@ public class DataTypeListItemView implements DataTypeListItem.View {
     @Override
     public String getName() {
         return nameInput.value;
+    }
+
+    @Override
+    public void setName(final String name) {
+        nameText.textContent = name;
+        nameInput.value = name;
     }
 
     @Override

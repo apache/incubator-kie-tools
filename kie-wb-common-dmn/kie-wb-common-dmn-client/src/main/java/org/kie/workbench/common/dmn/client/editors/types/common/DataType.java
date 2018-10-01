@@ -18,6 +18,7 @@ package org.kie.workbench.common.dmn.client.editors.types.common;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.kie.workbench.common.dmn.client.editors.types.persistence.ActiveRecord;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.ItemDefinitionRecordEngine;
@@ -91,6 +92,6 @@ public class DataType extends ActiveRecord<DataType> {
     }
 
     public boolean isTopLevel() {
-        return getParentUUID().equals(TOP_LEVEL_PARENT_UUID);
+        return Objects.equals(getParentUUID(), TOP_LEVEL_PARENT_UUID);
     }
 }

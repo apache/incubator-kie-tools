@@ -38,8 +38,8 @@ public abstract class ActiveRecord<T> {
         return getRecordEngine().destroy(getRecord());
     }
 
-    public void create() {
-        getRecordEngine().create(getRecord());
+    public T create() {
+        return getRecordEngine().create(getRecord());
     }
 
     public RecordEngine<T> getRecordEngine() {

@@ -19,21 +19,23 @@
         <button data-field="edit-button" class="btn btn-sm btn-default" data-i18n-key="Edit"></button>
         <button data-field="save-button" class="btn btn-sm btn-default" data-i18n-key="Save"></button>
         <button data-field="close-button" class="btn btn-sm btn-default close-button">✖</button>
-        <div class="dropdown pull-right dropdown-kebab-pf">
-            <button class="btn btn-link dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                <span class="fa fa-ellipsis-v"></span>
-            </button>
-            <ul class="dropdown-menu dropdown-menu-right">
-                <li><a data-field="remove-button" href="#" data-i18n-key="Remove"></a></li>
-                <li role="separator" class="divider"></li>
-                <li><a href="#" data-i18n-key="InsertFieldAbove"></a></li>
-                <li><a href="#" data-i18n-key="InsertFieldBelow"></a></li>
-                <li role="separator" class="divider"></li>
-                <li><a href="#" data-i18n-key="InsertNestedField"></a></li>
-                <li role="separator" class="divider"></li>
-                <li><a href="#" data-i18n-key="MoveUp"></a></li>
-                <li><a href="#" data-i18n-key="MoveDown"></a></li>
-            </ul>
+        <div data-field="kebab-menu" class="dropdown-kebab-container">
+            <div class="dropdown pull-right dropdown-kebab-pf">
+                <button class="btn btn-link dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    <span class="fa fa-ellipsis-v"></span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-right">
+                    <li><a data-field="remove-button" href="#" data-i18n-key="Remove"></a></li>
+                    <li role="separator" class="divider"></li>
+                    <li><a href="#" data-i18n-key="InsertFieldAbove"></a></li>
+                    <li><a href="#" data-i18n-key="InsertFieldBelow"></a></li>
+                    <li role="separator" class="divider"></li>
+                    <li><a href="#" data-i18n-key="InsertNestedField"></a></li>
+                    <li role="separator" class="divider"></li>
+                    <li><a href="#" data-i18n-key="MoveUp"></a></li>
+                    <li><a href="#" data-i18n-key="MoveDown"></a></li>
+                </ul>
+            </div>
         </div>
     </div>
 

@@ -19,6 +19,10 @@ package org.kie.workbench.common.dmn.client.editors.types;
 import java.util.List;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import elemental2.dom.DOMTokenList;
+import elemental2.dom.Element;
+import elemental2.dom.HTMLElement;
+import elemental2.dom.Node;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,6 +30,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManager;
+import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManagerStackStore;
 import org.kie.workbench.common.dmn.client.editors.types.common.ItemDefinitionUtils;
 import org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeList;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.DataTypeStore;
@@ -39,7 +44,6 @@ import org.mockito.Mockito;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -68,6 +72,9 @@ public class DataTypeModalTest {
     @Mock
     private DataTypeManager dataTypeManager;
 
+    @Mock
+    private DataTypeManagerStackStore stackIndex;
+
     @Captor
     private ArgumentCaptor<List<DataType>> dataTypesCaptor;
 
@@ -84,11 +91,11 @@ public class DataTypeModalTest {
     @Test
     public void testSetup() {
 
-        final String expectedWidgetWidth = "800px";
+        doNothing().when(modal).setDataTypeModalCSSClasses();
 
         modal.setup();
 
-        verify(modal).setWidth(eq(expectedWidgetWidth));
+        verify(modal).setDataTypeModalCSSClasses();
         verify(view).setup(treeList);
     }
 
@@ -110,6 +117,7 @@ public class DataTypeModalTest {
 
         verify(definitionStore).clear();
         verify(dataTypeStore).clear();
+        verify(stackIndex).clear();
     }
 
     @Test
@@ -152,6 +160,44 @@ public class DataTypeModalTest {
         assertEquals(expectedDataType, actualDataType);
     }
 
+    @Test
+    public void testSetDataTypeModalCSSClasses() {
+
+        final Element modalDialogElement = mock(Element.class);
+        final DOMTokenList classList = mock(DOMTokenList.class);
+
+        modalDialogElement.classList = classList;
+        doReturn(modalDialogElement).when(modal).getModalDialogElement();
+
+        modal.setDataTypeModalCSSClasses();
+
+        verify(classList).add("kie-data-types-modal");
+    }
+
+    @Test
+    public void testGetModalDialogElement() {
+
+        final DataTypeModal.View view = mock(DataTypeModal.View.class);
+        final HTMLElement body = mock(HTMLElement.class);
+        final Node modalBodyNode = mock(Node.class);
+        final Node modalContentNode = mock(Node.class);
+        final Node modalDialogNode = mock(Node.class);
+        final Node modalParentNode = mock(Node.class);
+        final Element expectedDialog = mock(Element.class);
+
+        when(modal.getView()).thenReturn(view);
+        when(view.getBody()).thenReturn(body);
+        when(modalParentNode.querySelector(".modal-dialog")).thenReturn(expectedDialog);
+        body.parentNode = modalBodyNode;
+        modalBodyNode.parentNode = modalContentNode;
+        modalContentNode.parentNode = modalDialogNode;
+        modalDialogNode.parentNode = modalParentNode;
+
+        final Element actualDialog = modal.getModalDialogElement();
+
+        assertEquals(expectedDialog, actualDialog);
+    }
+
     private ItemDefinition makeItem(final String itemName) {
         final ItemDefinition itemDefinition = mock(ItemDefinition.class);
         final Name name = mock(Name.class);
@@ -165,7 +211,7 @@ public class DataTypeModalTest {
     class FakeDataTypeModal extends DataTypeModal {
 
         FakeDataTypeModal() {
-            super(view, treeList, itemDefinitionUtils, definitionStore, dataTypeStore, dataTypeManager);
+            super(view, treeList, itemDefinitionUtils, definitionStore, dataTypeStore, dataTypeManager, stackIndex);
         }
 
         @Override

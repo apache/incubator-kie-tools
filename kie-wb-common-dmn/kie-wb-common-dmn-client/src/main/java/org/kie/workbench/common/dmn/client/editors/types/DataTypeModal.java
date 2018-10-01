@@ -22,9 +22,13 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import elemental2.dom.Element;
+import elemental2.dom.HTMLElement;
+import elemental2.dom.Node;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManager;
+import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManagerStackStore;
 import org.kie.workbench.common.dmn.client.editors.types.common.ItemDefinitionUtils;
 import org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeList;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.DataTypeStore;
@@ -33,8 +37,6 @@ import org.uberfire.ext.editor.commons.client.file.popups.elemental2.Elemental2M
 
 @ApplicationScoped
 public class DataTypeModal extends Elemental2Modal<DataTypeModal.View> {
-
-    private static final String MODAL_WIDTH = "800px";
 
     private final DataTypeList treeList;
 
@@ -46,13 +48,16 @@ public class DataTypeModal extends Elemental2Modal<DataTypeModal.View> {
 
     private final DataTypeManager dataTypeManager;
 
+    private final DataTypeManagerStackStore stackIndex;
+
     @Inject
     public DataTypeModal(final View view,
                          final DataTypeList treeList,
                          final ItemDefinitionUtils itemDefinitionUtils,
                          final ItemDefinitionStore definitionStore,
                          final DataTypeStore dataTypeStore,
-                         final DataTypeManager dataTypeManager) {
+                         final DataTypeManager dataTypeManager,
+                         final DataTypeManagerStackStore stackIndex) {
         super(view);
 
         this.treeList = treeList;
@@ -60,12 +65,13 @@ public class DataTypeModal extends Elemental2Modal<DataTypeModal.View> {
         this.definitionStore = definitionStore;
         this.dataTypeStore = dataTypeStore;
         this.dataTypeManager = dataTypeManager;
+        this.stackIndex = stackIndex;
     }
 
     @PostConstruct
     public void setup() {
         super.setup();
-        setWidth(MODAL_WIDTH);
+        setDataTypeModalCSSClasses();
         getView().setup(treeList);
     }
 
@@ -78,6 +84,7 @@ public class DataTypeModal extends Elemental2Modal<DataTypeModal.View> {
     void cleanDataTypeStore() {
         definitionStore.clear();
         dataTypeStore.clear();
+        stackIndex.clear();
     }
 
     void loadDataTypes() {
@@ -94,6 +101,20 @@ public class DataTypeModal extends Elemental2Modal<DataTypeModal.View> {
 
     void superShow() {
         super.show();
+    }
+
+    void setDataTypeModalCSSClasses() {
+        final Element modalDialogElement = getModalDialogElement();
+        modalDialogElement.classList.add("kie-data-types-modal");
+    }
+
+    Element getModalDialogElement() {
+        final HTMLElement body = getView().getBody();
+        final Node modalBodyNode = body.parentNode;
+        final Node modalContentNode = modalBodyNode.parentNode;
+        final Node modalDialogNode = modalContentNode.parentNode;
+        final Node modalParentNode = modalDialogNode.parentNode;
+        return modalParentNode.querySelector(".modal-dialog");
     }
 
     public interface View extends Elemental2Modal.View<DataTypeModal> {

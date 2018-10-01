@@ -27,6 +27,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.handlers.DataTypeDestroyHandler;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.handlers.DataTypeUpdateHandler;
+import org.kie.workbench.common.dmn.client.editors.types.persistence.handlers.ItemDefinitionCreateHandler;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.handlers.ItemDefinitionDestroyHandler;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.handlers.ItemDefinitionUpdateHandler;
 import org.mockito.Mock;
@@ -51,6 +52,9 @@ public class ItemDefinitionRecordEngineTest {
     private ItemDefinitionUpdateHandler itemDefinitionUpdateHandler;
 
     @Mock
+    private ItemDefinitionCreateHandler itemDefinitionCreateHandler;
+
+    @Mock
     private DataTypeDestroyHandler dataTypeDestroyHandler;
 
     @Mock
@@ -60,7 +64,7 @@ public class ItemDefinitionRecordEngineTest {
 
     @Before
     public void setup() {
-        recordEngine = spy(new ItemDefinitionRecordEngine(itemDefinitionStore, itemDefinitionDestroyHandler, itemDefinitionUpdateHandler, dataTypeDestroyHandler, dataTypeUpdateHandler));
+        recordEngine = spy(new ItemDefinitionRecordEngine(itemDefinitionStore, itemDefinitionDestroyHandler, itemDefinitionUpdateHandler, itemDefinitionCreateHandler, dataTypeDestroyHandler, dataTypeUpdateHandler));
     }
 
     @Test
@@ -117,6 +121,19 @@ public class ItemDefinitionRecordEngineTest {
 
         verify(recordEngine).doDestroy(dataType);
         assertEquals(expectedDependentDataTypes, actualDependentDataTypes);
+    }
+
+    @Test
+    public void testCreate() {
+
+        final DataType dataType = mock(DataType.class);
+        final DataType expectedDataType = mock(DataType.class);
+
+        when(itemDefinitionCreateHandler.create(dataType)).thenReturn(expectedDataType);
+
+        final DataType actualDataType = recordEngine.create(dataType);
+
+        assertEquals(expectedDataType, actualDataType);
     }
 
     @Test

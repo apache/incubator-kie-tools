@@ -33,7 +33,9 @@ import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.DataTypeStore;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.ItemDefinitionRecordEngine;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.ItemDefinitionStore;
+import org.mockito.InOrder;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -41,6 +43,7 @@ import org.uberfire.commons.uuid.UUID;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -79,6 +82,9 @@ public class DataTypeManagerTest {
 
     @Mock
     private ManagedInstance<DataTypeManager> dataTypeManagers;
+
+    @Mock
+    private DataTypeManagerStackStore typeStack;
 
     private DataTypeManager manager;
 
@@ -136,10 +142,6 @@ public class DataTypeManagerTest {
         final List<DataType> actualDataTypes = dataType.getSubDataTypes();
 
         assertEquals(expectedDataTypes, actualDataTypes);
-    }
-
-    @Test
-    public void testWithSubDataTypes() {
     }
 
     @Test
@@ -244,6 +246,18 @@ public class DataTypeManagerTest {
     }
 
     @Test
+    public void testMakeDataTypeFromNewType() {
+
+        final DataType dataType = manager.fromNew().get();
+
+        assertEquals("uuid", dataType.getUUID());
+        assertEquals("--", dataType.getName());
+        assertEquals("string", dataType.getType());
+        assertEquals(emptyList(), dataType.getSubDataTypes());
+        assertFalse(dataType.hasSubDataTypes());
+    }
+
+    @Test
     public void testFromDataType() {
 
         final String uuid = "uuid";
@@ -290,6 +304,7 @@ public class DataTypeManagerTest {
         doReturn(dataType1).when(manager).createSubDataType(itemDefinition1);
         doReturn(dataType2).when(manager).createSubDataType(itemDefinition2);
         doReturn(dataType3).when(manager).createSubDataType(itemDefinition3);
+        doReturn(parent).when(manager).getDataType();
 
         final List<DataType> dataTypes = manager.makeExternalDataTypes(type);
 
@@ -305,6 +320,7 @@ public class DataTypeManagerTest {
 
         when(parent.getUUID()).thenReturn(parentUUID);
         when(itemDefinitionUtils.findByName(type)).thenReturn(Optional.empty());
+        doReturn(parent).when(manager).getDataType();
 
         final List<DataType> dataTypes = manager.makeExternalDataTypes(type);
 
@@ -314,16 +330,145 @@ public class DataTypeManagerTest {
     @Test
     public void testCreateSubDataType() {
 
+        final DataType expectedDataType = mock(DataType.class);
         final ItemDefinition itemDefinition = mock(ItemDefinition.class);
+        final List<String> subDataTypeStack = singletonList("type");
         final String expectedParentUUID = "expectedParentUUID";
 
-        when(itemDefinitionUtils.findByName(anyString())).thenReturn(Optional.empty());
         doReturn(Optional.of(expectedParentUUID)).when(manager).getDataTypeUUID();
+        doReturn(manager).when(manager).anotherManager();
+        doReturn(manager).when(manager).newDataType();
+        doReturn(manager).when(manager).withUUID();
+        doReturn(manager).when(manager).withParentUUID(anyString());
+        doReturn(manager).when(manager).withItemDefinition(any());
+        doReturn(manager).when(manager).withItemDefinition(any());
+        doReturn(manager).when(manager).withItemDefinitionName();
+        doReturn(manager).when(manager).withItemDefinitionType();
+        doReturn(manager).when(manager).withTypeStack(any());
+        doReturn(manager).when(manager).withItemDefinitionSubDataTypes();
+        doReturn(manager).when(manager).withIndexedItemDefinition();
+        doReturn(subDataTypeStack).when(manager).getSubDataTypeStack();
+        doReturn(expectedDataType).when(manager).get();
+        doReturn(expectedDataType).when(manager).get();
 
         final DataType actualDataType = manager.createSubDataType(itemDefinition);
-        final String actualParentUUID = actualDataType.getParentUUID();
+        final InOrder inOrder = Mockito.inOrder(manager);
 
-        assertEquals(expectedParentUUID, actualParentUUID);
+        inOrder.verify(manager).newDataType();
+        inOrder.verify(manager).withUUID();
+        inOrder.verify(manager).withParentUUID(expectedParentUUID);
+        inOrder.verify(manager).withItemDefinition(itemDefinition);
+        inOrder.verify(manager).withItemDefinitionName();
+        inOrder.verify(manager).withItemDefinitionType();
+        inOrder.verify(manager).withTypeStack(subDataTypeStack);
+        inOrder.verify(manager).withItemDefinitionSubDataTypes();
+        inOrder.verify(manager).withIndexedItemDefinition();
+
+        assertEquals(expectedDataType, actualDataType);
+    }
+
+    @Test
+    public void testGetStackTypeWhenDataTypeIsTopLevel() {
+
+        final DataType parent = mock(DataType.class);
+        final String type = "tCity";
+
+        when(parent.isTopLevel()).thenReturn(true);
+        when(parent.getName()).thenReturn(type);
+        doReturn(parent).when(manager).getDataType();
+
+        final Optional<String> stackType = manager.getStackType();
+
+        assertEquals(type, stackType.get());
+    }
+
+    @Test
+    public void testGetStackTypeWhenDataTypeIsNotTopLevelAndStructureType() {
+
+        final DataType parent = mock(DataType.class);
+        final String type = "Structure";
+
+        when(parent.isTopLevel()).thenReturn(false);
+        when(parent.getType()).thenReturn(type);
+        doReturn(parent).when(manager).getDataType();
+
+        final Optional<String> stackType = manager.getStackType();
+
+        assertFalse(stackType.isPresent());
+    }
+
+    @Test
+    public void testGetStackTypeWhenDataTypeIsNotTopLevelAndDefaultType() {
+
+        final DataType parent = mock(DataType.class);
+        final String type = BuiltInType.STRING.getName();
+
+        when(parent.isTopLevel()).thenReturn(false);
+        when(parent.getType()).thenReturn(type);
+        doReturn(parent).when(manager).getDataType();
+
+        final Optional<String> stackType = manager.getStackType();
+
+        assertFalse(stackType.isPresent());
+    }
+
+    @Test
+    public void testGetStackTypeWhenDataTypeIsNotTopLevelAndCustomType() {
+
+        final DataType parent = mock(DataType.class);
+        final String type = "tCity";
+
+        when(parent.isTopLevel()).thenReturn(false);
+        when(parent.getType()).thenReturn(type);
+        doReturn(parent).when(manager).getDataType();
+
+        final Optional<String> stackType = manager.getStackType();
+
+        assertEquals(type, stackType.get());
+    }
+
+    @Test
+    public void testIsTypeAlreadyRepresentedWhenIsReturnsTrue() {
+
+        final DataType dataType = mock(DataType.class);
+        final String uuid = "uuid";
+        final String type = "tCity";
+
+        when(typeStack.get(uuid)).thenReturn(singletonList(type));
+        when(dataType.getUUID()).thenReturn(uuid);
+        doReturn(dataType).when(manager).getDataType();
+
+        assertTrue(manager.isTypeAlreadyRepresented(type));
+    }
+
+    @Test
+    public void testIsTypeAlreadyRepresentedWhenIsReturnsFalse() {
+
+        final DataType dataType = mock(DataType.class);
+        final String uuid = "uuid";
+
+        when(typeStack.get(uuid)).thenReturn(singletonList("tPerson"));
+        when(dataType.getUUID()).thenReturn(uuid);
+        doReturn(dataType).when(manager).getDataType();
+
+        assertFalse(manager.isTypeAlreadyRepresented("tCity"));
+    }
+
+    @Test
+    public void testGetSubDataTypeStack() {
+
+        final DataType dataType = mock(DataType.class);
+        final String uuid = "uuid";
+
+        when(typeStack.get(uuid)).thenReturn(asList("tPerson", "tCompany"));
+        when(dataType.getUUID()).thenReturn(uuid);
+        when(dataType.getType()).thenReturn("tCity");
+        doReturn(dataType).when(manager).getDataType();
+
+        final List<String> actualTypeStack = manager.getSubDataTypeStack();
+        final List<String> expectedTypeStack = asList("tPerson", "tCompany", "tCity");
+
+        assertEquals(expectedTypeStack, actualTypeStack);
     }
 
     @Test
@@ -371,7 +516,7 @@ public class DataTypeManagerTest {
     class DataTypeManagerFake extends DataTypeManager {
 
         DataTypeManagerFake() {
-            super(translationService, recordEngine, itemDefinitionStore, dataTypeStore, itemDefinitionUtils, dataTypeManagers);
+            super(translationService, recordEngine, itemDefinitionStore, dataTypeStore, itemDefinitionUtils, dataTypeManagers, typeStack);
         }
 
         DataTypeManager anotherManager() {

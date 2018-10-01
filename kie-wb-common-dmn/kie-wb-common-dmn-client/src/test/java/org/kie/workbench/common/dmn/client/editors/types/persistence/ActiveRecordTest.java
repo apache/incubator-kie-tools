@@ -107,6 +107,7 @@ public class ActiveRecordTest {
 
     private RecordEngine<Data> makeRecordEngine() {
         return spy(new RecordEngine<Data>() {
+
             @Override
             public List<Data> update(final Data record) {
                 return null;
@@ -118,8 +119,8 @@ public class ActiveRecordTest {
             }
 
             @Override
-            public void create(final Data record) {
-
+            public Data create(final Data record) {
+                return null;
             }
         });
     }

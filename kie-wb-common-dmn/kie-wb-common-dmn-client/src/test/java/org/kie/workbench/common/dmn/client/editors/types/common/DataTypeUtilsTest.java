@@ -56,13 +56,16 @@ public class DataTypeUtilsTest {
     @Mock
     private ManagedInstance<DataTypeManager> dataTypeManagers;
 
+    @Mock
+    private DataTypeManagerStackStore typeStack;
+
     private DataTypeManager dataTypeManager;
 
     private DataTypeUtils utils;
 
     @Before
     public void setup() {
-        dataTypeManager = spy(new DataTypeManager(translationService, recordEngine, itemDefinitionStore, dataTypeStore, itemDefinitionUtils, dataTypeManagers));
+        dataTypeManager = spy(new DataTypeManager(translationService, recordEngine, itemDefinitionStore, dataTypeStore, itemDefinitionUtils, dataTypeManagers, typeStack));
         utils = spy(new DataTypeUtils(dataTypeStore, dataTypeManager));
     }
 

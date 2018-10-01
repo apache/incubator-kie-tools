@@ -22,6 +22,7 @@ import elemental2.dom.CSSProperties.MarginLeftUnionType;
 import elemental2.dom.CSSStyleDeclaration;
 import elemental2.dom.DOMTokenList;
 import elemental2.dom.Element;
+import elemental2.dom.HTMLAnchorElement;
 import elemental2.dom.HTMLButtonElement;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
@@ -93,11 +94,17 @@ public class DataTypeListItemViewTest {
     @Mock
     private HTMLElement dataTypeListElement;
 
+    @Mock
+    private HTMLAnchorElement removeButton;
+
+    @Mock
+    private HTMLDivElement kebabMenu;
+
     private DataTypeListItemView view;
 
     @Before
     public void setup() {
-        view = spy(new DataTypeListItemView(row, level, arrow, nameText, nameInput, type, editButton, saveButton, closeButton, null));
+        view = spy(new DataTypeListItemView(row, level, arrow, nameText, nameInput, type, editButton, saveButton, closeButton, removeButton, kebabMenu));
         view.init(presenter);
 
         doReturn(dataTypeListElement).when(view).dataTypeListElement();

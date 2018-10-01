@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,32 +14,31 @@
  * limitations under the License.
  */
 
-[data-i18n-prefix="DataTypeListView."] {
-  h3 {
-    font-weight: 600;
-    font-size: 14px;
-    margin: 5px 0 10px;
-  }
+.kie-data-types-modal {
 
-  .description-buttons {
-    text-align: right;
-    margin-bottom: 15px;
+  &.modal-dialog {
+    width: 800px;
+    height: ~"calc(100% - 60px)";
 
-    a {
-      float: left;
-    }
+    .modal-content {
+      height: ~"calc(100% - 60px)";
 
-    .btn {
-      padding-right: 15px;
-      padding-left: 15px;
+      .modal-body {
+        height: ~"calc(100% - 40px)";
 
-      i {
-        padding-right: 3px;
+        [data-field="body"] {
+          height: 100%;
+
+          [data-i18n-prefix="DataTypeListView."] {
+            height: 100%;
+
+            [data-field="list-items"] {
+              height: ~"calc(100% - 120px)";
+              overflow-y: scroll;
+            }
+          }
+        }
       }
     }
-  }
-
-  ul {
-    padding: 0 15px;
   }
 }

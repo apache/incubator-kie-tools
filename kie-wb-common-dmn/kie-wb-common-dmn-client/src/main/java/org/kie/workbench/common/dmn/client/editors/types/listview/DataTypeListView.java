@@ -23,9 +23,13 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.json.client.JSONNumber;
+import com.google.gwt.json.client.JSONObject;
 import elemental2.dom.Element;
 import elemental2.dom.HTMLAnchorElement;
+import elemental2.dom.HTMLButtonElement;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.NodeList;
@@ -43,6 +47,7 @@ import static org.kie.workbench.common.dmn.client.editors.types.listview.common.
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.HiddenHelper.hide;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.HiddenHelper.isHidden;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.HiddenHelper.show;
+import static org.kie.workbench.common.dmn.client.editors.types.listview.common.JQuery.$;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper.isRightArrow;
 
 @Templated
@@ -64,6 +69,9 @@ public class DataTypeListView implements DataTypeList.View {
     @DataField("view-less")
     private final HTMLAnchorElement viewLess;
 
+    @DataField("add-button")
+    private final HTMLButtonElement addButton;
+
     private DataTypeList presenter;
 
     @Inject
@@ -71,12 +79,14 @@ public class DataTypeListView implements DataTypeList.View {
                             final HTMLDivElement collapsedDescription,
                             final HTMLDivElement expandedDescription,
                             final HTMLAnchorElement viewMore,
-                            final HTMLAnchorElement viewLess) {
+                            final HTMLAnchorElement viewLess,
+                            final HTMLButtonElement addButton) {
         this.listItems = listItems;
         this.collapsedDescription = collapsedDescription;
         this.expandedDescription = expandedDescription;
         this.viewMore = viewMore;
         this.viewLess = viewLess;
+        this.addButton = addButton;
     }
 
     @Override
@@ -114,6 +124,21 @@ public class DataTypeListView implements DataTypeList.View {
         }
 
         showArrowIconIfDataTypeHasChildren(dataType);
+    }
+
+    @Override
+    public void addSubItem(final DataTypeListItem listItem) {
+        listItems.appendChild(listItem.getElement());
+    }
+
+    @EventHandler("add-button")
+    public void onAddClick(final ClickEvent e) {
+
+        final double scrollTop = listItems.scrollHeight;
+
+        scrollTo(listItems, scrollTop);
+
+        presenter.addDataType();
     }
 
     void hideItemElementIfParentIsCollapsed(final HTMLElement itemElement,
@@ -186,14 +211,34 @@ public class DataTypeListView implements DataTypeList.View {
     void expandDescription() {
         collapsedDescription.hidden = true;
         expandedDescription.hidden = false;
+        viewLess.hidden = false;
+        viewMore.hidden = true;
     }
 
     void collapseDescription() {
         collapsedDescription.hidden = false;
         expandedDescription.hidden = true;
+        viewLess.hidden = true;
+        viewMore.hidden = false;
     }
 
     Element getDataTypeRow(final DataType dataType) {
         return listItems.querySelector("[" + UUID_ATTR + "=\"" + dataType.getUUID() + "\"]");
+    }
+
+    void scrollTo(final HTMLDivElement listItems,
+                  final double scrollPosition) {
+
+        final JavaScriptObject scrollTopProperty = property("scrollTop", scrollPosition);
+        final int duration = 800;
+
+        $(listItems).animate(scrollTopProperty, duration);
+    }
+
+    private JavaScriptObject property(final String key,
+                                      final double value) {
+        final JSONObject jsonObject = new JSONObject();
+        jsonObject.put(key, new JSONNumber(value));
+        return jsonObject.getJavaScriptObject();
     }
 }

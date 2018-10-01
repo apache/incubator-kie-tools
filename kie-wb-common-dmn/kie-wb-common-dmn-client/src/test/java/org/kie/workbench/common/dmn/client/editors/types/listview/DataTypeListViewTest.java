@@ -23,6 +23,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import elemental2.dom.DOMTokenList;
 import elemental2.dom.Element;
 import elemental2.dom.HTMLAnchorElement;
+import elemental2.dom.HTMLButtonElement;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.Node;
@@ -44,6 +45,7 @@ import static org.kie.workbench.common.dmn.client.editors.types.listview.DataTyp
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.HiddenHelper.HIDDEN_CSS_CLASS;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper.RIGHT_ARROW_CSS_CLASS;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyDouble;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
@@ -78,11 +80,18 @@ public class DataTypeListViewTest {
     @Mock
     private HTMLElement element;
 
+    @Mock
+    private HTMLButtonElement addButton;
+
+    @Mock
+    private DataTypeList presenter;
+
     private DataTypeListView view;
 
     @Before
     public void setup() {
-        view = spy(new DataTypeListView(listItems, collapsedDescription, expandedDescription, viewMore, viewLess));
+        view = spy(new DataTypeListView(listItems, collapsedDescription, expandedDescription, viewMore, viewLess, addButton));
+        view.init(presenter);
         doReturn(element).when(view).getElement();
     }
 
@@ -164,6 +173,34 @@ public class DataTypeListViewTest {
         verifyStatic();
         ElementHelper.insertAfter(listItemElement1, dataTypeRow);
         ElementHelper.insertAfter(listItemElement2, listItemElement1);
+    }
+
+    @Test
+    public void testAddSubItem() {
+
+        final DataTypeListItem listItem = mock(DataTypeListItem.class);
+        final HTMLElement element = mock(HTMLElement.class);
+
+        when(listItem.getElement()).thenReturn(element);
+
+        view.addSubItem(listItem);
+
+        verify(listItems).appendChild(element);
+    }
+
+    @Test
+    public void testOnAddClick() {
+
+        final ClickEvent event = mock(ClickEvent.class);
+        final double expectedScrollTop = 200d;
+
+        doNothing().when(view).scrollTo(any(), anyDouble());
+        listItems.scrollHeight = expectedScrollTop;
+
+        view.onAddClick(event);
+
+        verify(view).scrollTo(listItems, expectedScrollTop);
+        verify(presenter).addDataType();
     }
 
     @Test
@@ -308,6 +345,8 @@ public class DataTypeListViewTest {
 
         assertTrue(collapsedDescription.hidden);
         assertFalse(expandedDescription.hidden);
+        assertFalse(viewLess.hidden);
+        assertTrue(viewMore.hidden);
     }
 
     @Test
@@ -316,6 +355,8 @@ public class DataTypeListViewTest {
 
         assertFalse(collapsedDescription.hidden);
         assertTrue(expandedDescription.hidden);
+        assertTrue(viewLess.hidden);
+        assertFalse(viewMore.hidden);
     }
 
     @Test

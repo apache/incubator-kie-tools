@@ -14,32 +14,13 @@
  * limitations under the License.
  */
 
-[data-i18n-prefix="DataTypeListView."] {
-  h3 {
-    font-weight: 600;
-    font-size: 14px;
-    margin: 5px 0 10px;
-  }
+package org.kie.workbench.common.dmn.client.editors.types.listview.common;
 
-  .description-buttons {
-    text-align: right;
-    margin-bottom: 15px;
+import elemental2.dom.Element;
+import jsinterop.annotations.JsType;
 
-    a {
-      float: left;
-    }
+@JsType(isNative = true)
+public abstract class JQueryEvent {
 
-    .btn {
-      padding-right: 15px;
-      padding-left: 15px;
-
-      i {
-        padding-right: 3px;
-      }
-    }
-  }
-
-  ul {
-    padding: 0 15px;
-  }
+    public Element target;
 }

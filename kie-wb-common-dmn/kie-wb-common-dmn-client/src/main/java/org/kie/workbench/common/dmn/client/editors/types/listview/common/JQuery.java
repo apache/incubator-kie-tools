@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.editors.types.listview.common;
 
+import com.google.gwt.core.client.JavaScriptObject;
 import elemental2.dom.Element;
 import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsMethod;
@@ -24,22 +25,26 @@ import jsinterop.annotations.JsType;
 import static jsinterop.annotations.JsPackage.GLOBAL;
 
 @JsType(isNative = true)
-public abstract class JQuerySelectPicker {
+public abstract class JQuery {
 
     @JsMethod(namespace = GLOBAL, name = "jQuery")
-    public native static JQuerySelectPicker $(final Element selector);
+    public native static JQuery $(final Element selector);
 
-    public native JQuerySelectPicker selectpicker(final String method);
+    public native JQuery animate(final JavaScriptObject properties,
+                                 final int duration);
 
-    public native JQuerySelectPicker selectpicker(final String method,
-                                                  final String value);
+    public native JQuery on(final String event,
+                            final CallbackFunction callbackFunction);
 
-    public native JQuerySelectPicker on(final String event,
-                                        final CallbackFunction callbackFunction);
+    public native JQuery append(final JQuery jQueryElement);
+
+    public native JQuery css(final JavaScriptObject properties);
+
+    public native JQuery detach();
 
     @JsFunction
     public interface CallbackFunction {
 
-        void call(final JQuerySelectPickerEvent event);
+        void call(final JQueryEvent event);
     }
 }

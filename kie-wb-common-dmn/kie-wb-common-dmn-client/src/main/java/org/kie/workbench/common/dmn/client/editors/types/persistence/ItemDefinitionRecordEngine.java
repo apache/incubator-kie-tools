@@ -26,6 +26,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.handlers.DataTypeDestroyHandler;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.handlers.DataTypeUpdateHandler;
+import org.kie.workbench.common.dmn.client.editors.types.persistence.handlers.ItemDefinitionCreateHandler;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.handlers.ItemDefinitionDestroyHandler;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.handlers.ItemDefinitionUpdateHandler;
 
@@ -41,6 +42,8 @@ public class ItemDefinitionRecordEngine implements RecordEngine<DataType> {
 
     private final ItemDefinitionUpdateHandler itemDefinitionUpdateHandler;
 
+    private final ItemDefinitionCreateHandler itemDefinitionCreateHandler;
+
     private final DataTypeDestroyHandler dataTypeDestroyHandler;
 
     private final DataTypeUpdateHandler dataTypeUpdateHandler;
@@ -49,11 +52,13 @@ public class ItemDefinitionRecordEngine implements RecordEngine<DataType> {
     public ItemDefinitionRecordEngine(final ItemDefinitionStore itemDefinitionStore,
                                       final ItemDefinitionDestroyHandler itemDefinitionDestroyHandler,
                                       final ItemDefinitionUpdateHandler itemDefinitionUpdateHandler,
+                                      final ItemDefinitionCreateHandler itemDefinitionCreateHandler,
                                       final DataTypeDestroyHandler dataTypeDestroyHandler,
                                       final DataTypeUpdateHandler dataTypeUpdateHandler) {
         this.itemDefinitionStore = itemDefinitionStore;
         this.itemDefinitionDestroyHandler = itemDefinitionDestroyHandler;
         this.itemDefinitionUpdateHandler = itemDefinitionUpdateHandler;
+        this.itemDefinitionCreateHandler = itemDefinitionCreateHandler;
         this.dataTypeDestroyHandler = dataTypeDestroyHandler;
         this.dataTypeUpdateHandler = dataTypeUpdateHandler;
     }
@@ -84,8 +89,8 @@ public class ItemDefinitionRecordEngine implements RecordEngine<DataType> {
     }
 
     @Override
-    public void create(final DataType record) {
-        // TODO: https://issues.jboss.org/browse/DROOLS-2762
+    public DataType create(final DataType dataType) {
+        return itemDefinitionCreateHandler.create(dataType);
     }
 
     public void doUpdate(final DataType dataType,

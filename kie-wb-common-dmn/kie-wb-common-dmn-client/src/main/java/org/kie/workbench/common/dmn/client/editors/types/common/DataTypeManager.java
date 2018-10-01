@@ -18,6 +18,7 @@ package org.kie.workbench.common.dmn.client.editors.types.common;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -37,6 +38,7 @@ import org.uberfire.commons.uuid.UUID;
 
 import static java.util.stream.Collectors.toList;
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.workbench.common.dmn.client.editors.types.common.BuiltInTypeUtils.isDefault;
 import static org.kie.workbench.common.dmn.client.editors.types.common.DataType.TOP_LEVEL_PARENT_UUID;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeManager_None;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeManager_Structure;
@@ -62,11 +64,11 @@ public class DataTypeManager {
 
     private final ManagedInstance<DataTypeManager> dataTypeManagers;
 
+    private final DataTypeManagerStackStore typeStack;
+
     private DataType dataType;
 
     private ItemDefinition itemDefinition;
-
-    private BuiltInType builtInType;
 
     @Inject
     public DataTypeManager(final TranslationService translationService,
@@ -74,37 +76,50 @@ public class DataTypeManager {
                            final ItemDefinitionStore itemDefinitionStore,
                            final DataTypeStore dataTypeStore,
                            final ItemDefinitionUtils itemDefinitionUtils,
-                           final ManagedInstance<DataTypeManager> dataTypeManagers) {
+                           final ManagedInstance<DataTypeManager> dataTypeManagers,
+                           final DataTypeManagerStackStore typeStack) {
         this.translationService = translationService;
         this.recordEngine = recordEngine;
         this.itemDefinitionStore = itemDefinitionStore;
         this.dataTypeStore = dataTypeStore;
         this.itemDefinitionUtils = itemDefinitionUtils;
         this.dataTypeManagers = dataTypeManagers;
+        this.typeStack = typeStack;
+    }
+
+    public DataTypeManager fromNew() {
+        return this
+                .newDataType()
+                .withUUID()
+                .withParentUUID(TOP_LEVEL_PARENT_UUID)
+                .withNoName()
+                .withDefaultType();
     }
 
     public DataTypeManager from(final ItemDefinition itemDefinition) {
-
-        this.dataType = makeDataType();
-        this.itemDefinition = checkNotNull("itemDefinition", itemDefinition);
-
-        return asStandard();
+        return this
+                .newDataType()
+                .withUUID()
+                .withParentUUID(TOP_LEVEL_PARENT_UUID)
+                .withItemDefinition(itemDefinition)
+                .withItemDefinitionName()
+                .withItemDefinitionType()
+                .withItemDefinitionSubDataTypes()
+                .withIndexedItemDefinition();
     }
 
     public DataTypeManager from(final BuiltInType builtInType) {
-
-        this.dataType = makeDataType();
-        this.builtInType = checkNotNull("builtInType", builtInType);
-
-        return asDefault();
+        return this
+                .newDataType()
+                .withUUID()
+                .withNoName()
+                .withBuiltInType(builtInType);
     }
 
     public DataTypeManager from(final DataType dataType) {
-
-        this.dataType = dataType;
-        this.itemDefinition = getItemDefinition(dataType);
-
-        return this;
+        return this
+                .withDataType(dataType)
+                .withItemDefinition(getItemDefinition(dataType));
     }
 
     public DataTypeManager withParentUUID(final String parentUUID) {
@@ -122,6 +137,29 @@ public class DataTypeManager {
         return this;
     }
 
+    public DataTypeManager withDataType(final DataType dataType) {
+        this.dataType = dataType;
+        return this;
+    }
+
+    private DataTypeManager withDefaultType() {
+        return withType(BuiltInType.STRING.getName());
+    }
+
+    DataTypeManager newDataType() {
+        return withDataType(makeDataType());
+    }
+
+    public DataTypeManager withItemDefinition(final ItemDefinition itemDefinition) {
+        this.itemDefinition = checkNotNull("itemDefinition", itemDefinition);
+        return this;
+    }
+
+    private DataTypeManager withBuiltInType(final BuiltInType builtInType) {
+        final String type = checkNotNull("builtInType", builtInType).getName();
+        return withType(type);
+    }
+
     public DataTypeManager withRefreshedSubDataTypes(final String newType) {
         return withSubDataTypes(makeExternalDataTypes(newType));
     }
@@ -135,24 +173,7 @@ public class DataTypeManager {
         return this;
     }
 
-    private DataTypeManager asDefault() {
-        return this
-                .withUUID()
-                .withNoName()
-                .withBuiltInType();
-    }
-
-    private DataTypeManager asStandard() {
-        return this
-                .withUUID()
-                .withParentUUID(TOP_LEVEL_PARENT_UUID)
-                .withItemDefinitionName()
-                .withItemDefinitionType()
-                .withItemDefinitionSubDataTypes()
-                .withIndexedItemDefinition();
-    }
-
-    private DataTypeManager withUUID() {
+    DataTypeManager withUUID() {
         dataType.setUUID(UUID.uuid());
         return this;
     }
@@ -162,24 +183,19 @@ public class DataTypeManager {
         return this;
     }
 
-    private DataTypeManager withBuiltInType() {
-        dataType.setType(builtInType.getName());
-        return this;
-    }
-
-    private DataTypeManager withItemDefinitionName() {
+    DataTypeManager withItemDefinitionName() {
         return withName(itemDefinitionName(itemDefinition));
     }
 
-    private DataTypeManager withItemDefinitionType() {
+    DataTypeManager withItemDefinitionType() {
         return withType(itemDefinitionType(itemDefinition));
     }
 
-    private DataTypeManager withItemDefinitionSubDataTypes() {
+    DataTypeManager withItemDefinitionSubDataTypes() {
         return withSubDataTypes(createSubDataTypesFromItemDefinition());
     }
 
-    private DataTypeManager withIndexedItemDefinition() {
+    public DataTypeManager withIndexedItemDefinition() {
 
         itemDefinitionStore.index(dataType.getUUID(), itemDefinition);
         dataTypeStore.index(dataType.getUUID(), dataType);
@@ -209,8 +225,13 @@ public class DataTypeManager {
     private List<DataType> createSubDataTypesFromItemDefinition() {
 
         final List<ItemDefinition> itemComponent = itemDefinition.getItemComponent();
-        final Optional<ItemDefinition> existingItemDefinition = findByName(itemDefinitionType(itemDefinition));
+        final String type = itemDefinitionType(itemDefinition);
+        final Optional<ItemDefinition> existingItemDefinition = itemDefinitionUtils.findByName(type);
         final boolean existingDataType = existingItemDefinition.isPresent();
+
+        if (isTypeAlreadyRepresented(type)) {
+            return new ArrayList<>();
+        }
 
         if (itemComponent.isEmpty()) {
             return createSubDataTypes(existingDataType ? existingItemDefinition.get().getItemComponent() : new ArrayList<>());
@@ -221,16 +242,17 @@ public class DataTypeManager {
 
     public List<DataType> makeExternalDataTypes(final String typeName) {
 
-        final Optional<ItemDefinition> existingItemDefinition = findByName(typeName);
+        final Optional<ItemDefinition> existingItemDefinition = itemDefinitionUtils.findByName(typeName);
 
-        if (existingItemDefinition.isPresent()) {
-            return getItemDefinitionWithItemComponent(existingItemDefinition.get())
+        if (isTypeAlreadyRepresented(typeName) || !existingItemDefinition.isPresent()) {
+            return new ArrayList<>();
+        } else {
+            return existingItemDefinition
+                    .get()
                     .getItemComponent()
                     .stream()
                     .map(this::createSubDataType)
                     .collect(toList());
-        } else {
-            return new ArrayList<>();
         }
     }
 
@@ -254,8 +276,15 @@ public class DataTypeManager {
 
     DataType createSubDataType(final ItemDefinition itemDefinition) {
         return anotherManager()
-                .from(itemDefinition)
+                .newDataType()
+                .withUUID()
                 .withParentUUID(getDataTypeUUID().orElseThrow(() -> new UnsupportedOperationException("A parent data type must have an UUID.")))
+                .withItemDefinition(itemDefinition)
+                .withItemDefinitionName()
+                .withItemDefinitionType()
+                .withTypeStack(getSubDataTypeStack())
+                .withItemDefinitionSubDataTypes()
+                .withIndexedItemDefinition()
                 .get();
     }
 
@@ -268,7 +297,51 @@ public class DataTypeManager {
     }
 
     Optional<String> getDataTypeUUID() {
-        return Optional.ofNullable(dataType.getUUID());
+        return Optional.ofNullable(getDataType().getUUID());
+    }
+
+    /**
+     * It identifies if a given type were already represented in the current stack.
+     * See {@link DataTypeManagerStackStore}
+     */
+    boolean isTypeAlreadyRepresented(final String type) {
+        return getTypeStack().contains(type);
+    }
+
+    List<String> getSubDataTypeStack() {
+        final List<String> subDataTypeStack = new ArrayList<>(getTypeStack());
+        getStackType().ifPresent(subDataTypeStack::add);
+        return subDataTypeStack;
+    }
+
+    DataTypeManager withTypeStack(final List<String> typeStack) {
+        final String dataTypeUUID = getDataTypeUUID().orElseThrow(() -> new UnsupportedOperationException("A data type must have an UUID to be inserted in the type stack."));
+        this.typeStack.put(dataTypeUUID, typeStack);
+        return this;
+    }
+
+    Optional<String> getStackType() {
+
+        final String type = getDataType().getType();
+        final String name = getDataType().getName();
+
+        if (getDataType().isTopLevel()) {
+            return Optional.ofNullable(name);
+        } else {
+            if (!Objects.equals(type, structure()) && !isDefault(type)) {
+                return Optional.ofNullable(type);
+            }
+        }
+        return Optional.empty();
+    }
+
+    private List<String> getTypeStack() {
+        final String dataTypeUUID = getDataTypeUUID().orElseThrow(() -> new UnsupportedOperationException("A data type must have an UUID to be access the type stack."));
+        return typeStack.get(dataTypeUUID);
+    }
+
+    DataType getDataType() {
+        return dataType;
     }
 
     private DataType makeDataType() {
