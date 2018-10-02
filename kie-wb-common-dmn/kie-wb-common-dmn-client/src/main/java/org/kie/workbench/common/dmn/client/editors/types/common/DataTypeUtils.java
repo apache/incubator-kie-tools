@@ -18,6 +18,7 @@ package org.kie.workbench.common.dmn.client.editors.types.common;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.enterprise.context.Dependent;
@@ -51,6 +52,10 @@ public class DataTypeUtils {
     }
 
     public List<DataType> customDataTypes() {
-        return dataTypeStore.getTopLevelDataTypes();
+        return dataTypeStore
+                .getTopLevelDataTypes()
+                .stream()
+                .sorted(Comparator.comparing(DataType::getName))
+                .collect(Collectors.toList());
     }
 }

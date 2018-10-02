@@ -117,11 +117,11 @@ public class DataTypeSelectView implements DataTypeSelect.View {
 
         optionGroup.label = groupTitle;
 
-        dataTypes.forEach(dataType -> {
-            final String optionValue = dataTypeConsumer.apply(dataType);
-            final HTMLOptionElement option = makeOption(optionValue);
-            optionGroup.appendChild(option);
-        });
+        dataTypes.stream()
+                .forEach(dataType -> {
+                    final HTMLOptionElement option = makeOption(dataType, dataTypeConsumer);
+                    optionGroup.appendChild(option);
+                });
 
         return optionGroup;
     }
@@ -130,10 +130,13 @@ public class DataTypeSelectView implements DataTypeSelect.View {
         return typeSelectStructureOptGroup;
     }
 
-    HTMLOptionElement makeOption(final String value) {
+    HTMLOptionElement makeOption(final DataType dataType,
+                                 final Function<DataType, String> dataTypeConsumer) {
+        final String optionValue = dataTypeConsumer.apply(dataType);
+
         final HTMLOptionElement option = makeHTMLOptionElement();
-        option.text = value;
-        option.value = value;
+        option.text = optionValue;
+        option.value = optionValue;
         return option;
     }
 

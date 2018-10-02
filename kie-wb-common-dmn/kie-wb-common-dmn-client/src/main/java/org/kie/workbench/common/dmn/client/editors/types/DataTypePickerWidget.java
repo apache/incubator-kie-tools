@@ -33,6 +33,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.HasValue;
+import org.gwtbootstrap3.extras.select.client.ui.OptGroup;
 import org.gwtbootstrap3.extras.select.client.ui.Option;
 import org.gwtbootstrap3.extras.select.client.ui.Select;
 import org.jboss.errai.common.client.dom.Anchor;
@@ -69,6 +70,8 @@ public class DataTypePickerWidget extends Composite implements HasValue<QName>,
     @DataField
     private Select typeSelector;
 
+    private TranslationService translationService;
+
     private QNameConverter qNameConverter;
 
     private DMNGraphUtils dmnGraphUtils;
@@ -95,6 +98,7 @@ public class DataTypePickerWidget extends Composite implements HasValue<QName>,
                                 final ItemDefinitionUtils itemDefinitionUtils) {
         this.typeButton = typeButton;
         this.manageLabel = manageLabel;
+        this.translationService = translationService;
         this.typeSelector = GWT.create(Select.class);
         this.qNameConverter = qNameConverter;
         this.dmnGraphUtils = dmnGraphUtils;
@@ -122,12 +126,17 @@ public class DataTypePickerWidget extends Composite implements HasValue<QName>,
         typeSelector.refresh();
     }
 
-    private void addBuiltInTypes() {
+    void addBuiltInTypes() {
+        final OptGroup group = GWT.create(OptGroup.class);
+        group.setLabel(translationService.getTranslation(DMNEditorConstants.DataTypeSelectView_DefaultTitle));
+
         Stream.of(BuiltInType.values())
                 .sorted(BUILT_IN_TYPE_COMPARATOR)
                 .map(this::makeTypeSelector)
                 .filter(Optional::isPresent)
-                .forEach(o -> typeSelector.add(o.get()));
+                .forEach(o -> group.add(o.get()));
+
+        typeSelector.add(group);
     }
 
     Optional<Option> makeTypeSelector(final BuiltInType bit) {
@@ -142,26 +151,20 @@ public class DataTypePickerWidget extends Composite implements HasValue<QName>,
         return itemDefinitionUtils.normaliseTypeRef(typeRef);
     }
 
-    private void addItemDefinitions() {
+    void addItemDefinitions() {
         final Definitions definitions = dmnGraphUtils.getDefinitions();
         final List<ItemDefinition> itemDefinitions = definitions != null ? definitions.getItemDefinition() : Collections.emptyList();
 
-        //There will always be BuiltInTypes so it safe to add a divider
-        if (itemDefinitions.size() > 0) {
-            addDivider();
-        }
+        final OptGroup group = GWT.create(OptGroup.class);
+        group.setLabel(translationService.getTranslation(DMNEditorConstants.DataTypeSelectView_CustomTitle));
 
         itemDefinitions.stream()
                 .sorted(ITEM_DEFINITION_COMPARATOR)
                 .map(this::makeTypeSelector)
                 .filter(Optional::isPresent)
-                .forEach(o -> typeSelector.add(o.get()));
-    }
+                .forEach(o -> group.add(o.get()));
 
-    void addDivider() {
-        final Option o = GWT.create(Option.class);
-        o.setDivider(true);
-        typeSelector.add(o);
+        typeSelector.add(group);
     }
 
     Optional<Option> makeTypeSelector(final ItemDefinition id) {

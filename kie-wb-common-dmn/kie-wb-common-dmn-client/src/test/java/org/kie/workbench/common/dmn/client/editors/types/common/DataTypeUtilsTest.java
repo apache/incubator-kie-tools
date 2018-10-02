@@ -92,12 +92,15 @@ public class DataTypeUtilsTest {
 
         final DataType dataType1 = mock(DataType.class);
         final DataType dataType2 = mock(DataType.class);
-        final List<DataType> expectedDataType = asList(dataType1, dataType2);
+        final List<DataType> unorderedDataTypes = asList(dataType1, dataType2);
+        final List<DataType> expectedDataTypes = asList(dataType2, dataType1);
 
-        when(dataTypeStore.getTopLevelDataTypes()).thenReturn(expectedDataType);
+        when(dataTypeStore.getTopLevelDataTypes()).thenReturn(unorderedDataTypes);
+        when(dataType1.getName()).thenReturn("z");
+        when(dataType2.getName()).thenReturn("a");
 
         final List<DataType> actualDataTypes = utils.customDataTypes();
 
-        assertEquals(expectedDataType, actualDataTypes);
+        assertEquals(expectedDataTypes, actualDataTypes);
     }
 }

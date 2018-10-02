@@ -24,6 +24,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.thirdparty.guava.common.collect.Ordering;
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.gwtbootstrap3.extras.select.client.ui.OptGroup;
 import org.gwtbootstrap3.extras.select.client.ui.Option;
 import org.gwtbootstrap3.extras.select.client.ui.Select;
 import org.jboss.errai.common.client.dom.Anchor;
@@ -44,7 +45,6 @@ import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.mockito.InOrder;
 import org.mockito.Mock;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -54,9 +54,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
@@ -97,6 +95,10 @@ public class DataTypePickerWidgetTest {
     @GwtMock
     @SuppressWarnings("unused")
     private Option option;
+
+    @GwtMock
+    @SuppressWarnings("unused")
+    private OptGroup group;
 
     @Mock
     private com.google.gwt.user.client.Element optionElement;
@@ -162,15 +164,20 @@ public class DataTypePickerWidgetTest {
 
         verify(qNameConverter).setDMNModel(eq(dmnModel));
         verify(typeSelector).clear();
+        verify(picker).addBuiltInTypes();
+        verify(picker).addItemDefinitions();
         verify(typeSelector).refresh();
     }
 
     @Test
     public void testSetDMNModel_BuiltInTypes() {
-        picker.setDMNModel(dmnModel);
+        picker.addBuiltInTypes();
 
         final BuiltInType[] bits = BuiltInType.values();
         verify(picker, times(bits.length)).makeTypeSelector(builtInTypeCaptor.capture());
+        verify(group).setLabel(DMNEditorConstants.DataTypeSelectView_DefaultTitle);
+        verify(group, times(bits.length)).add(eq(option));
+        verify(typeSelector).add(group);
 
         //Checks all BuiltInTypes were handled by makeTypeSelector(BuiltInType)
         final List<BuiltInType> builtInTypes = Arrays.asList(bits);
@@ -189,10 +196,13 @@ public class DataTypePickerWidgetTest {
             setName(new Name("user_defined_data_type"));
         }});
 
-        picker.setDMNModel(dmnModel);
+        picker.addItemDefinitions();
 
         final List<ItemDefinition> itemDefinitions = definitions.getItemDefinition();
         verify(picker, times(itemDefinitions.size())).makeTypeSelector(itemDefinitionCaptor.capture());
+        verify(group).setLabel(DMNEditorConstants.DataTypeSelectView_CustomTitle);
+        verify(group, times(itemDefinitions.size())).add(eq(option));
+        verify(typeSelector).add(group);
 
         //Checks all ItemDefinitions were handled by makeTypeSelector(ItemDefinition)
         assertFalse(itemDefinitions.isEmpty());
@@ -210,19 +220,7 @@ public class DataTypePickerWidgetTest {
 
         picker.setDMNModel(dmnModel);
 
-        verify(picker, never()).addDivider();
         verify(picker, never()).makeTypeSelector(any(ItemDefinition.class));
-    }
-
-    @Test
-    public void testSetDMNModel_Divider() {
-        final InOrder order = inOrder(picker);
-
-        picker.setDMNModel(dmnModel);
-
-        order.verify(picker, atLeastOnce()).makeTypeSelector(any(BuiltInType.class));
-        order.verify(picker).addDivider();
-        order.verify(picker, atLeastOnce()).makeTypeSelector(any(ItemDefinition.class));
     }
 
     @Test
