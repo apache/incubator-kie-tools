@@ -44,6 +44,6 @@ public class PrependColumnCommandTest extends AbstractCommandTest {
     public void execute() {
         prependColumnCommand.execute();
         verify(mockScenarioGridModel, times(1)).getFirstIndexLeftOfGroup(eq(COLUMN_GROUP));
-        verify(mockScenarioGridModel, times(1)).insertNewColumn(eq(FIRST_INDEX_LEFT), isA(ScenarioGridColumn.class));
+        verify(mockScenarioGridModel, times(1)).insertColumn(eq(FIRST_INDEX_LEFT), isA(ScenarioGridColumn.class));
     }
 }

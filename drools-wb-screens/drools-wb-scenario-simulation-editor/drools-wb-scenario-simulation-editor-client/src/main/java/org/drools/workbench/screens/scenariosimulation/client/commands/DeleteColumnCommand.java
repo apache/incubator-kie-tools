@@ -60,16 +60,16 @@ public class DeleteColumnCommand implements Command {
 
     @Override
     public void execute() {
-        model.deleteNewColumn(columnIndex);
+        model.deleteColumn(columnIndex);
         if (model.getGroupSize(columnGroup) < 1) {
             FactMappingType factMappingType = FactMappingType.valueOf(columnGroup.toUpperCase());
             String columnTitle = FactMapping.getPlaceHolder(factMappingType, model.nextColumnCount());
-            model.insertNewColumn(columnIndex, getScenarioGridColumn(columnTitle,
-                                                                     String.valueOf(new Date().getTime()),
-                                                                     columnGroup,
-                                                                     factMappingType,
-                                                                     scenarioGridPanel,
-                                                                     scenarioGridLayer));
+            model.insertColumn(columnIndex, getScenarioGridColumn(columnTitle,
+                                                                  String.valueOf(new Date().getTime()),
+                                                                  columnGroup,
+                                                                  factMappingType,
+                                                                  scenarioGridPanel,
+                                                                  scenarioGridLayer));
         }
     }
 }

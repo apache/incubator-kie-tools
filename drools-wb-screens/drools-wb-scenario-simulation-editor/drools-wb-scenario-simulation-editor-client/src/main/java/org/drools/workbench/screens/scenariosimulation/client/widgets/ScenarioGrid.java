@@ -98,7 +98,7 @@ public class ScenarioGrid extends BaseGridWidget {
                     String columnId = factMapping.getExpressionIdentifier().getName();
                     String columnTitle = factMapping.getExpressionAlias();
                     String columnGroup = factMapping.getExpressionIdentifier().getType().name();
-                    model.insertColumn(index, getScenarioGridColumn(columnTitle,
+                    ((ScenarioGridModel) model).insertColumnGridOnly(index, getScenarioGridColumn(columnTitle,
                                                                     columnId,
                                                                     columnGroup,
                                                                     factMapping.getExpressionIdentifier().getType(),
@@ -110,7 +110,7 @@ public class ScenarioGrid extends BaseGridWidget {
     void appendRows(Simulation simulation) {
         List<Scenario> scenarios = simulation.getUnmodifiableScenarios();
         IntStream.range(0, scenarios.size()).forEach(rowIndex -> {
-            ((ScenarioGridModel) model).insertRow(rowIndex, new ScenarioGridRow(), scenarios.get(rowIndex));
+            ((ScenarioGridModel) model).insertRowGridOnly(rowIndex, new ScenarioGridRow(), scenarios.get(rowIndex));
         });
     }
 }

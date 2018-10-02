@@ -43,6 +43,6 @@ public class PrependRowCommandTest extends AbstractCommandTest {
     @Test
     public void execute() {
         prependRowCommand.execute();
-        verify(mockScenarioGridModel, times(1)).insertNewRow(eq(0), isA(ScenarioGridRow.class));
+        verify(mockScenarioGridModel, times(1)).insertRow(eq(0), isA(ScenarioGridRow.class));
     }
 }

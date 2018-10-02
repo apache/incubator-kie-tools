@@ -66,11 +66,11 @@ public class InsertColumnCommand implements Command {
         int columnPosition = isRight ? columnIndex + 1 : columnIndex;
         FactMappingType factMappingType = FactMappingType.valueOf(columnGroup.toUpperCase());
         String columnTitle = FactMapping.getPlaceHolder(factMappingType, model.nextColumnCount());
-        model.insertNewColumn(columnPosition, getScenarioGridColumn(columnTitle,
-                                                                    columnId,
-                                                                    columnGroup,
-                                                                    factMappingType,
-                                                                    scenarioGridPanel,
-                                                                    scenarioGridLayer));
+        model.insertColumn(columnPosition, getScenarioGridColumn(columnTitle,
+                                                                 columnId,
+                                                                 columnGroup,
+                                                                 factMappingType,
+                                                                 scenarioGridPanel,
+                                                                 scenarioGridLayer));
     }
 }

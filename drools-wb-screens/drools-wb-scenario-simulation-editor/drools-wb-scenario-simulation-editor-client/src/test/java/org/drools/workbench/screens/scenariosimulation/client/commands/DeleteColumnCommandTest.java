@@ -49,12 +49,12 @@ public class DeleteColumnCommandTest extends AbstractCommandTest {
     public void execute() {
         when(mockScenarioGridModel.getGroupSize(COLUMN_GROUP)).thenReturn(4L);
         deleteColumnCommand.execute();
-        verify(mockScenarioGridModel, times(1)).deleteNewColumn(eq(COLUMN_INDEX));
-        verify(mockScenarioGridModel,never()).insertNewColumn(anyInt(),anyObject());
+        verify(mockScenarioGridModel, times(1)).deleteColumn(eq(COLUMN_INDEX));
+        verify(mockScenarioGridModel,never()).insertColumn(anyInt(), anyObject());
         reset(mockScenarioGridModel);
         when(mockScenarioGridModel.getGroupSize(COLUMN_GROUP)).thenReturn(0L);
         deleteColumnCommand.execute();
-        verify(mockScenarioGridModel, times(1)).deleteNewColumn(eq(COLUMN_INDEX));
-        verify(mockScenarioGridModel,times(1)).insertNewColumn(eq(COLUMN_INDEX),isA(GridColumn.class));
+        verify(mockScenarioGridModel, times(1)).deleteColumn(eq(COLUMN_INDEX));
+        verify(mockScenarioGridModel,times(1)).insertColumn(eq(COLUMN_INDEX), isA(GridColumn.class));
     }
 }

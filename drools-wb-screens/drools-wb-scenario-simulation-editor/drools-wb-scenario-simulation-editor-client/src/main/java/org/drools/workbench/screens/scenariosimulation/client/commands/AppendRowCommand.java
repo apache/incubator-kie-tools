@@ -35,6 +35,6 @@ public class AppendRowCommand implements Command {
 
     @Override
     public void execute() {
-        model.appendNewRow(new ScenarioGridRow());
+        model.appendRow(new ScenarioGridRow());
     }
 }

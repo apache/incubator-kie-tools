@@ -54,11 +54,11 @@ public class AppendColumnCommand implements Command {
         final int index = model.getFirstIndexRightOfGroup(columnGroup);
         FactMappingType factMappingType = FactMappingType.valueOf(columnGroup.toUpperCase());
         String columnTitle = FactMapping.getPlaceHolder(factMappingType, model.nextColumnCount());
-        model.insertNewColumn(index, getScenarioGridColumn(columnTitle,
-                                                           columnId,
-                                                           columnGroup,
-                                                           factMappingType,
-                                                           scenarioGridPanel,
-                                                           scenarioGridLayer));
+        model.insertColumn(index, getScenarioGridColumn(columnTitle,
+                                                        columnId,
+                                                        columnGroup,
+                                                        factMappingType,
+                                                        scenarioGridPanel,
+                                                        scenarioGridLayer));
     }
 }

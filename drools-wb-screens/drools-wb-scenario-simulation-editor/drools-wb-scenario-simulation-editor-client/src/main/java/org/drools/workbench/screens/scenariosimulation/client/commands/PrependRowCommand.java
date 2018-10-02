@@ -35,6 +35,6 @@ public class PrependRowCommand implements Command {
 
     @Override
     public void execute() {
-        model.insertNewRow(0, new ScenarioGridRow());
+        model.insertRow(0, new ScenarioGridRow());
     }
 }

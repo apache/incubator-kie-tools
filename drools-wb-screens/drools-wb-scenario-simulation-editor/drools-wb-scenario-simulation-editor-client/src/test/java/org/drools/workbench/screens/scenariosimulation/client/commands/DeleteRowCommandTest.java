@@ -41,6 +41,6 @@ public class DeleteRowCommandTest extends AbstractCommandTest {
     @Test
     public void execute() {
         deleteRowCommand.execute();
-        verify(mockScenarioGridModel, times(1)).deleteNewRow(eq(ROW_INDEX));
+        verify(mockScenarioGridModel, times(1)).deleteRow(eq(ROW_INDEX));
     }
 }

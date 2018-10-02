@@ -44,6 +44,6 @@ public class AppendColumnCommandTest extends AbstractCommandTest {
     public void execute() {
         appendColumnCommand.execute();
         verify(mockScenarioGridModel, times(1)).getFirstIndexRightOfGroup(eq(COLUMN_GROUP));
-        verify(mockScenarioGridModel, times(1)).insertNewColumn(eq(FIRST_INDEX_RIGHT), isA(ScenarioGridColumn.class));
+        verify(mockScenarioGridModel, times(1)).insertColumn(eq(FIRST_INDEX_RIGHT), isA(ScenarioGridColumn.class));
     }
 }

@@ -42,6 +42,6 @@ public class AppendRowCommandTest extends AbstractCommandTest {
     @Test
     public void execute() {
         appendRowCommand.execute();
-        verify(mockScenarioGridModel, times(1)).appendNewRow(isA(ScenarioGridRow.class));
+        verify(mockScenarioGridModel, times(1)).appendRow(isA(ScenarioGridRow.class));
     }
 }

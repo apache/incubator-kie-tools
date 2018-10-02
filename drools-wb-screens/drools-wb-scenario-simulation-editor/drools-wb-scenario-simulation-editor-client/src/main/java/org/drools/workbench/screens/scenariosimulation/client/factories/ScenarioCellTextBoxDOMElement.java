@@ -34,12 +34,12 @@ public class ScenarioCellTextBoxDOMElement extends TextBoxDOMElement {
         final int rowIndex = context.getRowIndex();
         final int columnIndex = context.getColumnIndex();
         if (value == null || value.trim().isEmpty()) {
-            ((ScenarioGridModel) gridWidget.getModel()).deleteNewCell(rowIndex,
-                                                                      columnIndex);
+            ((ScenarioGridModel) gridWidget.getModel()).deleteCell(rowIndex,
+                                                                   columnIndex);
         } else {
-            ((ScenarioGridModel) gridWidget.getModel()).setNewCellValue(rowIndex,
-                                                                        columnIndex,
-                                                                        new BaseGridCellValue<String>(value));
+            ((ScenarioGridModel) gridWidget.getModel()).setCellValue(rowIndex,
+                                                                     columnIndex,
+                                                                     new BaseGridCellValue<String>(value));
         }
     }
 }

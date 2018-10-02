@@ -41,9 +41,9 @@ public class InsertColumnCommandTest extends AbstractCommandTest {
     public void execute() {
         insertColumnCommand = new InsertColumnCommand(mockScenarioGridModel, COLUMN_ID, COLUMN_INDEX, false, mockScenarioGridPanel, mockScenarioGridLayer);
         insertColumnCommand.execute();
-        verify(mockScenarioGridModel, times(1)).insertNewColumn(eq(COLUMN_INDEX), isA(ScenarioGridColumn.class));
+        verify(mockScenarioGridModel, times(1)).insertColumn(eq(COLUMN_INDEX), isA(ScenarioGridColumn.class));
         insertColumnCommand = new InsertColumnCommand(mockScenarioGridModel, COLUMN_ID, COLUMN_INDEX, true, mockScenarioGridPanel, mockScenarioGridLayer);
         insertColumnCommand.execute();
-        verify(mockScenarioGridModel, times(1)).insertNewColumn(eq(COLUMN_INDEX + 1), isA(ScenarioGridColumn.class));
+        verify(mockScenarioGridModel, times(1)).insertColumn(eq(COLUMN_INDEX + 1), isA(ScenarioGridColumn.class));
     }
 }

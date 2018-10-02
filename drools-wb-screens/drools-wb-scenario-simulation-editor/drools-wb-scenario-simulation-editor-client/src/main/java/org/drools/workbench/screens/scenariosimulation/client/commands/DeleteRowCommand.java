@@ -43,6 +43,6 @@ public class DeleteRowCommand implements Command {
 
     @Override
     public void execute() {
-        model.deleteNewRow(rowIndex);
+        model.deleteRow(rowIndex);
     }
 }

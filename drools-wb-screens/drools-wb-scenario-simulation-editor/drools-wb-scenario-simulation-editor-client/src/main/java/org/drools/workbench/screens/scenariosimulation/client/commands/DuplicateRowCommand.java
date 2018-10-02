@@ -44,6 +44,6 @@ public class DuplicateRowCommand implements Command {
 
     @Override
     public void execute() {
-        model.duplicateNewRow(rowIndex, new ScenarioGridRow());
+        model.duplicateRow(rowIndex, new ScenarioGridRow());
     }
 }

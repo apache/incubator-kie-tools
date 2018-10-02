@@ -43,6 +43,6 @@ public class DuplicateRowCommandTest extends AbstractCommandTest {
     @Test
     public void execute() {
         duplicateRowCommand.execute();
-        verify(mockScenarioGridModel, times(1)).duplicateNewRow(eq(ROW_INDEX), isA(ScenarioGridRow.class));
+        verify(mockScenarioGridModel, times(1)).duplicateRow(eq(ROW_INDEX), isA(ScenarioGridRow.class));
     }
 }
