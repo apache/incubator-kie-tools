@@ -31,6 +31,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.workbench.common.services.backend.compiler.configuration.KieDecorator;
 import org.kie.workbench.common.services.backend.compiler.configuration.MavenCLIArgs;
@@ -49,6 +50,7 @@ import org.uberfire.java.nio.file.Paths;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Ignore
 public class ConcurrentBuildTest {
 
     private String mavenRepoPath;
