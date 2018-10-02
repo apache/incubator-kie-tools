@@ -179,6 +179,7 @@ public class ContainerPresenterTest {
         verify(view).setContainerStartState(State.ENABLED);
         verify(view).setContainerStopState(State.DISABLED);
         verify(view).disableRemoveButton();
+        verify(view).enableToggleActivationButton();
 
         final String errorMessage = "ERROR";
         when(view.getStartContainerErrorMessage()).thenReturn(errorMessage);
@@ -218,6 +219,56 @@ public class ContainerPresenterTest {
         verify(view).setContainerStartState(State.ENABLED);
         verify(view).setContainerStopState(State.DISABLED);
         verify(view).disableRemoveButton();
+    }
+    
+    @Test
+    public void testDeactivateContainerFromStopedState() {
+        presenter.loadContainers(containerSpecData);
+
+        presenter.toggleActivationContainer();
+
+        verify(view).setContainerStartState(State.DISABLED);
+        verify(view).setContainerStopState(State.ENABLED);
+        verify(view).enableRemoveButton();
+        verify(view).disableToggleActivationButton();
+    }
+    
+    @Test
+    public void testDeactivateContainerFromStartedState() {
+        presenter.loadContainers(containerSpecData);
+        
+        presenter.startContainer();
+        containerSpec.setStatus(KieContainerStatus.STARTED);
+       
+        verify(view).enableToggleActivationButton();
+
+        presenter.toggleActivationContainer();
+
+        verify(view,
+                times(2)).enableToggleActivationButton();
+        verify(view).updateToggleActivationButton(eq(true));
+    }
+    
+    @Test
+    public void testDeactivateThenActivateContainerFromStartedState() {
+        presenter.loadContainers(containerSpecData);
+        
+        presenter.startContainer();
+        containerSpec.setStatus(KieContainerStatus.STARTED);
+       
+        verify(view).enableToggleActivationButton();
+
+        presenter.toggleActivationContainer();
+
+        verify(view,
+                times(2)).enableToggleActivationButton();
+        verify(view).updateToggleActivationButton(eq(true));
+        
+        presenter.toggleActivationContainer();
+
+        verify(view,
+                times(3)).enableToggleActivationButton();
+        verify(view).updateToggleActivationButton(eq(false));
     }
 
     @Test

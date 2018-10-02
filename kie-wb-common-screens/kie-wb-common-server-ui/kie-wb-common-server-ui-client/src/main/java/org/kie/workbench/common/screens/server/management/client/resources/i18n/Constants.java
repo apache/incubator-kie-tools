@@ -61,6 +61,12 @@ public class Constants {
 
     @TranslationKey(defaultValue = "")
     public static final String ContainerView_ConfirmRemovePopupTitle = "ContainerView.ConfirmRemovePopupTitle";
+    
+    @TranslationKey(defaultValue = "")
+    public static final String ContainerView_ActivateButton = "ContainerView.ActivateButton";
+    
+    @TranslationKey(defaultValue = "")
+    public static final String ContainerView_DeactivateButton = "ContainerView.DectivateButton";
 
     @TranslationKey(defaultValue = "")
     public static final String CopyPopupView_TemplateNameLabelText = "CopyPopupView.TemplateNameLabelText";
@@ -226,4 +232,5 @@ public class Constants {
 
     @TranslationKey(defaultValue = "")
     public static final String ContainerUpdateEvent_SuccessMessage = "ContainerUpdateEvent.SuccessMessage";
+
 }

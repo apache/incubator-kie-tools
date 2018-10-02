@@ -58,6 +58,10 @@ public class ContainerView extends Composite
     @Inject
     @DataField("container-config-stop")
     Button containerStop;
+    
+    @Inject
+    @DataField("container-config-activation")
+    Button containerActivation;
 
     @Inject
     @DataField("remove-container")
@@ -147,6 +151,25 @@ public class ContainerView extends Composite
     public void enableRemoveButton() {
         removeContainer.setEnabled(true);
     }
+    
+    @Override
+    public void updateToggleActivationButton(boolean activate) {
+        if (activate) {
+            containerActivation.setText(translationService.format(Constants.ContainerView_ActivateButton));
+        } else {
+            containerActivation.setText(translationService.format(Constants.ContainerView_DeactivateButton));
+        }
+    }
+    
+    @Override
+    public void disableToggleActivationButton() {
+        containerActivation.setEnabled(false);
+    }
+
+    @Override
+    public void enableToggleActivationButton() {
+        containerActivation.setEnabled(true);
+    }
 
     @Override
     public void setContainerName(final String containerName) {
@@ -225,6 +248,11 @@ public class ContainerView extends Composite
     @EventHandler("container-config-stop")
     public void stopContainer(final ClickEvent event) {
         presenter.stopContainer();
+    }
+    
+    @EventHandler("container-config-activation")
+    public void toggleActivationContainer(final ClickEvent event) {
+        presenter.toggleActivationContainer();
     }
 
     @Override

@@ -166,4 +166,14 @@ public class SpecManagementServiceCDI implements SpecManagementService {
     public void stopContainer(final ContainerSpecKey containerSpecKey) {
         service.stopContainer(containerSpecKey);
     }
+    
+    @Override
+    public void activateContainer(final ContainerSpecKey containerSpecKey) {
+        service.activateContainer(containerSpecKey);
+    }
+
+    @Override
+    public void deactivateContainer(final ContainerSpecKey containerSpecKey) {
+        service.deactivateContainer(containerSpecKey);
+    }
 }

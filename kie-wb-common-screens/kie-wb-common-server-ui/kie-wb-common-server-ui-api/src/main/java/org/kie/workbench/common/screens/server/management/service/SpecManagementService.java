@@ -53,6 +53,10 @@ public interface SpecManagementService {
     void startContainer(ContainerSpecKey containerSpecKey);
 
     void stopContainer(ContainerSpecKey containerSpecKey);
+    
+    void activateContainer(ContainerSpecKey containerSpecKey);
+
+    void deactivateContainer(ContainerSpecKey containerSpecKey);
 
     boolean isContainerIdValid(String serverTemplateId,
                                String containerId);

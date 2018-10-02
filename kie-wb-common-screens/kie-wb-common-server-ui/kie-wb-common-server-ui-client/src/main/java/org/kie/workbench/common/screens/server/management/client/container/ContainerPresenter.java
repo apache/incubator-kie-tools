@@ -219,13 +219,23 @@ public class ContainerPresenter {
                 view.disableRemoveButton();
                 view.setContainerStartState(State.ENABLED);
                 view.setContainerStopState(State.DISABLED);
+                view.updateToggleActivationButton(false);
+                view.enableToggleActivationButton();
                 break;
+            case DEACTIVATED:
+                view.disableRemoveButton();
+                view.setContainerStartState(State.ENABLED);
+                view.setContainerStopState(State.DISABLED);
+                view.updateToggleActivationButton(true);
+                view.enableToggleActivationButton();
+                break;                
             case STOPPED:
             case DISPOSING:
             case FAILED:
                 view.enableRemoveButton();
                 view.setContainerStartState(State.DISABLED);
                 view.setContainerStopState(State.ENABLED);
+                view.disableToggleActivationButton();
                 break;
         }
     }
@@ -304,6 +314,45 @@ public class ContainerPresenter {
                                        }
                                    }).startContainer(containerSpec);
     }
+    
+    public void toggleActivationContainer() {
+        if (containerSpec.getStatus().equals(KieContainerStatus.DEACTIVATED)) {
+            specManagementService.call(new RemoteCallback<Void>() {
+                                           @Override
+                                           public void callback(final Void response) {
+                                               updateStatus(KieContainerStatus.STARTED);
+                                           }
+                                       },
+                                       new ErrorCallback<Object>() {
+                                           @Override
+                                           public boolean error(final Object o,
+                                                                final Throwable throwable) {
+                                               notification.fire(new NotificationEvent(view.getStartContainerErrorMessage(),
+                                                                                       NotificationEvent.NotificationType.ERROR));
+                                               updateStatus(KieContainerStatus.DEACTIVATED);
+                                               return false;
+                                           }
+                                       }).activateContainer(containerSpec);
+        } else if (containerSpec.getStatus().equals(KieContainerStatus.STARTED)) {
+         
+            specManagementService.call(new RemoteCallback<Void>() {
+                                           @Override
+                                           public void callback(final Void response) {
+                                               updateStatus(KieContainerStatus.DEACTIVATED);
+                                           }
+                                       },
+                                       new ErrorCallback<Object>() {
+                                           @Override
+                                           public boolean error(final Object o,
+                                                                final Throwable throwable) {
+                                               notification.fire(new NotificationEvent(view.getStartContainerErrorMessage(),
+                                                                                       NotificationEvent.NotificationType.ERROR));
+                                               updateStatus(KieContainerStatus.STARTED);
+                                               return false;
+                                           }
+                                       }).deactivateContainer(containerSpec);
+        }
+    }
 
     public interface View extends UberView<ContainerPresenter> {
 
@@ -313,6 +362,12 @@ public class ContainerPresenter {
 
         void enableRemoveButton();
 
+        void updateToggleActivationButton(boolean activate);
+        
+        void disableToggleActivationButton();
+        
+        void enableToggleActivationButton();
+        
         void setContainerName(final String containerName);
 
         void setGroupIp(final String groupIp);
