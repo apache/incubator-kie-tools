@@ -56,11 +56,14 @@ public class WiresConnectorLabelFactory
                     final TextBoundsWrap textWrap     = new TextBoundsWrap(text, wrap);
                     text.setWrapper(textWrap);
                     text.setTextAlign(TextAlign.LEFT);
+                    text.moveToTop();
+
 
                     // Set the right location.
                     final BoundingBox tbb = textWrap.getTextBoundaries();
                     final Point2D offset = new Point2D(Math.abs(OFFSET * sin), Math.abs(OFFSET * cos) * -1);
-                    text.setLocation(center.minus(0, tbb.getHeight()).add(offset));
+                    final double middleCenterSegmentWidth = Math.abs(start.getX() - center.getX()) / 2;
+                    text.setLocation(center.minus(middleCenterSegmentWidth, tbb.getHeight()).add(offset));
                 }
             };
         }
