@@ -48,7 +48,7 @@ public class MultipleSubFormFieldValueMarshaller extends AbstractFieldValueMarsh
         super.init(originalValue, fieldDefinition, currentForm, currentContext);
 
         if (originalValue == null) {
-            originalValue = new ArrayList<>();
+            this.originalValue = new ArrayList<>();
         }
     }
 
