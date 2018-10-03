@@ -26,10 +26,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.widgets.palette.categories.DefinitionPaletteCategoryWidget;
 import org.kie.workbench.common.stunner.client.widgets.palette.categories.items.DefinitionPaletteItemWidget;
+import org.kie.workbench.common.stunner.client.widgets.palette.collapsed.CollapsedDefinitionPaletteItemWidget;
 import org.kie.workbench.common.stunner.core.client.ShapeSet;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.components.glyph.ShapeGlyphDragHandler;
 import org.kie.workbench.common.stunner.core.client.components.palette.AbstractPalette;
+import org.kie.workbench.common.stunner.core.client.components.palette.CollapsedDefaultPaletteItem;
 import org.kie.workbench.common.stunner.core.client.components.palette.DefaultPaletteCategory;
 import org.kie.workbench.common.stunner.core.client.components.palette.DefaultPaletteDefinition;
 import org.kie.workbench.common.stunner.core.client.components.palette.DefaultPaletteItem;
@@ -59,6 +61,8 @@ public class BS3PaletteWidgetImplTest {
 
     private static final int CATEGORY_ITEMS_COUNT = 6;
     private static final int SIMPLE_ITEMS_COUNT = 8;
+    private static final int COLLAPSED_ITEMS_COUNT = 2;
+
     private static final String DEFINITION_SET_ID = "DEFINITION_SET_ID";
     private static final String DEFINITION_ID = "DEFINITION_ID";
 
@@ -94,6 +98,11 @@ public class BS3PaletteWidgetImplTest {
     private List<DefinitionPaletteItemWidget> createdItemWidgets = new ArrayList<>();
 
     @Mock
+    private ManagedInstance<CollapsedDefinitionPaletteItemWidget> collapsedDefinitionPaletteItemWidgets;
+
+    private List<CollapsedDefinitionPaletteItemWidget> createdCollapsedItemWidgets = new ArrayList<>();
+
+    @Mock
     private DefaultPaletteDefinition paletteDefinition;
 
     @Mock
@@ -122,7 +131,8 @@ public class BS3PaletteWidgetImplTest {
                                                 shapeGlyphDragHandler,
                                                 preferencesRegistries,
                                                 categoryWidgetInstance,
-                                                definitionPaletteItemWidgets) {
+                                                definitionPaletteItemWidgets,
+                                                collapsedDefinitionPaletteItemWidgets) {
             @Override
             protected DefinitionPaletteCategoryWidget newDefinitionPaletteCategoryWidget() {
                 DefinitionPaletteCategoryWidget categoryWidget = mock(DefinitionPaletteCategoryWidget.class);
@@ -138,6 +148,14 @@ public class BS3PaletteWidgetImplTest {
                 when(definitionPaletteItemWidgets.get()).thenReturn(itemWidget);
                 return super.newDefinitionPaletteItemWidget();
             }
+
+            @Override
+            protected CollapsedDefinitionPaletteItemWidget newCollapsedDefinitionPaletteItemWidget() {
+                CollapsedDefinitionPaletteItemWidget itemWidget = mock(CollapsedDefinitionPaletteItemWidget.class);
+                createdCollapsedItemWidgets.add(itemWidget);
+                when(collapsedDefinitionPaletteItemWidgets.get()).thenReturn(itemWidget);
+                return super.newCollapsedDefinitionPaletteItemWidget();
+            }
         };
         this.palette.init();
     }
@@ -148,6 +166,7 @@ public class BS3PaletteWidgetImplTest {
 
         verify(categoryWidgetInstance).destroyAll();
         verify(definitionPaletteItemWidgets).destroyAll();
+        verify(collapsedDefinitionPaletteItemWidgets).destroyAll();
         verify(view).destroy();
     }
 
@@ -196,6 +215,7 @@ public class BS3PaletteWidgetImplTest {
         List<DefaultPaletteItem> items = new ArrayList<>();
         items.addAll(mockCategoryItems(CATEGORY_ITEMS_COUNT));
         items.addAll(mockSimpleItems(SIMPLE_ITEMS_COUNT));
+        items.addAll(mockCollapsedItems(COLLAPSED_ITEMS_COUNT));
         when(paletteDefinition.getItems()).thenReturn(items);
 
         palette.bind(paletteDefinition);
@@ -204,10 +224,15 @@ public class BS3PaletteWidgetImplTest {
                times(CATEGORY_ITEMS_COUNT)).get();
         verify(definitionPaletteItemWidgets,
                times(SIMPLE_ITEMS_COUNT)).get();
+        verify(collapsedDefinitionPaletteItemWidgets,
+               times(COLLAPSED_ITEMS_COUNT)).get();
+
         assertEquals(CATEGORY_ITEMS_COUNT,
                      createdCategoryWidgets.size());
         assertEquals(SIMPLE_ITEMS_COUNT,
                      createdItemWidgets.size());
+        assertEquals(COLLAPSED_ITEMS_COUNT,
+                     createdCollapsedItemWidgets.size());
 
         List<DefaultPaletteCategory> categoryItems = items.stream()
                 .filter(item -> (item instanceof DefaultPaletteCategory))
@@ -227,11 +252,24 @@ public class BS3PaletteWidgetImplTest {
         }
 
         List<DefaultPaletteItem> paletteItems = items.stream()
-                .filter(item -> !(item instanceof DefaultPaletteCategory))
+                .filter(item -> !(item instanceof DefaultPaletteCategory) && !(item instanceof CollapsedDefaultPaletteItem))
                 .collect(Collectors.toList());
         for (int i = 0; i < createdItemWidgets.size(); i++) {
             DefaultPaletteItem item = paletteItems.get(i);
             DefinitionPaletteItemWidget widget = createdItemWidgets.get(i);
+            verify(widget,
+                   times(1)).initialize(eq(item),
+                                        eq(shapeFactory),
+                                        anyObject());
+        }
+
+        List<CollapsedDefaultPaletteItem> collapsedPaletteItems = items.stream()
+                .filter(item -> (item instanceof CollapsedDefaultPaletteItem))
+                .map(item -> (CollapsedDefaultPaletteItem) item)
+                .collect(Collectors.toList());
+        for (int i = 0; i < createdCollapsedItemWidgets.size(); i++) {
+            CollapsedDefaultPaletteItem item = collapsedPaletteItems.get(i);
+            CollapsedDefinitionPaletteItemWidget widget = createdCollapsedItemWidgets.get(i);
             verify(widget,
                    times(1)).initialize(eq(item),
                                         eq(shapeFactory),
@@ -245,6 +283,7 @@ public class BS3PaletteWidgetImplTest {
         List<DefaultPaletteItem> items = new ArrayList<>();
         items.addAll(mockCategoryItems(CATEGORY_ITEMS_COUNT));
         items.addAll(mockSimpleItems(SIMPLE_ITEMS_COUNT));
+        items.addAll(mockCollapsedItems(COLLAPSED_ITEMS_COUNT));
         when(paletteDefinition.getItems()).thenReturn(items);
         when(diagramEditorPreferences.isAutoHidePalettePanel()).thenReturn(true);
 
@@ -276,14 +315,6 @@ public class BS3PaletteWidgetImplTest {
         verify(shapeFactory).getGlyph(eq(DEFINITION_ID), eq(AbstractPalette.PaletteDragProxyGlyphConsumer.class));
     }
 
-    private List<DefaultPaletteItem> mockSimpleItems(int size) {
-        List<DefaultPaletteItem> items = new ArrayList<>();
-        for (int i = 0; i < size; i++) {
-            items.add(mock(DefaultPaletteItem.class));
-        }
-        return items;
-    }
-
     private List<DefaultPaletteCategory> mockCategoryItems(int size) {
         List<DefaultPaletteCategory> items = new ArrayList<>();
         String categoryIdPrefix = "CategoryID";
@@ -294,6 +325,22 @@ public class BS3PaletteWidgetImplTest {
             category = mock(DefaultPaletteCategory.class);
             when(category.getId()).thenReturn(categoryId);
             items.add(category);
+        }
+        return items;
+    }
+
+    private List<DefaultPaletteItem> mockSimpleItems(int size) {
+        List<DefaultPaletteItem> items = new ArrayList<>();
+        for (int i = 0; i < size; i++) {
+            items.add(mock(DefaultPaletteItem.class));
+        }
+        return items;
+    }
+
+    private List<CollapsedDefaultPaletteItem> mockCollapsedItems(int size) {
+        List<CollapsedDefaultPaletteItem> items = new ArrayList<>();
+        for (int i = 0; i < size; i++) {
+            items.add(mock(CollapsedDefaultPaletteItem.class));
         }
         return items;
     }

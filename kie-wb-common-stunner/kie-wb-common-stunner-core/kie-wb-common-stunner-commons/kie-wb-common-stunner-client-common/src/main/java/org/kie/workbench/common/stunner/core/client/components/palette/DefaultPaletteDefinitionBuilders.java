@@ -92,6 +92,18 @@ public class DefaultPaletteDefinitionBuilders {
         }
     }
 
+    public static class CollapsedItemBuilder extends AbstractItemBuilder<CollapsedDefaultPaletteItem, CollapsedItemBuilder> {
+
+        public static final int ICON_SIZE = 21;
+
+        public CollapsedDefaultPaletteItem build() {
+            return new CollapsedDefaultPaletteItem(itemId,
+                                                   definitionId,
+                                                   tooltip,
+                                                   ICON_SIZE);
+        }
+    }
+
     public static class GroupBuilder extends AbstractItemBuilder<DefaultPaletteGroup, GroupBuilder> {
 
         public DefaultPaletteGroup build() {

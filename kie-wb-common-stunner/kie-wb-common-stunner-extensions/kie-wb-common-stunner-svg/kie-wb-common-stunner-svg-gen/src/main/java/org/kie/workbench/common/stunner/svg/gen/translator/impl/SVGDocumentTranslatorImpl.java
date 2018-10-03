@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.svg.gen.translator.impl;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.kie.workbench.common.stunner.core.util.StringUtils;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
 import org.kie.workbench.common.stunner.svg.gen.exception.TranslatorException;
 import org.kie.workbench.common.stunner.svg.gen.model.PrimitiveDefinition;
@@ -83,7 +84,7 @@ public class SVGDocumentTranslatorImpl implements SVGDocumentTranslator {
         final Element svgNode = (Element) svgNodes.item(0);
         // SVG id.
         String svgId = svgNode.getAttribute(ID);
-        if (isEmpty(svgId)) {
+        if (StringUtils.isEmpty(svgId)) {
             throw new TranslatorException("The SVG node must contain a valid ID attribute.");
         }
         context.setSVGId(svgId);
@@ -95,11 +96,11 @@ public class SVGDocumentTranslatorImpl implements SVGDocumentTranslator {
         final String x = svgNode.getAttribute(X);
         final String y = svgNode.getAttribute(Y);
         final String width = svgNode.getAttribute(WIDTH);
-        if (isEmpty(width)) {
+        if (StringUtils.isEmpty(width)) {
             throw new TranslatorException("The SVG node [" + svgId + "] must contain a valid WIDTH attribute.");
         }
         final String height = svgNode.getAttribute(HEIGHT);
-        if (isEmpty(height)) {
+        if (StringUtils.isEmpty(height)) {
             throw new TranslatorException("The SVG node [" + svgId + "] must contain a valid HEIGHT attribute.");
         }
         svgCoord[0] = SVGAttributeParser.toPixelValue(x,
@@ -109,7 +110,7 @@ public class SVGDocumentTranslatorImpl implements SVGDocumentTranslator {
         svgSize[0] = SVGAttributeParser.toPixelValue(width);
         svgSize[1] = SVGAttributeParser.toPixelValue(height);
         final String vbox = svgNode.getAttribute(VIEW_BOX);
-        if (isEmpty(vbox)) {
+        if (StringUtils.isEmpty(vbox)) {
             throw new TranslatorException("The SVG node [" + svgId + "] must contain a valid VIEWBOX attribute.");
         }
         viewBox[0] = SVGViewBoxTranslator.translate(vbox);
@@ -173,8 +174,6 @@ public class SVGDocumentTranslatorImpl implements SVGDocumentTranslator {
         viewDefinition.getSVGViewRefs().addAll(context.getViewRefDefinitions());
         return viewDefinition;
     }
-
-    private static boolean isEmpty(final String s) {
-        return null == s || s.trim().length() == 0;
-    }
 }
+
+

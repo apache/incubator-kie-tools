@@ -22,7 +22,7 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Typed;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.stunner.core.client.components.palette.DefaultPaletteDefinitionBuilders.ItemBuilder;
+import org.kie.workbench.common.stunner.core.client.components.palette.DefaultPaletteDefinitionBuilders.CollapsedItemBuilder;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.i18n.StunnerTranslationService;
@@ -31,20 +31,19 @@ import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 /**
  * Builds a new single level palette model.
- * All items are being considered palette categories, so rendered on the main palette region.
  */
 @Dependent
 @Typed(CollapsedPaletteDefinitionBuilder.class)
 public class CollapsedPaletteDefinitionBuilder
         extends AbstractPaletteDefinitionBuilder<CollapsedPaletteDefinitionBuilder> {
 
-    static final int ICON_SIZE = 35;
-
     @Inject
     public CollapsedPaletteDefinitionBuilder(final DefinitionUtils definitionUtils,
                                              final DefinitionsCacheRegistry definitionsRegistry,
                                              final StunnerTranslationService translationService) {
-        super(definitionUtils, definitionsRegistry, translationService);
+        super(definitionUtils,
+              definitionsRegistry,
+              translationService);
     }
 
     @Override
@@ -55,16 +54,13 @@ public class CollapsedPaletteDefinitionBuilder
         final DefinitionAdapter<Object> definitionAdapter = getDefinitionManager().adapters().forDefinition();
         final String id = definitionAdapter.getId(definition);
         final String title = definitionAdapter.getTitle(definition);
-        final String description = definitionAdapter.getDescription(definition);
         // Notice it creates the item by using the title as for the item's tooltip property,
         // setting this an empty item title, in order to not display text once the rendered
         // item is displayed, just the icon with the given tooltip.
-        return new ItemBuilder()
+        return new CollapsedItemBuilder()
                 .setItemId(id)
                 .setDefinitionId(id)
-                .setDescription(description)
                 .setTooltip(title)
-                .setIconSize(ICON_SIZE)
                 .build();
     }
 }

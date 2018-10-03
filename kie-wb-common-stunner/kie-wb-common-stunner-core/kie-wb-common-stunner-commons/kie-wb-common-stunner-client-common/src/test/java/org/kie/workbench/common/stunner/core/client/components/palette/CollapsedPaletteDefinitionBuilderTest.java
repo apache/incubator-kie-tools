@@ -33,7 +33,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
@@ -42,8 +41,8 @@ public class CollapsedPaletteDefinitionBuilderTest {
 
     private static final String DEF1_ID = "def1";
     private static final String DEF1_CATEGORY = "cat1";
-    private static final String DEF1_TITLE = "defITitle";
-    private static final String DEF1_DESC = "defIDesc";
+    private static final String DEF1_TITLE = "def1Title";
+    private static final String DEF1_DESC = "def1Desc";
 
     @Mock
     private DefinitionUtils definitionUtils;
@@ -89,7 +88,7 @@ public class CollapsedPaletteDefinitionBuilderTest {
     }
 
     @Test
-    public void testCrateItem() {
+    public void testCreateItem() {
         DefaultPaletteItem item = tested.createItem(definition1,
                                                     DEF1_CATEGORY,
                                                     metadata,
@@ -97,9 +96,9 @@ public class CollapsedPaletteDefinitionBuilderTest {
         assertNotNull(item);
         assertEquals(DEF1_ID, item.getId());
         assertEquals(DEF1_ID, item.getDefinitionId());
+        assertEquals(DEF1_TITLE, item.getTitle());
         assertEquals(DEF1_TITLE, item.getTooltip());
-        assertEquals(DEF1_DESC, item.getDescription());
-        assertEquals(CollapsedPaletteDefinitionBuilder.ICON_SIZE, item.getIconSize());
-        assertTrue(null == item.getTitle() || item.getTitle().trim().length() == 0);
+        assertEquals(DEF1_TITLE, item.getDescription());
+        assertEquals(DefaultPaletteDefinitionBuilders.CollapsedItemBuilder.ICON_SIZE, item.getIconSize());
     }
 }

@@ -32,6 +32,7 @@ import org.jbpm.process.workitem.WorkItemRepository;
 import org.kie.workbench.common.stunner.bpmn.backend.workitem.WorkItemDefinitionParser;
 import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinition;
 import org.kie.workbench.common.stunner.bpmn.workitem.service.WorkItemDefinitionService;
+import org.kie.workbench.common.stunner.core.util.StringUtils;
 
 @ApplicationScoped
 public class WorkItemDefinitionRemoteService
@@ -96,14 +97,10 @@ public class WorkItemDefinitionRemoteService
     private static String buildUri(final WorkDefinitionImpl item) {
         final String path = null != item.getPath() ? item.getPath() : "";
         final String fileName = null != item.getFile() ? item.getFile() : "";
-        if (isEmpy(path)) {
+        if (StringUtils.isEmpty(path)) {
             return null;
         }
         return path + "/" + fileName;
-    }
-
-    private static boolean isEmpy(final String s) {
-        return null == s || s.trim().length() == 0;
     }
 
     private static boolean isAllNames(final String[] names) {

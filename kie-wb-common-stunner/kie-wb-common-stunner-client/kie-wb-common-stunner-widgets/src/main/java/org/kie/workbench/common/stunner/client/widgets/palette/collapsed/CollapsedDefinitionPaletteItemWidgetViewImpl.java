@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.client.widgets.palette.categories.items;
+package org.kie.workbench.common.stunner.client.widgets.palette.collapsed;
 
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.event.dom.client.MouseDownEvent;
-import org.jboss.errai.common.client.dom.Anchor;
+import org.jboss.errai.common.client.dom.Button;
 import org.jboss.errai.common.client.dom.DOMUtil;
-import org.jboss.errai.common.client.dom.Span;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
@@ -34,32 +33,29 @@ import org.kie.workbench.common.stunner.core.util.StringUtils;
 
 @Templated
 @Dependent
-public class DefinitionPaletteItemWidgetViewImpl implements DefinitionPaletteItemWidgetView,
-                                                            IsElement {
+public class CollapsedDefinitionPaletteItemWidgetViewImpl implements CollapsedDefinitionPaletteItemWidgetView,
+                                                                     IsElement {
 
-    private static final String DISPLAY = "display";
-    private static final String DISPLAY_NONE = "none";
-    private static final String PADDING_RIGHT = "padding-right";
-
-    @Inject
     @DataField
-    private Anchor itemAnchor;
+    private Button icon;
 
-    @Inject
-    @DataField
-    private Span icon;
-
-    @Inject
-    @DataField
-    private Span name;
-
-    @Inject
     private DOMGlyphRenderers domGlyphRenderers;
 
     private Presenter presenter;
 
+    public CollapsedDefinitionPaletteItemWidgetViewImpl() {
+        //CDI proxy
+    }
+
+    @Inject
+    public CollapsedDefinitionPaletteItemWidgetViewImpl(final Button icon,
+                                                        final DOMGlyphRenderers domGlyphRenderers) {
+        this.icon = icon;
+        this.domGlyphRenderers = domGlyphRenderers;
+    }
+
     @Override
-    public void init(Presenter presenter) {
+    public void init(final Presenter presenter) {
         this.presenter = presenter;
     }
 
@@ -67,28 +63,19 @@ public class DefinitionPaletteItemWidgetViewImpl implements DefinitionPaletteIte
     public void render(final Glyph glyph,
                        final double width,
                        final double height) {
-        final org.jboss.errai.common.client.api.IsElement glyphElement =
-                domGlyphRenderers.render(glyph,
-                                         width,
-                                         height);
+        final org.jboss.errai.common.client.api.IsElement glyphElement = domGlyphRenderers.render(glyph, width, height);
         icon.appendChild(glyphElement.getElement());
-        final String title = presenter.getItem().getTitle();
-        if (!StringUtils.isEmpty(title)) {
-            name.setTextContent(presenter.getItem().getTitle());
-        } else {
-            name.getStyle().setProperty(DISPLAY, DISPLAY_NONE);
-            icon.getStyle().setProperty(PADDING_RIGHT, "0");
-        }
+
         final String tooltip = presenter.getItem().getTooltip();
         if (!StringUtils.isEmpty(tooltip)) {
-            itemAnchor.setTitle(tooltip);
+            icon.setTitle(tooltip);
         } else {
-            itemAnchor.setTitle("");
+            icon.setTitle("");
         }
     }
 
-    @EventHandler("itemAnchor")
-    public void onMouseDown(MouseDownEvent mouseDownEvent) {
+    @EventHandler("icon")
+    public void onMouseDown(final MouseDownEvent mouseDownEvent) {
         presenter.onMouseDown(mouseDownEvent.getClientX(),
                               mouseDownEvent.getClientY(),
                               mouseDownEvent.getX(),
@@ -97,9 +84,7 @@ public class DefinitionPaletteItemWidgetViewImpl implements DefinitionPaletteIte
 
     @PreDestroy
     public void destroy() {
-        DOMUtil.removeAllChildren(itemAnchor);
         DOMUtil.removeAllChildren(icon);
-        DOMUtil.removeAllChildren(name);
         presenter = null;
     }
 }

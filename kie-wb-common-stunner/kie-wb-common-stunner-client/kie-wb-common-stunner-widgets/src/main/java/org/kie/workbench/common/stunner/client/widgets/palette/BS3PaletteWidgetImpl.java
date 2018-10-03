@@ -32,10 +32,12 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.stunner.client.widgets.palette.categories.DefinitionPaletteCategoryWidget;
 import org.kie.workbench.common.stunner.client.widgets.palette.categories.items.DefinitionPaletteItemWidget;
+import org.kie.workbench.common.stunner.client.widgets.palette.collapsed.CollapsedDefinitionPaletteItemWidget;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasFocusedEvent;
 import org.kie.workbench.common.stunner.core.client.components.glyph.ShapeGlyphDragHandler;
 import org.kie.workbench.common.stunner.core.client.components.palette.AbstractPalette;
+import org.kie.workbench.common.stunner.core.client.components.palette.CollapsedDefaultPaletteItem;
 import org.kie.workbench.common.stunner.core.client.components.palette.DefaultPaletteCategory;
 import org.kie.workbench.common.stunner.core.client.components.palette.DefaultPaletteDefinition;
 import org.kie.workbench.common.stunner.core.client.components.palette.DefaultPaletteItem;
@@ -66,6 +68,7 @@ public class BS3PaletteWidgetImpl
     private final StunnerPreferencesRegistries preferencesRegistries;
     private final ManagedInstance<DefinitionPaletteCategoryWidget> categoryWidgetInstances;
     private final ManagedInstance<DefinitionPaletteItemWidget> definitionPaletteItemWidgetInstances;
+    private final ManagedInstance<CollapsedDefinitionPaletteItemWidget> collapsedDefinitionPaletteItemWidgets;
     private Consumer<PaletteIDefinitionItemEvent> itemDropCallback;
     private Consumer<PaletteIDefinitionItemEvent> itemDragStartCallback;
     private Consumer<PaletteIDefinitionItemEvent> itemDragUpdateCallback;
@@ -80,7 +83,8 @@ public class BS3PaletteWidgetImpl
                                 final ShapeGlyphDragHandler shapeGlyphDragHandler,
                                 final StunnerPreferencesRegistries preferencesRegistries,
                                 final ManagedInstance<DefinitionPaletteCategoryWidget> categoryWidgetInstance,
-                                final ManagedInstance<DefinitionPaletteItemWidget> definitionPaletteItemWidgets) {
+                                final ManagedInstance<DefinitionPaletteItemWidget> definitionPaletteItemWidgets,
+                                final ManagedInstance<CollapsedDefinitionPaletteItemWidget> collapsedDefinitionPaletteItemWidgets) {
         super(shapeManager);
         this.clientFactoryServices = clientFactoryServices;
         this.view = view;
@@ -88,6 +92,7 @@ public class BS3PaletteWidgetImpl
         this.preferencesRegistries = preferencesRegistries;
         this.categoryWidgetInstances = categoryWidgetInstance;
         this.definitionPaletteItemWidgetInstances = definitionPaletteItemWidgets;
+        this.collapsedDefinitionPaletteItemWidgets = collapsedDefinitionPaletteItemWidgets;
     }
 
     public static int getDefaultWidth() {
@@ -204,6 +209,8 @@ public class BS3PaletteWidgetImpl
                     categoryWidgets.put(item.getId(),
                                         categoryWidget);
                     widget = categoryWidget;
+                } else if (item instanceof CollapsedDefaultPaletteItem) {
+                    widget = newCollapsedDefinitionPaletteItemWidget();
                 } else {
                     widget = newDefinitionPaletteItemWidget();
                 }
@@ -306,6 +313,7 @@ public class BS3PaletteWidgetImpl
         view.destroy();
         categoryWidgetInstances.destroyAll();
         definitionPaletteItemWidgetInstances.destroyAll();
+        collapsedDefinitionPaletteItemWidgets.destroyAll();
         itemDragStartCallback = null;
         itemDragUpdateCallback = null;
         itemDropCallback = null;
@@ -325,6 +333,10 @@ public class BS3PaletteWidgetImpl
 
     protected DefinitionPaletteItemWidget newDefinitionPaletteItemWidget() {
         return definitionPaletteItemWidgetInstances.get();
+    }
+
+    protected CollapsedDefinitionPaletteItemWidget newCollapsedDefinitionPaletteItemWidget() {
+        return collapsedDefinitionPaletteItemWidgets.get();
     }
 
     @Override
