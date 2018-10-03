@@ -1,8 +1,6 @@
 
 package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 
-import static com.ait.lienzo.client.core.AttributeOp.any;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -23,6 +21,8 @@ import com.ait.tooling.common.api.flow.Flows;
 import com.ait.tooling.nativetools.client.collection.NFastStringSet;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 import com.google.gwt.event.shared.HandlerRegistration;
+
+import static com.ait.lienzo.client.core.AttributeOp.any;
 
 public class AlignAndDistributeControlImpl implements AlignAndDistributeControl
 {
@@ -60,7 +60,7 @@ public class AlignAndDistributeControlImpl implements AlignAndDistributeControl
 
     protected Set<AlignAndDistribute.DistributionEntry>            m_verticalDistEntries;
 
-    private boolean                                                indexed;
+    private boolean                                                m_indexed;
 
     private boolean                                                m_indexedButRemoved;
 
@@ -134,7 +134,7 @@ public class AlignAndDistributeControlImpl implements AlignAndDistributeControl
         }
     };
 
-    public void addHandlers(IDrawable<?> drawable, ArrayList<Attribute> list)
+    private void addHandlers(IDrawable<?> drawable, ArrayList<Attribute> list)
     {
         for (Attribute attribute : list)
         {
@@ -147,12 +147,12 @@ public class AlignAndDistributeControlImpl implements AlignAndDistributeControl
 
     public boolean isIndexed()
     {
-        return indexed;
+        return m_indexed;
     }
 
     public void setIndexed(boolean indexed)
     {
-        this.indexed = indexed;
+        this.m_indexed = indexed;
     }
 
     public Set<AlignAndDistribute.DistributionEntry> getHorizontalDistributionEntries()
@@ -217,7 +217,7 @@ public class AlignAndDistributeControlImpl implements AlignAndDistributeControl
         return m_bottom;
     }
 
-    public void capturePositions(double left, double right, double top, double bottom)
+    private void capturePositions(double left, double right, double top, double bottom)
     {
         if (left != m_left || right != m_right)
         {
@@ -230,7 +230,7 @@ public class AlignAndDistributeControlImpl implements AlignAndDistributeControl
         }
     }
 
-    public void captureHorizontalPositions(double left, double right)
+    private void captureHorizontalPositions(double left, double right)
     {
         double width = m_box.getWidth();
         m_left = left;
@@ -238,7 +238,7 @@ public class AlignAndDistributeControlImpl implements AlignAndDistributeControl
         m_right = right;
     }
 
-    public void captureVerticalPositions(double top, double bottom)
+    private void captureVerticalPositions(double top, double bottom)
     {
         double height = m_box.getHeight();
         m_top = top;
@@ -275,7 +275,7 @@ public class AlignAndDistributeControlImpl implements AlignAndDistributeControl
         updateIndex(leftChanged, rightChanged, topChanged, bottomChanged, left, right, top, bottom);
     }
 
-    public void updateIndex(boolean leftChanged, boolean rightChanged, boolean topChanged, boolean bottomChanged, double left, double right, double top, double bottom)
+    private void updateIndex(boolean leftChanged, boolean rightChanged, boolean topChanged, boolean bottomChanged, double left, double right, double top, double bottom)
     {
         if (leftChanged || rightChanged)
         {
@@ -401,7 +401,6 @@ public class AlignAndDistributeControlImpl implements AlignAndDistributeControl
     @Override
     public void refresh(boolean transforms, boolean attributes)
     {
-
         if (m_isDragging || m_indexedButRemoved)
         {
             // ignore attribute changes while dragging
@@ -411,20 +410,20 @@ public class AlignAndDistributeControlImpl implements AlignAndDistributeControl
         {
             boolean hasTransformations = hasComplexTransformAttributes();
 
-            if (indexed && hasTransformations)
+            if (isIndexed() && hasTransformations)
             {
                 // Indexing cannot be done on transformed shapes
                 // it's cheaper to just check if the attributes exist on the shape, than it is to test for attributes on the event
                 m_alignAndDistribute.indexOff(this);
             }
-            else if (!indexed && !hasTransformations)
+            else if (!isIndexed() && !hasTransformations)
             {
                 // Indexing was turned off, but there are no more transformations, so turn it back on again
                 m_alignAndDistribute.indexOn(this);
             }
         }
 
-        if (indexed && attributes)
+        if (isIndexed() && attributes)
         {
             updateIndex();
         }
@@ -448,7 +447,7 @@ public class AlignAndDistributeControlImpl implements AlignAndDistributeControl
         this.removeHandlerRegistrations();
     }
 
-    public void iterateAndRemoveIndex(IPrimitive<?> prim)
+    private void iterateAndRemoveIndex(IPrimitive<?> prim)
     {
         indexOff(prim);
         if (prim instanceof Group)
@@ -467,7 +466,7 @@ public class AlignAndDistributeControlImpl implements AlignAndDistributeControl
         }
     }
 
-    public void indexOff(IPrimitive<?> child)
+    protected void indexOff(IPrimitive<?> child)
     {
         AlignAndDistributeControlImpl handler = (AlignAndDistributeControlImpl) m_alignAndDistribute.getControlForShape(child.uuid());
         if (handler != null && handler.isIndexed())
@@ -493,7 +492,7 @@ public class AlignAndDistributeControlImpl implements AlignAndDistributeControl
         }
     }
 
-    public void removeChildrenIfIndexed(IPrimitive<?> prim, List<ShapePair> pairs)
+    private void removeChildrenIfIndexed(IPrimitive<?> prim, List<ShapePair> pairs)
     {
         for (IPrimitive<?> child : prim.asGroup().getChildNodes())
         {
@@ -511,7 +510,7 @@ public class AlignAndDistributeControlImpl implements AlignAndDistributeControl
         }
     }
 
-    private void indexOn(IPrimitive<?> shape)
+    protected void indexOn(IPrimitive<?> shape)
     {
         AlignAndDistributeControl handler = m_alignAndDistribute.getControlForShape(shape.uuid());
         indexOn(handler);
@@ -530,7 +529,7 @@ public class AlignAndDistributeControlImpl implements AlignAndDistributeControl
     @Override
     public boolean dragAdjust(Point2D dxy)
     {
-        if (!indexed)
+        if (!isIndexed())
         {
             // ignore adjustment if indexing is off
             return false;
@@ -649,7 +648,7 @@ public class AlignAndDistributeControlImpl implements AlignAndDistributeControl
 
             m_alignAndDistributeMatchesCallback.dragEnd();
 
-            // We do not want the nested indexed shapes to impact the bounding box
+            // We do not want the nested m_indexed shapes to impact the bounding box
             // so remove them, they will be added once the index has been made.
             List<ShapePair> pairs = new ArrayList<ShapePair>();
             removeChildrenIfIndexed(m_group, pairs);
@@ -675,7 +674,7 @@ public class AlignAndDistributeControlImpl implements AlignAndDistributeControl
         }
     }
 
-    public void removeHandlerRegistrations()
+    private void removeHandlerRegistrations()
     {
         if (null != m_attrHandlerRegs)
         {
