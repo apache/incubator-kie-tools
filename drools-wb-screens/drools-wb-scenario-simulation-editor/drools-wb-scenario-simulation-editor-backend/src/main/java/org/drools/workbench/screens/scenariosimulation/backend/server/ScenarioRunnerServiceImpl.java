@@ -35,7 +35,6 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.junit.runner.Result;
 import org.kie.api.runtime.KieContainer;
 import org.kie.workbench.common.services.backend.builder.service.BuildInfoService;
-import org.kie.workbench.common.services.backend.project.ModuleClassLoaderHelper;
 import org.kie.workbench.common.services.shared.project.KieModule;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.uberfire.backend.vfs.Path;
@@ -55,9 +54,6 @@ public class ScenarioRunnerServiceImpl
 
     @Inject
     private BuildInfoService buildInfoService;
-
-    @Inject
-    private ModuleClassLoaderHelper classLoaderHelper;
 
     private BiFunction<KieContainer, Simulation, AbstractScenarioRunner> runnerSupplier = ScenarioRunnerImpl::new;
 
@@ -92,11 +88,11 @@ public class ScenarioRunnerServiceImpl
                         final ScenarioSimulationModel model) {
 
         KieModule kieModule = getKieModule(path);
-        ClassLoader moduleClassLoader = classLoaderHelper.getModuleClassLoader(kieModule);
         KieContainer kieContainer = getKieContainer(kieModule);
+        ClassLoader rootClassLoader = kieContainer.getClassLoader();
         AbstractScenarioRunner scenarioRunner = getRunnerSupplier().apply(kieContainer, model.getSimulation());
 
-        scenarioRunner.setClassLoader(moduleClassLoader);
+        scenarioRunner.setClassLoader(rootClassLoader);
 
         final List<Failure> failures = new ArrayList<>();
 

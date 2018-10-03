@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.drools.workbench.screens.scenariosimulation.backend.server.OperatorEvaluator;
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.ScenarioInput;
@@ -47,13 +48,14 @@ import static org.drools.workbench.screens.scenariosimulation.backend.server.uti
 public class ScenarioRunnerHelper {
 
     private static final Map<String, Class<?>> primitiveMap = new HashMap<>();
+
     static {
+        primitiveMap.put("boolean", boolean.class);
         primitiveMap.put("int", int.class);
         primitiveMap.put("long", long.class);
         primitiveMap.put("double", double.class);
         primitiveMap.put("float", float.class);
     }
-
 
     private ScenarioRunnerHelper() {
 
@@ -107,8 +109,17 @@ public class ScenarioRunnerHelper {
 
     public static List<ScenarioResult> verifyConditions(SimulationDescriptor simulationDescriptor,
                                                         List<ScenarioInput> inputData,
-                                                        List<ScenarioOutput> outputData) {
+                                                        List<ScenarioOutput> outputData,
+                                                        ClassLoader classLoader) {
         List<ScenarioResult> scenarioResult = new ArrayList<>();
+
+        List<FactIdentifier> inputIds = inputData.stream().map(ScenarioInput::getFactIdentifier).collect(Collectors.toList());
+
+        List<String> outputNotValidIds = outputData.stream().map(ScenarioOutput::getFactIdentifier)
+                .filter(output -> !inputIds.contains(output)).map(FactIdentifier::getName).collect(Collectors.toList());
+        if (outputNotValidIds.size() > 0) {
+            throw new ScenarioException("Some expected conditions are not linked to any given facts: " + String.join(", ", outputNotValidIds));
+        }
 
         for (ScenarioInput input : inputData) {
             FactIdentifier factIdentifier = input.getFactIdentifier();
@@ -119,13 +130,16 @@ public class ScenarioRunnerHelper {
                 continue;
             }
 
-            scenarioResult.addAll(getScenarioResults(simulationDescriptor, assertionOnFact, input));
+            scenarioResult.addAll(getScenarioResults(simulationDescriptor, assertionOnFact, input, classLoader));
         }
 
         return scenarioResult;
     }
 
-    public static List<ScenarioResult> getScenarioResults(SimulationDescriptor simulationDescriptor, List<ScenarioOutput> scenarioOutputsPerFact, ScenarioInput input) {
+    public static List<ScenarioResult> getScenarioResults(SimulationDescriptor simulationDescriptor,
+                                                          List<ScenarioOutput> scenarioOutputsPerFact,
+                                                          ScenarioInput input,
+                                                          ClassLoader classLoader) {
         FactIdentifier factIdentifier = input.getFactIdentifier();
         Object factInstance = input.getValue();
         List<ScenarioResult> scenarioResults = new ArrayList<>();
@@ -141,8 +155,8 @@ public class ScenarioRunnerHelper {
                         .orElseThrow(() -> new IllegalStateException("Wrong expression, this should not happen"));
 
                 List<String> pathToValue = factMapping.getExpressionElements().stream().map(ExpressionElement::getStep).collect(toList());
-                Object expectedValue = expectedResult.getCleanValue();
-                Object resultValue = ScenarioBeanUtil.navigateToObject(factInstance, pathToValue);
+                Object expectedValue = convertValue(factMapping.getClassName(), expectedResult.getCleanValue(), classLoader);
+                Object resultValue = ScenarioBeanUtil.navigateToObject(factInstance, pathToValue, false);
 
                 Boolean conditionResult = new OperatorEvaluator().evaluate(operator, resultValue, expectedValue);
 
@@ -220,7 +234,7 @@ public class ScenarioRunnerHelper {
                     return cleanValue;
                 }
                 if (!isPrimitive(className) && cleanValue == null) {
-                    return cleanValue;
+                    return null;
                 }
                 throw new IllegalArgumentException(new StringBuilder().append("Object ").append(cleanValue)
                                                            .append(" is not a String or an instance of ").append(className).toString());
@@ -230,6 +244,8 @@ public class ScenarioRunnerHelper {
 
             if (clazz.isAssignableFrom(String.class)) {
                 return value;
+            } else if (clazz.isAssignableFrom(Boolean.class) || clazz.isAssignableFrom(boolean.class)) {
+                return Boolean.parseBoolean(value);
             } else if (clazz.isAssignableFrom(Integer.class) || clazz.isAssignableFrom(int.class)) {
                 return Integer.parseInt(value);
             } else if (clazz.isAssignableFrom(Long.class) || clazz.isAssignableFrom(long.class)) {
@@ -249,7 +265,7 @@ public class ScenarioRunnerHelper {
     }
 
     private static Class<?> loadClass(String className, ClassLoader classLoader) throws ClassNotFoundException {
-        if(primitiveMap.containsKey(className)) {
+        if (primitiveMap.containsKey(className)) {
             return primitiveMap.get(className);
         }
         return classLoader.loadClass(className);

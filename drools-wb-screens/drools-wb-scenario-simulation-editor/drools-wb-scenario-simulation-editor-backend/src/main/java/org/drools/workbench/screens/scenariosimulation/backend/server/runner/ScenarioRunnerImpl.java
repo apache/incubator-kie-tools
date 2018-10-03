@@ -83,7 +83,8 @@ public class ScenarioRunnerImpl extends AbstractScenarioRunner {
             executeScenario(kieContainer, scenarioRunnerData.getInputData());
             List<ScenarioResult> scenarioResults = verifyConditions(simulationDescriptor,
                                                                     scenarioRunnerData.getInputData(),
-                                                                    scenarioRunnerData.getOutputData());
+                                                                    scenarioRunnerData.getOutputData(),
+                                                                    getClassLoader());
             validateAssertion(scenarioResults, scenario, singleNotifier);
 
             scenarioResults.forEach(scenarioRunnerData::addResult);

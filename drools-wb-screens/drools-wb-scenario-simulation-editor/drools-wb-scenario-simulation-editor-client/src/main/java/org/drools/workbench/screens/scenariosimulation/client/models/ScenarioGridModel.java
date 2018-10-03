@@ -199,7 +199,7 @@ public class ScenarioGridModel extends BaseGridData {
             fullPackage += ".";
         }
         String canonicalClassName = fullPackage + elements[0];
-        FactIdentifier factIdentifier = FactIdentifier.create(columnId, canonicalClassName);
+        FactIdentifier factIdentifier = FactIdentifier.create(canonicalClassName, canonicalClassName);
         ExpressionIdentifier ei = ExpressionIdentifier.create(columnId, FactMappingType.valueOf(group));
         commonAddColumn(columnIndex, column, factIdentifier, ei);
         final FactMapping factMappingByIndex = simulation.getSimulationDescriptor().getFactMappingByIndex(columnIndex);

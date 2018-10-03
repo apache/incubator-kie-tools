@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.assertj.core.api.Assertions;
 import org.drools.workbench.screens.scenariosimulation.backend.server.model.Dispute;
 import org.drools.workbench.screens.scenariosimulation.backend.server.model.Person;
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.ScenarioInput;
@@ -48,6 +49,7 @@ import static org.drools.workbench.screens.scenariosimulation.backend.server.run
 import static org.drools.workbench.screens.scenariosimulation.backend.server.runner.ScenarioRunnerHelper.validateAssertion;
 import static org.drools.workbench.screens.scenariosimulation.backend.server.runner.ScenarioRunnerHelper.verifyConditions;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.any;
@@ -56,12 +58,12 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ScenarioRunnerImplHelperTest {
+public class ScenarioRunnerHelperTest {
 
     private static final String NAME = "NAME";
     private static final double AMOUNT = 10;
     private static final String TEST_DESCRIPTION = "Test description";
-    private static final ClassLoader classLoader = ScenarioRunnerImplHelperTest.class.getClassLoader();
+    private static final ClassLoader classLoader = ScenarioRunnerHelperTest.class.getClassLoader();
 
     private Simulation simulation;
     private FactIdentifier personFactIdentifier;
@@ -138,14 +140,27 @@ public class ScenarioRunnerImplHelperTest {
         List<ScenarioInput> scenario1Inputs = extractGivenValues(simulation.getSimulationDescriptor(), scenario1.getUnmodifiableFactMappingValues(), classLoader);
         List<ScenarioOutput> scenario1Outputs = extractExpectedValues(scenario1.getUnmodifiableFactMappingValues());
 
-        List<ScenarioResult> scenario1Results = verifyConditions(simulation.getSimulationDescriptor(), scenario1Inputs, scenario1Outputs);
+        List<ScenarioResult> scenario1Results = verifyConditions(simulation.getSimulationDescriptor(), scenario1Inputs, scenario1Outputs, classLoader);
         assertEquals(1, scenario1Results.size());
 
         List<ScenarioInput> scenario2Inputs = extractGivenValues(simulation.getSimulationDescriptor(), scenario2.getUnmodifiableFactMappingValues(), classLoader);
         List<ScenarioOutput> scenario2Outputs = extractExpectedValues(scenario2.getUnmodifiableFactMappingValues());
 
-        List<ScenarioResult> scenario2Results = verifyConditions(simulation.getSimulationDescriptor(), scenario2Inputs, scenario2Outputs);
+        List<ScenarioResult> scenario2Results = verifyConditions(simulation.getSimulationDescriptor(), scenario2Inputs, scenario2Outputs, classLoader);
         assertEquals(2, scenario2Results.size());
+    }
+
+    @Test
+    public void verifyConditionsFailTest() {
+        List<ScenarioInput> scenario1Inputs = extractGivenValues(simulation.getSimulationDescriptor(), scenario1.getUnmodifiableFactMappingValues(), classLoader);
+        List<ScenarioOutput> scenario1Outputs = extractExpectedValues(scenario1.getUnmodifiableFactMappingValues());
+        scenario1Outputs.add(new ScenarioOutput(FactIdentifier.create("NOT_EXISTING", String.class.getCanonicalName()), new ArrayList<>()));
+
+        String expectedMessage = "Some expected conditions are not linked to any given facts: NOT_EXISTING";
+        Assertions.assertThatThrownBy(() -> verifyConditions(simulation.getSimulationDescriptor(),
+                                                             scenario1Inputs,
+                                                             scenario1Outputs,
+                                                             classLoader)).hasMessage(expectedMessage).isInstanceOf(ScenarioException.class);
     }
 
     @Test
@@ -158,7 +173,7 @@ public class ScenarioRunnerImplHelperTest {
         ScenarioInput input1 = scenario1Inputs.get(0);
 
         scenario1Outputs = scenario1Outputs.stream().filter(elem -> elem.getFactIdentifier().equals(input1.getFactIdentifier())).collect(toList());
-        List<ScenarioResult> scenario1Results = getScenarioResults(simulation.getSimulationDescriptor(), scenario1Outputs, input1);
+        List<ScenarioResult> scenario1Results = getScenarioResults(simulation.getSimulationDescriptor(), scenario1Outputs, input1, classLoader);
 
         assertEquals(1, scenario1Results.size());
 
@@ -170,7 +185,7 @@ public class ScenarioRunnerImplHelperTest {
         ScenarioInput input2 = scenario2Inputs.get(0);
 
         scenario2Outputs = scenario2Outputs.stream().filter(elem -> elem.getFactIdentifier().equals(input2.getFactIdentifier())).collect(toList());
-        List<ScenarioResult> scenario2Results = getScenarioResults(simulation.getSimulationDescriptor(), scenario2Outputs, input2);
+        List<ScenarioResult> scenario2Results = getScenarioResults(simulation.getSimulationDescriptor(), scenario2Outputs, input2, classLoader);
 
         assertEquals(1, scenario2Results.size());
     }
@@ -218,13 +233,15 @@ public class ScenarioRunnerImplHelperTest {
     @Test(expected = IllegalArgumentException.class)
     public void groupByFactIdentifierAndFilterFailTest() {
         List<FactMappingValue> fail = new ArrayList<>();
-        fail.add(new FactMappingValue(personFactIdentifier, null, null));
+        fail.add(new FactMappingValue());
         groupByFactIdentifierAndFilter(fail, FactMappingType.GIVEN);
     }
 
     @Test
     public void convertValueTest() {
         assertEquals("Test", convertValue(String.class.getCanonicalName(), "Test", classLoader));
+        assertEquals(false, convertValue(boolean.class.getCanonicalName(), "false", classLoader));
+        assertEquals(true, convertValue(Boolean.class.getCanonicalName(), "true", classLoader));
         assertEquals(1, convertValue(int.class.getCanonicalName(), "1", classLoader));
         assertEquals(1, convertValue(Integer.class.getCanonicalName(), "1", classLoader));
         assertEquals(1L, convertValue(long.class.getCanonicalName(), "1", classLoader));
@@ -233,7 +250,7 @@ public class ScenarioRunnerImplHelperTest {
         assertEquals(1.0D, convertValue(Double.class.getCanonicalName(), "1.0", classLoader));
         assertEquals(1.0F, convertValue(float.class.getCanonicalName(), "1.0", classLoader));
         assertEquals(1.0F, convertValue(Float.class.getCanonicalName(), "1.0", classLoader));
-        assertEquals(null, convertValue(Float.class.getCanonicalName(), null, classLoader));
+        assertNull(convertValue(Float.class.getCanonicalName(), null, classLoader));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -243,7 +260,7 @@ public class ScenarioRunnerImplHelperTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void convertValueFailUnsupportedTest() {
-        convertValue(ScenarioRunnerImplHelperTest.class.getCanonicalName(), "Test", classLoader);
+        convertValue(ScenarioRunnerHelperTest.class.getCanonicalName(), "Test", classLoader);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -253,6 +270,6 @@ public class ScenarioRunnerImplHelperTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void convertValueFailNotStringOrTypeTest() {
-        convertValue(ScenarioRunnerImplHelperTest.class.getCanonicalName(), 1, classLoader);
+        convertValue(ScenarioRunnerHelperTest.class.getCanonicalName(), 1, classLoader);
     }
 }

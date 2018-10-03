@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.assertj.core.api.Assertions;
 import org.drools.workbench.screens.scenariosimulation.backend.server.model.Dispute;
 import org.drools.workbench.screens.scenariosimulation.backend.server.model.NotEmptyConstructor;
 import org.drools.workbench.screens.scenariosimulation.backend.server.model.Person;
@@ -90,21 +91,38 @@ public class ScenarioBeanUtilTest {
         dispute.setCreator(creator);
         List<String> pathToProperty = Arrays.asList("creator", "firstName");
 
-        Object targetObject = ScenarioBeanUtil.navigateToObject(dispute, pathToProperty);
+        Object targetObject = ScenarioBeanUtil.navigateToObject(dispute, pathToProperty, true);
 
         assertEquals(targetObject, FIRST_NAME);
     }
 
-    @Test(expected = ScenarioException.class)
+    @Test
     public void navigateToObjectNoStepTest() {
-        ScenarioBeanUtil.navigateToObject(new Dispute(), new ArrayList<>());
+        String message = "Invalid path to a property, no steps provided";
+        Assertions.assertThatThrownBy(() -> ScenarioBeanUtil.navigateToObject(new Dispute(), new ArrayList<>(), true))
+                .isInstanceOf(ScenarioException.class)
+                .hasMessage(message);
     }
 
-    @Test(expected = ScenarioException.class)
+    @Test
     public void navigateToObjectFakeFieldTest() {
         Dispute dispute = new Dispute();
         List<String> pathToProperty = Arrays.asList("fakeField");
 
-        ScenarioBeanUtil.navigateToObject(dispute, pathToProperty);
+        String message = "Impossible to find field with name 'fakeField' in class " + Dispute.class.getCanonicalName();
+        Assertions.assertThatThrownBy(() -> ScenarioBeanUtil.navigateToObject(dispute, pathToProperty, true))
+                .isInstanceOf(ScenarioException.class)
+                .hasMessage(message);
+    }
+
+    @Test
+    public void navigateToObjectNoStepCreationTest() {
+        Dispute dispute = new Dispute();
+        List<String> pathToProperty = Arrays.asList("creator", "firstName");
+
+        String message = "Impossible to reach field firstName because a step is not instantiated";
+        Assertions.assertThatThrownBy(() -> ScenarioBeanUtil.navigateToObject(dispute, pathToProperty, false))
+                .isInstanceOf(ScenarioException.class)
+                .hasMessage(message);
     }
 }

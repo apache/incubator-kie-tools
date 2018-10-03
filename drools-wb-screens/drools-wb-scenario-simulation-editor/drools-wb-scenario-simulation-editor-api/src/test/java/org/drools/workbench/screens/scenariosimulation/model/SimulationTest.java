@@ -112,7 +112,8 @@ public class SimulationTest {
         assertEquals(1, simulation.getSimulationDescriptor().getUnmodifiableFactMappings().size());
         simulation.removeFactMapping(simulation.getSimulationDescriptor().getFactMappingByIndex(0));
         assertEquals(1, simulation.getUnmodifiableScenarios().get(0).getUnmodifiableFactMappingValues().size());
-        assertEquals(0, simulation.getSimulationDescriptor().getUnmodifiableFactMappings().size());    }
+        assertEquals(0, simulation.getSimulationDescriptor().getUnmodifiableFactMappings().size());
+    }
 
     private <T extends Throwable> void muteException(Runnable toBeExecuted, Class<T> expected) {
         try {

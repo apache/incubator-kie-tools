@@ -21,6 +21,7 @@ import org.guvnor.common.services.shared.test.TestResultMessage;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.api.runtime.KieContainer;
 import org.kie.workbench.common.services.backend.builder.service.BuildInfo;
 import org.kie.workbench.common.services.backend.builder.service.BuildInfoService;
 import org.kie.workbench.common.services.backend.project.ModuleClassLoaderHelper;
@@ -56,6 +57,9 @@ public class ScenarioRunnerImplServiceImplTest {
     private BuildInfo buildInfo;
 
     @Mock
+    private KieContainer kieContainer;
+
+    @Mock
     private ModuleClassLoaderHelper classLoaderHelper;
 
     @InjectMocks
@@ -76,6 +80,7 @@ public class ScenarioRunnerImplServiceImplTest {
     @Test
     public void runTest() throws Exception {
         when(buildInfoService.getBuildInfo(any())).thenReturn(buildInfo);
+        when(buildInfo.getKieContainer()).thenReturn(kieContainer);
         scenarioRunnerService.runTest("test", mock(Path.class), new ScenarioSimulationModel());
 
         verify(defaultTestResultMessageEvent).fire(any());

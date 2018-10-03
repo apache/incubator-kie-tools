@@ -16,7 +16,7 @@
   -->
 
 <!-- SECOND DOCK TAB - TEST TOOLS -->
-<div id="right-panel" class="tab-pane kie-dock active" >
+<div id="right-panel" class="tab-pane kie-dock active">
     <hr class="kie-dock__divider"/>
 
     <ul data-field="rightPanelTabs" class="nav nav-tabs nav-tabs-pf" id="kieTestTools" role="tablist">
@@ -55,42 +55,46 @@
                             <!-- <label for="search1" class="sr-only">Search</label> -->
                             <input id="search1" type="search" class="form-control" data-field="inputSearch" placeholder="Search">
                             <button type="button" class="clear" data-field="clearSearchButton" aria-hidden="true">
-                                <span class="pficon pficon-close"></span></button>
+                                <span class="pficon pficon-close"></span>
+                            </button>
                         </div>
                     </div>
                     <div class="form-group">
-                        <button class="btn btn-default" type="button" data-field="searchButton"><span class="fa fa-search"></span></button>
+                        <button class="btn btn-default" type="button" data-field="searchButton">
+                            <span class="fa fa-search"></span></button>
                     </div>
                 </form>
                 <!-- end search box -->
 
                 <!-- list expansion -->
-                <div id="pf-list-simple-expansion" class="list-group tree-list-view-pf-view kie-tree-list-view-pf-view--compact" data-field="listContainer"> </div>
+                <div id="pf-list-simple-expansion" class="list-group tree-list-view-pf-view kie-tree-list-view-pf-view--compact" data-field="listContainer"></div>
                 <!-- end list expansion -->
             </div><!-- end outlined data object box -->
 
-            <label for="kie-name">Name Field</label>
-            <input id="kie-name" type="text" class="form-control" placeholder="Name" data-field="nameField">
+            <div style="display: none">
+                <label for="kie-name">Name Field</label>
+                <input id="kie-name" type="text" class="form-control" placeholder="Name" data-field="nameField">
 
-            <br/>
+                <br/>
 
-            <label for="kieDropdownConditions">Set Conditions</label>
-            <div class="dropdown">
-                <button class="btn btn-default dropdown-toggle" type="button" id="kieDropdownConditions" data-toggle="dropdown" data-field="conditionsButton">
-                    Condition
-                    <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu" role="menu" aria-labelledby="kieDropdownConditions" data-field="conditionsDropdown">
-                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Required</a></li>
-                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Preferred</a></li>
-                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Other options here</a></li>
-                </ul>
+                <label for="kieDropdownConditions">Set Conditions</label>
+                <div class="dropdown">
+                    <button class="btn btn-default dropdown-toggle" type="button" id="kieDropdownConditions" data-toggle="dropdown" data-field="conditionsButton">
+                        Condition
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu" aria-labelledby="kieDropdownConditions" data-field="conditionsDropdown">
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Required</a></li>
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Preferred</a></li>
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Other options here</a></li>
+                    </ul>
+                </div>
+
+                <hr/>
+                <button class="btn btn-default" type="button">Add</button>
+                &nbsp;&nbsp;&nbsp;
+                <a href="#0" role="button">Clear</a>
             </div>
-
-            <hr/>
-            <button class="btn btn-default" type="button">Add</button>
-            &nbsp;&nbsp;&nbsp;
-            <a href="#0" role="button">Clear</a>
         </div>
         <br/>
         <!-- content for cheatsheet tab -->

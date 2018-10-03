@@ -15,6 +15,7 @@
  */
 package org.drools.workbench.screens.scenariosimulation.model;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -37,8 +38,8 @@ public class FactMappingValue {
     }
 
     public FactMappingValue(FactIdentifier factIdentifier, ExpressionIdentifier expressionIdentifier, Object rawValue) {
-        this.factIdentifier = factIdentifier;
-        this.expressionIdentifier = expressionIdentifier;
+        this.factIdentifier = Objects.requireNonNull(factIdentifier, "FactIdentifier has to be not null");
+        this.expressionIdentifier = Objects.requireNonNull(expressionIdentifier, "ExpressionIdentifier has to be not null");
         this.rawValue = rawValue;
     }
 
@@ -64,7 +65,8 @@ public class FactMappingValue {
     }
 
     public FactMappingValueOperator getOperator() {
-        return operator != null ? operator : extractOperator(rawValue);
+        this.operator = extractOperator(rawValue);
+        return operator;
     }
 
     public Object getCleanValue() {
@@ -86,14 +88,16 @@ public class FactMappingValue {
         String value = ((String) rawValue).trim();
 
         FactMappingValueOperator operator = FactMappingValueOperator.findOperator(value);
-        Optional<String> first = operator.getSymbols().stream().filter(value::startsWith).findFirst();
-        if (first.isPresent()) {
-            String symbolToRemove = first.get();
+        Optional<String> operatorSymbol = operator.getSymbols().stream().filter(value::startsWith).findFirst();
+        if (operatorSymbol.isPresent()) {
+            String symbolToRemove = operatorSymbol.get();
             int index = value.indexOf(symbolToRemove);
             value = value.substring(index + symbolToRemove.length()).trim();
         }
 
-        return value.trim();
+        String returnValue = value.trim();
+        // empty string is equivalent to null only if there is no operator symbol
+        return "".equals(returnValue) && !operatorSymbol.isPresent() ? null : returnValue;
     }
 
     public static FactMappingValueOperator extractOperator(Object rawValue) {
