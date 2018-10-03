@@ -192,11 +192,6 @@ public class AlignAndDistribute
 
     public AlignAndDistributeControl addShape(IDrawable<?> group)
     {
-        return addShape(group, true);
-    }
-
-    public AlignAndDistributeControl addShape(IDrawable<?> group, boolean useChangeListener)
-    {
         final String uuid = group.uuid();
 
         AlignAndDistributeControl handler = m_shapes.get(uuid);
@@ -205,10 +200,7 @@ public class AlignAndDistribute
         if (null == handler)
         {
             List<Attribute> attrs = null;
-            if (useChangeListener)
-            {
-                attrs = group.getBoundingBoxAttributes();
-            }
+            attrs = group.getBoundingBoxAttributes();
             handler = new AlignAndDistributeControlImpl((IPrimitive<?>) group, this, m_alignmentCallback, attrs);
             m_shapes.put(uuid, handler);
         }

@@ -68,10 +68,6 @@ public class AlignAndDistributeControlImpl implements AlignAndDistributeControl
 
     private Flows.BooleanOp                                        m_tranOp;
 
-    private double                                                 m_leftOffset;
-
-    private double                                                 m_topOffset;
-
     public AlignAndDistributeControlImpl(IPrimitive<?> group, AlignAndDistribute alignAndDistribute, AlignAndDistribute.AlignAndDistributeMatchesCallback alignAndDistributeMatchesCallback, List<Attribute> attributes)
     {
         m_group = group;
@@ -129,7 +125,7 @@ public class AlignAndDistributeControlImpl implements AlignAndDistributeControl
         }
     }
 
-    private final AttributesChangedHandler ShapeAttributesChangedHandler = new AttributesChangedHandler()
+    protected final AttributesChangedHandler ShapeAttributesChangedHandler = new AttributesChangedHandler()
     {
         @Override
         public void onAttributesChanged(AttributesChangedEvent event)
