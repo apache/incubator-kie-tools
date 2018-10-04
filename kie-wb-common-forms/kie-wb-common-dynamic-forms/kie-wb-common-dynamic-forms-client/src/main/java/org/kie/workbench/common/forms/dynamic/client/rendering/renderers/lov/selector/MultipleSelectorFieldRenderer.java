@@ -51,7 +51,7 @@ public class MultipleSelectorFieldRenderer<TYPE> extends FieldRenderer<AbstractM
         public void search(String pattern, int maxResults, LiveSearchCallback<TYPE> callback) {
             List<TYPE> values = field.getListOfValues();
 
-            if (pattern != null & !pattern.isEmpty()) {
+            if (pattern != null && !pattern.isEmpty()) {
                 values = values.stream()
                         .filter(value -> stringValue(value).toLowerCase().contains(pattern.toLowerCase()))
                         .collect(Collectors.toList());
