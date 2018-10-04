@@ -1,6 +1,7 @@
 package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.ait.lienzo.client.core.event.NodeDragEndEvent;
 import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
@@ -32,7 +33,7 @@ public class WiresConnectorHandlerImpl implements WiresConnectorHandler {
     private boolean ownToken;
 
     //Token to control the concurrency between connectors when creating transient control handle
-    private static ConcurrentHashMap<String, Boolean> transientControlHandleTokenMap = new ConcurrentHashMap<>();
+    private static Map<String, Boolean> transientControlHandleTokenMap = new HashMap<>();
 
     public static class Event {
 
@@ -274,7 +275,7 @@ public class WiresConnectorHandlerImpl implements WiresConnectorHandler {
         if(layerID == null){
             return true;
         }
-        final Boolean gotToken = transientControlHandleTokenMap.putIfAbsent(layerID, Boolean.TRUE);
+        final Boolean gotToken = transientControlHandleTokenMap.put(layerID, Boolean.TRUE);
         if(gotToken == null){
             this.ownToken = true;
         }
