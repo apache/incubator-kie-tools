@@ -20,10 +20,9 @@ import java.util.function.Consumer;
 
 import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioCellTextBoxSingletonDOMElementFactory;
 import org.drools.workbench.screens.scenariosimulation.client.metadata.ScenarioHeaderMetaData;
+import org.drools.workbench.screens.scenariosimulation.client.values.ScenarioGridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
-import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCell;
-import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.GridColumnRenderer;
@@ -34,18 +33,22 @@ public class ScenarioGridColumn extends BaseGridColumn<String> {
 
     final ScenarioHeaderMetaData informationHeaderMetaData;
 
-    public ScenarioGridColumn(HeaderMetaData headerMetaData, GridColumnRenderer<String> columnRenderer, double width, boolean isMovable, ScenarioCellTextBoxSingletonDOMElementFactory factory) {
+    final String placeHolder;
+
+    public ScenarioGridColumn(HeaderMetaData headerMetaData, GridColumnRenderer<String> columnRenderer, double width, boolean isMovable, ScenarioCellTextBoxSingletonDOMElementFactory factory, String placeHolder) {
         super(headerMetaData, columnRenderer, width);
         this.informationHeaderMetaData = (ScenarioHeaderMetaData) headerMetaData;
         this.setMovable(isMovable);
         this.factory = factory;
+        this.placeHolder = placeHolder;
     }
 
-    public ScenarioGridColumn(List<HeaderMetaData> headerMetaData, GridColumnRenderer<String> columnRenderer, double width, boolean isMovable, ScenarioCellTextBoxSingletonDOMElementFactory factory) {
+    public ScenarioGridColumn(List<HeaderMetaData> headerMetaData, GridColumnRenderer<String> columnRenderer, double width, boolean isMovable, ScenarioCellTextBoxSingletonDOMElementFactory factory, String placeHolder) {
         super(headerMetaData, columnRenderer, width);
         this.informationHeaderMetaData = (ScenarioHeaderMetaData) headerMetaData.stream().filter(hdm -> ((ScenarioHeaderMetaData) hdm).isInformationHeader()).findFirst().orElse(headerMetaData.get(0));
         this.setMovable(isMovable);
         this.factory = factory;
+        this.placeHolder = placeHolder;
     }
 
     @Override
@@ -59,10 +62,14 @@ public class ScenarioGridColumn extends BaseGridColumn<String> {
         return informationHeaderMetaData;
     }
 
+    public String getPlaceHolder() {
+        return placeHolder;
+    }
+
     private GridCell<String> assertCell(final GridCell<String> cell) {
         if (cell != null) {
             return cell;
         }
-        return new BaseGridCell<>(new BaseGridCellValue<>(""));
+        return new ScenarioGridCell(new ScenarioGridCellValue("", placeHolder));
     }
 }

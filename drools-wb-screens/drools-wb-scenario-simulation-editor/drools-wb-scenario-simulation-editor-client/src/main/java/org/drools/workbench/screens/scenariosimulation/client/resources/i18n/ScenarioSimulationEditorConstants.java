@@ -87,4 +87,6 @@ public interface ScenarioSimulationEditorConstants
     String insertRightmostColumn();
 
     String description();
+
+    String insertValue();
 }

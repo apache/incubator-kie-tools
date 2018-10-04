@@ -23,6 +23,7 @@ import org.drools.workbench.screens.scenariosimulation.client.factories.Scenario
 import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioHeaderTextBoxSingletonDOMElementFactory;
 import org.drools.workbench.screens.scenariosimulation.client.metadata.ScenarioHeaderMetaData;
 import org.drools.workbench.screens.scenariosimulation.client.renderers.ScenarioGridColumnRenderer;
+import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridLayer;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
@@ -39,7 +40,7 @@ public class ScenarioSimulationUtils {
                                                            ScenarioGridLayer gridLayer) {
         ScenarioHeaderTextBoxSingletonDOMElementFactory factoryHeader = FactoryProvider.getHeaderTextBoxFactory(scenarioGridPanel, gridLayer);
         ScenarioCellTextBoxSingletonDOMElementFactory factoryCell = FactoryProvider.getCellTextBoxFactory(scenarioGridPanel, gridLayer);
-        return new ScenarioGridColumn(getTwoLevelHeaderBuilder(title, columnId, columnGroup, factMappingType).build(factoryHeader), new ScenarioGridColumnRenderer(), 150, false, factoryCell);
+        return new ScenarioGridColumn(getTwoLevelHeaderBuilder(title, columnId, columnGroup, factMappingType).build(factoryHeader), new ScenarioGridColumnRenderer(), 150, false, factoryCell, ScenarioSimulationEditorConstants.INSTANCE.insertValue());
     }
 
     public static ColumnBuilder getTwoLevelHeaderBuilder(String title,

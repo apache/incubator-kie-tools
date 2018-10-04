@@ -13,24 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.workbench.screens.scenariosimulation.client.values;
+package org.drools.workbench.screens.scenariosimulation.client.renderers;
 
-import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
+import com.ait.lienzo.client.core.shape.Text;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.themes.GridRendererTheme;
 
-public class ScenarioGridCellValue extends BaseGridCellValue<String> {
+public interface ScenarioGridRendererTheme extends GridRendererTheme {
 
-    private String placeHolder = null;
+    Text getPlaceholderText();
 
-    public ScenarioGridCellValue(String value, String placeHolder) {
-        super(value);
-        this.placeHolder = placeHolder;
-    }
-
-    public ScenarioGridCellValue(String value) {
-        super(value);
-    }
-
-    public String getPlaceHolder() {
-        return placeHolder;
-    }
 }

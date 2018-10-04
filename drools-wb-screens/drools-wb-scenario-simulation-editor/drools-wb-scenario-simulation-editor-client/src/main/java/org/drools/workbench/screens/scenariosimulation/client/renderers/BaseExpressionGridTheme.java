@@ -25,9 +25,8 @@ import com.ait.lienzo.shared.core.types.TextAlign;
 import com.ait.lienzo.shared.core.types.TextBaseLine;
 import com.ait.lienzo.shared.core.types.TextUnit;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.themes.GridRendererTheme;
 
-public class BaseExpressionGridTheme implements GridRendererTheme {
+public class BaseExpressionGridTheme implements ScenarioGridRendererTheme {
 
     public static final String BACKGROUND_FILL_COLOUR = "#c7ffca";
 
@@ -58,6 +57,8 @@ public class BaseExpressionGridTheme implements GridRendererTheme {
     public static final String FONT_FAMILY_LABEL = "Open Sans, Helvetica, Arial, sans-serif";
 
     public static final String FONT_FAMILY_EXPRESSION = "Courier New";
+
+    public static final String FONT_STYLE_ITALIC = "italic";
 
     public static final double SELECTOR_STROKE_WIDTH = 2.0;
 
@@ -140,6 +141,19 @@ public class BaseExpressionGridTheme implements GridRendererTheme {
                 .setFillColor(ColorName.BLACK)
                 .setFontSize(FONT_SIZE)
                 .setFontFamily(FONT_FAMILY_LABEL)
+                .setTextUnit(TextUnit.PT)
+                .setListening(false)
+                .setTextBaseLine(TextBaseLine.MIDDLE)
+                .setTextAlign(TextAlign.CENTER);
+    }
+
+    @Override
+    public Text getPlaceholderText() {
+        return new Text("")
+                .setFillColor(ColorName.GRAY)
+                .setFontSize(FONT_SIZE)
+                .setFontFamily(FONT_FAMILY_LABEL)
+                .setFontStyle(FONT_STYLE_ITALIC)
                 .setTextUnit(TextUnit.PT)
                 .setListening(false)
                 .setTextBaseLine(TextBaseLine.MIDDLE)

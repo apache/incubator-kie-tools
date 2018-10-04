@@ -16,9 +16,9 @@
 
 package org.drools.workbench.screens.scenariosimulation.client.factories;
 
-import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
+import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
+import org.drools.workbench.screens.scenariosimulation.client.values.ScenarioGridCellValue;
 import org.gwtbootstrap3.client.ui.TextBox;
-import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.impl.TextBoxDOMElement;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
@@ -33,13 +33,9 @@ public class ScenarioCellTextBoxDOMElement extends TextBoxDOMElement {
     public void flush(final String value) {
         final int rowIndex = context.getRowIndex();
         final int columnIndex = context.getColumnIndex();
-        if (value == null || value.trim().isEmpty()) {
-            ((ScenarioGridModel) gridWidget.getModel()).deleteCell(rowIndex,
-                                                                   columnIndex);
-        } else {
-            ((ScenarioGridModel) gridWidget.getModel()).setCellValue(rowIndex,
-                                                                     columnIndex,
-                                                                     new BaseGridCellValue<String>(value));
-        }
+        String actualValue = (value == null || value.trim().isEmpty()) ? null : value;
+        gridWidget.getModel().setCellValue(rowIndex,
+                                           columnIndex,
+                                           new ScenarioGridCellValue(actualValue, ScenarioSimulationEditorConstants.INSTANCE.insertValue()));
     }
 }

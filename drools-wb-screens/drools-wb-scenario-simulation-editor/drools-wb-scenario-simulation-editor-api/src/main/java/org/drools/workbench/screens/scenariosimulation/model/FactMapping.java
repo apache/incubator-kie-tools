@@ -103,4 +103,5 @@ public class FactMapping {
     public static String getPlaceHolder(FactMappingType factMappingType, int index) {
         return getPlaceHolder(factMappingType) + " " + index;
     }
+
 }
