@@ -141,6 +141,8 @@ public class ScenarioSimulationEditorPresenter
         view.init(this);
 
         populateRightPanelCommand = getPopulateRightPanelCommand();
+
+        scenarioGridPanel.select();
     }
 
     @OnStartup

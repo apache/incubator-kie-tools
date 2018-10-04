@@ -38,17 +38,12 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPane
 @Dependent
 public class ScenarioGridPanel extends GridLienzoPanel implements NodeMouseOutHandler {
 
-    public static final int LIENZO_PANEL_WIDTH = 1000;
-
-    public static final int LIENZO_PANEL_HEIGHT = 800;
-
     private EventBus eventBus;
     private ScenarioSimulationGridPanelClickHandler clickHandler;
 
     Set<HandlerRegistration> handlerRegistrations = new HashSet<>();
 
     public ScenarioGridPanel() {
-        super(LIENZO_PANEL_WIDTH, LIENZO_PANEL_HEIGHT);
     }
 
     public void addClickHandler(final ScenarioSimulationGridPanelClickHandler clickHandler) {
@@ -74,14 +69,17 @@ public class ScenarioGridPanel extends GridLienzoPanel implements NodeMouseOutHa
         getScenarioGrid().getModel().setEventBus(eventBus);
     }
 
+    public void select() {
+        getDefaultGridLayer().select(getScenarioGrid()); // This is to have "floatable" header, ie. not moving
+    }
+
     @Override
     public void onNodeMouseOut(NodeMouseOutEvent event) {
         final int height = getScenarioGridLayer().getHeight();
         final int width = getScenarioGridLayer().getWidth();
         final int x = event.getX();
         final int y = event.getY();
-        final int screenY = event.getMouseEvent().getScreenY();
-        if (x < 0 || x > width || y < 0 || screenY > height) {
+        if (x < 0 || x > width || y < 0 || y > height) {
            clickHandler.hideMenus();
        }
     }

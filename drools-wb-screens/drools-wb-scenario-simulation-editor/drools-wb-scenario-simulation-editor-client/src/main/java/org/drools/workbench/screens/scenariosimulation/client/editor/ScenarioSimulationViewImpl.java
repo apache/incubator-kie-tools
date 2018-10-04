@@ -18,6 +18,7 @@ package org.drools.workbench.screens.scenariosimulation.client.editor;
 
 import javax.enterprise.context.Dependent;
 
+import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridLayer;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
@@ -65,7 +66,6 @@ public class ScenarioSimulationViewImpl
         scenarioGridPanel.getScenarioGrid().setContent(simulation);
     }
 
-
     @Override
     public MenuItem getRunScenarioMenuItem() {
         return new RunScenarioMenuItem(ScenarioSimulationEditorConstants.INSTANCE.runScenarioSimulation(),
@@ -80,5 +80,16 @@ public class ScenarioSimulationViewImpl
     @Override
     public ScenarioGridLayer getScenarioGridLayer() {
         return scenarioGridLayer;
+    }
+
+    @Override
+    public void onResize() {
+        final Widget parent = getParent();
+        if (parent != null) {
+            final double w = parent.getOffsetWidth();
+            final double h = parent.getOffsetHeight();
+            setPixelSize((int) w, (int) h);
+        }
+        scenarioGridPanel.onResize();
     }
 }

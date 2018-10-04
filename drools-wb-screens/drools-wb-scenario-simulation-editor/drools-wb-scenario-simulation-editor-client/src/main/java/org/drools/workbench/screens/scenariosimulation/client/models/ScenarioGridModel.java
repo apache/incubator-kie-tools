@@ -431,11 +431,18 @@ public class ScenarioGridModel extends BaseGridData {
     }
 
     protected void updateIndexColumn() {
-        IntStream.range(0, getRowCount())
-                .forEach(rowIndex -> {
-                    String value = String.valueOf(rowIndex + 1);
-                    setCellValue(rowIndex, 0, new ScenarioGridCellValue(value));
-                });
+        final Optional<GridColumn<?>> indexColumn = this.getColumns()    // Retrieving the column list
+                .stream()  // streaming
+                .filter(gridColumn -> ((ScenarioGridColumn) gridColumn).getInformationHeaderMetaData().getTitle().equals(ExpressionIdentifier.INDEX.getName()))  // filtering by group name
+                .findFirst();
+        indexColumn.ifPresent(column -> {
+            int indexOfColumn = getColumns().indexOf(column);
+            IntStream.range(0, getRowCount())
+                    .forEach(rowIndex -> {
+                        String value = String.valueOf(rowIndex + 1);
+                        setCellValue(rowIndex, indexOfColumn, new ScenarioGridCellValue(value));
+                    });
+        });
     }
 
     void checkSimulation() {
