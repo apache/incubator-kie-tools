@@ -199,8 +199,7 @@ public class AlignAndDistribute
         // only add if the group has not already been added
         if (null == handler)
         {
-            List<Attribute> attrs = null;
-            attrs = group.getBoundingBoxAttributes();
+            List<Attribute> attrs = group.getBoundingBoxAttributes();
             handler = new AlignAndDistributeControlImpl((IPrimitive<?>) group, this, m_alignmentCallback, attrs);
             m_shapes.put(uuid, handler);
         }
