@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -11,12 +11,13 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 package org.ext.uberfire.social.activities.persistence;
 
 import java.util.List;
 import java.util.UUID;
+
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -27,8 +28,6 @@ import org.ext.uberfire.social.activities.model.SocialUser;
 import org.ext.uberfire.social.activities.service.SocialEventTypeRepositoryAPI;
 import org.ext.uberfire.social.activities.service.SocialTimelinePersistenceAPI;
 import org.ext.uberfire.social.activities.service.SocialUserPersistenceAPI;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.uberfire.commons.cluster.ClusterJMSService;
 import org.uberfire.commons.cluster.ClusterService;
 import org.uberfire.commons.services.cdi.Startup;
@@ -64,14 +63,14 @@ public class SocialClusterMessaging {
                                                SocialMessageWrapper.class,
                                                message -> {
                                                    if (!message.getNodeId().equals(nodeId)) {
-                                                       SocialClusterMessage strType = message.getMessageType();
-                                                       if (strType.equals(SocialClusterMessage.SOCIAL_EVENT.name())) {
+                                                       SocialClusterMessage messageType = message.getMessageType();
+                                                       if (messageType == SocialClusterMessage.SOCIAL_EVENT) {
                                                            handleSocialEvent(message);
                                                        }
-                                                       if (strType.equals(SocialClusterMessage.SOCIAL_FILE_SYSTEM_PERSISTENCE.name())) {
+                                                       if (messageType == SocialClusterMessage.SOCIAL_FILE_SYSTEM_PERSISTENCE) {
                                                            handleSocialPersistenceEvent(message);
                                                        }
-                                                       if (strType.equals(SocialClusterMessage.CLUSTER_SHUTDOWN.name())) {
+                                                       if (messageType == SocialClusterMessage.CLUSTER_SHUTDOWN) {
                                                            handleClusterShutdown();
                                                        }
                                                    }
@@ -80,8 +79,8 @@ public class SocialClusterMessaging {
     }
 
     @PreDestroy
-    public void shutdown(){
-        if(this.clusterService.isAppFormerClustered()){
+    public void shutdown() {
+        if (this.clusterService.isAppFormerClustered()) {
             this.clusterService.close();
         }
     }
@@ -92,23 +91,22 @@ public class SocialClusterMessaging {
     }
 
     private void handleSocialPersistenceEvent(SocialMessageWrapper message) {
-        SocialActivitiesEvent eventTypeName = null;
-        SocialUser user = null;
         SocialTimelineCacheClusterPersistence cacheClusterPersistence = (SocialTimelineCacheClusterPersistence) socialTimelinePersistence;
         if (message.getSubMessageType().equals(SocialClusterMessage.UPDATE_TYPE_EVENT)) {
-            eventTypeName = message.getEvent();
+            SocialActivitiesEvent eventTypeName = message.getEvent();
+            if (eventTypeName != null) {
+                SocialEventType typeEvent = socialEventTypeRepository.findType(eventTypeName.getType());
+                cacheClusterPersistence.persist(SocialActivitiesEvent.getDummyLastWrittenMarker(),
+                                                typeEvent,
+                                                false);
+            }
         }
         if (message.getSubMessageType().equals(SocialClusterMessage.UPDATE_USER_EVENT)) {
-            user = message.getUser();
-        }
-        if (user == null || user.getUserName() == null) {
-            SocialEventType typeEvent = socialEventTypeRepository.findType(eventTypeName.getType());
-            cacheClusterPersistence.persist(SocialActivitiesEvent.getDummyLastWrittenMarker(),
-                                            typeEvent,
-                                            false);
-        } else {
-            cacheClusterPersistence.persist(user,
-                                            SocialActivitiesEvent.getDummyLastWrittenMarker());
+            SocialUser user = message.getUser();
+            if (user != null) {
+                cacheClusterPersistence.persist(user,
+                                                SocialActivitiesEvent.getDummyLastWrittenMarker());
+            }
         }
     }
 
