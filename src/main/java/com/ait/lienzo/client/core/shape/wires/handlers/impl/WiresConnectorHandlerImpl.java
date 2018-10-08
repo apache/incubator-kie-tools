@@ -173,6 +173,11 @@ public class WiresConnectorHandlerImpl implements WiresConnectorHandler {
 
     @Override
     public void onNodeMouseMove(final NodeMouseMoveEvent event) {
+        if (!getConnector().getLine().isControlPointShape()) {
+            //skipping in case the connector is not a control point shape
+            return;
+        }
+
         if (!isOverConnector(event.getX(), event.getY())) {
             destroyTransientControlHandle();
             return;
