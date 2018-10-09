@@ -88,4 +88,9 @@ public class RowNumberBuilder
         return values.size();
     }
 
+    @Override
+    public int getColumn() {
+        return 0;
+    }
+
 }

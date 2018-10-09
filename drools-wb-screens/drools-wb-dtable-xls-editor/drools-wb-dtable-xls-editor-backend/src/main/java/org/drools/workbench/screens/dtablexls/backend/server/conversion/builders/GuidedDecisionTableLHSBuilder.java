@@ -381,4 +381,9 @@ public class GuidedDecisionTableLHSBuilder
         }
         return maxRowCount;
     }
+
+    @Override
+    public int getColumn() {
+        return headerCol;
+    }
 }

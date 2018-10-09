@@ -87,4 +87,9 @@ public class DefaultDescriptionBuilder
     public int getRowCount() {
         return values.size();
     }
+
+    @Override
+    public int getColumn() {
+        return 1;
+    }
 }

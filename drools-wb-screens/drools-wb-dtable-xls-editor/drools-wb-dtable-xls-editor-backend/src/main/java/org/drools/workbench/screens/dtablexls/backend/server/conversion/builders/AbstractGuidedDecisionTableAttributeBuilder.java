@@ -103,4 +103,9 @@ public abstract class AbstractGuidedDecisionTableAttributeBuilder
     public int getRowCount() {
         return values.size();
     }
+
+    @Override
+    public int getColumn() {
+        return headerCol;
+    }
 }

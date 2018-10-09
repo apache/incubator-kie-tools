@@ -137,4 +137,9 @@ public class GuidedDecisionTableMetadataBuilder
         return values.size();
     }
 
+    @Override
+    public int getColumn() {
+        return headerCol;
+    }
+
 }
