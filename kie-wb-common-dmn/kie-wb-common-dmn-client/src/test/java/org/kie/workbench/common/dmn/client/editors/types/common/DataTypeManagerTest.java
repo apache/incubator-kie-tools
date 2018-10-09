@@ -31,9 +31,13 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
+import org.kie.workbench.common.dmn.client.editors.types.messages.DataTypeFlashMessage;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.DataTypeStore;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.ItemDefinitionRecordEngine;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.ItemDefinitionStore;
+import org.kie.workbench.common.dmn.client.editors.types.persistence.validation.DataTypeNameValidator;
+import org.kie.workbench.common.dmn.client.editors.types.persistence.validation.NameIsBlankErrorMessage;
+import org.kie.workbench.common.dmn.client.editors.types.persistence.validation.NameIsNotUniqueErrorMessage;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -41,6 +45,7 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.uberfire.commons.uuid.UUID;
+import org.uberfire.mocks.EventSourceMock;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -87,6 +92,17 @@ public class DataTypeManagerTest {
     @Mock
     private DataTypeManagerStackStore typeStack;
 
+    @Mock
+    private EventSourceMock<DataTypeFlashMessage> flashMessageEvent;
+
+    @Mock
+    private NameIsBlankErrorMessage blankErrorMessage;
+
+    @Mock
+    private NameIsNotUniqueErrorMessage notUniqueErrorMessage;
+
+    private DataTypeNameValidator dataTypeNameValidator;
+
     private DataTypeManager manager;
 
     @Before
@@ -98,6 +114,7 @@ public class DataTypeManagerTest {
         when(translationService.format(DataTypeManager_Structure)).thenReturn("Structure");
         when(itemDefinitionStore.get("uuid")).thenReturn(mock(ItemDefinition.class));
 
+        dataTypeNameValidator = spy(new DataTypeNameValidator(flashMessageEvent, blankErrorMessage, notUniqueErrorMessage, dataTypeStore));
         manager = spy(new DataTypeManagerFake());
     }
 
@@ -105,7 +122,7 @@ public class DataTypeManagerTest {
     public void testWithParentUUID() {
 
         final String expectedParentUUID = "expectedParentUUID";
-        final DataType dataType = manager.from(makeDataType()).withParentUUID(expectedParentUUID).get();
+        final DataType dataType = manager.from(makeDataType("uuid")).withParentUUID(expectedParentUUID).get();
         final String actualParentUUID = dataType.getParentUUID();
 
         assertEquals(expectedParentUUID, actualParentUUID);
@@ -115,7 +132,7 @@ public class DataTypeManagerTest {
     public void testWithName() {
 
         final String expectedName = "expectedName";
-        final DataType dataType = manager.from(makeDataType()).withName(expectedName).get();
+        final DataType dataType = manager.from(makeDataType("uuid")).withName(expectedName).get();
         final String actualName = dataType.getName();
 
         assertEquals(expectedName, actualName);
@@ -125,7 +142,7 @@ public class DataTypeManagerTest {
     public void testWithType() {
 
         final String expectedType = "expectedType";
-        final DataType dataType = manager.from(makeDataType()).withType(expectedType).get();
+        final DataType dataType = manager.from(makeDataType("uuid")).withType(expectedType).get();
         final String actualType = dataType.getType();
 
         assertEquals(expectedType, actualType);
@@ -139,7 +156,7 @@ public class DataTypeManagerTest {
 
         doReturn(expectedDataTypes).when(manager).makeExternalDataTypes(newType);
 
-        final DataType dataType = manager.from(makeDataType()).withRefreshedSubDataTypes(newType).get();
+        final DataType dataType = manager.from(makeDataType("uuid")).withRefreshedSubDataTypes(newType).get();
         final List<DataType> actualDataTypes = dataType.getSubDataTypes();
 
         assertEquals(expectedDataTypes, actualDataTypes);
@@ -508,6 +525,38 @@ public class DataTypeManagerTest {
         assertEquals(expectedItemDefinition, actualItemDefinition);
     }
 
+    @Test
+    public void testWithUniqueNameWhenNameIsUnique() {
+
+        final DataType dataType = makeDataType("uuid1");
+
+        doReturn(dataType).when(manager).get();
+        doReturn(asList(makeDataType("uuid2", "tPerson"), makeDataType("uuid3", "tCity"))).when(dataTypeNameValidator).siblings(dataType);
+
+        final String actualDataTypeName = manager.withDataType(dataType).withUniqueName("tCompany").get().getName();
+        final String expectedDataTypeName = "tCompany";
+
+        assertEquals(expectedDataTypeName, actualDataTypeName);
+    }
+
+    @Test
+    public void testWithUniqueNameWhenNameIsNotUnique() {
+
+        final DataType dataType = makeDataType("uuid1");
+        final DataType tPerson = makeDataType("uuid2", "tPerson");
+        final DataType tCompany1 = makeDataType("uuid3", "tCompany");
+        final DataType tCompany2 = makeDataType("uuid3", "tCompany (2)");
+        final List<DataType> siblings = asList(tPerson, tCompany1, tCompany2);
+
+        doReturn(dataType).when(manager).get();
+        doReturn(siblings).when(dataTypeNameValidator).siblings(dataType);
+
+        final String actualDataTypeName = manager.withDataType(dataType).withUniqueName("tCompany").get().getName();
+        final String expectedDataTypeName = "tCompany (3)";
+
+        assertEquals(expectedDataTypeName, actualDataTypeName);
+    }
+
     private ItemDefinition makeItem(final String itemName,
                                     final String itemType,
                                     final ItemDefinition... subItemDefinitions) {
@@ -527,16 +576,23 @@ public class DataTypeManagerTest {
         return itemDefinition;
     }
 
-    private DataType makeDataType() {
+    private DataType makeDataType(final String uuid,
+                                  final String name) {
+        final DataType dataType = makeDataType(uuid);
+        doReturn(name).when(dataType).getName();
+        return dataType;
+    }
+
+    private DataType makeDataType(final String uuid) {
         final DataType dataType = spy(new DataType(null));
-        when(dataType.getUUID()).thenReturn("uuid");
+        doReturn(uuid).when(dataType).getUUID();
         return dataType;
     }
 
     class DataTypeManagerFake extends DataTypeManager {
 
         DataTypeManagerFake() {
-            super(translationService, recordEngine, itemDefinitionStore, dataTypeStore, itemDefinitionUtils, dataTypeManagers, typeStack);
+            super(translationService, recordEngine, itemDefinitionStore, dataTypeStore, itemDefinitionUtils, dataTypeManagers, dataTypeNameValidator, typeStack);
         }
 
         DataTypeManager anotherManager() {

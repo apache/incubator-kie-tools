@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.editors.types.listview.common;
+package org.kie.workbench.common.dmn.client.editors.types.common;
 
 import elemental2.dom.Element;
 

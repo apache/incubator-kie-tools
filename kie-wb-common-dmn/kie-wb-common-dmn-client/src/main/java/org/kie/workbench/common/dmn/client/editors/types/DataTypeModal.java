@@ -31,6 +31,7 @@ import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManager;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManagerStackStore;
 import org.kie.workbench.common.dmn.client.editors.types.common.ItemDefinitionUtils;
 import org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeList;
+import org.kie.workbench.common.dmn.client.editors.types.messages.DataTypeFlashMessages;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.DataTypeStore;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.ItemDefinitionStore;
 import org.uberfire.ext.editor.commons.client.file.popups.elemental2.Elemental2Modal;
@@ -50,6 +51,8 @@ public class DataTypeModal extends Elemental2Modal<DataTypeModal.View> {
 
     private final DataTypeManagerStackStore stackIndex;
 
+    private final DataTypeFlashMessages flashMessages;
+
     @Inject
     public DataTypeModal(final View view,
                          final DataTypeList treeList,
@@ -57,7 +60,8 @@ public class DataTypeModal extends Elemental2Modal<DataTypeModal.View> {
                          final ItemDefinitionStore definitionStore,
                          final DataTypeStore dataTypeStore,
                          final DataTypeManager dataTypeManager,
-                         final DataTypeManagerStackStore stackIndex) {
+                         final DataTypeManagerStackStore stackIndex,
+                         final DataTypeFlashMessages flashMessages) {
         super(view);
 
         this.treeList = treeList;
@@ -66,13 +70,14 @@ public class DataTypeModal extends Elemental2Modal<DataTypeModal.View> {
         this.dataTypeStore = dataTypeStore;
         this.dataTypeManager = dataTypeManager;
         this.stackIndex = stackIndex;
+        this.flashMessages = flashMessages;
     }
 
     @PostConstruct
     public void setup() {
         super.setup();
         setDataTypeModalCSSClasses();
-        getView().setup(treeList);
+        getView().setup(flashMessages, treeList);
     }
 
     public void show() {
@@ -119,6 +124,7 @@ public class DataTypeModal extends Elemental2Modal<DataTypeModal.View> {
 
     public interface View extends Elemental2Modal.View<DataTypeModal> {
 
-        void setup(final DataTypeList treeGrid);
+        void setup(final DataTypeFlashMessages flashMessages,
+                   final DataTypeList treeGrid);
     }
 }

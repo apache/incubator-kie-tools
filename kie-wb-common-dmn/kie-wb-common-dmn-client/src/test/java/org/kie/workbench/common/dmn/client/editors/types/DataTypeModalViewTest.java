@@ -21,6 +21,7 @@ import elemental2.dom.HTMLElement;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeList;
+import org.kie.workbench.common.dmn.client.editors.types.messages.DataTypeFlashMessages;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -43,6 +44,9 @@ public class DataTypeModalViewTest {
     @Mock
     private DataTypeList treeGrid;
 
+    @Mock
+    private DataTypeFlashMessages flashMessages;
+
     @Test
     public void testSetup() {
 
@@ -51,7 +55,7 @@ public class DataTypeModalViewTest {
 
         when(treeGrid.getElement()).thenReturn(element);
 
-        view.setup(treeGrid);
+        view.setup(flashMessages, treeGrid);
 
         verify(body).appendChild(element);
     }

@@ -42,6 +42,10 @@ public class DataTypeListItem {
 
     private DataTypeList dataTypeList;
 
+    private String oldName;
+
+    private String oldType;
+
     @Inject
     public DataTypeListItem(final View view,
                             final DataTypeSelect dataTypeSelectComponent,
@@ -124,6 +128,9 @@ public class DataTypeListItem {
 
     void enableEditMode() {
 
+        oldName = getDataType().getName();
+        oldType = getDataType().getType();
+
         view.showSaveButton();
         view.showDataTypeNameInput();
         view.enableFocusMode();
@@ -137,13 +144,33 @@ public class DataTypeListItem {
     }
 
     void saveAndCloseEditMode() {
-        saveNewDataType();
-        closeEditMode();
+
+        final DataType updatedDataType = update(getDataType());
+
+        if (updatedDataType.isValid()) {
+
+            final List<DataType> updatedDataTypes = persist(updatedDataType);
+
+            dataTypeList.refreshItemsByUpdatedDataTypes(updatedDataTypes);
+            closeEditMode();
+        }
+    }
+
+    List<DataType> persist(final DataType dataType) {
+        return dataTypeManager
+                .from(dataType)
+                .withSubDataTypes(dataTypeSelectComponent.getSubDataTypes())
+                .get()
+                .update();
     }
 
     void discardNewDataType() {
 
-        view.setDataType(getDataType());
+        view.setDataType(dataTypeManager
+                                 .withDataType(getDataType())
+                                 .withName(getOldName())
+                                 .withType(getOldType())
+                                 .get());
 
         setupSelectComponent();
         refreshSubItems(getDataType().getSubDataTypes());
@@ -156,13 +183,6 @@ public class DataTypeListItem {
         view.disableFocusMode();
 
         dataTypeSelectComponent.disableEditMode();
-    }
-
-    void saveNewDataType() {
-
-        final List<DataType> updatedDataTypes = update(getDataType());
-
-        dataTypeList.refreshItemsByUpdatedDataTypes(updatedDataTypes);
     }
 
     public void remove() {
@@ -185,14 +205,20 @@ public class DataTypeListItem {
                 .collect(Collectors.toList());
     }
 
-    List<DataType> update(final DataType dataType) {
+    DataType update(final DataType dataType) {
         return dataTypeManager
                 .from(dataType)
                 .withName(view.getName())
                 .withType(dataTypeSelectComponent.getValue())
-                .withSubDataTypes(dataTypeSelectComponent.getSubDataTypes())
-                .get()
-                .update();
+                .get();
+    }
+
+    String getOldName() {
+        return oldName;
+    }
+
+    String getOldType() {
+        return oldType;
     }
 
     public DataTypeList getDataTypeList() {

@@ -30,10 +30,15 @@ import org.kie.workbench.common.dmn.client.editors.types.persistence.handlers.Da
 import org.kie.workbench.common.dmn.client.editors.types.persistence.handlers.ItemDefinitionCreateHandler;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.handlers.ItemDefinitionDestroyHandler;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.handlers.ItemDefinitionUpdateHandler;
+import org.kie.workbench.common.dmn.client.editors.types.persistence.validation.DataTypeNameValidator;
 import org.mockito.Mock;
 
 import static java.util.Arrays.asList;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -60,11 +65,14 @@ public class ItemDefinitionRecordEngineTest {
     @Mock
     private DataTypeUpdateHandler dataTypeUpdateHandler;
 
+    @Mock
+    private DataTypeNameValidator dataTypeNameValidator;
+
     private ItemDefinitionRecordEngine recordEngine;
 
     @Before
     public void setup() {
-        recordEngine = spy(new ItemDefinitionRecordEngine(itemDefinitionStore, itemDefinitionDestroyHandler, itemDefinitionUpdateHandler, itemDefinitionCreateHandler, dataTypeDestroyHandler, dataTypeUpdateHandler));
+        recordEngine = spy(new ItemDefinitionRecordEngine(itemDefinitionStore, itemDefinitionDestroyHandler, itemDefinitionUpdateHandler, itemDefinitionCreateHandler, dataTypeDestroyHandler, dataTypeUpdateHandler, dataTypeNameValidator));
     }
 
     @Test
@@ -85,6 +93,7 @@ public class ItemDefinitionRecordEngineTest {
         final Name name = mock(Name.class);
         final List<DataType> expectedDependentDataTypes = asList(mock(DataType.class), mock(DataType.class));
 
+        when(dataType.isValid()).thenReturn(true);
         when(dataType.getUUID()).thenReturn(uuid);
         when(itemDefinitionStore.get(uuid)).thenReturn(itemDefinition);
         when(itemDefinition.getName()).thenReturn(name);
@@ -98,6 +107,18 @@ public class ItemDefinitionRecordEngineTest {
     }
 
     @Test
+    public void testUpdateWhenDataTypeIsNotValid() {
+
+        final DataType dataType = mock(DataType.class);
+
+        when(dataType.isValid()).thenReturn(false);
+
+        assertThatThrownBy(() -> recordEngine.update(dataType))
+                .isInstanceOf(UnsupportedOperationException.class)
+                .hasMessageContaining("An invalid Data Type cannot be updated.");
+    }
+
+    @Test
     public void testDoUpdate() {
 
         final DataType dataType = mock(DataType.class);
@@ -105,7 +126,7 @@ public class ItemDefinitionRecordEngineTest {
 
         recordEngine.doUpdate(dataType, itemDefinition);
 
-        verify(dataTypeUpdateHandler).update(dataType, itemDefinition);
+        verify(dataTypeUpdateHandler).update(dataType);
         verify(itemDefinitionUpdateHandler).update(dataType, itemDefinition);
     }
 
@@ -134,6 +155,26 @@ public class ItemDefinitionRecordEngineTest {
         final DataType actualDataType = recordEngine.create(dataType);
 
         assertEquals(expectedDataType, actualDataType);
+    }
+
+    @Test
+    public void testIsValidWhenItIsTrue() {
+
+        final DataType dataType = mock(DataType.class);
+
+        doReturn(true).when(dataTypeNameValidator).isValid(dataType);
+
+        assertTrue(recordEngine.isValid(dataType));
+    }
+
+    @Test
+    public void testIsValidWhenItIsFalse() {
+
+        final DataType dataType = mock(DataType.class);
+
+        doReturn(false).when(dataTypeNameValidator).isValid(dataType);
+
+        assertFalse(recordEngine.isValid(dataType));
     }
 
     @Test

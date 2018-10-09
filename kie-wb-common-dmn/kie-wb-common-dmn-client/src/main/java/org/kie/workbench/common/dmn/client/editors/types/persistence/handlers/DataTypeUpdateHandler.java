@@ -28,6 +28,8 @@ import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManager;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.DataTypeStore;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.ItemDefinitionStore;
 
+import static org.kie.workbench.common.dmn.client.editors.types.common.BuiltInTypeUtils.isDefault;
+
 @Dependent
 public class DataTypeUpdateHandler extends DataTypeHandler {
 
@@ -42,16 +44,14 @@ public class DataTypeUpdateHandler extends DataTypeHandler {
         this.itemDefinitionStore = itemDefinitionStore;
     }
 
-    public void update(final DataType dataType,
-                       final ItemDefinition itemDefinition) {
+    public void update(final DataType dataType) {
 
-        final boolean isStructureDataType = isStructure(dataType);
-        final boolean isStructureItemDefinition = itemDefinition.getTypeRef() != null;
+        final String type = dataType.getType();
 
-        if (isStructureDataType || isStructureItemDefinition) {
+        if (!isDefault(type)) {
             dataTypeManager
                     .from(dataType)
-                    .withRefreshedSubDataTypes(dataType.getName());
+                    .withRefreshedSubDataTypes(type);
         }
     }
 
@@ -102,7 +102,7 @@ public class DataTypeUpdateHandler extends DataTypeHandler {
 
         if (dataType.isTopLevel()) {
 
-            refreshSubDataTypes(dataType, dataType.getName());
+            refreshSubDataTypes(dataType);
 
             affectedDataTypes.addAll(forEachSubDataTypesByType(oldTypeName, subDataType -> {
                 refreshSubDataType(subDataType, dataType.getName());

@@ -42,6 +42,10 @@ public abstract class ActiveRecord<T> {
         return getRecordEngine().create(getRecord());
     }
 
+    public boolean isValid() {
+        return getRecordEngine().isValid(getRecord());
+    }
+
     public RecordEngine<T> getRecordEngine() {
         return Optional.ofNullable(recordEngine).orElseThrow(this::error);
     }

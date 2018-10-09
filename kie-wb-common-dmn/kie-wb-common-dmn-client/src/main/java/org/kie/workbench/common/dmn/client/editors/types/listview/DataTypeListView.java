@@ -39,14 +39,14 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.ElementHelper;
 
+import static org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper.hide;
+import static org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper.isHidden;
+import static org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper.show;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItemView.ARROW_BUTTON_SELECTOR;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItemView.PARENT_UUID_ATTR;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItemView.UUID_ATTR;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ElementHelper.insertAfter;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ElementHelper.remove;
-import static org.kie.workbench.common.dmn.client.editors.types.listview.common.HiddenHelper.hide;
-import static org.kie.workbench.common.dmn.client.editors.types.listview.common.HiddenHelper.isHidden;
-import static org.kie.workbench.common.dmn.client.editors.types.listview.common.HiddenHelper.show;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.JQuery.$;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper.isRightArrow;
 

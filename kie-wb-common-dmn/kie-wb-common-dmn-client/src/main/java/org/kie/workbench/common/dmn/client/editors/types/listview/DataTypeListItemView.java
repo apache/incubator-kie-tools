@@ -37,12 +37,12 @@ import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
-import org.kie.workbench.common.dmn.client.editors.types.listview.common.HiddenHelper;
+import org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.KebabMenuInitializer;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper;
 
-import static org.kie.workbench.common.dmn.client.editors.types.listview.common.HiddenHelper.hide;
-import static org.kie.workbench.common.dmn.client.editors.types.listview.common.HiddenHelper.show;
+import static org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper.hide;
+import static org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper.show;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper.asDownArrow;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper.asFocusedDataType;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper.asNonFocusedDataType;
@@ -53,13 +53,15 @@ import static org.kie.workbench.common.dmn.client.editors.types.listview.common.
 @Templated
 public class DataTypeListItemView implements DataTypeListItem.View {
 
-    static final String UUID_ATTR = "data-row-uuid";
+    public static final String UUID_ATTR = "data-row-uuid";
 
     static final String PARENT_UUID_ATTR = "data-parent-row-uuid";
 
     static final String ARROW_BUTTON_SELECTOR = "[data-field=\"arrow-button\"]";
 
     private static final int PIXELS_PER_LEVEL = 35;
+
+    public static final String NAME_DATA_FIELD = "name-input";
 
     @DataField("view")
     private final HTMLDivElement view;
@@ -73,7 +75,7 @@ public class DataTypeListItemView implements DataTypeListItem.View {
     @DataField("name-text")
     private final HTMLElement nameText;
 
-    @DataField("name-input")
+    @DataField(NAME_DATA_FIELD)
     private final HTMLInputElement nameInput;
 
     @DataField("type")
@@ -233,9 +235,13 @@ public class DataTypeListItemView implements DataTypeListItem.View {
 
     @Override
     public void enableFocusMode() {
+
         final Element rowElement = getRowElement(getDataType());
+
         asFocusedDataType(rowElement);
         forEachChildElement(rowElement, ListItemViewCssHelper::asFocusedDataType);
+
+        nameInput.select();
     }
 
     @Override

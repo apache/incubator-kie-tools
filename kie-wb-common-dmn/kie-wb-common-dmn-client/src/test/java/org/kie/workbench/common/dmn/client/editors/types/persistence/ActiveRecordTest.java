@@ -24,6 +24,10 @@ import org.junit.runner.RunWith;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
@@ -93,6 +97,28 @@ public class ActiveRecordTest {
         verify(engine).create(activeRecord.getRecord());
     }
 
+    @Test
+    public void testIsValidWhenItIsTrue() {
+
+        final RecordEngine<Data> engine = makeRecordEngine();
+        final ActiveRecord<Data> activeRecord = activeRecord(engine);
+
+        doReturn(true).when(engine).isValid(any());
+
+        assertTrue(activeRecord.isValid());
+    }
+
+    @Test
+    public void testIsValidWhenItIsFalse() {
+
+        final RecordEngine<Data> engine = makeRecordEngine();
+        final ActiveRecord<Data> activeRecord = activeRecord(engine);
+
+        doReturn(false).when(engine).isValid(any());
+
+        assertFalse(activeRecord.isValid());
+    }
+
     private ActiveRecord<Data> activeRecord(final RecordEngine<Data> engine) {
 
         final Data record = new Data();
@@ -121,6 +147,11 @@ public class ActiveRecordTest {
             @Override
             public Data create(final Data record) {
                 return null;
+            }
+
+            @Override
+            public boolean isValid(final Data record) {
+                return true;
             }
         });
     }

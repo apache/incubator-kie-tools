@@ -24,6 +24,7 @@ import elemental2.dom.HTMLElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeList;
+import org.kie.workbench.common.dmn.client.editors.types.messages.DataTypeFlashMessages;
 
 @Templated
 @ApplicationScoped
@@ -55,7 +56,9 @@ public class DataTypeModalView implements DataTypeModal.View {
     }
 
     @Override
-    public void setup(final DataTypeList treeGrid) {
+    public void setup(final DataTypeFlashMessages flashMessages,
+                      final DataTypeList treeGrid) {
+        body.appendChild(flashMessages.getElement());
         body.appendChild(treeGrid.getElement());
     }
 

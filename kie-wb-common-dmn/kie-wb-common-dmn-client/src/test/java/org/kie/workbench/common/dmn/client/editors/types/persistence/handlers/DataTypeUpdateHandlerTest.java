@@ -24,7 +24,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
-import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManager;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.DataTypeStore;
@@ -71,66 +71,36 @@ public class DataTypeUpdateHandlerTest {
     }
 
     @Test
-    public void testUpdateWhenDataTypeSubTypesIsNotRefresh() {
+    public void testUpdateWhenDataTypeIsDefault() {
 
         final DataType dataType = mock(DataType.class);
-        final String structure = "Structure";
-        final ItemDefinition itemDefinition = mock(ItemDefinition.class);
 
-        when(dataType.getType()).thenReturn("type");
-        when(itemDefinition.getTypeRef()).thenReturn(null);
-        when(dataTypeManager.structure()).thenReturn(structure);
+        when(dataType.getType()).thenReturn(BuiltInType.STRING.getName());
 
-        handler.update(dataType, itemDefinition);
+        handler.update(dataType);
 
         verify(dataTypeManager, never()).from(any(DataType.class));
         verify(dataTypeManager, never()).withRefreshedSubDataTypes(anyString());
     }
 
     @Test
-    public void testUpdateWhenDataTypeIsStructure() {
+    public void testUpdateWhenDataTypeIsNotDefault() {
 
         final DataType dataType = mock(DataType.class);
-        final String name = "tCity";
-        final String structure = "Structure";
-        final ItemDefinition itemDefinition = mock(ItemDefinition.class);
+        final String name = "city";
+        final String type = "tCity";
 
         when(dataType.getName()).thenReturn(name);
-        when(dataType.getType()).thenReturn(structure);
-        when(itemDefinition.getTypeRef()).thenReturn(null);
-        when(dataTypeManager.structure()).thenReturn(structure);
+        when(dataType.getType()).thenReturn(type);
         when(dataTypeManager.from(any(DataType.class))).thenReturn(dataTypeManager);
         when(dataTypeManager.withRefreshedSubDataTypes(anyString())).thenReturn(dataTypeManager);
 
-        handler.update(dataType, itemDefinition);
+        handler.update(dataType);
 
         final InOrder inOrder = Mockito.inOrder(dataTypeManager);
 
         inOrder.verify(dataTypeManager).from(dataType);
-        inOrder.verify(dataTypeManager).withRefreshedSubDataTypes(name);
-    }
-
-    @Test
-    public void testUpdateWhenItemDefinitionIsStructure() {
-
-        final DataType dataType = mock(DataType.class);
-        final String name = "tCity";
-        final String structure = "Structure";
-        final ItemDefinition itemDefinition = mock(ItemDefinition.class);
-
-        when(dataType.getName()).thenReturn(name);
-        when(dataType.getType()).thenReturn("type");
-        when(itemDefinition.getTypeRef()).thenReturn(mock(QName.class));
-        when(dataTypeManager.structure()).thenReturn(structure);
-        when(dataTypeManager.from(any(DataType.class))).thenReturn(dataTypeManager);
-        when(dataTypeManager.withRefreshedSubDataTypes(anyString())).thenReturn(dataTypeManager);
-
-        handler.update(dataType, itemDefinition);
-
-        final InOrder inOrder = Mockito.inOrder(dataTypeManager);
-
-        inOrder.verify(dataTypeManager).from(dataType);
-        inOrder.verify(dataTypeManager).withRefreshedSubDataTypes(name);
+        inOrder.verify(dataTypeManager).withRefreshedSubDataTypes(type);
     }
 
     @Test

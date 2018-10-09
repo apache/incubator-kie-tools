@@ -207,4 +207,16 @@ public class DMNEditorConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String NameAndDataTypePopover_DataTypeLabel = "NameAndDataTypePopover.DataTypeLabel";
+
+    @TranslationKey(defaultValue = "")
+    public static final String NameIsBlankErrorMessage_StrongMessage = "NameIsBlankErrorMessage.StrongMessage";
+
+    @TranslationKey(defaultValue = "")
+    public static final String NameIsBlankErrorMessage_RegularMessage = "NameIsBlankErrorMessage.RegularMessage";
+
+    @TranslationKey(defaultValue = "")
+    public static final String NameIsNotUniqueErrorMessage_StrongMessage = "NameIsNotUniqueErrorMessage.StrongMessage";
+
+    @TranslationKey(defaultValue = "")
+    public static final String NameIsNotUniqueErrorMessage_RegularMessage = "NameIsNotUniqueErrorMessage.RegularMessage";
 }

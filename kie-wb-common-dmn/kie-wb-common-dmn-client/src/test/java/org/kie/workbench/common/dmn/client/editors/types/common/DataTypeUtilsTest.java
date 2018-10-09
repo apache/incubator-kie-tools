@@ -26,6 +26,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.DataTypeStore;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.ItemDefinitionRecordEngine;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.ItemDefinitionStore;
+import org.kie.workbench.common.dmn.client.editors.types.persistence.validation.DataTypeNameValidator;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -57,6 +58,9 @@ public class DataTypeUtilsTest {
     private ManagedInstance<DataTypeManager> dataTypeManagers;
 
     @Mock
+    private DataTypeNameValidator dataTypeNameValidator;
+
+    @Mock
     private DataTypeManagerStackStore typeStack;
 
     private DataTypeManager dataTypeManager;
@@ -65,7 +69,7 @@ public class DataTypeUtilsTest {
 
     @Before
     public void setup() {
-        dataTypeManager = spy(new DataTypeManager(translationService, recordEngine, itemDefinitionStore, dataTypeStore, itemDefinitionUtils, dataTypeManagers, typeStack));
+        dataTypeManager = spy(new DataTypeManager(translationService, recordEngine, itemDefinitionStore, dataTypeStore, itemDefinitionUtils, dataTypeManagers, dataTypeNameValidator, typeStack));
         utils = spy(new DataTypeUtils(dataTypeStore, dataTypeManager));
     }
 

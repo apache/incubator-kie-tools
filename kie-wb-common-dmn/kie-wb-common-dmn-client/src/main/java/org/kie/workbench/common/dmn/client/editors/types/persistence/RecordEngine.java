@@ -38,8 +38,14 @@ public interface RecordEngine<T> {
     List<T> destroy(final T record);
 
     /**
-     * Create a record
+     * Create a record.
      * @param record
      */
     T create(final T record);
+
+    /**
+     * Check if a record is valid.
+     * @param record
+     */
+    boolean isValid(final T record);
 }

@@ -28,13 +28,28 @@
 
         [data-field="body"] {
           height: 100%;
+          display: flex;
+          flex-direction: column;
+
+          & > div {
+            flex: 0 1 auto;
+          }
 
           [data-i18n-prefix="DataTypeListView."] {
+
             height: 100%;
+            flex: 1 1 auto;
+            display: flex;
+            flex-direction: column;
+
+            & > * {
+              flex: 0 1 auto;
+            }
 
             [data-field="list-items"] {
               height: ~"calc(100% - 120px)";
               overflow-y: scroll;
+              flex: 1 1 auto;
             }
           }
         }

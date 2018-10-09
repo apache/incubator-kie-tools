@@ -25,21 +25,25 @@ import elemental2.dom.HTMLElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManager;
+import org.kie.workbench.common.dmn.client.editors.types.persistence.ItemDefinitionStore;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyListOf;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -57,15 +61,21 @@ public class DataTypeListItemTest {
     private DataType dataType;
 
     @Mock
-    private DataTypeList dataTypeList;
+    private ItemDefinitionStore itemDefinitionStore;
+
+    @Captor
+    private ArgumentCaptor<DataType> dataTypeCaptor;
 
     @Mock
+    private DataTypeList dataTypeList;
+
     private DataTypeManager dataTypeManager;
 
     private DataTypeListItem listItem;
 
     @Before
     public void setup() {
+        dataTypeManager = spy(new DataTypeManager(null, null, itemDefinitionStore, null, null, null, null, null));
         listItem = spy(new DataTypeListItem(view, dataTypeSelectComponent, dataTypeManager));
         listItem.init(dataTypeList);
     }
@@ -180,7 +190,18 @@ public class DataTypeListItemTest {
     @Test
     public void testEnableEditMode() {
 
+        final DataType dataType = mock(DataType.class);
+        final String expectedName = "name";
+        final String expectedType = "type";
+
+        doReturn(dataType).when(listItem).getDataType();
+        when(dataType.getName()).thenReturn(expectedName);
+        when(dataType.getType()).thenReturn(expectedType);
+
         listItem.enableEditMode();
+
+        assertEquals(expectedName, listItem.getOldName());
+        assertEquals(expectedType, listItem.getOldType());
 
         verify(view).showSaveButton();
         verify(view).showDataTypeNameInput();
@@ -201,31 +222,87 @@ public class DataTypeListItemTest {
     }
 
     @Test
-    public void testSaveAndCloseEditMode() {
+    public void testSaveAndCloseEditModeWhenDataTypeIsValid() {
 
-        doNothing().when(listItem).saveNewDataType();
-        doNothing().when(listItem).closeEditMode();
+        final DataType dataType = spy(makeDataType());
+        final DataType updatedDataType = spy(makeDataType());
+        final List<DataType> updatedDataTypes = singletonList(makeDataType());
+
+        doReturn(dataType).when(listItem).getDataType();
+        doReturn(updatedDataType).when(listItem).update(dataType);
+        doReturn(true).when(updatedDataType).isValid();
+        doReturn(updatedDataTypes).when(listItem).persist(updatedDataType);
 
         listItem.saveAndCloseEditMode();
 
-        verify(listItem).saveNewDataType();
+        verify(dataTypeList).refreshItemsByUpdatedDataTypes(updatedDataTypes);
         verify(listItem).closeEditMode();
+    }
+
+    @Test
+    public void testSaveAndCloseEditModeWhenDataTypeIsNotValid() {
+
+        final DataType dataType = spy(makeDataType());
+        final DataType updatedDataType = spy(makeDataType());
+        final List<DataType> updatedDataTypes = singletonList(makeDataType());
+
+        doReturn(dataType).when(listItem).getDataType();
+        doReturn(updatedDataType).when(listItem).update(dataType);
+        doReturn(false).when(updatedDataType).isValid();
+
+        listItem.saveAndCloseEditMode();
+
+        verify(dataTypeList, never()).refreshItemsByUpdatedDataTypes(updatedDataTypes);
+        verify(listItem, never()).closeEditMode();
+    }
+
+    @Test
+    public void testPersist() {
+
+        final String uuid = "uuid";
+        final DataType dataType = spy(makeDataType());
+        final ItemDefinition itemDefinition = mock(ItemDefinition.class);
+        final List<DataType> subDataTypes = singletonList(makeDataType());
+        final List<DataType> affectedDataTypes = emptyList();
+
+        when(itemDefinitionStore.get(uuid)).thenReturn(itemDefinition);
+        when(dataTypeSelectComponent.getSubDataTypes()).thenReturn(subDataTypes);
+        doReturn(uuid).when(dataType).getUUID();
+        doReturn(affectedDataTypes).when(dataType).update();
+
+        listItem.persist(dataType);
+
+        final InOrder inOrder = inOrder(dataTypeManager, dataType);
+
+        inOrder.verify(dataTypeManager).from(dataType);
+        inOrder.verify(dataTypeManager).withSubDataTypes(subDataTypes);
+        inOrder.verify(dataTypeManager).get();
+        inOrder.verify(dataType).update();
     }
 
     @Test
     public void testDiscardNewDataType() {
 
-        final DataType dataType = mock(DataType.class);
+        final DataType dataType = spy(makeDataType());
         final List<DataType> subDataTypes = Collections.emptyList();
+        final String expectedName = "name";
+        final String expectedType = "type";
 
-        when(dataType.getSubDataTypes()).thenReturn(subDataTypes);
+        doReturn(subDataTypes).when(dataType).getSubDataTypes();
         doReturn(dataType).when(listItem).getDataType();
+        doReturn(expectedName).when(listItem).getOldName();
+        doReturn(expectedType).when(listItem).getOldType();
 
         listItem.discardNewDataType();
 
-        verify(view).setDataType(dataType);
+        verify(view).setDataType(dataTypeCaptor.capture());
         verify(listItem).setupSelectComponent();
         verify(listItem).refreshSubItems(subDataTypes);
+
+        final DataType dataTypeCaptorValue = dataTypeCaptor.getValue();
+
+        assertEquals(expectedName, dataTypeCaptorValue.getName());
+        assertEquals(expectedType, dataTypeCaptorValue.getType());
     }
 
     @Test
@@ -243,41 +320,21 @@ public class DataTypeListItemTest {
     public void testUpdate() {
 
         final DataType dataType = spy(makeDataType());
+        final String uuid = "uuid";
         final String expectedName = "name";
         final String expectedType = "type";
-        final List<DataType> expectedSubDataTypes = asList(mock(DataType.class), mock(DataType.class));
-        final List<DataType> expectedUpdatedDataTypes = singletonList(mock(DataType.class));
+        final ItemDefinition itemDefinition = mock(ItemDefinition.class);
 
-        doReturn(expectedUpdatedDataTypes).when(dataType).update();
+        when(dataType.getUUID()).thenReturn(uuid);
+        when(itemDefinitionStore.get(uuid)).thenReturn(itemDefinition);
         when(view.getName()).thenReturn(expectedName);
         when(dataTypeSelectComponent.getValue()).thenReturn(expectedType);
-        when(dataTypeSelectComponent.getSubDataTypes()).thenReturn(expectedSubDataTypes);
-        when(dataTypeManager.from(dataType)).thenReturn(dataTypeManager);
-        when(dataTypeManager.withName(anyString())).thenReturn(dataTypeManager);
-        when(dataTypeManager.withType(anyString())).thenReturn(dataTypeManager);
-        when(dataTypeManager.withSubDataTypes(anyListOf(DataType.class))).thenReturn(dataTypeManager);
         when(dataTypeManager.get()).thenReturn(dataType);
 
-        final List<DataType> actualUpdatedDataTypes = listItem.update(dataType);
+        final DataType updatedDataType = listItem.update(dataType);
 
-        verify(dataTypeManager).withName(expectedName);
-        verify(dataTypeManager).withType(expectedType);
-        verify(dataTypeManager).withSubDataTypes(expectedSubDataTypes);
-        assertEquals(expectedUpdatedDataTypes, actualUpdatedDataTypes);
-    }
-
-    @Test
-    public void testSaveNewDataType() {
-
-        final DataType dataType = spy(makeDataType());
-        final List<DataType> updatedDataTypes = singletonList(mock(DataType.class));
-
-        doReturn(dataType).when(listItem).getDataType();
-        doReturn(updatedDataTypes).when(listItem).update(dataType);
-
-        listItem.saveNewDataType();
-
-        verify(dataTypeList).refreshItemsByUpdatedDataTypes(updatedDataTypes);
+        assertEquals(expectedName, updatedDataType.getName());
+        assertEquals(expectedType, updatedDataType.getType());
     }
 
     @Test

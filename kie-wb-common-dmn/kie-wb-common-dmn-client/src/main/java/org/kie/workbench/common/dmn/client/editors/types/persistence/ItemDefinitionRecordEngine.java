@@ -29,6 +29,7 @@ import org.kie.workbench.common.dmn.client.editors.types.persistence.handlers.Da
 import org.kie.workbench.common.dmn.client.editors.types.persistence.handlers.ItemDefinitionCreateHandler;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.handlers.ItemDefinitionDestroyHandler;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.handlers.ItemDefinitionUpdateHandler;
+import org.kie.workbench.common.dmn.client.editors.types.persistence.validation.DataTypeNameValidator;
 
 /**
  * Implements the {@link RecordEngine} to record a {@link DataType} as a {@link ItemDefinition}.
@@ -48,19 +49,23 @@ public class ItemDefinitionRecordEngine implements RecordEngine<DataType> {
 
     private final DataTypeUpdateHandler dataTypeUpdateHandler;
 
+    private final DataTypeNameValidator dataTypeNameValidator;
+
     @Inject
     public ItemDefinitionRecordEngine(final ItemDefinitionStore itemDefinitionStore,
                                       final ItemDefinitionDestroyHandler itemDefinitionDestroyHandler,
                                       final ItemDefinitionUpdateHandler itemDefinitionUpdateHandler,
                                       final ItemDefinitionCreateHandler itemDefinitionCreateHandler,
                                       final DataTypeDestroyHandler dataTypeDestroyHandler,
-                                      final DataTypeUpdateHandler dataTypeUpdateHandler) {
+                                      final DataTypeUpdateHandler dataTypeUpdateHandler,
+                                      final DataTypeNameValidator dataTypeNameValidator) {
         this.itemDefinitionStore = itemDefinitionStore;
         this.itemDefinitionDestroyHandler = itemDefinitionDestroyHandler;
         this.itemDefinitionUpdateHandler = itemDefinitionUpdateHandler;
         this.itemDefinitionCreateHandler = itemDefinitionCreateHandler;
         this.dataTypeDestroyHandler = dataTypeDestroyHandler;
         this.dataTypeUpdateHandler = dataTypeUpdateHandler;
+        this.dataTypeNameValidator = dataTypeNameValidator;
     }
 
     @PostConstruct
@@ -72,6 +77,10 @@ public class ItemDefinitionRecordEngine implements RecordEngine<DataType> {
     @Override
     public List<DataType> update(final DataType dataType) {
 
+        if (!dataType.isValid()) {
+            throw new UnsupportedOperationException("An invalid Data Type cannot be updated.");
+        }
+
         final ItemDefinition itemDefinition = itemDefinitionStore.get(dataType.getUUID());
         final String itemDefinitionBeforeUpdate = itemDefinition.getName().getValue();
 
@@ -82,7 +91,6 @@ public class ItemDefinitionRecordEngine implements RecordEngine<DataType> {
 
     @Override
     public List<DataType> destroy(final DataType dataType) {
-
         doDestroy(dataType);
 
         return refreshDependentDataTypesFromDestroyOperation(dataType);
@@ -93,10 +101,15 @@ public class ItemDefinitionRecordEngine implements RecordEngine<DataType> {
         return itemDefinitionCreateHandler.create(dataType);
     }
 
+    @Override
+    public boolean isValid(final DataType dataType) {
+        return dataTypeNameValidator.isValid(dataType);
+    }
+
     public void doUpdate(final DataType dataType,
                          final ItemDefinition itemDefinition) {
 
-        dataTypeUpdateHandler.update(dataType, itemDefinition);
+        dataTypeUpdateHandler.update(dataType);
         itemDefinitionUpdateHandler.update(dataType, itemDefinition);
     }
 

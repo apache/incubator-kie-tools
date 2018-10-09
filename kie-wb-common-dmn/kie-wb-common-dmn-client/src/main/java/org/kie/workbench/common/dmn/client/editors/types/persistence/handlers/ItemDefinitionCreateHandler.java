@@ -33,25 +33,28 @@ public class ItemDefinitionCreateHandler {
 
     private final ItemDefinitionUtils itemDefinitionUtils;
 
+    private final ItemDefinitionUpdateHandler updateHandler;
+
     @Inject
     public ItemDefinitionCreateHandler(final DataTypeManager dataTypeManager,
-                                       final ItemDefinitionUtils itemDefinitionUtils) {
+                                       final ItemDefinitionUtils itemDefinitionUtils,
+                                       final ItemDefinitionUpdateHandler updateHandler) {
         this.dataTypeManager = dataTypeManager;
         this.itemDefinitionUtils = itemDefinitionUtils;
+        this.updateHandler = updateHandler;
     }
 
     public DataType create(final DataType dataType) {
 
-        final ItemDefinition itemDefinition = createItemDefinition();
+        final ItemDefinition itemDefinition = makeItemDefinition();
+        final DataType newDataType = makeDataType(dataType, itemDefinition);
 
-        return dataTypeManager
-                .withDataType(dataType)
-                .withItemDefinition(itemDefinition)
-                .withIndexedItemDefinition()
-                .get();
+        updateHandler.update(dataType, itemDefinition);
+
+        return newDataType;
     }
 
-    ItemDefinition createItemDefinition() {
+    ItemDefinition makeItemDefinition() {
         final ItemDefinition itemDefinition = new ItemDefinition();
         itemDefinitions().add(itemDefinition);
         return itemDefinition;
@@ -59,5 +62,14 @@ public class ItemDefinitionCreateHandler {
 
     private List<ItemDefinition> itemDefinitions() {
         return itemDefinitionUtils.all();
+    }
+
+    private DataType makeDataType(final DataType dataType,
+                                  final ItemDefinition itemDefinition) {
+        return dataTypeManager
+                .withDataType(dataType)
+                .withItemDefinition(itemDefinition)
+                .withIndexedItemDefinition()
+                .get();
     }
 }

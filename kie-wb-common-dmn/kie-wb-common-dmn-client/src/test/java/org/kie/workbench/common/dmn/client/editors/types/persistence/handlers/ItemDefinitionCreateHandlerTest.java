@@ -47,11 +47,14 @@ public class ItemDefinitionCreateHandlerTest {
     @Mock
     private ItemDefinitionUtils itemDefinitionUtils;
 
+    @Mock
+    private ItemDefinitionUpdateHandler updateHandler;
+
     private ItemDefinitionCreateHandler handler;
 
     @Before
     public void setup() {
-        handler = spy(new ItemDefinitionCreateHandler(dataTypeManager, itemDefinitionUtils));
+        handler = spy(new ItemDefinitionCreateHandler(dataTypeManager, itemDefinitionUtils, updateHandler));
     }
 
     @Test
@@ -60,7 +63,7 @@ public class ItemDefinitionCreateHandlerTest {
         final DataType expectedDataType = mock(DataType.class);
         final ItemDefinition itemDefinition = mock(ItemDefinition.class);
 
-        doReturn(itemDefinition).when(handler).createItemDefinition();
+        doReturn(itemDefinition).when(handler).makeItemDefinition();
         when(dataTypeManager.withDataType(any())).thenReturn(dataTypeManager);
         when(dataTypeManager.withItemDefinition(any())).thenReturn(dataTypeManager);
         when(dataTypeManager.withIndexedItemDefinition()).thenReturn(dataTypeManager);
@@ -82,7 +85,7 @@ public class ItemDefinitionCreateHandlerTest {
 
         when(itemDefinitionUtils.all()).thenReturn(new ArrayList<>());
 
-        final ItemDefinition itemDefinition = handler.createItemDefinition();
+        final ItemDefinition itemDefinition = handler.makeItemDefinition();
 
         assertTrue(itemDefinitionUtils.all().contains(itemDefinition));
     }

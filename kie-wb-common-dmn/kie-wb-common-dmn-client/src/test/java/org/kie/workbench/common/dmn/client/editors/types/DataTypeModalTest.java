@@ -33,6 +33,7 @@ import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManager;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManagerStackStore;
 import org.kie.workbench.common.dmn.client.editors.types.common.ItemDefinitionUtils;
 import org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeList;
+import org.kie.workbench.common.dmn.client.editors.types.messages.DataTypeFlashMessages;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.DataTypeStore;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.ItemDefinitionStore;
 import org.mockito.ArgumentCaptor;
@@ -75,14 +76,17 @@ public class DataTypeModalTest {
     @Mock
     private DataTypeManagerStackStore stackIndex;
 
+    @Mock
+    private DataTypeFlashMessages flashMessages;
+
     @Captor
     private ArgumentCaptor<List<DataType>> dataTypesCaptor;
 
-    private FakeDataTypeModal modal;
+    private DataTypeModal modal;
 
     @Before
     public void setup() {
-        modal = spy(new FakeDataTypeModal());
+        modal = spy(new DataTypeModal(view, treeList, itemDefinitionUtils, definitionStore, dataTypeStore, dataTypeManager, stackIndex, flashMessages));
 
         doNothing().when(modal).superSetup();
         doNothing().when(modal).superShow();
@@ -96,7 +100,7 @@ public class DataTypeModalTest {
         modal.setup();
 
         verify(modal).setDataTypeModalCSSClasses();
-        verify(view).setup(treeList);
+        verify(view).setup(flashMessages, treeList);
     }
 
     @Test
@@ -206,17 +210,5 @@ public class DataTypeModalTest {
         when(itemDefinition.getName()).thenReturn(name);
 
         return itemDefinition;
-    }
-
-    class FakeDataTypeModal extends DataTypeModal {
-
-        FakeDataTypeModal() {
-            super(view, treeList, itemDefinitionUtils, definitionStore, dataTypeStore, dataTypeManager, stackIndex);
-        }
-
-        @Override
-        protected void setWidth(final String width) {
-            // Nothing.
-        }
     }
 }
