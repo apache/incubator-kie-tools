@@ -24,13 +24,12 @@ import javax.inject.Inject;
 import elemental2.dom.Element;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
-import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
 import org.kie.workbench.common.screens.library.client.settings.sections.knowledgebases.KnowledgeBasesPresenter;
 import org.kie.workbench.common.screens.library.client.settings.sections.knowledgebases.item.includedknowledgebases.IncludedKnowledgeBaseItemPresenter;
 import org.kie.workbench.common.screens.library.client.settings.sections.knowledgebases.item.knowledgesessions.KnowledgeSessionsModal;
 import org.kie.workbench.common.screens.library.client.settings.sections.knowledgebases.item.packages.PackageItemPresenter;
+import org.kie.workbench.common.services.shared.kmodule.SingleValueItemObjectModel;
 import org.kie.workbench.common.screens.library.client.settings.util.select.KieEnumSelectElement;
-import org.kie.workbench.common.screens.library.client.settings.util.modal.single.AddSingleValueModal;
 import org.kie.workbench.common.services.shared.kmodule.AssertBehaviorOption;
 import org.kie.workbench.common.services.shared.kmodule.EventProcessingOption;
 import org.kie.workbench.common.services.shared.kmodule.KBaseModel;
@@ -44,8 +43,6 @@ public class KnowledgeBaseItemPresenter extends ListItemPresenter<KBaseModel, Kn
     private final Event<DefaultKnowledgeBaseChange> defaultKnowledgeBaseChangeEvent;
     private final KieEnumSelectElement<AssertBehaviorOption> equalsBehaviorSelect;
     private final KieEnumSelectElement<EventProcessingOption> eventProcessingModeSelect;
-    private final AddSingleValueModal addIncludedKnowledgeBaseModal;
-    private final AddSingleValueModal addPackageModal;
     private final KnowledgeSessionsModal knowledgeSessionsModal;
     private final IncludedKnowledgeBasesListPresenter includedKnowledgeBasesListPresenter;
     private final PackageListPresenter packageListPresenter;
@@ -58,8 +55,6 @@ public class KnowledgeBaseItemPresenter extends ListItemPresenter<KBaseModel, Kn
                                       final Event<DefaultKnowledgeBaseChange> defaultKnowledgeBaseChangeEvent,
                                       final KieEnumSelectElement<AssertBehaviorOption> equalsBehaviorSelect,
                                       final KieEnumSelectElement<EventProcessingOption> eventProcessingModeSelect,
-                                      final AddSingleValueModal addIncludedKnowledgeBaseModal,
-                                      final AddSingleValueModal addPackageModal,
                                       final KnowledgeSessionsModal knowledgeSessionsModal,
                                       final IncludedKnowledgeBasesListPresenter includedKnowledgeBasesListPresenter,
                                       final PackageListPresenter packageListPresenter) {
@@ -67,8 +62,6 @@ public class KnowledgeBaseItemPresenter extends ListItemPresenter<KBaseModel, Kn
         this.defaultKnowledgeBaseChangeEvent = defaultKnowledgeBaseChangeEvent;
         this.equalsBehaviorSelect = equalsBehaviorSelect;
         this.eventProcessingModeSelect = eventProcessingModeSelect;
-        this.addIncludedKnowledgeBaseModal = addIncludedKnowledgeBaseModal;
-        this.addPackageModal = addPackageModal;
         this.knowledgeSessionsModal = knowledgeSessionsModal;
         this.includedKnowledgeBasesListPresenter = includedKnowledgeBasesListPresenter;
         this.packageListPresenter = packageListPresenter;
@@ -87,9 +80,6 @@ public class KnowledgeBaseItemPresenter extends ListItemPresenter<KBaseModel, Kn
         view.setKnowledgeSessionsCount(kBaseModel.getKSessions().size());
 
         knowledgeSessionsModal.setup(this);
-
-        addIncludedKnowledgeBaseModal.setup(LibraryConstants.AddIncludedKnowledgeBase, LibraryConstants.Name);
-        addPackageModal.setup(LibraryConstants.AddPackage, LibraryConstants.PackageName);
 
         equalsBehaviorSelect.setup(
                 view.getEqualsBehaviorSelectContainer(),
@@ -122,9 +112,15 @@ public class KnowledgeBaseItemPresenter extends ListItemPresenter<KBaseModel, Kn
         return this;
     }
 
+
     @Override
     public void remove() {
         super.remove();
+        fireChangeEvent();
+    }
+
+    public void onNameChange(final String name){
+        kBaseModel.setName(name);
         fireChangeEvent();
     }
 
@@ -137,18 +133,14 @@ public class KnowledgeBaseItemPresenter extends ListItemPresenter<KBaseModel, Kn
         return kBaseModel;
     }
 
-    public void showNewIncludedKnowledgeBaseModal() {
-        addIncludedKnowledgeBaseModal.show(kBaseName -> {
-            includedKnowledgeBasesListPresenter.add(kBaseName);
-            parentPresenter.fireChangeEvent();
-        });
+    public void addNewIncludedKnowledgeBase() {
+        includedKnowledgeBasesListPresenter.add(new SingleValueItemObjectModel(""));
+        parentPresenter.fireChangeEvent();;
     }
 
-    public void showAddPackageModal() {
-        addPackageModal.show(packageName -> {
-            packageListPresenter.add(packageName);
-            parentPresenter.fireChangeEvent();
-        });
+    public void addPackage() {
+        packageListPresenter.add(new SingleValueItemObjectModel(""));
+        parentPresenter.fireChangeEvent();
     }
 
     public void showKnowledgeSessionsModal() {
@@ -188,10 +180,11 @@ public class KnowledgeBaseItemPresenter extends ListItemPresenter<KBaseModel, Kn
         Element getEventProcessingModelSelectContainer();
 
         void setKnowledgeSessionsCount(final int size);
+
     }
 
     @Dependent
-    public static class IncludedKnowledgeBasesListPresenter extends ListPresenter<String, IncludedKnowledgeBaseItemPresenter> {
+    public static class IncludedKnowledgeBasesListPresenter extends ListPresenter<SingleValueItemObjectModel, IncludedKnowledgeBaseItemPresenter> {
 
         @Inject
         public IncludedKnowledgeBasesListPresenter(ManagedInstance<IncludedKnowledgeBaseItemPresenter> itemPresenters) {
@@ -200,7 +193,7 @@ public class KnowledgeBaseItemPresenter extends ListItemPresenter<KBaseModel, Kn
     }
 
     @Dependent
-    public static class PackageListPresenter extends ListPresenter<String, PackageItemPresenter> {
+    public static class PackageListPresenter extends ListPresenter<SingleValueItemObjectModel, PackageItemPresenter> {
 
         @Inject
         public PackageListPresenter(ManagedInstance<PackageItemPresenter> itemPresenters) {

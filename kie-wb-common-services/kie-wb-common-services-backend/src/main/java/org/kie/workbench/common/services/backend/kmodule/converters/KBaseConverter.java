@@ -26,6 +26,7 @@ import org.kie.workbench.common.services.shared.kmodule.DeclarativeAgendaOption;
 import org.kie.workbench.common.services.shared.kmodule.EventProcessingOption;
 import org.kie.workbench.common.services.shared.kmodule.KBaseModel;
 import org.kie.workbench.common.services.shared.kmodule.KSessionModel;
+import org.kie.workbench.common.services.shared.kmodule.SingleValueItemObjectModel;
 
 import java.util.Map;
 
@@ -58,24 +59,24 @@ public class KBaseConverter
         if (!kBase.getPackages().isEmpty()) {
             StringBuilder buf = new StringBuilder();
             boolean first = true;
-            for (String pkg : kBase.getPackages()) {
+            for (SingleValueItemObjectModel pkg : kBase.getPackages()) {
                 if (first) {
                     first = false;
                 } else {
                     buf.append(", ");
                 }
-                buf.append(pkg);
+                buf.append(pkg.getValue());
             }
             writer.addAttribute("packages", buf.toString());
         }
         if (!kBase.getIncludes().isEmpty()) {
             StringBuilder sb = new StringBuilder();
             boolean insertComma = false;
-            for (String include : kBase.getIncludes()) {
+            for (SingleValueItemObjectModel include : kBase.getIncludes()) {
                 if (insertComma) {
                     sb.append(", ");
                 }
-                sb.append(include);
+                sb.append(include.getValue());
                 if (!insertComma) {
                     insertComma = true;
                 }
@@ -120,14 +121,14 @@ public class KBaseConverter
         String pkgs = reader.getAttribute("packages");
         if (pkgs != null) {
             for (String pkg : pkgs.split(",")) {
-                kBase.addPackage(pkg.trim());
+                kBase.addPackage(new SingleValueItemObjectModel(pkg.trim()));
             }
         }
 
         String includes = reader.getAttribute("includes");
         if (includes != null) {
             for (String include : includes.split(",")) {
-                kBase.addInclude(include.trim());
+                kBase.addInclude(new SingleValueItemObjectModel(include.trim()));
             }
         }
 
@@ -139,7 +140,7 @@ public class KBaseConverter
 
                 } else if ("includes".equals(name)) {
                     for (String include : readList(reader)) {
-                        kBase.addInclude(include);
+                        kBase.addInclude(new SingleValueItemObjectModel(include));
                     }
                 }
             }

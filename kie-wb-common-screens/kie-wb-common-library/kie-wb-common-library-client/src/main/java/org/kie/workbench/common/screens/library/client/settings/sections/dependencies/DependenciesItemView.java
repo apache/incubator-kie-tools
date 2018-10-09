@@ -20,15 +20,18 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import com.google.gwt.event.dom.client.ClickEvent;
+import elemental2.dom.Event;
 import elemental2.dom.HTMLAnchorElement;
 import elemental2.dom.HTMLDivElement;
-import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLInputElement;
+import elemental2.dom.HTMLElement;
+import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
 import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
+import org.jboss.errai.ui.shared.api.annotations.ForEvent;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.commons.uuid.UUID;
 
@@ -40,6 +43,21 @@ public class DependenciesItemView implements DependenciesItemPresenter.View,
 
     @Inject
     private Elemental2DomUtil elemental2DomUtil;
+
+    @Inject
+    @Named("td")
+    @DataField("groupid-td")
+    private HTMLElement groupIdTD ;
+
+    @Inject
+    @Named("td")
+    @DataField("artifactid-td")
+    private HTMLElement artifactIdTD ;
+
+    @Inject
+    @Named("td")
+    @DataField("version-td")
+    private HTMLElement versionTD ;
 
     @Inject
     private TranslationService translationService;
@@ -57,19 +75,29 @@ public class DependenciesItemView implements DependenciesItemPresenter.View,
     private HTMLInputElement packageWhiteListNone;
 
     @Inject
-    @Named("span")
     @DataField("group-id")
-    private HTMLElement groupId;
+    private HTMLInputElement groupId;
 
     @Inject
-    @Named("span")
+    @DataField("groupIdHelpBock")
+    public HelpBlock groupIdHelpBock;
+
+
+    @Inject
     @DataField("artifact-id")
-    private HTMLElement artifactId;
+    private HTMLInputElement artifactId;
 
     @Inject
-    @Named("span")
+    @DataField("artifactIdHelpBock")
+    public HelpBlock artifactIdHelpBock;
+
+    @Inject
     @DataField("version")
-    private HTMLElement version;
+    private HTMLInputElement version;
+
+    @Inject
+    @DataField("versionHelpBock")
+    public HelpBlock versionHelpBock;
 
     @Inject
     @DataField("remove-button")
@@ -87,17 +115,47 @@ public class DependenciesItemView implements DependenciesItemPresenter.View,
 
     @Override
     public void setGroupId(final String groupId) {
-        this.groupId.textContent = groupId;
+        this.groupId.value = groupId;
     }
 
     @Override
     public void setArtifactId(final String artifactId) {
-        this.artifactId.textContent = artifactId;
+        this.artifactId.value = artifactId;
     }
 
     @Override
     public void setVersion(final String version) {
-        this.version.textContent = version;
+        this.version.value = version;
+    }
+
+    @Override
+    public void setGroupIdHelpBock(String groupIdHelpBock) {
+        this.groupIdHelpBock.setText(groupIdHelpBock);
+        if (!groupIdHelpBock.isEmpty()) {
+            this.groupIdTD.classList.add("has-error");
+        } else {
+            this.groupIdTD.classList.remove("has-error");
+        }
+    }
+
+    @Override
+    public void setArtifactIdHelpBock(String artifactIdHelpBock) {
+        this.artifactIdHelpBock.setText(artifactIdHelpBock);
+        if (!artifactIdHelpBock.isEmpty()) {
+            this.artifactIdTD.classList.add("has-error");
+        } else {
+            this.artifactIdTD.classList.remove("has-error");
+        }
+    }
+
+    @Override
+    public void setVersionHelpBock(String versionHelpBock) {
+        this.versionHelpBock.setText(versionHelpBock);
+        if (!versionHelpBock.isEmpty()) {
+            this.versionTD.classList.add("has-error");
+        } else {
+            this.versionTD.classList.remove("has-error");
+        }
     }
 
     @Override
@@ -140,5 +198,20 @@ public class DependenciesItemView implements DependenciesItemPresenter.View,
     @EventHandler("remove-button")
     public void delete(final ClickEvent event) {
         presenter.remove();
+    }
+
+    @EventHandler("group-id")
+    public void onGroupIdChange(final @ForEvent("change") Event event) {
+        presenter.onGroupIdChange(groupId.value);
+    }
+
+    @EventHandler("artifact-id")
+    public void onArtifactIdChange(final @ForEvent("change") Event event) {
+        presenter.onArtifactIdChange(artifactId.value);
+    }
+
+    @EventHandler("version")
+    public void onVersionChange(final @ForEvent("change") Event event) {
+        presenter.onVersionChange(version.value);
     }
 }

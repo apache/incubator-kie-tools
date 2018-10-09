@@ -22,6 +22,7 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.workbench.common.screens.datamodeller.model.persistence.CachingType;
+import org.kie.workbench.common.screens.datamodeller.model.persistence.PersistableDataObject;
 import org.kie.workbench.common.screens.datamodeller.model.persistence.PersistenceDescriptorModel;
 import org.kie.workbench.common.screens.datamodeller.model.persistence.PersistenceUnitModel;
 import org.kie.workbench.common.screens.datamodeller.model.persistence.Property;
@@ -107,8 +108,8 @@ public class PersistenceDescriptorXMLMarshallerTest {
         persistenceUnit.getMappingFile().add( "META-INF/Mapping2.xml" );
         persistenceUnit.getJarFile().add( "file1.jar" );
         persistenceUnit.getJarFile().add( "file2.jar" );
-        persistenceUnit.getClasses().add( "org.test.Entity1" );
-        persistenceUnit.getClasses().add( "org.test.Entity2" );
+        persistenceUnit.getClasses().add(new PersistableDataObject("org.test.Entity1") );
+        persistenceUnit.getClasses().add( new PersistableDataObject("org.test.Entity2") );
         persistenceUnit.setExcludeUnlistedClasses( true );
         persistenceUnit.setSharedCacheMode( CachingType.ALL );
         persistenceUnit.setValidationMode( ValidationMode.AUTO );

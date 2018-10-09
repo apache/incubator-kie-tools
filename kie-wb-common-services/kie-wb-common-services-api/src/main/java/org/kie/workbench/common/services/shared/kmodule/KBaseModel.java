@@ -29,11 +29,11 @@ public class KBaseModel
     private AssertBehaviorOption equalsBehavior = AssertBehaviorOption.IDENTITY;
     private EventProcessingOption eventProcessingMode = EventProcessingOption.STREAM;
     private List<KSessionModel> kSessions = new ArrayList<KSessionModel>();
-    private List<String> includes = new ArrayList<String>();
+    private List<SingleValueItemObjectModel> includes = new ArrayList<SingleValueItemObjectModel>();
 
     private boolean theDefault;
     private String scope;
-    private List<String> packages=new ArrayList<String>();
+    private List<SingleValueItemObjectModel> packages=new ArrayList<SingleValueItemObjectModel>();
     private DeclarativeAgendaOption declarativeAgenda;
 
     public String getName() {
@@ -64,11 +64,11 @@ public class KBaseModel
         return kSessions;
     }
 
-    public List<String> getIncludes() {
+    public List<SingleValueItemObjectModel> getIncludes() {
         return includes;
     }
 
-    public void addInclude(String include) {
+    public void addInclude(SingleValueItemObjectModel include) {
         includes.add(include);
     }
 
@@ -80,7 +80,7 @@ public class KBaseModel
         return scope;
     }
 
-    public List<String> getPackages() {
+    public List<SingleValueItemObjectModel> getPackages() {
         return packages;
     }
 
@@ -92,7 +92,7 @@ public class KBaseModel
         this.scope = scope;
     }
 
-    public void addPackage(String pkg) {
+    public void addPackage(SingleValueItemObjectModel pkg) {
         packages.add(pkg);
     }
 

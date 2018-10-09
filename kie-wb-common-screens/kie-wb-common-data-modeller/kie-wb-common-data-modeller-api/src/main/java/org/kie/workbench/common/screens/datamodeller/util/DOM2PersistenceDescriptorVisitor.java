@@ -18,8 +18,10 @@ package org.kie.workbench.common.screens.datamodeller.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.kie.workbench.common.screens.datamodeller.model.persistence.CachingType;
+import org.kie.workbench.common.screens.datamodeller.model.persistence.PersistableDataObject;
 import org.kie.workbench.common.screens.datamodeller.model.persistence.PersistenceDescriptorModel;
 import org.kie.workbench.common.screens.datamodeller.model.persistence.PersistenceUnitModel;
 import org.kie.workbench.common.screens.datamodeller.model.persistence.Property;
@@ -101,8 +103,8 @@ public class DOM2PersistenceDescriptorVisitor {
         persistenceUnit.setJarFile( parseSimpleTextElementList( nodes ) );
     }
 
-    private void visitClass( PersistenceUnitModel persistenceUnit, NodeList nodes ) {
-        persistenceUnit.setClasses( parseSimpleTextElementList( nodes ) );
+    private void visitClass(PersistenceUnitModel persistenceUnit, NodeList nodes) {
+        persistenceUnit.setClasses(parseSimpleTextElementList(nodes).stream().map(p -> new PersistableDataObject(p)).collect(Collectors.toList()));
     }
 
     private void visitExcludeUnlistedClasses( PersistenceUnitModel persistenceUnit, NodeList nodes ) {

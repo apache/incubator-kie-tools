@@ -20,12 +20,13 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
+import org.kie.workbench.common.screens.datamodeller.model.persistence.PersistableDataObject;
 import org.kie.workbench.common.screens.library.client.settings.sections.persistence.PersistencePresenter;
 import org.kie.workbench.common.widgets.client.widget.ListItemPresenter;
 import org.kie.workbench.common.widgets.client.widget.ListItemView;
 
 @Dependent
-public class PersistableDataObjectsItemPresenter extends ListItemPresenter<String, PersistencePresenter, PersistableDataObjectsItemPresenter.View> {
+public class PersistableDataObjectsItemPresenter extends ListItemPresenter<PersistableDataObject, PersistencePresenter, PersistableDataObjectsItemPresenter.View> {
 
     public interface View extends ListItemView<PersistableDataObjectsItemPresenter>,
                                   IsElement {
@@ -34,28 +35,33 @@ public class PersistableDataObjectsItemPresenter extends ListItemPresenter<Strin
     }
 
     PersistencePresenter parentPresenter;
-    private String className;
+    PersistableDataObject persistableDataObjects;
 
     @Inject
     public PersistableDataObjectsItemPresenter(final View view) {
         super(view);
     }
 
-    public PersistableDataObjectsItemPresenter setup(final String className,
+    public PersistableDataObjectsItemPresenter setup(final PersistableDataObject className,
                                                      final PersistencePresenter parentPresenter) {
 
         this.parentPresenter = parentPresenter;
-        this.className = className;
+        this.persistableDataObjects = className;
 
         view.init(this);
-        view.setClassName(className);
+        view.setClassName(className.getValue());
 
         return this;
     }
 
+    public void onClassNameChange(final String className){
+        persistableDataObjects.setValue(className);
+        parentPresenter.fireChangeEvent();
+    }
+
     @Override
-    public String getObject() {
-        return className;
+    public PersistableDataObject getObject() {
+        return persistableDataObjects;
     }
 
     public void remove() {

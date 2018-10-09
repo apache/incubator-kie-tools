@@ -102,12 +102,12 @@ public class PersistenceView implements PersistencePresenter.View {
 
     @EventHandler("add-property-button")
     public void onAddPropertyButtonClicked(final ClickEvent ignore) {
-        presenter.showNewPropertyModal();
+        presenter.addNewProperty();
     }
 
     @EventHandler("add-persistable-data-object-button")
     public void onAddPersistableDataObjectButtonClicked(final ClickEvent ignore) {
-        presenter.showNewPersistableDataObjectModal();
+        presenter.addNewPersistableDataObject();
     }
 
     @EventHandler("add-all-projects-persistable-data-objects-button")

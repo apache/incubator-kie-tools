@@ -17,13 +17,14 @@
 package org.kie.workbench.common.screens.library.client.settings.sections.persistence.persistabledataobjects;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import com.google.gwt.event.dom.client.ClickEvent;
+import elemental2.dom.Event;
 import elemental2.dom.HTMLAnchorElement;
-import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLInputElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
+import org.jboss.errai.ui.shared.api.annotations.ForEvent;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 @Templated("#root")
@@ -34,9 +35,8 @@ public class PersistableDataObjectsItemView implements PersistableDataObjectsIte
     private HTMLAnchorElement removeButton;
 
     @Inject
-    @Named("span")
     @DataField("class-name")
-    private HTMLElement className;
+    private HTMLInputElement className;
 
     private PersistableDataObjectsItemPresenter presenter;
 
@@ -52,6 +52,11 @@ public class PersistableDataObjectsItemView implements PersistableDataObjectsIte
 
     @Override
     public void setClassName(final String className) {
-        this.className.textContent = className;
+        this.className.value = className;
+    }
+
+    @EventHandler("class-name")
+    public void onClassNameChange(final @ForEvent("change") Event event) {
+        presenter.onClassNameChange(className.value);
     }
 }

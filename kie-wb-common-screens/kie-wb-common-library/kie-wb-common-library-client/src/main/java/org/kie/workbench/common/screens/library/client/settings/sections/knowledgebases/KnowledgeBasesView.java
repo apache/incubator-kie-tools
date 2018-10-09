@@ -54,7 +54,7 @@ public class KnowledgeBasesView implements KnowledgeBasesPresenter.View {
 
     @EventHandler("add-knowledge-base-button")
     private void onAddKnowledgeBaseButtonClicked(final ClickEvent ignore) {
-        presenter.openAddKnowledgeBaseModal();
+        presenter.addKnowledgeBase();
     }
 
     @Override

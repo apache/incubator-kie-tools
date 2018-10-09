@@ -22,12 +22,14 @@ import javax.inject.Named;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import elemental2.dom.Element;
+import elemental2.dom.Event;
 import elemental2.dom.HTMLAnchorElement;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLInputElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
+import org.jboss.errai.ui.shared.api.annotations.ForEvent;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 @Templated("#root")
@@ -38,9 +40,8 @@ public class KnowledgeBaseItemView implements KnowledgeBaseItemPresenter.View {
     private HTMLInputElement isDefault;
 
     @Inject
-    @Named("span")
     @DataField("name")
-    private HTMLElement name;
+    private HTMLInputElement name;
 
     @Inject
     @DataField("remove-button")
@@ -89,12 +90,12 @@ public class KnowledgeBaseItemView implements KnowledgeBaseItemPresenter.View {
 
     @EventHandler("add-included-knowledge-base-button")
     private void onAddIncludedKnowledgeBaseButtonClicked(final ClickEvent ignore) {
-        presenter.showNewIncludedKnowledgeBaseModal();
+        presenter.addNewIncludedKnowledgeBase();
     }
 
     @EventHandler("add-package-button")
     private void onAddPackageButtonClicked(final ClickEvent ignore) {
-        presenter.showAddPackageModal();
+        presenter.addPackage();
     }
 
     @EventHandler("knowledge-sessions-link")
@@ -114,7 +115,7 @@ public class KnowledgeBaseItemView implements KnowledgeBaseItemPresenter.View {
 
     @Override
     public void setName(final String name) {
-        this.name.textContent = name;
+        this.name.value = name;
     }
 
     @Override
@@ -145,5 +146,10 @@ public class KnowledgeBaseItemView implements KnowledgeBaseItemPresenter.View {
     @Override
     public void setKnowledgeSessionsCount(final int size) {
         knowledgeSessionsCount.textContent = Integer.toString(size);
+    }
+
+    @EventHandler("name")
+    public void onNameChange(final @ForEvent("change") Event event) {
+        presenter.onNameChange(name.value);
     }
 }

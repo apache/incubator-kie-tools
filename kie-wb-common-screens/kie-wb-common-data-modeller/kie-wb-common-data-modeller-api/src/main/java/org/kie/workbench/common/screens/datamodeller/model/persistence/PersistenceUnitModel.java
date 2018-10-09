@@ -38,7 +38,7 @@ public class PersistenceUnitModel {
 
     private List<String> jarFile = new ArrayList<String>();
 
-    private List<String> classes = new ArrayList<String>();
+    private List<PersistableDataObject> classes = new ArrayList<PersistableDataObject>();
 
     private Boolean excludeUnlistedClasses;
 
@@ -109,11 +109,11 @@ public class PersistenceUnitModel {
         this.jarFile = jarFile;
     }
 
-    public List<String> getClasses() {
+    public List<PersistableDataObject> getClasses() {
         return classes;
     }
 
-    public void setClasses( List<String> classes ) {
+    public void setClasses( List<PersistableDataObject> classes ) {
         this.classes = classes;
     }
 

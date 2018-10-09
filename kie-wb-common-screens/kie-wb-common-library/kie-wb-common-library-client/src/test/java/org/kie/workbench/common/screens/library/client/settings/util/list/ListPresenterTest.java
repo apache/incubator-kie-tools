@@ -10,6 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.library.client.settings.sections.knowledgebases.item.includedknowledgebases.IncludedKnowledgeBaseItemPresenter;
+import org.kie.workbench.common.services.shared.kmodule.SingleValueItemObjectModel;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -40,7 +41,7 @@ public class ListPresenterTest {
     @Test
     public void testSetup() {
         doNothing().when(listPresenter).addToListElement(any());
-        final List<String> objs = Arrays.asList("foo", "bar");
+        final List<SingleValueItemObjectModel> objs = Arrays.asList(new SingleValueItemObjectModel("foo"), new SingleValueItemObjectModel("bar"));
 
         listPresenter.setup(mock(HTMLElement.class), objs, (a, b) -> {
         });
@@ -54,10 +55,10 @@ public class ListPresenterTest {
         doNothing().when(listPresenter).addPresenter(any());
 
         final IncludedKnowledgeBaseItemPresenter p1 = mock(IncludedKnowledgeBaseItemPresenter.class);
-        doReturn("foo").when(p1).getObject();
+        doReturn(new SingleValueItemObjectModel("foo")).when(p1).getObject();
 
         final IncludedKnowledgeBaseItemPresenter p2 = mock(IncludedKnowledgeBaseItemPresenter.class);
-        doReturn("bar").when(p2).getObject();
+        doReturn(new SingleValueItemObjectModel("bar")).when(p2).getObject();
 
         final List<IncludedKnowledgeBaseItemPresenter> presenters = Arrays.asList(p1, p2);
 
@@ -65,21 +66,27 @@ public class ListPresenterTest {
         });
 
         assertEquals(presenters, listPresenter.getPresenters());
-        assertEquals(Arrays.asList("foo", "bar"), listPresenter.getObjectsList());
+        assertEquals(Arrays.asList(new SingleValueItemObjectModel("foo"), new SingleValueItemObjectModel("bar")), listPresenter.getObjectsList());
         verify(listPresenter, times(2)).addPresenter(any());
     }
 
     @Test
     public void addTest() {
         doNothing().when(listPresenter).addToListElement(any());
-        final List<String> objs = new ArrayList<>(Arrays.asList("foo", "bar"));
+
+        final List<SingleValueItemObjectModel> objs = new ArrayList<SingleValueItemObjectModel>();
+        objs.add(new SingleValueItemObjectModel("foo"));
+        objs.add(new SingleValueItemObjectModel("bar"));
         listPresenter.setup(mock(HTMLElement.class), objs, (a, b) -> {
         });
 
-        listPresenter.add("dee");
+        listPresenter.add(new SingleValueItemObjectModel("dee"));
 
-        verify(listPresenter).addToListElement(eq("dee"));
-        assertEquals(Arrays.asList("foo", "bar", "dee"), listPresenter.getObjectsList());
+        verify(listPresenter).addToListElement(eq(new SingleValueItemObjectModel("dee")));
+        assertEquals(Arrays.asList(new SingleValueItemObjectModel("foo"),
+                                   new SingleValueItemObjectModel("bar"),
+                                   new SingleValueItemObjectModel("dee")),
+                     listPresenter.getObjectsList());
     }
 
     @Test
@@ -88,11 +95,11 @@ public class ListPresenterTest {
         doReturn(p1).when(includedKnowledgeBaseItemPresenters).get();
 
         listPresenter.setup(mock(HTMLElement.class), new ArrayList<>(), (o, p) -> {
-            assertEquals("foo", o);
+            assertEquals(new SingleValueItemObjectModel("foo"), o);
             assertEquals(p1, p);
         });
 
-        listPresenter.newPresenterFor("foo");
+        listPresenter.newPresenterFor(new SingleValueItemObjectModel("foo"));
 
         verify(p1).setListPresenter(eq(listPresenter));
     }

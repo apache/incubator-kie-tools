@@ -20,10 +20,12 @@ import javax.persistence.Entity;
 
 import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectCreatedEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectDeletedEvent;
+import org.kie.workbench.common.screens.datamodeller.model.persistence.PersistableDataObject;
 import org.kie.workbench.common.screens.datamodeller.model.persistence.PersistenceDescriptorModel;
 import org.kie.workbench.common.screens.datamodeller.model.persistence.PersistenceUnitModel;
 import org.kie.workbench.common.screens.datamodeller.service.PersistenceDescriptorService;
@@ -57,62 +59,49 @@ public class DataModelerEventObserverTest {
 
     private static final String DESCRIPTOR_PATH = "default://dummy-repo/dummy-project/src/main/resources/META-INF/persistence.xml";
 
-    @Test
-    public void onPersistableDataObjectCreatedTest() {
+    private DataModelerEventObserver eventObserver;
+    private PersistenceDescriptorModel descriptorModel;
+    private DataObject dataObject;
 
-        DataModelerEventObserver eventObserver = createObserver();
-        PersistenceDescriptorModel descriptorModel = createModel();
+    @Before
+    public void init() {
 
-        DataObject dataObject = new DataObjectImpl("package1", "PersistableObject");
+        eventObserver = createObserver();
+        descriptorModel = createModel();
+        dataObject = new DataObjectImpl("package1", "PersistableObject");
         dataObject.addAnnotation(new AnnotationImpl(DriverUtils.buildAnnotationDefinition(Entity.class)));
 
         when(descriptorPath.toURI()).thenReturn(DESCRIPTOR_PATH);
         when(descriptorService.calculatePersistenceDescriptorPath(any(Module.class))).thenReturn(descriptorPath);
         when(descriptorService.load(descriptorPath)).thenReturn(descriptorModel);
         when(ioService.exists(any(org.uberfire.java.nio.file.Path.class))).thenReturn(true);
+    }
+
+    @Test
+    public void onPersistableDataObjectCreatedTest() {
 
         DataObjectCreatedEvent createdEvent = new DataObjectCreatedEvent(module, dataObject);
         eventObserver.onDataObjectCreated(createdEvent);
 
         verify(descriptorService, times(1)).save(eq(descriptorPath), eq(descriptorModel), any(Metadata.class), anyString());
-        assertTrue(descriptorModel.getPersistenceUnit().getClasses().contains(dataObject.getClassName()));
+        assertTrue(descriptorModel.getPersistenceUnit().getClasses().contains(new PersistableDataObject(dataObject.getClassName())));
     }
 
     @Test
     public void onPersistableDataObjectDeletedTest() {
 
-        DataModelerEventObserver eventObserver = createObserver();
-        PersistenceDescriptorModel descriptorModel = createModel();
-        descriptorModel.getPersistenceUnit().getClasses().add("package1.PersistableObject");
-
-        DataObject dataObject = new DataObjectImpl("package1", "PersistableObject");
-        dataObject.addAnnotation(new AnnotationImpl(DriverUtils.buildAnnotationDefinition(Entity.class)));
-
-        when(descriptorPath.toURI()).thenReturn(DESCRIPTOR_PATH);
-        when(descriptorService.calculatePersistenceDescriptorPath(any(Module.class))).thenReturn(descriptorPath);
-        when(descriptorService.load(descriptorPath)).thenReturn(descriptorModel);
-        when(ioService.exists(any(org.uberfire.java.nio.file.Path.class))).thenReturn(true);
-
         DataObjectDeletedEvent deletedEvent = new DataObjectDeletedEvent(module, dataObject);
+        descriptorModel.getPersistenceUnit().getClasses().add(new PersistableDataObject(deletedEvent.getCurrentDataObject().getClassName()));
         eventObserver.onDataObjectDeleted(deletedEvent);
 
         verify(descriptorService, times(1)).save(eq(descriptorPath), eq(descriptorModel), any(Metadata.class), anyString());
-        assertFalse(descriptorModel.getPersistenceUnit().getClasses().contains(dataObject.getClassName()));
+        assertFalse(descriptorModel.getPersistenceUnit().getClasses().contains(new PersistableDataObject(dataObject.getClassName())));
     }
 
     @Test
     public void onNonPersistableDataObjectCreatedTest() {
 
-        DataModelerEventObserver eventObserver = createObserver();
-        PersistenceDescriptorModel descriptorModel = createModel();
-        descriptorModel.getPersistenceUnit().getClasses().add("package1.PersistableObject");
-
-        DataObject dataObject = new DataObjectImpl("package1", "NonPersistableObject");
-
-        when(descriptorPath.toURI()).thenReturn(DESCRIPTOR_PATH);
-        when(descriptorService.calculatePersistenceDescriptorPath(any(Module.class))).thenReturn(descriptorPath);
-        when(descriptorService.load(descriptorPath)).thenReturn(descriptorModel);
-        when(ioService.exists(any(org.uberfire.java.nio.file.Path.class))).thenReturn(true);
+        descriptorModel.getPersistenceUnit().getClasses().add(new PersistableDataObject("package1.PersistableObject"));
 
         DataObjectCreatedEvent createdEvent = new DataObjectCreatedEvent(module, dataObject);
         eventObserver.onDataObjectCreated(createdEvent);
@@ -124,21 +113,13 @@ public class DataModelerEventObserverTest {
     @Test
     public void onNonPersistableDataObjectDeletedTest() {
 
-        DataModelerEventObserver eventObserver = createObserver();
-        PersistenceDescriptorModel descriptorModel = createModel();
-
         DataObject dataObject = new DataObjectImpl("package1", "NonPersistableObject");
-
-        when(descriptorPath.toURI()).thenReturn(DESCRIPTOR_PATH);
-        when(descriptorService.calculatePersistenceDescriptorPath(any(Module.class))).thenReturn(descriptorPath);
-        when(descriptorService.load(descriptorPath)).thenReturn(descriptorModel);
-        when(ioService.exists(any(org.uberfire.java.nio.file.Path.class))).thenReturn(true);
-
         DataObjectCreatedEvent createdEvent = new DataObjectCreatedEvent(module, dataObject);
         eventObserver.onDataObjectCreated(createdEvent);
 
+        descriptorModel.getPersistenceUnit().getClasses().add(new PersistableDataObject(createdEvent.getCurrentDataObject().getClassName()));
         verify(descriptorService, times(0)).save(eq(descriptorPath), eq(descriptorModel), any(Metadata.class), anyString());
-        assertEquals(0, descriptorModel.getPersistenceUnit().getClasses().size());
+        assertEquals(1, descriptorModel.getPersistenceUnit().getClasses().size());
     }
 
     private PersistenceDescriptorModel createModel() {

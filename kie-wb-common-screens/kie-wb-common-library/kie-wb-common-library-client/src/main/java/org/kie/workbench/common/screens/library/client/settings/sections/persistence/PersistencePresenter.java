@@ -28,20 +28,18 @@ import elemental2.promise.Promise;
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.kie.workbench.common.screens.datamodeller.model.persistence.PersistableDataObject;
 import org.kie.workbench.common.screens.datamodeller.model.persistence.PersistenceDescriptorEditorContent;
 import org.kie.workbench.common.screens.datamodeller.model.persistence.PersistenceUnitModel;
 import org.kie.workbench.common.screens.datamodeller.model.persistence.Property;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.kie.workbench.common.screens.datamodeller.service.PersistenceDescriptorEditorService;
-import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
 import org.kie.workbench.common.screens.library.client.settings.SettingsSectionChange;
 import org.kie.workbench.common.screens.library.client.settings.sections.persistence.persistabledataobjects.PersistableDataObjectsItemPresenter;
 import org.kie.workbench.common.screens.library.client.settings.sections.persistence.properties.PropertiesItemPresenter;
 import org.kie.workbench.common.screens.library.client.settings.util.sections.MenuItem;
 import org.kie.workbench.common.screens.library.client.settings.util.sections.Section;
 import org.kie.workbench.common.screens.library.client.settings.util.sections.SectionView;
-import org.kie.workbench.common.screens.library.client.settings.util.modal.doublevalue.AddDoubleValueModal;
-import org.kie.workbench.common.screens.library.client.settings.util.modal.single.AddSingleValueModal;
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
 import org.kie.workbench.common.widgets.client.widget.ListPresenter;
 import org.uberfire.backend.vfs.ObservablePath;
@@ -57,8 +55,6 @@ public class PersistencePresenter extends Section<ProjectScreenModel> {
     private final WorkspaceProjectContext projectContext;
     private final Event<NotificationEvent> notificationEvent;
     private final ManagedInstance<ObservablePath> observablePaths;
-    private final AddDoubleValueModal newPropertyModal;
-    private final AddSingleValueModal newPersistableDataObjectModal;
     private final Caller<PersistenceDescriptorEditorService> editorService;
     private final Caller<DataModelerService> dataModelerService;
 
@@ -92,8 +88,6 @@ public class PersistencePresenter extends Section<ProjectScreenModel> {
                                 final Event<NotificationEvent> notificationEvent,
                                 final Event<SettingsSectionChange<ProjectScreenModel>> settingsSectionChangeEvent,
                                 final ManagedInstance<ObservablePath> observablePaths,
-                                final AddDoubleValueModal newPropertyModal,
-                                final AddSingleValueModal newPersistableDataObjectModal,
                                 final Caller<PersistenceDescriptorEditorService> editorService,
                                 final Caller<DataModelerService> dataModelerService,
                                 final PropertiesListPresenter propertiesListPresenter,
@@ -104,8 +98,6 @@ public class PersistencePresenter extends Section<ProjectScreenModel> {
         this.projectContext = projectContext;
         this.notificationEvent = notificationEvent;
         this.observablePaths = observablePaths;
-        this.newPropertyModal = newPropertyModal;
-        this.newPersistableDataObjectModal = newPersistableDataObjectModal;
         this.editorService = editorService;
         this.dataModelerService = dataModelerService;
         this.propertiesListPresenter = propertiesListPresenter;
@@ -151,10 +143,6 @@ public class PersistencePresenter extends Section<ProjectScreenModel> {
     }
 
     private void setupPropertiesTable() {
-        newPropertyModal.setup(LibraryConstants.AddProperty,
-                               LibraryConstants.Name,
-                               LibraryConstants.Value);
-
         propertiesListPresenter.setup(
                 view.getPropertiesTable(),
                 getPersistenceUnitModel().getProperties(),
@@ -162,9 +150,6 @@ public class PersistencePresenter extends Section<ProjectScreenModel> {
     }
 
     private void setupPersistableDataObjectsTable() {
-        newPersistableDataObjectModal.setup(LibraryConstants.AddPersistableDataObject,
-                                            LibraryConstants.Class);
-
         persistableDataObjectsListPresenter.setup(
                 view.getPersistableDataObjectsTable(),
                 getPersistenceUnitModel().getClasses(),
@@ -193,7 +178,7 @@ public class PersistencePresenter extends Section<ProjectScreenModel> {
     }
 
     public void add(final String className) {
-        persistableDataObjectsListPresenter.add(className);
+        persistableDataObjectsListPresenter.add(new PersistableDataObject(className));
         fireChangeEvent();
     }
 
@@ -233,18 +218,14 @@ public class PersistencePresenter extends Section<ProjectScreenModel> {
         return persistenceDescriptorEditorContent.getDescriptorModel().getPersistenceUnit();
     }
 
-    public void showNewPropertyModal() {
-        newPropertyModal.show((name, value) -> {
-            add(new Property(name, value));
-            fireChangeEvent();
-        });
+    public void addNewProperty() {
+        add(new Property("", ""));
+        fireChangeEvent();
     }
 
-    public void showNewPersistableDataObjectModal() {
-        newPersistableDataObjectModal.show(className -> {
-            add(className);
-            fireChangeEvent();
-        });
+    public void addNewPersistableDataObject() {
+        add("");
+        fireChangeEvent();
     }
 
     @Override
@@ -258,7 +239,7 @@ public class PersistencePresenter extends Section<ProjectScreenModel> {
     }
 
     @Dependent
-    public static class PersistableDataObjectsListPresenter extends ListPresenter<String, PersistableDataObjectsItemPresenter> {
+    public static class PersistableDataObjectsListPresenter extends ListPresenter<PersistableDataObject, PersistableDataObjectsItemPresenter> {
 
         @Inject
         public PersistableDataObjectsListPresenter(final ManagedInstance<PersistableDataObjectsItemPresenter> itemPresenters) {

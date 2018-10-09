@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.library.client.settings.sections.knowledgebases.item.KnowledgeBaseItemPresenter;
 import org.kie.workbench.common.screens.library.client.settings.sections.knowledgebases.item.KnowledgeBaseItemPresenter.PackageListPresenter;
+import org.kie.workbench.common.services.shared.kmodule.SingleValueItemObjectModel;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -28,7 +29,7 @@ public class PackageItemPresenterTest {
 
     @Test
     public void testSetup() {
-        packageItemPresenter.setup("Name", mock(KnowledgeBaseItemPresenter.class));
+        packageItemPresenter.setup(new SingleValueItemObjectModel("Name"), mock(KnowledgeBaseItemPresenter.class));
         verify(view).init(eq(packageItemPresenter));
         verify(view).setName(eq("Name"));
     }

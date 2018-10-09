@@ -46,9 +46,6 @@ public class KnowledgeBasesPresenterTest {
     private MenuItem<ProjectScreenModel> menuItem;
 
     @Mock
-    private AddSingleValueModal addKnowledgeBaseModal;
-
-    @Mock
     private KnowledgeBasesPresenter.KnowledgeBaseListPresenter knowledgeBaseListPresenter;
 
     private final Promises promises = new SyncPromises();
@@ -59,7 +56,6 @@ public class KnowledgeBasesPresenterTest {
                                                                   settingsSectionChangeEvent,
                                                                   promises,
                                                                   menuItem,
-                                                                  addKnowledgeBaseModal,
                                                                   knowledgeBaseListPresenter));
     }
 
@@ -75,7 +71,6 @@ public class KnowledgeBasesPresenterTest {
         });
 
         verify(view).init(eq(knowledgeBasesPresenter));
-        verify(addKnowledgeBaseModal).setup(any(), any());
         verify(knowledgeBaseListPresenter).setup(any(), any(), any());
     }
 
@@ -97,9 +92,13 @@ public class KnowledgeBasesPresenterTest {
     }
 
     @Test
-    public void testOpenAddKnowledgeBaseModal() {
-        knowledgeBasesPresenter.openAddKnowledgeBaseModal();
-        verify(addKnowledgeBaseModal).show(any());
+    public void testAddKnowledgeBase() {
+        knowledgeBasesPresenter.addKnowledgeBase();
+        final KBaseModel kBaseModel = new KBaseModel();
+        kBaseModel.setName("");
+        kBaseModel.setDefault(knowledgeBaseListPresenter.getObjectsList().isEmpty());
+        verify(knowledgeBaseListPresenter).add(kBaseModel);
+        verify(knowledgeBasesPresenter).fireChangeEvent();
     }
 
     @Test

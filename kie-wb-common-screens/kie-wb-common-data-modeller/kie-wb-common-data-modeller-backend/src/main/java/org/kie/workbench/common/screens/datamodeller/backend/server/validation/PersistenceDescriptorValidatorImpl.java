@@ -104,7 +104,7 @@ public class PersistenceDescriptorValidatorImpl
 
         if (unitModel.getClasses() != null && !unitModel.getClasses().isEmpty()) {
             ClassLoader moduleClassLoader = moduleClassLoaderHelper.getModuleClassLoader(module);
-            unitModel.getClasses().forEach(clazz -> Optional.ofNullable(classValidator.validate(clazz, moduleClassLoader)).ifPresent(messages::addAll));
+            unitModel.getClasses().forEach(clazz -> Optional.ofNullable(classValidator.validate( clazz.getValue(), moduleClassLoader)).ifPresent(messages::addAll));
         }
 
         if (unitModel.getProperties() != null) {

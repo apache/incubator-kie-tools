@@ -24,6 +24,7 @@ import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.screens.datamodeller.model.persistence.PersistableDataObject;
 import org.kie.workbench.common.screens.datamodeller.model.persistence.PersistenceDescriptorModel;
 import org.kie.workbench.common.screens.datamodeller.model.persistence.PersistenceUnitModel;
 import org.kie.workbench.common.screens.datamodeller.model.persistence.Property;
@@ -180,7 +181,7 @@ public class PersistenceDescriptorValidatorTest {
     @Test
     public void testValidateNonPersistableClass() {
         //add a non persistable class
-        descriptor.getPersistenceUnit().getClasses().add(NonPersistableClass1.class.getName());
+        descriptor.getPersistenceUnit().getClasses().add(new PersistableDataObject(NonPersistableClass1.class.getName()));
         List<ValidationMessage> result = validator.validate(path,
                                                             descriptor);
         ValidationMessage expectedMessage;
@@ -241,10 +242,10 @@ public class PersistenceDescriptorValidatorTest {
                                     "value2"));
         unit.setProperties(properties);
 
-        List<String> classes = new ArrayList<>();
-        classes.add(PersistableClass1.class.getName());
-        classes.add(PersistableClass2.class.getName());
-        classes.add(PersistableClass3.class.getName());
+        List<PersistableDataObject> classes = new ArrayList<>();
+        classes.add(new PersistableDataObject(PersistableClass1.class.getName()));
+        classes.add(new PersistableDataObject(PersistableClass2.class.getName()));
+        classes.add(new PersistableDataObject(PersistableClass3.class.getName()));
         descriptor.getPersistenceUnit().setClasses(classes);
 
         return descriptor;

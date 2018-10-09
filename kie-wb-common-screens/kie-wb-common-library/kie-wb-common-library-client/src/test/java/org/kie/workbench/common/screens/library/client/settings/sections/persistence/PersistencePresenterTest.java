@@ -14,6 +14,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.screens.datamodeller.model.persistence.PersistableDataObject;
 import org.kie.workbench.common.screens.datamodeller.model.persistence.PersistenceDescriptorEditorContent;
 import org.kie.workbench.common.screens.datamodeller.model.persistence.PersistenceDescriptorModel;
 import org.kie.workbench.common.screens.datamodeller.model.persistence.PersistenceUnitModel;
@@ -22,8 +23,6 @@ import org.kie.workbench.common.screens.datamodeller.model.persistence.Transacti
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.kie.workbench.common.screens.datamodeller.service.PersistenceDescriptorEditorService;
 import org.kie.workbench.common.screens.library.client.settings.SettingsSectionChange;
-import org.kie.workbench.common.screens.library.client.settings.util.modal.doublevalue.AddDoubleValueModal;
-import org.kie.workbench.common.screens.library.client.settings.util.modal.single.AddSingleValueModal;
 import org.kie.workbench.common.screens.library.client.settings.util.sections.MenuItem;
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
 import org.mockito.Mock;
@@ -70,12 +69,6 @@ public class PersistencePresenterTest {
     private ManagedInstance<ObservablePath> observablePaths;
 
     @Mock
-    private AddDoubleValueModal newPropertyModal;
-
-    @Mock
-    private AddSingleValueModal newPersistableDataObjectModal;
-
-    @Mock
     private PersistenceDescriptorEditorService editorService;
 
     @Mock
@@ -112,12 +105,11 @@ public class PersistencePresenterTest {
                                                             notificationEvent,
                                                             settingsSectionChangeEvent,
                                                             observablePaths,
-                                                            newPropertyModal,
-                                                            newPersistableDataObjectModal,
                                                             new CallerMock<>(editorService),
                                                             new CallerMock<>(dataModelerService),
                                                             propertiesListPresenter,
                                                             persistableDataObjectsListPresenter));
+
     }
 
     @Test
@@ -135,15 +127,10 @@ public class PersistencePresenterTest {
         verify(view).init(eq(persistencePresenter));
         verify(editorService).loadContent(any(),
                                           anyBoolean());
-        verify(newPropertyModal).setup(any(),
-                                       any(),
-                                       any());
 
         verify(propertiesListPresenter).setup(any(),
                                               any(),
                                               any());
-        verify(newPersistableDataObjectModal).setup(any(),
-                                                    any());
         verify(persistableDataObjectsListPresenter).setup(any(),
                                                           any(),
                                                           any());
@@ -176,7 +163,6 @@ public class PersistencePresenterTest {
         persistencePresenter.add(property);
 
         verify(propertiesListPresenter).add(eq(property));
-        verify(persistencePresenter).fireChangeEvent();
     }
 
     @Test
@@ -185,15 +171,13 @@ public class PersistencePresenterTest {
 
         persistencePresenter.add(className);
 
-        verify(persistableDataObjectsListPresenter).add(eq(className));
-        verify(persistencePresenter).fireChangeEvent();
+        verify(persistableDataObjectsListPresenter).add(eq(new PersistableDataObject(className)));
     }
 
     @Test
     public void testAddAllProjectsPersistableDataObjects() {
         persistencePresenter.persistenceDescriptorEditorContent = newPersistenceDescriptorEditorContent();
-        doReturn(Arrays.asList("Class1",
-                               "NewClass1",
+        doReturn(Arrays.asList("NewClass1",
                                "NewClass2")).when(dataModelerService).findPersistableClasses(any());
 
         persistencePresenter.addAllProjectsPersistableDataObjects();
@@ -206,15 +190,15 @@ public class PersistencePresenterTest {
     }
 
     @Test
-    public void testShowNewPropertyModal() {
-        persistencePresenter.showNewPropertyModal();
-        verify(newPropertyModal).show(any());
+    public void testAddNewProperty() {
+        persistencePresenter.addNewProperty();
+        verify(propertiesListPresenter).add(eq(new Property("","")));
     }
 
     @Test
-    public void testShowNewPersistableDataObjectModal() {
-        persistencePresenter.showNewPersistableDataObjectModal();
-        verify(newPersistableDataObjectModal).show(any());
+    public void testAddNewPersistableDataObject() {
+        persistencePresenter.addNewPersistableDataObject();
+        verify(persistableDataObjectsListPresenter).add(eq(new PersistableDataObject("")));
     }
 
     @Test
@@ -315,8 +299,8 @@ public class PersistencePresenterTest {
         unitModel.setTransactionType(TransactionType.JTA);
         unitModel.setProvider("ProviderClass");
         unitModel.setJtaDataSource("JTADataSource");
-        unitModel.setClasses(Arrays.asList("Class1",
-                                           "Class2"));
+        unitModel.setClasses(Arrays.asList(new PersistableDataObject("Class1"),
+                                           new PersistableDataObject("Class2")));
 
         content.setDescriptorModel(model);
         content.setOverview(new Overview());

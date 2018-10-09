@@ -17,14 +17,15 @@
 package org.kie.workbench.common.screens.library.client.settings.sections.persistence.properties;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import com.google.gwt.event.dom.client.ClickEvent;
+import elemental2.dom.Event;
 import elemental2.dom.HTMLAnchorElement;
-import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLInputElement;
 import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
+import org.jboss.errai.ui.shared.api.annotations.ForEvent;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 @Templated("#root")
@@ -36,14 +37,12 @@ public class PropertiesItemView implements PropertiesItemPresenter.View,
     private HTMLAnchorElement removeButton;
 
     @Inject
-    @Named("span")
     @DataField("name")
-    private HTMLElement name;
+    private HTMLInputElement name;
 
     @Inject
-    @Named("span")
     @DataField("value")
-    private HTMLElement value;
+    private HTMLInputElement value;
 
     private PropertiesItemPresenter presenter;
 
@@ -59,11 +58,21 @@ public class PropertiesItemView implements PropertiesItemPresenter.View,
 
     @Override
     public void setName(final String name) {
-        this.name.textContent = name;
+        this.name.value = name;
     }
 
     @Override
     public void setValue(final String value) {
-        this.value.textContent = value;
+        this.value.value = value;
+    }
+
+    @EventHandler("value")
+    public void onValueChange(final @ForEvent("change") Event event) {
+        presenter.onValueChange(value.value);
+    }
+
+    @EventHandler("name")
+    public void onNameChange(final @ForEvent("change") Event event) {
+        presenter.onNameChange(name.value);
     }
 }

@@ -3,6 +3,7 @@ package org.kie.workbench.common.screens.library.client.settings.sections.persis
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.screens.datamodeller.model.persistence.PersistableDataObject;
 import org.kie.workbench.common.screens.library.client.settings.sections.persistence.PersistencePresenter;
 import org.kie.workbench.common.screens.library.client.settings.sections.persistence.PersistencePresenter.PersistableDataObjectsListPresenter;
 import org.mockito.Mock;
@@ -12,6 +13,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PersistableDataObjectsItemPresenterTest {
@@ -28,7 +30,7 @@ public class PersistableDataObjectsItemPresenterTest {
 
     @Test
     public void testSetup() {
-        persistableDataObjectsItemPresenter.setup("ClassName", mock(PersistencePresenter.class));
+        persistableDataObjectsItemPresenter.setup(new PersistableDataObject("ClassName"), mock(PersistencePresenter.class));
         verify(view).init(eq(persistableDataObjectsItemPresenter));
         verify(view).setClassName(eq("ClassName"));
     }

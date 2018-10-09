@@ -26,13 +26,11 @@ import javax.inject.Inject;
 import elemental2.dom.Element;
 import elemental2.promise.Promise;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
 import org.kie.workbench.common.screens.library.client.settings.SettingsSectionChange;
 import org.kie.workbench.common.screens.library.client.settings.sections.knowledgebases.item.KnowledgeBaseItemPresenter;
 import org.kie.workbench.common.screens.library.client.settings.util.sections.MenuItem;
 import org.kie.workbench.common.screens.library.client.settings.util.sections.Section;
 import org.kie.workbench.common.screens.library.client.settings.util.sections.SectionView;
-import org.kie.workbench.common.screens.library.client.settings.util.modal.single.AddSingleValueModal;
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
 import org.kie.workbench.common.services.shared.kmodule.KBaseModel;
 import org.kie.workbench.common.services.shared.kmodule.KModuleModel;
@@ -44,7 +42,6 @@ import static java.util.function.Function.identity;
 
 public class KnowledgeBasesPresenter extends Section<ProjectScreenModel>  {
 
-    private final AddSingleValueModal addKnowledgeBaseModal;
     private final KnowledgeBaseListPresenter knowledgeBaseListPresenter;
     private final View view;
 
@@ -60,11 +57,9 @@ public class KnowledgeBasesPresenter extends Section<ProjectScreenModel>  {
                                    final Event<SettingsSectionChange<ProjectScreenModel>> settingsSectionChangeEvent,
                                    final Promises promises,
                                    final MenuItem<ProjectScreenModel> menuItem,
-                                   final AddSingleValueModal addKnowledgeBaseModal,
                                    final KnowledgeBaseListPresenter knowledgeBaseListPresenter) {
 
         super(settingsSectionChangeEvent, menuItem, promises);
-        this.addKnowledgeBaseModal = addKnowledgeBaseModal;
         this.knowledgeBaseListPresenter = knowledgeBaseListPresenter;
         this.view = view;
     }
@@ -75,8 +70,6 @@ public class KnowledgeBasesPresenter extends Section<ProjectScreenModel>  {
         this.kModuleModel = model.getKModule();
 
         view.init(this);
-
-        addKnowledgeBaseModal.setup(LibraryConstants.AddKnowledgeBase, LibraryConstants.Name);
 
         knowledgeBaseListPresenter.setup(
                 view.getKnowledgeBasesTable(),
@@ -98,11 +91,9 @@ public class KnowledgeBasesPresenter extends Section<ProjectScreenModel>  {
         return promises.resolve();
     }
 
-    void openAddKnowledgeBaseModal() {
-        addKnowledgeBaseModal.show(knowledgeBaseName -> {
-            knowledgeBaseListPresenter.add(newKBaseModel(knowledgeBaseName));
-            fireChangeEvent();
-        });
+    void addKnowledgeBase() {
+        knowledgeBaseListPresenter.add(newKBaseModel(""));
+        fireChangeEvent();
     }
 
     KBaseModel newKBaseModel(final String knowledgeBaseName) {

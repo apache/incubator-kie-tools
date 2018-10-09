@@ -31,7 +31,6 @@ import org.kie.workbench.common.screens.library.client.settings.util.sections.Se
 import org.kie.workbench.common.screens.library.client.settings.util.sections.SectionView;
 import org.kie.workbench.common.screens.projecteditor.client.forms.dependencies.DependencySelectorPopup;
 import org.kie.workbench.common.screens.projecteditor.client.forms.dependencies.EnhancedDependenciesManager;
-import org.kie.workbench.common.screens.projecteditor.client.forms.dependencies.NewDependencyPopup;
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
 import org.kie.workbench.common.services.shared.dependencies.EnhancedDependencies;
 import org.kie.workbench.common.services.shared.dependencies.EnhancedDependency;
@@ -50,7 +49,6 @@ public class DependenciesPresenter extends Section<ProjectScreenModel>  {
 
     private final View view;
     private final DependencySelectorPopup dependencySelectorPopup;
-    private final NewDependencyPopup newDependencyPopup;
     private final EnhancedDependenciesManager enhancedDependenciesManager;
     private final ManagedInstance<DependenciesItemPresenter> presenters;
 
@@ -64,14 +62,12 @@ public class DependenciesPresenter extends Section<ProjectScreenModel>  {
                                  final MenuItem<ProjectScreenModel> menuItem,
                                  final DependencySelectorPopup dependencySelectorPopup,
                                  final Event<SettingsSectionChange<ProjectScreenModel>> settingsSectionChangeEvent,
-                                 final NewDependencyPopup newDependencyPopup,
                                  final EnhancedDependenciesManager enhancedDependenciesManager,
                                  final ManagedInstance<DependenciesItemPresenter> presenters) {
 
         super(settingsSectionChangeEvent, menuItem, promises);
         this.view = view;
         this.dependencySelectorPopup = dependencySelectorPopup;
-        this.newDependencyPopup = newDependencyPopup;
         this.enhancedDependenciesManager = enhancedDependenciesManager;
         this.presenters = presenters;
     }
@@ -101,6 +97,12 @@ public class DependenciesPresenter extends Section<ProjectScreenModel>  {
         });
     }
 
+    @Override
+    public Promise<Object> validate() {
+        enhancedDependenciesManager.validateDependency();
+        return promises.resolve();
+    }
+
     private void updateHashCode(final EnhancedDependencies enhancedDependencies) {
         currentHashCode = enhancedDependencies.asList().hashCode() + model.getWhiteList().hashCode();
     }
@@ -116,8 +118,9 @@ public class DependenciesPresenter extends Section<ProjectScreenModel>  {
         enhancedDependenciesManager.addNew(dependency);
     }
 
-    public void add() {
-        newDependencyPopup.show(this::add);
+    public void addNewDependency() {
+        add(new Dependency());
+        fireChangeEvent();
     }
 
     public void addAllToWhiteList(final Set<String> packages) {

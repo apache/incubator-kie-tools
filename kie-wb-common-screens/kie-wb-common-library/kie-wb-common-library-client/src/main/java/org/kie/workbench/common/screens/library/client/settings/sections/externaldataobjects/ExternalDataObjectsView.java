@@ -55,7 +55,7 @@ public class ExternalDataObjectsView implements ExternalDataObjectsPresenter.Vie
 
     @EventHandler("add-button")
     public void onAdd(final ClickEvent ignore) {
-        presenter.openAddPopup();
+        presenter.addNewExternalDataObjects();
     }
 
     @Override

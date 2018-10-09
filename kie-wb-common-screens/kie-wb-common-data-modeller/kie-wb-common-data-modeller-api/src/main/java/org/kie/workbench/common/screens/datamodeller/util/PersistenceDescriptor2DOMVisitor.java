@@ -19,6 +19,7 @@ package org.kie.workbench.common.screens.datamodeller.util;
 import java.util.List;
 
 import org.kie.workbench.common.screens.datamodeller.model.persistence.CachingType;
+import org.kie.workbench.common.screens.datamodeller.model.persistence.PersistableDataObject;
 import org.kie.workbench.common.screens.datamodeller.model.persistence.PersistenceDescriptorModel;
 import org.kie.workbench.common.screens.datamodeller.model.persistence.PersistenceUnitModel;
 import org.kie.workbench.common.screens.datamodeller.model.persistence.Property;
@@ -85,8 +86,8 @@ public class PersistenceDescriptor2DOMVisitor {
         }
 
         if ( persistenceUnit.getClasses() != null ) {
-            for ( String clazz : persistenceUnit.getClasses() ) {
-                visitClass( persistenceUnitElement, clazz );
+            for ( PersistableDataObject clazz : persistenceUnit.getClasses() ) {
+                visitClass( persistenceUnitElement, clazz.getValue() );
             }
         }
 

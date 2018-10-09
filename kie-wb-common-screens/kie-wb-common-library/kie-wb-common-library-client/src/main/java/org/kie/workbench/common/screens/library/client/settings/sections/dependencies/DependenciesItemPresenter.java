@@ -22,6 +22,7 @@ import java.util.Set;
 import javax.inject.Inject;
 
 import org.guvnor.common.services.project.model.Dependency;
+import org.kie.workbench.common.screens.projecteditor.client.forms.dependencies.validation.DependencyValidator;
 import org.kie.workbench.common.services.shared.dependencies.EnhancedDependency;
 import org.kie.workbench.common.services.shared.dependencies.TransitiveEnhancedDependency;
 import org.kie.workbench.common.services.shared.whitelist.WhiteList;
@@ -37,12 +38,20 @@ public class DependenciesItemPresenter {
 
         void setVersion(String version);
 
+        void setGroupIdHelpBock(final String groupIdHelpBock);
+
+        void setArtifactIdHelpBock(final String artifactIdHelpBock);
+
+        void setVersionHelpBock(final String versionHelpBock);
+
         void setPackagesWhiteListedState(final WhiteListedPackagesState state);
 
         void setTransitiveDependency(final boolean disabled);
     }
 
     private final View view;
+
+    private DependencyValidator validator;
 
     DependenciesPresenter parentPresenter;
     EnhancedDependency enhancedDependency;
@@ -60,6 +69,7 @@ public class DependenciesItemPresenter {
         this.parentPresenter = dependenciesPresenter;
 
         final Dependency dependency = enhancedDependency.getDependency();
+        validator = new DependencyValidator(dependency);
 
         view.init(this);
         view.setGroupId(dependency.getGroupId());
@@ -69,6 +79,24 @@ public class DependenciesItemPresenter {
         view.setTransitiveDependency(enhancedDependency instanceof TransitiveEnhancedDependency);
 
         return this;
+    }
+
+    public void onGroupIdChange(final String groupId){
+        this.enhancedDependency.getDependency().setGroupId(groupId);
+        validateGroupId();
+        parentPresenter.fireChangeEvent();
+    }
+
+    public void onArtifactIdChange(final String artifactId){
+        this.enhancedDependency.getDependency().setArtifactId(artifactId);
+        validateArtifactId();
+        parentPresenter.fireChangeEvent();
+    }
+
+    public void onVersionChange(final String version){
+        this.enhancedDependency.getDependency().setVersion(version);
+        validateVersion();
+        parentPresenter.fireChangeEvent();
     }
 
     public void addAllPackagesToWhiteList() {
@@ -104,6 +132,30 @@ public class DependenciesItemPresenter {
             }
 
             return NONE;
+        }
+    }
+
+    private void validateGroupId() {
+        if (validator.validateGroupId()) {
+            view.setGroupIdHelpBock("");
+        } else {
+            view.setGroupIdHelpBock(validator.getMessage());
+        }
+    }
+
+    private void validateArtifactId() {
+        if (validator.validateArtifactId()) {
+            view.setArtifactIdHelpBock("");
+        } else {
+            view.setArtifactIdHelpBock(validator.getMessage());
+        }
+    }
+
+    private void validateVersion() {
+        if (validator.validateVersion()) {
+            view.setVersionHelpBock("");
+        } else {
+            view.setVersionHelpBock(validator.getMessage());
         }
     }
 }

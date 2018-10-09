@@ -38,7 +38,6 @@ public class ExternalDataObjectsPresenter extends Section<ProjectScreenModel>  {
 
     private final View view;
     private final ImportsListPresenter itemPresenters;
-    private final AddImportPopup addImportPopup;
 
     private Imports imports;
 
@@ -55,14 +54,12 @@ public class ExternalDataObjectsPresenter extends Section<ProjectScreenModel>  {
     public ExternalDataObjectsPresenter(final View view,
                                         final Promises promises,
                                         final MenuItem<ProjectScreenModel> menuItem,
-                                        final AddImportPopup addImportPopup,
                                         final ImportsListPresenter itemPresenters,
                                         final Event<SettingsSectionChange<ProjectScreenModel>> settingsSectionChangeEvent) {
 
         super(settingsSectionChangeEvent, menuItem, promises);
         this.view = view;
         this.itemPresenters = itemPresenters;
-        this.addImportPopup = addImportPopup;
     }
 
     @Override
@@ -79,13 +76,8 @@ public class ExternalDataObjectsPresenter extends Section<ProjectScreenModel>  {
         return promises.resolve();
     }
 
-    public void openAddPopup() {
-        addImportPopup.show();
-        addImportPopup.setCommand(() -> addImport(addImportPopup.getImportType()));
-    }
-
-    void addImport(final String typeName) {
-        itemPresenters.add(new Import(typeName));
+    public void addNewExternalDataObjects() {
+        itemPresenters.add(new Import(""));
         fireChangeEvent();
     }
 

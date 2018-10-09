@@ -17,22 +17,22 @@
 package org.kie.workbench.common.screens.library.client.settings.sections.externaldataobjects;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import com.google.gwt.event.dom.client.ClickEvent;
+import elemental2.dom.Event;
 import elemental2.dom.HTMLAnchorElement;
-import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLInputElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
+import org.jboss.errai.ui.shared.api.annotations.ForEvent;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 @Templated("#root")
 public class ExternalDataObjectsItemView implements ExternalDataObjectsItemPresenter.View {
 
     @Inject
-    @Named("span")
     @DataField("type-name")
-    private HTMLElement typeName;
+    private HTMLInputElement typeName;
 
     @Inject
     @DataField("remove-button")
@@ -52,6 +52,11 @@ public class ExternalDataObjectsItemView implements ExternalDataObjectsItemPrese
 
     @Override
     public void setTypeName(final String typeName) {
-        this.typeName.textContent = typeName;
+        this.typeName.value = typeName;
+    }
+
+    @EventHandler("type-name")
+    public void onVersionChange(final @ForEvent("change") Event event) {
+        presenter.onTypeNameChange(typeName.value);
     }
 }

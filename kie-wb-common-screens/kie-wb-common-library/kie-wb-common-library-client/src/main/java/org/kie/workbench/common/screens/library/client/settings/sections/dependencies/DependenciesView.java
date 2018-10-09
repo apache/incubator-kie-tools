@@ -69,7 +69,7 @@ public class DependenciesView implements DependenciesPresenter.View,
 
     @EventHandler("add-dependency")
     public void add(final ClickEvent ignore) {
-        presenter.add();
+        presenter.addNewDependency();
     }
 
     @EventHandler("add-from-repository")

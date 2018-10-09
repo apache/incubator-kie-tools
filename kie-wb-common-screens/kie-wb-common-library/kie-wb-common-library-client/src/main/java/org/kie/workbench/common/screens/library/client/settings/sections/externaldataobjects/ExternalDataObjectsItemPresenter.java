@@ -18,6 +18,8 @@ package org.kie.workbench.common.screens.library.client.settings.sections.extern
 
 import javax.inject.Inject;
 
+import elemental2.dom.Element;
+import elemental2.dom.Event;
 import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
 import org.kie.soup.project.datamodel.imports.Import;
 import org.kie.workbench.common.widgets.client.widget.ListItemPresenter;
@@ -56,6 +58,11 @@ public class ExternalDataObjectsItemPresenter extends ListItemPresenter<Import, 
     @Override
     public void remove() {
         super.remove();
+        parentPresenter.fireChangeEvent();
+    }
+
+    public void onTypeNameChange(final String typeName){
+        import_.setType(typeName);
         parentPresenter.fireChangeEvent();
     }
 

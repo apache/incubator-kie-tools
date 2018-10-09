@@ -15,7 +15,6 @@ import org.kie.workbench.common.screens.library.client.settings.SettingsSectionC
 import org.kie.workbench.common.screens.library.client.settings.util.sections.MenuItem;
 import org.kie.workbench.common.screens.projecteditor.client.forms.dependencies.DependencySelectorPopup;
 import org.kie.workbench.common.screens.projecteditor.client.forms.dependencies.EnhancedDependenciesManager;
-import org.kie.workbench.common.screens.projecteditor.client.forms.dependencies.NewDependencyPopup;
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
 import org.kie.workbench.common.services.shared.dependencies.EnhancedDependency;
 import org.kie.workbench.common.services.shared.whitelist.WhiteList;
@@ -50,9 +49,6 @@ public class DependenciesPresenterTest {
     private Event<SettingsSectionChange<ProjectScreenModel>> settingsSectionChangeEvent;
 
     @Mock
-    private NewDependencyPopup newDependencyPopup;
-
-    @Mock
     private EnhancedDependenciesManager enhancedDependenciesManager;
 
     @Mock
@@ -68,7 +64,6 @@ public class DependenciesPresenterTest {
                                                               menuItem,
                                                               dependencySelectorPopup,
                                                               settingsSectionChangeEvent,
-                                                              newDependencyPopup,
                                                               enhancedDependenciesManager,
                                                               presenters));
     }
@@ -85,8 +80,10 @@ public class DependenciesPresenterTest {
 
     @Test
     public void testAdd() {
-        dependenciesPresenter.add();
-        verify(newDependencyPopup).show(any());
+        dependenciesPresenter.addNewDependency();
+
+        verify(enhancedDependenciesManager).addNew(new Dependency());
+        verify(settingsSectionChangeEvent).fire(any());
     }
 
     @Test

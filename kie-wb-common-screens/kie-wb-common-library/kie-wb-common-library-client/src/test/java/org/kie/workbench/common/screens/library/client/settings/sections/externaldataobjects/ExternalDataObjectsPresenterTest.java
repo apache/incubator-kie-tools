@@ -1,17 +1,16 @@
 package org.kie.workbench.common.screens.library.client.settings.sections.externaldataobjects;
 
-import com.google.gwtmockito.GwtMock;
-import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.guvnor.common.services.project.model.ProjectImports;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.soup.project.datamodel.imports.Import;
 import org.kie.workbench.common.screens.library.client.settings.SettingsSectionChange;
 import org.kie.workbench.common.screens.library.client.settings.util.sections.MenuItem;
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
-import org.kie.workbench.common.widgets.configresource.client.widget.unbound.AddImportPopup;
 import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.client.promise.Promises;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.promise.SyncPromises;
@@ -23,7 +22,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
-@RunWith(GwtMockitoTestRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class ExternalDataObjectsPresenterTest {
 
     private ExternalDataObjectsPresenter externalDataObjectsPresenter;
@@ -33,9 +32,6 @@ public class ExternalDataObjectsPresenterTest {
 
     @Mock
     private MenuItem<ProjectScreenModel> menuItem;
-
-    @GwtMock
-    private AddImportPopup addImportPopup;
 
     @Mock
     private ExternalDataObjectsPresenter.ImportsListPresenter itemPresenters;
@@ -50,7 +46,6 @@ public class ExternalDataObjectsPresenterTest {
         externalDataObjectsPresenter = spy(new ExternalDataObjectsPresenter(view,
                                                                             promises,
                                                                             menuItem,
-                                                                            addImportPopup,
                                                                             itemPresenters,
                                                                             settingsSectionChangeEvent));
     }
@@ -70,16 +65,8 @@ public class ExternalDataObjectsPresenterTest {
     }
 
     @Test
-    public void testOpenAddPopup() {
-        externalDataObjectsPresenter.openAddPopup();
-        verify(addImportPopup).show();
-        verify(addImportPopup).setCommand(any());
-    }
-
-    @Test
-    public void testAddImport() {
-        externalDataObjectsPresenter.addImport("Test");
-        verify(itemPresenters).add(any());
-        verify(externalDataObjectsPresenter).fireChangeEvent();
+    public void testAddNewExternalDataObjects() {
+        externalDataObjectsPresenter.addNewExternalDataObjects();
+        verify(itemPresenters).add(new Import(""));
     }
 }

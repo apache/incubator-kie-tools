@@ -2,14 +2,15 @@ package org.kie.workbench.common.screens.library.client.settings.sections.knowle
 
 import javax.enterprise.event.Event;
 
+import elemental2.dom.HTMLInputElement;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.library.client.settings.sections.knowledgebases.KnowledgeBasesPresenter;
 import org.kie.workbench.common.screens.library.client.settings.sections.knowledgebases.item.knowledgesessions.KnowledgeSessionsModal;
+import org.kie.workbench.common.services.shared.kmodule.SingleValueItemObjectModel;
 import org.kie.workbench.common.screens.library.client.settings.util.select.KieEnumSelectElement;
-import org.kie.workbench.common.screens.library.client.settings.util.modal.single.AddSingleValueModal;
 import org.kie.workbench.common.services.shared.kmodule.AssertBehaviorOption;
 import org.kie.workbench.common.services.shared.kmodule.EventProcessingOption;
 import org.kie.workbench.common.services.shared.kmodule.KBaseModel;
@@ -24,6 +25,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class KnowledgeBaseItemPresenterTest {
@@ -43,12 +45,6 @@ public class KnowledgeBaseItemPresenterTest {
     private KieEnumSelectElement<EventProcessingOption> eventProcessingModeSelect;
 
     @Mock
-    private AddSingleValueModal addIncludedKnowledgeBaseModal;
-
-    @Mock
-    private AddSingleValueModal addPackageModal;
-
-    @Mock
     private KnowledgeSessionsModal knowledgeSessionsModal;
 
     @Mock
@@ -63,8 +59,6 @@ public class KnowledgeBaseItemPresenterTest {
                                                                         defaultKnowledgeBaseChangeEvent,
                                                                         equalsBehaviorSelect,
                                                                         eventProcessingModeSelect,
-                                                                        addIncludedKnowledgeBaseModal,
-                                                                        addPackageModal,
                                                                         knowledgeSessionsModal,
                                                                         includedKnowledgeBasesListPresenter,
                                                                         packageListPresenter));
@@ -82,8 +76,6 @@ public class KnowledgeBaseItemPresenterTest {
         verify(view).setName(any());
 
         verify(knowledgeSessionsModal).setup(any());
-        verify(addPackageModal).setup(any(), any());
-        verify(addIncludedKnowledgeBaseModal).setup(any(), any());
 
         verify(packageListPresenter).setup(any(), any(), any());
         verify(includedKnowledgeBasesListPresenter).setup(any(), any(), any());
@@ -93,15 +85,25 @@ public class KnowledgeBaseItemPresenterTest {
     }
 
     @Test
-    public void testShowNewIncludedKnowledgeBaseModal() {
-        knowledgeBaseItemPresenter.showNewIncludedKnowledgeBaseModal();
-        verify(addIncludedKnowledgeBaseModal).show(any());
+    public void testAddNewIncludedKnowledgeBase() {
+        KnowledgeBasesPresenter parentPresenter = mock(KnowledgeBasesPresenter.class);
+        knowledgeBaseItemPresenter.setup(new KBaseModel(),
+                                         parentPresenter);
+
+        knowledgeBaseItemPresenter.addNewIncludedKnowledgeBase();
+        verify(includedKnowledgeBasesListPresenter).add(any());
+        verify(parentPresenter).fireChangeEvent();
     }
 
     @Test
-    public void testShowAddPackageModal() {
-        knowledgeBaseItemPresenter.showAddPackageModal();
-        verify(addPackageModal).show(any());
+    public void testAddPackage() {
+        KnowledgeBasesPresenter parentPresenter = mock(KnowledgeBasesPresenter.class);
+        knowledgeBaseItemPresenter.setup(new KBaseModel(),
+                                         parentPresenter);
+
+        knowledgeBaseItemPresenter.addPackage();
+        verify(packageListPresenter).add(any());
+        verify(parentPresenter).fireChangeEvent();
     }
 
     @Test

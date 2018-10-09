@@ -18,9 +18,18 @@
 <table>
     <tbody>
     <tr class="kie-tablelist__row" data-field="root">
-        <td class="kie-tablelist__cell"><span data-field="group-id"></span></td>
-        <td class="kie-tablelist__cell"><span data-field="artifact-id"></span></td>
-        <td class="kie-tablelist__cell"><span data-field="version"></span></td>
+        <td class="kie-tablelist__cell" data-field="groupid-td" style="width:25%;">
+            <input data-field="group-id" type="text" class="form-control" required/>
+            <span class="help-block" for="group-id" data-field="groupIdHelpBock"></span>
+        </td>
+        <td class="kie-tablelist__cell" data-field="artifactid-td" style="width:25%;">
+            <input data-field="artifact-id" type="text" class="form-control" required/>
+            <span class="help-block" for="artifact-id" data-field="artifactIdHelpBock"></span>
+        </td>
+        <td class="kie-tablelist__cell" data-field="version-td" style="width:25%;">
+            <input data-field="version" type="text" class="form-control" required/>
+            <span class="help-block" for="version" data-field="versionHelpBock"></span>
+        </td>
         <td class="kie-tablelist__cell">
             <div data-field="white-listed-packages-indicator">
                 <label class="radio-inline">
@@ -32,7 +41,7 @@
             </div>
         </td>
         <td class="kie-tablelist__cell--actions">
-            <a href="#0" class="btn btn-link" data-field="remove-button">
+            <a class="btn btn-link" data-field="remove-button">
                 <span class="fa fa-trash-o"></span>
             </a>
         </td>

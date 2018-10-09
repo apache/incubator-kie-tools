@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.library.client.settings.sections.knowledgebases.item.KnowledgeBaseItemPresenter;
+import org.kie.workbench.common.services.shared.kmodule.SingleValueItemObjectModel;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -12,6 +13,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class IncludedKnowledgeBaseItemPresenterTest {
@@ -28,7 +30,7 @@ public class IncludedKnowledgeBaseItemPresenterTest {
 
     @Test
     public void testSetup() {
-        includedKnowledgeBaseItemPresenter.setup("Name", mock(KnowledgeBaseItemPresenter.class));
+        includedKnowledgeBaseItemPresenter.setup(new SingleValueItemObjectModel("Name"), mock(KnowledgeBaseItemPresenter.class));
         verify(view).init(eq(includedKnowledgeBaseItemPresenter));
         verify(view).setName(eq("Name"));
     }

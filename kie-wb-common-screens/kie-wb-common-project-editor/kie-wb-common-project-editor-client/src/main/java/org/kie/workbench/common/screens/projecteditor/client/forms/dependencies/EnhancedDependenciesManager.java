@@ -17,6 +17,8 @@
 package org.kie.workbench.common.screens.projecteditor.client.forms.dependencies;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -25,6 +27,7 @@ import org.guvnor.common.services.project.model.Dependencies;
 import org.guvnor.common.services.project.model.Dependency;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
+import org.kie.workbench.common.screens.projecteditor.client.forms.dependencies.validation.DependencyValidator;
 import org.kie.workbench.common.services.shared.dependencies.EnhancedDependencies;
 import org.kie.workbench.common.services.shared.dependencies.EnhancedDependency;
 import org.kie.workbench.common.services.shared.dependencies.NormalEnhancedDependency;
@@ -122,5 +125,14 @@ public class EnhancedDependenciesManager {
         originalSetOfDependencies.add(dependency);
         loader.addToQueue(dependency);
         update();
+    }
+
+    public void validateDependency() {
+        enhancedDependencies.asList().forEach(e -> {
+            DependencyValidator validator = new DependencyValidator(e.getDependency());
+            if (!validator.validate()) {
+                delete(e);
+            }
+        });
     }
 }

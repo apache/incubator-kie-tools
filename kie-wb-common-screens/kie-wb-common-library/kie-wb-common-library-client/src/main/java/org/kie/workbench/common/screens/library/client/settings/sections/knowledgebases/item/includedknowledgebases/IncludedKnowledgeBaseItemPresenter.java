@@ -21,13 +21,15 @@ import javax.inject.Inject;
 
 import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
 import org.kie.workbench.common.screens.library.client.settings.sections.knowledgebases.item.KnowledgeBaseItemPresenter;
+import org.kie.workbench.common.services.shared.kmodule.SingleValueItemObjectModel;
 import org.kie.workbench.common.widgets.client.widget.ListItemPresenter;
 import org.kie.workbench.common.widgets.client.widget.ListItemView;
 
 @Dependent
-public class IncludedKnowledgeBaseItemPresenter extends ListItemPresenter<String, KnowledgeBaseItemPresenter, IncludedKnowledgeBaseItemPresenter.View> {
+public class IncludedKnowledgeBaseItemPresenter extends ListItemPresenter<SingleValueItemObjectModel, KnowledgeBaseItemPresenter, IncludedKnowledgeBaseItemPresenter.View> {
 
-    private String knowledgeBaseName;
+    private SingleValueItemObjectModel knowledgeBaseNameObject;
+
     KnowledgeBaseItemPresenter parentPresenter;
 
     @Inject
@@ -36,25 +38,30 @@ public class IncludedKnowledgeBaseItemPresenter extends ListItemPresenter<String
     }
 
     @Override
-    public IncludedKnowledgeBaseItemPresenter setup(final String knowledgeBaseName,
+    public IncludedKnowledgeBaseItemPresenter setup(final SingleValueItemObjectModel knowledgeBaseName,
                                                     final KnowledgeBaseItemPresenter parentPresenter) {
-        this.knowledgeBaseName = knowledgeBaseName;
         this.parentPresenter = parentPresenter;
+        this.knowledgeBaseNameObject = knowledgeBaseName;
 
         view.init(this);
-        view.setName(knowledgeBaseName);
+        view.setName(knowledgeBaseNameObject.getValue());
 
         return this;
     }
 
     @Override
-    public String getObject() {
-        return knowledgeBaseName;
+    public SingleValueItemObjectModel getObject() {
+        return knowledgeBaseNameObject;
     }
 
     @Override
     public void remove() {
         super.remove();
+        parentPresenter.fireChangeEvent();
+    }
+
+    public void onKnowledgeBaseNamChange(final String name){
+        knowledgeBaseNameObject.setValue(name);
         parentPresenter.fireChangeEvent();
     }
 

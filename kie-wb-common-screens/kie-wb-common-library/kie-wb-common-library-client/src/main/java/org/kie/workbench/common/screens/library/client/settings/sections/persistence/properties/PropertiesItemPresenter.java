@@ -32,6 +32,7 @@ public class PropertiesItemPresenter extends ListItemPresenter<Property, Persist
         void setName(String name);
 
         void setValue(String value);
+
     }
 
     PersistencePresenter parentPresenter;
@@ -54,6 +55,16 @@ public class PropertiesItemPresenter extends ListItemPresenter<Property, Persist
         view.setValue(property.getValue());
 
         return this;
+    }
+
+    public void onNameChange(final String name){
+        property.setName(name);
+        parentPresenter.fireChangeEvent();
+    }
+
+    public void onValueChange(final String value){
+        property.setValue(value);
+        parentPresenter.fireChangeEvent();
     }
 
     @Override

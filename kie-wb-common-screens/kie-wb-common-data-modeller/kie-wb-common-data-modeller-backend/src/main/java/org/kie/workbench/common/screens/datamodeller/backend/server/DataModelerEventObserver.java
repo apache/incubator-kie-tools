@@ -24,6 +24,7 @@ import javax.persistence.Entity;
 
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectCreatedEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectDeletedEvent;
+import org.kie.workbench.common.screens.datamodeller.model.persistence.PersistableDataObject;
 import org.kie.workbench.common.screens.datamodeller.model.persistence.PersistenceDescriptorModel;
 import org.kie.workbench.common.screens.datamodeller.model.persistence.PersistenceUnitModel;
 import org.kie.workbench.common.screens.datamodeller.service.PersistenceDescriptorService;
@@ -62,7 +63,7 @@ public class DataModelerEventObserver {
             persistenceDescriptor = safeLoad(descriptorPath);
             if (persistenceDescriptor != null &&
                     !containsClass(persistenceDescriptor.getPersistenceUnit(), event.getCurrentDataObject().getClassName())) {
-                persistenceDescriptor.getPersistenceUnit().getClasses().add(event.getCurrentDataObject().getClassName());
+                persistenceDescriptor.getPersistenceUnit().getClasses().add(new PersistableDataObject(event.getCurrentDataObject().getClassName()));
                 descriptorService.save(descriptorPath,
                                        persistenceDescriptor,
                                        null,
@@ -80,7 +81,7 @@ public class DataModelerEventObserver {
 
         if (persistenceDescriptor != null &&
                 containsClass(persistenceDescriptor.getPersistenceUnit(), event.getCurrentDataObject().getClassName())) {
-            persistenceDescriptor.getPersistenceUnit().getClasses().remove(event.getCurrentDataObject().getClassName());
+            persistenceDescriptor.getPersistenceUnit().getClasses().remove(new PersistableDataObject(event.getCurrentDataObject().getClassName()));
             descriptorService.save(descriptorPath,
                                    persistenceDescriptor,
                                    null,
@@ -91,7 +92,7 @@ public class DataModelerEventObserver {
     private boolean containsClass(PersistenceUnitModel persistenceUnit, String className) {
         return persistenceUnit != null &&
                 persistenceUnit.getClasses() != null &&
-                persistenceUnit.getClasses().contains(className);
+                persistenceUnit.getClasses().contains(new PersistableDataObject(className));
     }
 
     private PersistenceDescriptorModel safeLoad(final Path path) {

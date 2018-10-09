@@ -20,18 +20,20 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import com.google.gwt.event.dom.client.ClickEvent;
+import elemental2.dom.Event;
 import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLInputElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
+import org.jboss.errai.ui.shared.api.annotations.ForEvent;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 @Templated
 public class PackageItemView implements PackageItemPresenter.View {
 
     @Inject
-    @Named("span")
     @DataField("name")
-    private HTMLElement name;
+    private HTMLInputElement name;
 
     @Inject
     @Named("span")
@@ -51,6 +53,11 @@ public class PackageItemView implements PackageItemPresenter.View {
 
     @Override
     public void setName(final String name) {
-        this.name.textContent = name;
+        this.name.value = name;
+    }
+
+    @EventHandler("name")
+    public void onPackageNameChange(final @ForEvent("change") Event event) {
+        presenter.onPackageNameChange(name.value);
     }
 }
