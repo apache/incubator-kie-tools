@@ -19,9 +19,11 @@ package org.drools.workbench.screens.scenariosimulation.client.commands;
 import java.util.List;
 
 import com.google.gwt.event.shared.EventBus;
+import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioHeaderTextBoxSingletonDOMElementFactory;
 import org.drools.workbench.screens.scenariosimulation.client.metadata.ScenarioHeaderMetaData;
 import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.RightPanelPresenter;
+import org.drools.workbench.screens.scenariosimulation.client.utils.ScenarioSimulationBuilders;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGrid;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridLayer;
@@ -63,6 +65,11 @@ public abstract class AbstractCommandTest {
     protected List<GridColumn.HeaderMetaData> mockHeaderMetaDatas;
     @Mock
     protected ScenarioHeaderMetaData mockHeaderMetaData;
+    @Mock
+    protected ScenarioHeaderTextBoxSingletonDOMElementFactory scenarioHeaderTextBoxSingletonDOMElementFactoryMock;
+    @Mock
+    protected ScenarioSimulationBuilders.HeaderBuilder headerBuilderMock;
+
 
     protected final String COLUMN_ID = "COLUMN ID";
 
@@ -79,6 +86,7 @@ public abstract class AbstractCommandTest {
 
     protected final int FIRST_INDEX_LEFT = 2;
     protected final int FIRST_INDEX_RIGHT = 4;
+    protected final FactMappingType factMappingType = FactMappingType.valueOf(COLUMN_GROUP);
 
     @Before
     public void setup() {
@@ -93,5 +101,6 @@ public abstract class AbstractCommandTest {
         when(mockScenarioGridPanel.getScenarioGridLayer()).thenReturn(mockScenarioGridLayer);
         when(mockScenarioGridModel.getFirstIndexLeftOfGroup(eq(COLUMN_GROUP))).thenReturn(FIRST_INDEX_LEFT);
         when(mockScenarioGridModel.getFirstIndexRightOfGroup(eq(COLUMN_GROUP))).thenReturn(FIRST_INDEX_RIGHT);
+        doReturn(mockGridColumn).when(mockScenarioGridModel).getSelectedColumn();
     }
 }

@@ -18,35 +18,30 @@ package org.drools.workbench.screens.scenariosimulation.client.commands;
 import javax.enterprise.context.Dependent;
 
 import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
+import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridLayer;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
 import org.drools.workbench.screens.scenariosimulation.model.FactMapping;
 import org.drools.workbench.screens.scenariosimulation.model.FactMappingType;
-import org.uberfire.mvp.Command;
-
-import static org.drools.workbench.screens.scenariosimulation.client.utils.ScenarioSimulationUtils.getScenarioGridColumn;
 
 /**
  * <code>Command</code> to <b>prepend</b> (i.e. put in the first position) a column to a given <i>group</i>
  */
 @Dependent
-public class PrependColumnCommand implements Command {
+public class PrependColumnCommand extends AbstractCommand {
 
     private ScenarioGridModel model;
     private String columnId;
     private String columnGroup;
-    private ScenarioGridPanel scenarioGridPanel;
-    private ScenarioGridLayer scenarioGridLayer;
 
     public PrependColumnCommand() {
     }
 
     public PrependColumnCommand(ScenarioGridModel model, String columnId, String columnGroup, ScenarioGridPanel scenarioGridPanel, ScenarioGridLayer scenarioGridLayer) {
+        super(scenarioGridPanel, scenarioGridLayer);
         this.model = model;
         this.columnId = columnId;
         this.columnGroup = columnGroup;
-        this.scenarioGridPanel = scenarioGridPanel;
-        this.scenarioGridLayer = scenarioGridLayer;
     }
 
     @Override
@@ -54,11 +49,12 @@ public class PrependColumnCommand implements Command {
         final int index = model.getFirstIndexLeftOfGroup(columnGroup);
         FactMappingType factMappingType = FactMappingType.valueOf(columnGroup.toUpperCase());
         String columnTitle = FactMapping.getPlaceHolder(factMappingType, model.nextColumnCount());
-        model.insertColumn(index, getScenarioGridColumn(columnTitle,
+        model.insertColumn(index, getScenarioGridColumnLocal(columnTitle,
                                                         columnId,
                                                         columnGroup,
                                                         factMappingType,
                                                         scenarioGridPanel,
-                                                        scenarioGridLayer));
+                                                        scenarioGridLayer,
+                                                        ScenarioSimulationEditorConstants.INSTANCE.defineValidType()));
     }
 }

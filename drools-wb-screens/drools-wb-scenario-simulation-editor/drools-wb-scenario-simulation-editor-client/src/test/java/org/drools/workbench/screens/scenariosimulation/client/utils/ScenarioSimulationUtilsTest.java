@@ -16,41 +16,50 @@
 
 package org.drools.workbench.screens.scenariosimulation.client.utils;
 
-import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioHeaderTextBoxSingletonDOMElementFactory;
-import org.drools.workbench.screens.scenariosimulation.model.FactMappingType;
+import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
 
-@RunWith(MockitoJUnitRunner.class)
-public class ScenarioSimulationUtilsTest {
-
-    @Mock
-    private ScenarioHeaderTextBoxSingletonDOMElementFactory factory;
+@RunWith(GwtMockitoTestRunner.class)
+public class ScenarioSimulationUtilsTest extends AbstractUtilsTest {
 
     @Test
-    public void getColumnBuilder() {
-
-        String alias = "Alias";
-        String factName = "FactName";
-
-        ScenarioSimulationUtils.ColumnBuilder columnBuilderOther =
-                ScenarioSimulationUtils.getTwoLevelHeaderBuilder(alias, factName, FactMappingType.OTHER.name(), FactMappingType.OTHER);
-        assertEquals(1, columnBuilderOther.build(factory).size());
-        assertEquals(FactMappingType.OTHER.name(), columnBuilderOther.columnGroup);
-        assertNull(columnBuilderOther.nestedLevel);
-        assertEquals(alias, columnBuilderOther.columnTitle);
-
-        ScenarioSimulationUtils.ColumnBuilder columnBuilderGiven =
-                ScenarioSimulationUtils.getTwoLevelHeaderBuilder(alias, factName, FactMappingType.GIVEN.name(), FactMappingType.GIVEN);
-        assertEquals(2, columnBuilderGiven.build(factory).size());
-        assertEquals("", columnBuilderGiven.columnGroup);
-        assertEquals(FactMappingType.GIVEN.name(), columnBuilderGiven.columnTitle);
-        assertEquals(alias, columnBuilderGiven.nestedLevel.columnTitle);
-        assertEquals(FactMappingType.GIVEN.name(), columnBuilderGiven.nestedLevel.columnGroup);
+    public void getScenarioGridColumn1() {
+        final ScenarioGridColumn retrieved = ScenarioSimulationUtils.getScenarioGridColumn(COLUMN_TITLE_FIRST, COLUMN_ID, COLUMN_GROUP_FIRST, factMappingType, mockScenarioGridPanel, mockScenarioGridLayer);
+        assertNotNull(retrieved);
     }
+
+    @Test
+    public void getScenarioGridColumn2() {
+        final ScenarioGridColumn retrieved = ScenarioSimulationUtils.getScenarioGridColumn(COLUMN_TITLE_FIRST, COLUMN_ID, COLUMN_GROUP_FIRST, factMappingType, mockScenarioGridPanel, mockScenarioGridLayer, PLACEHOLDER);
+        assertNotNull(retrieved);
+    }
+
+    @Test
+    public void getScenarioGridColumn3() {
+        final ScenarioGridColumn retrieved = ScenarioSimulationUtils.getScenarioGridColumn(headerBuilderMock, mockScenarioGridPanel, mockScenarioGridLayer);
+        assertNotNull(retrieved);
+    }
+
+    @Test
+    public void getScenarioGridColumn4() {
+        final ScenarioGridColumn retrieved = ScenarioSimulationUtils.getScenarioGridColumn(headerBuilderMock, mockScenarioGridPanel, mockScenarioGridLayer, false, PLACEHOLDER);
+        assertNotNull(retrieved);
+    }
+
+    @Test
+    public void getScenarioGridColumnBuilder() {
+        final ScenarioSimulationBuilders.ScenarioGridColumnBuilder retrieved = ScenarioSimulationUtils.getScenarioGridColumnBuilder(scenarioCellTextBoxSingletonDOMElementFactoryMock, headerBuilderMock, PLACEHOLDER);
+        assertNotNull(retrieved);
+    }
+
+    @Test
+    public void getHeaderBuilder() {
+        final ScenarioSimulationBuilders.HeaderBuilder retrieved = ScenarioSimulationUtils.getHeaderBuilder(COLUMN_TITLE_FIRST, COLUMN_ID, COLUMN_GROUP_FIRST, factMappingType, scenarioHeaderTextBoxSingletonDOMElementFactoryMock);
+        assertNotNull(retrieved);
+    }
+
 }

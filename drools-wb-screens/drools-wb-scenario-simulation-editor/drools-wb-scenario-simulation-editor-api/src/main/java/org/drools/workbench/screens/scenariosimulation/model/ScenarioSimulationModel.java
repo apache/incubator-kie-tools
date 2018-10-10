@@ -48,18 +48,16 @@ public class ScenarioSimulationModel
         // Add GIVEN Facts
         IntStream.range(2, 4).forEach(id -> {
             ExpressionIdentifier givenExpression = ExpressionIdentifier.create(row + "|" + id, FactMappingType.GIVEN);
-            FactIdentifier givenFact = FactIdentifier.create(FactMappingType.GIVEN + "FACT-" + id, String.class.getCanonicalName());
-            simulationDescriptor.addFactMapping(FactMapping.getPlaceHolder(FactMappingType.GIVEN, id), givenFact, givenExpression);
-            scenario.addMappingValue(givenFact, givenExpression, null);
+            simulationDescriptor.addFactMapping(FactMapping.getPlaceHolder(FactMappingType.GIVEN, id), FactIdentifier.EMPTY, givenExpression);
+            scenario.addMappingValue(FactIdentifier.EMPTY, givenExpression, null);
         });
 
         // Add EXPECTED Facts
         IntStream.range(2, 4).forEach(id -> {
             id += 2; // This is to have consistent labels/names even when adding columns at runtime
             ExpressionIdentifier expectedExpression = ExpressionIdentifier.create(row + "|" + id, FactMappingType.EXPECTED);
-            FactIdentifier expectFact = FactIdentifier.create(FactMappingType.EXPECTED + "FACT-" + id, String.class.getCanonicalName());
-            simulationDescriptor.addFactMapping(FactMapping.getPlaceHolder(FactMappingType.EXPECTED, id), expectFact, expectedExpression);
-            scenario.addMappingValue(expectFact, expectedExpression, null);
+            simulationDescriptor.addFactMapping(FactMapping.getPlaceHolder(FactMappingType.EXPECTED, id), FactIdentifier.EMPTY, expectedExpression);
+            scenario.addMappingValue(FactIdentifier.EMPTY, expectedExpression, null);
         });
     }
 

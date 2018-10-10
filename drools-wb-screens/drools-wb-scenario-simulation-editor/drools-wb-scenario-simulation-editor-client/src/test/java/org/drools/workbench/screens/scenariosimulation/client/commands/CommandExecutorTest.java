@@ -43,7 +43,10 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -155,9 +158,15 @@ public class CommandExecutorTest extends AbstractCommandTest {
     @Test
     public void onDeleteColumnEvent() {
         DeleteColumnEvent event = new DeleteColumnEvent(COLUMN_INDEX, COLUMN_GROUP);
+        when(mockScenarioGridModel.getSelectedColumn()).thenReturn(null);
         commandExecutor.onEvent(event);
         verify(commandExecutor, times(1)).commonExecute(isA(DeleteColumnCommand.class));
         verify(commandExecutor, times(1)).commonExecute(isA(DisableRightPanelCommand.class));
+        reset(commandExecutor);
+        doReturn(mockGridColumn).when(mockScenarioGridModel).getSelectedColumn();
+        commandExecutor.onEvent(event);
+        verify(commandExecutor, times(1)).commonExecute(isA(DeleteColumnCommand.class));
+        verify(commandExecutor, never()).commonExecute(isA(DisableRightPanelCommand.class));
     }
 
     @Test

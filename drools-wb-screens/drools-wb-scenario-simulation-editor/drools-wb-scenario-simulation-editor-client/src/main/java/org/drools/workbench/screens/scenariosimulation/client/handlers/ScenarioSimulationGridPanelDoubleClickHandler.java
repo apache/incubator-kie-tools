@@ -116,4 +116,14 @@ public class ScenarioSimulationGridPanelDoubleClickHandler extends BaseGridWidge
         headerMetaData.edit(context);
         return true;
     }
+
+    /**
+     * Returns <code>true</code> (block <code>NodeMouseDoubleClickEvent</code> propagation)
+     * @param event
+     */
+    @Override
+    protected boolean handleBodyCellDoubleClick(final NodeMouseDoubleClickEvent event) {
+        // Block event propagation
+        return true;
+    }
 }

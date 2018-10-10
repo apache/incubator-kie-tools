@@ -18,27 +18,23 @@ package org.drools.workbench.screens.scenariosimulation.client.commands;
 import javax.enterprise.context.Dependent;
 
 import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
+import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridLayer;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
 import org.drools.workbench.screens.scenariosimulation.model.FactMapping;
 import org.drools.workbench.screens.scenariosimulation.model.FactMappingType;
-import org.uberfire.mvp.Command;
-
-import static org.drools.workbench.screens.scenariosimulation.client.utils.ScenarioSimulationUtils.getScenarioGridColumn;
 
 /**
  * <code>Command</code> to <b>insert</b> a column.
  */
 @Dependent
-public class InsertColumnCommand implements Command {
+public class InsertColumnCommand extends AbstractCommand {
 
     private ScenarioGridModel model;
     private String columnId;
     private int columnIndex;
-    private boolean isRight;
-    private ScenarioGridPanel scenarioGridPanel;
-    private ScenarioGridLayer scenarioGridLayer;
+    boolean isRight;
 
     public InsertColumnCommand() {
     }
@@ -52,12 +48,11 @@ public class InsertColumnCommand implements Command {
      * @param scenarioGridLayer
      */
     public InsertColumnCommand(ScenarioGridModel model, String columnId, int columnIndex, boolean isRight, ScenarioGridPanel scenarioGridPanel, ScenarioGridLayer scenarioGridLayer) {
+        super(scenarioGridPanel, scenarioGridLayer);
         this.model = model;
         this.columnId = columnId;
         this.columnIndex = columnIndex;
         this.isRight = isRight;
-        this.scenarioGridPanel = scenarioGridPanel;
-        this.scenarioGridLayer = scenarioGridLayer;
     }
 
     @Override
@@ -66,11 +61,12 @@ public class InsertColumnCommand implements Command {
         int columnPosition = isRight ? columnIndex + 1 : columnIndex;
         FactMappingType factMappingType = FactMappingType.valueOf(columnGroup.toUpperCase());
         String columnTitle = FactMapping.getPlaceHolder(factMappingType, model.nextColumnCount());
-        model.insertColumn(columnPosition, getScenarioGridColumn(columnTitle,
-                                                                 columnId,
-                                                                 columnGroup,
-                                                                 factMappingType,
-                                                                 scenarioGridPanel,
-                                                                 scenarioGridLayer));
+        model.insertColumn(columnPosition, getScenarioGridColumnLocal(columnTitle,
+                                                                      columnId,
+                                                                      columnGroup,
+                                                                      factMappingType,
+                                                                      scenarioGridPanel,
+                                                                      scenarioGridLayer,
+                                                                      ScenarioSimulationEditorConstants.INSTANCE.defineValidType()));
     }
 }

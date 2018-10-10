@@ -33,6 +33,8 @@ public class ScenarioGridColumn extends BaseGridColumn<String> {
 
     final ScenarioHeaderMetaData informationHeaderMetaData;
 
+    boolean readOnly = false;
+
     final String placeHolder;
 
     public ScenarioGridColumn(HeaderMetaData headerMetaData, GridColumnRenderer<String> columnRenderer, double width, boolean isMovable, ScenarioCellTextBoxSingletonDOMElementFactory factory, String placeHolder) {
@@ -56,6 +58,14 @@ public class ScenarioGridColumn extends BaseGridColumn<String> {
         factory.attachDomElement(context,
                                  e -> e.getWidget().setValue(assertCell(cell).getValue().getValue()),
                                  e -> e.getWidget().setFocus(true));
+    }
+
+    public boolean isReadOnly() {
+        return readOnly;
+    }
+
+    public void setReadOnly(boolean readOnly) {
+        this.readOnly = readOnly;
     }
 
     public ScenarioHeaderMetaData getInformationHeaderMetaData() {

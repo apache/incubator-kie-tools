@@ -20,19 +20,17 @@ import java.util.Date;
 import javax.enterprise.context.Dependent;
 
 import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
+import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridLayer;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
 import org.drools.workbench.screens.scenariosimulation.model.FactMapping;
 import org.drools.workbench.screens.scenariosimulation.model.FactMappingType;
-import org.uberfire.mvp.Command;
-
-import static org.drools.workbench.screens.scenariosimulation.client.utils.ScenarioSimulationUtils.getScenarioGridColumn;
 
 /**
  * <code>Command</code> to <b>delete</b> a column. <b>Eventually</b> add a ne column if the deleted one is the last of its group.
  */
 @Dependent
-public class DeleteColumnCommand implements Command {
+public class DeleteColumnCommand extends AbstractCommand {
 
     private ScenarioGridModel model;
     private int columnIndex;
@@ -64,12 +62,13 @@ public class DeleteColumnCommand implements Command {
         if (model.getGroupSize(columnGroup) < 1) {
             FactMappingType factMappingType = FactMappingType.valueOf(columnGroup.toUpperCase());
             String columnTitle = FactMapping.getPlaceHolder(factMappingType, model.nextColumnCount());
-            model.insertColumn(columnIndex, getScenarioGridColumn(columnTitle,
+            model.insertColumn(columnIndex, getScenarioGridColumnLocal(columnTitle,
                                                                   String.valueOf(new Date().getTime()),
                                                                   columnGroup,
                                                                   factMappingType,
                                                                   scenarioGridPanel,
-                                                                  scenarioGridLayer));
+                                                                  scenarioGridLayer,
+                                                                  ScenarioSimulationEditorConstants.INSTANCE.defineValidType()));
         }
     }
 }

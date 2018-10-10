@@ -295,8 +295,15 @@ public class ScenarioSimulationGridPanelClickHandler implements ClickHandler,
                                                                            ap.getX());
         if (uiColumnIndex == null) {
             return false;
+        }
+        ScenarioGridColumn scenarioGridColumn = (ScenarioGridColumn) scenarioGrid.getModel().getColumns().get(uiColumnIndex);
+        if (scenarioGridColumn == null) {
+            return false;
+        }
+        if (!manageHeaderLeftClick(scenarioGrid, uiColumnIndex, scenarioGridColumn, ap)) {
+            return manageGridLeftClick(scenarioGrid, scenarioGridColumn, ap);
         } else {
-            return manageHeaderLeftClick(scenarioGrid, uiColumnIndex, ap);
+            return true;
         }
     }
 
@@ -305,15 +312,12 @@ public class ScenarioSimulationGridPanelClickHandler implements ClickHandler,
      * otherwise returns <code>false</code>
      * @param scenarioGrid
      * @param uiColumnIndex
+     * @param scenarioGridColumn
      * @param rp
      * @return
      */
-    private boolean manageHeaderLeftClick(ScenarioGrid scenarioGrid, Integer uiColumnIndex, Point2D rp) {
+    private boolean manageHeaderLeftClick(ScenarioGrid scenarioGrid, Integer uiColumnIndex, ScenarioGridColumn scenarioGridColumn, Point2D rp) {
         double gridY = rp.getY();
-        ScenarioGridColumn scenarioGridColumn = (ScenarioGridColumn) scenarioGrid.getModel().getColumns().get(uiColumnIndex);
-        if (scenarioGridColumn == null) {
-            return false;
-        }
         if (!ScenarioSimulationGridHeaderUtilities.hasEditableHeader(scenarioGridColumn)) {
             return false;
         }
@@ -349,5 +353,21 @@ public class ScenarioSimulationGridPanelClickHandler implements ClickHandler,
                 return false;
         }
         return true;
+    }
+
+    /**
+     * This method check if the click happened on an <i>writable</i> column of a <b>grid row</b>. If it is so, start editing the cell,
+     * otherwise returns <code>false</code>
+     * @param scenarioGrid
+     * @param scenarioGridColumn
+     * @param rp
+     * @return
+     */
+    private boolean manageGridLeftClick(ScenarioGrid scenarioGrid, ScenarioGridColumn scenarioGridColumn, Point2D rp) {
+        final Integer uiRowIndex = CoordinateUtilities.getUiRowIndex(scenarioGrid, rp.getY());
+        if (uiRowIndex == null) {
+            return false;
+        }
+        return scenarioGridColumn.isReadOnly() || scenarioGrid.startEditingCell(rp);
     }
 }
