@@ -18,6 +18,7 @@ package org.drools.workbench.screens.scenariosimulation.client.editor;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.screens.scenariosimulation.client.commands.CommandExecutor;
+import org.drools.workbench.screens.scenariosimulation.client.models.FactModelTree;
 import org.drools.workbench.screens.scenariosimulation.client.producers.ScenarioSimulationProducer;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.RightPanelPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.RightPanelView;
@@ -33,6 +34,8 @@ import org.guvnor.messageconsole.client.console.widget.button.AlertsButtonMenuIt
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.soup.project.datamodel.oracle.FieldAccessorsAndMutators;
+import org.kie.soup.project.datamodel.oracle.ModelField;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleFactory;
@@ -56,6 +59,8 @@ import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuItem;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.any;
@@ -144,6 +149,8 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
     @Mock
     private CommandExecutor mockCommandExecutor;
 
+    private static final String SCENARIO_PACKAGE = "scenario.package";
+
     @Before
     public void setup() {
         super.setup();
@@ -182,6 +189,8 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
                 this.path = mockPath;
                 this.rightPanelMenuItem = mockRightPanelMenuItem;
                 this.scenarioGridPanel = mockScenarioGridPanel;
+                this.oracle = mockOracle;
+                this.packageName = SCENARIO_PACKAGE;
             }
 
             @Override
@@ -311,6 +320,36 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
         presenter.onRunScenario();
 
         verify(scenarioSimulationService).runScenario(any(), eq(model));
+    }
+
+    @Test
+    public void getFactModelTree() {
+        String factPackage = "scenario.test";
+        String factName = "FACT_NAME";
+        String fullFactname = factPackage + "." + factName;
+        ModelField modelField1 = new ModelField("this",
+                                                fullFactname,
+                                                ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                                ModelField.FIELD_ORIGIN.SELF,
+                                                FieldAccessorsAndMutators.BOTH,
+                                                fullFactname);
+        ModelField modelField2 = new ModelField("myint",
+                                                int.class.getName(),
+                                                ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                                ModelField.FIELD_ORIGIN.SELF,
+                                                FieldAccessorsAndMutators.BOTH,
+                                                int.class.getName());
+        ModelField[] modelFields = {modelField1, modelField2};
+        when(mockOracle.getFQCNByFactName(factName)).thenReturn(fullFactname);
+        FactModelTree retrieved = presenter.getFactModelTree(factName, modelFields);
+        assertNotNull(retrieved);
+        assertEquals(factName, retrieved.getFactName());
+        assertEquals(factPackage, retrieved.getFullPackage());
+        when(mockOracle.getFQCNByFactName(factName)).thenReturn(null);
+        retrieved = presenter.getFactModelTree(factName, modelFields);
+        assertNotNull(retrieved);
+        assertEquals(factName, retrieved.getFactName());
+        assertEquals(SCENARIO_PACKAGE, retrieved.getFullPackage());
     }
 
     private void onClosePlaceStatusOpen() {

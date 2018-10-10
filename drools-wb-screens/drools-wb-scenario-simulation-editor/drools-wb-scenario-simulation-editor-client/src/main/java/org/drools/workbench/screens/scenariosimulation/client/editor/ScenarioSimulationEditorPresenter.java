@@ -92,7 +92,7 @@ public class ScenarioSimulationEditorPresenter
 
     private ScenarioSimulationResourceType type;
 
-    private AsyncPackageDataModelOracle oracle;
+    AsyncPackageDataModelOracle oracle;
 
     private ScenarioSimulationView view;
 
@@ -101,7 +101,7 @@ public class ScenarioSimulationEditorPresenter
     private Command populateRightPanelCommand;
 
     //Package for which this Scenario Simulation relates
-    private String packageName = "";
+    String packageName = "";
 
     RightPanelMenuItem rightPanelMenuItem;
 
@@ -329,6 +329,43 @@ public class ScenarioSimulationEditorPresenter
         return MarshallingWrapper.toJSON(model);
     }
 
+    /**
+     * This <code>Callback</code> will receive <code>ModelField[]</code> from <code>AsyncPackageDataModelOracleFactory.getFieldCompletions(final String,
+     * final Callback&lt;ModelField[]&gt;)</code>; build a <code>FactModelTree</code> from them, and send it to the
+     * given <code>Callback&lt;FactModelTree&gt;</code> aggregatorCallback
+     * @param factName
+     * @param aggregatorCallback
+     * @return
+     */
+    protected Callback<ModelField[]> fieldCompletionsCallback(String factName, Callback<FactModelTree> aggregatorCallback) {
+        return result -> {
+            FactModelTree toSend = getFactModelTree(factName, result);
+            aggregatorCallback.callback(toSend);
+        };
+    }
+
+    /**
+     * Create a <code>FactModelTree</code> for a given <b>factName</b> populating it with the given
+     * <code>ModelField[]</code>
+     * @param factName
+     * @param modelFields
+     * @return
+     */
+    protected FactModelTree getFactModelTree(String factName, ModelField[] modelFields) {
+        Map<String, String> simpleProperties = new HashMap<>();
+        for (ModelField modelField : modelFields) {
+            if (!modelField.getName().equals("this")) {
+                simpleProperties.put(modelField.getName(), modelField.getClassName());
+            }
+        }
+        String factPackageName = packageName;
+        String fullFactClassName = oracle.getFQCNByFactName(factName);
+        if (fullFactClassName != null && fullFactClassName.contains(".")) {
+            factPackageName = fullFactClassName.substring(0, fullFactClassName.lastIndexOf("."));
+        }
+        return new FactModelTree(factName, factPackageName, simpleProperties);
+    }
+
     private RemoteCallback<ScenarioSimulationModelContent> getModelSuccessCallback() {
         return content -> {
             //Path is set to null when the Editor is closed (which can happen before async calls complete).
@@ -354,27 +391,6 @@ public class ScenarioSimulationEditorPresenter
 
     private void addRightPanelMenuItem(final FileMenuBuilder fileMenuBuilder) {
         fileMenuBuilder.addNewTopLevelMenu(rightPanelMenuItem);
-    }
-
-    /**
-     * This <code>Callback</code> will receive <code>ModelField[]</code> from <code>AsyncPackageDataModelOracleFactory.getFieldCompletions(final String,
-     * final Callback&lt;ModelField[]&gt;)</code>; build a <code>FactModelTree</code> from them, and send it to the
-     * given <code>Callback&lt;FactModelTree&gt;</code> aggregatorCallback
-     * @param factName
-     * @param aggregatorCallback
-     * @return
-     */
-    private Callback<ModelField[]> fieldCompletionsCallback(String factName, Callback<FactModelTree> aggregatorCallback) {
-        return result -> {
-            Map<String, String> simpleProperties = new HashMap<>();
-            for (ModelField modelField : result) {
-                if (!modelField.getName().equals("this")) {
-                    simpleProperties.put(modelField.getName(), modelField.getClassName());
-                }
-            }
-            FactModelTree toSend = new FactModelTree(factName, packageName, simpleProperties);
-            aggregatorCallback.callback(toSend);
-        };
     }
 
     /**
