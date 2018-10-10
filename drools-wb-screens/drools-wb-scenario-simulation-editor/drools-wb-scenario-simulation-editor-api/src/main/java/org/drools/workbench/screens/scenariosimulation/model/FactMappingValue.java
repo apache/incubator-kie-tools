@@ -16,7 +16,6 @@
 package org.drools.workbench.screens.scenariosimulation.model;
 
 import java.util.Objects;
-import java.util.Optional;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 
@@ -29,10 +28,6 @@ public class FactMappingValue {
     private FactIdentifier factIdentifier;
     private ExpressionIdentifier expressionIdentifier;
     private Object rawValue;
-    /**
-     * Each mapping value is bound with an operator. Default is equals that can be used as assignment in an "GIVEN" value or as equality check with "EXPECTED"
-     */
-    private FactMappingValueOperator operator = FactMappingValueOperator.EQUALS;
 
     public FactMappingValue() {
     }
@@ -41,11 +36,6 @@ public class FactMappingValue {
         this.factIdentifier = Objects.requireNonNull(factIdentifier, "FactIdentifier has to be not null");
         this.expressionIdentifier = Objects.requireNonNull(expressionIdentifier, "ExpressionIdentifier has to be not null");
         this.rawValue = rawValue;
-    }
-
-    public FactMappingValue(FactIdentifier factIdentifier, ExpressionIdentifier expressionIdentifier, Object rawValue, FactMappingValueOperator operator) {
-        this(factIdentifier, expressionIdentifier, rawValue);
-        this.operator = operator;
     }
 
     public void setRawValue(Object rawValue) {
@@ -64,61 +54,11 @@ public class FactMappingValue {
         return rawValue;
     }
 
-    public FactMappingValueOperator getOperator() {
-        this.operator = extractOperator(rawValue);
-        return operator;
-    }
-
-    public Object getCleanValue() {
-        return cleanValue(rawValue);
-    }
-
     FactMappingValue cloneFactMappingValue() {
         FactMappingValue cloned = new FactMappingValue();
         cloned.expressionIdentifier = expressionIdentifier;
         cloned.factIdentifier = factIdentifier;
         cloned.rawValue = rawValue;
         return cloned;
-    }
-
-    public static Object cleanValue(Object rawValue) {
-        if (!(rawValue instanceof String)) {
-            return rawValue;
-        }
-        String value = ((String) rawValue).trim();
-
-        FactMappingValueOperator operator = FactMappingValueOperator.findOperator(value);
-        Optional<String> operatorSymbol = operator.getSymbols().stream().filter(value::startsWith).findFirst();
-        if (operatorSymbol.isPresent()) {
-            String symbolToRemove = operatorSymbol.get();
-            int index = value.indexOf(symbolToRemove);
-            value = value.substring(index + symbolToRemove.length()).trim();
-        }
-
-        String returnValue = value.trim();
-        // empty string is equivalent to null only if there is no operator symbol
-        return "".equals(returnValue) && !operatorSymbol.isPresent() ? null : returnValue;
-    }
-
-    public static FactMappingValueOperator extractOperator(Object rawValue) {
-        if (!(rawValue instanceof String)) {
-            return FactMappingValueOperator.EQUALS;
-        }
-
-        String value = (String) rawValue;
-
-        return FactMappingValueOperator.findOperator(value);
-    }
-
-    public static String getPlaceHolder() {
-        return "Empty value";
-    }
-
-    public static String getPlaceHolder(int index) {
-        return getPlaceHolder() + " " + index;
-    }
-
-    public static String getPlaceHolder(int rowIndex, int colIndex) {
-        return getPlaceHolder() + " " + rowIndex + " " + colIndex;
     }
 }

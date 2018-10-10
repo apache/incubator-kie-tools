@@ -83,7 +83,7 @@ public class ScenarioRunnerImplServiceImplTest {
         when(buildInfo.getKieContainer()).thenReturn(kieContainer);
         final ScenarioSimulationModel scenarioSimulationModel = new ScenarioSimulationModel();
         scenarioSimulationModel.getSimulation().getScenarioByIndex(0).setDescription("testDescription"); // fix the getScenarioByIndex(1)
-        scenarioRunnerService.runTest("test", mock(Path.class),scenarioSimulationModel);
+        scenarioRunnerService.runTest("test", mock(Path.class), scenarioSimulationModel);
         verify(defaultTestResultMessageEvent).fire(any());
     }
 

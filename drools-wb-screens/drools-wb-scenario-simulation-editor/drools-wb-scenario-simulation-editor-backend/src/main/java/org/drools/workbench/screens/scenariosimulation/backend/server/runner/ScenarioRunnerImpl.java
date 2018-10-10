@@ -18,6 +18,7 @@ package org.drools.workbench.screens.scenariosimulation.backend.server.runner;
 
 import java.util.List;
 
+import org.drools.workbench.screens.scenariosimulation.backend.server.expression.ExpressionEvaluator;
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.ScenarioResult;
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.ScenarioRunnerData;
 import org.drools.workbench.screens.scenariosimulation.model.Scenario;
@@ -77,14 +78,16 @@ public class ScenarioRunnerImpl extends AbstractScenarioRunner {
         singleNotifier.fireTestStarted();
 
         try {
-            extractGivenValues(simulationDescriptor, scenario.getUnmodifiableFactMappingValues(), getClassLoader()).forEach(scenarioRunnerData::addInput);
+            ExpressionEvaluator expressionEvaluator = createExpressionEvaluator();
+            extractGivenValues(simulationDescriptor, scenario.getUnmodifiableFactMappingValues(), getClassLoader(), expressionEvaluator)
+                    .forEach(scenarioRunnerData::addInput);
             extractExpectedValues(scenario.getUnmodifiableFactMappingValues()).forEach(scenarioRunnerData::addOutput);
 
             executeScenario(kieContainer, scenarioRunnerData.getInputData());
             List<ScenarioResult> scenarioResults = verifyConditions(simulationDescriptor,
                                                                     scenarioRunnerData.getInputData(),
                                                                     scenarioRunnerData.getOutputData(),
-                                                                    getClassLoader());
+                                                                    expressionEvaluator);
             validateAssertion(scenarioResults, scenario, singleNotifier);
 
             scenarioResults.forEach(scenarioRunnerData::addResult);

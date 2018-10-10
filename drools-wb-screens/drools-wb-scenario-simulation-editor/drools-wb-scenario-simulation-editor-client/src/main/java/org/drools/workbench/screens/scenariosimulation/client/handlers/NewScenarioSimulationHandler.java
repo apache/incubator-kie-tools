@@ -107,7 +107,7 @@ public class NewScenarioSimulationHandler
                        final NewResourcePresenter presenter) {
         busyIndicatorView.showBusyIndicator(CommonConstants.INSTANCE.Saving());
         scenarioSimulationService.call(getSuccessCallback(presenter),
-                                       new HasBusyIndicatorDefaultErrorCallback(busyIndicatorView)).create(pkg.getPackageMainResourcesPath(),
+                                       new HasBusyIndicatorDefaultErrorCallback(busyIndicatorView)).create(pkg.getPackageTestResourcesPath(),
                                                                                                            buildFileName(baseFileName,
                                                                                                                          resourceType),
                                                                                                            new ScenarioSimulationModel(),

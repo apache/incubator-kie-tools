@@ -17,6 +17,7 @@
 package org.drools.workbench.screens.scenariosimulation.backend.server.util;
 
 import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -24,6 +25,16 @@ import java.util.Optional;
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.ScenarioException;
 
 public class ScenarioBeanUtil {
+
+    private static final Map<String, Class<?>> primitiveMap = new HashMap<>();
+
+    static {
+        primitiveMap.put("boolean", boolean.class);
+        primitiveMap.put("int", int.class);
+        primitiveMap.put("long", long.class);
+        primitiveMap.put("double", double.class);
+        primitiveMap.put("float", float.class);
+    }
 
     private ScenarioBeanUtil() {
     }
@@ -115,14 +126,6 @@ public class ScenarioBeanUtil {
         return value;
     }
 
-    private static <T> Class<T> loadClass(String className, ClassLoader classLoader) {
-        try {
-            return (Class<T>) classLoader.loadClass(className);
-        } catch (ClassNotFoundException e) {
-            throw new ScenarioException(new StringBuilder().append("Impossible to load class ").append(className).toString(), e);
-        }
-    }
-
     private static <T> T newInstance(Class<T> clazz) {
         try {
             return clazz.newInstance();
@@ -130,5 +133,56 @@ public class ScenarioBeanUtil {
             throw new ScenarioException(new StringBuilder().append("Class ").append(clazz.getCanonicalName())
                                                 .append(" has no empty constructor").toString(), e);
         }
+    }
+
+    public static Object convertValue(String className, Object cleanValue, ClassLoader classLoader) {
+        Class<?> clazz = loadClass(className, classLoader);
+
+        // if it is not a String, it has to be an instance of the desired type
+        if (!(cleanValue instanceof String)) {
+            if (clazz.isInstance(cleanValue)) {
+                return cleanValue;
+            }
+            if (!isPrimitive(className) && cleanValue == null) {
+                return null;
+            }
+            throw new IllegalArgumentException(new StringBuilder().append("Object ").append(cleanValue)
+                                                       .append(" is not a String or an instance of ").append(className).toString());
+        }
+
+        String value = (String) cleanValue;
+
+        if (clazz.isAssignableFrom(String.class)) {
+            return value;
+        } else if (clazz.isAssignableFrom(Boolean.class) || clazz.isAssignableFrom(boolean.class)) {
+            return Boolean.parseBoolean(value);
+        } else if (clazz.isAssignableFrom(Integer.class) || clazz.isAssignableFrom(int.class)) {
+            return Integer.parseInt(value);
+        } else if (clazz.isAssignableFrom(Long.class) || clazz.isAssignableFrom(long.class)) {
+            return Long.parseLong(value);
+        } else if (clazz.isAssignableFrom(Double.class) || clazz.isAssignableFrom(double.class)) {
+            return Double.parseDouble(value);
+        } else if (clazz.isAssignableFrom(Float.class) || clazz.isAssignableFrom(float.class)) {
+            return Float.parseFloat(value);
+        }
+
+        throw new IllegalArgumentException(new StringBuilder().append("Class ").append(className)
+                                                   .append(" is not supported").toString());
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T> Class<T> loadClass(String className, ClassLoader classLoader) {
+        if (primitiveMap.containsKey(className)) {
+            return (Class<T>) primitiveMap.get(className);
+        }
+        try {
+            return (Class<T>) classLoader.loadClass(className);
+        } catch (ClassNotFoundException | NullPointerException e) {
+            throw new ScenarioException(new StringBuilder().append("Impossible to load class ").append(className).toString(), e);
+        }
+    }
+
+    private static boolean isPrimitive(String className) {
+        return primitiveMap.containsKey(className);
     }
 }

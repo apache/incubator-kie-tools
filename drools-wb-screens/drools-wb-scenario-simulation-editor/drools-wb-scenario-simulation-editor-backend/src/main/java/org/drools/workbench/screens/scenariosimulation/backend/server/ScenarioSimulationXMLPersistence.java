@@ -24,7 +24,6 @@ import org.drools.workbench.screens.scenariosimulation.model.FactIdentifier;
 import org.drools.workbench.screens.scenariosimulation.model.FactMapping;
 import org.drools.workbench.screens.scenariosimulation.model.FactMappingType;
 import org.drools.workbench.screens.scenariosimulation.model.FactMappingValue;
-import org.drools.workbench.screens.scenariosimulation.model.FactMappingValueOperator;
 import org.drools.workbench.screens.scenariosimulation.model.Scenario;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModelContent;
@@ -49,7 +48,6 @@ public class ScenarioSimulationXMLPersistence {
         xt.alias("FactMapping", FactMapping.class);
         xt.alias("FactMappingType", FactMappingType.class);
         xt.alias("FactMappingValue", FactMappingValue.class);
-        xt.alias("FactMappingValueOperator", FactMappingValueOperator.class);
         xt.alias("Scenario", Scenario.class);
         xt.alias("ScenarioSimulationModel", ScenarioSimulationModel.class);
         xt.alias("ScenarioSimulationModelContent", ScenarioSimulationModelContent.class);

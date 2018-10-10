@@ -19,66 +19,11 @@ package org.drools.workbench.screens.scenariosimulation.model;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 public class FactMappingValueTest {
 
     @Test
-    public void cleanValue() {
-        Object rawValue = "Test";
-        assertEquals(rawValue, FactMappingValue.cleanValue(rawValue));
-
-        rawValue = " Test ";
-        assertEquals(((String) rawValue).trim(), FactMappingValue.cleanValue(rawValue));
-
-        rawValue = "= Test ";
-        assertEquals("Test", FactMappingValue.cleanValue(rawValue));
-
-        rawValue = " != Test ";
-        assertEquals("Test", FactMappingValue.cleanValue(rawValue));
-
-        rawValue = new Object();
-        assertEquals(rawValue, FactMappingValue.cleanValue(rawValue));
-    }
-
-    @Test
-    public void cleanValueEmptyAndNullString() {
-        Object rawValue = "";
-        assertNull(FactMappingValue.cleanValue(rawValue));
-
-        rawValue = null;
-        assertNull(FactMappingValue.cleanValue(rawValue));
-
-        rawValue = " =  ";
-        assertEquals("", FactMappingValue.cleanValue(rawValue));
-    }
-
-    @Test
-    public void extractOperator() {
-        Object rawValue = "Test";
-        assertEquals(FactMappingValueOperator.EQUALS, FactMappingValue.extractOperator(rawValue));
-
-        rawValue = " Test ";
-        assertEquals(FactMappingValueOperator.EQUALS, FactMappingValue.extractOperator(rawValue));
-
-        rawValue = "= Test ";
-        assertEquals(FactMappingValueOperator.EQUALS, FactMappingValue.extractOperator(rawValue));
-
-        rawValue = "!= Test ";
-        assertEquals(FactMappingValueOperator.NOT_EQUALS, FactMappingValue.extractOperator(rawValue));
-
-        rawValue = new Object();
-        assertEquals(FactMappingValueOperator.EQUALS, FactMappingValue.extractOperator(rawValue));
-    }
-
-    @Test
-    public void checkOperator() {
-        FactMappingValue factMappingValue = new FactMappingValue(FactIdentifier.DESCRIPTION, ExpressionIdentifier.DESCRIPTION, null);
-        assertEquals(FactMappingValueOperator.EQUALS, factMappingValue.getOperator());
-        factMappingValue = new FactMappingValue(FactIdentifier.DESCRIPTION, ExpressionIdentifier.DESCRIPTION, "!= value");
-        assertEquals(FactMappingValueOperator.NOT_EQUALS, factMappingValue.getOperator());
-
+    public void emptyFactMappingValue() {
         assertThatThrownBy(() -> new FactMappingValue(null, ExpressionIdentifier.DESCRIPTION, null))
                 .isInstanceOf(NullPointerException.class)
                 .hasMessage("FactIdentifier has to be not null");

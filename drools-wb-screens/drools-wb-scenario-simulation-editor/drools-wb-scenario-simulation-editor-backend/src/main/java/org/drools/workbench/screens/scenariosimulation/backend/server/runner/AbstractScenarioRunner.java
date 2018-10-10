@@ -16,11 +16,16 @@
 
 package org.drools.workbench.screens.scenariosimulation.backend.server.runner;
 
+import java.util.function.Function;
+
+import org.drools.workbench.screens.scenariosimulation.backend.server.expression.BaseExpressionEvaluator;
+import org.drools.workbench.screens.scenariosimulation.backend.server.expression.ExpressionEvaluator;
 import org.junit.runner.Runner;
 
 public abstract class AbstractScenarioRunner extends Runner {
 
     private ClassLoader classLoader = AbstractScenarioRunner.class.getClassLoader();
+    private Function<ClassLoader, ExpressionEvaluator> expressionEvaluatorFactory = BaseExpressionEvaluator::new;
 
     public ClassLoader getClassLoader() {
         return classLoader;
@@ -28,5 +33,13 @@ public abstract class AbstractScenarioRunner extends Runner {
 
     public void setClassLoader(ClassLoader classLoader) {
         this.classLoader = classLoader;
+    }
+
+    public ExpressionEvaluator createExpressionEvaluator() {
+        return expressionEvaluatorFactory.apply(getClassLoader());
+    }
+
+    public void setExpressionEvaluatorFactory(Function<ClassLoader, ExpressionEvaluator> expressionEvaluatorFactory) {
+        this.expressionEvaluatorFactory = expressionEvaluatorFactory;
     }
 }

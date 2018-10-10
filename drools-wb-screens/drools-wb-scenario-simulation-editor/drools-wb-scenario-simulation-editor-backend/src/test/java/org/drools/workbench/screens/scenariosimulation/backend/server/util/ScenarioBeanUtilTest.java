@@ -28,9 +28,12 @@ import org.drools.workbench.screens.scenariosimulation.backend.server.model.Disp
 import org.drools.workbench.screens.scenariosimulation.backend.server.model.NotEmptyConstructor;
 import org.drools.workbench.screens.scenariosimulation.backend.server.model.Person;
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.ScenarioException;
+import org.drools.workbench.screens.scenariosimulation.backend.server.runner.ScenarioRunnerHelperTest;
 import org.junit.Test;
 
+import static org.drools.workbench.screens.scenariosimulation.backend.server.util.ScenarioBeanUtil.convertValue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public class ScenarioBeanUtilTest {
@@ -73,6 +76,14 @@ public class ScenarioBeanUtilTest {
         paramsToSet.put(Arrays.asList("fakeField"), null);
 
         ScenarioBeanUtil.fillBean(Dispute.class.getCanonicalName(), paramsToSet, classLoader);
+    }
+
+    @Test(expected = ScenarioException.class)
+    public void fillBeanFailNullClassTest() {
+        Map<List<String>, Object> paramsToSet = new HashMap<>();
+        paramsToSet.put(Arrays.asList("fakeField"), null);
+
+        ScenarioBeanUtil.fillBean(null, paramsToSet, classLoader);
     }
 
     @Test
@@ -124,5 +135,41 @@ public class ScenarioBeanUtilTest {
         Assertions.assertThatThrownBy(() -> ScenarioBeanUtil.navigateToObject(dispute, pathToProperty, false))
                 .isInstanceOf(ScenarioException.class)
                 .hasMessage(message);
+    }
+
+    @Test
+    public void convertValueTest() {
+        assertEquals("Test", convertValue(String.class.getCanonicalName(), "Test", classLoader));
+        assertEquals(false, convertValue(boolean.class.getCanonicalName(), "false", classLoader));
+        assertEquals(true, convertValue(Boolean.class.getCanonicalName(), "true", classLoader));
+        assertEquals(1, convertValue(int.class.getCanonicalName(), "1", classLoader));
+        assertEquals(1, convertValue(Integer.class.getCanonicalName(), "1", classLoader));
+        assertEquals(1L, convertValue(long.class.getCanonicalName(), "1", classLoader));
+        assertEquals(1L, convertValue(Long.class.getCanonicalName(), "1", classLoader));
+        assertEquals(1.0D, convertValue(double.class.getCanonicalName(), "1.0", classLoader));
+        assertEquals(1.0D, convertValue(Double.class.getCanonicalName(), "1.0", classLoader));
+        assertEquals(1.0F, convertValue(float.class.getCanonicalName(), "1.0", classLoader));
+        assertEquals(1.0F, convertValue(Float.class.getCanonicalName(), "1.0", classLoader));
+        assertNull(convertValue(Float.class.getCanonicalName(), null, classLoader));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void convertValueFailLoadClassTest() {
+        convertValue("my.NotExistingClass", "Test", classLoader);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void convertValueFailUnsupportedTest() {
+        convertValue(ScenarioRunnerHelperTest.class.getCanonicalName(), "Test", classLoader);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void convertValueFailPrimitiveNullTest() {
+        convertValue("int", null, classLoader);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void convertValueFailNotStringOrTypeTest() {
+        convertValue(ScenarioRunnerHelperTest.class.getCanonicalName(), 1, classLoader);
     }
 }

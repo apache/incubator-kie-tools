@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.drools.workbench.screens.scenariosimulation.backend.server.OperatorEvaluator;
+import org.drools.workbench.screens.scenariosimulation.backend.server.expression.ExpressionEvaluator;
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.ScenarioInput;
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.ScenarioOutput;
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.ScenarioResult;
@@ -34,7 +34,6 @@ import org.drools.workbench.screens.scenariosimulation.model.FactIdentifier;
 import org.drools.workbench.screens.scenariosimulation.model.FactMapping;
 import org.drools.workbench.screens.scenariosimulation.model.FactMappingType;
 import org.drools.workbench.screens.scenariosimulation.model.FactMappingValue;
-import org.drools.workbench.screens.scenariosimulation.model.FactMappingValueOperator;
 import org.drools.workbench.screens.scenariosimulation.model.Scenario;
 import org.drools.workbench.screens.scenariosimulation.model.SimulationDescriptor;
 import org.junit.internal.runners.model.EachTestNotifier;
@@ -47,21 +46,14 @@ import static org.drools.workbench.screens.scenariosimulation.backend.server.uti
 
 public class ScenarioRunnerHelper {
 
-    private static final Map<String, Class<?>> primitiveMap = new HashMap<>();
-
-    static {
-        primitiveMap.put("boolean", boolean.class);
-        primitiveMap.put("int", int.class);
-        primitiveMap.put("long", long.class);
-        primitiveMap.put("double", double.class);
-        primitiveMap.put("float", float.class);
-    }
-
     private ScenarioRunnerHelper() {
 
     }
 
-    public static List<ScenarioInput> extractGivenValues(SimulationDescriptor simulationDescriptor, List<FactMappingValue> factMappingValues, ClassLoader classLoader) {
+    public static List<ScenarioInput> extractGivenValues(SimulationDescriptor simulationDescriptor,
+                                                         List<FactMappingValue> factMappingValues,
+                                                         ClassLoader classLoader,
+                                                         ExpressionEvaluator expressionEvaluator) {
         List<ScenarioInput> scenarioInput = new ArrayList<>();
 
         Map<FactIdentifier, List<FactMappingValue>> groupByFactIdentifier =
@@ -75,7 +67,8 @@ public class ScenarioRunnerHelper {
             Map<List<String>, Object> paramsForBean = getParamsForBean(simulationDescriptor,
                                                                        factIdentifier,
                                                                        entry.getValue(),
-                                                                       classLoader);
+                                                                       classLoader,
+                                                                       expressionEvaluator);
 
             Object bean = fillBean(factIdentifier.getClassName(), paramsForBean, classLoader);
 
@@ -110,7 +103,7 @@ public class ScenarioRunnerHelper {
     public static List<ScenarioResult> verifyConditions(SimulationDescriptor simulationDescriptor,
                                                         List<ScenarioInput> inputData,
                                                         List<ScenarioOutput> outputData,
-                                                        ClassLoader classLoader) {
+                                                        ExpressionEvaluator expressionEvaluator) {
         List<ScenarioResult> scenarioResult = new ArrayList<>();
 
         List<FactIdentifier> inputIds = inputData.stream().map(ScenarioInput::getFactIdentifier).collect(Collectors.toList());
@@ -130,7 +123,7 @@ public class ScenarioRunnerHelper {
                 continue;
             }
 
-            scenarioResult.addAll(getScenarioResults(simulationDescriptor, assertionOnFact, input, classLoader));
+            scenarioResult.addAll(getScenarioResults(simulationDescriptor, assertionOnFact, input, expressionEvaluator));
         }
 
         return scenarioResult;
@@ -139,7 +132,7 @@ public class ScenarioRunnerHelper {
     public static List<ScenarioResult> getScenarioResults(SimulationDescriptor simulationDescriptor,
                                                           List<ScenarioOutput> scenarioOutputsPerFact,
                                                           ScenarioInput input,
-                                                          ClassLoader classLoader) {
+                                                          ExpressionEvaluator expressionEvaluator) {
         FactIdentifier factIdentifier = input.getFactIdentifier();
         Object factInstance = input.getValue();
         List<ScenarioResult> scenarioResults = new ArrayList<>();
@@ -147,7 +140,6 @@ public class ScenarioRunnerHelper {
             List<FactMappingValue> expectedResults = scenarioOutput.getExpectedResult();
 
             for (FactMappingValue expectedResult : expectedResults) {
-                FactMappingValueOperator operator = expectedResult.getOperator();
 
                 ExpressionIdentifier expressionIdentifier = expectedResult.getExpressionIdentifier();
 
@@ -155,10 +147,9 @@ public class ScenarioRunnerHelper {
                         .orElseThrow(() -> new IllegalStateException("Wrong expression, this should not happen"));
 
                 List<String> pathToValue = factMapping.getExpressionElements().stream().map(ExpressionElement::getStep).collect(toList());
-                Object expectedValue = convertValue(factMapping.getClassName(), expectedResult.getCleanValue(), classLoader);
                 Object resultValue = ScenarioBeanUtil.navigateToObject(factInstance, pathToValue, false);
 
-                Boolean conditionResult = new OperatorEvaluator().evaluate(operator, resultValue, expectedValue);
+                Boolean conditionResult = expressionEvaluator.evaluate(expectedResult.getRawValue(), resultValue);
 
                 scenarioResults.add(new ScenarioResult(factIdentifier, expectedResult, resultValue, conditionResult));
             }
@@ -185,7 +176,8 @@ public class ScenarioRunnerHelper {
     public static Map<List<String>, Object> getParamsForBean(SimulationDescriptor simulationDescriptor,
                                                              FactIdentifier factIdentifier,
                                                              List<FactMappingValue> factMappingValues,
-                                                             ClassLoader classLoader) {
+                                                             ClassLoader classLoader,
+                                                             ExpressionEvaluator expressionEvaluator) {
         Map<List<String>, Object> paramsForBean = new HashMap<>();
 
         for (FactMappingValue factMappingValue : factMappingValues) {
@@ -197,8 +189,8 @@ public class ScenarioRunnerHelper {
             List<String> pathToField = factMapping.getExpressionElements().stream()
                     .map(ExpressionElement::getStep).collect(toList());
 
-            Object parsedValue = convertValue(factMapping.getClassName(), factMappingValue.getCleanValue(), classLoader);
-            paramsForBean.put(pathToField, parsedValue);
+            Object value = expressionEvaluator.getValueForGiven(factMapping.getClassName(), factMappingValue.getRawValue(), classLoader);
+            paramsForBean.put(pathToField, value);
         }
 
         return paramsForBean;
@@ -222,56 +214,5 @@ public class ScenarioRunnerHelper {
                     .add(factMappingValue);
         }
         return groupByFactIdentifier;
-    }
-
-    public static Object convertValue(String className, Object cleanValue, ClassLoader classLoader) {
-        try {
-            Class<?> clazz = loadClass(className, classLoader);
-
-            // if it is not a String, it has to be an instance of the desired type
-            if (!(cleanValue instanceof String)) {
-                if (clazz.isInstance(cleanValue)) {
-                    return cleanValue;
-                }
-                if (!isPrimitive(className) && cleanValue == null) {
-                    return null;
-                }
-                throw new IllegalArgumentException(new StringBuilder().append("Object ").append(cleanValue)
-                                                           .append(" is not a String or an instance of ").append(className).toString());
-            }
-
-            String value = (String) cleanValue;
-
-            if (clazz.isAssignableFrom(String.class)) {
-                return value;
-            } else if (clazz.isAssignableFrom(Boolean.class) || clazz.isAssignableFrom(boolean.class)) {
-                return Boolean.parseBoolean(value);
-            } else if (clazz.isAssignableFrom(Integer.class) || clazz.isAssignableFrom(int.class)) {
-                return Integer.parseInt(value);
-            } else if (clazz.isAssignableFrom(Long.class) || clazz.isAssignableFrom(long.class)) {
-                return Long.parseLong(value);
-            } else if (clazz.isAssignableFrom(Double.class) || clazz.isAssignableFrom(double.class)) {
-                return Double.parseDouble(value);
-            } else if (clazz.isAssignableFrom(Float.class) || clazz.isAssignableFrom(float.class)) {
-                return Float.parseFloat(value);
-            }
-
-            throw new IllegalArgumentException(new StringBuilder().append("Class ").append(className)
-                                                       .append(" is not supported").toString());
-        } catch (ClassNotFoundException e) {
-            throw new IllegalArgumentException(new StringBuilder().append("Class ").append(className)
-                                                       .append(" cannot be resolved").toString(), e);
-        }
-    }
-
-    private static Class<?> loadClass(String className, ClassLoader classLoader) throws ClassNotFoundException {
-        if (primitiveMap.containsKey(className)) {
-            return primitiveMap.get(className);
-        }
-        return classLoader.loadClass(className);
-    }
-
-    private static boolean isPrimitive(String className) {
-        return primitiveMap.containsKey(className);
     }
 }
