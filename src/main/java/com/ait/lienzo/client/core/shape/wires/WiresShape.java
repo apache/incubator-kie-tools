@@ -22,6 +22,7 @@ import java.util.Objects;
 import com.ait.lienzo.client.core.event.IAttributesChangedBatcher;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.MultiPath;
+import com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleType;
 import com.ait.lienzo.client.core.shape.wires.MagnetManager.Magnets;
 import com.ait.lienzo.client.core.shape.wires.event.WiresResizeEndEvent;
 import com.ait.lienzo.client.core.shape.wires.event.WiresResizeEndHandler;
@@ -36,7 +37,6 @@ import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleType;
 
 
 public class WiresShape extends WiresContainer
@@ -304,7 +304,7 @@ public class WiresShape extends WiresContainer
 
         WiresShape that = (WiresShape) o;
 
-        return getGroup().uuid() == that.getGroup().uuid();
+        return getGroup().uuid().equals(that.getGroup().uuid());
     }
 
     @Override public int hashCode()

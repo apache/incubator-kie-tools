@@ -7,13 +7,13 @@ public class OnEventHandlers
 {
     private OnMouseEventHandler m_onMouseDownEventHandle = DefaultOnMouseEventHandler.INSTANCE;
 
-    private OnMouseEventHandler m_onMouseUpEventHandle = DefaultOnMouseEventHandler.INSTANCE;;
+    private OnMouseEventHandler m_onMouseUpEventHandle = DefaultOnMouseEventHandler.INSTANCE;
 
-    private OnMouseEventHandler m_onMouseMoveEventHandle = DefaultOnMouseEventHandler.INSTANCE;;
+    private OnMouseEventHandler m_onMouseMoveEventHandle = DefaultOnMouseEventHandler.INSTANCE;
 
-    private OnMouseEventHandler m_onMouseClickEventHandle = DefaultOnMouseEventHandler.INSTANCE;;
+    private OnMouseEventHandler m_onMouseClickEventHandle = DefaultOnMouseEventHandler.INSTANCE;
 
-    private OnMouseEventHandler m_onMouseDoubleClickEventHandle = DefaultOnMouseEventHandler.INSTANCE;;
+    private OnMouseEventHandler m_onMouseDoubleClickEventHandle = DefaultOnMouseEventHandler.INSTANCE;
 
     public OnMouseEventHandler getOnMouseDownEventHandle()
     {
@@ -80,5 +80,14 @@ public class OnEventHandlers
         {
 
         }
+    }
+
+    public void destroy()
+    {
+        m_onMouseDownEventHandle = null;
+        m_onMouseUpEventHandle = null;
+        m_onMouseMoveEventHandle = null;
+        m_onMouseClickEventHandle = null;
+        m_onMouseDoubleClickEventHandle = null;
     }
 }

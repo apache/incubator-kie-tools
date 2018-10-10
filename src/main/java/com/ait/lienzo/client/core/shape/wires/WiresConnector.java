@@ -17,12 +17,25 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
+import java.util.Objects;
+
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.shape.*;
+import com.ait.lienzo.client.core.shape.Group;
+import com.ait.lienzo.client.core.shape.IDirectionalMultiPointShape;
+import com.ait.lienzo.client.core.shape.IPrimitive;
+import com.ait.lienzo.client.core.shape.Layer;
+import com.ait.lienzo.client.core.shape.MultiPath;
+import com.ait.lienzo.client.core.shape.MultiPathDecorator;
+import com.ait.lienzo.client.core.shape.OrthogonalPolyLine;
 import com.ait.lienzo.client.core.shape.wires.event.WiresConnectorPointsChangedEvent;
 import com.ait.lienzo.client.core.shape.wires.event.WiresConnectorPointsChangedHandler;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
-import com.ait.lienzo.client.core.types.*;
+import com.ait.lienzo.client.core.types.BoundingBox;
+import com.ait.lienzo.client.core.types.ImageData;
+import com.ait.lienzo.client.core.types.PathPartEntryJSO;
+import com.ait.lienzo.client.core.types.PathPartList;
+import com.ait.lienzo.client.core.types.Point2D;
+import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.lienzo.shared.core.types.ArrowEnd;
@@ -32,8 +45,6 @@ import com.ait.tooling.nativetools.client.collection.NFastDoubleArrayJSO;
 import com.ait.tooling.nativetools.client.collection.NFastStringMap;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
-
-import java.util.Objects;
 
 import static com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleStandardType.POINT;
 
@@ -317,7 +328,7 @@ public class WiresConnector
     {
         boolean accept = true;
 
-        // Allowed conections has already been checked, but for consistency and notifications will be rechecked via acceptor
+        // Allowed connections has already been checked, but for consistency and notifications will be rechecked via acceptor
         // Will not set a magnet if the connection is already set to that returned magnet
         WiresMagnet[] magnets = getMagnetsOnAutoConnection(headS, tailS);
         if ( magnets != null )

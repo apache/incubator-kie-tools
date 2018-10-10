@@ -220,7 +220,8 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
         @Override
         public boolean onMouseEventBefore(MouseEvent<? extends EventHandler> event)
         {
-            if (!isButtonLeft(event)) {
+            if (!isButtonLeft(event))
+            {
                 return true;
             }
 
@@ -312,7 +313,7 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
             {
                 m_selected.clear();
                 // selection shape is null, for a layer mouse down without any drag
-                if ( getSelectionShape() != null)
+                if (getSelectionShape() != null)
                 {
                     m_ignoreMouseClick = true; // only ignore a mouse click, if there was an actual drag and thus selection shape creation
 
@@ -358,8 +359,10 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
         }
     }
 
-    public void rebuildSelectionArea() {
-        if (m_selected.isEmpty()) {
+    public void rebuildSelectionArea()
+    {
+        if (m_selected.isEmpty())
+        {
             return;
         }
         m_selected.rebuildBoundingBox();
@@ -413,7 +416,8 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
 
     @Override public void onNodeMouseDown(NodeMouseDownEvent event)
     {
-        if (!event.isButtonLeft()) {
+        if (!event.isButtonLeft())
+        {
             return;
         }
 
@@ -430,13 +434,15 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
         }
     }
 
-    public void clearSelection() {
+    public void clearSelection()
+    {
         clearIfSelection();
     }
 
     private void clearIfSelection()
     {
-        if (!isSelectionHandlerRunning()) {
+        if (!isSelectionHandlerRunning())
+        {
             destroySelectionShape();
             m_selected.clear();
             m_selected.notifyListener();
@@ -1090,7 +1096,7 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
     }
 
     /**
-     * returns wheher the connector is connected to a shape not in the selection.
+     * returns whether the connector is connected to a shape not in the selection.
      * As this could be connected to a nested shape, it iterates from that shape (not in the selection) until it finds it's parent in the selection or it returns null.
      * @param connector
      * @return
@@ -1167,11 +1173,7 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
             m_selectMouseDoubleClickHandlerReg = null;
         }
 
-        m_layer.getViewport().getOnEventHandlers().setOnMouseClickEventHandle(null);
-        m_layer.getViewport().getOnEventHandlers().setOnMouseDoubleClickEventHandle(null);
-        m_layer.getViewport().getOnEventHandlers().setOnMouseDownEventHandle(null);
-        m_layer.getViewport().getOnEventHandlers().setOnMouseMoveEventHandle(null);
-        m_layer.getViewport().getOnEventHandlers().setOnMouseUpEventHandle(null);
+        m_layer.getViewport().getOnEventHandlers().destroy();
 
         m_selected.destroy();
         destroySelectionShape();
@@ -1180,9 +1182,6 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
         m_selectionListener = null;
         m_startBoundingBox = null;
         m_start = null;
-        m_startBoundingBox = null;
-        m_startBoundingBox = null;
-        m_startBoundingBox = null;
     }
 
     private double[] calculateSelectionShapeForExternallyConnectedConnectors(int dx, int dy, BoundingBox originalBox)

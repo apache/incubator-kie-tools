@@ -17,14 +17,12 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
-import com.ait.lienzo.client.core.shape.AbstractDirectionalMultiPointShape;
 import com.ait.lienzo.client.core.shape.IDirectionalMultiPointShape;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.shared.core.types.ArrowEnd;
 import com.ait.lienzo.shared.core.types.Direction;
-import com.ait.tooling.nativetools.client.util.Console;
 
 public class WiresConnection extends AbstractControlHandle
 {
@@ -243,7 +241,5 @@ public class WiresConnection extends AbstractControlHandle
     public void destroy()
     {
         super.destroy();
-
-        //        m_context.getHandleManager().destroy(this);
     }
 }
