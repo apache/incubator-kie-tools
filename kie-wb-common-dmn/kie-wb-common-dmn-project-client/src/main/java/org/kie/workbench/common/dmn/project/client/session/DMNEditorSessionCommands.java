@@ -20,6 +20,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.project.client.session.command.SaveDiagramSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.ManagedClientSessionCommands;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ClearSessionCommand;
@@ -40,6 +41,7 @@ import org.kie.workbench.common.stunner.core.client.session.command.impl.VisitGr
 import org.kie.workbench.common.stunner.project.client.session.EditorSessionCommands;
 
 @Dependent
+@DMNEditor
 public class DMNEditorSessionCommands extends EditorSessionCommands {
 
     @Inject

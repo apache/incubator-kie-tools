@@ -17,20 +17,18 @@
 package org.kie.workbench.common.stunner.cm.project.client.editor;
 
 import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Typed;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
-import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectEditorMenuSessionItems;
+import org.kie.workbench.common.stunner.core.client.session.command.ManagedClientSessionCommands;
+import org.kie.workbench.common.stunner.project.client.session.EditorSessionCommands;
 
 @Dependent
-@Typed(CaseManagementProjectEditorMenuSessionItems.class)
-public class CaseManagementProjectEditorMenuSessionItems extends AbstractProjectEditorMenuSessionItems<CaseManagementProjectDiagramEditorMenuItemsBuilder> {
+@CaseManagementEditor
+public class CaseManagementEditorSessionCommands extends EditorSessionCommands {
 
     @Inject
-    public CaseManagementProjectEditorMenuSessionItems(final CaseManagementProjectDiagramEditorMenuItemsBuilder itemsBuilder,
-                                                       final @CaseManagementEditor CaseManagementEditorSessionCommands sessionCommands) {
-        super(itemsBuilder,
-              sessionCommands);
+    public CaseManagementEditorSessionCommands(final ManagedClientSessionCommands commands) {
+        super(commands);
     }
 }

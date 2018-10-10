@@ -20,6 +20,7 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Typed;
 import javax.inject.Inject;
 
+import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.project.client.session.DMNEditorSessionCommands;
 import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectEditorMenuSessionItems;
 
@@ -29,7 +30,7 @@ public class DMNProjectEditorMenuSessionItems extends AbstractProjectEditorMenuS
 
     @Inject
     public DMNProjectEditorMenuSessionItems(final DMNProjectDiagramEditorMenuItemsBuilder itemsBuilder,
-                                            final DMNEditorSessionCommands sessionCommands) {
+                                            final @DMNEditor DMNEditorSessionCommands sessionCommands) {
         super(itemsBuilder,
               sessionCommands);
     }
