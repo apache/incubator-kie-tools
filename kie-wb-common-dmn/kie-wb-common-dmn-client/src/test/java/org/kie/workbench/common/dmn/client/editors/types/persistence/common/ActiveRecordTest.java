@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.editors.types.persistence;
+package org.kie.workbench.common.dmn.client.editors.types.persistence.common;
 
 import java.util.List;
 
@@ -145,7 +145,7 @@ public class ActiveRecordTest {
             }
 
             @Override
-            public Data create(final Data record) {
+            public List<Data> create(final Data record) {
                 return null;
             }
 

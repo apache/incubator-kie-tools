@@ -38,6 +38,9 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
+import static org.kie.workbench.common.dmn.client.editors.types.persistence.CreationType.ABOVE;
+import static org.kie.workbench.common.dmn.client.editors.types.persistence.CreationType.BELOW;
+import static org.kie.workbench.common.dmn.client.editors.types.persistence.CreationType.NESTED;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
@@ -398,6 +401,99 @@ public class DataTypeListItemTest {
 
         verify(dataTypeList).removeItem(dataType0);
         assertEquals(expectedDataTypes, actualDataTypes);
+    }
+
+    @Test
+    public void testInsertFieldAboveWhenTheNewDataTypeIsTopLevel() {
+
+        final DataType newDataType = mock(DataType.class);
+        final DataType reference = mock(DataType.class);
+        final List<DataType> updatedDataTypes = asList(mock(DataType.class), mock(DataType.class));
+
+        when(newDataType.isTopLevel()).thenReturn(true);
+        when(newDataType.create(reference, ABOVE)).thenReturn(updatedDataTypes);
+        doReturn(dataTypeManager).when(dataTypeManager).fromNew();
+        doReturn(newDataType).when(dataTypeManager).get();
+        doReturn(reference).when(listItem).getDataType();
+
+        listItem.insertFieldAbove();
+
+        verify(listItem).closeEditMode();
+        verify(dataTypeList).insertAbove(newDataType, reference);
+    }
+
+    @Test
+    public void testInsertFieldAboveWhenTheNewDataTypeIsNotTopLevel() {
+
+        final DataType newDataType = mock(DataType.class);
+        final DataType reference = mock(DataType.class);
+        final List<DataType> updatedDataTypes = asList(mock(DataType.class), mock(DataType.class));
+
+        when(newDataType.isTopLevel()).thenReturn(false);
+        when(newDataType.create(reference, ABOVE)).thenReturn(updatedDataTypes);
+        doReturn(dataTypeManager).when(dataTypeManager).fromNew();
+        doReturn(newDataType).when(dataTypeManager).get();
+        doReturn(reference).when(listItem).getDataType();
+
+        listItem.insertFieldAbove();
+
+        verify(listItem).closeEditMode();
+        verify(dataTypeList).refreshItemsByUpdatedDataTypes(updatedDataTypes);
+    }
+
+    @Test
+    public void testInsertFieldBelowWhenTheNewDataTypeIsTopLevel() {
+
+        final DataType newDataType = mock(DataType.class);
+        final DataType reference = mock(DataType.class);
+        final List<DataType> updatedDataTypes = asList(mock(DataType.class), mock(DataType.class));
+
+        when(newDataType.isTopLevel()).thenReturn(true);
+        when(newDataType.create(reference, BELOW)).thenReturn(updatedDataTypes);
+        doReturn(dataTypeManager).when(dataTypeManager).fromNew();
+        doReturn(newDataType).when(dataTypeManager).get();
+        doReturn(reference).when(listItem).getDataType();
+
+        listItem.insertFieldBelow();
+
+        verify(listItem).closeEditMode();
+        verify(dataTypeList).insertBelow(newDataType, reference);
+    }
+
+    @Test
+    public void testInsertFieldBelowWhenTheNewDataTypeIsNotTopLevel() {
+
+        final DataType newDataType = mock(DataType.class);
+        final DataType reference = mock(DataType.class);
+        final List<DataType> updatedDataTypes = asList(mock(DataType.class), mock(DataType.class));
+
+        when(newDataType.isTopLevel()).thenReturn(false);
+        when(newDataType.create(reference, BELOW)).thenReturn(updatedDataTypes);
+        doReturn(dataTypeManager).when(dataTypeManager).fromNew();
+        doReturn(newDataType).when(dataTypeManager).get();
+        doReturn(reference).when(listItem).getDataType();
+
+        listItem.insertFieldBelow();
+
+        verify(listItem).closeEditMode();
+        verify(dataTypeList).refreshItemsByUpdatedDataTypes(updatedDataTypes);
+    }
+
+    @Test
+    public void testInsertNestedField() {
+
+        final DataType newDataType = mock(DataType.class);
+        final DataType reference = mock(DataType.class);
+        final List<DataType> updatedDataTypes = asList(mock(DataType.class), mock(DataType.class));
+
+        when(newDataType.create(reference, NESTED)).thenReturn(updatedDataTypes);
+        doReturn(dataTypeManager).when(dataTypeManager).fromNew();
+        doReturn(newDataType).when(dataTypeManager).get();
+        doReturn(reference).when(listItem).getDataType();
+
+        listItem.insertNestedField();
+
+        verify(dataTypeList).refreshItemsByUpdatedDataTypes(updatedDataTypes);
     }
 
     private DataType makeDataType() {

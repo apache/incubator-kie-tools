@@ -163,14 +163,34 @@ public class DataTypeList {
 
     void addDataType() {
 
-        final DataTypeListItem listItem = makeListItem();
-        final DataType dataType = dataTypeManager.fromNew().get().create();
+        final DataType dataType = dataTypeManager.fromNew().get();
+        final DataTypeListItem listItem = makeListItem(dataType);
 
-        listItem.setupDataType(dataType, 1);
+        dataType.create();
 
         view.addSubItem(listItem);
 
         listItem.enableEditMode();
+    }
+
+    public void insertBelow(final DataType dataType,
+                            final DataType reference) {
+        view.insertBelow(makeListItem(dataType), reference);
+    }
+
+    public void insertAbove(final DataType dataType,
+                            final DataType reference) {
+        view.insertAbove(makeListItem(dataType), reference);
+    }
+
+    DataTypeListItem makeListItem(final DataType dataType) {
+
+        final DataTypeListItem listItem = makeListItem();
+
+        listItem.setupDataType(dataType, 1);
+        getItems().add(listItem);
+
+        return listItem;
     }
 
     public interface View extends UberElemental<DataTypeList>,
@@ -184,5 +204,11 @@ public class DataTypeList {
         void addSubItem(final DataTypeListItem listItem);
 
         void removeItem(final DataType dataType);
+
+        void insertBelow(final DataTypeListItem listItem,
+                         final DataType reference);
+
+        void insertAbove(final DataTypeListItem listItem,
+                         final DataType reference);
     }
 }

@@ -67,7 +67,7 @@ public class DataTypeNameValidator {
 
     public boolean isNotUnique(final DataType dataType) {
 
-        List<DataType> siblings = siblings(dataType);
+        final List<DataType> siblings = siblings(dataType);
         return siblings.stream().anyMatch(sibling -> {
 
             final boolean isNameEquals = Objects.equals(sibling.getName(), dataType.getName());

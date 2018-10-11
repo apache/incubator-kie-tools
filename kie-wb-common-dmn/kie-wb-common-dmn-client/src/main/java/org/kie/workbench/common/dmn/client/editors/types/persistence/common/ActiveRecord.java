@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.editors.types.persistence;
+package org.kie.workbench.common.dmn.client.editors.types.persistence.common;
 
 import java.util.List;
 import java.util.Optional;
@@ -38,7 +38,7 @@ public abstract class ActiveRecord<T> {
         return getRecordEngine().destroy(getRecord());
     }
 
-    public T create() {
+    public List<T> create() {
         return getRecordEngine().create(getRecord());
     }
 

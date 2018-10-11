@@ -25,6 +25,11 @@ public class ElementHelper {
         referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
     }
 
+    public static void insertBefore(final Node newNode,
+                                    final Node referenceNode) {
+        referenceNode.parentNode.insertBefore(newNode, referenceNode);
+    }
+
     public static void remove(final Node element) {
         element.parentNode.removeChild(element);
     }

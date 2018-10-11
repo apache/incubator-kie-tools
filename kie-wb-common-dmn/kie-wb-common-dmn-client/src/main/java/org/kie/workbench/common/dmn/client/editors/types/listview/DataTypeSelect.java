@@ -79,6 +79,7 @@ public class DataTypeSelect {
     }
 
     void enableEditMode() {
+        refresh();
         view.enableEditMode();
     }
 

@@ -20,12 +20,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import org.kie.workbench.common.dmn.client.editors.types.persistence.ActiveRecord;
-import org.kie.workbench.common.dmn.client.editors.types.persistence.ItemDefinitionRecordEngine;
+import org.kie.workbench.common.dmn.client.editors.types.persistence.DataTypeActiveRecord;
+import org.kie.workbench.common.dmn.client.editors.types.persistence.common.RecordEngine;
 
-public class DataType extends ActiveRecord<DataType> {
+public class DataType extends DataTypeActiveRecord {
 
-    static final String TOP_LEVEL_PARENT_UUID = "";
+    public static final String TOP_LEVEL_PARENT_UUID = "";
 
     private String uuid;
 
@@ -37,7 +37,7 @@ public class DataType extends ActiveRecord<DataType> {
 
     private List<DataType> subDataTypes = new ArrayList<>();
 
-    public DataType(final ItemDefinitionRecordEngine recordEngine) {
+    public DataType(final RecordEngine<DataType> recordEngine) {
         super(recordEngine);
     }
 

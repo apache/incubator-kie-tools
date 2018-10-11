@@ -41,6 +41,20 @@ public class ElementHelperTest {
     }
 
     @Test
+    public void testInsertBefore() {
+
+        final Node newNode = mock(Node.class);
+        final Node referenceNode = mock(Node.class);
+        final Node parentNode = mock(Node.class);
+
+        referenceNode.parentNode = parentNode;
+
+        ElementHelper.insertBefore(newNode, referenceNode);
+
+        verify(parentNode).insertBefore(newNode, referenceNode);
+    }
+
+    @Test
     public void testRemove() {
 
         final Node node = mock(Node.class);

@@ -45,7 +45,6 @@ import static org.kie.workbench.common.dmn.client.editors.types.common.HiddenHel
 import static org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItemView.ARROW_BUTTON_SELECTOR;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItemView.PARENT_UUID_ATTR;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItemView.UUID_ATTR;
-import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ElementHelper.insertAfter;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ElementHelper.remove;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.JQuery.$;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper.isRightArrow;
@@ -119,7 +118,7 @@ public class DataTypeListView implements DataTypeList.View {
 
             hideItemElementIfParentIsCollapsed(itemElement, parent);
 
-            insertAfter(itemElement, parent);
+            ElementHelper.insertAfter(itemElement, parent);
             parent = itemElement;
         }
 
@@ -190,6 +189,22 @@ public class DataTypeListView implements DataTypeList.View {
         }
     }
 
+    @Override
+    public void insertBelow(final DataTypeListItem listItem,
+                            final DataType reference) {
+
+        final Element elementReference = getLastSubDataTypeElement(reference);
+        ElementHelper.insertAfter(listItem.getElement(), elementReference);
+    }
+
+    @Override
+    public void insertAbove(final DataTypeListItem listItem,
+                            final DataType reference) {
+
+        final Element elementReference = getDataTypeRow(reference);
+        ElementHelper.insertBefore(listItem.getElement(), elementReference);
+    }
+
     boolean isCollapsed(final Element arrow) {
         return isRightArrow(arrow);
     }
@@ -224,6 +239,23 @@ public class DataTypeListView implements DataTypeList.View {
 
     Element getDataTypeRow(final DataType dataType) {
         return listItems.querySelector("[" + UUID_ATTR + "=\"" + dataType.getUUID() + "\"]");
+    }
+
+    Element getLastSubDataTypeElement(final DataType reference) {
+        return getLastSubDataTypeElement(getDataTypeRow(reference));
+    }
+
+    Element getLastSubDataTypeElement(final Element element) {
+
+        final String parentUUID = element.getAttribute(UUID_ATTR);
+        final String selector = "[" + PARENT_UUID_ATTR + "=\"" + parentUUID + "\"]";
+        final NodeList<Element> nestedElements = listItems.querySelectorAll(selector);
+
+        if (nestedElements.length == 0) {
+            return element;
+        } else {
+            return getLastSubDataTypeElement(nestedElements.getAt((int) nestedElements.length - 1));
+        }
     }
 
     void scrollTo(final HTMLDivElement listItems,

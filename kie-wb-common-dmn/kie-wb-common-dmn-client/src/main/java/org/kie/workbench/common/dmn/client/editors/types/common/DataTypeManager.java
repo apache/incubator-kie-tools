@@ -117,7 +117,7 @@ public class DataTypeManager {
         return this
                 .newDataType()
                 .withUUID()
-                .withNoName()
+                .withName(none())
                 .withBuiltInType(builtInType);
     }
 
@@ -183,7 +183,7 @@ public class DataTypeManager {
         return this;
     }
 
-    private DataTypeManager withNoName() {
+    public DataTypeManager withNoName() {
         return withUniqueName(none());
     }
 
@@ -310,6 +310,10 @@ public class DataTypeManager {
 
     private String none() {
         return translationService.format(DataTypeManager_None);
+    }
+
+    public DataTypeManager asStructure() {
+        return withType(structure());
     }
 
     DataTypeManager anotherManager() {

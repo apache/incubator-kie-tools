@@ -98,13 +98,22 @@ public class DataTypeListItemViewTest {
     private HTMLAnchorElement removeButton;
 
     @Mock
+    private HTMLAnchorElement insertFieldAbove;
+
+    @Mock
+    private HTMLAnchorElement insertFieldBelow;
+
+    @Mock
+    private HTMLAnchorElement insertNestedField;
+
+    @Mock
     private HTMLDivElement kebabMenu;
 
     private DataTypeListItemView view;
 
     @Before
     public void setup() {
-        view = spy(new DataTypeListItemView(row, level, arrow, nameText, nameInput, type, editButton, saveButton, closeButton, removeButton, kebabMenu));
+        view = spy(new DataTypeListItemView(row, level, arrow, nameText, nameInput, type, editButton, saveButton, closeButton, removeButton, insertFieldAbove, insertFieldBelow, insertNestedField, kebabMenu));
         view.init(presenter);
 
         doReturn(dataTypeListElement).when(view).dataTypeListElement();
@@ -237,6 +246,27 @@ public class DataTypeListItemViewTest {
         view.onArrowClickEvent(mock(ClickEvent.class));
 
         verify(presenter).expandOrCollapseSubTypes();
+    }
+
+    @Test
+    public void testOnInsertFieldAbove() {
+        view.onInsertFieldAbove(mock(ClickEvent.class));
+
+        verify(presenter).insertFieldAbove();
+    }
+
+    @Test
+    public void testOnInsertFieldBelow() {
+        view.onInsertFieldBelow(mock(ClickEvent.class));
+
+        verify(presenter).insertFieldBelow();
+    }
+
+    @Test
+    public void testOnInsertNestedField() {
+        view.onInsertNestedField(mock(ClickEvent.class));
+
+        verify(presenter).insertNestedField();
     }
 
     @Test

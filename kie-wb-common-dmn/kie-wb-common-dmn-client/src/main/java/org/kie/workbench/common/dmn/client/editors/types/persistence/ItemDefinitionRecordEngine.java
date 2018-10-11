@@ -24,6 +24,8 @@ import javax.inject.Inject;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
+import org.kie.workbench.common.dmn.client.editors.types.persistence.common.RecordEngine;
+import org.kie.workbench.common.dmn.client.editors.types.persistence.handlers.DataTypeCreateHandler;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.handlers.DataTypeDestroyHandler;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.handlers.DataTypeUpdateHandler;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.handlers.ItemDefinitionCreateHandler;
@@ -31,11 +33,13 @@ import org.kie.workbench.common.dmn.client.editors.types.persistence.handlers.It
 import org.kie.workbench.common.dmn.client.editors.types.persistence.handlers.ItemDefinitionUpdateHandler;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.validation.DataTypeNameValidator;
 
+import static org.kie.workbench.common.dmn.client.editors.types.persistence.CreationType.NESTED;
+
 /**
  * Implements the {@link RecordEngine} to record a {@link DataType} as a {@link ItemDefinition}.
  */
 @ApplicationScoped
-public class ItemDefinitionRecordEngine implements RecordEngine<DataType> {
+public class ItemDefinitionRecordEngine implements DataTypeRecordEngine {
 
     private final ItemDefinitionStore itemDefinitionStore;
 
@@ -49,6 +53,8 @@ public class ItemDefinitionRecordEngine implements RecordEngine<DataType> {
 
     private final DataTypeUpdateHandler dataTypeUpdateHandler;
 
+    private final DataTypeCreateHandler dataTypeCreateHandler;
+
     private final DataTypeNameValidator dataTypeNameValidator;
 
     @Inject
@@ -58,6 +64,7 @@ public class ItemDefinitionRecordEngine implements RecordEngine<DataType> {
                                       final ItemDefinitionCreateHandler itemDefinitionCreateHandler,
                                       final DataTypeDestroyHandler dataTypeDestroyHandler,
                                       final DataTypeUpdateHandler dataTypeUpdateHandler,
+                                      final DataTypeCreateHandler dataTypeCreateHandler,
                                       final DataTypeNameValidator dataTypeNameValidator) {
         this.itemDefinitionStore = itemDefinitionStore;
         this.itemDefinitionDestroyHandler = itemDefinitionDestroyHandler;
@@ -65,11 +72,13 @@ public class ItemDefinitionRecordEngine implements RecordEngine<DataType> {
         this.itemDefinitionCreateHandler = itemDefinitionCreateHandler;
         this.dataTypeDestroyHandler = dataTypeDestroyHandler;
         this.dataTypeUpdateHandler = dataTypeUpdateHandler;
+        this.dataTypeCreateHandler = dataTypeCreateHandler;
         this.dataTypeNameValidator = dataTypeNameValidator;
     }
 
     @PostConstruct
     public void init() {
+        dataTypeCreateHandler.init(this);
         dataTypeDestroyHandler.init(this);
         dataTypeUpdateHandler.init(this);
     }
@@ -97,8 +106,22 @@ public class ItemDefinitionRecordEngine implements RecordEngine<DataType> {
     }
 
     @Override
-    public DataType create(final DataType dataType) {
-        return itemDefinitionCreateHandler.create(dataType);
+    public List<DataType> create(final DataType dataType) {
+        return dataTypeCreateHandler.append(dataType, itemDefinitionCreateHandler.appendItemDefinition());
+    }
+
+    @Override
+    public List<DataType> create(final DataType record,
+                                 final DataType reference,
+                                 final CreationType creationType) {
+
+        if (creationType == NESTED) {
+            final ItemDefinition nestedItemDefinition = itemDefinitionCreateHandler.insertNestedItemDefinition(reference);
+            return dataTypeCreateHandler.insertNested(record, reference, nestedItemDefinition);
+        } else {
+            final ItemDefinition itemDefinition = itemDefinitionCreateHandler.insertItemDefinition(reference, creationType);
+            return dataTypeCreateHandler.insert(record, reference, creationType, itemDefinition);
+        }
     }
 
     @Override

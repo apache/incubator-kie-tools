@@ -37,6 +37,7 @@ import org.mockito.Mock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper.HIDDEN_CSS_CLASS;
@@ -376,6 +377,82 @@ public class DataTypeListViewTest {
 
         verify(view).cleanSubTypes(uuid);
         verify(parentNode).removeChild(dataTypeElement);
+    }
+
+    @Test
+    public void testInsertBelow() {
+
+        final DataTypeListItem listItem = mock(DataTypeListItem.class);
+        final DataType reference = mock(DataType.class);
+        final HTMLElement listItemElement = mock(HTMLElement.class);
+        final Element lastElement = mock(Element.class);
+
+        when(listItem.getElement()).thenReturn(listItemElement);
+        doReturn(lastElement).when(view).getLastSubDataTypeElement(reference);
+
+        mockStatic(ElementHelper.class);
+
+        view.insertBelow(listItem, reference);
+
+        verifyStatic();
+        ElementHelper.insertAfter(listItemElement, lastElement);
+    }
+
+    @Test
+    public void testInsertAbove() {
+
+        final DataTypeListItem listItem = mock(DataTypeListItem.class);
+        final DataType reference = mock(DataType.class);
+        final HTMLElement listItemElement = mock(HTMLElement.class);
+        final Element element = mock(Element.class);
+
+        when(listItem.getElement()).thenReturn(listItemElement);
+        doReturn(element).when(view).getDataTypeRow(reference);
+
+        mockStatic(ElementHelper.class);
+
+        view.insertAbove(listItem, reference);
+
+        verifyStatic();
+        ElementHelper.insertBefore(listItemElement, element);
+    }
+
+    @Test
+    public void testGetLastSubDataTypeElementWithElement() {
+
+        final String parentUUID = "parentUUID";
+        final Element parentElement = makeElement(parentUUID);
+        final NodeList<Element> children = spy(new NodeList<>());
+        final Element child1 = makeElement("uuid1");
+        final Element child2 = makeElement("uuid2");
+
+        child1.parentNode = parentElement;
+        child2.parentNode = parentElement;
+
+        doReturn(child1).when(children).getAt(0);
+        doReturn(child2).when(children).getAt(1);
+        children.length = 2;
+
+        mockDOMElementsByParentUUID(parentUUID, children);
+
+        final Element lastElement = view.getLastSubDataTypeElement(parentElement);
+
+        assertEquals(child2, lastElement);
+    }
+
+    @Test
+    public void testGetLastSubDataTypeElementWithDataType() {
+
+        final DataType dataType = mock(DataType.class);
+        final Element element = mock(Element.class);
+        final Element expectedElement = mock(Element.class);
+
+        doReturn(element).when(view).getDataTypeRow(dataType);
+        doReturn(expectedElement).when(view).getLastSubDataTypeElement(element);
+
+        final Element actualElement = view.getLastSubDataTypeElement(dataType);
+
+        assertEquals(expectedElement, actualElement);
     }
 
     private HTMLElement makeHTMLElement() {

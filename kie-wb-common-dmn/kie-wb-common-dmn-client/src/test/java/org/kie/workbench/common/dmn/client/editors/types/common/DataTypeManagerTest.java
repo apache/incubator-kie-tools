@@ -540,6 +540,16 @@ public class DataTypeManagerTest {
     }
 
     @Test
+    public void testAsStructure() {
+
+        final DataType dataType = makeDataType("uuid");
+
+        manager.withDataType(dataType).asStructure();
+
+        verify(manager).withType("Structure");
+    }
+
+    @Test
     public void testWithUniqueNameWhenNameIsNotUnique() {
 
         final DataType dataType = makeDataType("uuid1");

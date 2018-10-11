@@ -126,6 +126,7 @@ public class DataTypeSelectTest {
     public void testEnableEditMode() {
         dataTypeSelect.enableEditMode();
 
+        verify(dataTypeSelect).refresh();
         verify(view).enableEditMode();
     }
 

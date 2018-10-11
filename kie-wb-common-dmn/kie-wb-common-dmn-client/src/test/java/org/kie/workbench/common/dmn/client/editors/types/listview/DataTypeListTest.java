@@ -35,6 +35,7 @@ import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
+import static freemarker.template.utility.Collections12.singletonList;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -367,17 +368,61 @@ public class DataTypeListTest {
         final DataTypeListItem listItem = mock(DataTypeListItem.class);
         final DataType dataType = mock(DataType.class);
 
-        when(dataType.create()).thenReturn(dataType);
         when(dataTypeManager.fromNew()).thenReturn(dataTypeManager);
         when(dataTypeManager.get()).thenReturn(dataType);
-        doReturn(listItem).when(dataTypeList).makeListItem();
+        doReturn(listItem).when(dataTypeList).makeListItem(dataType);
 
         dataTypeList.addDataType();
 
         verify(dataType).create();
-        verify(listItem).setupDataType(dataType, 1);
-        verify(listItem).enableEditMode();
         verify(view).addSubItem(listItem);
+        verify(listItem).enableEditMode();
+    }
+
+    @Test
+    public void testInsertBelow() {
+
+        final DataType dataType = mock(DataType.class);
+        final DataType reference = mock(DataType.class);
+        final DataTypeListItem listItem = mock(DataTypeListItem.class);
+
+        doReturn(listItem).when(dataTypeList).makeListItem(dataType);
+
+        dataTypeList.insertBelow(dataType, reference);
+
+        verify(view).insertBelow(listItem, reference);
+    }
+
+    @Test
+    public void testInsertAbove() {
+
+        final DataType dataType = mock(DataType.class);
+        final DataType reference = mock(DataType.class);
+        final DataTypeListItem listItem = mock(DataTypeListItem.class);
+
+        doReturn(listItem).when(dataTypeList).makeListItem(dataType);
+
+        dataTypeList.insertAbove(dataType, reference);
+
+        verify(view).insertAbove(listItem, reference);
+    }
+
+    @Test
+    public void testMakeListItemWithDataType() {
+
+        final DataType dataType = mock(DataType.class);
+        final DataTypeListItem expectedListItem = mock(DataTypeListItem.class);
+
+        doReturn(expectedListItem).when(dataTypeList).makeListItem();
+        doReturn(new ArrayList<>()).when(dataTypeList).getItems();
+
+        final DataTypeListItem actualListItem = dataTypeList.makeListItem(dataType);
+        final List<DataTypeListItem> actualItems = dataTypeList.getItems();
+        final List expectedItems = singletonList(expectedListItem);
+
+        verify(expectedListItem).setupDataType(dataType, 1);
+        assertEquals(expectedListItem, actualListItem);
+        assertEquals(expectedItems, actualItems);
     }
 
     private DataType makeDataType(final String name,

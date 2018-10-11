@@ -17,59 +17,105 @@
 package org.kie.workbench.common.dmn.client.editors.types.persistence.handlers;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
-import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManager;
 import org.kie.workbench.common.dmn.client.editors.types.common.ItemDefinitionUtils;
+import org.kie.workbench.common.dmn.client.editors.types.persistence.CreationType;
+import org.kie.workbench.common.dmn.client.editors.types.persistence.ItemDefinitionStore;
 
 @Dependent
 public class ItemDefinitionCreateHandler {
 
-    private final DataTypeManager dataTypeManager;
-
     private final ItemDefinitionUtils itemDefinitionUtils;
 
-    private final ItemDefinitionUpdateHandler updateHandler;
+    private final ItemDefinitionStore itemDefinitionStore;
 
     @Inject
-    public ItemDefinitionCreateHandler(final DataTypeManager dataTypeManager,
-                                       final ItemDefinitionUtils itemDefinitionUtils,
-                                       final ItemDefinitionUpdateHandler updateHandler) {
-        this.dataTypeManager = dataTypeManager;
+    public ItemDefinitionCreateHandler(final ItemDefinitionUtils itemDefinitionUtils,
+                                       final ItemDefinitionStore itemDefinitionStore) {
         this.itemDefinitionUtils = itemDefinitionUtils;
-        this.updateHandler = updateHandler;
+        this.itemDefinitionStore = itemDefinitionStore;
     }
 
-    public DataType create(final DataType dataType) {
-
-        final ItemDefinition itemDefinition = makeItemDefinition();
-        final DataType newDataType = makeDataType(dataType, itemDefinition);
-
-        updateHandler.update(dataType, itemDefinition);
-
-        return newDataType;
-    }
-
-    ItemDefinition makeItemDefinition() {
+    public ItemDefinition appendItemDefinition() {
         final ItemDefinition itemDefinition = new ItemDefinition();
         itemDefinitions().add(itemDefinition);
         return itemDefinition;
+    }
+
+    public ItemDefinition insertNestedItemDefinition(final DataType reference) {
+
+        final ItemDefinition itemDefinition = new ItemDefinition();
+        final ItemDefinition relativeParent = getItemDefinition(reference.getUUID());
+        final Optional<ItemDefinition> absoluteParent = lookupAbsoluteParent(reference.getUUID());
+        final List<ItemDefinition> itemComponent;
+
+        if (absoluteParent.isPresent()) {
+            itemComponent = absoluteParent.get().getItemComponent();
+        } else {
+            itemComponent = relativeParent.getItemComponent();
+            relativeParent.setTypeRef(null);
+        }
+
+        itemComponent.add(0, itemDefinition);
+
+        return itemDefinition;
+    }
+
+    public ItemDefinition insertItemDefinition(final DataType reference,
+                                               final CreationType creationType) {
+
+        final ItemDefinition itemDefinition = new ItemDefinition();
+        final ItemDefinition itemDefinitionReference = getItemDefinition(reference.getUUID());
+        final List<ItemDefinition> siblings = getItemDefinitionSiblings(reference);
+
+        siblings.add(siblings.indexOf(itemDefinitionReference) + creationType.getIndexIncrement(), itemDefinition);
+
+        return itemDefinition;
+    }
+
+    List<ItemDefinition> getItemDefinitionSiblings(final DataType reference) {
+        final Optional<ItemDefinition> parent = lookupAbsoluteParent(reference.getParentUUID());
+
+        if (parent.isPresent()) {
+            return parent.get().getItemComponent();
+        } else {
+            return itemDefinitions();
+        }
+    }
+
+    Optional<ItemDefinition> lookupAbsoluteParent(final String parentUUID) {
+        final Optional<ItemDefinition> optionalParent = Optional.ofNullable(getItemDefinition(parentUUID));
+
+        if (optionalParent.isPresent()) {
+
+            final ItemDefinition parent = optionalParent.get();
+            final boolean isStructure = parent.getTypeRef() == null;
+
+            if (isStructure) {
+                return Optional.of(parent);
+            } else {
+                return findItemDefinitionByName(parent.getTypeRef().getLocalPart());
+            }
+        }
+
+        return Optional.empty();
+    }
+
+    private Optional<ItemDefinition> findItemDefinitionByName(final String type) {
+        return itemDefinitionUtils.findByName(type);
     }
 
     private List<ItemDefinition> itemDefinitions() {
         return itemDefinitionUtils.all();
     }
 
-    private DataType makeDataType(final DataType dataType,
-                                  final ItemDefinition itemDefinition) {
-        return dataTypeManager
-                .withDataType(dataType)
-                .withItemDefinition(itemDefinition)
-                .withIndexedItemDefinition()
-                .get();
+    private ItemDefinition getItemDefinition(final String uuid) {
+        return itemDefinitionStore.get(uuid);
     }
 }

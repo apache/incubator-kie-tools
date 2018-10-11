@@ -28,6 +28,10 @@ import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManager;
 import org.uberfire.client.mvp.UberElemental;
 
+import static org.kie.workbench.common.dmn.client.editors.types.persistence.CreationType.ABOVE;
+import static org.kie.workbench.common.dmn.client.editors.types.persistence.CreationType.BELOW;
+import static org.kie.workbench.common.dmn.client.editors.types.persistence.CreationType.NESTED;
+
 public class DataTypeListItem {
 
     private final View view;
@@ -221,8 +225,50 @@ public class DataTypeListItem {
         return oldType;
     }
 
-    public DataTypeList getDataTypeList() {
+    DataTypeList getDataTypeList() {
         return dataTypeList;
+    }
+
+    void insertFieldAbove() {
+
+        closeEditMode();
+
+        final DataType newDataType = newDataType();
+        final List<DataType> updatedDataTypes = newDataType.create(getDataType(), ABOVE);
+
+        if (newDataType.isTopLevel()) {
+            dataTypeList.insertAbove(newDataType, getDataType());
+        } else {
+            dataTypeList.refreshItemsByUpdatedDataTypes(updatedDataTypes);
+        }
+    }
+
+    void insertFieldBelow() {
+
+        closeEditMode();
+
+        final DataType newDataType = newDataType();
+        final List<DataType> updatedDataTypes = newDataType.create(getDataType(), BELOW);
+
+        if (newDataType.isTopLevel()) {
+            dataTypeList.insertBelow(newDataType, getDataType());
+        } else {
+            dataTypeList.refreshItemsByUpdatedDataTypes(updatedDataTypes);
+        }
+    }
+
+    void insertNestedField() {
+
+        closeEditMode();
+        expand();
+
+        final List<DataType> updatedDataTypes = newDataType().create(getDataType(), NESTED);
+
+        dataTypeList.refreshItemsByUpdatedDataTypes(updatedDataTypes);
+    }
+
+    private DataType newDataType() {
+        return dataTypeManager.fromNew().get();
     }
 
     public interface View extends UberElemental<DataTypeListItem> {

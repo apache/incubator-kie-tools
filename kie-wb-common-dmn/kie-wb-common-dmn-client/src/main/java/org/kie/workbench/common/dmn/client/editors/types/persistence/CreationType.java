@@ -16,36 +16,24 @@
 
 package org.kie.workbench.common.dmn.client.editors.types.persistence;
 
-import java.util.List;
+public enum CreationType {
 
-/**
- * A Record Engine persists a given record.
- */
-public interface RecordEngine<T> {
+    ABOVE(0),
+    BELOW(1),
+    NESTED(Constants.NONE);
 
-    /**
-     * Updates a record
-     * @param record
-     * @return returning an array of all affected records by the update operation.
-     */
-    List<T> update(final T record);
+    private final int indexIncrement;
 
-    /**
-     * Destroys a record
-     * @param record
-     * @return returning an array of all affected records by the destroy operation.
-     */
-    List<T> destroy(final T record);
+    CreationType(final int indexIncrement) {
+        this.indexIncrement = indexIncrement;
+    }
 
-    /**
-     * Create a record.
-     * @param record
-     */
-    T create(final T record);
+    public int getIndexIncrement() {
+        return indexIncrement;
+    }
 
-    /**
-     * Check if a record is valid.
-     * @param record
-     */
-    boolean isValid(final T record);
+    private static class Constants {
+
+        static final int NONE = Integer.MAX_VALUE;
+    }
 }

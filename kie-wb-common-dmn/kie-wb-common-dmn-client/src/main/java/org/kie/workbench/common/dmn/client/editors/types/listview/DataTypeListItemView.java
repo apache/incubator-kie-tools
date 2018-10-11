@@ -55,13 +55,13 @@ public class DataTypeListItemView implements DataTypeListItem.View {
 
     public static final String UUID_ATTR = "data-row-uuid";
 
+    public static final String NAME_DATA_FIELD = "name-input";
+
     static final String PARENT_UUID_ATTR = "data-parent-row-uuid";
 
     static final String ARROW_BUTTON_SELECTOR = "[data-field=\"arrow-button\"]";
 
     private static final int PIXELS_PER_LEVEL = 35;
-
-    public static final String NAME_DATA_FIELD = "name-input";
 
     @DataField("view")
     private final HTMLDivElement view;
@@ -93,6 +93,15 @@ public class DataTypeListItemView implements DataTypeListItem.View {
     @DataField("remove-button")
     private final HTMLAnchorElement removeButton;
 
+    @DataField("insert-field-above")
+    private final HTMLAnchorElement insertFieldAbove;
+
+    @DataField("insert-field-below")
+    private final HTMLAnchorElement insertFieldBelow;
+
+    @DataField("insert-nested-field")
+    private final HTMLAnchorElement insertNestedField;
+
     @DataField("kebab-menu")
     private HTMLDivElement kebabMenu;
 
@@ -109,6 +118,9 @@ public class DataTypeListItemView implements DataTypeListItem.View {
                                 final HTMLButtonElement saveButton,
                                 final HTMLButtonElement closeButton,
                                 final HTMLAnchorElement removeButton,
+                                final HTMLAnchorElement insertFieldAbove,
+                                final HTMLAnchorElement insertFieldBelow,
+                                final HTMLAnchorElement insertNestedField,
                                 final HTMLDivElement kebabMenu) {
         this.view = view;
         this.level = level;
@@ -120,6 +132,9 @@ public class DataTypeListItemView implements DataTypeListItem.View {
         this.saveButton = saveButton;
         this.closeButton = closeButton;
         this.removeButton = removeButton;
+        this.insertFieldAbove = insertFieldAbove;
+        this.insertFieldBelow = insertFieldBelow;
+        this.insertNestedField = insertNestedField;
         this.kebabMenu = kebabMenu;
     }
 
@@ -226,6 +241,21 @@ public class DataTypeListItemView implements DataTypeListItem.View {
     @EventHandler("arrow-button")
     public void onArrowClickEvent(final ClickEvent e) {
         presenter.expandOrCollapseSubTypes();
+    }
+
+    @EventHandler("insert-field-above")
+    public void onInsertFieldAbove(final ClickEvent e) {
+        presenter.insertFieldAbove();
+    }
+
+    @EventHandler("insert-field-below")
+    public void onInsertFieldBelow(final ClickEvent e) {
+        presenter.insertFieldBelow();
+    }
+
+    @EventHandler("insert-nested-field")
+    public void onInsertNestedField(final ClickEvent e) {
+        presenter.insertNestedField();
     }
 
     @EventHandler("remove-button")
