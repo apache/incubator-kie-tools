@@ -8,6 +8,7 @@
 
   <inherits name="org.uberfire.UberfireClientAll"/>
   <inherits name="org.uberfire.client.views.PatternFlyTheme"/>
+  <inherits name="org.uberfire.ssh.UberfireSSHClient"/>
 
   <!-- Uberfire Extensions -->
   <inherits name="org.uberfire.ext.plugin.RuntimePluginClient"/>

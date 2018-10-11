@@ -125,6 +125,19 @@
       <artifactId>uberfire-nio2-fs</artifactId>
       <scope>test</scope>
     </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-ssh-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-ssh-backend</artifactId>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
 
 </project>
