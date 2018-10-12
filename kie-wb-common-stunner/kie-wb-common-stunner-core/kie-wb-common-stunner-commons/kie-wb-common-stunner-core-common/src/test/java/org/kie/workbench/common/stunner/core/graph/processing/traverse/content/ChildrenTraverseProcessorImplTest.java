@@ -18,15 +18,11 @@ package org.kie.workbench.common.stunner.core.graph.processing.traverse.content;
 
 import java.util.List;
 
-import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.TestingGraphInstanceBuilder;
-import org.kie.workbench.common.stunner.core.TestingGraphMockHandler;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.TreeWalkTraverseProcessorImpl;
 import org.mockito.ArgumentCaptor;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.eq;
@@ -35,16 +31,16 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-@RunWith(MockitoJUnitRunner.class)
-public class ChildrenTraverseProcessorImplTest {
+public class ChildrenTraverseProcessorImplTest extends ContentTraverseProcessorBaseTest<ChildrenTraverseProcessor, ChildrenTraverseCallback> {
 
-    private TestingGraphMockHandler graphTestHandler;
-    private ChildrenTraverseProcessorImpl tested;
+    @Override
+    protected ChildrenTraverseProcessorImpl newTraverseProcessor() {
+        return new ChildrenTraverseProcessorImpl(new TreeWalkTraverseProcessorImpl());
+    }
 
-    @Before
-    public void setup() {
-        this.graphTestHandler = new TestingGraphMockHandler();
-        this.tested = new ChildrenTraverseProcessorImpl(new TreeWalkTraverseProcessorImpl());
+    @Override
+    protected ChildrenTraverseCallback newTraverseCallback() {
+        return mock(ChildrenTraverseCallback.class);
     }
 
     @Test
@@ -52,7 +48,6 @@ public class ChildrenTraverseProcessorImplTest {
     public void testTraverseGraph1() {
         final TestingGraphInstanceBuilder.TestGraph1 result =
                 TestingGraphInstanceBuilder.newGraph1(graphTestHandler);
-        final ChildrenTraverseCallback callback = mock(ChildrenTraverseCallback.class);
         tested.traverse(result.graph,
                         callback);
         verify(callback,
@@ -68,7 +63,6 @@ public class ChildrenTraverseProcessorImplTest {
     public void testTraverseGraph2() {
         final TestingGraphInstanceBuilder.TestGraph2 result =
                 TestingGraphInstanceBuilder.newGraph2(graphTestHandler);
-        final ChildrenTraverseCallback callback = mock(ChildrenTraverseCallback.class);
         final ArgumentCaptor<List> cStartNodeParents = ArgumentCaptor.forClass(List.class);
         final ArgumentCaptor<List> cIntermNodeParents = ArgumentCaptor.forClass(List.class);
         final ArgumentCaptor<List> cEndNodeParents = ArgumentCaptor.forClass(List.class);

@@ -183,6 +183,33 @@ public class TestingGraphInstanceBuilder {
         return buildTestGraph4(handler);
     }
 
+    /**
+     * **********
+     * * Graph5 *
+     * **********
+     * <p>
+     * Structure:
+     * -                 parentNode
+     * ----------------------------------------------------------------
+     * |                     |                                        |
+     * startNode --(edge1)--> intermNode --(edge2)--> intermNode   endNode
+     */
+    public static class TestGraph5 {
+
+        public Graph graph;
+        public Node parentNode;
+        public Node startNode;
+        public Node intermNode;
+        public Node endNode;
+        public Edge edge1;
+        public Edge edge2;
+        public int evaluationsCount;
+    }
+
+    public static TestGraph5 newGraph5(final TestingGraphMockHandler handler) {
+        return buildTestGraph5(handler);
+    }
+
     /*
      ************ PRIVATE BUILDER METHODS ******************
      */
@@ -338,6 +365,52 @@ public class TestingGraphInstanceBuilder {
         graphTestHandler.dockTo(result.intermNode, result.dockedNode);
         graphTestHandler.setChild(result.parentNode, result.dockedNode);
 
+        return result;
+    }
+
+    private static TestGraph5 buildTestGraph5(final TestingGraphMockHandler graphTestHandler) {
+        TestGraph5 result = new TestGraph5();
+        result.graph = graphTestHandler.graph;
+        result.parentNode =
+                graphTestHandler.newNode(PARENT_NODE_UUID,
+                                         DEF0_ID,
+                                         Optional.of(DEF0_LABELS));
+        result.startNode =
+                graphTestHandler.newNode(START_NODE_UUID,
+                                         DEF1_ID,
+                                         Optional.of(DEF1_LABELS));
+        result.intermNode =
+                graphTestHandler.newNode(INTERM_NODE_UUID,
+                                         DEF2_ID,
+                                         Optional.of(DEF2_LABELS));
+        result.endNode =
+                graphTestHandler.newNode(END_NODE_UUID,
+                                         DEF3_ID,
+                                         Optional.of(DEF3_LABELS));
+        result.edge1 =
+                graphTestHandler.newEdge(EDGE1_UUID,
+                                         EDGE1_ID,
+                                         Optional.empty());
+        result.edge2 =
+                graphTestHandler.newEdge(EDGE2_UUID,
+                                         EDGE2_ID,
+                                         Optional.empty());
+        graphTestHandler
+                .setChild(result.parentNode,
+                          result.startNode)
+                .setChild(result.parentNode,
+                          result.intermNode)
+                .setChild(result.parentNode,
+                          result.endNode)
+                .addEdge(result.edge1,
+                         result.startNode)
+                .connectTo(result.edge1,
+                           result.intermNode)
+                .addEdge(result.edge2,
+                         result.intermNode)
+                .connectTo(result.edge2,
+                           result.intermNode);
+        result.evaluationsCount = 23;
         return result;
     }
 }

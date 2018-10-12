@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.stunner.core.graph.processing.traverse.content;
 
+import java.util.Objects;
+import java.util.function.Predicate;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -31,14 +34,29 @@ public final class ViewTraverseProcessorImpl extends AbstractContentTraverseProc
     @Inject
     public ViewTraverseProcessorImpl(final TreeWalkTraverseProcessor treeWalkTraverseProcessor) {
         super(treeWalkTraverseProcessor);
-        treeWalkTraverseProcessor.useStartNodePredicate(node -> !node.getInEdges().stream()
-                .filter(e -> e.getContent() instanceof View)
+        treeWalkTraverseProcessor.useStartNodePredicate(newStartNodePredicate());
+    }
+
+    protected Predicate<Node<?, Edge>> newStartNodePredicate() {
+        return node -> !node.getInEdges().stream()
+                .filter(ViewTraverseProcessorImpl::isViewEdge)
+                .filter(ViewTraverseProcessorImpl::isNotCyclicEdge)
                 .findAny()
-                .isPresent());
+                .isPresent();
     }
 
     @Override
     protected boolean accepts(final Edge edge) {
+        return isViewEdge(edge);
+    }
+
+    private static boolean isViewEdge(final Edge edge) {
         return edge.getContent() instanceof View;
+    }
+
+    private static boolean isNotCyclicEdge(final Edge edge) {
+        final String sourceId = edge.getSourceNode() != null ? edge.getSourceNode().getUUID() : null;
+        final String targetId = edge.getTargetNode() != null ? edge.getTargetNode().getUUID() : null;
+        return !Objects.equals(sourceId, targetId);
     }
 }
