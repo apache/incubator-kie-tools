@@ -42,9 +42,9 @@
         <!-- content for the test editor tab -->
         <div id="kieTestEditorTabContent"
              class="tab-pane fade in active"
-             aria-labelledby="Test Editor">
+             aria-labelledby="Test Editor" style="padding: 1em">
             <br/>
-            <p>To create a test template, define "Given" and "Expect" columns by entering an expression or use the expression editor below.</p>
+            <p>To create a test template, define the "Given" and "Expect" columns by using use the expression editor below.</p>
 
             <label for="kie-search">Select Data Object</label>
             <div id="kie-search" class="kie-test-tools-content__box"><!-- outlined data object box -->
@@ -100,8 +100,41 @@
         <!-- content for cheatsheet tab -->
         <div id="kieScenarioCheatsheetTabContent"
              class="tab-pane fade"
-             aria-labelledby="Scenario Cheatsheet">
-            <p>Create a row for each scenario, and input values using the following syntax.</p>
+             aria-labelledby="Scenario Cheatsheet" style="padding: 1em">
+            <p style="margin-bottom: 1em">Use contextual menu to add/remove columns and rows.</p>
+
+            <p style="margin-bottom: 1em">Left click on column header & then edit the mapping with a field using the Test Editor tab.</p>
+
+            <p style="margin-bottom: 1em">Double click on the field to set the mapping.</p>
+
+            <p style="margin-bottom: 0px">Each cell can contain an expression which use following syntax:</p>
+
+            <ul style="margin-bottom: 1em">
+                <li>
+                    <i>= value (or no symbol)</i>: specifies equals to a value. This is the default and only operator supported under GIVEN section
+                </li>
+                <li>
+                    <i>! or != or <> value</i>: specifies not equals to a value. It can be used with other operators.
+                </li>
+                <li><i>< or > or <= or >= value</i>: specifies a comparison</li>
+                <li>
+                    <i>[ value1, value2, value3 ]</i>: provides a list of values. This operator works like the logical OR operator
+                </li>
+                <li>
+                    <i>expression1 ; expression2 ; expression3</i>: specifies a list of expressions. This operator works like the logical AND operator
+                </li>
+            </ul>
+
+            <p style="margin-bottom: 0px">Example of expressions:</p>
+
+            <ul>
+                <li><i>< 3</i></li>
+                <li><i>< 3 ; ! [0,-1]</i></li>
+                <li><i>[MyString, My second string]</i></li>
+                <li><i>= 3; > 2</i></li>
+            </ul>
+
+            <p>Empty cell is equal to <i>null</i> and use the equals symbol (=) without any value to specify an empty string.</p>
         </div>
     </div>
 </div>
