@@ -33,6 +33,7 @@ import org.mockito.Mock;
 
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -74,16 +75,33 @@ public class AlignAndDistributeControlImplTest extends AbstractWiresControlTest 
         when(group.getAttributes()).thenReturn(attributes);
         when(group.uuid()).thenReturn(UUID);
         tested = new AlignAndDistributeControlImpl(group, alignAndDistribute, callback, Arrays.asList(attribute));
+        tested.setIndexed(true);
 
         when(alignAndDistribute.getControlForShape(anyString())).thenReturn(tested);
     }
 
     @Test
     public void refreshTest() {
-        tested.setIndexed(true);
         tested.indexOff(group);
         tested.refresh();
+
         verify(alignAndDistribute, never()).indexOff(tested);
         verify(alignAndDistribute, times(1)).indexOn(tested);
+    }
+
+    @Test
+    public void indexOnTest() {
+        tested.indexOn(group);
+        AlignAndDistributeControlImpl spied = spy(tested);
+        spied.refresh();
+        verify(spied, times(1)).updateIndex();
+    }
+
+    @Test
+    public void indexOffTest() {
+        tested.indexOff(group);
+        AlignAndDistributeControlImpl spied = spy(tested);
+        spied.refresh();
+        verify(spied, never()).updateIndex();
     }
 }
