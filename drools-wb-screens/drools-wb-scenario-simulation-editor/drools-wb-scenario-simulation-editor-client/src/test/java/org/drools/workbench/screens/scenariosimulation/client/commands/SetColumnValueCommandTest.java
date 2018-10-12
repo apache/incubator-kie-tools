@@ -30,6 +30,7 @@ import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 
 import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -48,7 +49,7 @@ public class SetColumnValueCommandTest extends AbstractCommandTest {
         super.setup();
         when(mockGridColumns.indexOf(mockGridColumn)).thenReturn(COLUMN_INDEX);
         when(mockScenarioGridModel.getColumns()).thenReturn(mockGridColumns);
-        setColumnValueCommand = spy(new SetColumnValueCommand(mockScenarioGridModel, COLUMN_ID, FULL_PACKAGE, VALUE, VALUE_CLASS_NAME, mockScenarioGridPanel, mockScenarioGridLayer) {
+        setColumnValueCommand = spy(new SetColumnValueCommand(mockScenarioGridModel, COLUMN_ID, FULL_PACKAGE, VALUE, VALUE_CLASS_NAME, mockScenarioGridPanel, mockScenarioGridLayer, true) {
 
             @Override
             protected ScenarioHeaderTextBoxSingletonDOMElementFactory getHeaderTextBoxFactoryLocal() {
@@ -65,15 +66,22 @@ public class SetColumnValueCommandTest extends AbstractCommandTest {
                 return mockGridColumn;
             }
         });
-
     }
 
     @Test
-    public void execute() {
+    public void executeFalse() {
+        setColumnValueCommand.keepData = false;
+        setColumnValueCommand.execute();
+        verify(mockScenarioGridModel, times(1)).updateColumnType(eq(COLUMN_INDEX), isA(ScenarioGridColumn.class), eq(FULL_PACKAGE), eq(VALUE), eq(VALUE_CLASS_NAME), eq(false));
+    }
+
+    @Test
+    public void executeTrue() {
+        setColumnValueCommand.keepData = true;
         setColumnValueCommand.execute();
         verify(setColumnValueCommand, times(1)).getHeaderTextBoxFactoryLocal();
         verify(setColumnValueCommand, times(1)).getHeaderBuilderLocal(eq(COLUMN_GROUP), eq(factMappingType), eq(scenarioHeaderTextBoxSingletonDOMElementFactoryMock));
         verify(setColumnValueCommand, times(1)).getScenarioGridColumnLocal(eq(headerBuilderMock));
-        verify(mockScenarioGridModel, times(1)).updateColumnType(eq(COLUMN_INDEX), eq(mockGridColumn), eq(FULL_PACKAGE), eq(VALUE), eq(VALUE_CLASS_NAME));
+        verify(mockScenarioGridModel, times(1)).updateColumnType(eq(COLUMN_INDEX), eq(mockGridColumn), eq(FULL_PACKAGE), eq(VALUE), eq(VALUE_CLASS_NAME), eq( true));
     }
 }

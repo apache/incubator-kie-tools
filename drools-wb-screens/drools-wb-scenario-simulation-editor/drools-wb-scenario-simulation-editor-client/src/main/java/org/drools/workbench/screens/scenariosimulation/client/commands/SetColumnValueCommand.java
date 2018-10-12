@@ -38,6 +38,9 @@ public class SetColumnValueCommand extends AbstractCommand {
     private String fullPackage;
     private String value;
     private String valueClassName;
+    private ScenarioGridPanel scenarioGridPanel;
+    private ScenarioGridLayer scenarioGridLayer;
+    protected boolean keepData;
 
     public SetColumnValueCommand() {
     }
@@ -51,13 +54,16 @@ public class SetColumnValueCommand extends AbstractCommand {
      * @param scenarioGridPanel
      * @param scenarioGridLayer
      */
-    public SetColumnValueCommand(ScenarioGridModel model, String columnId, String fullPackage, String value, String valueClassName, ScenarioGridPanel scenarioGridPanel, ScenarioGridLayer scenarioGridLayer) {
+    public SetColumnValueCommand(ScenarioGridModel model, String columnId, String fullPackage, String value, String valueClassName, ScenarioGridPanel scenarioGridPanel, ScenarioGridLayer scenarioGridLayer, boolean keepData) {
         super(scenarioGridPanel, scenarioGridLayer);
         this.model = model;
         this.columnId = columnId;
         this.fullPackage = fullPackage;
         this.value = value;
         this.valueClassName = valueClassName;
+        this.scenarioGridPanel = scenarioGridPanel;
+        this.scenarioGridLayer = scenarioGridLayer;
+        this.keepData = keepData;
     }
 
     @Override
@@ -75,7 +81,7 @@ public class SetColumnValueCommand extends AbstractCommand {
                                getScenarioGridColumnLocal(headerBuilder),
                                fullPackage,
                                value,
-                               valueClassName);
+                               valueClassName, keepData);
     }
 
     protected ScenarioSimulationBuilders.HeaderBuilder getHeaderBuilderLocal(String columnGroup, FactMappingType factMappingType, ScenarioHeaderTextBoxSingletonDOMElementFactory factoryHeader) {

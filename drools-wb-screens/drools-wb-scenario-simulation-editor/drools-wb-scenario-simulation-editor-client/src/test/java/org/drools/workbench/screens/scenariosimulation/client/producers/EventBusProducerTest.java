@@ -13,23 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.drools.workbench.screens.scenariosimulation.client.producers;
 
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
+import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import com.google.gwt.event.shared.EventBus;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import org.drools.workbench.screens.scenariosimulation.client.widgets.RightPanelMenuItem;
+import static org.junit.Assert.assertNotNull;
 
-/**
- * <code>@Dependent</code> <i>Producer</i> for a given {@link RightPanelMenuItem}
- */
-@Dependent
-public class RightPanelMenuItemProducer {
+@RunWith(LienzoMockitoTestRunner.class)
+public class EventBusProducerTest {
 
-    @Inject
-    RightPanelMenuItem rightPanelMenuItem;
+    private EventBusProducer eventBusProducer;
 
-    public RightPanelMenuItem getRightPanelMenuItem() {
-        return rightPanelMenuItem;
+    @Before
+    public void setup() {
+        eventBusProducer = new EventBusProducer();
+    }
+
+    @Test
+    public void getEventBus() {
+        final EventBus retrieved = eventBusProducer.getEventBus();
+        assertNotNull(retrieved);
     }
 }

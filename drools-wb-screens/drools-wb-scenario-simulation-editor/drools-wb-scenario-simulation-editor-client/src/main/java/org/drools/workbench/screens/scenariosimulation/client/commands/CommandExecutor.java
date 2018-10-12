@@ -51,6 +51,9 @@ import org.drools.workbench.screens.scenariosimulation.client.handlers.PrependRo
 import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioGridReloadEventHandler;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.SetColumnValueEventHandler;
 import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
+import org.drools.workbench.screens.scenariosimulation.client.popup.DeletePopupPresenter;
+import org.drools.workbench.screens.scenariosimulation.client.popup.PreserveDeletePopupPresenter;
+import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.RightPanelView;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridLayer;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
@@ -81,6 +84,8 @@ public class CommandExecutor implements AppendColumnEventHandler,
     ScenarioGridPanel scenarioGridPanel;
     ScenarioGridLayer scenarioGridLayer;
     RightPanelView.Presenter rightPanelPresenter;
+    DeletePopupPresenter deletePopupPresenter;
+    PreserveDeletePopupPresenter preserveDeletePopupPresenter;
 
     EventBus eventBus;
 
@@ -108,6 +113,14 @@ public class CommandExecutor implements AppendColumnEventHandler,
         this.scenarioGridPanel = scenarioGridPanel;
         this.scenarioGridLayer = scenarioGridPanel.getScenarioGridLayer();
         this.model = scenarioGridLayer.getScenarioGrid().getModel();
+    }
+
+    public void setDeletePopupPresenter(DeletePopupPresenter deletePopupPresenter) {
+        this.deletePopupPresenter = deletePopupPresenter;
+    }
+
+    public void setPreserveDeletePopupPresenter(PreserveDeletePopupPresenter preserveDeletePopupPresenter) {
+        this.preserveDeletePopupPresenter = preserveDeletePopupPresenter;
     }
 
     @PreDestroy
@@ -187,7 +200,36 @@ public class CommandExecutor implements AppendColumnEventHandler,
 
     @Override
     public void onEvent(SetColumnValueEvent event) {
-        commonExecute(new SetColumnValueCommand(model, String.valueOf(new Date().getTime()), event.getFullPackage(), event.getValue(), event.getValueClassName(), scenarioGridPanel, scenarioGridLayer));
+        if (model.getSelectedColumn() == null) {
+            return;
+        }
+        if (model.isSelectedColumnEmpty()) {
+            commonExecute(new SetColumnValueCommand(model, String.valueOf(new Date().getTime()), event.getFullPackage(), event.getValue(), event.getValueClassName(), scenarioGridPanel, scenarioGridLayer, false));
+        } else if (model.isSameSelectedColumnProperty(event.getValue())) {
+            return;
+        } else if (model.isSameSelectedColumnType(event.getValueClassName())) {
+            Command okDeleteCommand = () -> commonExecute(new SetColumnValueCommand(model, String.valueOf(new Date().getTime()), event.getFullPackage(), event.getValue(), event.getValueClassName(), scenarioGridPanel, scenarioGridLayer, false));
+            Command okPreserveCommand = () -> commonExecute(new SetColumnValueCommand(model, String.valueOf(new Date().getTime()), event.getFullPackage(), event.getValue(), event.getValueClassName(), scenarioGridPanel, scenarioGridLayer, true));
+            preserveDeletePopupPresenter.show(ScenarioSimulationEditorConstants.INSTANCE.preserveDeleteScenarioMainTitle(),
+                                              ScenarioSimulationEditorConstants.INSTANCE.preserveDeleteScenarioMainQuestion(),
+                                              ScenarioSimulationEditorConstants.INSTANCE.preserveDeleteScenarioText1(),
+                                              ScenarioSimulationEditorConstants.INSTANCE.preserveDeleteScenarioTextQuestion(),
+                                              ScenarioSimulationEditorConstants.INSTANCE.preserveDeleteScenarioTextOption1(),
+                                              ScenarioSimulationEditorConstants.INSTANCE.preserveDeleteScenarioTextOption2(),
+                                              ScenarioSimulationEditorConstants.INSTANCE.preserveValues(),
+                                              ScenarioSimulationEditorConstants.INSTANCE.deleteValues(),
+                                              okPreserveCommand,
+                                              okDeleteCommand);
+        } else if (!model.isSameSelectedColumnType(event.getValueClassName())) {
+            Command okPreserveCommand = () -> commonExecute(new SetColumnValueCommand(model, String.valueOf(new Date().getTime()), event.getFullPackage(), event.getValue(), event.getValueClassName(), scenarioGridPanel, scenarioGridLayer, false));
+            deletePopupPresenter.show(ScenarioSimulationEditorConstants.INSTANCE.deleteScenarioMainTitle(),
+                                      ScenarioSimulationEditorConstants.INSTANCE.deleteScenarioMainQuestion(),
+                                      ScenarioSimulationEditorConstants.INSTANCE.deleteScenarioText1(),
+                                      ScenarioSimulationEditorConstants.INSTANCE.deleteScenarioTextQuestion(),
+                                      ScenarioSimulationEditorConstants.INSTANCE.deleteScenarioTextDanger(),
+                                      ScenarioSimulationEditorConstants.INSTANCE.deleteValues(),
+                                      okPreserveCommand);
+        }
     }
 
     void commonExecute(Command toExecute) {

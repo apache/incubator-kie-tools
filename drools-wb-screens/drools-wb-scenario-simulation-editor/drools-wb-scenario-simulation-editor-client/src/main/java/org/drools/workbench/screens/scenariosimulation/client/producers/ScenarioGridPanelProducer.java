@@ -31,10 +31,10 @@ import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGr
 public class ScenarioGridPanelProducer {
 
     @Inject
-    private ScenarioGridLayer scenarioGridLayer;
+    ScenarioGridLayer scenarioGridLayer;
 
     @Inject
-    private ScenarioGridPanel scenarioGridPanel;
+    ScenarioGridPanel scenarioGridPanel;
 
     public ScenarioGridPanel getScenarioGridPanel() {
         scenarioGridLayer.addScenarioGrid(newScenarioGrid(scenarioGridPanel,
@@ -43,7 +43,7 @@ public class ScenarioGridPanelProducer {
         return scenarioGridPanel;
     }
 
-    private ScenarioGrid newScenarioGrid(final ScenarioGridPanel scenarioGridPanel,
+    ScenarioGrid newScenarioGrid(final ScenarioGridPanel scenarioGridPanel,
                                          final ScenarioGridLayer scenarioGridLayer) {
         return new ScenarioGrid(new ScenarioGridModel(false),
                                 scenarioGridLayer,

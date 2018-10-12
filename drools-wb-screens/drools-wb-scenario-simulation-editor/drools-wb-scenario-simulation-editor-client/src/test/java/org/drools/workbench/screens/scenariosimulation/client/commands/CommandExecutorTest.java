@@ -33,6 +33,9 @@ import org.drools.workbench.screens.scenariosimulation.client.events.PrependColu
 import org.drools.workbench.screens.scenariosimulation.client.events.PrependRowEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.ScenarioGridReloadEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.SetColumnValueEvent;
+import org.drools.workbench.screens.scenariosimulation.client.popup.DeletePopupPresenter;
+import org.drools.workbench.screens.scenariosimulation.client.popup.PreserveDeletePopupPresenter;
+import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -84,6 +87,11 @@ public class CommandExecutorTest extends AbstractCommandTest {
     @Mock
     private HandlerRegistration mockSetColumnValueEventHandler;
 
+    @Mock
+    private DeletePopupPresenter deletePopupPresenterMock;
+    @Mock
+    private PreserveDeletePopupPresenter preserveDeletePopupPresenterMock;
+
     private CommandExecutor commandExecutor;
 
     @Before
@@ -110,6 +118,8 @@ public class CommandExecutorTest extends AbstractCommandTest {
                 this.scenarioGridPanel = mockScenarioGridPanel;
                 this.scenarioGridLayer = mockScenarioGridLayer;
                 this.rightPanelPresenter = mockRightPanelPresenter;
+                this.deletePopupPresenter = deletePopupPresenterMock;
+                this.preserveDeletePopupPresenter = preserveDeletePopupPresenterMock;
             }
         });
     }
@@ -236,8 +246,47 @@ public class CommandExecutorTest extends AbstractCommandTest {
     @Test
     public void onSetColumnValueEvent() {
         SetColumnValueEvent event = new SetColumnValueEvent(FULL_PACKAGE, VALUE, VALUE_CLASS_NAME);
+        when(mockScenarioGridModel.getSelectedColumn()).thenReturn(null);
+        commandExecutor.onEvent(event);
+        verify(commandExecutor, never()).commonExecute(isA(SetColumnValueCommand.class));
+
+        doReturn(mockGridColumn).when(mockScenarioGridModel).getSelectedColumn();
+        reset(commandExecutor);
+        when(mockScenarioGridModel.isSelectedColumnEmpty()).thenReturn(true);
         commandExecutor.onEvent(event);
         verify(commandExecutor, times(1)).commonExecute(isA(SetColumnValueCommand.class));
+
+        when(mockScenarioGridModel.isSelectedColumnEmpty()).thenReturn(false);
+        reset(commandExecutor);
+        when(mockScenarioGridModel.isSameSelectedColumnProperty(VALUE)).thenReturn(true);
+        commandExecutor.onEvent(event);
+        verify(commandExecutor, never()).commonExecute(isA(SetColumnValueCommand.class));
+
+        when(mockScenarioGridModel.isSameSelectedColumnProperty(VALUE)).thenReturn(false);
+        reset(commandExecutor);
+        when(mockScenarioGridModel.isSameSelectedColumnType(VALUE_CLASS_NAME)).thenReturn(true);
+        commandExecutor.onEvent(event);
+        verify(preserveDeletePopupPresenterMock, times(1)).show(eq(ScenarioSimulationEditorConstants.INSTANCE.preserveDeleteScenarioMainTitle()),
+                                                              eq(ScenarioSimulationEditorConstants.INSTANCE.preserveDeleteScenarioMainQuestion()),
+                                                              eq(ScenarioSimulationEditorConstants.INSTANCE.preserveDeleteScenarioText1()),
+                                                              eq(ScenarioSimulationEditorConstants.INSTANCE.preserveDeleteScenarioTextQuestion()),
+                                                              eq(ScenarioSimulationEditorConstants.INSTANCE.preserveDeleteScenarioTextOption1()),
+                                                              eq(ScenarioSimulationEditorConstants.INSTANCE.preserveDeleteScenarioTextOption2()),
+                                                              eq(ScenarioSimulationEditorConstants.INSTANCE.preserveValues()),
+                                                              eq(ScenarioSimulationEditorConstants.INSTANCE.deleteValues()),
+                                                              isA(Command.class),
+                                                              isA(Command.class));
+
+        when(mockScenarioGridModel.isSameSelectedColumnType(VALUE_CLASS_NAME)).thenReturn(false);
+        reset(commandExecutor);
+        commandExecutor.onEvent(event);
+        verify(deletePopupPresenterMock, times(1)).show(eq(ScenarioSimulationEditorConstants.INSTANCE.deleteScenarioMainTitle()),
+                                                              eq(ScenarioSimulationEditorConstants.INSTANCE.deleteScenarioMainQuestion()),
+                                                              eq(ScenarioSimulationEditorConstants.INSTANCE.deleteScenarioText1()),
+                                                              eq(ScenarioSimulationEditorConstants.INSTANCE.deleteScenarioTextQuestion()),
+                                                              eq(ScenarioSimulationEditorConstants.INSTANCE.deleteScenarioTextDanger()),
+                                                              eq(ScenarioSimulationEditorConstants.INSTANCE.deleteValues()),
+                                                              isA(Command.class));
     }
 
     @Test

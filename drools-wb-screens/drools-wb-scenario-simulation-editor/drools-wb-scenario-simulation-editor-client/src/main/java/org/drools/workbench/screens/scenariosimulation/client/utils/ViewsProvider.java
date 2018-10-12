@@ -49,4 +49,5 @@ public class ViewsProvider {
     public ListGroupItemView getListGroupItemView() {
         return listGroupItemViewInstance.get();
     }
+
 }
