@@ -30,6 +30,10 @@
   <inherits name="org.guvnor.messageconsole.GuvnorMessageConsoleClient"/>
 
   <inherits name="org.kie.workbench.common.services.verifier.reporting.VerifierReporting"/>
+
+  <!-- Profile API-->
+  <inherits name="org.kie.workbench.common.profile.ProfileAPI"/>
+
   <!--Common Screens -->
   <inherits name="org.kie.workbench.common.screens.library.LibraryClient"/>
   <inherits name="org.kie.workbench.common.screens.contributors.KieWorkbenchContributorsClient"/>
