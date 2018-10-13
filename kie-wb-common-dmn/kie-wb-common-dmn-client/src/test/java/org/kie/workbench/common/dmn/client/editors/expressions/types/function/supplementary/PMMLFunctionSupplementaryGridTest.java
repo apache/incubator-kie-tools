@@ -30,6 +30,7 @@ public class PMMLFunctionSupplementaryGridTest extends BaseFunctionSupplementary
                                                 canvasCommandFactory,
                                                 editorSelectedEvent,
                                                 refreshFormPropertiesEvent,
+                                                domainObjectSelectionEvent,
                                                 listSelector,
                                                 translationService,
                                                 expressionEditorDefinitionsSupplier);

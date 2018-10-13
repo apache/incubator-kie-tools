@@ -22,7 +22,6 @@ import java.util.function.Supplier;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
@@ -30,16 +29,13 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 public class LiteralExpressionUIModelMapper extends BaseUIModelMapper<LiteralExpression> {
 
     private final ListSelectorView.Presenter listSelector;
-    private final GridCellTuple parent;
 
     public LiteralExpressionUIModelMapper(final Supplier<GridData> uiModel,
                                           final Supplier<Optional<LiteralExpression>> dmnModel,
-                                          final ListSelectorView.Presenter listSelector,
-                                          final GridCellTuple parent) {
+                                          final ListSelectorView.Presenter listSelector) {
         super(uiModel,
               dmnModel);
         this.listSelector = listSelector;
-        this.parent = parent;
     }
 
     @Override
@@ -50,20 +46,6 @@ public class LiteralExpressionUIModelMapper extends BaseUIModelMapper<LiteralExp
                                   columnIndex,
                                   () -> new LiteralExpressionCell<>(new BaseGridCellValue<>(literalExpression.getText()),
                                                                     listSelector));
-            uiModel.get().getCell(rowIndex,
-                                  columnIndex).setSelectionStrategy((final GridData model,
-                                                                     final int uiRowIndex,
-                                                                     final int uiColumnIndex,
-                                                                     final boolean isShiftKeyDown,
-                                                                     final boolean isControlKeyDown) -> {
-                final GridData parentUiModel = parent.getGridWidget().getModel();
-                return parentUiModel.getCell(parent.getRowIndex(),
-                                             parent.getColumnIndex()).getSelectionStrategy().handleSelection(parentUiModel,
-                                                                                                             parent.getRowIndex(),
-                                                                                                             parent.getColumnIndex(),
-                                                                                                             isShiftKeyDown,
-                                                                                                             isControlKeyDown);
-            });
         });
     }
 

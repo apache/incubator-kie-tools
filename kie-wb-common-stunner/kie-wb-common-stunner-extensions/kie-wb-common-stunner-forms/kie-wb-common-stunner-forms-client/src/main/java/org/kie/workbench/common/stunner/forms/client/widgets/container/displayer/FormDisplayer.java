@@ -41,8 +41,6 @@ import org.kie.workbench.common.forms.dynamic.service.shared.adf.DynamicFormMode
 import org.kie.workbench.common.forms.dynamic.service.shared.impl.StaticModelFormRenderingContext;
 import org.kie.workbench.common.forms.processing.engine.handling.FieldChangeHandler;
 import org.kie.workbench.common.forms.processing.engine.handling.FormField;
-import org.kie.workbench.common.stunner.core.graph.Element;
-import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.forms.client.formFilters.FormFiltersProviderFactory;
 import org.kie.workbench.common.stunner.forms.context.PathAwareFormContext;
 import org.uberfire.backend.vfs.Path;
@@ -71,18 +69,24 @@ public class FormDisplayer implements FormDisplayerView.Presenter,
         view.init(this);
     }
 
-    public void render(final Element<? extends Definition<?>> element, final Path diagramPath, final FieldChangeHandler changeHandler, final RenderMode renderMode) {
+    public void render(final String domainObjectUUID,
+                       final Object domainObject,
+                       final Path diagramPath,
+                       final FieldChangeHandler changeHandler,
+                       final RenderMode renderMode) {
 
-        final Object definition = element.getContent().getDefinition();
+        LOGGER.fine("Rendering form for element: " + domainObjectUUID);
 
-        LOGGER.fine("Rendering form for element: " + element.getUUID());
-
-        doRender(element, definition, diagramPath, changeHandler, renderMode);
+        doRender(domainObjectUUID, domainObject, diagramPath, changeHandler, renderMode);
 
         show();
     }
 
-    private void doRender(Element<? extends Definition<?>> element, Object definition, Path diagramPath, FieldChangeHandler changeHandler, RenderMode renderMode) {
+    private void doRender(final String domainObjectUUID,
+                          final Object domainObject,
+                          final Path diagramPath,
+                          final FieldChangeHandler changeHandler,
+                          final RenderMode renderMode) {
 
         final List<String> previousExpandedCollapses = new ArrayList<>();
 
@@ -101,9 +105,9 @@ public class FormDisplayer implements FormDisplayerView.Presenter,
 
         LOGGER.fine("Rendering a new form for element");
 
-        Collection<FormElementFilter> filters = FormFiltersProviderFactory.getFilterForDefinition(element.getUUID(), element, definition);
+        Collection<FormElementFilter> filters = FormFiltersProviderFactory.getFilterForDefinition(domainObjectUUID, domainObject);
 
-        final BindableProxy<?> proxy = (BindableProxy<?>) BindableProxyFactory.getBindableProxy(definition);
+        final BindableProxy<?> proxy = (BindableProxy<?>) BindableProxyFactory.getBindableProxy(domainObject);
         final StaticModelFormRenderingContext generatedCtx = modelGenerator.getContextForModel(proxy.deepUnwrap(), filters.stream().toArray(FormElementFilter[]::new));
         final FormRenderingContext<?> pathAwareCtx = new PathAwareFormContext<>(generatedCtx, diagramPath);
         pathAwareCtx.setRenderMode(renderMode);
@@ -133,11 +137,11 @@ public class FormDisplayer implements FormDisplayerView.Presenter,
         }
     }
 
-    private boolean checkCollapsibleGroup(FormField formField) {
+    private boolean checkCollapsibleGroup(final FormField formField) {
         return formField.getContainer() instanceof CollapsibleFormGroup;
     }
 
-    private CollapsibleFormGroup toFormGroup(FormField formField) {
+    private CollapsibleFormGroup toFormGroup(final FormField formField) {
         return (CollapsibleFormGroup) formField.getContainer();
     }
 

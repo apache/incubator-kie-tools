@@ -29,15 +29,11 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.context.Exp
 import org.kie.workbench.common.dmn.client.editors.expressions.types.literal.LiteralExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.CellSelectionStrategy;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Matchers.eq;
@@ -47,10 +43,6 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UndefinedExpressionUIModelMapperTest {
-
-    private static final int PARENT_ROW_INDEX = 0;
-
-    private static final int PARENT_COLUMN_INDEX = 1;
 
     @Mock
     private Expression expression;
@@ -70,18 +62,6 @@ public class UndefinedExpressionUIModelMapperTest {
     @Mock
     private UndefinedExpressionColumn uiColumn;
 
-    @Mock
-    private GridWidget parentGridWidget;
-
-    @Mock
-    private GridData parentGridUiModel;
-
-    @Mock
-    private GridCell parentGridUiCell;
-
-    @Mock
-    private CellSelectionStrategy parentGridUiCellCellSelectionStrategy;
-
     private GridData uiModel;
 
     private Supplier<Optional<GridCellValue<?>>> cellValueSupplier;
@@ -97,15 +77,9 @@ public class UndefinedExpressionUIModelMapperTest {
         this.mapper = new UndefinedExpressionUIModelMapper(() -> uiModel,
                                                            () -> Optional.ofNullable(expression),
                                                            listSelector,
-                                                           hasExpression,
-                                                           new GridCellTuple(PARENT_ROW_INDEX,
-                                                                             PARENT_COLUMN_INDEX,
-                                                                             parentGridWidget));
+                                                           hasExpression);
         this.cellValueSupplier = () -> Optional.of(new ExpressionCellValue(Optional.of(editor)));
 
-        when(parentGridWidget.getModel()).thenReturn(parentGridUiModel);
-        when(parentGridUiModel.getCell(eq(PARENT_ROW_INDEX), eq(PARENT_COLUMN_INDEX))).thenReturn(parentGridUiCell);
-        when(parentGridUiCell.getSelectionStrategy()).thenReturn(parentGridUiCellCellSelectionStrategy);
         when(hasExpression.asDMNModelInstrumentedBase()).thenReturn(hasExpressionDMNModelInstrumentedBase);
     }
 
@@ -114,21 +88,6 @@ public class UndefinedExpressionUIModelMapperTest {
         mapper.fromDMNModel(0, 0);
 
         assertThat(mapper.getUiModel().get().getCell(0, 0)).isInstanceOf(UndefinedExpressionCell.class);
-    }
-
-    @Test
-    public void testFromDMNCellSelectionStrategy() {
-        mapper.fromDMNModel(0, 0);
-
-        final CellSelectionStrategy strategy = uiModel.getCell(0, 0).getSelectionStrategy();
-
-        strategy.handleSelection(uiModel, 0, 0, true, false);
-
-        verify(parentGridUiCellCellSelectionStrategy).handleSelection(eq(parentGridUiModel),
-                                                                      eq(PARENT_ROW_INDEX),
-                                                                      eq(PARENT_COLUMN_INDEX),
-                                                                      eq(true),
-                                                                      eq(false));
     }
 
     @Test

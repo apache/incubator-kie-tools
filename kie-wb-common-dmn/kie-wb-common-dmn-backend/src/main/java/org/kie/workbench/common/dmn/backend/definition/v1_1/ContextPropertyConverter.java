@@ -26,7 +26,7 @@ public class ContextPropertyConverter {
 
     public static Context wbFromDMN(final org.kie.dmn.model.api.Context dmn) {
         Id id = new Id(dmn.getId());
-        Description description = new Description(dmn.getDescription());
+        Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
         QName typeRef = QNamePropertyConverter.wbFromDMN(dmn.getTypeRef());
         Context result = new Context(id,
                                      description,

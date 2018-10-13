@@ -23,14 +23,16 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
-import org.kie.workbench.common.stunner.forms.client.event.RefreshFormProperties;
+import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.mvp.Command;
@@ -76,15 +78,20 @@ public class FormsCanvasSessionHandlerTest {
     @Mock
     private Element<? extends Definition<?>> element;
 
-    private RefreshFormProperties refreshFormPropertiesEvent;
+    @Mock
+    private DomainObject domainObject;
+
+    private RefreshFormPropertiesEvent refreshFormPropertiesEvent;
 
     private CanvasSelectionEvent canvasSelectionEvent;
+
+    private DomainObjectSelectionEvent domainObjectSelectionEvent;
 
     private FormsCanvasSessionHandler handler;
 
     @Before
     public void setup() {
-        this.refreshFormPropertiesEvent = new RefreshFormProperties(session, UUID);
+        this.refreshFormPropertiesEvent = new RefreshFormPropertiesEvent(session, UUID);
         this.handler = spy(new FormsCanvasSessionHandler(definitionManager, commandFactory));
         this.handler.setRenderer(formRenderer);
 
@@ -142,6 +149,28 @@ public class FormsCanvasSessionHandlerTest {
         canvasSelectionEvent = new CanvasSelectionEvent(abstractCanvasHandler, UUID);
 
         handler.onCanvasSelectionEvent(canvasSelectionEvent);
+
+        verify(formRenderer, never()).render(anyString(), any(DomainObject.class));
+    }
+
+    @Test
+    public void testOnDomainObjectSelectionEventSameSession() {
+        handler.bind(session);
+
+        domainObjectSelectionEvent = new DomainObjectSelectionEvent(abstractCanvasHandler, domainObject);
+
+        handler.onDomainObjectSelectionEvent(domainObjectSelectionEvent);
+
+        verify(formRenderer).render(anyString(), eq(domainObject));
+    }
+
+    @Test
+    public void testOnDomainObjectSelectionEventDifferentSession() {
+        handler.bind(mock(EditorSession.class));
+
+        domainObjectSelectionEvent = new DomainObjectSelectionEvent(abstractCanvasHandler, domainObject);
+
+        handler.onDomainObjectSelectionEvent(domainObjectSelectionEvent);
 
         verify(formRenderer, never()).render(anyString(), any(Element.class), any(Command.class));
     }

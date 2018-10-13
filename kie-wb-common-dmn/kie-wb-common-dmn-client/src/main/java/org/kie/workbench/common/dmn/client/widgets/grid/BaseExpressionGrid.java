@@ -32,10 +32,12 @@ import com.ait.lienzo.client.core.event.NodeMouseDoubleClickHandler;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Viewport;
+import com.ait.lienzo.client.core.types.Point2D;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
+import org.kie.workbench.common.dmn.api.definition.NOPDomainObject;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
@@ -46,6 +48,7 @@ import org.kie.workbench.common.dmn.client.commands.general.SetCellValueCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetHasNameCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetHeaderValueCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetTypeRefCommand;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableHeaderGridWidgetMouseDoubleClickHandler;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableHeaderMetaData;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
@@ -60,19 +63,25 @@ import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasGraphCommand;
+import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
+import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
-import org.kie.workbench.common.stunner.forms.client.event.RefreshFormProperties;
+import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.uberfire.commons.data.Pair;
+import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
+import org.uberfire.ext.wires.core.grids.client.util.CoordinateUtilities;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidget;
@@ -109,7 +118,8 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
 
     protected final TranslationService translationService;
     protected final Event<ExpressionEditorChanged> editorSelectedEvent;
-    protected final Event<RefreshFormProperties> refreshFormPropertiesEvent;
+    protected final Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent;
+    protected final Event<DomainObjectSelectionEvent> domainObjectSelectionEvent;
 
     protected final int nesting;
     protected M uiModelMapper;
@@ -128,7 +138,8 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
                               final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                               final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
                               final Event<ExpressionEditorChanged> editorSelectedEvent,
-                              final Event<RefreshFormProperties> refreshFormPropertiesEvent,
+                              final Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent,
+                              final Event<DomainObjectSelectionEvent> domainObjectSelectionEvent,
                               final CellEditorControlsView.Presenter cellEditorControls,
                               final ListSelectorView.Presenter listSelector,
                               final TranslationService translationService,
@@ -147,6 +158,7 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
         this.canvasCommandFactory = canvasCommandFactory;
         this.editorSelectedEvent = editorSelectedEvent;
         this.refreshFormPropertiesEvent = refreshFormPropertiesEvent;
+        this.domainObjectSelectionEvent = domainObjectSelectionEvent;
         this.cellEditorControls = cellEditorControls;
         this.listSelector = listSelector;
         this.translationService = translationService;
@@ -204,7 +216,7 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
                                                                                      typeRef,
                                                                                      () -> {
                                                                                          gridLayer.batch();
-                                                                                         getNodeUUID().ifPresent(uuid -> refreshFormPropertiesEvent.fire(new RefreshFormProperties(sessionManager.getCurrentSession(), uuid)));
+                                                                                         getNodeUUID().ifPresent(uuid -> refreshFormPropertiesEvent.fire(new RefreshFormPropertiesEvent(sessionManager.getCurrentSession(), uuid)));
                                                                                      }));
     }
 
@@ -213,7 +225,7 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
         commandBuilder.addCommand(new DeleteHasNameCommand(hasName,
                                                            () -> {
                                                                gridLayer.batch();
-                                                               getNodeUUID().ifPresent(uuid -> refreshFormPropertiesEvent.fire(new RefreshFormProperties(sessionManager.getCurrentSession(), uuid)));
+                                                               getNodeUUID().ifPresent(uuid -> refreshFormPropertiesEvent.fire(new RefreshFormPropertiesEvent(sessionManager.getCurrentSession(), uuid)));
                                                            }));
         return commandBuilder;
     }
@@ -225,7 +237,7 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
                                                         name,
                                                         () -> {
                                                             gridLayer.batch();
-                                                            getNodeUUID().ifPresent(uuid -> refreshFormPropertiesEvent.fire(new RefreshFormProperties(sessionManager.getCurrentSession(), uuid)));
+                                                            getNodeUUID().ifPresent(uuid -> refreshFormPropertiesEvent.fire(new RefreshFormPropertiesEvent(sessionManager.getCurrentSession(), uuid)));
                                                         }));
         return commandBuilder;
     }
@@ -468,32 +480,74 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
     }
 
     public void selectFirstCell() {
-        final DMNGridLayer gridLayer = (DMNGridLayer) getLayer();
-        gridLayer.select(this);
-
         final GridData uiModel = getModel();
         if (uiModel.getRowCount() == 0 || uiModel.getColumnCount() == 0) {
             return;
         }
+
         uiModel.clearSelections();
         uiModel.getColumns()
                 .stream()
                 .filter(c -> !(c instanceof RowNumberColumn))
                 .map(c -> uiModel.getColumns().indexOf(c))
                 .findFirst()
-                .ifPresent(index -> uiModel.selectCell(0, index));
+                .ifPresent(index -> selectCell(0, index, false, false));
     }
 
-    public void selectParentCell() {
-        final int parentUiRowIndex = parent.getRowIndex();
-        final int parentUiColumnIndex = parent.getColumnIndex();
-        final Optional<GridWidget> parentGridWidget = Optional.ofNullable(parent.getGridWidget());
-        parentGridWidget.ifPresent(pgw -> {
-            ((DMNGridLayer) getLayer()).select(pgw);
-            pgw.selectCell(parentUiRowIndex,
-                           parentUiColumnIndex,
-                           false,
-                           false);
+    @Override
+    public boolean selectCell(final Point2D ap,
+                              final boolean isShiftKeyDown,
+                              final boolean isControlKeyDown) {
+        final Integer uiRowIndex = CoordinateUtilities.getUiRowIndex(this,
+                                                                     ap.getY());
+        final Integer uiColumnIndex = CoordinateUtilities.getUiColumnIndex(this,
+                                                                           ap.getX());
+        if (uiRowIndex == null || uiColumnIndex == null) {
+            return false;
+        }
+
+        gridLayer.select(this);
+
+        final boolean isSelectionChanged = super.selectCell(uiRowIndex,
+                                                            uiColumnIndex,
+                                                            isShiftKeyDown,
+                                                            isControlKeyDown);
+        if (isSelectionChanged) {
+            doAfterSelectionChange(uiRowIndex, uiColumnIndex);
+        }
+
+        return isSelectionChanged;
+    }
+
+    @Override
+    public boolean selectCell(final int uiRowIndex,
+                              final int uiColumnIndex,
+                              final boolean isShiftKeyDown,
+                              final boolean isControlKeyDown) {
+        gridLayer.select(this);
+        final boolean isSelectionChanged = super.selectCell(uiRowIndex,
+                                                            uiColumnIndex,
+                                                            isShiftKeyDown,
+                                                            isControlKeyDown);
+        if (isSelectionChanged) {
+            doAfterSelectionChange(uiRowIndex, uiColumnIndex);
+        }
+
+        return isSelectionChanged;
+    }
+
+    protected void doAfterSelectionChange(final int uiRowIndex,
+                                          final int uiColumnIndex) {
+        fireDomainObjectSelectionEvent(new NOPDomainObject());
+    }
+
+    public void selectExpressionEditorFirstCell(final int uiRowIndex,
+                                                final int uiColumnIndex) {
+        final GridCellValue<?> value = model.getCell(uiRowIndex, uiColumnIndex).getValue();
+        final Optional<BaseExpressionGrid> grid = ((ExpressionCellValue) value).getValue();
+        grid.ifPresent(beg -> {
+            ((DMNGridLayer) getLayer()).select(beg);
+            beg.selectFirstCell();
         });
     }
 
@@ -503,5 +557,15 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
             return Optional.of((BaseExpressionGrid) gridWidget);
         }
         return Optional.empty();
+    }
+
+    protected void fireDomainObjectSelectionEvent(final DomainObject domainObject) {
+        final ClientSession session = sessionManager.getCurrentSession();
+        if (session != null) {
+            final CanvasHandler canvasHandler = session.getCanvasHandler();
+            if (canvasHandler != null) {
+                domainObjectSelectionEvent.fire(new DomainObjectSelectionEvent(canvasHandler, domainObject));
+            }
+        }
     }
 }

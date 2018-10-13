@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.forms.client.widgets;
 
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,15 +29,19 @@ import javax.inject.Inject;
 import com.google.gwt.logging.client.LogConfiguration;
 import org.jboss.errai.common.client.api.IsElement;
 import org.jboss.errai.common.client.dom.HTMLElement;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
+import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.forms.client.event.FormPropertiesOpened;
 import org.kie.workbench.common.stunner.forms.client.widgets.container.FormsContainer;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.mvp.Command;
 
 @Dependent
@@ -50,9 +55,10 @@ public class FormPropertiesWidget implements IsElement,
     private final Event<FormPropertiesOpened> propertiesOpenedEvent;
     private final FormsCanvasSessionHandler formSessionHandler;
     private final FormsContainer formsContainer;
+    private final TranslationService translationService;
 
     protected FormPropertiesWidget() {
-        this(null, null, null, null, null);
+        this(null, null, null, null, null, null);
     }
 
     @Inject
@@ -60,21 +66,29 @@ public class FormPropertiesWidget implements IsElement,
                                 final DefinitionUtils definitionUtils,
                                 final FormsCanvasSessionHandler formSessionHandler,
                                 final Event<FormPropertiesOpened> propertiesOpenedEvent,
-                                final FormsContainer formsContainer) {
+                                final FormsContainer formsContainer,
+                                final TranslationService translationService) {
         this.view = view;
         this.definitionUtils = definitionUtils;
         this.formSessionHandler = formSessionHandler;
         this.propertiesOpenedEvent = propertiesOpenedEvent;
         this.formsContainer = formsContainer;
+        this.translationService = translationService;
     }
 
     @PostConstruct
+    @SuppressWarnings("unchecked")
     public void init() {
         log(Level.INFO, "FormPropertiesWidget instance build.");
         formSessionHandler.setRenderer(new FormsCanvasSessionHandler.FormRenderer() {
             @Override
             public void render(String graphUuid, Element element, Command callback) {
                 show(graphUuid, element, callback);
+            }
+
+            @Override
+            public void render(String graphUuid, DomainObject domainObject) {
+                show(graphUuid, domainObject);
             }
 
             @Override
@@ -142,27 +156,77 @@ public class FormPropertiesWidget implements IsElement,
                       final Command callback) {
         final String uuid = element.getUUID();
         final Diagram<?, ?> diagram = formSessionHandler.getDiagram();
-        final Object definition = element.getContent().getDefinition();
+        if (Objects.isNull(diagram)) {
+            return;
+        }
+        final Metadata metadata = diagram.getMetadata();
+        if (Objects.isNull(metadata)) {
+            return;
+        }
+        final Path diagramPath = metadata.getPath();
+        final Definition content = element.getContent();
+        if (Objects.isNull(content)) {
+            return;
+        }
+        final Object definition = content.getDefinition();
         final RenderMode renderMode = formSessionHandler.getSession() instanceof EditorSession ? RenderMode.EDIT_MODE : RenderMode.READ_ONLY_MODE;
 
-        formsContainer.render(graphUuid, element, diagram.getMetadata().getPath(), (fieldName, newValue) -> {
-            try {
-                formSessionHandler.executeUpdateProperty(element, fieldName, newValue);
-            } catch (final Exception ex) {
-                log(Level.SEVERE,
-                    "Something wrong happened refreshing the canvas for " +
-                            "field '" + fieldName + "': " + ex.getCause());
-            } finally {
-                if (null != callback) {
-                    callback.execute();
-                }
-            }
-        }, renderMode);
+        formsContainer.render(graphUuid,
+                              uuid,
+                              definition,
+                              diagramPath,
+                              (fieldName, newValue) -> {
+                                  try {
+                                      formSessionHandler.executeUpdateProperty(element, fieldName, newValue);
+                                  } catch (final Exception ex) {
+                                      log(Level.SEVERE,
+                                          "Something wrong happened refreshing the canvas for " +
+                                                  "field '" + fieldName + "': " + ex.getCause());
+                                  } finally {
+                                      if (null != callback) {
+                                          callback.execute();
+                                      }
+                                  }
+                              }, renderMode);
         final String name = definitionUtils.getName(definition);
         propertiesOpenedEvent.fire(new FormPropertiesOpened(formSessionHandler.getSession(), uuid, name));
     }
 
-    private static void log(final Level level, final String message) {
+    private void show(final String graphUuid,
+                      final DomainObject domainObject) {
+        final String domainObjectUUID = domainObject.getDomainObjectUUID();
+        final String domainObjectName = translationService.getTranslation(domainObject.getDomainObjectNameTranslationKey());
+        final Diagram<?, ?> diagram = formSessionHandler.getDiagram();
+        if (Objects.isNull(diagram)) {
+            return;
+        }
+        final Metadata metadata = diagram.getMetadata();
+        if (Objects.isNull(metadata)) {
+            return;
+        }
+        final Path diagramPath = metadata.getPath();
+        final RenderMode renderMode = formSessionHandler.getSession() instanceof EditorSession ? RenderMode.EDIT_MODE : RenderMode.READ_ONLY_MODE;
+
+        formsContainer.render(graphUuid,
+                              domainObjectUUID,
+                              domainObject,
+                              diagramPath,
+                              (fieldName, newValue) -> {
+                                  try {
+                                      formSessionHandler.executeUpdateDomainObjectProperty(domainObject,
+                                                                                           fieldName,
+                                                                                           newValue);
+                                  } catch (final Exception ex) {
+                                      log(Level.SEVERE,
+                                          "Something wrong happened refreshing the DomainObject '"
+                                                  + domainObject + "' for field '"
+                                                  + fieldName + "': " + ex.getCause());
+                                  }
+                              }, renderMode);
+        propertiesOpenedEvent.fire(new FormPropertiesOpened(formSessionHandler.getSession(), domainObjectUUID, domainObjectName));
+    }
+
+    protected void log(final Level level, final String message) {
         if (LogConfiguration.loggingIsEnabled()) {
             LOGGER.log(level, message);
         }

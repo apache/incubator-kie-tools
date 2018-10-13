@@ -22,11 +22,8 @@ import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.literal.LiteralExpressionGrid;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
@@ -106,37 +103,6 @@ public class DMNGridPanelCellSelectionHandlerTest {
                                                                anyBoolean(),
                                                                anyBoolean());
         verify(gridLayer, never()).batch();
-    }
-
-    @Test
-    public void testSelectCellIfRequiredWhenLiteralExpressionGrid() {
-        assertSelectCellIfRequiredForParentGridWidget(mockGridWidget(LiteralExpressionGrid.class));
-    }
-
-    @Test
-    public void testSelectCellIfRequiredWhenUndefinedExpressionGrid() {
-        assertSelectCellIfRequiredForParentGridWidget(mockGridWidget(UndefinedExpressionGrid.class));
-    }
-
-    private void assertSelectCellIfRequiredForParentGridWidget(final BaseExpressionGrid gridWidget) {
-        final GridData gridData = gridWidget.getModel();
-        gridData.setCell(0, 1, () -> gridCell);
-
-        final GridWidget parentGridWidget = mockGridWidget(BaseExpressionGrid.class);
-        final GridCellTuple parentInformation = new GridCellTuple(2, 3, parentGridWidget);
-        when(gridWidget.getParentInformation()).thenReturn(parentInformation);
-        final GridData parentGridData = parentGridWidget.getModel();
-        parentGridData.setCell(2, 3, () -> gridCell);
-
-        cellSelectionHandler.selectCellIfRequired(0, 1, gridWidget, true, false);
-
-        verify(gridLayer).select(eq(parentGridWidget));
-        verify(cellSelectionStrategy).handleSelection(eq(parentGridData),
-                                                      eq(2),
-                                                      eq(3),
-                                                      eq(true),
-                                                      eq(false));
-        verify(gridLayer).batch();
     }
 
     private <G extends BaseExpressionGrid> G mockGridWidget(final Class<G> gridClass) {

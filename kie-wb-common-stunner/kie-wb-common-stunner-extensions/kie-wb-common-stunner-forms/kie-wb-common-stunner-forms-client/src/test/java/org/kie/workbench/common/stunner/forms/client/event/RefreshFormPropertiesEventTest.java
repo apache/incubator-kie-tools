@@ -25,18 +25,18 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @RunWith(MockitoJUnitRunner.class)
-public class RefreshFormPropertiesTest {
+public class RefreshFormPropertiesEventTest {
 
     private static final String UUID = "uuid";
 
     @Mock
     private ClientSession session;
 
-    private RefreshFormProperties event;
+    private RefreshFormPropertiesEvent event;
 
     @Before
     public void setup() {
-        this.event = new RefreshFormProperties(session, UUID);
+        this.event = new RefreshFormPropertiesEvent(session, UUID);
     }
 
     @Test

@@ -32,8 +32,6 @@ import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.forms.processing.engine.handling.FieldChangeHandler;
-import org.kie.workbench.common.stunner.core.graph.Element;
-import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.forms.client.widgets.container.displayer.FormDisplayer;
 import org.uberfire.backend.vfs.Path;
 
@@ -56,11 +54,16 @@ public class FormsContainer implements IsElement {
         this.formDisplayers = new HashMap<>();
     }
 
-    public void render(final String graphUuid, final Element<? extends Definition<?>> element, final Path diagramPath, final FieldChangeHandler changeHandler, final RenderMode renderMode) {
+    public void render(final String graphUuid,
+                       final String domainObjectUUID,
+                       final Object domainObject,
+                       final Path diagramPath,
+                       final FieldChangeHandler changeHandler,
+                       final RenderMode renderMode) {
 
-        FormDisplayer displayer = getDisplayer(graphUuid, element);
+        FormDisplayer displayer = getDisplayer(graphUuid, domainObjectUUID);
 
-        displayer.render(element, diagramPath, changeHandler, renderMode);
+        displayer.render(domainObjectUUID, domainObject, diagramPath, changeHandler, renderMode);
 
         if (null != currentDisplayer && !displayer.equals(currentDisplayer)) {
             currentDisplayer.hide();
@@ -70,8 +73,9 @@ public class FormsContainer implements IsElement {
         currentDisplayer = displayer;
     }
 
-    private FormDisplayer getDisplayer(String graphUuid, Element<? extends Definition<?>> element) {
-        FormDisplayerKey key = new FormDisplayerKey(graphUuid, element.getUUID());
+    private FormDisplayer getDisplayer(final String graphUuid,
+                                       final String elementUuid) {
+        FormDisplayerKey key = new FormDisplayerKey(graphUuid, elementUuid);
         FormDisplayer displayer = formDisplayers.get(key);
 
         LOGGER.fine("Getting form displayer for : " + key);
@@ -86,12 +90,12 @@ public class FormsContainer implements IsElement {
         displayer.hide();
         view.addDisplayer(displayer);
 
-        formDisplayers.put(new FormDisplayerKey(graphUuid, element.getUUID()), displayer);
+        formDisplayers.put(new FormDisplayerKey(graphUuid, elementUuid), displayer);
 
         return displayer;
     }
 
-    public void clearDiagramDisplayers(String graphUuid) {
+    public void clearDiagramDisplayers(final String graphUuid) {
         LOGGER.fine("Clearing properties forms for graph: " + graphUuid);
         List<FormDisplayerKey> keys = formDisplayers.keySet()
                 .stream()
@@ -101,7 +105,8 @@ public class FormsContainer implements IsElement {
         LOGGER.fine("Cleared properties forms for graph: " + graphUuid);
     }
 
-    public void clearFormDisplayer(String graphUuid, String elementUid) {
+    public void clearFormDisplayer(final String graphUuid,
+                                   final String elementUid) {
         formDisplayers.keySet()
                 .stream()
                 .filter(key -> key.getGraphUuid().equals(graphUuid) && key.getElementUid().equals(elementUid))
@@ -109,7 +114,7 @@ public class FormsContainer implements IsElement {
                 .ifPresent(this::clearDisplayer);
     }
 
-    private void clearDisplayer(FormDisplayerKey key) {
+    private void clearDisplayer(final FormDisplayerKey key) {
         FormDisplayer displayer = formDisplayers.remove(key);
         LOGGER.fine("Clearing form displayer for element: " + key.getElementUid());
         view.removeDisplayer(displayer);

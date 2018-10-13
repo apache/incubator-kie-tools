@@ -24,4 +24,6 @@ public class Categories {
     public static final String CONNECTORS = "DMNConnectors";
 
     public static final String MISCELLANEOUS = "DMNMiscellaneousObjects";
+
+    public static final String DOMAIN_OBJECTS = "DMNDomainObjects";
 }

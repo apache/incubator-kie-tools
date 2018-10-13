@@ -18,9 +18,6 @@ package org.kie.workbench.common.dmn.client.widgets.panel;
 
 import java.util.stream.Stream;
 
-import org.kie.workbench.common.dmn.client.editors.expressions.types.literal.LiteralExpressionGrid;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionGrid;
-import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
@@ -45,28 +42,14 @@ public class DMNGridPanelCellSelectionHandlerImpl implements DMNGridPanelCellSel
                                      final boolean isShiftKeyDown,
                                      final boolean isControlKeyDown) {
         // If the right-click did not occur in an already selected cell, ensure the cell is selected
-        GridWidget _gridWidget = gridWidget;
-        int _uiRowIndex = uiRowIndex;
-        int _uiColumnIndex = uiColumnIndex;
-
-        // LiteralExpression and UndefinedExpression are not handled as grids in
-        // their own right. In these circumstances use their parent GridWidget.
-        if (_gridWidget instanceof LiteralExpressionGrid || _gridWidget instanceof UndefinedExpressionGrid) {
-            final BaseExpressionGrid grid = (BaseExpressionGrid) _gridWidget;
-            _gridWidget = grid.getParentInformation().getGridWidget();
-            _uiRowIndex = grid.getParentInformation().getRowIndex();
-            _uiColumnIndex = grid.getParentInformation().getColumnIndex();
-        }
-
-        final int rowIndex = _uiRowIndex;
-        final GridData gridData = _gridWidget.getModel();
-        final GridColumn<?> column = gridData.getColumns().get(_uiColumnIndex);
+        final GridData gridData = gridWidget.getModel();
+        final GridColumn<?> column = gridData.getColumns().get(uiColumnIndex);
         final Stream<SelectedCell> modelColumnSelectedCells = gridData.getSelectedCells().stream().filter(sc -> sc.getColumnIndex() == column.getIndex());
-        final boolean isContextMenuCellSelectedCell = modelColumnSelectedCells.map(SelectedCell::getRowIndex).anyMatch(ri -> ri == rowIndex);
+        final boolean isContextMenuCellSelectedCell = modelColumnSelectedCells.map(SelectedCell::getRowIndex).anyMatch(ri -> ri == uiRowIndex);
         if (!isContextMenuCellSelectedCell) {
-            selectCell(_uiRowIndex,
-                       _uiColumnIndex,
-                       _gridWidget,
+            selectCell(uiRowIndex,
+                       uiColumnIndex,
+                       gridWidget,
                        isShiftKeyDown,
                        isControlKeyDown);
         }

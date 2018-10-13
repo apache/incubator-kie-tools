@@ -24,9 +24,11 @@ import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasDomainObjectListener;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.definition.morph.MorphDefinition;
+import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -206,6 +208,17 @@ public class DefaultCanvasCommandFactory implements CanvasCommandFactory<Abstrac
         return new UpdateElementPropertyCommand(element,
                                                 propertyId,
                                                 value);
+    }
+
+    @Override
+    public CanvasCommand<AbstractCanvasHandler> updateDomainObjectPropertyValue(final CanvasDomainObjectListener domainObjectCanvasListener,
+                                                                                final DomainObject domainObject,
+                                                                                final String propertyId,
+                                                                                final Object value) {
+        return new UpdateDomainObjectPropertyCommand(domainObjectCanvasListener,
+                                                     domainObject,
+                                                     propertyId,
+                                                     value);
     }
 
     @Override

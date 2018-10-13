@@ -1203,8 +1203,8 @@ public class DMNMarshallerTest {
     private static void checkDecisionExpression(final Graph<?, Node<View, ?>> unmarshalledGraph,
                                                 final Expression expression) {
         final Node<View, ?> decisionNode = nodeOfDefinition(unmarshalledGraph.nodes().iterator(), Decision.class);
-        assertThat(((Decision) decisionNode.getContent().getDefinition()).getExpression())
-                .isEqualTo(expression);
+        final Expression decisionNodeExpression = ((Decision) decisionNode.getContent().getDefinition()).getExpression();
+        assertThat(decisionNodeExpression).isEqualTo(expression);
     }
 
     private static Node<View, ?> nodeOfDefinition(final Iterator<Node<View, ?>> nodesIterator, final Class aClass) {

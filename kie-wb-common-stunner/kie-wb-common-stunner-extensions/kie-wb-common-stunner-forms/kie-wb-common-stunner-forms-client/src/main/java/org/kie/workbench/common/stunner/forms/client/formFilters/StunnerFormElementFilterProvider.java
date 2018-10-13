@@ -19,12 +19,10 @@ package org.kie.workbench.common.stunner.forms.client.formFilters;
 import java.util.Collection;
 
 import org.kie.workbench.common.forms.adf.engine.shared.FormElementFilter;
-import org.kie.workbench.common.stunner.core.graph.Element;
-import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 
 public interface StunnerFormElementFilterProvider {
 
     Class<?> getDefinitionType();
 
-    Collection<FormElementFilter> provideFilters (String elementUUID, Element<? extends Definition<?>> element, Object definition);
+    Collection<FormElementFilter> provideFilters(String elementUUID, Object definition);
 }

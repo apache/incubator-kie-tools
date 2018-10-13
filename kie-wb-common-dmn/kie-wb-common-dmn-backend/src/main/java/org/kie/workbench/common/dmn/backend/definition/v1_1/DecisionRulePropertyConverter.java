@@ -27,7 +27,7 @@ public class DecisionRulePropertyConverter {
     public static DecisionRule wbFromDMN(final org.kie.dmn.model.api.DecisionRule dmn) {
         Id id = new Id(dmn.getId());
         Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
-        
+
         DecisionRule result = new DecisionRule();
         result.setId(id);
         result.setDescription(description);

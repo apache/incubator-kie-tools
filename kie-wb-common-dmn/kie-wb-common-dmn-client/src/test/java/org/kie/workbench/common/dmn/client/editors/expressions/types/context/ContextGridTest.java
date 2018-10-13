@@ -70,6 +70,7 @@ import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.UpdateElementPropertyCommand;
+import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
@@ -77,7 +78,7 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
-import org.kie.workbench.common.stunner.forms.client.event.RefreshFormProperties;
+import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InOrder;
@@ -219,7 +220,10 @@ public class ContextGridTest {
     private EventSourceMock<ExpressionEditorChanged> editorSelectedEvent;
 
     @Mock
-    private EventSourceMock<RefreshFormProperties> refreshFormPropertiesEvent;
+    private EventSourceMock<RefreshFormPropertiesEvent> refreshFormPropertiesEvent;
+
+    @Mock
+    private EventSourceMock<DomainObjectSelectionEvent> domainObjectSelectionEvent;
 
     @Captor
     private ArgumentCaptor<AddContextEntryCommand> addContextEntryCommandCaptor;
@@ -265,6 +269,7 @@ public class ContextGridTest {
                                                  canvasCommandFactory,
                                                  editorSelectedEvent,
                                                  refreshFormPropertiesEvent,
+                                                 domainObjectSelectionEvent,
                                                  listSelector,
                                                  translationService,
                                                  expressionEditorDefinitionsSupplier,
@@ -705,11 +710,11 @@ public class ContextGridTest {
         clearExpressionTypeCommand.execute(canvasHandler);
 
         verify(grid).resize(BaseExpressionGrid.RESIZE_EXISTING_MINIMUM);
-        verify(gridLayer).select(gridWidget);
-        verify(gridWidget).selectCell(eq(0),
-                                      eq(2),
-                                      eq(false),
-                                      eq(false));
+        verify(gridLayer).select(grid);
+        verify(grid).selectCell(eq(0),
+                                eq(ContextUIModelMapperHelper.EXPRESSION_COLUMN_INDEX),
+                                eq(false),
+                                eq(false));
         verify(gridLayer).batch(redrawCommandCaptor.capture());
         redrawCommandCaptor.getValue().execute();
         verify(gridLayer).draw();
@@ -721,8 +726,10 @@ public class ContextGridTest {
         //Verify Expression has been restored and UndefinedExpressionEditor resized
         assertThat(grid.getModel().getColumns().get(2).getWidth()).isEqualTo(DMNGridColumn.DEFAULT_WIDTH);
         verify(grid).resize(BaseExpressionGrid.RESIZE_EXISTING_MINIMUM);
-        verify(gridLayer).select(grid);
-        verify(grid).selectFirstCell();
+
+        verify(grid).selectExpressionEditorFirstCell(eq(0), eq(ContextUIModelMapperHelper.EXPRESSION_COLUMN_INDEX));
+        verify(gridLayer).select(undefinedExpressionEditor);
+        verify(undefinedExpressionEditor).selectFirstCell();
 
         verify(gridLayer).batch(redrawCommandCaptor.capture());
         assertThat(redrawCommandCaptor.getAllValues()).hasSize(2);

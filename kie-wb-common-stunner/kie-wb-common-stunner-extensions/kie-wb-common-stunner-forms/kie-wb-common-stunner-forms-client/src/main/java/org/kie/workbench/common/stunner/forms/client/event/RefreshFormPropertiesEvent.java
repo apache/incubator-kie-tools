@@ -18,13 +18,13 @@ package org.kie.workbench.common.stunner.forms.client.event;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.uberfire.workbench.events.UberFireEvent;
 
-public final class RefreshFormProperties implements UberFireEvent {
+public final class RefreshFormPropertiesEvent implements UberFireEvent {
 
     private final ClientSession session;
     private final String uuid;
 
-    public RefreshFormProperties(final ClientSession session,
-                                 final String uuid) {
+    public RefreshFormPropertiesEvent(final ClientSession session,
+                                      final String uuid) {
         this.session = session;
         this.uuid = uuid;
     }

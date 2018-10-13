@@ -29,6 +29,7 @@
   <source path="command"/>
   <source path="definition"/>
   <source path="diagram"/>
+  <source path="domainobject"/>
   <source path="graph"/>
   <source path="factory"/>
   <source path="lookup"/>

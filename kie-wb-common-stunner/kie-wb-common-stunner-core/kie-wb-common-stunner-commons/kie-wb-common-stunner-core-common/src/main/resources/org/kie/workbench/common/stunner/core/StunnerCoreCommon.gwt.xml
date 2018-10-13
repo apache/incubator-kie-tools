@@ -23,6 +23,7 @@
   <inherits name="org.kie.workbench.common.stunner.core.StunnerCoreApi"/>
   <inherits name="org.hibernate.validator.HibernateValidator" />
   <inherits name="org.jboss.errai.validation.Validation" />
+  <inherits name="org.kie.soup.commons.KIESoupCommons"/>
 
   <source path="api"/>
   <source path="command"/>

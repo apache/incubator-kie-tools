@@ -23,12 +23,14 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
+import org.kie.workbench.common.dmn.api.definition.NOPDomainObject;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
@@ -39,6 +41,7 @@ import org.kie.workbench.common.dmn.client.commands.general.SetHasNameCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetHeaderValueCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetTypeRefCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.GridFactoryCommandUtils;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableHeaderMetaData;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
@@ -50,6 +53,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellValueTuple;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.UpdateElementPropertyCommand;
+import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.command.Command;
@@ -57,7 +61,7 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.core.util.UUID;
-import org.kie.workbench.common.stunner.forms.client.event.RefreshFormProperties;
+import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -122,7 +126,10 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
     private ArgumentCaptor<Command> commandCaptor;
 
     @Captor
-    private ArgumentCaptor<RefreshFormProperties> refreshFormPropertiesCaptor;
+    private ArgumentCaptor<RefreshFormPropertiesEvent> refreshFormPropertiesEventCaptor;
+
+    @Captor
+    private ArgumentCaptor<DomainObjectSelectionEvent> domainObjectSelectionEventCaptor;
 
     private Decision decision = new Decision();
 
@@ -165,6 +172,7 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
                                       canvasCommandFactory,
                                       editorSelectedEvent,
                                       refreshFormPropertiesEvent,
+                                      domainObjectSelectionEvent,
                                       cellEditorControls,
                                       listSelector,
                                       translationService,
@@ -299,6 +307,10 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
 
         assertThat(grid.getModel().getSelectedCells()).isNotEmpty();
         assertThat(grid.getModel().getSelectedCells()).contains(new GridData.SelectedCell(0, 0));
+
+        verify(domainObjectSelectionEvent).fire(domainObjectSelectionEventCaptor.capture());
+        final DomainObjectSelectionEvent domainObjectSelectionEvent = domainObjectSelectionEventCaptor.getValue();
+        assertThat(domainObjectSelectionEvent.getDomainObject()).isInstanceOf(NOPDomainObject.class);
     }
 
     @Test
@@ -320,29 +332,47 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
 
         assertThat(grid.getModel().getSelectedCells()).isNotEmpty();
         assertThat(grid.getModel().getSelectedCells()).contains(new GridData.SelectedCell(0, 1));
+
+        verify(domainObjectSelectionEvent).fire(domainObjectSelectionEventCaptor.capture());
+        final DomainObjectSelectionEvent domainObjectSelectionEvent = domainObjectSelectionEventCaptor.getValue();
+        assertThat(domainObjectSelectionEvent.getDomainObject()).isInstanceOf(NOPDomainObject.class);
     }
 
     @Test
-    public void testSelectParentCellWithNullParent() {
-        grid.selectParentCell();
+    public void testSelectCellWithPoint() {
+        grid.getModel().appendRow(new DMNGridRow());
+        appendColumns(RowNumberColumn.class, GridColumn.class);
 
-        verify(gridLayer, never()).select(any(GridWidget.class));
+        final Point2D point = mock(Point2D.class);
+        final double columnOffset = grid.getModel().getColumns().get(0).getWidth();
+        final double columnWidth = grid.getModel().getColumns().get(1).getWidth() / 2;
+        when(point.getX()).thenReturn(columnOffset + columnWidth);
+
+        grid.selectCell(point, false, true);
+
+        assertThat(grid.getModel().getSelectedCells()).isNotEmpty();
+        assertThat(grid.getModel().getSelectedCells()).contains(new GridData.SelectedCell(0, 1));
+
+        verify(domainObjectSelectionEvent).fire(domainObjectSelectionEventCaptor.capture());
+        final DomainObjectSelectionEvent domainObjectSelectionEvent = domainObjectSelectionEventCaptor.getValue();
+        assertThat(domainObjectSelectionEvent.getDomainObject()).isInstanceOf(NOPDomainObject.class);
     }
 
     @Test
-    public void testSelectParentCellWithNonNullParent() {
-        final GridWidget parentGrid = mock(BaseExpressionGrid.class);
-        when(parentCell.getGridWidget()).thenReturn(parentGrid);
-        when(parentCell.getRowIndex()).thenReturn(0);
-        when(parentCell.getColumnIndex()).thenReturn(1);
+    public void testSelectExpressionEditorFirstCell() {
+        grid.getModel().appendRow(new DMNGridRow());
+        appendColumns(GridColumn.class);
 
-        grid.selectParentCell();
+        final ExpressionCellValue cellValue = mock(ExpressionCellValue.class);
+        final BaseExpressionGrid cellGrid = mock(BaseExpressionGrid.class);
+        when(cellValue.getValue()).thenReturn(Optional.of(cellGrid));
 
-        verify(gridLayer).select(parentGrid);
-        verify(parentGrid).selectCell(eq(0),
-                                      eq(1),
-                                      eq(false),
-                                      eq(false));
+        grid.getModel().setCellValue(0, 0, cellValue);
+
+        grid.selectExpressionEditorFirstCell(0, 0);
+
+        verify(gridLayer).select(cellGrid);
+        verify(cellGrid).selectFirstCell();
     }
 
     @Test
@@ -461,11 +491,11 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
                                        DeleteHasNameCommand.class);
 
         verify(gridLayer).batch();
-        verify(refreshFormPropertiesEvent).fire(refreshFormPropertiesCaptor.capture());
+        verify(refreshFormPropertiesEvent).fire(refreshFormPropertiesEventCaptor.capture());
 
-        final RefreshFormProperties refreshFormProperties = refreshFormPropertiesCaptor.getValue();
-        assertThat(refreshFormProperties.getUuid()).isEqualTo(uuid);
-        assertThat(refreshFormProperties.getSession()).isEqualTo(session);
+        final RefreshFormPropertiesEvent refreshFormPropertiesEvent = refreshFormPropertiesEventCaptor.getValue();
+        assertThat(refreshFormPropertiesEvent.getUuid()).isEqualTo(uuid);
+        assertThat(refreshFormPropertiesEvent.getSession()).isEqualTo(session);
     }
 
     @Test
@@ -489,11 +519,11 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
 
         verify(gridLayer).batch();
         verify(updateElementPropertyCommand).execute(eq(canvasHandler));
-        verify(refreshFormPropertiesEvent).fire(refreshFormPropertiesCaptor.capture());
+        verify(refreshFormPropertiesEvent).fire(refreshFormPropertiesEventCaptor.capture());
 
-        final RefreshFormProperties refreshFormProperties = refreshFormPropertiesCaptor.getValue();
-        assertThat(refreshFormProperties.getUuid()).isEqualTo(uuid);
-        assertThat(refreshFormProperties.getSession()).isEqualTo(session);
+        final RefreshFormPropertiesEvent refreshFormPropertiesEvent = refreshFormPropertiesEventCaptor.getValue();
+        assertThat(refreshFormPropertiesEvent.getUuid()).isEqualTo(uuid);
+        assertThat(refreshFormPropertiesEvent.getSession()).isEqualTo(session);
     }
 
     @SuppressWarnings("unchecked")
@@ -528,11 +558,11 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
                                      SetHasNameCommand.class);
 
         verify(gridLayer).batch();
-        verify(refreshFormPropertiesEvent).fire(refreshFormPropertiesCaptor.capture());
+        verify(refreshFormPropertiesEvent).fire(refreshFormPropertiesEventCaptor.capture());
 
-        final RefreshFormProperties refreshFormProperties = refreshFormPropertiesCaptor.getValue();
-        assertThat(refreshFormProperties.getUuid()).isEqualTo(uuid);
-        assertThat(refreshFormProperties.getSession()).isEqualTo(session);
+        final RefreshFormPropertiesEvent refreshFormPropertiesEvent = refreshFormPropertiesEventCaptor.getValue();
+        assertThat(refreshFormPropertiesEvent.getUuid()).isEqualTo(uuid);
+        assertThat(refreshFormPropertiesEvent.getSession()).isEqualTo(session);
     }
 
     @Test
@@ -556,11 +586,11 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
 
         verify(gridLayer).batch();
         verify(updateElementPropertyCommand).execute(eq(canvasHandler));
-        verify(refreshFormPropertiesEvent).fire(refreshFormPropertiesCaptor.capture());
+        verify(refreshFormPropertiesEvent).fire(refreshFormPropertiesEventCaptor.capture());
 
-        final RefreshFormProperties refreshFormProperties = refreshFormPropertiesCaptor.getValue();
-        assertThat(refreshFormProperties.getUuid()).isEqualTo(uuid);
-        assertThat(refreshFormProperties.getSession()).isEqualTo(session);
+        final RefreshFormPropertiesEvent refreshFormPropertiesEvent = refreshFormPropertiesEventCaptor.getValue();
+        assertThat(refreshFormPropertiesEvent.getUuid()).isEqualTo(uuid);
+        assertThat(refreshFormPropertiesEvent.getSession()).isEqualTo(session);
     }
 
     @SuppressWarnings("unchecked")
@@ -593,11 +623,11 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
         doTestSetTypeRefConsumer();
 
         verify(gridLayer).batch();
-        verify(refreshFormPropertiesEvent).fire(refreshFormPropertiesCaptor.capture());
+        verify(refreshFormPropertiesEvent).fire(refreshFormPropertiesEventCaptor.capture());
 
-        final RefreshFormProperties refreshFormProperties = refreshFormPropertiesCaptor.getValue();
-        assertThat(refreshFormProperties.getUuid()).isEqualTo(uuid);
-        assertThat(refreshFormProperties.getSession()).isEqualTo(session);
+        final RefreshFormPropertiesEvent refreshFormPropertiesEvent = refreshFormPropertiesEventCaptor.getValue();
+        assertThat(refreshFormPropertiesEvent.getUuid()).isEqualTo(uuid);
+        assertThat(refreshFormPropertiesEvent.getSession()).isEqualTo(session);
     }
 
     @SuppressWarnings("unchecked")

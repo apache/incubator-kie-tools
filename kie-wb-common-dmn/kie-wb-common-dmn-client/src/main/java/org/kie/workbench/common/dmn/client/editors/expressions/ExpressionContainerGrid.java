@@ -21,7 +21,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import javax.enterprise.event.Event;
+
 import com.ait.lienzo.client.core.event.INodeXYEvent;
+import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
@@ -46,18 +49,23 @@ import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
+import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidget;
+import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 import org.uberfire.mvp.ParameterizedCommand;
 
 public class ExpressionContainerGrid extends BaseGridWidget implements HasListSelectorControl {
 
     private static final String COLUMN_GROUP = "ExpressionContainerGrid$Expression0";
 
+    private final GridLayer gridLayer;
     private final CellEditorControlsView.Presenter cellEditorControls;
     private final TranslationService translationService;
 
@@ -73,6 +81,7 @@ public class ExpressionContainerGrid extends BaseGridWidget implements HasListSe
 
     private final ParameterizedCommand<Optional<Expression>> onHasExpressionChanged;
     private final ParameterizedCommand<Optional<HasName>> onHasNameChanged;
+    private final Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent;
 
     private ExpressionContainerUIModelMapper uiModelMapper;
 
@@ -85,11 +94,13 @@ public class ExpressionContainerGrid extends BaseGridWidget implements HasListSe
                                    final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitions,
                                    final Supplier<ExpressionGridCache> expressionGridCache,
                                    final ParameterizedCommand<Optional<Expression>> onHasExpressionChanged,
-                                   final ParameterizedCommand<Optional<HasName>> onHasNameChanged) {
+                                   final ParameterizedCommand<Optional<HasName>> onHasNameChanged,
+                                   final Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent) {
         super(new DMNGridData(),
               gridLayer,
               gridLayer,
               new ExpressionContainerRenderer());
+        this.gridLayer = gridLayer;
         this.cellEditorControls = cellEditorControls;
         this.translationService = translationService;
         this.sessionManager = sessionManager;
@@ -98,6 +109,7 @@ public class ExpressionContainerGrid extends BaseGridWidget implements HasListSe
 
         this.onHasExpressionChanged = onHasExpressionChanged;
         this.onHasNameChanged = onHasNameChanged;
+        this.refreshFormPropertiesEvent = refreshFormPropertiesEvent;
 
         this.uiModelMapper = new ExpressionContainerUIModelMapper(parent,
                                                                   this::getModel,
@@ -144,7 +156,7 @@ public class ExpressionContainerGrid extends BaseGridWidget implements HasListSe
         uiModelMapper.fromDMNModel(0, 0);
 
         expressionColumn.setWidth(getExistingEditorWidth());
-        selectFirstCell();
+        selectExpressionEditorFirstCell();
     }
 
     double getExistingEditorWidth() {
@@ -256,15 +268,15 @@ public class ExpressionContainerGrid extends BaseGridWidget implements HasListSe
                                                                      expressionGridCache.get(),
                                                                      () -> {
                                                                          expressionColumn.setWidth(getExistingEditorWidth());
-                                                                         selectFirstCell();
+                                                                         selectExpressionEditorFirstCell();
                                                                      },
                                                                      () -> {
                                                                          expressionColumn.setWidth(getExistingEditorWidth());
-                                                                         selectFirstCell();
+                                                                         selectExpressionEditorFirstCell();
                                                                      }));
     }
 
-    void selectFirstCell() {
+    void selectExpressionEditorFirstCell() {
         final GridCellValue<?> value = model.getCell(0, 0).getValue();
         final Optional<BaseExpressionGrid> grid = ((ExpressionCellValue) value).getValue();
         grid.ifPresent(beg -> {
@@ -272,5 +284,39 @@ public class ExpressionContainerGrid extends BaseGridWidget implements HasListSe
             Optional.ofNullable(getLayer()).ifPresent(layer -> ((DMNGridLayer) layer).select(beg));
             beg.selectFirstCell();
         });
+    }
+
+    @Override
+    public boolean selectCell(final Point2D ap,
+                              final boolean isShiftKeyDown,
+                              final boolean isControlKeyDown) {
+        gridLayer.select(this);
+        fireRefreshFormPropertiesEvent();
+        return super.selectCell(ap,
+                                isShiftKeyDown,
+                                isControlKeyDown);
+    }
+
+    @Override
+    public boolean selectCell(final int uiRowIndex,
+                              final int uiColumnIndex,
+                              final boolean isShiftKeyDown,
+                              final boolean isControlKeyDown) {
+        gridLayer.select(this);
+        fireRefreshFormPropertiesEvent();
+        return super.selectCell(uiRowIndex,
+                                uiColumnIndex,
+                                isShiftKeyDown,
+                                isControlKeyDown);
+    }
+
+    protected void fireRefreshFormPropertiesEvent() {
+        final ClientSession session = sessionManager.getCurrentSession();
+        if (session != null) {
+            final CanvasHandler canvasHandler = session.getCanvasHandler();
+            if (canvasHandler != null) {
+                refreshFormPropertiesEvent.fire(new RefreshFormPropertiesEvent(session, nodeUUID));
+            }
+        }
     }
 }

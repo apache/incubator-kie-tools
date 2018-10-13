@@ -19,6 +19,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -48,6 +49,7 @@ import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.Session;
+import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.TransformMediator;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.impl.RestrictedMousePanMediator;
 
@@ -73,6 +75,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
     private SessionManager sessionManager;
     private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
     private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
+    private Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent;
 
     private DMNGridPanel gridPanel;
     private DMNGridLayer gridLayer;
@@ -92,7 +95,8 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                                     final ListSelectorView.Presenter listSelector,
                                     final SessionManager sessionManager,
                                     final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                                    final @DMNEditor Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier) {
+                                    final @DMNEditor Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
+                                    final Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent) {
         this.returnToDRG = returnToDRG;
         this.expressionType = expressionType;
         this.gridPanelContainer = gridPanelContainer;
@@ -103,6 +107,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         this.sessionManager = sessionManager;
         this.sessionCommandManager = sessionCommandManager;
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
+        this.refreshFormPropertiesEvent = refreshFormPropertiesEvent;
     }
 
     @Override
@@ -142,7 +147,8 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                                                               expressionEditorDefinitionsSupplier,
                                                               getExpressionGridCacheSupplier(),
                                                               this::setExpressionTypeText,
-                                                              this::setReturnToDRGText);
+                                                              this::setReturnToDRGText,
+                                                              refreshFormPropertiesEvent);
         gridLayer.removeAll();
         gridLayer.add(expressionContainerGrid);
         gridLayer.select(expressionContainerGrid);

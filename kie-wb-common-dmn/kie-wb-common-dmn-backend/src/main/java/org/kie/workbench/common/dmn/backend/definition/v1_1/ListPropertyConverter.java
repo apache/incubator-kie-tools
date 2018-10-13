@@ -28,7 +28,7 @@ public class ListPropertyConverter {
 
     public static List wbFromDMN(final org.kie.dmn.model.api.List dmn) {
         Id id = new Id(dmn.getId());
-        Description description = new Description(dmn.getDescription());
+        Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
         QName typeRef = QNamePropertyConverter.wbFromDMN(dmn.getTypeRef());
 
         java.util.List<Expression> expression = new ArrayList<>();

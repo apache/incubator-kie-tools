@@ -27,7 +27,7 @@ public class UnaryTestsPropertyConverter {
             return null;
         }
         Id id = new Id(dmn.getId());
-        Description description = new Description(dmn.getDescription());
+        Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
 
         UnaryTests result = new UnaryTests(id, description, dmn.getText(), dmn.getExpressionLanguage());
         return result;

@@ -90,6 +90,7 @@ public class DMNPaletteDefinitionBuilderTest {
         assertFalse(tested.getPaletteDefinitionBuilder().getCategoryFilter().test(Categories.DIAGRAM));
         assertFalse(tested.getPaletteDefinitionBuilder().getCategoryFilter().test(Categories.CONNECTORS));
         assertFalse(tested.getPaletteDefinitionBuilder().getCategoryFilter().test(Categories.MISCELLANEOUS));
+        assertFalse(tested.getPaletteDefinitionBuilder().getCategoryFilter().test(Categories.DOMAIN_OBJECTS));
     }
 
     @Test

@@ -18,6 +18,8 @@ package org.kie.workbench.common.dmn.client.commands.general;
 
 import java.util.Optional;
 
+import javax.enterprise.event.Event;
+
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.Widget;
@@ -40,6 +42,7 @@ import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecution
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.graph.command.impl.AbstractGraphCommand;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
+import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.uberfire.client.workbench.widgets.listbar.ResizeFlowPanel;
 
 public abstract class BaseNavigateCommand extends AbstractCanvasGraphCommand {
@@ -50,6 +53,8 @@ public abstract class BaseNavigateCommand extends AbstractCanvasGraphCommand {
     protected final SessionPresenter<? extends ClientSession, ?, Diagram> presenter;
     protected final SessionManager sessionManager;
     protected final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
+    protected final Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent;
+
     protected final String nodeUUID;
     protected final HasExpression hasExpression;
     protected final Optional<HasName> hasName;
@@ -58,6 +63,7 @@ public abstract class BaseNavigateCommand extends AbstractCanvasGraphCommand {
                                final SessionPresenter<? extends ClientSession, ?, Diagram> presenter,
                                final SessionManager sessionManager,
                                final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
+                               final Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent,
                                final String nodeUUID,
                                final HasExpression hasExpression,
                                final Optional<HasName> hasName) {
@@ -65,6 +71,7 @@ public abstract class BaseNavigateCommand extends AbstractCanvasGraphCommand {
         this.presenter = presenter;
         this.sessionManager = sessionManager;
         this.sessionCommandManager = sessionCommandManager;
+        this.refreshFormPropertiesEvent = refreshFormPropertiesEvent;
         this.nodeUUID = nodeUUID;
         this.hasExpression = hasExpression;
         this.hasName = hasName;
@@ -77,6 +84,7 @@ public abstract class BaseNavigateCommand extends AbstractCanvasGraphCommand {
                                                                             presenter,
                                                                             sessionManager,
                                                                             sessionCommandManager,
+                                                                            refreshFormPropertiesEvent,
                                                                             nodeUUID,
                                                                             hasExpression,
                                                                             hasName));
@@ -89,6 +97,7 @@ public abstract class BaseNavigateCommand extends AbstractCanvasGraphCommand {
                                                                      presenter,
                                                                      sessionManager,
                                                                      sessionCommandManager,
+                                                                     refreshFormPropertiesEvent,
                                                                      nodeUUID,
                                                                      hasExpression,
                                                                      hasName));

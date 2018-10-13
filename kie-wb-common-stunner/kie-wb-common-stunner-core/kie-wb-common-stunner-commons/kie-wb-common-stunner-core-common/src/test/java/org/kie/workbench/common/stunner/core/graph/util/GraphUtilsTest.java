@@ -21,20 +21,56 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.soup.commons.util.Sets;
 import org.kie.workbench.common.stunner.core.TestingGraphInstanceBuilder;
 import org.kie.workbench.common.stunner.core.TestingGraphMockHandler;
+import org.kie.workbench.common.stunner.core.api.DefinitionManager;
+import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
+import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
+import org.kie.workbench.common.stunner.core.definition.adapter.PropertyAdapter;
+import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
+import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
+import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
+import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class GraphUtilsTest {
+
+    private static final String PROPERTY = "property";
+
+    private static final String PROPERTY_ID = "property.id";
+
+    @Mock
+    private DefinitionManager definitionManager;
+
+    @Mock
+    private AdapterManager adapterManager;
+
+    @Mock
+    private DefinitionAdapter definitionAdapter;
+
+    @Mock
+    private PropertyAdapter propertyAdapter;
+
+    @Mock
+    private Element<? extends Definition> element;
+
+    @Mock
+    private DomainObject domainObject;
 
     private TestingGraphMockHandler graphTestHandler;
     private TestingGraphInstanceBuilder.TestGraph4 graphInstance;
@@ -122,5 +158,46 @@ public class GraphUtilsTest {
         assertEquals(dockedNodes.get(1), graphInstance.intermNode);
         assertEquals(dockedNodes.get(2), graphInstance.endNode);
         assertEquals(dockedNodes.get(3), graphInstance.dockedNode);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testGetPropertyForNullElement() {
+        assertNull(GraphUtils.getProperty(definitionManager, (Element) null, PROPERTY_ID));
+    }
+
+    @Test
+    public void testGetPropertyForNonNullElement() {
+        setupDefinitionManager();
+
+        assertEquals(PROPERTY, GraphUtils.getProperty(definitionManager, element, PROPERTY_ID));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testGetPropertyForNullDomainObject() {
+        assertNull(GraphUtils.getProperty(definitionManager, (DomainObject) null, PROPERTY_ID));
+    }
+
+    @Test
+    public void testGetPropertyForNonNullDomainObject() {
+        setupDefinitionManager();
+
+        assertEquals(PROPERTY, GraphUtils.getProperty(definitionManager, domainObject, PROPERTY_ID));
+    }
+
+    @SuppressWarnings("unchecked")
+    private void setupDefinitionManager() {
+        final Definition<String> definition = mock(Definition.class);
+        final String content = "content";
+        when(element.getContent()).thenReturn(definition);
+        when(definition.getDefinition()).thenReturn(content);
+
+        when(definitionManager.adapters()).thenReturn(adapterManager);
+        when(adapterManager.forDefinition()).thenReturn(definitionAdapter);
+        when(definitionAdapter.getProperties(eq(content))).thenReturn(new Sets.Builder<String>().add(PROPERTY).build());
+        when(definitionAdapter.getProperties(any(DomainObject.class))).thenReturn(new Sets.Builder<String>().add(PROPERTY).build());
+        when(adapterManager.forProperty()).thenReturn(propertyAdapter);
+        when(propertyAdapter.getId(PROPERTY)).thenReturn(PROPERTY_ID);
     }
 }

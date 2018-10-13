@@ -42,6 +42,7 @@ public class NavigateToExpressionEditorCommandTest extends BaseNavigationCommand
                                                      sessionPresenter,
                                                      sessionManager,
                                                      sessionCommandManager,
+                                                     refreshFormPropertiesEvent,
                                                      NODE_UUID,
                                                      hasExpression,
                                                      Optional.of(hasName));
@@ -74,6 +75,8 @@ public class NavigateToExpressionEditorCommandTest extends BaseNavigationCommand
         verify(command).addDRGEditorToCanvasWidget();
         verify(sessionPresenterView).setCanvasWidget(view);
         verify(sessionPresenterView).setContentScrollType(eq(SessionPresenter.View.ScrollType.AUTO));
+
+        verify(canvasHandler).notifyCanvasClear();
     }
 
     @Test

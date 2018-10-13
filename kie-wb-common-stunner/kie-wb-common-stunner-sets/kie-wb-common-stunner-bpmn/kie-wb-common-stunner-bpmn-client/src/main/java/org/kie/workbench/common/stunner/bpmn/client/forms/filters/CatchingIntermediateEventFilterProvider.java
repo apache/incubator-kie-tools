@@ -16,17 +16,15 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.forms.filters;
 
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import org.kie.workbench.common.forms.adf.engine.shared.FormElementFilter;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.forms.client.formFilters.StunnerFormElementFilterProvider;
 
@@ -47,15 +45,16 @@ public class CatchingIntermediateEventFilterProvider implements StunnerFormEleme
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Collection<FormElementFilter> provideFilters(final String uuid,
-                                                        final Element<? extends Definition<?>> element,
                                                         final Object definition) {
         final Predicate predicate = o -> isBoundaryEvent(uuid);
         final FormElementFilter isInterruptingFilter = new FormElementFilter("executionSet.cancelActivity",
                                                                              predicate);
-        return Arrays.asList(isInterruptingFilter);
+        return Collections.singletonList(isInterruptingFilter);
     }
 
+    @SuppressWarnings("unchecked")
     private boolean isBoundaryEvent(final String uuid) {
         final AbstractCanvasHandler canvasHandler = (AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler();
         final Node node = canvasHandler.getGraphIndex().getNode(uuid);

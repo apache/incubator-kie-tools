@@ -30,6 +30,7 @@ public class JavaFunctionSupplementaryGridTest extends BaseFunctionSupplementary
                                                 canvasCommandFactory,
                                                 editorSelectedEvent,
                                                 refreshFormPropertiesEvent,
+                                                domainObjectSelectionEvent,
                                                 listSelector,
                                                 translationService,
                                                 expressionEditorDefinitionsSupplier);

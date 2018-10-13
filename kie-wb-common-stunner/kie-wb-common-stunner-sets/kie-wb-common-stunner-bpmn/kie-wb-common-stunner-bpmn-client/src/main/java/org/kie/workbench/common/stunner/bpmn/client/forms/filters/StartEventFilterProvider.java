@@ -15,8 +15,8 @@
  */
 package org.kie.workbench.common.stunner.bpmn.client.forms.filters;
 
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -27,7 +27,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.forms.client.formFilters.StunnerFormElementFilterProvider;
@@ -49,13 +48,15 @@ public class StartEventFilterProvider implements StunnerFormElementFilterProvide
     }
 
     @Override
-    public Collection<FormElementFilter> provideFilters(String elementUUID, Element<? extends Definition<?>> element, Object definition) {
+    @SuppressWarnings("unchecked")
+    public Collection<FormElementFilter> provideFilters(String elementUUID, Object definition) {
         Predicate predicate = o -> isParentAnEventSubProcess(elementUUID);
         FormElementFilter isInterruptingFilter = new FormElementFilter("executionSet.isInterrupting",
                                                                        predicate);
-        return Arrays.asList(isInterruptingFilter);
+        return Collections.singletonList(isInterruptingFilter);
     }
 
+    @SuppressWarnings("unchecked")
     private boolean isParentAnEventSubProcess(final String uuid) {
         AbstractCanvasHandler canvasHandler = (AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler();
         Node node = canvasHandler.getGraphIndex().getNode(uuid);

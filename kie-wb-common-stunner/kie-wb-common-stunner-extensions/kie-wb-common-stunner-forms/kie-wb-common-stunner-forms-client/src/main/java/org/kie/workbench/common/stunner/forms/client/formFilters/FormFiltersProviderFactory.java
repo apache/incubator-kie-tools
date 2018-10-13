@@ -23,8 +23,6 @@ import java.util.Map;
 
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.forms.adf.engine.shared.FormElementFilter;
-import org.kie.workbench.common.stunner.core.graph.Element;
-import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 
 public class FormFiltersProviderFactory {
 
@@ -36,11 +34,11 @@ public class FormFiltersProviderFactory {
         providers.put(provider.getDefinitionType(), provider);
     }
 
-    public static Collection<FormElementFilter> getFilterForDefinition(String elementUUID, Element<? extends Definition<?>> element, Object definition) {
+    public static Collection<FormElementFilter> getFilterForDefinition(String elementUUID, Object definition) {
         StunnerFormElementFilterProvider provider = providers.get(definition.getClass());
 
         if (provider != null) {
-            return provider.provideFilters(elementUUID, element, definition);
+            return provider.provideFilters(elementUUID, definition);
         }
 
         return Collections.emptyList();

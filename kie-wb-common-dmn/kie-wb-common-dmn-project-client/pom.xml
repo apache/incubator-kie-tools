@@ -83,6 +83,12 @@
       <scope>provided</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.kie.workbench.stunner</groupId>
+      <artifactId>kie-wb-common-stunner-forms-client</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
     <!-- DMN Editor -->
     <dependency>
       <groupId>org.kie.workbench</groupId>

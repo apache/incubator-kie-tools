@@ -17,24 +17,25 @@
 package org.kie.workbench.common.dmn.backend.definition.v1_1;
 
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
+import org.kie.workbench.common.stunner.core.util.StringUtils;
 
 public class DescriptionPropertyConverter {
 
-    public static Description wbFromDMN(final String dmn) {
-        if (dmn == null) {
-            return new Description(null);
+    public static Description wbFromDMN(final String description) {
+        if (description == null) {
+            return new Description("");
         } else {
-            return new Description(dmn);
+            return new Description(description);
         }
     }
 
-    public static String dmnFromWB(final Description wb) {
-        if (wb == null) {
+    public static String dmnFromWB(final Description description) {
+        if (description == null) {
             return null;
-        } else if (wb.getValue() == null || wb.getValue().isEmpty()) {
+        } else if (StringUtils.isEmpty(description.getValue())) {
             return null;
         } else {
-            return wb.getValue();
+            return description.getValue();
         }
     }
 }

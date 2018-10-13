@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.backend.definition.v1_1;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ImportedValues;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
+import org.kie.workbench.common.dmn.api.property.dmn.ExpressionLanguage;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 
@@ -32,7 +33,7 @@ public class LiteralExpressionPropertyConverter {
         Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
         QName typeRef = QNamePropertyConverter.wbFromDMN(dmn.getTypeRef());
         String text = dmn.getText();
-        String expressionLanguage = dmn.getExpressionLanguage();
+        ExpressionLanguage expressionLanguage = ExpressionLanguagePropertyConverter.wbFromDMN(dmn.getExpressionLanguage());
         ImportedValues importedValues = ImportedValuesConverter.wbFromDMN(dmn.getImportedValues());
         LiteralExpression result = new LiteralExpression(id,
                                                          description,
@@ -56,8 +57,8 @@ public class LiteralExpressionPropertyConverter {
         QNamePropertyConverter.setDMNfromWB(wb.getTypeRef(),
                                             result::setTypeRef);
         result.setText(wb.getText());
-        result.setExpressionLanguage(wb.getExpressionLanguage());
-        result.setImportedValues(ImportedValuesConverter.wbFromDMN(wb.getImportedValues()));
+        result.setExpressionLanguage(ExpressionLanguagePropertyConverter.dmnFromWB(wb.getExpressionLanguage()));
+        result.setImportedValues(ImportedValuesConverter.dmnFromWB(wb.getImportedValues()));
         return result;
     }
 }

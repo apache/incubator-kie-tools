@@ -18,21 +18,26 @@ package org.kie.workbench.common.stunner.forms.client.widgets;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.logging.Level;
 
 import javax.enterprise.event.Event;
 
 import org.jboss.errai.databinding.client.BindableProxy;
 import org.jboss.errai.databinding.client.BindableProxyFactory;
 import org.jboss.errai.databinding.client.BindableProxyProvider;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
+import org.kie.workbench.common.forms.processing.engine.handling.FieldChangeHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
+import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.impl.NodeImpl;
@@ -40,14 +45,18 @@ import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.forms.client.event.FormPropertiesOpened;
 import org.kie.workbench.common.stunner.forms.client.widgets.container.FormsContainer;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.mvp.Command;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -56,9 +65,11 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class FormPropertiesWidgetTest {
 
-    private static final String GRAPH_UID = "graph1";
+    private static final String GRAPH_UUID = "graph1";
     private static final String DIAGRAM_NAME = "diagram1";
     private static final String ROOT_UUID = "root1";
+    private static final String DOMAIN_OBJECT_UUID = "domainObject1";
+    private static final String DOMAIN_OBJECT_TRANSLATION_KEY = "domainObjectTranslationKey";
 
     @Mock
     private FormPropertiesWidgetView view;
@@ -72,6 +83,8 @@ public class FormPropertiesWidgetTest {
     private Event<FormPropertiesOpened> propertiesOpenedEvent;
     @Mock
     private FormsContainer formsContainer;
+    @Mock
+    private TranslationService translationService;
     @Mock
     private EditorSession session;
     @Mock
@@ -98,6 +111,17 @@ public class FormPropertiesWidgetTest {
     private BindableProxyProvider proxyProvider;
     @Mock
     private BindableProxy<Object> proxy;
+    @Mock
+    private DomainObject domainObject;
+
+    @Captor
+    private ArgumentCaptor<FormsCanvasSessionHandler.FormRenderer> formRendererArgumentCaptor;
+
+    @Captor
+    private ArgumentCaptor<FieldChangeHandler> fieldChangeHandlerArgumentCaptor;
+
+    @Captor
+    private ArgumentCaptor<FormPropertiesOpened> formPropertiesOpenedArgumentCaptor;
 
     private Object unmockedDef = new Object();
 
@@ -114,7 +138,7 @@ public class FormPropertiesWidgetTest {
         when(diagram.getMetadata()).thenReturn(metadata);
         when(diagram.getName()).thenReturn(DIAGRAM_NAME);
         when(diagram.getGraph()).thenReturn(graph);
-        when(graph.getUUID()).thenReturn(GRAPH_UID);
+        when(graph.getUUID()).thenReturn(GRAPH_UUID);
         when(node.getUUID()).thenReturn(ROOT_UUID);
         when(node.getContent()).thenReturn(nodeContent);
         when(nodeContent.getDefinition()).thenReturn(nodeDefObject);
@@ -127,7 +151,15 @@ public class FormPropertiesWidgetTest {
                                                definitionUtils,
                                                formsCanvasSessionHandler,
                                                propertiesOpenedEvent,
-                                               formsContainer);
+                                               formsContainer,
+                                               translationService) {
+            @Override
+            protected void log(final Level level, final String message) {
+                //Logging not supported in Unit Test
+            }
+        };
+
+        doAnswer((i) -> i.getArguments()[0]).when(translationService).getTranslation(anyString());
     }
 
     @Test
@@ -139,7 +171,7 @@ public class FormPropertiesWidgetTest {
         verify(formsCanvasSessionHandler).bind(session);
         verify(formsCanvasSessionHandler).show(callback);
 
-        verify(formsContainer, never()).render(anyString(), any(), any(), any(), any());
+        verify(formsContainer, never()).render(anyString(), any(), any(), any(), any(), any());
     }
 
     /**
@@ -180,5 +212,42 @@ public class FormPropertiesWidgetTest {
 
         verify(formsCanvasSessionHandler).bind(session);
         verify(formsCanvasSessionHandler).show(callback);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testShowDomainObject() {
+        tested.init();
+
+        final String fieldName = "fieldName";
+        final String fieldValue = "fieldValue";
+
+        when(formsCanvasSessionHandler.getDiagram()).thenReturn(diagram);
+        when(domainObject.getDomainObjectUUID()).thenReturn(DOMAIN_OBJECT_UUID);
+        when(domainObject.getDomainObjectNameTranslationKey()).thenReturn(DOMAIN_OBJECT_TRANSLATION_KEY);
+        when(formsCanvasSessionHandler.getSession()).thenReturn(session);
+
+        verify(formsCanvasSessionHandler).setRenderer(formRendererArgumentCaptor.capture());
+
+        final FormsCanvasSessionHandler.FormRenderer formRenderer = formRendererArgumentCaptor.getValue();
+        formRenderer.render(GRAPH_UUID, domainObject);
+
+        verify(formsContainer).render(eq(GRAPH_UUID),
+                                      eq(DOMAIN_OBJECT_UUID),
+                                      eq(domainObject),
+                                      any(Path.class),
+                                      fieldChangeHandlerArgumentCaptor.capture(),
+                                      eq(RenderMode.EDIT_MODE));
+        final FieldChangeHandler fieldChangeHandler = fieldChangeHandlerArgumentCaptor.getValue();
+        fieldChangeHandler.onFieldChange(fieldName, fieldValue);
+        verify(formsCanvasSessionHandler).executeUpdateDomainObjectProperty(eq(domainObject),
+                                                                            eq(fieldName),
+                                                                            eq(fieldValue));
+
+        verify(propertiesOpenedEvent).fire(formPropertiesOpenedArgumentCaptor.capture());
+        final FormPropertiesOpened formPropertiesOpened = formPropertiesOpenedArgumentCaptor.getValue();
+        assertThat(formPropertiesOpened.getUuid()).isEqualTo(DOMAIN_OBJECT_UUID);
+        assertThat(formPropertiesOpened.getName()).isEqualTo(DOMAIN_OBJECT_TRANSLATION_KEY);
+        assertThat(formPropertiesOpened.getSession()).isEqualTo(session);
     }
 }

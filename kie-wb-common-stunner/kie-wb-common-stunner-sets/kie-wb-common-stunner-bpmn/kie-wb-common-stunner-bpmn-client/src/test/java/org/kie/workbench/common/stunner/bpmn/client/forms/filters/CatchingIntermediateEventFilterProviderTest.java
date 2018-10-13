@@ -115,9 +115,7 @@ public class CatchingIntermediateEventFilterProviderTest {
         assertEquals(filterClass,
                      filterProvider.getDefinitionType());
 
-        Collection<FormElementFilter> formElementFilters = filterProvider.provideFilters(UUID,
-                                                                                         element,
-                                                                                         definition);
+        Collection<FormElementFilter> formElementFilters = filterProvider.provideFilters(UUID, definition);
         assertEquals(1,
                      formElementFilters.size());
 
@@ -134,9 +132,7 @@ public class CatchingIntermediateEventFilterProviderTest {
         assertEquals(filterClass,
                      filterProvider.getDefinitionType());
 
-        Collection<FormElementFilter> formElementFilters = filterProvider.provideFilters(UUID,
-                                                                                         element,
-                                                                                         definition);
+        Collection<FormElementFilter> formElementFilters = filterProvider.provideFilters(UUID, definition);
         assertEquals(1,
                      formElementFilters.size());
 

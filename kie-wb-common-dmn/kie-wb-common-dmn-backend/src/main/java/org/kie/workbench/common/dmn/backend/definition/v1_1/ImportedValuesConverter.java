@@ -38,7 +38,7 @@ public class ImportedValuesConverter {
         return wb;
     }
 
-    public static org.kie.dmn.model.api.ImportedValues wbFromDMN(final ImportedValues wb) {
+    public static org.kie.dmn.model.api.ImportedValues dmnFromWB(final ImportedValues wb) {
         if (wb == null) {
             return null;
         }

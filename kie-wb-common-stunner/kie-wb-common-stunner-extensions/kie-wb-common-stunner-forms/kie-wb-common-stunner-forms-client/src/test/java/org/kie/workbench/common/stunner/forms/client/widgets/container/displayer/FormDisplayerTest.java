@@ -57,7 +57,7 @@ public class FormDisplayerTest {
     private static final String FIELD2 = "field2";
 
     @Mock
-    private NodeImpl node;
+    private NodeImpl<Definition> node;
 
     @Mock
     private Definition nodeContent;
@@ -246,7 +246,7 @@ public class FormDisplayerTest {
     }
 
     private void testRender(int renderingTimes, int initializedTimes, int newContextTimes, int boundTimes, int viewTimes, RenderMode renderMode) {
-        displayer.render(node, path, fieldChangeHandler, renderMode);
+        displayer.render(node.getUUID(), node.getContent().getDefinition(), path, fieldChangeHandler, renderMode);
 
         verify(formRenderer, times(initializedTimes)).isInitialized();
         verify(formRenderer, times(boundTimes)).unBind();

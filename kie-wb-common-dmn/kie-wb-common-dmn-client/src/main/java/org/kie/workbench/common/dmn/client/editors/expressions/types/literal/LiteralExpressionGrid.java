@@ -22,7 +22,6 @@ import java.util.Optional;
 
 import javax.enterprise.event.Event;
 
-import com.ait.lienzo.client.core.event.NodeMouseClickHandler;
 import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
@@ -43,15 +42,13 @@ import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
-import org.kie.workbench.common.stunner.forms.client.event.RefreshFormProperties;
+import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
-import org.uberfire.ext.wires.core.grids.client.model.GridData;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
-import org.uberfire.ext.wires.core.grids.client.widget.layer.GridSelectionManager;
 
 public class LiteralExpressionGrid extends BaseExpressionGrid<LiteralExpression, DMNGridData, LiteralExpressionUIModelMapper> implements HasListSelectorControl {
 
@@ -72,7 +69,8 @@ public class LiteralExpressionGrid extends BaseExpressionGrid<LiteralExpression,
                                  final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                  final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
                                  final Event<ExpressionEditorChanged> editorSelectedEvent,
-                                 final Event<RefreshFormProperties> refreshFormPropertiesEvent,
+                                 final Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent,
+                                 final Event<DomainObjectSelectionEvent> domainObjectSelectionEvent,
                                  final CellEditorControlsView.Presenter cellEditorControls,
                                  final ListSelectorView.Presenter listSelector,
                                  final TranslationService translationService,
@@ -93,6 +91,7 @@ public class LiteralExpressionGrid extends BaseExpressionGrid<LiteralExpression,
               canvasCommandFactory,
               editorSelectedEvent,
               refreshFormPropertiesEvent,
+              domainObjectSelectionEvent,
               cellEditorControls,
               listSelector,
               translationService,
@@ -105,24 +104,6 @@ public class LiteralExpressionGrid extends BaseExpressionGrid<LiteralExpression,
     }
 
     @Override
-    protected NodeMouseClickHandler getGridMouseClickHandler(final GridSelectionManager selectionManager) {
-        return (event) -> gridLayer.select(parent.getGridWidget());
-    }
-
-    @Override
-    public void selectFirstCell() {
-        final GridCellTuple parent = getParentInformation();
-        final GridWidget parentGridWidget = parent.getGridWidget();
-        final GridData parentUiModel = parentGridWidget.getModel();
-        parentUiModel.clearSelections();
-        parentUiModel.selectCell(parent.getRowIndex(),
-                                 parent.getColumnIndex());
-
-        final DMNGridLayer gridLayer = (DMNGridLayer) getLayer();
-        gridLayer.select(parentGridWidget);
-    }
-
-    @Override
     protected void doInitialisation() {
         // Defer initialisation until after the constructor completes as
         // LiteralExpressionUIModelMapper needs ListSelector to have been set
@@ -132,8 +113,7 @@ public class LiteralExpressionGrid extends BaseExpressionGrid<LiteralExpression,
     public LiteralExpressionUIModelMapper makeUiModelMapper() {
         return new LiteralExpressionUIModelMapper(this::getModel,
                                                   () -> expression,
-                                                  listSelector,
-                                                  parent);
+                                                  listSelector);
     }
 
     @Override
@@ -201,5 +181,12 @@ public class LiteralExpressionGrid extends BaseExpressionGrid<LiteralExpression,
     public void onItemSelected(final ListSelectorItem item) {
         final ListSelectorTextItem li = (ListSelectorTextItem) item;
         li.getCommand().execute();
+    }
+
+    @Override
+    @SuppressWarnings("unused")
+    protected void doAfterSelectionChange(final int uiRowIndex,
+                                          final int uiColumnIndex) {
+        getExpression().ifPresent(this::fireDomainObjectSelectionEvent);
     }
 }

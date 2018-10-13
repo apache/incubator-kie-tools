@@ -18,6 +18,8 @@ package org.kie.workbench.common.dmn.client.commands.general;
 
 import java.util.Optional;
 
+import javax.enterprise.event.Event;
+
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.client.commands.VetoUndoCommand;
@@ -35,6 +37,7 @@ import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
+import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 
 public class NavigateToDRGEditorCommand extends BaseNavigateCommand implements VetoUndoCommand {
 
@@ -42,6 +45,7 @@ public class NavigateToDRGEditorCommand extends BaseNavigateCommand implements V
                                       final SessionPresenter<? extends ClientSession, ?, Diagram> presenter,
                                       final SessionManager sessionManager,
                                       final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
+                                      final Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent,
                                       final String nodeUUID,
                                       final HasExpression hasExpression,
                                       final Optional<HasName> hasName) {
@@ -49,6 +53,7 @@ public class NavigateToDRGEditorCommand extends BaseNavigateCommand implements V
               presenter,
               sessionManager,
               sessionCommandManager,
+              refreshFormPropertiesEvent,
               nodeUUID,
               hasExpression,
               hasName);
@@ -67,6 +72,9 @@ public class NavigateToDRGEditorCommand extends BaseNavigateCommand implements V
                 enableHandlers(true);
                 hidePaletteWidget(false);
                 addDRGEditorToCanvasWidget();
+
+                //Ensure Form Properties are updated to reflect the Graph node selection
+                refreshFormPropertiesEvent.fire(new RefreshFormPropertiesEvent(sessionManager.getCurrentSession(), nodeUUID));
 
                 return CanvasCommandResultBuilder.SUCCESS;
             }

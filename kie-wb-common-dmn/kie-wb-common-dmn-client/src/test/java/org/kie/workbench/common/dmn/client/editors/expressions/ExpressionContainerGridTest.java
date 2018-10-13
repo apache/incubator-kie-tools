@@ -21,6 +21,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import com.ait.lienzo.client.core.event.INodeXYEvent;
+import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
@@ -55,6 +56,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
+import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -62,6 +64,8 @@ import org.uberfire.ext.wires.core.grids.client.model.Bounds;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.CellSelectionManager;
+import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 
@@ -137,16 +141,25 @@ public class ExpressionContainerGridTest {
     private HasExpression hasExpression;
 
     @Mock
+    private ParameterizedCommand<Optional<Expression>> onHasExpressionChanged;
+
+    @Mock
     private ParameterizedCommand<Optional<HasName>> onHasNameChanged;
 
     @Mock
-    private ParameterizedCommand<Optional<Expression>> onHasExpressionChanged;
+    private EventSourceMock<RefreshFormPropertiesEvent> refreshFormPropertiesEvent;
+
+    @Mock
+    private CellSelectionManager cellSelectionManager;
 
     @Captor
     private ArgumentCaptor<Optional<HasName>> hasNameCaptor;
 
     @Captor
     private ArgumentCaptor<ClearExpressionTypeCommand> clearExpressionTypeCommandCaptor;
+
+    @Captor
+    private ArgumentCaptor<RefreshFormPropertiesEvent> refreshFormPropertiesEventCaptor;
 
     private HasName hasName = new HasName() {
 
@@ -185,7 +198,13 @@ public class ExpressionContainerGridTest {
                                                 expressionEditorDefinitionsSupplier,
                                                 () -> expressionGridCache,
                                                 onHasExpressionChanged,
-                                                onHasNameChanged);
+                                                onHasNameChanged,
+                                                refreshFormPropertiesEvent) {
+            @Override
+            protected CellSelectionManager getCellSelectionManager() {
+                return cellSelectionManager;
+            }
+        };
 
         this.gridLayer.add(grid);
 
@@ -565,5 +584,46 @@ public class ExpressionContainerGridTest {
         final HasExpression spy = grid.spyHasExpression(hasExpression);
 
         assertThat(spy.asDMNModelInstrumentedBase()).isEqualTo(literalExpression);
+    }
+
+    @Test
+    public void testSelectCellWithPoint() {
+        final Point2D point = mock(Point2D.class);
+
+        grid.setExpression(NODE_UUID,
+                           hasExpression,
+                           Optional.of(hasName));
+
+        grid.selectCell(point, false, true);
+
+        verify(gridLayer).select(eq(grid));
+        verify(refreshFormPropertiesEvent).fire(refreshFormPropertiesEventCaptor.capture());
+
+        final RefreshFormPropertiesEvent refreshFormPropertiesEvent = refreshFormPropertiesEventCaptor.getValue();
+        assertThat(refreshFormPropertiesEvent.getSession()).isEqualTo(session);
+        assertThat(refreshFormPropertiesEvent.getUuid()).isEqualTo(NODE_UUID);
+
+        verify(cellSelectionManager).selectCell(eq(point), eq(false), eq(true));
+    }
+
+    @Test
+    public void testSelectCellWithCoordinates() {
+        final int uiRowIndex = 0;
+        final int uiColumnIndex = 1;
+
+        grid.setExpression(NODE_UUID,
+                           hasExpression,
+                           Optional.of(hasName));
+
+        grid.selectCell(uiRowIndex, uiColumnIndex, false, true);
+
+        verify(gridLayer).select(eq(grid));
+        verify(refreshFormPropertiesEvent).fire(refreshFormPropertiesEventCaptor.capture());
+
+        final RefreshFormPropertiesEvent refreshFormPropertiesEvent = refreshFormPropertiesEventCaptor.getValue();
+        assertThat(refreshFormPropertiesEvent.getSession()).isEqualTo(session);
+        assertThat(refreshFormPropertiesEvent.getUuid()).isEqualTo(NODE_UUID);
+
+        verify(cellSelectionManager).selectCell(eq(uiRowIndex), eq(uiColumnIndex), eq(false), eq(true));
     }
 }

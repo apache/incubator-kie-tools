@@ -23,30 +23,18 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.uberfire.ext.wires.core.grids.client.model.GridCell;
-import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.CellSelectionStrategy;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class LiteralExpressionUIModelMapperTest {
-
-    private static final int PARENT_ROW_INDEX = 0;
-
-    private static final int PARENT_COLUMN_INDEX = 1;
 
     @Mock
     private LiteralExpressionColumn uiLiteralExpressionColumn;
@@ -56,18 +44,6 @@ public class LiteralExpressionUIModelMapperTest {
 
     @Mock
     private ListSelectorView.Presenter listSelector;
-
-    @Mock
-    private GridWidget parentGridWidget;
-
-    @Mock
-    private GridData parentGridUiModel;
-
-    @Mock
-    private GridCell parentGridUiCell;
-
-    @Mock
-    private CellSelectionStrategy parentGridUiCellCellSelectionStrategy;
 
     private BaseGridData uiModel;
 
@@ -82,18 +58,12 @@ public class LiteralExpressionUIModelMapperTest {
         uiModel.appendRow(new DMNGridRow());
         uiModel.appendColumn(uiLiteralExpressionColumn);
         doReturn(0).when(uiLiteralExpressionColumn).getIndex();
-        when(parentGridWidget.getModel()).thenReturn(parentGridUiModel);
-        when(parentGridUiModel.getCell(eq(PARENT_ROW_INDEX), eq(PARENT_COLUMN_INDEX))).thenReturn(parentGridUiCell);
-        when(parentGridUiCell.getSelectionStrategy()).thenReturn(parentGridUiCellCellSelectionStrategy);
 
         literalExpression = new LiteralExpression();
 
         mapper = new LiteralExpressionUIModelMapper(() -> uiModel,
                                                     () -> Optional.of(literalExpression),
-                                                    listSelector,
-                                                    new GridCellTuple(PARENT_ROW_INDEX,
-                                                                      PARENT_COLUMN_INDEX,
-                                                                      parentGridWidget));
+                                                    listSelector);
     }
 
     @Test
@@ -116,21 +86,6 @@ public class LiteralExpressionUIModelMapperTest {
         mapper.fromDMNModel(0, 0);
 
         assertTrue(uiModel.getCell(0, 0) instanceof LiteralExpressionCell);
-    }
-
-    @Test
-    public void testFromDmn_CellSelectionStrategy() {
-        mapper.fromDMNModel(0, 0);
-
-        final CellSelectionStrategy strategy = uiModel.getCell(0, 0).getSelectionStrategy();
-
-        strategy.handleSelection(uiModel, 0, 0, true, false);
-
-        verify(parentGridUiCellCellSelectionStrategy).handleSelection(eq(parentGridUiModel),
-                                                                      eq(PARENT_ROW_INDEX),
-                                                                      eq(PARENT_COLUMN_INDEX),
-                                                                      eq(true),
-                                                                      eq(false));
     }
 
     @Test

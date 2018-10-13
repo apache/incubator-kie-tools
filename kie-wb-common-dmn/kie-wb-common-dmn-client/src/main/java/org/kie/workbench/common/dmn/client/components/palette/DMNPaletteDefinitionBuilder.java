@@ -53,6 +53,7 @@ public class DMNPaletteDefinitionBuilder
             .add(Categories.DIAGRAM)
             .add(Categories.CONNECTORS)
             .add(Categories.MISCELLANEOUS)
+            .add(Categories.DOMAIN_OBJECTS)
             .build();
 
     @PostConstruct

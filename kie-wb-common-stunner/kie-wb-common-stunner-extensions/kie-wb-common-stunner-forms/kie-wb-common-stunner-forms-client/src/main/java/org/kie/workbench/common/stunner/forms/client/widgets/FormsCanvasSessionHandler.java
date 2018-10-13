@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.forms.client.widgets;
 
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -33,6 +34,8 @@ import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasDomainObjectListener;
 import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasElementListener;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
@@ -42,10 +45,11 @@ import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
-import org.kie.workbench.common.stunner.forms.client.event.RefreshFormProperties;
+import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.uberfire.mvp.Command;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
@@ -58,6 +62,7 @@ public class FormsCanvasSessionHandler {
     private final DefinitionManager definitionManager;
     private final CanvasCommandFactory<AbstractCanvasHandler> commandFactory;
     private final FormsCanvasListener canvasListener;
+    private final FormsDomainObjectCanvasListener domainObjectCanvasListener;
 
     private ClientSession session;
     private FormFeaturesSessionProvider featuresSessionProvider;
@@ -69,6 +74,7 @@ public class FormsCanvasSessionHandler {
         this.definitionManager = definitionManager;
         this.commandFactory = commandFactory;
         this.canvasListener = new FormsCanvasListener();
+        this.domainObjectCanvasListener = new FormsDomainObjectCanvasListener();
     }
 
     public FormsCanvasSessionHandler setRenderer(FormRenderer renderer) {
@@ -159,6 +165,26 @@ public class FormsCanvasSessionHandler {
         return !CommandUtils.isError(result);
     }
 
+    @SuppressWarnings("unchecked")
+    public boolean executeUpdateDomainObjectProperty(final DomainObject domainObject,
+                                                     final String fieldName,
+                                                     final Object value) {
+        final HasProperties hasProperties = (HasProperties) DataBinder.forModel(domainObject).getModel();
+        final String propertyId = getModifiedPropertyId(hasProperties, fieldName);
+        domainObjectCanvasListener.startProcessing();
+        final CommandResult result =
+                featuresSessionProvider
+                        .getCommandManager(session)
+                        .execute(getCanvasHandler(),
+                                 commandFactory.updateDomainObjectPropertyValue(domainObjectCanvasListener,
+                                                                                domainObject,
+                                                                                propertyId,
+                                                                                value));
+        domainObjectCanvasListener.endProcessing();
+        return !CommandUtils.isError(result);
+    }
+
+    @SuppressWarnings("unchecked")
     private Element<? extends Definition<?>> getElement(final String uuid) {
         return (null != uuid && null != getCanvasHandler()) ? getCanvasHandler().getGraphIndex().get(uuid) : null;
     }
@@ -178,7 +204,7 @@ public class FormsCanvasSessionHandler {
         return definitionManager.adapters().forProperty().getId(property);
     }
 
-    void onRefreshFormPropertiesEvent(@Observes RefreshFormProperties event) {
+    void onRefreshFormPropertiesEvent(@Observes RefreshFormPropertiesEvent event) {
         checkNotNull("event", event);
 
         if (null != getCanvasHandler()) {
@@ -187,7 +213,6 @@ public class FormsCanvasSessionHandler {
         }
     }
 
-    @SuppressWarnings("unchecked")
     void onCanvasSelectionEvent(@Observes CanvasSelectionEvent event) {
         checkNotNull("event",
                      event);
@@ -196,6 +221,15 @@ public class FormsCanvasSessionHandler {
                 final String uuid = event.getIdentifiers().iterator().next();
                 render(uuid);
             }
+        }
+    }
+
+    void onDomainObjectSelectionEvent(@Observes DomainObjectSelectionEvent event) {
+        checkNotNull("event",
+                     event);
+        if (null != getCanvasHandler()) {
+            final DomainObject domainObject = event.getDomainObject();
+            render(domainObject);
         }
     }
 
@@ -228,7 +262,21 @@ public class FormsCanvasSessionHandler {
     private void render(final String uuid,
                         final Command callback) {
         if (null != renderer) {
-            renderer.render(getDiagram().getGraph().getUUID(), getElement(uuid), callback);
+            final Diagram diagram = getDiagram();
+            if (Objects.isNull(diagram)) {
+                return;
+            }
+            final Graph graph = diagram.getGraph();
+            if (Objects.isNull(graph)) {
+                return;
+            }
+            renderer.render(graph.getUUID(), getElement(uuid), callback);
+        }
+    }
+
+    private void render(final DomainObject domainObject) {
+        if (null != renderer) {
+            renderer.render(getDiagram().getGraph().getUUID(), domainObject);
         }
     }
 
@@ -294,6 +342,34 @@ public class FormsCanvasSessionHandler {
         }
     }
 
+    /**
+     * A listener that refresh the forms once a DomainObject has been updated,
+     * but it skips the refreshing when updates come from this forms widget instance.
+     */
+    private class FormsDomainObjectCanvasListener implements CanvasDomainObjectListener {
+
+        private boolean areFormsProcessing;
+
+        public FormsDomainObjectCanvasListener() {
+            this.areFormsProcessing = false;
+        }
+
+        public void startProcessing() {
+            this.areFormsProcessing = true;
+        }
+
+        public void endProcessing() {
+            this.areFormsProcessing = false;
+        }
+
+        @Override
+        public void update(final DomainObject domainObject) {
+            if (!areFormsProcessing) {
+                render(domainObject);
+            }
+        }
+    }
+
     private FormFeaturesSessionProvider getFeaturesSessionProvider(final ClientSession session) {
         for (final FormFeaturesSessionProvider featureSessionProvider : FEATURE_SESSION_PROVIDERS) {
             if (featureSessionProvider.supports(session)) {
@@ -315,6 +391,13 @@ public class FormsCanvasSessionHandler {
          * @param callback a {@link Command} to execute after a property value change
          */
         void render(String graphUuid, Element element, Command callback);
+
+        /**
+         * Renders the form properties panel for the given {@link Object}
+         * @param graphUuid the current {@link Graph} UUID
+         * @param domainObject the {@link DomainObject} to render properties form
+         */
+        void render(String graphUuid, DomainObject domainObject);
 
         /**
          * Clears the properties form for the given {@link Element}
