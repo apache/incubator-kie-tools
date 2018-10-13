@@ -393,7 +393,7 @@ public class AbstractProjectDiagramEditorTest {
 
         String formattedTitle = presenter.formatTitle(title);
         assertEquals(formattedTitle,
-                     "testDiagram.bpmn - Business Process");
+                     "testDiagram." + resourceType.getSuffix() + " - " + resourceType.getShortName());
     }
 
     @Test

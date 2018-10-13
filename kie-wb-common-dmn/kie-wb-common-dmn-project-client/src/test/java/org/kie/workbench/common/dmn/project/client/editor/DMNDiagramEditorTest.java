@@ -89,7 +89,6 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
         super.setUp();
         when(sessionEditorPresenter.getInstance()).thenReturn(dmnEditorSession);
         when(dmnEditorSession.getExpressionEditor()).thenReturn(expressionEditor);
-        when(resourceType.getSuffix()).thenReturn("dmn");
     }
 
     @Override
@@ -210,13 +209,5 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
 
         verify(sessionCommandManager).execute(eq(canvasHandler),
                                               any(NavigateToExpressionEditorCommand.class));
-    }
-
-    @Override
-    public void testOpen() {
-    }
-
-    @Override
-    public void testFormatTitle() {
     }
 }
