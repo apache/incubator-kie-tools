@@ -104,4 +104,13 @@ public class AlignAndDistributeControlImplTest extends AbstractWiresControlTest 
         spied.refresh();
         verify(spied, never()).updateIndex();
     }
+
+    @Test
+    public void addHandlerTest() {
+        verify(group).addAttributesChangedHandler(Attribute.X, tested.ShapeAttributesChangedHandler);
+        verify(group).addAttributesChangedHandler(Attribute.Y, tested.ShapeAttributesChangedHandler);
+        verify(group).addAttributesChangedHandler(Attribute.ROTATION, tested.ShapeAttributesChangedHandler);
+        verify(group).addAttributesChangedHandler(Attribute.SCALE, tested.ShapeAttributesChangedHandler);
+        verify(group).addAttributesChangedHandler(Attribute.SHEAR, tested.ShapeAttributesChangedHandler);
+    }
 }
