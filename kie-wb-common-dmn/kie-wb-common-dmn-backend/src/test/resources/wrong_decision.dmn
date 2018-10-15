@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<dmn11:definitions xmlns="http://www.trisotech.com/dmn/definitions/_edfed70d-07af-4141-8263-8297fafb826c" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="6.1.11.1" id="_edfed70d-07af-4141-8263-8297fafb826c" name="Drawing 1" namespace="http://www.trisotech.com/dmn/definitions/_edfed70d-07af-4141-8263-8297fafb826c" triso:logoChoice="Default" xmlns:dmn11="http://www.omg.org/spec/DMN/20151101/dmn.xsd">
+  <dmn11:extensionElements/>
+  <dmn11:decision id="_cce32679-9395-444d-a4bf-96af8ee727a0" name="my decision">
+    <dmn11:variable id="_e8a42dc7-eb73-41f5-8e58-8ef07d995056" name="my decision"/>
+    <dmn11:literalExpression id="_36dd163c-4862-4308-92bf-40a998b24e39"/>
+  </dmn11:decision>
+</dmn11:definitions>
