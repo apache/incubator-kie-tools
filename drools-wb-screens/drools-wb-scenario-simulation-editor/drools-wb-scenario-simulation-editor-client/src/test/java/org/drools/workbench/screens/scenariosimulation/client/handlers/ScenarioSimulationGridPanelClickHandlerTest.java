@@ -30,6 +30,7 @@ import org.drools.workbench.screens.scenariosimulation.client.editor.menu.Header
 import org.drools.workbench.screens.scenariosimulation.client.editor.menu.OtherContextMenu;
 import org.drools.workbench.screens.scenariosimulation.client.editor.menu.UnmodifiableColumnGridContextMenu;
 import org.drools.workbench.screens.scenariosimulation.client.events.EnableRightPanelEvent;
+import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,6 +40,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
@@ -71,6 +73,8 @@ public class ScenarioSimulationGridPanelClickHandlerTest extends AbstractScenari
     private UnmodifiableColumnGridContextMenu mockUnmodifiableColumnGridContextMenu;
     @Mock
     private Set<AbstractHeaderMenuPresenter> mockManagedMenus;
+    @Mock
+    private ScenarioGridColumn gridColumnMock;
 
     @Mock
     private EventBus mockEventBus;
@@ -244,6 +248,36 @@ public class ScenarioSimulationGridPanelClickHandlerTest extends AbstractScenari
                                                                             CTRL_PRESSED));
         verify(mockScenarioGrid, never()).selectColumn(anyInt());
         verify(mockEventBus, never()).fireEvent(any(EnableRightPanelEvent.class));
+    }
+
+    @Test
+    public void testManageGridLeftClickReadOnlyTrue() {
+        when(headerMetaData.isReadOnly()).thenReturn(true);
+        scenarioSimulationGridPanelClickHandler.setEventBus(mockEventBus);
+        when(scenarioGridCellMock.isEditing()).thenReturn(true);
+        boolean retrieved = scenarioSimulationGridPanelClickHandler.manageGridLeftClick(mockScenarioGrid, UI_ROW_INDEX, UI_COLUMN_INDEX, gridColumnMock);
+        verify(scenarioGridCellMock, never()).setEditing(anyBoolean());
+        assertTrue(retrieved);
+        when(scenarioGridCellMock.isEditing()).thenReturn(false);
+        scenarioSimulationGridPanelClickHandler.manageGridLeftClick(mockScenarioGrid,  UI_ROW_INDEX, UI_COLUMN_INDEX, gridColumnMock);
+        verify(scenarioGridCellMock, times(1)).setEditing(eq(false));
+        verify(gridColumnMock, times(1)).isReadOnly();
+    }
+
+    @Test
+    public void testManageGridLeftClickReadOnlyFalse() {
+        when(mockScenarioGrid.startEditingCell( UI_ROW_INDEX, UI_COLUMN_INDEX)).thenReturn(true);
+        when(headerMetaData.isReadOnly()).thenReturn(false);
+        scenarioSimulationGridPanelClickHandler.setEventBus(mockEventBus);
+        when(scenarioGridCellMock.isEditing()).thenReturn(true);
+        boolean retrieved = scenarioSimulationGridPanelClickHandler.manageGridLeftClick(mockScenarioGrid,  UI_ROW_INDEX, UI_COLUMN_INDEX, gridColumnMock);
+        assertTrue(retrieved);
+        verify(scenarioGridCellMock, never()).setEditing(anyBoolean());
+        verify(gridColumnMock, never()).isReadOnly();
+        when(scenarioGridCellMock.isEditing()).thenReturn(false);
+        scenarioSimulationGridPanelClickHandler.manageGridLeftClick(mockScenarioGrid,  UI_ROW_INDEX, UI_COLUMN_INDEX, gridColumnMock);
+        verify(scenarioGridCellMock, times(1)).setEditing(eq(true));
+        verify(gridColumnMock, times(1)).isReadOnly();
     }
 
     private void commonCheck() {

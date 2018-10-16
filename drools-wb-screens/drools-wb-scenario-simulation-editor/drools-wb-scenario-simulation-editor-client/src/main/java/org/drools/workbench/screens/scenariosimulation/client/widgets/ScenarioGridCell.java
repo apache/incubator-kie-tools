@@ -20,7 +20,17 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCell;
 
 public class ScenarioGridCell extends BaseGridCell<String> {
 
+    private boolean isEditing = false;
+
     public ScenarioGridCell(ScenarioGridCellValue value) {
         super(value);
+    }
+
+    public boolean isEditing() {
+        return isEditing;
+    }
+
+    public void setEditing(boolean editing) {
+        isEditing = editing;
     }
 }

@@ -18,6 +18,7 @@ package org.drools.workbench.screens.scenariosimulation.client.handlers;
 
 import java.util.Collections;
 
+import com.ait.lienzo.client.core.types.Point2D;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
@@ -25,6 +26,7 @@ import com.google.gwt.event.dom.client.ContextMenuEvent;
 import org.drools.workbench.screens.scenariosimulation.client.metadata.ScenarioHeaderMetaData;
 import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGrid;
+import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridCell;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
 import org.drools.workbench.screens.scenariosimulation.model.FactMappingType;
@@ -33,31 +35,39 @@ import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
 
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public abstract class AbstractScenarioSimulationGridPanelClickHandlerTest {
 
-    final Double GRID_WIDTH = 100.0;
-    final Double HEADER_HEIGHT = 10.0;
-    final Double HEADER_ROW_HEIGHT = 10.0;
-    final int UI_COLUMN_INDEX = 0;
-    final int CLICK_POINT_X = 5;
-    final int CLICK_POINT_Y = 5;
-    final boolean SHIFT_PRESSED = false;
-    final boolean CTRL_PRESSED = false;
-    final int OFFSET_X = 0;
-    final int NATIVE_EVENT_CLIENT_X = 100;
-    final int NATIVE_EVENT_CLIENT_Y = 100;
-    final int TARGET_ABSOLUTE_LEFT = 50;
-    final int TARGET_SCROLL_LEFT = 20;
-    final int TARGET_ABSOLUTE_TOP = 50;
-    final int TARGET_SCROLL_TOP = 20;
-    final int DOCUMENT_SCROLL_LEFT = 10;
-    final int DOCUMENT_SCROLL_TOP = 10;
+    protected final Double GRID_WIDTH = 100.0;
+    protected final Double HEADER_HEIGHT = 10.0;
+    protected final Double HEADER_ROW_HEIGHT = 10.0;
+    protected final int UI_COLUMN_INDEX = 0;
+    protected final int UI_ROW_INDEX = 1;
+    protected final int CLICK_POINT_X = 5;
+    protected final int CLICK_POINT_Y = 5;
+    protected final boolean SHIFT_PRESSED = false;
+    protected final boolean CTRL_PRESSED = false;
+    protected final int OFFSET_X = 0;
+    protected final int NATIVE_EVENT_CLIENT_X = 100;
+    protected final int NATIVE_EVENT_CLIENT_Y = 100;
+    protected final int TARGET_ABSOLUTE_LEFT = 50;
+    protected final int TARGET_SCROLL_LEFT = 20;
+    protected final int TARGET_ABSOLUTE_TOP = 50;
+    protected final int TARGET_SCROLL_TOP = 20;
+    protected final int DOCUMENT_SCROLL_LEFT = 10;
+    protected final int DOCUMENT_SCROLL_TOP = 10;
+
+    @Mock
+    protected Point2D point2DMock;
 
     @Mock
     protected ScenarioGrid mockScenarioGrid;
+
+    @Mock
+    protected ScenarioGridCell scenarioGridCellMock;
 
     @Mock
     protected ScenarioHeaderMetaData headerMetaData;
@@ -69,7 +79,7 @@ public abstract class AbstractScenarioSimulationGridPanelClickHandlerTest {
     private ScenarioGridPanel mockScenarioGridPanel;
 
     @Mock
-    private ScenarioGridModel scenarioGridModel;
+    private ScenarioGridModel scenarioGridModelMock;
 
     @Mock
     private GridRenderer scenarioGridRenderer;
@@ -90,11 +100,13 @@ public abstract class AbstractScenarioSimulationGridPanelClickHandlerTest {
     private Document mockDocument;
 
 
+
     @Before
     public void setUp() throws Exception {
+        doReturn(scenarioGridCellMock).when(scenarioGridModelMock).getCell(UI_ROW_INDEX, UI_COLUMN_INDEX);
         when(mockScenarioGridPanel.getScenarioGrid()).thenReturn(mockScenarioGrid);
         when(mockScenarioGrid.getWidth()).thenReturn(GRID_WIDTH);
-        when(mockScenarioGrid.getModel()).thenReturn(scenarioGridModel);
+        when(mockScenarioGrid.getModel()).thenReturn(scenarioGridModelMock);
         when(mockScenarioGrid.getRenderer()).thenReturn(scenarioGridRenderer);
         when(mockScenarioGrid.getRendererHelper()).thenReturn(scenarioGridRendererHelper);
         when(scenarioGridRenderer.getHeaderHeight()).thenReturn(HEADER_HEIGHT);
@@ -103,8 +115,8 @@ public abstract class AbstractScenarioSimulationGridPanelClickHandlerTest {
 
         // mock single column in grid
         ScenarioGridColumn column = mock(ScenarioGridColumn.class);
-        when(scenarioGridModel.getColumns()).thenReturn(Collections.singletonList(column));
-        when(scenarioGridModel.getColumnCount()).thenReturn(1);
+        when(scenarioGridModelMock.getColumns()).thenReturn(Collections.singletonList(column));
+        when(scenarioGridModelMock.getColumnCount()).thenReturn(1);
 
         // presence of header metadata is prerequisite to handle header click
         // to simplify test, return just one header metadata
@@ -132,5 +144,4 @@ public abstract class AbstractScenarioSimulationGridPanelClickHandlerTest {
         when(mockContextMenuEvent.getNativeEvent()).thenReturn(mockNativeEvent);
         when(mockContextMenuEvent.getRelativeElement()).thenReturn(mockTarget);
     }
-
 }

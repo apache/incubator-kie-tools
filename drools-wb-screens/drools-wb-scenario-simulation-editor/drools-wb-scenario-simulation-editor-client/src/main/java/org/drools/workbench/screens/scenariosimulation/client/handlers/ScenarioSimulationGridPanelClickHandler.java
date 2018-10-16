@@ -44,7 +44,9 @@ import org.drools.workbench.screens.scenariosimulation.client.events.EnableRight
 import org.drools.workbench.screens.scenariosimulation.client.metadata.ScenarioHeaderMetaData;
 import org.drools.workbench.screens.scenariosimulation.client.utils.ScenarioSimulationGridHeaderUtilities;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGrid;
+import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridCell;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
+import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.util.CoordinateUtilities;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellEditContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
@@ -136,8 +138,7 @@ public class ScenarioSimulationGridPanelClickHandler implements ClickHandler,
                 if (clickReceived.get() == 1) {
                     hideMenus();
                     scenarioGrid.clearSelections();
-                    if (manageLeftClick(canvasX, canvasY, isShiftKeyDown, isControlKeyDown)) {
-                    } else {
+                    if (!manageLeftClick(canvasX, canvasY, isShiftKeyDown, isControlKeyDown)) { // It was not a grid click
                         eventBus.fireEvent(new DisableRightPanelEvent());
                     }
                 }
@@ -301,7 +302,11 @@ public class ScenarioSimulationGridPanelClickHandler implements ClickHandler,
             return false;
         }
         if (!manageHeaderLeftClick(scenarioGrid, uiColumnIndex, scenarioGridColumn, ap)) {
-            return manageGridLeftClick(scenarioGrid, scenarioGridColumn, ap);
+            final Integer uiRowIndex = CoordinateUtilities.getUiRowIndex(scenarioGrid, ap.getY());
+            if (uiRowIndex == null) {
+                return false;
+            } else { return manageGridLeftClick(scenarioGrid, uiRowIndex, uiColumnIndex, scenarioGridColumn);
+            }
         } else {
             return true;
         }
@@ -316,7 +321,7 @@ public class ScenarioSimulationGridPanelClickHandler implements ClickHandler,
      * @param rp
      * @return
      */
-    private boolean manageHeaderLeftClick(ScenarioGrid scenarioGrid, Integer uiColumnIndex, ScenarioGridColumn scenarioGridColumn, Point2D rp) {
+    protected boolean manageHeaderLeftClick(ScenarioGrid scenarioGrid, Integer uiColumnIndex, ScenarioGridColumn scenarioGridColumn, Point2D rp) {
         double gridY = rp.getY();
         if (!ScenarioSimulationGridHeaderUtilities.hasEditableHeader(scenarioGridColumn)) {
             return false;
@@ -359,15 +364,20 @@ public class ScenarioSimulationGridPanelClickHandler implements ClickHandler,
      * This method check if the click happened on an <i>writable</i> column of a <b>grid row</b>. If it is so, start editing the cell,
      * otherwise returns <code>false</code>
      * @param scenarioGrid
+     * @param uiRowIndex
+     * @param uiColumnIndex
      * @param scenarioGridColumn
-     * @param rp
      * @return
      */
-    private boolean manageGridLeftClick(ScenarioGrid scenarioGrid, ScenarioGridColumn scenarioGridColumn, Point2D rp) {
-        final Integer uiRowIndex = CoordinateUtilities.getUiRowIndex(scenarioGrid, rp.getY());
-        if (uiRowIndex == null) {
+    protected boolean manageGridLeftClick(ScenarioGrid scenarioGrid, Integer uiRowIndex, Integer uiColumnIndex, ScenarioGridColumn scenarioGridColumn) {
+        final GridCell<?> cell = scenarioGrid.getModel().getCell(uiRowIndex, uiColumnIndex);
+        if (cell == null) {
             return false;
         }
-        return scenarioGridColumn.isReadOnly() || scenarioGrid.startEditingCell(rp);
+        if (((ScenarioGridCell) cell).isEditing()) {
+            return true;
+        }
+        ((ScenarioGridCell) cell).setEditing((!scenarioGridColumn.isReadOnly()) && scenarioGrid.startEditingCell(uiRowIndex, uiColumnIndex));
+        return ((ScenarioGridCell) cell).isEditing();
     }
 }
