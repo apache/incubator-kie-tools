@@ -32,12 +32,6 @@ public class JGitFileSystemImplProviderHookTest extends AbstractTestInfra {
     @Override
     public Map<String, String> getGitPreferences() {
         Map<String, String> gitPrefs = super.getGitPreferences();
-        gitPrefs.put("org.uberfire.nio.git.daemon.enabled",
-                     "true");
-        int gitDaemonPort = findFreePort();
-        gitPrefs.put("org.uberfire.nio.git.daemon.port",
-                     String.valueOf(gitDaemonPort));
-
         try {
             final File hooksDir = createTempDirectory();
             gitPrefs.put("org.uberfire.nio.git.hooks",

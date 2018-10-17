@@ -50,15 +50,20 @@ import org.eclipse.jgit.transport.resolver.RepositoryResolver;
 import org.eclipse.jgit.transport.resolver.ServiceNotAuthorizedException;
 import org.eclipse.jgit.transport.resolver.ServiceNotEnabledException;
 import org.eclipse.jgit.transport.resolver.UploadPackFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.commons.async.DescriptiveRunnable;
 import org.uberfire.java.nio.fs.jgit.daemon.filters.HiddenBranchRefFilter;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
+import static org.uberfire.java.nio.fs.jgit.daemon.common.PortUtil.validateOrGetNew;
 
 /**
  * Basic daemon for the anonymous <code>git://</code> transport protocol.
  */
 public class Daemon {
+
+    private static final Logger LOG = LoggerFactory.getLogger(Daemon.class);
 
     private static final int BACKLOG = 5;
 
@@ -94,11 +99,10 @@ public class Daemon {
     /**
      * Configures a new daemon for the specified network address. The daemon will not attempt to bind to an address or
      * accept connections until a call to {@link #start()}.
-     *
-     * @param addr             address to listen for connections on. If null, any available port will be chosen on all network
-     *                         interfaces.
+     * @param addr address to listen for connections on. If null, any available port will be chosen on all network
+     * interfaces.
      * @param acceptThreadPool source of threads for waiting for inbound socket connections. Every time the daemon is started or
-     *                         restarted, a new task will be submitted to this pool. When the daemon is stopped, the task completes.
+     * restarted, a new task will be submitted to this pool. When the daemon is stopped, the task completes.
      */
     public Daemon(final InetSocketAddress addr,
                   final Executor acceptThreadPool,
@@ -217,9 +221,8 @@ public class Daemon {
 
     /**
      * Lookup a supported service so it can be reconfigured.
-     *
      * @param name name of the service; e.g. "receive-pack"/"git-receive-pack" or
-     *             "upload-pack"/"git-upload-pack".
+     * "upload-pack"/"git-upload-pack".
      * @return the service; null if this daemon implementation doesn't support
      * the requested service type.
      */
@@ -244,10 +247,9 @@ public class Daemon {
 
     /**
      * Set the timeout before willing to abort an IO call.
-     *
      * @param seconds number of seconds to wait (with no data transfer occurring)
-     *                before aborting an IO read or write operation with the
-     *                connected client.
+     * before aborting an IO read or write operation with the
+     * connected client.
      */
     public void setTimeout(final int seconds) {
         timeout = seconds;
@@ -255,7 +257,6 @@ public class Daemon {
 
     /**
      * Sets the resolver that locates repositories by name.
-     *
      * @param resolver the resolver instance.
      */
     public void setRepositoryResolver(RepositoryResolver<DaemonClient> resolver) {
@@ -264,7 +265,6 @@ public class Daemon {
 
     /**
      * Sets the factory that constructs and configures the per-request UploadPack.
-     *
      * @param factory the factory. If null upload-pack is disabled.
      */
     @SuppressWarnings("unchecked")
@@ -279,8 +279,7 @@ public class Daemon {
     /**
      * Starts this daemon listening for connections on a thread supplied by the executor service given to the
      * constructor. The daemon can be stopped by a call to {@link #stop()} or by shutting down the ExecutorService.
-     *
-     * @throws IOException           the server socket could not be opened.
+     * @throws IOException the server socket could not be opened.
      * @throws IllegalStateException the daemon is already running.
      */
     public synchronized void start() throws IOException {
@@ -292,12 +291,14 @@ public class Daemon {
         int listenPort = myAddress != null ? myAddress.getPort() : 0;
 
         try {
-            this.listenSock = new ServerSocket(listenPort,
+            this.listenSock = new ServerSocket(validateOrGetNew(listenPort),
                                                BACKLOG,
                                                listenAddress);
         } catch (IOException e) {
-            throw new IOException("Failed to open server socket for " + listenAddress + ":" + listenPort,
-                                  e);
+            throw new IOException("Failed to open server socket for " + listenAddress + ":" + listenPort, e);
+        }
+        if (listenSock.getLocalPort() != listenPort) {
+            LOG.error("Git original port {} not available, new free port {} assigned.", listenPort, listenSock.getLocalPort());
         }
         myAddress = (InetSocketAddress) listenSock.getLocalSocketAddress();
 
@@ -409,15 +410,7 @@ public class Daemon {
         try {
             return repositoryResolver.open(client,
                                            name.substring(1));
-        } catch (RepositoryNotFoundException e) {
-            // null signals it "wasn't found", which is all that is suitable
-            // for the remote client to know.
-            return null;
-        } catch (ServiceNotAuthorizedException e) {
-            // null signals it "wasn't found", which is all that is suitable
-            // for the remote client to know.
-            return null;
-        } catch (ServiceNotEnabledException e) {
+        } catch (RepositoryNotFoundException | ServiceNotAuthorizedException | ServiceNotEnabledException e) {
             // null signals it "wasn't found", which is all that is suitable
             // for the remote client to know.
             return null;

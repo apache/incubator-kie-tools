@@ -33,6 +33,8 @@ import org.apache.sshd.server.keyprovider.AbstractGeneratorHostKeyProvider;
 import org.apache.sshd.server.keyprovider.SimpleGeneratorHostKeyProvider;
 import org.apache.sshd.server.scp.UnknownCommand;
 import org.eclipse.jgit.transport.resolver.ReceivePackFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
 import org.uberfire.java.nio.security.FileSystemAuthenticator;
 import org.uberfire.java.nio.security.FileSystemAuthorizer;
@@ -42,8 +44,11 @@ import static org.apache.sshd.common.NamedFactory.setUpBuiltinFactories;
 import static org.apache.sshd.server.ServerBuilder.builder;
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotEmpty;
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
+import static org.uberfire.java.nio.fs.jgit.daemon.common.PortUtil.validateOrGetNew;
 
 public class GitSSHService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(GitSSHService.class);
 
     private final SshServer sshd = buildSshServer();
 
@@ -84,12 +89,15 @@ public class GitSSHService {
         checkNotNull("repositoryResolver",
                      repositoryResolver);
 
-        sshd.getProperties().put(SshServer.IDLE_TIMEOUT,
-                                 sshIdleTimeout);
+        sshd.getProperties().put(SshServer.IDLE_TIMEOUT, sshIdleTimeout);
 
         if (inetSocketAddress != null) {
             sshd.setHost(inetSocketAddress.getHostName());
-            sshd.setPort(inetSocketAddress.getPort());
+            sshd.setPort(validateOrGetNew(inetSocketAddress.getPort()));
+
+            if (inetSocketAddress.getPort() != sshd.getPort()) {
+                LOG.error("SSH for Git original port {} not available, new free port {} assigned.", inetSocketAddress.getPort(), sshd.getPort());
+            }
         }
 
         if (!certDir.exists()) {

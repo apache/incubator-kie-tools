@@ -209,8 +209,7 @@ public abstract class AbstractTestInfra {
     public static int findFreePort() {
         int port = 0;
         try {
-            ServerSocket server =
-                    new ServerSocket(0);
+            ServerSocket server = new ServerSocket(0);
             port = server.getLocalPort();
             server.close();
         } catch (IOException e) {
@@ -230,7 +229,7 @@ public abstract class AbstractTestInfra {
 
     static void commit(final Git origin, final String branchName, final String message, final TestFile... testFiles) throws IOException {
         final Map<String, File> data = Arrays.stream(testFiles)
-                                             .collect(toMap(f -> f.path, f -> tmpFile(f.content)));
+                .collect(toMap(f -> f.path, f -> tmpFile(f.content)));
         new Commit(origin,
                    branchName,
                    "name",
@@ -253,7 +252,6 @@ public abstract class AbstractTestInfra {
     static TestFile content(final String path, final String content) {
         return new TestFile(path, content);
     }
-    
 
     /**
      * Creates mock hook in defined hooks directory.
@@ -263,7 +261,7 @@ public abstract class AbstractTestInfra {
      * @throws UnsupportedEncodingException
      */
     void writeMockHook(final File hooksDirectory,
-                               final String hookName)
+                       final String hookName)
             throws FileNotFoundException, UnsupportedEncodingException {
         final PrintWriter writer = new PrintWriter(new File(hooksDirectory,
                                                             hookName),
@@ -271,7 +269,7 @@ public abstract class AbstractTestInfra {
         writer.println("# something");
         writer.close();
     }
-    
+
     /**
      * Tests if defined hook was executed or not.
      * @param gitRepoName Name of test git repository that is created for committing changes.
@@ -281,8 +279,8 @@ public abstract class AbstractTestInfra {
      * @throws IOException
      */
     void testHook(final String gitRepoName,
-                          final String testedHookName,
-                          final boolean wasExecuted) throws IOException {
+                  final String testedHookName,
+                  final boolean wasExecuted) throws IOException {
         final URI newRepo = URI.create("git://" + gitRepoName);
 
         final AtomicBoolean hookExecuted = new AtomicBoolean(false);

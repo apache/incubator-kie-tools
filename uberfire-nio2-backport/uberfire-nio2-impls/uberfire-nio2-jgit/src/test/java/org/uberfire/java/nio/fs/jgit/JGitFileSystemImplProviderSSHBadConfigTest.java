@@ -32,8 +32,6 @@ public class JGitFileSystemImplProviderSSHBadConfigTest extends AbstractTestInfr
 
         gitPrefs.put("org.uberfire.nio.git.ssh.enabled",
                      "true");
-        gitPrefs.put("org.uberfire.nio.git.ssh.port",
-                     String.valueOf(findFreePort()));
         gitPrefs.put("org.uberfire.nio.git.ssh.idle.timeout",
                      "bz");
 
