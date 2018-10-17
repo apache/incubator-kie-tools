@@ -30,11 +30,14 @@ import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManager;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManagerStackStore;
 import org.kie.workbench.common.dmn.client.editors.types.common.ItemDefinitionUtils;
+import org.kie.workbench.common.dmn.client.editors.types.common.JQueryEvent;
 import org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeList;
 import org.kie.workbench.common.dmn.client.editors.types.messages.DataTypeFlashMessages;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.DataTypeStore;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.ItemDefinitionStore;
 import org.uberfire.ext.editor.commons.client.file.popups.elemental2.Elemental2Modal;
+
+import static org.kie.workbench.common.dmn.client.editors.types.common.JQuery.$;
 
 @ApplicationScoped
 public class DataTypeModal extends Elemental2Modal<DataTypeModal.View> {
@@ -81,6 +84,7 @@ public class DataTypeModal extends Elemental2Modal<DataTypeModal.View> {
     }
 
     public void show() {
+        setupOnCloseCallback();
         cleanDataTypeStore();
         loadDataTypes();
         superShow();
@@ -113,6 +117,10 @@ public class DataTypeModal extends Elemental2Modal<DataTypeModal.View> {
         modalDialogElement.classList.add("kie-data-types-modal");
     }
 
+    void onCloseEvent(final JQueryEvent event) {
+        flashMessages.hideMessages();
+    }
+
     Element getModalDialogElement() {
         final HTMLElement body = getView().getBody();
         final Node modalBodyNode = body.parentNode;
@@ -120,6 +128,10 @@ public class DataTypeModal extends Elemental2Modal<DataTypeModal.View> {
         final Node modalDialogNode = modalContentNode.parentNode;
         final Node modalParentNode = modalDialogNode.parentNode;
         return modalParentNode.querySelector(".modal-dialog");
+    }
+
+    void setupOnCloseCallback() {
+        $(getModalDialogElement().parentNode).on("hidden.bs.modal", this::onCloseEvent);
     }
 
     public interface View extends Elemental2Modal.View<DataTypeModal> {

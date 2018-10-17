@@ -26,7 +26,9 @@ import javax.inject.Inject;
 import elemental2.dom.HTMLElement;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManager;
+import org.kie.workbench.common.dmn.client.editors.types.listview.confirmation.DataTypeConfirmation;
 import org.uberfire.client.mvp.UberElemental;
+import org.uberfire.mvp.Command;
 
 import static org.kie.workbench.common.dmn.client.editors.types.persistence.CreationType.ABOVE;
 import static org.kie.workbench.common.dmn.client.editors.types.persistence.CreationType.BELOW;
@@ -39,6 +41,8 @@ public class DataTypeListItem {
     private final DataTypeSelect dataTypeSelectComponent;
 
     private final DataTypeManager dataTypeManager;
+
+    private final DataTypeConfirmation confirmation;
 
     private DataType dataType;
 
@@ -53,10 +57,12 @@ public class DataTypeListItem {
     @Inject
     public DataTypeListItem(final View view,
                             final DataTypeSelect dataTypeSelectComponent,
-                            final DataTypeManager dataTypeManager) {
+                            final DataTypeManager dataTypeManager,
+                            final DataTypeConfirmation confirmation) {
         this.view = view;
         this.dataTypeSelectComponent = dataTypeSelectComponent;
         this.dataTypeManager = dataTypeManager;
+        this.confirmation = confirmation;
     }
 
     @PostConstruct
@@ -152,12 +158,20 @@ public class DataTypeListItem {
         final DataType updatedDataType = update(getDataType());
 
         if (updatedDataType.isValid()) {
-
-            final List<DataType> updatedDataTypes = persist(updatedDataType);
-
-            dataTypeList.refreshItemsByUpdatedDataTypes(updatedDataTypes);
-            closeEditMode();
+            confirmation.ifDataTypeDoesNotHaveLostSubDataTypes(updatedDataType, doSaveAndCloseEditMode(updatedDataType), doDisableEditMode());
         }
+    }
+
+    Command doDisableEditMode() {
+        return this::disableEditMode;
+    }
+
+    Command doSaveAndCloseEditMode(final DataType dataType) {
+        return () -> {
+            final List<DataType> updateDataTypes = persist(dataType);
+            dataTypeList.refreshItemsByUpdatedDataTypes(updateDataTypes);
+            closeEditMode();
+        };
     }
 
     List<DataType> persist(final DataType dataType) {
@@ -190,12 +204,19 @@ public class DataTypeListItem {
     }
 
     public void remove() {
+        confirmation.ifIsNotReferencedDataType(getDataType(), doRemove());
+    }
 
-        final List<DataType> destroyedDataTypes = getDataType().destroy();
-        final List<DataType> removedDataTypes = removeTopLevelDataTypes(destroyedDataTypes);
-        destroyedDataTypes.removeAll(removedDataTypes);
+    Command doRemove() {
+        return () -> {
 
-        dataTypeList.refreshItemsByUpdatedDataTypes(destroyedDataTypes);
+            final List<DataType> destroyedDataTypes = getDataType().destroy();
+            final List<DataType> removedDataTypes = removeTopLevelDataTypes(destroyedDataTypes);
+
+            destroyedDataTypes.removeAll(removedDataTypes);
+
+            dataTypeList.refreshItemsByUpdatedDataTypes(destroyedDataTypes);
+        };
     }
 
     List<DataType> removeTopLevelDataTypes(final List<DataType> destroyedDataTypes) {

@@ -219,4 +219,16 @@ public class DMNEditorConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String NameIsNotUniqueErrorMessage_RegularMessage = "NameIsNotUniqueErrorMessage.RegularMessage";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DataTypeWithFieldsWarningMessage_StrongMessage = "DataTypeWithFieldsWarningMessage.StrongMessage";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DataTypeWithFieldsWarningMessage_RegularMessage = "DataTypeWithFieldsWarningMessage.RegularMessage";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ReferencedDataTypeWarningMessage_StrongMessage = "ReferencedDataTypeWarningMessage.StrongMessage";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ReferencedDataTypeWarningMessage_RegularMessage = "ReferencedDataTypeWarningMessage.RegularMessage";
 }

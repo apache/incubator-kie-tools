@@ -20,6 +20,11 @@
     outline-color: #c00;
   }
 
+  .kie-data-types-warning-element {
+    border: 1px solid #ec7a08;
+    outline-color: #ec7a08;
+  }
+
   .alert {
     max-height: 0;
     opacity: 0;
@@ -27,6 +32,21 @@
     transition: all 0.15s linear;
     padding: 0 0 0 47px;
     margin-bottom: 0;
+
+    &.opened.alert-warning {
+      padding-right: 120px;
+    }
+  }
+
+  .action-buttons {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+
+    .btn {
+      width: 50px;
+      margin: 0 1px;
+    }
   }
 
   .alert.opened {

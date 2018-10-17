@@ -22,6 +22,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.uberfire.mvp.Command;
 
 import static org.junit.Assert.assertEquals;
 import static org.kie.workbench.common.dmn.client.editors.types.messages.DataTypeFlashMessage.Type.ERROR;
@@ -64,11 +65,13 @@ public class DataTypeFlashMessagesTest {
 
         final DataTypeFlashMessage flashMessage = mock(DataTypeFlashMessage.class);
 
+        doNothing().when(dataTypeFlashMessages).registerFlashMessageCallback(flashMessage);
         doNothing().when(dataTypeFlashMessages).showFlashMessage(flashMessage);
         doNothing().when(dataTypeFlashMessages).highlightDataField(flashMessage);
 
         dataTypeFlashMessages.onNameIsBlankErrorMessage(flashMessage);
 
+        verify(dataTypeFlashMessages).registerFlashMessageCallback(flashMessage);
         verify(dataTypeFlashMessages).showFlashMessage(flashMessage);
         verify(dataTypeFlashMessages).highlightDataField(flashMessage);
     }
@@ -135,5 +138,33 @@ public class DataTypeFlashMessagesTest {
 
         verify(view).showWarningHighlight(elementSelector);
         verify(view, never()).showErrorHighlight(anyString());
+    }
+
+    @Test
+    public void testRegisterFlashMessageCallback() {
+
+        final DataTypeFlashMessage flashMessage = mock(DataTypeFlashMessage.class);
+        final Command onSuccess = mock(Command.class);
+        final Command onError = mock(Command.class);
+
+        when(flashMessage.getOnSuccess()).thenReturn(onSuccess);
+        when(flashMessage.getOnError()).thenReturn(onError);
+        when(flashMessage.getType()).thenReturn(WARNING);
+
+        dataTypeFlashMessages.registerFlashMessageCallback(flashMessage);
+        dataTypeFlashMessages.executeSuccessWarningCallback();
+        dataTypeFlashMessages.executeErrorWarningCallback();
+
+        verify(onSuccess).execute();
+        verify(onError).execute();
+    }
+
+    @Test
+    public void testHideMessages() {
+
+        dataTypeFlashMessages.hideMessages();
+
+        verify(view).hideErrorContainer();
+        verify(view).hideWarningContainer();
     }
 }

@@ -20,12 +20,16 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import com.google.gwt.event.dom.client.ClickEvent;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.DomGlobal.SetTimeoutCallbackFn;
 import elemental2.dom.Element;
+import elemental2.dom.HTMLButtonElement;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
+import elemental2.dom.NodeList;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 @Templated
@@ -33,6 +37,8 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 public class DataTypeFlashMessagesView implements DataTypeFlashMessages.View {
 
     static final String ERROR_CSS_CLASS = "kie-data-types-error-element";
+
+    static final String WARNING_CSS_CLASS = "kie-data-types-warning-element";
 
     static final String OPENED_CONTAINER_CSS_CLASS = "opened";
 
@@ -54,6 +60,12 @@ public class DataTypeFlashMessagesView implements DataTypeFlashMessages.View {
     @DataField("regular-warning-message")
     private final HTMLElement regularWarningMessage;
 
+    @DataField("ok-warning-button")
+    private final HTMLButtonElement okWarningButton;
+
+    @DataField("cancel-warning-button")
+    private final HTMLButtonElement cancelWarningButton;
+
     private DataTypeFlashMessages presenter;
 
     @Inject
@@ -62,18 +74,36 @@ public class DataTypeFlashMessagesView implements DataTypeFlashMessages.View {
                                      final @Named("strong") HTMLElement strongErrorMessage,
                                      final @Named("span") HTMLElement regularErrorMessage,
                                      final @Named("strong") HTMLElement strongWarningMessage,
-                                     final @Named("span") HTMLElement regularWarningMessage) {
+                                     final @Named("span") HTMLElement regularWarningMessage,
+                                     final HTMLButtonElement okWarningButton,
+                                     final HTMLButtonElement cancelWarningButton) {
         this.errorContainer = errorContainer;
         this.warningContainer = warningContainer;
         this.strongErrorMessage = strongErrorMessage;
         this.regularErrorMessage = regularErrorMessage;
         this.strongWarningMessage = strongWarningMessage;
         this.regularWarningMessage = regularWarningMessage;
+        this.okWarningButton = okWarningButton;
+        this.cancelWarningButton = cancelWarningButton;
     }
 
     @Override
     public void init(final DataTypeFlashMessages presenter) {
         this.presenter = presenter;
+    }
+
+    @EventHandler("ok-warning-button")
+    public void onOkWarningButtonClick(final ClickEvent e) {
+        presenter.executeSuccessWarningCallback();
+        hideWarningContainer();
+        disableWarningHighlight();
+    }
+
+    @EventHandler("cancel-warning-button")
+    public void onCancelWarningButtonClick(final ClickEvent e) {
+        presenter.executeErrorWarningCallback();
+        hideWarningContainer();
+        disableWarningHighlight();
     }
 
     @Override
@@ -82,6 +112,14 @@ public class DataTypeFlashMessagesView implements DataTypeFlashMessages.View {
         show(errorContainer);
         strongErrorMessage.textContent = strongMessage;
         regularErrorMessage.textContent = regularMessage;
+    }
+
+    @Override
+    public void showWarningMessage(final String strongMessage,
+                                   final String regularMessage) {
+        show(warningContainer);
+        strongWarningMessage.textContent = strongMessage;
+        regularWarningMessage.textContent = regularMessage;
     }
 
     @Override
@@ -96,13 +134,22 @@ public class DataTypeFlashMessagesView implements DataTypeFlashMessages.View {
     }
 
     @Override
-    public void showWarningMessage(final String strongMessage, final String regularMessage) {
-        // TODO: https://issues.jboss.org/browse/DROOLS-3023
+    public void showWarningHighlight(final String warningElementSelector) {
+        disableWarningHighlight();
+
+        final Element element = getElement().parentNode.querySelector(warningElementSelector);
+
+        enableWarningHighlight(element);
     }
 
     @Override
-    public void showWarningHighlight(final String errorElementSelector) {
-        // TODO: https://issues.jboss.org/browse/DROOLS-3023
+    public void hideWarningContainer() {
+        hide(warningContainer);
+    }
+
+    @Override
+    public void hideErrorContainer() {
+        hide(errorContainer);
     }
 
     void setupDisableErrorHighlightCallbacks(final Element element) {
@@ -122,6 +169,19 @@ public class DataTypeFlashMessagesView implements DataTypeFlashMessages.View {
         element.classList.add(ERROR_CSS_CLASS);
     }
 
+    void enableWarningHighlight(final Element element) {
+        element.classList.add(WARNING_CSS_CLASS);
+    }
+
+    void disableWarningHighlight() {
+
+        final NodeList<Element> warningElements = getElement().parentNode.querySelectorAll("." + WARNING_CSS_CLASS);
+
+        for (int i = 0; i < warningElements.length; i++) {
+            warningElements.getAt(i).classList.remove(WARNING_CSS_CLASS);
+        }
+    }
+
     void disableErrorHighlight(final Element element) {
         element.classList.remove(ERROR_CSS_CLASS);
 
@@ -129,7 +189,7 @@ public class DataTypeFlashMessagesView implements DataTypeFlashMessages.View {
             final boolean isErrorEnabled = element.classList.contains(ERROR_CSS_CLASS);
 
             if (!isErrorEnabled) {
-                hide(errorContainer);
+                hideErrorContainer();
                 teardownDisableErrorHighlightCallbacks(element);
             }
         }, 500);

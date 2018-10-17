@@ -32,6 +32,7 @@ import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManager;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManagerStackStore;
 import org.kie.workbench.common.dmn.client.editors.types.common.ItemDefinitionUtils;
+import org.kie.workbench.common.dmn.client.editors.types.common.JQueryEvent;
 import org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeList;
 import org.kie.workbench.common.dmn.client.editors.types.messages.DataTypeFlashMessages;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.DataTypeStore;
@@ -88,6 +89,7 @@ public class DataTypeModalTest {
     public void setup() {
         modal = spy(new DataTypeModal(view, treeList, itemDefinitionUtils, definitionStore, dataTypeStore, dataTypeManager, stackIndex, flashMessages));
 
+        doNothing().when(modal).setupOnCloseCallback();
         doNothing().when(modal).superSetup();
         doNothing().when(modal).superShow();
     }
@@ -110,6 +112,7 @@ public class DataTypeModalTest {
 
         final InOrder inOrder = Mockito.inOrder(modal);
 
+        inOrder.verify(modal).setupOnCloseCallback();
         inOrder.verify(modal).cleanDataTypeStore();
         inOrder.verify(modal).loadDataTypes();
         inOrder.verify(modal).superShow();
@@ -200,6 +203,14 @@ public class DataTypeModalTest {
         final Element actualDialog = modal.getModalDialogElement();
 
         assertEquals(expectedDialog, actualDialog);
+    }
+
+    @Test
+    public void testOnCloseEvent() {
+
+        modal.onCloseEvent(mock(JQueryEvent.class));
+
+        verify(flashMessages).hideMessages();
     }
 
     private ItemDefinition makeItem(final String itemName) {

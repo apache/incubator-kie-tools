@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.editors.types.messages;
 
+import org.uberfire.mvp.Command;
 import org.uberfire.workbench.events.UberFireEvent;
 
 public class DataTypeFlashMessage implements UberFireEvent {
@@ -28,14 +29,29 @@ public class DataTypeFlashMessage implements UberFireEvent {
 
     private final String errorElementSelector;
 
+    private final Command onSuccess;
+
+    private final Command onError;
+
     public DataTypeFlashMessage(final Type type,
                                 final String strongMessage,
                                 final String regularMessage,
-                                final String errorElementSelector) {
+                                final String errorElementSelector,
+                                final Command onSuccess,
+                                final Command onError) {
         this.type = type;
         this.strongMessage = strongMessage;
         this.regularMessage = regularMessage;
         this.errorElementSelector = errorElementSelector;
+        this.onSuccess = onSuccess;
+        this.onError = onError;
+    }
+
+    public DataTypeFlashMessage(final Type type,
+                                final String strongMessage,
+                                final String regularMessage,
+                                final String errorElementSelector) {
+        this(type, strongMessage, regularMessage, errorElementSelector, () -> { /* Nothing. */ }, () -> { /* Nothing. */ });
     }
 
     public String getStrongMessage() {
@@ -52,6 +68,14 @@ public class DataTypeFlashMessage implements UberFireEvent {
 
     public String getErrorElementSelector() {
         return errorElementSelector;
+    }
+
+    public Command getOnSuccess() {
+        return onSuccess;
+    }
+
+    public Command getOnError() {
+        return onError;
     }
 
     public enum Type {

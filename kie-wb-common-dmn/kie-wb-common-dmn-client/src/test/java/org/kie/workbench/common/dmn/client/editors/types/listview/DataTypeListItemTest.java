@@ -28,11 +28,13 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManager;
+import org.kie.workbench.common.dmn.client.editors.types.listview.confirmation.DataTypeConfirmation;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.ItemDefinitionStore;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
+import org.uberfire.mvp.Command;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -41,6 +43,7 @@ import static org.junit.Assert.assertEquals;
 import static org.kie.workbench.common.dmn.client.editors.types.persistence.CreationType.ABOVE;
 import static org.kie.workbench.common.dmn.client.editors.types.persistence.CreationType.BELOW;
 import static org.kie.workbench.common.dmn.client.editors.types.persistence.CreationType.NESTED;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
@@ -72,6 +75,9 @@ public class DataTypeListItemTest {
     @Mock
     private DataTypeList dataTypeList;
 
+    @Mock
+    private DataTypeConfirmation confirmation;
+
     private DataTypeManager dataTypeManager;
 
     private DataTypeListItem listItem;
@@ -79,7 +85,7 @@ public class DataTypeListItemTest {
     @Before
     public void setup() {
         dataTypeManager = spy(new DataTypeManager(null, null, itemDefinitionStore, null, null, null, null, null));
-        listItem = spy(new DataTypeListItem(view, dataTypeSelectComponent, dataTypeManager));
+        listItem = spy(new DataTypeListItem(view, dataTypeSelectComponent, dataTypeManager, confirmation));
         listItem.init(dataTypeList);
     }
 
@@ -229,17 +235,27 @@ public class DataTypeListItemTest {
 
         final DataType dataType = spy(makeDataType());
         final DataType updatedDataType = spy(makeDataType());
-        final List<DataType> updatedDataTypes = singletonList(makeDataType());
+        final Command doSaveAndCloseCommand = mock(Command.class);
+        final Command doDisableEditMode = mock(Command.class);
 
         doReturn(dataType).when(listItem).getDataType();
         doReturn(updatedDataType).when(listItem).update(dataType);
         doReturn(true).when(updatedDataType).isValid();
-        doReturn(updatedDataTypes).when(listItem).persist(updatedDataType);
+        doReturn(doSaveAndCloseCommand).when(listItem).doSaveAndCloseEditMode(updatedDataType);
+        doReturn(doDisableEditMode).when(listItem).doDisableEditMode();
 
         listItem.saveAndCloseEditMode();
 
-        verify(dataTypeList).refreshItemsByUpdatedDataTypes(updatedDataTypes);
-        verify(listItem).closeEditMode();
+        verify(confirmation).ifDataTypeDoesNotHaveLostSubDataTypes(updatedDataType, doSaveAndCloseCommand, doDisableEditMode);
+    }
+
+    @Test
+    public void testDoDisableEditMode() {
+        doNothing().when(listItem).disableEditMode();
+
+        listItem.doDisableEditMode().execute();
+
+        verify(listItem).disableEditMode();
     }
 
     @Test
@@ -247,7 +263,6 @@ public class DataTypeListItemTest {
 
         final DataType dataType = spy(makeDataType());
         final DataType updatedDataType = spy(makeDataType());
-        final List<DataType> updatedDataTypes = singletonList(makeDataType());
 
         doReturn(dataType).when(listItem).getDataType();
         doReturn(updatedDataType).when(listItem).update(dataType);
@@ -255,8 +270,21 @@ public class DataTypeListItemTest {
 
         listItem.saveAndCloseEditMode();
 
-        verify(dataTypeList, never()).refreshItemsByUpdatedDataTypes(updatedDataTypes);
-        verify(listItem, never()).closeEditMode();
+        verify(confirmation, never()).ifDataTypeDoesNotHaveLostSubDataTypes(any(), any(), any());
+    }
+
+    @Test
+    public void testDoSaveAndCloseEditMode() {
+
+        final DataType dataType = spy(makeDataType());
+        final List<DataType> updatedDataTypes = singletonList(makeDataType());
+
+        doReturn(updatedDataTypes).when(listItem).persist(dataType);
+
+        listItem.doSaveAndCloseEditMode(dataType).execute();
+
+        verify(dataTypeList).refreshItemsByUpdatedDataTypes(updatedDataTypes);
+        verify(listItem).closeEditMode();
     }
 
     @Test
@@ -357,7 +385,21 @@ public class DataTypeListItemTest {
     }
 
     @Test
-    public void testRemoveWhenDataTypeIsTopLevelNode() {
+    public void testRemove() {
+
+        final DataType dataType = mock(DataType.class);
+        final Command command = mock(Command.class);
+
+        doReturn(dataType).when(listItem).getDataType();
+        doReturn(command).when(listItem).doRemove();
+
+        listItem.remove();
+
+        verify(confirmation).ifIsNotReferencedDataType(dataType, command);
+    }
+
+    @Test
+    public void testDoRemove() {
 
         final DataType dataType = mock(DataType.class);
         final DataType dataType0 = mock(DataType.class);
@@ -371,7 +413,7 @@ public class DataTypeListItemTest {
         doReturn(removedDataTypes).when(listItem).removeTopLevelDataTypes(destroyedDataTypes);
         doReturn(dataType).when(listItem).getDataType();
 
-        listItem.remove();
+        listItem.doRemove().execute();
 
         verify(dataTypeList).refreshItemsByUpdatedDataTypes(asList(dataType0, dataType3));
     }

@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.editors.types.listview.common;
+package org.kie.workbench.common.dmn.client.editors.types.common;
 
 import com.google.gwt.core.client.JavaScriptObject;
-import elemental2.dom.Element;
+import elemental2.dom.Node;
 import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsType;
@@ -28,7 +28,7 @@ import static jsinterop.annotations.JsPackage.GLOBAL;
 public abstract class JQuery {
 
     @JsMethod(namespace = GLOBAL, name = "jQuery")
-    public native static JQuery $(final Element selector);
+    public native static JQuery $(final Node selector);
 
     public native JQuery animate(final JavaScriptObject properties,
                                  final int duration);

@@ -44,7 +44,7 @@ public class DataTypeDestroyHandler extends DataTypeHandler {
             parent.getSubDataTypes().remove(dataType);
         });
 
-        dataTypeStore.unIndex(dataType.getUUID());
+        unIndex(dataType);
     }
 
     public List<DataType> refreshDependentDataTypes(final DataType dataType) {
@@ -108,5 +108,15 @@ public class DataTypeDestroyHandler extends DataTypeHandler {
         final DataType refreshed = subDataType.isTopLevel() ? subDataType : parent(subDataType);
         refreshSubDataTypes(refreshed);
         return refreshed;
+    }
+
+    private void unIndex(final DataType dataType) {
+
+        final String uuid = dataType.getUUID();
+        final List<DataType> subDataTypes = dataType.getSubDataTypes();
+
+        dataTypeStore.unIndex(uuid);
+
+        subDataTypes.forEach(this::unIndex);
     }
 }

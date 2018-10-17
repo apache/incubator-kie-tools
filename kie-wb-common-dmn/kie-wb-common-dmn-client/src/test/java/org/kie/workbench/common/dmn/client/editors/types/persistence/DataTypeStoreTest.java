@@ -29,6 +29,7 @@ import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -104,5 +105,22 @@ public class DataTypeStoreTest {
         store.unIndex(uuid);
 
         assertNull(store.get(uuid));
+    }
+
+    @Test
+    public void testAll() {
+
+        final DataType dataType0 = mock(DataType.class);
+        final DataType dataType1 = mock(DataType.class);
+
+        store.index("0", dataType0);
+        store.index("1", dataType1);
+
+        final List<DataType> all = store.all();
+
+        assertEquals(3, all.size());
+        assertTrue(all.contains(dataType));
+        assertTrue(all.contains(dataType0));
+        assertTrue(all.contains(dataType1));
     }
 }

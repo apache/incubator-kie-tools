@@ -23,8 +23,10 @@ import com.google.gwt.json.client.JSONString;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.Element;
 import elemental2.dom.HTMLDivElement;
+import org.kie.workbench.common.dmn.client.editors.types.common.JQuery;
+import org.kie.workbench.common.dmn.client.editors.types.common.JQueryEvent;
 
-import static org.kie.workbench.common.dmn.client.editors.types.listview.common.JQuery.$;
+import static org.kie.workbench.common.dmn.client.editors.types.common.JQuery.$;
 
 /**
  * This class implements a workaround for the kebab menu.

@@ -67,7 +67,13 @@ public class DataTypeDestroyHandlerTest {
 
         final String uuid = "uuid";
         final String parentUUID = "parentUUID";
-        final DataType dataType = makeDataType(uuid);
+        final String childUUID1 = "childUUID1";
+        final String childUUID2 = "childUUID2";
+        final String grandchildUUID1 = "grandchildUUID1";
+        final String grandchildUUID2 = "grandchildUUID2";
+        final DataType[] grandchildren = {makeDataType(grandchildUUID1), makeDataType(grandchildUUID2)};
+        final DataType[] children = {makeDataType(childUUID1), makeDataType(childUUID2, grandchildren)};
+        final DataType dataType = makeDataType(uuid, children);
         final DataType parent = makeDataType(parentUUID, dataType);
 
         doReturn(parent).when(handler).parent(dataType);
@@ -75,6 +81,10 @@ public class DataTypeDestroyHandlerTest {
         handler.destroy(dataType);
 
         verify(dataTypeStore).unIndex(uuid);
+        verify(dataTypeStore).unIndex(childUUID1);
+        verify(dataTypeStore).unIndex(childUUID2);
+        verify(dataTypeStore).unIndex(grandchildUUID1);
+        verify(dataTypeStore).unIndex(grandchildUUID2);
         assertEquals(emptyList(), parent.getSubDataTypes());
     }
 

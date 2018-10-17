@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.editors.types.persistence;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,8 +58,8 @@ public class DataTypeStore {
         return all().stream().filter(DataType::isTopLevel).collect(Collectors.toList());
     }
 
-    private Collection<DataType> all() {
-        return dataTypes.values();
+    public List<DataType> all() {
+        return new ArrayList<>(dataTypes.values());
     }
 
     public void unIndex(final String uuid) {

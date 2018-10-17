@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.dmn.client.editors.types.messages;
 
+import java.util.Optional;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
@@ -24,11 +26,16 @@ import javax.inject.Inject;
 import elemental2.dom.HTMLElement;
 import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
 import org.uberfire.client.mvp.UberElemental;
+import org.uberfire.mvp.Command;
 
 @ApplicationScoped
 public class DataTypeFlashMessages {
 
     private final View view;
+
+    private Command warningSuccessCallback;
+
+    private Command warningErrorCallback;
 
     @Inject
     public DataTypeFlashMessages(final View view) {
@@ -45,6 +52,7 @@ public class DataTypeFlashMessages {
     }
 
     public void onNameIsBlankErrorMessage(final @Observes DataTypeFlashMessage flashMessage) {
+        registerFlashMessageCallback(flashMessage);
         showFlashMessage(flashMessage);
         highlightDataField(flashMessage);
     }
@@ -71,6 +79,39 @@ public class DataTypeFlashMessages {
         }
     }
 
+    void registerFlashMessageCallback(final DataTypeFlashMessage flashMessage) {
+        switch (flashMessage.getType()) {
+            case ERROR:
+                // 'Error' FlashMessage does not have callbacks.
+                break;
+            case WARNING:
+                warningSuccessCallback = flashMessage.getOnSuccess();
+                warningErrorCallback = flashMessage.getOnError();
+                break;
+        }
+    }
+
+    void executeSuccessWarningCallback() {
+        getWarningSuccessCallback().ifPresent(Command::execute);
+    }
+
+    void executeErrorWarningCallback() {
+        getWarningErrorCallback().ifPresent(Command::execute);
+    }
+
+    private Optional<Command> getWarningErrorCallback() {
+        return Optional.ofNullable(warningErrorCallback);
+    }
+
+    private Optional<Command> getWarningSuccessCallback() {
+        return Optional.ofNullable(warningSuccessCallback);
+    }
+
+    public void hideMessages() {
+        view.hideErrorContainer();
+        view.hideWarningContainer();
+    }
+
     public interface View extends UberElemental<DataTypeFlashMessages>,
                                   IsElement {
 
@@ -80,6 +121,10 @@ public class DataTypeFlashMessages {
 
         void showErrorHighlight(final String errorElementSelector);
 
-        void showWarningHighlight(final String errorElementSelector);
+        void showWarningHighlight(final String warningElementSelector);
+
+        void hideWarningContainer();
+
+        void hideErrorContainer();
     }
 }
