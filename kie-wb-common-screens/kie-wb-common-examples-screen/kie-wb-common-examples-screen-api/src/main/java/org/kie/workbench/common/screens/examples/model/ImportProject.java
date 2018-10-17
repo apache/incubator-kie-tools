@@ -32,19 +32,22 @@ public class ImportProject {
     private String origin;
     private List<String> tags;
     private List<ExampleProjectError> errors;
+    private Credentials credentials;
 
     public ImportProject(final @MapsTo("root") Path root,
                          final @MapsTo("name") String name,
                          final @MapsTo("description") String description,
                          final @MapsTo("origin") String origin,
                          final @MapsTo("tags") List<String> tags,
-                         final @MapsTo("errors") List<ExampleProjectError> errors) {
+                         final @MapsTo("errors") List<ExampleProjectError> errors,
+                         final @MapsTo("credentials") Credentials credentials) {
         this.root = root;
         this.name = name;
         this.description = description;
         this.origin = origin;
         this.tags = tags;
         this.errors = errors;
+        this.credentials = credentials;
     }
 
     public ImportProject(Path root,
@@ -57,7 +60,23 @@ public class ImportProject {
              description,
              origin,
              tags,
-             new ArrayList<>());
+             new ArrayList<>(),
+             null);
+    }
+
+    public ImportProject(Path root,
+                         String name,
+                         String description,
+                         String origin,
+                         List<String> tags,
+                         Credentials credentials) {
+        this(root,
+             name,
+             description,
+             origin,
+             tags,
+             new ArrayList<>(),
+             credentials);
     }
 
     public Path getRoot() {
@@ -96,6 +115,9 @@ public class ImportProject {
         if (!description.equals(that.description)) {
             return false;
         }
+        if (credentials != null && !credentials.equals(that.credentials)) {
+            return false;
+        }
         return !(tags != null ? !tags.equals(that.tags) : that.tags != null);
     }
 
@@ -110,6 +132,8 @@ public class ImportProject {
         result = ~~result;
         result = 31 * result + (description != null ? description.hashCode() : 0);
         result = ~~result;
+        result = 31 * result + (credentials != null ? credentials.hashCode() : 0);
+        result = ~~result;
         return result;
     }
 
@@ -119,5 +143,9 @@ public class ImportProject {
 
     public String getOrigin() {
         return origin;
+    }
+
+    public Credentials getCredentials() {
+        return credentials;
     }
 }

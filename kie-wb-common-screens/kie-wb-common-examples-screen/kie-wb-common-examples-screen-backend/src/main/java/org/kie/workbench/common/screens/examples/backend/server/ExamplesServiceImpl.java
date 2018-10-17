@@ -49,10 +49,11 @@ import org.guvnor.structure.server.config.ConfigurationFactory;
 import org.guvnor.structure.server.repositories.RepositoryFactory;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.soup.commons.validation.PortablePreconditions;
+import org.kie.workbench.common.screens.examples.model.Credentials;
 import org.kie.workbench.common.screens.examples.model.ExampleOrganizationalUnit;
-import org.kie.workbench.common.screens.examples.model.ImportProject;
 import org.kie.workbench.common.screens.examples.model.ExampleRepository;
 import org.kie.workbench.common.screens.examples.model.ExamplesMetaData;
+import org.kie.workbench.common.screens.examples.model.ImportProject;
 import org.kie.workbench.common.screens.examples.service.ExamplesService;
 import org.kie.workbench.common.screens.examples.validation.ImportProjectValidators;
 import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenService;
@@ -212,9 +213,16 @@ public class ExamplesServiceImpl extends BaseProjectImportService implements Exa
         if (exampleRepository.equals(playgroundRepository)) {
             return clonedRepositories.stream().filter(r -> exampleRepository.getUrl().equals(r.getEnvironment().get("origin"))).findFirst().orElseGet(() -> cloneRepository(exampleRepository.getUrl()));
         } else {
+            Credentials credentials = exampleRepository.getCredentials();
+            String username = null;
+            String password = null;
+            if (credentials != null) {
+                username = credentials.getUsername();
+                password = credentials.getPassword();
+            }
             return cloneRepository(exampleRepository.getUrl(),
-                                   exampleRepository.getUserName(),
-                                   exampleRepository.getPassword());
+                                   username,
+                                   password);
         }
     }
 

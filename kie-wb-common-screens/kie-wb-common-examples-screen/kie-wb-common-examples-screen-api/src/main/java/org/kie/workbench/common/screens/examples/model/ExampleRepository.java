@@ -23,10 +23,8 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 public class ExampleRepository {
 
     private String url;
+    private Credentials credentials;
     private boolean isUrlValid = true;
-
-    private String userName;
-    private String password;
 
     public ExampleRepository(final String url) {
         this.url = url;
@@ -34,11 +32,9 @@ public class ExampleRepository {
     }
 
     public ExampleRepository(final @MapsTo("url") String url,
-                             final @MapsTo("userName") String userName,
-                             final @MapsTo("password") String password) {
+                             final @MapsTo("credentials") Credentials credentials) {
         this.url = url;
-        this.userName = userName;
-        this.password = password;
+        this.credentials = credentials;
     }
 
     public String getUrl() {
@@ -53,12 +49,8 @@ public class ExampleRepository {
         this.isUrlValid = isUrlValid;
     }
 
-    public String getUserName() {
-        return userName;
-    }
-
-    public String getPassword() {
-        return password;
+    public Credentials getCredentials() {
+        return credentials;
     }
 
     @Override
@@ -78,10 +70,7 @@ public class ExampleRepository {
         if (url != null ? !url.equals(that.url) : that.url != null) {
             return false;
         }
-        if (userName != null ? !userName.equals(that.userName) : that.userName != null) {
-            return false;
-        }
-        return !(password != null ? !password.equals(that.password) : that.password != null);
+        return !(credentials != null ? !credentials.equals(that.credentials) : that.credentials != null);
     }
 
     @Override
@@ -90,9 +79,7 @@ public class ExampleRepository {
         result = ~~result;
         result = 31 * result + (isUrlValid ? 1 : 0);
         result = ~~result;
-        result = 31 * result + (userName != null ? userName.hashCode() : 0);
-        result = ~~result;
-        result = 31 * result + (password != null ? password.hashCode() : 0);
+        result = 31 * result + (credentials != null ? credentials.hashCode() : 0);
         result = ~~result;
         return result;
     }

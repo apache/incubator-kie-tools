@@ -22,8 +22,9 @@ import javax.inject.Inject;
 
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
-import org.kie.workbench.common.screens.examples.model.ImportProject;
+import org.kie.workbench.common.screens.examples.model.Credentials;
 import org.kie.workbench.common.screens.examples.model.ExampleRepository;
+import org.kie.workbench.common.screens.examples.model.ImportProject;
 import org.kie.workbench.common.screens.examples.service.ProjectImportService;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.uberfire.client.mvp.UberElement;
@@ -99,8 +100,9 @@ public class ImportRepositoryPopUpPresenter {
                                view.showError(view.getNoProjectsToImportMessage());
                                return false;
                            }).getProjects(new ExampleRepository(repositoryUrl,
-                                                                view.getUserName(),
-                                                                view.getPassword()));
+                                                                new Credentials(
+                                                                        view.getUserName(),
+                                                                        view.getPassword())));
     }
 
     public void cancel() {

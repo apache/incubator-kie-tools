@@ -17,6 +17,19 @@
 
 package org.kie.workbench.common.screens.examples.backend.server;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.guvnor.common.services.project.backend.server.utils.PathUtil;
 import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
 import org.guvnor.common.services.project.events.NewProjectEvent;
@@ -33,6 +46,7 @@ import org.guvnor.structure.server.config.ConfigurationFactory;
 import org.guvnor.structure.server.repositories.RepositoryFactory;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.soup.commons.validation.PortablePreconditions;
+import org.kie.workbench.common.screens.examples.model.Credentials;
 import org.kie.workbench.common.screens.examples.model.ExampleRepository;
 import org.kie.workbench.common.screens.examples.model.ImportProject;
 import org.kie.workbench.common.screens.examples.service.ProjectImportService;
@@ -48,19 +62,6 @@ import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.NoSuchFileException;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 import org.uberfire.java.nio.file.spi.FileSystemProvider;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 import static java.util.stream.Collectors.toList;
 
@@ -110,9 +111,16 @@ public class ProjectImportServiceImpl extends BaseProjectImportService implement
         try {
             String url = repository.getUrl();
             final String alias = getRepositoryAlias(url);
+            Credentials credentials = repository.getCredentials();
+            String username = null;
+            String password = null;
+            if (credentials != null) {
+                username = credentials.getUsername();
+                password = credentials.getPassword();
+            }
             final Map<String, Object> env = this.buildGitEnv(url,
-                                                             repository.getUserName(),
-                                                             repository.getPassword(),
+                                                             username,
+                                                             password,
                                                              true);
 
             final ConfigGroup repositoryConfig = createConfigGroup(alias,
@@ -182,16 +190,28 @@ public class ProjectImportServiceImpl extends BaseProjectImportService implement
         final org.uberfire.java.nio.file.Path rootPath = getProjectRoot(importProject);
         String origin = importProject.getOrigin();
         if (pathUtil.convert(importProject.getRoot()).equals(rootPath)) {
+            String username = null;
+            String password = null;
+            Credentials credentials = importProject.getCredentials();
+            if (credentials != null) {
+                username = credentials.getUsername();
+                password = credentials.getPassword();
+            }
             return importProject(organizationalUnit,
                                  origin,
-                                 null,
-                                 null);
+                                 username,
+                                 password);
         } else {
             final RepositoryEnvironmentConfigurations configurations = new RepositoryEnvironmentConfigurations();
             configurations.setInit(false);
             configurations.setOrigin(origin);
             configurations.setBranches(getBranches(rootPath,
                                                    importProject.getRoot()));
+            Credentials credentials = importProject.getCredentials();
+            if (credentials != null) {
+                configurations.setUserName(credentials.getUsername());
+                configurations.setPassword(credentials.getPassword());
+            }
             configurations.setMirror(false);
             final String subdirectoryPath = pathUtil.stripRepoNameAndSpace(pathUtil.stripProtocolAndBranch(importProject.getRoot().toURI()));
             configurations.setSubdirectory(subdirectoryPath);
@@ -257,14 +277,17 @@ public class ProjectImportServiceImpl extends BaseProjectImportService implement
     }
 
     String inferProjectName(String repositoryURL) {
-        repositoryURL = repositoryURL.replaceAll("\\\\", "/");
+        repositoryURL = repositoryURL.replaceAll("\\\\",
+                                                 "/");
         if (repositoryURL.endsWith(".git")) {
-            repositoryURL = repositoryURL.substring(0, repositoryURL.length() - 4);
+            repositoryURL = repositoryURL.substring(0,
+                                                    repositoryURL.length() - 4);
         }
         if (repositoryURL.endsWith("/")) {
-            repositoryURL = repositoryURL.substring(0, repositoryURL.length() - 1);
+            repositoryURL = repositoryURL.substring(0,
+                                                    repositoryURL.length() - 1);
         }
-        if (repositoryURL.lastIndexOf('/') < 0){
+        if (repositoryURL.lastIndexOf('/') < 0) {
             return "new-project";
         }
         return repositoryURL.substring(repositoryURL.lastIndexOf('/') + 1);

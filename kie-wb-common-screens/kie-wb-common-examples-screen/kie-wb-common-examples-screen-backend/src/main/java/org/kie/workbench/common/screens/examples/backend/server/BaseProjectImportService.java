@@ -38,9 +38,9 @@ import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.impl.git.GitRepository;
 import org.guvnor.structure.server.config.ConfigGroup;
 import org.guvnor.structure.server.config.ConfigurationFactory;
-import org.kie.workbench.common.screens.examples.model.ImportProject;
 import org.kie.workbench.common.screens.examples.model.ExampleProjectError;
 import org.kie.workbench.common.screens.examples.model.ExampleRepository;
+import org.kie.workbench.common.screens.examples.model.ImportProject;
 import org.kie.workbench.common.screens.examples.service.ImportService;
 import org.kie.workbench.common.screens.examples.validation.ImportProjectValidator;
 import org.kie.workbench.common.screens.examples.validation.ImportProjectValidators;
@@ -119,7 +119,8 @@ public abstract class BaseProjectImportService implements ImportService {
                                  module.getModuleName(),
                                  description,
                                  repository.getUrl(),
-                                 tags);
+                                 tags,
+                                 repository.getCredentials());
     }
 
     protected String readDescription(final Module module) {
@@ -159,7 +160,8 @@ public abstract class BaseProjectImportService implements ImportService {
                                              project.getDescription(),
                                              project.getOrigin(),
                                              project.getTags(),
-                                             errors);
+                                             errors,
+                                             project.getCredentials());
                 })
                 .collect(Collectors.toSet());
     }
@@ -186,9 +188,9 @@ public abstract class BaseProjectImportService implements ImportService {
     }
 
     protected Map<String, Object> buildGitEnv(String url,
-                                                  String username,
-                                                  String password,
-                                                  boolean mirror) {
+                                              String username,
+                                              String password,
+                                              boolean mirror) {
         return new HashMap<String, Object>() {{
             put("origin",
                 url);

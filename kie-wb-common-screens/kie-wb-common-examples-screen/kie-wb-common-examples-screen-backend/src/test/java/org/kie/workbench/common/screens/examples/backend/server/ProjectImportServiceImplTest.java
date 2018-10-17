@@ -49,6 +49,7 @@ import org.guvnor.structure.server.repositories.RepositoryFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.screens.examples.model.Credentials;
 import org.kie.workbench.common.screens.examples.model.ExampleRepository;
 import org.kie.workbench.common.screens.examples.model.ImportProject;
 import org.kie.workbench.common.screens.examples.validation.ImportProjectValidators;
@@ -380,6 +381,33 @@ public class ProjectImportServiceImplTest {
 
         assertSame(project,
                    observedProject);
+    }
+
+    @Test
+    public void testProjectImportWithCredentialsTest() {
+
+        String origin = "file:///some/path/to/fake-repo.git";
+        String username = "fakeUser";
+        String password = "fakePassword";
+
+        final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
+        ImportProject importProject = mock(ImportProject.class);
+        Path rootPath = mock(Path.class);
+        org.uberfire.java.nio.file.Path convertedRootPath = mock(org.uberfire.java.nio.file.Path.class);
+        when(pathUtil.convert(any(Path.class))).thenReturn(convertedRootPath);
+        when(importProject.getCredentials()).thenReturn(new Credentials(username,
+                                                                        password));
+        when(importProject.getRoot()).thenReturn(rootPath);
+
+        when(importProject.getOrigin()).thenReturn(origin);
+
+        service.importProject(organizationalUnit,
+                              importProject);
+
+        verify(service).importProject(organizationalUnit,
+                                      origin,
+                                      username,
+                                      password);
     }
 
     @Test
