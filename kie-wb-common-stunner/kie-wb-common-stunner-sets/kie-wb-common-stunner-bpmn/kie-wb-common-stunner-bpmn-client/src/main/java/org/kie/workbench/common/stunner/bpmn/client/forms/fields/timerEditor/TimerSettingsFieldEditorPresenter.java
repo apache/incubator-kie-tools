@@ -16,13 +16,13 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.timerEditor;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
+import org.kie.soup.commons.util.Lists;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.FieldEditorPresenter;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.timer.TimerSettingsValue;
 import org.uberfire.client.mvp.UberElement;
@@ -62,14 +62,10 @@ public class TimerSettingsFieldEditorPresenter
         }
     }
 
-    final static List<Pair<String, String>> timeCycleOptions = new ArrayList<Pair<String, String>>() {
-        {
-            add(new Pair<>(TIME_CYCLE_LANGUAGE.ISO.text(),
-                           TIME_CYCLE_LANGUAGE.ISO.value()));
-            add(new Pair<>(TIME_CYCLE_LANGUAGE.CRON.text(),
-                           TIME_CYCLE_LANGUAGE.CRON.value()));
-        }
-    };
+    final static List<Pair<String, String>> timeCycleOptions = new Lists.Builder<Pair<String, String>>()
+            .add(new Pair<>(TIME_CYCLE_LANGUAGE.ISO.text(), TIME_CYCLE_LANGUAGE.ISO.value()))
+            .add(new Pair<>(TIME_CYCLE_LANGUAGE.CRON.text(), TIME_CYCLE_LANGUAGE.CRON.value()))
+            .build();
 
     public interface View extends UberElement<TimerSettingsFieldEditorPresenter> {
 
@@ -174,8 +170,7 @@ public class TimerSettingsFieldEditorPresenter
 
     protected void onTimerDurationChange() {
         TimerSettingsValue oldValue = value;
-        value = copy(oldValue,
-                     true);
+        value = copy(oldValue);
         value.setTimeDuration(view.getTimeDuration());
         value.setTimeDate(null);
         value.setTimeCycle(null);
@@ -195,8 +190,7 @@ public class TimerSettingsFieldEditorPresenter
 
     protected void onMultipleTimerValuesChange() {
         TimerSettingsValue oldValue = value;
-        value = copy(oldValue,
-                     true);
+        value = copy(oldValue);
         value.setTimeCycleLanguage(view.getTimeCycleLanguage());
         value.setTimeCycle(view.getTimeCycle());
 
@@ -209,8 +203,7 @@ public class TimerSettingsFieldEditorPresenter
 
     protected void onTimeDateChange() {
         TimerSettingsValue oldValue = value;
-        value = copy(oldValue,
-                     true);
+        value = copy(oldValue);
         value.setTimeDate(view.getTimeDate());
 
         value.setTimeDuration(null);
@@ -290,10 +283,9 @@ public class TimerSettingsFieldEditorPresenter
         view.showTimeDateTimePicker(false);
     }
 
-    private TimerSettingsValue copy(TimerSettingsValue source,
-                                    boolean createIfSourceNull) {
+    private TimerSettingsValue copy(TimerSettingsValue source) {
         if (source == null) {
-            return createIfSourceNull ? new TimerSettingsValue() : null;
+            return new TimerSettingsValue();
         }
         TimerSettingsValue copy = new TimerSettingsValue();
         copy.setTimeDuration(source.getTimeDuration());

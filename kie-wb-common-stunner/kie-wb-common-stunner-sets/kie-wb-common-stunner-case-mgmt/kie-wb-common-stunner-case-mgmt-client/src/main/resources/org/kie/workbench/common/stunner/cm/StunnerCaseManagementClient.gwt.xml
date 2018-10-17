@@ -23,6 +23,7 @@
   <inherits name="org.kie.workbench.common.stunner.cm.StunnerCaseManagementApi"/>
   <inherits name="org.kie.workbench.common.stunner.core.StunnerClientCommon"/>
   <inherits name="org.kie.workbench.common.stunner.client.StunnerLienzo"/>
+  <inherits name="org.kie.soup.commons.KIESoupCommons"/>
 
   <source path="client"/>
   <source path="" includes="CaseManagementEntryPoint.java"/>

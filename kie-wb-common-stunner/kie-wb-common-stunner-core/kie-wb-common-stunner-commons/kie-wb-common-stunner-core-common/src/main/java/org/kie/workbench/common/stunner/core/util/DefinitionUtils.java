@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.core.util;
 
 import java.lang.annotation.Annotation;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -25,6 +24,7 @@ import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
@@ -293,16 +293,16 @@ public class DefinitionUtils {
         return definitionManager;
     }
 
-    private static final Map<Class<?>, Class<? extends PropertyType>> DEFAULT_PROPERTY_TYPES = new HashMap<Class<?>, Class<? extends PropertyType>>() {{
-        put(String.class,
-            StringType.class);
-        put(Double.class,
-            DoubleType.class);
-        put(Integer.class,
-            IntegerType.class);
-        put(Boolean.class,
-            BooleanType.class);
-    }};
+    private static final Map<Class<?>, Class<? extends PropertyType>> DEFAULT_PROPERTY_TYPES = new Maps.Builder<Class<?>, Class<? extends PropertyType>>()
+            .put(String.class,
+                 StringType.class)
+            .put(Double.class,
+                 DoubleType.class)
+            .put(Integer.class,
+                 IntegerType.class)
+            .put(Boolean.class,
+                 BooleanType.class)
+            .build();
 
     public static Class<? extends PropertyType> getDefaultPropertyType(final Class<?> clazz) {
         return DEFAULT_PROPERTY_TYPES.get(clazz);

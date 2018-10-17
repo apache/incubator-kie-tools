@@ -17,7 +17,14 @@ package org.kie.workbench.common.stunner.core.util;
 
 public class StringUtils {
 
+    private StringUtils() {
+    }
+
     public static boolean isEmpty(final String s) {
         return null == s || s.trim().length() == 0;
+    }
+
+    public static boolean nonEmpty(final String s) {
+        return !isEmpty(s);
     }
 }

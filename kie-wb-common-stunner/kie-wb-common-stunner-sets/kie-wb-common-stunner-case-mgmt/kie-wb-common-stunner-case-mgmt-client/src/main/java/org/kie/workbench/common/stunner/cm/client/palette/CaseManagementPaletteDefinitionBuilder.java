@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.stunner.cm.client.palette;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -26,6 +25,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.stunner.bpmn.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
 import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
@@ -60,40 +60,40 @@ public class CaseManagementPaletteDefinitionBuilder
     public static final String STAGES = "Stages";
     public static final String ACTIVITIES = "Activities";
 
-    private static final Map<String, String> CAT_TITLES = new HashMap<String, String>(2) {{
-        put(STAGES,
-            STAGES);
-        put(ACTIVITIES,
-            ACTIVITIES);
-    }};
+    private static final Map<String, String> CAT_TITLES = new Maps.Builder<String, String>()
+            .put(STAGES,
+                 STAGES)
+            .put(ACTIVITIES,
+                 ACTIVITIES)
+            .build();
 
-    private static final Map<String, Class<?>> CAT_DEFAULTS = new HashMap<String, Class<?>>(2) {{
-        put(STAGES,
-            AdHocSubprocess.class);
-        put(ACTIVITIES,
-            BusinessRuleTask.class);
-    }};
+    private static final Map<String, Class<?>> CAT_DEFAULTS = new Maps.Builder<String, Class<?>>()
+            .put(STAGES,
+                 AdHocSubprocess.class)
+            .put(ACTIVITIES,
+                 BusinessRuleTask.class)
+            .build();
 
     @SuppressWarnings("unchecked")
-    private final static Map<String, Glyph> CATEGORY_GLYPHS = new HashMap<String, Glyph>(2) {{
-        put(STAGES,
-            BS3IconTypeGlyph.create(IconType.STAR));
-        put(ACTIVITIES,
-            BS3IconTypeGlyph.create(IconType.TASKS));
-    }};
+    private final static Map<String, Glyph> CATEGORY_GLYPHS = new Maps.Builder<String, Glyph>()
+            .put(STAGES,
+                 BS3IconTypeGlyph.create(IconType.STAR))
+            .put(ACTIVITIES,
+                 BS3IconTypeGlyph.create(IconType.TASKS))
+            .build();
 
-    private static final Map<String, String> DEFINITION_CATEGORY_MAPPINGS = new HashMap<String, String>(5) {{
-        put(AdHocSubprocess.class.getName(),
-            STAGES);
-        put(UserTask.class.getName(),
-            ACTIVITIES);
-        put(ScriptTask.class.getName(),
-            ACTIVITIES);
-        put(BusinessRuleTask.class.getName(),
-            ACTIVITIES);
-        put(ReusableSubprocess.class.getName(),
-            ACTIVITIES);
-    }};
+    private static final Map<String, String> DEFINITION_CATEGORY_MAPPINGS = new Maps.Builder<String, String>()
+            .put(AdHocSubprocess.class.getName(),
+                 STAGES)
+            .put(UserTask.class.getName(),
+                 ACTIVITIES)
+            .put(ScriptTask.class.getName(),
+                 ACTIVITIES)
+            .put(BusinessRuleTask.class.getName(),
+                 ACTIVITIES)
+            .put(ReusableSubprocess.class.getName(),
+                 ACTIVITIES)
+            .build();
 
     private final ExpandedPaletteDefinitionBuilder paletteDefinitionBuilder;
     private final DefinitionManager definitionManager;

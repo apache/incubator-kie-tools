@@ -16,10 +16,10 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.shape.def;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNGlyphFactory;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.AdHocSubprocess;
@@ -47,13 +47,13 @@ public class SubprocessShapeDef extends BaseDimensionedShapeDef
                     .put(MultipleInstanceSubprocess.class, BPMNSVGViewFactory::multipleInstanceSubProcess);
 
     public static final Map<Class<? extends BaseSubprocess>, Glyph> GLYPHS =
-            new HashMap<Class<? extends BaseSubprocess>, Glyph>() {{
-                put(ReusableSubprocess.class, BPMNGlyphFactory.SUBPROCESS_RESUABLE);
-                put(EmbeddedSubprocess.class, BPMNGlyphFactory.SUBPROCESS_EMBEDDED);
-                put(EventSubprocess.class, BPMNGlyphFactory.SUBPROCESS_EVENT);
-                put(AdHocSubprocess.class, BPMNGlyphFactory.SUBPROCESS_ADHOC);
-                put(MultipleInstanceSubprocess.class, BPMNGlyphFactory.SUBPROCESS_MULTIPLE_INSTANCE);
-            }};
+            new Maps.Builder<Class<? extends BaseSubprocess>, Glyph>()
+                    .put(ReusableSubprocess.class, BPMNGlyphFactory.SUBPROCESS_RESUABLE)
+                    .put(EmbeddedSubprocess.class, BPMNGlyphFactory.SUBPROCESS_EMBEDDED)
+                    .put(EventSubprocess.class, BPMNGlyphFactory.SUBPROCESS_EVENT)
+                    .put(AdHocSubprocess.class, BPMNGlyphFactory.SUBPROCESS_ADHOC)
+                    .put(MultipleInstanceSubprocess.class, BPMNGlyphFactory.SUBPROCESS_MULTIPLE_INSTANCE)
+                    .build();
 
     private static HasTitle.Position getSubprocessTextPosition(final BaseSubprocess bean) {
         if ((bean instanceof EmbeddedSubprocess) || (bean instanceof MultipleInstanceSubprocess) || (bean instanceof EventSubprocess) || (bean instanceof AdHocSubprocess)) {

@@ -18,12 +18,13 @@ package org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.kie.soup.commons.util.Maps;
+import org.kie.soup.commons.util.Sets;
 import org.kie.workbench.common.stunner.bpmn.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
@@ -152,110 +153,62 @@ public abstract class BaseOryxIdMappings implements OryxIdMappings {
 
     @Override
     public Map<Class<?>, String> getGlobalMappings() {
-        final Map<Class<?>, String> globalMappings = new HashMap<Class<?>, String>() {{
-            put(getDiagramType(),
-                "BPMNDiagram");
-            // Add here global class <-> oryxId mappings, if any.
-            put(Name.class,
-                "name");
-            put(TaskType.class,
-                "tasktype");
-            put(NoneTask.class,
-                "Task");
-            put(UserTask.class,
-                "Task");
-            put(ScriptTask.class,
-                "Task");
-            put(BusinessRuleTask.class,
-                "Task");
-            put(RuleFlowGroup.class,
-                "ruleflowgroup");
-            put(CalledElement.class,
-                "calledelement");
-            put(ConditionExpression.class,
-                "conditionexpression");
-            put(Priority.class,
-                "priority");
-            put(ExclusiveGateway.class,
-                "Exclusive_Databased_Gateway");
-            put(TimerSettings.class,
-                "timersettings");
-            put(EmbeddedSubprocess.class,
-                "Subprocess");
-            put(AdHocSubprocess.class,
-                "AdHocSubprocess");
-            put(AdHoc.class,
-                "adhocprocess");
-            put(ProcessInstanceDescription.class,
-                "customdescription");
-            put(WaitForCompletion.class,
-                "waitforcompletion");
-            put(IsAsync.class,
-                "isasync");
-            put(Skippable.class,
-                "skippable");
-            put(Subject.class,
-                "subject");
-            put(Description.class,
-                "description");
-            put(CreatedBy.class,
-                "createdby");
-            put(AdHocAutostart.class,
-                "customautostart");
-            put(OnEntryAction.class,
-                "onentryactions");
-            put(OnExitAction.class,
-                "onexitactions");
-            put(IsInterrupting.class,
-                "isinterrupting");
-            put(SignalRef.class,
-                "signalref");
-            put(MessageRef.class,
-                "messageref");
-            put(EscalationRef.class,
-                "escalationcode");
-            put(CancelActivity.class,
-                "boundarycancelactivity");
-            put(SignalScope.class,
-                "signalscope");
-            put(ErrorRef.class,
-                "errorref");
-            put(IntermediateErrorEventCatching.class,
-                "IntermediateErrorEvent");
-            put(AdHocOrdering.class,
-                "adhocordering");
-            put(AdHocCompletionCondition.class,
-                "adhoccompletioncondition");
 
-            put(MITrigger.class,
-                "mitrigger");
+        return new Maps.Builder<Class<?>, String>()
+                .put(getDiagramType(), "BPMNDiagram")
+                // Add here global class <-> oryxId mappings, if any.
+                .put(Name.class, "name")
+                .put(TaskType.class, "tasktype")
+                .put(NoneTask.class, "Task")
+                .put(UserTask.class, "Task")
+                .put(ScriptTask.class, "Task")
+                .put(BusinessRuleTask.class, "Task")
+                .put(RuleFlowGroup.class, "ruleflowgroup")
+                .put(CalledElement.class, "calledelement")
+                .put(ConditionExpression.class, "conditionexpression")
+                .put(Priority.class, "priority")
+                .put(ExclusiveGateway.class, "Exclusive_Databased_Gateway")
+                .put(TimerSettings.class, "timersettings")
+                .put(EmbeddedSubprocess.class, "Subprocess")
+                .put(AdHocSubprocess.class, "AdHocSubprocess")
+                .put(AdHoc.class, "adhocprocess")
+                .put(ProcessInstanceDescription.class, "customdescription")
+                .put(WaitForCompletion.class, "waitforcompletion")
+                .put(IsAsync.class, "isasync")
+                .put(Skippable.class, "skippable")
+                .put(Subject.class, "subject")
+                .put(Description.class, "description")
+                .put(CreatedBy.class, "createdby")
+                .put(AdHocAutostart.class, "customautostart")
+                .put(OnEntryAction.class, "onentryactions")
+                .put(OnExitAction.class, "onexitactions")
+                .put(IsInterrupting.class, "isinterrupting")
+                .put(SignalRef.class, "signalref")
+                .put(MessageRef.class, "messageref")
+                .put(EscalationRef.class, "escalationcode")
+                .put(CancelActivity.class, "boundarycancelactivity")
+                .put(SignalScope.class, "signalscope")
+                .put(ErrorRef.class, "errorref")
+                .put(IntermediateErrorEventCatching.class, "IntermediateErrorEvent")
+                .put(AdHocOrdering.class, "adhocordering")
+                .put(AdHocCompletionCondition.class, "adhoccompletioncondition")
 
-            put(MultipleInstanceCollectionInput.class,
-                "multipleinstancecollectioninput");
-            put(MultipleInstanceCollectionOutput.class,
-                "multipleinstancecollectionoutput");
-            put(MultipleInstanceDataInput.class,
-                "multipleinstancedatainput");
-            put(MultipleInstanceDataOutput.class,
-                "multipleinstancedataoutput");
+                .put(MITrigger.class, "mitrigger")
 
-            put(MultipleInstanceCompletionCondition.class,
-                "multipleinstancecompletioncondition");
+                .put(MultipleInstanceCollectionInput.class, "multipleinstancecollectioninput")
+                .put(MultipleInstanceCollectionOutput.class, "multipleinstancecollectionoutput")
+                .put(MultipleInstanceDataInput.class, "multipleinstancedatainput")
+                .put(MultipleInstanceDataOutput.class, "multipleinstancedataoutput")
 
-            // Simulation properties
-            put(TimeUnit.class,
-                "timeunit");
-            put(StandardDeviation.class,
-                "standarddeviation");
-            put(DistributionType.class,
-                "distributiontype");
-            put(WorkingHours.class,
-                "workinghours");
-            put(UnitCost.class,
-                "unitcost");
-        }};
+                .put(MultipleInstanceCompletionCondition.class, "multipleinstancecompletioncondition")
 
-        return globalMappings;
+                // Simulation properties
+                .put(TimeUnit.class, "timeunit")
+                .put(StandardDeviation.class, "standarddeviation")
+                .put(DistributionType.class, "distributiontype")
+                .put(WorkingHours.class, "workinghours")
+                .put(UnitCost.class, "unitcost")
+                .build();
     }
 
     @Override
@@ -266,215 +219,122 @@ public abstract class BaseOryxIdMappings implements OryxIdMappings {
 
     @Override
     public Map<Class<?>, Set<String>> getSkippedProperties() {
-        final Map<Class<?>, Set<String>> skippedProperties = new HashMap<Class<?>, Set<String>>() {{
-            // Add here global class <-> collection oryx property identifiers to skip processing, if any.
-            put(getDiagramType(),
-                new HashSet<String>() {{
-                    add("name");
-                }});
-        }};
-
-        return skippedProperties;
+        return new Maps.Builder<Class<?>, Set<String>>()
+                // Add here global class <-> collection oryx property identifiers to skip processing, if any.
+                .put(getDiagramType(), new Sets.Builder<String>()
+                        .add("name").build()
+                ).build();
     }
 
     @Override
     public Map<Class<?>, Map<Class<?>, String>> getDefinitionMappings() {
-        final Map<Class<?>, Map<Class<?>, String>> definitionMappings = new HashMap<Class<?>, Map<Class<?>, String>>() {{
-            // Add here class <-> oryxId mappings just for a concrete definition (stencil), if any.
-            Map<Class<?>, String> diagramPropertiesMap = new HashMap<Class<?>, String>();
-            put(getDiagramType(),
-                diagramPropertiesMap);
-            // The name property in the diagram stencil is "processn".
-            diagramPropertiesMap.put(Name.class,
-                                     "processn");
-            // The process variables property in the diagram stencil is "vardefs".
-            diagramPropertiesMap.put(ProcessVariables.class,
-                                     "vardefs");
+        return new Maps.Builder<Class<?>, Map<Class<?>, String>>()
 
-            Map<Class<?>, String> userTaskPropertiesMap = new HashMap<Class<?>, String>();
-            put(UserTask.class,
-                userTaskPropertiesMap);
-            userTaskPropertiesMap.put(AssignmentsInfo.class,
-                                      "assignmentsinfo");
-            userTaskPropertiesMap.put(TaskName.class,
-                                      "taskname");
+                // Add here class <-> oryxId mappings just for a concrete definition (stencil), if any.
+                .put(getDiagramType(), new Maps.Builder<Class<?>, String>()
+                        // The name property in the diagram stencil is "processn".
+                        .put(Name.class, "processn")
+                        // The process variables property in the diagram stencil is "vardefs".
+                        .put(ProcessVariables.class, "vardefs").build())
 
-            Map<Class<?>, String> businesRuleTaskPropertiesMap = new HashMap<Class<?>, String>();
-            put(BusinessRuleTask.class,
-                businesRuleTaskPropertiesMap);
-            businesRuleTaskPropertiesMap.put(AssignmentsInfo.class,
-                                             "assignmentsinfo");
+                .put(UserTask.class, new Maps.Builder<Class<?>, String>()
+                        .put(AssignmentsInfo.class, "assignmentsinfo")
+                        .put(TaskName.class, "taskname").build())
 
-            Map<Class<?>, String> serviceTaskPropertiesMap = new HashMap<Class<?>, String>();
-            put(ServiceTask.class,
-                serviceTaskPropertiesMap);
-            serviceTaskPropertiesMap.put(AssignmentsInfo.class,
-                                         "assignmentsinfo");
-            serviceTaskPropertiesMap.put(TaskName.class,
-                                         "taskname");
+                .put(BusinessRuleTask.class, new Maps.Builder<Class<?>, String>()
+                        .put(AssignmentsInfo.class, "assignmentsinfo").build())
 
-            Map<Class<?>, String> startNoneEventPropertiesMap = new HashMap<Class<?>, String>();
-            put(StartNoneEvent.class,
-                startNoneEventPropertiesMap);
-            startNoneEventPropertiesMap.put(AssignmentsInfo.class,
-                                            "assignmentsinfo");
+                .put(ServiceTask.class, new Maps.Builder<Class<?>, String>()
+                        .put(AssignmentsInfo.class, "assignmentsinfo")
+                        .put(TaskName.class, "taskname").build())
 
-            Map<Class<?>, String> endSignalEventPropertiesMap = new HashMap<Class<?>, String>();
-            put(EndSignalEvent.class,
-                endSignalEventPropertiesMap);
-            endSignalEventPropertiesMap.put(AssignmentsInfo.class,
-                                            "assignmentsinfo");
+                .put(StartNoneEvent.class, new Maps.Builder<Class<?>, String>()
+                        .put(AssignmentsInfo.class, "assignmentsinfo").build())
 
-            Map<Class<?>, String> startSignalEventPropertiesMap = new HashMap<Class<?>, String>();
-            put(StartSignalEvent.class,
-                startSignalEventPropertiesMap);
-            startSignalEventPropertiesMap.put(AssignmentsInfo.class,
-                                              "assignmentsinfo");
+                .put(EndSignalEvent.class, new Maps.Builder<Class<?>, String>()
+                        .put(AssignmentsInfo.class, "assignmentsinfo").build())
 
-            Map<Class<?>, String> startTimerEventPropertiesMap = new HashMap<Class<?>, String>();
-            put(StartTimerEvent.class,
-                startTimerEventPropertiesMap);
-            startTimerEventPropertiesMap.put(AssignmentsInfo.class,
-                                             "assignmentsinfo");
+                .put(StartSignalEvent.class, new Maps.Builder<Class<?>, String>()
+                        .put(AssignmentsInfo.class, "assignmentsinfo").build())
 
-            Map<Class<?>, String> startMessageEventPropertiesMap = new HashMap<Class<?>, String>();
-            put(StartMessageEvent.class,
-                startMessageEventPropertiesMap);
-            startMessageEventPropertiesMap.put(AssignmentsInfo.class,
-                                               "assignmentsinfo");
+                .put(StartTimerEvent.class, new Maps.Builder<Class<?>, String>()
+                        .put(AssignmentsInfo.class, "assignmentsinfo").build())
 
-            Map<Class<?>, String> startErrorEventPropertiesMap = new HashMap<Class<?>, String>();
-            put(StartErrorEvent.class,
-                startErrorEventPropertiesMap);
-            startErrorEventPropertiesMap.put(AssignmentsInfo.class,
-                                             "assignmentsinfo");
+                .put(StartMessageEvent.class, new Maps.Builder<Class<?>, String>()
+                        .put(AssignmentsInfo.class, "assignmentsinfo").build())
 
-            Map<Class<?>, String> startConditionalEventPropertiesMap = new HashMap<Class<?>, String>();
-            put(StartConditionalEvent.class,
-                startConditionalEventPropertiesMap);
+                .put(StartErrorEvent.class, new Maps.Builder<Class<?>, String>()
+                        .put(AssignmentsInfo.class, "assignmentsinfo").build())
 
-            Map<Class<?>, String> startEscalationEventPropertiesMap = new HashMap<Class<?>, String>();
-            put(StartEscalationEvent.class,
-                startEscalationEventPropertiesMap);
-            startEscalationEventPropertiesMap.put(AssignmentsInfo.class,
-                                             "assignmentsinfo");
+                .put(StartConditionalEvent.class, new Maps.Builder<Class<?>, String>()
+                        .build())
 
-            Map<Class<?>, String> intermediateTimerEventPropertiesMap = new HashMap<Class<?>, String>();
-            put(IntermediateTimerEvent.class,
-                intermediateTimerEventPropertiesMap);
-            intermediateTimerEventPropertiesMap.put(AssignmentsInfo.class,
-                                                    "assignmentsinfo");
+                .put(StartEscalationEvent.class, new Maps.Builder<Class<?>, String>()
+                        .put(AssignmentsInfo.class, "assignmentsinfo").build())
 
-            Map<Class<?>, String> intermediateConditionalEventPropertiesMap = new HashMap<Class<?>, String>();
-            put(IntermediateConditionalEvent.class,
-                intermediateConditionalEventPropertiesMap);
+                .put(IntermediateTimerEvent.class, new Maps.Builder<Class<?>, String>()
+                        .put(AssignmentsInfo.class, "assignmentsinfo").build())
 
-            Map<Class<?>, String> intermediateSignalEventCatchingPropertiesMap = new HashMap<Class<?>, String>();
-            put(IntermediateSignalEventCatching.class,
-                intermediateSignalEventCatchingPropertiesMap);
-            intermediateSignalEventCatchingPropertiesMap.put(AssignmentsInfo.class,
-                                                             "assignmentsinfo");
+                .put(IntermediateConditionalEvent.class, new Maps.Builder<Class<?>, String>()
+                        .build())
 
-            Map<Class<?>, String> intermediateErrorEventCatchingPropertiesMap = new HashMap<Class<?>, String>();
-            put(IntermediateErrorEventCatching.class,
-                intermediateErrorEventCatchingPropertiesMap);
-            intermediateErrorEventCatchingPropertiesMap.put(AssignmentsInfo.class,
-                                                            "assignmentsinfo");
-            Map<Class<?>, String> intermediateMessageEventCatchingPropertiesMap = new HashMap<Class<?>, String>();
-            put(IntermediateMessageEventCatching.class,
-                intermediateMessageEventCatchingPropertiesMap);
-            intermediateMessageEventCatchingPropertiesMap.put(AssignmentsInfo.class,
-                                                              "assignmentsinfo");
+                .put(IntermediateSignalEventCatching.class, new Maps.Builder<Class<?>, String>()
+                        .put(AssignmentsInfo.class, "assignmentsinfo").build())
 
-            Map<Class<?>, String> intermediateEscalationEventCatchingPropertiesMap = new HashMap<Class<?>, String>();
-            put(IntermediateEscalationEvent.class,
-                intermediateEscalationEventCatchingPropertiesMap);
-            intermediateEscalationEventCatchingPropertiesMap.put(AssignmentsInfo.class,
-                                                              "assignmentsinfo");
+                .put(IntermediateErrorEventCatching.class, new Maps.Builder<Class<?>, String>()
+                        .put(AssignmentsInfo.class, "assignmentsinfo").build())
 
-            Map<Class<?>, String> intermediateSignalEventThrowingPropertiesMap = new HashMap<Class<?>, String>();
-            put(IntermediateSignalEventThrowing.class,
-                intermediateSignalEventThrowingPropertiesMap);
-            intermediateSignalEventThrowingPropertiesMap.put(AssignmentsInfo.class,
-                                                             "assignmentsinfo");
+                .put(IntermediateMessageEventCatching.class, new Maps.Builder<Class<?>, String>()
+                        .put(AssignmentsInfo.class, "assignmentsinfo").build())
 
-            Map<Class<?>, String> intermediateMessageEventThrowingPropertiesMap = new HashMap<Class<?>, String>();
-            put(IntermediateMessageEventThrowing.class,
-                intermediateMessageEventThrowingPropertiesMap);
-            intermediateMessageEventThrowingPropertiesMap.put(AssignmentsInfo.class,
-                                                              "assignmentsinfo");
+                .put(IntermediateEscalationEvent.class, new Maps.Builder<Class<?>, String>()
+                        .put(AssignmentsInfo.class, "assignmentsinfo").build())
 
-            Map<Class<?>, String> intermediateEscalationEventThrowingPropertiesMap = new HashMap<Class<?>, String>();
-            put(IntermediateEscalationEventThrowing.class,
-                intermediateEscalationEventThrowingPropertiesMap);
-            intermediateEscalationEventThrowingPropertiesMap.put(AssignmentsInfo.class,
-                                                                 "assignmentsinfo");
+                .put(IntermediateSignalEventThrowing.class, new Maps.Builder<Class<?>, String>()
+                        .put(AssignmentsInfo.class, "assignmentsinfo").build())
 
-            Map<Class<?>, String> endEventPropertiesMap = new HashMap<Class<?>, String>();
-            put(EndNoneEvent.class,
-                endEventPropertiesMap);
-            put(EndTerminateEvent.class,
-                endEventPropertiesMap);
-            put(EndErrorEvent.class,
-                endEventPropertiesMap);
-            endEventPropertiesMap.put(AssignmentsInfo.class,
-                                      "assignmentsinfo");
+                .put(IntermediateMessageEventThrowing.class, new Maps.Builder<Class<?>, String>()
+                        .put(AssignmentsInfo.class, "assignmentsinfo").build())
 
-            Map<Class<?>, String> endMessageEventPropertiesMap = new HashMap<Class<?>, String>();
-            put(EndMessageEvent.class,
-                endMessageEventPropertiesMap);
-            endMessageEventPropertiesMap.put(AssignmentsInfo.class,
-                                             "assignmentsinfo");
+                .put(IntermediateEscalationEventThrowing.class, new Maps.Builder<Class<?>, String>()
+                        .put(AssignmentsInfo.class, "assignmentsinfo").build())
 
-            Map<Class<?>, String> endEscalationEventPropertiesMap = new HashMap<Class<?>, String>();
-            put(EndEscalationEvent.class,
-                endEscalationEventPropertiesMap);
-            endEscalationEventPropertiesMap.put(AssignmentsInfo.class,
-                                                "assignmentsinfo");
+                .put(EndNoneEvent.class, new Maps.Builder<Class<?>, String>()
+                        .put(AssignmentsInfo.class, "assignmentsinfo").build())
 
-            Map<Class<?>, String> reusableSubprocessPropertiesMap = new HashMap<Class<?>, String>();
-            put(ReusableSubprocess.class,
-                reusableSubprocessPropertiesMap);
-            reusableSubprocessPropertiesMap.put(AssignmentsInfo.class,
-                                                "assignmentsinfo");
+                .put(EndTerminateEvent.class, new Maps.Builder<Class<?>, String>()
+                        .put(AssignmentsInfo.class, "assignmentsinfo").build())
 
-            Map<Class<?>, String> embeddedSubprocessPropertiesMap = new HashMap<Class<?>, String>();
-            put(EmbeddedSubprocess.class,
-                embeddedSubprocessPropertiesMap);
-            embeddedSubprocessPropertiesMap.put(ProcessVariables.class,
-                                                "vardefs");
+                .put(EndErrorEvent.class, new Maps.Builder<Class<?>, String>()
+                        .put(AssignmentsInfo.class, "assignmentsinfo").build())
 
-            Map<Class<?>, String> eventSubprocessPropertiesMap = new HashMap<Class<?>, String>();
-            put(EventSubprocess.class,
-                eventSubprocessPropertiesMap);
-            eventSubprocessPropertiesMap.put(ProcessVariables.class,
-                                             "vardefs");
+                .put(EndMessageEvent.class, new Maps.Builder<Class<?>, String>()
+                        .put(AssignmentsInfo.class, "assignmentsinfo").build())
 
-            Map<Class<?>, String> adHocSubprocessPropertiesMap = new HashMap<>();
-            put(AdHocSubprocess.class,
-                adHocSubprocessPropertiesMap);
-            adHocSubprocessPropertiesMap.put(ProcessVariables.class,
-                                             "vardefs");
+                .put(EndEscalationEvent.class, new Maps.Builder<Class<?>, String>()
+                        .put(AssignmentsInfo.class, "assignmentsinfo").build())
 
-            Map<Class<?>, String> exclusiveGatewayPropertiesMap = new HashMap<Class<?>, String>();
-            put(ExclusiveGateway.class,
-                exclusiveGatewayPropertiesMap);
-            exclusiveGatewayPropertiesMap.put(DefaultRoute.class,
-                                              "defaultgate");
+                .put(ReusableSubprocess.class, new Maps.Builder<Class<?>, String>()
+                        .put(AssignmentsInfo.class, "assignmentsinfo").build())
 
-            Map<Class<?>, String> inclusiveGatewayPropertiesMap = new HashMap<>();
-            put(InclusiveGateway.class,
-                inclusiveGatewayPropertiesMap);
-            inclusiveGatewayPropertiesMap.put(DefaultRoute.class,
-                                              "defaultgate");
-            Map<Class<?>, String> multipleInstanceSubprocessPropertiesMap = new HashMap<Class<?>, String>();
-            put(MultipleInstanceSubprocess.class,
-                multipleInstanceSubprocessPropertiesMap);
-            multipleInstanceSubprocessPropertiesMap.put(ProcessVariables.class,
-                                                        "vardefs");
-        }};
+                .put(EmbeddedSubprocess.class, new Maps.Builder<Class<?>, String>()
+                        .put(ProcessVariables.class, "vardefs").build())
 
-        return definitionMappings;
+                .put(EventSubprocess.class, new Maps.Builder<Class<?>, String>()
+                        .put(ProcessVariables.class, "vardefs").build())
+
+                .put(AdHocSubprocess.class, new Maps.Builder<Class<?>, String>()
+                        .put(ProcessVariables.class, "vardefs").build())
+
+                .put(ExclusiveGateway.class, new Maps.Builder<Class<?>, String>()
+                        .put(DefaultRoute.class, "defaultgate").build())
+
+                .put(InclusiveGateway.class, new Maps.Builder<Class<?>, String>()
+                        .put(DefaultRoute.class, "defaultgate").build())
+
+                .put(MultipleInstanceSubprocess.class, new Maps.Builder<Class<?>, String>()
+                        .put(ProcessVariables.class, "vardefs").build())
+                .build();
     }
 
     @Override
@@ -539,8 +399,7 @@ public abstract class BaseOryxIdMappings implements OryxIdMappings {
 
     @Override
     public Class<?> getDefinition(final String oryxId) {
-        return get(oryxId,
-                   defMappings);
+        return getKey(oryxId, defMappings);
     }
 
     @Override
@@ -549,8 +408,7 @@ public abstract class BaseOryxIdMappings implements OryxIdMappings {
         Class<?> definitionClass = definition.getClass();
         Map<Class<?>, String> mappings = definitionMappings.get(definitionClass);
         if (null != mappings) {
-            Class<?> p = get(oryxId,
-                             mappings);
+            Class<?> p = getKey(oryxId, mappings);
             if (null != p) {
                 return getPropertyId(p);
             }
@@ -574,16 +432,6 @@ public abstract class BaseOryxIdMappings implements OryxIdMappings {
     @Override
     public String getDefinitionId(final Class<?> clazz) {
         return BindableAdapterUtils.getDefinitionId(clazz);
-    }
-
-    private Class<?> get(final String oryxId,
-                         final Map<Class<?>, String> map) {
-        Class<?> r = getKey(oryxId,
-                            map);
-        if (null != r) {
-            return r;
-        }
-        return null;
     }
 
     private Class<?> getKey(final String value,

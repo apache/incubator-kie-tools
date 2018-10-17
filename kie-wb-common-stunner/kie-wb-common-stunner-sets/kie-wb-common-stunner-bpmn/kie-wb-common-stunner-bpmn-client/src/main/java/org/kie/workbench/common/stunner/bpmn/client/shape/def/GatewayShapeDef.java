@@ -16,9 +16,9 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.shape.def;
 
-import java.util.HashMap;
 import java.util.Map;
 
+import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNGlyphFactory;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseGateway;
@@ -43,14 +43,14 @@ public class GatewayShapeDef
                          BPMNSVGViewFactory::inclusiveGateway);
 
     public static final Map<Class<? extends BaseGateway>, Glyph> GLYPHS =
-            new HashMap<Class<? extends BaseGateway>, Glyph>() {{
-                put(ParallelGateway.class,
-                    BPMNGlyphFactory.GATEWAY_PARALLEL_MULTIPLE);
-                put(ExclusiveGateway.class,
-                    BPMNGlyphFactory.GATEWAY_EXCLUSIVE);
-                put(InclusiveGateway.class,
-                    BPMNGlyphFactory.GATEWAY_INCLUSIVE);
-            }};
+            new Maps.Builder<Class<? extends BaseGateway>, Glyph>()
+                    .put(ParallelGateway.class,
+                         BPMNGlyphFactory.GATEWAY_PARALLEL_MULTIPLE)
+                    .put(ExclusiveGateway.class,
+                         BPMNGlyphFactory.GATEWAY_EXCLUSIVE)
+                    .put(InclusiveGateway.class,
+                         BPMNGlyphFactory.GATEWAY_INCLUSIVE)
+                    .build();
 
     @Override
     public SizeHandler<BaseGateway, SVGShapeView> newSizeHandler() {

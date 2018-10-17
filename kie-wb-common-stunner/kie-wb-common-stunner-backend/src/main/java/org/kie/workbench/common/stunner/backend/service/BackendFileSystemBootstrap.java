@@ -19,13 +19,13 @@ package org.kie.workbench.common.stunner.backend.service;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.net.URI;
-import java.util.HashMap;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.stunner.core.backend.service.BackendFileSystemManager;
 import org.uberfire.commons.services.cdi.Startup;
 import org.uberfire.commons.services.cdi.StartupType;
@@ -98,12 +98,10 @@ public class BackendFileSystemBootstrap {
     private void initFileSystem() {
         try {
             fileSystem = ioService.newFileSystem(URI.create(VFS_ROOT_PATH),
-                                                 new HashMap<String, Object>() {{
-                                                     put("init",
-                                                         Boolean.TRUE);
-                                                     put("internal",
-                                                         Boolean.TRUE);
-                                                 }});
+                                                 new Maps.Builder<String, Object>()
+                                                         .put("init", Boolean.TRUE)
+                                                         .put("internal", Boolean.TRUE)
+                                                         .build());
         } catch (FileSystemAlreadyExistsException e) {
             fileSystem = ioService.getFileSystem(URI.create(VFS_ROOT_PATH));
         }

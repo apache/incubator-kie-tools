@@ -16,13 +16,13 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.dataproviders;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
 import javax.inject.Inject;
 
+import org.kie.soup.commons.util.Sets;
 import org.kie.workbench.common.forms.dynamic.model.config.SelectorData;
 import org.kie.workbench.common.forms.dynamic.model.config.SelectorDataProvider;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
@@ -55,13 +55,14 @@ public class RuleFlowGroupFormProvider implements SelectorDataProvider {
 
         List<RefactoringPageRow> results = queryService.query(
                 FindRuleFlowNamesQuery.NAME,
-                new HashSet<ValueIndexTerm>() {{
-                    add(new ValueSharedPartIndexTerm("*",
-                                                     PartType.RULEFLOW_GROUP,
-                                                     ValueIndexTerm.TermSearchType.WILDCARD));
-                }});
+                new Sets.Builder<ValueIndexTerm>()
+                        .add(new ValueSharedPartIndexTerm("*",
+                                                          PartType.RULEFLOW_GROUP,
+                                                          ValueIndexTerm.TermSearchType.WILDCARD))
 
-        Map<Object, String> ruleFlowGroupNames = new TreeMap<Object, String>();
+                        .build());
+
+        Map<Object, String> ruleFlowGroupNames = new TreeMap<>();
 
         for (RefactoringPageRow row : results) {
             ruleFlowGroupNames.put(((Map<String, String>) row.getValue()).get("name"),

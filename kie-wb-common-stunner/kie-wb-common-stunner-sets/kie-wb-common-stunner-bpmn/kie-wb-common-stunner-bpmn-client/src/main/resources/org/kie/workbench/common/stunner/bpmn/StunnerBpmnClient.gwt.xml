@@ -28,6 +28,7 @@
   <inherits name="org.kie.workbench.common.stunner.svg.StunnerSvgClient"/>
   <inherits name="org.kie.workbench.common.stunner.forms.StunnerFormsClient"/>
   <inherits name="org.kie.workbench.common.stunner.client.StunnerWidgets"/>
+  <inherits name="org.kie.soup.commons.KIESoupCommons"/>
 
   <source path="client"/>
   <source path="" includes="StunnerBPMNEntryPoint.java"/>

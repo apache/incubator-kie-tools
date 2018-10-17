@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.stunner.bpmn.definition;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.validation.Valid;
@@ -24,6 +23,7 @@ import javax.validation.Valid;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
+import org.kie.soup.commons.util.Sets;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
@@ -73,13 +73,13 @@ public class Lane implements BPMNViewDefinition {
     protected RectangleDimensionsSet dimensionsSet;
 
     @Labels
-    private final Set<String> labels = new HashSet<String>() {{
-        add("all");
-        add("PoolChild");
-        add("fromtoall");
-        add("canContainArtifacts");
-        add("cm_nop");
-    }};
+    private final Set<String> labels = new Sets.Builder<String>()
+            .add("all")
+            .add("PoolChild")
+            .add("fromtoall")
+            .add("canContainArtifacts")
+            .add("cm_nop")
+            .build();
 
     public Lane() {
         this(new BPMNGeneralSet("Lane"),

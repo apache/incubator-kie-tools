@@ -16,11 +16,11 @@
 
 package org.kie.workbench.common.stunner.bpmn.definition.property.task;
 
-import java.util.ArrayList;
 import java.util.Objects;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
+import org.kie.soup.commons.util.Lists;
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldValue;
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.I18nMode;
@@ -54,13 +54,13 @@ public class TaskType implements BPMNProperty {
     public static final PropertyType type = new TaskPropertyType();
 
     @AllowedValues
-    public static final Iterable<TaskTypes> allowedValues = new ArrayList<TaskTypes>(5) {{
-        add(TaskTypes.NONE);
-        add(TaskTypes.USER);
-        add(TaskTypes.SCRIPT);
-        add(TaskTypes.BUSINESS_RULE);
-        add(TaskTypes.SERVICE_TASK);
-    }};
+    public static final Iterable<TaskTypes> allowedValues = new Lists.Builder<TaskTypes>()
+            .add(TaskTypes.NONE)
+            .add(TaskTypes.USER)
+            .add(TaskTypes.SCRIPT)
+            .add(TaskTypes.BUSINESS_RULE)
+            .add(TaskTypes.SERVICE_TASK)
+            .build();
 
     @Value
     @FieldValue

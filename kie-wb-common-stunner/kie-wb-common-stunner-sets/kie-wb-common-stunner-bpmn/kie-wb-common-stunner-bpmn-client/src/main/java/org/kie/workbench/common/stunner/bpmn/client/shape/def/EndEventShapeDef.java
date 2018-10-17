@@ -16,9 +16,9 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.shape.def;
 
-import java.util.HashMap;
 import java.util.Map;
 
+import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNGlyphFactory;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseEndEvent;
@@ -54,20 +54,20 @@ public class EndEventShapeDef
                          BPMNSVGViewFactory::endEscalationEvent);
 
     public static final Map<Class<? extends BaseEndEvent>, Glyph> GLYPHS =
-            new HashMap<Class<? extends BaseEndEvent>, Glyph>() {{
-                put(EndNoneEvent.class,
-                    BPMNGlyphFactory.EVENT_END_NONE);
-                put(EndSignalEvent.class,
-                    BPMNGlyphFactory.EVENT_END_SIGNAL);
-                put(EndMessageEvent.class,
-                    BPMNGlyphFactory.EVENT_END_MESSAGE);
-                put(EndTerminateEvent.class,
-                    BPMNGlyphFactory.EVENT_END_TERMINATE);
-                put(EndErrorEvent.class,
-                    BPMNGlyphFactory.EVENT_END_ERROR);
-                put(EndEscalationEvent.class,
-                    BPMNGlyphFactory.EVENT_END_ESCALATION);
-            }};
+            new Maps.Builder<Class<? extends BaseEndEvent>, Glyph>()
+                    .put(EndNoneEvent.class,
+                         BPMNGlyphFactory.EVENT_END_NONE)
+                    .put(EndSignalEvent.class,
+                         BPMNGlyphFactory.EVENT_END_SIGNAL)
+                    .put(EndMessageEvent.class,
+                         BPMNGlyphFactory.EVENT_END_MESSAGE)
+                    .put(EndTerminateEvent.class,
+                         BPMNGlyphFactory.EVENT_END_TERMINATE)
+                    .put(EndErrorEvent.class,
+                         BPMNGlyphFactory.EVENT_END_ERROR)
+                    .put(EndEscalationEvent.class,
+                         BPMNGlyphFactory.EVENT_END_ESCALATION)
+                    .build();
 
     @Override
     public FontHandler<BaseEndEvent, SVGShapeView> newFontHandler() {

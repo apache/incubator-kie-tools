@@ -16,13 +16,13 @@
 
 package org.kie.workbench.common.stunner.bpmn.definition;
 
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
 import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
+import org.kie.soup.commons.util.Sets;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.CircleDimensionSet;
@@ -56,17 +56,17 @@ public abstract class BaseGateway implements BPMNViewDefinition {
     protected CircleDimensionSet dimensionsSet;
 
     @Labels
-    protected final Set<String> labels = new HashSet<String>() {{
-        add("all");
-        add("lane_child");
-        add("sequence_start");
-        add("sequence_end");
-        add("choreography_sequence_start");
-        add("choreography_sequence_end");
-        add("fromtoall");
-        add("GatewaysMorph");
-        add("cm_nop");
-    }};
+    protected final Set<String> labels = new Sets.Builder<String>()
+            .add("all")
+            .add("lane_child")
+            .add("sequence_start")
+            .add("sequence_end")
+            .add("choreography_sequence_start")
+            .add("choreography_sequence_end")
+            .add("fromtoall")
+            .add("GatewaysMorph")
+            .add("cm_nop")
+            .build();
 
     public BaseGateway() {
     }

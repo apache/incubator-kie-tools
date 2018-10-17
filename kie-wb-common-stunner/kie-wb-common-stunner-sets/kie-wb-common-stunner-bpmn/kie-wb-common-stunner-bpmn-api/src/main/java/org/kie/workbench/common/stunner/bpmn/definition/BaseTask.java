@@ -15,7 +15,6 @@
  */
 package org.kie.workbench.common.stunner.bpmn.definition;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
@@ -24,6 +23,8 @@ import java.util.Set;
 import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
+import org.kie.soup.commons.util.Maps;
+import org.kie.soup.commons.util.Sets;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.RectangleDimensionsSet;
@@ -44,20 +45,20 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 @MorphBase(defaultType = NoneTask.class, targets = {BaseNonContainerSubprocess.class})
 public abstract class BaseTask implements BPMNViewDefinition {
 
-    public static final Set<String> TASK_LABELS = new HashSet<String>() {{
-        add("all");
-        add("lane_child");
-        add("sequence_start");
-        add("sequence_end");
-        add("from_task_event");
-        add("to_task_event");
-        add("FromEventbasedGateway");
-        add("messageflow_start");
-        add("messageflow_end");
-        add("fromtoall");
-        add("ActivitiesMorph");
-        add("cm_activity");
-    }};
+    public static final Set<String> TASK_LABELS = new Sets.Builder<String>()
+            .add("all")
+            .add("lane_child")
+            .add("sequence_start")
+            .add("sequence_end")
+            .add("from_task_event")
+            .add("to_task_event")
+            .add("FromEventbasedGateway")
+            .add("messageflow_start")
+            .add("messageflow_end")
+            .add("fromtoall")
+            .add("ActivitiesMorph")
+            .add("cm_activity")
+            .build();
 
     @Category
     public static final transient String category = BPMNCategories.ACTIVITIES;
@@ -87,16 +88,16 @@ public abstract class BaseTask implements BPMNViewDefinition {
     public static class TaskTypeMorphPropertyBinding implements MorphPropertyValueBinding<TaskType, TaskTypes> {
 
         private static final Map<TaskTypes, Class<?>> MORPH_TARGETS =
-                new HashMap<TaskTypes, Class<?>>(4) {{
-                    put(TaskTypes.NONE,
-                        NoneTask.class);
-                    put(TaskTypes.USER,
-                        UserTask.class);
-                    put(TaskTypes.SCRIPT,
-                        ScriptTask.class);
-                    put(TaskTypes.BUSINESS_RULE,
-                        BusinessRuleTask.class);
-                }};
+                new Maps.Builder<TaskTypes, Class<?>>()
+                        .put(TaskTypes.NONE,
+                             NoneTask.class)
+                        .put(TaskTypes.USER,
+                             UserTask.class)
+                        .put(TaskTypes.SCRIPT,
+                             ScriptTask.class)
+                        .put(TaskTypes.BUSINESS_RULE,
+                             BusinessRuleTask.class)
+                        .build();
 
         @Override
         public TaskTypes getValue(final TaskType property) {
@@ -110,7 +111,7 @@ public abstract class BaseTask implements BPMNViewDefinition {
     }
 
     @Labels
-    protected final Set<String> labels = new HashSet<String>(TASK_LABELS);
+    protected final Set<String> labels = new HashSet<>(TASK_LABELS);
 
     public BaseTask(final @MapsTo("general") TaskGeneralSet general,
                     final @MapsTo("backgroundSet") BackgroundSet backgroundSet,

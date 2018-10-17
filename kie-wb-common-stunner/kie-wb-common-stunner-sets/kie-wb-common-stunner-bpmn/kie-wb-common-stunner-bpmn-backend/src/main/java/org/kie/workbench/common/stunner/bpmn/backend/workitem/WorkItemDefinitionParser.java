@@ -39,23 +39,24 @@ import org.jbpm.process.core.datatype.impl.type.EnumDataType;
 import org.jbpm.process.core.impl.ParameterDefinitionImpl;
 import org.jbpm.process.workitem.WorkDefinitionImpl;
 import org.jbpm.util.WidMVELEvaluator;
+import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNCategories;
 import org.kie.workbench.common.stunner.bpmn.workitem.IconDefinition;
 import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinition;
 import org.kie.workbench.common.stunner.core.backend.util.URLUtils;
-import org.kie.workbench.common.stunner.core.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.kie.workbench.common.stunner.core.util.StringUtils.nonEmpty;
 
 public class WorkItemDefinitionParser {
 
     private static final Logger LOG = LoggerFactory.getLogger(WorkItemDefinitionParser.class.getName());
 
     public static final Map<Class<?>, Function<Object, String>> DATA_TYPE_FORMATTERS =
-            new HashMap<Class<?>, Function<Object, String>>(2) {{
-                put(String.class, value -> value.toString().trim().length() > 0 ? value.toString() : null);
-                put(EnumDataType.class, Object::toString);
-            }};
+            new Maps.Builder<Class<?>, Function<Object, String>>()
+                    .put(String.class, value -> value.toString().trim().length() > 0 ? value.toString() : null)
+                    .put(EnumDataType.class, Object::toString).build();
 
     public static final String ENCODING = StandardCharsets.UTF_8.name();
     private static final Pattern UNICODE_WORDS_PATTERN = Pattern.compile("\\p{L}+",
@@ -139,7 +140,7 @@ public class WorkItemDefinitionParser {
 
     @SuppressWarnings("unchecked")
     private static Map<String, WorkDefinitionImpl> parseJBPMWorkItemDefinitions(final String content,
-                                                                                final Function<String, String> dataUriProvider) throws Exception {
+                                                                                final Function<String, String> dataUriProvider) {
         final List<Map<String, Object>> workDefinitionsMaps = (List<Map<String, Object>>) WidMVELEvaluator.eval(content);
         final Map<String, WorkDefinitionImpl> result = new HashMap<>(workDefinitionsMaps.size());
         for (Map<String, Object> workDefinitionMap : workDefinitionsMaps) {
@@ -165,7 +166,7 @@ public class WorkItemDefinitionParser {
     @SuppressWarnings("unchecked")
     private static WorkDefinitionImpl parseMVELWorkItemDefinition(final Map<String, Object> workDefinitionMap,
                                                                   final Function<String, String> dataUriProvider,
-                                                                  final String name) throws Exception {
+                                                                  final String name) {
         final WorkDefinitionImpl workDefinition = new WorkDefinitionImpl();
 
         // Name.
@@ -189,7 +190,7 @@ public class WorkItemDefinitionParser {
 
         // Icon data-uri.
         final String icon = workDefinition.getIcon();
-        if (!StringUtils.isEmpty(icon)) {
+        if (nonEmpty(icon)) {
             final String iconData = dataUriProvider.apply(icon);
             workDefinition.setIcon(icon);
             workDefinition.setIconEncoded(iconData);
@@ -281,9 +282,8 @@ public class WorkItemDefinitionParser {
                             final String defaultValue,
                             final Consumer<String> consumer) {
         final String value = (String) map.get(key);
-        if (!StringUtils.isEmpty(value)) {
+        if (nonEmpty(value)) {
             consumer.accept(value);
-            ;
         } else if (null != defaultValue) {
             consumer.accept(defaultValue);
         }
@@ -308,7 +308,7 @@ public class WorkItemDefinitionParser {
                                  final Consumer<String[]> consumer) {
         final List<String> values = (List<String>) map.get(key);
         if (null != values) {
-            consumer.accept(values.toArray(new String[values.size()]));
+            consumer.accept(values.toArray(new String[0]));
         } else {
             consumer.accept(new String[0]);
         }

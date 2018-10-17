@@ -21,6 +21,7 @@
 
   <inherits name="com.google.gwt.user.User"/>
   <inherits name="org.kie.workbench.common.stunner.bpmn.StunnerBpmnApi"/>
+  <inherits name="org.kie.soup.commons.KIESoupCommons"/>
 
   <source path="definition"/>
   <source path="factory"/>

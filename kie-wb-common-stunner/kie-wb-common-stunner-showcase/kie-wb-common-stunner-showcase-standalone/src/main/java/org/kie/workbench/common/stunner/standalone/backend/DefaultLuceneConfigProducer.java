@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.stunner.standalone.backend;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
@@ -25,6 +24,7 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Named;
 
 import org.apache.lucene.analysis.Analyzer;
+import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.ImpactAnalysisAnalyzerWrapperFactory;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.LowerCaseOnlyAnalyzer;
 import org.kie.workbench.common.services.refactoring.model.index.terms.ModuleNameIndexTerm;
@@ -61,13 +61,13 @@ public class DefaultLuceneConfigProducer {
     }
 
     private Map<String, Analyzer> getAnalyzers() {
-        return new HashMap<String, Analyzer>() {{
-            put(ModuleRootPathIndexTerm.TERM,
-                new FilenameAnalyzer());
-            put(ModuleNameIndexTerm.TERM,
-                new LowerCaseOnlyAnalyzer());
-            put(PackageNameIndexTerm.TERM,
-                new LowerCaseOnlyAnalyzer());
-        }};
+        return new Maps.Builder<String, Analyzer>()
+                .put(ModuleRootPathIndexTerm.TERM,
+                     new FilenameAnalyzer())
+                .put(ModuleNameIndexTerm.TERM,
+                     new LowerCaseOnlyAnalyzer())
+                .put(PackageNameIndexTerm.TERM,
+                     new LowerCaseOnlyAnalyzer())
+                .build();
     }
 }

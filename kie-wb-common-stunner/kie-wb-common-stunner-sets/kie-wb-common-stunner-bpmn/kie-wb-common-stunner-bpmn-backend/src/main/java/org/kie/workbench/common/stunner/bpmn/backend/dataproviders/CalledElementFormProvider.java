@@ -15,7 +15,6 @@
  */
 package org.kie.workbench.common.stunner.bpmn.backend.dataproviders;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -23,6 +22,7 @@ import java.util.TreeMap;
 
 import javax.inject.Inject;
 
+import org.kie.soup.commons.util.Sets;
 import org.kie.workbench.common.forms.dynamic.model.config.SelectorData;
 import org.kie.workbench.common.forms.dynamic.model.config.SelectorDataProvider;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
@@ -55,16 +55,17 @@ public class CalledElementFormProvider implements SelectorDataProvider {
     }
 
     public Map<Object, String> getBusinessProcessIDs() {
-        final Set<ValueIndexTerm> queryTerms = new HashSet<ValueIndexTerm>() {{
-            add(new ValueResourceIndexTerm("*",
-                                           ResourceType.BPMN2,
-                                           ValueIndexTerm.TermSearchType.WILDCARD));
-        }};
+        final Set<ValueIndexTerm> queryTerms = new Sets.Builder<ValueIndexTerm>()
+                .add(new ValueResourceIndexTerm("*",
+                                                ResourceType.BPMN2,
+                                                ValueIndexTerm.TermSearchType.WILDCARD))
+                .build();
+
         List<RefactoringPageRow> results = queryService.query(
                 FindBpmnProcessIdsQuery.NAME,
                 queryTerms);
 
-        Map<Object, String> businessProcessIDs = new TreeMap<Object, String>();
+        Map<Object, String> businessProcessIDs = new TreeMap<>();
 
         for (RefactoringPageRow row : results) {
             Map<String, Path> mapRow = (Map<String, Path>) row.getValue();

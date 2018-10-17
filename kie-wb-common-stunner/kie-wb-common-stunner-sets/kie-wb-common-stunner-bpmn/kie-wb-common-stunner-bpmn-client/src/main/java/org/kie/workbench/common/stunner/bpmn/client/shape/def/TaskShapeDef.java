@@ -16,10 +16,10 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.shape.def;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNGlyphFactory;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseTask;
@@ -43,12 +43,12 @@ public class TaskShapeDef extends BaseDimensionedShapeDef
                     .put(BusinessRuleTask.class, BPMNSVGViewFactory::businessRuleTask);
 
     public static final Map<Class<? extends BaseTask>, Glyph> GLYPHS =
-            new HashMap<Class<? extends BaseTask>, Glyph>() {{
-                put(NoneTask.class, BPMNGlyphFactory.TASK);
-                put(UserTask.class, BPMNGlyphFactory.TASK_USER);
-                put(ScriptTask.class, BPMNGlyphFactory.TASK_SCRIPT);
-                put(BusinessRuleTask.class, BPMNGlyphFactory.TASK_BUSINESS_RULE);
-            }};
+            new Maps.Builder<Class<? extends BaseTask>, Glyph>()
+                    .put(NoneTask.class, BPMNGlyphFactory.TASK)
+                    .put(UserTask.class, BPMNGlyphFactory.TASK_USER)
+                    .put(ScriptTask.class, BPMNGlyphFactory.TASK_SCRIPT)
+                    .put(BusinessRuleTask.class, BPMNGlyphFactory.TASK_BUSINESS_RULE)
+                    .build();
 
     @Override
     public SizeHandler<BaseTask, SVGShapeView> newSizeHandler() {

@@ -25,15 +25,18 @@ public class StringUtilsTest {
     @Test
     public void testNull() {
         assertTrue(StringUtils.isEmpty(null));
+        assertFalse(StringUtils.nonEmpty(null));
     }
 
     @Test
     public void testEmpty() {
         assertTrue(StringUtils.isEmpty(""));
+        assertFalse(StringUtils.nonEmpty(""));
     }
 
     @Test
     public void testNonNullNonEmpty() {
         assertFalse(StringUtils.isEmpty("string"));
+        assertTrue(StringUtils.nonEmpty("string"));
     }
 }
