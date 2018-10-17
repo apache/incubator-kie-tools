@@ -23,16 +23,14 @@
 
     <b:Container fluid="true">
         <b:Row>
-            <b:Column size="MD_12">
-                <b:Form ui:field="form">
-                    <b:FieldSet>
-                        <b:FormGroup>
-                            <b:FormLabel text="{i18n.SelectFileToUpload}"/>
-                            <common:FileUpload ui:field="fileUpload" name="fileUpload"/>
-                        </b:FormGroup>
-                    </b:FieldSet>
-                </b:Form>
-            </b:Column>
+            <b:Form ui:field="form">
+                <b:FieldSet>
+                    <b:FormGroup>
+                        <b:FormLabel text="{i18n.SelectFileToUpload}"/>
+                        <common:FileUpload ui:field="fileUpload" name="fileUpload"/>
+                    </b:FormGroup>
+                </b:FieldSet>
+            </b:Form>
         </b:Row>
     </b:Container>
 
