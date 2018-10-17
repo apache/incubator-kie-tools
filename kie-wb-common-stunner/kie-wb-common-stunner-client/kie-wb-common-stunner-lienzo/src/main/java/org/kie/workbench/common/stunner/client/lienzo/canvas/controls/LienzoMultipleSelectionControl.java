@@ -124,7 +124,7 @@ public final class LienzoMultipleSelectionControl<H extends AbstractCanvasHandle
             return false;
         }
 
-        return uuids.stream().anyMatch(uuid -> selectedItems.contains(uuid));
+        return uuids.stream().anyMatch(selectedItems::contains);
     }
 
     @Override

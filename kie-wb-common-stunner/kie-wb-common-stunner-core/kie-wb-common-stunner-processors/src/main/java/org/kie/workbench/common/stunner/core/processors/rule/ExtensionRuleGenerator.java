@@ -65,27 +65,24 @@ public class ExtensionRuleGenerator extends AbstractGenerator {
             for (final RuleExtension annotation : extensions.value()) {
                 processRuleExtension(ruleNamePrefix,
                                      ruleDefinitionId,
-                                     annotation,
-                                     messager);
+                                     annotation);
             }
         }
         final RuleExtension extension = classElement.getAnnotation(RuleExtension.class);
         if (null != extension) {
             processRuleExtension(ruleNamePrefix,
                                  ruleDefinitionId,
-                                 extension,
-                                 messager);
+                                 extension);
         }
         return null;
     }
 
     private void processRuleExtension(final String ruleNamePrefix,
                                       final String ruleDefinitionId,
-                                      final RuleExtension annotation,
-                                      final Messager messager) throws GenerationException {
+                                      final RuleExtension annotation) throws GenerationException {
         TypeMirror mirror = null;
         try {
-            Class<?> handlerClass = annotation.handler();
+            annotation.handler();
         } catch (MirroredTypeException mte) {
             mirror = mte.getTypeMirror();
         }
@@ -96,7 +93,7 @@ public class ExtensionRuleGenerator extends AbstractGenerator {
         // Type arguments.
         List<? extends TypeMirror> argumentTypeMirrors = null;
         try {
-            Class<?>[] defsClasses = annotation.typeArguments();
+            annotation.typeArguments();
         } catch (MirroredTypesException mte) {
             argumentTypeMirrors = mte.getTypeMirrors();
         }
@@ -120,8 +117,7 @@ public class ExtensionRuleGenerator extends AbstractGenerator {
             rawArgs += " }";
         }
         final String ruleName = ruleNamePrefix + "_" + MainProcessor.toClassMemberId(rhc);
-        final StringBuffer value = generateRule(messager,
-                                                ruleName,
+        final StringBuffer value = generateRule(ruleName,
                                                 ruleDefinitionId,
                                                 rawTypeArgs,
                                                 rawArgs,
@@ -132,13 +128,12 @@ public class ExtensionRuleGenerator extends AbstractGenerator {
                                   value);
     }
 
-    private StringBuffer generateRule(final Messager messager,
-                                      final String ruleName,
+    private StringBuffer generateRule(final String ruleName,
                                       final String ruleDefinitionId,
                                       final String rawTypeArgs,
                                       final String rawArgs,
                                       final String rhc) throws GenerationException {
-        Map<String, Object> root = new HashMap<String, Object>();
+        Map<String, Object> root = new HashMap<>();
         root.put("ruleId",
                  ruleDefinitionId);
         root.put("args",
@@ -157,10 +152,8 @@ public class ExtensionRuleGenerator extends AbstractGenerator {
             final Template template = config.getTemplate("RuleExtension.ftl");
             template.process(root,
                              bw);
-        } catch (IOException ioe) {
+        } catch (IOException | TemplateException ioe) {
             throw new GenerationException(ioe);
-        } catch (TemplateException te) {
-            throw new GenerationException(te);
         } finally {
             try {
                 bw.close();

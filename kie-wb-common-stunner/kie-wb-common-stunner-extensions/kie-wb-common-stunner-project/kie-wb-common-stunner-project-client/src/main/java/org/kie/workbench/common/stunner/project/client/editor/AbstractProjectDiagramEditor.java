@@ -98,7 +98,7 @@ import static org.kie.workbench.common.stunner.project.client.resources.i18n.Stu
 
 public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType> extends KieEditor<ProjectDiagramResource> {
 
-    private static Logger LOGGER = Logger.getLogger(AbstractProjectDiagramEditor.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(AbstractProjectDiagramEditor.class.getName());
     private static final String TITLE_FORMAT_TEMPLATE = "#title.#suffix - #type";
 
     public interface View extends UberView<AbstractProjectDiagramEditor>,
@@ -110,7 +110,6 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         void setWidget(IsWidget widget);
     }
 
-    private PlaceManager placeManager;
     private ErrorPopupPresenter errorPopupPresenter;
     private Event<ChangeTitleWidgetEvent> changeTitleNotificationEvent;
     private R resourceType;

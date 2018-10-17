@@ -24,7 +24,7 @@ import org.kie.workbench.common.stunner.lienzo.toolbox.ToolboxVisibilityExecutor
 public abstract class AbstractFocusableGroupItem<T extends AbstractFocusableGroupItem>
         extends AbstractGroupItem<T> {
 
-    private final static int FOCUS_DELAY_MILLIS = 50;
+    private static final int FOCUS_DELAY_MILLIS = 50;
     static final double ALPHA_FOCUSED = 1d;
     static final double ALPHA_UNFOCUSED = 0.75d;
 

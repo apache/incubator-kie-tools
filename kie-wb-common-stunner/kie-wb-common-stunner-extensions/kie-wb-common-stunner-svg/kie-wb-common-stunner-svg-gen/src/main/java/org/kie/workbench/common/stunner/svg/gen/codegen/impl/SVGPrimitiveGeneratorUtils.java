@@ -34,7 +34,7 @@ public class SVGPrimitiveGeneratorUtils {
     public static final String NEW_SVG_SHAPE_TEMPLATE = "SVGPrimitiveShape %1s = SVGPrimitiveFactory.newSVGPrimitiveShape(%1s, %1s, %1s);";
     public static final String GROUP_ADD_CHILD_TEMPLATE = "%1s.add(%1s);";
 
-    public static Predicate<PrimitiveDefinition> CAN_GENERATE_PRIMITIVE_CODE = p -> p.getAlpha() > 0;
+    public static final Predicate<PrimitiveDefinition> CAN_GENERATE_PRIMITIVE_CODE = p -> p.getAlpha() > 0;
 
     public static String generateSvgPrimitive(final String instanceId,
                                               final Function<PrimitiveDefinition, PrimitiveDefinitionGenerator<PrimitiveDefinition<?>>> generatorProvider,

@@ -70,6 +70,9 @@ public class SVGStyleTranslator {
     private static final String TRANSFORM_TRANSLATE = "translate";
     private static final Pattern TRANSFORM_PATTERN = Pattern.compile("(.*)\\((.*),(.*)\\)");
 
+    private SVGStyleTranslator() {
+    }
+
     public static TransformDefinition parseTransformDefinition(final Element element) throws TranslatorException {
         final String transformRaw = element.getAttribute(TRANSFORM);
         if (!isEmpty(transformRaw)) {

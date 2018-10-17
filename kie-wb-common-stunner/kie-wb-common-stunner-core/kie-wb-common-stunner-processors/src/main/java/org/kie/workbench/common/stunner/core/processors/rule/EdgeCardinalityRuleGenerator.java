@@ -27,7 +27,6 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic;
 
 import freemarker.template.Template;
@@ -54,7 +53,6 @@ public class EdgeCardinalityRuleGenerator extends AbstractGenerator {
         final Messager messager = processingEnvironment.getMessager();
         messager.printMessage(Diagnostic.Kind.NOTE,
                               "Starting code adf for [" + className + "]");
-        final Elements elementUtils = processingEnvironment.getElementUtils();
         final String ruleDefinitionId = ((TypeElement) element).getQualifiedName().toString();
         //Extract required information
         final TypeElement classElement = (TypeElement) element;
@@ -63,8 +61,7 @@ public class EdgeCardinalityRuleGenerator extends AbstractGenerator {
             int count = 0;
             for (EdgeOccurrences occurrence : occs.value()) {
                 String ruleById = classElement.getQualifiedName().toString();
-                String shortId = ruleById.substring(ruleById.lastIndexOf(".") + 1,
-                                                    ruleById.length());
+                String shortId = ruleById.substring(ruleById.lastIndexOf(".") + 1);
                 String name = shortId + count + MainProcessor.RULE_EDGE_CARDINALITY_SUFFIX_CLASSNAME;
                 EdgeOccurrences.EdgeType _type = occurrence.type();
                 EdgeCardinalityContext.Direction type = EdgeOccurrences.EdgeType.INCOMING.equals(_type) ? EdgeCardinalityContext.Direction.INCOMING : EdgeCardinalityContext.Direction.OUTGOING;
@@ -94,7 +91,7 @@ public class EdgeCardinalityRuleGenerator extends AbstractGenerator {
                                       final String direction,
                                       final long min,
                                       final long max) throws GenerationException {
-        Map<String, Object> root = new HashMap<String, Object>();
+        Map<String, Object> root = new HashMap<>();
         root.put("ruleName",
                  ruleName);
         root.put("edgeId",
@@ -115,10 +112,8 @@ public class EdgeCardinalityRuleGenerator extends AbstractGenerator {
             final Template template = config.getTemplate("EdgeCardinalityRule.ftl");
             template.process(root,
                              bw);
-        } catch (IOException ioe) {
+        } catch (IOException | TemplateException ioe) {
             throw new GenerationException(ioe);
-        } catch (TemplateException te) {
-            throw new GenerationException(te);
         } finally {
             try {
                 bw.close();

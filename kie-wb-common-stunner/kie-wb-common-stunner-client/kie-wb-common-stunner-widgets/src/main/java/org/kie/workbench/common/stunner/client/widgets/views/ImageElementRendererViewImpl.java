@@ -69,8 +69,8 @@ public class ImageElementRendererViewImpl implements ImageElementRendererView,
                                     widthPx + Style.Unit.PX.name());
         icon.getStyle().setProperty("height",
                                     heightPx + Style.Unit.PX.name());
-        HTMLElement svgElement = (HTMLElement) DOMUtil.getFirstChildElement(icon).get();
-        if (svgElement != null) {
+        if (DOMUtil.getFirstChildElement(icon).isPresent()) {
+            HTMLElement svgElement = (HTMLElement) DOMUtil.getFirstChildElement(icon).get();
             svgElement.getStyle().setProperty("width",
                                               widthPx + Style.Unit.PX.name());
             svgElement.getStyle().setProperty("height",

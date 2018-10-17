@@ -29,7 +29,6 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic;
 
 import freemarker.template.Template;
@@ -74,10 +73,8 @@ public class ConnectionRuleGenerator extends AbstractGenerator {
         final Messager messager = processingEnvironment.getMessager();
         messager.printMessage(Diagnostic.Kind.NOTE,
                               "Starting code adf for [" + className + "]");
-        final Elements elementUtils = processingEnvironment.getElementUtils();
         //Extract required information
         final TypeElement classElement = (TypeElement) element;
-        final boolean isInterface = classElement.getKind().isInterface();
         final String ruleId = MainProcessor.toValidId(className);
         final String ruleDefinitionId = classElement.getQualifiedName().toString();
         CanConnect[] pcs = classElement.getAnnotationsByType(CanConnect.class);
@@ -90,7 +87,7 @@ public class ConnectionRuleGenerator extends AbstractGenerator {
                                                         endRole));
             }
         }
-        Map<String, Object> root = new HashMap<String, Object>();
+        Map<String, Object> root = new HashMap<>();
         root.put("ruleId",
                  ruleId);
         root.put("ruleDefinitionId",
@@ -106,10 +103,8 @@ public class ConnectionRuleGenerator extends AbstractGenerator {
             final Template template = config.getTemplate("ConnectionRule.ftl");
             template.process(root,
                              bw);
-        } catch (IOException ioe) {
+        } catch (IOException | TemplateException ioe) {
             throw new GenerationException(ioe);
-        } catch (TemplateException te) {
-            throw new GenerationException(te);
         } finally {
             try {
                 bw.close();
