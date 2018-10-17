@@ -18,6 +18,7 @@ package org.kie.workbench.common.dmn.backend.definition.v1_1;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.UnaryTests;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
+import org.kie.workbench.common.dmn.api.property.dmn.ExpressionLanguage;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 
 public class UnaryTestsPropertyConverter {
@@ -28,8 +29,11 @@ public class UnaryTestsPropertyConverter {
         }
         Id id = new Id(dmn.getId());
         Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
-
-        UnaryTests result = new UnaryTests(id, description, dmn.getText(), dmn.getExpressionLanguage());
+        ExpressionLanguage expressionLanguage = ExpressionLanguagePropertyConverter.wbFromDMN(dmn.getExpressionLanguage());
+        UnaryTests result = new UnaryTests(id,
+                                           description,
+                                           dmn.getText(),
+                                           expressionLanguage);
         return result;
     }
 
@@ -41,7 +45,7 @@ public class UnaryTestsPropertyConverter {
         result.setId(wb.getId().getValue());
         result.setDescription(DescriptionPropertyConverter.dmnFromWB(wb.getDescription()));
         result.setText(wb.getText());
-        result.setExpressionLanguage(wb.getExpressionLanguage());
+        result.setExpressionLanguage(ExpressionLanguagePropertyConverter.dmnFromWB(wb.getExpressionLanguage()));
 
         return result;
     }

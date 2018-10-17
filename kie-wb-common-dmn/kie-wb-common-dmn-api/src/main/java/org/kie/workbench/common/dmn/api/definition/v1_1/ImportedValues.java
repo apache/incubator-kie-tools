@@ -15,17 +15,50 @@
  */
 package org.kie.workbench.common.dmn.api.definition.v1_1;
 
+import java.util.Set;
+
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.jboss.errai.databinding.client.api.Bindable;
+import org.kie.soup.commons.util.Sets;
 import org.kie.workbench.common.dmn.api.property.DMNPropertySet;
+import org.kie.workbench.common.dmn.api.property.dmn.ExpressionLanguage;
 import org.kie.workbench.common.dmn.api.property.dmn.LocationURI;
+import org.kie.workbench.common.dmn.api.resource.i18n.DMNAPIConstants;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
+import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
+import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
+import org.kie.workbench.common.stunner.core.definition.annotation.Property;
+import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
+import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
+import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
+import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
+import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers.nestedForms.AbstractEmbeddedFormsInitializer.COLLAPSIBLE_CONTAINER;
+import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers.nestedForms.AbstractEmbeddedFormsInitializer.FIELD_CONTAINER_PARAM;
+
 @Portable
-public class ImportedValues extends Import implements DMNPropertySet {
+@Bindable
+@Definition(graphFactory = NodeFactory.class)
+@FormDefinition(policy = FieldPolicy.ONLY_MARKED, defaultFieldSettings = {@FieldParam(name = FIELD_CONTAINER_PARAM, value = COLLAPSIBLE_CONTAINER)})
+public class ImportedValues extends Import implements DMNPropertySet,
+                                                      DomainObject {
+
+    @Category
+    private static final String stunnerCategory = Categories.DOMAIN_OBJECTS;
+
+    @Labels
+    private static final Set<String> stunnerLabels = new Sets.Builder<String>().build();
+
+    private final String UUID = org.kie.workbench.common.stunner.core.util.UUID.uuid();
 
     protected String importedElement;
 
-    protected String expressionLanguage;
+    @Property
+    @FormField
+    protected ExpressionLanguage expressionLanguage;
 
     public ImportedValues() {
         this(null,
@@ -39,12 +72,24 @@ public class ImportedValues extends Import implements DMNPropertySet {
                           final LocationURI locationURI,
                           final String importType,
                           final String importedElement,
-                          final String expressionLanguage) {
+                          final ExpressionLanguage expressionLanguage) {
         super(namespace,
               locationURI,
               importType);
         this.importedElement = importedElement;
         this.expressionLanguage = expressionLanguage;
+    }
+
+    // -----------------------
+    // Stunner core properties
+    // -----------------------
+
+    public String getStunnerCategory() {
+        return stunnerCategory;
+    }
+
+    public Set<String> getStunnerLabels() {
+        return stunnerLabels;
     }
 
     // -----------------------
@@ -59,12 +104,26 @@ public class ImportedValues extends Import implements DMNPropertySet {
         this.importedElement = importedElement;
     }
 
-    public String getExpressionLanguage() {
+    public ExpressionLanguage getExpressionLanguage() {
         return expressionLanguage;
     }
 
-    public void setExpressionLanguage(final String expressionLanguage) {
+    public void setExpressionLanguage(final ExpressionLanguage expressionLanguage) {
         this.expressionLanguage = expressionLanguage;
+    }
+
+    // ------------------------------------------------------
+    // DomainObject requirements - to use in Properties Panel
+    // ------------------------------------------------------
+
+    @Override
+    public String getDomainObjectUUID() {
+        return UUID;
+    }
+
+    @Override
+    public String getDomainObjectNameTranslationKey() {
+        return DMNAPIConstants.ImportedValues_DomainObjectName;
     }
 
     @Override

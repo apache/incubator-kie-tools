@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.function.Consumer;
 
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasDomainObjectListener;
 import org.kie.workbench.common.stunner.core.definition.morph.MorphDefinition;
 import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -101,8 +100,7 @@ public interface CanvasCommandFactory<H extends CanvasHandler> {
                                          final String propertyId,
                                          final Object value);
 
-    CanvasCommand<H> updateDomainObjectPropertyValue(final CanvasDomainObjectListener domainObjectCanvasListener,
-                                                     final DomainObject domainObject,
+    CanvasCommand<H> updateDomainObjectPropertyValue(final DomainObject domainObject,
                                                      final String propertyId,
                                                      final Object value);
 

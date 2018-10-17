@@ -79,7 +79,6 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
-import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -106,6 +105,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -186,9 +186,6 @@ public class FunctionGridTest {
 
     @Mock
     private EventSourceMock<ExpressionEditorChanged> editorSelectedEvent;
-
-    @Mock
-    private EventSourceMock<RefreshFormPropertiesEvent> refreshFormPropertiesEvent;
 
     @Mock
     private EventSourceMock<DomainObjectSelectionEvent> domainObjectSelectionEvent;
@@ -273,7 +270,6 @@ public class FunctionGridTest {
                                                   sessionCommandManager,
                                                   canvasCommandFactory,
                                                   editorSelectedEvent,
-                                                  refreshFormPropertiesEvent,
                                                   domainObjectSelectionEvent,
                                                   listSelector,
                                                   translationService,
@@ -286,7 +282,6 @@ public class FunctionGridTest {
                                                                                       sessionCommandManager,
                                                                                       canvasCommandFactory,
                                                                                       editorSelectedEvent,
-                                                                                      refreshFormPropertiesEvent,
                                                                                       domainObjectSelectionEvent,
                                                                                       listSelector,
                                                                                       translationService,
@@ -740,11 +735,8 @@ public class FunctionGridTest {
         clearExpressionTypeCommand.execute(canvasHandler);
 
         verify(grid).resize(BaseExpressionGrid.RESIZE_EXISTING_MINIMUM);
-        verify(gridLayer).select(grid);
-        verify(grid).selectCell(eq(0),
-                                eq(0),
-                                eq(false),
-                                eq(false));
+        verify(gridLayer).select(literalExpressionEditor);
+        verify(literalExpressionEditor).selectFirstCell();
         verify(gridLayer).batch(redrawCommandCaptor.capture());
         redrawCommandCaptor.getValue().execute();
         verify(gridLayer).draw();
@@ -759,7 +751,7 @@ public class FunctionGridTest {
 
         verify(grid).selectExpressionEditorFirstCell(eq(0), eq(0));
         verify(gridLayer).select(literalExpressionEditor);
-        verify(literalExpressionEditor).selectFirstCell();
+        verify(literalExpressionEditor, times(2)).selectFirstCell();
 
         verify(gridLayer).batch(redrawCommandCaptor.capture());
         assertThat(redrawCommandCaptor.getAllValues()).hasSize(2);

@@ -19,7 +19,6 @@ package org.kie.workbench.common.stunner.core.client.canvas.command;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasDomainObjectListener;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.command.Command;
@@ -45,15 +44,11 @@ public class UpdateDomainObjectPropertyCommandTest {
     private AbstractCanvasHandler canvasHandler;
 
     @Mock
-    private CanvasDomainObjectListener domainObjectCanvasListener;
-
-    @Mock
     private DomainObject domainObject;
 
     @Test
     public void testNewGraphCommand() {
-        final Command<GraphCommandExecutionContext, RuleViolation> command = new UpdateDomainObjectPropertyCommand(domainObjectCanvasListener,
-                                                                                                                   domainObject,
+        final Command<GraphCommandExecutionContext, RuleViolation> command = new UpdateDomainObjectPropertyCommand(domainObject,
                                                                                                                    PROPERTY_ID,
                                                                                                                    VALUE).newGraphCommand(canvasHandler);
 
@@ -62,8 +57,7 @@ public class UpdateDomainObjectPropertyCommandTest {
 
     @Test
     public void testNewCanvasCommandExecute() {
-        final CanvasCommand<AbstractCanvasHandler> command = new UpdateDomainObjectPropertyCommand(domainObjectCanvasListener,
-                                                                                                   domainObject,
+        final CanvasCommand<AbstractCanvasHandler> command = new UpdateDomainObjectPropertyCommand(domainObject,
                                                                                                    PROPERTY_ID,
                                                                                                    VALUE).newCanvasCommand(canvasHandler);
 
@@ -71,13 +65,12 @@ public class UpdateDomainObjectPropertyCommandTest {
 
         assertThat(command.execute(canvasHandler)).isEqualTo(CanvasCommandResultBuilder.SUCCESS);
 
-        verify(domainObjectCanvasListener).update(eq(domainObject));
+        verify(canvasHandler).notifyCanvasDomainObjectUpdated(eq(domainObject));
     }
 
     @Test
     public void testNewCanvasCommandUndo() {
-        final CanvasCommand<AbstractCanvasHandler> command = new UpdateDomainObjectPropertyCommand(domainObjectCanvasListener,
-                                                                                                   domainObject,
+        final CanvasCommand<AbstractCanvasHandler> command = new UpdateDomainObjectPropertyCommand(domainObject,
                                                                                                    PROPERTY_ID,
                                                                                                    VALUE).newCanvasCommand(canvasHandler);
 
@@ -85,6 +78,6 @@ public class UpdateDomainObjectPropertyCommandTest {
 
         assertThat(command.undo(canvasHandler)).isEqualTo(CanvasCommandResultBuilder.SUCCESS);
 
-        verify(domainObjectCanvasListener).update(eq(domainObject));
+        verify(canvasHandler).notifyCanvasDomainObjectUpdated(eq(domainObject));
     }
 }

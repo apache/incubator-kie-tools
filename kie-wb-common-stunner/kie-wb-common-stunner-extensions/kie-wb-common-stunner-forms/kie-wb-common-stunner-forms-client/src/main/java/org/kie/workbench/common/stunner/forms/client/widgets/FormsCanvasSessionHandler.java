@@ -73,8 +73,16 @@ public class FormsCanvasSessionHandler {
                                      final CanvasCommandFactory<AbstractCanvasHandler> commandFactory) {
         this.definitionManager = definitionManager;
         this.commandFactory = commandFactory;
-        this.canvasListener = new FormsCanvasListener();
-        this.domainObjectCanvasListener = new FormsDomainObjectCanvasListener();
+        this.canvasListener = getFormsCanvasListener();
+        this.domainObjectCanvasListener = getFormsDomainObjectCanvasListener();
+    }
+
+    protected FormsCanvasListener getFormsCanvasListener() {
+        return new FormsCanvasListener();
+    }
+
+    protected FormsDomainObjectCanvasListener getFormsDomainObjectCanvasListener() {
+        return new FormsDomainObjectCanvasListener();
     }
 
     public FormsCanvasSessionHandler setRenderer(FormRenderer renderer) {
@@ -85,6 +93,7 @@ public class FormsCanvasSessionHandler {
     public FormsCanvasSessionHandler bind(final ClientSession session) {
         this.session = session;
         canvasListener.attach();
+        domainObjectCanvasListener.attach();
         featuresSessionProvider = getFeaturesSessionProvider(session);
         if (null == featuresSessionProvider) {
             throw new UnsupportedOperationException("No client session type supported.");
@@ -94,6 +103,7 @@ public class FormsCanvasSessionHandler {
 
     public FormsCanvasSessionHandler unbind() {
         canvasListener.detach();
+        domainObjectCanvasListener.detach();
         this.session = null;
         return this;
     }
@@ -176,8 +186,7 @@ public class FormsCanvasSessionHandler {
                 featuresSessionProvider
                         .getCommandManager(session)
                         .execute(getCanvasHandler(),
-                                 commandFactory.updateDomainObjectPropertyValue(domainObjectCanvasListener,
-                                                                                domainObject,
+                                 commandFactory.updateDomainObjectPropertyValue(domainObject,
                                                                                 propertyId,
                                                                                 value));
         domainObjectCanvasListener.endProcessing();
@@ -284,7 +293,7 @@ public class FormsCanvasSessionHandler {
      * A listener that refresh the forms once an element has been updated,
      * but it skips the refreshing when updates come from this forms widget instance.
      */
-    private class FormsCanvasListener implements CanvasElementListener {
+    class FormsCanvasListener implements CanvasElementListener {
 
         private boolean areFormsProcessing;
 
@@ -346,12 +355,20 @@ public class FormsCanvasSessionHandler {
      * A listener that refresh the forms once a DomainObject has been updated,
      * but it skips the refreshing when updates come from this forms widget instance.
      */
-    private class FormsDomainObjectCanvasListener implements CanvasDomainObjectListener {
+    class FormsDomainObjectCanvasListener implements CanvasDomainObjectListener {
 
         private boolean areFormsProcessing;
 
         public FormsDomainObjectCanvasListener() {
             this.areFormsProcessing = false;
+        }
+
+        public void attach() {
+            getCanvasHandler().ifPresent(this::_attach);
+        }
+
+        public void detach() {
+            getCanvasHandler().ifPresent(this::_detach);
         }
 
         public void startProcessing() {
@@ -360,6 +377,18 @@ public class FormsCanvasSessionHandler {
 
         public void endProcessing() {
             this.areFormsProcessing = false;
+        }
+
+        private void _attach(final AbstractCanvasHandler canvasHandler) {
+            canvasHandler.addDomainObjectListener(this);
+        }
+
+        private void _detach(final AbstractCanvasHandler canvasHandler) {
+            canvasHandler.removeDomainObjectListener(this);
+        }
+
+        private Optional<AbstractCanvasHandler> getCanvasHandler() {
+            return Optional.ofNullable(FormsCanvasSessionHandler.this.getCanvasHandler());
         }
 
         @Override

@@ -29,7 +29,6 @@ public class JavaFunctionSupplementaryGridTest extends BaseFunctionSupplementary
                                                 sessionCommandManager,
                                                 canvasCommandFactory,
                                                 editorSelectedEvent,
-                                                refreshFormPropertiesEvent,
                                                 domainObjectSelectionEvent,
                                                 listSelector,
                                                 translationService,

@@ -27,6 +27,7 @@ import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
+import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.undefined.SetCellValueCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
@@ -52,8 +53,8 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.selection.Domai
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
+import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
-import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
@@ -80,7 +81,6 @@ public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, DMNG
                                    final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                    final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
                                    final Event<ExpressionEditorChanged> editorSelectedEvent,
-                                   final Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent,
                                    final Event<DomainObjectSelectionEvent> domainObjectSelectionEvent,
                                    final CellEditorControlsView.Presenter cellEditorControls,
                                    final ListSelectorView.Presenter listSelector,
@@ -102,7 +102,6 @@ public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, DMNG
               sessionCommandManager,
               canvasCommandFactory,
               editorSelectedEvent,
-              refreshFormPropertiesEvent,
               domainObjectSelectionEvent,
               cellEditorControls,
               listSelector,
@@ -255,10 +254,13 @@ public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, DMNG
         final ClientSession session = sessionManager.getCurrentSession();
         if (session != null) {
             if (nodeUUID.isPresent()) {
-                refreshFormPropertiesEvent.fire(new RefreshFormPropertiesEvent(session, nodeUUID.get()));
-            } else {
-                super.doAfterSelectionChange(uiRowIndex, uiColumnIndex);
+                final DMNModelInstrumentedBase base = hasExpression.asDMNModelInstrumentedBase();
+                if (base instanceof DomainObject) {
+                    fireDomainObjectSelectionEvent((DomainObject) base);
+                    return;
+                }
             }
         }
+        super.doAfterSelectionChange(uiRowIndex, uiColumnIndex);
     }
 }

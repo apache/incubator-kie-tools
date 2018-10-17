@@ -20,15 +20,23 @@ import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementUpdatedEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasDomainObjectListener;
+import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasElementListener;
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
+import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.graph.Element;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class DMNGridLayerControlImplTest {
@@ -37,10 +45,22 @@ public class DMNGridLayerControlImplTest {
     private DMNGridLayer gridLayer;
 
     @Mock
-    private CanvasHandler canvasHandler;
+    private AbstractCanvasHandler canvasHandler;
+
+    @Mock
+    private ClientSession session;
 
     @Mock
     private Element element;
+
+    @Mock
+    private DomainObject domainObject;
+
+    @Captor
+    private ArgumentCaptor<CanvasElementListener> canvasElementListenerCaptor;
+
+    @Captor
+    private ArgumentCaptor<CanvasDomainObjectListener> domainObjectListenerCaptor;
 
     private DMNGridLayerControlImpl control;
 
@@ -52,6 +72,8 @@ public class DMNGridLayerControlImplTest {
                 return gridLayer;
             }
         };
+
+        when(session.getCanvasHandler()).thenReturn(canvasHandler);
     }
 
     @Test
@@ -73,20 +95,53 @@ public class DMNGridLayerControlImplTest {
     }
 
     @Test
+    public void testDoInitWithBoundSession() {
+        control.bind(session);
+
+        control.doInit();
+
+        assertEquals(gridLayer,
+                     control.getGridLayer());
+
+        verify(canvasHandler).addRegistrationListener(canvasElementListenerCaptor.capture());
+        final CanvasElementListener canvasElementListener = canvasElementListenerCaptor.getValue();
+        canvasElementListener.update(element);
+        verify(gridLayer).batch();
+
+        reset(gridLayer);
+
+        verify(canvasHandler).addDomainObjectListener(domainObjectListenerCaptor.capture());
+        final CanvasDomainObjectListener domainObjectListener = domainObjectListenerCaptor.getValue();
+        domainObjectListener.update(domainObject);
+        verify(gridLayer).batch();
+    }
+
+    @Test
+    public void testDoDestroyWithBoundSession() {
+        control.bind(session);
+
+        control.doInit();
+
+        verify(canvasHandler).addRegistrationListener(canvasElementListenerCaptor.capture());
+        verify(canvasHandler).addDomainObjectListener(domainObjectListenerCaptor.capture());
+        final CanvasElementListener canvasElementListener = canvasElementListenerCaptor.getValue();
+        final CanvasDomainObjectListener domainObjectListener = domainObjectListenerCaptor.getValue();
+
+        control.doDestroy();
+
+        assertNull(control.getGridLayer());
+
+        verify(canvasHandler).removeRegistrationListener(eq(canvasElementListener));
+        verify(canvasHandler).removeDomainObjectListener(eq(domainObjectListener));
+    }
+
+    @Test
     public void testGetGridLayer() {
         final DMNGridLayer gridLayer = control.getGridLayer();
 
         //Check same instance is re-used
-        assertEquals(gridLayer,
+        assertEquals("GridLayer instances should be identical.",
+                     gridLayer,
                      control.getGridLayer());
-    }
-
-    @Test
-    public void testOnCanvasElementUpdatedEvent() {
-        final CanvasElementUpdatedEvent event = new CanvasElementUpdatedEvent(canvasHandler, element);
-
-        control.onCanvasElementUpdatedEvent(event);
-
-        verify(gridLayer).batch();
     }
 }

@@ -24,4 +24,19 @@ public class DMNAPIConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String LiteralExpression_DomainObjectName = "LiteralExpression.DomainObjectName";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ImportedValues_DomainObjectName = "ImportedValues.DomainObjectName";
+
+    @TranslationKey(defaultValue = "")
+    public static final String UnaryTests_DomainObjectName = "UnaryTests.DomainObjectName";
+
+    @TranslationKey(defaultValue = "")
+    public static final String InformationItem_DomainObjectName = "InformationItem.DomainObjectName";
+
+    @TranslationKey(defaultValue = "")
+    public static final String Decision_DomainObjectName = "Decision.DomainObjectName";
+
+    @TranslationKey(defaultValue = "")
+    public static final String BusinessKnowledgeModel_DomainObjectName = "BusinessKnowledgeModel.DomainObjectName";
 }

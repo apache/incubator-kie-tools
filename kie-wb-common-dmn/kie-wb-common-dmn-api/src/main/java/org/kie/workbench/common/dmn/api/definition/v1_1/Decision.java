@@ -32,6 +32,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.Question;
 import org.kie.workbench.common.dmn.api.property.font.FontSet;
+import org.kie.workbench.common.dmn.api.resource.i18n.DMNAPIConstants;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
@@ -41,6 +42,7 @@ import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
+import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
@@ -53,13 +55,14 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 @FormDefinition(policy = FieldPolicy.ONLY_MARKED, startElement = "id", defaultFieldSettings = {@FieldParam(name = FIELD_CONTAINER_PARAM, value = COLLAPSIBLE_CONTAINER)})
 public class Decision extends DRGElement implements HasExpression,
                                                     HasVariable,
-                                                    DMNViewDefinition {
+                                                    DMNViewDefinition,
+                                                    DomainObject {
 
     @Category
-    public static final transient String stunnerCategory = Categories.NODES;
+    private static final String stunnerCategory = Categories.NODES;
 
     @Labels
-    private final Set<String> stunnerLabels = new Sets.Builder<String>()
+    private static final Set<String> stunnerLabels = new Sets.Builder<String>()
             .add("decision")
             .build();
 
@@ -212,6 +215,20 @@ public class Decision extends DRGElement implements HasExpression,
     @Override
     public DMNModelInstrumentedBase asDMNModelInstrumentedBase() {
         return this;
+    }
+
+    // ------------------------------------------------------
+    // DomainObject requirements - to use in Properties Panel
+    // ------------------------------------------------------
+
+    @Override
+    public String getDomainObjectUUID() {
+        return getId().getValue();
+    }
+
+    @Override
+    public String getDomainObjectNameTranslationKey() {
+        return DMNAPIConstants.Decision_DomainObjectName;
     }
 
     @Override

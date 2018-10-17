@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.backend.definition.v1_1;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.ImportedValues;
+import org.kie.workbench.common.dmn.api.property.dmn.ExpressionLanguage;
 import org.kie.workbench.common.dmn.api.property.dmn.LocationURI;
 
 public class ImportedValuesConverter {
@@ -29,7 +30,7 @@ public class ImportedValuesConverter {
         LocationURI locationURI = new LocationURI(dmn.getLocationURI());
         String importType = dmn.getImportType();
         String importedElement = dmn.getImportedElement();
-        String expressionLanguage = dmn.getExpressionLanguage();
+        ExpressionLanguage expressionLanguage = ExpressionLanguagePropertyConverter.wbFromDMN(dmn.getExpressionLanguage());
         ImportedValues wb = new ImportedValues(namespace,
                                                locationURI,
                                                importType,
@@ -47,7 +48,7 @@ public class ImportedValuesConverter {
         dmn.setLocationURI(wb.getLocationURI().getValue());
         dmn.setImportType(wb.getImportType());
         dmn.setImportedElement(wb.getImportedElement());
-        dmn.setExpressionLanguage(wb.getExpressionLanguage());
+        dmn.setExpressionLanguage(ExpressionLanguagePropertyConverter.dmnFromWB(wb.getExpressionLanguage()));
         return dmn;
     }
 }

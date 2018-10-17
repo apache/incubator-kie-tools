@@ -43,7 +43,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.selection.Domai
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
-import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 
 public abstract class BaseSupplementaryFunctionEditorDefinition extends BaseEditorDefinition<Context, FunctionSupplementaryGridData> {
 
@@ -58,7 +57,6 @@ public abstract class BaseSupplementaryFunctionEditorDefinition extends BaseEdit
                                                      final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                                      final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
                                                      final Event<ExpressionEditorChanged> editorSelectedEvent,
-                                                     final Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent,
                                                      final Event<DomainObjectSelectionEvent> domainObjectSelectionEvent,
                                                      final ListSelectorView.Presenter listSelector,
                                                      final TranslationService translationService,
@@ -68,7 +66,6 @@ public abstract class BaseSupplementaryFunctionEditorDefinition extends BaseEdit
               sessionCommandManager,
               canvasCommandFactory,
               editorSelectedEvent,
-              refreshFormPropertiesEvent,
               domainObjectSelectionEvent,
               listSelector,
               translationService);
@@ -116,7 +113,6 @@ public abstract class BaseSupplementaryFunctionEditorDefinition extends BaseEdit
                                                          sessionCommandManager,
                                                          canvasCommandFactory,
                                                          editorSelectedEvent,
-                                                         refreshFormPropertiesEvent,
                                                          domainObjectSelectionEvent,
                                                          getCellEditorControls(),
                                                          listSelector,

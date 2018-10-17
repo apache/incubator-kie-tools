@@ -31,6 +31,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.NOPDomainObject;
+import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.undefined.SetCellValueCommand;
@@ -164,9 +165,6 @@ public class UndefinedExpressionGridTest {
     private EventSourceMock<ExpressionEditorChanged> editorSelectedEvent;
 
     @Mock
-    private EventSourceMock<RefreshFormPropertiesEvent> refreshFormPropertiesEvent;
-
-    @Mock
     private EventSourceMock<DomainObjectSelectionEvent> domainObjectSelectionEvent;
 
     @Mock
@@ -213,7 +211,6 @@ public class UndefinedExpressionGridTest {
                                                              sessionCommandManager,
                                                              canvasCommandFactory,
                                                              editorSelectedEvent,
-                                                             refreshFormPropertiesEvent,
                                                              domainObjectSelectionEvent,
                                                              listSelector,
                                                              translationService,
@@ -269,6 +266,9 @@ public class UndefinedExpressionGridTest {
     public void testSelectFirstCell() {
         setupGrid(0);
 
+        final Decision decision = mock(Decision.class);
+        when(hasExpression.asDMNModelInstrumentedBase()).thenReturn(decision);
+
         grid.selectFirstCell();
 
         final List<GridData.SelectedCell> selectedCells = grid.getModel().getSelectedCells();
@@ -278,11 +278,10 @@ public class UndefinedExpressionGridTest {
 
         verify(gridLayer).select(grid);
 
-        verify(domainObjectSelectionEvent, never()).fire(any(DomainObjectSelectionEvent.class));
-        verify(refreshFormPropertiesEvent).fire(refreshFormPropertiesArgumentCaptor.capture());
-        final RefreshFormPropertiesEvent refreshFormPropertiesEvent = refreshFormPropertiesArgumentCaptor.getValue();
-        assertThat(refreshFormPropertiesEvent.getSession()).isEqualTo(session);
-        assertThat(refreshFormPropertiesEvent.getUuid()).isEqualTo(NODE_UUID);
+        verify(domainObjectSelectionEvent).fire(domainObjectSelectionArgumentEventCaptor.capture());
+        final DomainObjectSelectionEvent domainObjectSelectionEvent = domainObjectSelectionArgumentEventCaptor.getValue();
+        assertThat(domainObjectSelectionEvent.getCanvasHandler()).isEqualTo(handler);
+        assertThat(domainObjectSelectionEvent.getDomainObject()).isEqualTo(decision);
     }
 
     @Test
@@ -465,7 +464,6 @@ public class UndefinedExpressionGridTest {
 
         verify(expressionGridCache, never()).getExpressionGrid(anyString());
 
-        verify(refreshFormPropertiesEvent, never()).fire(any(RefreshFormPropertiesEvent.class));
         verify(domainObjectSelectionEvent).fire(domainObjectSelectionArgumentEventCaptor.capture());
         final DomainObjectSelectionEvent domainObjectSelectionEvent = domainObjectSelectionArgumentEventCaptor.getValue();
         assertThat(domainObjectSelectionEvent.getDomainObject()).isInstanceOf(NOPDomainObject.class);
@@ -474,15 +472,17 @@ public class UndefinedExpressionGridTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testOnExpressionTypeChangedWhenNotNested() {
+        final Decision decision = mock(Decision.class);
+        when(hasExpression.asDMNModelInstrumentedBase()).thenReturn(decision);
+
         assertOnExpressionTypeChanged(0);
 
         verify(expressionGridCache).getExpressionGrid(eq(NODE_UUID));
 
-        verify(domainObjectSelectionEvent, never()).fire(any(DomainObjectSelectionEvent.class));
-        verify(refreshFormPropertiesEvent).fire(refreshFormPropertiesArgumentCaptor.capture());
-        final RefreshFormPropertiesEvent refreshFormPropertiesEvent = refreshFormPropertiesArgumentCaptor.getValue();
-        assertThat(refreshFormPropertiesEvent.getSession()).isEqualTo(session);
-        assertThat(refreshFormPropertiesEvent.getUuid()).isEqualTo(NODE_UUID);
+        verify(domainObjectSelectionEvent).fire(domainObjectSelectionArgumentEventCaptor.capture());
+        final DomainObjectSelectionEvent domainObjectSelectionEvent = domainObjectSelectionArgumentEventCaptor.getValue();
+        assertThat(domainObjectSelectionEvent.getCanvasHandler()).isEqualTo(handler);
+        assertThat(domainObjectSelectionEvent.getDomainObject()).isEqualTo(decision);
     }
 
     private void assertResize(final Function<BaseExpressionGrid, Double> expectedResizer) {

@@ -64,6 +64,8 @@ public class QNameFieldRendererTest {
     public void setup() {
         this.renderer = spy(new QNameFieldRenderer(typePicker));
         this.renderer.setFormGroup(formGroupInstance);
+
+        when(context.getModel()).thenReturn(null);
         when(context.getParentContext()).thenReturn(parentContext);
         when(parentContext.getModel()).thenReturn(dmnModel);
         when(formGroupInstance.get()).thenReturn(formGroup);
@@ -71,6 +73,17 @@ public class QNameFieldRendererTest {
 
     @Test
     public void testInit() {
+        renderer.init(context,
+                      definition);
+
+        verify(typePicker).setDMNModel(eq(dmnModel));
+        verify(renderer).superInit(eq(context), eq(definition));
+    }
+
+    @Test
+    public void testInitNoParent() {
+        when(context.getModel()).thenReturn(dmnModel);
+
         renderer.init(context,
                       definition);
 

@@ -58,10 +58,10 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 public class DMNDiagram extends DMNModelInstrumentedBase implements DMNDefinition {
 
     @Category
-    public static final transient String stunnerCategory = Categories.DIAGRAM;
+    private static final String stunnerCategory = Categories.DIAGRAM;
 
     @Labels
-    public static final Set<String> stunnerLabels = new Sets.Builder<String>()
+    private static final Set<String> stunnerLabels = new Sets.Builder<String>()
             .add("dmn_diagram")
             .build();
 

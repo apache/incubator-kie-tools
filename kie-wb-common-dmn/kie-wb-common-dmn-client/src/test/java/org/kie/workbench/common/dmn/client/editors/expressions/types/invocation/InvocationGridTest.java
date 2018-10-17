@@ -81,7 +81,6 @@ import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecution
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
-import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -113,6 +112,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -223,9 +223,6 @@ public class InvocationGridTest {
     private EventSourceMock<ExpressionEditorChanged> editorSelectedEvent;
 
     @Mock
-    private EventSourceMock<RefreshFormPropertiesEvent> refreshFormPropertiesEvent;
-
-    @Mock
     private EventSourceMock<DomainObjectSelectionEvent> domainObjectSelectionEvent;
 
     @Captor
@@ -271,7 +268,6 @@ public class InvocationGridTest {
                                                     sessionCommandManager,
                                                     canvasCommandFactory,
                                                     editorSelectedEvent,
-                                                    refreshFormPropertiesEvent,
                                                     domainObjectSelectionEvent,
                                                     listSelector,
                                                     translationService,
@@ -694,11 +690,8 @@ public class InvocationGridTest {
         clearExpressionTypeCommand.execute(canvasHandler);
 
         verify(grid).resize(BaseExpressionGrid.RESIZE_EXISTING_MINIMUM);
-        verify(gridLayer).select(grid);
-        verify(grid).selectCell(eq(0),
-                                eq(InvocationUIModelMapper.BINDING_EXPRESSION_COLUMN_INDEX),
-                                eq(false),
-                                eq(false));
+        verify(gridLayer).select(undefinedExpressionEditor);
+        verify(undefinedExpressionEditor).selectFirstCell();
         verify(gridLayer).batch(redrawCommandCaptor.capture());
         redrawCommandCaptor.getValue().execute();
         verify(gridLayer).draw();
@@ -713,7 +706,7 @@ public class InvocationGridTest {
 
         verify(grid).selectExpressionEditorFirstCell(eq(0), eq(InvocationUIModelMapper.BINDING_EXPRESSION_COLUMN_INDEX));
         verify(gridLayer).select(undefinedExpressionEditor);
-        verify(undefinedExpressionEditor).selectFirstCell();
+        verify(undefinedExpressionEditor, times(2)).selectFirstCell();
 
         verify(gridLayer).batch(redrawCommandCaptor.capture());
         assertThat(redrawCommandCaptor.getAllValues()).hasSize(2);

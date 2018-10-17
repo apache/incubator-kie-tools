@@ -13,15 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.kie.workbench.common.stunner.core.client.canvas.listener;
 
-import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
-import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
+public interface HasDomainObjectListeners<L extends CanvasDomainObjectListener> {
 
-public interface CanvasDomainObjectListener extends CanvasListener<CanvasHandler, DomainObject> {
+    HasDomainObjectListeners<L> addDomainObjectListener(final L instance);
 
-    /**
-     * A DomainObject has been updated on the canvas.
-     */
-    void update(final DomainObject domainObject);
+    HasDomainObjectListeners<L> removeDomainObjectListener(final L instance);
+
+    HasDomainObjectListeners<L> clearDomainObjectListeners();
 }

@@ -168,7 +168,6 @@ public class BaseExpressionGridRenderingTest extends BaseExpressionGridTest {
                                       sessionCommandManager,
                                       canvasCommandFactory,
                                       editorSelectedEvent,
-                                      refreshFormPropertiesEvent,
                                       domainObjectSelectionEvent,
                                       cellEditorControls,
                                       listSelector,

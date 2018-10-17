@@ -51,8 +51,8 @@ import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanelContainer;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
-import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -121,7 +121,7 @@ public class ExpressionEditorViewImplTest {
     private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
 
     @Mock
-    private EventSourceMock<RefreshFormPropertiesEvent> refreshFormPropertiesEvent;
+    private EventSourceMock<DomainObjectSelectionEvent> domainObjectSelectionEvent;
 
     @Mock
     private ExpressionEditorDefinition undefinedExpressionEditorDefinition;
@@ -199,7 +199,7 @@ public class ExpressionEditorViewImplTest {
                                                      sessionManager,
                                                      sessionCommandManager,
                                                      expressionEditorDefinitionsSupplier,
-                                                     refreshFormPropertiesEvent));
+                                                     domainObjectSelectionEvent));
         view.init(presenter);
         view.bind(session);
 

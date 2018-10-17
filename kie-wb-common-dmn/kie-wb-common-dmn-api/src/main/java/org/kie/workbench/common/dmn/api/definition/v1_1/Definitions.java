@@ -25,6 +25,7 @@ import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.property.DMNPropertySet;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
+import org.kie.workbench.common.dmn.api.property.dmn.ExpressionLanguage;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
@@ -57,7 +58,11 @@ public class Definitions extends DMNElement implements HasName,
     private List<Artifact> artifact;
     private List<ElementCollection> elementCollection;
     private List<BusinessContextElement> businessContextElement;
-    private String expressionLanguage;
+
+    @Property
+    @FormField(afterElement = "name")
+    protected ExpressionLanguage expressionLanguage;
+
     private String typeLanguage;
     private String namespace;
     private String exporter;
@@ -73,7 +78,7 @@ public class Definitions extends DMNElement implements HasName,
              new ArrayList<>(),
              new ArrayList<>(),
              new ArrayList<>(),
-             null,
+             new ExpressionLanguage(),
              null,
              null,
              null,
@@ -89,7 +94,7 @@ public class Definitions extends DMNElement implements HasName,
                        final List<Artifact> artifact,
                        final List<ElementCollection> elementCollection,
                        final List<BusinessContextElement> businessContextElement,
-                       final String expressionLanguage,
+                       final ExpressionLanguage expressionLanguage,
                        final String typeLanguage,
                        final String namespace,
                        final String exporter,
@@ -166,15 +171,15 @@ public class Definitions extends DMNElement implements HasName,
         return this.businessContextElement;
     }
 
-    public String getExpressionLanguage() {
+    public ExpressionLanguage getExpressionLanguage() {
         if (expressionLanguage == null) {
-            return DEFAULT_EXPRESSION_LANGUAGE;
+            return new ExpressionLanguage(DEFAULT_EXPRESSION_LANGUAGE);
         } else {
             return expressionLanguage;
         }
     }
 
-    public void setExpressionLanguage(final String value) {
+    public void setExpressionLanguage(final ExpressionLanguage value) {
         this.expressionLanguage = value;
     }
 

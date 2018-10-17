@@ -47,10 +47,10 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 public class LiteralExpression extends Expression implements DomainObject {
 
     @Category
-    public static final transient String stunnerCategory = Categories.DOMAIN_OBJECTS;
+    private static final String stunnerCategory = Categories.DOMAIN_OBJECTS;
 
     @Labels
-    private final Set<String> stunnerLabels = new Sets.Builder<String>().build();
+    private static final Set<String> stunnerLabels = new Sets.Builder<String>().build();
 
     protected String text;
 

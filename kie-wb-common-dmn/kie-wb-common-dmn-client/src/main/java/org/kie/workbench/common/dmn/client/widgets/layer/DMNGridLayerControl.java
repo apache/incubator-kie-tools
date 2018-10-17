@@ -18,8 +18,10 @@ package org.kie.workbench.common.dmn.client.widgets.layer;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControl;
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 
-public interface DMNGridLayerControl extends CanvasControl<AbstractCanvas> {
+public interface DMNGridLayerControl extends CanvasControl<AbstractCanvas>,
+                                             CanvasControl.SessionAware<ClientSession> {
 
     DMNGridLayer getGridLayer();
 }

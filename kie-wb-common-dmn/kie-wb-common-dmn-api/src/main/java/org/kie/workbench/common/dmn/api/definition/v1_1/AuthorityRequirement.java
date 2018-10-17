@@ -51,10 +51,10 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 public class AuthorityRequirement extends DMNModelInstrumentedBase {
 
     @Category
-    public static final transient String stunnerCategory = Categories.CONNECTORS;
+    private static final String stunnerCategory = Categories.CONNECTORS;
 
     @Labels
-    private final Set<String> stunnerLabels = new Sets.Builder<String>()
+    private static final Set<String> stunnerLabels = new Sets.Builder<String>()
             .add("authority-requirement")
             .build();
 

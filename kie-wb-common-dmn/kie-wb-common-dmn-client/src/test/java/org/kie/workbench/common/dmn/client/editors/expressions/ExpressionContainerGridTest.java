@@ -29,6 +29,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
+import org.kie.workbench.common.dmn.api.definition.NOPDomainObject;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
@@ -53,10 +54,10 @@ import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
-import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -147,7 +148,7 @@ public class ExpressionContainerGridTest {
     private ParameterizedCommand<Optional<HasName>> onHasNameChanged;
 
     @Mock
-    private EventSourceMock<RefreshFormPropertiesEvent> refreshFormPropertiesEvent;
+    private EventSourceMock<DomainObjectSelectionEvent> domainObjectSelectionEvent;
 
     @Mock
     private CellSelectionManager cellSelectionManager;
@@ -159,7 +160,7 @@ public class ExpressionContainerGridTest {
     private ArgumentCaptor<ClearExpressionTypeCommand> clearExpressionTypeCommandCaptor;
 
     @Captor
-    private ArgumentCaptor<RefreshFormPropertiesEvent> refreshFormPropertiesEventCaptor;
+    private ArgumentCaptor<DomainObjectSelectionEvent> domainObjectSelectionEventCaptor;
 
     private HasName hasName = new HasName() {
 
@@ -199,7 +200,7 @@ public class ExpressionContainerGridTest {
                                                 () -> expressionGridCache,
                                                 onHasExpressionChanged,
                                                 onHasNameChanged,
-                                                refreshFormPropertiesEvent) {
+                                                domainObjectSelectionEvent) {
             @Override
             protected CellSelectionManager getCellSelectionManager() {
                 return cellSelectionManager;
@@ -589,6 +590,8 @@ public class ExpressionContainerGridTest {
     @Test
     public void testSelectCellWithPoint() {
         final Point2D point = mock(Point2D.class);
+        final LiteralExpression domainObject = mock(LiteralExpression.class);
+        when(hasExpression.asDMNModelInstrumentedBase()).thenReturn(domainObject);
 
         grid.setExpression(NODE_UUID,
                            hasExpression,
@@ -597,17 +600,40 @@ public class ExpressionContainerGridTest {
         grid.selectCell(point, false, true);
 
         verify(gridLayer).select(eq(grid));
-        verify(refreshFormPropertiesEvent).fire(refreshFormPropertiesEventCaptor.capture());
+        verify(domainObjectSelectionEvent).fire(domainObjectSelectionEventCaptor.capture());
 
-        final RefreshFormPropertiesEvent refreshFormPropertiesEvent = refreshFormPropertiesEventCaptor.getValue();
-        assertThat(refreshFormPropertiesEvent.getSession()).isEqualTo(session);
-        assertThat(refreshFormPropertiesEvent.getUuid()).isEqualTo(NODE_UUID);
+        final DomainObjectSelectionEvent domainObjectSelectionEvent = domainObjectSelectionEventCaptor.getValue();
+        assertThat(domainObjectSelectionEvent.getCanvasHandler()).isEqualTo(canvasHandler);
+        assertThat(domainObjectSelectionEvent.getDomainObject()).isEqualTo(domainObject);
 
         verify(cellSelectionManager).selectCell(eq(point), eq(false), eq(true));
     }
 
     @Test
     public void testSelectCellWithCoordinates() {
+        final int uiRowIndex = 0;
+        final int uiColumnIndex = 1;
+        final LiteralExpression domainObject = mock(LiteralExpression.class);
+        when(hasExpression.asDMNModelInstrumentedBase()).thenReturn(domainObject);
+
+        grid.setExpression(NODE_UUID,
+                           hasExpression,
+                           Optional.of(hasName));
+
+        grid.selectCell(uiRowIndex, uiColumnIndex, false, true);
+
+        verify(gridLayer).select(eq(grid));
+        verify(domainObjectSelectionEvent).fire(domainObjectSelectionEventCaptor.capture());
+
+        final DomainObjectSelectionEvent domainObjectSelectionEvent = domainObjectSelectionEventCaptor.getValue();
+        assertThat(domainObjectSelectionEvent.getCanvasHandler()).isEqualTo(canvasHandler);
+        assertThat(domainObjectSelectionEvent.getDomainObject()).isEqualTo(domainObject);
+
+        verify(cellSelectionManager).selectCell(eq(uiRowIndex), eq(uiColumnIndex), eq(false), eq(true));
+    }
+
+    @Test
+    public void testSelectCellWithCoordinatesNonDomainObject() {
         final int uiRowIndex = 0;
         final int uiColumnIndex = 1;
 
@@ -618,11 +644,11 @@ public class ExpressionContainerGridTest {
         grid.selectCell(uiRowIndex, uiColumnIndex, false, true);
 
         verify(gridLayer).select(eq(grid));
-        verify(refreshFormPropertiesEvent).fire(refreshFormPropertiesEventCaptor.capture());
+        verify(domainObjectSelectionEvent).fire(domainObjectSelectionEventCaptor.capture());
 
-        final RefreshFormPropertiesEvent refreshFormPropertiesEvent = refreshFormPropertiesEventCaptor.getValue();
-        assertThat(refreshFormPropertiesEvent.getSession()).isEqualTo(session);
-        assertThat(refreshFormPropertiesEvent.getUuid()).isEqualTo(NODE_UUID);
+        final DomainObjectSelectionEvent domainObjectSelectionEvent = domainObjectSelectionEventCaptor.getValue();
+        assertThat(domainObjectSelectionEvent.getCanvasHandler()).isEqualTo(canvasHandler);
+        assertThat(domainObjectSelectionEvent.getDomainObject()).isInstanceOf(NOPDomainObject.class);
 
         verify(cellSelectionManager).selectCell(eq(uiRowIndex), eq(uiColumnIndex), eq(false), eq(true));
     }

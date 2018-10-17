@@ -61,7 +61,6 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.core.util.UUID;
-import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -83,6 +82,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -124,9 +124,6 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
 
     @Captor
     private ArgumentCaptor<Command> commandCaptor;
-
-    @Captor
-    private ArgumentCaptor<RefreshFormPropertiesEvent> refreshFormPropertiesEventCaptor;
 
     @Captor
     private ArgumentCaptor<DomainObjectSelectionEvent> domainObjectSelectionEventCaptor;
@@ -171,7 +168,6 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
                                       sessionCommandManager,
                                       canvasCommandFactory,
                                       editorSelectedEvent,
-                                      refreshFormPropertiesEvent,
                                       domainObjectSelectionEvent,
                                       cellEditorControls,
                                       listSelector,
@@ -483,19 +479,20 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testClearDisplayNameConsumerWhenNotNested() {
-        final String uuid = UUID.uuid();
-        doReturn(Optional.of(uuid)).when(grid).getNodeUUID();
+        grid.fireDomainObjectSelectionEvent(decision);
+        reset(domainObjectSelectionEvent);
 
         doTestClearDisplayNameConsumer(false,
                                        DeleteHasNameCommand.class);
 
         verify(gridLayer).batch();
-        verify(refreshFormPropertiesEvent).fire(refreshFormPropertiesEventCaptor.capture());
+        verify(domainObjectSelectionEvent).fire(domainObjectSelectionEventCaptor.capture());
 
-        final RefreshFormPropertiesEvent refreshFormPropertiesEvent = refreshFormPropertiesEventCaptor.getValue();
-        assertThat(refreshFormPropertiesEvent.getUuid()).isEqualTo(uuid);
-        assertThat(refreshFormPropertiesEvent.getSession()).isEqualTo(session);
+        final DomainObjectSelectionEvent domainObjectSelectionEvent = domainObjectSelectionEventCaptor.getValue();
+        assertThat(domainObjectSelectionEvent.getDomainObject()).isEqualTo(decision);
+        assertThat(domainObjectSelectionEvent.getCanvasHandler()).isEqualTo(canvasHandler);
     }
 
     @Test
@@ -507,7 +504,11 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testClearDisplayNameConsumerWhenNotNestedAndUpdateStunnerTitle() {
+        grid.fireDomainObjectSelectionEvent(decision);
+        reset(domainObjectSelectionEvent);
+
         final String uuid = UUID.uuid();
         doReturn(Optional.of(uuid)).when(grid).getNodeUUID();
         when(index.get(uuid)).thenReturn(element);
@@ -519,11 +520,11 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
 
         verify(gridLayer).batch();
         verify(updateElementPropertyCommand).execute(eq(canvasHandler));
-        verify(refreshFormPropertiesEvent).fire(refreshFormPropertiesEventCaptor.capture());
+        verify(domainObjectSelectionEvent).fire(domainObjectSelectionEventCaptor.capture());
 
-        final RefreshFormPropertiesEvent refreshFormPropertiesEvent = refreshFormPropertiesEventCaptor.getValue();
-        assertThat(refreshFormPropertiesEvent.getUuid()).isEqualTo(uuid);
-        assertThat(refreshFormPropertiesEvent.getSession()).isEqualTo(session);
+        final DomainObjectSelectionEvent domainObjectSelectionEvent = domainObjectSelectionEventCaptor.getValue();
+        assertThat(domainObjectSelectionEvent.getDomainObject()).isEqualTo(decision);
+        assertThat(domainObjectSelectionEvent.getCanvasHandler()).isEqualTo(canvasHandler);
     }
 
     @SuppressWarnings("unchecked")
@@ -550,19 +551,20 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testSetDisplayNameConsumerWhenNotNested() {
-        final String uuid = UUID.uuid();
-        doReturn(Optional.of(uuid)).when(grid).getNodeUUID();
+        grid.fireDomainObjectSelectionEvent(decision);
+        reset(domainObjectSelectionEvent);
 
         doTestSetDisplayNameConsumer(false,
                                      SetHasNameCommand.class);
 
         verify(gridLayer).batch();
-        verify(refreshFormPropertiesEvent).fire(refreshFormPropertiesEventCaptor.capture());
+        verify(domainObjectSelectionEvent).fire(domainObjectSelectionEventCaptor.capture());
 
-        final RefreshFormPropertiesEvent refreshFormPropertiesEvent = refreshFormPropertiesEventCaptor.getValue();
-        assertThat(refreshFormPropertiesEvent.getUuid()).isEqualTo(uuid);
-        assertThat(refreshFormPropertiesEvent.getSession()).isEqualTo(session);
+        final DomainObjectSelectionEvent domainObjectSelectionEvent = domainObjectSelectionEventCaptor.getValue();
+        assertThat(domainObjectSelectionEvent.getDomainObject()).isEqualTo(decision);
+        assertThat(domainObjectSelectionEvent.getCanvasHandler()).isEqualTo(canvasHandler);
     }
 
     @Test
@@ -574,7 +576,11 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testSetDisplayNameConsumerWhenNotNestedAndUpdateStunnerTitle() {
+        grid.fireDomainObjectSelectionEvent(decision);
+        reset(domainObjectSelectionEvent);
+
         final String uuid = UUID.uuid();
         doReturn(Optional.of(uuid)).when(grid).getNodeUUID();
         when(index.get(uuid)).thenReturn(element);
@@ -586,11 +592,11 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
 
         verify(gridLayer).batch();
         verify(updateElementPropertyCommand).execute(eq(canvasHandler));
-        verify(refreshFormPropertiesEvent).fire(refreshFormPropertiesEventCaptor.capture());
+        verify(domainObjectSelectionEvent).fire(domainObjectSelectionEventCaptor.capture());
 
-        final RefreshFormPropertiesEvent refreshFormPropertiesEvent = refreshFormPropertiesEventCaptor.getValue();
-        assertThat(refreshFormPropertiesEvent.getUuid()).isEqualTo(uuid);
-        assertThat(refreshFormPropertiesEvent.getSession()).isEqualTo(session);
+        final DomainObjectSelectionEvent domainObjectSelectionEvent = domainObjectSelectionEventCaptor.getValue();
+        assertThat(domainObjectSelectionEvent.getDomainObject()).isEqualTo(decision);
+        assertThat(domainObjectSelectionEvent.getCanvasHandler()).isEqualTo(canvasHandler);
     }
 
     @SuppressWarnings("unchecked")
@@ -616,18 +622,19 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testSetTypeRefConsumerWhenNotNested() {
-        final String uuid = UUID.uuid();
-        doReturn(Optional.of(uuid)).when(grid).getNodeUUID();
+        grid.fireDomainObjectSelectionEvent(decision);
+        reset(domainObjectSelectionEvent);
 
         doTestSetTypeRefConsumer();
 
         verify(gridLayer).batch();
-        verify(refreshFormPropertiesEvent).fire(refreshFormPropertiesEventCaptor.capture());
+        verify(domainObjectSelectionEvent).fire(domainObjectSelectionEventCaptor.capture());
 
-        final RefreshFormPropertiesEvent refreshFormPropertiesEvent = refreshFormPropertiesEventCaptor.getValue();
-        assertThat(refreshFormPropertiesEvent.getUuid()).isEqualTo(uuid);
-        assertThat(refreshFormPropertiesEvent.getSession()).isEqualTo(session);
+        final DomainObjectSelectionEvent domainObjectSelectionEvent = domainObjectSelectionEventCaptor.getValue();
+        assertThat(domainObjectSelectionEvent.getDomainObject()).isEqualTo(decision);
+        assertThat(domainObjectSelectionEvent.getCanvasHandler()).isEqualTo(canvasHandler);
     }
 
     @SuppressWarnings("unchecked")

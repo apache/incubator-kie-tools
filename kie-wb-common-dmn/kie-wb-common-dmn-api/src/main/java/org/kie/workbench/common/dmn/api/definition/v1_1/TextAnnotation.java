@@ -51,10 +51,10 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 public class TextAnnotation extends Artifact implements DMNViewDefinition {
 
     @Category
-    public static final transient String stunnerCategory = Categories.NODES;
+    private static final String stunnerCategory = Categories.NODES;
 
     @Labels
-    private final Set<String> stunnerLabels = new Sets.Builder<String>()
+    private static final Set<String> stunnerLabels = new Sets.Builder<String>()
             .add("text-annotation")
             .build();
 

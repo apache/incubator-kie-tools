@@ -32,6 +32,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
+import org.kie.workbench.common.dmn.api.definition.NOPDomainObject;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
@@ -74,11 +75,11 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.selection.Domai
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
+import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
-import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InOrder;
@@ -115,6 +116,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -220,9 +222,6 @@ public class ContextGridTest {
     private EventSourceMock<ExpressionEditorChanged> editorSelectedEvent;
 
     @Mock
-    private EventSourceMock<RefreshFormPropertiesEvent> refreshFormPropertiesEvent;
-
-    @Mock
     private EventSourceMock<DomainObjectSelectionEvent> domainObjectSelectionEvent;
 
     @Captor
@@ -239,6 +238,9 @@ public class ContextGridTest {
 
     @Captor
     private ArgumentCaptor<CompositeCommand> compositeCommandCaptor;
+
+    @Captor
+    private ArgumentCaptor<DomainObjectSelectionEvent> domainObjectSelectionEventCaptor;
 
     private LiteralExpression literalExpression = new LiteralExpression();
 
@@ -268,7 +270,6 @@ public class ContextGridTest {
                                                  sessionCommandManager,
                                                  canvasCommandFactory,
                                                  editorSelectedEvent,
-                                                 refreshFormPropertiesEvent,
                                                  domainObjectSelectionEvent,
                                                  listSelector,
                                                  translationService,
@@ -710,11 +711,8 @@ public class ContextGridTest {
         clearExpressionTypeCommand.execute(canvasHandler);
 
         verify(grid).resize(BaseExpressionGrid.RESIZE_EXISTING_MINIMUM);
-        verify(gridLayer).select(grid);
-        verify(grid).selectCell(eq(0),
-                                eq(ContextUIModelMapperHelper.EXPRESSION_COLUMN_INDEX),
-                                eq(false),
-                                eq(false));
+        verify(gridLayer).select(undefinedExpressionEditor);
+        verify(undefinedExpressionEditor).selectFirstCell();
         verify(gridLayer).batch(redrawCommandCaptor.capture());
         redrawCommandCaptor.getValue().execute();
         verify(gridLayer).draw();
@@ -729,7 +727,7 @@ public class ContextGridTest {
 
         verify(grid).selectExpressionEditorFirstCell(eq(0), eq(ContextUIModelMapperHelper.EXPRESSION_COLUMN_INDEX));
         verify(gridLayer).select(undefinedExpressionEditor);
-        verify(undefinedExpressionEditor).selectFirstCell();
+        verify(undefinedExpressionEditor, times(2)).selectFirstCell();
 
         verify(gridLayer).batch(redrawCommandCaptor.capture());
         assertThat(redrawCommandCaptor.getAllValues()).hasSize(2);
@@ -849,6 +847,52 @@ public class ContextGridTest {
 
         verify(sessionCommandManager, never()).execute(any(AbstractCanvasHandler.class),
                                                        any(SetTypeRefCommand.class));
+    }
+
+    @Test
+    public void testSelectRow() {
+        setupGrid(0);
+
+        grid.selectCell(0, ContextUIModelMapperHelper.ROW_COLUMN_INDEX, false, false);
+
+        assertDomainObjectSelection(expression.get().getContextEntry().get(0).getVariable());
+    }
+
+    @Test
+    public void testSelectInformationItem() {
+        setupGrid(0);
+
+        grid.selectCell(0, ContextUIModelMapperHelper.NAME_COLUMN_INDEX, false, false);
+
+        assertDomainObjectSelection(expression.get().getContextEntry().get(0).getVariable());
+    }
+
+    @Test
+    public void testSelectUndefinedExpression() {
+        setupGrid(0);
+
+        grid.selectCell(0, ContextUIModelMapperHelper.EXPRESSION_COLUMN_INDEX, false, false);
+
+        assertDomainObjectSelection(expression.get().getContextEntry().get(0).getVariable());
+    }
+
+    private void assertDomainObjectSelection(final DomainObject domainObject) {
+        verify(domainObjectSelectionEvent).fire(domainObjectSelectionEventCaptor.capture());
+
+        final DomainObjectSelectionEvent domainObjectSelectionEvent = domainObjectSelectionEventCaptor.getValue();
+        assertThat(domainObjectSelectionEvent.getDomainObject()).isEqualTo(domainObject);
+    }
+
+    @Test
+    public void testSelectDefaultRow() {
+        setupGrid(0);
+
+        grid.selectCell(grid.getModel().getRowCount() - 1, ContextUIModelMapperHelper.EXPRESSION_COLUMN_INDEX, false, false);
+
+        verify(domainObjectSelectionEvent).fire(domainObjectSelectionEventCaptor.capture());
+
+        final DomainObjectSelectionEvent domainObjectSelectionEvent = domainObjectSelectionEventCaptor.getValue();
+        assertThat(domainObjectSelectionEvent.getDomainObject()).isInstanceOf(NOPDomainObject.class);
     }
 
     @Test

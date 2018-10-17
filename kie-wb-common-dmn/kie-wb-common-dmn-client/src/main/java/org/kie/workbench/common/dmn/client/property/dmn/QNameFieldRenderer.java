@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.dmn.client.property.dmn;
 
+import java.util.Objects;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -50,10 +52,11 @@ public class QNameFieldRenderer extends FieldRenderer<QNameFieldDefinition, Defa
     @Override
     public void init(final FormRenderingContext renderingContext,
                      final QNameFieldDefinition field) {
-        // Extract the DMNModelInstrumentedBase from the FormRenderingContext. Only the parent model is
-        // available as Forms' SubFormFieldRenderer does not provide the model on the context. This should
-        // be sufficient in all cases, as the InformationItem cannot have its NameSpace context set.
-        final Object model = renderingContext.getParentContext().getModel();
+        // Extract the DMNModelInstrumentedBase from the FormRenderingContext.
+        Object model = renderingContext.getModel();
+        if (Objects.isNull(model)) {
+            model = renderingContext.getParentContext().getModel();
+        }
         if (model instanceof DMNModelInstrumentedBase) {
             typePicker.setDMNModel((DMNModelInstrumentedBase) model);
         }

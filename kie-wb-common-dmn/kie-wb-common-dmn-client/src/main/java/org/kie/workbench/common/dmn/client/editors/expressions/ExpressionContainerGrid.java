@@ -29,6 +29,7 @@ import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
+import org.kie.workbench.common.dmn.api.definition.NOPDomainObject;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
@@ -50,9 +51,10 @@ import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
-import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
+import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
@@ -81,7 +83,7 @@ public class ExpressionContainerGrid extends BaseGridWidget implements HasListSe
 
     private final ParameterizedCommand<Optional<Expression>> onHasExpressionChanged;
     private final ParameterizedCommand<Optional<HasName>> onHasNameChanged;
-    private final Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent;
+    private final Event<DomainObjectSelectionEvent> domainObjectSelectionEvent;
 
     private ExpressionContainerUIModelMapper uiModelMapper;
 
@@ -95,7 +97,7 @@ public class ExpressionContainerGrid extends BaseGridWidget implements HasListSe
                                    final Supplier<ExpressionGridCache> expressionGridCache,
                                    final ParameterizedCommand<Optional<Expression>> onHasExpressionChanged,
                                    final ParameterizedCommand<Optional<HasName>> onHasNameChanged,
-                                   final Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent) {
+                                   final Event<DomainObjectSelectionEvent> domainObjectSelectionEvent) {
         super(new DMNGridData(),
               gridLayer,
               gridLayer,
@@ -109,7 +111,7 @@ public class ExpressionContainerGrid extends BaseGridWidget implements HasListSe
 
         this.onHasExpressionChanged = onHasExpressionChanged;
         this.onHasNameChanged = onHasNameChanged;
-        this.refreshFormPropertiesEvent = refreshFormPropertiesEvent;
+        this.domainObjectSelectionEvent = domainObjectSelectionEvent;
 
         this.uiModelMapper = new ExpressionContainerUIModelMapper(parent,
                                                                   this::getModel,
@@ -315,7 +317,12 @@ public class ExpressionContainerGrid extends BaseGridWidget implements HasListSe
         if (session != null) {
             final CanvasHandler canvasHandler = session.getCanvasHandler();
             if (canvasHandler != null) {
-                refreshFormPropertiesEvent.fire(new RefreshFormPropertiesEvent(session, nodeUUID));
+                final DMNModelInstrumentedBase base = hasExpression.asDMNModelInstrumentedBase();
+                if (base instanceof DomainObject) {
+                    domainObjectSelectionEvent.fire(new DomainObjectSelectionEvent(canvasHandler, (DomainObject) base));
+                    return;
+                }
+                domainObjectSelectionEvent.fire(new DomainObjectSelectionEvent(canvasHandler, new NOPDomainObject()));
             }
         }
     }

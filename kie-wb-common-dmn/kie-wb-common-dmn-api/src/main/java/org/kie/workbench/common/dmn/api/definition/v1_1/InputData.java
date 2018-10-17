@@ -51,10 +51,10 @@ public class InputData extends DRGElement implements DMNViewDefinition,
                                                      HasVariable {
 
     @Category
-    public static final transient String stunnerCategory = Categories.NODES;
+    private static final String stunnerCategory = Categories.NODES;
 
     @Labels
-    private final Set<String> stunnerLabels = new Sets.Builder<String>()
+    private static final Set<String> stunnerLabels = new Sets.Builder<String>()
             .add("input-data")
             .build();
 

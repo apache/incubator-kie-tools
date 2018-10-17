@@ -16,7 +16,6 @@
 package org.kie.workbench.common.stunner.core.client.canvas.command;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasDomainObjectListener;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.command.Command;
@@ -28,7 +27,6 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
 public class UpdateDomainObjectPropertyCommand extends AbstractCanvasGraphCommand {
 
-    private final CanvasDomainObjectListener domainObjectCanvasListener;
     private final DomainObject domainObject;
     private final String propertyId;
     private final Object value;
@@ -37,22 +35,20 @@ public class UpdateDomainObjectPropertyCommand extends AbstractCanvasGraphComman
 
         @Override
         public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
-            domainObjectCanvasListener.update(domainObject);
+            context.notifyCanvasDomainObjectUpdated(domainObject);
             return CanvasCommandResultBuilder.SUCCESS;
         }
 
         @Override
         public CommandResult<CanvasViolation> undo(final AbstractCanvasHandler context) {
-            domainObjectCanvasListener.update(domainObject);
+            context.notifyCanvasDomainObjectUpdated(domainObject);
             return CanvasCommandResultBuilder.SUCCESS;
         }
     }
 
-    public UpdateDomainObjectPropertyCommand(final CanvasDomainObjectListener domainObjectCanvasListener,
-                                             final DomainObject domainObject,
+    public UpdateDomainObjectPropertyCommand(final DomainObject domainObject,
                                              final String propertyId,
                                              final Object value) {
-        this.domainObjectCanvasListener = domainObjectCanvasListener;
         this.domainObject = domainObject;
         this.propertyId = propertyId;
         this.value = value;

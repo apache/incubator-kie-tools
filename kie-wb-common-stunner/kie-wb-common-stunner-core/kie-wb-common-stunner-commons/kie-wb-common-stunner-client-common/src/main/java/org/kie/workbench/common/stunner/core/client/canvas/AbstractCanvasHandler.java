@@ -23,13 +23,16 @@ import java.util.Optional;
 
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.TextPropertyProviderFactory;
+import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasDomainObjectListener;
 import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasElementListener;
 import org.kie.workbench.common.stunner.core.client.canvas.listener.HasCanvasListeners;
+import org.kie.workbench.common.stunner.core.client.canvas.listener.HasDomainObjectListeners;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
@@ -50,10 +53,12 @@ import org.kie.workbench.common.stunner.core.util.UUID;
  */
 public abstract class AbstractCanvasHandler<D extends Diagram, C extends AbstractCanvas>
         implements CanvasHandler<D, C>,
-                   HasCanvasListeners<CanvasElementListener> {
+                   HasCanvasListeners<CanvasElementListener>,
+                   HasDomainObjectListeners<CanvasDomainObjectListener> {
 
     private final String uuid;
     private final List<CanvasElementListener> listeners = new LinkedList<>();
+    private final List<CanvasDomainObjectListener> domainObjectListeners = new LinkedList<>();
 
     public AbstractCanvasHandler() {
         this.uuid = UUID.uuid();
@@ -243,7 +248,7 @@ public abstract class AbstractCanvasHandler<D extends Diagram, C extends Abstrac
     public void deregister(final Element element,
                            final boolean fireEvents) {
         final Shape shape = getCanvas().getShape(element.getUUID());
-        if(Objects.isNull(shape)){
+        if (Objects.isNull(shape)) {
             //already not exists on canvas
             return;
         }
@@ -342,13 +347,22 @@ public abstract class AbstractCanvasHandler<D extends Diagram, C extends Abstrac
         return this;
     }
 
-    /**
-     * Notifies an element removed to the listeners.
-     */
-    public void notifyCanvasElementRemoved(final Element candidate) {
-        for (final CanvasElementListener instance : listeners) {
-            instance.deregister(candidate);
-        }
+    @Override
+    public HasDomainObjectListeners<CanvasDomainObjectListener> addDomainObjectListener(final CanvasDomainObjectListener instance) {
+        domainObjectListeners.add(instance);
+        return this;
+    }
+
+    @Override
+    public HasDomainObjectListeners<CanvasDomainObjectListener> removeDomainObjectListener(final CanvasDomainObjectListener instance) {
+        domainObjectListeners.remove(instance);
+        return this;
+    }
+
+    @Override
+    public HasDomainObjectListeners<CanvasDomainObjectListener> clearDomainObjectListeners() {
+        domainObjectListeners.clear();
+        return this;
     }
 
     /**
@@ -357,6 +371,15 @@ public abstract class AbstractCanvasHandler<D extends Diagram, C extends Abstrac
     public void notifyCanvasElementAdded(final Element candidate) {
         for (final CanvasElementListener instance : listeners) {
             instance.register(candidate);
+        }
+    }
+
+    /**
+     * Notifies an element removed to the listeners.
+     */
+    public void notifyCanvasElementRemoved(final Element candidate) {
+        for (final CanvasElementListener instance : listeners) {
+            instance.deregister(candidate);
         }
     }
 
@@ -378,9 +401,46 @@ public abstract class AbstractCanvasHandler<D extends Diagram, C extends Abstrac
         }
     }
 
+    /**
+     * Notifies {@link CanvasDomainObjectListener}s that a {@link DomainObject} has been added.
+     */
+    public void notifyCanvasDomainObjectAdded(final DomainObject domainObject) {
+        for (final CanvasDomainObjectListener instance : domainObjectListeners) {
+            instance.register(domainObject);
+        }
+    }
+
+    /**
+     * Notifies {@link CanvasDomainObjectListener}s that a {@link DomainObject} has been removed.
+     */
+    public void notifyCanvasDomainObjectRemoved(final DomainObject domainObject) {
+        for (final CanvasDomainObjectListener instance : domainObjectListeners) {
+            instance.deregister(domainObject);
+        }
+    }
+
+    /**
+     * Notifies {@link CanvasDomainObjectListener}s that a {@link DomainObject} has been updated.
+     */
+    public void notifyCanvasDomainObjectUpdated(final DomainObject domainObject) {
+        for (final CanvasDomainObjectListener instance : domainObjectListeners) {
+            instance.update(domainObject);
+        }
+    }
+
+    /**
+     * Notifies {@link CanvasDomainObjectListener}s that the {@link Canvas} has been cleared.
+     */
+    public void notifyCanvasDomainObjectClear() {
+        for (final CanvasDomainObjectListener instance : domainObjectListeners) {
+            instance.clear();
+        }
+    }
+
     public void clearCanvas() {
         if (null != getCanvas()) {
             notifyCanvasClear();
+            notifyCanvasDomainObjectClear();
             getCanvas().clear();
         }
     }
@@ -407,6 +467,7 @@ public abstract class AbstractCanvasHandler<D extends Diagram, C extends Abstrac
         getCanvas().destroy();
         doDestroy();
         listeners.clear();
+        domainObjectListeners.clear();
     }
 
     /**

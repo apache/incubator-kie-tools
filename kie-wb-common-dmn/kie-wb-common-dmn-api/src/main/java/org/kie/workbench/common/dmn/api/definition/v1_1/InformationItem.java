@@ -15,10 +15,13 @@
  */
 package org.kie.workbench.common.dmn.api.definition.v1_1;
 
+import java.util.Set;
+
 import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
+import org.kie.soup.commons.util.Sets;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.property.DMNPropertySet;
@@ -28,23 +31,34 @@ import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.property.dmn.QNameFieldType;
 import org.kie.workbench.common.dmn.api.property.dmn.QNameHolder;
+import org.kie.workbench.common.dmn.api.resource.i18n.DMNAPIConstants;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
+import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
+import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
+import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
+import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
+import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 @Bindable
 @PropertySet
+@Definition(graphFactory = NodeFactory.class)
 @FormDefinition(policy = FieldPolicy.ONLY_MARKED, startElement = "id")
-public class InformationItem extends DMNElement implements HasName,
-                                                           HasTypeRef,
-                                                           DMNPropertySet {
+public class InformationItem extends NamedElement implements HasName,
+                                                             HasTypeRef,
+                                                             DMNPropertySet,
+                                                             DomainObject {
 
-    //InformationItem should extend NamedElement however we do not want to expose Name as a @FormField
-    protected Name name;
+    @Category
+    private static final String stunnerCategory = Categories.DOMAIN_OBJECTS;
+
+    @Labels
+    private static final Set<String> stunnerLabels = new Sets.Builder<String>().build();
 
     protected QName typeRef;
 
@@ -65,25 +79,27 @@ public class InformationItem extends DMNElement implements HasName,
                            final Name name,
                            final QName typeRef) {
         super(id,
-              description);
-        this.name = name;
+              description,
+              name);
         this.typeRef = typeRef;
         this.typeRefHolder = new QNameHolder(typeRef);
     }
 
     // -----------------------
-    // DMN properties
+    // Stunner core properties
     // -----------------------
 
-    @Override
-    public Name getName() {
-        return name;
+    public String getStunnerCategory() {
+        return stunnerCategory;
     }
 
-    @Override
-    public void setName(final Name name) {
-        this.name = name;
+    public Set<String> getStunnerLabels() {
+        return stunnerLabels;
     }
+
+    // -----------------------
+    // DMN properties
+    // -----------------------
 
     @Override
     public QName getTypeRef() {
@@ -109,6 +125,20 @@ public class InformationItem extends DMNElement implements HasName,
 
     public void setTypeRefHolder(final QNameHolder typeRefHolder) {
         this.typeRefHolder = typeRefHolder;
+    }
+
+    // ------------------------------------------------------
+    // DomainObject requirements - to use in Properties Panel
+    // ------------------------------------------------------
+
+    @Override
+    public String getDomainObjectUUID() {
+        return getId().getValue();
+    }
+
+    @Override
+    public String getDomainObjectNameTranslationKey() {
+        return DMNAPIConstants.InformationItem_DomainObjectName;
     }
 
     @Override
