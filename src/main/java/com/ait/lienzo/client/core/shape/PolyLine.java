@@ -89,10 +89,13 @@ public class PolyLine extends AbstractDirectionalMultiPointShape<PolyLine>
         Point2DArray list = attr.getPoints();
 
         list = list.noAdjacentPoints();
-
         final int size = list.size();
-        final PathPartList path = getPathPartList();
 
+        if (0 == size) {
+            return false;
+        }
+
+        final PathPartList path = getPathPartList();
         final double headOffset = attr.getHeadOffset();
         final double tailOffset = attr.getTailOffset();
 

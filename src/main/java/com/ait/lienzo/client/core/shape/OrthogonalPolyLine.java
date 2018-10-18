@@ -32,7 +32,13 @@ import com.ait.lienzo.shared.core.types.ShapeType;
 import com.ait.tooling.nativetools.client.collection.NFastDoubleArrayJSO;
 import com.google.gwt.json.client.JSONObject;
 
-import static com.ait.lienzo.shared.core.types.Direction.*;
+import static com.ait.lienzo.shared.core.types.Direction.EAST;
+import static com.ait.lienzo.shared.core.types.Direction.NONE;
+import static com.ait.lienzo.shared.core.types.Direction.NORTH;
+import static com.ait.lienzo.shared.core.types.Direction.NORTH_WEST;
+import static com.ait.lienzo.shared.core.types.Direction.SOUTH;
+import static com.ait.lienzo.shared.core.types.Direction.SOUTH_WEST;
+import static com.ait.lienzo.shared.core.types.Direction.WEST;
 
 /**
  * Draws Orthogonal lines based on Head and Tail Directions.
@@ -81,54 +87,52 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
         Point2DArray points = attr.getControlPoints();
         points = correctBreakDistance(points, m_breakDistance);
 
-        if (null != points)
+        if (points.size() > 1)
         {
-            if (points.size() > 1)
+            final double headOffset = attr.getHeadOffset();
+            final double correction = attr.getCorrectionOffset();
+            Direction headDirection = attr.getHeadDirection();
+            Direction tailDirection = attr.getTailDirection();
+
+            if (headDirection == NONE)
             {
-                final double headOffset = attr.getHeadOffset();
-                final double correction = attr.getCorrectionOffset();
-                Direction headDirection = attr.getHeadDirection();
-                Direction tailDirection = attr.getTailDirection();
+                Point2D p0 = points.get(0);
+                Point2D p1 = points.get(1);
+                double headOffsetAndCorrect = headOffset + correction;
+                headDirection = getHeadDirection(points, null, headDirection, tailDirection, p0, p1, headOffsetAndCorrect, correction,this);
+            }
 
-                if (headDirection == NONE)
+            final NFastDoubleArrayJSO opoint = drawOrthogonalLinePoints(points, headDirection, tailDirection, correction, this, m_breakDistance,true);
+
+            m_headOffsetPoint = points.get(0);
+            m_tailOffsetPoint = points.get(points.size()-1);
+
+            if (null != opoint)
+            {
+                final PathPartList list = getPathPartList();
+                list.M(m_headOffsetPoint.getX(), m_headOffsetPoint.getY());
+                final double radius = getCornerRadius();
+
+                m_computedPoint2DArray = Point2DArray.fromNFastDoubleArrayJSO(opoint);
+
+                if (radius > 0)
                 {
-                    Point2D p0 = points.get(0);
-                    Point2D p1 = points.get(1);
-                    double headOffsetAndCorrect = headOffset + correction;
-                    headDirection = getHeadDirection(points, null, headDirection, tailDirection, p0, p1, headOffsetAndCorrect, correction,this);
+                    Geometry.drawArcJoinedLines(list, m_computedPoint2DArray, radius);
                 }
-
-                final NFastDoubleArrayJSO opoint = drawOrthogonalLinePoints(points, headDirection, tailDirection, correction, this, m_breakDistance,true);
-
-                m_headOffsetPoint = points.get(0);
-                m_tailOffsetPoint = points.get(points.size()-1);
-
-                if (null != opoint)
+                else
                 {
-                    final PathPartList list = getPathPartList();
-                    list.M(m_headOffsetPoint.getX(), m_headOffsetPoint.getY());
-                    final double radius = getCornerRadius();
-
-                    m_computedPoint2DArray =  Point2DArray.fromNFastDoubleArrayJSO(opoint);
-
-                    if (radius > 0)
+                    final int size = opoint.size();
+                    // start at 2, as M is for opoint[0]
+                    for (int i = 2; i < size; i += 2)
                     {
-                        Geometry.drawArcJoinedLines(list, m_computedPoint2DArray, radius);
+                        list.L(opoint.get(i), opoint.get(i + 1));
                     }
-                    else
-                    {
-                        final int size = opoint.size();
-                        // start at 2, as M is for opoint[0]
-                        for (int i = 2; i < size; i += 2)
-                        {
-                            list.L(opoint.get(i), opoint.get(i + 1));
-                        }
-                    }
-
-                    return true;
                 }
             }
+
+            return true;
         }
+
         m_computedPoint2DArray = null;
         return false;
     }
@@ -219,12 +223,10 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
             case WEST:
                 return target.setX(target.getX() - offset);
             case NONE:
-                break;
+                return target;
             default:
                 throw new IllegalStateException("Invalid Direction " + direction);
         }
-
-        return target;
     }
 
     private static Point2D correctP0(Direction headDirection, double correction, OrthogonalPolyLine pline, boolean write, NFastDoubleArrayJSO buffer, Point2D p0)
@@ -289,6 +291,7 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
 
         return buffer;
     }
+
     /**
      * Draws an orthogonal line between two points, it uses the previous direction to determine the new direction. It
      * will always attempt to continue the line in the same direction if it can do so, without requiring a corner.
