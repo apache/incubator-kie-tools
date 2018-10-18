@@ -369,4 +369,10 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
                                                                          }));
         });
     }
+
+    @Override
+    protected void doAfterSelectionChange(final int uiRowIndex,
+                                          final int uiColumnIndex) {
+        selectExpressionEditorFirstCell(0, 0);
+    }
 }

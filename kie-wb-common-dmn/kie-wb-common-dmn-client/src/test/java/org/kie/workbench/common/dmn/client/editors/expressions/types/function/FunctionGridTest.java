@@ -879,6 +879,24 @@ public class FunctionGridTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
+    public void testSelectFirstCell() {
+        doReturn(Optional.of(literalExpressionEditor)).when(literalExpressionEditorDefinition).getEditor(any(GridCellTuple.class),
+                                                                                                         any(Optional.class),
+                                                                                                         any(HasExpression.class),
+                                                                                                         any(Optional.class),
+                                                                                                         any(Optional.class),
+                                                                                                         anyInt());
+
+        setupGrid(0);
+
+        grid.selectFirstCell();
+
+        verify(gridLayer).select(literalExpressionEditor);
+        verify(literalExpressionEditor).selectFirstCell();
+    }
+
+    @Test
     public void testAsDMNModelInstrumentedBase() {
         setupGrid(0);
 
