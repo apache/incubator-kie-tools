@@ -379,7 +379,12 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
     public void deselect() {
         fireExpressionEditorChanged();
         getModel().clearSelections();
+        clearSelectedDomainObject();
         super.deselect();
+    }
+
+    void clearSelectedDomainObject() {
+        selectedDomainObject = Optional.empty();
     }
 
     @Override
