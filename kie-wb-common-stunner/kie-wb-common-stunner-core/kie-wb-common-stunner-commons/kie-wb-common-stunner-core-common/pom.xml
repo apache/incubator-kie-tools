@@ -56,6 +56,12 @@
       <scope>provided</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.gwtbootstrap3</groupId>
+      <artifactId>gwtbootstrap3</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
     <!-- Uberfire & Errai. -->
     <dependency>
       <groupId>org.jboss.errai</groupId>

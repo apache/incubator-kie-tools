@@ -58,9 +58,8 @@ public class RuleFlowGroupFormProvider implements SelectorDataProvider {
                 new Sets.Builder<ValueIndexTerm>()
                         .add(new ValueSharedPartIndexTerm("*",
                                                           PartType.RULEFLOW_GROUP,
-                                                          ValueIndexTerm.TermSearchType.WILDCARD))
-
-                        .build());
+                                                          ValueIndexTerm.TermSearchType.WILDCARD)).build()
+        );
 
         Map<Object, String> ruleFlowGroupNames = new TreeMap<>();
 
