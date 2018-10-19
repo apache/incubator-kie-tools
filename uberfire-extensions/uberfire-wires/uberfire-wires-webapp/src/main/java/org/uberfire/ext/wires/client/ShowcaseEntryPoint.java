@@ -24,6 +24,7 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.RootPanel;
 import org.jboss.errai.ioc.client.api.EntryPoint;
+import org.kie.soup.commons.util.Sets;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.widgets.menu.megamenu.WorkbenchMegaMenuPresenter;
@@ -78,20 +79,20 @@ public class ShowcaseEntryPoint {
 
         adminPage.addTool("root",
                           "Apps",
-                          "fa-map",
+                          new Sets.Builder().add("fa").add("fa-map").build(),
                           "General",
                           () -> placeManager.goTo(new DefaultPlaceRequest("AppsPerspective")));
 
         adminPage.addPreference("root",
                                 "MyPreference",
                                 "My Preferences",
-                                "fa-gear",
+                                new Sets.Builder().add("fa").add("fa-gear").build(),
                                 "Preferences");
 
         adminPage.addPreference("root",
                                 "MySharedPreference",
                                 "Shared Preferences",
-                                "fa-share-alt",
+                                new Sets.Builder().add("fa").add("fa-share-alt").build(),
                                 "Preferences");
     }
 

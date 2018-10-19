@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Supplier;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -99,7 +100,7 @@ public class AdminPageImpl implements AdminPage {
     @Override
     public void addTool(final String screen,
                         final String title,
-                        final String iconCss,
+                        final Set<String> iconCss,
                         final String category,
                         final Command command,
                         final ParameterizedCommand<ParameterizedCommand<Integer>> counterCommand) {
@@ -135,7 +136,7 @@ public class AdminPageImpl implements AdminPage {
     @Override
     public void addTool(final String screen,
                         final String title,
-                        final String iconCss,
+                        final Set<String> iconCss,
                         final String category,
                         final Command command) {
         addTool(screen,
@@ -150,7 +151,7 @@ public class AdminPageImpl implements AdminPage {
     public void addPreference(final String screen,
                               final String identifier,
                               final String title,
-                              final String iconCss,
+                              final Set<String> iconCss,
                               final String category,
                               final AdminPageOptions... options) {
         addPreference(screen,
@@ -166,7 +167,7 @@ public class AdminPageImpl implements AdminPage {
     public void addPreference(final String screen,
                               final String identifier,
                               final String title,
-                              final String iconCss,
+                              final Set<String> iconCss,
                               final String category,
                               final Supplier<PreferenceScopeResolutionStrategyInfo> customScopeResolutionStrategySupplier,
                               final AdminPageOptions... options) {
@@ -184,7 +185,7 @@ public class AdminPageImpl implements AdminPage {
     public void addPreference(final String screen,
                               final String identifier,
                               final String title,
-                              final String iconCss,
+                              final Set<String> iconCss,
                               final String category,
                               final PreferenceScope preferenceScope,
                               final AdminPageOptions... options) {
@@ -202,7 +203,7 @@ public class AdminPageImpl implements AdminPage {
     public void addPreference(final String screen,
                               final String identifier,
                               final String title,
-                              final String iconCss,
+                              final Set<String> iconCss,
                               final String category,
                               final Supplier<PreferenceScopeResolutionStrategyInfo> customScopeResolutionStrategySupplier,
                               final PreferenceScope preferenceScope,

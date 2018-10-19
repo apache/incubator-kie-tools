@@ -22,6 +22,7 @@ import javax.inject.Inject;
 import org.guvnor.common.services.project.client.preferences.ProjectScopedResolutionStrategySupplier;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ui.shared.api.annotations.Bundle;
+import org.kie.soup.commons.util.Sets;
 import org.uberfire.ext.preferences.client.admin.page.AdminPage;
 
 @EntryPoint
@@ -51,7 +52,7 @@ public class ProjectEntryPoint {
         adminPage.addPreference("project",
                                 "GeneralPreferences",
                                 "General",
-                                "fa-gears",
+                                new Sets.Builder().add("fa").add("fa-gears").build(),
                                 "general",
                                 projectScopedResolutionStrategySupplier);
     }

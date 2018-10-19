@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 import javax.enterprise.event.Event;
 
+import com.google.common.collect.Sets;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,6 +43,9 @@ import org.uberfire.preferences.shared.impl.PreferenceScopeFactoryImpl;
 import org.uberfire.preferences.shared.impl.PreferenceScopeImpl;
 import org.uberfire.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
 
+import static java.util.Collections.singleton;
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.hasItems;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
@@ -102,25 +106,25 @@ public class AdminPageImplTest {
 
         adminPage.addTool("screen1",
                           "title1",
-                          "iconCss1",
+                          singleton("iconCss1"),
                           "category1",
                           () -> {
                           });
         adminPage.addTool("screen1",
                           "title2",
-                          "iconCss2",
+                          singleton("iconCss2"),
                           "category1",
                           () -> {
                           });
         adminPage.addTool("screen1",
                           "title3",
-                          "iconCss3",
+                          singleton("iconCss3"),
                           "category2",
                           () -> {
                           });
         adminPage.addTool("screen2",
                           "title4",
-                          "iconCss4",
+                          singleton("iconCss4"),
                           "category3",
                           () -> {
                           });
@@ -136,20 +140,24 @@ public class AdminPageImplTest {
                      category1Tools.size());
         assertEquals("title1",
                      category1Tools.get(0).getTitle());
-        assertEquals("iconCss1",
-                     category1Tools.get(0).getIconCss());
+        assertEquals(1,
+                     category1Tools.get(0).getIconCss().size());
+        assertThat(category1Tools.get(0).getIconCss(),
+                   hasItem("iconCss1"));
         assertEquals("title2",
                      category1Tools.get(1).getTitle());
-        assertEquals("iconCss2",
-                     category1Tools.get(1).getIconCss());
+        assertEquals(1,
+                     category1Tools.get(1).getIconCss().size());
+        assertThat(category1Tools.get(1).getIconCss(),
+                   hasItem("iconCss2"));
 
         final List<AdminTool> category2Tools = toolsByCategory1.get("category2");
         assertEquals(1,
                      category2Tools.size());
         assertEquals("title3",
                      category2Tools.get(0).getTitle());
-        assertEquals("iconCss3",
-                     category2Tools.get(0).getIconCss());
+        assertThat(category2Tools.get(0).getIconCss(),
+                   hasItem("iconCss3"));
 
         final Map<String, List<AdminTool>> toolsByCategory2 = adminPage.getToolsByCategory("screen2");
 
@@ -162,15 +170,15 @@ public class AdminPageImplTest {
                      category3Tools.size());
         assertEquals("title4",
                      category3Tools.get(0).getTitle());
-        assertEquals("iconCss4",
-                     category3Tools.get(0).getIconCss());
+        assertThat(category3Tools.get(0).getIconCss(),
+                   hasItem("iconCss4"));
     }
 
     @Test(expected = RuntimeException.class)
     public void addToolWithNullScreenTest() {
         adminPage.addTool(null,
                           "title",
-                          "iconCss",
+                          singleton("iconCss"),
                           null,
                           () -> {
                           });
@@ -180,7 +188,7 @@ public class AdminPageImplTest {
     public void addToolWithNullCategoryTest() {
         adminPage.addTool("screen",
                           "title",
-                          "iconCss",
+                          singleton("iconCss"),
                           null,
                           () -> {
                           });
@@ -193,7 +201,8 @@ public class AdminPageImplTest {
         adminPage.addPreference("screen1",
                                 "MyPreference",
                                 "My Preference",
-                                "fa-map",
+                                Sets.newHashSet("fa",
+                                                "fa-map"),
                                 "category1");
 
         final Map<String, List<AdminTool>> toolsByCategory1 = adminPage.getToolsByCategory("screen1");
@@ -207,8 +216,11 @@ public class AdminPageImplTest {
                      category1Tools.size());
         assertEquals("My Preference",
                      category1Tools.get(0).getTitle());
-        assertEquals("fa-map",
-                     category1Tools.get(0).getIconCss());
+        assertEquals(2,
+                     category1Tools.get(0).getIconCss().size());
+        assertThat(category1Tools.get(0).getIconCss(),
+                   hasItems("fa",
+                            "fa-map"));
 
         category1Tools.get(0).getOnClickCommand().execute();
 
@@ -238,7 +250,8 @@ public class AdminPageImplTest {
         adminPage.addPreference("screen1",
                                 "MyPreference",
                                 "My Preference",
-                                "fa-map",
+                                Sets.newHashSet("fa",
+                                                "fa-map"),
                                 "category1",
                                 scopeResolutionStrategyInfoSupplier);
 
@@ -253,8 +266,9 @@ public class AdminPageImplTest {
                      category1Tools.size());
         assertEquals("My Preference",
                      category1Tools.get(0).getTitle());
-        assertEquals("fa-map",
-                     category1Tools.get(0).getIconCss());
+        assertThat(category1Tools.get(0).getIconCss(),
+                   hasItems("fa",
+                            "fa-map"));
 
         category1Tools.get(0).getOnClickCommand().execute();
 
@@ -277,7 +291,8 @@ public class AdminPageImplTest {
         adminPage.addPreference("screen1",
                                 "MyPreference",
                                 "My Preference",
-                                "fa-map",
+                                Sets.newHashSet("fa",
+                                                "fa-map"),
                                 "category1",
                                 preferenceScope);
 
@@ -292,8 +307,9 @@ public class AdminPageImplTest {
                      category1Tools.size());
         assertEquals("My Preference",
                      category1Tools.get(0).getTitle());
-        assertEquals("fa-map",
-                     category1Tools.get(0).getIconCss());
+        assertThat(category1Tools.get(0).getIconCss(),
+                   hasItems("fa",
+                            "fa-map"));
 
         category1Tools.get(0).getOnClickCommand().execute();
 
@@ -310,7 +326,8 @@ public class AdminPageImplTest {
         adminPage.addPreference("screen1",
                                 "MyPreference",
                                 "My Preference",
-                                "fa-map",
+                                Sets.newHashSet("fa",
+                                                "fa-map"),
                                 "category1",
                                 AdminPageOptions.WITH_BREADCRUMBS);
 
@@ -325,8 +342,9 @@ public class AdminPageImplTest {
                      category1Tools.size());
         assertEquals("My Preference",
                      category1Tools.get(0).getTitle());
-        assertEquals("fa-map",
-                     category1Tools.get(0).getIconCss());
+        assertThat(category1Tools.get(0).getIconCss(),
+                   hasItems("fa",
+                            "fa-map"));
 
         category1Tools.get(0).getOnClickCommand().execute();
 

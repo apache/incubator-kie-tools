@@ -16,6 +16,8 @@
 
 package org.uberfire.ext.preferences.client.admin.item;
 
+import java.util.Collections;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -59,7 +61,7 @@ public class AdminPageItemPresenterTest {
         });
 
         AdminTool adminTool = new AdminTool("title1",
-                                            "iconCss1",
+                                            Collections.singleton("iconCss1"),
                                             "category1",
                                             command);
 

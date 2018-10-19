@@ -63,9 +63,8 @@ public class AdminPageItemView implements IsElement,
         this.presenter = presenter;
         final AdminTool adminTool = presenter.getAdminTool();
 
-        final String iconCss = adminTool.getIconCss();
-        if (!iconCss.isEmpty()) {
-            icon.addClassName(iconCss);
+        if (adminTool.getIconCss() != null) {
+            adminTool.getIconCss().forEach(css -> icon.addClassName(css));
         }
 
         text.setTextContent(adminTool.getTitle());

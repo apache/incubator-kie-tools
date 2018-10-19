@@ -18,6 +18,7 @@ package org.uberfire.ext.preferences.client.admin.page;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Supplier;
 
 import org.uberfire.mvp.Command;
@@ -50,7 +51,7 @@ public interface AdminPage {
      */
     void addTool(String screen,
                  String title,
-                 String iconCss,
+                 Set<String> iconCss,
                  String category,
                  Command command,
                  ParameterizedCommand<ParameterizedCommand<Integer>> counterCommand);
@@ -65,7 +66,7 @@ public interface AdminPage {
      */
     void addTool(String screen,
                  String title,
-                 String iconCss,
+                 Set<String> iconCss,
                  String category,
                  Command command);
 
@@ -81,7 +82,7 @@ public interface AdminPage {
     void addPreference(String screen,
                        String identifier,
                        String title,
-                       String iconCss,
+                       Set<String> iconCss,
                        String category,
                        AdminPageOptions... options);
 
@@ -99,7 +100,7 @@ public interface AdminPage {
     void addPreference(String screen,
                        String identifier,
                        String title,
-                       String iconCss,
+                       Set<String> iconCss,
                        String category,
                        Supplier<PreferenceScopeResolutionStrategyInfo> customScopeResolutionStrategySupplier,
                        AdminPageOptions... options);
@@ -118,7 +119,7 @@ public interface AdminPage {
     void addPreference(String screen,
                        String identifier,
                        String title,
-                       String iconCss,
+                       Set<String> iconCss,
                        String category,
                        PreferenceScope preferenceScope,
                        AdminPageOptions... options);
@@ -138,7 +139,7 @@ public interface AdminPage {
     void addPreference(String screen,
                        String identifier,
                        String title,
-                       String iconCss,
+                       Set<String> iconCss,
                        String category,
                        Supplier<PreferenceScopeResolutionStrategyInfo> customScopeResolutionStrategySupplier,
                        PreferenceScope preferenceScope,

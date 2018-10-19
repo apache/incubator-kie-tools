@@ -16,6 +16,8 @@
 
 package org.uberfire.ext.preferences.client.admin.page;
 
+import java.util.Set;
+
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 
@@ -23,7 +25,7 @@ public class AdminTool {
 
     private String title;
 
-    private String iconCss;
+    private Set<String> iconCss;
 
     private String category;
 
@@ -35,7 +37,7 @@ public class AdminTool {
     }
 
     public AdminTool(final String title,
-                     final String iconCss,
+                     final Set<String> iconCss,
                      final String category,
                      final Command onClickCommand) {
         this(title,
@@ -46,7 +48,7 @@ public class AdminTool {
     }
 
     public AdminTool(final String title,
-                     final String iconCss,
+                     final Set<String> iconCss,
                      final String category,
                      final Command onClickCommand,
                      final ParameterizedCommand<ParameterizedCommand<Integer>> counterCommand) {
@@ -61,7 +63,7 @@ public class AdminTool {
         return title;
     }
 
-    public String getIconCss() {
+    public Set<String> getIconCss() {
         return iconCss;
     }
 
