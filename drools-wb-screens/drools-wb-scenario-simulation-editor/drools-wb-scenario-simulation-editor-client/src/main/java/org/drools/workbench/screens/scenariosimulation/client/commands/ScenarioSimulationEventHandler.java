@@ -300,6 +300,7 @@ public class ScenarioSimulationEventHandler implements AppendColumnEventHandler,
         } else {
             commonExecution(context, new SetInstanceHeaderCommand());
         }
+        context.getScenarioGridPanel().setFocus(true);
     }
 
     @Override
@@ -346,6 +347,8 @@ public class ScenarioSimulationEventHandler implements AppendColumnEventHandler,
                                       ScenarioSimulationEditorConstants.INSTANCE.deleteValues(),
                                       okPreserveCommand);
         }
+
+        context.getScenarioGridPanel().setFocus(true);
     }
 
     @Override

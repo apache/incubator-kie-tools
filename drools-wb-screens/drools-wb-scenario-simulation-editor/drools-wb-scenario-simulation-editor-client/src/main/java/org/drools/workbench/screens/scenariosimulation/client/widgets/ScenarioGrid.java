@@ -38,6 +38,7 @@ import org.uberfire.ext.wires.core.grids.client.model.GridColumn.ColumnWidthMode
 import org.uberfire.ext.wires.core.grids.client.widget.grid.NodeMouseEventHandler;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.DefaultGridWidgetCellSelectorMouseEventHandler;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.SelectionExtension;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridSelectionManager;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.GridPinnedModeManager;
 
@@ -218,5 +219,14 @@ public class ScenarioGrid extends BaseGridWidget {
 
     protected void appendRow(int rowIndex, Scenario scenario) {
         ((ScenarioGridModel) model).insertRowGridOnly(rowIndex, new ScenarioGridRow(), scenario);
+    }
+
+    @Override
+    public boolean adjustSelection(final SelectionExtension direction, final boolean isShiftKeyDown) {
+        final boolean selectionChanged = super.adjustSelection(direction, isShiftKeyDown);
+
+        scenarioGridPanel.signalRightPanelAboutSelectedHeaderCells();
+
+        return selectionChanged;
     }
 }

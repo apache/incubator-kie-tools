@@ -21,12 +21,19 @@ import java.util.function.Supplier;
 import javax.enterprise.context.Dependent;
 
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.workbench.screens.scenariosimulation.client.handlers.EditScenarioSimulationGridCellKeyboardOperation;
+import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGrid;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridLayer;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
 import org.drools.workbench.screens.scenariosimulation.model.Simulation;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidgetKeyboardHandler;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationMoveDown;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationMoveLeft;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationMoveRight;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationMoveUp;
 import org.uberfire.workbench.model.menu.MenuItem;
 
 /**
@@ -53,7 +60,6 @@ public class ScenarioSimulationViewImpl
 
     private ScenarioMenuItem downloadMenuItem;
 
-
     /**
      * This method also set <code>ScenarioGridLayer</code> taken the instance from given <code>ScenarioGridPanel</code>
      * @param scenarioGridPanel
@@ -69,12 +75,33 @@ public class ScenarioSimulationViewImpl
         this.presenter = presenter;
         scenarioGridLayer.enterPinnedMode(scenarioGridLayer.getScenarioGrid(), () -> {
         });  // Hack to overcome default implementation
+        final BaseGridWidgetKeyboardHandler handler = new BaseGridWidgetKeyboardHandler(scenarioGridLayer);
+        handler.addOperation(new EditScenarioSimulationGridCellKeyboardOperation(scenarioGridLayer),
+                             new KeyboardOperationMoveLeft(scenarioGridLayer),
+                             new KeyboardOperationMoveRight(scenarioGridLayer),
+                             new KeyboardOperationMoveUp(scenarioGridLayer),
+                             new KeyboardOperationMoveDown(scenarioGridLayer));
+        scenarioGridPanel.addKeyDownHandler(handler);
         initWidget(scenarioGridPanel);
     }
 
     @Override
     public void setContent(Simulation simulation) {
         scenarioGridPanel.getScenarioGrid().setContent(simulation);
+
+        // prepare grid for keyboard navigation
+        selectLeftTopCell();
+        scenarioGridPanel.setFocus(true);
+    }
+
+    private void selectLeftTopCell() {
+        final ScenarioGrid scenarioGrid = scenarioGridPanel.getScenarioGrid();
+        if (scenarioGrid.getModel().getColumnCount() > 0 && scenarioGrid.getModel().getRowCount() > 0) {
+            scenarioGridPanel.getScenarioGrid().selectCell(0,
+                                                           0,
+                                                           false,
+                                                           false);
+        }
     }
 
     @Override
@@ -114,7 +141,7 @@ public class ScenarioSimulationViewImpl
     public MenuItem getDownloadMenuItem(final Supplier<Path> pathSupplier) {
         if (downloadMenuItem == null) {
             downloadMenuItem = new ScenarioMenuItem(IconType.DOWNLOAD,
-                                                () -> presenter.onDownload(pathSupplier));
+                                                    () -> presenter.onDownload(pathSupplier));
         }
         return downloadMenuItem;
     }

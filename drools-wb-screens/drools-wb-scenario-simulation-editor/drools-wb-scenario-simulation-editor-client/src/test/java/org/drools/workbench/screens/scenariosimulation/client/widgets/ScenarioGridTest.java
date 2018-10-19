@@ -15,6 +15,7 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.widgets;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -39,8 +40,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn.ColumnWidthMode;
+import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.NodeMouseEventHandler;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.DefaultGridWidgetCellSelectorMouseEventHandler;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.SelectionExtension;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -49,6 +52,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
@@ -242,6 +246,20 @@ public class ScenarioGridTest {
     public void appendRows() {
         scenarioGrid.appendRows(simulation);
         verify(scenarioGrid, times(1)).appendRow(anyInt(), isA(Scenario.class));
+    }
+
+    @Test
+    public void testAdjustSelection() {
+        final ScenarioGridColumn column = mock(ScenarioGridColumn.class);
+        when(scenarioGridModelMock.getColumns()).thenReturn(Collections.singletonList(column));
+
+        final GridData.SelectedCell selectedHeaderCell = mock(GridData.SelectedCell.class);
+        when(selectedHeaderCell.getRowIndex()).thenReturn(1);
+        when(scenarioGridModelMock.getSelectedHeaderCells()).thenReturn(Collections.singletonList(selectedHeaderCell));
+
+        scenarioGrid.adjustSelection(mock(SelectionExtension.class), false);
+        
+        verify(scenarioGridPanelMock).signalRightPanelAboutSelectedHeaderCells();
     }
 
     private Simulation getSimulation() {

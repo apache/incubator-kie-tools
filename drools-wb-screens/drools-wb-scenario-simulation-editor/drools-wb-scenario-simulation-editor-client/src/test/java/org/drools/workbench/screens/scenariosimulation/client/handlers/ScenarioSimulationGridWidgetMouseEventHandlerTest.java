@@ -50,7 +50,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
-public class ScenarioSimulationGridWidgetMouseEventHandlerTest extends AbstractScenarioSimulationGridPanelClickHandlerTest {
+public class ScenarioSimulationGridWidgetMouseEventHandlerTest extends AbstractScenarioSimulationGridHandlerTest {
 
     private static final int MOUSE_EVENT_X = 32;
 

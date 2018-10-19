@@ -33,6 +33,10 @@ public interface ScenarioSimulationView extends KieEditorView,
 
     void init(final ScenarioSimulationEditorPresenter presenter);
 
+    /**
+     * Initializes the view with 'simulation' model and selects its left top cell
+     * @param simulation model of the Simulation Scenario
+     */
     void setContent(final Simulation simulation);
 
     void refreshContent(final Simulation simulation);

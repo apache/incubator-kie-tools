@@ -56,6 +56,22 @@ public class ScenarioSimulationGridHeaderUtilities {
     }
 
     /**
+     * Retrieve the <code>ScenarioHeaderMetaData</code> from the <code>GridColumn</code> corresponding to given row.
+     * It returns <code>null</code> row with given index doesn't exist.
+     * @param scenarioGridColumn
+     * @param uiRowIndex
+     * @return
+     */
+    public static ScenarioHeaderMetaData getColumnScenarioHeaderMetaData(final ScenarioGridColumn scenarioGridColumn,
+                                                                         final int uiRowIndex) {
+        if (scenarioGridColumn.getHeaderMetaData().size() > uiRowIndex) {
+            return (ScenarioHeaderMetaData) scenarioGridColumn.getHeaderMetaData().get(uiRowIndex);
+        }
+
+        return null;
+    }
+
+    /**
      * Retrieve the <code>GridColumn</code> of a <code>GridWidget</code> at a given point x.
      * It returns <code>null</code> if none is present at that position.
      * @param gridWidget
@@ -109,7 +125,6 @@ public class ScenarioSimulationGridHeaderUtilities {
         return String.join(";", scenarioGridModel.getColumns()
                 .stream()
                 .filter(gridColumn -> {
-
                     GridColumn.HeaderMetaData m = ((ScenarioGridColumn) gridColumn).getInformationHeaderMetaData();
                     return group.equals(m.getColumnGroup());
                 })
