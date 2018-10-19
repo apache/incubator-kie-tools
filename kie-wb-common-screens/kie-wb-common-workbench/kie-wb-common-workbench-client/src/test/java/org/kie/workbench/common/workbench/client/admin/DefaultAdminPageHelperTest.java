@@ -306,9 +306,9 @@ public class DefaultAdminPageHelperTest {
         verify(adminPage,
                times(1)).addPreference(eq("root"),
                                        eq(LIBRARY_PREFERENCES),
-                                       anyString(),
-                                       anyString(),
-                                       anyString(),
+                                       any(),
+                                       any(),
+                                       any(),
                                        eq(globalScope),
                                        eq(AdminPageOptions.WITH_BREADCRUMBS));
     }
@@ -317,9 +317,9 @@ public class DefaultAdminPageHelperTest {
         verify(adminPage,
                never()).addPreference(eq("root"),
                                       eq(LIBRARY_PREFERENCES),
-                                      anyString(),
-                                      anyString(),
-                                      anyString(),
+                                      any(),
+                                      any(),
+                                      any(),
                                       any(PreferenceScope.class),
                                       eq(AdminPageOptions.WITH_BREADCRUMBS));
     }
@@ -328,9 +328,9 @@ public class DefaultAdminPageHelperTest {
         verify(adminPage,
                times(1)).addPreference(eq("root"),
                                        eq(ARTIFACT_REPOSITORY_PREFERENCES),
-                                       anyString(),
-                                       anyString(),
-                                       anyString(),
+                                       any(),
+                                       any(),
+                                       any(),
                                        eq(globalScope),
                                        eq(AdminPageOptions.WITH_BREADCRUMBS));
     }
@@ -339,9 +339,9 @@ public class DefaultAdminPageHelperTest {
         verify(adminPage,
                times(1)).addPreference(eq("root"),
                                        eq(MANAGE_PREFERENCES),
-                                       anyString(),
-                                       anyString(),
-                                       anyString(),
+                                       any(),
+                                       any(),
+                                       any(),
                                        eq(globalScope),
                                        eq(AdminPageOptions.WITH_BREADCRUMBS));
     }
@@ -350,9 +350,9 @@ public class DefaultAdminPageHelperTest {
         verify(adminPage,
                never()).addPreference(eq("root"),
                                       eq(MANAGE_PREFERENCES),
-                                      anyString(),
-                                      anyString(),
-                                      anyString(),
+                                      any(),
+                                      any(),
+                                      any(),
                                       eq(globalScope),
                                       eq(AdminPageOptions.WITH_BREADCRUMBS));
     }
@@ -361,9 +361,9 @@ public class DefaultAdminPageHelperTest {
         verify(adminPage,
                never()).addPreference(eq("root"),
                                       eq(ARTIFACT_REPOSITORY_PREFERENCES),
-                                      anyString(),
-                                      anyString(),
-                                      anyString(),
+                                      any(),
+                                      any(),
+                                      any(),
                                       any(PreferenceScope.class),
                                       eq(AdminPageOptions.WITH_BREADCRUMBS));
     }
@@ -372,9 +372,9 @@ public class DefaultAdminPageHelperTest {
         verify(adminPage,
                times(timesAdded)).addPreference(eq("root"),
                                            eq(STUNNER_PREFERENCES),
-                                           anyString(),
-                                           anyString(),
-                                           anyString(),
+                                           any(),
+                                           any(),
+                                           any(),
                                            any(PreferenceScope.class),
                                            eq(AdminPageOptions.WITH_BREADCRUMBS));
     }

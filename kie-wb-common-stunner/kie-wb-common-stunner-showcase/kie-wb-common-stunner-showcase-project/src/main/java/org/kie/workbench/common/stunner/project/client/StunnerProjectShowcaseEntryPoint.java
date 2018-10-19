@@ -21,6 +21,7 @@ import org.guvnor.common.services.shared.config.AppConfigService;
 import org.guvnor.common.services.shared.preferences.GuvnorPreferenceScopes;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.api.EntryPoint;
+import org.kie.soup.commons.util.Sets;
 import org.kie.workbench.common.stunner.project.client.resources.i18n.AppConstants;
 import org.kie.workbench.common.widgets.client.handlers.workbench.configuration.LanguageConfigurationHandler;
 import org.kie.workbench.common.widgets.client.handlers.workbench.configuration.WorkbenchConfigurationPresenter;
@@ -106,20 +107,20 @@ public class StunnerProjectShowcaseEntryPoint extends DefaultWorkbenchEntryPoint
         adminPage.addPreference("root",
                                 "LibraryPreferences",
                                 AppConstants.INSTANCE.Library(),
-                                "fa-cubes",
+                                new Sets.Builder().add("fa").add("fa-cubes").build(),
                                 "preferences",
                                 scopeFactory.createScope(GuvnorPreferenceScopes.GLOBAL));
 
         adminPage.addPreference("root",
                                 "ArtifactRepositoryPreference",
                                 AppConstants.INSTANCE.ArtifactRepository(),
-                                "fa-archive",
+                                new Sets.Builder().add("fa").add("fa-archive").build(),
                                 "preferences",
                                 scopeFactory.createScope(GuvnorPreferenceScopes.GLOBAL));
 
         adminPage.addTool("root",
                           "Languages",
-                          "fa-cog",
+                          new Sets.Builder().add("fa").add("fa-cog").build(),
                           "general",
                           () -> {
                               workbenchConfigurationPresenter.show(languageConfigurationHandler);

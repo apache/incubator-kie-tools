@@ -26,6 +26,7 @@ import org.jboss.errai.security.shared.api.Group;
 import org.jboss.errai.security.shared.api.Role;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
+import org.kie.soup.commons.util.Sets;
 import org.kie.workbench.common.widgets.client.handlers.workbench.configuration.LanguageConfigurationHandler;
 import org.kie.workbench.common.widgets.client.handlers.workbench.configuration.WorkbenchConfigurationPresenter;
 import org.kie.workbench.common.workbench.client.PerspectiveIds;
@@ -111,7 +112,7 @@ public class DefaultAdminPageHelper {
     private void addGeneralPreferences() {
         adminPage.addTool("root",
                           constants.Languages(),
-                          "fa-language",
+                          new Sets.Builder().add("fa").add("fa-language").build(),
                           "preferences",
                           () -> workbenchConfigurationPresenter.show(languageConfigurationHandler));
     }
@@ -121,7 +122,7 @@ public class DefaultAdminPageHelper {
             adminPage.addPreference("root",
                                     "StunnerPreferences",
                                     constants.StunnerDesignerPreferences(),
-                                    "fa-object-group",
+                                    new Sets.Builder().add("fa").add("fa-object-group").build(),
                                     "general",
                                     scopeFactory.createScope(GuvnorPreferenceScopes.GLOBAL),
                                     AdminPageOptions.WITH_BREADCRUMBS);
@@ -132,7 +133,7 @@ public class DefaultAdminPageHelper {
         if (hasAccessToPerspective(PerspectiveIds.SECURITY_MANAGEMENT)) {
             adminPage.addTool("root",
                               constants.Roles(),
-                              "fa-unlock-alt",
+                              new Sets.Builder().add("fa").add("fa-unlock-alt").build(),
                               "security",
                               () -> {
                                   final Command accessRoles = () -> {
@@ -160,7 +161,7 @@ public class DefaultAdminPageHelper {
 
             adminPage.addTool("root",
                               constants.Groups(),
-                              "fa-users",
+                              new Sets.Builder().add("fa").add("fa-users").build(),
                               "security",
                               () -> {
                                   final Command accessGroups = () -> {
@@ -188,7 +189,7 @@ public class DefaultAdminPageHelper {
 
             adminPage.addTool("root",
                               constants.Users(),
-                              "fa-user",
+                              new Sets.Builder().add("fa").add("fa-user").build(),
                               "security",
                               () -> {
                                   final Command accessUsers = () -> {
@@ -220,7 +221,7 @@ public class DefaultAdminPageHelper {
         if (hasAccessToPerspective(PerspectiveIds.GUVNOR_M2REPO)) {
             adminPage.addTool("root",
                               constants.Artifacts(),
-                              "fa-download",
+                              new Sets.Builder().add("fa").add("fa-download").build(),
                               "perspectives",
                               () -> {
                                   final Command accessArtifacts = () -> placeManager.goTo(GUVNOR_M2REPO);
@@ -236,7 +237,7 @@ public class DefaultAdminPageHelper {
         if (hasAccessToPerspective(PerspectiveIds.DATASOURCE_MANAGEMENT)) {
             adminPage.addTool("root",
                               constants.DataSources(),
-                              "fa-database",
+                              new Sets.Builder().add("fa").add("fa-database").build(),
                               "perspectives",
                               () -> {
                                   final Command accessDataSources = () -> placeManager.goTo(PerspectiveIds.DATASOURCE_MANAGEMENT);
@@ -252,7 +253,7 @@ public class DefaultAdminPageHelper {
         if (hasAccessToPerspective(PerspectiveIds.DATASET_AUTHORING)) {
             adminPage.addTool("root",
                               constants.DataSets(),
-                              "fa-folder-open",
+                              new Sets.Builder().add("fa").add("fa-folder-open").build(),
                               "perspectives",
                               () -> {
                                   final Command accessDataSets = () -> placeManager.goTo(PerspectiveIds.DATASET_AUTHORING);
@@ -277,7 +278,7 @@ public class DefaultAdminPageHelper {
             adminPage.addPreference("root",
                                     "LibraryPreferences",
                                     translationService.format(PreferencesConstants.LibraryPreferences_Title),
-                                    "fa-cubes",
+                                    new Sets.Builder().add("fa").add("fa-cubes").build(),
                                     "preferences",
                                     scopeFactory.createScope(GuvnorPreferenceScopes.GLOBAL),
                                     AdminPageOptions.WITH_BREADCRUMBS);
@@ -287,7 +288,7 @@ public class DefaultAdminPageHelper {
             adminPage.addPreference("root",
                                     "ArtifactRepositoryPreference",
                                     translationService.format(PreferencesConstants.ArtifactRepositoryPreferences_Title),
-                                    "fa-archive",
+                                    new Sets.Builder().add("fa").add("fa-archive").build(),
                                     "preferences",
                                     scopeFactory.createScope(GuvnorPreferenceScopes.GLOBAL),
                                     AdminPageOptions.WITH_BREADCRUMBS);
@@ -296,7 +297,7 @@ public class DefaultAdminPageHelper {
         adminPage.addPreference("root",
                                 "ManagePreferences",
                                 constants.ProcessAdministration(),
-                                "pficon-storage-domain",
+                                new Sets.Builder().add("pficon").add("pficon-storage-domain").build(),
                                 "general",
                                 scopeFactory.createScope(GuvnorPreferenceScopes.GLOBAL),
                                 AdminPageOptions.WITH_BREADCRUMBS);
