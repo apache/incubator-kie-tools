@@ -127,6 +127,7 @@ public class WiresConnectorHandlerImplTest {
         when(line.getLayer()).thenReturn(layer);
         when(line.getPoint2DArray()).thenReturn(linePoints);
         when(line.getComputedBoundingPoints()).thenReturn(new BoundingPoints(boundingBox));
+        when(line.isControlPointShape()).thenReturn(true);
         when(wiresManager.getSelectionManager()).thenReturn(selectionManager);
         when(selectionManager.getSelectedItems()).thenReturn(selectedItems);
         when(selectedItems.getConnectors()).thenReturn(new HashSet<WiresConnector>());
@@ -255,6 +256,20 @@ public class WiresConnectorHandlerImplTest {
         verify(transientPoint, never()).setX(anyDouble());
         verify(transientPoint, never()).setY(anyDouble());
         verify(control).destroyTransientControlHandle();
+    }
+
+    @Test
+    public void testMoveNonControlPointShape() {
+        when(line.isControlPointShape()).thenReturn(false);
+        when(moveEvent.getX()).thenReturn(20);
+        when(moveEvent.getY()).thenReturn(20);
+
+        tested.onNodeMouseMove(moveEvent);
+        verify(control, never()).showControlPoints();
+        verify(control, never()).createTransientControlHandle(createConsumer.capture());
+        verify(transientPoint, never()).setX(anyDouble());
+        verify(transientPoint, never()).setY(anyDouble());
+        verify(control, never()).destroyTransientControlHandle();
     }
 
     @Test
