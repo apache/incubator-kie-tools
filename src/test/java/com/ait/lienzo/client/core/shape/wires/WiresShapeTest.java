@@ -56,6 +56,7 @@ import static com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandl
 import static com.ait.lienzo.shared.core.types.EventPropagationMode.FIRST_ANCESTOR;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -316,5 +317,24 @@ public class WiresShapeTest
         tested.refresh();
 
         verify(controls).refresh();
+    }
+
+    @Test
+    public void testEquals()
+    {
+        WiresShape shape1 = new WiresShape(path, layoutContainer, handlerManager, handlerRegistrationManager, attributesChangedBatcher);
+        assertEquals(shape1, shape1);
+        assertFalse(shape1.equals(null));
+        assertFalse(shape1.equals(new Object()));
+
+        WiresShape shape2 = new WiresShape(path, layoutContainer, handlerManager, handlerRegistrationManager, attributesChangedBatcher);
+        assertEquals(shape1, shape2);
+        assertEquals(shape2, shape1);
+
+        Group group2 = new Group();
+        when(layoutContainer.getGroup()).thenReturn(group2);
+        shape2 = new WiresShape(path, layoutContainer, handlerManager, handlerRegistrationManager, attributesChangedBatcher);
+        assertNotEquals(shape1, shape2);
+        assertNotEquals(shape2, shape1);
     }
 }

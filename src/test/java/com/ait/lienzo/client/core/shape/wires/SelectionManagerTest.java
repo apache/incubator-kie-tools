@@ -19,6 +19,7 @@ import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyDouble;
@@ -57,7 +58,6 @@ public class SelectionManagerTest
     @Mock
     private Viewport viewport;
 
-    @Mock
     private OnEventHandlers onEventHandlers;
 
     @Mock
@@ -79,6 +79,8 @@ public class SelectionManagerTest
     @Before
     public void setup()
     {
+        onEventHandlers = spy(new OnEventHandlers());
+
         when(wiresManager.getLayer()).thenReturn(wiresLayer);
         when(wiresManager.getControlFactory()).thenReturn(factory);
         when(wiresLayer.getLayer()).thenReturn(layer);
@@ -202,5 +204,17 @@ public class SelectionManagerTest
         final Double relativeStartY = manager.relativeStartY();
 
         assertEquals(5d, relativeStartY, 0);
+    }
+
+    @Test
+    public void testDestroy()
+    {
+        manager.destroy();
+
+        assertNull(onEventHandlers.getOnMouseClickEventHandle());
+        assertNull(onEventHandlers.getOnMouseDoubleClickEventHandle());
+        assertNull(onEventHandlers.getOnMouseDownEventHandle());
+        assertNull(onEventHandlers.getOnMouseMoveEventHandle());
+        assertNull(onEventHandlers.getOnMouseUpEventHandle());
     }
 }
