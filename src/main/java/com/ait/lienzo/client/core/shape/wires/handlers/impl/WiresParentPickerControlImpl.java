@@ -149,9 +149,13 @@ public class WiresParentPickerControlImpl implements WiresParentPickerControl,
 
     public void clear() {
         shapeLocationControl.clear();
+        if (null != m_picker)
+        {
+            m_picker.destroy();
+            m_picker = null;
+        }
         m_parent = null;
         m_parentPart = null;
-        m_picker = null;
         initialParent = null;
     }
 
@@ -230,16 +234,15 @@ public class WiresParentPickerControlImpl implements WiresParentPickerControl,
 
         private final ColorMapBackedPicker.PickerOptions pickerOptions;
 
-        public ColorMapBackedPickerProviderImpl(ColorMapBackedPicker.PickerOptions pickerOptions) {
+        public ColorMapBackedPickerProviderImpl(final ColorMapBackedPicker.PickerOptions pickerOptions) {
             this.pickerOptions = pickerOptions;
         }
 
         @Override
-        public ColorMapBackedPicker get(WiresLayer layer) {
+        public ColorMapBackedPicker get(final WiresLayer layer)
+        {
             return new ColorMapBackedPicker(layer,
-                                     layer.getChildShapes(),
-                                     layer.getLayer().getScratchPad(),
-                                     pickerOptions);
+                                            pickerOptions);
         }
 
         @Override
@@ -258,7 +261,7 @@ public class WiresParentPickerControlImpl implements WiresParentPickerControl,
         }
 
         @Override
-        public PickerPart findShapeAt(int x, int y)
+        public PickerPart findShapeAt(final int x, final int y)
         {
             return m_picker.findShapeAt(x, y);
         }

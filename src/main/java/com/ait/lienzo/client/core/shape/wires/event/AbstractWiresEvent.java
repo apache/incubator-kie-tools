@@ -20,7 +20,7 @@ import com.ait.lienzo.client.core.event.INodeEvent;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 
-public abstract class AbstractWiresEvent<S, H extends EventHandler>extends GwtEvent<H> implements INodeEvent
+public abstract class AbstractWiresEvent<S, H extends EventHandler> extends GwtEvent<H> implements INodeEvent
 {
     private final S shape;
 

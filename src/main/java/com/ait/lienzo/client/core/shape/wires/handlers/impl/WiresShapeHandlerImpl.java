@@ -58,8 +58,9 @@ public class WiresShapeHandlerImpl extends WiresManager.WiresDragHandler impleme
         super.startDrag(dragContext);
 
         // Delegate start dragging to shape control.
-        getControl().onMoveStart(dragContext.getDragStartX(),
-                            dragContext.getDragStartY());
+        final Point2D startAdjusted = dragContext.getStartAdjusted();
+        getControl().onMoveStart(startAdjusted.getX(),
+                            startAdjusted.getY());
 
         // Highlights.
         final WiresShape parent = getParentShape();

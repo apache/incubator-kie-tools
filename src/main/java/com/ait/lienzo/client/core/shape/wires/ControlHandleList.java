@@ -198,8 +198,6 @@ public class ControlHandleList extends Activatable implements IControlHandleList
 
             if (totl > 0)
             {
-                container.moveToTop();
-
                 m_shape.batch();
             }
         }

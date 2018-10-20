@@ -19,10 +19,7 @@ package com.ait.lienzo.client.core.shape.wires.picker;
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.wires.*;
-import com.ait.lienzo.client.core.types.ColorKeyRotor;
-import com.ait.lienzo.client.core.types.ImageData;
-import com.ait.lienzo.client.core.types.ImageDataPixelColor;
-import com.ait.lienzo.client.core.types.Point2D;
+import com.ait.lienzo.client.core.types.*;
 import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import com.ait.tooling.nativetools.client.collection.NFastStringMap;
@@ -31,31 +28,43 @@ public class ColorMapBackedPicker
 {
     public static final ColorKeyRotor          m_colorKeyRotor = new ColorKeyRotor();
 
-    protected final Context2D                  m_ctx;
+    private final Context2D                  m_ctx;
 
-    protected final ScratchPad                 m_scratchPad;
+    private final ScratchPad                 m_scratchPad;
 
-    protected final NFastStringMap<PickerPart> m_colorMap = new NFastStringMap<>();
+    private final NFastStringMap<PickerPart> m_colorMap = new NFastStringMap<>();
+
+    private final BoundingBox m_box = new BoundingBox(0d, 0d, 1d, 1d);
+
+    private final NFastArrayList<WiresShape> m_shapesMap = new NFastArrayList<>();
 
     private final PickerOptions                m_options;
 
-    protected WiresLayer                       m_layer;
+    public ColorMapBackedPicker(final WiresLayer layer,
+                                final PickerOptions options) {
+        this(layer.getChildShapes(),
+             layer.getLayer().getScratchPad(),
+             options);
+    }
 
-    public ColorMapBackedPicker(WiresLayer layer,
-                                NFastArrayList<WiresShape> shapes,
-                                ScratchPad scratchPad,
-                                PickerOptions options)
+    public ColorMapBackedPicker(final NFastArrayList<WiresShape> shapes,
+                                final ScratchPad scratchPad,
+                                final PickerOptions options)
     {
         m_scratchPad = scratchPad;
-        m_layer = layer;
         m_ctx = scratchPad.getContext();
         m_options = options;
         m_scratchPad.clear();
-        addShapes(shapes);
+        processShapes(shapes);
     }
 
+    private void processShapes(final NFastArrayList<WiresShape> shapes)
+    {
+        computeShapes(shapes);
+        drawShapes();
+    }
 
-    protected void addShapes(NFastArrayList<WiresShape> shapes)
+    private void computeShapes(final NFastArrayList<WiresShape> shapes)
     {
         for (int j = 0; j < shapes.size(); j++)
         {
@@ -65,6 +74,30 @@ public class ColorMapBackedPicker
                 continue;
             }
 
+            BoundingBox shapeBB = prim.getGroup().getBoundingPoints().getBoundingBox();
+            m_box.add(shapeBB);
+            m_shapesMap.add(prim);
+
+            if (prim.getChildShapes() != null && !prim.getChildShapes().isEmpty())
+            {
+                computeShapes(prim.getChildShapes());
+            }
+        }
+    }
+
+    private void drawShapes()
+    {
+        // It's necessary to resize the scratchPad to the resulting bounds calculated from all shapes in the layer
+        final double width = m_box.getWidth();
+        final double height = m_box.getHeight();
+        int w = (int) Math.round(width);
+        int h = (int) Math.round(height);
+        m_scratchPad.setPixelSize(w, h);
+
+        // Draw all shapes (and children) into the scratchPad instance.
+        for (int j = 0; j < m_shapesMap.size(); j++)
+        {
+            WiresShape prim = m_shapesMap.get(j);
             MultiPath multiPath = prim.getPath();
             drawShape(m_colorKeyRotor.next(), multiPath.getStrokeWidth(), new PickerPart(prim, PickerPart.ShapePart.BODY), true);
             addSupplementaryPaths(prim);
@@ -77,10 +110,6 @@ public class ColorMapBackedPicker
                 drawShape(m_colorKeyRotor.next(), multiPath.getStrokeWidth(), new PickerPart(prim, PickerPart.ShapePart.BORDER), false);
             }
 
-            if (prim.getChildShapes() != null && !prim.getChildShapes().isEmpty())
-            {
-                addShapes(prim.getChildShapes());
-            }
         }
     }
 
@@ -103,14 +132,6 @@ public class ColorMapBackedPicker
 
     public PickerPart findShapeAt(int x, int y)
     {
-        if (null != m_layer) {
-            Point2D temp = new Point2D(x,
-                                       y);
-            m_layer.getLayer().getViewport().getTransform().getInverse().transform(temp,
-                                                                                   temp);
-            x = (int) Math.round(temp.getX());
-            y = (int) Math.round(temp.getY());
-        }
 
         ImageDataPixelColor color = m_ctx.getImageDataPixelColor(x, y);
         if (color != null)
@@ -122,6 +143,12 @@ public class ColorMapBackedPicker
             }
         }
         return null;
+    }
+
+    public void destroy() {
+        m_scratchPad.clear();
+        m_colorMap.clear();
+        m_shapesMap.clear();
     }
 
     public PickerOptions getPickerOptions() {

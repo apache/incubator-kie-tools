@@ -31,13 +31,15 @@ import com.google.gwt.event.shared.GwtEvent;
  */
 public class MouseWheelZoomMediator extends AbstractMediator
 {
-    private double  m_minScale    = 0;
+    private double  m_minScale          = 0;
 
-    private double  m_maxScale    = Double.MAX_VALUE;
+    private double  m_maxScale          = Double.MAX_VALUE;
 
-    private boolean m_downZoomOut = true;
+    private boolean m_downZoomOut       = true;
 
-    private double  m_zoomFactor  = 0.1;
+    private double  m_zoomFactor        = 0.1;
+
+    private boolean m_scaleAboutPoint   = true;
 
     public MouseWheelZoomMediator()
     {
@@ -70,6 +72,18 @@ public class MouseWheelZoomMediator extends AbstractMediator
     public void cancel()
     {
         // nothing to do
+    }
+
+    public MouseWheelZoomMediator setScaleAboutPoint(final boolean s)
+    {
+        m_scaleAboutPoint = s;
+
+        return this;
+    }
+
+    public boolean isScaleAboutPoint()
+    {
+        return m_scaleAboutPoint;
     }
 
     /**
@@ -213,13 +227,21 @@ public class MouseWheelZoomMediator extends AbstractMediator
         {
             scaleDelta = m_maxScale / currentScale;
         }
-        Point2D p = new Point2D(event.getX(), event.getY());
 
-        transform.getInverse().transform(p, p);
+        if (m_scaleAboutPoint)
+        {
+            Point2D p = new Point2D(event.getX(), event.getY());
 
-        transform = transform.copy();
+            transform.getInverse().transform(p, p);
 
-        transform.scaleAboutPoint(scaleDelta, p.getX(), p.getY());
+            transform = transform.copy();
+
+            transform.scaleAboutPoint(scaleDelta, p.getX(), p.getY());
+        }
+        else
+        {
+            transform.scale(scaleDelta);
+        }
 
         setTransform(transform);
 

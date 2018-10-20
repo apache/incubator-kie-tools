@@ -260,7 +260,7 @@ public class WiresConnectorHandlerImpl implements WiresConnectorHandler {
         this.destroyTransientControlHandle(true);
     }
 
-    private String getLayerID(){
+    private String getLayerID() {
         return getWiresManager().getLayer().getLayer().uuid();
     }
 
@@ -283,19 +283,20 @@ public class WiresConnectorHandlerImpl implements WiresConnectorHandler {
     private boolean tryGetToken() {
         //check and get the token of the transient control handle, concurrency between connectors
         final String layerID = getLayerID();
-        if(layerID == null){
+        if (layerID == null) {
             return true;
         }
         final Boolean gotToken = transientControlHandleTokenMap.put(layerID, Boolean.TRUE);
-        if(gotToken == null){
+        if (gotToken == null) {
+            transientControlHandleTokenMap.put(layerID, Boolean.TRUE);
             this.ownToken = true;
         }
         return this.ownToken;
     }
 
-    private void releaseToken(){
+    private void releaseToken() {
         final String layerID = getLayerID();
-        if(layerID == null){
+        if (layerID == null) {
             return;
         }
 
