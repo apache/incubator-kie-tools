@@ -49,6 +49,7 @@ import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.kie.workbench.common.stunner.core.client.components.layout.LayoutHelper;
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
@@ -104,6 +105,7 @@ public class SessionDiagramEditorScreen {
     private final ScreenPanelView screenPanelView;
     private final ScreenErrorView screenErrorView;
     private final DecisionNavigatorDock decisionNavigatorDock;
+    private final LayoutHelper layoutHelper;
     private PlaceRequest placeRequest;
     private String title = "Authoring Screen";
     private Menus menu = null;
@@ -121,7 +123,8 @@ public class SessionDiagramEditorScreen {
                                       final MenuDevCommandsBuilder menuDevCommandsBuilder,
                                       final ScreenPanelView screenPanelView,
                                       final ScreenErrorView screenErrorView,
-                                      final DecisionNavigatorDock decisionNavigatorDock) {
+                                      final DecisionNavigatorDock decisionNavigatorDock,
+                                      final LayoutHelper layoutHelper) {
         this.definitionManager = definitionManager;
         this.clientFactoryServices = clientFactoryServices;
         this.diagramService = diagramService;
@@ -135,6 +138,7 @@ public class SessionDiagramEditorScreen {
         this.screenPanelView = screenPanelView;
         this.screenErrorView = screenErrorView;
         this.decisionNavigatorDock = decisionNavigatorDock;
+        this.layoutHelper = layoutHelper;
     }
 
     @PostConstruct
@@ -294,6 +298,7 @@ public class SessionDiagramEditorScreen {
     void open(final Diagram diagram,
               final Command callback) {
         screenPanelView.setWidget(presenter.getView());
+        layoutHelper.applyLayout(diagram.getGraph());
         presenter
                 .withToolbar(true)
                 .withPalette(true)

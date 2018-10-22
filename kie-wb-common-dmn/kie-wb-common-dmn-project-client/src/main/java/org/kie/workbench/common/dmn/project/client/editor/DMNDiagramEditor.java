@@ -39,6 +39,7 @@ import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.kie.workbench.common.stunner.core.client.components.layout.LayoutHelper;
 import org.kie.workbench.common.stunner.core.client.error.DiagramClientErrorHandler;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.session.Session;
@@ -50,6 +51,7 @@ import org.kie.workbench.common.stunner.project.client.editor.event.OnDiagramFoc
 import org.kie.workbench.common.stunner.project.client.editor.event.OnDiagramLoseFocusEvent;
 import org.kie.workbench.common.stunner.project.client.screens.ProjectMessagesListener;
 import org.kie.workbench.common.stunner.project.client.service.ClientProjectDiagramService;
+import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
 import org.kie.workbench.common.stunner.project.service.ProjectDiagramResourceService;
 import org.kie.workbench.common.workbench.client.PerspectiveIds;
 import org.uberfire.backend.vfs.ObservablePath;
@@ -83,6 +85,7 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
     private final Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent;
     private final DecisionNavigatorDock decisionNavigatorDock;
+    private final LayoutHelper layoutHelper;
 
     @Inject
     public DMNDiagramEditor(final View view,
@@ -105,7 +108,8 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
                             final Caller<ProjectDiagramResourceService> projectDiagramResourceServiceCaller,
                             final SessionManager sessionManager,
                             final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                            final DecisionNavigatorDock decisionNavigatorDock) {
+                            final DecisionNavigatorDock decisionNavigatorDock,
+                            final LayoutHelper layoutHelper) {
         super(view,
               placeManager,
               errorPopupPresenter,
@@ -127,6 +131,7 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
         this.sessionCommandManager = sessionCommandManager;
         this.refreshFormPropertiesEvent = refreshFormPropertiesEvent;
         this.decisionNavigatorDock = decisionNavigatorDock;
+        this.layoutHelper = layoutHelper;
     }
 
     @OnStartup
@@ -134,6 +139,12 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
                           final PlaceRequest place) {
         superDoStartUp(path, place);
         decisionNavigatorDock.init(PerspectiveIds.LIBRARY);
+    }
+
+    @Override
+    public void open(final ProjectDiagram diagram) {
+        this.layoutHelper.applyLayout(diagram.getGraph());
+        super.open(diagram);
     }
 
     @Override

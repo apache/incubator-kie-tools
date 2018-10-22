@@ -45,6 +45,7 @@ public class CoreTranslationMessages {
     public static final String VALIDATION_SUCCESS = RULE_PREF + "success";
     public static final String VALIDATION_FAILED = RULE_PREF + "fail";
     public static final String DIAGRAM_LOAD_FAIL_UNSUPPORTED_ELEMENTS = "org.kie.workbench.common.stunner.core.client.diagram.load.fail.unsupported";
+    public static final String DIAGRAM_AUTOMATIC_LAYOUT_PERFORMED = "org.kie.workbench.common.stunner.core.client.diagram.automatic.layout.performed";
     public static final String COPY_SELECTION = "org.kie.workbench.common.stunner.core.client.toolbox.CopySelection";
     public static final String CUT_SELECTION = "org.kie.workbench.common.stunner.core.client.toolbox.CutSelection";
     public static final String PASTE_SELECTION = "org.kie.workbench.common.stunner.core.client.toolbox.PasteSelection";

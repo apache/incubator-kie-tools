@@ -167,6 +167,7 @@ public abstract class AbstractVFSDiagramService<M extends Metadata, D extends Di
                 try {
                     Graph<DefinitionSet, ?> graph = services.getDiagramMarshaller().unmarshall(metadata,
                                                                                                is);
+
                     DiagramFactory<M, ?> factory = factoryManager.registry().getDiagramFactory(graph.getContent().getDefinition(),
                                                                                                getMetadataType());
                     return (D) factory.build(name,
