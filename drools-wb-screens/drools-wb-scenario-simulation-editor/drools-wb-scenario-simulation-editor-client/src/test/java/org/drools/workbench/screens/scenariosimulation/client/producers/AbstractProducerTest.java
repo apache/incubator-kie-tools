@@ -32,9 +32,6 @@ import static org.mockito.Mockito.when;
 public abstract class AbstractProducerTest {
 
     @Mock
-    protected RightPanelMenuItemProducer rightPanelMenuItemProducerMock;
-
-    @Mock
     protected EventBusProducer eventBusProducerMock;
 
     @Mock

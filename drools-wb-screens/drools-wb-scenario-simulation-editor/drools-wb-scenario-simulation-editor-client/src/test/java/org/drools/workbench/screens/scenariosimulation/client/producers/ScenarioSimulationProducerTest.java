@@ -45,16 +45,9 @@ public class ScenarioSimulationProducerTest extends AbstractProducerTest {
                 this.deletePopupPresenter = deletePopupPresenterMock;
                 this.preserveDeletePopupPresenter = preserveDeletePopupPresenterMock;
                 this.eventBusProducer = eventBusProducerMock;
-                this.rightPanelMenuItemProducer = rightPanelMenuItemProducerMock;
                 this.scenarioSimulationViewProducer = scenarioSimulationViewProducerMock;
             }
         });
-    }
-
-    @Test
-    public void getRightPanelMenuItem() {
-        scenarioSimulationProducer.getRightPanelMenuItem();
-        verify(rightPanelMenuItemProducerMock, times(1)).getRightPanelMenuItem();
     }
 
     @Test

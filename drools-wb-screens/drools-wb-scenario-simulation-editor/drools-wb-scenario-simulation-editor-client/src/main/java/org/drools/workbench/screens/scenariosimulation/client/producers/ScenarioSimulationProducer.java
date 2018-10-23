@@ -23,7 +23,6 @@ import org.drools.workbench.screens.scenariosimulation.client.commands.CommandEx
 import org.drools.workbench.screens.scenariosimulation.client.editor.ScenarioSimulationView;
 import org.drools.workbench.screens.scenariosimulation.client.popup.DeletePopupPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.popup.PreserveDeletePopupPresenter;
-import org.drools.workbench.screens.scenariosimulation.client.widgets.RightPanelMenuItem;
 
 /**
  * <code>@Dependent</code> Class meant to be the only <i>Producer</i> for a given {@link org.drools.workbench.screens.scenariosimulation.client.editor.ScenarioSimulationEditorPresenter}
@@ -31,14 +30,12 @@ import org.drools.workbench.screens.scenariosimulation.client.widgets.RightPanel
 @Dependent
 public class ScenarioSimulationProducer {
 
-    @Inject
-    RightPanelMenuItemProducer rightPanelMenuItemProducer;
-
-    @Inject
-    EventBusProducer eventBusProducer;
 
     @Inject
     ScenarioSimulationViewProducer scenarioSimulationViewProducer;
+
+    @Inject
+    EventBusProducer eventBusProducer;
 
     @Inject
     DeletePopupPresenter deletePopupPresenter;
@@ -47,10 +44,6 @@ public class ScenarioSimulationProducer {
 
     @Inject
     CommandExecutor commandExecutor;
-
-    public RightPanelMenuItem getRightPanelMenuItem() {
-        return rightPanelMenuItemProducer.getRightPanelMenuItem();
-    }
 
     public EventBus getEventBus() {
         return eventBusProducer.getEventBus();

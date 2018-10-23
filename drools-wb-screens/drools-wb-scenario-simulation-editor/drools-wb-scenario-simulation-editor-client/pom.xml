@@ -108,6 +108,11 @@
     </dependency>
 
     <dependency>
+      <groupId>org.kie.workbench.screens</groupId>
+      <artifactId>kie-wb-common-workbench-client</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>org.kie.workbench.widgets</groupId>
       <artifactId>kie-wb-metadata-widget</artifactId>
     </dependency>

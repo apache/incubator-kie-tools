@@ -13,23 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.workbench.screens.scenariosimulation.client.producers;
+package org.drools.workbench.screens.scenariosimulation.client.rightpanel;
 
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
+import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import org.drools.workbench.screens.scenariosimulation.client.widgets.RightPanelMenuItem;
+import static org.junit.Assert.assertEquals;
 
-/**
- * <code>@Dependent</code> <i>Producer</i> for a given {@link RightPanelMenuItem}
- */
-@Dependent
-public class RightPanelMenuItemProducer {
+@RunWith(GwtMockitoTestRunner.class)
+public class ScenarioSimulationDocksHandlerTest {
 
-    @Inject
-    RightPanelMenuItem rightPanelMenuItem;
-
-    public RightPanelMenuItem getRightPanelMenuItem() {
-        return rightPanelMenuItem;
+    @Test
+    public void correctAmountOfItems() {
+        assertEquals(2, new ScenarioSimulationDocksHandler().provideDocks("identifier").size());
     }
 }

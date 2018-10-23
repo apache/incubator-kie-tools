@@ -62,6 +62,10 @@
     </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-message-console-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
       <artifactId>uberfire-message-console-client</artifactId>
     </dependency>
     <dependency>
@@ -121,6 +125,11 @@
     <dependency>
       <groupId>org.kie.workbench.services</groupId>
       <artifactId>kie-wb-common-datamodel-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.workbench.screens</groupId>
+      <artifactId>kie-wb-common-workbench-client</artifactId>
     </dependency>
 
     <!-- TODO: Do not depend on other -screen level jars -Rikkola- -->

@@ -16,9 +16,12 @@
 
 package org.drools.workbench.screens.testscenario.client;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -41,12 +44,18 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleFactory;
 import org.kie.workbench.common.widgets.configresource.client.widget.bound.ImportsWidgetPresenter;
 import org.kie.workbench.common.widgets.metadata.client.KieEditor;
+import org.kie.workbench.common.workbench.client.test.OnHideTestPanelEvent;
+import org.kie.workbench.common.workbench.client.test.OnShowTestPanelEvent;
+import org.kie.workbench.common.workbench.client.test.TestRunnerReportingScreen;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.workbench.events.AbstractPlaceEvent;
+import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
+import org.uberfire.client.workbench.events.PlaceHiddenEvent;
 import org.uberfire.ext.editor.commons.service.support.SupportsSaveAndRename;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.lifecycle.OnClose;
@@ -55,10 +64,12 @@ import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.menu.Menus;
 
-@WorkbenchEditor(identifier = "ScenarioEditorPresenter", supportedTypes = {TestScenarioResourceType.class})
+@WorkbenchEditor(identifier = ScenarioEditorPresenter.IDENTIFIER, supportedTypes = {TestScenarioResourceType.class})
 public class ScenarioEditorPresenter
         extends KieEditor<Scenario>
         implements ScenarioEditorView.Presenter {
+
+    public static final String IDENTIFIER = "ScenarioEditorPresenter";
 
     private final TestScenarioResourceType type;
     private final ScenarioEditorView view;
@@ -66,6 +77,7 @@ public class ScenarioEditorPresenter
     private final AsyncPackageDataModelOracleFactory oracleFactory;
     private final Caller<TestRunnerService> testService;
     private final ImportsWidgetPresenter importsWidget;
+
     private User user;
     private final SettingsPage settingsPage;
     private final AuditPage auditPage;
@@ -73,6 +85,11 @@ public class ScenarioEditorPresenter
     private AsyncPackageDataModelOracle dmo;
 
     private TestRunFailedErrorCallback testRunFailedErrorCallback;
+
+    private Event<OnShowTestPanelEvent> showTestPanelEvent;
+    private Event<OnHideTestPanelEvent> hideTestPanelEvent;
+
+    private TestRunnerReportingScreen testRunnerReportingScreen;
 
     @Inject
     public ScenarioEditorPresenter(final ScenarioEditorView view,
@@ -83,7 +100,10 @@ public class ScenarioEditorPresenter
                                    final TestScenarioResourceType type,
                                    final AsyncPackageDataModelOracleFactory oracleFactory,
                                    final SettingsPage settingsPage,
-                                   final AuditPage auditPage) {
+                                   final AuditPage auditPage,
+                                   final TestRunnerReportingScreen testRunnerReportingScreen,
+                                   final Event<OnShowTestPanelEvent> showTestPanelEvent,
+                                   final Event<OnHideTestPanelEvent> hideTestPanelEvent) {
         super(view);
         this.view = view;
         this.user = user;
@@ -94,6 +114,9 @@ public class ScenarioEditorPresenter
         this.oracleFactory = oracleFactory;
         this.settingsPage = settingsPage;
         this.auditPage = auditPage;
+        this.testRunnerReportingScreen = testRunnerReportingScreen;
+        this.showTestPanelEvent = showTestPanelEvent;
+        this.hideTestPanelEvent = hideTestPanelEvent;
 
         view.setPresenter(this);
     }
@@ -104,6 +127,26 @@ public class ScenarioEditorPresenter
         super.init(path,
                    place,
                    type);
+    }
+
+    public void hideDiagramEditorDocks(@Observes PlaceHiddenEvent event) {
+        if (verifyEventIdentifier(event)) {
+            hideTestPanelEvent.fire(new OnHideTestPanelEvent());
+            testRunnerReportingScreen.reset();
+        }
+    }
+
+    public void showDiagramEditorDocks(@Observes PlaceGainFocusEvent event) {
+        if (verifyEventIdentifier(event)) {
+            showTestPanelEvent.fire(new OnShowTestPanelEvent());
+        }
+    }
+
+    private boolean verifyEventIdentifier(AbstractPlaceEvent event) {
+        return (Objects.equals(IDENTIFIER,
+                               event.getPlace().getIdentifier()) &&
+                Objects.equals(place,
+                               event.getPlace()));
     }
 
     protected void loadContent() {

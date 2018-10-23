@@ -26,6 +26,7 @@ import java.util.TreeMap;
 import java.util.function.Supplier;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
@@ -34,10 +35,11 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.screens.scenariosimulation.client.commands.CommandExecutor;
 import org.drools.workbench.screens.scenariosimulation.client.models.FactModelTree;
 import org.drools.workbench.screens.scenariosimulation.client.producers.ScenarioSimulationProducer;
+import org.drools.workbench.screens.scenariosimulation.client.rightpanel.OnHideScenarioSimulationDockEvent;
+import org.drools.workbench.screens.scenariosimulation.client.rightpanel.OnShowScenarioSimulationDockEvent;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.RightPanelPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.RightPanelView;
 import org.drools.workbench.screens.scenariosimulation.client.type.ScenarioSimulationResourceType;
-import org.drools.workbench.screens.scenariosimulation.client.widgets.RightPanelMenuItem;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModelContent;
@@ -51,6 +53,7 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.configresource.client.widget.bound.ImportsWidgetPresenter;
 import org.kie.workbench.common.widgets.metadata.client.KieEditor;
+import org.kie.workbench.common.workbench.client.test.TestRunnerReportingScreen;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
@@ -82,6 +85,9 @@ public class ScenarioSimulationEditorPresenter
 
     public static final String IDENTIFIER = "ScenarioSimulationEditor";
 
+    private Event<OnShowScenarioSimulationDockEvent> showScenarioSimulationDockEvent;
+    private Event<OnHideScenarioSimulationDockEvent> hideScenarioSimulationDockEvent;
+
     private ImportsWidgetPresenter importsWidget;
 
     private AsyncPackageDataModelOracleFactory oracleFactory;
@@ -100,12 +106,10 @@ public class ScenarioSimulationEditorPresenter
 
     private Command populateRightPanelCommand;
 
+    private TestRunnerReportingScreen testRunnerReportingScreen;
+
     //Package for which this Scenario Simulation relates
     String packageName = "";
-
-    RightPanelMenuItem rightPanelMenuItem;
-
-    PlaceRequest rightPanelRequest;
 
     ObservablePath path;
 
@@ -117,21 +121,27 @@ public class ScenarioSimulationEditorPresenter
         //Zero-parameter constructor for CDI proxies
     }
 
+
     @Inject
     public ScenarioSimulationEditorPresenter(final Caller<ScenarioSimulationService> service,
                                              final ScenarioSimulationProducer scenarioSimulationProducer,
                                              final ScenarioSimulationResourceType type,
                                              final ImportsWidgetPresenter importsWidget,
                                              final AsyncPackageDataModelOracleFactory oracleFactory,
-                                             final PlaceManager placeManager) {
+                                             final PlaceManager placeManager,
+                                             final TestRunnerReportingScreen testRunnerReportingScreen,
+                                             final Event<OnShowScenarioSimulationDockEvent> showScenarioSimulationDockEvent,
+                                             final Event<OnHideScenarioSimulationDockEvent> hideScenarioSimulationDockEvent) {
         super(scenarioSimulationProducer.getScenarioSimulationView());
+        this.testRunnerReportingScreen = testRunnerReportingScreen;
+        this.showScenarioSimulationDockEvent = showScenarioSimulationDockEvent;
+        this.hideScenarioSimulationDockEvent = hideScenarioSimulationDockEvent;
         this.view = (ScenarioSimulationView) baseView;
         this.service = service;
         this.type = type;
         this.importsWidget = importsWidget;
         this.oracleFactory = oracleFactory;
         this.placeManager = placeManager;
-        this.rightPanelMenuItem = scenarioSimulationProducer.getRightPanelMenuItem();
         this.commandExecutor = scenarioSimulationProducer.getCommandExecutor();
         this.eventBus = scenarioSimulationProducer.getEventBus();
 
@@ -152,18 +162,11 @@ public class ScenarioSimulationEditorPresenter
                    place,
                    type);
         this.path = path;
-        rightPanelRequest = new DefaultPlaceRequest(RightPanelPresenter.IDENTIFIER);
-        rightPanelRequest.addParameter("ScenarioSimulationEditorPresenter", path.toString());
-        rightPanelMenuItem.init(rightPanelRequest);
     }
 
     @OnClose
     public void onClose() {
         this.versionRecordManager.clear();
-        if (PlaceStatus.OPEN.equals(placeManager.getStatus(rightPanelRequest))) {
-            placeManager.closePlace(rightPanelRequest);
-            this.view.showLoading();
-        }
         scenarioGridPanel.unregister();
     }
 
@@ -199,10 +202,9 @@ public class ScenarioSimulationEditorPresenter
         }
         PathPlaceRequest placeRequest = (PathPlaceRequest) placeGainFocusEvent.getPlace();
         if (placeRequest.getIdentifier().equals(ScenarioSimulationEditorPresenter.IDENTIFIER)
-                && placeRequest.getPath().equals(this.path)
-                && PlaceStatus.CLOSE.equals(placeManager.getStatus(rightPanelRequest))) {
+                && placeRequest.getPath().equals(this.path)) {
+            showScenarioSimulationDockEvent.fire(new OnShowScenarioSimulationDockEvent());
             registerRightPanelCallback();
-            placeManager.goTo(rightPanelRequest);
             populateRightPanel();
         }
     }
@@ -215,12 +217,11 @@ public class ScenarioSimulationEditorPresenter
         PathPlaceRequest placeRequest = (PathPlaceRequest) placeHiddenEvent.getPlace();
         if (placeRequest.getIdentifier().equals(ScenarioSimulationEditorPresenter.IDENTIFIER)
                 && placeRequest.getPath().equals(this.path)) {
+            hideScenarioSimulationDockEvent.fire(new OnHideScenarioSimulationDockEvent());
             view.getScenarioGridLayer().getScenarioGrid().clearSelections();
-            if (PlaceStatus.OPEN.equals(placeManager.getStatus(rightPanelRequest))) {
                 unRegisterRightPanelCallback();
                 clearRightPanelStatus();
-                placeManager.closePlace(rightPanelRequest);
-            }
+            testRunnerReportingScreen.reset();
         }
     }
 
@@ -238,15 +239,11 @@ public class ScenarioSimulationEditorPresenter
     }
 
     protected void registerRightPanelCallback() {
-        placeManager.registerOnOpenCallback(rightPanelRequest, populateRightPanelCommand);
-        placeManager.registerOnOpenCallback(rightPanelRequest, rightPanelMenuItem.getSetButtonTextTrue());
-        placeManager.registerOnCloseCallback(rightPanelRequest, rightPanelMenuItem.getSetButtonTextFalse());
+        placeManager.registerOnOpenCallback(new DefaultPlaceRequest(RightPanelPresenter.IDENTIFIER), populateRightPanelCommand);
     }
 
     protected void unRegisterRightPanelCallback() {
-        placeManager.getOnOpenCallbacks(rightPanelRequest).remove(populateRightPanelCommand);
-        placeManager.getOnOpenCallbacks(rightPanelRequest).remove(rightPanelMenuItem.getSetButtonTextTrue());
-        placeManager.getOnCloseCallbacks(rightPanelRequest).remove(rightPanelMenuItem.getSetButtonTextFalse());
+        placeManager.getOnOpenCallbacks(new DefaultPlaceRequest(RightPanelPresenter.IDENTIFIER)).remove(populateRightPanelCommand);
     }
 
     /**
@@ -256,7 +253,6 @@ public class ScenarioSimulationEditorPresenter
     protected void makeMenuBar() {
         fileMenuBuilder.addNewTopLevelMenu(view.getRunScenarioMenuItem());
         super.makeMenuBar();
-        addRightPanelMenuItem(fileMenuBuilder);
     }
 
     @Override
@@ -389,10 +385,6 @@ public class ScenarioSimulationEditorPresenter
         };
     }
 
-    private void addRightPanelMenuItem(final FileMenuBuilder fileMenuBuilder) {
-        fileMenuBuilder.addNewTopLevelMenu(rightPanelMenuItem);
-    }
-
     /**
      * This <code>Callback</code> will receive data from other callbacks and when the retrieved results get to the
      * expected ones it will recursively elaborate the map
@@ -423,8 +415,9 @@ public class ScenarioSimulationEditorPresenter
     }
 
     private Optional<RightPanelView> getRightPanelView() {
-        if (PlaceStatus.OPEN.equals(placeManager.getStatus(rightPanelRequest))) {
-            final AbstractWorkbenchActivity rightPanelActivity = (AbstractWorkbenchActivity) placeManager.getActivity(rightPanelRequest);
+        final DefaultPlaceRequest placeRequest = new DefaultPlaceRequest(RightPanelPresenter.IDENTIFIER);
+        if (PlaceStatus.OPEN.equals(placeManager.getStatus(placeRequest))) {
+            final AbstractWorkbenchActivity rightPanelActivity = (AbstractWorkbenchActivity) placeManager.getActivity(placeRequest);
             return Optional.of((RightPanelView) rightPanelActivity.getWidget());
         } else {
             return Optional.empty();

@@ -33,6 +33,7 @@
   <inherits name="org.kie.workbench.common.widgets.metadata.KieWorkbenchMetadataWidget"/>
   <inherits name="org.kie.workbench.common.widgets.configresource.KieWorkbenchConfigResourceWidget"/>
   <inherits name="org.kie.workbench.common.widgets.KieWorkbenchWidgetsCommon"/>
+  <inherits name="org.kie.workbench.common.workbench.KieDefaultWorkbenchClient"/>
 
   <inherits name="org.gwtbootstrap3.extras.select.SelectNoResources"/>
 
