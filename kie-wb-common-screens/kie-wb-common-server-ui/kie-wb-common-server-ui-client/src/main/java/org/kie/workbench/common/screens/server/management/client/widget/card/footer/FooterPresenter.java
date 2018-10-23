@@ -85,7 +85,7 @@ public class FooterPresenter {
         builder.setUser(none);
         builder.setPassword(none);
         builder.setCallback(makeCallback(onSuccess, onError));
-
+        builder.setHeader("Accept", "*/*");
         return builder;
     }
 

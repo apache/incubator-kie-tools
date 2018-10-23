@@ -165,6 +165,7 @@ public class FooterPresenterTest {
         assertEquals(none, builder.getUser());
         assertEquals(none, builder.getPassword());
         assertEquals(callback, builder.getCallback());
+        assertEquals("*/*", builder.getHeader("Accept"));
     }
 
     @Test
