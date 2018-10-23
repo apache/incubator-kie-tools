@@ -65,7 +65,7 @@ public class ScenarioSimulationBuilders {
             return new ScenarioGridColumnBuilder(factoryCell, headerBuilder);
         }
 
-        public ScenarioGridColumnBuilder(ScenarioCellTextBoxSingletonDOMElementFactory factoryCell, HeaderBuilder headerBuilder) {
+        private ScenarioGridColumnBuilder(ScenarioCellTextBoxSingletonDOMElementFactory factoryCell, HeaderBuilder headerBuilder) {
             this.factoryCell = factoryCell;
             this.headerBuilder = headerBuilder;
         }
@@ -144,6 +144,10 @@ public class ScenarioSimulationBuilders {
 
         public HeaderBuilder(ScenarioHeaderTextBoxSingletonDOMElementFactory factory) {
             this.factory = factory;
+        }
+
+        public String getColumnId() {
+            return columnId;
         }
 
         public HeaderBuilder setColumnId(String columnId) {

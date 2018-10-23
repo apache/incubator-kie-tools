@@ -22,6 +22,7 @@ import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.Sce
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridLayer;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
+import org.drools.workbench.screens.scenariosimulation.model.ExpressionIdentifier;
 import org.drools.workbench.screens.scenariosimulation.model.FactMappingType;
 
 public class ScenarioSimulationUtils {
@@ -183,6 +184,7 @@ public class ScenarioSimulationUtils {
                                                                                                     String placeHolder) {
         ScenarioSimulationBuilders.ScenarioGridColumnBuilder toReturn = ScenarioSimulationBuilders.ScenarioGridColumnBuilder.get(factoryCell, headerBuilder);
         toReturn.setPlaceHolder(placeHolder);
+        toReturn.setWidth(getColumnWidth(headerBuilder.getColumnId()));
         return toReturn;
     }
 
@@ -230,6 +232,23 @@ public class ScenarioSimulationUtils {
                 .setInformationHeader(informationHeader);
 
         return headerBuilder;
+    }
+
+    protected static double getColumnWidth(String columnId) {
+        ExpressionIdentifier.NAME expressionName = ExpressionIdentifier.NAME.Other;
+        try {
+            expressionName = ExpressionIdentifier.NAME.valueOf(columnId);
+        } catch (IllegalArgumentException e) {
+            // ColumnId not recognized
+        }
+        switch(expressionName) {
+            case Index:
+                return 70;
+            case Description:
+                return 230;
+            default:
+                return 150;
+        }
     }
 
     private static boolean isOther(FactMappingType factMappingType) {

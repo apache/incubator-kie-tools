@@ -30,6 +30,7 @@ import org.junit.Before;
 import org.mockito.Mock;
 
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.when;
 
 public abstract class AbstractUtilsTest {
 
@@ -61,6 +62,7 @@ public abstract class AbstractUtilsTest {
 
     @Before
     public void setup() {
+        when(headerBuilderMock.getColumnId()).thenReturn(COLUMN_ID);
         scenarioHeaderMetaDataList = Collections.singletonList(scenarioHeaderMetaDataMock);
         doReturn(scenarioHeaderMetaDataList).when(headerBuilderMock).build();
     }
