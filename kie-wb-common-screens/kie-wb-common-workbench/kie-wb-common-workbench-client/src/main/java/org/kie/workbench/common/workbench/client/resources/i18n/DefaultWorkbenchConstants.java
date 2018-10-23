@@ -170,4 +170,7 @@ public interface DefaultWorkbenchConstants
     String ScenarioSimulationEditor();
 
     String ProcessAdministration();
+
+    String TestReport();
+
 }
