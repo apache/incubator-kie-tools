@@ -47,6 +47,13 @@ public class ExpressionPropertyConverter {
     }
 
     public static org.kie.dmn.model.api.Expression dmnFromWB(final Expression wb) {
+        // SPECIAL CASE: to represent a partially edited DMN file.
+        // reference above.
+        if (wb == null) {
+            org.kie.dmn.model.api.LiteralExpression mockedExpression = new org.kie.dmn.model.v1_1.TLiteralExpression();
+            return mockedExpression;
+        }
+
         if (wb instanceof LiteralExpression) {
             return LiteralExpressionPropertyConverter.dmnFromWB((LiteralExpression) wb);
         } else if (wb instanceof Context) {

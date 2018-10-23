@@ -130,7 +130,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -1045,20 +1044,22 @@ public class DMNMarshallerTest {
         final DMNRuntime runtime = roundTripUnmarshalMarshalThenUnmarshalDMN(this.getClass().getResourceAsStream("/wrong_context.dmn"));
         DMNModel dmnModel = runtime.getModels().get(0);
 
-        // the DMN file is schema valid but is not a valid-DMN (a context-entry value is a literal expression missing text, which is null)
+        // although the DMN file is schema valid but is not a valid-DMN (a context-entry value is a literal expression missing text, which is null)
+        // DROOLS-3152: once roundtripped through the Stunner marshaller it will receive an empty text. (empty expression, but a LiteralExpression with an empty text child xml element)
+        // this will still naturally throw some error because unable to FEEL-parse/compile an empty epression.
         assertTrue(dmnModel.hasErrors());
 
         // identify the error message for context-entry "ciao":
         DMNMessage m0 = dmnModel.getMessages(DMNMessage.Severity.ERROR).get(0);
         assertTrue("expected a message identifying the problem on a context entry for 'ciao'",
-                   m0.getMessage().startsWith("No expression defined for name 'ciao'"));
+                   m0.getMessage().startsWith("Error compiling FEEL expression '' for name ")); // DROOLS-3152 please notice FEEL reporting indeed an empty expression.
 
         DecisionNode d0 = dmnModel.getDecisionById("_653b3426-933a-4050-9568-ab2a66b43c36");
         // the identified DMN Decision is composed of a DMN Context where the first context-entry value is a literal expression missing text (text is null).
         org.kie.dmn.model.api.Context d0c = (org.kie.dmn.model.api.Context) d0.getDecision().getExpression();
         org.kie.dmn.model.api.Expression contextEntryValue = d0c.getContextEntry().get(0).getExpression();
         assertTrue(contextEntryValue instanceof org.kie.dmn.model.api.LiteralExpression);
-        assertNull(((org.kie.dmn.model.api.LiteralExpression) contextEntryValue).getText());
+        assertEquals("", ((org.kie.dmn.model.api.LiteralExpression) contextEntryValue).getText()); // DROOLS-3152
 
         // -- Stunner side.
         DMNMarshaller m = new DMNMarshaller(new XMLEncoderDiagramMetadataMarshaller(), applicationFactoryManager);
@@ -1073,7 +1074,7 @@ public class DMNMarshallerTest {
         assertNotNull(expression.getContextEntry().get(0).getExpression()); // DROOLS-3116 empty Literal Expression is preserved
         assertEquals(LiteralExpression.class, expression.getContextEntry().get(0).getExpression().getClass());
         LiteralExpression le = (LiteralExpression) expression.getContextEntry().get(0).getExpression();
-        assertNull(le.getText());
+        assertEquals("", le.getText()); // DROOLS-3152
     }
 
     @Test
@@ -1083,19 +1084,21 @@ public class DMNMarshallerTest {
         final DMNRuntime runtime = roundTripUnmarshalMarshalThenUnmarshalDMN(this.getClass().getResourceAsStream("/wrong_decision.dmn"));
         DMNModel dmnModel = runtime.getModels().get(0);
 
-        // the DMN file is schema valid but is not a valid-DMN (a decision logic is a literal expression missing text, which is null)
+        // although the DMN file is schema valid but is not a valid-DMN (a context-entry value is a literal expression missing text, which is null)
+        // DROOLS-3152: once roundtripped through the Stunner marshaller it will receive an empty text. (empty expression, but a LiteralExpression with an empty text child xml element)
+        // this will still naturally throw some error because unable to FEEL-parse/compile an empty epression.
         assertTrue(dmnModel.hasErrors());
 
-        // identify the error message for the Decision with a Literal Expression decision logic missing the text.
+        // identify the error message for the Decision with a Literal Expression decision logic missing the actual expression text.
         DMNMessage m0 = dmnModel.getMessages(DMNMessage.Severity.ERROR).get(0);
-        assertTrue("expected a message identifying the problem on a decision named 'my decision'",
-                   m0.getMessage().startsWith("No expression defined for name 'my decision'"));
+        assertTrue("expected a message identifying the problem on the literalExpression of 'my decision'",
+                   m0.getSourceId().equals("_36dd163c-4862-4308-92bf-40a998b24e39"));
 
         DecisionNode d0 = dmnModel.getDecisionById("_cce32679-9395-444d-a4bf-96af8ee727a0");
         // the identified DMN Decision is composed a literal expression missing text (text is null).
         org.kie.dmn.model.api.Expression d0le = d0.getDecision().getExpression();
         assertTrue(d0le instanceof org.kie.dmn.model.api.LiteralExpression);
-        assertNull(((org.kie.dmn.model.api.LiteralExpression) d0le).getText());
+        assertEquals("", ((org.kie.dmn.model.api.LiteralExpression) d0le).getText()); // DROOLS-3152
 
         // -- Stunner side.
         DMNMarshaller m = new DMNMarshaller(new XMLEncoderDiagramMetadataMarshaller(), applicationFactoryManager);
@@ -1110,7 +1113,7 @@ public class DMNMarshallerTest {
         assertNotNull(expression); // DROOLS-3116 empty Literal Expression is preserved
         assertEquals(LiteralExpression.class, expression.getClass());
         LiteralExpression le = (LiteralExpression) expression;
-        assertNull(le.getText());
+        assertEquals("", le.getText()); // DROOLS-3152
     }
 
     @Test
