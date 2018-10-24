@@ -63,17 +63,17 @@ public class CoordinateUtilities {
      * Gets the row index corresponding to the provided Canvas y-coordinate relative to the grid. Grid-relative coordinates can be
      * obtained from {@link INodeXYEvent} using {@link CoordinateUtilities#convertDOMToGridCoordinate(GridWidget, Point2D)}
      * @param gridWidget GridWidget to check.
-     * @param cy y-coordinate relative to the GridWidget.
+     * @param relativeY y-coordinate relative to the GridWidget.
      * @return The row index or null if the coordinate did not map to a cell.
      */
     public static Integer getUiRowIndex(final GridWidget gridWidget,
-                                        final double cy) {
+                                        final double relativeY) {
         final Group header = gridWidget.getHeader();
         final GridData gridModel = gridWidget.getModel();
         final GridRenderer renderer = gridWidget.getRenderer();
         final double headerMaxY = (header == null ? renderer.getHeaderHeight() : renderer.getHeaderHeight() + header.getY());
 
-        if (cy < headerMaxY || cy > gridWidget.getHeight()) {
+        if (relativeY < headerMaxY || relativeY > gridWidget.getHeight()) {
             return null;
         }
         if (gridModel.getRowCount() == 0) {
@@ -83,7 +83,7 @@ public class CoordinateUtilities {
         //Get row index
         GridRow row;
         int uiRowIndex = 0;
-        double offsetY = cy - renderer.getHeaderHeight();
+        double offsetY = relativeY - renderer.getHeaderHeight();
         while ((row = gridModel.getRow(uiRowIndex)).getHeight() < offsetY) {
             offsetY = offsetY - row.getHeight();
             uiRowIndex++;
@@ -99,24 +99,24 @@ public class CoordinateUtilities {
      * Gets the column index corresponding to the provided Canvas x-coordinate relative to the grid. Grid-relative coordinates can be
      * obtained from {@link INodeXYEvent} using {@link CoordinateUtilities#convertDOMToGridCoordinate(GridWidget, Point2D)}
      * @param gridWidget GridWidget to check.
-     * @param cx x-coordinate relative to the GridWidget.
+     * @param relativeX x-coordinate relative to the GridWidget.
      * @return The column index or null if the coordinate did not map to a cell.
      */
     public static Integer getUiColumnIndex(final GridWidget gridWidget,
-                                           final double cx) {
+                                           final double relativeX) {
         final GridData gridModel = gridWidget.getModel();
         final BaseGridRendererHelper rendererHelper = gridWidget.getRendererHelper();
 
-        if (cx < 0 || cx > gridWidget.getWidth()) {
+        if (relativeX < 0 || relativeX > gridWidget.getWidth()) {
             return null;
         }
 
         //Get column index
-        final BaseGridRendererHelper.ColumnInformation ci = rendererHelper.getColumnInformation(cx);
-        final GridColumn<?> column = ci.getColumn();
+        final BaseGridRendererHelper.ColumnInformation ci = rendererHelper.getColumnInformation(relativeX);
+        final GridColumn<?> uiColumn = ci.getColumn();
         final int uiColumnIndex = ci.getUiColumnIndex();
 
-        if (column == null) {
+        if (uiColumn == null) {
             return null;
         }
         if (uiColumnIndex < 0 || uiColumnIndex > gridModel.getColumnCount() - 1) {
@@ -124,5 +124,57 @@ public class CoordinateUtilities {
         }
 
         return uiColumnIndex;
+    }
+
+    /**
+     * Gets the header row index corresponding to the provided Canvas y-coordinate relative to
+     * the grid. Grid-relative coordinates can be obtained from {@link INodeXYEvent} using
+     * {@link CoordinateUtilities#convertDOMToGridCoordinate(GridWidget, Point2D)}
+     * @param gridWidget GridWidget to check.
+     * @param rp Canvas coordinate relative to the GridWidget.
+     * @return The header row index or null if the coordinate did not map to a header row.
+     */
+    public static Integer getUiHeaderRowIndex(final GridWidget gridWidget,
+                                              final Point2D rp) {
+        final double relativeX = rp.getX();
+        final double relativeY = rp.getY();
+
+        final Group header = gridWidget.getHeader();
+        final GridRenderer renderer = gridWidget.getRenderer();
+        final BaseGridRendererHelper.RenderingInformation ri = gridWidget.getRendererHelper().getRenderingInformation();
+        final double headerRowsYOffset = ri.getHeaderRowsYOffset();
+        final double headerMinY = (header == null ? headerRowsYOffset : header.getY() + headerRowsYOffset);
+        final double headerMaxY = (header == null ? renderer.getHeaderHeight() : renderer.getHeaderHeight() + header.getY());
+
+        if (relativeX < 0 || relativeX > gridWidget.getWidth()) {
+            return null;
+        }
+        if (relativeY < headerMinY || relativeY > headerMaxY) {
+            return null;
+        }
+
+        //Get header column index
+        final BaseGridRendererHelper rendererHelper = gridWidget.getRendererHelper();
+        final BaseGridRendererHelper.ColumnInformation ci = rendererHelper.getColumnInformation(relativeX);
+        final GridColumn<?> uiColumn = ci.getColumn();
+        if (uiColumn == null) {
+            return null;
+        }
+
+        //Get header row index
+        int uiHeaderRowIndex = 0;
+        double offsetY = relativeY - headerMinY;
+        final double headerRowHeight = renderer.getHeaderRowHeight();
+        final double headerRowsHeight = headerRowHeight * gridWidget.getModel().getHeaderRowCount();
+        final double columnHeaderRowHeight = headerRowsHeight / uiColumn.getHeaderMetaData().size();
+        while (columnHeaderRowHeight < offsetY) {
+            offsetY = offsetY - columnHeaderRowHeight;
+            uiHeaderRowIndex++;
+        }
+        if (uiHeaderRowIndex < 0 || uiHeaderRowIndex > uiColumn.getHeaderMetaData().size() - 1) {
+            return null;
+        }
+
+        return uiHeaderRowIndex;
     }
 }

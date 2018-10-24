@@ -21,6 +21,8 @@ import java.util.function.Consumer;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellEditContext;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.GridColumnRenderer;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.CellSelectionStrategy;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.impl.HeaderSingleCellSelectionStrategy;
 
 /**
  * Defines a Column within a grid.
@@ -209,5 +211,13 @@ public interface GridColumn<T> {
          * @param title
          */
         void setTitle(final String title);
+
+        /**
+         * Returns the CellSelectionStrategy to handle selections of the header cell.
+         * @return
+         */
+        default CellSelectionStrategy getSelectionStrategy() {
+            return HeaderSingleCellSelectionStrategy.INSTANCE;
+        }
     }
 }

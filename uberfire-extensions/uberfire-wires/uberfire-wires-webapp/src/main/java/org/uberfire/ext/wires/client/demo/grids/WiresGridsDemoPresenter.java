@@ -214,7 +214,6 @@ public class WiresGridsDemoPresenter implements WiresGridsDemoView.Presenter {
 
     private GridWidget makeGridWidget1() {
         final GridData grid1 = new BaseGridData(false);
-        grid1.setHeaderRowCount(2);
         final GridWidget gridWidget1 = new BaseGridWidget(grid1,
                                                           this,
                                                           view.getGridLayer(),

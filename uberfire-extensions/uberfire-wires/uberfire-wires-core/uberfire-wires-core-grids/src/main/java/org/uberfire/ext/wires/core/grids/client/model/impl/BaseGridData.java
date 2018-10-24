@@ -42,9 +42,10 @@ public class BaseGridData implements GridData {
     protected boolean isMerged = true;
     protected boolean isRowDraggingEnabled = true;
     protected boolean isColumnDraggingEnabled = true;
-    protected List<GridRow> rows = new ArrayList<GridRow>();
-    protected List<GridColumn<?>> columns = new ArrayList<GridColumn<?>>();
-    protected List<SelectedCell> selectedCells = new ArrayList<SelectedCell>();
+    protected List<GridRow> rows = new ArrayList<>();
+    protected List<GridColumn<?>> columns = new ArrayList<>();
+    protected List<SelectedCell> selectedCells = new ArrayList<>();
+    protected List<SelectedCell> selectedHeaderCells = new ArrayList<>();
     protected int headerRowCount = 1;
 
     protected BaseGridDataIndexManager indexManager = new BaseGridDataIndexManager(this);
@@ -267,6 +268,10 @@ public class BaseGridData implements GridData {
 
     @Override
     public int getHeaderRowCount() {
+        int headerRowCount = this.headerRowCount;
+        for (GridColumn<?> column : columns) {
+            headerRowCount = Math.max(headerRowCount, column.getHeaderMetaData().size());
+        }
         return headerRowCount;
     }
 
@@ -299,8 +304,14 @@ public class BaseGridData implements GridData {
     }
 
     @Override
+    public List<SelectedCell> getSelectedHeaderCells() {
+        return selectedHeaderCells;
+    }
+
+    @Override
     public void clearSelections() {
         selectedCells.clear();
+        selectedHeaderCells.clear();
     }
 
     @Override
@@ -491,6 +502,22 @@ public class BaseGridData implements GridData {
                                                columnIndex,
                                                width,
                                                height);
+    }
+
+    @Override
+    public Range selectHeaderCell(final int headerRowIndex,
+                                  final int headerColumnIndex) {
+        if (headerColumnIndex < 0 || headerColumnIndex > columns.size() - 1) {
+            return new Range(headerRowIndex);
+        }
+        final GridColumn<?> gridColumn = getColumns().get(headerColumnIndex);
+        final List<GridColumn.HeaderMetaData> gridColumnHeaderMetaData = gridColumn.getHeaderMetaData();
+        if (headerRowIndex < 0 || headerRowIndex > gridColumnHeaderMetaData.size() - 1) {
+            return new Range(headerRowIndex);
+        }
+
+        return selectionsManager.onSelectHeaderCell(headerRowIndex,
+                                                    headerColumnIndex);
     }
 
     @Override

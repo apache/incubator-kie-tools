@@ -222,6 +222,21 @@ public interface GridData {
     List<SelectedCell> getSelectedCells();
 
     /**
+     * Selects a header cell at the specified physical coordinate.
+     * @param headerRowIndex
+     * @param headerColumnIndex
+     * @return The Range of rows affected by the operation.
+     */
+    Range selectHeaderCell(final int headerRowIndex,
+                           final int headerColumnIndex);
+
+    /**
+     * Returns all selected header cells.
+     * @return
+     */
+    List<SelectedCell> getSelectedHeaderCells();
+
+    /**
      * Clears all cell selections.
      */
     void clearSelections();

@@ -50,13 +50,13 @@ public class BaseCellSelectionManager implements CellSelectionManager {
     }
 
     @Override
-    public boolean selectCell(final Point2D ap,
+    public boolean selectCell(final Point2D rp,
                               final boolean isShiftKeyDown,
                               final boolean isControlKeyDown) {
         final Integer uiRowIndex = CoordinateUtilities.getUiRowIndex(gridWidget,
-                                                                     ap.getY());
+                                                                     rp.getY());
         final Integer uiColumnIndex = CoordinateUtilities.getUiColumnIndex(gridWidget,
-                                                                           ap.getX());
+                                                                           rp.getX());
         if (uiRowIndex == null || uiColumnIndex == null) {
             return false;
         }
@@ -95,6 +95,48 @@ public class BaseCellSelectionManager implements CellSelectionManager {
         return strategy.handleSelection(gridModel,
                                         uiRowIndex,
                                         uiColumnIndex,
+                                        isShiftKeyDown,
+                                        isControlKeyDown);
+    }
+
+    @Override
+    public boolean selectHeaderCell(final Point2D rp,
+                                    final boolean isShiftKeyDown,
+                                    final boolean isControlKeyDown) {
+        final Integer uiHeaderRowIndex = CoordinateUtilities.getUiHeaderRowIndex(gridWidget,
+                                                                                 rp);
+        final Integer uiHeaderColumnIndex = CoordinateUtilities.getUiColumnIndex(gridWidget,
+                                                                                 rp.getX());
+        if (uiHeaderRowIndex == null || uiHeaderColumnIndex == null) {
+            return false;
+        }
+
+        return selectHeaderCell(uiHeaderRowIndex,
+                                uiHeaderColumnIndex,
+                                isShiftKeyDown,
+                                isControlKeyDown);
+    }
+
+    @Override
+    public boolean selectHeaderCell(final int uiHeaderRowIndex,
+                                    final int uiHeaderColumnIndex,
+                                    final boolean isShiftKeyDown,
+                                    final boolean isControlKeyDown) {
+        if (uiHeaderColumnIndex < 0 || uiHeaderColumnIndex > gridModel.getColumnCount() - 1) {
+            return false;
+        }
+
+        final GridColumn<?> gridColumn = gridModel.getColumns().get(uiHeaderColumnIndex);
+        final List<GridColumn.HeaderMetaData> gridColumnHeaderMetaData = gridColumn.getHeaderMetaData();
+        if (uiHeaderRowIndex < 0 || uiHeaderRowIndex > gridColumnHeaderMetaData.size() - 1) {
+            return false;
+        }
+        final GridColumn.HeaderMetaData headerMetaData = gridColumnHeaderMetaData.get(uiHeaderRowIndex);
+        final CellSelectionStrategy strategy = headerMetaData.getSelectionStrategy();
+
+        return strategy.handleSelection(gridModel,
+                                        uiHeaderRowIndex,
+                                        uiHeaderColumnIndex,
                                         isShiftKeyDown,
                                         isControlKeyDown);
     }

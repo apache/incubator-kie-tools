@@ -16,7 +16,12 @@
 
 package org.uberfire.ext.wires.core.grids.client.widget.grid.impl;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.Group;
@@ -29,7 +34,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
@@ -38,13 +45,16 @@ import org.uberfire.ext.wires.core.grids.client.widget.context.GridBoundaryRende
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridHeaderRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.multiple.impl.CheckBoxDOMElementFactory;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.BooleanDOMElementColumn;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.GridColumnRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.SelectedRange;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.CellSelectionManager;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridSelectionManager;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.DefaultGridLayer;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.GridPinnedModeManager;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
@@ -53,11 +63,15 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidgetRenderingTestUtils.ROW_HEIGHT;
+import static org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidgetRenderingTestUtils.HEADER_ROW_HEIGHT;
 import static org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidgetRenderingTestUtils.makeRenderingInformation;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class BaseGridWidgetRenderingTest {
+
+    private static final double HEADER_Y_OFFSET = 32.0;
+
+    private static final double ROW_HEIGHT = 20.0;
 
     @Mock
     private Viewport viewport;
@@ -154,13 +168,46 @@ public class BaseGridWidgetRenderingTest {
         when(selections.asNode()).thenReturn(mock(Node.class));
         when(renderer.renderSelectedCells(any(GridData.class),
                                           any(GridBodyRenderContext.class),
-                                          eq(rendererHelper))).thenReturn((rc) -> rc.getGroup().add(selections));
+                                          eq(rendererHelper),
+                                          any(List.class),
+                                          any(BiFunction.class),
+                                          any(Function.class))).thenReturn((rc) -> rc.getGroup().add(selections));
     }
 
     @SuppressWarnings("unchecked")
     private void mockBoundary() {
         when(boundary.asNode()).thenReturn(mock(Node.class));
         when(renderer.renderGridBoundary(any(GridBoundaryRenderContext.class))).thenReturn((rc) -> rc.getGroup().add(boundary));
+    }
+
+    @SuppressWarnings("unchecked")
+    private void mockGridRendering(final double expectedHeaderYOffset,
+                                   final double headerHeight,
+                                   final int numberOfRows) {
+        final List<Double> rowOffsets = new ArrayList<>();
+        for (int i = 0; i < numberOfRows; i++) {
+            rowOffsets.add(i * ROW_HEIGHT);
+            model.appendRow(new BaseGridRow(ROW_HEIGHT));
+            when(rendererHelper.getRowOffset(i)).thenReturn(rowOffsets.get(i));
+        }
+
+        final BaseGridRendererHelper.RenderingInformation ri = makeRenderingInformation(model,
+                                                                                        rowOffsets,
+                                                                                        BaseGridWidgetRenderingTestUtils.HEADER_HEIGHT + expectedHeaderYOffset);
+        when(rendererHelper.getRenderingInformation()).thenReturn(ri);
+        when(renderer.getHeaderHeight()).thenReturn(headerHeight);
+
+        final GridColumn<String> column = new BaseGridColumn<>(Arrays.asList(new BaseHeaderMetaData("row1"), new BaseHeaderMetaData("row2")),
+                                                               mock(GridColumnRenderer.class),
+                                                               100.0);
+        model.appendColumn(column);
+
+        final Context2D context2D = mock(Context2D.class);
+        final BoundingBox boundingBox = mock(BoundingBox.class);
+
+        gridWidget.drawWithTransforms(context2D,
+                                      1.0,
+                                      boundingBox);
     }
 
     @Test
@@ -175,7 +222,7 @@ public class BaseGridWidgetRenderingTest {
                                                                                100.0));
 
         model.appendColumn(column);
-        model.appendRow(new BaseGridRow(ROW_HEIGHT));
+        model.appendRow(new BaseGridRow(HEADER_ROW_HEIGHT));
 
         final Context2D context2D = mock(Context2D.class);
         final BoundingBox boundingBox = mock(BoundingBox.class);
@@ -222,5 +269,121 @@ public class BaseGridWidgetRenderingTest {
                times(1)).drawHeader(eq(ri));
         verify(gridWidget,
                never()).drawBody(any(BaseGridRendererHelper.RenderingInformation.class));
+    }
+
+    @Test
+    public void testHeaderSelectionYOffsetStrategyWhenHeaderHeightIsEqualToRowsHeight() {
+        assertHeaderSelectionYOffsetStrategy(0.0);
+    }
+
+    @Test
+    public void testHeaderSelectionYOffsetStrategyWhenHeaderHeightIsGreaterThanRowsHeight() {
+        assertHeaderSelectionYOffsetStrategy(HEADER_Y_OFFSET);
+    }
+
+    @Test
+    public void testHeaderSelectionHeightStrategySingleSelectionNoYOffset() {
+        mockGridRendering(0.0, BaseGridWidgetRenderingTestUtils.HEADER_HEIGHT, 0);
+
+        final Function<SelectedRange, Double> strategy = gridWidget.getHeaderSelectionHeightStrategy();
+        final SelectedRange selectedRange = new SelectedRange(1, 0);
+
+        assertEquals(BaseGridWidgetRenderingTestUtils.HEADER_ROW_HEIGHT,
+                     strategy.apply(selectedRange),
+                     0.0);
+    }
+
+    @Test
+    public void testHeaderSelectionHeightStrategyMultipleSelectionsNoYOffset() {
+        mockGridRendering(0.0, BaseGridWidgetRenderingTestUtils.HEADER_HEIGHT, 0);
+
+        final Function<SelectedRange, Double> strategy = gridWidget.getHeaderSelectionHeightStrategy();
+        final SelectedRange selectedRange = new SelectedRange(1, 0, 1, 2);
+
+        assertEquals(BaseGridWidgetRenderingTestUtils.HEADER_ROW_HEIGHT * 2,
+                     strategy.apply(selectedRange),
+                     0.0);
+    }
+
+    @Test
+    public void testHeaderSelectionHeightStrategySingleSelectionWithYOffset() {
+        mockGridRendering(HEADER_Y_OFFSET, BaseGridWidgetRenderingTestUtils.HEADER_HEIGHT, 0);
+
+        final Function<SelectedRange, Double> strategy = gridWidget.getHeaderSelectionHeightStrategy();
+        final SelectedRange selectedRange = new SelectedRange(1, 0);
+
+        assertEquals(((BaseGridWidgetRenderingTestUtils.HEADER_ROW_HEIGHT * 2) - HEADER_Y_OFFSET) / BaseGridWidgetRenderingTestUtils.HEADER_ROW_COUNT,
+                     strategy.apply(selectedRange),
+                     0.0);
+    }
+
+    @Test
+    public void testHeaderSelectionHeightStrategyMultipleSelectionsWithYOffset() {
+        mockGridRendering(HEADER_Y_OFFSET, BaseGridWidgetRenderingTestUtils.HEADER_HEIGHT, 0);
+
+        final Function<SelectedRange, Double> strategy = gridWidget.getHeaderSelectionHeightStrategy();
+        final SelectedRange selectedRange = new SelectedRange(1, 0, 1, 2);
+
+        assertEquals((BaseGridWidgetRenderingTestUtils.HEADER_ROW_HEIGHT * 2) - HEADER_Y_OFFSET,
+                     strategy.apply(selectedRange),
+                     0.0);
+    }
+
+    @Test
+    public void testBodySelectionYOffsetStrategyRow0() {
+        assertBodySelectionYOffsetStrategy(new SelectedRange(0, 0), 0);
+    }
+
+    @Test
+    public void testBodySelectionYOffsetStrategyRow1() {
+        assertBodySelectionYOffsetStrategy(new SelectedRange(1, 0), ROW_HEIGHT);
+    }
+
+    @Test
+    public void testBodySelectionHeightStrategySingleSelection() {
+        mockGridRendering(0, BaseGridWidgetRenderingTestUtils.HEADER_HEIGHT, 2);
+
+        final Function<SelectedRange, Double> strategy = gridWidget.getBodySelectionHeightStrategy();
+        final SelectedRange selectedRange = new SelectedRange(1, 0);
+
+        assertEquals(ROW_HEIGHT,
+                     strategy.apply(selectedRange),
+                     0.0);
+    }
+
+    @Test
+    public void testBodySelectionHeightStrategyMultipleSelections() {
+        mockGridRendering(0, BaseGridWidgetRenderingTestUtils.HEADER_HEIGHT, 2);
+
+        final Function<SelectedRange, Double> strategy = gridWidget.getBodySelectionHeightStrategy();
+        final SelectedRange selectedRange = new SelectedRange(0, 0, 1, 2);
+
+        assertEquals(ROW_HEIGHT * 2,
+                     strategy.apply(selectedRange),
+                     0.0);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void assertHeaderSelectionYOffsetStrategy(final double expectedHeaderYOffset) {
+        mockGridRendering(expectedHeaderYOffset, BaseGridWidgetRenderingTestUtils.HEADER_HEIGHT, 0);
+
+        final BiFunction<SelectedRange, Integer, Double> strategy = gridWidget.getHeaderSelectionYOffsetStrategy();
+        final SelectedRange selectedRange = new SelectedRange(1, 0);
+
+        assertEquals(expectedHeaderYOffset,
+                     strategy.apply(selectedRange, 1),
+                     0.0);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void assertBodySelectionYOffsetStrategy(final SelectedRange selectedRange,
+                                                    final double expectedRowYOffset) {
+        mockGridRendering(0, BaseGridWidgetRenderingTestUtils.HEADER_HEIGHT, 2);
+
+        final BiFunction<SelectedRange, Integer, Double> strategy = gridWidget.getBodySelectionYOffsetStrategy();
+
+        assertEquals(expectedRowYOffset,
+                     strategy.apply(selectedRange, 0),
+                     0.0);
     }
 }

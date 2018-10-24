@@ -17,6 +17,7 @@ package org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids;
 
 import java.util.List;
 
+import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.SelectedRange;
 
 /**
@@ -24,5 +25,5 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl
  */
 public interface SelectionsTransformer {
 
-    List<SelectedRange> transformToSelectedRanges();
+    List<SelectedRange> transformToSelectedRanges(final List<GridData.SelectedCell> selectedCells);
 }

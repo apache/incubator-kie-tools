@@ -27,14 +27,22 @@ import static org.mockito.Mockito.mock;
 
 public class BaseGridWidgetRenderingTestUtils {
 
-    public static final double ROW_HEIGHT = 20.0;
-
     public static final int HEADER_ROW_COUNT = 2;
 
-    public static final double HEADER_HEIGHT = ROW_HEIGHT * HEADER_ROW_COUNT;
+    public static final double HEADER_ROW_HEIGHT = 20.0;
+
+    public static final double HEADER_HEIGHT = HEADER_ROW_HEIGHT * HEADER_ROW_COUNT;
 
     public static RenderingInformation makeRenderingInformation(final GridData model,
                                                                 final List<Double> rowOffsets) {
+        return makeRenderingInformation(model,
+                                        rowOffsets,
+                                        HEADER_HEIGHT);
+    }
+
+    public static RenderingInformation makeRenderingInformation(final GridData model,
+                                                                final List<Double> rowOffsets,
+                                                                final double headerHeight) {
         return new RenderingInformation(mock(Bounds.class),
                                         model.getColumns(),
                                         new BaseGridRendererHelper.RenderingBlockInformation(model.getColumns(),
@@ -52,8 +60,9 @@ public class BaseGridWidgetRenderingTestUtils {
                                         rowOffsets,
                                         false,
                                         false,
-                                        HEADER_HEIGHT,
                                         HEADER_ROW_COUNT,
-                                        0);
+                                        HEADER_ROW_HEIGHT,
+                                        headerHeight,
+                                        headerHeight - (HEADER_ROW_COUNT * HEADER_ROW_HEIGHT));
     }
 }

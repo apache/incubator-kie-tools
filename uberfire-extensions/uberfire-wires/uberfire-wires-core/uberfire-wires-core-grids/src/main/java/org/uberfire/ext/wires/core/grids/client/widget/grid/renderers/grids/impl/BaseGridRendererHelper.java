@@ -276,7 +276,6 @@ public class BaseGridRendererHelper {
         }
 
         final int headerRowCount = model.getHeaderRowCount();
-
         final double headerHeight = renderer.getHeaderHeight();
         final double headerRowHeight = renderer.getHeaderRowHeight();
         final double headerRowsHeight = headerRowHeight * headerRowCount;
@@ -292,8 +291,9 @@ public class BaseGridRendererHelper {
                                         visibleRowOffsets,
                                         isFixedHeader,
                                         isFloatingHeader,
-                                        headerRowsHeight,
                                         headerRowCount,
+                                        headerRowHeight,
+                                        headerRowsHeight,
                                         headerRowsYOffset);
     }
 
@@ -456,8 +456,9 @@ public class BaseGridRendererHelper {
         private final List<Double> visibleRowOffsets;
         private final boolean isFixedHeader;
         private final boolean isFloatingHeader;
-        private final double headerRowsHeight;
         private final double headerRowCount;
+        private final double headerRowHeight;
+        private final double headerRowsHeight;
         private final double headerRowsYOffset;
 
         public RenderingInformation(final Bounds bounds,
@@ -469,8 +470,9 @@ public class BaseGridRendererHelper {
                                     final List<Double> visibleRowOffsets,
                                     final boolean isFixedHeader,
                                     final boolean isFloatingHeader,
-                                    final double headerRowsHeight,
                                     final double headerRowCount,
+                                    final double headerRowHeight,
+                                    final double headerRowsHeight,
                                     final double headerRowsYOffset) {
             this.bounds = bounds;
             this.allColumns = allColumns;
@@ -481,8 +483,9 @@ public class BaseGridRendererHelper {
             this.visibleRowOffsets = visibleRowOffsets;
             this.isFixedHeader = isFixedHeader;
             this.isFloatingHeader = isFloatingHeader;
-            this.headerRowsHeight = headerRowsHeight;
             this.headerRowCount = headerRowCount;
+            this.headerRowHeight = headerRowHeight;
+            this.headerRowsHeight = headerRowsHeight;
             this.headerRowsYOffset = headerRowsYOffset;
         }
 
@@ -520,6 +523,10 @@ public class BaseGridRendererHelper {
 
         public boolean isFloatingHeader() {
             return isFloatingHeader;
+        }
+
+        public double getHeaderRowHeight() {
+            return headerRowHeight;
         }
 
         public double getHeaderRowsHeight() {

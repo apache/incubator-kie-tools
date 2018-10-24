@@ -17,6 +17,7 @@ package org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids;
 
 import java.util.List;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import com.ait.lienzo.client.core.shape.Group;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
@@ -25,6 +26,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyRenderCon
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBoundaryRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridHeaderRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.SelectedRange;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.themes.GridRendererTheme;
 
 /**
@@ -43,8 +45,8 @@ public interface GridRenderer {
      * Generic command to render a component of the grid
      */
     interface RendererCommand {
-        void execute(GridRendererContext parameter);
 
+        void execute(GridRendererContext parameter);
     }
 
     /**
@@ -165,11 +167,17 @@ public interface GridRenderer {
      * @param model The data model for the GridWidget.
      * @param context The context of the render phase.
      * @param rendererHelper Helper for rendering.
+     * @param selectedCells The cells that are selected.
+     * @param selectedCellsYOffsetStrategy A function that returns the YOffset of a selection.
+     * @param selectedCellsHeightStrategy A function that returns the height of a selection.
      * @return A command that adds the "selected cells".
      */
     RendererCommand renderSelectedCells(final GridData model,
                                         final GridBodyRenderContext context,
-                                        final BaseGridRendererHelper rendererHelper);
+                                        final BaseGridRendererHelper rendererHelper,
+                                        final List<GridData.SelectedCell> selectedCells,
+                                        final BiFunction<SelectedRange, Integer, Double> selectedCellsYOffsetStrategy,
+                                        final Function<SelectedRange, Double> selectedCellsHeightStrategy);
 
     /**
      * Renders the header for the Grid.

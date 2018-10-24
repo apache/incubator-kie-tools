@@ -27,6 +27,7 @@ import com.google.gwt.dom.client.Style;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
+import org.uberfire.ext.wires.core.grids.client.util.ColumnIndexUtilities;
 import org.uberfire.ext.wires.core.grids.client.util.CoordinateUtilities;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.HasDOMElementResources;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
@@ -98,10 +99,15 @@ public class GridWidgetDnDMouseMoveHandler implements NodeMouseMoveHandler {
 
             final Group header = gridWidget.getHeader();
             final GridRenderer renderer = gridWidget.getRenderer();
-
             final double headerHeight = renderer.getHeaderHeight();
-            final double headerRowsYOffset = getHeaderRowsYOffset(gridWidget,
-                                                                  renderer);
+
+            final BaseGridRendererHelper rendererHelper = gridWidget.getRendererHelper();
+            final BaseGridRendererHelper.RenderingInformation renderingInformation = rendererHelper.getRenderingInformation();
+            if (renderingInformation == null) {
+                continue;
+            }
+
+            final double headerRowsYOffset = renderingInformation.getHeaderRowsYOffset();
             final double headerMinY = (header == null ? headerRowsYOffset : header.getY() + headerRowsYOffset);
             final double headerMaxY = (header == null ? headerHeight : headerHeight + header.getY());
 
@@ -159,18 +165,6 @@ public class GridWidgetDnDMouseMoveHandler implements NodeMouseMoveHandler {
         for (IMediator mediator : layer.getViewport().getMediators()) {
             mediator.setEnabled(state.getActiveGridWidget() == null);
         }
-    }
-
-    private double getHeaderRowsYOffset(final GridWidget gridWidget,
-                                        final GridRenderer renderer) {
-        final GridData model = gridWidget.getModel();
-        final int headerRowCount = model.getHeaderRowCount();
-        final double headerHeight = renderer.getHeaderHeight();
-        final double headerRowHeight = renderer.getHeaderRowHeight();
-        final double headerRowsHeight = headerRowHeight * headerRowCount;
-        final double headerRowsYOffset = headerHeight - headerRowsHeight;
-
-        return headerRowsYOffset;
     }
 
     private void setCursor(final Style.Cursor cursor) {
@@ -316,69 +310,19 @@ public class GridWidgetDnDMouseMoveHandler implements NodeMouseMoveHandler {
                                                 final List<GridColumn.HeaderMetaData> headerMetaData,
                                                 final int headerRowIndex,
                                                 final int headerColumnIndex) {
-        final int blockStartColumnIndex = getBlockStartColumnIndex(allColumns,
-                                                                   headerMetaData.get(headerRowIndex),
-                                                                   headerRowIndex,
-                                                                   headerColumnIndex);
-        final int blockEndColumnIndex = getBlockEndColumnIndex(allColumns,
-                                                               headerMetaData.get(headerRowIndex),
-                                                               headerRowIndex,
-                                                               headerColumnIndex);
+        final int blockStartColumnIndex = ColumnIndexUtilities.getHeaderBlockStartColumnIndex(allColumns,
+                                                                                              headerMetaData.get(headerRowIndex),
+                                                                                              headerRowIndex,
+                                                                                              headerColumnIndex);
+        final int blockEndColumnIndex = ColumnIndexUtilities.getHeaderBlockEndColumnIndex(allColumns,
+                                                                                          headerMetaData.get(headerRowIndex),
+                                                                                          headerRowIndex,
+                                                                                          headerColumnIndex);
 
         final List<GridColumn<?>> columns = new ArrayList<GridColumn<?>>();
         columns.addAll(allColumns.subList(blockStartColumnIndex,
                                           blockEndColumnIndex + 1));
         return columns;
-    }
-
-    @SuppressWarnings("unchecked")
-    private int getBlockStartColumnIndex(final List<? extends GridColumn<?>> allColumns,
-                                         final GridColumn.HeaderMetaData headerMetaData,
-                                         final int headerRowIndex,
-                                         final int headerColumnIndex) {
-        //Back-track adding width of proceeding columns sharing header MetaData
-        int candidateHeaderColumnIndex = headerColumnIndex;
-        if (candidateHeaderColumnIndex == 0) {
-            return candidateHeaderColumnIndex;
-        }
-        while (candidateHeaderColumnIndex > 0) {
-            final GridColumn candidateColumn = allColumns.get(candidateHeaderColumnIndex - 1);
-            final List<GridColumn.HeaderMetaData> candidateHeaderMetaData = candidateColumn.getHeaderMetaData();
-            if (candidateHeaderMetaData.size() - 1 < headerRowIndex) {
-                break;
-            }
-            if (!candidateHeaderMetaData.get(headerRowIndex).equals(headerMetaData)) {
-                break;
-            }
-            candidateHeaderColumnIndex--;
-        }
-
-        return candidateHeaderColumnIndex;
-    }
-
-    @SuppressWarnings("unchecked")
-    private int getBlockEndColumnIndex(final List<? extends GridColumn<?>> allColumns,
-                                       final GridColumn.HeaderMetaData headerMetaData,
-                                       final int headerRowIndex,
-                                       final int headerColumnIndex) {
-        //Forward-track adding width of following columns sharing header MetaData
-        int candidateHeaderColumnIndex = headerColumnIndex;
-        if (candidateHeaderColumnIndex == allColumns.size() - 1) {
-            return candidateHeaderColumnIndex;
-        }
-        while (candidateHeaderColumnIndex < allColumns.size() - 1) {
-            final GridColumn candidateColumn = allColumns.get(candidateHeaderColumnIndex + 1);
-            final List<GridColumn.HeaderMetaData> candidateHeaderMetaData = candidateColumn.getHeaderMetaData();
-            if (candidateHeaderMetaData.size() - 1 < headerRowIndex) {
-                break;
-            }
-            if (!candidateHeaderMetaData.get(headerRowIndex).equals(headerMetaData)) {
-                break;
-            }
-            candidateHeaderColumnIndex++;
-        }
-
-        return candidateHeaderColumnIndex;
     }
 
     protected void findMovableRows(final GridWidget view,
@@ -540,14 +484,14 @@ public class GridWidgetDnDMouseMoveHandler implements NodeMouseMoveHandler {
                     for (int headerRowIndex = 0; headerRowIndex < candidateGridColumn.getHeaderMetaData().size(); headerRowIndex++) {
                         final GridColumn.HeaderMetaData candidateHeaderMetaData = candidateGridColumn.getHeaderMetaData().get(headerRowIndex);
                         if (candidateHeaderMetaData.getColumnGroup().equals(activeHeaderMetaData.getColumnGroup())) {
-                            final int candidateBlockStartColumnIndex = getBlockStartColumnIndex(allGridColumns,
-                                                                                                candidateHeaderMetaData,
-                                                                                                headerRowIndex,
-                                                                                                headerColumnIndex);
-                            final int candidateBlockEndColumnIndex = getBlockEndColumnIndex(allGridColumns,
-                                                                                            candidateHeaderMetaData,
-                                                                                            headerRowIndex,
-                                                                                            headerColumnIndex);
+                            final int candidateBlockStartColumnIndex = ColumnIndexUtilities.getHeaderBlockStartColumnIndex(allGridColumns,
+                                                                                                                           candidateHeaderMetaData,
+                                                                                                                           headerRowIndex,
+                                                                                                                           headerColumnIndex);
+                            final int candidateBlockEndColumnIndex = ColumnIndexUtilities.getHeaderBlockEndColumnIndex(allGridColumns,
+                                                                                                                       candidateHeaderMetaData,
+                                                                                                                       headerRowIndex,
+                                                                                                                       headerColumnIndex);
                             final double candidateBlockOffset = rendererHelper.getColumnOffset(candidateBlockStartColumnIndex);
                             final double candidateBlockWidth = getBlockWidth(allGridColumns,
                                                                              candidateBlockStartColumnIndex,

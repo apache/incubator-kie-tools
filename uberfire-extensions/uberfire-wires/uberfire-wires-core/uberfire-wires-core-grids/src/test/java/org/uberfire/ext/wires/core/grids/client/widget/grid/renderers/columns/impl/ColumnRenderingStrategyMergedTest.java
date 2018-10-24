@@ -47,19 +47,19 @@ public class ColumnRenderingStrategyMergedTest {
     @Before
     public void setUp() throws Exception {
         doReturn(gridRow).when(gridData).getRow(anyInt());
-        doReturn(BaseGridWidgetRenderingTestUtils.ROW_HEIGHT).when(gridRow).getHeight();
+        doReturn(BaseGridWidgetRenderingTestUtils.HEADER_ROW_HEIGHT).when(gridRow).getHeight();
     }
 
     @Test
     public void testGetCellHeightCells3() throws Exception {
         doReturn(3).when(gridCell).getMergedCellCount();
-        Assertions.assertThat(ColumnRenderingStrategyMerged.getCellHeight(0, gridData, gridCell)).isEqualTo(BaseGridWidgetRenderingTestUtils.ROW_HEIGHT * 3);
+        Assertions.assertThat(ColumnRenderingStrategyMerged.getCellHeight(0, gridData, gridCell)).isEqualTo(BaseGridWidgetRenderingTestUtils.HEADER_ROW_HEIGHT * 3);
     }
 
     @Test
     public void testGetCellHeightCells4() throws Exception {
         doReturn(4).when(gridCell).getMergedCellCount();
-        Assertions.assertThat(ColumnRenderingStrategyMerged.getCellHeight(0, gridData, gridCell)).isEqualTo(BaseGridWidgetRenderingTestUtils.ROW_HEIGHT * 4);
+        Assertions.assertThat(ColumnRenderingStrategyMerged.getCellHeight(0, gridData, gridCell)).isEqualTo(BaseGridWidgetRenderingTestUtils.HEADER_ROW_HEIGHT * 4);
     }
 
     @Test

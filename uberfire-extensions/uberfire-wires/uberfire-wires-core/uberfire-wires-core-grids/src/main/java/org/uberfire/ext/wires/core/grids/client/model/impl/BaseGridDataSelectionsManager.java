@@ -174,6 +174,12 @@ public class BaseGridDataSelectionsManager {
                                   maxRowIndex);
     }
 
+    public GridData.Range onSelectHeaderCell(final int headerRowIndex,
+                                             final int headerColumnIndex) {
+        return selectHeaderCell(headerRowIndex,
+                                headerColumnIndex);
+    }
+
     private GridData.Range selectCellMerged(final int rowIndex,
                                             final int columnIndex) {
         //Find affected rows for merged data
@@ -250,6 +256,31 @@ public class BaseGridDataSelectionsManager {
 
         return new GridData.Range(rowIndex,
                                   rowIndex + height - 1);
+    }
+
+    private GridData.Range selectHeaderCell(final int headerRowIndex,
+                                            final int headerColumnIndex) {
+        final List<GridColumn<?>> columns = gridData.getColumns();
+        final List<GridData.SelectedCell> selectedHeaderCells = gridData.getSelectedHeaderCells();
+        final GridData.Range range = new GridData.Range(headerRowIndex);
+        if (headerColumnIndex < 0 || headerColumnIndex > columns.size() - 1) {
+            return range;
+        }
+        final GridColumn<?> gridColumn = columns.get(headerColumnIndex);
+        final List<GridColumn.HeaderMetaData> gridColumnHeaderMetaData = gridColumn.getHeaderMetaData();
+        if (headerRowIndex < 0 || headerRowIndex > gridColumnHeaderMetaData.size() - 1) {
+            return range;
+        }
+
+        final int _headerColumnIndex = columns.get(headerColumnIndex).getIndex();
+        final GridData.SelectedCell selectedCell = new GridData.SelectedCell(headerRowIndex,
+                                                                             _headerColumnIndex);
+
+        if (!selectedHeaderCells.contains(selectedCell)) {
+            selectedHeaderCells.add(selectedCell);
+        }
+
+        return range;
     }
 
     private int findMinRowIndex(final int rowIndex,

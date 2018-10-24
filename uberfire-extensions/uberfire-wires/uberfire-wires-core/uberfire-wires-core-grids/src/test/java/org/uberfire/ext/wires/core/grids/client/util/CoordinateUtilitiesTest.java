@@ -16,6 +16,9 @@
 
 package org.uberfire.ext.wires.core.grids.client.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Transform;
@@ -24,6 +27,8 @@ import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
@@ -34,12 +39,17 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.GridColumnRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRenderer;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.themes.impl.GreenTheme;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridSelectionManager;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.DefaultGridLayer;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.GridPinnedModeManager;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.impl.DefaultPinnedModeManager;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.mockito.Matchers.anyDouble;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -50,6 +60,15 @@ public class CoordinateUtilitiesTest {
 
     private static final double DEFAULT_ROW_HEIGHT = 20D;
     private static final double COLUMN_WIDTH = 50D;
+
+    @Mock
+    private BaseGridRendererHelper gridRendererHelper;
+
+    @Mock
+    private BaseGridRendererHelper.RenderingInformation ri;
+
+    @Mock
+    private BaseGridRendererHelper.ColumnInformation ci;
 
     private GridData gridData;
 
@@ -79,7 +98,7 @@ public class CoordinateUtilitiesTest {
     @Test
     public void testConvertDOMToGridCoordinateNoParent() throws Exception {
         point = new Point2D(15D, 20D);
-        view = new BaseGridWidget(gridData, gridSelectionManager, gridPinnedModeManager, gridRenderer);
+        setupGridWidget();
         convertedPoint = CoordinateUtilities.convertDOMToGridCoordinate(view, point);
         Assertions.assertThat(convertedPoint).isNotNull();
         Assertions.assertThat(convertedPoint.getX()).isEqualTo(15D);
@@ -89,7 +108,7 @@ public class CoordinateUtilitiesTest {
     @Test
     public void testConvertDOMToGridCoordinateWithParentWithoutTransform() throws Exception {
         point = new Point2D(15D, 20D);
-        view = spy(new BaseGridWidget(gridData, gridSelectionManager, gridPinnedModeManager, gridRenderer));
+        setupGridWidget();
         when(view.getViewport()).thenReturn(mock(Viewport.class));
         convertedPoint = CoordinateUtilities.convertDOMToGridCoordinate(view, point);
         Assertions.assertThat(convertedPoint).isNotNull();
@@ -103,7 +122,7 @@ public class CoordinateUtilitiesTest {
         final Transform transform = new Transform();
         transform.translate(10D, 10D);
         point = new Point2D(15D, 20D);
-        view = spy(new BaseGridWidget(gridData, gridSelectionManager, gridPinnedModeManager, gridRenderer));
+        setupGridWidget();
         when(view.getViewport()).thenReturn(viewport);
         when(viewport.getTransform()).thenReturn(transform);
         convertedPoint = CoordinateUtilities.convertDOMToGridCoordinate(view, point);
@@ -119,7 +138,7 @@ public class CoordinateUtilitiesTest {
         transform.translate(10D, 10D);
         transform.rotate(Math.PI);
         point = new Point2D(15D, 20D);
-        view = spy(new BaseGridWidget(gridData, gridSelectionManager, gridPinnedModeManager, gridRenderer));
+        setupGridWidget();
         when(view.getViewport()).thenReturn(viewport);
         when(viewport.getTransform()).thenReturn(transform);
         convertedPoint = CoordinateUtilities.convertDOMToGridCoordinate(view, point);
@@ -130,14 +149,14 @@ public class CoordinateUtilitiesTest {
 
     @Test
     public void testGetUiRowIndexOverHeader() throws Exception {
-        view = new BaseGridWidget(gridData, gridSelectionManager, gridPinnedModeManager, gridRenderer);
+        setupGridWidget();
         final Integer rowIndex = CoordinateUtilities.getUiRowIndex(view, -1);
         Assertions.assertThat(rowIndex).isNull();
     }
 
     @Test
     public void testGetUiRowIndexInHeader() throws Exception {
-        view = new BaseGridWidget(gridData, gridSelectionManager, gridPinnedModeManager, gridRenderer);
+        setupGridWidget();
         final Integer rowIndex = CoordinateUtilities.getUiRowIndex(view, gridRenderer.getHeaderHeight() - 1);
         Assertions.assertThat(rowIndex).isNull();
     }
@@ -148,7 +167,7 @@ public class CoordinateUtilitiesTest {
         gridData.appendRow(new BaseGridRow());
         gridData.appendRow(new BaseGridRow());
         gridData.appendRow(new BaseGridRow());
-        view = new BaseGridWidget(gridData, gridSelectionManager, gridPinnedModeManager, gridRenderer);
+        setupGridWidget();
         final Integer rowIndex = CoordinateUtilities.getUiRowIndex(view, gridRenderer.getHeaderHeight() + 1);
         Assertions.assertThat(rowIndex).isEqualTo(0);
     }
@@ -158,7 +177,7 @@ public class CoordinateUtilitiesTest {
         gridData.appendRow(new BaseGridRow());
         gridData.appendRow(new BaseGridRow());
         gridData.appendRow(new BaseGridRow());
-        view = new BaseGridWidget(gridData, gridSelectionManager, gridPinnedModeManager, gridRenderer);
+        setupGridWidget();
         final Integer rowIndex = CoordinateUtilities.getUiRowIndex(view, gridRenderer.getHeaderHeight() + DEFAULT_ROW_HEIGHT + 1);
         Assertions.assertThat(rowIndex).isEqualTo(1);
     }
@@ -168,7 +187,7 @@ public class CoordinateUtilitiesTest {
         gridData.appendRow(new BaseGridRow());
         gridData.appendRow(new BaseGridRow());
         gridData.appendRow(new BaseGridRow());
-        view = new BaseGridWidget(gridData, gridSelectionManager, gridPinnedModeManager, gridRenderer);
+        setupGridWidget();
         final Integer rowIndex = CoordinateUtilities.getUiRowIndex(view, gridRenderer.getHeaderHeight() + (DEFAULT_ROW_HEIGHT * 2) + 1);
         Assertions.assertThat(rowIndex).isEqualTo(2);
     }
@@ -178,33 +197,114 @@ public class CoordinateUtilitiesTest {
         gridData.appendRow(new BaseGridRow());
         gridData.appendRow(new BaseGridRow());
         gridData.appendRow(new BaseGridRow());
-        view = new BaseGridWidget(gridData, gridSelectionManager, gridPinnedModeManager, gridRenderer);
+        setupGridWidget();
         final Integer rowIndex = CoordinateUtilities.getUiRowIndex(view, gridRenderer.getHeaderHeight() + (DEFAULT_ROW_HEIGHT * 3) + 1);
         Assertions.assertThat(rowIndex).isNull();
     }
 
     @Test
     public void testGetUiColumnIndexBeforeWidget() throws Exception {
-        view = new BaseGridWidget(gridData, gridSelectionManager, gridPinnedModeManager, gridRenderer);
+        setupGridWidget();
         final Integer columnIndex = CoordinateUtilities.getUiColumnIndex(view, -1);
         Assertions.assertThat(columnIndex).isNull();
     }
 
     @Test
     public void testGetUiColumnIndexAfterWidgetHeader() throws Exception {
-        view = new BaseGridWidget(gridData, gridSelectionManager, gridPinnedModeManager, gridRenderer);
+        setupGridWidget();
         final Integer columnIndex = CoordinateUtilities.getUiColumnIndex(view, view.getWidth() + 1);
         Assertions.assertThat(columnIndex).isNull();
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testGetUiColumnIndexInHeaderAfterLastColumn() throws Exception {
-        gridData.appendColumn(new BaseGridColumn<Object>(new BaseHeaderMetaData("first"), gridColumnRenderer, COLUMN_WIDTH));
-        gridData.appendColumn(new BaseGridColumn<Object>(new BaseHeaderMetaData("second"), gridColumnRenderer, COLUMN_WIDTH));
-        gridData.appendColumn(new BaseGridColumn<Object>(new BaseHeaderMetaData("third"), gridColumnRenderer, COLUMN_WIDTH));
-        view = spy(new BaseGridWidget(gridData, gridSelectionManager, gridPinnedModeManager, gridRenderer));
+        gridData.appendColumn(new BaseGridColumn<>(new BaseHeaderMetaData("first"), gridColumnRenderer, COLUMN_WIDTH));
+        gridData.appendColumn(new BaseGridColumn<>(new BaseHeaderMetaData("second"), gridColumnRenderer, COLUMN_WIDTH));
+        gridData.appendColumn(new BaseGridColumn<>(new BaseHeaderMetaData("third"), gridColumnRenderer, COLUMN_WIDTH));
+        setupGridWidget();
         doReturn(gridSelectionManager).when(view).getLayer();
         final Integer columnIndex = CoordinateUtilities.getUiColumnIndex(view, (COLUMN_WIDTH * 3) + 1);
         Assertions.assertThat(columnIndex).isNull();
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testGetUiHeaderRowIndexHeaderMinY() {
+        point = new Point2D(COLUMN_WIDTH / 2, -5.0);
+        setupGridWidget();
+
+        final GridColumn uiColumn = new BaseGridColumn<>(new BaseHeaderMetaData("first"), gridColumnRenderer, COLUMN_WIDTH);
+        gridData.appendColumn(uiColumn);
+        doReturn(uiColumn).when(ci).getColumn();
+
+        final Integer uiHeaderRowIndex = CoordinateUtilities.getUiHeaderRowIndex(view,
+                                                                                 point);
+        assertNull(uiHeaderRowIndex);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testGetUiHeaderRowIndexHeaderMaxY() {
+        point = new Point2D(COLUMN_WIDTH / 2, gridRenderer.getHeaderHeight() + 5.0);
+        setupGridWidget();
+
+        final GridColumn uiColumn = new BaseGridColumn<>(new BaseHeaderMetaData("first"), gridColumnRenderer, COLUMN_WIDTH);
+        gridData.appendColumn(uiColumn);
+        doReturn(uiColumn).when(ci).getColumn();
+
+        final Integer uiHeaderRowIndex = CoordinateUtilities.getUiHeaderRowIndex(view,
+                                                                                 point);
+        assertNull(uiHeaderRowIndex);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testGetUiHeaderRowIndexRow0() {
+        point = new Point2D(COLUMN_WIDTH / 2, gridRenderer.getHeaderRowHeight() - 5.0);
+        setupGridWidget();
+
+        final GridColumn uiColumn = new BaseGridColumn<>(new BaseHeaderMetaData("first"), gridColumnRenderer, COLUMN_WIDTH);
+        gridData.appendColumn(uiColumn);
+        doReturn(uiColumn).when(ci).getColumn();
+
+        final Integer uiHeaderRowIndex = CoordinateUtilities.getUiHeaderRowIndex(view,
+                                                                                 point);
+        assertNotNull(uiHeaderRowIndex);
+        assertEquals(0,
+                     (int) uiHeaderRowIndex);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testGetUiHeaderRowIndexRow1() {
+        point = new Point2D(COLUMN_WIDTH / 2, gridRenderer.getHeaderRowHeight() + 5.0);
+        setupGridWidget();
+
+        final List<GridColumn.HeaderMetaData> headerMetaData = new ArrayList<>();
+        headerMetaData.add(new BaseHeaderMetaData("first"));
+        headerMetaData.add(new BaseHeaderMetaData("second"));
+        final GridColumn uiColumn = new BaseGridColumn<>(headerMetaData,
+                                                         gridColumnRenderer,
+                                                         COLUMN_WIDTH);
+        gridData.appendColumn(uiColumn);
+        doReturn(uiColumn).when(ci).getColumn();
+
+        final Integer uiHeaderRowIndex = CoordinateUtilities.getUiHeaderRowIndex(view,
+                                                                                 point);
+        assertNotNull(uiHeaderRowIndex);
+        assertEquals(1,
+                     (int) uiHeaderRowIndex);
+    }
+
+    private void setupGridWidget() {
+        view = spy(new BaseGridWidget(gridData, gridSelectionManager, gridPinnedModeManager, gridRenderer));
+        doReturn(gridRenderer).when(view).getRenderer();
+        doReturn(gridRendererHelper).when(view).getRendererHelper();
+        doReturn(ri).when(gridRendererHelper).getRenderingInformation();
+        doReturn(ci).when(gridRendererHelper).getColumnInformation(anyDouble());
+        doReturn(mock(Viewport.class)).when(view).getViewport();
+        doReturn(0.0).when(ci).getOffsetX();
+        doReturn(0).when(ci).getUiColumnIndex();
     }
 }

@@ -49,6 +49,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.DefaultGridLay
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.never;
@@ -131,6 +132,7 @@ public class BaseCellSelectionManagerTest {
         when(gridWidget.getComputedLocation()).thenReturn(new Point2D(GRID_ABSOLUTE_X, GRID_ABSOLUTE_Y));
         when(gridLayer.getVisibleBounds()).thenReturn(visibleBounds);
         when(gridWidgetRenderer.getHeaderHeight()).thenReturn(HEADER_HEIGHT);
+        when(gridWidgetRenderer.getHeaderRowHeight()).thenReturn(HEADER_HEIGHT);
         when(viewport.getTransform()).thenReturn(transform);
     }
 
@@ -319,6 +321,40 @@ public class BaseCellSelectionManagerTest {
                                                                     0)));
         assertTrue(selectedCells.contains(new GridData.SelectedCell(1,
                                                                     1)));
+    }
+
+    @Test
+    public void selectHeaderCellWithPoint() {
+        cellSelectionManager.selectHeaderCell(new Point2D(col1.getWidth() + col2.getWidth() / 2,
+                                                          HEADER_HEIGHT / 2),
+                                              false,
+                                              false);
+
+        final List<GridData.SelectedCell> selectedHeaderCells = gridWidgetData.getSelectedHeaderCells();
+        assertEquals(1,
+                     selectedHeaderCells.size());
+        assertEquals(0,
+                     selectedHeaderCells.get(0).getRowIndex());
+        assertEquals(1,
+                     selectedHeaderCells.get(0).getColumnIndex());
+        assertNull(gridWidgetData.getSelectedCellsOrigin());
+    }
+
+    @Test
+    public void selectHeaderCellWithCoordinate() {
+        cellSelectionManager.selectHeaderCell(0,
+                                              1,
+                                              false,
+                                              false);
+
+        final List<GridData.SelectedCell> selectedHeaderCells = gridWidgetData.getSelectedHeaderCells();
+        assertEquals(1,
+                     selectedHeaderCells.size());
+        assertEquals(0,
+                     selectedHeaderCells.get(0).getRowIndex());
+        assertEquals(1,
+                     selectedHeaderCells.get(0).getColumnIndex());
+        assertNull(gridWidgetData.getSelectedCellsOrigin());
     }
 
     @Test

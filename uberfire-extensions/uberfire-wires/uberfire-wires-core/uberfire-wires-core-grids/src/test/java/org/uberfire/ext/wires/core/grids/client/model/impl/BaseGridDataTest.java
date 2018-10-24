@@ -25,6 +25,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
+import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.GridColumnRenderer;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
@@ -155,6 +156,40 @@ public class BaseGridDataTest {
 
         assertThat(baseGridData.getCell(0, 0).getValue().getValue()).isEqualTo("hello");
         assertThat(baseGridData.getCell(0, 0)).isInstanceOf(CustomGridCell.class);
+    }
+
+    @Test
+    public void testSelectHeaderCell() {
+        final BaseGridColumn<String> column1 = new BaseGridColumn<>(header, columnRenderer, 100.0);
+        final BaseGridColumn<String> column2 = new BaseGridColumn<>(header, columnRenderer, 100.0);
+
+        baseGridData.appendColumn(column1);
+        baseGridData.appendColumn(column2);
+
+        assertThat(baseGridData.selectHeaderCell(0, 1).getMaxRowIndex()).isEqualTo(0);
+
+        final List<GridData.SelectedCell> selectedHeaderCells = baseGridData.getSelectedHeaderCells();
+        assertThat(selectedHeaderCells).isNotEmpty();
+        assertThat(selectedHeaderCells.size()).isEqualTo(1);
+        assertThat(selectedHeaderCells).contains(new GridData.SelectedCell(0, 1));
+    }
+
+    @Test
+    public void testSelectHeaderCellOutOfHeaderRowRange() {
+        final BaseGridColumn<String> column = new BaseGridColumn<>(header, columnRenderer, 100.0);
+
+        baseGridData.appendColumn(column);
+
+        assertThat(baseGridData.selectHeaderCell(1, 0).getMaxRowIndex()).isEqualTo(1);
+
+        assertThat(baseGridData.getSelectedHeaderCells()).isEmpty();
+    }
+
+    @Test
+    public void testSelectHeaderCellOutOfHeaderColumnRange() {
+        assertThat(baseGridData.selectHeaderCell(0, 0).getMaxRowIndex()).isEqualTo(0);
+
+        assertThat(baseGridData.getSelectedHeaderCells()).isEmpty();
     }
 
     static class CustomGridCell<T> extends BaseGridCell<T> {

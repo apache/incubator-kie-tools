@@ -28,6 +28,7 @@ import com.ait.lienzo.client.core.types.BoundingBox;
 import com.google.gwt.core.client.GWT;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
+import org.uberfire.ext.wires.core.grids.client.util.ColumnIndexUtilities;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyColumnRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridHeaderColumnRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.GridColumnRenderer;
@@ -69,14 +70,14 @@ public abstract class BaseGridColumnRenderer<T> implements GridColumnRenderer<T>
 
                 for (int headerRowIndex = 0; headerRowIndex < headerMetaData.size(); headerRowIndex++) {
                     //Get extents of block for Header cell
-                    final int blockStartColumnIndex = getBlockStartColumnIndex(allBlockColumns,
-                                                                               headerMetaData.get(headerRowIndex),
-                                                                               headerRowIndex,
-                                                                               headerColumnIndex);
-                    final int blockEndColumnIndex = getBlockEndColumnIndex(allBlockColumns,
-                                                                           headerMetaData.get(headerRowIndex),
-                                                                           headerRowIndex,
-                                                                           headerColumnIndex);
+                    final int blockStartColumnIndex = ColumnIndexUtilities.getHeaderBlockStartColumnIndex(allBlockColumns,
+                                                                                                          headerMetaData.get(headerRowIndex),
+                                                                                                          headerRowIndex,
+                                                                                                          headerColumnIndex);
+                    final int blockEndColumnIndex = ColumnIndexUtilities.getHeaderBlockEndColumnIndex(allBlockColumns,
+                                                                                                      headerMetaData.get(headerRowIndex),
+                                                                                                      headerRowIndex,
+                                                                                                      headerColumnIndex);
 
                     //Vertical grid lines
                     if (headerColumnIndex < model.getColumnCount() - 1) {
@@ -125,14 +126,14 @@ public abstract class BaseGridColumnRenderer<T> implements GridColumnRenderer<T>
                 final Group g = new Group().setX(x);
                 for (int headerRowIndex = 0; headerRowIndex < headerMetaData.size(); headerRowIndex++) {
                     //Get extents of block for Header cell
-                    final int blockStartColumnIndex = getBlockStartColumnIndex(allBlockColumns,
-                                                                               headerMetaData.get(headerRowIndex),
-                                                                               headerRowIndex,
-                                                                               headerColumnIndex);
-                    final int blockEndColumnIndex = getBlockEndColumnIndex(allBlockColumns,
-                                                                           headerMetaData.get(headerRowIndex),
-                                                                           headerRowIndex,
-                                                                           headerColumnIndex);
+                    final int blockStartColumnIndex = ColumnIndexUtilities.getHeaderBlockStartColumnIndex(allBlockColumns,
+                                                                                                          headerMetaData.get(headerRowIndex),
+                                                                                                          headerRowIndex,
+                                                                                                          headerColumnIndex);
+                    final int blockEndColumnIndex = ColumnIndexUtilities.getHeaderBlockEndColumnIndex(allBlockColumns,
+                                                                                                      headerMetaData.get(headerRowIndex),
+                                                                                                      headerRowIndex,
+                                                                                                      headerColumnIndex);
 
                     //Check whether we need to render clipped cell (we only render once for blocks spanning multiple columns)
                     boolean skip;
@@ -198,56 +199,6 @@ public abstract class BaseGridColumnRenderer<T> implements GridColumnRenderer<T>
         t.setY(rowHeight / 2);
         headerGroup.add(t);
         return headerGroup;
-    }
-
-    @SuppressWarnings("unchecked")
-    private int getBlockStartColumnIndex(final List<GridColumn<?>> allColumns,
-                                         final GridColumn.HeaderMetaData headerMetaData,
-                                         final int headerRowIndex,
-                                         final int headerColumnIndex) {
-        //Back-track adding width of proceeding columns sharing header MetaData
-        int candidateHeaderColumnIndex = headerColumnIndex;
-        if (candidateHeaderColumnIndex == 0) {
-            return candidateHeaderColumnIndex;
-        }
-        while (candidateHeaderColumnIndex > 0) {
-            final GridColumn candidateColumn = allColumns.get(candidateHeaderColumnIndex - 1);
-            final List<GridColumn.HeaderMetaData> candidateHeaderMetaData = candidateColumn.getHeaderMetaData();
-            if (candidateHeaderMetaData.size() - 1 < headerRowIndex) {
-                break;
-            }
-            if (!candidateHeaderMetaData.get(headerRowIndex).equals(headerMetaData)) {
-                break;
-            }
-            candidateHeaderColumnIndex--;
-        }
-
-        return candidateHeaderColumnIndex;
-    }
-
-    @SuppressWarnings("unchecked")
-    private int getBlockEndColumnIndex(final List<GridColumn<?>> allColumns,
-                                       final GridColumn.HeaderMetaData headerMetaData,
-                                       final int headerRowIndex,
-                                       final int headerColumnIndex) {
-        //Forward-track adding width of following columns sharing header MetaData
-        int candidateHeaderColumnIndex = headerColumnIndex;
-        if (candidateHeaderColumnIndex == allColumns.size() - 1) {
-            return candidateHeaderColumnIndex;
-        }
-        while (candidateHeaderColumnIndex < allColumns.size() - 1) {
-            final GridColumn candidateColumn = allColumns.get(candidateHeaderColumnIndex + 1);
-            final List<GridColumn.HeaderMetaData> candidateHeaderMetaData = candidateColumn.getHeaderMetaData();
-            if (candidateHeaderMetaData.size() - 1 < headerRowIndex) {
-                break;
-            }
-            if (!candidateHeaderMetaData.get(headerRowIndex).equals(headerMetaData)) {
-                break;
-            }
-            candidateHeaderColumnIndex++;
-        }
-
-        return candidateHeaderColumnIndex;
     }
 
     private double getBlockOffset(final List<GridColumn<?>> allColumns,

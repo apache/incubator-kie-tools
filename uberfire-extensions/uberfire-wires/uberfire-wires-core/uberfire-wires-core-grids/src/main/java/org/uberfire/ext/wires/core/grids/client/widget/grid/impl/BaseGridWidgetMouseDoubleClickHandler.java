@@ -76,7 +76,8 @@ public class BaseGridWidgetMouseDoubleClickHandler implements NodeMouseDoubleCli
         final double cy = ap.getY();
 
         final Group header = gridWidget.getHeader();
-        final double headerRowsYOffset = getHeaderRowsYOffset();
+        final BaseGridRendererHelper.RenderingInformation ri = rendererHelper.getRenderingInformation();
+        final double headerRowsYOffset = ri.getHeaderRowsYOffset();
         final double headerMinY = (header == null ? headerRowsYOffset : header.getY() + headerRowsYOffset);
         final double headerMaxY = (header == null ? renderer.getHeaderHeight() : renderer.getHeaderHeight() + header.getY());
 
@@ -95,17 +96,6 @@ public class BaseGridWidgetMouseDoubleClickHandler implements NodeMouseDoubleCli
         }
 
         return true;
-    }
-
-    protected double getHeaderRowsYOffset() {
-        final GridData model = gridWidget.getModel();
-        final int headerRowCount = model.getHeaderRowCount();
-        final double headerHeight = renderer.getHeaderHeight();
-        final double headerRowHeight = renderer.getHeaderRowHeight();
-        final double headerRowsHeight = headerRowHeight * headerRowCount;
-        final double headerRowsYOffset = headerHeight - headerRowsHeight;
-
-        return headerRowsYOffset;
     }
 
     /**

@@ -19,6 +19,7 @@ package org.uberfire.ext.wires.core.grids.client.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridTest;
@@ -29,16 +30,21 @@ public class ColumnIndexUtilitiesTest {
 
     private static final int COLUMN_COUNT = 4;
 
-    @Test
-    public void testFindUiColumnIndex() {
-        final List<GridColumn<?>> columns = new ArrayList<>();
+    private List<GridColumn<?>> columns;
+
+    @Before
+    public void setup() {
+        this.columns = new ArrayList<>();
         for (int index = 0; index < COLUMN_COUNT; index++) {
             final GridColumn<String> column = new BaseGridTest.MockMergableGridColumn<>("col1",
                                                                                         100);
             column.setIndex(COLUMN_COUNT - index - 1);
             columns.add(column);
         }
+    }
 
+    @Test
+    public void testFindUiColumnIndex() {
         assertEquals(3,
                      ColumnIndexUtilities.findUiColumnIndex(columns,
                                                             0));
@@ -51,5 +57,47 @@ public class ColumnIndexUtilitiesTest {
         assertEquals(0,
                      ColumnIndexUtilities.findUiColumnIndex(columns,
                                                             3));
+    }
+
+    @Test
+    public void testGetHeaderBlockStartColumnIndex() {
+        //MetaDataGroups: [""][""][""][""]
+        assertEquals(0,
+                     ColumnIndexUtilities.getHeaderBlockStartColumnIndex(columns,
+                                                                         columns.get(3).getHeaderMetaData().get(0),
+                                                                         0,
+                                                                         3));
+    }
+
+    @Test
+    public void testGetHeaderBlockStartColumnIndexWithSplitBlock() {
+        //MetaDataGroups: [""]["new-group"][""][""]
+        columns.get(1).getHeaderMetaData().get(0).setColumnGroup("new-group");
+        assertEquals(2,
+                     ColumnIndexUtilities.getHeaderBlockStartColumnIndex(columns,
+                                                                         columns.get(3).getHeaderMetaData().get(0),
+                                                                         0,
+                                                                         3));
+    }
+
+    @Test
+    public void testGetHeaderBlockEndColumnIndex() {
+        //MetaDataGroups: [""][""][""][""]
+        assertEquals(3,
+                     ColumnIndexUtilities.getHeaderBlockEndColumnIndex(columns,
+                                                                       columns.get(0).getHeaderMetaData().get(0),
+                                                                       0,
+                                                                       0));
+    }
+
+    @Test
+    public void testGetHeaderBlockEndColumnIndexWithSplitBlock() {
+        //MetaDataGroups: [""][""]["new-group"][""]
+        columns.get(2).getHeaderMetaData().get(0).setColumnGroup("new-group");
+        assertEquals(1,
+                     ColumnIndexUtilities.getHeaderBlockEndColumnIndex(columns,
+                                                                       columns.get(0).getHeaderMetaData().get(0),
+                                                                       0,
+                                                                       0));
     }
 }

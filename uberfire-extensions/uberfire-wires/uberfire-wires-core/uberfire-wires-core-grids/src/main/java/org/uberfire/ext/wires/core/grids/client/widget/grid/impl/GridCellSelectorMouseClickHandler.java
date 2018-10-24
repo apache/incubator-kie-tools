@@ -51,14 +51,32 @@ public class GridCellSelectorMouseClickHandler implements NodeMouseClickHandler 
         if (!gridWidget.isVisible()) {
             return;
         }
+        handleHeaderCellClick(event);
         handleBodyCellClick(event);
     }
 
     /**
-     * Select cells.
+     * Select header cells.
      * @param event
      */
-    void handleBodyCellClick(final NodeMouseClickEvent event) {
+    protected void handleHeaderCellClick(final NodeMouseClickEvent event) {
+        //Convert Canvas co-ordinate to Grid co-ordinate
+        final Point2D rp = CoordinateUtilities.convertDOMToGridCoordinate(gridWidget,
+                                                                          new Point2D(event.getX(),
+                                                                                      event.getY()));
+
+        if (gridWidget.selectHeaderCell(rp,
+                                        event.isShiftKeyDown(),
+                                        event.isControlKeyDown())) {
+            gridWidget.getLayer().batch();
+        }
+    }
+
+    /**
+     * Select body cells.
+     * @param event
+     */
+    protected void handleBodyCellClick(final NodeMouseClickEvent event) {
         //Convert Canvas co-ordinate to Grid co-ordinate
         final Point2D ap = CoordinateUtilities.convertDOMToGridCoordinate(gridWidget,
                                                                           new Point2D(event.getX(),

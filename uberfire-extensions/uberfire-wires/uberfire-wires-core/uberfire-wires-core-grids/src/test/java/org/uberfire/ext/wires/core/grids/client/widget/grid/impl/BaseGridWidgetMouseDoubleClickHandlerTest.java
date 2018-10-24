@@ -16,6 +16,7 @@
 package org.uberfire.ext.wires.core.grids.client.widget.grid.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import com.ait.lienzo.client.core.event.NodeMouseDoubleClickEvent;
 import com.ait.lienzo.client.core.shape.Group;
@@ -97,6 +98,9 @@ public class BaseGridWidgetMouseDoubleClickHandlerTest {
         when(uiModel.getColumns()).thenReturn(new ArrayList<GridColumn<?>>() {{
             add(uiColumn);
         }});
+
+        final BaseGridRendererHelper.RenderingInformation ri = BaseGridWidgetRenderingTestUtils.makeRenderingInformation(uiModel, Collections.emptyList());
+        when(helper.getRenderingInformation()).thenReturn(ri);
 
         final BaseGridWidgetMouseDoubleClickHandler wrapped = new BaseGridWidgetMouseDoubleClickHandler(gridWidget,
                                                                                                         selectionManager,

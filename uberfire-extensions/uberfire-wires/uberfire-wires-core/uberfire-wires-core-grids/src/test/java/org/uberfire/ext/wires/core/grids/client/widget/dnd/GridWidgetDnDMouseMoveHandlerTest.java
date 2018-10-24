@@ -17,6 +17,7 @@
 package org.uberfire.ext.wires.core.grids.client.widget.dnd;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -112,12 +113,10 @@ public class GridWidgetDnDMouseMoveHandlerTest {
     @Before
     public void setup() {
         this.uiColumn1 = new RowNumberColumn();
-        this.uiColumn2 = new BaseGridColumn<>(new BaseHeaderMetaData("title"),
+        this.uiColumn2 = new BaseGridColumn<>(Arrays.asList(new BaseHeaderMetaData("title1"), new BaseHeaderMetaData("title2")),
                                               columnRenderer,
                                               100.0);
-        this.uiModel = new BaseGridData() {{
-            setHeaderRowCount(2);
-        }};
+        this.uiModel = new BaseGridData();
         uiModel.appendColumn(uiColumn1);
         uiModel.appendColumn(uiColumn2);
         uiModel.appendRow(new BaseGridRow());
@@ -163,8 +162,9 @@ public class GridWidgetDnDMouseMoveHandlerTest {
                                                                                                                }},
                                                                                                                false,
                                                                                                                false,
-                                                                                                               0,
                                                                                                                2,
+                                                                                                               0,
+                                                                                                               0,
                                                                                                                0);
         when(helper.getRenderingInformation()).thenReturn(ri);
 

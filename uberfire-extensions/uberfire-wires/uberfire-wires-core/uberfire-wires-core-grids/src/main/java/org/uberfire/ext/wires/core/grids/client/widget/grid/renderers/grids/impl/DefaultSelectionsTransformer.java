@@ -44,11 +44,11 @@ public class DefaultSelectionsTransformer implements SelectionsTransformer {
     }
 
     @Override
-    public List<SelectedRange> transformToSelectedRanges() {
+    public List<SelectedRange> transformToSelectedRanges(final List<GridData.SelectedCell> selectedCells) {
         //Group into vertical ranges translating modelColumnIndexes to uiColumnIndexes
         int currentUiColumnIndex = -1;
         SelectedRange currentRange = null;
-        final List<GridData.SelectedCell> orderedSelectedCells = sortSelectedCells();
+        final List<GridData.SelectedCell> orderedSelectedCells = sortSelectedCells(selectedCells);
         final Map<Integer, List<SelectedRange>> orderedSelectedRanges = new TreeMap<Integer, List<SelectedRange>>();
 
         for (GridData.SelectedCell selectedCell : orderedSelectedCells) {
@@ -143,15 +143,15 @@ public class DefaultSelectionsTransformer implements SelectionsTransformer {
     }
 
     //Sort arbitrary selections by column->row to simplify grouping
-    private List<GridData.SelectedCell> sortSelectedCells() {
-        final List<GridData.SelectedCell> selectedCells = new ArrayList<GridData.SelectedCell>();
-        for (GridData.SelectedCell sc : model.getSelectedCells()) {
+    private List<GridData.SelectedCell> sortSelectedCells(final List<GridData.SelectedCell> selectedCells) {
+        final List<GridData.SelectedCell> _selectedCells = new ArrayList<GridData.SelectedCell>();
+        for (GridData.SelectedCell sc : selectedCells) {
             if (isSelectionInColumns(sc)) {
-                selectedCells.add(sc);
+                _selectedCells.add(sc);
             }
         }
         final int rowCount = model.getRowCount();
-        Collections.sort(selectedCells,
+        Collections.sort(_selectedCells,
                          new Comparator<GridData.SelectedCell>() {
 
                              @Override
@@ -165,7 +165,7 @@ public class DefaultSelectionsTransformer implements SelectionsTransformer {
                                  return o1Index - o2Index;
                              }
                          });
-        return selectedCells;
+        return _selectedCells;
     }
 
     private boolean isSelectionInColumns(final GridData.SelectedCell sc) {

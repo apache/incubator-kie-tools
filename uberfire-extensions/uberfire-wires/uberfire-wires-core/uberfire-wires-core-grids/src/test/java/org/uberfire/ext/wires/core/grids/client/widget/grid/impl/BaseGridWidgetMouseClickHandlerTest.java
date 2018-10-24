@@ -15,6 +15,8 @@
  */
 package org.uberfire.ext.wires.core.grids.client.widget.grid.impl;
 
+import java.util.Collections;
+
 import com.ait.lienzo.client.core.event.NodeMouseClickEvent;
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Point2D;
@@ -83,6 +85,9 @@ public class BaseGridWidgetMouseClickHandlerTest {
         when(renderer.getHeaderHeight()).thenReturn(64.0);
         when(renderer.getHeaderRowHeight()).thenReturn(32.0);
         when(uiModel.getHeaderRowCount()).thenReturn(2);
+
+        final BaseGridRendererHelper.RenderingInformation ri = BaseGridWidgetRenderingTestUtils.makeRenderingInformation(uiModel, Collections.emptyList());
+        when(helper.getRenderingInformation()).thenReturn(ri);
 
         final BaseGridWidgetMouseClickHandler wrapped = new BaseGridWidgetMouseClickHandler(gridWidget,
                                                                                             selectionManager,

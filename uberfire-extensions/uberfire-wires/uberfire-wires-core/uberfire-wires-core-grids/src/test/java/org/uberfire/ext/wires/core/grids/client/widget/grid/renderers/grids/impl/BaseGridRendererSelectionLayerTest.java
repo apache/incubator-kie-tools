@@ -19,13 +19,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.google.gwtmockito.WithClassesToStub;
 import org.gwtbootstrap3.client.ui.html.Text;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyColumnRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBoundaryRenderContext;
@@ -52,7 +52,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidgetRenderingTestUtils.ROW_HEIGHT;
+import static org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidgetRenderingTestUtils.HEADER_ROW_HEIGHT;
 import static org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidgetRenderingTestUtils.makeRenderingInformation;
 
 @WithClassesToStub({Text.class})
@@ -67,7 +67,7 @@ public class BaseGridRendererSelectionLayerTest extends BaseGridRendererTest {
     @Test
     public void checkRenderSelector() {
         final BaseGridRendererHelper.RenderingInformation ri = makeRenderingInformation(model,
-                                                                                        Arrays.asList(0d, ROW_HEIGHT, ROW_HEIGHT * 2));
+                                                                                        Arrays.asList(0d, HEADER_ROW_HEIGHT, HEADER_ROW_HEIGHT * 2));
 
         final RendererCommand command = renderer.renderSelector(WIDTH,
                                                                 HEIGHT,
@@ -91,19 +91,22 @@ public class BaseGridRendererSelectionLayerTest extends BaseGridRendererTest {
 
         renderer.renderSelectedCells(model,
                                      context,
-                                     rendererHelper).execute(rc);
+                                     rendererHelper,
+                                     model.getSelectedCells(),
+                                     (uiRowIndex, minVisibleUiRowIndex) -> 0.0,
+                                     selectedRange -> 0.0).execute(rc);
 
-        verify(renderer, never()).renderSelectedRange(any(GridData.class),
-                                                      anyList(),
+        verify(renderer, never()).renderSelectedRange(anyList(),
                                                       anyInt(),
-                                                      any(SelectedRange.class));
+                                                      any(SelectedRange.class),
+                                                      any(Function.class));
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void checkRenderHeader() {
         final BaseGridRendererHelper.RenderingInformation ri = makeRenderingInformation(model,
-                                                                                        Arrays.asList(0d, ROW_HEIGHT, ROW_HEIGHT * 2));
+                                                                                        Arrays.asList(0d, HEADER_ROW_HEIGHT, HEADER_ROW_HEIGHT * 2));
         final GridHeaderRenderContext context = mock(GridHeaderRenderContext.class);
         doReturn(model.getColumns()).when(context).getAllColumns();
         doReturn(model.getColumns()).when(context).getBlockColumns();
@@ -138,7 +141,7 @@ public class BaseGridRendererSelectionLayerTest extends BaseGridRendererTest {
     @SuppressWarnings("unchecked")
     public void checkRenderBody() {
         final BaseGridRendererHelper.RenderingInformation ri = makeRenderingInformation(model,
-                                                                                        Arrays.asList(0d, ROW_HEIGHT, ROW_HEIGHT * 2));
+                                                                                        Arrays.asList(0d, HEADER_ROW_HEIGHT, HEADER_ROW_HEIGHT * 2));
         final GridBodyRenderContext context = mock(GridBodyRenderContext.class);
         doReturn(0).when(context).getMinVisibleRowIndex();
         doReturn(model.getRowCount() - 1).when(context).getMaxVisibleRowIndex();
