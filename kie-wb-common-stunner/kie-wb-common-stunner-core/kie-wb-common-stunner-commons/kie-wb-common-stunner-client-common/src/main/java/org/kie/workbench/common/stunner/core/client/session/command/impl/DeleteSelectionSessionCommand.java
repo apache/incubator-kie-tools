@@ -98,6 +98,7 @@ public class DeleteSelectionSessionCommand extends AbstractSelectionAwareSession
             final Collection<String> selectedItems = selectionControl.getSelectedItems();
 
             clearSelectionEvent.fire(new CanvasClearSelectionEvent(canvasHandler));
+            selectionControl.clearSelection();
 
             if (selectedItems != null && !selectedItems.isEmpty()) {
                 // Execute the commands.

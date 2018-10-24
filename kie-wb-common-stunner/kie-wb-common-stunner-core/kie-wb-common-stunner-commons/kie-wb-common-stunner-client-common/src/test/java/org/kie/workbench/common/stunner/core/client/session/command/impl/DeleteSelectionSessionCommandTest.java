@@ -18,13 +18,20 @@ package org.kie.workbench.common.stunner.core.client.session.command.impl;
 
 import javax.enterprise.event.Event;
 
+import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyboardControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
+import org.kie.workbench.common.stunner.core.client.session.command.ClientSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DeleteSelectionSessionCommandTest extends BaseSessionCommandKeyboardSelectionAwareTest {
@@ -32,12 +39,37 @@ public class DeleteSelectionSessionCommandTest extends BaseSessionCommandKeyboar
     @Mock
     private Event<CanvasClearSelectionEvent> canvasClearSelectionEventEvent;
 
-    @Override
+    @Mock
+    private ClientSessionCommand.Callback callback;
 
+    @Mock
+    private EditorSession session;
+
+    @Mock
+    private KeyboardControl keyboardControl;
+
+    @Mock
+    private SelectionControl selectionControl;
+
+    @Override
     protected AbstractClientSessionCommand<EditorSession> getCommand() {
         return new DeleteSelectionSessionCommand(sessionCommandManager,
                                                  canvasCommandFactory,
                                                  canvasClearSelectionEventEvent);
+    }
+
+    @Test
+    public void testClearSessionInvoked() {
+        DeleteSelectionSessionCommand deleteCommand = (DeleteSelectionSessionCommand) getCommand();
+
+        when(session.getKeyboardControl()).thenReturn(keyboardControl);
+        when(session.getSelectionControl()).thenReturn(selectionControl);
+
+        deleteCommand.bind(session);
+
+        deleteCommand.execute(callback);
+
+        verify(selectionControl).clearSelection();
     }
 
     @Override
