@@ -16,12 +16,14 @@
 
 package org.kie.workbench.common.stunner.core.graph.processing.layout.sugiyama.step01;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.graph.processing.layout.Graphs;
 import org.kie.workbench.common.stunner.core.graph.processing.layout.sugiyama.LayeredGraph;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ReverseEdgesCycleBreakerTest {
@@ -33,7 +35,7 @@ public class ReverseEdgesCycleBreakerTest {
         final ReverseEdgesCycleBreaker breaker = new ReverseEdgesCycleBreaker();
         breaker.breakCycle(graph);
 
-        Assert.assertTrue(graph.isAcyclic());
+        assertTrue(graph.isAcyclic());
     }
 
     @Test
@@ -44,12 +46,12 @@ public class ReverseEdgesCycleBreakerTest {
         graph.addEdge("C", "D");
         graph.addEdge("D", "A");
 
-        Assert.assertFalse(graph.isAcyclic());
+        assertFalse(graph.isAcyclic());
 
         final ReverseEdgesCycleBreaker breaker = new ReverseEdgesCycleBreaker();
         breaker.breakCycle(graph);
 
-        Assert.assertTrue(graph.isAcyclic());
+        assertTrue(graph.isAcyclic());
     }
 
     @Test
@@ -59,6 +61,15 @@ public class ReverseEdgesCycleBreakerTest {
         final ReverseEdgesCycleBreaker breaker = new ReverseEdgesCycleBreaker();
         breaker.breakCycle(graph);
 
-        Assert.assertTrue(graph.isAcyclic());
+        assertTrue(graph.isAcyclic());
+    }
+
+    @Test
+    public void testCyclicGraphFull() {
+        final LayeredGraph graph = new LayeredGraph(Graphs.Full);
+        assertFalse(graph.isAcyclic());
+        final ReverseEdgesCycleBreaker breaker = new ReverseEdgesCycleBreaker();
+        breaker.breakCycle(graph);
+        assertTrue(graph.isAcyclic());
     }
 }

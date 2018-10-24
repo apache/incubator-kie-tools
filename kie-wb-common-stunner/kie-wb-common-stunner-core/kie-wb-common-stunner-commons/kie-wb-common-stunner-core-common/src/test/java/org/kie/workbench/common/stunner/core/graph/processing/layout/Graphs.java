@@ -83,4 +83,43 @@ public final class Graphs {
             {"T", "F"},
             {"F", "C"}
     };
+
+    public static final String[][] TwoSeparateTreesFromRoots = {
+            {"A1", "B1"},
+            {"A1", "C1"},
+            {"C1", "D1"},
+            {"C1", "E1"},
+            {"A2", "B2"},
+            {"A2", "C2"},
+            {"A2", "D2"},
+            {"B2", "E2"},
+            {"D2", "F2"},
+    };
+
+    public static final String[][] TwoSeparateTreesToRoots = {
+            {"B1", "A1"},
+            {"C1", "A1"},
+            {"D1", "C1"},
+            {"E1", "C1"},
+            {"B2", "A2"},
+            {"C2", "A2"},
+            {"D2", "A2"},
+            {"E2", "B2"},
+            {"F2", "D2"},
+    };
+
+    public static final String[][] Full = {
+            {"A", "B"},
+            {"A", "C"},
+            {"A", "D"},
+            {"B", "A"},
+            {"B", "C"},
+            {"B", "D"},
+            {"C", "A"},
+            {"C", "B"},
+            {"C", "D"},
+            {"D", "A"},
+            {"D", "B"},
+            {"D", "C"}
+    };
 }

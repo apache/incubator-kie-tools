@@ -68,6 +68,10 @@ public final class Vertex implements Comparable<Vertex> {
         this.y = y;
     }
 
+    public String getId() {
+        return this.id;
+    }
+
     public Vertex clone() {
         final Vertex clone = new Vertex(this.id);
         clone.setMedian(this.median);
@@ -107,7 +111,14 @@ public final class Vertex implements Comparable<Vertex> {
         return Objects.hash(id, median);
     }
 
-    public String getId() {
-        return this.id;
+    @Override
+    public String toString() {
+        return "Vertex{" +
+                "id='" + id + '\'' +
+                ", median=" + median +
+                ", isVirtual=" + isVirtual +
+                ", x=" + x +
+                ", y=" + y +
+                '}';
     }
 }

@@ -16,18 +16,18 @@
 
 package org.kie.workbench.common.stunner.core.graph.processing.layout.sugiyama.step02;
 
-import java.util.Arrays;
 import java.util.List;
 
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.core.graph.processing.layout.Graphs;
 import org.kie.workbench.common.stunner.core.graph.processing.layout.Vertex;
 import org.kie.workbench.common.stunner.core.graph.processing.layout.sugiyama.GraphLayer;
 import org.kie.workbench.common.stunner.core.graph.processing.layout.sugiyama.LayeredGraph;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(MockitoJUnitRunner.class)
 public class LongestPathVertexLayererTest {
@@ -134,21 +134,51 @@ public class LongestPathVertexLayererTest {
         assertEquals(4, result.size()); // 4 = layered = vertical line
     }
 
+    @Test
+    public void twoSeparateTreesFromRoots() {
+        final LayeredGraph graph = new LayeredGraph(Graphs.TwoSeparateTreesFromRoots);
+        final LongestPathVertexLayerer layerer = new LongestPathVertexLayerer();
+        layerer.createLayers(graph);
+        final List<GraphLayer> result = graph.getLayers();
+        Assertions.assertThat(result.size())
+                .as("TwoSeparateTreesFromRoots graph vertices should be placed into three layers")
+                .isEqualTo(3);
+
+        match(new String[]{"A1", "A2"},
+              result.get(0));
+
+        match(new String[]{"C1", "B2", "D2"},
+              result.get(1));
+
+        match(new String[]{"B1", "D1", "E1", "E2", "C2", "F2"},
+              result.get(2));
+    }
+
+    @Test
+    public void twoSeparateTreesToRoots() {
+        final LayeredGraph graph = new LayeredGraph(Graphs.TwoSeparateTreesToRoots);
+        final LongestPathVertexLayerer layerer = new LongestPathVertexLayerer();
+        layerer.createLayers(graph);
+        final List<GraphLayer> result = graph.getLayers();
+        Assertions.assertThat(result.size())
+                .as("TwoSeparateTreesToRoots graph vertices should be placed into three layers")
+                .isEqualTo(3);
+        match(new String[]{"A1", "A2"},
+              result.get(2));
+        match(new String[]{"B1", "C1", "B2", "C2", "D2"},
+              result.get(1));
+        match(new String[]{"D1", "E1", "E2", "F2"},
+              result.get(0));
+    }
+
     private static void match(final String[] expected,
                               final GraphLayer layer) {
-        assertEquals("kie.wb.common.graph.layout.Layer " + layer.getLevel() + " contains " + expected.length + " vertices",
-                     expected.length,
-                     layer.getVertices().size());
-
-        final String[] fromLayer = layer.getVertices().stream()
-                .map(Vertex::getId)
-                .distinct()
-                .toArray(String[]::new);
-
-        final boolean containsAllElements = Arrays.asList(expected)
-                .containsAll(Arrays.asList(fromLayer));
-
-        assertTrue("kie.wb.common.graph.layout.Layer " + layer.getLevel() + " contains all expected vertices",
-                   containsAllElements);
+        Assertions.assertThat(layer.getVertices())
+                .as("kie.wb.common.graph.layout.Layer " + layer.getLevel() + " contains " + expected.length + " vertices")
+                .hasSize(expected.length);
+        Assertions.assertThat(layer.getVertices())
+                .as("kie.wb.common.graph.layout.Layer " + layer.getLevel() + " contains all expected vertices")
+                .extracting(Vertex::getId)
+                .containsOnly(expected);
     }
 }

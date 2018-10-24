@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.core.graph.processing.layout.sugiyama.s
 import java.util.ArrayList;
 import java.util.List;
 
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.graph.processing.layout.OrientedEdgeImpl;
@@ -29,7 +30,6 @@ import org.kie.workbench.common.stunner.core.graph.processing.layout.sugiyama.La
 import org.kie.workbench.common.stunner.core.graph.processing.layout.sugiyama.OrientedEdge;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -59,8 +59,12 @@ public class VertexOrderingTest {
                                                                          verticesTransposer);
         ordering.orderVertices(graph);
 
-        assertArrayEquals(new Object[]{"A", "B"}, graph.getLayers().get(0).getVertices().stream().map(Vertex::getId).toArray());
-        assertArrayEquals(new Object[]{"D", "C"}, graph.getLayers().get(1).getVertices().stream().map(Vertex::getId).toArray());
+        Assertions.assertThat(graph.getLayers().get(0).getVertices())
+                .extracting(Vertex::getId)
+                .containsExactly("A", "B");
+        Assertions.assertThat(graph.getLayers().get(1).getVertices())
+                .extracting(Vertex::getId)
+                .containsExactly("D", "C");
     }
 
     @Test
@@ -100,15 +104,21 @@ public class VertexOrderingTest {
         ordering.orderVertices(graph);
         final List<GraphLayer> orderedLayers = graph.getLayers();
 
-        assertArrayEquals(new Object[]{"A"}, orderedLayers.get(0).getVertices().stream().map(Vertex::getId).toArray());
-        assertArrayEquals(new Object[]{"D", "B", "C"}, orderedLayers.get(1).getVertices().stream().map(Vertex::getId).toArray());
-        assertArrayEquals(new Object[]{"F", "E", "G", "H"}, orderedLayers.get(2).getVertices().stream().map(Vertex::getId).toArray());
+        Assertions.assertThat(orderedLayers.get(0).getVertices())
+                .extracting(Vertex::getId)
+                .containsExactly("A");
+        Assertions.assertThat(orderedLayers.get(1).getVertices())
+                .extracting(Vertex::getId)
+                .containsExactly("D", "B", "C");
+        Assertions.assertThat(orderedLayers.get(2).getVertices())
+                .extracting(Vertex::getId)
+                .containsExactly("F", "E", "G", "H");
     }
 
     @Test
     public void calculateMedianTest() {
 
-        final ArrayList<OrientedEdge> edges = new ArrayList<>();
+        final List<OrientedEdge> edges = new ArrayList<>();
         edges.add(new OrientedEdgeImpl("G", "A"));
         edges.add(new OrientedEdgeImpl("G", "D"));
         edges.add(new OrientedEdgeImpl("G", "E"));
@@ -142,7 +152,7 @@ public class VertexOrderingTest {
         bottom.addNewVertex("C");
         bottom.addNewVertex("D");
 
-        final ArrayList<OrientedEdge> edges = new ArrayList<>();
+        final List<OrientedEdge> edges = new ArrayList<>();
         edges.add(new OrientedEdgeImpl("A", "D"));
         edges.add(new OrientedEdgeImpl("B", "C"));
 
@@ -163,7 +173,7 @@ public class VertexOrderingTest {
         bottom.addNewVertex("C");
         bottom.addNewVertex("D");
 
-        final ArrayList<OrientedEdge> edges = new ArrayList<>();
+        final List<OrientedEdge> edges = new ArrayList<>();
         edges.add(new OrientedEdgeImpl("A", "C"));
         edges.add(new OrientedEdgeImpl("B", "D"));
 
@@ -194,7 +204,7 @@ public class VertexOrderingTest {
         bottom.addNewVertex("E");
         bottom.addNewVertex("F");
 
-        final ArrayList<OrientedEdge> edges = new ArrayList<>();
+        final List<OrientedEdge> edges = new ArrayList<>();
         edges.add(new OrientedEdgeImpl("A", "F"));
         edges.add(new OrientedEdgeImpl("D", "C"));
 
@@ -225,7 +235,7 @@ public class VertexOrderingTest {
         bottom.addNewVertex("E");
         bottom.addNewVertex("F");
 
-        final ArrayList<OrientedEdge> edges = new ArrayList<>();
+        final List<OrientedEdge> edges = new ArrayList<>();
         edges.add(new OrientedEdgeImpl("A", "D"));
         edges.add(new OrientedEdgeImpl("E", "A"));
         edges.add(new OrientedEdgeImpl("A", "F"));
@@ -258,7 +268,7 @@ public class VertexOrderingTest {
         bottom.addNewVertex("E");
         bottom.addNewVertex("F");
 
-        final ArrayList<OrientedEdge> edges = new ArrayList<>();
+        final List<OrientedEdge> edges = new ArrayList<>();
         edges.add(new OrientedEdgeImpl("A", "E"));
         edges.add(new OrientedEdgeImpl("B", "E"));
         edges.add(new OrientedEdgeImpl("C", "D"));
@@ -293,7 +303,7 @@ public class VertexOrderingTest {
         bottom.addNewVertex("G");
         bottom.addNewVertex("H");
 
-        final ArrayList<OrientedEdge> edges = new ArrayList<>();
+        final List<OrientedEdge> edges = new ArrayList<>();
         edges.add(new OrientedEdgeImpl("A", "E"));
         edges.add(new OrientedEdgeImpl("A", "G"));
         edges.add(new OrientedEdgeImpl("A", "H"));
@@ -328,7 +338,7 @@ public class VertexOrderingTest {
         bottom.addNewVertex("E");
         bottom.addNewVertex("F");
 
-        final ArrayList<OrientedEdge> edges = new ArrayList<>();
+        final List<OrientedEdge> edges = new ArrayList<>();
         edges.add(new OrientedEdgeImpl("A", "F"));
         edges.add(new OrientedEdgeImpl("B", "E"));
         edges.add(new OrientedEdgeImpl("C", "D"));
@@ -355,7 +365,7 @@ public class VertexOrderingTest {
         bottom.addNewVertex("E");
         bottom.addNewVertex("F");
 
-        final ArrayList<OrientedEdge> edges = new ArrayList<>();
+        final List<OrientedEdge> edges = new ArrayList<>();
         edges.add(new OrientedEdgeImpl("A", "D"));
         edges.add(new OrientedEdgeImpl("A", "E"));
         edges.add(new OrientedEdgeImpl("A", "F"));
@@ -394,7 +404,7 @@ public class VertexOrderingTest {
         bottom.addNewVertex("E");
         bottom.addNewVertex("F");
 
-        final ArrayList<OrientedEdge> edges = new ArrayList<>();
+        final List<OrientedEdge> edges = new ArrayList<>();
         edges.add(new OrientedEdgeImpl("A", "D"));
         edges.add(new OrientedEdgeImpl("B", "D"));
         edges.add(new OrientedEdgeImpl("E", "B"));
