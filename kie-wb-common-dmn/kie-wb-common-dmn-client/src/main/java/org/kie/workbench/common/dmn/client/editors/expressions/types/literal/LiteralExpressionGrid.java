@@ -26,6 +26,7 @@ import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
+import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
@@ -45,6 +46,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
@@ -185,5 +187,18 @@ public class LiteralExpressionGrid extends BaseExpressionGrid<LiteralExpression,
     protected void doAfterSelectionChange(final int uiRowIndex,
                                           final int uiColumnIndex) {
         getExpression().ifPresent(this::fireDomainObjectSelectionEvent);
+    }
+
+    @Override
+    protected void doAfterHeaderSelectionChange(final int uiHeaderRowIndex,
+                                                final int uiHeaderColumnIndex) {
+        if (uiHeaderRowIndex == 0 && uiHeaderColumnIndex == 0) {
+            final DMNModelInstrumentedBase base = hasExpression.asDMNModelInstrumentedBase();
+            if (base instanceof DomainObject) {
+                fireDomainObjectSelectionEvent((DomainObject) base);
+                return;
+            }
+        }
+        super.doAfterHeaderSelectionChange(uiHeaderRowIndex, uiHeaderColumnIndex);
     }
 }

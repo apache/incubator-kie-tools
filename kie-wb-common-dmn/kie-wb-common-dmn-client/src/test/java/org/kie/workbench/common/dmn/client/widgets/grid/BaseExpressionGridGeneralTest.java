@@ -23,6 +23,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.assertj.core.api.Assertions;
@@ -97,6 +98,10 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
 
     private static final String NAME_ID = "nameId";
 
+    private static final double COLUMN_WIDTH = 100.0;
+
+    private static final double HEADER_HEIGHT = 100.0;
+
     private GridCellTuple tupleWithoutValue;
 
     private GridCellValueTuple tupleWithValue;
@@ -118,6 +123,9 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
 
     @Mock
     private UpdateElementPropertyCommand updateElementPropertyCommand;
+
+    @Mock
+    private Group header;
 
     @Captor
     private ArgumentCaptor<GridLayerRedrawManager.PrioritizedCommand> redrawCommandCaptor;
@@ -145,6 +153,11 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
         when(definition.getDefinition()).thenReturn(DEFINITION);
         when(definitionUtils.getNameIdentifier(DEFINITION)).thenReturn(NAME_ID);
         when(updateElementPropertyCommand.execute(canvasHandler)).thenReturn(CanvasCommandResultBuilder.SUCCESS);
+
+        when(grid.getHeader()).thenReturn(header);
+        when(header.getY()).thenReturn(0.0);
+        when(renderer.getHeaderHeight()).thenReturn(HEADER_HEIGHT);
+        when(renderer.getHeaderRowHeight()).thenReturn(HEADER_HEIGHT);
     }
 
     @Override
@@ -343,7 +356,9 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
         final Point2D point = mock(Point2D.class);
         final double columnOffset = grid.getModel().getColumns().get(0).getWidth();
         final double columnWidth = grid.getModel().getColumns().get(1).getWidth() / 2;
+        final double rowOffset = HEADER_HEIGHT + grid.getModel().getRow(0).getHeight() / 2;
         when(point.getX()).thenReturn(columnOffset + columnWidth);
+        when(point.getY()).thenReturn(rowOffset);
 
         grid.selectCell(point, false, true);
 
@@ -370,6 +385,46 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
 
         verify(gridLayer).select(cellGrid);
         verify(cellGrid).selectFirstCell();
+    }
+
+    @Test
+    public void testSelectHeaderWithPoint() {
+        grid.getModel().appendColumn(new RowNumberColumn());
+        grid.getModel().appendColumn(new RowNumberColumn());
+
+        final Point2D point = mock(Point2D.class);
+        final double columnOffset = grid.getModel().getColumns().get(0).getWidth();
+        final double columnWidth = grid.getModel().getColumns().get(1).getWidth() / 2;
+        when(point.getX()).thenReturn(columnOffset + columnWidth);
+        when(point.getY()).thenReturn(HEADER_HEIGHT / 2);
+
+        when(grid.getHeader()).thenReturn(header);
+        when(header.getY()).thenReturn(0.0);
+        when(renderer.getHeaderHeight()).thenReturn(HEADER_HEIGHT);
+        when(renderer.getHeaderRowHeight()).thenReturn(HEADER_HEIGHT);
+
+        grid.selectHeaderCell(point, false, false);
+
+        assertHeaderSelection();
+    }
+
+    @Test
+    public void testSelectHeaderWithCoordinate() {
+        grid.getModel().appendColumn(new RowNumberColumn());
+        grid.getModel().appendColumn(new RowNumberColumn());
+
+        grid.selectHeaderCell(0, 1, false, false);
+
+        assertHeaderSelection();
+    }
+
+    private void assertHeaderSelection() {
+        assertThat(grid.getModel().getSelectedHeaderCells()).isNotEmpty();
+        assertThat(grid.getModel().getSelectedHeaderCells()).contains(new GridData.SelectedCell(0, 1));
+
+        verify(domainObjectSelectionEvent).fire(domainObjectSelectionEventCaptor.capture());
+        final DomainObjectSelectionEvent domainObjectSelectionEvent = domainObjectSelectionEventCaptor.getValue();
+        assertThat(domainObjectSelectionEvent.getDomainObject()).isInstanceOf(NOPDomainObject.class);
     }
 
     @Test
@@ -703,7 +758,7 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
             final GridColumn column = mock(columnClasses[i]);
             doReturn(i).when(column).getIndex();
             doReturn(true).when(column).isVisible();
-            doReturn(100.0).when(column).getWidth();
+            doReturn(COLUMN_WIDTH).when(column).getWidth();
             grid.getModel().appendColumn(column);
         });
     }

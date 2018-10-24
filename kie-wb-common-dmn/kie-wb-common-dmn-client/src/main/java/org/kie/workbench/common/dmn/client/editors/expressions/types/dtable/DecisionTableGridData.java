@@ -35,6 +35,8 @@ import org.uberfire.mvp.Command;
 
 public class DecisionTableGridData extends DelegatingGridData {
 
+    static final int HEADER_ROW_COUNT = 2;
+
     private final SessionManager sessionManager;
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
     private final Optional<DecisionTable> expression;
@@ -50,6 +52,8 @@ public class DecisionTableGridData extends DelegatingGridData {
         this.sessionCommandManager = sessionCommandManager;
         this.expression = expression;
         this.canvasOperation = canvasOperation;
+
+        setHeaderRowCount(HEADER_ROW_COUNT);
     }
 
     // --- Intercepted methods delegated to commands ---

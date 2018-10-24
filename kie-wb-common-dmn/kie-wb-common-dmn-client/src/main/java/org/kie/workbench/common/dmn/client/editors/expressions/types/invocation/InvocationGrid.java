@@ -29,6 +29,7 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Binding;
+import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Invocation;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
@@ -60,6 +61,7 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
+import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
@@ -313,5 +315,18 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGri
                                                                              selectExpressionEditorFirstCell(uiRowIndex, InvocationUIModelMapper.BINDING_EXPRESSION_COLUMN_INDEX);
                                                                          }));
         });
+    }
+
+    @Override
+    protected void doAfterHeaderSelectionChange(final int uiHeaderRowIndex,
+                                                final int uiHeaderColumnIndex) {
+        if (uiHeaderRowIndex == 0 && uiHeaderColumnIndex == InvocationUIModelMapper.BINDING_PARAMETER_COLUMN_INDEX) {
+            final DMNModelInstrumentedBase base = hasExpression.asDMNModelInstrumentedBase();
+            if (base instanceof DomainObject) {
+                fireDomainObjectSelectionEvent((DomainObject) base);
+                return;
+            }
+        }
+        super.doAfterHeaderSelectionChange(uiHeaderRowIndex, uiHeaderColumnIndex);
     }
 }

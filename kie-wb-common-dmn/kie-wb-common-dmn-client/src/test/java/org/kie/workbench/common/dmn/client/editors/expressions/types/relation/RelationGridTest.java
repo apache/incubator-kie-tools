@@ -30,6 +30,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasName;
+import org.kie.workbench.common.dmn.api.definition.NOPDomainObject;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase.Namespace;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
@@ -209,6 +210,9 @@ public class RelationGridTest {
 
     @Captor
     private ArgumentCaptor<CompositeCommand> compositeCommandCaptor;
+
+    @Captor
+    private ArgumentCaptor<DomainObjectSelectionEvent> domainObjectSelectionEventCaptor;
 
     private GridCellTuple parent;
 
@@ -593,6 +597,10 @@ public class RelationGridTest {
         addColumn(0);
 
         verifyCommandExecuteOperation(BaseExpressionGrid.RESIZE_EXISTING);
+        verify(grid).selectHeaderCell(eq(0),
+                                      eq(0),
+                                      eq(false),
+                                      eq(false));
 
         verify(headerEditor).bind(any(RelationColumnHeaderMetaData.class),
                                   eq(0),
@@ -810,6 +818,42 @@ public class RelationGridTest {
 
         verify(sessionCommandManager, never()).execute(any(AbstractCanvasHandler.class),
                                                        any(SetTypeRefCommand.class));
+    }
+
+    @Test
+    public void testSelectRow() {
+        setupGrid(0);
+
+        grid.selectCell(0, 0, false, false);
+
+        verify(domainObjectSelectionEvent).fire(domainObjectSelectionEventCaptor.capture());
+
+        final DomainObjectSelectionEvent domainObjectSelectionEvent = domainObjectSelectionEventCaptor.getValue();
+        assertThat(domainObjectSelectionEvent.getDomainObject()).isInstanceOf(NOPDomainObject.class);
+    }
+
+    @Test
+    public void testSelectExpression() {
+        setupGrid(0);
+
+        grid.selectCell(0, 1, false, false);
+
+        verify(domainObjectSelectionEvent).fire(domainObjectSelectionEventCaptor.capture());
+
+        final DomainObjectSelectionEvent domainObjectSelectionEvent = domainObjectSelectionEventCaptor.getValue();
+        assertThat(domainObjectSelectionEvent.getDomainObject()).isEqualTo(expression.get().getRow().get(0).getExpression().get(0));
+    }
+
+    @Test
+    public void testSelectHeaderExpression() {
+        setupGrid(0);
+
+        grid.selectHeaderCell(0, RelationUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT, false, false);
+
+        verify(domainObjectSelectionEvent).fire(domainObjectSelectionEventCaptor.capture());
+
+        final DomainObjectSelectionEvent domainObjectSelectionEvent = domainObjectSelectionEventCaptor.getValue();
+        assertThat(domainObjectSelectionEvent.getDomainObject()).isEqualTo(expression.get().getColumn().get(0));
     }
 
     @Test

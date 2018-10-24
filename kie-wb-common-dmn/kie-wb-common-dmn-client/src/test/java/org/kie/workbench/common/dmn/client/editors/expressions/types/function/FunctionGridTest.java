@@ -27,6 +27,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
+import org.kie.workbench.common.dmn.api.definition.NOPDomainObject;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
@@ -240,6 +241,9 @@ public class FunctionGridTest {
 
     @Captor
     private ArgumentCaptor<CompositeCommand> compositeCommandCaptor;
+
+    @Captor
+    private ArgumentCaptor<DomainObjectSelectionEvent> domainObjectSelectionEventCaptor;
 
     private LiteralExpressionEditorDefinition literalExpressionEditorDefinition;
 
@@ -894,6 +898,30 @@ public class FunctionGridTest {
 
         verify(gridLayer).select(literalExpressionEditor);
         verify(literalExpressionEditor).selectFirstCell();
+    }
+
+    @Test
+    public void testSelectHeaderNameRow() {
+        setupGrid(0);
+
+        grid.selectHeaderCell(0, 0, false, false);
+
+        verify(domainObjectSelectionEvent).fire(domainObjectSelectionEventCaptor.capture());
+
+        final DomainObjectSelectionEvent domainObjectSelectionEvent = domainObjectSelectionEventCaptor.getValue();
+        assertThat(domainObjectSelectionEvent.getDomainObject()).isEqualTo(hasExpression);
+    }
+
+    @Test
+    public void testSelectHeaderParametersRow() {
+        setupGrid(0);
+
+        grid.selectHeaderCell(1, 0, false, false);
+
+        verify(domainObjectSelectionEvent).fire(domainObjectSelectionEventCaptor.capture());
+
+        final DomainObjectSelectionEvent domainObjectSelectionEvent = domainObjectSelectionEventCaptor.getValue();
+        assertThat(domainObjectSelectionEvent.getDomainObject()).isInstanceOf(NOPDomainObject.class);
     }
 
     @Test

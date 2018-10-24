@@ -701,6 +701,11 @@ public class DecisionTableGridTest {
 
         verifyCommandExecuteOperation(BaseExpressionGrid.RESIZE_EXISTING);
 
+        verify(grid).selectHeaderCell(eq(0),
+                                      eq(1),
+                                      eq(false),
+                                      eq(false));
+
         verifyEditHeaderCell(InputClauseColumnHeaderMetaData.class,
                              Optional.of(DMNEditorConstants.DecisionTableEditor_EditInputClause),
                              0,
@@ -783,6 +788,11 @@ public class DecisionTableGridTest {
         addOutputClause(2);
 
         verifyCommandExecuteOperation(BaseExpressionGrid.RESIZE_EXISTING);
+
+        verify(grid).selectHeaderCell(eq(1),
+                                      eq(2),
+                                      eq(false),
+                                      eq(false));
 
         verifyEditHeaderCell(OutputClauseColumnHeaderMetaData.class,
                              Optional.of(DMNEditorConstants.DecisionTableEditor_EditOutputClause),

@@ -51,7 +51,9 @@ public class EditableHeaderGridWidgetMouseDoubleClickHandler extends BaseGridWid
         final double cy = rp.getY();
 
         final Group header = gridWidget.getHeader();
-        final double headerRowsYOffset = getHeaderRowsYOffset();
+        final BaseGridRendererHelper rendererHelper = gridWidget.getRendererHelper();
+        final BaseGridRendererHelper.RenderingInformation ri = rendererHelper.getRenderingInformation();
+        final double headerRowsYOffset = ri.getHeaderRowsYOffset();
         final double headerMinY = (header == null ? headerRowsYOffset : header.getY() + headerRowsYOffset);
         final double headerMaxY = (header == null ? renderer.getHeaderHeight() : renderer.getHeaderHeight() + header.getY());
 
@@ -63,11 +65,6 @@ public class EditableHeaderGridWidgetMouseDoubleClickHandler extends BaseGridWid
         }
 
         //Get column information
-        final BaseGridRendererHelper rendererHelper = gridWidget.getRendererHelper();
-        final BaseGridRendererHelper.RenderingInformation ri = rendererHelper.getRenderingInformation();
-        if (ri == null) {
-            return false;
-        }
         final BaseGridRendererHelper.ColumnInformation ci = rendererHelper.getColumnInformation(cx);
         final GridColumn<?> column = ci.getColumn();
         if (column == null) {
@@ -78,9 +75,7 @@ public class EditableHeaderGridWidgetMouseDoubleClickHandler extends BaseGridWid
         }
 
         //Get row index
-        final Integer uiHeaderRowIndex = EditableHeaderUtilities.getUiHeaderRowIndex(gridWidget,
-                                                                                     column,
-                                                                                     cy);
+        final Integer uiHeaderRowIndex = CoordinateUtilities.getUiHeaderRowIndex(gridWidget, rp);
         if (uiHeaderRowIndex == null) {
             return false;
         }

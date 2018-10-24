@@ -121,6 +121,14 @@ public class DelegatingGridDataTest {
     }
 
     @Test
+    public void testDelegateSelectHeaderCell() {
+        uiModel.selectHeaderCell(0, 1);
+
+        verify(delegate).selectHeaderCell(eq(0),
+                                          eq(1));
+    }
+
+    @Test
     public void testDelegateSetCell() {
         uiModel.setCell(0, 1, () -> gridCell);
 
@@ -276,6 +284,13 @@ public class DelegatingGridDataTest {
         uiModel.getSelectedCellsOrigin();
 
         verify(delegate).getSelectedCellsOrigin();
+    }
+
+    @Test
+    public void testDelegateGetSelectedHeaderCells() {
+        uiModel.getSelectedHeaderCells();
+
+        verify(delegate).getSelectedHeaderCells();
     }
 
     @Test

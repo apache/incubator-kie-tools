@@ -19,6 +19,8 @@ package org.kie.workbench.common.dmn.client.widgets.grid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.types.BoundingBox;
@@ -62,6 +64,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(LienzoMockitoTestRunner.class)
@@ -104,6 +107,7 @@ public class BaseExpressionGridRenderingTest extends BaseExpressionGridTest {
 
     @Before
     @Override
+    @SuppressWarnings("unchecked")
     public void setup() {
         super.setup();
 
@@ -119,7 +123,10 @@ public class BaseExpressionGridRenderingTest extends BaseExpressionGridTest {
 
         doReturn(renderSelectedCellsCommand).when(renderer).renderSelectedCells(any(GridData.class),
                                                                                 any(GridBodyRenderContext.class),
-                                                                                any(BaseGridRendererHelper.class));
+                                                                                any(BaseGridRendererHelper.class),
+                                                                                any(List.class),
+                                                                                any(BiFunction.class),
+                                                                                any(Function.class));
 
         final List<RendererCommand> renderHeaderCommands = new ArrayList<>();
         renderHeaderCommands.add(renderHeaderBackgroundCommand);
@@ -216,7 +223,8 @@ public class BaseExpressionGridRenderingTest extends BaseExpressionGridTest {
         order.verify(renderBodyGridContentCommand).execute(any(GridRendererContext.class));
         order.verify(renderGridBoundaryCommand).execute(any(GridRendererContext.class));
         order.verify(renderBodyGridLinesCommand).execute(any(GridRendererContext.class));
-        order.verify(renderSelectedCellsCommand).execute(any(GridRendererContext.class));
+        //Render header selections and body selections
+        order.verify(renderSelectedCellsCommand, times(2)).execute(any(GridRendererContext.class));
     }
 
     @Test
@@ -241,7 +249,8 @@ public class BaseExpressionGridRenderingTest extends BaseExpressionGridTest {
         order.verify(renderGridBoundaryCommand).execute(any(GridRendererContext.class));
         order.verify(renderHeaderGridLinesCommand).execute(any(GridRendererContext.class));
         order.verify(renderBodyGridLinesCommand).execute(any(GridRendererContext.class));
-        order.verify(renderSelectedCellsCommand).execute(any(GridRendererContext.class));
+        //Render header selections and body selections
+        order.verify(renderSelectedCellsCommand, times(2)).execute(any(GridRendererContext.class));
     }
 
     @Test

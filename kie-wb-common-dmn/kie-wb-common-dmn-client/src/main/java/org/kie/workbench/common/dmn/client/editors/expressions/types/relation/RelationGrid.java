@@ -25,6 +25,7 @@ import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
+import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
 import org.kie.workbench.common.dmn.api.definition.v1_1.List;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Relation;
@@ -54,6 +55,7 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
+import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
@@ -240,6 +242,7 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
                                                                                                                      () -> resize(BaseExpressionGrid.RESIZE_EXISTING_MINIMUM)));
 
             if (!CommandUtils.isError(result)) {
+                selectHeaderCell(0, index, false, false);
                 relationColumn.startEditingHeaderCell(0);
             }
         });
@@ -278,5 +281,40 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
                                                                        index,
                                                                        () -> resize(BaseExpressionGrid.RESIZE_EXISTING)));
         });
+    }
+
+    @Override
+    protected void doAfterSelectionChange(final int uiRowIndex,
+                                          final int uiColumnIndex) {
+        if (expression.isPresent()) {
+            final Relation relation = expression.get();
+            final RelationUIModelMapperHelper.RelationSection section = RelationUIModelMapperHelper.getSection(relation, uiColumnIndex);
+            if (section == RelationUIModelMapperHelper.RelationSection.INFORMATION_ITEM) {
+                final int iiIndex = RelationUIModelMapperHelper.getInformationItemIndex(relation, uiColumnIndex);
+                final Expression relationExpression = relation.getRow().get(uiRowIndex).getExpression().get(iiIndex);
+                if (relationExpression instanceof DomainObject) {
+                    final DomainObject domainObject = (DomainObject) relationExpression;
+                    fireDomainObjectSelectionEvent(domainObject);
+                    return;
+                }
+            }
+        }
+        super.doAfterSelectionChange(uiRowIndex, uiColumnIndex);
+    }
+
+    @Override
+    protected void doAfterHeaderSelectionChange(final int uiHeaderRowIndex,
+                                                final int uiHeaderColumnIndex) {
+        if (expression.isPresent()) {
+            final Relation relation = expression.get();
+            final RelationUIModelMapperHelper.RelationSection section = RelationUIModelMapperHelper.getSection(relation, uiHeaderColumnIndex);
+            if (section == RelationUIModelMapperHelper.RelationSection.INFORMATION_ITEM) {
+                final int iiIndex = RelationUIModelMapperHelper.getInformationItemIndex(relation, uiHeaderColumnIndex);
+                final InformationItem domainObject = relation.getColumn().get(iiIndex);
+                fireDomainObjectSelectionEvent(domainObject);
+                return;
+            }
+        }
+        super.doAfterHeaderSelectionChange(uiHeaderRowIndex, uiHeaderColumnIndex);
     }
 }

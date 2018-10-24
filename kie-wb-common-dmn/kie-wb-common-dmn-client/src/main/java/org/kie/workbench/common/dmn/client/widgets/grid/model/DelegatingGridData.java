@@ -83,6 +83,18 @@ public class DelegatingGridData implements GridData {
     }
 
     @Override
+    public Range selectHeaderCell(final int headerRowIndex,
+                                  final int headerColumnIndex) {
+        return delegate.selectHeaderCell(headerRowIndex,
+                                         headerColumnIndex);
+    }
+
+    @Override
+    public List<SelectedCell> getSelectedHeaderCells() {
+        return delegate.getSelectedHeaderCells();
+    }
+
+    @Override
     public Range setCell(final int rowIndex,
                          final int columnIndex,
                          final Supplier<GridCell<?>> cellSupplier) {

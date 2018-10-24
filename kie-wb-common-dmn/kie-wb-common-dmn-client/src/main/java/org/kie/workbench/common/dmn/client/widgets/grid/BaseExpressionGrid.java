@@ -539,8 +539,54 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
         return isSelectionChanged;
     }
 
+    @Override
+    public boolean selectHeaderCell(final Point2D ap,
+                                    final boolean isShiftKeyDown,
+                                    final boolean isControlKeyDown) {
+        final Integer uiHeaderRowIndex = CoordinateUtilities.getUiHeaderRowIndex(this,
+                                                                                 ap);
+        final Integer uiHeaderColumnIndex = CoordinateUtilities.getUiColumnIndex(this,
+                                                                                 ap.getX());
+        if (uiHeaderRowIndex == null || uiHeaderColumnIndex == null) {
+            return false;
+        }
+
+        final boolean isSelectionChanged = super.selectHeaderCell(uiHeaderRowIndex,
+                                                                  uiHeaderColumnIndex,
+                                                                  isShiftKeyDown,
+                                                                  isControlKeyDown);
+
+        if (isSelectionChanged) {
+            doAfterHeaderSelectionChange(uiHeaderRowIndex, uiHeaderColumnIndex);
+        }
+
+        return isSelectionChanged;
+    }
+
+    @Override
+    public boolean selectHeaderCell(final int uiHeaderRowIndex,
+                                    final int uiHeaderColumnIndex,
+                                    final boolean isShiftKeyDown,
+                                    final boolean isControlKeyDown) {
+        final boolean isSelectionChanged = super.selectHeaderCell(uiHeaderRowIndex,
+                                                                  uiHeaderColumnIndex,
+                                                                  isShiftKeyDown,
+                                                                  isControlKeyDown);
+
+        if (isSelectionChanged) {
+            doAfterHeaderSelectionChange(uiHeaderRowIndex, uiHeaderColumnIndex);
+        }
+
+        return isSelectionChanged;
+    }
+
     protected void doAfterSelectionChange(final int uiRowIndex,
                                           final int uiColumnIndex) {
+        fireDomainObjectSelectionEvent(new NOPDomainObject());
+    }
+
+    protected void doAfterHeaderSelectionChange(final int uiHeaderRowIndex,
+                                                final int uiHeaderColumnIndex) {
         fireDomainObjectSelectionEvent(new NOPDomainObject());
     }
 

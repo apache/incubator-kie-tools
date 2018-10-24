@@ -29,6 +29,7 @@ import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ContextEntry;
+import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.context.AddContextEntryCommand;
@@ -57,6 +58,7 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
+import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
@@ -327,5 +329,18 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextGridData, Co
             }
         }
         super.doAfterSelectionChange(uiRowIndex, uiColumnIndex);
+    }
+
+    @Override
+    protected void doAfterHeaderSelectionChange(final int uiHeaderRowIndex,
+                                                final int uiHeaderColumnIndex) {
+        if (uiHeaderColumnIndex == ContextUIModelMapperHelper.NAME_COLUMN_INDEX) {
+            final DMNModelInstrumentedBase base = hasExpression.asDMNModelInstrumentedBase();
+            if (base instanceof DomainObject) {
+                fireDomainObjectSelectionEvent((DomainObject) base);
+                return;
+            }
+        }
+        super.doAfterHeaderSelectionChange(uiHeaderRowIndex, uiHeaderColumnIndex);
     }
 }

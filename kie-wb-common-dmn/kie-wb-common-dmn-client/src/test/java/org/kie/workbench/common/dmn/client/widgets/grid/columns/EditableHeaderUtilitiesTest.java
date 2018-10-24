@@ -34,15 +34,11 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class EditableHeaderUtilitiesTest {
-
-    private static final double HEADER_HEIGHT = 50.0;
-    private static final double HEADER_ROW_HEIGHT = HEADER_HEIGHT / 2;
 
     @Mock
     private GridWidget gridWidget;
@@ -69,54 +65,12 @@ public class EditableHeaderUtilitiesTest {
         doReturn(gridRenderer).when(gridWidget).getRenderer();
         doReturn(gridRendererHelper).when(gridWidget).getRendererHelper();
         doReturn(ri).when(gridRendererHelper).getRenderingInformation();
-        doReturn(HEADER_HEIGHT).when(gridRenderer).getHeaderHeight();
-        doReturn(HEADER_HEIGHT).when(gridRenderer).getHeaderRowHeight();
 
         doReturn(floatingBlockInformation).when(ri).getFloatingBlockInformation();
         doReturn(0.0).when(floatingBlockInformation).getX();
         doReturn(0.0).when(floatingBlockInformation).getWidth();
 
         doReturn(mock(Viewport.class)).when(gridWidget).getViewport();
-    }
-
-    @Test
-    public void testGetUiHeaderRowIndexHeaderMinY() {
-        final GridColumn<?> uiColumn = mockGridColumn(100.0);
-        final Integer uiHeaderRowIndex = EditableHeaderUtilities.getUiHeaderRowIndex(gridWidget,
-                                                                                     uiColumn,
-                                                                                     -5.0);
-        assertNull(uiHeaderRowIndex);
-    }
-
-    @Test
-    public void testGetUiHeaderRowIndexHeaderMaxY() {
-        final GridColumn<?> uiColumn = mockGridColumn(100.0);
-        final Integer uiHeaderRowIndex = EditableHeaderUtilities.getUiHeaderRowIndex(gridWidget,
-                                                                                     uiColumn,
-                                                                                     HEADER_HEIGHT + 5.0);
-        assertNull(uiHeaderRowIndex);
-    }
-
-    @Test
-    public void testGetUiHeaderRowIndexRow0() {
-        final GridColumn<?> uiColumn = mockGridColumn(100.0);
-        final Integer uiHeaderRowIndex = EditableHeaderUtilities.getUiHeaderRowIndex(gridWidget,
-                                                                                     uiColumn,
-                                                                                     HEADER_ROW_HEIGHT - 5.0);
-        assertNotNull(uiHeaderRowIndex);
-        assertEquals(0,
-                     (int) uiHeaderRowIndex);
-    }
-
-    @Test
-    public void testGetUiHeaderRowIndexRow1() {
-        final GridColumn<?> uiColumn = mockGridColumn(100.0);
-        final Integer uiHeaderRowIndex = EditableHeaderUtilities.getUiHeaderRowIndex(gridWidget,
-                                                                                     uiColumn,
-                                                                                     HEADER_ROW_HEIGHT + 5.0);
-        assertNotNull(uiHeaderRowIndex);
-        assertEquals(1,
-                     (int) uiHeaderRowIndex);
     }
 
     @Test

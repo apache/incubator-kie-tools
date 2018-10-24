@@ -512,6 +512,18 @@ public class LiteralExpressionGridTest {
     }
 
     @Test
+    public void testSelectHeader() {
+        setupGrid(0);
+
+        grid.selectHeaderCell(0, 0, false, false);
+
+        verify(domainObjectSelectionEvent).fire(domainObjectSelectionEventCaptor.capture());
+
+        final DomainObjectSelectionEvent domainObjectSelectionEvent = domainObjectSelectionEventCaptor.getValue();
+        assertThat(domainObjectSelectionEvent.getDomainObject()).isEqualTo(hasExpression);
+    }
+
+    @Test
     public void testAsDMNModelInstrumentedBase() {
         setupGrid(0);
 

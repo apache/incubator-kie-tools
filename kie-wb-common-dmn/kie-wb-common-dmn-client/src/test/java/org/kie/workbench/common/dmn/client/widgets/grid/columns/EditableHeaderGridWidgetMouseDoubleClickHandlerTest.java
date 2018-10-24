@@ -108,6 +108,7 @@ public class EditableHeaderGridWidgetMouseDoubleClickHandlerTest {
     @SuppressWarnings("unchecked")
     public void setup() {
         this.uiModel = new BaseGridData(false);
+        this.uiModel.appendColumn(gridColumn);
 
         when(gridWidget.getModel()).thenReturn(uiModel);
         when(gridWidget.getRendererHelper()).thenReturn(rendererHelper);

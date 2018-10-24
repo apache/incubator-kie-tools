@@ -407,6 +407,7 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
                                                                                                                   () -> resize(BaseExpressionGrid.RESIZE_EXISTING_MINIMUM)));
 
             if (!CommandUtils.isError(result)) {
+                selectHeaderCell(0, index, false, false);
                 inputClauseColumn.startEditingHeaderCell(0);
             }
         });
@@ -440,6 +441,7 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
                                                                                                                    () -> resize(BaseExpressionGrid.RESIZE_EXISTING_MINIMUM)));
 
             if (!CommandUtils.isError(result)) {
+                selectHeaderCell(1, index, false, false);
                 outputClauseColumn.startEditingHeaderCell(1);
             }
         });

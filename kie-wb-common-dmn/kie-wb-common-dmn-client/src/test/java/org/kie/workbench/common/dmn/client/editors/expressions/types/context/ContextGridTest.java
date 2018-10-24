@@ -876,6 +876,42 @@ public class ContextGridTest {
         assertDomainObjectSelection(expression.get().getContextEntry().get(0).getVariable());
     }
 
+    @Test
+    public void testSelectDefaultRow() {
+        setupGrid(0);
+
+        grid.selectCell(grid.getModel().getRowCount() - 1, ContextUIModelMapperHelper.EXPRESSION_COLUMN_INDEX, false, false);
+
+        assertNOPDomainObjectSelection();
+    }
+
+    @Test
+    public void testSelectHeaderRowNumberColumn() {
+        setupGrid(0);
+
+        grid.selectHeaderCell(0, ContextUIModelMapperHelper.ROW_COLUMN_INDEX, false, false);
+
+        assertNOPDomainObjectSelection();
+    }
+
+    @Test
+    public void testSelectHeaderNameColumn() {
+        setupGrid(0);
+
+        grid.selectHeaderCell(0, ContextUIModelMapperHelper.NAME_COLUMN_INDEX, false, false);
+
+        assertDomainObjectSelection(hasExpression);
+    }
+
+    @Test
+    public void testSelectHeaderExpressionColumn() {
+        setupGrid(0);
+
+        grid.selectHeaderCell(0, ContextUIModelMapperHelper.EXPRESSION_COLUMN_INDEX, false, false);
+
+        assertNOPDomainObjectSelection();
+    }
+
     private void assertDomainObjectSelection(final DomainObject domainObject) {
         verify(domainObjectSelectionEvent).fire(domainObjectSelectionEventCaptor.capture());
 
@@ -883,12 +919,7 @@ public class ContextGridTest {
         assertThat(domainObjectSelectionEvent.getDomainObject()).isEqualTo(domainObject);
     }
 
-    @Test
-    public void testSelectDefaultRow() {
-        setupGrid(0);
-
-        grid.selectCell(grid.getModel().getRowCount() - 1, ContextUIModelMapperHelper.EXPRESSION_COLUMN_INDEX, false, false);
-
+    private void assertNOPDomainObjectSelection() {
         verify(domainObjectSelectionEvent).fire(domainObjectSelectionEventCaptor.capture());
 
         final DomainObjectSelectionEvent domainObjectSelectionEvent = domainObjectSelectionEventCaptor.getValue();
