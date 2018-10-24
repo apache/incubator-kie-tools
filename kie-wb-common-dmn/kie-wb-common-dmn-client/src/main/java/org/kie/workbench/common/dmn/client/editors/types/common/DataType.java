@@ -35,6 +35,8 @@ public class DataType extends DataTypeActiveRecord {
 
     private String type;
 
+    private String constraint;
+
     private List<DataType> subDataTypes = new ArrayList<>();
 
     public DataType(final RecordEngine<DataType> recordEngine) {
@@ -89,6 +91,14 @@ public class DataType extends DataTypeActiveRecord {
 
     public boolean hasSubDataTypes() {
         return !subDataTypes.isEmpty();
+    }
+
+    public String getConstraint() {
+        return constraint;
+    }
+
+    void setConstraint(final String constraint) {
+        this.constraint = constraint;
     }
 
     public boolean isTopLevel() {

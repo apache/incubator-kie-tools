@@ -28,6 +28,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
+import org.kie.workbench.common.dmn.api.definition.v1_1.UnaryTests;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
@@ -185,7 +186,7 @@ public class DataTypeManagerTest {
     public void testMakeDataTypeFromItemDefinition() {
 
         final ItemDefinition simpleItemDefinitionFromMainItemDefinition = makeItem("name", "Text");
-        final ItemDefinition simpleItemDefinitionFromStructureItemDefinition = makeItem("company", "Text");
+        final ItemDefinition simpleItemDefinitionFromStructureItemDefinition = makeItem("company", "Text", "\"Red\", \"Hat\"");
         final ItemDefinition structureItemDefinition = makeItem("employee", null, simpleItemDefinitionFromStructureItemDefinition);
         final ItemDefinition existingItemDefinition = makeItem("address", "tAddress");
         final ItemDefinition simpleItemDefinitionFromExistingItemDefinition = makeItem("street", "Text");
@@ -202,8 +203,9 @@ public class DataTypeManagerTest {
          *   - employee (null)               # (again) ItemDefinition with 'null' indicates that it has one or more sub DataType(s).
          *     - company (Text)              #
          * -------------------------------------------------------------------------------------------------------------
-         * */
+         */
 
+        when(itemDefinitionUtils.getConstraintText(any())).thenCallRealMethod();
         when(itemDefinitionUtils.findByName(any())).thenReturn(Optional.empty());
         when(itemDefinitionUtils.findByName(eq("tAddress"))).thenReturn(Optional.of(existingItemDefinitionWithFields));
 
@@ -236,6 +238,7 @@ public class DataTypeManagerTest {
         assertEquals("uuid", name.getUUID());
         assertEquals("name", name.getName());
         assertEquals("Text", name.getType());
+        assertEquals("", name.getConstraint());
         assertSame(tPerson.getUUID(), name.getParentUUID());
         assertEquals(0, name.getSubDataTypes().size());
         assertFalse(name.hasSubDataTypes());
@@ -243,6 +246,7 @@ public class DataTypeManagerTest {
         assertEquals("uuid", address.getUUID());
         assertEquals("address", address.getName());
         assertEquals("tAddress", address.getType());
+        assertEquals("", address.getConstraint());
         assertSame(tPerson.getUUID(), address.getParentUUID());
         assertEquals(1, address.getSubDataTypes().size());
         assertTrue(address.hasSubDataTypes());
@@ -250,6 +254,7 @@ public class DataTypeManagerTest {
         assertEquals("uuid", street.getUUID());
         assertEquals("street", street.getName());
         assertEquals("Text", street.getType());
+        assertEquals("", street.getConstraint());
         assertSame(address.getUUID(), street.getParentUUID());
         assertEquals(0, street.getSubDataTypes().size());
         assertFalse(street.hasSubDataTypes());
@@ -257,6 +262,7 @@ public class DataTypeManagerTest {
         assertEquals("uuid", employee.getUUID());
         assertEquals("employee", employee.getName());
         assertEquals("Structure", employee.getType());
+        assertEquals("", employee.getConstraint());
         assertSame(tPerson.getUUID(), address.getParentUUID());
         assertEquals(1, employee.getSubDataTypes().size());
         assertTrue(employee.hasSubDataTypes());
@@ -264,6 +270,7 @@ public class DataTypeManagerTest {
         assertEquals("uuid", company.getUUID());
         assertEquals("company", company.getName());
         assertEquals("Text", company.getType());
+        assertEquals("\"Red\", \"Hat\"", company.getConstraint());
         assertSame(employee.getUUID(), company.getParentUUID());
         assertEquals(0, company.getSubDataTypes().size());
         assertFalse(company.hasSubDataTypes());
@@ -290,6 +297,7 @@ public class DataTypeManagerTest {
         assertEquals("uuid", dataType.getUUID());
         assertEquals("--", dataType.getName());
         assertEquals("string", dataType.getType());
+        assertEquals("", dataType.getConstraint());
         assertEquals(emptyList(), dataType.getSubDataTypes());
         assertFalse(dataType.hasSubDataTypes());
     }
@@ -302,7 +310,6 @@ public class DataTypeManagerTest {
         final String type = "type";
         final List<DataType> subDataTypes = emptyList();
         final DataType dataType0 = mock(DataType.class);
-        final ItemDefinition itemDefinition = mock(ItemDefinition.class);
 
         when(dataType0.getUUID()).thenReturn(uuid);
         when(dataType0.getName()).thenReturn(name);
@@ -381,6 +388,7 @@ public class DataTypeManagerTest {
         doReturn(manager).when(manager).withItemDefinition(any());
         doReturn(manager).when(manager).withItemDefinitionName();
         doReturn(manager).when(manager).withItemDefinitionType();
+        doReturn(manager).when(manager).withItemDefinitionConstraint();
         doReturn(manager).when(manager).withTypeStack(any());
         doReturn(manager).when(manager).withItemDefinitionSubDataTypes();
         doReturn(manager).when(manager).withIndexedItemDefinition();
@@ -582,6 +590,20 @@ public class DataTypeManagerTest {
         when(itemDefinition.getName()).thenReturn(name);
         when(itemDefinition.getItemComponent()).thenReturn(itemDefinitions);
         when(itemDefinition.getTypeRef()).thenReturn(typeRef);
+
+        return itemDefinition;
+    }
+
+    private ItemDefinition makeItem(final String itemName,
+                                    final String itemType,
+                                    final String constraint,
+                                    final ItemDefinition... subItemDefinitions) {
+
+        final ItemDefinition itemDefinition = makeItem(itemName, itemType, subItemDefinitions);
+        final UnaryTests unaryTests = mock(UnaryTests.class);
+
+        when(unaryTests.getText()).thenReturn(constraint);
+        when(itemDefinition.getAllowedValues()).thenReturn(unaryTests);
 
         return itemDefinition;
     }

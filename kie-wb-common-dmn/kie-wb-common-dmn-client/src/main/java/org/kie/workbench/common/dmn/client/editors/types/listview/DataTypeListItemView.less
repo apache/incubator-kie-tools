@@ -16,13 +16,20 @@
 
 [data-i18n-prefix="DataTypeListItemView."] {
 
+  &.has-sub-data-types {
+    [data-field="constraint-container"] {
+      .nesting-level {
+        padding-left: 35px;
+      }
+    }
+  }
+
   &.list-group-item:hover {
     background: #eff8ff;
   }
 
   &.list-group-item {
     border-color: #e2e4e3;
-    height: 50px;
     padding: 0 5px 0 0;
   }
 
@@ -66,16 +73,40 @@
 
   .list-view-pf-main-info {
     padding-top: 8px;
-
-    [data-field="level"] {
-      height: 32px;
-    }
+    padding-bottom: 8px;
 
     [data-field="arrow-button"] {
       margin-left: -20px;
       width: 55px;
       display: inline-block
     }
+
+    [data-field="type"],
+    [data-field="constraint"] {
+      display: inline-block;
+    }
+  }
+
+  .nesting-level {
+    height: 32px;
+  }
+
+  [data-field="constraint-container"] {
+    display: flex;
+
+    .nesting-level {
+      flex: 0;
+    }
+
+    [data-field="constraint"] {
+      flex: 1;
+      margin-bottom: 15px;
+    }
+  }
+
+  .constraint-text {
+    padding: 0 35px;
+    font-style: italic;
   }
 
   .list-view-pf-actions {

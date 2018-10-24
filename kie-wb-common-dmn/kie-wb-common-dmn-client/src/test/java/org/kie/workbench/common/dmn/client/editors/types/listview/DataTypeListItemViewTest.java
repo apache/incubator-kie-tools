@@ -18,8 +18,6 @@ package org.kie.workbench.common.dmn.client.editors.types.listview;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import elemental2.dom.CSSProperties.MarginLeftUnionType;
-import elemental2.dom.CSSStyleDeclaration;
 import elemental2.dom.DOMTokenList;
 import elemental2.dom.Element;
 import elemental2.dom.HTMLAnchorElement;
@@ -28,12 +26,11 @@ import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLInputElement;
 import elemental2.dom.NodeList;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
@@ -45,12 +42,14 @@ import static org.kie.workbench.common.dmn.client.editors.types.listview.DataTyp
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper.DOWN_ARROW_CSS_CLASS;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper.FOCUSED_CSS_CLASS;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper.RIGHT_ARROW_CSS_CLASS;
+import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeListItemView_Constraints;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -62,19 +61,25 @@ public class DataTypeListItemViewTest {
     private HTMLDivElement row;
 
     @Mock
-    private HTMLElement level;
-
-    @Mock
     private HTMLElement arrow;
 
     @Mock
     private HTMLElement nameText;
 
     @Mock
+    private HTMLElement constraintText;
+
+    @Mock
     private HTMLInputElement nameInput;
 
     @Mock
     private HTMLElement type;
+
+    @Mock
+    private HTMLDivElement constraint;
+
+    @Mock
+    private HTMLDivElement constraintContainer;
 
     @Mock
     private HTMLButtonElement editButton;
@@ -87,9 +92,6 @@ public class DataTypeListItemViewTest {
 
     @Mock
     private DataTypeListItem presenter;
-
-    @Captor
-    private ArgumentCaptor<Integer> integerCaptor;
 
     @Mock
     private HTMLElement dataTypeListElement;
@@ -109,11 +111,14 @@ public class DataTypeListItemViewTest {
     @Mock
     private HTMLDivElement kebabMenu;
 
+    @Mock
+    private TranslationService translationService;
+
     private DataTypeListItemView view;
 
     @Before
     public void setup() {
-        view = spy(new DataTypeListItemView(row, level, arrow, nameText, nameInput, type, editButton, saveButton, closeButton, removeButton, insertFieldAbove, insertFieldBelow, insertNestedField, kebabMenu));
+        view = spy(new DataTypeListItemView(row, arrow, nameText, constraintText, nameInput, type, constraint, constraintContainer, editButton, saveButton, closeButton, removeButton, insertFieldAbove, insertFieldBelow, insertNestedField, kebabMenu, translationService));
         view.init(presenter);
 
         doReturn(dataTypeListElement).when(view).dataTypeListElement();
@@ -127,7 +132,7 @@ public class DataTypeListItemViewTest {
         doNothing().when(view).setupRowMetadata(dataType);
         doNothing().when(view).setupArrow(dataType);
         doNothing().when(view).setupIndentationLevel();
-        doNothing().when(view).setupNameComponent(dataType);
+        doNothing().when(view).setupReadOnly(dataType);
         doNothing().when(view).setupActionButtons();
 
         view.setDataType(dataType);
@@ -135,7 +140,7 @@ public class DataTypeListItemViewTest {
         verify(view).setupRowMetadata(dataType);
         verify(view).setupArrow(dataType);
         verify(view).setupIndentationLevel();
-        verify(view).setupNameComponent(dataType);
+        verify(view).setupReadOnly(dataType);
         verify(view).setupActionButtons();
     }
 
@@ -153,6 +158,33 @@ public class DataTypeListItemViewTest {
 
         verify(row).setAttribute(UUID_ATTR, "1234");
         verify(row).setAttribute(PARENT_UUID_ATTR, "4567");
+        verify(view).setupRowCSSClass(dataType);
+    }
+
+    @Test
+    public void testSetupRowCSSClassWhenDataTypeHasSubDataTypes() {
+
+        final DataType dataType = mock(DataType.class);
+
+        row.classList = mock(DOMTokenList.class);
+        when(dataType.hasSubDataTypes()).thenReturn(true);
+
+        view.setupRowCSSClass(dataType);
+
+        verify(row.classList).add("has-sub-data-types");
+    }
+
+    @Test
+    public void testSetupRowCSSClassWhenDataTypeDoesNotHaveSubDataTypes() {
+
+        final DataType dataType = mock(DataType.class);
+
+        row.classList = mock(DOMTokenList.class);
+        when(dataType.hasSubDataTypes()).thenReturn(false);
+
+        view.setupRowCSSClass(dataType);
+
+        verify(row.classList).remove("has-sub-data-types");
     }
 
     @Test
@@ -210,35 +242,91 @@ public class DataTypeListItemViewTest {
     @Test
     public void testSetupIndentationLevel() {
 
-        final CSSStyleDeclaration style = mock(CSSStyleDeclaration.class);
-        final MarginLeftUnionType margin = mock(MarginLeftUnionType.class);
+        final int indentationLevel = 3;
+        final NodeList<Element> levelElements = spy(new NodeList<>());
+        final Element element0 = mock(Element.class);
+        final Element element1 = mock(Element.class);
 
-        when(presenter.getLevel()).thenReturn(2);
-        doReturn(margin).when(view).margin(anyInt());
-        level.style = style;
+        levelElements.length = 2;
+        doReturn(element0).when(levelElements).getAt(0);
+        doReturn(element1).when(levelElements).getAt(1);
+
+        when(presenter.getLevel()).thenReturn(indentationLevel);
+        when(row.querySelectorAll(".nesting-level")).thenReturn(levelElements);
 
         view.setupIndentationLevel();
 
-        verify(view).margin(integerCaptor.capture());
-        assertEquals(70, (int) integerCaptor.getValue());
-        assertEquals(margin, level.style.marginLeft);
+        verify(element0).setAttribute("style", "margin-left: 105px");
+        verify(element1).setAttribute("style", "margin-left: 105px");
     }
 
     @Test
-    public void testSetupDataTypeValues() {
+    public void testSetupReadOnly() {
 
         final DataType dataType = mock(DataType.class);
         final DOMTokenList classList = mock(DOMTokenList.class);
         final String name = "name";
+        final String constraint = "constraint";
 
+        doNothing().when(view).setName(name);
+        doNothing().when(view).setConstraint(constraint);
         when(dataType.getName()).thenReturn(name);
+        when(dataType.getConstraint()).thenReturn(constraint);
         nameInput.classList = classList;
 
-        view.setupNameComponent(dataType);
+        view.setupReadOnly(dataType);
 
         verify(classList).add(HIDDEN_CSS_CLASS);
+        verify(view).setName(name);
+        verify(view).setConstraint(constraint);
+    }
+
+    @Test
+    public void testSetName() {
+
+        final String name = "name";
+
+        view.setName(name);
+
         assertEquals(name, nameText.textContent);
         assertEquals(name, nameInput.value);
+    }
+
+    @Test
+    public void testSetConstraintWhenConstraintIsNull() {
+
+        final String constraint = null;
+        constraintText.classList = mock(DOMTokenList.class);
+
+        view.setConstraint(constraint);
+
+        assertEquals("", constraintText.textContent);
+        verify(constraintText.classList).add(HIDDEN_CSS_CLASS);
+    }
+
+    @Test
+    public void testSetConstraintWhenConstraintIsBlank() {
+
+        final String constraint = "";
+        constraintText.classList = mock(DOMTokenList.class);
+
+        view.setConstraint(constraint);
+
+        assertEquals("", constraintText.textContent);
+        verify(constraintText.classList).add(HIDDEN_CSS_CLASS);
+    }
+
+    @Test
+    public void testSetConstraintWhenConstraintIsPresent() {
+
+        final String constraint = "(1..20)";
+        constraintText.classList = mock(DOMTokenList.class);
+        when(translationService.format(DataTypeListItemView_Constraints, constraint)).thenReturn("Constraints: " + constraint);
+
+        view.setConstraint(constraint);
+
+        assertEquals("Constraints: (1..20)", constraintText.textContent);
+        verify(constraintText.classList).remove(HIDDEN_CSS_CLASS);
     }
 
     @Test
@@ -310,6 +398,79 @@ public class DataTypeListItemViewTest {
 
         assertFalse(type.innerHTML.contains("previous content"));
         verify(type).appendChild(htmlElement);
+    }
+
+    @Test
+    public void testSetupConstraintComponent() {
+
+        final DataTypeConstraint constraintComponent = mock(DataTypeConstraint.class);
+        final HTMLElement htmlElement = mock(HTMLElement.class);
+
+        when(constraintComponent.getElement()).thenReturn(htmlElement);
+        constraint.innerHTML = "previous content";
+
+        view.setupConstraintComponent(constraintComponent);
+
+        assertFalse(constraint.innerHTML.contains("previous content"));
+        verify(constraint).appendChild(htmlElement);
+    }
+
+    @Test
+    public void testShowConstraintContainer() {
+        constraintContainer.classList = mock(DOMTokenList.class);
+
+        view.showConstraintContainer();
+
+        verify(constraintContainer.classList).remove(HIDDEN_CSS_CLASS);
+    }
+
+    @Test
+    public void testHideConstraintContainer() {
+
+        constraintContainer.classList = mock(DOMTokenList.class);
+
+        view.hideConstraintContainer();
+
+        verify(constraintContainer.classList).add(HIDDEN_CSS_CLASS);
+    }
+
+    @Test
+    public void testShowConstraintTextWhenConstraintTextIsNull() {
+        constraintText.classList = mock(DOMTokenList.class);
+        constraintText.textContent = null;
+
+        view.showConstraintText();
+
+        verify(constraintText.classList, never()).remove(anyString());
+    }
+
+    @Test
+    public void testShowConstraintTextWhenConstraintTextIsBlank() {
+        constraintText.classList = mock(DOMTokenList.class);
+        constraintText.textContent = "";
+
+        view.showConstraintText();
+
+        verify(constraintText.classList, never()).remove(anyString());
+    }
+
+    @Test
+    public void testShowConstraintTextWhenConstraintTextIsPresent() {
+        constraintText.classList = mock(DOMTokenList.class);
+        constraintText.textContent = "Constraint: (1..30)";
+
+        view.showConstraintText();
+
+        verify(constraintText.classList).remove(HIDDEN_CSS_CLASS);
+    }
+
+    @Test
+    public void testHideConstraintText() {
+        constraintText.classList = mock(DOMTokenList.class);
+
+        view.hideConstraintText();
+
+        verify(constraintText.classList).add(HIDDEN_CSS_CLASS);
     }
 
     @Test

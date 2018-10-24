@@ -42,14 +42,19 @@
 
     <div class="list-view-pf-main-info">
         <div class="list-view-pf-body">
-            <span data-field="level"></span>
+            <span class="nesting-level"></span>
             <span data-field="arrow-button" class="icon expand-icon fa fa-caret-down">
                 <span class="data-type-icon fa fa-object-group"></span>
             </span>
 
             <span class="name-text" data-field="name-text"></span>
             <input class="name-input" data-field="name-input"/>
-            <span style="display: inline-block" data-field="type"></span>
+            <span data-field="type"></span>
+            <span class="constraint-text" data-field="name-text"></span>
         </div>
+    </div>
+    <div class="hidden" data-field="constraint-container">
+        <span class="nesting-level"></span>
+        <div data-field="constraint"></div>
     </div>
 </div>

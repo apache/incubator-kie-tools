@@ -25,6 +25,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Definitions;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
+import org.kie.workbench.common.dmn.api.definition.v1_1.UnaryTests;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
@@ -144,6 +145,32 @@ public class ItemDefinitionUtilsTest {
         assertEquals(expectedLocalPart, actualQName.getLocalPart());
         assertEquals(expectedNamespace, actualQName.getNamespaceURI());
         assertEquals(expectedPrefix, actualQName.getPrefix());
+    }
+
+    @Test
+    public void testGetConstraintTextWhenItemDefinitionDoesNotHaveAllowedValues() {
+
+        final ItemDefinition itemDefinition = mock(ItemDefinition.class);
+        final String expectedText = "";
+
+        final String actualText = utils.getConstraintText(itemDefinition);
+
+        assertEquals(expectedText, actualText);
+    }
+
+    @Test
+    public void testGetConstraintTextWhenItemDefinitionHasAllowedValues() {
+
+        final ItemDefinition itemDefinition = mock(ItemDefinition.class);
+        final UnaryTests allowedValues = mock(UnaryTests.class);
+        final String expectedText = "(1..10)";
+
+        when(allowedValues.getText()).thenReturn(expectedText);
+        when(itemDefinition.getAllowedValues()).thenReturn(allowedValues);
+
+        final String actualText = utils.getConstraintText(itemDefinition);
+
+        assertEquals(expectedText, actualText);
     }
 
     private ItemDefinition makeItem(final String itemName) {

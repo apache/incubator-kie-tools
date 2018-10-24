@@ -22,6 +22,9 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
+import org.kie.workbench.common.dmn.api.definition.v1_1.UnaryTests;
+import org.kie.workbench.common.dmn.api.property.dmn.Description;
+import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
@@ -31,6 +34,7 @@ import org.kie.workbench.common.dmn.client.editors.types.common.ItemDefinitionUt
 import static org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase.Namespace.FEEL;
 import static org.kie.workbench.common.dmn.api.property.dmn.QName.NULL_NS_URI;
 import static org.kie.workbench.common.dmn.client.editors.types.common.BuiltInTypeUtils.isDefault;
+import static org.kie.workbench.common.stunner.core.util.StringUtils.isEmpty;
 
 @Dependent
 public class ItemDefinitionUpdateHandler {
@@ -57,6 +61,30 @@ public class ItemDefinitionUpdateHandler {
         }
 
         itemDefinition.setName(makeName(dataType));
+        itemDefinition.setAllowedValues(makeAllowedValues(dataType, itemDefinition));
+    }
+
+    UnaryTests makeAllowedValues(final DataType dataType,
+                                 final ItemDefinition itemDefinition) {
+
+        final String constraint = dataType.getConstraint();
+
+        if (isEmpty(constraint)) {
+            return null;
+        }
+
+        if (!Objects.equals(constraint, getText(itemDefinition))) {
+            return new UnaryTests(new Id(),
+                                  new Description(),
+                                  constraint,
+                                  null);
+        }
+
+        return itemDefinition.getAllowedValues();
+    }
+
+    String getText(final ItemDefinition itemDefinition) {
+        return itemDefinitionUtils.getConstraintText(itemDefinition);
     }
 
     Name makeName(final DataType dataType) {

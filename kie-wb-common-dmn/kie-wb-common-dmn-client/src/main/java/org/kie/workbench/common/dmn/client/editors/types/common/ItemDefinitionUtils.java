@@ -25,6 +25,7 @@ import javax.inject.Inject;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.Definitions;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
+import org.kie.workbench.common.dmn.api.definition.v1_1.UnaryTests;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 
@@ -51,6 +52,13 @@ public class ItemDefinitionUtils {
         } else {
             return Collections.emptyList();
         }
+    }
+
+    public String getConstraintText(final ItemDefinition itemDefinition) {
+        return Optional
+                .ofNullable(itemDefinition.getAllowedValues())
+                .map(UnaryTests::getText)
+                .orElse("");
     }
 
     public QName normaliseTypeRef(final QName typeRef) {

@@ -24,6 +24,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
+import org.kie.workbench.common.dmn.api.definition.v1_1.UnaryTests;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
@@ -33,6 +34,8 @@ import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -146,5 +149,65 @@ public class ItemDefinitionUpdateHandlerTest {
         final String expected = "tAddress";
 
         assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testMakeAllowedValuesWhenDataTypeConstraintIsBlank() {
+
+        final DataType dataType = mock(DataType.class);
+        final ItemDefinition itemDefinition = mock(ItemDefinition.class);
+
+        when(dataType.getConstraint()).thenReturn("");
+
+        final UnaryTests actualAllowedValues = handler.makeAllowedValues(dataType, itemDefinition);
+
+        assertNull(actualAllowedValues);
+    }
+
+    @Test
+    public void testMakeAllowedValuesWhenDataTypeConstraintIsNull() {
+
+        final DataType dataType = mock(DataType.class);
+        final ItemDefinition itemDefinition = mock(ItemDefinition.class);
+
+        when(dataType.getConstraint()).thenReturn(null);
+
+        final UnaryTests actualAllowedValues = handler.makeAllowedValues(dataType, itemDefinition);
+
+        assertNull(actualAllowedValues);
+    }
+
+    @Test
+    public void testMakeAllowedValuesWhenDataTypeAndItemDefinitionConstraintAreEqual() {
+
+        final DataType dataType = mock(DataType.class);
+        final ItemDefinition itemDefinition = mock(ItemDefinition.class);
+        final UnaryTests expectedAllowedValues = mock(UnaryTests.class);
+        final String expectedText = "(1..20)";
+
+        when(itemDefinition.getAllowedValues()).thenReturn(expectedAllowedValues);
+        when(expectedAllowedValues.getText()).thenReturn(expectedText);
+        when(dataType.getConstraint()).thenReturn(expectedText);
+
+        final UnaryTests actualAllowedValues = handler.makeAllowedValues(dataType, itemDefinition);
+
+        assertEquals(expectedAllowedValues, actualAllowedValues);
+    }
+
+    @Test
+    public void testMakeAllowedValuesWhenDataTypeAndItemDefinitionConstraintAreNotEqual() {
+
+        final DataType dataType = mock(DataType.class);
+        final ItemDefinition itemDefinition = mock(ItemDefinition.class);
+        final String expectedText = "(1..20)";
+
+        when(dataType.getConstraint()).thenReturn(expectedText);
+
+        final UnaryTests actualAllowedValues = handler.makeAllowedValues(dataType, itemDefinition);
+
+        assertNotNull(actualAllowedValues.getId());
+        assertNotNull(actualAllowedValues.getDescription());
+        assertEquals(expectedText, actualAllowedValues.getText());
+        assertNull(actualAllowedValues.getExpressionLanguage());
     }
 }

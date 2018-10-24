@@ -40,6 +40,8 @@ public class DataTypeListItem {
 
     private final DataTypeSelect dataTypeSelectComponent;
 
+    private final DataTypeConstraint dataTypeConstraintComponent;
+
     private final DataTypeManager dataTypeManager;
 
     private final DataTypeConfirmation confirmation;
@@ -54,13 +56,17 @@ public class DataTypeListItem {
 
     private String oldType;
 
+    private String oldConstraint;
+
     @Inject
     public DataTypeListItem(final View view,
                             final DataTypeSelect dataTypeSelectComponent,
+                            final DataTypeConstraint dataTypeConstraintComponent,
                             final DataTypeManager dataTypeManager,
                             final DataTypeConfirmation confirmation) {
         this.view = view;
         this.dataTypeSelectComponent = dataTypeSelectComponent;
+        this.dataTypeConstraintComponent = dataTypeConstraintComponent;
         this.dataTypeManager = dataTypeManager;
         this.confirmation = confirmation;
     }
@@ -78,15 +84,18 @@ public class DataTypeListItem {
         return view.getElement();
     }
 
-    DataTypeListItem setupDataType(final DataType dataType,
-                                   final int level) {
+    void setupDataType(final DataType dataType,
+                       final int level) {
         this.dataType = dataType;
         this.level = level;
 
         setupSelectComponent();
+        setupConstraintComponent();
         setupView();
+    }
 
-        return this;
+    void setupConstraintComponent() {
+        dataTypeConstraintComponent.init(getDataType());
     }
 
     void setupSelectComponent() {
@@ -95,6 +104,7 @@ public class DataTypeListItem {
 
     void setupView() {
         view.setupSelectComponent(dataTypeSelectComponent);
+        view.setupConstraintComponent(dataTypeConstraintComponent);
         view.setDataType(getDataType());
     }
 
@@ -102,6 +112,9 @@ public class DataTypeListItem {
         dataTypeSelectComponent.refresh();
         dataTypeSelectComponent.init(this, getDataType());
         view.setName(getDataType().getName());
+        view.setConstraint(getDataType().getConstraint());
+
+        setupConstraintComponent();
     }
 
     DataType getDataType() {
@@ -128,7 +141,7 @@ public class DataTypeListItem {
         view.collapse();
     }
 
-    public void refreshSubItems(final List<DataType> dataTypes) {
+    void refreshSubItems(final List<DataType> dataTypes) {
 
         dataTypeList.refreshSubItemsFromListItem(this, dataTypes);
 
@@ -140,12 +153,16 @@ public class DataTypeListItem {
 
         oldName = getDataType().getName();
         oldType = getDataType().getType();
+        oldConstraint = getDataType().getConstraint();
 
         view.showSaveButton();
         view.showDataTypeNameInput();
+        view.showConstraintContainer();
+        view.hideConstraintText();
         view.enableFocusMode();
 
         dataTypeSelectComponent.enableEditMode();
+        dataTypeConstraintComponent.refreshView();
     }
 
     void disableEditMode() {
@@ -188,6 +205,7 @@ public class DataTypeListItem {
                                  .withDataType(getDataType())
                                  .withName(getOldName())
                                  .withType(getOldType())
+                                 .withConstraint(getOldConstraint())
                                  .get());
 
         setupSelectComponent();
@@ -199,6 +217,8 @@ public class DataTypeListItem {
         view.showEditButton();
         view.hideDataTypeNameInput();
         view.disableFocusMode();
+        view.hideConstraintContainer();
+        view.showConstraintText();
 
         dataTypeSelectComponent.disableEditMode();
     }
@@ -235,6 +255,7 @@ public class DataTypeListItem {
                 .from(dataType)
                 .withName(view.getName())
                 .withType(dataTypeSelectComponent.getValue())
+                .withConstraint(dataTypeConstraintComponent.getValue())
                 .get();
     }
 
@@ -244,6 +265,10 @@ public class DataTypeListItem {
 
     String getOldType() {
         return oldType;
+    }
+
+    String getOldConstraint() {
+        return oldConstraint;
     }
 
     DataTypeList getDataTypeList() {
@@ -308,9 +333,17 @@ public class DataTypeListItem {
 
         void setupSelectComponent(final DataTypeSelect typeSelect);
 
+        void setupConstraintComponent(final DataTypeConstraint dataTypeConstraintComponent);
+
+        void showConstraintText();
+
+        void hideConstraintText();
+
         boolean isCollapsed();
 
         void hideDataTypeNameInput();
+
+        void setConstraint(final String constraint);
 
         void showDataTypeNameInput();
 
@@ -321,5 +354,9 @@ public class DataTypeListItem {
         String getName();
 
         void setName(final String name);
+
+        void showConstraintContainer();
+
+        void hideConstraintContainer();
     }
 }

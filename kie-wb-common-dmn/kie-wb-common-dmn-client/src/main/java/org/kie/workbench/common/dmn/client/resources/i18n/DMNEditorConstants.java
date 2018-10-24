@@ -231,4 +231,10 @@ public class DMNEditorConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String ReferencedDataTypeWarningMessage_RegularMessage = "ReferencedDataTypeWarningMessage.RegularMessage";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DataTypeConstraintView_ConstraintsTooltip = "DataTypeConstraintView.ConstraintsTooltip";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DataTypeListItemView_Constraints = "DataTypeListItemView.Constraints";
 }

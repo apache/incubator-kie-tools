@@ -25,7 +25,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import com.google.gwt.event.dom.client.ClickEvent;
-import elemental2.dom.CSSProperties.MarginLeftUnionType;
 import elemental2.dom.Element;
 import elemental2.dom.HTMLAnchorElement;
 import elemental2.dom.HTMLButtonElement;
@@ -33,6 +32,7 @@ import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLInputElement;
 import elemental2.dom.NodeList;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
@@ -48,6 +48,8 @@ import static org.kie.workbench.common.dmn.client.editors.types.listview.common.
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper.asNonFocusedDataType;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper.asRightArrow;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper.isRightArrow;
+import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeListItemView_Constraints;
+import static org.kie.workbench.common.stunner.core.util.StringUtils.isEmpty;
 
 @Dependent
 @Templated
@@ -66,20 +68,26 @@ public class DataTypeListItemView implements DataTypeListItem.View {
     @DataField("view")
     private final HTMLDivElement view;
 
-    @DataField("level")
-    private final HTMLElement level;
-
     @DataField("arrow-button")
     private final HTMLElement arrow;
 
     @DataField("name-text")
     private final HTMLElement nameText;
 
+    @DataField("constraint-text")
+    private final HTMLElement constraintText;
+
     @DataField(NAME_DATA_FIELD)
     private final HTMLInputElement nameInput;
 
     @DataField("type")
     private final HTMLElement type;
+
+    @DataField("constraint")
+    private final HTMLDivElement constraint;
+
+    @DataField("constraint-container")
+    private final HTMLDivElement constraintContainer;
 
     @DataField("edit-button")
     private final HTMLButtonElement editButton;
@@ -103,17 +111,21 @@ public class DataTypeListItemView implements DataTypeListItem.View {
     private final HTMLAnchorElement insertNestedField;
 
     @DataField("kebab-menu")
-    private HTMLDivElement kebabMenu;
+    private final HTMLDivElement kebabMenu;
+
+    private final TranslationService translationService;
 
     private DataTypeListItem presenter;
 
     @Inject
     public DataTypeListItemView(final HTMLDivElement view,
-                                final @Named("span") HTMLElement level,
                                 final @Named("span") HTMLElement arrow,
                                 final @Named("span") HTMLElement nameText,
+                                final @Named("span") HTMLElement constraintText,
                                 final HTMLInputElement nameInput,
                                 final @Named("span") HTMLElement type,
+                                final HTMLDivElement constraint,
+                                final HTMLDivElement constraintContainer,
                                 final HTMLButtonElement editButton,
                                 final HTMLButtonElement saveButton,
                                 final HTMLButtonElement closeButton,
@@ -121,13 +133,16 @@ public class DataTypeListItemView implements DataTypeListItem.View {
                                 final HTMLAnchorElement insertFieldAbove,
                                 final HTMLAnchorElement insertFieldBelow,
                                 final HTMLAnchorElement insertNestedField,
-                                final HTMLDivElement kebabMenu) {
+                                final HTMLDivElement kebabMenu,
+                                final TranslationService translationService) {
         this.view = view;
-        this.level = level;
         this.arrow = arrow;
         this.nameText = nameText;
+        this.constraintText = constraintText;
         this.nameInput = nameInput;
         this.type = type;
+        this.constraint = constraint;
+        this.constraintContainer = constraintContainer;
         this.editButton = editButton;
         this.saveButton = saveButton;
         this.closeButton = closeButton;
@@ -136,6 +151,7 @@ public class DataTypeListItemView implements DataTypeListItem.View {
         this.insertFieldBelow = insertFieldBelow;
         this.insertNestedField = insertNestedField;
         this.kebabMenu = kebabMenu;
+        this.translationService = translationService;
     }
 
     @PostConstruct
@@ -154,8 +170,22 @@ public class DataTypeListItemView implements DataTypeListItem.View {
     }
 
     void setupRowMetadata(final DataType dataType) {
+
         getElement().setAttribute(UUID_ATTR, dataType.getUUID());
         getElement().setAttribute(PARENT_UUID_ATTR, dataType.getParentUUID());
+
+        setupRowCSSClass(dataType);
+    }
+
+    void setupRowCSSClass(final DataType dataType) {
+
+        final String hasSubDataTypesCSSClass = "has-sub-data-types";
+
+        if (dataType.hasSubDataTypes()) {
+            getElement().classList.add(hasSubDataTypesCSSClass);
+        } else {
+            getElement().classList.remove(hasSubDataTypesCSSClass);
+        }
     }
 
     void setupArrow(final DataType dataType) {
@@ -166,13 +196,23 @@ public class DataTypeListItemView implements DataTypeListItem.View {
 
         final int indentationLevel = presenter.getLevel();
         final int marginPixels = PIXELS_PER_LEVEL * indentationLevel;
+        final String nestingLevelSelector = ".nesting-level";
+        final NodeList<Element> levelElements = getElement().querySelectorAll(nestingLevelSelector);
 
-        this.level.style.marginLeft = margin(marginPixels);
+        for (int i = 0; i < levelElements.length; i++) {
+
+            final Element element = levelElements.getAt(i);
+            final String propertyName = "style";
+            final String propertyValue = "margin-left: " + marginPixels + "px";
+
+            element.setAttribute(propertyName, propertyValue);
+        }
     }
 
-    void setupNameComponent(final DataType dataType) {
+    void setupReadOnly(final DataType dataType) {
         hide(nameInput);
         setName(dataType.getName());
+        setConstraint(dataType.getConstraint());
     }
 
     void setupActionButtons() {
@@ -295,6 +335,17 @@ public class DataTypeListItemView implements DataTypeListItem.View {
     }
 
     @Override
+    public void setConstraint(final String constraint) {
+        if (isEmpty(constraint)) {
+            constraintText.textContent = "";
+            hide(constraintText);
+        } else {
+            constraintText.textContent = translationService.format(DataTypeListItemView_Constraints, constraint);
+            show(constraintText);
+        }
+    }
+
+    @Override
     public void showDataTypeNameInput() {
         hide(nameText);
         show(nameInput);
@@ -316,6 +367,34 @@ public class DataTypeListItemView implements DataTypeListItem.View {
     }
 
     @Override
+    public void setupConstraintComponent(final DataTypeConstraint dataTypeConstraintComponent) {
+        constraint.innerHTML = "";
+        constraint.appendChild(dataTypeConstraintComponent.getElement());
+    }
+
+    @Override
+    public void showConstraintContainer() {
+        show(constraintContainer);
+    }
+
+    @Override
+    public void hideConstraintContainer() {
+        hide(constraintContainer);
+    }
+
+    @Override
+    public void showConstraintText() {
+        if (!isEmpty(constraintText.textContent)) {
+            show(constraintText);
+        }
+    }
+
+    @Override
+    public void hideConstraintText() {
+        hide(constraintText);
+    }
+
+    @Override
     public boolean isCollapsed() {
         return isCollapsed(getArrow());
     }
@@ -326,10 +405,6 @@ public class DataTypeListItemView implements DataTypeListItem.View {
 
     Element getRowElement(final DataType dataType) {
         return getRowElement(dataType.getUUID());
-    }
-
-    MarginLeftUnionType margin(final int pixels) {
-        return MarginLeftUnionType.of(pixels + "px");
     }
 
     boolean isCollapsed(final Element arrow) {
@@ -379,7 +454,7 @@ public class DataTypeListItemView implements DataTypeListItem.View {
         setupRowMetadata(dataType);
         setupArrow(dataType);
         setupIndentationLevel();
-        setupNameComponent(dataType);
+        setupReadOnly(dataType);
         setupActionButtons();
     }
 }
