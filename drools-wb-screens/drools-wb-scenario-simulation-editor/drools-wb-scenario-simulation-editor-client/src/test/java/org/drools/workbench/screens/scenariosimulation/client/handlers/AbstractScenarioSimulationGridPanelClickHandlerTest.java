@@ -99,8 +99,6 @@ public abstract class AbstractScenarioSimulationGridPanelClickHandlerTest {
     @Mock
     private Document mockDocument;
 
-
-
     @Before
     public void setUp() throws Exception {
         doReturn(scenarioGridCellMock).when(scenarioGridModelMock).getCell(UI_ROW_INDEX, UI_COLUMN_INDEX);
@@ -115,6 +113,7 @@ public abstract class AbstractScenarioSimulationGridPanelClickHandlerTest {
 
         // mock single column in grid
         ScenarioGridColumn column = mock(ScenarioGridColumn.class);
+        when(scenarioGridModelMock.getHeaderRowCount()).thenReturn(1);
         when(scenarioGridModelMock.getColumns()).thenReturn(Collections.singletonList(column));
         when(scenarioGridModelMock.getColumnCount()).thenReturn(1);
 

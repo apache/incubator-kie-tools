@@ -195,8 +195,9 @@ public class ColumnHeaderPopOverImplTest {
                                                                                                                 Collections.<Double>emptyList(),
                                                                                                                 false,
                                                                                                                 false,
-                                                                                                                0,
                                                                                                                 2,
+                                                                                                                0,
+                                                                                                                0,
                                                                                                                 0 );
         when( rendererHelper.getRenderingInformation() ).thenReturn( ri );
 

@@ -184,8 +184,9 @@ public class GuidedDecisionTableViewImplTest {
                                                                Collections.singletonList(0.0),
                                                                false,
                                                                false,
-                                                               HEADER_ROW_HEIGHT,
                                                                1,
+                                                               HEADER_ROW_HEIGHT,
+                                                               HEADER_ROW_HEIGHT,
                                                                0.0);
     }
 

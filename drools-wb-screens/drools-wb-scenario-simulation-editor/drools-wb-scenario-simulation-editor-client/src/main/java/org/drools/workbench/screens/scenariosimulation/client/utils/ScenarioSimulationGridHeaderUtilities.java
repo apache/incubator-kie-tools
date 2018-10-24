@@ -57,10 +57,12 @@ public class ScenarioSimulationGridHeaderUtilities {
         //Get header row index
         int uiHeaderRowIndex = 0;
         double offsetY = cy - headerMinY;
-        final double headerRowsHeight = renderer.getHeaderRowHeight();
-        final double headerRowHeight = headerRowsHeight / column.getHeaderMetaData().size();
-        while (headerRowHeight < offsetY) {
-            offsetY = offsetY - headerRowHeight;
+        final int headerRowCount = gridWidget.getModel().getHeaderRowCount();
+        final double headerRowHeight = renderer.getHeaderRowHeight();
+        final double headerRowsHeight = headerRowHeight * headerRowCount;
+        final double columnHeaderRowHeight = headerRowsHeight / column.getHeaderMetaData().size();
+        while (columnHeaderRowHeight < offsetY) {
+            offsetY = offsetY - columnHeaderRowHeight;
             uiHeaderRowIndex++;
         }
         if (uiHeaderRowIndex < 0 || uiHeaderRowIndex > column.getHeaderMetaData().size() - 1) {
@@ -154,12 +156,15 @@ public class ScenarioSimulationGridHeaderUtilities {
         final GridRenderer renderer = gridWidget.getRenderer();
 
         final Group header = gridWidget.getHeader();
+        final int headerRowCount = gridWidget.getModel().getHeaderRowCount();
         final double headerRowsYOffset = ri.getHeaderRowsYOffset();
         final double headerMinY = (header == null ? headerRowsYOffset : header.getY() + headerRowsYOffset);
-        final double headerRowHeight = renderer.getHeaderRowHeight() / column.getHeaderMetaData().size();
+        final double headerRowHeight = renderer.getHeaderRowHeight();
+        final double headerRowsHeight = headerRowCount * headerRowHeight;
+        final double columnHeaderRowHeight = headerRowsHeight / column.getHeaderMetaData().size();
 
         final double cellX = gridWidget.getAbsoluteX() + ci.getOffsetX();
-        final double cellY = gridWidget.getAbsoluteY() + headerMinY + (headerRowHeight * uiHeaderRowIndex);
+        final double cellY = gridWidget.getAbsoluteY() + headerMinY + (columnHeaderRowHeight * uiHeaderRowIndex);
 
         final BaseGridRendererHelper.RenderingBlockInformation floatingBlockInformation = ri.getFloatingBlockInformation();
         final double floatingX = floatingBlockInformation.getX();

@@ -57,7 +57,7 @@ public class ScenarioSimulationGridPanelDoubleClickHandler extends BaseGridWidge
 
     protected boolean manageDoubleClick(final NodeMouseDoubleClickEvent event) {
         if (!handleHeaderCellDoubleClick(event)) {
-           return handleBodyCellDoubleClick(event);
+            return handleBodyCellDoubleClick(event);
         } else {
             return true;
         }
@@ -73,7 +73,8 @@ public class ScenarioSimulationGridPanelDoubleClickHandler extends BaseGridWidge
         final double cy = rp.getY();
 
         final Group header = gridWidget.getHeader();
-        final double headerRowsYOffset = getHeaderRowsYOffset();
+        final BaseGridRendererHelper.RenderingInformation ri = rendererHelper.getRenderingInformation();
+        final double headerRowsYOffset = ri.getHeaderRowsYOffset();
         final double headerMinY = (header == null ? headerRowsYOffset : header.getY() + headerRowsYOffset);
         final double headerMaxY = (header == null ? renderer.getHeaderHeight() : renderer.getHeaderHeight() + header.getY());
 
@@ -85,7 +86,6 @@ public class ScenarioSimulationGridPanelDoubleClickHandler extends BaseGridWidge
         }
 
         //Get column information
-        final BaseGridRendererHelper.RenderingInformation ri = rendererHelper.getRenderingInformation();
         final BaseGridRendererHelper.ColumnInformation ci = rendererHelper.getColumnInformation(cx);
         final GridColumn<?> column = getGridColumn(gridWidget, cx);
         if (column == null) {

@@ -22,6 +22,7 @@ import java.util.List;
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -77,6 +78,8 @@ public class ScenarioSimulationGridHeaderUtilitiesTest {
         doReturn(0.0).when(floatingBlockInformation).getWidth();
 
         doReturn(mock(Viewport.class)).when(gridWidget).getViewport();
+
+        doReturn(new ScenarioGridModel()).when(gridWidget).getModel();
     }
 
     @Test
@@ -92,8 +95,8 @@ public class ScenarioSimulationGridHeaderUtilitiesTest {
     public void testGetUiHeaderRowIndexHeaderMaxY() {
         final GridColumn<?> uiColumn = mockGridColumn(100.0);
         final Integer uiHeaderRowIndex = ScenarioSimulationGridHeaderUtilities.getUiHeaderRowIndex(gridWidget,
-                                                                                     uiColumn,
-                                                                                     HEADER_HEIGHT + 5.0);
+                                                                                                   uiColumn,
+                                                                                                   HEADER_HEIGHT + 5.0);
         assertNull(uiHeaderRowIndex);
     }
 
@@ -101,8 +104,8 @@ public class ScenarioSimulationGridHeaderUtilitiesTest {
     public void testGetUiHeaderRowIndexRow0() {
         final GridColumn<?> uiColumn = mockGridColumn(100.0);
         final Integer uiHeaderRowIndex = ScenarioSimulationGridHeaderUtilities.getUiHeaderRowIndex(gridWidget,
-                                                                                     uiColumn,
-                                                                                     HEADER_ROW_HEIGHT - 5.0);
+                                                                                                   uiColumn,
+                                                                                                   HEADER_ROW_HEIGHT - 5.0);
         assertNotNull(uiHeaderRowIndex);
         assertEquals(0,
                      (int) uiHeaderRowIndex);
@@ -112,8 +115,8 @@ public class ScenarioSimulationGridHeaderUtilitiesTest {
     public void testGetUiHeaderRowIndexRow1() {
         final GridColumn<?> uiColumn = mockGridColumn(100.0);
         final Integer uiHeaderRowIndex = ScenarioSimulationGridHeaderUtilities.getUiHeaderRowIndex(gridWidget,
-                                                                                     uiColumn,
-                                                                                     HEADER_ROW_HEIGHT + 5.0);
+                                                                                                   uiColumn,
+                                                                                                   HEADER_ROW_HEIGHT + 5.0);
         assertNotNull(uiHeaderRowIndex);
         assertEquals(1,
                      (int) uiHeaderRowIndex);
@@ -131,10 +134,10 @@ public class ScenarioSimulationGridHeaderUtilitiesTest {
         doReturn(0).when(ci).getUiColumnIndex();
 
         final GridBodyCellRenderContext context = ScenarioSimulationGridHeaderUtilities.makeRenderContext(gridWidget,
-                                                                                            ri,
-                                                                                            ci,
-                                                                                            rp,
-                                                                                            0);
+                                                                                                          ri,
+                                                                                                          ci,
+                                                                                                          rp,
+                                                                                                          0);
 
         assertNotNull(context);
         assertEquals(0.0,
@@ -161,10 +164,10 @@ public class ScenarioSimulationGridHeaderUtilitiesTest {
         doReturn(1).when(ci).getUiColumnIndex();
 
         final GridBodyCellRenderContext context = ScenarioSimulationGridHeaderUtilities.makeRenderContext(gridWidget,
-                                                                                            ri,
-                                                                                            ci,
-                                                                                            rp,
-                                                                                            0);
+                                                                                                          ri,
+                                                                                                          ci,
+                                                                                                          rp,
+                                                                                                          0);
 
         assertNotNull(context);
         assertEquals(25.0,
@@ -190,10 +193,10 @@ public class ScenarioSimulationGridHeaderUtilitiesTest {
         doReturn(1).when(ci).getUiColumnIndex();
 
         final GridBodyCellRenderContext context = ScenarioSimulationGridHeaderUtilities.makeRenderContext(gridWidget,
-                                                                                            ri,
-                                                                                            ci,
-                                                                                            rp,
-                                                                                            0);
+                                                                                                          ri,
+                                                                                                          ci,
+                                                                                                          rp,
+                                                                                                          0);
 
         assertNotNull(context);
         assertEquals(0.0,
@@ -221,10 +224,10 @@ public class ScenarioSimulationGridHeaderUtilitiesTest {
         doReturn(2).when(ci).getUiColumnIndex();
 
         final GridBodyCellRenderContext context = ScenarioSimulationGridHeaderUtilities.makeRenderContext(gridWidget,
-                                                                                            ri,
-                                                                                            ci,
-                                                                                            rp,
-                                                                                            0);
+                                                                                                          ri,
+                                                                                                          ci,
+                                                                                                          rp,
+                                                                                                          0);
 
         assertNotNull(context);
         assertEquals(25.0,
@@ -250,10 +253,10 @@ public class ScenarioSimulationGridHeaderUtilitiesTest {
         doReturn(0).when(ci).getUiColumnIndex();
 
         final GridBodyCellRenderContext context = ScenarioSimulationGridHeaderUtilities.makeRenderContext(gridWidget,
-                                                                                            ri,
-                                                                                            ci,
-                                                                                            rp,
-                                                                                            0);
+                                                                                                          ri,
+                                                                                                          ci,
+                                                                                                          rp,
+                                                                                                          0);
 
         assertNotNull(context);
         assertEquals(0.0,
@@ -281,10 +284,10 @@ public class ScenarioSimulationGridHeaderUtilitiesTest {
         doReturn(0).when(ci).getUiColumnIndex();
 
         final GridBodyCellRenderContext context = ScenarioSimulationGridHeaderUtilities.makeRenderContext(gridWidget,
-                                                                                            ri,
-                                                                                            ci,
-                                                                                            rp,
-                                                                                            0);
+                                                                                                          ri,
+                                                                                                          ci,
+                                                                                                          rp,
+                                                                                                          0);
 
         assertNotNull(context);
         assertEquals(0.0,

@@ -15,9 +15,23 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.renderers;
 
+import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
+
 public class ScenarioGridRenderer extends BaseExpressionGridRenderer {
+
+    private static final double HEADER_ROW_HEIGHT = 32.0;
 
     public ScenarioGridRenderer(boolean isHeaderHidden) {
         super(isHeaderHidden);
+    }
+
+    @Override
+    public double getHeaderHeight() {
+        return HEADER_ROW_HEIGHT * ScenarioGridModel.HEADER_ROW_COUNT;
+    }
+
+    @Override
+    public double getHeaderRowHeight() {
+        return HEADER_ROW_HEIGHT;
     }
 }
