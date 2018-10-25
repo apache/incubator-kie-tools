@@ -20,9 +20,6 @@ import com.ait.lienzo.client.core.shape.Line;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.Rectangle;
 import com.ait.lienzo.client.core.shape.Text;
-import com.ait.lienzo.client.core.types.Shadow;
-import com.ait.lienzo.shared.core.types.Color;
-import com.ait.lienzo.shared.core.types.ColorName;
 import com.ait.lienzo.shared.core.types.TextAlign;
 import com.ait.lienzo.shared.core.types.TextBaseLine;
 import com.ait.lienzo.shared.core.types.TextUnit;
@@ -38,46 +35,17 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.model.Guid
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.themes.GridRendererTheme;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.themes.impl.KIEColours;
 
 public class GuidedDecisionTableTheme implements GridRendererTheme {
 
-    private static final double GRID_LINE_WIDTH = 1;
+    private static final double GRID_LINE_WIDTH = 1.0;
 
-    private static final String GRID_LINE_COLOUR = Color.rgbToBrowserHexColor(160,
-                                                                              160,
-                                                                              160);
-
-    private static final String GRID_LINK_COLOUR = "#d4eec2";
-
-    private static final String GRID_FONT_COLOUR = "#333333";
+    public static final double GRID_SELECTOR_LINE_WIDTH = 2.0;
 
     private static final String GRID_FONT_FAMILY = "Open Sans, Helvetica, Arial, sans-serif";
 
-    private static final int GRID_FONT_SIZE = 12;
-
-    private static final String ROW_NUMBER_COLUMN_BACKGROUND_COLOUR = Color.rgbToBrowserHexColor(255,
-                                                                                                 255,
-                                                                                                 255);
-
-    private static final String DESCRIPTION_COLUMN_BACKGROUND_COLOUR = Color.rgbToBrowserHexColor(255,
-                                                                                                  255,
-                                                                                                  255);
-
-    private static final String METADATA_COLUMN_BACKGROUND_COLOUR = Color.rgbToBrowserHexColor(255,
-                                                                                               255,
-                                                                                               224);
-
-    private static final String ATTRIBUTE_COLUMN_BACKGROUND_COLOUR = Color.rgbToBrowserHexColor(255,
-                                                                                                255,
-                                                                                                224);
-
-    private static final String CONDITION_COLUMN_BACKGROUND_COLOUR = Color.rgbToBrowserHexColor(239,
-                                                                                                249,
-                                                                                                232);
-
-    private static final String ACTION_COLUMN_BACKGROUND_COLOUR = Color.rgbToBrowserHexColor(225,
-                                                                                             243,
-                                                                                             213);
+    private static final int GRID_FONT_SIZE = 10;
 
     private final GuidedDecisionTableUiModel uiModel;
     private final GuidedDecisionTable52 model;
@@ -98,29 +66,22 @@ public class GuidedDecisionTableTheme implements GridRendererTheme {
     @Override
     public MultiPath getSelector() {
         final MultiPath selector = new MultiPath()
-                .setStrokeWidth(2.0)
-                .setStrokeColor(ColorName.GREEN)
-                .setShadow(new Shadow(ColorName.DARKGREEN,
-                                      4,
-                                      0.0,
-                                      0.0));
+                .setStrokeColor(KIEColours.CELL_FOCUS)
+                .setStrokeWidth(GRID_LINE_WIDTH);
         return selector;
     }
 
     @Override
     public Rectangle getCellSelectorBorder() {
         final Rectangle selector = new Rectangle(0, 0)
-                .setStrokeColor(ColorName.GREEN)
-                .setStrokeWidth(1.0);
+                .setStrokeColor(KIEColours.CELL_FOCUS)
+                .setStrokeWidth(GRID_SELECTOR_LINE_WIDTH);
         return selector;
     }
 
     @Override
     public Rectangle getCellSelectorBackground() {
-        final Rectangle background = new Rectangle(0, 0)
-                .setFillColor(ColorName.GREEN)
-                .setAlpha(0.25);
-        return background;
+        return new Rectangle(0, 0).setVisible(false);
     }
 
     @Override
@@ -130,16 +91,13 @@ public class GuidedDecisionTableTheme implements GridRendererTheme {
 
     @Override
     public Rectangle getHeaderLinkBackground(final GridColumn<?> column) {
-        final Rectangle link = new Rectangle(0,
-                                             0)
-                .setFillColor(GRID_LINK_COLOUR);
-        return link;
+        return getBaseRectangle(column);
     }
 
     @Override
     public MultiPath getHeaderGridLine() {
         final MultiPath headerGrid = new MultiPath()
-                .setStrokeColor(GRID_LINE_COLOUR)
+                .setStrokeColor(KIEColours.TABLE_GRID)
                 .setStrokeWidth(GRID_LINE_WIDTH)
                 .setListening(false);
         return headerGrid;
@@ -148,9 +106,9 @@ public class GuidedDecisionTableTheme implements GridRendererTheme {
     @Override
     public Text getHeaderText() {
         final Text t = new Text("")
-                .setFillColor(GRID_FONT_COLOUR)
+                .setFillColor(KIEColours.TABLE_TEXT)
                 .setFontSize(GRID_FONT_SIZE)
-                .setTextUnit(TextUnit.PX)
+                .setTextUnit(TextUnit.PT)
                 .setFontFamily(GRID_FONT_FAMILY)
                 .setListening(false)
                 .setTextBaseLine(TextBaseLine.MIDDLE)
@@ -160,13 +118,15 @@ public class GuidedDecisionTableTheme implements GridRendererTheme {
 
     @Override
     public Rectangle getBodyBackground(final GridColumn<?> column) {
-        return getBaseRectangle(column);
+        final Rectangle r = new Rectangle(0, 0);
+        r.setFillColor(KIEColours.CELL_CONTENT);
+        return r;
     }
 
     @Override
     public MultiPath getBodyGridLine() {
         final MultiPath bodyGrid = new MultiPath()
-                .setStrokeColor(GRID_LINE_COLOUR)
+                .setStrokeColor(KIEColours.TABLE_GRID)
                 .setStrokeWidth(GRID_LINE_WIDTH)
                 .setListening(false);
         return bodyGrid;
@@ -175,9 +135,9 @@ public class GuidedDecisionTableTheme implements GridRendererTheme {
     @Override
     public Text getBodyText() {
         final Text t = new Text("")
-                .setFillColor(GRID_FONT_COLOUR)
+                .setFillColor(KIEColours.TABLE_TEXT)
                 .setFontSize(GRID_FONT_SIZE)
-                .setTextUnit(TextUnit.PX)
+                .setTextUnit(TextUnit.PT)
                 .setFontFamily(GRID_FONT_FAMILY)
                 .setListening(false)
                 .setTextBaseLine(TextBaseLine.MIDDLE)
@@ -189,7 +149,7 @@ public class GuidedDecisionTableTheme implements GridRendererTheme {
     public Rectangle getGridBoundary() {
         final Rectangle boundary = new Rectangle(0,
                                                  0)
-                .setStrokeColor(GRID_LINE_COLOUR)
+                .setStrokeColor(KIEColours.TABLE_GRID)
                 .setStrokeWidth(GRID_LINE_WIDTH)
                 .setListening(false);
         return boundary;
@@ -198,7 +158,7 @@ public class GuidedDecisionTableTheme implements GridRendererTheme {
     @Override
     public Line getGridHeaderBodyDivider() {
         final Line divider = new Line()
-                .setStrokeColor(GRID_LINE_COLOUR)
+                .setStrokeColor(KIEColours.TABLE_GRID)
                 .setStrokeWidth(GRID_LINE_WIDTH);
         return divider;
     }
@@ -213,28 +173,28 @@ public class GuidedDecisionTableTheme implements GridRendererTheme {
                                           0);
         switch (columnType) {
             case ROW_NUMBER:
-                r.setFillColor(ROW_NUMBER_COLUMN_BACKGROUND_COLOUR);
+                r.setFillColor(KIEColours.HEADER_BACKGROUND_WHITE);
                 break;
             case DESCRIPTION:
-                r.setFillColor(DESCRIPTION_COLUMN_BACKGROUND_COLOUR);
+                r.setFillColor(KIEColours.HEADER_BACKGROUND_WHITE);
                 break;
             case METADATA:
-                r.setFillColor(METADATA_COLUMN_BACKGROUND_COLOUR);
+                r.setFillColor(KIEColours.HEADER_BACKGROUND_LIGHT_GREY);
                 break;
             case ATTRIBUTE:
-                r.setFillColor(ATTRIBUTE_COLUMN_BACKGROUND_COLOUR);
+                r.setFillColor(KIEColours.HEADER_BACKGROUND_LIGHT_GREY);
                 break;
             case CONDITION:
-                r.setFillColor(CONDITION_COLUMN_BACKGROUND_COLOUR);
+                r.setFillColor(KIEColours.HEADER_BACKGROUND_LIGHT_BLUE);
                 break;
             case ACTION:
-                r.setFillColor(ACTION_COLUMN_BACKGROUND_COLOUR);
+                r.setFillColor(KIEColours.HEADER_BACKGROUND_DARK_BLUE);
                 break;
             case CAPTION:
-                r.setFillColor(ROW_NUMBER_COLUMN_BACKGROUND_COLOUR);
+                r.setFillColor(KIEColours.HEADER_BACKGROUND_WHITE);
                 break;
             case UNKNOWN:
-                r.setFillColor(ROW_NUMBER_COLUMN_BACKGROUND_COLOUR);
+                r.setFillColor(KIEColours.HEADER_BACKGROUND_WHITE);
                 break;
         }
         return r;
