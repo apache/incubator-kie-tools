@@ -36,32 +36,9 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.U
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.themes.GridRendererTheme;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.themes.impl.KIEColours;
 
 public class BaseExpressionGridTheme implements GridRendererTheme {
-
-    public static final String BACKGROUND_FILL_COLOUR = "#c7ffca";
-
-    public static final String LABEL_BACKGROUND_FILL_COLOUR = "#c7ffca";
-
-    public static final String HOVER_STATE_STROKE_COLOUR = "#008acd";
-
-    public static final String GRID_STROKE_COLOUR = "#dbdbdb";
-
-    public static final String ROW_NUMBER_BACKGROUND_FILL_COLOUR = "#c7ffca";
-
-    public static final String INPUT_CLAUSE_BACKGROUND_FILL_COLOUR = "#ddffdf";
-
-    public static final String OUTPUT_CLAUSE_BACKGROUND_FILL_COLOUR = "#e9ffea";
-
-    public static final String DESCRIPTION_COLUMN_BACKGROUND_FILL_COLOUR = "#f7f7f7";
-
-    public static final String EXPRESSION_COLUMN_BACKGROUND_FILL_COLOUR = "#f7f7f7";
-
-    public static final String UNDEFINED_EXPRESSION_COLUMN_BACKGROUND_FILL_COLOUR = "#f7f7f7";
-
-    public static final String LITERAL_EXPRESSION_COLUMN_BACKGROUND_FILL_COLOUR = "#f7f7f7";
-
-    public static final String RELATION_BACKGROUND_FILL_COLOUR = "#f7f7f7";
 
     public static final String FONT_FAMILY_HEADER = "Open Sans, Helvetica, Arial, sans-serif";
 
@@ -88,7 +65,7 @@ public class BaseExpressionGridTheme implements GridRendererTheme {
     @Override
     public Rectangle getCellSelectorBorder() {
         return new Rectangle(0, 0)
-                .setStrokeColor(HOVER_STATE_STROKE_COLOUR)
+                .setStrokeColor(KIEColours.CELL_FOCUS)
                 .setStrokeWidth(SELECTOR_STROKE_WIDTH);
     }
 
@@ -99,8 +76,31 @@ public class BaseExpressionGridTheme implements GridRendererTheme {
 
     @Override
     public Rectangle getHeaderBackground(final GridColumn<?> column) {
-        return new Rectangle(0, 0)
-                .setFillColor(BACKGROUND_FILL_COLOUR);
+        final Rectangle background = new Rectangle(0, 0);
+        if (column instanceof NameColumn) {
+            background.setFillColor(KIEColours.HEADER_BACKGROUND_LIGHT_BLUE);
+        } else if (column instanceof InvocationParameterColumn) {
+            background.setFillColor(KIEColours.HEADER_BACKGROUND_LIGHT_BLUE);
+        } else if (column instanceof org.kie.workbench.common.dmn.client.editors.expressions.types.function.supplementary.NameColumn) {
+            background.setFillColor(KIEColours.HEADER_BACKGROUND_LIGHT_BLUE);
+        } else if (column instanceof RelationColumn) {
+            background.setFillColor(KIEColours.HEADER_BACKGROUND_LIGHT_BLUE);
+        } else if (column instanceof LiteralExpressionColumn) {
+            background.setFillColor(KIEColours.HEADER_BACKGROUND_LIGHT_BLUE);
+        } else if (column instanceof RowNumberColumn) {
+            background.setFillColor(KIEColours.HEADER_BACKGROUND_WHITE);
+        } else if (column instanceof InputClauseColumn) {
+            background.setFillColor(KIEColours.HEADER_BACKGROUND_LIGHT_BLUE);
+        } else if (column instanceof OutputClauseColumn) {
+            background.setFillColor(KIEColours.HEADER_BACKGROUND_DARK_BLUE);
+        } else if (column instanceof DescriptionColumn) {
+            background.setFillColor(KIEColours.HEADER_BACKGROUND_WHITE);
+        } else if (column instanceof ExpressionEditorColumn) {
+            background.setFillColor(KIEColours.HEADER_BACKGROUND_LIGHT_BLUE);
+        } else if (column instanceof UndefinedExpressionColumn) {
+            background.setFillColor(KIEColours.HEADER_BACKGROUND_LIGHT_BLUE);
+        }
+        return background;
     }
 
     @Override
@@ -112,7 +112,7 @@ public class BaseExpressionGridTheme implements GridRendererTheme {
     @Override
     public MultiPath getHeaderGridLine() {
         return new MultiPath()
-                .setStrokeColor(GRID_STROKE_COLOUR)
+                .setStrokeColor(KIEColours.TABLE_GRID)
                 .setStrokeWidth(STROKE_WIDTH)
                 .setVisible(true);
     }
@@ -131,37 +131,14 @@ public class BaseExpressionGridTheme implements GridRendererTheme {
 
     @Override
     public Rectangle getBodyBackground(final GridColumn<?> column) {
-        final Rectangle background = new Rectangle(0, 0);
-        if (column instanceof NameColumn) {
-            background.setFillColor(LABEL_BACKGROUND_FILL_COLOUR);
-        } else if (column instanceof InvocationParameterColumn) {
-            background.setFillColor(LABEL_BACKGROUND_FILL_COLOUR);
-        } else if (column instanceof org.kie.workbench.common.dmn.client.editors.expressions.types.function.supplementary.NameColumn) {
-            background.setFillColor(LABEL_BACKGROUND_FILL_COLOUR);
-        } else if (column instanceof RelationColumn) {
-            background.setFillColor(RELATION_BACKGROUND_FILL_COLOUR);
-        } else if (column instanceof LiteralExpressionColumn) {
-            background.setFillColor(LITERAL_EXPRESSION_COLUMN_BACKGROUND_FILL_COLOUR);
-        } else if (column instanceof RowNumberColumn) {
-            background.setFillColor(ROW_NUMBER_BACKGROUND_FILL_COLOUR);
-        } else if (column instanceof InputClauseColumn) {
-            background.setFillColor(INPUT_CLAUSE_BACKGROUND_FILL_COLOUR);
-        } else if (column instanceof OutputClauseColumn) {
-            background.setFillColor(OUTPUT_CLAUSE_BACKGROUND_FILL_COLOUR);
-        } else if (column instanceof DescriptionColumn) {
-            background.setFillColor(DESCRIPTION_COLUMN_BACKGROUND_FILL_COLOUR);
-        } else if (column instanceof ExpressionEditorColumn) {
-            background.setFillColor(EXPRESSION_COLUMN_BACKGROUND_FILL_COLOUR);
-        } else if (column instanceof UndefinedExpressionColumn) {
-            background.setFillColor(UNDEFINED_EXPRESSION_COLUMN_BACKGROUND_FILL_COLOUR);
-        }
-        return background;
+        return new Rectangle(0, 0)
+                .setFillColor(KIEColours.CELL_CONTENT);
     }
 
     @Override
     public MultiPath getBodyGridLine() {
         return new MultiPath()
-                .setStrokeColor(GRID_STROKE_COLOUR)
+                .setStrokeColor(KIEColours.TABLE_GRID)
                 .setStrokeWidth(STROKE_WIDTH)
                 .setVisible(true);
     }
@@ -181,7 +158,7 @@ public class BaseExpressionGridTheme implements GridRendererTheme {
     @Override
     public Rectangle getGridBoundary() {
         return new Rectangle(0, 0)
-                .setStrokeColor(GRID_STROKE_COLOUR)
+                .setStrokeColor(KIEColours.TABLE_GRID)
                 .setStrokeWidth(STROKE_WIDTH)
                 .setVisible(true);
     }
@@ -189,7 +166,7 @@ public class BaseExpressionGridTheme implements GridRendererTheme {
     @Override
     public Line getGridHeaderBodyDivider() {
         return new Line()
-                .setStrokeColor(GRID_STROKE_COLOUR)
+                .setStrokeColor(KIEColours.TABLE_GRID)
                 .setStrokeWidth(STROKE_WIDTH)
                 .setVisible(true);
     }

@@ -37,17 +37,9 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.U
 import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.themes.impl.KIEColours;
 
 import static org.junit.Assert.assertEquals;
-import static org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridTheme.DESCRIPTION_COLUMN_BACKGROUND_FILL_COLOUR;
-import static org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridTheme.EXPRESSION_COLUMN_BACKGROUND_FILL_COLOUR;
-import static org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridTheme.INPUT_CLAUSE_BACKGROUND_FILL_COLOUR;
-import static org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridTheme.LABEL_BACKGROUND_FILL_COLOUR;
-import static org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridTheme.LITERAL_EXPRESSION_COLUMN_BACKGROUND_FILL_COLOUR;
-import static org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridTheme.OUTPUT_CLAUSE_BACKGROUND_FILL_COLOUR;
-import static org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridTheme.RELATION_BACKGROUND_FILL_COLOUR;
-import static org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridTheme.ROW_NUMBER_BACKGROUND_FILL_COLOUR;
-import static org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridTheme.UNDEFINED_EXPRESSION_COLUMN_BACKGROUND_FILL_COLOUR;
 import static org.mockito.Mockito.mock;
 
 /**
@@ -57,18 +49,18 @@ import static org.mockito.Mockito.mock;
 public class BaseExpressionGridThemeTest {
 
     private List<Pair<Class<? extends GridColumn>, String>> tests = new ArrayList<Pair<Class<? extends GridColumn>, String>>() {{
-        add(new Pair<>(NameColumn.class, LABEL_BACKGROUND_FILL_COLOUR));
-        add(new Pair<>(InvocationParameterColumn.class, LABEL_BACKGROUND_FILL_COLOUR));
-        add(new Pair<>(org.kie.workbench.common.dmn.client.editors.expressions.types.function.supplementary.NameColumn.class, LABEL_BACKGROUND_FILL_COLOUR));
-        add(new Pair<>(RelationColumn.class, RELATION_BACKGROUND_FILL_COLOUR));
-        add(new Pair<>(LiteralExpressionColumn.class, LITERAL_EXPRESSION_COLUMN_BACKGROUND_FILL_COLOUR));
-        add(new Pair<>(RowNumberColumn.class, ROW_NUMBER_BACKGROUND_FILL_COLOUR));
-        add(new Pair<>(DecisionTableRowNumberColumn.class, ROW_NUMBER_BACKGROUND_FILL_COLOUR));
-        add(new Pair<>(InputClauseColumn.class, INPUT_CLAUSE_BACKGROUND_FILL_COLOUR));
-        add(new Pair<>(OutputClauseColumn.class, OUTPUT_CLAUSE_BACKGROUND_FILL_COLOUR));
-        add(new Pair<>(DescriptionColumn.class, DESCRIPTION_COLUMN_BACKGROUND_FILL_COLOUR));
-        add(new Pair<>(ExpressionEditorColumn.class, EXPRESSION_COLUMN_BACKGROUND_FILL_COLOUR));
-        add(new Pair<>(UndefinedExpressionColumn.class, UNDEFINED_EXPRESSION_COLUMN_BACKGROUND_FILL_COLOUR));
+        add(new Pair<>(NameColumn.class, KIEColours.HEADER_BACKGROUND_LIGHT_BLUE));
+        add(new Pair<>(InvocationParameterColumn.class, KIEColours.HEADER_BACKGROUND_LIGHT_BLUE));
+        add(new Pair<>(org.kie.workbench.common.dmn.client.editors.expressions.types.function.supplementary.NameColumn.class, KIEColours.HEADER_BACKGROUND_LIGHT_BLUE));
+        add(new Pair<>(RelationColumn.class, KIEColours.HEADER_BACKGROUND_LIGHT_BLUE));
+        add(new Pair<>(LiteralExpressionColumn.class, KIEColours.HEADER_BACKGROUND_LIGHT_BLUE));
+        add(new Pair<>(RowNumberColumn.class, KIEColours.HEADER_BACKGROUND_WHITE));
+        add(new Pair<>(DecisionTableRowNumberColumn.class, KIEColours.HEADER_BACKGROUND_WHITE));
+        add(new Pair<>(InputClauseColumn.class, KIEColours.HEADER_BACKGROUND_LIGHT_BLUE));
+        add(new Pair<>(OutputClauseColumn.class, KIEColours.HEADER_BACKGROUND_DARK_BLUE));
+        add(new Pair<>(DescriptionColumn.class, KIEColours.HEADER_BACKGROUND_WHITE));
+        add(new Pair<>(ExpressionEditorColumn.class, KIEColours.HEADER_BACKGROUND_LIGHT_BLUE));
+        add(new Pair<>(UndefinedExpressionColumn.class, KIEColours.HEADER_BACKGROUND_LIGHT_BLUE));
     }};
 
     private BaseExpressionGridTheme theme;
@@ -79,11 +71,13 @@ public class BaseExpressionGridThemeTest {
     }
 
     @Test
-    public void testGetBodyBackgroundFillColour() {
+    public void testGetHeaderBackgroundFillColour() {
         tests.stream().forEach(test -> {
             final GridColumn column = mock(test.getK1());
-            final Rectangle rectangle = theme.getBodyBackground(column);
-            assertEquals(test.getK2(), rectangle.getFillColor());
+            final Rectangle rectangle = theme.getHeaderBackground(column);
+            assertEquals("Column '" + column.getClass().getSimpleName() + "' has wrong colour.",
+                         test.getK2(),
+                         rectangle.getFillColor());
         });
     }
 }
