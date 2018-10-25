@@ -99,6 +99,7 @@ public class DataTypeManager {
                 .withParentUUID(TOP_LEVEL_PARENT_UUID)
                 .withNoName()
                 .withNoConstraint()
+                .asCollection(false)
                 .withDefaultType();
     }
 
@@ -111,6 +112,7 @@ public class DataTypeManager {
                 .withItemDefinitionName()
                 .withItemDefinitionType()
                 .withItemDefinitionConstraint()
+                .withItemDefinitionCollection()
                 .withItemDefinitionSubDataTypes()
                 .withIndexedItemDefinition();
     }
@@ -146,6 +148,11 @@ public class DataTypeManager {
 
     public DataTypeManager withConstraint(final String constraint) {
         dataType.setConstraint(constraint);
+        return this;
+    }
+
+    public DataTypeManager asCollection(final boolean isCollection) {
+        dataType.setCollection(isCollection);
         return this;
     }
 
@@ -220,6 +227,10 @@ public class DataTypeManager {
 
     DataTypeManager withItemDefinitionConstraint() {
         return withConstraint(itemDefinitionUtils.getConstraintText(itemDefinition));
+    }
+
+    DataTypeManager withItemDefinitionCollection() {
+        return asCollection(itemDefinition.isIsCollection());
     }
 
     DataTypeManager withItemDefinitionType() {
@@ -318,6 +329,7 @@ public class DataTypeManager {
                 .withItemDefinitionName()
                 .withItemDefinitionType()
                 .withItemDefinitionConstraint()
+                .withItemDefinitionCollection()
                 .withTypeStack(getSubDataTypeStack())
                 .withItemDefinitionSubDataTypes()
                 .withIndexedItemDefinition()

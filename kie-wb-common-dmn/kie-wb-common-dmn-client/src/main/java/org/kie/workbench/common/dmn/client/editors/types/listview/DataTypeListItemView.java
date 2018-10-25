@@ -25,6 +25,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import com.google.gwt.event.dom.client.ClickEvent;
+import elemental2.dom.DomGlobal;
 import elemental2.dom.Element;
 import elemental2.dom.HTMLAnchorElement;
 import elemental2.dom.HTMLButtonElement;
@@ -32,6 +33,7 @@ import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLInputElement;
 import elemental2.dom.NodeList;
+import elemental2.dom.Text;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
@@ -40,6 +42,7 @@ import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.KebabMenuInitializer;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper;
+import org.kie.workbench.common.dmn.client.editors.types.listview.common.SmallSwitchComponent;
 
 import static org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper.hide;
 import static org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper.show;
@@ -48,6 +51,7 @@ import static org.kie.workbench.common.dmn.client.editors.types.listview.common.
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper.asNonFocusedDataType;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper.asRightArrow;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper.isRightArrow;
+import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeListItemView_Collection;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeListItemView_Constraints;
 import static org.kie.workbench.common.stunner.core.util.StringUtils.isEmpty;
 
@@ -85,6 +89,12 @@ public class DataTypeListItemView implements DataTypeListItem.View {
 
     @DataField("constraint")
     private final HTMLDivElement constraint;
+
+    @DataField("collection-container")
+    private final HTMLDivElement collectionContainer;
+
+    @DataField("collection-yes")
+    private final HTMLDivElement collectionYes;
 
     @DataField("constraint-container")
     private final HTMLDivElement constraintContainer;
@@ -124,6 +134,8 @@ public class DataTypeListItemView implements DataTypeListItem.View {
                                 final @Named("span") HTMLElement constraintText,
                                 final HTMLInputElement nameInput,
                                 final @Named("span") HTMLElement type,
+                                final HTMLDivElement collectionContainer,
+                                final HTMLDivElement collectionYes,
                                 final HTMLDivElement constraint,
                                 final HTMLDivElement constraintContainer,
                                 final HTMLButtonElement editButton,
@@ -141,6 +153,8 @@ public class DataTypeListItemView implements DataTypeListItem.View {
         this.constraintText = constraintText;
         this.nameInput = nameInput;
         this.type = type;
+        this.collectionContainer = collectionContainer;
+        this.collectionYes = collectionYes;
         this.constraint = constraint;
         this.constraintContainer = constraintContainer;
         this.editButton = editButton;
@@ -373,6 +387,17 @@ public class DataTypeListItemView implements DataTypeListItem.View {
     }
 
     @Override
+    public void setupCollectionComponent(final SmallSwitchComponent dataTypeCollectionComponent) {
+        collectionContainer.innerHTML = "";
+        collectionContainer.appendChild(collectionTextNode());
+        collectionContainer.appendChild(dataTypeCollectionComponent.getElement());
+    }
+
+    Text collectionTextNode() {
+        return DomGlobal.document.createTextNode(collection());
+    }
+
+    @Override
     public void showConstraintContainer() {
         show(constraintContainer);
     }
@@ -380,6 +405,26 @@ public class DataTypeListItemView implements DataTypeListItem.View {
     @Override
     public void hideConstraintContainer() {
         hide(constraintContainer);
+    }
+
+    @Override
+    public void showCollectionContainer() {
+        show(collectionContainer);
+    }
+
+    @Override
+    public void hideCollectionContainer() {
+        hide(collectionContainer);
+    }
+
+    @Override
+    public void showCollectionYesLabel() {
+        show(collectionYes);
+    }
+
+    @Override
+    public void hideCollectionYesLabel() {
+        hide(collectionYes);
     }
 
     @Override
@@ -456,5 +501,9 @@ public class DataTypeListItemView implements DataTypeListItem.View {
         setupIndentationLevel();
         setupReadOnly(dataType);
         setupActionButtons();
+    }
+
+    private String collection() {
+        return translationService.format(DataTypeListItemView_Collection);
     }
 }

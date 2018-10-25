@@ -185,7 +185,7 @@ public class DataTypeManagerTest {
     @Test
     public void testMakeDataTypeFromItemDefinition() {
 
-        final ItemDefinition simpleItemDefinitionFromMainItemDefinition = makeItem("name", "Text");
+        final ItemDefinition simpleItemDefinitionFromMainItemDefinition = makeItem("name", "Text", true);
         final ItemDefinition simpleItemDefinitionFromStructureItemDefinition = makeItem("company", "Text", "\"Red\", \"Hat\"");
         final ItemDefinition structureItemDefinition = makeItem("employee", null, simpleItemDefinitionFromStructureItemDefinition);
         final ItemDefinition existingItemDefinition = makeItem("address", "tAddress");
@@ -242,6 +242,7 @@ public class DataTypeManagerTest {
         assertSame(tPerson.getUUID(), name.getParentUUID());
         assertEquals(0, name.getSubDataTypes().size());
         assertFalse(name.hasSubDataTypes());
+        assertTrue(name.isCollection());
 
         assertEquals("uuid", address.getUUID());
         assertEquals("address", address.getName());
@@ -250,6 +251,7 @@ public class DataTypeManagerTest {
         assertSame(tPerson.getUUID(), address.getParentUUID());
         assertEquals(1, address.getSubDataTypes().size());
         assertTrue(address.hasSubDataTypes());
+        assertFalse(address.isCollection());
 
         assertEquals("uuid", street.getUUID());
         assertEquals("street", street.getName());
@@ -258,6 +260,7 @@ public class DataTypeManagerTest {
         assertSame(address.getUUID(), street.getParentUUID());
         assertEquals(0, street.getSubDataTypes().size());
         assertFalse(street.hasSubDataTypes());
+        assertFalse(street.isCollection());
 
         assertEquals("uuid", employee.getUUID());
         assertEquals("employee", employee.getName());
@@ -266,6 +269,7 @@ public class DataTypeManagerTest {
         assertSame(tPerson.getUUID(), address.getParentUUID());
         assertEquals(1, employee.getSubDataTypes().size());
         assertTrue(employee.hasSubDataTypes());
+        assertFalse(employee.isCollection());
 
         assertEquals("uuid", company.getUUID());
         assertEquals("company", company.getName());
@@ -274,6 +278,7 @@ public class DataTypeManagerTest {
         assertSame(employee.getUUID(), company.getParentUUID());
         assertEquals(0, company.getSubDataTypes().size());
         assertFalse(company.hasSubDataTypes());
+        assertFalse(company.isCollection());
     }
 
     @Test
@@ -389,6 +394,7 @@ public class DataTypeManagerTest {
         doReturn(manager).when(manager).withItemDefinitionName();
         doReturn(manager).when(manager).withItemDefinitionType();
         doReturn(manager).when(manager).withItemDefinitionConstraint();
+        doReturn(manager).when(manager).withItemDefinitionCollection();
         doReturn(manager).when(manager).withTypeStack(any());
         doReturn(manager).when(manager).withItemDefinitionSubDataTypes();
         doReturn(manager).when(manager).withIndexedItemDefinition();
@@ -577,6 +583,7 @@ public class DataTypeManagerTest {
 
     private ItemDefinition makeItem(final String itemName,
                                     final String itemType,
+                                    final boolean isCollection,
                                     final ItemDefinition... subItemDefinitions) {
 
         final List<ItemDefinition> itemDefinitions = new ArrayList<>(Arrays.asList(subItemDefinitions));
@@ -590,8 +597,15 @@ public class DataTypeManagerTest {
         when(itemDefinition.getName()).thenReturn(name);
         when(itemDefinition.getItemComponent()).thenReturn(itemDefinitions);
         when(itemDefinition.getTypeRef()).thenReturn(typeRef);
+        when(itemDefinition.isIsCollection()).thenReturn(isCollection);
 
         return itemDefinition;
+    }
+
+    private ItemDefinition makeItem(final String itemName,
+                                    final String itemType,
+                                    final ItemDefinition... subItemDefinitions) {
+        return makeItem(itemName, itemType, false, subItemDefinitions);
     }
 
     private ItemDefinition makeItem(final String itemName,
@@ -599,7 +613,7 @@ public class DataTypeManagerTest {
                                     final String constraint,
                                     final ItemDefinition... subItemDefinitions) {
 
-        final ItemDefinition itemDefinition = makeItem(itemName, itemType, subItemDefinitions);
+        final ItemDefinition itemDefinition = makeItem(itemName, itemType, false, subItemDefinitions);
         final UnaryTests unaryTests = mock(UnaryTests.class);
 
         when(unaryTests.getText()).thenReturn(constraint);

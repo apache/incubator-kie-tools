@@ -237,4 +237,13 @@ public class DMNEditorConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String DataTypeListItemView_Constraints = "DataTypeListItemView.Constraints";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DataTypeListItemView_Collection = "DataTypeListItemView.Collection";
+
+    @TranslationKey(defaultValue = "")
+    public static final String SmallSwitchComponentView_Yes = "SmallSwitchComponentView.Yes";
+
+    @TranslationKey(defaultValue = "")
+    public static final String SmallSwitchComponentView_No = "SmallSwitchComponentView.No";
 }

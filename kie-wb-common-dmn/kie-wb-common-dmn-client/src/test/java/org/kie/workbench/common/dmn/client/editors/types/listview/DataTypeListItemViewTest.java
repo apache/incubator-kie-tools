@@ -26,11 +26,13 @@ import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLInputElement;
 import elemental2.dom.NodeList;
+import elemental2.dom.Text;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
+import org.kie.workbench.common.dmn.client.editors.types.listview.common.SmallSwitchComponent;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
@@ -79,6 +81,12 @@ public class DataTypeListItemViewTest {
     private HTMLDivElement constraint;
 
     @Mock
+    private HTMLDivElement collectionContainer;
+
+    @Mock
+    private HTMLDivElement collectionYes;
+
+    @Mock
     private HTMLDivElement constraintContainer;
 
     @Mock
@@ -118,7 +126,7 @@ public class DataTypeListItemViewTest {
 
     @Before
     public void setup() {
-        view = spy(new DataTypeListItemView(row, arrow, nameText, constraintText, nameInput, type, constraint, constraintContainer, editButton, saveButton, closeButton, removeButton, insertFieldAbove, insertFieldBelow, insertNestedField, kebabMenu, translationService));
+        view = spy(new DataTypeListItemView(row, arrow, nameText, constraintText, nameInput, type, collectionContainer, collectionYes, constraint, constraintContainer, editButton, saveButton, closeButton, removeButton, insertFieldAbove, insertFieldBelow, insertNestedField, kebabMenu, translationService));
         view.init(presenter);
 
         doReturn(dataTypeListElement).when(view).dataTypeListElement();
@@ -416,6 +424,24 @@ public class DataTypeListItemViewTest {
     }
 
     @Test
+    public void testSetupCollectionComponent() {
+
+        final SmallSwitchComponent switchComponent = mock(SmallSwitchComponent.class);
+        final HTMLElement htmlElement = mock(HTMLElement.class);
+        final Text collectionTextNode = mock(Text.class);
+
+        when(switchComponent.getElement()).thenReturn(htmlElement);
+        doReturn(collectionTextNode).when(view).collectionTextNode();
+        collectionContainer.innerHTML = "previous content";
+
+        view.setupCollectionComponent(switchComponent);
+
+        assertFalse(collectionContainer.innerHTML.contains("previous content"));
+        verify(collectionContainer).appendChild(collectionTextNode);
+        verify(collectionContainer).appendChild(htmlElement);
+    }
+
+    @Test
     public void testShowConstraintContainer() {
         constraintContainer.classList = mock(DOMTokenList.class);
 
@@ -432,6 +458,44 @@ public class DataTypeListItemViewTest {
         view.hideConstraintContainer();
 
         verify(constraintContainer.classList).add(HIDDEN_CSS_CLASS);
+    }
+
+    @Test
+    public void testShowCollectionContainer() {
+        collectionContainer.classList = mock(DOMTokenList.class);
+
+        view.showCollectionContainer();
+
+        verify(collectionContainer.classList).remove(HIDDEN_CSS_CLASS);
+    }
+
+    @Test
+    public void testHideCollectionContainer() {
+
+        collectionContainer.classList = mock(DOMTokenList.class);
+
+        view.hideCollectionContainer();
+
+        verify(collectionContainer.classList).add(HIDDEN_CSS_CLASS);
+    }
+
+    @Test
+    public void testShowCollectionYesLabel() {
+        collectionYes.classList = mock(DOMTokenList.class);
+
+        view.showCollectionYesLabel();
+
+        verify(collectionYes.classList).remove(HIDDEN_CSS_CLASS);
+    }
+
+    @Test
+    public void testHideCollectionYesLabel() {
+
+        collectionYes.classList = mock(DOMTokenList.class);
+
+        view.hideCollectionYesLabel();
+
+        verify(collectionYes.classList).add(HIDDEN_CSS_CLASS);
     }
 
     @Test
