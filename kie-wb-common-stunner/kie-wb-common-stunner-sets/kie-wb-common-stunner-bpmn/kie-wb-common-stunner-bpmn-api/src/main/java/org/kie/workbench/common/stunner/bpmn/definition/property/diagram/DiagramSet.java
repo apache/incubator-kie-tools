@@ -43,6 +43,8 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 public class DiagramSet implements BPMNPropertySet,
                                    BPMNBaseInfo {
 
+    public static final String ADHOC = "adHoc";
+
     @Property
     @FormField
     @Valid
@@ -86,7 +88,7 @@ public class DiagramSet implements BPMNPropertySet,
 
     @Property
     @FormField(
-            afterElement = "adHoc"
+            afterElement = ADHOC
     )
     @Valid
     private ProcessInstanceDescription processInstanceDescription;
@@ -110,7 +112,7 @@ public class DiagramSet implements BPMNPropertySet,
                       final @MapsTo("id") Id id,
                       final @MapsTo("packageProperty") Package packageProperty,
                       final @MapsTo("version") Version version,
-                      final @MapsTo("adHoc") AdHoc adHoc,
+                      final @MapsTo(ADHOC) AdHoc adHoc,
                       final @MapsTo("processInstanceDescription") ProcessInstanceDescription processInstanceDescription,
                       final @MapsTo("executable") Executable executable) {
         this.name = name;

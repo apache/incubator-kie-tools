@@ -58,6 +58,8 @@ public class BPMNDiagramImpl implements BPMNDiagram {
 
     @Category
     public static final transient String category = BPMNCategories.CONTAINERS;
+    public static final String DIAGRAM_SET = "diagramSet";
+    public static final String CASE_MANAGEMENT_SET = "caseManagementSet";
 
     @PropertySet
     @FormField
@@ -66,14 +68,14 @@ public class BPMNDiagramImpl implements BPMNDiagram {
 
     @PropertySet
     @FormField(
-            afterElement = "diagramSet"
+            afterElement = DIAGRAM_SET
     )
     @Valid
     protected ProcessData processData;
 
     @PropertySet
     @FormField(
-            afterElement = "diagramSet"
+            afterElement = DIAGRAM_SET
     )
     protected CaseManagementSet caseManagementSet;
 
@@ -105,9 +107,9 @@ public class BPMNDiagramImpl implements BPMNDiagram {
                                         HEIGHT));
     }
 
-    public BPMNDiagramImpl(final @MapsTo("diagramSet") DiagramSet diagramSet,
+    public BPMNDiagramImpl(final @MapsTo(DIAGRAM_SET) DiagramSet diagramSet,
                            final @MapsTo("processData") ProcessData processData,
-                           final @MapsTo("caseManagementSet") CaseManagementSet caseManagementSet,
+                           final @MapsTo(CASE_MANAGEMENT_SET) CaseManagementSet caseManagementSet,
                            final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
                            final @MapsTo("fontSet") FontSet fontSet,
                            final @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet) {

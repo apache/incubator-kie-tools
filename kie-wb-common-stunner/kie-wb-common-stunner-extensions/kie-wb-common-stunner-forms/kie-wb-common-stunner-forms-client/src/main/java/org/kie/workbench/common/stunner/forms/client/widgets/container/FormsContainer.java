@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
@@ -32,6 +33,7 @@ import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.forms.processing.engine.handling.FieldChangeHandler;
+import org.kie.workbench.common.stunner.forms.client.event.FormFieldChanged;
 import org.kie.workbench.common.stunner.forms.client.widgets.container.displayer.FormDisplayer;
 import org.uberfire.backend.vfs.Path;
 
@@ -43,14 +45,17 @@ public class FormsContainer implements IsElement {
     private final FormsContainerView view;
     private final ManagedInstance<FormDisplayer> displayersInstance;
     private final Map<FormDisplayerKey, FormDisplayer> formDisplayers;
+    private final Event<FormFieldChanged> formFieldChangedEvent;
 
     private FormDisplayer currentDisplayer;
 
     @Inject
     public FormsContainer(final FormsContainerView view,
-                          final @Any ManagedInstance<FormDisplayer> displayersInstance) {
+                          final @Any ManagedInstance<FormDisplayer> displayersInstance,
+                          final Event<FormFieldChanged> formFieldChangedEvent) {
         this.view = view;
         this.displayersInstance = displayersInstance;
+        this.formFieldChangedEvent = formFieldChangedEvent;
         this.formDisplayers = new HashMap<>();
     }
 
@@ -71,6 +76,10 @@ public class FormsContainer implements IsElement {
 
         displayer.show();
         currentDisplayer = displayer;
+
+        currentDisplayer.getRenderer().addFieldChangeHandler((name, value)-> {
+            formFieldChangedEvent.fire(new FormFieldChanged(name, value, domainObjectUUID));
+        });
     }
 
     private FormDisplayer getDisplayer(final String graphUuid,

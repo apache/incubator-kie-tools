@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.bpmn.definition;
+package org.kie.workbench.common.stunner.bpmn.service;
 
-import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.DiagramSet;
+import org.jboss.errai.bus.server.annotations.Remote;
+import org.uberfire.backend.vfs.Path;
 
-public interface BPMNDiagram extends BPMNViewDefinition {
+@Remote
+public interface BPMNDiagramService {
 
-    DiagramSet getDiagramSet();
+    ProjectType getProjectType(Path projectRootPath);
 }

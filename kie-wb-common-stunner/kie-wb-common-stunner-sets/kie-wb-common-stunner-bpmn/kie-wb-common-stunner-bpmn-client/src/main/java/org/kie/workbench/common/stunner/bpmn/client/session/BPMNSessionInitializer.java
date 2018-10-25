@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.bpmn.client.session;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.kie.workbench.common.stunner.bpmn.client.diagram.DiagramTypeService;
 import org.kie.workbench.common.stunner.bpmn.client.workitem.WorkItemDefinitionClientRegistry;
 import org.kie.workbench.common.stunner.bpmn.qualifiers.BPMN;
 import org.kie.workbench.common.stunner.core.client.session.impl.SessionInitializer;
@@ -30,21 +31,23 @@ import org.uberfire.mvp.Command;
 public class BPMNSessionInitializer implements SessionInitializer {
 
     private final WorkItemDefinitionClientRegistry workItemDefinitionService;
+    private final DiagramTypeService diagramTypeService;
 
     // CDI proxy.
     protected BPMNSessionInitializer() {
-        this(null);
+        this(null, null);
     }
 
     @Inject
-    public BPMNSessionInitializer(final WorkItemDefinitionClientRegistry workItemDefinitionService) {
+    public BPMNSessionInitializer(final WorkItemDefinitionClientRegistry workItemDefinitionService, final DiagramTypeService diagramTypeService) {
         this.workItemDefinitionService = workItemDefinitionService;
+        this.diagramTypeService = diagramTypeService;
     }
 
     @Override
     public void init(final Metadata metadata,
                      final Command completeCallback) {
-        workItemDefinitionService.load(metadata,
-                                       completeCallback);
+        diagramTypeService.loadDiagramType(metadata);
+        workItemDefinitionService.load(metadata, completeCallback);
     }
 }

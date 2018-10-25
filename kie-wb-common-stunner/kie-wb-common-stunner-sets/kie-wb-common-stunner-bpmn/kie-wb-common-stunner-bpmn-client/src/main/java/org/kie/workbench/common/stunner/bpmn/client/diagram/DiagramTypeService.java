@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,11 +14,14 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.bpmn.definition;
+package org.kie.workbench.common.stunner.bpmn.client.diagram;
 
-import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.DiagramSet;
+import org.kie.workbench.common.stunner.bpmn.service.ProjectType;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
 
-public interface BPMNDiagram extends BPMNViewDefinition {
+public interface DiagramTypeService {
 
-    DiagramSet getDiagramSet();
+    void loadDiagramType(Metadata metadata);
+
+    ProjectType getProjectType(Metadata metadata);
 }

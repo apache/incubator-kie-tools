@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.bpmn.client.session;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.bpmn.client.diagram.DiagramTypeService;
 import org.kie.workbench.common.stunner.bpmn.client.workitem.WorkItemDefinitionClientRegistry;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.mockito.Mock;
@@ -38,18 +39,20 @@ public class BPMNSessionInitializerTest {
 
     private BPMNSessionInitializer tested;
 
+    @Mock
+    private DiagramTypeService diagramTypeService;
+
     @Before
     public void setUp() {
-        tested = new BPMNSessionInitializer(workItemDefinitionService);
+        tested = new BPMNSessionInitializer(workItemDefinitionService, diagramTypeService);
     }
 
     @Test
     public void testInit() {
         Metadata metadata = mock(Metadata.class);
         Command callback = mock(Command.class);
-        tested.init(metadata,
-                    callback);
-        verify(workItemDefinitionService, times(1)).load(eq(metadata),
-                                                         eq(callback));
+        tested.init(metadata, callback);
+        verify(workItemDefinitionService, times(1)).load(eq(metadata), eq(callback));
+        verify(diagramTypeService).loadDiagramType(metadata);
     }
 }

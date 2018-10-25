@@ -29,6 +29,7 @@
   <inherits name="org.kie.workbench.common.stunner.forms.StunnerFormsClient"/>
   <inherits name="org.kie.workbench.common.stunner.client.StunnerWidgets"/>
   <inherits name="org.kie.soup.commons.KIESoupCommons"/>
+  <inherits name="org.kie.workbench.common.forms.processing.FormProcessingEngine"/>
 
   <source path="client"/>
   <source path="" includes="StunnerBPMNEntryPoint.java"/>
