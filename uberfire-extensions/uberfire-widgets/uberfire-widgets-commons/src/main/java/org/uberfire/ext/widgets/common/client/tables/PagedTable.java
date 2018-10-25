@@ -17,6 +17,7 @@
 package org.uberfire.ext.widgets.common.client.tables;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -29,8 +30,8 @@ import org.gwtbootstrap3.client.ui.Column;
 import org.gwtbootstrap3.extras.select.client.ui.Select;
 import org.uberfire.ext.services.shared.preferences.GridGlobalPreferences;
 import org.uberfire.ext.services.shared.preferences.GridPreferencesStore;
-import org.uberfire.ext.widgets.table.client.ColumnChangedHandler;
 import org.uberfire.ext.widgets.table.client.UberfireSimplePager;
+import org.uberfire.ext.widgets.table.client.resources.UFTableResources;
 
 /**
  * Paged Table Widget that stores user preferences.
@@ -41,8 +42,7 @@ public class PagedTable<T>
         extends SimpleTable<T> {
 
     public static final int DEFAULT_PAGE_SIZE = 10;
-    public static final int ROW_HEIGHT_PX = 33;
-    public static final int HEIGHT_OFFSET_PX = 45;
+    public static final int HEIGHT_OFFSET_PX = 20;
     private static Binder uiBinder = GWT.create(Binder.class);
 
     @UiField
@@ -118,24 +118,18 @@ public class PagedTable<T>
         });
         loadPageSizePreferences();
 
-        dataGrid.addRangeChangeHandler(e -> Scheduler.get().scheduleDeferred(() -> setTableHeight()));
-        dataGrid.addRowCountChangeHandler(e -> Scheduler.get().scheduleDeferred(() -> setTableHeight()));
+        dataGrid.addRedrawHandler(() -> Scheduler.get().scheduleDeferred(() -> setTableHeight()));
         dataGrid.getElement().getStyle().setMarginBottom(0,
                                                          Style.Unit.PX);
-        if (columnPicker != null) {
-            columnPicker.addColumnChangedHandler(new ColumnChangedHandler() {
-                @Override
-                public void beforeColumnChanged() {
-
-                }
-
-                @Override
-                public void afterColumnChanged() {
-                    Scheduler.get().scheduleDeferred(() -> setTableHeight());
-                }
-            });
-        }
     }
+
+    protected static native int getTableHeight(final JavaScriptObject grid,
+                                               final String headerCss,
+                                               final String contentCss)/*-{
+        var headerHeight = $wnd.jQuery(grid).find("." + headerCss).outerHeight();
+        var contentHeight = $wnd.jQuery(grid).find("." + contentCss).outerHeight();
+        return headerHeight + contentHeight;
+    }-*/;
 
     @Override
     protected Widget makeWidget() {
@@ -169,10 +163,14 @@ public class PagedTable<T>
     }
 
     protected void setTableHeight() {
-        final int items = dataGrid.getRowCount() - dataGrid.getVisibleRange().getStart();
-        int base = items > pageSize ? pageSize : items;
-        int height = ((base <= 0 ? 1 : base) * ROW_HEIGHT_PX) + HEIGHT_OFFSET_PX;
-        this.dataGrid.setHeight(height + "px");
+        int base = getTableHeight(dataGrid.getElement(),
+                                  UFTableResources.INSTANCE.CSS().dataGridHeader(),
+                                  UFTableResources.INSTANCE.CSS().dataGridContent());
+        String height = (base + HEIGHT_OFFSET_PX) + "px";
+        if (height.equals(dataGrid.getElement().getStyle().getHeight()) == false) {
+            this.dataGrid.setHeight(height);
+            this.dataGrid.redraw();
+        }
     }
 
     public void setShowLastPagerButton(boolean showLastPagerButton) {
@@ -200,7 +198,8 @@ public class PagedTable<T>
         return pageSize;
     }
 
-    public void setPageSizesSelectorDropup(boolean forceDropup, boolean dropupAuto){
+    public void setPageSizesSelectorDropup(boolean forceDropup,
+                                           boolean dropupAuto) {
         this.pageSizesSelector.setForceDropup(forceDropup);
         this.pageSizesSelector.setDropupAuto(dropupAuto);
     }

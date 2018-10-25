@@ -35,12 +35,7 @@ public class DataGrid<T> extends org.gwtbootstrap3.client.ui.gwt.DataGrid<T> {
         setHover(true);
         setStriped(true);
         setBordered(true);
-    }
-
-    @Override
-    protected void onLoad() {
-        super.onLoad();
-        fixTableStyle(this.getElement());
+        addRedrawHandler(() -> fixTableStyle(this.getElement()));
     }
 
     public native void fixTableStyle(final Element e) /*-{

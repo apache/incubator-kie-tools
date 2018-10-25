@@ -149,8 +149,6 @@ public class TableDisplayerView extends AbstractGwtDisplayerView<TableDisplayer>
     @Override
     public void setPagerEnabled(boolean enabled) {
         table.pager.setVisible(enabled);
-        int rows = table.getRowCount() > table.getPageSize() ? table.getPageSize() : table.getRowCount();
-        table.setHeight(calculateHeight(rows) + "px");
     }
 
     @Override
@@ -208,14 +206,6 @@ public class TableDisplayerView extends AbstractGwtDisplayerView<TableDisplayer>
     }
 
     // Table internals
-
-    public int calculateHeight(int rows) {
-        int rowHeight = 39 - rows;
-        int offset = 20 - rows;
-        rowHeight = rowHeight < 30 ? 30 : rowHeight;
-        offset = offset < 0 ? 0 : offset;
-        return offset + (rowHeight * (rows == 0 ? 1 : rows));
-    }
 
     protected Column<Integer,?> createColumn(ColumnType type,
                                              String columnId,
@@ -344,7 +334,6 @@ public class TableDisplayerView extends AbstractGwtDisplayerView<TableDisplayer>
                 getPresenter().lookupCurrentPage(rowsFetched -> {
                     final List<Integer> rows = getCurrentPageRows(display);
                     updateRowData(lastOffset, rows);
-                    table.setHeight(calculateHeight(rowsFetched) + "px");
                 });
             }
         }

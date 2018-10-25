@@ -53,7 +53,7 @@ public class PagedTableTest {
     public void testDataGridHeight() throws Exception {
         final int PAGE_SIZE = 10;
         final int ROWS = 2;
-        final int EXPECTED_HEIGHT_PX = (ROWS * PagedTable.ROW_HEIGHT_PX) + PagedTable.HEIGHT_OFFSET_PX;
+        final int EXPECTED_HEIGHT_PX = PagedTable.HEIGHT_OFFSET_PX;
         PagedTable pagedTable = new PagedTable(PAGE_SIZE, null, null, false, false, false);
         pagedTable.dataGrid = spy(pagedTable.dataGrid);
         when(pagedTable.dataGrid.getRowCount()).thenReturn(ROWS);
@@ -69,7 +69,7 @@ public class PagedTableTest {
     public void testDataGridHeightWithMoreItemsThanPaging() throws Exception {
         final int PAGE_SIZE = 10;
         final int ROWS = 12;
-        final int EXPECTED_HEIGHT_PX = (PAGE_SIZE * PagedTable.ROW_HEIGHT_PX) + PagedTable.HEIGHT_OFFSET_PX;
+        final int EXPECTED_HEIGHT_PX = PagedTable.HEIGHT_OFFSET_PX;
         PagedTable pagedTable = new PagedTable(PAGE_SIZE, null, null, false, false, false);
         pagedTable.dataGrid = spy(pagedTable.dataGrid);
         when(pagedTable.dataGrid.getRowCount()).thenReturn(ROWS);
@@ -79,21 +79,6 @@ public class PagedTableTest {
         pagedTable.loadPageSizePreferences();
         verify(pagedTable.dataGrid,
                times(1)).setHeight(eq(EXPECTED_HEIGHT_PX + "px"));
-    }
-
-    @Test
-    public void testDataGridSetHeightOnColumnChange() throws Exception {
-        PagedTable pagedTable = new PagedTable(10, null, null, false, false, false);
-        pagedTable.dataGrid = spy(pagedTable.dataGrid);
-        doAnswer(invocation -> {
-            Scheduler.ScheduledCommand cmd = (Scheduler.ScheduledCommand) invocation.getArguments()[0];
-            cmd.execute();
-            return null;
-        }).when(Scheduler.get()).scheduleDeferred(any());
-
-        pagedTable.getColumnPicker().adjustColumnWidths();
-
-        verify(pagedTable.dataGrid).setHeight(anyString());
     }
 
     @Test

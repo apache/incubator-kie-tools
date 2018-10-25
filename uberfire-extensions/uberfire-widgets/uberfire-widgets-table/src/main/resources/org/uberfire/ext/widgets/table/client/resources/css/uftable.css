@@ -33,6 +33,7 @@
 
 .dataGridContent {
     border-top: none;
+    margin-bottom: 0px;
 }
 
 .dataGridMain {
