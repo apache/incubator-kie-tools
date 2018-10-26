@@ -20,11 +20,9 @@ import javax.validation.Valid;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.dmn.api.property.DMNPropertySet;
-import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.slider.type.SliderFieldType;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
@@ -54,17 +52,6 @@ public class BackgroundSet implements DMNPropertySet {
     @Valid
     private BorderColour borderColour;
 
-    @Property
-    @FormField(
-            type = SliderFieldType.class,
-            afterElement = "borderColour",
-            settings = {
-                    @FieldParam(name = "min", value = "0.0"),
-                    @FieldParam(name = "max", value = "5.0"),
-                    @FieldParam(name = "step", value = "0.5")
-            }
-    )
-    @Valid
     private BorderSize borderSize;
 
     public BackgroundSet() {
