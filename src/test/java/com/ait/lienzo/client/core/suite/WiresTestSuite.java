@@ -40,6 +40,8 @@ import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresParentPickerCon
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresShapeControlImplTest;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresShapeLocationControlImplTest;
 import com.ait.lienzo.client.core.shape.wires.picker.ColorMapBackedPickerTest;
+import com.ait.lienzo.client.core.shape.wires.util.WiresConnectorLabelFactoryTest;
+import com.ait.lienzo.client.core.shape.wires.util.WiresConnectorLabelTest;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -58,6 +60,8 @@ import org.junit.runners.Suite;
         WiresCompositeShapeHandlerTest.class,
         WiresConnectorControlImplTest.class,
         WiresConnectorHandlerImplTest.class,
+        WiresConnectorLabelFactoryTest.class,
+        WiresConnectorLabelTest.class,
         WiresConnectorTest.class,
         WiresContainerTest.class,
         WiresDockingControlImplTest.class,

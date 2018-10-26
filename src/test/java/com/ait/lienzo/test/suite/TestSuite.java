@@ -21,6 +21,7 @@ package com.ait.lienzo.test.suite;
 import com.ait.lienzo.test.BasicLienzoMockTest;
 import com.ait.lienzo.test.BasicLienzoStateTest;
 import com.ait.lienzo.test.JSOMockTest;
+import com.ait.lienzo.test.LienzoCoreAttributesTest;
 import com.ait.lienzo.test.PointsMockTest;
 import com.ait.lienzo.test.PointsTest;
 import com.ait.lienzo.test.stub.custom.StubPointsTest;
@@ -39,6 +40,7 @@ import org.junit.runners.Suite;
         BasicLienzoMockTest.class,
         BasicLienzoStateTest.class,
         JSOMockTest.class,
+        LienzoCoreAttributesTest.class,
         PointsTest.class,
         PointsMockTest.class,
         StubPointsTest.class

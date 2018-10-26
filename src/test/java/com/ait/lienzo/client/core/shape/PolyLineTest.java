@@ -24,6 +24,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
@@ -39,6 +40,13 @@ public class PolyLineTest {
     public void setup() {
         polyLine = new PolyLine();
         attributes = makeAttributes();
+    }
+
+    @Test
+    public void testParseWhenPointsSizeIsEmpty() {
+        doReturn(new Point2DArray()).when(attributes).getPoints();
+
+        assertFalse(polyLine.parse(attributes));
     }
 
     @Test
