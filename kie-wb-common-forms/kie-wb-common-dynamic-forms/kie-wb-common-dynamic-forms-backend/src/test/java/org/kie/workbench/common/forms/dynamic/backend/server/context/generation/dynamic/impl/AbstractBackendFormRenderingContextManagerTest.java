@@ -27,6 +27,8 @@ import org.junit.Before;
 import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.dynamic.impl.marshalling.FieldValueMarshaller;
 import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.dynamic.impl.marshalling.FieldValueMarshallerRegistryImpl;
 import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.dynamic.impl.marshalling.TextAreaFormFieldValueMarshaller;
+import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.dynamic.impl.marshalling.lists.StringMultipleInputValueMarshaller;
+import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.dynamic.impl.marshalling.lists.StringMultipleSelectorValueMarshaller;
 import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.dynamic.impl.marshalling.models.MultipleSubFormFieldValueMarshaller;
 import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.dynamic.impl.marshalling.models.SubFormFieldValueMarshaller;
 import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.dynamic.impl.marshalling.time.DateMultipleInputFieldValueMarshaller;
@@ -71,7 +73,9 @@ public abstract class AbstractBackendFormRenderingContextManagerTest {
                                                                new DateMultipleInputFieldValueMarshaller(),
                                                                new DateMultipleSelectorFieldValueMarshaller(),
                                                                new LocalDateFieldValueMarshaller(),
-                                                               new TextAreaFormFieldValueMarshaller());
+                                                               new TextAreaFormFieldValueMarshaller(),
+                                                               new StringMultipleInputValueMarshaller(),
+                                                               new StringMultipleSelectorValueMarshaller());
 
         marshallersInstance = mock(Instance.class);
 

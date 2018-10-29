@@ -142,8 +142,7 @@ public class BPMNVFSFormDefinitionGeneratorService extends AbstractBPMNFormGener
     protected FormDefinition createModelFormDefinition(String modelType,
                                                        GenerationContext<Path> context) {
 
-        FormDefinition form = super.createModelFormDefinition(modelType,
-                                                              context);
+        FormDefinition form = super.createModelFormDefinition(modelType, context);
 
         org.uberfire.java.nio.file.Path path = Paths.convert(context.getSource()).getParent().resolve(form.getName() + "." + FormResourceTypeDefinition.EXTENSION);
 

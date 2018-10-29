@@ -218,12 +218,9 @@ public class FieldManagerTest {
     public void testGettingAllMultipleProvidersDefinitions() {
         for (BasicTypeFieldProvider provider : fieldManager.getAllBasicMultipleTypeProviders()) {
             for (String className : provider.getSupportedTypes()) {
-                TypeInfo typeInfo = new TypeInfoImpl(TypeKind.BASE,
-                                                     className,
-                                                     true);
+                TypeInfo typeInfo = new TypeInfoImpl(Object.class.getName().equals(className) ? TypeKind.OBJECT : TypeKind.BASE, className, true);
 
-                FieldDefinition fieldDefinition = fieldManager.getFieldFromProvider(provider.getFieldTypeName(),
-                                                                                    typeInfo);
+                FieldDefinition fieldDefinition = fieldManager.getFieldFromProvider(provider.getFieldTypeName(), typeInfo);
                 Assertions.assertThat(fieldDefinition).isNotNull();
             }
         }

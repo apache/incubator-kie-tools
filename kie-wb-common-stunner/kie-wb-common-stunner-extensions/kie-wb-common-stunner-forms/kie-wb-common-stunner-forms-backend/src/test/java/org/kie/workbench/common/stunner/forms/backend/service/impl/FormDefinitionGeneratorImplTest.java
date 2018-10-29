@@ -425,12 +425,13 @@ public class FormDefinitionGeneratorImplTest {
             assertNotNull(property);
             assertEquals(value, property.getTypeInfo().getClassName());
 
-            MetaDataEntry readOnlyEntry = property.getMetaData().getEntry(FieldReadOnlyEntry.NAME);
-
-            Assertions.assertThat(readOnlyEntry)
-                    .isNotNull()
-                    .isInstanceOf(FieldReadOnlyEntry.class)
-                    .hasFieldOrPropertyWithValue("value", readOnly);
+            if(readOnly) {
+                MetaDataEntry readOnlyEntry = property.getMetaData().getEntry(FieldReadOnlyEntry.NAME);
+                Assertions.assertThat(readOnlyEntry)
+                        .isNotNull()
+                        .isInstanceOf(FieldReadOnlyEntry.class)
+                        .hasFieldOrPropertyWithValue("value", readOnly);
+            }
         });
     }
 }

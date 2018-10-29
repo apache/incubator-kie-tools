@@ -30,6 +30,6 @@ public class StringEditableColumnGeneratorTest extends AbstractEditableColumnGen
 
     @Override
     protected String[] getSupportedTypes() {
-        return new String[]{String.class.getName()};
+        return new String[]{String.class.getName(), Object.class.getName()};
     }
 }

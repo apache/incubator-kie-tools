@@ -38,7 +38,7 @@ public class StringEditableColumnGenerator extends AbstractEditableColumnGenerat
 
     @Override
     public String[] getTypes() {
-        return new String[]{String.class.getName()};
+        return new String[]{String.class.getName(), Object.class.getName()};
     }
 
     @Override

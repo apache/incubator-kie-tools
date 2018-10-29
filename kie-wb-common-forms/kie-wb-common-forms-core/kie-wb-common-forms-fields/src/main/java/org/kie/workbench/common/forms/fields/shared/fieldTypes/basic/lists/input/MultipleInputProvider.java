@@ -66,39 +66,44 @@ public class MultipleInputProvider extends BasicTypeFieldProvider<AbstractMultip
 
         registerPropertyType(Character.class);
         registerPropertyType(String.class);
+        registerPropertyType(Object.class);
         registerPropertyType(Boolean.class);
     }
 
     @Override
     public AbstractMultipleInputFieldDefinition createFieldByType(TypeInfo typeInfo) {
-        if (typeInfo.getType().equals(TypeKind.BASE) && typeInfo.isMultiple()) {
-            if (typeInfo.getClassName().equals(Boolean.class.getName())) {
-                return new BooleanMultipleInputFieldDefinition();
-            }
-            if (typeInfo.getClassName().equals(Character.class.getName())) {
-                return new CharacterMultipleInputFieldDefinition();
-            }
-            if (typeInfo.getClassName().equals(String.class.getName())) {
+        if(typeInfo.isMultiple()) {
+            if(typeInfo.getType().equals(TypeKind.OBJECT) && typeInfo.getClassName().equals(Object.class.getName())) {
                 return new StringMultipleInputFieldDefinition();
-            }
-            if (typeInfo.getClassName().equals(BigInteger.class.getName()) ||
-                    typeInfo.getClassName().equals(Byte.class.getName()) ||
-                    typeInfo.getClassName().equals(Integer.class.getName()) ||
-                    typeInfo.getClassName().equals(Long.class.getName()) ||
-                    typeInfo.getClassName().equals(Short.class.getName())) {
-                return new IntegerMultipleInputFieldDefinition();
-            }
-            if (typeInfo.getClassName().equals(BigDecimal.class.getName()) ||
-                    typeInfo.getClassName().equals(Double.class.getName()) ||
-                    typeInfo.getClassName().equals(Float.class.getName())) {
-                return new DecimalMultipleInputFieldDefinition();
-            }
-            if (typeInfo.getClassName().equals(Date.class.getName()) ||
-                    typeInfo.getClassName().equals("java.time.LocalDate") ||
-                    typeInfo.getClassName().equals("java.time.LocalDateTime") ||
-                    typeInfo.getClassName().equals("java.time.LocalTime") ||
-                    typeInfo.getClassName().equals("java.time.OffsetDateTime")) {
-                return new DateMultipleInputFieldDefinition();
+            } else if(typeInfo.getType().equals(TypeKind.BASE)) {
+                if (typeInfo.getClassName().equals(Boolean.class.getName())) {
+                    return new BooleanMultipleInputFieldDefinition();
+                }
+                if (typeInfo.getClassName().equals(Character.class.getName())) {
+                    return new CharacterMultipleInputFieldDefinition();
+                }
+                if (typeInfo.getClassName().equals(String.class.getName())) {
+                    return new StringMultipleInputFieldDefinition();
+                }
+                if (typeInfo.getClassName().equals(BigInteger.class.getName()) ||
+                        typeInfo.getClassName().equals(Byte.class.getName()) ||
+                        typeInfo.getClassName().equals(Integer.class.getName()) ||
+                        typeInfo.getClassName().equals(Long.class.getName()) ||
+                        typeInfo.getClassName().equals(Short.class.getName())) {
+                    return new IntegerMultipleInputFieldDefinition();
+                }
+                if (typeInfo.getClassName().equals(BigDecimal.class.getName()) ||
+                        typeInfo.getClassName().equals(Double.class.getName()) ||
+                        typeInfo.getClassName().equals(Float.class.getName())) {
+                    return new DecimalMultipleInputFieldDefinition();
+                }
+                if (typeInfo.getClassName().equals(Date.class.getName()) ||
+                        typeInfo.getClassName().equals("java.time.LocalDate") ||
+                        typeInfo.getClassName().equals("java.time.LocalDateTime") ||
+                        typeInfo.getClassName().equals("java.time.LocalTime") ||
+                        typeInfo.getClassName().equals("java.time.OffsetDateTime")) {
+                    return new DateMultipleInputFieldDefinition();
+                }
             }
         }
         return null;
@@ -121,9 +126,6 @@ public class MultipleInputProvider extends BasicTypeFieldProvider<AbstractMultip
 
     @Override
     public boolean isSupported(TypeInfo typeInfo) {
-        if (!typeInfo.getType().equals(TypeKind.BASE) || !typeInfo.isMultiple()) {
-            return false;
-        }
-        return super.isSupported(typeInfo);
+        return typeInfo.isMultiple() && super.isSupported(typeInfo);
     }
 }

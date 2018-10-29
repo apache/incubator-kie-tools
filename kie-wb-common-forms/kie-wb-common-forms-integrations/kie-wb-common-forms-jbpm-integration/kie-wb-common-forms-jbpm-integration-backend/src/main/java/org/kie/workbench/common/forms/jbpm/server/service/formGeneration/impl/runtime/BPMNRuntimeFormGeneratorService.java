@@ -97,9 +97,10 @@ public class BPMNRuntimeFormGeneratorService extends AbstractBPMNFormGeneratorSe
 
     @Override
     protected List<FieldDefinition> extractModelFields(JavaFormModel formModel, GenerationContext<ClassLoader> context) {
-        Class clazz;
 
-        String modelType = formModel.getType();
+        final String modelType = formModel.getType();
+
+        Class<?> clazz = null;
 
         try {
             clazz = context.getSource().loadClass(modelType);

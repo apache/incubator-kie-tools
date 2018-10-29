@@ -67,6 +67,9 @@ public class RadioGroupFieldProviderTest {
     @Before
     public void init() {
         provider = spy(new RadioGroupFieldProvider());
+
+        provider.doRegisterFields();
+
         String[] classNames = Arrays.stream(SUPPORTED_TYPES).map(Class::getName).toArray(String[]::new);
 
         when(provider.getSupportedTypes()).thenReturn(classNames);

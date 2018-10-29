@@ -39,15 +39,11 @@ import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.RootElement;
 import org.eclipse.bpmn2.UserTask;
 import org.jsoup.parser.Parser;
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.definition.TextAreaFieldDefinition;
 import org.kie.workbench.common.forms.jbpm.model.authoring.process.BusinessProcessFormModel;
 import org.kie.workbench.common.forms.jbpm.model.authoring.task.TaskFormModel;
 import org.kie.workbench.common.forms.jbpm.server.service.BPMNFormModelGenerator;
 import org.kie.workbench.common.forms.jbpm.service.bpmn.util.BPMNVariableUtils;
 import org.kie.workbench.common.forms.model.ModelProperty;
-import org.kie.workbench.common.forms.model.impl.meta.entries.FieldReadOnlyEntry;
-import org.kie.workbench.common.forms.model.impl.meta.entries.FieldTypeEntry;
-import org.kie.workbench.common.forms.service.backend.util.ModelPropertiesGenerator;
 import org.kie.workbench.common.services.backend.project.ModuleClassLoaderHelper;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.slf4j.Logger;
@@ -122,20 +118,10 @@ public class BPMNFormModelGeneratorImpl implements BPMNFormModelGenerator {
     }
 
     protected ModelProperty createModelProperty(Variable variable, ClassLoader classLoader) {
-
-        ModelProperty property = ModelPropertiesGenerator.createModelProperty(variable.getName(),
-                                                                              BPMNVariableUtils.getRealTypeForInput(variable.getType()),
-                                                                              classLoader);
-
-        if (property != null) {
-            property.getMetaData().addEntry(new FieldReadOnlyEntry(variable.isInput() && !variable.isOutput()));
-
-            if (!property.getTypeInfo().isMultiple() && property.getTypeInfo().getClassName().equals(Object.class.getName())) {
-                property.getMetaData().addEntry(new FieldTypeEntry(TextAreaFieldDefinition.FIELD_TYPE.getTypeName()));
-            }
-        }
-
-        return property;
+        return BPMNVariableUtils.generateVariableProperty(variable.getName(),
+                                                          variable.getType(),
+                                                          variable.isInput() && !variable.isOutput(),
+                                                          classLoader);
     }
 
     @Override

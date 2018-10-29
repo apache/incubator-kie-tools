@@ -23,6 +23,12 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.lists.input.MultipleInputFieldType;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.type.TextAreaFieldType;
+import org.kie.workbench.common.forms.model.ModelProperty;
+import org.kie.workbench.common.forms.model.impl.meta.entries.FieldReadOnlyEntry;
+import org.kie.workbench.common.forms.model.impl.meta.entries.FieldTypeEntry;
+import org.kie.workbench.common.forms.service.backend.util.ModelPropertiesGenerator;
 
 public class BPMNVariableUtils {
 
@@ -85,5 +91,32 @@ public class BPMNVariableUtils {
         }
 
         return type;
+    }
+
+    public static ModelProperty generateVariableProperty(String name, String type, ClassLoader classLoader) {
+        return generateVariableProperty(name, type, false, classLoader);
+    }
+
+    public static ModelProperty generateVariableProperty(String name, String type, boolean readOnly, ClassLoader classLoader) {
+
+        ModelProperty property = ModelPropertiesGenerator.createModelProperty(name,
+                                                                              BPMNVariableUtils.getRealTypeForInput(type),
+                                                                              classLoader);
+
+        if(property != null) {
+            if(readOnly) {
+                property.getMetaData().addEntry(new FieldReadOnlyEntry(readOnly));
+            }
+
+            if (property.getTypeInfo().getClassName().equals(Object.class.getName())) {
+                if (property.getTypeInfo().isMultiple()) {
+                    property.getMetaData().addEntry(new FieldTypeEntry(MultipleInputFieldType.NAME));
+                } else {
+                    property.getMetaData().addEntry(new FieldTypeEntry(TextAreaFieldType.NAME));
+                }
+            }
+        }
+
+        return property;
     }
 }

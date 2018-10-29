@@ -80,12 +80,7 @@ public abstract class BasicTypeFieldProvider<FIELD extends FieldDefinition> impl
     }
 
     public boolean isSupported(TypeInfo typeInfo) {
-        for (String type : getSupportedTypes()) {
-            if (type.equals(typeInfo.getClassName())) {
-                return true;
-            }
-        }
-        return false;
+        return supportedTypes.contains(typeInfo.getClassName());
     }
 
     public boolean supports(Class clazz) {

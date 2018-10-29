@@ -22,6 +22,12 @@ import org.assertj.core.api.Assertions;
 import org.jbpm.bpmn2.handler.WorkItemHandlerRuntimeException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.integerBox.definition.IntegerBoxFieldDefinition;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.lists.input.MultipleInputFieldType;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.lists.input.impl.StringMultipleInputFieldDefinition;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.definition.TextAreaFieldDefinition;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.type.TextAreaFieldType;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textBox.definition.TextBoxFieldDefinition;
 import org.kie.workbench.common.forms.jbpm.model.authoring.task.TaskFormModel;
 import org.kie.workbench.common.forms.jbpm.server.service.formGeneration.FormGenerationResult;
 import org.kie.workbench.common.forms.model.FormDefinition;
@@ -29,12 +35,12 @@ import org.kie.workbench.common.forms.model.ModelProperty;
 import org.kie.workbench.common.forms.model.TypeKind;
 import org.kie.workbench.common.forms.model.impl.ModelPropertyImpl;
 import org.kie.workbench.common.forms.model.impl.TypeInfoImpl;
+import org.kie.workbench.common.forms.model.impl.meta.entries.FieldTypeEntry;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -50,6 +56,9 @@ public class RuntimeFormGenerationWithWrongTypesTest extends BPMNRuntimeFormDefi
     // Existing properties
     public static final String NAME_PROPERTY = "name";
     public static final String AGE_PROPERTY = "age";
+    public static final String WRONG_OBJECT_PROPERTY = "wrongObject";
+    public static final String OBJECT_PROPERTY = "object";
+    public static final String WRONG_LIST_PROPERTY = "wrongList";
     public static final String LIST_PROPERTY = "list";
     public static final String ERROR_PROPERTY = "error";
 
@@ -61,21 +70,24 @@ public class RuntimeFormGenerationWithWrongTypesTest extends BPMNRuntimeFormDefi
 
         List<ModelProperty> modelProperties = new ArrayList<>();
 
-        modelProperties.add(new ModelPropertyImpl(NAME_PROPERTY,
-                                                  new TypeInfoImpl(String.class.getName())));
-        modelProperties.add(new ModelPropertyImpl(AGE_PROPERTY,
-                                                  new TypeInfoImpl(Integer.class.getName())));
-        modelProperties.add(new ModelPropertyImpl(LIST_PROPERTY,
-                                                  new TypeInfoImpl(TypeKind.OBJECT, Object.class.getName(), true)));
-        modelProperties.add(new ModelPropertyImpl(ERROR_PROPERTY,
-                                                  new TypeInfoImpl(TypeKind.OBJECT, WorkItemHandlerRuntimeException.class.getName(), false)));
+        modelProperties.add(new ModelPropertyImpl(NAME_PROPERTY, new TypeInfoImpl(String.class.getName())));
+        modelProperties.add(new ModelPropertyImpl(AGE_PROPERTY, new TypeInfoImpl(Integer.class.getName())));
 
-        newFormModel = new TaskFormModel(PROCESS_ID,
-                                         TASK_NAME,
-                                         modelProperties);
+        modelProperties.add(new ModelPropertyImpl(WRONG_OBJECT_PROPERTY, new TypeInfoImpl(TypeKind.OBJECT, Object.class.getName(), false)));
+        ModelPropertyImpl objectProperty = new ModelPropertyImpl(OBJECT_PROPERTY, new TypeInfoImpl(TypeKind.OBJECT, Object.class.getName(), false));
+        objectProperty.getMetaData().addEntry(new FieldTypeEntry(TextAreaFieldType.NAME));
+        modelProperties.add(objectProperty);
 
-        FormGenerationResult generationResult = service.generateForms(newFormModel,
-                                                                      source);
+        modelProperties.add(new ModelPropertyImpl(WRONG_LIST_PROPERTY, new TypeInfoImpl(TypeKind.OBJECT, Object.class.getName(), true)));
+        ModelPropertyImpl listModelProperty = new ModelPropertyImpl(LIST_PROPERTY, new TypeInfoImpl(TypeKind.OBJECT, Object.class.getName(), true));
+        listModelProperty.getMetaData().addEntry(new FieldTypeEntry(MultipleInputFieldType.NAME));
+        modelProperties.add(listModelProperty);
+
+        modelProperties.add(new ModelPropertyImpl(ERROR_PROPERTY, new TypeInfoImpl(TypeKind.OBJECT, WorkItemHandlerRuntimeException.class.getName(), false)));
+
+        newFormModel = new TaskFormModel(PROCESS_ID, TASK_NAME, modelProperties);
+
+        FormGenerationResult generationResult = service.generateForms(newFormModel, source);
 
         assertNotNull(generationResult);
 
@@ -83,19 +95,35 @@ public class RuntimeFormGenerationWithWrongTypesTest extends BPMNRuntimeFormDefi
 
         FormDefinition formDefinition = generationResult.getRootForm();
 
-        assertEquals(newFormModel,
-                     formDefinition.getModel());
+        assertEquals(newFormModel, formDefinition.getModel());
 
         Assertions.assertThat(formDefinition.getFields())
                 .isNotNull()
                 .isNotEmpty()
-                .hasSize(2);
+                .hasSize(4);
 
-        assertNotNull(formDefinition.getFieldByBinding(NAME_PROPERTY));
-        assertNotNull(formDefinition.getFieldByBinding(AGE_PROPERTY));
+        Assertions.assertThat(formDefinition.getFieldByBinding(NAME_PROPERTY))
+                .isNotNull()
+                .isInstanceOf(TextBoxFieldDefinition.class);
 
-        assertNull(formDefinition.getFieldByBinding(LIST_PROPERTY));
-        assertNull(formDefinition.getFieldByBinding(ERROR_PROPERTY));
+        Assertions.assertThat(formDefinition.getFieldByBinding(AGE_PROPERTY))
+                .isNotNull()
+                .isInstanceOf(IntegerBoxFieldDefinition.class);
+
+        Assertions.assertThat(formDefinition.getFieldByBinding(OBJECT_PROPERTY))
+                .isNotNull()
+                .isInstanceOf(TextAreaFieldDefinition.class);
+
+        Assertions.assertThat(formDefinition.getFieldByBinding(LIST_PROPERTY))
+                .isNotNull()
+                .isInstanceOf(StringMultipleInputFieldDefinition.class);
+
+        Assertions.assertThat(formDefinition.getFieldByBinding(WRONG_LIST_PROPERTY))
+                .isNull();
+        Assertions.assertThat(formDefinition.getFieldByBinding(WRONG_OBJECT_PROPERTY))
+                .isNull();
+        Assertions.assertThat(formDefinition.getFieldByBinding(ERROR_PROPERTY))
+                .isNull();
 
         LayoutComponent formHeader = formDefinition.getLayoutTemplate().getRows().get(0).getLayoutColumns().get(0).getLayoutComponents().get(0);
 

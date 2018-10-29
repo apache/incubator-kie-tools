@@ -17,6 +17,7 @@
 package org.kie.workbench.common.forms.jbpm.server.service.formGeneration.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -50,6 +51,8 @@ import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 
 public abstract class AbstractBPMNFormGeneratorService<SOURCE> implements BPMNFormGeneratorService<SOURCE> {
 
+    protected static final Collection<String> bannedModelTypes = new ArrayList<>();
+
     private static final String HTML_COMPONENT = "org.uberfire.ext.plugin.client.perspective.editor.layout.editor.HTMLLayoutDragComponent";
     private static final String HTML_CODE_PARAMETER = "HTML_CODE";
 
@@ -57,6 +60,10 @@ public abstract class AbstractBPMNFormGeneratorService<SOURCE> implements BPMNFo
     private static final String OUTPUTS = "<h3>Outputs:</h3>";
 
     protected FieldManager fieldManager;
+
+    static {
+        bannedModelTypes.add(Object.class.getName());
+    }
 
     public AbstractBPMNFormGeneratorService(FieldManager fieldManager) {
         this.fieldManager = fieldManager;
@@ -226,8 +233,7 @@ public abstract class AbstractBPMNFormGeneratorService<SOURCE> implements BPMNFo
 
                     HasNestedForm nestedFormField = (HasNestedForm) field;
 
-                    FormDefinition nestedForm = findFormDefinitionForModelType(field.getStandaloneClassName(),
-                                                                               context);
+                    FormDefinition nestedForm = findFormDefinitionForModelType(field.getStandaloneClassName(), context);
 
                     if (nestedForm == null) {
                         nestedForm = createModelFormDefinition(field.getStandaloneClassName(), context);
@@ -283,19 +289,18 @@ public abstract class AbstractBPMNFormGeneratorService<SOURCE> implements BPMNFo
 
         if (form == null) {
 
+            if(bannedModelTypes.contains(modelType)) {
+                throw new IllegalArgumentException("Cannot extract fields for '" + modelType + "'");
+            }
+
             String modelName = modelType.substring(modelType.lastIndexOf(".") + 1);
 
             String formModelName = modelName;
-            formModelName = formModelName.substring(0,
-                                                    1).toLowerCase() + formModelName.substring(1);
+            formModelName = formModelName.substring(0, 1).toLowerCase() + formModelName.substring(1);
 
-            DataObjectFormModel formModel = new DataObjectFormModel(formModelName,
-                                                                    modelType);
+            DataObjectFormModel formModel = new DataObjectFormModel(formModelName, modelType);
 
             form = new FormDefinition(formModel);
-
-            context.getContextForms().put(modelType,
-                                          form);
 
             form.setId(UIDGenerator.generateUID());
             form.setName(modelName);
@@ -312,6 +317,8 @@ public abstract class AbstractBPMNFormGeneratorService<SOURCE> implements BPMNFo
             form.getFields().addAll(fields);
 
             createFormLayout(form);
+
+            context.getContextForms().put(modelType, form);
         }
         return form;
     }

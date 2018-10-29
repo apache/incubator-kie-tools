@@ -82,6 +82,8 @@ public class BPMNFormModelGeneratorImplTest {
             DATA_OBJECT_TYPE);
         put("_customType",
             CUSTOM_TYPE);
+        put("_list",
+            Object.class.getName());
     }};
 
     private static final Map<String, String> EXPECTED_OUTPUT_VARIABLES = new HashMap<String, String>() {{
@@ -99,6 +101,8 @@ public class BPMNFormModelGeneratorImplTest {
             DATA_OBJECT_TYPE);
         put("customType_",
             CUSTOM_TYPE);
+        put("list_",
+            Object.class.getName());
     }};
     private static BPMNFormModelGeneratorImpl generator;
     private static Definitions
@@ -169,6 +173,7 @@ public class BPMNFormModelGeneratorImplTest {
                 DATA_OBJECT_TYPE);
             put("customType",
                 CUSTOM_TYPE);
+            put("list", Object.class.getName());
         }};
 
         //generate all = generateProcessFormModel + generateTaskFormModels
@@ -226,21 +231,16 @@ public class BPMNFormModelGeneratorImplTest {
     public void testCorrectTaskFormModelIsGeneratedForTaskWithTheInputsAndOutputsBoundToTheSameNamesInSwimlane() {
         final String TASK_ID = "_9903B013-C42D-486B-A41D-2DEBC60911E3",
                 TASK_NAME = "taskWithTheSameInputsAndOutputs";
+
         final Map<String, String> EXPECTED_TASK_VARIABLES = new HashMap<String, String>() {{
-            put("_string_",
-                String.class.getName());
-            put("_integer_",
-                Integer.class.getName());
-            put("_boolean_",
-                Boolean.class.getName());
-            put("_float_",
-                Float.class.getName());
-            put("_object_",
-                Object.class.getName());
-            put("_dataObject_",
-                DATA_OBJECT_TYPE);
-            put("_customType_",
-                CUSTOM_TYPE);
+            put("_string_", String.class.getName());
+            put("_integer_", Integer.class.getName());
+            put("_boolean_", Boolean.class.getName());
+            put("_float_", Float.class.getName());
+            put("_object_", Object.class.getName());
+            put("_dataObject_", DATA_OBJECT_TYPE);
+            put("_customType_", CUSTOM_TYPE);
+            put("_list_", Object.class.getName());
         }};
 
         TaskFormModel taskFormModel = generator.generateTaskFormModel(processWithAllVariablesDefinitions,
@@ -451,11 +451,9 @@ public class BPMNFormModelGeneratorImplTest {
                                                Map<String, String> expectedVariables) {
         Map<String, String> actualVariables = new HashMap<>();
         for (ModelProperty modelProperty : formModel.getProperties()) {
-            actualVariables.put(modelProperty.getName(),
-                                modelProperty.getTypeInfo().getClassName());
+            actualVariables.put(modelProperty.getName(), modelProperty.getTypeInfo().getClassName());
         }
-        assertEquals(expectedVariables,
-                     actualVariables);
+        assertEquals(expectedVariables, actualVariables);
     }
 
     private void assertTaskFormModelIsCorrect(TaskFormModel taskFormModel,
