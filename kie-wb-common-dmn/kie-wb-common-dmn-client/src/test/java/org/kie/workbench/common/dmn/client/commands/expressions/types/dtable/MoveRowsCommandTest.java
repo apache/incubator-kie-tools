@@ -162,10 +162,10 @@ public class MoveRowsCommandTest {
         final String outValue = "out " + rowIdentifier;
         dtable.getRule().add(new DecisionRule() {{
             getInputEntry().add(new UnaryTests() {{
-                setText(inValue);
+                getText().setValue(inValue);
             }});
             getOutputEntry().add(new LiteralExpression() {{
-                setText(outValue);
+                getText().setValue(outValue);
             }});
         }});
         final DMNGridRow uiRow = new DMNGridRow();
@@ -190,8 +190,8 @@ public class MoveRowsCommandTest {
     }
 
     private void assertTableModelRow(final int rowIndex, final String inValue, final String outValue) {
-        assertEquals(inValue, dtable.getRule().get(rowIndex).getInputEntry().get(0).getText());
-        assertEquals(outValue, dtable.getRule().get(rowIndex).getOutputEntry().get(0).getText());
+        assertEquals(inValue, dtable.getRule().get(rowIndex).getInputEntry().get(0).getText().getValue());
+        assertEquals(outValue, dtable.getRule().get(rowIndex).getOutputEntry().get(0).getText().getValue());
     }
 
     private void assertUiModelRow(final int rowIndex, final String inValue, final String outValue) {

@@ -86,11 +86,11 @@ public class AddInputClauseCommand extends AbstractCanvasGraphCommand implements
                 dtable.getInput().add(clauseIndex, inputClause);
                 final LiteralExpression le = new LiteralExpression();
                 inputClause.setInputExpression(le);
-                le.setText(name);
+                le.getText().setValue(name);
 
                 dtable.getRule().forEach(rule -> {
                     final UnaryTests ut = new UnaryTests();
-                    ut.setText(DecisionTableDefaultValueUtilities.INPUT_CLAUSE_UNARY_TEST_TEXT);
+                    ut.getText().setValue(DecisionTableDefaultValueUtilities.INPUT_CLAUSE_UNARY_TEST_TEXT);
                     rule.getInputEntry().add(clauseIndex, ut);
                     ut.setParent(rule);
                 });

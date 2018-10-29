@@ -125,9 +125,9 @@ public class InvocationUIModelMapperTest {
                                                                                                          anyInt());
 
         final LiteralExpression invocationExpression = new LiteralExpression();
-        invocationExpression.setText("invocation-expression");
+        invocationExpression.getText().setValue("invocation-expression");
         final LiteralExpression bindingExpression = new LiteralExpression();
-        bindingExpression.setText("binding-expression");
+        bindingExpression.getText().setValue("binding-expression");
         final Binding binding = new Binding();
         final InformationItem parameter = new InformationItem();
         parameter.setName(new Name("p0"));

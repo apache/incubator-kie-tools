@@ -110,8 +110,8 @@ public class MoveRowsCommandTest {
                 setName(new Name(variable));
             }});
             setExpression(new LiteralExpression() {{
-                setText(makeLiteralExpression(variable,
-                                              invocation.getBinding().size()));
+                getText().setValue(makeLiteralExpression(variable,
+                                                         invocation.getBinding().size()));
             }});
         }});
     }
@@ -252,7 +252,7 @@ public class MoveRowsCommandTest {
             assertEquals(rowValueBases[iiRowIndexIterator],
                          invocation.getBinding().get(iiRowIndex).getParameter().getName().getValue());
             assertEquals(makeLiteralExpression(rowValueBases[iiRowIndexIterator], iiRowIndexIterator),
-                         ((LiteralExpression) invocation.getBinding().get(iiRowIndex).getExpression()).getText());
+                         ((LiteralExpression) invocation.getBinding().get(iiRowIndex).getExpression()).getText().getValue());
             iiRowIndexIterator++;
         }
     }

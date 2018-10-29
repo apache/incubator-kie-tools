@@ -33,6 +33,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasName;
+import org.kie.workbench.common.dmn.api.definition.NOPDomainObject;
 import org.kie.workbench.common.dmn.api.definition.v1_1.BuiltinAggregator;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
@@ -87,6 +88,7 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
+import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
@@ -153,6 +155,14 @@ public class DecisionTableGridTest {
     private static final String HASNAME_NAME = "name";
 
     private static final String NODE_UUID = "uuid";
+
+    private static final int DEFAULT_ROW_NUMBER_COLUMN_INDEX = 0;
+
+    private static final int DEFAULT_INPUT_CLAUSE_COLUMN_INDEX = 1;
+
+    private static final int DEFAULT_OUTPUT_CLAUSE_COLUMN_INDEX = 2;
+
+    private static final int DEFAULT_DESCRIPTION_COLUMN_INDEX = 3;
 
     @Mock
     private Viewport viewport;
@@ -270,6 +280,9 @@ public class DecisionTableGridTest {
 
     @Captor
     private ArgumentCaptor<CompositeCommand> compositeCommandCaptor;
+
+    @Captor
+    private ArgumentCaptor<DomainObjectSelectionEvent> domainObjectSelectionEventCaptor;
 
     private GridCellTuple parent;
 
@@ -1163,7 +1176,7 @@ public class DecisionTableGridTest {
 
         final DecisionTable dtable = expression.get();
 
-        assertThat(dtable.getInput().get(0).getInputExpression().getText()).isEqualTo(grid.getModel().getColumns().get(1).getHeaderMetaData().get(0).getTitle());
+        assertThat(dtable.getInput().get(0).getInputExpression().getText().getValue()).isEqualTo(grid.getModel().getColumns().get(1).getHeaderMetaData().get(0).getTitle());
 
         extractHeaderMetaData(0, 1).setName(new Name(NAME_NEW));
 
@@ -1171,7 +1184,7 @@ public class DecisionTableGridTest {
                                               compositeCommandCaptor.capture());
         ((AbstractCanvasGraphCommand) compositeCommandCaptor.getValue().getCommands().get(0)).execute(canvasHandler);
 
-        assertThat(expression.get().getInput().get(0).getInputExpression().getText()).isEqualTo(NAME_NEW);
+        assertThat(expression.get().getInput().get(0).getInputExpression().getText().getValue()).isEqualTo(NAME_NEW);
     }
 
     @Test
@@ -1196,5 +1209,111 @@ public class DecisionTableGridTest {
         ((AbstractCanvasGraphCommand) compositeCommandCaptor.getValue().getCommands().get(0)).execute(canvasHandler);
 
         assertThat(outputClause.getName()).isEqualTo(NAME_NEW);
+    }
+
+    @Test
+    public void testSelectRow() {
+        setupGrid(makeHasNameForDecision(), 0);
+
+        grid.selectCell(0, DEFAULT_ROW_NUMBER_COLUMN_INDEX, false, false);
+
+        assertNOPDomainObjectSelection();
+    }
+
+    @Test
+    public void testSelectInputClauseColumn() {
+        setupGrid(makeHasNameForDecision(), 0);
+
+        grid.selectCell(0, DEFAULT_INPUT_CLAUSE_COLUMN_INDEX, false, false);
+
+        assertDomainObjectSelection(expression.get().getRule().get(0).getInputEntry().get(0));
+    }
+
+    @Test
+    public void testSelectOutputClauseColumn() {
+        setupGrid(makeHasNameForDecision(), 0);
+
+        grid.selectCell(0, DEFAULT_OUTPUT_CLAUSE_COLUMN_INDEX, false, false);
+
+        assertDomainObjectSelection(expression.get().getRule().get(0).getOutputEntry().get(0));
+    }
+
+    @Test
+    public void testSelectDescriptionColumn() {
+        setupGrid(makeHasNameForDecision(), 0);
+
+        grid.selectCell(0, DEFAULT_DESCRIPTION_COLUMN_INDEX, false, false);
+
+        assertNOPDomainObjectSelection();
+    }
+
+    @Test
+    public void testSelectHeaderRowNumberColumn() {
+        setupGrid(makeHasNameForDecision(), 0);
+
+        grid.selectHeaderCell(0, DEFAULT_ROW_NUMBER_COLUMN_INDEX, false, false);
+
+        assertNOPDomainObjectSelection();
+    }
+
+    @Test
+    public void testSelectHeaderInputClauseColumn() {
+        setupGrid(makeHasNameForDecision(), 0);
+
+        grid.selectHeaderCell(0, DEFAULT_INPUT_CLAUSE_COLUMN_INDEX, false, false);
+
+        assertDomainObjectSelection(expression.get().getInput().get(0));
+    }
+
+    @Test
+    public void testSelectHeaderSingleOutputClauseColumn() {
+        setupGrid(makeHasNameForDecision(), 0);
+
+        grid.selectHeaderCell(0, DEFAULT_OUTPUT_CLAUSE_COLUMN_INDEX, false, false);
+
+        assertDomainObjectSelection(expression.get().getOutput().get(0));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testSelectHeaderMultipleOutputClauseColumn() {
+        setupGrid(makeHasNameForDecision(), 0);
+
+        addOutputClause(2);
+
+        reset(domainObjectSelectionEvent);
+
+        grid.selectHeaderCell(0, DEFAULT_OUTPUT_CLAUSE_COLUMN_INDEX, false, false);
+
+        assertDomainObjectSelection(hasExpression);
+
+        reset(domainObjectSelectionEvent);
+
+        grid.selectHeaderCell(1, DEFAULT_OUTPUT_CLAUSE_COLUMN_INDEX, false, false);
+
+        assertDomainObjectSelection(expression.get().getOutput().get(0));
+    }
+
+    @Test
+    public void testSelectHeaderDescriptionColumn() {
+        setupGrid(makeHasNameForDecision(), 0);
+
+        grid.selectHeaderCell(0, DEFAULT_DESCRIPTION_COLUMN_INDEX, false, false);
+
+        assertNOPDomainObjectSelection();
+    }
+
+    private void assertDomainObjectSelection(final DomainObject domainObject) {
+        verify(domainObjectSelectionEvent).fire(domainObjectSelectionEventCaptor.capture());
+
+        final DomainObjectSelectionEvent domainObjectSelectionEvent = domainObjectSelectionEventCaptor.getValue();
+        assertThat(domainObjectSelectionEvent.getDomainObject()).isEqualTo(domainObject);
+    }
+
+    private void assertNOPDomainObjectSelection() {
+        verify(domainObjectSelectionEvent).fire(domainObjectSelectionEventCaptor.capture());
+
+        final DomainObjectSelectionEvent domainObjectSelectionEvent = domainObjectSelectionEventCaptor.getValue();
+        assertThat(domainObjectSelectionEvent.getDomainObject()).isInstanceOf(NOPDomainObject.class);
     }
 }

@@ -39,4 +39,10 @@ public class DMNAPIConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String BusinessKnowledgeModel_DomainObjectName = "BusinessKnowledgeModel.DomainObjectName";
+
+    @TranslationKey(defaultValue = "")
+    public static final String InputClause_DomainObjectName = "InputClause.DomainObjectName";
+
+    @TranslationKey(defaultValue = "")
+    public static final String OutputClause_DomainObjectName = "OutputClause.DomainObjectName";
 }

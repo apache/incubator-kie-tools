@@ -45,7 +45,7 @@ public class DecisionTableDefaultValueUtilities {
         for (InputClause ic : dtable.getInput()) {
             final LiteralExpression le = ic.getInputExpression();
             if (le != null) {
-                final Optional<Integer> index = DefaultValueUtilities.extractIndex(le.getText(), INPUT_CLAUSE_PREFIX);
+                final Optional<Integer> index = DefaultValueUtilities.extractIndex(le.getText().getValue(), INPUT_CLAUSE_PREFIX);
                 if (index.isPresent()) {
                     maxIndex = Math.max(maxIndex, index.get());
                 }

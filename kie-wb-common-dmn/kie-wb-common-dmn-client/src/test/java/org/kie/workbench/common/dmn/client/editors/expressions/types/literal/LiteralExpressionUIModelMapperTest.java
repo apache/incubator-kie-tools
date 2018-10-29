@@ -70,12 +70,12 @@ public class LiteralExpressionUIModelMapperTest {
     public void testFromDmn_Empty() throws Exception {
         mapper.fromDMNModel(0, 0);
 
-        assertNull(((BaseGridCellValue) uiModel.getCell(0, 0).getValue()).getValue());
+        assertEquals("", ((BaseGridCellValue) uiModel.getCell(0, 0).getValue()).getValue());
     }
 
     @Test
     public void testFromDmn_MultiByte() throws Exception {
-        literalExpression.setText("学校");
+        literalExpression.getText().setValue("学校");
         mapper.fromDMNModel(0, 0);
 
         assertEquals("学校", ((BaseGridCellValue) uiModel.getCell(0, 0).getValue()).getValue());
@@ -92,20 +92,20 @@ public class LiteralExpressionUIModelMapperTest {
     public void testToDmn_Null() throws Exception {
         mapper.toDMNModel(0, 0, () -> Optional.of(new BaseGridCellValue<>(null)));
 
-        assertNull(literalExpression.getText());
+        assertNull(literalExpression.getText().getValue());
     }
 
     @Test
     public void testToDmn_Empty() throws Exception {
         mapper.toDMNModel(0, 0, () -> Optional.of(new BaseGridCellValue<>("")));
 
-        assertEquals("", literalExpression.getText());
+        assertEquals("", literalExpression.getText().getValue());
     }
 
     @Test
     public void testToDmn_MultiByte() throws Exception {
         mapper.toDMNModel(0, 0, () -> Optional.of(new BaseGridCellValue<>("学校")));
 
-        assertEquals("学校", literalExpression.getText());
+        assertEquals("学校", literalExpression.getText().getValue());
     }
 }

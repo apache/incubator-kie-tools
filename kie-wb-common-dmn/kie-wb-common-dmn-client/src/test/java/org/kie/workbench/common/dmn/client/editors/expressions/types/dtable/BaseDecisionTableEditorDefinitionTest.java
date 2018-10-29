@@ -162,7 +162,7 @@ public abstract class BaseDecisionTableEditorDefinitionTest {
         final List<InputClause> input = model.getInput();
         assertThat(input.size()).isEqualTo(1);
         assertThat(input.get(0).getInputExpression()).isInstanceOf(LiteralExpression.class);
-        assertThat(input.get(0).getInputExpression().getText()).isEqualTo(DecisionTableDefaultValueUtilities.INPUT_CLAUSE_PREFIX + "1");
+        assertThat(input.get(0).getInputExpression().getText().getValue()).isEqualTo(DecisionTableDefaultValueUtilities.INPUT_CLAUSE_PREFIX + "1");
     }
 
     protected void assertStandardOutputClauseEnrichment(final DecisionTable model) {
@@ -181,13 +181,13 @@ public abstract class BaseDecisionTableEditorDefinitionTest {
         assertThat(rule.getInputEntry().size()).isEqualTo(inputClauseCount);
         rule.getInputEntry().forEach(inputEntry -> {
             assertThat(inputEntry).isInstanceOf(UnaryTests.class);
-            assertThat(inputEntry.getText()).isEqualTo(DecisionTableDefaultValueUtilities.INPUT_CLAUSE_UNARY_TEST_TEXT);
+            assertThat(inputEntry.getText().getValue()).isEqualTo(DecisionTableDefaultValueUtilities.INPUT_CLAUSE_UNARY_TEST_TEXT);
         });
 
         assertThat(rule.getOutputEntry().size()).isEqualTo(outputClauseCount);
         rule.getOutputEntry().forEach(outputEntry -> {
             assertThat(outputEntry).isInstanceOf(LiteralExpression.class);
-            assertThat(outputEntry.getText()).isEqualTo(DecisionTableDefaultValueUtilities.OUTPUT_CLAUSE_EXPRESSION_TEXT);
+            assertThat(outputEntry.getText().getValue()).isEqualTo(DecisionTableDefaultValueUtilities.OUTPUT_CLAUSE_EXPRESSION_TEXT);
         });
 
         assertThat(rule.getDescription()).isNotNull();

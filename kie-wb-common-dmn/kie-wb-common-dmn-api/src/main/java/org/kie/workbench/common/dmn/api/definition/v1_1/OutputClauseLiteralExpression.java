@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,11 +23,13 @@ import org.kie.soup.commons.util.Sets;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.ExpressionLanguage;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
+import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.property.dmn.Text;
 import org.kie.workbench.common.dmn.api.resource.i18n.DMNAPIConstants;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
+import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSettings;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
@@ -40,14 +42,20 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers.nestedForms.AbstractEmbeddedFormsInitializer.COLLAPSIBLE_CONTAINER;
 import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers.nestedForms.AbstractEmbeddedFormsInitializer.FIELD_CONTAINER_PARAM;
 
+/**
+ * This is in essence a clone of {@link LiteralExpression} specifically for {@link OutputClause}
+ * to expose the {@link Text} as a Form Property to the Dynamic Forms Engine with a specific
+ * label for "Default Output value".
+ */
 @Portable
 @Bindable
 @Definition(graphFactory = NodeFactory.class)
 @FormDefinition(policy = FieldPolicy.ONLY_MARKED,
         defaultFieldSettings = {@FieldParam(name = FIELD_CONTAINER_PARAM, value = COLLAPSIBLE_CONTAINER)},
+        i18n = @I18nSettings(keyPreffix = "org.kie.workbench.common.dmn.api.definition.v1_1.OutputClauseLiteralExpression"),
         startElement = "id")
-public class UnaryTests extends DMNElement implements IsUnaryTests,
-                                                      DomainObject {
+public class OutputClauseLiteralExpression extends Expression implements IsLiteralExpression,
+                                                                         DomainObject {
 
     @Category
     private static final String stunnerCategory = Categories.DOMAIN_OBJECTS;
@@ -55,26 +63,36 @@ public class UnaryTests extends DMNElement implements IsUnaryTests,
     @Labels
     private static final Set<String> stunnerLabels = new Sets.Builder<String>().build();
 
-    private Text text;
+    @Property
+    @FormField(afterElement = "description", labelKey = "text")
+    protected Text text;
+
+    protected ImportedValues importedValues;
 
     @Property
     @FormField(afterElement = "description")
     protected ExpressionLanguage expressionLanguage;
 
-    public UnaryTests() {
+    public OutputClauseLiteralExpression() {
         this(new Id(),
              new Description(),
+             new QName(),
              new Text(),
+             null,
              new ExpressionLanguage());
     }
 
-    public UnaryTests(final Id id,
-                      final Description description,
-                      final Text text,
-                      final ExpressionLanguage expressionLanguage) {
+    public OutputClauseLiteralExpression(final Id id,
+                                         final Description description,
+                                         final QName typeRef,
+                                         final Text text,
+                                         final ImportedValues importedValues,
+                                         final ExpressionLanguage expressionLanguage) {
         super(id,
-              description);
+              description,
+              typeRef);
         this.text = text;
+        this.importedValues = importedValues;
         this.expressionLanguage = expressionLanguage;
     }
 
@@ -94,20 +112,31 @@ public class UnaryTests extends DMNElement implements IsUnaryTests,
     // DMN properties
     // -----------------------
 
+    @Override
     public Text getText() {
         return text;
     }
 
-    public void setText(final Text value) {
-        this.text = value;
+    public void setText(final Text text) {
+        this.text = text;
     }
 
+    @Override
+    public ImportedValues getImportedValues() {
+        return importedValues;
+    }
+
+    public void setImportedValues(final ImportedValues importedValues) {
+        this.importedValues = importedValues;
+    }
+
+    @Override
     public ExpressionLanguage getExpressionLanguage() {
         return expressionLanguage;
     }
 
-    public void setExpressionLanguage(final ExpressionLanguage value) {
-        this.expressionLanguage = value;
+    public void setExpressionLanguage(final ExpressionLanguage expressionLanguage) {
+        this.expressionLanguage = expressionLanguage;
     }
 
     // ------------------------------------------------------
@@ -121,7 +150,7 @@ public class UnaryTests extends DMNElement implements IsUnaryTests,
 
     @Override
     public String getDomainObjectNameTranslationKey() {
-        return DMNAPIConstants.UnaryTests_DomainObjectName;
+        return DMNAPIConstants.LiteralExpression_DomainObjectName;
     }
 
     @Override
@@ -129,11 +158,11 @@ public class UnaryTests extends DMNElement implements IsUnaryTests,
         if (this == o) {
             return true;
         }
-        if (!(o instanceof UnaryTests)) {
+        if (!(o instanceof OutputClauseLiteralExpression)) {
             return false;
         }
 
-        final UnaryTests that = (UnaryTests) o;
+        final OutputClauseLiteralExpression that = (OutputClauseLiteralExpression) o;
 
         if (id != null ? !id.equals(that.id) : that.id != null) {
             return false;
@@ -141,7 +170,13 @@ public class UnaryTests extends DMNElement implements IsUnaryTests,
         if (description != null ? !description.equals(that.description) : that.description != null) {
             return false;
         }
+        if (typeRef != null ? !typeRef.equals(that.typeRef) : that.typeRef != null) {
+            return false;
+        }
         if (text != null ? !text.equals(that.text) : that.text != null) {
+            return false;
+        }
+        if (importedValues != null ? !importedValues.equals(that.importedValues) : that.importedValues != null) {
             return false;
         }
         return expressionLanguage != null ? expressionLanguage.equals(that.expressionLanguage) : that.expressionLanguage == null;
@@ -151,7 +186,9 @@ public class UnaryTests extends DMNElement implements IsUnaryTests,
     public int hashCode() {
         return HashUtil.combineHashCodes(id != null ? id.hashCode() : 0,
                                          description != null ? description.hashCode() : 0,
+                                         typeRef != null ? typeRef.hashCode() : 0,
                                          text != null ? text.hashCode() : 0,
+                                         importedValues != null ? importedValues.hashCode() : 0,
                                          expressionLanguage != null ? expressionLanguage.hashCode() : 0);
     }
 }

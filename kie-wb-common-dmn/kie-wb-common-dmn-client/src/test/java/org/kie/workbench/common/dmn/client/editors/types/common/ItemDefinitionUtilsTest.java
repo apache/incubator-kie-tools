@@ -28,6 +28,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
 import org.kie.workbench.common.dmn.api.definition.v1_1.UnaryTests;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.dmn.api.property.dmn.Text;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.mockito.Mock;
 
@@ -165,7 +166,7 @@ public class ItemDefinitionUtilsTest {
         final UnaryTests allowedValues = mock(UnaryTests.class);
         final String expectedText = "(1..10)";
 
-        when(allowedValues.getText()).thenReturn(expectedText);
+        when(allowedValues.getText()).thenReturn(new Text(expectedText));
         when(itemDefinition.getAllowedValues()).thenReturn(allowedValues);
 
         final String actualText = utils.getConstraintText(itemDefinition);

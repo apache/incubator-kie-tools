@@ -173,7 +173,7 @@ public class DeleteRelationRowCommandTest {
     public void testGraphCommandUndoWithColumns() {
         relation.getColumn().add(new InformationItem());
         final LiteralExpression literalExpression = new LiteralExpression();
-        literalExpression.setText(VALUE);
+        literalExpression.getText().setValue(VALUE);
         relation.getRow().get(0).getExpression().add(literalExpression);
 
         final Command<GraphCommandExecutionContext, RuleViolation> c = command.newGraphCommand(handler);
@@ -190,7 +190,7 @@ public class DeleteRelationRowCommandTest {
         assertEquals(1,
                      relation.getRow().get(0).getExpression().size());
         assertEquals(VALUE,
-                     ((LiteralExpression) relation.getRow().get(0).getExpression().get(0)).getText());
+                     ((LiteralExpression) relation.getRow().get(0).getExpression().get(0)).getText().getValue());
     }
 
     @Test
@@ -297,7 +297,7 @@ public class DeleteRelationRowCommandTest {
     public void testCanvasCommandUndoWithColumns() {
         relation.getColumn().add(new InformationItem());
         final LiteralExpression literalExpression = new LiteralExpression();
-        literalExpression.setText(VALUE);
+        literalExpression.getText().setValue(VALUE);
         relation.getRow().get(0).getExpression().add(literalExpression);
         uiModel.appendColumn(uiModelColumn);
         uiModelMapper.fromDMNModel(0, 0);

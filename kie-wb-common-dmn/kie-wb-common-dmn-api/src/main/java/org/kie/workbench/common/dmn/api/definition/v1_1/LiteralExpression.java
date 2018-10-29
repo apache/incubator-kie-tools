@@ -24,6 +24,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.ExpressionLanguage;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.dmn.api.property.dmn.Text;
 import org.kie.workbench.common.dmn.api.resource.i18n.DMNAPIConstants;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
@@ -43,8 +44,11 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 @Portable
 @Bindable
 @Definition(graphFactory = NodeFactory.class)
-@FormDefinition(policy = FieldPolicy.ONLY_MARKED, defaultFieldSettings = {@FieldParam(name = FIELD_CONTAINER_PARAM, value = COLLAPSIBLE_CONTAINER)})
-public class LiteralExpression extends Expression implements DomainObject {
+@FormDefinition(policy = FieldPolicy.ONLY_MARKED,
+        defaultFieldSettings = {@FieldParam(name = FIELD_CONTAINER_PARAM, value = COLLAPSIBLE_CONTAINER)},
+        startElement = "id")
+public class LiteralExpression extends Expression implements IsLiteralExpression,
+                                                             DomainObject {
 
     @Category
     private static final String stunnerCategory = Categories.DOMAIN_OBJECTS;
@@ -52,7 +56,7 @@ public class LiteralExpression extends Expression implements DomainObject {
     @Labels
     private static final Set<String> stunnerLabels = new Sets.Builder<String>().build();
 
-    protected String text;
+    protected Text text;
 
     protected ImportedValues importedValues;
 
@@ -64,7 +68,7 @@ public class LiteralExpression extends Expression implements DomainObject {
         this(new Id(),
              new Description(),
              new QName(),
-             null,
+             new Text(),
              null,
              new ExpressionLanguage());
     }
@@ -72,7 +76,7 @@ public class LiteralExpression extends Expression implements DomainObject {
     public LiteralExpression(final Id id,
                              final org.kie.workbench.common.dmn.api.property.dmn.Description description,
                              final QName typeRef,
-                             final String text,
+                             final Text text,
                              final ImportedValues importedValues,
                              final ExpressionLanguage expressionLanguage) {
         super(id,
@@ -99,14 +103,16 @@ public class LiteralExpression extends Expression implements DomainObject {
     // DMN properties
     // -----------------------
 
-    public String getText() {
+    @Override
+    public Text getText() {
         return text;
     }
 
-    public void setText(final String text) {
+    public void setText(final Text text) {
         this.text = text;
     }
 
+    @Override
     public ImportedValues getImportedValues() {
         return importedValues;
     }
@@ -115,6 +121,7 @@ public class LiteralExpression extends Expression implements DomainObject {
         this.importedValues = importedValues;
     }
 
+    @Override
     public ExpressionLanguage getExpressionLanguage() {
         return expressionLanguage;
     }

@@ -15,34 +15,72 @@
  */
 package org.kie.workbench.common.dmn.api.definition.v1_1;
 
+import java.util.Set;
+
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.jboss.errai.databinding.client.api.Bindable;
+import org.kie.soup.commons.util.Sets;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.dmn.api.resource.i18n.DMNAPIConstants;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
+import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSettings;
+import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
+import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
+import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
+import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
+import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
+import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
+import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
-@Portable
-public class OutputClause extends DMNElement implements HasTypeRef {
+import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers.nestedForms.AbstractEmbeddedFormsInitializer.COLLAPSIBLE_CONTAINER;
+import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers.nestedForms.AbstractEmbeddedFormsInitializer.FIELD_CONTAINER_PARAM;
 
-    private UnaryTests outputValues;
-    private LiteralExpression defaultOutputEntry;
+@Portable
+@Bindable
+@Definition(graphFactory = NodeFactory.class)
+@FormDefinition(policy = FieldPolicy.ONLY_MARKED,
+        defaultFieldSettings = {@FieldParam(name = FIELD_CONTAINER_PARAM, value = COLLAPSIBLE_CONTAINER)},
+        i18n = @I18nSettings(keyPreffix = "org.kie.workbench.common.dmn.api.definition.v1_1.OutputClause"),
+        startElement = "id")
+public class OutputClause extends DMNElement implements HasTypeRef,
+                                                        DomainObject {
+
+    @Category
+    private static final String stunnerCategory = Categories.DOMAIN_OBJECTS;
+
+    @Labels
+    private static final Set<String> stunnerLabels = new Sets.Builder<String>().build();
+
+    @PropertySet
+    @FormField(afterElement = "description", labelKey = "outputValues")
+    protected OutputClauseUnaryTests outputValues;
+
+    @PropertySet
+    @FormField(afterElement = "outputValues", labelKey = "defaultOutputEntry")
+    protected OutputClauseLiteralExpression defaultOutputEntry;
+
     private String name;
     private QName typeRef;
 
     public OutputClause() {
         this(new Id(),
              new Description(),
-             null,
-             null,
+             new OutputClauseUnaryTests(),
+             new OutputClauseLiteralExpression(),
              null,
              new QName());
     }
 
     public OutputClause(final Id id,
                         final Description description,
-                        final UnaryTests outputValues,
-                        final LiteralExpression defaultOutputEntry,
+                        final OutputClauseUnaryTests outputValues,
+                        final OutputClauseLiteralExpression defaultOutputEntry,
                         final String name,
                         final QName typeRef) {
         super(id,
@@ -53,19 +91,35 @@ public class OutputClause extends DMNElement implements HasTypeRef {
         this.typeRef = typeRef;
     }
 
-    public UnaryTests getOutputValues() {
+    // -----------------------
+    // Stunner core properties
+    // -----------------------
+
+    public String getStunnerCategory() {
+        return stunnerCategory;
+    }
+
+    public Set<String> getStunnerLabels() {
+        return stunnerLabels;
+    }
+
+    // -----------------------
+    // DMN properties
+    // -----------------------
+
+    public OutputClauseUnaryTests getOutputValues() {
         return outputValues;
     }
 
-    public void setOutputValues(final UnaryTests value) {
+    public void setOutputValues(final OutputClauseUnaryTests value) {
         this.outputValues = value;
     }
 
-    public LiteralExpression getDefaultOutputEntry() {
+    public OutputClauseLiteralExpression getDefaultOutputEntry() {
         return defaultOutputEntry;
     }
 
-    public void setDefaultOutputEntry(final LiteralExpression value) {
+    public void setDefaultOutputEntry(final OutputClauseLiteralExpression value) {
         this.defaultOutputEntry = value;
     }
 
@@ -90,6 +144,20 @@ public class OutputClause extends DMNElement implements HasTypeRef {
     @Override
     public DMNModelInstrumentedBase asDMNModelInstrumentedBase() {
         return this;
+    }
+
+    // ------------------------------------------------------
+    // DomainObject requirements - to use in Properties Panel
+    // ------------------------------------------------------
+
+    @Override
+    public String getDomainObjectUUID() {
+        return getId().getValue();
+    }
+
+    @Override
+    public String getDomainObjectNameTranslationKey() {
+        return DMNAPIConstants.OutputClause_DomainObjectName;
     }
 
     @Override

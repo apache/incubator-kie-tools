@@ -110,8 +110,8 @@ public class MoveRowsCommandTest {
                 setName(new Name(variable));
             }});
             setExpression(new LiteralExpression() {{
-                setText(makeLiteralExpression(variable,
-                                              context.getContextEntry().size()));
+                getText().setValue(makeLiteralExpression(variable,
+                                                         context.getContextEntry().size()));
             }});
         }});
     }
@@ -252,7 +252,7 @@ public class MoveRowsCommandTest {
             assertEquals(rowValueBases[iiRowIndexIterator],
                          context.getContextEntry().get(iiRowIndex).getVariable().getName().getValue());
             assertEquals(makeLiteralExpression(rowValueBases[iiRowIndexIterator], iiRowIndexIterator),
-                         ((LiteralExpression) context.getContextEntry().get(iiRowIndex).getExpression()).getText());
+                         ((LiteralExpression) context.getContextEntry().get(iiRowIndex).getExpression()).getText().getValue());
             iiRowIndexIterator++;
         }
     }

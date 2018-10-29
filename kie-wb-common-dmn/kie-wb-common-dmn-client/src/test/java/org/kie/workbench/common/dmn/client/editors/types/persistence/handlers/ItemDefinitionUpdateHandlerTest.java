@@ -27,6 +27,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
 import org.kie.workbench.common.dmn.api.definition.v1_1.UnaryTests;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.dmn.api.property.dmn.Text;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManager;
 import org.kie.workbench.common.dmn.client.editors.types.common.ItemDefinitionUtils;
@@ -186,7 +187,7 @@ public class ItemDefinitionUpdateHandlerTest {
         final String expectedText = "(1..20)";
 
         when(itemDefinition.getAllowedValues()).thenReturn(expectedAllowedValues);
-        when(expectedAllowedValues.getText()).thenReturn(expectedText);
+        when(expectedAllowedValues.getText()).thenReturn(new Text(expectedText));
         when(dataType.getConstraint()).thenReturn(expectedText);
 
         final UnaryTests actualAllowedValues = handler.makeAllowedValues(dataType, itemDefinition);
@@ -207,7 +208,7 @@ public class ItemDefinitionUpdateHandlerTest {
 
         assertNotNull(actualAllowedValues.getId());
         assertNotNull(actualAllowedValues.getDescription());
-        assertEquals(expectedText, actualAllowedValues.getText());
+        assertEquals(expectedText, actualAllowedValues.getText().getValue());
         assertNull(actualAllowedValues.getExpressionLanguage());
     }
 }

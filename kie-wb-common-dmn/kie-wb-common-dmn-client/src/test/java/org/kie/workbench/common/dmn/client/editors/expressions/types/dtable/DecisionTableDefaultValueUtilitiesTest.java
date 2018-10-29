@@ -40,15 +40,15 @@ public class DecisionTableDefaultValueUtilitiesTest {
             setInputExpression(new LiteralExpression());
         }};
         dtable.getInput().add(inputClause1);
-        inputClause1.getInputExpression().setText(DecisionTableDefaultValueUtilities.getNewInputClauseName(dtable));
-        assertThat(inputClause1.getInputExpression().getText()).isEqualTo(DecisionTableDefaultValueUtilities.INPUT_CLAUSE_PREFIX + "1");
+        inputClause1.getInputExpression().getText().setValue(DecisionTableDefaultValueUtilities.getNewInputClauseName(dtable));
+        assertThat(inputClause1.getInputExpression().getText().getValue()).isEqualTo(DecisionTableDefaultValueUtilities.INPUT_CLAUSE_PREFIX + "1");
 
         final InputClause inputClause2 = new InputClause() {{
             setInputExpression(new LiteralExpression());
         }};
         dtable.getInput().add(inputClause2);
-        inputClause2.getInputExpression().setText(DecisionTableDefaultValueUtilities.getNewInputClauseName(dtable));
-        assertThat(inputClause2.getInputExpression().getText()).isEqualTo(DecisionTableDefaultValueUtilities.INPUT_CLAUSE_PREFIX + "2");
+        inputClause2.getInputExpression().getText().setValue(DecisionTableDefaultValueUtilities.getNewInputClauseName(dtable));
+        assertThat(inputClause2.getInputExpression().getText().getValue()).isEqualTo(DecisionTableDefaultValueUtilities.INPUT_CLAUSE_PREFIX + "2");
     }
 
     @Test
@@ -57,14 +57,14 @@ public class DecisionTableDefaultValueUtilitiesTest {
             setInputExpression(new LiteralExpression());
         }};
         dtable.getInput().add(inputClause1);
-        inputClause1.getInputExpression().setText("input");
+        inputClause1.getInputExpression().getText().setValue("input");
 
         final InputClause inputClause2 = new InputClause() {{
             setInputExpression(new LiteralExpression());
         }};
         dtable.getInput().add(inputClause2);
-        inputClause2.getInputExpression().setText(DecisionTableDefaultValueUtilities.getNewInputClauseName(dtable));
-        assertThat(inputClause2.getInputExpression().getText()).isEqualTo(DecisionTableDefaultValueUtilities.INPUT_CLAUSE_PREFIX + "1");
+        inputClause2.getInputExpression().getText().setValue(DecisionTableDefaultValueUtilities.getNewInputClauseName(dtable));
+        assertThat(inputClause2.getInputExpression().getText().getValue()).isEqualTo(DecisionTableDefaultValueUtilities.INPUT_CLAUSE_PREFIX + "1");
     }
 
     @Test
@@ -73,15 +73,15 @@ public class DecisionTableDefaultValueUtilitiesTest {
             setInputExpression(new LiteralExpression());
         }};
         dtable.getInput().add(inputClause1);
-        inputClause1.getInputExpression().setText(DecisionTableDefaultValueUtilities.getNewInputClauseName(dtable));
-        assertThat(inputClause1.getInputExpression().getText()).isEqualTo(DecisionTableDefaultValueUtilities.INPUT_CLAUSE_PREFIX + "1");
+        inputClause1.getInputExpression().getText().setValue(DecisionTableDefaultValueUtilities.getNewInputClauseName(dtable));
+        assertThat(inputClause1.getInputExpression().getText().getValue()).isEqualTo(DecisionTableDefaultValueUtilities.INPUT_CLAUSE_PREFIX + "1");
 
         final InputClause inputClause2 = new InputClause() {{
             setInputExpression(new LiteralExpression());
         }};
         dtable.getInput().add(inputClause2);
-        inputClause2.getInputExpression().setText(DecisionTableDefaultValueUtilities.getNewInputClauseName(dtable));
-        assertThat(inputClause2.getInputExpression().getText()).isEqualTo(DecisionTableDefaultValueUtilities.INPUT_CLAUSE_PREFIX + "2");
+        inputClause2.getInputExpression().getText().setValue(DecisionTableDefaultValueUtilities.getNewInputClauseName(dtable));
+        assertThat(inputClause2.getInputExpression().getText().getValue()).isEqualTo(DecisionTableDefaultValueUtilities.INPUT_CLAUSE_PREFIX + "2");
 
         dtable.getInput().remove(inputClause1);
 
@@ -89,8 +89,8 @@ public class DecisionTableDefaultValueUtilitiesTest {
             setInputExpression(new LiteralExpression());
         }};
         dtable.getInput().add(inputClause3);
-        inputClause3.getInputExpression().setText(DecisionTableDefaultValueUtilities.getNewInputClauseName(dtable));
-        assertThat(inputClause3.getInputExpression().getText()).isEqualTo(DecisionTableDefaultValueUtilities.INPUT_CLAUSE_PREFIX + "3");
+        inputClause3.getInputExpression().getText().setValue(DecisionTableDefaultValueUtilities.getNewInputClauseName(dtable));
+        assertThat(inputClause3.getInputExpression().getText().getValue()).isEqualTo(DecisionTableDefaultValueUtilities.INPUT_CLAUSE_PREFIX + "3");
     }
 
     @Test

@@ -1123,7 +1123,7 @@ public class DMNMarshallerTest {
         assertNotNull(expression.getContextEntry().get(0).getExpression()); // DROOLS-3116 empty Literal Expression is preserved
         assertEquals(LiteralExpression.class, expression.getContextEntry().get(0).getExpression().getClass());
         LiteralExpression le = (LiteralExpression) expression.getContextEntry().get(0).getExpression();
-        assertEquals("", le.getText()); // DROOLS-3152
+        assertEquals("", le.getText().getValue()); // DROOLS-3152
     }
 
     @Test
@@ -1162,7 +1162,7 @@ public class DMNMarshallerTest {
         assertNotNull(expression); // DROOLS-3116 empty Literal Expression is preserved
         assertEquals(LiteralExpression.class, expression.getClass());
         LiteralExpression le = (LiteralExpression) expression;
-        assertEquals("", le.getText()); // DROOLS-3152
+        assertEquals("", le.getText().getValue()); // DROOLS-3152
     }
 
     @Test
@@ -1245,7 +1245,7 @@ public class DMNMarshallerTest {
         final ContextEntry contextEntry = new ContextEntry();
         final LiteralExpression literalExpression = new LiteralExpression();
         literalExpression.setTypeRef(BuiltInType.BOOLEAN.asQName());
-        literalExpression.setText("feel");
+        literalExpression.getText().setValue("feel");
         contextEntry.setExpression(literalExpression);
         context.getContextEntry().add(contextEntry);
 

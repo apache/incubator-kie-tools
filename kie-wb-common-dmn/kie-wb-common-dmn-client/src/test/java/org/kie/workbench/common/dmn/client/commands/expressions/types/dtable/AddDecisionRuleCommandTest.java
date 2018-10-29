@@ -182,7 +182,7 @@ public class AddDecisionRuleCommandTest {
 
         for (int inputIndex = 0; inputIndex < inputsCount; inputIndex++) {
             assertTrue(rule.getInputEntry().get(inputIndex).getText() != null);
-            assertEquals(DecisionTableDefaultValueUtilities.INPUT_CLAUSE_UNARY_TEST_TEXT, rule.getInputEntry().get(inputIndex).getText());
+            assertEquals(DecisionTableDefaultValueUtilities.INPUT_CLAUSE_UNARY_TEST_TEXT, rule.getInputEntry().get(inputIndex).getText().getValue());
             assertEquals(rule, rule.getInputEntry().get(inputIndex).getParent());
         }
 
@@ -213,7 +213,7 @@ public class AddDecisionRuleCommandTest {
 
         for (int outputIndex = 0; outputIndex < outputsCount; outputIndex++) {
             assertTrue(rule.getOutputEntry().get(outputIndex).getText() != null);
-            assertEquals(DecisionTableDefaultValueUtilities.OUTPUT_CLAUSE_EXPRESSION_TEXT, rule.getOutputEntry().get(outputIndex).getText());
+            assertEquals(DecisionTableDefaultValueUtilities.OUTPUT_CLAUSE_EXPRESSION_TEXT, rule.getOutputEntry().get(outputIndex).getText().getValue());
             assertEquals(rule, rule.getOutputEntry().get(outputIndex).getParent());
         }
 

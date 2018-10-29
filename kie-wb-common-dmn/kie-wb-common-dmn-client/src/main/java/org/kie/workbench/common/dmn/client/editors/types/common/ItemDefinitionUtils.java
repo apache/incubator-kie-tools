@@ -27,6 +27,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.Definitions;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
 import org.kie.workbench.common.dmn.api.definition.v1_1.UnaryTests;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.dmn.api.property.dmn.Text;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 
 @Dependent
@@ -58,7 +59,8 @@ public class ItemDefinitionUtils {
         return Optional
                 .ofNullable(itemDefinition.getAllowedValues())
                 .map(UnaryTests::getText)
-                .orElse("");
+                .orElse(new Text())
+                .getValue();
     }
 
     public QName normaliseTypeRef(final QName typeRef) {

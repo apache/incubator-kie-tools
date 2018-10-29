@@ -28,12 +28,15 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.BuiltinAggregator;
+import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionRule;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTableOrientation;
 import org.kie.workbench.common.dmn.api.definition.v1_1.HitPolicy;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InputClause;
+import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.OutputClause;
+import org.kie.workbench.common.dmn.api.definition.v1_1.UnaryTests;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.AddDecisionRuleCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.AddInputClauseCommand;
@@ -69,6 +72,7 @@ import org.kie.workbench.common.stunner.core.client.command.SessionCommandManage
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
+import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
@@ -199,12 +203,12 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
 
             @Override
             public Name getName() {
-                return new Name(inputClause.getInputExpression().getText());
+                return new Name(inputClause.getInputExpression().getText().getValue());
             }
 
             @Override
             public void setName(final Name name) {
-                inputClause.getInputExpression().setText(name.getValue());
+                inputClause.getInputExpression().getText().setValue(name.getValue());
             }
         };
     }
@@ -535,5 +539,59 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
                                                                     orientation,
                                                                     gridLayer::batch));
         });
+    }
+
+    @Override
+    protected void doAfterSelectionChange(final int uiRowIndex,
+                                          final int uiColumnIndex) {
+        if (expression.isPresent()) {
+            final DecisionTable dtable = expression.get();
+            final DecisionTableUIModelMapperHelper.DecisionTableSection section = DecisionTableUIModelMapperHelper.getSection(dtable, uiColumnIndex);
+            switch (section) {
+                case INPUT_CLAUSES:
+                    final int icIndex = DecisionTableUIModelMapperHelper.getInputEntryIndex(dtable, uiColumnIndex);
+                    final UnaryTests unaryTests = dtable.getRule().get(uiRowIndex).getInputEntry().get(icIndex);
+                    fireDomainObjectSelectionEvent(unaryTests);
+                    return;
+                case OUTPUT_CLAUSES:
+                    final int ocIndex = DecisionTableUIModelMapperHelper.getOutputEntryIndex(dtable, uiColumnIndex);
+                    final LiteralExpression literalExpression = dtable.getRule().get(uiRowIndex).getOutputEntry().get(ocIndex);
+                    fireDomainObjectSelectionEvent(literalExpression);
+                    return;
+            }
+        }
+        super.doAfterSelectionChange(uiRowIndex, uiColumnIndex);
+    }
+
+    @Override
+    protected void doAfterHeaderSelectionChange(final int uiHeaderRowIndex,
+                                                final int uiHeaderColumnIndex) {
+        if (expression.isPresent()) {
+            final DecisionTable dtable = expression.get();
+            final DecisionTableUIModelMapperHelper.DecisionTableSection section = DecisionTableUIModelMapperHelper.getSection(dtable, uiHeaderColumnIndex);
+            switch (section) {
+                case INPUT_CLAUSES:
+                    final int icIndex = DecisionTableUIModelMapperHelper.getInputEntryIndex(dtable, uiHeaderColumnIndex);
+                    final InputClause inputClause = dtable.getInput().get(icIndex);
+                    fireDomainObjectSelectionEvent(inputClause);
+                    return;
+                case OUTPUT_CLAUSES:
+                    final List<GridColumn.HeaderMetaData> headerMetaData = model.getColumns().get(uiHeaderColumnIndex).getHeaderMetaData();
+                    if (headerMetaData.size() > 1) {
+                        if (uiHeaderRowIndex == 0) {
+                            final DMNModelInstrumentedBase base = hasExpression.asDMNModelInstrumentedBase();
+                            if (base instanceof DomainObject) {
+                                fireDomainObjectSelectionEvent((DomainObject) base);
+                                return;
+                            }
+                        }
+                    }
+                    final int ocIndex = DecisionTableUIModelMapperHelper.getOutputEntryIndex(dtable, uiHeaderColumnIndex);
+                    final OutputClause outputClause = dtable.getOutput().get(ocIndex);
+                    fireDomainObjectSelectionEvent(outputClause);
+                    return;
+            }
+        }
+        super.doAfterHeaderSelectionChange(uiHeaderRowIndex, uiHeaderColumnIndex);
     }
 }

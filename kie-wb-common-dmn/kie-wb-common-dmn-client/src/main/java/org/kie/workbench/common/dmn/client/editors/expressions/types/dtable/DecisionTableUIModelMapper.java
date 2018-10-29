@@ -60,14 +60,14 @@ public class DecisionTableUIModelMapper extends BaseUIModelMapper<DecisionTable>
                     final int iei = DecisionTableUIModelMapperHelper.getInputEntryIndex(dtable, columnIndex);
                     uiModel.get().setCell(rowIndex,
                                           columnIndex,
-                                          () -> new DecisionTableGridCell<>(new BaseGridCellValue<>(rule.getInputEntry().get(iei).getText()),
+                                          () -> new DecisionTableGridCell<>(new BaseGridCellValue<>(rule.getInputEntry().get(iei).getText().getValue()),
                                                                             listSelector));
                     break;
                 case OUTPUT_CLAUSES:
                     final int oei = DecisionTableUIModelMapperHelper.getOutputEntryIndex(dtable, columnIndex);
                     uiModel.get().setCell(rowIndex,
                                           columnIndex,
-                                          () -> new DecisionTableGridCell<>(new BaseGridCellValue<>(rule.getOutputEntry().get(oei).getText()),
+                                          () -> new DecisionTableGridCell<>(new BaseGridCellValue<>(rule.getOutputEntry().get(oei).getText().getValue()),
                                                                             listSelector));
                     break;
                 case DESCRIPTION:
@@ -92,11 +92,11 @@ public class DecisionTableUIModelMapper extends BaseUIModelMapper<DecisionTable>
                     break;
                 case INPUT_CLAUSES:
                     final int iei = DecisionTableUIModelMapperHelper.getInputEntryIndex(dtable, columnIndex);
-                    rule.getInputEntry().get(iei).setText(cell.get().orElse(new BaseGridCellValue<>("")).getValue().toString());
+                    rule.getInputEntry().get(iei).getText().setValue(cell.get().orElse(new BaseGridCellValue<>("")).getValue().toString());
                     break;
                 case OUTPUT_CLAUSES:
                     final int oei = DecisionTableUIModelMapperHelper.getOutputEntryIndex(dtable, columnIndex);
-                    rule.getOutputEntry().get(oei).setText(cell.get().orElse(new BaseGridCellValue<>("")).getValue().toString());
+                    rule.getOutputEntry().get(oei).getText().setValue(cell.get().orElse(new BaseGridCellValue<>("")).getValue().toString());
                     break;
                 case DESCRIPTION:
                     rule.getDescription().setValue(cell.get().orElse(new BaseGridCellValue<>("")).getValue().toString());

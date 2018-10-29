@@ -280,7 +280,7 @@ public class InvocationGridTest {
 
         expression = definition.getModelClass();
         definition.enrich(Optional.empty(), expression);
-        expression.ifPresent(invocation -> ((LiteralExpression) invocation.getExpression()).setText("invocation-expression"));
+        expression.ifPresent(invocation -> ((LiteralExpression) invocation.getExpression()).getText().setValue("invocation-expression"));
         final ExpressionEditorDefinitions expressionEditorDefinitions = new ExpressionEditorDefinitions();
         expressionEditorDefinitions.add((ExpressionEditorDefinition) definition);
         expressionEditorDefinitions.add(literalExpressionEditorDefinition);
@@ -444,7 +444,7 @@ public class InvocationGridTest {
         md2.setTitle(EXPRESSION_TEXT_NEW);
 
         assertEquals(EXPRESSION_TEXT_NEW,
-                     ((LiteralExpression) expression.get().getExpression()).getText());
+                     ((LiteralExpression) expression.get().getExpression()).getText().getValue());
     }
 
     @Test

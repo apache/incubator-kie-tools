@@ -84,13 +84,13 @@ public class AddDecisionRuleCommand extends AbstractCanvasGraphCommand implement
 
                 for (int ie = 0; ie < dtable.getInput().size(); ie++) {
                     final UnaryTests ut = new UnaryTests();
-                    ut.setText(DecisionTableDefaultValueUtilities.INPUT_CLAUSE_UNARY_TEST_TEXT);
+                    ut.getText().setValue(DecisionTableDefaultValueUtilities.INPUT_CLAUSE_UNARY_TEST_TEXT);
                     rule.getInputEntry().add(ut);
                     ut.setParent(rule);
                 }
                 for (int oe = 0; oe < dtable.getOutput().size(); oe++) {
                     final LiteralExpression le = new LiteralExpression();
-                    le.setText(DecisionTableDefaultValueUtilities.OUTPUT_CLAUSE_EXPRESSION_TEXT);
+                    le.getText().setValue(DecisionTableDefaultValueUtilities.OUTPUT_CLAUSE_EXPRESSION_TEXT);
                     rule.getOutputEntry().add(le);
                     le.setParent(rule);
                 }

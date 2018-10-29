@@ -89,10 +89,10 @@ public class DecisionTableUIModelMapperTest {
         this.dtable.getRule().add(new DecisionRule() {
             {
                 getInputEntry().add(new UnaryTests() {{
-                    setText("i1");
+                    getText().setValue("i1");
                 }});
                 getOutputEntry().add(new LiteralExpression() {{
-                    setText("o1");
+                    getText().setValue("o1");
                 }});
                 setDescription(new Description("desc1"));
             }
@@ -100,10 +100,10 @@ public class DecisionTableUIModelMapperTest {
         this.dtable.getRule().add(new DecisionRule() {
             {
                 getInputEntry().add(new UnaryTests() {{
-                    setText("i2");
+                    getText().setValue("i2");
                 }});
                 getOutputEntry().add(new LiteralExpression() {{
-                    setText("o2");
+                    getText().setValue("o2");
                 }});
                 setDescription(new Description("desc2"));
             }
@@ -181,10 +181,10 @@ public class DecisionTableUIModelMapperTest {
         mapper.toDMNModel(1, 1, () -> Optional.of(new BaseGridCellValue<>("value")));
 
         assertEquals("",
-                     dtable.getRule().get(0).getInputEntry().get(0).getText());
+                     dtable.getRule().get(0).getInputEntry().get(0).getText().getValue());
 
         assertEquals("value",
-                     dtable.getRule().get(1).getInputEntry().get(0).getText());
+                     dtable.getRule().get(1).getInputEntry().get(0).getText().getValue());
     }
 
     @Test
@@ -193,10 +193,10 @@ public class DecisionTableUIModelMapperTest {
         mapper.toDMNModel(1, 2, () -> Optional.of(new BaseGridCellValue<>("value")));
 
         assertEquals("",
-                     dtable.getRule().get(0).getOutputEntry().get(0).getText());
+                     dtable.getRule().get(0).getOutputEntry().get(0).getText().getValue());
 
         assertEquals("value",
-                     dtable.getRule().get(1).getOutputEntry().get(0).getText());
+                     dtable.getRule().get(1).getOutputEntry().get(0).getText().getValue());
     }
 
     @Test

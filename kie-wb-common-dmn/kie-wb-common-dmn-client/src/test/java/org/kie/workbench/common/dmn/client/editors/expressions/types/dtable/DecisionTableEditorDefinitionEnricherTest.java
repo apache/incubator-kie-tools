@@ -93,10 +93,10 @@ public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTable
         final List<InputClause> input = model.getInput();
         assertThat(input.size()).isEqualTo(2);
         assertThat(input.get(0).getInputExpression()).isInstanceOf(LiteralExpression.class);
-        assertThat(input.get(0).getInputExpression().getText()).isEqualTo(inputData2Name);
+        assertThat(input.get(0).getInputExpression().getText().getValue()).isEqualTo(inputData2Name);
         assertThat(input.get(0).getInputExpression().getTypeRef()).isEqualTo(inputData2QName);
         assertThat(input.get(1).getInputExpression()).isInstanceOf(LiteralExpression.class);
-        assertThat(input.get(1).getInputExpression().getText()).isEqualTo(inputData1Name);
+        assertThat(input.get(1).getInputExpression().getText().getValue()).isEqualTo(inputData1Name);
         assertThat(input.get(1).getInputExpression().getTypeRef()).isEqualTo(inputData1QName);
 
         assertStandardOutputClauseEnrichment(model);

@@ -31,6 +31,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
 import org.kie.workbench.common.dmn.api.definition.v1_1.UnaryTests;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.dmn.api.property.dmn.Text;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.kie.workbench.common.dmn.client.editors.types.messages.DataTypeFlashMessage;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.DataTypeStore;
@@ -616,7 +617,7 @@ public class DataTypeManagerTest {
         final ItemDefinition itemDefinition = makeItem(itemName, itemType, false, subItemDefinitions);
         final UnaryTests unaryTests = mock(UnaryTests.class);
 
-        when(unaryTests.getText()).thenReturn(constraint);
+        when(unaryTests.getText()).thenReturn(new Text(constraint));
         when(itemDefinition.getAllowedValues()).thenReturn(unaryTests);
 
         return itemDefinition;

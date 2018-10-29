@@ -17,8 +17,8 @@
 package org.kie.workbench.common.dmn.backend.definition.v1_1;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.InputClause;
+import org.kie.workbench.common.dmn.api.definition.v1_1.InputClauseUnaryTests;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
-import org.kie.workbench.common.dmn.api.definition.v1_1.UnaryTests;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 
@@ -28,9 +28,12 @@ public class InputClausePropertyConverter {
         Id id = new Id(dmn.getId());
         Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
         LiteralExpression inputExpression = LiteralExpressionPropertyConverter.wbFromDMN(dmn.getInputExpression());
-        UnaryTests inputValues = UnaryTestsPropertyConverter.wbFromDMN(dmn.getInputValues());
+        InputClauseUnaryTests inputValues = InputClauseUnaryTestsPropertyConverter.wbFromDMN(dmn.getInputValues());
 
-        InputClause result = new InputClause(id, description, inputExpression, inputValues);
+        InputClause result = new InputClause(id,
+                                             description,
+                                             inputExpression,
+                                             inputValues);
 
         if (inputExpression != null) {
             inputExpression.setParent(result);

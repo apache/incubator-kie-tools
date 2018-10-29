@@ -159,13 +159,13 @@ public class AddOutputClauseCommandTest {
         // first rule
         final List<LiteralExpression> outputEntriesRuleOne = dtable.getRule().get(0).getOutputEntry();
         assertEquals(1, outputEntriesRuleOne.size());
-        assertEquals(DecisionTableDefaultValueUtilities.OUTPUT_CLAUSE_EXPRESSION_TEXT, outputEntriesRuleOne.get(0).getText());
+        assertEquals(DecisionTableDefaultValueUtilities.OUTPUT_CLAUSE_EXPRESSION_TEXT, outputEntriesRuleOne.get(0).getText().getValue());
         assertEquals(dtable.getRule().get(0), outputEntriesRuleOne.get(0).getParent());
 
         // second rule
         final List<LiteralExpression> outputEntriesRuleTwo = dtable.getRule().get(1).getOutputEntry();
         assertEquals(1, outputEntriesRuleTwo.size());
-        assertEquals(DecisionTableDefaultValueUtilities.OUTPUT_CLAUSE_EXPRESSION_TEXT, outputEntriesRuleTwo.get(0).getText());
+        assertEquals(DecisionTableDefaultValueUtilities.OUTPUT_CLAUSE_EXPRESSION_TEXT, outputEntriesRuleTwo.get(0).getText().getValue());
         assertEquals(dtable.getRule().get(1), outputEntriesRuleTwo.get(0).getParent());
 
         assertEquals(dtable,
@@ -199,15 +199,15 @@ public class AddOutputClauseCommandTest {
         // first rule
         final List<LiteralExpression> outputEntriesRuleOne = dtable.getRule().get(0).getOutputEntry();
         assertEquals(2, outputEntriesRuleOne.size());
-        assertEquals(ruleOneOldOutput, outputEntriesRuleOne.get(1).getText());
-        assertEquals(DecisionTableDefaultValueUtilities.OUTPUT_CLAUSE_EXPRESSION_TEXT, outputEntriesRuleOne.get(0).getText());
+        assertEquals(ruleOneOldOutput, outputEntriesRuleOne.get(1).getText().getValue());
+        assertEquals(DecisionTableDefaultValueUtilities.OUTPUT_CLAUSE_EXPRESSION_TEXT, outputEntriesRuleOne.get(0).getText().getValue());
         assertEquals(dtable.getRule().get(0), outputEntriesRuleOne.get(0).getParent());
 
         // second rule
         final List<LiteralExpression> outputEntriesRuleTwo = dtable.getRule().get(1).getOutputEntry();
         assertEquals(2, outputEntriesRuleTwo.size());
-        assertEquals(ruleTwoOldOutput, outputEntriesRuleTwo.get(1).getText());
-        assertEquals(DecisionTableDefaultValueUtilities.OUTPUT_CLAUSE_EXPRESSION_TEXT, outputEntriesRuleTwo.get(0).getText());
+        assertEquals(ruleTwoOldOutput, outputEntriesRuleTwo.get(1).getText().getValue());
+        assertEquals(DecisionTableDefaultValueUtilities.OUTPUT_CLAUSE_EXPRESSION_TEXT, outputEntriesRuleTwo.get(0).getText().getValue());
         assertEquals(dtable.getRule().get(1), outputEntriesRuleTwo.get(0).getParent());
 
         assertEquals(dtable,
@@ -243,10 +243,10 @@ public class AddOutputClauseCommandTest {
 
         // first rule
         assertEquals(3, ruleOutputs.size());
-        assertEquals(ruleOutputOne, ruleOutputs.get(0).getText());
-        assertEquals(DecisionTableDefaultValueUtilities.OUTPUT_CLAUSE_EXPRESSION_TEXT, ruleOutputs.get(1).getText());
+        assertEquals(ruleOutputOne, ruleOutputs.get(0).getText().getValue());
+        assertEquals(DecisionTableDefaultValueUtilities.OUTPUT_CLAUSE_EXPRESSION_TEXT, ruleOutputs.get(1).getText().getValue());
         assertEquals(dtable.getRule().get(0), ruleOutputs.get(1).getParent());
-        assertEquals(ruleOutputTwo, ruleOutputs.get(2).getText());
+        assertEquals(ruleOutputTwo, ruleOutputs.get(2).getText().getValue());
 
         assertEquals(dtable,
                      outputClause.getParent());
@@ -291,11 +291,11 @@ public class AddOutputClauseCommandTest {
 
         // first rule
         assertEquals(1, dtable.getRule().get(0).getOutputEntry().size());
-        assertEquals(ruleOneOldOutput, dtable.getRule().get(0).getOutputEntry().get(0).getText());
+        assertEquals(ruleOneOldOutput, dtable.getRule().get(0).getOutputEntry().get(0).getText().getValue());
 
         // second rule
         assertEquals(1, dtable.getRule().get(1).getOutputEntry().size());
-        assertEquals(ruleTwoOldOutput, dtable.getRule().get(1).getOutputEntry().get(0).getText());
+        assertEquals(ruleTwoOldOutput, dtable.getRule().get(1).getOutputEntry().get(0).getText().getValue());
     }
 
     @Test
@@ -318,17 +318,17 @@ public class AddOutputClauseCommandTest {
         dtable.getInput().add(new InputClause());
         dtable.getRule().add(new DecisionRule() {{
             getInputEntry().add(new UnaryTests() {{
-                setText(ruleInputValue);
+                getText().setValue(ruleInputValue);
             }});
             getOutputEntry().add(new LiteralExpression() {{
-                setText(ruleOutputValue);
+                getText().setValue(ruleOutputValue);
             }});
         }});
 
         //Graph command populates OutputEntries so overwrite with test values
         final Command<GraphCommandExecutionContext, RuleViolation> graphCommand = command.newGraphCommand(canvasHandler);
         graphCommand.execute(graphCommandExecutionContext);
-        dtable.getRule().get(0).getOutputEntry().get(0).setText(ruleOutputValue);
+        dtable.getRule().get(0).getOutputEntry().get(0).getText().setValue(ruleOutputValue);
 
         doReturn(1).when(uiInputClauseColumn).getIndex();
         doReturn(2).when(uiOutputClauseColumn).getIndex();
@@ -368,8 +368,8 @@ public class AddOutputClauseCommandTest {
         //Graph command populates OutputEntries so overwrite with test values
         final Command<GraphCommandExecutionContext, RuleViolation> graphCommand = command.newGraphCommand(canvasHandler);
         graphCommand.execute(graphCommandExecutionContext);
-        dtable.getRule().get(0).getOutputEntry().get(0).setText(ruleOneOutputValue);
-        dtable.getRule().get(1).getOutputEntry().get(0).setText(ruleTwoOutputValue);
+        dtable.getRule().get(0).getOutputEntry().get(0).getText().setValue(ruleOneOutputValue);
+        dtable.getRule().get(1).getOutputEntry().get(0).getText().setValue(ruleTwoOutputValue);
 
         final Command<AbstractCanvasHandler, CanvasViolation> canvasAddOutputClauseCommand = command.newCanvasCommand(canvasHandler);
         canvasAddOutputClauseCommand.execute(canvasHandler);
@@ -408,7 +408,7 @@ public class AddOutputClauseCommandTest {
         dtable.getRule().add(new DecisionRule() {{
             Stream.of(outputClauseValues).forEach(oClause -> {
                 getOutputEntry().add(new LiteralExpression() {{
-                    setText(oClause);
+                    getText().setValue(oClause);
                 }});
             });
         }});

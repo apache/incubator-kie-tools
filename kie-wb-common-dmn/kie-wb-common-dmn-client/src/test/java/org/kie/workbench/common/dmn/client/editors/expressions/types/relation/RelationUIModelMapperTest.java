@@ -82,18 +82,18 @@ public class RelationUIModelMapperTest {
         this.relation.getColumn().add(new InformationItem());
         this.relation.getRow().add(new List() {{
             getExpression().add(new LiteralExpression() {{
-                setText("le(1,0)");
+                getText().setValue("le(1,0)");
             }});
             getExpression().add(new LiteralExpression() {{
-                setText("le(2,0)");
+                getText().setValue("le(2,0)");
             }});
         }});
         this.relation.getRow().add(new List() {{
             getExpression().add(new LiteralExpression() {{
-                setText("le(1,1)");
+                getText().setValue("le(1,1)");
             }});
             getExpression().add(new LiteralExpression() {{
-                setText("le(2,1)");
+                getText().setValue("le(2,1)");
             }});
         }});
 
@@ -167,7 +167,7 @@ public class RelationUIModelMapperTest {
                         .getExpression()
                         .get(uiColumnIndex - RelationUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT);
 
-                assertNull(le.getText());
+                assertNull(le.getText().getValue());
             }
         }
     }
@@ -186,7 +186,7 @@ public class RelationUIModelMapperTest {
                         .get(uiColumnIndex - RelationUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT);
 
                 assertEquals("",
-                             le.getText());
+                             le.getText().getValue());
             }
         }
     }
@@ -207,7 +207,7 @@ public class RelationUIModelMapperTest {
                         .get(uiColumnIndex - RelationUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT);
 
                 assertEquals(value,
-                             le.getText());
+                             le.getText().getValue());
             }
         }
     }

@@ -68,7 +68,7 @@ public class RelationUIModelMapper extends BaseUIModelMapper<Relation> {
                         final LiteralExpression le = (LiteralExpression) ex;
                         uiModel.get().setCell(rowIndex,
                                               columnIndex,
-                                              () -> new RelationGridCell<>(new BaseGridCellValue<>(le.getText()),
+                                              () -> new RelationGridCell<>(new BaseGridCellValue<>(le.getText().getValue()),
                                                                            listSelector));
                     });
             }
@@ -95,7 +95,7 @@ public class RelationUIModelMapper extends BaseUIModelMapper<Relation> {
                         // to limit ourselves to LiteralExpressions. Our Grid-system supports ANY (nested) expression too; however
                         // the simplification has been made for the benefit of USERS.
                         final LiteralExpression le = (LiteralExpression) ex;
-                        le.setText((String) cell.get().orElse(new BaseGridCellValue<>("")).getValue());
+                        le.getText().setValue((String) cell.get().orElse(new BaseGridCellValue<>("")).getValue());
                     });
             }
         });

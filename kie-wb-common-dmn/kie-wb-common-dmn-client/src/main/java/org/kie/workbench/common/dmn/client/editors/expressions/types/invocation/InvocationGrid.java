@@ -34,6 +34,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Invocation;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
+import org.kie.workbench.common.dmn.api.property.dmn.Text;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.invocation.AddParameterBindingCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.invocation.ClearExpressionTypeCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.invocation.DeleteParameterBindingCommand;
@@ -175,12 +176,13 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGri
 
     private String getExpressionText() {
         return expression.map(invocation -> (LiteralExpression) invocation.getExpression())
-                .map(literalExpression -> literalExpression.getText())
-                .orElse("");
+                .map(LiteralExpression::getText)
+                .orElse(new Text())
+                .getValue();
     }
 
     private void setExpressionText(final String text) {
-        expression.ifPresent(invocation -> ((LiteralExpression) invocation.getExpression()).setText(text));
+        expression.ifPresent(invocation -> ((LiteralExpression) invocation.getExpression()).getText().setValue(text));
     }
 
     @Override

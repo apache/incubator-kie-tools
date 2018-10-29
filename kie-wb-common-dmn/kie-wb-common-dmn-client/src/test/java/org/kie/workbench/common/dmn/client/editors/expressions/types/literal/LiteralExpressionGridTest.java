@@ -215,7 +215,7 @@ public class LiteralExpressionGridTest {
         decision.setName(new Name(NAME));
         hasName = Optional.of(decision);
         expression = definition.getModelClass();
-        expression.ifPresent(e -> e.setText(EXPRESSION_TEXT));
+        expression.ifPresent(e -> e.getText().setValue(EXPRESSION_TEXT));
 
         doReturn(canvasHandler).when(session).getCanvasHandler();
         doReturn(mock(Bounds.class)).when(gridLayer).getVisibleBounds();

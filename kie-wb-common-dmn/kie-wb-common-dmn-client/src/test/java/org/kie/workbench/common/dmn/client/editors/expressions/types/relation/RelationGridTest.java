@@ -321,12 +321,12 @@ public class RelationGridTest {
         final String secondRowValue = "first column value 2";
         relation.getRow().add(new List() {{
             getExpression().add(new LiteralExpression() {{
-                setText(firstRowValue);
+                getText().setValue(firstRowValue);
             }});
         }});
         relation.getRow().add(new List() {{
             getExpression().add(new LiteralExpression() {{
-                setText(secondRowValue);
+                getText().setValue(secondRowValue);
             }});
         }});
 
@@ -356,7 +356,7 @@ public class RelationGridTest {
         assertThat(uiModel.getRowCount()).isEqualTo(1);
 
         assertThat(uiModel.getCell(0, 0).getValue().getValue()).isEqualTo(1);
-        assertThat(uiModel.getCell(0, 1).getValue().getValue()).isNull();
+        assertThat(uiModel.getCell(0, 1).getValue().getValue()).isEqualTo("");
     }
 
     @Test

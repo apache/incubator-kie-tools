@@ -85,7 +85,7 @@ public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorMo
 
             final InputClause inputClause = new InputClause();
             final LiteralExpression literalExpression = new LiteralExpression();
-            literalExpression.setText(DecisionTableDefaultValueUtilities.getNewInputClauseName(dtable));
+            literalExpression.getText().setValue(DecisionTableDefaultValueUtilities.getNewInputClauseName(dtable));
             inputClause.setInputExpression(literalExpression);
             dtable.getInput().add(inputClause);
 
@@ -95,11 +95,11 @@ public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorMo
 
             final DecisionRule decisionRule = new DecisionRule();
             final UnaryTests decisionRuleUnaryTest = new UnaryTests();
-            decisionRuleUnaryTest.setText(DecisionTableDefaultValueUtilities.INPUT_CLAUSE_UNARY_TEST_TEXT);
+            decisionRuleUnaryTest.getText().setValue(DecisionTableDefaultValueUtilities.INPUT_CLAUSE_UNARY_TEST_TEXT);
             decisionRule.getInputEntry().add(decisionRuleUnaryTest);
 
             final LiteralExpression decisionRuleLiteralExpression = new LiteralExpression();
-            decisionRuleLiteralExpression.setText(DecisionTableDefaultValueUtilities.OUTPUT_CLAUSE_EXPRESSION_TEXT);
+            decisionRuleLiteralExpression.getText().setValue(DecisionTableDefaultValueUtilities.OUTPUT_CLAUSE_EXPRESSION_TEXT);
             decisionRule.getOutputEntry().add(decisionRuleLiteralExpression);
 
             final Description description = new Description();
@@ -164,14 +164,14 @@ public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorMo
                 .forEach(inputClauseRequirement -> {
                     final InputClause inputClause = new InputClause();
                     final LiteralExpression literalExpression = new LiteralExpression();
-                    literalExpression.setText(inputClauseRequirement.text);
+                    literalExpression.getText().setValue(inputClauseRequirement.text);
                     literalExpression.setTypeRef(inputClauseRequirement.typeRef);
                     inputClause.setInputExpression(literalExpression);
                     dtable.getInput().add(inputClause);
 
                     dtable.getRule().stream().forEach(decisionRule -> {
                         final UnaryTests decisionRuleUnaryTest = new UnaryTests();
-                        decisionRuleUnaryTest.setText(DecisionTableDefaultValueUtilities.INPUT_CLAUSE_UNARY_TEST_TEXT);
+                        decisionRuleUnaryTest.getText().setValue(DecisionTableDefaultValueUtilities.INPUT_CLAUSE_UNARY_TEST_TEXT);
                         decisionRule.getInputEntry().add(decisionRuleUnaryTest);
                         decisionRuleUnaryTest.setParent(decisionRule);
                     });
@@ -215,7 +215,7 @@ public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorMo
 
             dtable.getRule().stream().forEach(decisionRule -> {
                 final LiteralExpression decisionRuleLiteralExpression = new LiteralExpression();
-                decisionRuleLiteralExpression.setText(DecisionTableDefaultValueUtilities.OUTPUT_CLAUSE_EXPRESSION_TEXT);
+                decisionRuleLiteralExpression.getText().setValue(DecisionTableDefaultValueUtilities.OUTPUT_CLAUSE_EXPRESSION_TEXT);
                 decisionRule.getOutputEntry().add(decisionRuleLiteralExpression);
                 decisionRuleLiteralExpression.setParent(decisionRule);
             });

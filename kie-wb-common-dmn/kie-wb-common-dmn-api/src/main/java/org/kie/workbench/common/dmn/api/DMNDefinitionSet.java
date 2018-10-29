@@ -28,10 +28,12 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ImportedValues;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationRequirement;
+import org.kie.workbench.common.dmn.api.definition.v1_1.InputClause;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InputData;
 import org.kie.workbench.common.dmn.api.definition.v1_1.KnowledgeRequirement;
 import org.kie.workbench.common.dmn.api.definition.v1_1.KnowledgeSource;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
+import org.kie.workbench.common.dmn.api.definition.v1_1.OutputClause;
 import org.kie.workbench.common.dmn.api.definition.v1_1.TextAnnotation;
 import org.kie.workbench.common.dmn.api.definition.v1_1.UnaryTests;
 import org.kie.workbench.common.dmn.api.factory.DMNGraphFactory;
@@ -62,6 +64,8 @@ import org.kie.workbench.common.stunner.core.rule.annotation.Occurrences;
                 ImportedValues.class,
                 UnaryTests.class,
                 InformationItem.class,
+                InputClause.class,
+                OutputClause.class,
                 NOPDomainObject.class
         },
         builder = DMNDefinitionSet.DMNDefinitionSetBuilder.class
