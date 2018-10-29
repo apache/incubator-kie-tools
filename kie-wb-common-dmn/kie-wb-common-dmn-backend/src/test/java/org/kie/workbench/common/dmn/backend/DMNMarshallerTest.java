@@ -23,7 +23,6 @@ import java.math.BigDecimal;
 import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -39,7 +38,6 @@ import java.util.stream.StreamSupport;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
@@ -59,9 +57,18 @@ import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.api.core.ast.DecisionNode;
-import org.kie.dmn.backend.marshalling.v1_1.xstream.XStreamMarshaller;
+import org.kie.dmn.backend.marshalling.v1x.DMNMarshallerFactory;
 import org.kie.dmn.core.util.KieHelper;
 import org.kie.dmn.model.api.Definitions;
+import org.kie.dmn.model.api.FunctionKind;
+import org.kie.dmn.model.api.dmndi.Bounds;
+import org.kie.dmn.model.api.dmndi.Color;
+import org.kie.dmn.model.api.dmndi.DMNEdge;
+import org.kie.dmn.model.api.dmndi.DMNShape;
+import org.kie.dmn.model.api.dmndi.DMNStyle;
+import org.kie.dmn.model.api.dmndi.Point;
+import org.kie.dmn.model.v1_2.TDecision;
+import org.kie.dmn.model.v1_2.TInputData;
 import org.kie.workbench.common.dmn.api.DMNDefinitionSet;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Association;
 import org.kie.workbench.common.dmn.api.definition.v1_1.AuthorityRequirement;
@@ -80,11 +87,8 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.KnowledgeSource;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.TextAnnotation;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
-import org.kie.workbench.common.dmn.backend.definition.v1_1.dd.DDExtensionsRegister;
-import org.kie.workbench.common.dmn.backend.definition.v1_1.dd.DMNShape;
-import org.kie.workbench.common.dmn.backend.definition.v1_1.dd.DMNStyle;
-import org.kie.workbench.common.dmn.backend.definition.v1_1.dd.org.omg.spec.CMMN_20151109_DC.Bounds;
-import org.kie.workbench.common.dmn.backend.definition.v1_1.dd.org.omg.spec.CMMN_20151109_DC.Color;
+import org.kie.workbench.common.dmn.backend.definition.v1_1.DecisionConverter;
+import org.kie.workbench.common.dmn.backend.definition.v1_1.InputDataConverter;
 import org.kie.workbench.common.stunner.backend.definition.factory.TestScopeModelFactory;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.backend.BackendFactoryManager;
@@ -114,6 +118,9 @@ import org.kie.workbench.common.stunner.core.graph.command.GraphCommandManagerIm
 import org.kie.workbench.common.stunner.core.graph.command.impl.GraphCommandFactory;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
+import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
+import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
+import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewImpl;
@@ -123,6 +130,8 @@ import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.commons.uuid.UUID;
 import org.xml.sax.InputSource;
 
@@ -140,6 +149,8 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DMNMarshallerTest {
+
+    private static final Logger LOG = LoggerFactory.getLogger(DMNMarshallerTest.class);
 
     private static final String DMN_DEF_SET_ID = BindableAdapterUtils.getDefinitionSetId(DMNDefinitionSet.class);
 
@@ -307,20 +318,19 @@ public class DMNMarshallerTest {
     @Test
     public void test_diamond() throws IOException {
         // round trip test
-        roundTripUnmarshalThenMarshalUnmarshal(this.getClass().getResourceAsStream("/diamond.dmn"),
+        roundTripUnmarshalThenMarshalUnmarshal(this.getClass().getResourceAsStream("/diamondDMN12.dmn"),
                                                this::checkDiamondGraph);
 
         // additionally, check the marshalled is still DMN executable as expected
-
         DMNMarshaller m = new DMNMarshaller(new XMLEncoderDiagramMetadataMarshaller(),
                                             applicationFactoryManager);
         Graph<?, ?> g = m.unmarshall(null,
-                                     this.getClass().getResourceAsStream("/diamond.dmn"));
+                                     this.getClass().getResourceAsStream("/diamondDMN12.dmn"));
         DiagramImpl diagram = new DiagramImpl("",
                                               null);
         diagram.setGraph(g);
-        String mString = m.marshall(diagram);
 
+        String mString = m.marshall(diagram);
         final KieServices ks = KieServices.Factory.get();
         final KieContainer kieContainer = KieHelper.getKieContainer(ks.newReleaseId("org.kie",
                                                                                     "dmn-test_diamond",
@@ -342,49 +352,40 @@ public class DMNMarshallerTest {
         assertEquals("Hello, John Doe.",
                      result.get("My Decision"));
 
-        // additionally, check DMN DD/DI for version 1.1
-
-        org.kie.dmn.api.marshalling.v1_1.DMNMarshaller dmnMarshaller = new XStreamMarshaller(Collections.singletonList(new DDExtensionsRegister()));
+        // additionally, check DMN DD/DI
+        org.kie.dmn.api.marshalling.DMNMarshaller dmnMarshaller = DMNMarshallerFactory.newDefaultMarshaller();
         Definitions definitions = dmnMarshaller.unmarshal(mString);
 
-        assertNotNull(definitions.getExtensionElements());
-        assertNotNull(definitions.getExtensionElements().getAny());
-        assertEquals(1, definitions.getExtensionElements().getAny().size());
-        org.kie.workbench.common.dmn.backend.definition.v1_1.dd.DMNDiagram ddRoot = (org.kie.workbench.common.dmn.backend.definition.v1_1.dd.DMNDiagram) definitions.getExtensionElements().getAny().get(0);
+        org.kie.dmn.model.api.dmndi.DMNDiagram ddRoot = (org.kie.dmn.model.api.dmndi.DMNDiagram) definitions.getDMNDI().getDMNDiagram().get(0);
 
         DMNShape myname = findShapeByDMNI(ddRoot, "_4cd17e52-6253-41d6-820d-5824bf5197f3");
         assertBounds(500, 500, 100, 50, myname.getBounds());
-        assertColor(255, 255, 255, myname.getBgColor());
-        assertColor(0, 0, 0, myname.getBorderColor());
-        assertEquals(0.5, myname.getBorderSize().getValue(), 0);
-        assertDMNStyle("Open Sans", 24, 1, 255, 0, 0, myname.getFontStyle());
+        assertColor(255, 255, 255, ((DMNStyle) myname.getStyle()).getFillColor());
+        assertColor(0, 0, 0,       ((DMNStyle) myname.getStyle()).getStrokeColor());
+        assertDMNStyle("Open Sans", 24, 255, 0, 0, (DMNStyle) myname.getStyle());
 
         DMNShape prefix = findShapeByDMNI(ddRoot, "_e920f38a-293c-41b8-adb3-69d0dc184fab");
         assertBounds(300, 400, 100, 50, prefix.getBounds());
-        assertColor(0, 253, 25, prefix.getBgColor());
-        assertColor(253, 0, 0, prefix.getBorderColor());
-        assertEquals(1, prefix.getBorderSize().getValue(), 0);
-        assertDMNStyle("Times New Roman", 8, 2.5, 70, 60, 50, prefix.getFontStyle());
+        assertColor(0, 253, 25, ((DMNStyle) prefix.getStyle()).getFillColor());
+        assertColor(253, 0, 0, ((DMNStyle) prefix.getStyle()).getStrokeColor());
+        assertDMNStyle("Times New Roman", 8, 70, 60, 50, (DMNStyle) prefix.getStyle());
 
         DMNShape postfix = findShapeByDMNI(ddRoot, "_f49f9c34-29d5-4e72-91d2-f4f92117c8da");
         assertBounds(700, 400, 100, 50, postfix.getBounds());
-        assertColor(247, 255, 0, postfix.getBgColor());
-        assertColor(0, 51, 255, postfix.getBorderColor());
-        assertEquals(2, postfix.getBorderSize().getValue(), 0);
-        assertDMNStyle("Arial", 10, 1.5, 50, 60, 70, postfix.getFontStyle());
+        assertColor(247, 255, 0, ((DMNStyle) postfix.getStyle()).getFillColor());
+        assertColor(0, 51, 255, ((DMNStyle) postfix.getStyle()).getStrokeColor());
+        assertDMNStyle("Arial", 10, 50, 60, 70, (DMNStyle) postfix.getStyle());
 
         DMNShape mydecision = findShapeByDMNI(ddRoot, "_9b061fc3-8109-42e2-9fe4-fc39c90b654e");
         assertBounds(487.5, 275, 125, 75, mydecision.getBounds());
-        assertColor(255, 255, 255, mydecision.getBgColor());
-        assertColor(0, 0, 0, mydecision.getBorderColor());
-        assertEquals(0.5, mydecision.getBorderSize().getValue(), 0);
-        assertDMNStyle("Monospaced", 32, 3.5, 55, 66, 77, mydecision.getFontStyle());
+        assertColor(255, 255, 255, ((DMNStyle) mydecision.getStyle()).getFillColor());
+        assertColor(0, 0, 0, ((DMNStyle) mydecision.getStyle()).getStrokeColor());
+        assertDMNStyle("Monospaced", 32, 55, 66, 77, (DMNStyle) mydecision.getStyle());
     }
 
-    private void assertDMNStyle(String fontName, double fontSize, double fontBorderSize, int r, int g, int b, DMNStyle style) {
-        assertEquals(fontName, style.getFontName());
+    private void assertDMNStyle(String fontName, double fontSize, int r, int g, int b, DMNStyle style) {
+        assertEquals(fontName, style.getFontFamily());
         assertEquals(fontSize, style.getFontSize(), 0);
-        assertEquals(fontBorderSize, style.getFontBorderSize(), 0);
         assertColor(r, g, b, style.getFontColor());
     }
 
@@ -401,8 +402,22 @@ public class DMNMarshallerTest {
         assertEquals(b, color.getBlue());
     }
 
-    private DMNShape findShapeByDMNI(org.kie.workbench.common.dmn.backend.definition.v1_1.dd.DMNDiagram root, String id) {
-        return root.getAny().stream().filter(shape -> shape.getDmnElementRef().equals(id)).findFirst().get();
+    private static DMNShape findShapeByDMNI(org.kie.dmn.model.api.dmndi.DMNDiagram root, String id) {
+        return root.getDMNDiagramElement().stream()
+                   .filter(DMNShape.class::isInstance)
+                   .map(DMNShape.class::cast)
+                   .filter(shape -> shape.getDmnElementRef().getLocalPart().equals(id))
+                   .findFirst()
+                   .orElseThrow(() -> new UnsupportedOperationException("There is no DMNShape with id '" + id + "' in DMNDiagram " + root));
+    }
+
+    private static DMNEdge findEdgeByDMNI(org.kie.dmn.model.api.dmndi.DMNDiagram root, String id) {
+        return root.getDMNDiagramElement().stream()
+                   .filter(DMNEdge.class::isInstance)
+                   .map(DMNEdge.class::cast)
+                   .filter(shape -> shape.getDmnElementRef().getLocalPart().equals(id))
+                   .findFirst()
+                   .orElseThrow(() -> new UnsupportedOperationException("There is no DMNEdge with id '" + id + "' in DMNDiagram " + root));
     }
 
     @Test
@@ -433,6 +448,44 @@ public class DMNMarshallerTest {
     public void testDecisionWithContext() throws Exception {
         roundTripUnmarshalThenMarshalUnmarshal(this.getClass().getResourceAsStream("/DecisionWithContext.dmn"),
                                                this::checkDecisionWithContext);
+    }
+
+    @Test
+    public void testEdgewaypoint() throws Exception {
+        roundTripUnmarshalThenMarshalUnmarshal(this.getClass().getResourceAsStream("/edgewaypoint.dmn"),
+                                               this::checkEdgewaypoint);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void checkEdgewaypoint(Graph<?, Node<?, ?>> graph) {
+        Node<?, ?> decision = graph.getNode("_7647e26b-6c7c-46db-aa34-1a1a2b4d8d79");
+        assertNodeContentDefinitionIs(decision,
+                                      Decision.class);
+        Decision decisionDefinition = ((View<Decision>) decision.getContent()).getDefinition();
+        assertEquals("my decision",
+                     decisionDefinition.getName().getValue());
+
+        Node<?, ?> inputdata = graph.getNode("_fd528e66-e2a4-4b7f-aae1-c3ca6723d0cb");
+        assertNodeEdgesTo(inputdata,
+                          decision,
+                          InformationRequirement.class);
+
+        // asserted the two Stunner graph nodes are properly connected, assert location of edge.
+        List<Edge<?, ?>> outEdges = (List<Edge<?, ?>>) inputdata.getOutEdges();
+        Edge<?, ?> edge = outEdges.stream().filter(e -> e.getTargetNode().equals(decision)).findFirst().get();
+        ViewConnector<?> connectionContent = (ViewConnector<?>) edge.getContent();
+        Point2D sourceLocation = connectionContent.getSourceConnection().get().getLocation();
+        assertEquals(266.9968013763428d, ((View) inputdata.getContent()).getBounds().getUpperLeft().getX() + sourceLocation.getX(), 0.1d);
+        assertEquals(225.99999618530273d, ((View) inputdata.getContent()).getBounds().getUpperLeft().getY() + sourceLocation.getY(), 0.1d);
+
+        Point2D targetLocation = connectionContent.getTargetConnection().get().getLocation();
+        assertEquals(552.2411708831787d, ((View) decision.getContent()).getBounds().getUpperLeft().getX() + targetLocation.getX(), 0.1d);
+        assertEquals(226d, ((View) decision.getContent()).getBounds().getUpperLeft().getY() + targetLocation.getY(), 0.1d);
+
+        assertEquals(1, connectionContent.getControlPoints().size());
+        Point2D controlPointLocation = connectionContent.getControlPoints().get(0).getLocation();
+        assertEquals(398.61898612976074d, controlPointLocation.getX(), 0.1d);
+        assertEquals(116.99999809265137d, controlPointLocation.getY(), 0.1d);
     }
 
     @SuppressWarnings("unchecked")
@@ -471,7 +524,7 @@ public class DMNMarshallerTest {
         diagram.setGraph(g);
 
         String mString = m.marshall(diagram);
-        System.out.println(mString);
+        LOG.debug(mString);
 
         // now unmarshal once more, from the marshalled just done above, back again to Stunner DMN Graph to complete check for round-trip
         @SuppressWarnings("unchecked")
@@ -882,7 +935,7 @@ public class DMNMarshallerTest {
         diagram.setGraph(g);
 
         String mString = m.marshall(diagram);
-        System.out.println(mString);
+        LOG.debug(mString);
 
         // now unmarshal once more, from the marshalled just done above, into a DMNRuntime
         final KieServices ks = KieServices.Factory.get();
@@ -973,9 +1026,7 @@ public class DMNMarshallerTest {
             final FunctionDefinition wbFunction = (FunctionDefinition) d.getExpression();
 
             //This is what the WB expects
-            assertTrue(wbFunction.getAdditionalAttributes().containsKey(FunctionDefinition.KIND_QNAME));
-            assertEquals("J",
-                         wbFunction.getAdditionalAttributes().get(FunctionDefinition.KIND_QNAME));
+            assertEquals(FunctionDefinition.Kind.JAVA, wbFunction.getKind());
         });
 
         final DMNRuntime runtime = roundTripUnmarshalMarshalThenUnmarshalDMN(this.getClass().getResourceAsStream("/DROOLS-2372.dmn"));
@@ -984,9 +1035,7 @@ public class DMNMarshallerTest {
         final DecisionNode dmnDecision = dmnModel.getDecisions().iterator().next();
         assertTrue(dmnDecision.getDecision().getExpression() instanceof org.kie.dmn.model.api.FunctionDefinition);
         final org.kie.dmn.model.api.FunctionDefinition dmnFunction = (org.kie.dmn.model.api.FunctionDefinition) dmnDecision.getDecision().getExpression();
-        assertTrue(dmnFunction.getAdditionalAttributes().containsKey(org.kie.dmn.model.v1_1.TFunctionDefinition.KIND_QNAME));
-        assertEquals("J",
-                     dmnFunction.getAdditionalAttributes().get(org.kie.dmn.model.v1_1.TFunctionDefinition.KIND_QNAME));
+        assertEquals(FunctionKind.JAVA, dmnFunction.getKind());
     }
 
     @Test
@@ -1123,18 +1172,22 @@ public class DMNMarshallerTest {
         DiagramImpl diagram = new DiagramImpl("", null);
         diagram.setGraph(marshaller.unmarshall(null, getClass().getResourceAsStream("/dummy.dmn")));
         String roundtripped = marshaller.marshall(diagram);
-        XPath xpath = namespaceAwareXPath(
+        LOG.debug(roundtripped);
+        XPath xpathOriginal = namespaceAwareXPath(
                 new AbstractMap.SimpleEntry<>("semantic", "http://www.omg.org/spec/DMN/20151101/dmn.xsd"),
-                new AbstractMap.SimpleEntry<>("drools", "http://www.drools.org/kie/dmn/1.1")
+                new AbstractMap.SimpleEntry<>("drools", "http://www.drools.org/kie/dmn/1.1"));
+        XPath xpathRountripped = namespaceAwareXPath(
+                new AbstractMap.SimpleEntry<>("semantic", "http://www.omg.org/spec/DMN/20180521/MODEL/"),
+                new AbstractMap.SimpleEntry<>("drools", "http://www.drools.org/kie/dmn/1.2")
         );
-        assertXPathEquals(xpath.compile("boolean(/semantic:definitions/semantic:extensionElements)"), original, roundtripped);
+        assertXPathEquals(xpathOriginal, xpathRountripped, "boolean(/semantic:definitions/semantic:extensionElements)", original, roundtripped);
 
-        assertXPathEquals(xpath.compile("boolean(/semantic:definitions/semantic:import)"), original, roundtripped);
-        assertXPathEquals(xpath.compile("/semantic:definitions/semantic:import/@namespace"), original, roundtripped);
-        assertXPathEquals(xpath.compile("/semantic:definitions/semantic:import/@importType"), original, roundtripped);
-        assertXPathEquals(xpath.compile("/semantic:definitions/semantic:import/@locationURI"), original, roundtripped);
-        assertXPathEquals(xpath.compile("/semantic:definitions/semantic:import/@drools:name"), original, roundtripped);
-        assertXPathEquals(xpath.compile("/semantic:definitions/semantic:import/@drools:modelName"), original, roundtripped);
+        assertXPathEquals(xpathOriginal, xpathRountripped, "boolean(/semantic:definitions/semantic:import)", original, roundtripped);
+        assertXPathEquals(xpathOriginal, xpathRountripped, "/semantic:definitions/semantic:import/@namespace", original, roundtripped);
+        assertXPathEquals(xpathOriginal, xpathRountripped, "/semantic:definitions/semantic:import/@importType", original, roundtripped);
+        assertXPathEquals(xpathOriginal, xpathRountripped, "/semantic:definitions/semantic:import/@locationURI", original, roundtripped);
+        assertXPathEquals(xpathOriginal, xpathRountripped, "/semantic:definitions/semantic:import/@drools:name", original, roundtripped);
+        assertXPathEquals(xpathOriginal, xpathRountripped, "/semantic:definitions/semantic:import/@drools:modelName", original, roundtripped);
 
         //assertXPathEquals(xpath.compile("boolean(/semantic:definitions/semantic:elementCollection)"), original, roundtripped);
         //assertXPathEquals(xpath.compile("/semantic:definitions/semantic:elementCollection/@name"), original, roundtripped);
@@ -1159,20 +1212,25 @@ public class DMNMarshallerTest {
         //assertXPathEquals(xpath.compile("boolean(/semantic:definitions/semantic:organizationUnit/semantic:decisionOwned)"), original, roundtripped);
         //assertXPathEquals(xpath.compile("/semantic:definitions/semantic:organizationUnit/semantic:decisionOwned/@href"), original, roundtripped);
 
-        assertXPathEquals(xpath.compile("boolean(/semantic:definitions/semantic:knowledgeSource)"), original, roundtripped);
-        assertXPathEquals(xpath.compile("/semantic:definitions/semantic:knowledgeSource/@name"), original, roundtripped);
-        assertXPathEquals(xpath.compile("/semantic:definitions/semantic:knowledgeSource/@id"), original, roundtripped);
-        assertXPathEquals(xpath.compile("boolean(/semantic:definitions/semantic:knowledgeSource/semantic:authorityRequirement)"), original, roundtripped);
-        assertXPathEquals(xpath.compile("boolean(/semantic:definitions/semantic:knowledgeSource/semantic:requiredInput)"), original, roundtripped);
-        assertXPathEquals(xpath.compile("/semantic:definitions/semantic:knowledgeSource/semantic:requiredInput/@href"), original, roundtripped);
+        assertXPathEquals(xpathOriginal, xpathRountripped, "boolean(/semantic:definitions/semantic:knowledgeSource)", original, roundtripped);
+        assertXPathEquals(xpathOriginal, xpathRountripped, "/semantic:definitions/semantic:knowledgeSource/@name", original, roundtripped);
+        assertXPathEquals(xpathOriginal, xpathRountripped, "/semantic:definitions/semantic:knowledgeSource/@id", original, roundtripped);
+        assertXPathEquals(xpathOriginal, xpathRountripped, "boolean(/semantic:definitions/semantic:knowledgeSource/semantic:authorityRequirement)", original, roundtripped);
+        assertXPathEquals(xpathOriginal, xpathRountripped, "boolean(/semantic:definitions/semantic:knowledgeSource/semantic:requiredInput)", original, roundtripped);
+        assertXPathEquals(xpathOriginal, xpathRountripped, "/semantic:definitions/semantic:knowledgeSource/semantic:requiredInput/@href", original, roundtripped);
 
-        assertXPathEquals(xpath.compile("boolean(/semantic:definitions/semantic:inputData)"), original, roundtripped);
-        assertXPathEquals(xpath.compile("/semantic:definitions/semantic:inputData/@id"), original, roundtripped);
-        assertXPathEquals(xpath.compile("/semantic:definitions/semantic:inputData/@name"), original, roundtripped);
-        assertXPathEquals(xpath.compile("boolean(/semantic:definitions/semantic:inputData/semantic:variable)"), original, roundtripped);
-        assertXPathEquals(xpath.compile("/semantic:definitions/semantic:inputData/semantic:variable/@id"), original, roundtripped);
-        assertXPathEquals(xpath.compile("/semantic:definitions/semantic:inputData/semantic:variable/@name"), original, roundtripped);
-        assertXPathEquals(xpath.compile("/semantic:definitions/semantic:inputData/semantic:variable/@typeRef"), original, roundtripped);
+        assertXPathEquals(xpathOriginal, xpathRountripped, "boolean(/semantic:definitions/semantic:inputData)", original, roundtripped);
+        assertXPathEquals(xpathOriginal, xpathRountripped, "/semantic:definitions/semantic:inputData/@id", original, roundtripped);
+        assertXPathEquals(xpathOriginal, xpathRountripped, "/semantic:definitions/semantic:inputData/@name", original, roundtripped);
+        assertXPathEquals(xpathOriginal, xpathRountripped, "boolean(/semantic:definitions/semantic:inputData/semantic:variable)", original, roundtripped);
+        assertXPathEquals(xpathOriginal, xpathRountripped, "/semantic:definitions/semantic:inputData/semantic:variable/@id", original, roundtripped);
+        assertXPathEquals(xpathOriginal, xpathRountripped, "/semantic:definitions/semantic:inputData/semantic:variable/@name", original, roundtripped);
+
+        // DMN v1.2
+        String inputDataVariableTypeRefOriginal = xpathOriginal.compile("/semantic:definitions/semantic:inputData/semantic:variable/@typeRef").evaluate(new InputSource(new StringReader(original)));
+        String inputDataVariableTypeRefRoundtripped = xpathRountripped.compile("/semantic:definitions/semantic:inputData/semantic:variable/@typeRef").evaluate(new InputSource(new StringReader(roundtripped)));
+        assertEquals("feel:number", inputDataVariableTypeRefOriginal);
+        assertEquals("number", inputDataVariableTypeRefRoundtripped);
     }
 
     @Test
@@ -1213,6 +1271,64 @@ public class DMNMarshallerTest {
         final DMNContext context = dmnRuntime.newContext();
         final DMNResult result = dmnRuntime.evaluateAll(dmnModel, context);
         assertThat(result.getDecisionResultByName("A Vowel").getResult()).isEqualTo("a");
+    }
+
+    /**
+     * DROOLS-3184: If the "connection source/target location is null" assume it's the centre of the shape.
+     * [source/target location is null] If the connection was created from the Toolbox (i.e. add a InputData and then the Decision from it using the Decision toolbox icon).
+     * 
+     * This test re-create by hard-code the behavior of the Stunner framework "Toolbox" by instrumenting API calls to achieve the same behavior.
+     */
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testStunnerConstellationButtonCausingPoint2DbeingNull() throws IOException {
+        Diagram diagram = applicationFactoryManager.newDiagram("testDiagram",
+                                                               BindableAdapterUtils.getDefinitionSetId(DMNDefinitionSet.class),
+                                                               null);
+        Graph g = diagram.getGraph();
+
+        org.kie.dmn.model.api.InputData dmnInputData = (org.kie.dmn.model.api.InputData) new TInputData();
+        dmnInputData.setId("inputDataID");
+        dmnInputData.setName(dmnInputData.getId());
+        Node inputDataNode = new InputDataConverter(applicationFactoryManager).nodeFromDMN(dmnInputData);
+        org.kie.dmn.model.api.Decision dmnDecision = (org.kie.dmn.model.api.Decision) new TDecision();
+        dmnDecision.setId("decisionID");
+        dmnDecision.setName(dmnDecision.getId());
+        Node decisionNode = new DecisionConverter(applicationFactoryManager).nodeFromDMN(dmnDecision);
+        g.addNode(inputDataNode);
+        g.addNode(decisionNode);
+        View content = (View) decisionNode.getContent();
+        content.setBounds(BoundsImpl.build(200, 200, 300, 250));
+        final String irID = "irID";
+        Edge myEdge = applicationFactoryManager.newElement(irID, org.kie.workbench.common.dmn.api.definition.v1_1.InformationRequirement.class).asEdge();
+        myEdge.setSourceNode(inputDataNode);
+        myEdge.setTargetNode(decisionNode);
+        inputDataNode.getOutEdges().add(myEdge);
+        decisionNode.getInEdges().add(myEdge);
+        ViewConnector connectionContent = (ViewConnector) myEdge.getContent();
+        // DROOLS-3184: If the "connection source/target location is null" assume it's the centre of the shape.
+        // keep Stunner behavior of constellation button
+        connectionContent.setSourceConnection(MagnetConnection.Builder.forElement(inputDataNode).setLocation(null).setAuto(true));
+        connectionContent.setTargetConnection(MagnetConnection.Builder.forElement(decisionNode).setLocation(null).setAuto(true));
+
+        Node diagramRoot = DMNMarshaller.findDMNDiagramRoot(g);
+        DMNMarshaller.connectRootWithChild(diagramRoot, inputDataNode);
+        DMNMarshaller.connectRootWithChild(diagramRoot, decisionNode);
+
+        DMNMarshaller m = new DMNMarshaller(new XMLEncoderDiagramMetadataMarshaller(),
+                                            applicationFactoryManager);
+        String output = m.marshall(diagram);
+        LOG.debug(output);
+        
+        Definitions dmnDefinitions = DMNMarshallerFactory.newDefaultMarshaller().unmarshal(output);
+        DMNEdge dmndiEdge = findEdgeByDMNI(dmnDefinitions.getDMNDI().getDMNDiagram().get(0), irID);
+        assertThat(dmndiEdge.getWaypoint()).hasSize(2);
+        Point wpSource = dmndiEdge.getWaypoint().get(0);
+        assertThat(wpSource.getX()).isEqualByComparingTo(50d);
+        assertThat(wpSource.getY()).isEqualByComparingTo(25d);
+        Point wpTarget = dmndiEdge.getWaypoint().get(1);
+        assertThat(wpTarget.getX()).isEqualByComparingTo(250d);
+        assertThat(wpTarget.getY()).isEqualByComparingTo(225d);
     }
 
     @SuppressWarnings("unchecked")
@@ -1285,9 +1401,9 @@ public class DMNMarshallerTest {
         return result;
     }
 
-    private void assertXPathEquals(XPathExpression expression, String expectedXml, String actualXml) throws XPathExpressionException {
+    private void assertXPathEquals(XPath xpathOriginal, XPath xpathRoundtrip, String xpathExpression, String expectedXml, String actualXml) throws XPathExpressionException {
         InputSource expected = new InputSource(new StringReader(expectedXml));
         InputSource actual = new InputSource(new StringReader(actualXml));
-        assertEquals(expression.evaluate(expected), expression.evaluate(actual));
+        assertEquals(xpathOriginal.compile(xpathExpression).evaluate(expected), xpathRoundtrip.compile(xpathExpression).evaluate(actual));
     }
 }

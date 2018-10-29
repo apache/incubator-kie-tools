@@ -60,7 +60,7 @@ public class TextAnnotationConverter implements NodeConverter<org.kie.dmn.model.
     @Override
     public org.kie.dmn.model.api.TextAnnotation dmnFromNode(final Node<View<TextAnnotation>, ?> node) {
         TextAnnotation source = node.getContent().getDefinition();
-        org.kie.dmn.model.api.TextAnnotation result = new org.kie.dmn.model.v1_1.TTextAnnotation();
+        org.kie.dmn.model.api.TextAnnotation result = new org.kie.dmn.model.v1_2.TTextAnnotation();
         result.setId(source.getId().getValue());
         result.setDescription(DescriptionPropertyConverter.dmnFromWB(source.getDescription()));
         result.setText(source.getText().getValue());

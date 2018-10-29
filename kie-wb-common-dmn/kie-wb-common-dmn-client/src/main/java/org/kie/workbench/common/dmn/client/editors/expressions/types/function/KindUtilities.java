@@ -16,30 +16,16 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.function;
 
-import java.util.Map;
-
-import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase.Namespace;
 import org.kie.workbench.common.dmn.api.definition.v1_1.FunctionDefinition;
-import org.kie.workbench.common.dmn.api.property.dmn.QName;
 
 public class KindUtilities {
 
     public static FunctionDefinition.Kind getKind(final FunctionDefinition function) {
-        final Map<QName, String> attributes = function.getAdditionalAttributes();
-        return FunctionDefinition.Kind.determineFromString(attributes.get(FunctionDefinition.KIND_QNAME));
+        return function.getKind();
     }
 
     public static void setKind(final FunctionDefinition function,
                                final FunctionDefinition.Kind kind) {
-        final Map<QName, String> attributes = function.getAdditionalAttributes();
-        if (kind == null) {
-            attributes.remove(FunctionDefinition.KIND_QNAME);
-        } else {
-            final Map<String, String> nsContext = function.getNsContext();
-            nsContext.put(FunctionDefinition.DROOLS_PREFIX,
-                          Namespace.KIE.getUri());
-            attributes.put(FunctionDefinition.KIND_QNAME,
-                           kind.code());
-        }
+        function.setKind(kind);
     }
 }

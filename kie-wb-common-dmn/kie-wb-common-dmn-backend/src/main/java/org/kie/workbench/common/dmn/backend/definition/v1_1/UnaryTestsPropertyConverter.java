@@ -41,7 +41,7 @@ public class UnaryTestsPropertyConverter {
         if (wb == null) {
             return null;
         }
-        org.kie.dmn.model.api.UnaryTests result = new org.kie.dmn.model.v1_1.TUnaryTests();
+        org.kie.dmn.model.api.UnaryTests result = new org.kie.dmn.model.v1_2.TUnaryTests();
         result.setId(wb.getId().getValue());
         result.setDescription(DescriptionPropertyConverter.dmnFromWB(wb.getDescription()));
         result.setText(wb.getText());

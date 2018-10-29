@@ -28,14 +28,9 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 @Portable
 public class FunctionDefinition extends Expression implements HasExpression {
 
-    public static final String DROOLS_PREFIX = "drools";
-
-    public static final String KIND_LOCAL_PART = "kind";
-
-    public static final QName KIND_QNAME = new QName(Namespace.KIE.getUri(),
-                                                     KIND_LOCAL_PART);
-
     private Expression expression;
+
+    private Kind kind = Kind.FEEL; // same default as per DMN spec.
 
     private List<InformationItem> formalParameter;
 
@@ -80,6 +75,14 @@ public class FunctionDefinition extends Expression implements HasExpression {
             formalParameter = new ArrayList<>();
         }
         return this.formalParameter;
+    }
+
+    public Kind getKind() {
+        return kind;
+    }
+
+    public void setKind(Kind kind) {
+        this.kind = kind;
     }
 
     @Override

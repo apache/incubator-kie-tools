@@ -43,7 +43,7 @@ public class InformationItemPropertyConverter {
         if (wb == null) {
             return null;
         }
-        org.kie.dmn.model.api.InformationItem result = new org.kie.dmn.model.v1_1.TInformationItem();
+        org.kie.dmn.model.api.InformationItem result = new org.kie.dmn.model.v1_2.TInformationItem();
         result.setId(wb.getId().getValue());
         result.setDescription(DescriptionPropertyConverter.dmnFromWB(wb.getDescription()));
         result.setName(wb.getName().getValue());

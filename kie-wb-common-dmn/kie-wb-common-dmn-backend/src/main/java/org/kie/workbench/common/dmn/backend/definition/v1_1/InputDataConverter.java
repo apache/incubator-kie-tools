@@ -65,11 +65,15 @@ public class InputDataConverter implements NodeConverter<org.kie.dmn.model.api.I
     @Override
     public org.kie.dmn.model.api.InputData dmnFromNode(final Node<View<InputData>, ?> node) {
         InputData source = node.getContent().getDefinition();
-        org.kie.dmn.model.api.InputData result = new org.kie.dmn.model.v1_1.TInputData();
+        org.kie.dmn.model.api.InputData result = new org.kie.dmn.model.v1_2.TInputData();
         result.setId(source.getId().getValue());
         result.setDescription(DescriptionPropertyConverter.dmnFromWB(source.getDescription()));
         result.setName(source.getName().getValue());
-        result.setVariable(InformationItemPropertyConverter.dmnFromWB(source.getVariable()));
+        org.kie.dmn.model.api.InformationItem variable = InformationItemPropertyConverter.dmnFromWB(source.getVariable());
+        if (variable != null) {
+            variable.setParent(result);
+        }
+        result.setVariable(variable);
         return result;
     }
 }

@@ -20,7 +20,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.LocationURI;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
-public class Import extends DMNModelInstrumentedBase {
+public class Import extends NamedElement {
 
     protected String namespace;
 

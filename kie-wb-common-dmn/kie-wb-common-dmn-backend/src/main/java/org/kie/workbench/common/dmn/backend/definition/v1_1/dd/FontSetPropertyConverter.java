@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.backend.definition.v1_1;
+package org.kie.workbench.common.dmn.backend.definition.v1_1.dd;
 
+import org.kie.dmn.model.api.dmndi.DMNStyle;
 import org.kie.workbench.common.dmn.api.property.font.FontSet;
-import org.kie.workbench.common.dmn.backend.definition.v1_1.dd.ColorUtils;
-import org.kie.workbench.common.dmn.backend.definition.v1_1.dd.DMNStyle;
 
 public class FontSetPropertyConverter {
 
     public static FontSet wbFromDMN(final DMNStyle dmn) {
         FontSet result = new FontSet();
-        if (null != dmn.getFontName()) {
-            result.getFontFamily().setValue(dmn.getFontName());
+        if (null != dmn.getFontFamily()) {
+            result.getFontFamily().setValue(dmn.getFontFamily());
         }
         if (null != dmn.getFontSize()) {
             result.getFontSize().setValue(dmn.getFontSize());
@@ -33,25 +32,19 @@ public class FontSetPropertyConverter {
         if (null != dmn.getFontColor()) {
             result.getFontColour().setValue(ColorUtils.wbFromDMN(dmn.getFontColor()));
         }
-        if (null != dmn.getFontBorderSize()) {
-            result.getFontBorderSize().setValue(dmn.getFontBorderSize());
-        }
         return result;
     }
 
     public static DMNStyle dmnFromWB(final FontSet wb) {
-        DMNStyle result = new DMNStyle();
+        DMNStyle result = new org.kie.dmn.model.v1_2.dmndi.DMNStyle();
         if (null != wb.getFontFamily().getValue()) {
-            result.setFontName(wb.getFontFamily().getValue());
+            result.setFontFamily(wb.getFontFamily().getValue());
         }
         if (null != wb.getFontSize().getValue()) {
             result.setFontSize(wb.getFontSize().getValue());
         }
         if (null != wb.getFontColour().getValue()) {
             result.setFontColor(ColorUtils.dmnFromWB(wb.getFontColour().getValue()));
-        }
-        if (null != wb.getFontBorderSize().getValue()) {
-            result.setFontBorderSize(wb.getFontBorderSize().getValue());
         }
         return result;
     }

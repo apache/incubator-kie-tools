@@ -51,7 +51,7 @@ public class DecisionRulePropertyConverter {
     }
 
     public static org.kie.dmn.model.api.DecisionRule dmnFromWB(final DecisionRule wb) {
-        org.kie.dmn.model.api.DecisionRule result = new org.kie.dmn.model.v1_1.TDecisionRule();
+        org.kie.dmn.model.api.DecisionRule result = new org.kie.dmn.model.v1_2.TDecisionRule();
         result.setId(wb.getId().getValue());
         result.setDescription(DescriptionPropertyConverter.dmnFromWB(wb.getDescription()));
 

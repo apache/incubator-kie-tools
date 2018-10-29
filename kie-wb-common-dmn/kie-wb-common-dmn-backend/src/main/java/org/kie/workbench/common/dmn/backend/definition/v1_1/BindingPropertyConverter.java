@@ -45,7 +45,7 @@ public class BindingPropertyConverter {
         if (wb == null) {
             return null;
         }
-        org.kie.dmn.model.api.Binding result = new org.kie.dmn.model.v1_1.TBinding();
+        org.kie.dmn.model.api.Binding result = new org.kie.dmn.model.v1_2.TBinding();
         result.setParameter(InformationItemPropertyConverter.dmnFromWB(wb.getParameter()));
         result.setExpression(ExpressionPropertyConverter.dmnFromWB(wb.getExpression()));
 

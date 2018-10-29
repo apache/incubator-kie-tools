@@ -94,8 +94,7 @@ public class SetKindCommandTest {
     @Before
     public void setup() {
         this.function = new FunctionDefinition();
-        this.function.getAdditionalAttributes().put(FunctionDefinition.KIND_QNAME,
-                                                    originalKind.code());
+        this.function.setKind(originalKind);
         this.function.setExpression(originalExpression);
 
         this.uiModel = new BaseGridData();
@@ -142,7 +141,7 @@ public class SetKindCommandTest {
                      c.execute(gce));
 
         assertEquals(newKind.code(),
-                     function.getAdditionalAttributes().get(FunctionDefinition.KIND_QNAME));
+                     function.getKind().code());
         assertEquals(newExpression,
                      function.getExpression());
     }
@@ -160,7 +159,7 @@ public class SetKindCommandTest {
                      c.undo(gce));
 
         assertEquals(originalKind.code(),
-                     function.getAdditionalAttributes().get(FunctionDefinition.KIND_QNAME));
+                     function.getKind().code());
         assertEquals(originalExpression,
                      function.getExpression());
     }
@@ -179,7 +178,7 @@ public class SetKindCommandTest {
                      c.undo(gce));
 
         assertEquals(originalKind.code(),
-                     function.getAdditionalAttributes().get(FunctionDefinition.KIND_QNAME));
+                     function.getKind().code());
         assertNull(function.getExpression());
     }
 

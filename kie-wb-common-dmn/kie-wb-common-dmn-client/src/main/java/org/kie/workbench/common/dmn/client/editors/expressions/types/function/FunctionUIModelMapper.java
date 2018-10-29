@@ -16,13 +16,11 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.function;
 
-import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.FunctionDefinition;
-import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
@@ -113,9 +111,7 @@ public class FunctionUIModelMapper extends BaseUIModelMapper<FunctionDefinition>
     }
 
     private FunctionDefinition.Kind extractExpressionLanguage(final FunctionDefinition function) {
-        final Map<QName, String> attributes = function.getAdditionalAttributes();
-        final String code = attributes.getOrDefault(FunctionDefinition.KIND_QNAME,
-                                                    FunctionDefinition.Kind.FEEL.code());
+        final String code = function.getKind() != null ? function.getKind().code() : FunctionDefinition.Kind.FEEL.code();
         return FunctionDefinition.Kind.determineFromString(code);
     }
 

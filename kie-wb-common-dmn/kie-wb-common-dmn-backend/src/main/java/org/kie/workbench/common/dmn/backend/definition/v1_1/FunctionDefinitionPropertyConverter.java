@@ -16,13 +16,10 @@
 
 package org.kie.workbench.common.dmn.backend.definition.v1_1;
 
-import java.util.Map.Entry;
-import java.util.Optional;
-
-import javax.xml.XMLConstants;
-
+import org.kie.dmn.model.api.FunctionKind;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.FunctionDefinition;
+import org.kie.workbench.common.dmn.api.definition.v1_1.FunctionDefinition.Kind;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
@@ -45,10 +42,21 @@ public class FunctionDefinitionPropertyConverter {
         if (expression != null) {
             expression.setParent(result);
         }
-        result.getNsContext().putAll(dmn.getNsContext());
-        for (Entry<javax.xml.namespace.QName, String> kv : dmn.getAdditionalAttributes().entrySet()) {
-            QName convertedQName = QNamePropertyConverter.wbFromDMN(kv.getKey());
-            result.getAdditionalAttributes().put(convertedQName, kv.getValue());
+
+        FunctionKind kind = dmn.getKind();
+        switch (kind) {
+            case FEEL:
+                result.setKind(Kind.FEEL);
+                break;
+            case JAVA:
+                result.setKind(Kind.JAVA);
+                break;
+            case PMML:
+                result.setKind(Kind.PMML);
+                break;
+            default:
+                result.setKind(Kind.FEEL);
+                break;
         }
 
         for (org.kie.dmn.model.api.InformationItem ii : dmn.getFormalParameter()) {
@@ -66,28 +74,27 @@ public class FunctionDefinitionPropertyConverter {
         if (wb == null) {
             return null;
         }
-        org.kie.dmn.model.api.FunctionDefinition result = new org.kie.dmn.model.v1_1.TFunctionDefinition();
+        org.kie.dmn.model.api.FunctionDefinition result = new org.kie.dmn.model.v1_2.TFunctionDefinition();
         result.setId(wb.getId().getValue());
         result.setDescription(DescriptionPropertyConverter.dmnFromWB(wb.getDescription()));
         QNamePropertyConverter.setDMNfromWB(wb.getTypeRef(),
                                             result::setTypeRef);
         result.setExpression(ExpressionPropertyConverter.dmnFromWB(wb.getExpression()));
 
-        result.getNsContext().putAll(wb.getNsContext());
-        for (Entry<QName, String> kv : wb.getAdditionalAttributes().entrySet()) {
-            Optional<javax.xml.namespace.QName> convertedQName = QNamePropertyConverter.dmnFromWB(kv.getKey());
-            if (convertedQName.isPresent()) {
-                javax.xml.namespace.QName qNameFromWB = convertedQName.get();
-                String determinePrefix = qNameFromWB.getPrefix();
-                if (XMLConstants.DEFAULT_NS_PREFIX.equals(determinePrefix)) {
-                    // if the QName for an "additional attribute" was created from WB side, it would not be aware of the prefix, so setting it manually in the direction WB->DMN.
-                    determinePrefix = result.getPrefixForNamespaceURI(qNameFromWB.getNamespaceURI()).orElse(XMLConstants.DEFAULT_NS_PREFIX);
-                }
-                javax.xml.namespace.QName qNameWithPrefix = new javax.xml.namespace.QName(qNameFromWB.getNamespaceURI(),
-                                                                                          qNameFromWB.getLocalPart(),
-                                                                                          determinePrefix);
-                result.getAdditionalAttributes().put(qNameWithPrefix, kv.getValue());
-            }
+        Kind kind = wb.getKind();
+        switch (kind) {
+            case FEEL:
+                result.setKind(FunctionKind.FEEL);
+                break;
+            case JAVA:
+                result.setKind(FunctionKind.JAVA);
+                break;
+            case PMML:
+                result.setKind(FunctionKind.PMML);
+                break;
+            default:
+                result.setKind(FunctionKind.FEEL);
+                break;
         }
 
         for (InformationItem ii : wb.getFormalParameter()) {

@@ -16,11 +16,8 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.function;
 
-import java.util.Map;
-
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase.Namespace;
 import org.kie.workbench.common.dmn.api.definition.v1_1.FunctionDefinition;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -36,13 +33,12 @@ public class KindUtilitiesTest {
 
     @Test
     public void testGetKindNoneSet() {
-        assertThat(KindUtilities.getKind(function)).isNull();
+        assertThat(KindUtilities.getKind(function)).isEqualTo(FunctionDefinition.Kind.FEEL); // DMN v1.2 default is FEEL.
     }
 
     @Test
     public void testGetKindWhenSet() {
-        function.getAdditionalAttributes().put(FunctionDefinition.KIND_QNAME,
-                                               FunctionDefinition.Kind.FEEL.code());
+        function.setKind(FunctionDefinition.Kind.FEEL);
         assertThat(KindUtilities.getKind(function)).isEqualTo(FunctionDefinition.Kind.FEEL);
     }
 
@@ -63,29 +59,22 @@ public class KindUtilitiesTest {
 
     @Test
     public void testSetKindNullWithNSSet() {
-        final Map<String, String> nsContext = function.getNsContext();
-        nsContext.put(FunctionDefinition.DROOLS_PREFIX,
-                      Namespace.KIE.getUri());
-
         KindUtilities.setKind(function, null);
 
-        assertThat(function.getNsContext().get(FunctionDefinition.DROOLS_PREFIX)).isEqualTo(Namespace.KIE.getUri());
-        assertThat(function.getAdditionalAttributes().get(FunctionDefinition.KIND_QNAME)).isNull();
+        assertThat(function.getKind()).isNull();
     }
 
     @Test
     public void testSetKindNullWithNSNotSet() {
         KindUtilities.setKind(function, null);
 
-        assertThat(function.getNsContext().get(FunctionDefinition.DROOLS_PREFIX)).isNull();
-        assertThat(function.getAdditionalAttributes().get(FunctionDefinition.KIND_QNAME)).isNull();
+        assertThat(function.getKind()).isNull();
     }
 
     private void assertSetKind(final FunctionDefinition.Kind kind) {
         KindUtilities.setKind(function,
                               kind);
 
-        assertThat(function.getNsContext().get(FunctionDefinition.DROOLS_PREFIX)).isEqualTo(Namespace.KIE.getUri());
-        assertThat(function.getAdditionalAttributes().get(FunctionDefinition.KIND_QNAME)).isEqualTo(kind.code());
+        assertThat(function.getKind().code()).isEqualTo(kind.code());
     }
 }

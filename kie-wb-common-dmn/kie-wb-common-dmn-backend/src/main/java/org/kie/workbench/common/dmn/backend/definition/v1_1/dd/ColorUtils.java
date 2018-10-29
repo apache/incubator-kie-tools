@@ -16,12 +16,12 @@
 
 package org.kie.workbench.common.dmn.backend.definition.v1_1.dd;
 
-import org.kie.workbench.common.dmn.backend.definition.v1_1.dd.org.omg.spec.CMMN_20151109_DC.Color;
+import org.kie.dmn.model.api.dmndi.Color;
 
 public class ColorUtils {
 
     public static Color dmnFromWB(String colorString) {
-        Color result = new Color();
+        Color result = new org.kie.dmn.model.v1_2.dmndi.Color();
 
         java.awt.Color decode = java.awt.Color.decode(colorString);
 

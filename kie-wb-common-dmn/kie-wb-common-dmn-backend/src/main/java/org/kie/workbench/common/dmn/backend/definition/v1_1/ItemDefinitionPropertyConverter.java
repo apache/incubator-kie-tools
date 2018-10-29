@@ -64,7 +64,7 @@ public class ItemDefinitionPropertyConverter {
         if (wb == null) {
             return null;
         }
-        org.kie.dmn.model.api.ItemDefinition result = new org.kie.dmn.model.v1_1.TItemDefinition();
+        org.kie.dmn.model.api.ItemDefinition result = new org.kie.dmn.model.v1_2.TItemDefinition();
         result.setId(wb.getId().getValue());
         result.setDescription(DescriptionPropertyConverter.dmnFromWB(wb.getDescription()));
         result.setName(wb.getName().getValue());
@@ -78,6 +78,7 @@ public class ItemDefinitionPropertyConverter {
 
         for (ItemDefinition child : wb.getItemComponent()) {
             org.kie.dmn.model.api.ItemDefinition convertedChild = ItemDefinitionPropertyConverter.dmnFromWB(child);
+            convertedChild.setParent(result);
             result.getItemComponent().add(convertedChild);
         }
 

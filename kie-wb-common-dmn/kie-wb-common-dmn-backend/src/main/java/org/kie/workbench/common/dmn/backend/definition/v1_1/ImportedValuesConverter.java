@@ -16,9 +16,13 @@
 
 package org.kie.workbench.common.dmn.backend.definition.v1_1;
 
+import java.util.UUID;
+
 import org.kie.workbench.common.dmn.api.definition.v1_1.ImportedValues;
 import org.kie.workbench.common.dmn.api.property.dmn.ExpressionLanguage;
+import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.LocationURI;
+import org.kie.workbench.common.dmn.api.property.dmn.Name;
 
 public class ImportedValuesConverter {
 
@@ -36,6 +40,13 @@ public class ImportedValuesConverter {
                                                importType,
                                                importedElement,
                                                expressionLanguage);
+        String id = dmn.getId();
+        String name = dmn.getName();
+        String description = dmn.getDescription();
+        String fallbackUUID = UUID.randomUUID().toString();
+        wb.setId(new Id(id != null ? id : fallbackUUID));
+        wb.setName(new Name(name != null ? name : fallbackUUID));
+        wb.setDescription(DescriptionPropertyConverter.wbFromDMN(description));
         return wb;
     }
 
@@ -43,11 +54,14 @@ public class ImportedValuesConverter {
         if (wb == null) {
             return null;
         }
-        org.kie.dmn.model.api.ImportedValues dmn = new org.kie.dmn.model.v1_1.TImportedValues();
+        org.kie.dmn.model.api.ImportedValues dmn = new org.kie.dmn.model.v1_2.TImportedValues();
         dmn.setNamespace(wb.getNamespace());
         dmn.setLocationURI(wb.getLocationURI().getValue());
         dmn.setImportType(wb.getImportType());
         dmn.setImportedElement(wb.getImportedElement());
+        dmn.setId(wb.getId().getValue());
+        dmn.setName(wb.getName().getValue());
+        dmn.setDescription(DescriptionPropertyConverter.dmnFromWB(wb.getDescription()));
         dmn.setExpressionLanguage(ExpressionLanguagePropertyConverter.dmnFromWB(wb.getExpressionLanguage()));
         return dmn;
     }

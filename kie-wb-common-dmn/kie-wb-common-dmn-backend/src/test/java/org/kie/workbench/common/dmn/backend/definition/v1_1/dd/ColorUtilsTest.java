@@ -17,7 +17,7 @@
 package org.kie.workbench.common.dmn.backend.definition.v1_1.dd;
 
 import org.junit.Test;
-import org.kie.workbench.common.dmn.backend.definition.v1_1.dd.org.omg.spec.CMMN_20151109_DC.Color;
+import org.kie.dmn.model.api.dmndi.Color;
 
 import static org.junit.Assert.assertEquals;
 

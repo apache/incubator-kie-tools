@@ -51,7 +51,7 @@ public class OutputClausePropertyConverter {
     }
 
     public static org.kie.dmn.model.api.OutputClause dmnFromWB(final OutputClause wb) {
-        org.kie.dmn.model.api.OutputClause result = new org.kie.dmn.model.v1_1.TOutputClause();
+        org.kie.dmn.model.api.OutputClause result = new org.kie.dmn.model.v1_2.TOutputClause();
         result.setId(wb.getId().getValue());
         result.setName(wb.getName());
         result.setDescription(DescriptionPropertyConverter.dmnFromWB(wb.getDescription()));

@@ -100,12 +100,6 @@ public class FunctionColumnParametersHeaderMetaDataTest {
     }
 
     @Test
-    public void testGetExpressionLanguageTitleWhenKindIsNull() {
-        assertEquals(DMNEditorConstants.FunctionEditor_Undefined,
-                     header.getExpressionLanguageTitle());
-    }
-
-    @Test
     public void testGetFormalParametersTitleOneParameter() {
         setupFormalParameters("p0");
 

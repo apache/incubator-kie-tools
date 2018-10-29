@@ -42,9 +42,9 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 public class Definitions extends DMNElement implements HasName,
                                                        DMNPropertySet {
 
-    public static final String DEFAULT_EXPRESSION_LANGUAGE = "http://www.omg.org/spec/FEEL/20140401";
+    public static final String DEFAULT_EXPRESSION_LANGUAGE = Namespace.FEEL.getUri();
 
-    public static final String DEFAULT_TYPE_LANGUAGE = "http://www.omg.org/spec/FEEL/20140401";
+    public static final String DEFAULT_TYPE_LANGUAGE = Namespace.FEEL.getUri();
 
     //Definitions should extend NamedElement however we want Name to be read-only
     @Property

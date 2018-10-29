@@ -59,7 +59,7 @@ public class InvocationPropertyConverter {
         if (wb == null) {
             return null;
         }
-        org.kie.dmn.model.api.Invocation result = new org.kie.dmn.model.v1_1.TInvocation();
+        org.kie.dmn.model.api.Invocation result = new org.kie.dmn.model.v1_2.TInvocation();
         result.setId(wb.getId().getValue());
         result.setDescription(DescriptionPropertyConverter.dmnFromWB(wb.getDescription()));
         QNamePropertyConverter.setDMNfromWB(wb.getTypeRef(),

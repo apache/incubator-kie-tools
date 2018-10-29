@@ -150,8 +150,7 @@ public class FunctionUIModelMapperTest {
     @Test
     public void testFromDMNModelExpressionKindFEEL() {
         this.function.setExpression(literalExpression);
-        this.function.getAdditionalAttributes().put(FunctionDefinition.KIND_QNAME,
-                                                    FunctionDefinition.Kind.FEEL.code());
+        this.function.setKind(FunctionDefinition.Kind.FEEL);
 
         mapper.fromDMNModel(0, 0);
 
@@ -162,8 +161,7 @@ public class FunctionUIModelMapperTest {
     @Test
     public void testFromDMNModelExpressionKindJava() {
         this.function.setExpression(context);
-        this.function.getAdditionalAttributes().put(FunctionDefinition.KIND_QNAME,
-                                                    FunctionDefinition.Kind.JAVA.code());
+        this.function.setKind(FunctionDefinition.Kind.JAVA);
 
         mapper.fromDMNModel(0, 0);
 
@@ -174,8 +172,7 @@ public class FunctionUIModelMapperTest {
     @Test
     public void testFromDMNModelExpressionKindPMML() {
         this.function.setExpression(context);
-        this.function.getAdditionalAttributes().put(FunctionDefinition.KIND_QNAME,
-                                                    FunctionDefinition.Kind.PMML.code());
+        this.function.setKind(FunctionDefinition.Kind.PMML);
 
         mapper.fromDMNModel(0, 0);
 
