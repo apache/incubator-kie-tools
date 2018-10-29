@@ -40,6 +40,7 @@ import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.CategoriesManagerCache;
 import org.uberfire.client.mvp.UberElemental;
 import org.uberfire.ext.widgets.common.client.select.SelectOption;
+import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.workbench.category.Category;
 import org.uberfire.workbench.category.Undefined;
 
@@ -87,6 +88,11 @@ public class AddAssetScreen {
         this.filter = "";
         this.view.init(this);
         this.view.setTitle(this.getTitle());
+    }
+
+    @OnOpen
+    public void onOpen() {
+        this.filter = "";
         this.newResourceHandlers = this.resourceHandlerManager.getNewResourceHandlers(NewResourceHandler::isProjectAsset);
         this.view.setCategories(this.categoryUtils.createCategories());
         this.update();

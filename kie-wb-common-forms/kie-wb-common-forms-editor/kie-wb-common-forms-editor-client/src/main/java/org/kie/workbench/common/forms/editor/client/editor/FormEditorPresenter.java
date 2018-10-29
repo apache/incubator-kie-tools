@@ -16,8 +16,12 @@
 
 package org.kie.workbench.common.forms.editor.client.editor;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
@@ -36,6 +40,7 @@ import org.kie.workbench.common.forms.dynamic.client.rendering.FieldLayoutCompon
 import org.kie.workbench.common.forms.editor.client.editor.changes.ChangesNotificationDisplayer;
 import org.kie.workbench.common.forms.editor.client.editor.errorMessage.ErrorMessageDisplayer;
 import org.kie.workbench.common.forms.editor.client.editor.events.FormEditorSyncPaletteEvent;
+import org.kie.workbench.common.forms.editor.client.editor.groupProviders.FormEditorFieldGroupsProvider;
 import org.kie.workbench.common.forms.editor.client.editor.rendering.EditorFieldLayoutComponent;
 import org.kie.workbench.common.forms.editor.client.resources.i18n.FormEditorConstants;
 import org.kie.workbench.common.forms.editor.client.type.FormDefinitionResourceType;
@@ -61,7 +66,7 @@ import org.uberfire.ext.editor.commons.client.file.popups.CopyPopUpPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.RenamePopUpPresenter;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.api.ComponentRemovedEvent;
-import org.uberfire.ext.layout.editor.client.api.LayoutDragComponentGroup;
+import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponentPalette;
 import org.uberfire.ext.layout.editor.client.api.LayoutEditor;
 import org.uberfire.ext.plugin.client.perspective.editor.layout.editor.HTMLLayoutDragComponent;
@@ -251,12 +256,15 @@ public class FormEditorPresenter extends KieEditor<FormModelerContent> {
     }
 
     protected void loadFormControls() {
-        LayoutDragComponentGroup group = new LayoutDragComponentGroup(translationService.getTranslation(FormEditorConstants.FormEditorPresenterComponentsPalette));
-        group.addLayoutDragComponent("html",
-                                     htmlLayoutDragComponent);
-        editorHelper.getBaseFieldsDraggables().forEach(component -> group.addLayoutDragComponent(component.getFieldId(),
-                                                                                                 component));
-        layoutDragComponentPalette.addDraggableGroup(group);
+        String groupName = translationService.getTranslation(FormEditorConstants.FormEditorPresenterComponentsPalette);
+
+        List<LayoutDragComponent> components = new ArrayList<>();
+
+        components.add(htmlLayoutDragComponent);
+
+        editorHelper.getBaseFieldsDraggables().forEach(components::add);
+
+        layoutDragComponentPalette.addDraggableGroup(new FormEditorFieldGroupsProvider(groupName, components));
     }
 
     @Override
@@ -429,19 +437,21 @@ public class FormEditorPresenter extends KieEditor<FormModelerContent> {
     }
 
     protected void loadAvailableFields() {
-        LayoutDragComponentGroup group = new LayoutDragComponentGroup(translationService.getTranslation(FormEditorConstants.FormEditorPresenterModelFields));
+        String groupName = translationService.getTranslation(FormEditorConstants.FormEditorPresenterModelFields);
 
-        editorHelper.getAvailableFields().values().forEach(fieldDefinition -> {
-            EditorFieldLayoutComponent layoutFieldComponent = editorFieldLayoutComponents.get();
-            if (layoutFieldComponent != null) {
-                layoutFieldComponent.init(editorHelper.getRenderingContext(),
-                                          fieldDefinition);
-                group.addLayoutDragComponent(fieldDefinition.getId(),
-                                             layoutFieldComponent);
-            }
-        });
+        List<LayoutDragComponent> fieldComponents = editorHelper.getAvailableFields().values().stream()
+                .map(fieldDefinition -> {
+                    EditorFieldLayoutComponent layoutFieldComponent = editorFieldLayoutComponents.get();
+                    if (layoutFieldComponent != null) {
+                        layoutFieldComponent.init(editorHelper.getRenderingContext(), fieldDefinition);
+                        return layoutFieldComponent;
+                    }
+                    return null;
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
 
-        layoutDragComponentPalette.addDraggableGroup(group);
+        layoutDragComponentPalette.addDraggableGroup(new FormEditorFieldGroupsProvider(groupName, fieldComponents));
     }
 
     public void onRemoveComponent(@Observes ComponentRemovedEvent event) {

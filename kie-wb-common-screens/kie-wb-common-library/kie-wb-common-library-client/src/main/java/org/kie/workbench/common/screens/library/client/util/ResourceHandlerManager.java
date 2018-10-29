@@ -21,25 +21,29 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
+
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.jboss.errai.ioc.client.container.SyncBeanDef;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.kie.workbench.common.widgets.client.handlers.NewResourceHandler;
+import org.uberfire.client.workbench.type.ClientResourceType;
+import org.uberfire.client.workbench.type.ClientTypeRegistry;
 
 @ApplicationScoped
 public class ResourceHandlerManager {
 
-    private ManagedInstance<NewResourceHandler> newResourceHandlers;
+    private SyncBeanManager beanManager;
+    private ClientTypeRegistry clientTypeRegistry;
 
     public ResourceHandlerManager() {
     }
 
     @Inject
-    public ResourceHandlerManager(final ManagedInstance<NewResourceHandler> newResourceHandlers) {
-        this.newResourceHandlers = newResourceHandlers;
+    public ResourceHandlerManager(SyncBeanManager beanManager, ClientTypeRegistry clientTypeRegistry) {
+        this.beanManager = beanManager;
+        this.clientTypeRegistry = clientTypeRegistry;
     }
 
     public List<NewResourceHandler> getNewResourceHandlers(final Function<NewResourceHandler, Boolean> matcher) {
@@ -55,6 +59,9 @@ public class ResourceHandlerManager {
     }
 
     public Iterable<NewResourceHandler> getNewResourceHandlers() {
-        return newResourceHandlers;
+        return beanManager.lookupBeans(NewResourceHandler.class).stream()
+                .map(SyncBeanDef::getInstance)
+                .filter(newResourceHandler -> clientTypeRegistry.isEnabled((ClientResourceType) newResourceHandler.getResourceType()))
+                .collect(Collectors.toList());
     }
 }

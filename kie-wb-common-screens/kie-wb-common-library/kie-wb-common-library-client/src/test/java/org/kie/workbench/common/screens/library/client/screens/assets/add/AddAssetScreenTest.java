@@ -139,7 +139,7 @@ public class AddAssetScreenTest {
     }
 
     @Test
-    public void testInitialize() {
+    public void testOnOpen() {
         NewResourceHandler rh1 = new NewFileUploader();
         NewResourceHandler rh2 = new NewJavaFileTextHandler();
 
@@ -147,6 +147,7 @@ public class AddAssetScreenTest {
                                rh2)).when(resourceHandlerManager).getNewResourceHandlers();
 
         addAssetScreen.initialize();
+        addAssetScreen.onOpen();
 
         assertEquals(1,
                      addAssetScreen.newResourceHandlers.size());
