@@ -23,6 +23,10 @@
   <inherits name="org.uberfire.preferences.UberfirePreferencesAPI"/>
   <inherits name="org.uberfire.preferences.UberfirePreferencesClient"/>
 
+  <!-- Experimental -->
+  <inherits name="org.uberfire.experimental.UberfireExperimentalAPI"/>
+  <inherits name="org.uberfire.experimental.UberfireExperimentalClient"/>
+
   <!-- Specify the application specific style sheet. -->
   <stylesheet src='css/uberfire-showcase.css'/>
 

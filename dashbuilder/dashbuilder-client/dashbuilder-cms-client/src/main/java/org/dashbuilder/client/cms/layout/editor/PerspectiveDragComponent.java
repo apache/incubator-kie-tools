@@ -16,6 +16,7 @@
 package org.dashbuilder.client.cms.layout.editor;
 
 import java.util.Map;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -29,13 +30,14 @@ import org.uberfire.ext.layout.editor.client.api.RenderingContext;
 import org.uberfire.ext.plugin.client.perspective.editor.api.PerspectiveEditorCoreComponent;
 import org.uberfire.ext.plugin.model.Plugin;
 
-import static org.dashbuilder.navigation.layout.NavDragComponentSettings.*;
+import static org.dashbuilder.navigation.layout.NavDragComponentSettings.PERSPECTIVE_ID;
 
 /**
  * Runtime perspective drag component.
  */
 @Dependent
-public class PerspectiveDragComponent implements PerspectiveEditorCoreComponent, HasModalConfiguration {
+public class PerspectiveDragComponent implements PerspectiveEditorCoreComponent,
+                                                 HasModalConfiguration {
 
     PerspectiveDragConfigModal perspectiveDragConfigModal;
     PerspectiveWidget perspectiveWidget;

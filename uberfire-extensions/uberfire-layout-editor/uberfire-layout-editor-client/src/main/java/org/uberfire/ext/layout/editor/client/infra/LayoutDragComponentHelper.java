@@ -20,22 +20,35 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
 import javax.annotation.PreDestroy;
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.container.Factory;
-import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
-import org.jboss.errai.ioc.client.container.SyncBeanManagerImpl;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import org.uberfire.experimental.client.service.ClientExperimentalFeaturesRegistryService;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.client.api.HasDragAndDropSettings;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
+import org.uberfire.ext.layout.editor.client.infra.experimental.DisabledExperimentalLayoutComponent;
 
-@ApplicationScoped
+@Dependent
 public class LayoutDragComponentHelper {
+
+    private SyncBeanManager beanManager;
+    private ClientExperimentalFeaturesRegistryService experimentalFeaturesRegistryService;
 
     private DndDataJSONConverter converter = new DndDataJSONConverter();
     private List<Object> instances = new ArrayList<>();
+
+    @Inject
+    public LayoutDragComponentHelper(SyncBeanManager beanManager, ClientExperimentalFeaturesRegistryService experimentalFeaturesRegistryService) {
+        this.beanManager = beanManager;
+        this.experimentalFeaturesRegistryService = experimentalFeaturesRegistryService;
+    }
 
     @PreDestroy
     public void destroy() {
@@ -49,15 +62,29 @@ public class LayoutDragComponentHelper {
     }
 
     private LayoutDragComponent lookupBean(String dragTypeClassName) {
-        SyncBeanManagerImpl beanManager = (SyncBeanManagerImpl) IOC.getBeanManager();
         Collection<SyncBeanDef<LayoutDragComponent>> iocBeanDefs = beanManager.lookupBeans(LayoutDragComponent.class);
-        for (SyncBeanDef<LayoutDragComponent> iocBeanDef : iocBeanDefs) {
-            LayoutDragComponent instance = iocBeanDef.getInstance();
-            instances.add(instance);
-            if (getRealBeanClass(instance).equalsIgnoreCase(dragTypeClassName)) {
-                return instance;
+
+        Optional<SyncBeanDef<LayoutDragComponent>> optional = iocBeanDefs.stream()
+                .filter(beanDef -> beanDef.getBeanClass().getName().equals(dragTypeClassName))
+                .findAny();
+
+        if (optional.isPresent()) {
+            SyncBeanDef<LayoutDragComponent> beanDef = optional.get();
+
+            LayoutDragComponent instance;
+
+            if (experimentalFeaturesRegistryService.isFeatureEnabled(beanDef.getBeanClass().getName())) {
+                instance = beanDef.newInstance();
+            } else {
+                DisabledExperimentalLayoutComponent disabled = beanManager.lookupBean(DisabledExperimentalLayoutComponent.class).newInstance();
+                disabled.setFeatureId(beanDef.getBeanClass().getName());
+
+                instance = disabled;
             }
+            instances.add(instance);
+            return instance;
         }
+
         return null;
     }
 

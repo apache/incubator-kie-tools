@@ -17,36 +17,29 @@
 package org.uberfire.client.workbench.widgets.menu.megamenu;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.Window;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.Workbench;
-import org.uberfire.client.workbench.events.PerspectiveChange;
+import org.uberfire.client.workbench.widgets.menu.AbstractWorkbenchMenuProducer;
 import org.uberfire.client.workbench.widgets.menu.megamenu.brand.MegaMenuBrand;
 import org.uberfire.client.workbench.widgets.menu.megamenu.contextmenuitem.ChildContextMenuItemPresenter;
 import org.uberfire.client.workbench.widgets.menu.megamenu.contextmenuitem.GroupContextMenuItemPresenter;
 import org.uberfire.client.workbench.widgets.menu.megamenu.menuitem.ChildMenuItemPresenter;
 import org.uberfire.client.workbench.widgets.menu.megamenu.menuitem.GroupMenuItemPresenter;
+import org.uberfire.experimental.service.auth.ExperimentalActivitiesAuthorizationManager;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.authz.AuthorizationManager;
 
 @ApplicationScoped
-public class WorkbenchMegaMenuProducer {
+public class WorkbenchMegaMenuProducer extends AbstractWorkbenchMenuProducer<WorkbenchMegaMenuPresenter, WorkbenchMegaMenuPresenter.View> {
 
-    private AuthorizationManager authzManager;
-    private PerspectiveManager perspectiveManager;
-    private ActivityManager activityManager;
-    private User identity;
-    private WorkbenchMegaMenuPresenter.View view;
     private ManagedInstance<MegaMenuBrand> megaMenuBrands;
-    private PlaceManager placeManager;
     private AuthorizationManager authorizationManager;
     private SessionInfo sessionInfo;
     private ManagedInstance<ChildMenuItemPresenter> childMenuItemPresenters;
@@ -54,7 +47,6 @@ public class WorkbenchMegaMenuProducer {
     private ManagedInstance<ChildContextMenuItemPresenter> childContextMenuItemPresenters;
     private ManagedInstance<GroupContextMenuItemPresenter> groupContextMenuItemPresenters;
     private Workbench workbench;
-    private WorkbenchMegaMenuPresenter instance = null;
 
     public WorkbenchMegaMenuProducer() {
         //CDI proxy
@@ -74,36 +66,29 @@ public class WorkbenchMegaMenuProducer {
                                      final ManagedInstance<GroupMenuItemPresenter> groupMenuItemPresenters,
                                      final ManagedInstance<ChildContextMenuItemPresenter> childContextMenuItemPresenters,
                                      final ManagedInstance<GroupContextMenuItemPresenter> groupContextMenuItemPresenters,
-                                     final Workbench workbench) {
-        this.authzManager = authzManager;
-        this.perspectiveManager = perspectiveManager;
-        this.activityManager = activityManager;
-        this.identity = identity;
-        this.view = view;
+                                     final Workbench workbench,
+                                     final ExperimentalActivitiesAuthorizationManager experimentalActivitiesAuthorizationManager) {
+        super(authzManager, perspectiveManager, placeManager, activityManager, identity, experimentalActivitiesAuthorizationManager, view);
+        this.authorizationManager = authorizationManager;
         this.megaMenuBrands = megaMenuBrands;
         this.placeManager = placeManager;
-        this.authorizationManager = authorizationManager;
         this.sessionInfo = sessionInfo;
         this.childMenuItemPresenters = childMenuItemPresenters;
         this.groupMenuItemPresenters = groupMenuItemPresenters;
         this.childContextMenuItemPresenters = childContextMenuItemPresenters;
         this.groupContextMenuItemPresenters = groupContextMenuItemPresenters;
         this.workbench = workbench;
+        this.experimentalActivitiesAuthorizationManager = experimentalActivitiesAuthorizationManager;
     }
+
 
     @Produces
-    public WorkbenchMegaMenuPresenter getWorkbenchMegaMenu() {
-        if (instance == null) {
-            if (!isStandalone()) {
-                instance = makeDefaultMegaMenuPresenter();
-            } else {
-                instance = makeStandaloneMegaMenuPresenter();
-            }
-        }
-        return instance;
+    public WorkbenchMegaMenuPresenter getInstance() {
+        return getWorbenchMenu();
     }
 
-    WorkbenchMegaMenuPresenter makeDefaultMegaMenuPresenter() {
+    @Override
+    protected WorkbenchMegaMenuPresenter makeDefaultPresenter() {
         return new WorkbenchMegaMenuPresenter(authzManager,
                                               perspectiveManager,
                                               activityManager,
@@ -117,10 +102,12 @@ public class WorkbenchMegaMenuProducer {
                                               groupMenuItemPresenters,
                                               childContextMenuItemPresenters,
                                               groupContextMenuItemPresenters,
-                                              workbench);
+                                              workbench,
+                                              experimentalActivitiesAuthorizationManager);
     }
 
-    WorkbenchMegaMenuStandalonePresenter makeStandaloneMegaMenuPresenter() {
+    @Override
+    protected WorkbenchMegaMenuStandalonePresenter makeStandalonePresenter() {
         return new WorkbenchMegaMenuStandalonePresenter(authzManager,
                                                         perspectiveManager,
                                                         activityManager,
@@ -134,16 +121,7 @@ public class WorkbenchMegaMenuProducer {
                                                         groupMenuItemPresenters,
                                                         childContextMenuItemPresenters,
                                                         groupContextMenuItemPresenters,
-                                                        workbench);
-    }
-
-    protected void onPerspectiveChange(final @Observes PerspectiveChange perspectiveChange) {
-        if (instance != null) {
-            instance.onPerspectiveChange(perspectiveChange);
-        }
-    }
-
-    boolean isStandalone() {
-        return Window.Location.getParameterMap().containsKey("standalone");
+                                                        workbench,
+                                                        experimentalActivitiesAuthorizationManager);
     }
 }

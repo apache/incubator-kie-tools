@@ -25,9 +25,12 @@ import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 
+import static org.uberfire.ext.apps.client.AppsPerspective.IDENTIFIER;
+
 @ApplicationScoped
-@WorkbenchPerspective(identifier = "AppsPerspective")
+@WorkbenchPerspective(identifier = IDENTIFIER)
 public class AppsPerspective {
+    public static final String IDENTIFIER = "AppsPerspective";
 
     @Perspective
     public PerspectiveDefinition buildPerspective() {

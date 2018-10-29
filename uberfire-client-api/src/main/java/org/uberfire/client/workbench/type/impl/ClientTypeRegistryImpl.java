@@ -36,7 +36,7 @@ import static java.util.Collections.unmodifiableList;
 @ApplicationScoped
 public class ClientTypeRegistryImpl implements ClientTypeRegistry {
 
-    private final SyncBeanManager iocManager;
+    protected final SyncBeanManager iocManager;
     private List<ClientResourceType> localResourceTypes = new ArrayList<ClientResourceType>();
 
     @Inject
@@ -71,6 +71,11 @@ public class ClientTypeRegistryImpl implements ClientTypeRegistry {
     @Override
     public Collection<ClientResourceType> getRegisteredTypes() {
         return unmodifiableList(localResourceTypes);
+    }
+
+    @Override
+    public boolean isEnabled(ClientResourceType resourceType) {
+        return localResourceTypes.contains(resourceType);
     }
 
     @Override

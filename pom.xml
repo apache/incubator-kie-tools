@@ -847,6 +847,7 @@
     <module>uberfire-backend</module>
     <module>uberfire-js</module>
     <module>uberfire-testing-utils</module>
+    <module>uberfire-experimental</module>
     <module>uberfire-workbench</module>
     <module>uberfire-packaging</module>
     <module>uberfire-preferences</module>

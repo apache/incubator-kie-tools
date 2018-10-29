@@ -102,6 +102,7 @@ public class WorkbenchMegaMenuContextMenuVisitor extends BaseMenuVisitor {
                                      () -> placeManager.goTo(menuItemPerspective.getPlaceRequest()),
                                      menuItemPerspective.getPosition());
         setupEnableDisableContextMenuItem(menuItemPerspective);
+        presenter.setupSetVisibleMenuItem(menuItemPerspective);
     }
 
     private void setupEnableDisableContextMenuItem(final MenuItem menuItem) {

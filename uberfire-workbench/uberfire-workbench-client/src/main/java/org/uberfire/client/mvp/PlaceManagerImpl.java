@@ -56,6 +56,7 @@ import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
 import org.uberfire.client.workbench.events.PlaceLostFocusEvent;
 import org.uberfire.client.workbench.events.SelectPlaceEvent;
 import org.uberfire.client.workbench.panels.impl.UnanchoredStaticWorkbenchPanelPresenter;
+import org.uberfire.experimental.service.auth.ExperimentalActivitiesAuthorizationManager;
 import org.uberfire.mvp.BiParameterizedCommand;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.Commands;
@@ -131,6 +132,8 @@ public class PlaceManagerImpl
     private WorkbenchLayout workbenchLayout;
     @Inject
     private LayoutSelection layoutSelection;
+    @Inject
+    private ExperimentalActivitiesAuthorizationManager activitiesAuthorizationManager;
 
     @PostConstruct
     public void initPlaceHistoryHandler() {
@@ -1013,11 +1016,11 @@ public class PlaceManagerImpl
      * process.
      */
     private void openPartsRecursively(PanelDefinition panel) {
+
         for (PartDefinition part : ensureIterable(panel.getParts())) {
-            final PlaceRequest place = part.getPlace().clone();
-            part.setPlace(place);
-            goTo(part,
-                 panel);
+            activitiesAuthorizationManager.securePart(part, panel);
+
+            goTo(part, panel);
         }
         for (PanelDefinition child : ensureIterable(panel.getChildren())) {
             openPartsRecursively(child);

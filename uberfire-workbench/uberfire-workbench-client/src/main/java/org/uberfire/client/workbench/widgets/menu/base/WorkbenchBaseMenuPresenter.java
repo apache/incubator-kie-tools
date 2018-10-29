@@ -20,7 +20,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.uberfire.client.workbench.events.PerspectiveChange;
 import org.uberfire.client.workbench.widgets.menu.HasMenus;
+import org.uberfire.client.workbench.widgets.menu.MenuItemVisibilityHandler;
+import org.uberfire.client.workbench.widgets.menu.events.PerspectiveVisibiltiyChangeEvent;
 import org.uberfire.workbench.model.menu.MenuGroup;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
@@ -29,11 +32,14 @@ import static org.uberfire.plugin.PluginUtil.ensureIterable;
 
 public abstract class WorkbenchBaseMenuPresenter implements HasMenus {
 
+    private List<MenuItemVisibilityHandler> visibilityHandlers;
     private List<Menus> addedMenus;
 
     protected abstract WorkbenchBaseMenuView getBaseView();
 
     protected abstract void visitMenus(final Menus menus);
+
+    public abstract void onPerspectiveChange(final PerspectiveChange perspectiveChange);
 
     @Override
     public void addMenus(final Menus menus) {
@@ -41,6 +47,10 @@ public abstract class WorkbenchBaseMenuPresenter implements HasMenus {
 
             if (addedMenus == null) {
                 addedMenus = new ArrayList<>();
+            }
+
+            if (visibilityHandlers == null) {
+                visibilityHandlers = new ArrayList<>();
             }
 
             addedMenus.add(menus);
@@ -84,6 +94,18 @@ public abstract class WorkbenchBaseMenuPresenter implements HasMenus {
             } else {
                 menuItem.setEnabled(menuItem.isEnabled());
             }
+        }
+    }
+
+    protected void registerVisibilityChangeHandler(MenuItemVisibilityHandler handler) {
+        visibilityHandlers.add(handler);
+    }
+
+    public void onPerspectiveVisibilityChange(PerspectiveVisibiltiyChangeEvent event) {
+        if (visibilityHandlers != null) {
+            visibilityHandlers.stream()
+                    .filter(handler -> handler.getIdentifier().equals(event.getPerspectiveId()))
+                    .forEach(handler -> handler.run(event.isVisible()));
         }
     }
 }

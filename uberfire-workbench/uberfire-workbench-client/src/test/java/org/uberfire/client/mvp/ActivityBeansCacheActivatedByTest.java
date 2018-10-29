@@ -35,6 +35,7 @@ import org.uberfire.client.workbench.events.NewPerspectiveEvent;
 import org.uberfire.client.workbench.events.NewWorkbenchScreenEvent;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.client.workbench.type.DotResourceType;
+import org.uberfire.experimental.service.auth.ExperimentalActivitiesAuthorizationManager;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.workbench.category.Others;
 
@@ -80,6 +81,9 @@ public class ActivityBeansCacheActivatedByTest {
 
     private ResourceTypeManagerCache resourceTypeManagerCache;
 
+    @Mock
+    private ExperimentalActivitiesAuthorizationManager experimentalActivitiesAuthorizationManager;
+
     private ActiveSplashScreenActivity activeSplashScreenActivity;
     private SyncBeanDef activeSplashScreenActivityBean;
     private SyncBeanDef nonActiveSplashScreenActivityBean;
@@ -101,7 +105,8 @@ public class ActivityBeansCacheActivatedByTest {
         activityBeansCache = new ActivityBeansCache(iocManager,
                                                     newPerspectiveEventEvent,
                                                     newWorkbenchScreenEventEvent,
-                                                    resourceTypeManagerCache);
+                                                    resourceTypeManagerCache,
+                                                    experimentalActivitiesAuthorizationManager);
 
         activeSplashScreenActivity = mock(ActiveSplashScreenActivity.class);
         activeSplashScreenActivityBean = mockSplashScreenActivityBean(ActiveSplashScreenActivity.class,

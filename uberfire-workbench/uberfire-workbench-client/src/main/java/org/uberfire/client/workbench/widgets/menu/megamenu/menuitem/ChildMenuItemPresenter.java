@@ -22,12 +22,14 @@ import javax.inject.Inject;
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.client.workbench.widgets.menu.megamenu.base.BaseMenuItemPresenter;
 import org.uberfire.client.workbench.widgets.menu.megamenu.base.CanBeDisabled;
+import org.uberfire.client.workbench.widgets.menu.megamenu.base.CanHide;
 import org.uberfire.client.workbench.widgets.menu.megamenu.base.Selectable;
 import org.uberfire.mvp.Command;
 
 public class ChildMenuItemPresenter implements BaseMenuItemPresenter,
                                                Selectable,
-                                               CanBeDisabled {
+                                               CanBeDisabled,
+                                               CanHide {
 
     public interface View extends UberElement<ChildMenuItemPresenter> {
 
@@ -40,6 +42,8 @@ public class ChildMenuItemPresenter implements BaseMenuItemPresenter,
         void disable();
 
         void select();
+
+        void setVisible(boolean visible);
     }
 
     private View view;
@@ -82,5 +86,15 @@ public class ChildMenuItemPresenter implements BaseMenuItemPresenter,
     @Override
     public void disable() {
         view.disable();
+    }
+
+    @Override
+    public void show() {
+        view.setVisible(true);
+    }
+
+    @Override
+    public void hide() {
+        view.setVisible(false);
     }
 }

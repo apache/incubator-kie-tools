@@ -23,8 +23,10 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -38,8 +40,8 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.annotations.AssociatedResources;
 import org.uberfire.client.workbench.events.NewPerspectiveEvent;
 import org.uberfire.client.workbench.events.NewWorkbenchScreenEvent;
-import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.commons.data.Pair;
+import org.uberfire.experimental.service.auth.ExperimentalActivitiesAuthorizationManager;
 
 import static java.util.Collections.sort;
 
@@ -66,6 +68,7 @@ public class ActivityBeansCache {
     private Event<NewPerspectiveEvent> newPerspectiveEventEvent;
     private Event<NewWorkbenchScreenEvent> newWorkbenchScreenEventEvent;
     protected ResourceTypeManagerCache resourceTypeManagerCache;
+    private ExperimentalActivitiesAuthorizationManager experimentalActivitiesAuthorizationManager;
 
     public ActivityBeansCache() {
     }
@@ -74,11 +77,13 @@ public class ActivityBeansCache {
     public ActivityBeansCache(SyncBeanManager iocManager,
                               Event<NewPerspectiveEvent> newPerspectiveEventEvent,
                               Event<NewWorkbenchScreenEvent> newWorkbenchScreenEventEvent,
-                              ResourceTypeManagerCache resourceTypeManagerCache) {
+                              ResourceTypeManagerCache resourceTypeManagerCache,
+                              ExperimentalActivitiesAuthorizationManager experimentalActivitiesAuthorizationManager) {
         this.iocManager = iocManager;
         this.newPerspectiveEventEvent = newPerspectiveEventEvent;
         this.newWorkbenchScreenEventEvent = newWorkbenchScreenEventEvent;
         this.resourceTypeManagerCache = resourceTypeManagerCache;
+        this.experimentalActivitiesAuthorizationManager = experimentalActivitiesAuthorizationManager;
     }
 
     @PostConstruct
@@ -232,15 +237,28 @@ public class ActivityBeansCache {
      */
     public SyncBeanDef<Activity> getActivity(final Path path) {
 
-        for (final ActivityAndMetaInfo currentActivity : this.resourceTypeManagerCache.getResourceActivities()) {
-            for (final ClientResourceType resourceType : currentActivity.getResourceTypes()) {
-                if (resourceType.accept(path)) {
-                    return currentActivity.getActivityBean();
-                }
-            }
+        Optional<ActivityAndMetaInfo> optional = resourceTypeManagerCache.getResourceActivities().stream()
+                .filter(activityAndMetaInfo -> activitySupportsPath(activityAndMetaInfo, path))
+                .findAny();
+
+        if(optional.isPresent()) {
+            return optional.get().getActivityBean();
         }
 
         throw new EditorResourceTypeNotFound();
+    }
+
+    private boolean activitySupportsPath(ActivityAndMetaInfo activity, Path path) {
+
+        // Check if the editor activity is experimental && enabled
+        if(experimentalActivitiesAuthorizationManager.authorizeActivityClass(activity.getActivityBean().getBeanClass())) {
+
+            // Check if the editor resources types support the given path
+            return Stream.of(activity.getResourceTypes())
+                    .anyMatch(clientResourceType -> clientResourceType.accept(path));
+        }
+
+        return false;
     }
 
     public List<SyncBeanDef<Activity>> getPerspectiveActivities() {
@@ -261,7 +279,7 @@ public class ActivityBeansCache {
         return new ArrayList<String>(activitiesById.keySet());
     }
 
-    private class EditorResourceTypeNotFound extends RuntimeException {
+    public class EditorResourceTypeNotFound extends RuntimeException {
 
     }
 }

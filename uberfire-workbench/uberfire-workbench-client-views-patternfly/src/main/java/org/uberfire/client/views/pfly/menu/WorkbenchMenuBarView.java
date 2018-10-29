@@ -295,6 +295,24 @@ public class WorkbenchMenuBarView extends Composite implements WorkbenchMenuBarP
                                                              enabled);
     }
 
+    @Override
+    public void setAllMenuItemsVisible(String perspectiveId, boolean visible) {
+        setMenuItemVisible(perspectiveId, visible);
+        setContextMenuItemVisible(perspectiveId, visible);
+    }
+
+    @Override
+    public void setMenuItemVisible(String perspectiveId, boolean visible) {
+        workbenchMenuStandardNavBarView.setMenuItemVisible(perspectiveId, visible);
+        workbenchMenuCompactNavBarView.setMenuItemVisible(perspectiveId, visible);
+    }
+
+    @Override
+    public void setContextMenuItemVisible(String perspectiveId, boolean visible) {
+        workbenchMenuStandardNavBarView.setContextMenuItemVisible(perspectiveId, visible);
+        workbenchMenuCompactNavBarView.setContextMenuItemVisible(perspectiveId, visible);
+    }
+
     public interface WorkbenchMenuNavBarView {
 
         void clear();

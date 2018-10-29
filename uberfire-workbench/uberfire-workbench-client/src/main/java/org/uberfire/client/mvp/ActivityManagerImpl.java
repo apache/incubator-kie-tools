@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Set;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -33,6 +34,7 @@ import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.ActivityLifecycleError.LifecyclePhase;
+import org.uberfire.experimental.service.auth.ExperimentalActivitiesAuthorizationManager;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.ExternalPathPlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
@@ -64,6 +66,8 @@ public class ActivityManagerImpl implements ActivityManager {
     private User identity;
     @Inject
     private ActivityLifecycleErrorHandler lifecycleErrorHandler;
+    @Inject
+    private ExperimentalActivitiesAuthorizationManager activitiesAuthorizationManager;
 
     @Override
     public <T extends Activity> Set<T> getActivities(final Class<T> clazz) {
@@ -243,8 +247,7 @@ public class ActivityManagerImpl implements ActivityManager {
                 continue;
             }
             final T instance = activityBean.getInstance();
-            if (!protectedAccess || authzManager.authorize(instance,
-                                                           identity)) {
+            if (!protectedAccess || authzManager.authorize(instance, identity) && activitiesAuthorizationManager.authorizeActivity(instance)) {
                 activities.add(instance);
             } else {
                 // Since user does not have permission, destroy bean to avoid memory leak
@@ -316,8 +319,8 @@ public class ActivityManagerImpl implements ActivityManager {
     }
 
     /**
-     * Gets the bean definition of the activity associated with the given place ID, if one exists.
-     * @param identifier the place ID. Null is permitted, but always resolves to an empty collection.
+     * Gets the bean definition of the activity associated with the given place IDENTIFIER, if one exists.
+     * @param identifier the place IDENTIFIER. Null is permitted, but always resolves to an empty collection.
      * @return an unmodifiable collection with zero or one item, depending on if the resolution was successful.
      */
     private Collection<SyncBeanDef<Activity>> resolveById(final String identifier) {

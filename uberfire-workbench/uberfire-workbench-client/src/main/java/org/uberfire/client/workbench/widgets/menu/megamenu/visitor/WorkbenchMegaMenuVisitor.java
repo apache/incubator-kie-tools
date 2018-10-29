@@ -101,6 +101,7 @@ public class WorkbenchMegaMenuVisitor extends BaseMenuVisitor {
                               () -> placeManager.goTo(menuItemPerspective.getPlaceRequest()),
                               menuItemPerspective.getPosition());
         setupEnableDisableMenuItem(menuItemPerspective);
+        presenter.setupSetVisibleMenuItem(menuItemPerspective);
         final PlaceRequest placeRequest = menuItemPerspective.getPlaceRequest();
         if (perspectiveManager.getCurrentPerspective() != null && placeRequest.equals(perspectiveManager.getCurrentPerspective().getPlace())) {
             presenter.selectMenuItem(id);

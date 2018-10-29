@@ -54,7 +54,17 @@ public abstract class WorkbenchMenuNavBarView extends Composite implements Workb
     @Override
     public void enableMenuItem(final String menuItemId,
                                final boolean enabled) {
-        final ComplexPanel cp = getMenuItemWidgetMap().get(menuItemId);
+        doSetMenuItemEnabled(getMenuItemWidgetMap().get(menuItemId), enabled);
+    }
+
+    @Override
+    public void enableContextMenuItem(final String menuItemId,
+                                      final boolean enabled) {
+        doSetMenuItemEnabled(getMenuItemContextWidgetMap().get(menuItemId), enabled);
+
+    }
+
+    private void doSetMenuItemEnabled(final ComplexPanel cp, final boolean enabled) {
         if (cp == null) {
             return;
         }
@@ -63,16 +73,20 @@ public abstract class WorkbenchMenuNavBarView extends Composite implements Workb
         }
     }
 
-    @Override
-    public void enableContextMenuItem(final String menuItemId,
-                                      final boolean enabled) {
-        final ComplexPanel cp = getMenuItemContextWidgetMap().get(menuItemId);
+
+    public void setMenuItemVisible(String menuItemId, boolean visible) {
+        doSetMenuItemVisible(getMenuItemWidgetMap().get(menuItemId), visible);
+    }
+
+    public void setContextMenuItemVisible(String menuItemId, boolean visible) {
+        doSetMenuItemVisible(getMenuItemContextWidgetMap().get(menuItemId), visible);
+    }
+
+    private void doSetMenuItemVisible(final ComplexPanel cp, final boolean visible) {
         if (cp == null) {
             return;
         }
-        if (cp instanceof AnchorListItem) {
-            ((AnchorListItem) cp).setEnabled(enabled);
-        }
+        cp.setVisible(visible);
     }
 
     @Override

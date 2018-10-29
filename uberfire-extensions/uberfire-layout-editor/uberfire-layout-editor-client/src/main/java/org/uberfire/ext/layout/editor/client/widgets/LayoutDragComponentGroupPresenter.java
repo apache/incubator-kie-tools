@@ -40,8 +40,7 @@ public class LayoutDragComponentGroupPresenter {
 
     public void init(LayoutDragComponentGroup group) {
         this.group = group;
-        view.setTitle(idGenerator.createAccordionID(group.getName()),
-                      group.getName());
+        view.setTitle(idGenerator.createAccordionID(group.getName()), group.getName());
         view.setExpanded(group.isExpandeByDefault());
         view.addComponents(group.getComponents());
     }

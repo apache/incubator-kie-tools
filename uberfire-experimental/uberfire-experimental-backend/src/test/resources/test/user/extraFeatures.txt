@@ -1,0 +1,6 @@
+feature_0=true
+feature_1=true
+feature_2=false
+feature_3=true
+feature_4=true
+feature_5=false

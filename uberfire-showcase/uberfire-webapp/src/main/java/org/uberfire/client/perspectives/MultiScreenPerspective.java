@@ -25,8 +25,9 @@ import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 
 @ApplicationScoped
-@WorkbenchPerspective(identifier = "MultiScreenPerspective")
+@WorkbenchPerspective(identifier = MultiScreenPerspective.IDENTIFIER)
 public class MultiScreenPerspective {
+    public static final String IDENTIFIER = "MultiScreenPerspective";
 
     @Perspective
     public PerspectiveDefinition buildPerspective() {

@@ -34,6 +34,7 @@ import org.uberfire.client.workbench.widgets.menu.megamenu.contextmenuitem.Child
 import org.uberfire.client.workbench.widgets.menu.megamenu.contextmenuitem.GroupContextMenuItemPresenter;
 import org.uberfire.client.workbench.widgets.menu.megamenu.menuitem.ChildMenuItemPresenter;
 import org.uberfire.client.workbench.widgets.menu.megamenu.menuitem.GroupMenuItemPresenter;
+import org.uberfire.experimental.service.auth.ExperimentalActivitiesAuthorizationManager;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.rpc.SessionInfo;
@@ -48,7 +49,12 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isNull;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class WorkbenchMegaMenuStandalonePresenterTest {
@@ -95,6 +101,9 @@ public class WorkbenchMegaMenuStandalonePresenterTest {
     @Mock
     private Workbench workbench;
 
+    @Mock
+    private ExperimentalActivitiesAuthorizationManager experimentalActivitiesAuthorizationManager;
+
     private WorkbenchMegaMenuStandalonePresenter presenter;
 
     @Before
@@ -113,7 +122,8 @@ public class WorkbenchMegaMenuStandalonePresenterTest {
                                                                  groupMenuItemPresenters,
                                                                  childContextMenuItemPresenters,
                                                                  groupContextMenuItemPresenters,
-                                                                 workbench));
+                                                                 workbench,
+                                                                 experimentalActivitiesAuthorizationManager));
         doReturn(mock(ChildMenuItemPresenter.class)).when(childMenuItemPresenters).get();
     }
 

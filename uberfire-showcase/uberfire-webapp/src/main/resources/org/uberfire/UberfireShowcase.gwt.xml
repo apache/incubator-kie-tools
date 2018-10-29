@@ -24,10 +24,15 @@
   <inherits name="org.uberfire.ext.preferences.UberfirePreferences"/>
   <inherits name="org.uberfire.ext.plugin.RuntimePluginClient"/>
   <inherits name="org.uberfire.ext.apps.UberfireAppsClient"/>
+  <inherits name="org.uberfire.ext.widgets.core.UberfireWidgetsCore"/>
 
   <!-- Social dependencies -->
   <inherits name="org.ext.uberfire.social.activities.SocialActivitiesAPI"/>
   <inherits name="org.ext.uberfire.social.activities.SocialActivitiesClient"/>
+
+  <!-- Experimental -->
+  <inherits name="org.uberfire.experimental.UberfireExperimentalAPI"/>
+  <inherits name="org.uberfire.experimental.UberfireExperimentalClient"/>
 
   <!-- Specify the application specific style sheet. -->
   <stylesheet src='css/uberfire-showcase.css'/>

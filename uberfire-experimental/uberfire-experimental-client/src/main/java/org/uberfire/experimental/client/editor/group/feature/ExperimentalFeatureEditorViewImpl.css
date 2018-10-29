@@ -1,0 +1,5 @@
+.appformer_experimental_features_editor_element_text {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}

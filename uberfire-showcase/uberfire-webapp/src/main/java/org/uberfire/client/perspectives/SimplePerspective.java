@@ -34,8 +34,9 @@ import org.uberfire.workbench.model.menu.Menus;
  * A simple perspective with one tabbed panel.
  */
 @ApplicationScoped
-@WorkbenchPerspective(identifier = "SimplePerspective", isTransient = false)
+@WorkbenchPerspective(identifier = SimplePerspective.IDENTIFIER, isTransient = false)
 public class SimplePerspective {
+    public static final String IDENTIFIER = "SimplePerspective";
 
     @Perspective
     public PerspectiveDefinition buildPerspective() {

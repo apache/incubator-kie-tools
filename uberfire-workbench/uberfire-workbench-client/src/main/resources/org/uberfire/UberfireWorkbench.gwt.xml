@@ -41,6 +41,8 @@
   <!-- GuvnorNG API common interfaces -->
   <inherits name="org.uberfire.UberfireClientAPI"/>
 
+  <inherits name="org.uberfire.experimental.UberfireExperimentalAPI"/>
+
   <!-- Google Guava -->
   <inherits name="com.google.common.collect.Collect"/>
 

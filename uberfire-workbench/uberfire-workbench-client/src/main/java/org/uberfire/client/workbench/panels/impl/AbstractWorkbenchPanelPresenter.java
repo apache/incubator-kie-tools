@@ -18,6 +18,8 @@ package org.uberfire.client.workbench.panels.impl;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
+
 import javax.annotation.PostConstruct;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -112,7 +114,10 @@ public abstract class AbstractWorkbenchPanelPresenter<P extends AbstractWorkbenc
 
         // special case: when new perspectives are being built up based on definitions,
         // our definition will already say it contains the given part! We should not try to add it again.
-        if (!definition.getParts().contains(part.getDefinition())) {
+        Optional<PartDefinition> optional = definition.getParts().stream()
+                .filter(partDefinition -> partDefinition.equals(part.getDefinition()))
+                .findAny();
+        if (!optional.isPresent()) {
             definition.addPart(part.getDefinition());
         }
         getPanelView().addPart(part.getPartView());

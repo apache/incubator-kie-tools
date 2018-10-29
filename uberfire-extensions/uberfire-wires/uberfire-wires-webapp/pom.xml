@@ -442,6 +442,23 @@
       <artifactId>uberfire-social-activities-backend</artifactId>
     </dependency>
 
+    <!-- Uberfire Experimentals -->
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-experimental-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-experimental-backend</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-experimental-client</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-testing-utils</artifactId>
@@ -517,6 +534,10 @@
             <compileSourcesArtifact>org.uberfire:uberfire-wires-bayesian-network-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-wires-bpmn-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-wires-bpmn-client</compileSourcesArtifact>
+
+            <!-- Uberfire Experimentals -->
+            <compileSourcesArtifact>org.uberfire:uberfire-experimental-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-experimental-client</compileSourcesArtifact>
           </compileSourcesArtifacts>
         </configuration>
         <executions>

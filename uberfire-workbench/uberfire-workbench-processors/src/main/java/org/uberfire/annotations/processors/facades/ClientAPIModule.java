@@ -61,6 +61,15 @@ public class ClientAPIModule {
     public static final String intercept = "org.uberfire.client.annotations.Intercept";
     public static final String workbenchPanel = "org.uberfire.client.annotations.WorkbenchPanel";
     public static final String jsType = "jsinterop.annotations.JsType";
+
+    // Experimental Features
+    public static final String experimentalFeature = "org.uberfire.experimental.definition.annotations.ExperimentalFeature";
+    private static final String scopeGlobal = "GLOBAL";
+    private static final String scope = "scope";
+    private static final String group = "group";
+    private static final String nameI18nKey = "nameI18nKey";
+    private static final String descriptionI18nKey = "descriptionI18nKey";
+
     private ClientAPIModule() {
     }
 
@@ -268,6 +277,30 @@ public class ClientAPIModule {
         return getAnnotationStringParam(classElement,
                                         workbenchScreen,
                                         IDENTIFIER);
+    }
+
+    public static String getWbEditorIdentifierValueOnClass(TypeElement classElement) {
+        return getAnnotationStringParam(classElement,
+                                        workbenchEditor,
+                                        IDENTIFIER);
+    }
+
+    public static Boolean isExperimentalFeatureGlobal(TypeElement classElement) {
+        String featureScope = getAnnotationStringParam(classElement, experimentalFeature, scope);
+
+        return scopeGlobal.equals(featureScope);
+    }
+
+    public static String getExperimentalFeatureGroup(TypeElement classElement) {
+        return getAnnotationStringParam(classElement, experimentalFeature, group);
+    }
+
+    public static final String getExperimentalFeatureNameKey(TypeElement classElement) {
+        return getAnnotationStringParam(classElement, experimentalFeature, nameI18nKey);
+    }
+
+    public static final String getExperimentalFeatureDescriptionKey(TypeElement classElement) {
+        return getAnnotationStringParam(classElement, experimentalFeature, descriptionI18nKey);
     }
 
     public static String getWbContextIdentifierValueOnClass(TypeElement classElement) {

@@ -26,8 +26,10 @@ import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 
 @Dependent
-@Named("StandaloneEditorPerspective")
+@Named(StandaloneEditorPerspective.IDENTIFIER)
 public class StandaloneEditorPerspective extends AbstractWorkbenchPerspectiveActivity {
+
+    public static final String IDENTIFIER = "StandaloneEditorPerspective";
 
     @Inject
     public StandaloneEditorPerspective(final PlaceManager placeManager) {
@@ -43,6 +45,6 @@ public class StandaloneEditorPerspective extends AbstractWorkbenchPerspectiveAct
 
     @Override
     public String getIdentifier() {
-        return "StandaloneEditorPerspective";
+        return IDENTIFIER;
     }
 }

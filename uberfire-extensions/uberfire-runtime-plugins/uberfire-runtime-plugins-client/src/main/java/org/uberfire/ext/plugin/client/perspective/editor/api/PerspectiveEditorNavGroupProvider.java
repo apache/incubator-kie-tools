@@ -16,6 +16,7 @@
 package org.uberfire.ext.plugin.client.perspective.editor.api;
 
 import java.util.Collection;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -45,7 +46,7 @@ public class PerspectiveEditorNavGroupProvider implements PerspectiveEditorCompo
     }
 
     @Override
-    public LayoutDragComponentGroup getInstance() {
+    public LayoutDragComponentGroup getComponentGroup() {
         LayoutDragComponentGroup group = new LayoutDragComponentGroup(getName());
         Collection<SyncBeanDef<PerspectiveEditorNavComponent>> beanDefs = beanManager.lookupBeans(PerspectiveEditorNavComponent.class);
         for (SyncBeanDef<PerspectiveEditorNavComponent> beanDef : beanDefs) {

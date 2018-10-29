@@ -43,7 +43,7 @@ import static org.uberfire.workbench.model.ContextDisplayMode.SHOW;
 @JsType
 public class PanelDefinitionImpl implements PanelDefinition {
 
-    private final Set<PartDefinition> parts = new LinkedHashSet<PartDefinition>();
+    private final Set<PartDefinition> parts = new LinkedHashSet<>();
     //Ideally this should be a Set but the order of insertion is important
     private final List<PanelDefinition> children = new ArrayList<PanelDefinition>();
     private Integer height = null;

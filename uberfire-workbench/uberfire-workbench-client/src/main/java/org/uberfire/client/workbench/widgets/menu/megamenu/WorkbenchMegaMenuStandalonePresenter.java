@@ -30,6 +30,7 @@ import org.uberfire.client.workbench.widgets.menu.megamenu.contextmenuitem.Child
 import org.uberfire.client.workbench.widgets.menu.megamenu.contextmenuitem.GroupContextMenuItemPresenter;
 import org.uberfire.client.workbench.widgets.menu.megamenu.menuitem.ChildMenuItemPresenter;
 import org.uberfire.client.workbench.widgets.menu.megamenu.menuitem.GroupMenuItemPresenter;
+import org.uberfire.experimental.service.auth.ExperimentalActivitiesAuthorizationManager;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.workbench.model.menu.Menus;
@@ -50,7 +51,8 @@ public class WorkbenchMegaMenuStandalonePresenter extends WorkbenchMegaMenuPrese
                                          final ManagedInstance<GroupMenuItemPresenter> groupMenuItemPresenters,
                                          final ManagedInstance<ChildContextMenuItemPresenter> childContextMenuItemPresenters,
                                          final ManagedInstance<GroupContextMenuItemPresenter> groupContextMenuItemPresenters,
-                                         final Workbench workbench) {
+                                         final Workbench workbench,
+                                         final ExperimentalActivitiesAuthorizationManager experimentalActivitiesAuthorizationManager) {
         super(authzManager,
               perspectiveManager,
               activityManager,
@@ -64,7 +66,8 @@ public class WorkbenchMegaMenuStandalonePresenter extends WorkbenchMegaMenuPrese
               groupMenuItemPresenters,
               childContextMenuItemPresenters,
               groupContextMenuItemPresenters,
-              workbench);
+              workbench,
+              experimentalActivitiesAuthorizationManager);
     }
 
     @Override

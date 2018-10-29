@@ -16,15 +16,19 @@
 package org.uberfire.ext.plugin.client.perspective.editor;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.function.Supplier;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.assertj.core.api.Assertions;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.uberfire.backend.vfs.ObservablePath;
@@ -40,6 +44,7 @@ import org.uberfire.ext.layout.editor.client.LayoutEditorPresenter;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponentGroup;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponentPalette;
 import org.uberfire.ext.layout.editor.client.api.LayoutEditorPlugin;
+import org.uberfire.ext.layout.editor.client.widgets.LayoutComponentPaletteGroupProvider;
 import org.uberfire.ext.plugin.client.perspective.editor.api.PerspectiveEditorComponentGroupProvider;
 import org.uberfire.ext.plugin.client.perspective.editor.events.PerspectiveEditorFocusEvent;
 import org.uberfire.ext.plugin.client.perspective.editor.layout.editor.PerspectiveEditorSettings;
@@ -52,11 +57,11 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.eq;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class PerspectiveEditorPresenterTest {
@@ -112,6 +117,9 @@ public class PerspectiveEditorPresenterTest {
     @InjectMocks
     PerspectiveEditorPresenter presenter;
 
+    @Captor
+    private ArgumentCaptor<Collection<LayoutComponentPaletteGroupProvider>> providersCaptor;
+
     PerspectiveEditorComponentGroupProvider perspectiveEditorGroupA;
     PerspectiveEditorComponentGroupProvider perspectiveEditorGroupB;
     LayoutDragComponentGroup dragComponentGroupA;
@@ -136,7 +144,7 @@ public class PerspectiveEditorPresenterTest {
         }
 
         @Override
-        public LayoutDragComponentGroup getInstance() {
+        public LayoutDragComponentGroup getComponentGroup() {
             return componentGroup;
         }
     }
@@ -175,9 +183,16 @@ public class PerspectiveEditorPresenterTest {
     public void testInitDragComponentGroups() {
         presenter.onStartup(observablePath, placeRequest);
 
+        verify(layoutDragComponentPalette).clear();
+
         // The component groups are grouped by name
-        verify(layoutDragComponentPalette).addDraggableGroup(dragComponentGroupA);
-        verify(layoutDragComponentPalette).addDraggableGroup(dragComponentGroupB);
+        verify(layoutDragComponentPalette).addDraggableGroups(providersCaptor.capture());
+
+        Collection<LayoutComponentPaletteGroupProvider> providers = providersCaptor.getValue();
+
+        Assertions.assertThat(providers)
+                .hasSize(2)
+                .containsExactly(perspectiveEditorGroupA, perspectiveEditorGroupB);
     }
 
     @Test

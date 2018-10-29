@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
+
 import javax.enterprise.event.Event;
 
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
@@ -34,8 +34,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.client.workbench.events.NewPerspectiveEvent;
 import org.uberfire.client.workbench.events.NewWorkbenchScreenEvent;
 import org.uberfire.client.workbench.type.ClientResourceType;
+import org.uberfire.experimental.service.auth.ExperimentalActivitiesAuthorizationManager;
 import org.uberfire.workbench.category.Category;
-import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -57,6 +57,9 @@ public class ActivityBeansCacheTest {
 
     private ResourceTypeManagerCache resourceTypeManagerCache;
 
+    @Mock
+    private ExperimentalActivitiesAuthorizationManager experimentalActivitiesAuthorizationManager;
+
     @InjectMocks
     ActivityBeansCache cache;
 
@@ -67,7 +70,8 @@ public class ActivityBeansCacheTest {
         cache = new ActivityBeansCache(iocManager,
                                        newPerspectiveEventEvent,
                                        newWorkbenchScreenEvent,
-                                       resourceTypeManagerCache);
+                                       resourceTypeManagerCache,
+                                       experimentalActivitiesAuthorizationManager);
     }
 
     @Test

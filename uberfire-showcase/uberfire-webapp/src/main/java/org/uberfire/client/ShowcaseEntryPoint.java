@@ -18,10 +18,10 @@ package org.uberfire.client;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
@@ -36,7 +36,6 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.html.Text;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.api.EntryPoint;
@@ -47,6 +46,8 @@ import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.jboss.errai.security.shared.api.Role;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.service.AuthenticationService;
+import org.jboss.errai.ui.shared.api.annotations.Bundle;
+import org.uberfire.client.experimental.perspectives.ExperimentalPerspective;
 import org.uberfire.client.menu.CustomSplashHelp;
 import org.uberfire.client.menu.WorkbenchViewModeSwitcherMenuBuilder;
 import org.uberfire.client.mvp.ActivityManager;
@@ -54,8 +55,10 @@ import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.WorkbenchScreenActivity;
 import org.uberfire.client.navbar.SearchMenuBuilder;
-import org.uberfire.client.perspectives.SimplePerspectiveNoContext;
+import org.uberfire.client.perspectives.MultiScreenPerspective;
+import org.uberfire.client.perspectives.SimplePerspective;
 import org.uberfire.client.resources.AppResource;
+import org.uberfire.client.resources.i18n.Constants;
 import org.uberfire.client.screen.JSWorkbenchScreenActivity;
 import org.uberfire.client.screens.popup.SimplePopUp;
 import org.uberfire.client.views.pfly.PatternFlyEntryPoint;
@@ -64,11 +67,17 @@ import org.uberfire.client.views.pfly.menu.UserMenu;
 import org.uberfire.client.views.pfly.modal.Bs3Modal;
 import org.uberfire.client.views.pfly.modal.ErrorPopupView;
 import org.uberfire.client.views.pfly.sys.PatternFlyBootstrapper;
+import org.uberfire.client.workbench.StandaloneEditorPerspective;
 import org.uberfire.client.workbench.events.ApplicationReadyEvent;
 import org.uberfire.client.workbench.widgets.menu.UtilityMenuBar;
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBar;
+import org.uberfire.experimental.client.perspective.ExperimentalFeaturesPerspective;
+import org.uberfire.ext.apps.client.AppsPerspective;
+import org.uberfire.ext.plugin.client.perspective.PlugInAuthoringPerspective;
 import org.uberfire.ext.plugin.client.perspective.editor.generator.PerspectiveEditorScreenActivity;
 import org.uberfire.ext.plugin.client.perspective.editor.layout.editor.PerspectiveEditorSettings;
+import org.uberfire.ext.preferences.client.admin.AdminPagePerspective;
+import org.uberfire.ext.preferences.client.central.PreferencesCentralPerspective;
 import org.uberfire.mvp.Commands;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.events.PluginAddedEvent;
@@ -84,6 +93,7 @@ import static org.uberfire.workbench.model.menu.MenuFactory.newTopLevelMenu;
  * GWT's Entry-point for Uberfire-showcase
  */
 @EntryPoint
+@Bundle("resources/i18n/Constants.properties")
 public class ShowcaseEntryPoint {
 
     private static final Set<String> menuItemsToRemove = Sets.newHashSet(
@@ -226,14 +236,16 @@ public class ShowcaseEntryPoint {
 
     private List<MenuItem> getPerspectives() {
         final List<MenuItem> perspectives = new ArrayList<>();
-        for (final PerspectiveActivity perspective : getPerspectiveActivities()) {
-            if (SimplePerspectiveNoContext.SIMPLE_PERSPECTIVE_NO_CONTEXT.equals(perspective.getIdentifier())) {
-                continue;
-            }
-            final String name = perspective.getName();
-            final MenuItem item = MenuFactory.newSimpleItem(name).perspective(perspective.getIdentifier()).endMenu().build().getItems().get(0);
-            perspectives.add(item);
-        }
+
+        perspectives.add(MenuFactory.newSimpleItem(Constants.INSTANCE.admin_perspective()).perspective(AdminPagePerspective.IDENTIFIER).endMenu().build().getItems().get(0));
+        perspectives.add(MenuFactory.newSimpleItem(Constants.INSTANCE.apps_perspective()).perspective(AppsPerspective.IDENTIFIER).endMenu().build().getItems().get(0));
+        perspectives.add(MenuFactory.newSimpleItem(Constants.INSTANCE.experimental_features_editor()).perspective(ExperimentalFeaturesPerspective.IDENTIFIER).endMenu().build().getItems().get(0));
+        perspectives.add(MenuFactory.newSimpleItem(Constants.INSTANCE.experimental_perspective()).perspective(ExperimentalPerspective.IDENTIFIER).endMenu().build().getItems().get(0));
+        perspectives.add(MenuFactory.newSimpleItem(Constants.INSTANCE.admin_perspective()).perspective(MultiScreenPerspective.IDENTIFIER).endMenu().build().getItems().get(0));
+        perspectives.add(MenuFactory.newSimpleItem(Constants.INSTANCE.plugin_authoring()).perspective(PlugInAuthoringPerspective.IDENTIFIER).endMenu().build().getItems().get(0));
+        perspectives.add(MenuFactory.newSimpleItem(Constants.INSTANCE.preferences_perspective()).perspective(PreferencesCentralPerspective.IDENTIFIER).endMenu().build().getItems().get(0));
+        perspectives.add(MenuFactory.newSimpleItem(Constants.INSTANCE.simple_perspective()).perspective(SimplePerspective.IDENTIFIER).endMenu().build().getItems().get(0));
+        perspectives.add(MenuFactory.newSimpleItem(Constants.INSTANCE.standalone_editor_perspective()).perspective(StandaloneEditorPerspective.IDENTIFIER).endMenu().build().getItems().get(0));
 
         return perspectives;
     }

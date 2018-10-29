@@ -24,6 +24,8 @@ public interface ClientTypeRegistry {
 
     Collection<ClientResourceType> getRegisteredTypes();
 
+    boolean isEnabled(ClientResourceType resourceType);
+
     ClientResourceType resolve(final Path path);
 
     String resolveWildcardPattern(final String shortName);

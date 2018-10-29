@@ -1,0 +1,38 @@
+.appformer_experimental_features_group_collapse_panel_group {
+    margin-bottom: 0;
+}
+
+.appformer_experimental_features_group_collapse_panel_heading {
+    padding: 0;
+    margin-bottom: 15px;
+    background-image: none !important;
+}
+
+.appformer_experimental_features_group_collapse_panel {
+    background-color: transparent;
+    box-shadow: none;
+    margin-bottom: 0;
+    padding-top: 0;
+}
+
+.appformer_experimental_features_group_collapse_panel_body {
+    border: none !important;
+    padding: 0 !important;
+}
+
+.appformer_experimental_features_group_caret_margin {
+    margin-right: 5px;
+}
+
+.appformer_experimental_features_group_anchor_container {
+    margin-top: 15px;
+    padding-right: 20px;
+}
+
+.appformer_experimental_features_group_anchor {
+    cursor: pointer !important;
+}
+
+.appformer_experimental_features_group_list_group {
+    margin-bottom: 0;
+}

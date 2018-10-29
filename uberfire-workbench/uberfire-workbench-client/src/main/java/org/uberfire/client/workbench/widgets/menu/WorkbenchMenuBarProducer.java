@@ -20,26 +20,17 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.Window;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.workbench.events.PerspectiveChange;
 import org.uberfire.client.workbench.events.PlaceMaximizedEvent;
 import org.uberfire.client.workbench.events.PlaceMinimizedEvent;
+import org.uberfire.experimental.service.auth.ExperimentalActivitiesAuthorizationManager;
 import org.uberfire.security.authz.AuthorizationManager;
 
 @ApplicationScoped
-public class WorkbenchMenuBarProducer {
-
-    private AuthorizationManager authzManager;
-    private PerspectiveManager perspectiveManager;
-    private PlaceManager placeManager;
-    private ActivityManager activityManager;
-    private User identity;
-    private WorkbenchMenuBarPresenter.View view;
-    private WorkbenchMenuBarPresenter instance = null;
+public class WorkbenchMenuBarProducer extends AbstractWorkbenchMenuProducer<WorkbenchMenuBarPresenter, WorkbenchMenuBarPresenter.View> {
 
     public WorkbenchMenuBarProducer() {
         //CDI proxy
@@ -51,49 +42,34 @@ public class WorkbenchMenuBarProducer {
                                     final PlaceManager placeManager,
                                     final ActivityManager activityManager,
                                     final User identity,
-                                    final WorkbenchMenuBarPresenter.View view) {
-        this.authzManager = authzManager;
-        this.perspectiveManager = perspectiveManager;
-        this.placeManager = placeManager;
-        this.activityManager = activityManager;
-        this.identity = identity;
-        this.view = view;
+                                    final ExperimentalActivitiesAuthorizationManager experimentalActivitiesAuthorizationManager, final WorkbenchMenuBarPresenter.View view) {
+        super(authzManager, perspectiveManager, placeManager, activityManager, identity, experimentalActivitiesAuthorizationManager, view);
     }
 
     @Produces
-    public WorkbenchMenuBarPresenter getWorkbenchMenuBar() {
-        if (instance == null) {
-            if (!isStandalone()) {
-                instance = makeDefaultMenuBarPresenter();
-            } else {
-                instance = makeStandaloneMenuBarPresenter();
-            }
-        }
-        return instance;
+    public WorkbenchMenuBarPresenter getInstance() {
+        return getWorbenchMenu();
     }
 
-    WorkbenchMenuBarPresenter makeDefaultMenuBarPresenter() {
+    @Override
+    protected WorkbenchMenuBarPresenter makeDefaultPresenter() {
         return new WorkbenchMenuBarPresenter(authzManager,
                                              perspectiveManager,
                                              placeManager,
                                              activityManager,
                                              identity,
-                                             view);
+                                             view,
+                                             experimentalActivitiesAuthorizationManager);
     }
 
-    WorkbenchMenuBarPresenter makeStandaloneMenuBarPresenter() {
+    protected WorkbenchMenuBarPresenter makeStandalonePresenter() {
         return new WorkbenchMenuBarStandalonePresenter(authzManager,
                                                        perspectiveManager,
                                                        placeManager,
                                                        activityManager,
                                                        identity,
-                                                       view);
-    }
-
-    protected void onPerspectiveChange(final @Observes PerspectiveChange perspectiveChange) {
-        if (instance != null) {
-            instance.onPerspectiveChange(perspectiveChange);
-        }
+                                                       view,
+                                                       experimentalActivitiesAuthorizationManager);
     }
 
     protected void onPlaceMinimized(final @Observes PlaceMinimizedEvent event) {
@@ -106,9 +82,5 @@ public class WorkbenchMenuBarProducer {
         if (instance != null) {
             instance.onPlaceMaximized(event);
         }
-    }
-
-    boolean isStandalone() {
-        return Window.Location.getParameterMap().containsKey("standalone");
     }
 }

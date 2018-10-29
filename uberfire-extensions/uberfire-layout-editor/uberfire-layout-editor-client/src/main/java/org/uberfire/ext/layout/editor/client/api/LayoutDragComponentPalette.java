@@ -15,11 +15,17 @@
  */
 package org.uberfire.ext.layout.editor.client.api;
 
+import java.util.Collection;
+
+import org.uberfire.ext.layout.editor.client.widgets.LayoutComponentPaletteGroupProvider;
+
 public interface LayoutDragComponentPalette {
 
     void clear();
 
-    void addDraggableGroup(LayoutDragComponentGroup group);
+    void addDraggableGroups(Collection<LayoutComponentPaletteGroupProvider> groupProviders);
+
+    void addDraggableGroup(LayoutComponentPaletteGroupProvider groupProvider);
 
     void removeDraggableGroup(String groupId);
 

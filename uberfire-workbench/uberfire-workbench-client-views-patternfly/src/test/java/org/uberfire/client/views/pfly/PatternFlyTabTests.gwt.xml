@@ -21,6 +21,7 @@
 
   <inherits name="org.uberfire.client.views.PatternFly"/>
   <inherits name="org.uberfire.java.nio.UberfireNIO2Model"/>
+  <inherits name="org.uberfire.experimental.UberfireExperimentalClient"/>
 
   <source path='tab'/>
   <source path='mock'/>

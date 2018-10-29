@@ -28,11 +28,15 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.PerspectiveChange;
 import org.uberfire.client.workbench.events.PlaceMaximizedEvent;
 import org.uberfire.client.workbench.events.PlaceMinimizedEvent;
+import org.uberfire.client.workbench.widgets.menu.events.PerspectiveVisibiltiyChangeEvent;
+import org.uberfire.experimental.service.auth.ExperimentalActivitiesAuthorizationManager;
 import org.uberfire.security.authz.AuthorizationManager;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class WorkbenchMenuBarProducerTest {
@@ -62,6 +66,9 @@ public class WorkbenchMenuBarProducerTest {
     private WorkbenchMenuBarStandalonePresenter standalonePresenter;
 
     @Mock
+    private ExperimentalActivitiesAuthorizationManager experimentalActivitiesAuthorizationManager;
+
+    @Mock
     private PerspectiveChange perspectiveChangeEvent;
 
     @Mock
@@ -80,19 +87,20 @@ public class WorkbenchMenuBarProducerTest {
                                                 placeManager,
                                                 activityManager,
                                                 identity,
-                                                view) {
+                                                experimentalActivitiesAuthorizationManager, view
+        ) {
             @Override
-            boolean isStandalone() {
+            protected boolean isStandalone() {
                 return isStandalone;
             }
 
             @Override
-            WorkbenchMenuBarPresenter makeDefaultMenuBarPresenter() {
+            protected WorkbenchMenuBarPresenter makeDefaultPresenter() {
                 return defaultPresenter;
             }
 
             @Override
-            WorkbenchMenuBarPresenter makeStandaloneMenuBarPresenter() {
+            protected WorkbenchMenuBarPresenter makeStandalonePresenter() {
                 return standalonePresenter;
             }
         };
@@ -122,6 +130,24 @@ public class WorkbenchMenuBarProducerTest {
         assertMenuBarEvents(presenter);
     }
 
+    @Test
+    public void testNotifyVisibilityChange() {
+        testNotifyVisibilityChange(false);
+    }
+
+    @Test
+    public void testNotifyVisibilityChangeStandaloneMode() {
+        testNotifyVisibilityChange(true);
+    }
+
+    private void testNotifyVisibilityChange(boolean isStandalone) {
+        final WorkbenchMenuBarPresenter presenter = getMenuBarPresenter(isStandalone);
+
+        presenter.onPerspectiveVisibilityChange(new PerspectiveVisibiltiyChangeEvent("perspectiveId", false));
+
+        verify(presenter).onPerspectiveVisibilityChange(any());
+    }
+
     private void assertMenuBarPresenter(final boolean isStandalone,
                                         final Class expectedPresenterType) {
         final WorkbenchMenuBarPresenter presenter = getMenuBarPresenter(isStandalone);
@@ -142,7 +168,7 @@ public class WorkbenchMenuBarProducerTest {
 
     private WorkbenchMenuBarPresenter getMenuBarPresenter(final boolean isStandalone) {
         this.isStandalone = isStandalone;
-        return producer.getWorkbenchMenuBar();
+        return producer.getWorbenchMenu();
     }
 
     private String extractContainingClassName(final String className) {

@@ -1,0 +1,6 @@
+globalFeature_0=true
+globalFeature_1=true
+globalFeature_2=false
+globalFeature_3=true
+globalFeature_4=true
+globalFeature_5=false

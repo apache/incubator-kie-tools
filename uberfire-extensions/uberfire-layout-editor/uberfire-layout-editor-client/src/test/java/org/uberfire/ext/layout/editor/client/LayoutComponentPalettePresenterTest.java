@@ -16,25 +16,51 @@
 
 package org.uberfire.ext.layout.editor.client;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.stubbing.Answer;
+import org.uberfire.experimental.client.service.ClientExperimentalFeaturesRegistryService;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponentGroup;
+import org.uberfire.ext.layout.editor.client.test.group1.Group1LayoutComponentPaletteGroupProvider;
+import org.uberfire.ext.layout.editor.client.test.group1.Group1LayoutDragComponent1;
+import org.uberfire.ext.layout.editor.client.test.group1.Group1LayoutDragComponent2;
+import org.uberfire.ext.layout.editor.client.test.group1.Group1LayoutDragComponent3;
+import org.uberfire.ext.layout.editor.client.test.group2.Group2LayoutComponentPaletteGroupProvider;
+import org.uberfire.ext.layout.editor.client.test.group2.Group2LayoutDragComponent1;
+import org.uberfire.ext.layout.editor.client.test.group2.Group2LayoutDragComponent2;
+import org.uberfire.ext.layout.editor.client.test.group3.Group3LayoutComponentPaletteGroupProvider;
+import org.uberfire.ext.layout.editor.client.test.group3.Group3LayoutDragComponent1;
 import org.uberfire.ext.layout.editor.client.widgets.LayoutComponentPalettePresenter;
 import org.uberfire.ext.layout.editor.client.widgets.LayoutDragComponentGroupPresenter;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class LayoutComponentPalettePresenterTest {
 
-    public static final String DRAGGABLE_GROUP_NAME = "Draggable group name";
     public static final String DRAGGABLE_COMPONENT_NAME = "Draggable component name";
 
     @Mock
@@ -43,17 +69,45 @@ public class LayoutComponentPalettePresenterTest {
     @Mock
     private LayoutDragComponentGroupPresenter.View dragComponentGroupView;
 
+    @Mock
+    private ClientExperimentalFeaturesRegistryService experimentalFeaturesRegistryService;
+
     private LayoutDragComponentGroupPresenter dragComponentGroupPresenter;
 
     private LayoutComponentPalettePresenter presenter;
 
+    private List<String> disabledExperimentalFeatures = new ArrayList<>();
+
+    private List<String> currentDragComponents = new ArrayList<>();
+
     @Before
     public void initialize() {
+
+        when(experimentalFeaturesRegistryService.isFeatureEnabled(anyString())).thenAnswer((Answer<Boolean>) invocationOnMock -> !disabledExperimentalFeatures.contains(invocationOnMock.getArguments()[0]));
+
         ManagedInstance<LayoutDragComponentGroupPresenter> instance = mock(ManagedInstance.class);
+
         dragComponentGroupPresenter = spy(new LayoutDragComponentGroupPresenter(dragComponentGroupView));
         when(instance.get()).thenReturn(dragComponentGroupPresenter);
 
-        presenter = new LayoutComponentPalettePresenter(view, instance);
+        doAnswer((Answer<Void>) invocationOnMock -> {
+            invocationOnMock.callRealMethod();
+
+            LayoutDragComponentGroup group = (LayoutDragComponentGroup) invocationOnMock.getArguments()[0];
+
+            currentDragComponents.addAll(group.getComponents().keySet());
+
+            return null;
+        }).when(dragComponentGroupPresenter).init(any());
+
+        when(dragComponentGroupView.hasComponent(anyString())).then(new Answer<Boolean>() {
+            @Override
+            public Boolean answer(InvocationOnMock invocationOnMock) throws Throwable {
+                return currentDragComponents.contains(invocationOnMock.getArguments()[0]);
+            }
+        });
+
+        presenter = new LayoutComponentPalettePresenter(view, instance, experimentalFeaturesRegistryService);
     }
 
     @Test
@@ -62,104 +116,123 @@ public class LayoutComponentPalettePresenterTest {
     }
 
     @Test
-    public void testAddDraggableGroups() {
-        LayoutDragComponentGroup dragGroup = new LayoutDragComponentGroup(DRAGGABLE_GROUP_NAME, true);
-        presenter.addDraggableGroup(dragGroup);
-        verify(dragComponentGroupPresenter).init(dragGroup);
-        verify(dragComponentGroupPresenter).getView();
+    public void testAddAllDraggableGroups() {
+
+        presenter.addDraggableGroups(Arrays.asList(new Group1LayoutComponentPaletteGroupProvider(true), new Group2LayoutComponentPaletteGroupProvider(), new Group3LayoutComponentPaletteGroupProvider()));
+
+        verify(dragComponentGroupPresenter, times(3)).init(any());
+        verify(dragComponentGroupPresenter, times(3)).getView();
         verify(dragComponentGroupView).setExpanded(true);
-        verify(view).addDraggableComponentGroup(any());
-        assertEquals(1, presenter.getLayoutDragComponentGroups().size());
-        assertNotNull(presenter.getLayoutDragComponentGroups().get(DRAGGABLE_GROUP_NAME));
+        verify(dragComponentGroupView, times(2)).setExpanded(false);
+        verify(view, times(3)).addDraggableComponentGroup(any());
+
+        assertEquals(3, presenter.getLayoutDragComponentGroups().size());
+
+        assertNotNull(presenter.getLayoutDragComponentGroups().get(Group1LayoutComponentPaletteGroupProvider.ID));
+        assertTrue(presenter.hasDraggableComponent(Group1LayoutComponentPaletteGroupProvider.ID, Group1LayoutDragComponent1.ID));
+        assertTrue(presenter.hasDraggableComponent(Group1LayoutComponentPaletteGroupProvider.ID, Group1LayoutDragComponent2.ID));
+        assertTrue(presenter.hasDraggableComponent(Group1LayoutComponentPaletteGroupProvider.ID, Group1LayoutDragComponent3.ID));
+
+        assertNotNull(presenter.getLayoutDragComponentGroups().get(Group2LayoutComponentPaletteGroupProvider.ID));
+        assertTrue(presenter.hasDraggableComponent(Group2LayoutComponentPaletteGroupProvider.ID, Group2LayoutDragComponent1.ID));
+        assertTrue(presenter.hasDraggableComponent(Group2LayoutComponentPaletteGroupProvider.ID, Group2LayoutDragComponent2.ID));
+
+        assertNotNull(presenter.getLayoutDragComponentGroups().get(Group3LayoutComponentPaletteGroupProvider.ID));
+        assertTrue(presenter.hasDraggableComponent(Group3LayoutComponentPaletteGroupProvider.ID, Group3LayoutDragComponent1.ID));
 
         LayoutDragComponent dragComponent = mock(LayoutDragComponent.class);
-        presenter.addDraggableComponent(DRAGGABLE_GROUP_NAME,
-                                               DRAGGABLE_COMPONENT_NAME,
-                                               dragComponent);
-        verify(dragComponentGroupPresenter).addComponent(DRAGGABLE_COMPONENT_NAME,
-                                                dragComponent);
 
-        presenter.removeDraggableComponent(DRAGGABLE_GROUP_NAME, DRAGGABLE_COMPONENT_NAME);
+        presenter.addDraggableComponent(Group1LayoutComponentPaletteGroupProvider.ID, DRAGGABLE_COMPONENT_NAME, dragComponent);
+        verify(dragComponentGroupPresenter).addComponent(DRAGGABLE_COMPONENT_NAME, dragComponent);
+
+        presenter.removeDraggableComponent(Group1LayoutComponentPaletteGroupProvider.ID, DRAGGABLE_COMPONENT_NAME);
         verify(dragComponentGroupPresenter).removeComponent(DRAGGABLE_COMPONENT_NAME);
     }
 
     @Test
-    public void testAddAndRemoveDraggableGroups() {
-        testAddDraggableGroups();
+    public void testAddDraggableGroupsWithExperimental() {
+        disabledExperimentalFeatures.add(Group1LayoutDragComponent1.class.getName());
+        disabledExperimentalFeatures.add(Group1LayoutDragComponent3.class.getName());
+        disabledExperimentalFeatures.add(Group2LayoutComponentPaletteGroupProvider.class.getName());
+        disabledExperimentalFeatures.add(Group3LayoutDragComponent1.class.getName());
 
-        presenter.removeDraggableGroup(DRAGGABLE_GROUP_NAME);
-        verify(dragComponentGroupPresenter,
-               times(2)).getView();
+        presenter.addDraggableGroups(Arrays.asList(new Group1LayoutComponentPaletteGroupProvider(true), new Group2LayoutComponentPaletteGroupProvider(), new Group3LayoutComponentPaletteGroupProvider()));
+
+        verify(dragComponentGroupPresenter, times(2)).init(any());
+        verify(dragComponentGroupPresenter, times(2)).getView();
+        verify(dragComponentGroupView).setExpanded(true);
+        verify(dragComponentGroupView).setExpanded(false);
+        verify(view, times(2)).addDraggableComponentGroup(any());
+
+        assertEquals(2, presenter.getLayoutDragComponentGroups().size());
+
+        assertNotNull(presenter.getLayoutDragComponentGroups().get(Group1LayoutComponentPaletteGroupProvider.ID));
+        assertFalse(presenter.hasDraggableComponent(Group1LayoutComponentPaletteGroupProvider.ID, Group1LayoutDragComponent1.ID));
+        assertTrue(presenter.hasDraggableComponent(Group1LayoutComponentPaletteGroupProvider.ID, Group1LayoutDragComponent2.ID));
+        assertFalse(presenter.hasDraggableComponent(Group1LayoutComponentPaletteGroupProvider.ID, Group1LayoutDragComponent3.ID));
+
+        assertNull(presenter.getLayoutDragComponentGroups().get(Group2LayoutComponentPaletteGroupProvider.ID));
+        assertFalse(presenter.hasDraggableComponent(Group2LayoutComponentPaletteGroupProvider.ID, Group2LayoutDragComponent1.ID));
+        assertFalse(presenter.hasDraggableComponent(Group2LayoutComponentPaletteGroupProvider.ID, Group2LayoutDragComponent2.ID));
+
+        assertNotNull(presenter.getLayoutDragComponentGroups().get(Group3LayoutComponentPaletteGroupProvider.ID));
+        assertFalse(presenter.hasDraggableComponent(Group3LayoutComponentPaletteGroupProvider.ID, Group3LayoutDragComponent1.ID));
+    }
+
+    @Test
+    public void testAddAndRemoveDraggableGroups() {
+        testAddAllDraggableGroups();
+
+        presenter.removeDraggableGroup(Group1LayoutComponentPaletteGroupProvider.ID);
+
+        verify(dragComponentGroupPresenter, times(4)).getView();
+
         verify(view).removeDraggableComponentGroup(any());
-        assertEquals(0,
-                     presenter.getLayoutDragComponentGroups().size());
-        assertNull(presenter.getLayoutDragComponentGroups().get(DRAGGABLE_GROUP_NAME));
+
+        assertEquals(2, presenter.getLayoutDragComponentGroups().size());
+
+        assertNull(presenter.getLayoutDragComponentGroups().get(Group1LayoutComponentPaletteGroupProvider.ID));
     }
 
     @Test
     public void testClearPalette() {
-        testAddDraggableGroups();
+        testAddAllDraggableGroups();
 
         presenter.clear();
 
-        verify(dragComponentGroupPresenter, times(2)).getView();
-        verify(view).removeDraggableComponentGroup(any());
+        verify(dragComponentGroupPresenter, times(6)).getView();
+
+        verify(view, times(3)).removeDraggableComponentGroup(any());
+
         assertEquals(0, presenter.getLayoutDragComponentGroups().size());
-        assertNull(presenter.getLayoutDragComponentGroups().get(DRAGGABLE_GROUP_NAME));
+
+        assertNull(presenter.getLayoutDragComponentGroups().get(Group1LayoutComponentPaletteGroupProvider.ID));
     }
 
     @Test
     public void testHasDraggableGroup() {
-        boolean result = presenter.hasDraggableGroup(DRAGGABLE_GROUP_NAME);
-        assertFalse(result);
+        assertFalse(presenter.hasDraggableGroup(Group1LayoutComponentPaletteGroupProvider.ID));
 
-        testAddDraggableGroups();
+        testAddAllDraggableGroups();
 
-        result = presenter.hasDraggableGroup(DRAGGABLE_GROUP_NAME);
-        assertTrue(result);
+        assertTrue(presenter.hasDraggableGroup(Group1LayoutComponentPaletteGroupProvider.ID));
     }
 
     @Test
     public void testHasDraggableComponent() {
-        boolean result = presenter.hasDraggableComponent(DRAGGABLE_GROUP_NAME, DRAGGABLE_COMPONENT_NAME);
-        assertFalse(result);
+        assertFalse(presenter.hasDraggableComponent(Group1LayoutComponentPaletteGroupProvider.ID, Group1LayoutDragComponent1.ID));
 
-        LayoutDragComponentGroup dragGroup = new LayoutDragComponentGroup(DRAGGABLE_GROUP_NAME);
-        presenter.addDraggableGroup(dragGroup);
+        testAddAllDraggableGroups();
 
-        result = presenter.hasDraggableComponent(DRAGGABLE_GROUP_NAME, DRAGGABLE_COMPONENT_NAME);
-        assertFalse(result);
-
-        LayoutDragComponent dragComponent = mock(LayoutDragComponent.class);
-        presenter.addDraggableComponent(DRAGGABLE_GROUP_NAME,
-                                               DRAGGABLE_COMPONENT_NAME,
-                                               dragComponent);
-        when(dragComponentGroupPresenter.hasComponent(DRAGGABLE_COMPONENT_NAME)).thenReturn(true);
-
-        result = presenter.hasDraggableComponent(DRAGGABLE_GROUP_NAME, DRAGGABLE_COMPONENT_NAME);
-        assertTrue(result);
+        assertTrue(presenter.hasDraggableComponent(Group1LayoutComponentPaletteGroupProvider.ID, Group1LayoutDragComponent1.ID));
     }
 
     @Test
     public void testRemoveComponent() {
-        LayoutDragComponentGroup dragGroup = new LayoutDragComponentGroup(DRAGGABLE_GROUP_NAME);
-        LayoutDragComponent dragComponent = mock(LayoutDragComponent.class);
+        testAddAllDraggableGroups();
 
-        // Add component
-        presenter.addDraggableGroup(dragGroup);
-        presenter.addDraggableComponent(DRAGGABLE_GROUP_NAME, DRAGGABLE_COMPONENT_NAME, dragComponent);
-        verify(dragComponentGroupView, never()).setComponentVisible(anyString(), anyBoolean());
-
-        // Add same component again
-        reset(dragComponentGroupView);
-        when(dragComponentGroupView.hasComponent(DRAGGABLE_COMPONENT_NAME)).thenReturn(true);
-        presenter.addDraggableComponent(DRAGGABLE_GROUP_NAME, DRAGGABLE_COMPONENT_NAME, dragComponent);
-        verify(dragComponentGroupView, never()).addComponent(anyString(), any());
-        verify(dragComponentGroupView).setComponentVisible(DRAGGABLE_COMPONENT_NAME, true);
-
-        // Remove existing component (the component is not removed but remains hidden)
-        presenter.removeDraggableComponent(DRAGGABLE_GROUP_NAME, DRAGGABLE_COMPONENT_NAME);
-        verify(dragComponentGroupView).setComponentVisible(DRAGGABLE_COMPONENT_NAME, false);
-        verify(dragComponentGroupView, never()).removeComponent(DRAGGABLE_COMPONENT_NAME);
+        presenter.removeDraggableComponent(Group1LayoutComponentPaletteGroupProvider.ID, Group1LayoutDragComponent1.ID);
+        verify(dragComponentGroupView).setComponentVisible(Group1LayoutDragComponent1.ID, false);
+        verify(dragComponentGroupView, never()).removeComponent(Group1LayoutDragComponent1.ID);
     }
 }

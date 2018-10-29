@@ -30,17 +30,20 @@ import org.uberfire.client.workbench.Workbench;
 import org.uberfire.client.workbench.events.PerspectiveChange;
 import org.uberfire.client.workbench.events.PlaceMaximizedEvent;
 import org.uberfire.client.workbench.events.PlaceMinimizedEvent;
+import org.uberfire.client.workbench.widgets.menu.events.PerspectiveVisibiltiyChangeEvent;
 import org.uberfire.client.workbench.widgets.menu.megamenu.brand.MegaMenuBrand;
 import org.uberfire.client.workbench.widgets.menu.megamenu.contextmenuitem.ChildContextMenuItemPresenter;
 import org.uberfire.client.workbench.widgets.menu.megamenu.contextmenuitem.GroupContextMenuItemPresenter;
 import org.uberfire.client.workbench.widgets.menu.megamenu.menuitem.ChildMenuItemPresenter;
 import org.uberfire.client.workbench.widgets.menu.megamenu.menuitem.GroupMenuItemPresenter;
+import org.uberfire.experimental.service.auth.ExperimentalActivitiesAuthorizationManager;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.authz.AuthorizationManager;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class WorkbenchMegaMenuProducerTest {
@@ -102,6 +105,9 @@ public class WorkbenchMegaMenuProducerTest {
     @Mock
     private Workbench workbench;
 
+    @Mock
+    private ExperimentalActivitiesAuthorizationManager experimentalActivitiesAuthorizationManager;
+
     private WorkbenchMegaMenuProducer producer;
     private boolean isStandalone = false;
 
@@ -120,19 +126,20 @@ public class WorkbenchMegaMenuProducerTest {
                                                  groupMenuItemPresenters,
                                                  childContextMenuItemPresenters,
                                                  groupContextMenuItemPresenters,
-                                                 workbench) {
+                                                 workbench,
+                                                 experimentalActivitiesAuthorizationManager) {
             @Override
-            boolean isStandalone() {
+            protected boolean isStandalone() {
                 return isStandalone;
             }
 
             @Override
-            WorkbenchMegaMenuPresenter makeDefaultMegaMenuPresenter() {
+            protected WorkbenchMegaMenuPresenter makeDefaultPresenter() {
                 return defaultPresenter;
             }
 
             @Override
-            WorkbenchMegaMenuStandalonePresenter makeStandaloneMegaMenuPresenter() {
+            protected WorkbenchMegaMenuStandalonePresenter makeStandalonePresenter() {
                 return standalonePresenter;
             }
         };
@@ -162,6 +169,24 @@ public class WorkbenchMegaMenuProducerTest {
         assertMegaMenuEvents(presenter);
     }
 
+    @Test
+    public void testNotifyVisibilityChange() {
+        testNotifyVisibilityChange(false);
+    }
+
+    @Test
+    public void testNotifyVisibilityChangeStandaloneMode() {
+        testNotifyVisibilityChange(true);
+    }
+
+    private void testNotifyVisibilityChange(boolean isStandalone) {
+        final WorkbenchMegaMenuPresenter presenter = getMegaMenuPresenter(isStandalone);
+
+        presenter.onPerspectiveVisibilityChange(new PerspectiveVisibiltiyChangeEvent("perspectiveId", false));
+
+        verify(presenter).onPerspectiveVisibilityChange(any());
+    }
+
     private void assertMegaMenuPresenter(final boolean isStandalone,
                                          final Class expectedPresenterType) {
         final WorkbenchMegaMenuPresenter presenter = getMegaMenuPresenter(isStandalone);
@@ -176,7 +201,7 @@ public class WorkbenchMegaMenuProducerTest {
 
     private WorkbenchMegaMenuPresenter getMegaMenuPresenter(final boolean isStandalone) {
         this.isStandalone = isStandalone;
-        return producer.getWorkbenchMegaMenu();
+        return producer.getWorbenchMenu();
     }
 
     private String extractContainingClassName(final String className) {

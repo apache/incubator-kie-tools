@@ -15,6 +15,8 @@
  */
 package org.uberfire.client.workbench.widgets.menu;
 
+import java.util.function.BiConsumer;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.security.shared.api.identity.User;
@@ -29,6 +31,7 @@ import org.uberfire.client.workbench.events.PlaceMaximizedEvent;
 import org.uberfire.client.workbench.events.PlaceMinimizedEvent;
 import org.uberfire.client.workbench.widgets.menu.base.WorkbenchBaseMenuPresenter;
 import org.uberfire.client.workbench.widgets.menu.base.WorkbenchBaseMenuView;
+import org.uberfire.experimental.service.auth.ExperimentalActivitiesAuthorizationManager;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.security.authz.AuthorizationManager;
@@ -61,19 +64,22 @@ public class WorkbenchMenuBarPresenter extends WorkbenchBaseMenuPresenter implem
     private PlaceManager placeManager;
     private ActivityManager activityManager;
     private View view;
+    private ExperimentalActivitiesAuthorizationManager experimentalActivitiesAuthorizationManager;
 
     WorkbenchMenuBarPresenter(final AuthorizationManager authzManager,
                               final PerspectiveManager perspectiveManager,
                               final PlaceManager placeManager,
                               final ActivityManager activityManager,
                               final User identity,
-                              final View view) {
+                              final View view,
+                              final ExperimentalActivitiesAuthorizationManager experimentalActivitiesAuthorizationManager) {
         this.authzManager = authzManager;
         this.perspectiveManager = perspectiveManager;
         this.placeManager = placeManager;
         this.activityManager = activityManager;
         this.identity = identity;
         this.view = view;
+        this.experimentalActivitiesAuthorizationManager = experimentalActivitiesAuthorizationManager;
 
         setup();
     }
@@ -174,6 +180,7 @@ public class WorkbenchMenuBarPresenter extends WorkbenchBaseMenuPresenter implem
                                                                             },
                                                                             menuItemPerspective.getPosition());
                                                            setupEnableDisableMenuItem(menuItemPerspective);
+                                                           setupSetVisibleMenuItem(menuItemPerspective);
                                                            final PlaceRequest placeRequest = menuItemPerspective.getPlaceRequest();
                                                            if (perspectiveManager.getCurrentPerspective() != null && placeRequest.equals(perspectiveManager.getCurrentPerspective().getPlace())) {
                                                                view.selectMenuItem(id);
@@ -271,6 +278,7 @@ public class WorkbenchMenuBarPresenter extends WorkbenchBaseMenuPresenter implem
                                                                                    },
                                                                                    menuItemPerspective.getPosition());
                                                            setupEnableDisableContextMenuItem(menuItemPerspective);
+                                                           setupSetVisibleContextMenuItem(menuItemPerspective);
                                                        }
 
                                                        private void setupEnableDisableContextMenuItem(final MenuItem menuItem) {
@@ -288,7 +296,7 @@ public class WorkbenchMenuBarPresenter extends WorkbenchBaseMenuPresenter implem
         }
     }
 
-    protected void onPerspectiveChange(final PerspectiveChange perspectiveChange) {
+    public void onPerspectiveChange(final PerspectiveChange perspectiveChange) {
         final Activity activity = activityManager.getActivity(perspectiveChange.getPlaceRequest());
         if (activity != null && activity.isType(ActivityResourceType.PERSPECTIVE.name())) {
             addPerspectiveMenus((PerspectiveActivity) activity);
@@ -304,6 +312,23 @@ public class WorkbenchMenuBarPresenter extends WorkbenchBaseMenuPresenter implem
 
     protected void onPlaceMaximized(final PlaceMaximizedEvent event) {
         view.collapse();
+    }
+
+    private void setupSetVisibleMenuItem(MenuItemPerspective menuItemPerspective) {
+        doSetMenuItemVisible(menuItemPerspective, view::setMenuItemVisible);
+    }
+
+    private void setupSetVisibleContextMenuItem(MenuItemPerspective menuItemPerspective) {
+        doSetMenuItemVisible(menuItemPerspective, view::setContextMenuItemVisible);
+    }
+
+    protected void doSetMenuItemVisible(MenuItemPerspective menuItemPerspective, BiConsumer<String, Boolean> callback) {
+        String perspectiveId = menuItemPerspective.getPlaceRequest().getIdentifier();
+        boolean visible = experimentalActivitiesAuthorizationManager.authorizeActivityId(perspectiveId);
+
+        callback.accept(perspectiveId, visible);
+
+        registerVisibilityChangeHandler(new MenuItemVisibilityHandler(perspectiveId, callback));
     }
 
     @Override
@@ -390,5 +415,11 @@ public class WorkbenchMenuBarPresenter extends WorkbenchBaseMenuPresenter implem
 
         void enableContextMenuItem(String menuItemId,
                                    boolean enabled);
+
+        void setAllMenuItemsVisible(String perspectiveId, boolean visible);
+
+        void setMenuItemVisible(String perspectiveId, boolean visible);
+
+        void setContextMenuItemVisible(String perspectiveId, boolean visible);
     }
 }

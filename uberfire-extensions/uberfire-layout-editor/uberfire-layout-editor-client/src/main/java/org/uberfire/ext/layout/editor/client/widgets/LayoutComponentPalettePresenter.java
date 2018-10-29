@@ -15,18 +15,24 @@
  */
 package org.uberfire.ext.layout.editor.client.widgets;
 
-import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.uberfire.client.mvp.UberElement;
-import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
-import org.uberfire.ext.layout.editor.client.api.LayoutDragComponentGroup;
-import org.uberfire.ext.layout.editor.client.api.LayoutDragComponentPalette;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
+import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.jboss.errai.ioc.client.container.Factory;
+import org.kie.soup.commons.validation.PortablePreconditions;
+import org.uberfire.client.mvp.UberElement;
+import org.uberfire.experimental.client.service.ClientExperimentalFeaturesRegistryService;
+import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
+import org.uberfire.ext.layout.editor.client.api.LayoutDragComponentGroup;
+import org.uberfire.ext.layout.editor.client.api.LayoutDragComponentPalette;
 
 @ApplicationScoped
 public class LayoutComponentPalettePresenter implements LayoutDragComponentPalette {
@@ -39,17 +45,19 @@ public class LayoutComponentPalettePresenter implements LayoutDragComponentPalet
     }
 
     private View view;
-    protected Map<String, LayoutDragComponentGroupPresenter> layoutDragComponentGroups = new HashMap<>();
     private ManagedInstance<LayoutDragComponentGroupPresenter> layoutDragComponentGroupInstance;
+    private ClientExperimentalFeaturesRegistryService experimentalFeaturesRegistryService;
+
+    private Map<String, LayoutDragComponentGroupPresenter> layoutDragComponentGroups = new HashMap<>();
 
     public LayoutComponentPalettePresenter() {
     }
 
     @Inject
-    public LayoutComponentPalettePresenter(final View view,
-                                 ManagedInstance<LayoutDragComponentGroupPresenter> layoutDragComponentGroupInstance) {
+    public LayoutComponentPalettePresenter(View view, ManagedInstance<LayoutDragComponentGroupPresenter> layoutDragComponentGroupInstance, ClientExperimentalFeaturesRegistryService experimentalFeaturesRegistryService) {
         this.view = view;
         this.layoutDragComponentGroupInstance = layoutDragComponentGroupInstance;
+        this.experimentalFeaturesRegistryService = experimentalFeaturesRegistryService;
         view.init(this);
     }
 
@@ -68,18 +76,40 @@ public class LayoutComponentPalettePresenter implements LayoutDragComponentPalet
     }
 
     @Override
-    public void addDraggableGroup(LayoutDragComponentGroup group) {
-        LayoutDragComponentGroupPresenter layoutDragComponentGroupPresenter = createComponentGroupPresenter(
-                group);
+    public void addDraggableGroups(Collection<LayoutComponentPaletteGroupProvider> groupProviders) {
+        PortablePreconditions.checkNotNull("groupDefinitions", groupProviders);
+
+        groupProviders.stream()
+                .filter(this::isEnabled)
+                .forEach(this::addDraggableGroup);
+    }
+
+    @Override
+    public void addDraggableGroup(LayoutComponentPaletteGroupProvider groupProvider) {
+        PortablePreconditions.checkNotNull("groupProvider", groupProvider);
+
+        LayoutDragComponentGroup group = groupProvider.getComponentGroup();
+
+        Map<String, LayoutDragComponent> components = group.getComponents();
+
+        List<String> disabledGroups =  group.getComponents().entrySet().stream()
+                .filter(entry -> !isEnabled(entry.getValue()))
+                .map(entry -> entry.getKey())
+                .collect(Collectors.toList());
+
+        disabledGroups.stream()
+                .forEach(components::remove);
+
+        LayoutDragComponentGroupPresenter layoutDragComponentGroupPresenter = layoutDragComponentGroupInstance.get();
+        layoutDragComponentGroups.put(group.getName(), layoutDragComponentGroupPresenter);
+        layoutDragComponentGroupPresenter.init(group);
         view.addDraggableComponentGroup(layoutDragComponentGroupPresenter.getView());
     }
 
-    private LayoutDragComponentGroupPresenter createComponentGroupPresenter(LayoutDragComponentGroup group) {
-        LayoutDragComponentGroupPresenter layoutDragComponentGroupPresenter = layoutDragComponentGroupInstance.get();
-        layoutDragComponentGroups.put(group.getName(),
-                                      layoutDragComponentGroupPresenter);
-        layoutDragComponentGroupPresenter.init(group);
-        return layoutDragComponentGroupPresenter;
+    private boolean isEnabled(Object object) {
+        object = Factory.maybeUnwrapProxy(object);
+
+        return experimentalFeaturesRegistryService.isFeatureEnabled(object.getClass().getName());
     }
 
     @Override
@@ -103,7 +133,7 @@ public class LayoutComponentPalettePresenter implements LayoutDragComponentPalet
         LayoutDragComponentGroupPresenter layoutDragComponentGroupPresenter = layoutDragComponentGroups
                 .get(groupName);
         layoutDragComponentGroupPresenter.addComponent(componentId,
-                component);
+                                                       component);
     }
 
     @Override
@@ -119,7 +149,6 @@ public class LayoutComponentPalettePresenter implements LayoutDragComponentPalet
     @Override
     public boolean hasDraggableComponent(String groupName,
                                          String componentId) {
-        return hasDraggableGroup(groupName) && layoutDragComponentGroups
-                .get(groupName).hasComponent(componentId);
+        return hasDraggableGroup(groupName) && layoutDragComponentGroups.get(groupName).hasComponent(componentId);
     }
 }

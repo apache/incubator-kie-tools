@@ -44,7 +44,7 @@ public class PerspectiveEditorReportingGroupProvider implements PerspectiveEdito
     }
 
     @Override
-    public LayoutDragComponentGroup getInstance() {
+    public LayoutDragComponentGroup getComponentGroup() {
         LayoutDragComponentGroup group = new LayoutDragComponentGroup(getName());
         group.addLayoutDragComponent(i18n.drag_component_name_barchart(), lookupDisplayerComponent(BarChartDragComponent.class));
         group.addLayoutDragComponent(i18n.drag_component_name_piechart(), lookupDisplayerComponent(PieChartDragComponent.class));

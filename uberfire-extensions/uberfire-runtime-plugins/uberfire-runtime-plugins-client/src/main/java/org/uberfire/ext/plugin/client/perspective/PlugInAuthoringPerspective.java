@@ -32,8 +32,10 @@ import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 
 @ApplicationScoped
-@WorkbenchPerspective(identifier = "PlugInAuthoringPerspective")
+@WorkbenchPerspective(identifier = PlugInAuthoringPerspective.IDENTIFIER)
 public class PlugInAuthoringPerspective {
+
+    public static final String IDENTIFIER = "PlugInAuthoringPerspective";
 
     @Inject
     UberfireDocks uberfireDocks;

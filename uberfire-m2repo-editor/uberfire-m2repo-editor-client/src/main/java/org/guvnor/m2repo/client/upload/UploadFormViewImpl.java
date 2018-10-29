@@ -92,11 +92,11 @@ public class UploadFormViewImpl
 
         form.addAttribute("File",
                           uploader);
-        groupIdItem = form.addAttribute("Group ID",
+        groupIdItem = form.addAttribute("Group IDENTIFIER",
                                         hiddenGroupIdField);
-        artifactIdItem = form.addAttribute("Artifact ID",
+        artifactIdItem = form.addAttribute("Artifact IDENTIFIER",
                                            hiddenArtifactIdField);
-        versionIdItem = form.addAttribute("Version ID",
+        versionIdItem = form.addAttribute("Version IDENTIFIER",
                                           hiddenVersionIdField);
 
         hideGAVInputs();
