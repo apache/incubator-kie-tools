@@ -39,6 +39,7 @@ import org.kie.workbench.common.dmn.client.editors.types.persistence.ItemDefinit
 import org.kie.workbench.common.dmn.client.editors.types.persistence.ItemDefinitionStore;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.validation.DataTypeNameValidator;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.validation.NameIsBlankErrorMessage;
+import org.kie.workbench.common.dmn.client.editors.types.persistence.validation.NameIsDefaultTypeMessage;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.validation.NameIsNotUniqueErrorMessage;
 import org.mockito.InOrder;
 import org.mockito.Mock;
@@ -103,6 +104,9 @@ public class DataTypeManagerTest {
     @Mock
     private NameIsNotUniqueErrorMessage notUniqueErrorMessage;
 
+    @Mock
+    private NameIsDefaultTypeMessage nameIsDefaultTypeMessage;
+
     private DataTypeNameValidator dataTypeNameValidator;
 
     private DataTypeManager manager;
@@ -116,7 +120,7 @@ public class DataTypeManagerTest {
         when(translationService.format(DataTypeManager_Structure)).thenReturn("Structure");
         when(itemDefinitionStore.get("uuid")).thenReturn(mock(ItemDefinition.class));
 
-        dataTypeNameValidator = spy(new DataTypeNameValidator(flashMessageEvent, blankErrorMessage, notUniqueErrorMessage, dataTypeStore));
+        dataTypeNameValidator = spy(new DataTypeNameValidator(flashMessageEvent, blankErrorMessage, notUniqueErrorMessage, nameIsDefaultTypeMessage, dataTypeStore));
         manager = spy(new DataTypeManagerFake());
     }
 

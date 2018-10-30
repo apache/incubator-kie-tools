@@ -54,13 +54,16 @@ public class DataTypeNameValidatorTest {
     private NameIsNotUniqueErrorMessage notUniqueErrorMessage;
 
     @Mock
+    private NameIsDefaultTypeMessage nameIsDefaultTypeMessage;
+
+    @Mock
     private DataTypeStore dataTypeStore;
 
     private DataTypeNameValidator validator;
 
     @Before
     public void setup() {
-        validator = spy(new DataTypeNameValidator(flashMessageEvent, blankErrorMessage, notUniqueErrorMessage, dataTypeStore));
+        validator = spy(new DataTypeNameValidator(flashMessageEvent, blankErrorMessage, notUniqueErrorMessage, nameIsDefaultTypeMessage, dataTypeStore));
     }
 
     @Test
@@ -96,12 +99,30 @@ public class DataTypeNameValidatorTest {
     }
 
     @Test
+    public void testIsValidWhenDataTypeNameIsDefault() {
+
+        final DataType dataType = mock(DataType.class);
+        final DataTypeFlashMessage nameIsDefaultMessage = mock(DataTypeFlashMessage.class);
+
+        doReturn(false).when(validator).isBlank(dataType);
+        doReturn(false).when(validator).isNotUnique(dataType);
+        doReturn(true).when(validator).isDefault(dataType);
+        when(nameIsDefaultTypeMessage.getFlashMessage(dataType)).thenReturn(nameIsDefaultMessage);
+
+        final boolean isValid = validator.isValid(dataType);
+
+        verify(flashMessageEvent).fire(nameIsDefaultMessage);
+        assertFalse(isValid);
+    }
+
+    @Test
     public void testIsValid() {
 
         final DataType dataType = mock(DataType.class);
 
         doReturn(false).when(validator).isBlank(dataType);
         doReturn(false).when(validator).isNotUnique(dataType);
+        doReturn(false).when(validator).isDefault(dataType);
 
         final boolean isValid = validator.isValid(dataType);
 
@@ -149,6 +170,24 @@ public class DataTypeNameValidatorTest {
         final DataType dataType = makeDataType("uuid", "tCity");
 
         assertFalse(validator.isBlank(dataType));
+    }
+
+    @Test
+    public void testIsDefaultWhenItReturnsTrue() {
+        final DataType dataType = mock(DataType.class);
+
+        when(dataType.getName()).thenReturn("string");
+
+        assertTrue(validator.isDefault(dataType));
+    }
+
+    @Test
+    public void testIsDefaultWhenItReturnsFalse() {
+        final DataType dataType = mock(DataType.class);
+
+        when(dataType.getName()).thenReturn("tCity");
+
+        assertFalse(validator.isDefault(dataType));
     }
 
     @Test

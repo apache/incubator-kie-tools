@@ -23,6 +23,7 @@ import java.util.Optional;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import org.kie.workbench.common.dmn.client.editors.types.common.BuiltInTypeUtils;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.messages.DataTypeFlashMessage;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.DataTypeStore;
@@ -37,16 +38,20 @@ public class DataTypeNameValidator {
 
     private final NameIsNotUniqueErrorMessage notUniqueErrorMessage;
 
+    private final NameIsDefaultTypeMessage nameIsDefaultTypeMessage;
+
     private final DataTypeStore dataTypeStore;
 
     @Inject
     public DataTypeNameValidator(final Event<DataTypeFlashMessage> flashMessageEvent,
                                  final NameIsBlankErrorMessage blankErrorMessage,
                                  final NameIsNotUniqueErrorMessage notUniqueErrorMessage,
+                                 final NameIsDefaultTypeMessage nameIsDefaultTypeMessage,
                                  final DataTypeStore dataTypeStore) {
         this.flashMessageEvent = flashMessageEvent;
         this.blankErrorMessage = blankErrorMessage;
         this.notUniqueErrorMessage = notUniqueErrorMessage;
+        this.nameIsDefaultTypeMessage = nameIsDefaultTypeMessage;
         this.dataTypeStore = dataTypeStore;
     }
 
@@ -62,7 +67,16 @@ public class DataTypeNameValidator {
             return false;
         }
 
+        if (isDefault(dataType)) {
+            flashMessageEvent.fire(nameIsDefaultTypeMessage.getFlashMessage(dataType));
+            return false;
+        }
+
         return true;
+    }
+
+    boolean isDefault(final DataType dataType) {
+        return BuiltInTypeUtils.isDefault(dataType.getName());
     }
 
     public boolean isNotUnique(final DataType dataType) {

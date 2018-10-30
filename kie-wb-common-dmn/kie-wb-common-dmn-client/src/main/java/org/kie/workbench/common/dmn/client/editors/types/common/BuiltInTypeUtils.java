@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.editors.types.common;
 
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -24,8 +25,18 @@ import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 public class BuiltInTypeUtils {
 
     public static boolean isDefault(final String type) {
+        return builtInTypeNames()
+                .anyMatch(builtInTypeName -> Objects.equals(upperCase(builtInTypeName), upperCase(type)));
+    }
+
+    private static String upperCase(final String value) {
+        return value == null ? null : value.toUpperCase();
+    }
+
+    private static Stream<String> builtInTypeNames() {
         return Stream
                 .of(BuiltInType.values())
-                .anyMatch(dataType -> Objects.equals(dataType.getName(), type));
+                .map(BuiltInType::getNames)
+                .flatMap(Arrays::stream);
     }
 }
