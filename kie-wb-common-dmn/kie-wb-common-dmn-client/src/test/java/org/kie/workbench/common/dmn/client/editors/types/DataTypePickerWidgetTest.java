@@ -68,7 +68,7 @@ public class DataTypePickerWidgetTest {
 
     private static final QName VALUE = new QName();
 
-    private static final String WIDGET_VALUE = "[][string][feel]";
+    private static final String WIDGET_VALUE = "[][string][]";
 
     @Mock
     private Anchor typeButton;
@@ -238,12 +238,12 @@ public class DataTypePickerWidgetTest {
 
         final QName normalisedQName = qNameCaptor.getValue();
         assertEquals("", normalisedQName.getNamespaceURI());
-        assertEquals(Namespace.FEEL.getPrefix(), normalisedQName.getPrefix());
+        assertEquals(QName.NULL_NS_URI, normalisedQName.getPrefix());
         assertEquals(bit.getName(), normalisedQName.getLocalPart());
 
         assertTrue(oo.isPresent());
         assertEquals(bit.getName(), optionTextCaptor.getValue());
-        assertEquals("[][any][feel]", optionValueCaptor.getValue());
+        assertEquals("[][any][]", optionValueCaptor.getValue());
     }
 
     @Test

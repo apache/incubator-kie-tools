@@ -32,9 +32,7 @@ import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManager;
 import org.kie.workbench.common.dmn.client.editors.types.common.ItemDefinitionUtils;
 
-import static org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase.Namespace.FEEL;
 import static org.kie.workbench.common.dmn.api.property.dmn.QName.NULL_NS_URI;
-import static org.kie.workbench.common.dmn.client.editors.types.common.BuiltInTypeUtils.isDefault;
 import static org.kie.workbench.common.stunner.core.util.StringUtils.isEmpty;
 
 @Dependent
@@ -94,11 +92,7 @@ public class ItemDefinitionUpdateHandler {
     }
 
     QName makeQName(final DataType dataType) {
-        if (isDefault(dataType.getType())) {
-            return normaliseTypeRef(new QName(FEEL.getUri(), dataType.getType()));
-        } else {
-            return normaliseTypeRef(new QName(NULL_NS_URI, dataType.getType()));
-        }
+        return normaliseTypeRef(new QName(NULL_NS_URI, dataType.getType()));
     }
 
     QName normaliseTypeRef(final QName typeRef) {

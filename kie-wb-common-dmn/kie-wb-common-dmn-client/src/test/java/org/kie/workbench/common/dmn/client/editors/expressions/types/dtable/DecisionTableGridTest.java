@@ -35,7 +35,6 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.NOPDomainObject;
 import org.kie.workbench.common.dmn.api.definition.v1_1.BuiltinAggregator;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTableOrientation;
@@ -1110,7 +1109,7 @@ public class DecisionTableGridTest {
     public void testSetTypeRef() {
         setupGrid(makeHasNameForDecision(), 0);
 
-        final Consumer<NameAndDataTypeHeaderMetaData> test = (md) -> md.setTypeRef(new QName(DMNModelInstrumentedBase.Namespace.FEEL.getUri(),
+        final Consumer<NameAndDataTypeHeaderMetaData> test = (md) -> md.setTypeRef(new QName(QName.NULL_NS_URI,
                                                                                              BuiltInType.DATE.getName()));
 
         assertHeaderMetaDataTest(0, 1, test, SetTypeRefCommand.class);

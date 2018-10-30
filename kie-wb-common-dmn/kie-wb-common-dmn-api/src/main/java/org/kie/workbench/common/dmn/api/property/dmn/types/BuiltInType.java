@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.dmn.api.property.dmn.types;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase.Namespace;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 
 public enum BuiltInType {
@@ -50,7 +49,7 @@ public enum BuiltInType {
     }
 
     public QName asQName() {
-        return new QName(Namespace.FEEL.getUri(),
+        return new QName(QName.NULL_NS_URI,
                          getName());
     }
 

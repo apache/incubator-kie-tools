@@ -135,6 +135,7 @@ public class ItemDefinitionUpdateHandlerTest {
         final String actualName = name.getLocalPart();
 
         assertEquals(expectedName, actualName);
+        assertEquals(QName.NULL_NS_URI, name.getNamespaceURI());
     }
 
     @Test
@@ -150,6 +151,7 @@ public class ItemDefinitionUpdateHandlerTest {
         final String expected = "tAddress";
 
         assertEquals(expected, actual);
+        assertEquals(QName.NULL_NS_URI, name.getNamespaceURI());
     }
 
     @Test

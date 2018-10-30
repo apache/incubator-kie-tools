@@ -36,7 +36,7 @@ import static org.junit.Assert.assertEquals;
 @RunWith(MockitoJUnitRunner.class)
 public class QNameConverterTest {
 
-    private static final String ENCODED_FEEL_DATE = "[][date][" + DMNModelInstrumentedBase.Namespace.FEEL.getPrefix() + "]";
+    private static final String ENCODED_FEEL_DATE = "[][date][]";
 
     private static final String ENCODED_DMN_UNKNOWN = "[" + org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase.URI_DMN + "]" +
             "[unknown]" +
@@ -101,7 +101,7 @@ public class QNameConverterTest {
     @Test
     public void testToModelValueWithCorrectlyEncodedValue() {
         final QName typeRef = converter.toModelValue(ENCODED_FEEL_DATE);
-        assertEquals(DMNModelInstrumentedBase.Namespace.FEEL.getPrefix(),
+        assertEquals(QName.NULL_NS_URI,
                      typeRef.getPrefix());
         assertEquals("",
                      typeRef.getNamespaceURI());

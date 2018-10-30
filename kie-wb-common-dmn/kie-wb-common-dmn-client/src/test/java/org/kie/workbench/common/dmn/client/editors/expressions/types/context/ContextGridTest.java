@@ -34,7 +34,6 @@ import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.NOPDomainObject;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
@@ -832,7 +831,7 @@ public class ContextGridTest {
     public void testSetTypeRef() {
         setupGrid(0);
 
-        extractHeaderMetaData().setTypeRef(new QName(DMNModelInstrumentedBase.Namespace.FEEL.getUri(),
+        extractHeaderMetaData().setTypeRef(new QName(QName.NULL_NS_URI,
                                                      BuiltInType.DATE.getName()));
 
         verify(sessionCommandManager).execute(eq(canvasHandler),

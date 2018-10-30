@@ -20,16 +20,20 @@ import java.util.List;
 import java.util.Optional;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ContextEntry;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase.Namespace;
+import org.kie.workbench.common.dmn.api.definition.v1_1.DMNDiagram;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
+import org.kie.workbench.common.dmn.api.definition.v1_1.Definitions;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InputClause;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InputData;
+import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.OutputClause;
+import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -45,21 +49,214 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(LienzoMockitoTestRunner.class)
 public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTableEditorDefinitionTest {
 
+    private static final String NODE_UUID = UUID.uuid();
+
+    private static final String INPUT_DATA_NAME_1 = "z-inputData1";
+
+    private static final String INPUT_DATA_NAME_2 = "a-inputData2";
+
+    private static final QName INPUT_DATA_QNAME_1 = new QName(QName.NULL_NS_URI, BuiltInType.STRING.getName());
+
+    private static final QName INPUT_DATA_QNAME_2 = new QName(QName.NULL_NS_URI, BuiltInType.NUMBER.getName());
+
+    private DMNDiagram diagram;
+
+    private InputData inputData1;
+
+    private InputData inputData2;
+
+    @Before
+    public void setup() {
+        super.setup();
+
+        this.diagram = new DMNDiagram();
+        this.inputData1 = new InputData();
+        this.inputData2 = new InputData();
+    }
+
     @Test
     @SuppressWarnings("unchecked")
     public void testModelEnrichmentWhenTopLevelDecisionTableWithInputData() {
-        final String uuid = UUID.uuid();
-        final Node<Definition, Edge> node = new NodeImpl<>(uuid);
+        setupGraph();
+
+        final Optional<DecisionTable> oModel = definition.getModelClass();
+        definition.enrich(Optional.of(NODE_UUID), oModel);
+
+        final DecisionTable model = oModel.get();
+        assertBasicEnrichment(model);
+
+        final List<InputClause> input = model.getInput();
+        assertThat(input.size()).isEqualTo(2);
+        assertThat(input.get(0).getInputExpression()).isInstanceOf(LiteralExpression.class);
+        assertThat(input.get(0).getInputExpression().getText().getValue()).isEqualTo(INPUT_DATA_NAME_2);
+        assertThat(input.get(0).getInputExpression().getTypeRef()).isEqualTo(INPUT_DATA_QNAME_2);
+        assertThat(input.get(1).getInputExpression()).isInstanceOf(LiteralExpression.class);
+        assertThat(input.get(1).getInputExpression().getText().getValue()).isEqualTo(INPUT_DATA_NAME_1);
+        assertThat(input.get(1).getInputExpression().getTypeRef()).isEqualTo(INPUT_DATA_QNAME_1);
+
+        assertStandardOutputClauseEnrichment(model);
+        assertStandardDecisionRuleEnrichment(model, 2, 1);
+        assertParentHierarchyEnrichment(model, 2, 1);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testModelEnrichmentWhenTopLevelDecisionTableWithInputDataAndSimpleCustomType() {
+        setupGraph();
+
+        final Definitions definitions = diagram.getDefinitions();
+
+        final String simpleItemDefinitionName = "tSmurf";
+        final QName simpleItemDefinitionTypeRef = new QName(QName.NULL_NS_URI, BuiltInType.DATE.getName());
+        final ItemDefinition simpleItemDefinition = new ItemDefinition();
+        simpleItemDefinition.setName(new Name(simpleItemDefinitionName));
+        simpleItemDefinition.setTypeRef(simpleItemDefinitionTypeRef);
+        definitions.getItemDefinition().add(simpleItemDefinition);
+
+        final QName inputData1TypeRef = new QName(QName.NULL_NS_URI, simpleItemDefinitionName);
+        inputData1.getVariable().setTypeRef(inputData1TypeRef);
+
+        final Optional<DecisionTable> oModel = definition.getModelClass();
+        definition.enrich(Optional.of(NODE_UUID), oModel);
+
+        final DecisionTable model = oModel.get();
+        assertBasicEnrichment(model);
+
+        final List<InputClause> input = model.getInput();
+        assertThat(input.size()).isEqualTo(2);
+        assertThat(input.get(0).getInputExpression()).isInstanceOf(LiteralExpression.class);
+        assertThat(input.get(0).getInputExpression().getText().getValue()).isEqualTo(INPUT_DATA_NAME_2);
+        assertThat(input.get(0).getInputExpression().getTypeRef()).isEqualTo(INPUT_DATA_QNAME_2);
+        assertThat(input.get(1).getInputExpression()).isInstanceOf(LiteralExpression.class);
+        assertThat(input.get(1).getInputExpression().getText().getValue()).isEqualTo(INPUT_DATA_NAME_1);
+        assertThat(input.get(1).getInputExpression().getTypeRef()).isEqualTo(simpleItemDefinitionTypeRef);
+
+        assertStandardOutputClauseEnrichment(model);
+        assertStandardDecisionRuleEnrichment(model, 2, 1);
+        assertParentHierarchyEnrichment(model, 2, 1);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testModelEnrichmentWhenTopLevelDecisionTableWithInputDataAndComplexCustomType() {
+        setupGraph();
+
+        final Definitions definitions = diagram.getDefinitions();
+
+        final String complexItemDefinitionName = "tSmurf";
+        final String complexItemDefinitionPart1Name = "tDateOfBirth";
+        final String complexItemDefinitionPart2Name = "tIsBlue";
+        final QName complexItemDefinitionPart1TypeRef = new QName(QName.NULL_NS_URI, BuiltInType.DATE.getName());
+        final QName complexItemDefinitionPart2TypeRef = new QName(QName.NULL_NS_URI, BuiltInType.BOOLEAN.getName());
+        final ItemDefinition complexItemDefinition = new ItemDefinition();
+        complexItemDefinition.setName(new Name(complexItemDefinitionName));
+        complexItemDefinition.getItemComponent().add(new ItemDefinition() {{
+            setName(new Name(complexItemDefinitionPart1Name));
+            setTypeRef(complexItemDefinitionPart1TypeRef);
+        }});
+        complexItemDefinition.getItemComponent().add(new ItemDefinition() {{
+            setName(new Name(complexItemDefinitionPart2Name));
+            setTypeRef(complexItemDefinitionPart2TypeRef);
+        }});
+
+        definitions.getItemDefinition().add(complexItemDefinition);
+
+        final QName inputData1TypeRef = new QName(QName.NULL_NS_URI, complexItemDefinitionName);
+        inputData1.getVariable().setTypeRef(inputData1TypeRef);
+
+        final Optional<DecisionTable> oModel = definition.getModelClass();
+        definition.enrich(Optional.of(NODE_UUID), oModel);
+
+        final DecisionTable model = oModel.get();
+        assertBasicEnrichment(model);
+
+        final List<InputClause> input = model.getInput();
+        assertThat(input.size()).isEqualTo(3);
+        assertThat(input.get(0).getInputExpression()).isInstanceOf(LiteralExpression.class);
+        assertThat(input.get(0).getInputExpression().getText().getValue()).isEqualTo(INPUT_DATA_NAME_2);
+        assertThat(input.get(0).getInputExpression().getTypeRef()).isEqualTo(INPUT_DATA_QNAME_2);
+        assertThat(input.get(1).getInputExpression()).isInstanceOf(LiteralExpression.class);
+        assertThat(input.get(1).getInputExpression().getText().getValue()).isEqualTo(INPUT_DATA_NAME_1 + "." + complexItemDefinitionPart1Name);
+        assertThat(input.get(1).getInputExpression().getTypeRef()).isEqualTo(complexItemDefinitionPart1TypeRef);
+        assertThat(input.get(2).getInputExpression()).isInstanceOf(LiteralExpression.class);
+        assertThat(input.get(2).getInputExpression().getText().getValue()).isEqualTo(INPUT_DATA_NAME_1 + "." + complexItemDefinitionPart2Name);
+        assertThat(input.get(2).getInputExpression().getTypeRef()).isEqualTo(complexItemDefinitionPart2TypeRef);
+
+        assertStandardOutputClauseEnrichment(model);
+        assertStandardDecisionRuleEnrichment(model, 3, 1);
+        assertParentHierarchyEnrichment(model, 3, 1);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testModelEnrichmentWhenTopLevelDecisionTableWithInputDataAndRecursiveCustomType() {
+        setupGraph();
+
+        final Definitions definitions = diagram.getDefinitions();
+
+        final String tSmurfName = "tSmurf";
+        final String tDateOfBirthName = "tDateOfBirth";
+        final String tIsBlueName = "tIsBlue";
+        final String tParentName = "tParent";
+        final QName dateBuiltInType = new QName(QName.NULL_NS_URI, BuiltInType.DATE.getName());
+        final QName booleanBuiltInType = new QName(QName.NULL_NS_URI, BuiltInType.BOOLEAN.getName());
+        final QName parentCustomType = new QName(QName.NULL_NS_URI, tSmurfName);
+        final ItemDefinition tSmurfCustomDataType = new ItemDefinition();
+        tSmurfCustomDataType.setName(new Name(tSmurfName));
+        tSmurfCustomDataType.getItemComponent().add(new ItemDefinition() {{
+            setName(new Name(tDateOfBirthName));
+            setTypeRef(dateBuiltInType);
+        }});
+        tSmurfCustomDataType.getItemComponent().add(new ItemDefinition() {{
+            setName(new Name(tIsBlueName));
+            setTypeRef(booleanBuiltInType);
+        }});
+        tSmurfCustomDataType.getItemComponent().add(new ItemDefinition() {{
+            setName(new Name(tParentName));
+            setTypeRef(parentCustomType);
+        }});
+
+        definitions.getItemDefinition().add(tSmurfCustomDataType);
+
+        final QName inputData1TypeRef = new QName(QName.NULL_NS_URI, tSmurfName);
+        inputData1.getVariable().setTypeRef(inputData1TypeRef);
+
+        final Optional<DecisionTable> oModel = definition.getModelClass();
+        definition.enrich(Optional.of(NODE_UUID), oModel);
+
+        final DecisionTable model = oModel.get();
+        assertBasicEnrichment(model);
+
+        final List<InputClause> input = model.getInput();
+        assertThat(input.size()).isEqualTo(4);
+        assertThat(input.get(0).getInputExpression()).isInstanceOf(LiteralExpression.class);
+        assertThat(input.get(0).getInputExpression().getText().getValue()).isEqualTo(INPUT_DATA_NAME_2);
+        assertThat(input.get(0).getInputExpression().getTypeRef()).isEqualTo(INPUT_DATA_QNAME_2);
+        assertThat(input.get(1).getInputExpression()).isInstanceOf(LiteralExpression.class);
+        assertThat(input.get(1).getInputExpression().getText().getValue()).isEqualTo(INPUT_DATA_NAME_1 + "." + tDateOfBirthName);
+        assertThat(input.get(1).getInputExpression().getTypeRef()).isEqualTo(dateBuiltInType);
+        assertThat(input.get(2).getInputExpression()).isInstanceOf(LiteralExpression.class);
+        assertThat(input.get(2).getInputExpression().getText().getValue()).isEqualTo(INPUT_DATA_NAME_1 + "." + tIsBlueName);
+        assertThat(input.get(2).getInputExpression().getTypeRef()).isEqualTo(booleanBuiltInType);
+        assertThat(input.get(3).getInputExpression()).isInstanceOf(LiteralExpression.class);
+        assertThat(input.get(3).getInputExpression().getText().getValue()).isEqualTo(INPUT_DATA_NAME_1 + "." + tParentName);
+        assertThat(input.get(3).getInputExpression().getTypeRef()).isEqualTo(parentCustomType);
+
+        assertStandardOutputClauseEnrichment(model);
+        assertStandardDecisionRuleEnrichment(model, 4, 1);
+        assertParentHierarchyEnrichment(model, 4, 1);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void setupGraph() {
+        final Node<Definition, Edge> diagramNode = new NodeImpl<>(UUID.uuid());
         final Node<Definition, Edge> sourceNode1 = new NodeImpl<>(UUID.uuid());
         final Node<Definition, Edge> sourceNode2 = new NodeImpl<>(UUID.uuid());
-        final String inputData1Name = "z-inputData1";
-        final String inputData2Name = "a-inputData2";
-        final InputData inputData1 = new InputData();
-        final InputData inputData2 = new InputData();
-        inputData1.getName().setValue(inputData1Name);
-        inputData2.getName().setValue(inputData2Name);
-        final QName inputData1QName = new QName(Namespace.FEEL.getUri(), BuiltInType.STRING.getName());
-        final QName inputData2QName = new QName(Namespace.FEEL.getUri(), BuiltInType.NUMBER.getName());
+        final Node<Definition, Edge> targetNode = new NodeImpl<>(NODE_UUID);
+        inputData1.getName().setValue(INPUT_DATA_NAME_1);
+        inputData2.getName().setValue(INPUT_DATA_NAME_2);
+        final QName inputData1QName = new QName(QName.NULL_NS_URI, BuiltInType.STRING.getName());
+        final QName inputData2QName = new QName(QName.NULL_NS_URI, BuiltInType.NUMBER.getName());
         inputData1.getVariable().setTypeRef(inputData1QName);
         inputData2.getVariable().setTypeRef(inputData2QName);
 
@@ -70,38 +267,23 @@ public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTable
 
         final Edge edge1 = new EdgeImpl<>(UUID.uuid());
         final Edge edge2 = new EdgeImpl<>(UUID.uuid());
-        edge1.setTargetNode(node);
+        edge1.setTargetNode(targetNode);
         edge1.setSourceNode(sourceNode1);
-        edge2.setTargetNode(node);
+        edge2.setTargetNode(targetNode);
         edge2.setSourceNode(sourceNode2);
 
-        node.getInEdges().add(edge1);
-        node.getInEdges().add(edge2);
+        targetNode.getInEdges().add(edge1);
+        targetNode.getInEdges().add(edge2);
         sourceNode1.getOutEdges().add(edge1);
         sourceNode2.getOutEdges().add(edge2);
 
-        graph.addNode(node);
+        final Definition<DMNDiagram> diagramDefinition = new DefinitionImpl<>(diagram);
+        diagramNode.setContent(diagramDefinition);
+
+        graph.addNode(diagramNode);
+        graph.addNode(targetNode);
         graph.addNode(sourceNode1);
         graph.addNode(sourceNode2);
-
-        final Optional<DecisionTable> oModel = definition.getModelClass();
-        definition.enrich(Optional.of(uuid), oModel);
-
-        final DecisionTable model = oModel.get();
-        assertBasicEnrichment(model);
-
-        final List<InputClause> input = model.getInput();
-        assertThat(input.size()).isEqualTo(2);
-        assertThat(input.get(0).getInputExpression()).isInstanceOf(LiteralExpression.class);
-        assertThat(input.get(0).getInputExpression().getText().getValue()).isEqualTo(inputData2Name);
-        assertThat(input.get(0).getInputExpression().getTypeRef()).isEqualTo(inputData2QName);
-        assertThat(input.get(1).getInputExpression()).isInstanceOf(LiteralExpression.class);
-        assertThat(input.get(1).getInputExpression().getText().getValue()).isEqualTo(inputData1Name);
-        assertThat(input.get(1).getInputExpression().getTypeRef()).isEqualTo(inputData1QName);
-
-        assertStandardOutputClauseEnrichment(model);
-        assertStandardDecisionRuleEnrichment(model, 2, 1);
-        assertParentHierarchyEnrichment(model, 2, 1);
     }
 
     @Test
