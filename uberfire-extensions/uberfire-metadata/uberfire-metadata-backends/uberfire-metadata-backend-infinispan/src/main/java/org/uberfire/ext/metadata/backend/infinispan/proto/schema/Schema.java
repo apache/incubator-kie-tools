@@ -1,0 +1,72 @@
+/*
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
+package org.uberfire.ext.metadata.backend.infinispan.proto.schema;
+
+import java.util.HashSet;
+import java.util.Set;
+
+import org.infinispan.protostream.annotations.ProtoField;
+import org.infinispan.protostream.annotations.ProtoMessage;
+
+@ProtoMessage
+public class Schema {
+
+    private String name;
+    private String pkg;
+    private Set<Message> messages;
+
+    public Schema() {
+        this.messages = new HashSet<>();
+    }
+
+    public Schema(String name,
+                  String pkg,
+                  Set<Message> messages) {
+
+        this.name = name;
+        this.pkg = pkg;
+        this.messages = messages;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    @ProtoField(number = 1)
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getPkg() {
+        return pkg;
+    }
+
+    @ProtoField(number = 2)
+    public void setPkg(String pkg) {
+        this.pkg = pkg;
+    }
+
+    public Set<Message> getMessages() {
+        return messages;
+    }
+
+    @ProtoField(number = 3, javaType = Message.class, collectionImplementation = HashSet.class)
+    public void setMessages(Set<Message> messages) {
+        this.messages = messages;
+    }
+}

@@ -16,8 +16,11 @@
 
 package org.uberfire.ext.metadata.model;
 
+import java.io.Serializable;
+
 public interface KObject extends KObjectKey,
-                                 PropertyBag {
+                                 PropertyBag,
+                                 Serializable {
 
     /**
      * Flag indicating whether a "full text" entry should be created for the KObject.

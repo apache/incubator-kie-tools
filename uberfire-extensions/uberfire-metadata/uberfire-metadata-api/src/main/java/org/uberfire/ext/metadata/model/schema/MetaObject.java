@@ -29,6 +29,7 @@ public interface MetaObject {
     String META_OBJECT_TYPE = "type";
     String META_OBJECT_KEY = "key";
     String META_OBJECT_SEGMENT_ID = "segment.id";
+    String META_OBJECT_FULL_TEXT = "fullText";
 
     MetaType getType();
 

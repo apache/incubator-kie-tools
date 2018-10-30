@@ -66,7 +66,9 @@ public class MetadataIndexEngine implements MetaIndexEngine {
 
     public MetadataIndexEngine(IndexProvider provider,
                                MetaModelStore metaModelStore) {
-        this(provider, metaModelStore, () -> new MultiIndexerLock(new ReentrantLock()));
+        this(provider,
+             metaModelStore,
+             () -> new MultiIndexerLock(new ReentrantLock()));
     }
 
     @Override
@@ -79,14 +81,16 @@ public class MetadataIndexEngine implements MetaIndexEngine {
     }
 
     @Override
-    public boolean isIndexReady(KCluster cluster, String indexerId) {
+    public boolean isIndexReady(KCluster cluster,
+                                String indexerId) {
         final MultiIndexerLock lock;
         return !provider.isFreshIndex(cluster) && ((lock = batchLocks.get(cluster)) == null || !lock.isLockedBy(indexerId));
     }
 
     @Override
     public void prepareBatch(KCluster cluster) {
-        batchLocks.computeIfAbsent(cluster, ignore -> lockSupplier.get());
+        batchLocks.computeIfAbsent(cluster,
+                                   ignore -> lockSupplier.get());
     }
 
     @Override
@@ -98,11 +102,13 @@ public class MetadataIndexEngine implements MetaIndexEngine {
                                                           cluster.getClusterId(),
                                                           Thread.currentThread().getName()));
         } else {
-            batchSet.put(cluster, new ArrayList<>());
+            batchSet.put(cluster,
+                         new ArrayList<>());
         }
     }
 
-    private void doOrDeferAction(KCluster index, IndexEvent event) {
+    private void doOrDeferAction(KCluster index,
+                                 IndexEvent event) {
         if (this.isBatch(index)) {
             List<IndexEvent> store = this.batchSets.get().get(index);
             store.add(event);
@@ -114,7 +120,8 @@ public class MetadataIndexEngine implements MetaIndexEngine {
     @Override
     public void index(KObject kObject) {
         KCluster index = new KClusterImpl(kObject.getClusterId());
-        doOrDeferAction(index, new NewlyIndexedEvent(kObject));
+        doOrDeferAction(index,
+                        new NewlyIndexedEvent(kObject));
     }
 
     private void doAction(IndexEvent event) {
@@ -126,7 +133,8 @@ public class MetadataIndexEngine implements MetaIndexEngine {
             }
             case Renamed: {
                 RenamedEvent renamedEvent = (RenamedEvent) event;
-                doRename(renamedEvent.getSource(), renamedEvent.getTarget());
+                doRename(renamedEvent.getSource(),
+                         renamedEvent.getTarget());
                 break;
             }
             case Deleted: {
@@ -165,10 +173,13 @@ public class MetadataIndexEngine implements MetaIndexEngine {
                        from.getClusterId().equals(to.getClusterId()));
 
         KCluster index = new KClusterImpl(from.getClusterId());
-        doOrDeferAction(index, new RenamedEvent(from, to));
+        doOrDeferAction(index,
+                        new RenamedEvent(from,
+                                         to));
     }
 
-    private void doRename(KObjectKey from, KObject to) {
+    private void doRename(KObjectKey from,
+                          KObject to) {
         this.provider.rename(from.getClusterId(),
                              from.getId(),
                              to);
@@ -188,7 +199,8 @@ public class MetadataIndexEngine implements MetaIndexEngine {
     @Override
     public void delete(KObjectKey objectKey) {
         KCluster index = new KClusterImpl(objectKey.getClusterId());
-        doOrDeferAction(index, new DeletedEvent(objectKey));
+        doOrDeferAction(index,
+                        new DeletedEvent(objectKey));
     }
 
     private void doDelete(KObjectKey objectKey) {
@@ -197,13 +209,16 @@ public class MetadataIndexEngine implements MetaIndexEngine {
     }
 
     @Override
-    public void commit(KCluster cluster, String indexerId) {
+    public void commit(KCluster cluster,
+                       String indexerId) {
         final MultiIndexerLock lock = batchLocks.get(cluster);
         final List<IndexEvent> batchSet = batchSets.get().get(cluster);
         final boolean clusterDeleted = lock == null && batchSet != null;
 
         if (clusterDeleted) {
-            logger.info("Cluster [{}] was deleted. Aborting commit for indexer [{}].", cluster.getClusterId(), indexerId);
+            logger.info("Cluster [{}] was deleted. Aborting commit for indexer [{}].",
+                        cluster.getClusterId(),
+                        indexerId);
             abort(cluster);
             return;
         }
@@ -213,11 +228,13 @@ public class MetadataIndexEngine implements MetaIndexEngine {
                 throw new IllegalStateException(String.format("Cannot commit batch for cluster [id=%s] when no batch has been started in thread [%s].",
                                                               cluster.getClusterId(),
                                                               Thread.currentThread().getName()));
-            }
-            else if (batchSet.isEmpty()) {
+            } else if (batchSet.isEmpty()) {
                 removeThreadLocalBatchState(cluster);
             } else {
-                doCommit(cluster, batchSet, lock, indexerId);
+                doCommit(cluster,
+                         batchSet,
+                         lock,
+                         indexerId);
             }
         } catch (Throwable t) {
             abort(cluster);
@@ -225,7 +242,10 @@ public class MetadataIndexEngine implements MetaIndexEngine {
         }
     }
 
-    private void doCommit(KCluster cluster, List<IndexEvent> batchSet, MultiIndexerLock lock, String indexerId) {
+    private void doCommit(KCluster cluster,
+                          List<IndexEvent> batchSet,
+                          MultiIndexerLock lock,
+                          String indexerId) {
         try {
             lock.lock(indexerId);
             batchSet.forEach(this::doAction);

@@ -1,0 +1,159 @@
+RULE reset state lucene
+CLASS org.uberfire.ext.metadata.io.index.MetadataIndexEngine
+METHOD <init>(IndexProvider,MetaModelStore)
+AT ENTRY
+IF TRUE
+DO deleteCounter("freshIndex");
+   deleteCounter("startBatch");
+   deleteCounter("index kobject");
+   deleteCounter("index kobject[]");
+   deleteCounter("rename");
+   deleteCounter("delete kcluster");
+   deleteCounter("delete kobjectkey");
+   deleteCounter("delete kobjectkey[]");
+   deleteCounter("commit kcluster");
+   deleteCounter("beforeDispose");
+   deleteCounter("dispose");
+ENDRULE
+
+RULE count freshIndex
+INTERFACE org.uberfire.ext.metadata.engine.MetaIndexEngine
+METHOD freshIndex(org.uberfire.ext.metadata.model.KCluster)
+AT ENTRY
+IF true
+DO incrementCounter("freshIndex");
+   traceln("-> freshIndex");
+ENDRULE
+
+RULE count startBatch
+INTERFACE org.uberfire.ext.metadata.engine.MetaIndexEngine
+METHOD startBatch(org.uberfire.ext.metadata.model.KCluster)
+AT ENTRY
+IF true
+DO incrementCounter("startBatch");
+   traceln("-> startBatch");
+ENDRULE
+
+RULE count index kobject
+INTERFACE org.uberfire.ext.metadata.engine.MetaIndexEngine
+METHOD index(org.uberfire.ext.metadata.model.KObject)
+AT ENTRY
+IF true
+DO incrementCounter("index kobject");
+   traceln("-> index kobject");
+ENDRULE
+
+RULE count index kobject[]
+INTERFACE org.uberfire.ext.metadata.engine.MetaIndexEngine
+METHOD index(org.uberfire.ext.metadata.model.KObject[])
+AT ENTRY
+IF true
+DO incrementCounter("index kobject[]");
+   traceln("-> index kobject[]");
+ENDRULE
+
+RULE count rename kcluster
+INTERFACE org.uberfire.ext.metadata.engine.MetaIndexEngine
+METHOD rename(org.uberfire.ext.metadata.model.KObjectKey,org.uberfire.ext.metadata.model.KObject)
+AT ENTRY
+IF true
+DO incrementCounter("rename");
+   traceln("-> rename");
+ENDRULE
+
+RULE count delete kcluster
+INTERFACE org.uberfire.ext.metadata.engine.MetaIndexEngine
+METHOD delete(org.uberfire.ext.metadata.model.KCluster)
+AT ENTRY
+IF true
+DO incrementCounter("delete kcluster");
+   traceln("-> delete kcluster");
+ENDRULE
+
+RULE count delete kobject
+INTERFACE org.uberfire.ext.metadata.engine.MetaIndexEngine
+METHOD delete(org.uberfire.ext.metadata.model.KObjectKey)
+AT ENTRY
+IF true
+DO incrementCounter("delete kobjectkey");
+   traceln("-> delete kobjectkey");
+ENDRULE
+
+RULE count delete kobject[]
+INTERFACE org.uberfire.ext.metadata.engine.MetaIndexEngine
+METHOD delete(org.uberfire.ext.metadata.model.KObjectKey[])
+AT ENTRY
+IF true
+DO incrementCounter("delete kobjectkey[]");
+   traceln("-> delete kobjectkey[]");
+ENDRULE
+
+RULE count commit kcluster
+INTERFACE org.uberfire.ext.metadata.engine.MetaIndexEngine
+METHOD commit(org.uberfire.ext.metadata.model.KCluster)
+AT ENTRY
+IF true
+DO incrementCounter("commit kcluster");
+   traceln("-> commit kcluster");
+ENDRULE
+
+RULE count beforeDispose
+INTERFACE org.uberfire.ext.metadata.engine.MetaIndexEngine
+METHOD beforeDispose(java.lang.Runnable)
+AT ENTRY
+IF true
+DO incrementCounter("beforeDispose");
+   traceln("-> beforeDispose");
+ENDRULE
+
+RULE count dispose
+INTERFACE org.uberfire.ext.metadata.engine.MetaIndexEngine
+METHOD dispose()
+AT ENTRY
+IF true
+DO incrementCounter("dispose");
+   traceln("-> dispose");
+ENDRULE
+
+RULE countdown
+INTERFACE org.uberfire.ext.metadata.provider.IndexProvider
+METHOD index(org.uberfire.ext.metadata.model.KObject)
+AT EXIT
+IF countDown("indexCountdown")
+DO traceln("countdown active");
+   signalWake("testReady", true);
+ENDRULE
+
+RULE countdown batch
+INTERFACE org.uberfire.ext.metadata.provider.IndexProvider
+METHOD index(List<KObject>)
+AT EXIT
+IF countDown("indexCountdown")
+DO traceln("countdown active");
+   signalWake("testReady", true);
+ENDRULE
+
+RULE create count down
+CLASS org.uberfire.ext.metadata.io.infinispan.BaseIndexTest
+METHOD setupCountDown(int)
+AT ENTRY
+IF true
+DO createCountDown("indexCountdown", $1);
+   countDown("indexCountdown");
+ENDRULE
+
+RULE wait for count down
+CLASS org.uberfire.ext.metadata.io.infinispan.BaseIndexTest
+METHOD waitForCountDown(int)
+AT ENTRY
+IF TRUE
+DO waitFor("testReady", $1);
+ENDRULE
+
+RULE return startBatch value
+CLASS org.uberfire.ext.metadata.io.infinispan.BaseIndexTest
+METHOD getStartBatchCount()
+AT EXIT
+IF TRUE
+DO return readCounter("startBatch");
+ENDRULE

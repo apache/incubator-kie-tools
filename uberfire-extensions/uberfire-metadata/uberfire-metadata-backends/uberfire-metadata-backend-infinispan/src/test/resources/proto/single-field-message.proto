@@ -1,0 +1,7 @@
+/**
+* @Indexed
+*/
+message KObject {
+	/* @Field(index=Index.YES, analyze = Analyze.NO, store = Store.YES) */
+	required int32 aField = 1;
+}

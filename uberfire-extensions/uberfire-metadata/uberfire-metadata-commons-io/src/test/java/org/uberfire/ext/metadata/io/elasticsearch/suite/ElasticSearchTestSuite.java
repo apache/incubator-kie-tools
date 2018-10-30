@@ -16,11 +16,8 @@
 
 package org.uberfire.ext.metadata.io.elasticsearch.suite;
 
-import java.io.File;
-
 import com.spotify.docker.client.DockerClient;
 import com.spotify.docker.client.exceptions.DockerException;
-import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.slf4j.Logger;

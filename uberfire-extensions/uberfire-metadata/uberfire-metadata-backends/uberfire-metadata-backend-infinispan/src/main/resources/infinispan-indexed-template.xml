@@ -1,0 +1,7 @@
+<infinispan>
+  <cache-container>
+    <replicated-cache name="%value%">
+      <indexing index="ALL" auto-config="true"/>
+    </replicated-cache>
+  </cache-container>
+</infinispan>

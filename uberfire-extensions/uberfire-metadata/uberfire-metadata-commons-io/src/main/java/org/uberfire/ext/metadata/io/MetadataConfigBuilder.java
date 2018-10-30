@@ -28,6 +28,10 @@ import org.uberfire.ext.metadata.ElasticSearchConfig;
 import org.uberfire.ext.metadata.MetadataConfig;
 import org.uberfire.ext.metadata.backend.elastic.index.ElasticSearchIndexProvider;
 import org.uberfire.ext.metadata.backend.elastic.provider.ElasticSearchContext;
+import org.uberfire.ext.metadata.backend.infinispan.InfinispanSearchConfig;
+import org.uberfire.ext.metadata.backend.infinispan.provider.InfinispanContext;
+import org.uberfire.ext.metadata.backend.infinispan.provider.InfinispanIndexProvider;
+import org.uberfire.ext.metadata.backend.infinispan.provider.MappingProvider;
 import org.uberfire.ext.metadata.backend.lucene.LuceneConfig;
 import org.uberfire.ext.metadata.backend.lucene.analyzer.FilenameAnalyzer;
 import org.uberfire.ext.metadata.backend.lucene.fields.FieldFactory;
@@ -49,8 +53,11 @@ public class MetadataConfigBuilder {
 
     private static final String LUCENE = "lucene";
     private static final String ELASTIC = "elastic";
+    private static final String ISPN = "infinispan";
+
     public static final String ORG_UBERFIRE_EXT_METADATA_INDEX = "org.appformer.ext.metadata.index";
-    private static final Consumer<List<IndexEvent>> NOP_OBSERVER = o -> {};
+    private static final Consumer<List<IndexEvent>> NOP_OBSERVER = o -> {
+    };
 
     private MetaModelStore metaModelStore;
     private FieldFactory fieldFactory;
@@ -144,6 +151,16 @@ public class MetadataConfigBuilder {
                                            metaModelStore,
                                            indexProvider,
                                            analyzer);
+        } else if (this.metadataIndex.toLowerCase().equals(ISPN)) {
+            InfinispanContext context = InfinispanContext.getInstance();
+            MappingProvider mappingProvider = new MappingProvider(this.analyzer);
+            InfinispanIndexProvider infinispanIndexProvider = new InfinispanIndexProvider(context,
+                                                                                          mappingProvider);
+            return new InfinispanSearchConfig(new MetadataIndexEngine(infinispanIndexProvider,
+                                                                      this.metaModelStore),
+                                              infinispanIndexProvider,
+                                              this.metaModelStore,
+                                              this.analyzer);
         } else {
             DirectoryFactory indexFactory = new DirectoryFactory(type,
                                                                  analyzer);
