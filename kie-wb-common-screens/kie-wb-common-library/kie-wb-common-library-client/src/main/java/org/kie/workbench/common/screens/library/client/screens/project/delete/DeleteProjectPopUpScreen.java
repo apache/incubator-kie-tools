@@ -20,10 +20,8 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import org.guvnor.common.services.project.model.WorkspaceProject;
-import org.guvnor.structure.repositories.RepositoryService;
-import org.jboss.errai.common.client.api.Caller;
+import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.uberfire.client.mvp.UberElemental;
-import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
 
 public class DeleteProjectPopUpScreen {
@@ -49,13 +47,13 @@ public class DeleteProjectPopUpScreen {
 
     private DeleteProjectPopUpScreen.View view;
 
-    private Caller<RepositoryService> repositoryService;
+    private LibraryPlaces libraryPlaces;
 
     @Inject
     public DeleteProjectPopUpScreen(final DeleteProjectPopUpScreen.View view,
-                                    final Caller<RepositoryService> repositoryService) {
+                                    final LibraryPlaces libraryPlaces) {
         this.view = view;
-        this.repositoryService = repositoryService;
+        this.libraryPlaces = libraryPlaces;
     }
 
     @PostConstruct
@@ -75,13 +73,10 @@ public class DeleteProjectPopUpScreen {
             return;
         }
 
-        view.showBusyIndicator(view.getDeletingMessage());
-        repositoryService.call(v -> {
-                                   view.hideBusyIndicator();
-                                   view.hide();
-                               },
-                               new HasBusyIndicatorDefaultErrorCallback(view)).removeRepository(project.getSpace(),
-                                                                                                project.getRepository().getAlias());
+        libraryPlaces.closeAllPlacesOrNothing(() -> {
+            view.showBusyIndicator(view.getDeletingMessage());
+            libraryPlaces.deleteProject(project, view);
+        });
     }
 
     public void cancel() {

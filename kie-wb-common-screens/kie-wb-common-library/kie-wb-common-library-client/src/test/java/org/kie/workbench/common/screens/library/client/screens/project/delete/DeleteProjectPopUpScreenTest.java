@@ -22,19 +22,17 @@ import org.guvnor.structure.repositories.RepositoryService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.mocks.CallerMock;
+import org.uberfire.mvp.Command;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DeleteProjectPopUpScreenTest {
@@ -45,17 +43,22 @@ public class DeleteProjectPopUpScreenTest {
     private DeleteProjectPopUpScreen.View view;
 
     @Mock
-    private RepositoryService repositoryService;
+    private LibraryPlaces libraryPlaces;
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private WorkspaceProject project;
 
     @Before
     public void setUp() {
+        doAnswer(invocationOnMock -> {
+            invocationOnMock.getArgumentAt(0, Command.class).execute();
+            return null;
+        }).when(libraryPlaces).closeAllPlacesOrNothing(any());
 
         when(project.getName()).thenReturn("kieProject");
+
         presenter = spy(new DeleteProjectPopUpScreen(view,
-                                                     new CallerMock<>(repositoryService)));
+                                                     libraryPlaces));
     }
 
     @Test
@@ -63,8 +66,7 @@ public class DeleteProjectPopUpScreenTest {
 
         this.presenter.show(project);
 
-        verify(this.view,
-               times(1)).show(eq(project.getName()));
+        verify(this.view).show(eq(project.getName()));
     }
 
     @Test
@@ -73,8 +75,8 @@ public class DeleteProjectPopUpScreenTest {
         this.presenter.show(project);
         this.presenter.delete();
 
-        verify(this.view,
-               times(1)).showError(anyString());
+        verify(this.view).showError(anyString());
+        verify(this.libraryPlaces, never()).deleteProject(any(), any());
     }
 
     @Test
@@ -83,11 +85,8 @@ public class DeleteProjectPopUpScreenTest {
         this.presenter.show(project);
         this.presenter.delete();
 
-        verify(this.view,
-               never()).showError(anyString());
-
-        verify(this.repositoryService,
-               times(1)).removeRepository(any(),
-                                          anyString());
+        verify(this.view, never()).showError(anyString());
+        verify(this.libraryPlaces).closeAllPlacesOrNothing(any());
+        verify(this.libraryPlaces).deleteProject(project, view);
     }
 }

@@ -27,7 +27,6 @@ import javax.enterprise.event.Event;
 import org.ext.uberfire.social.activities.model.ExtendedTypes;
 import org.ext.uberfire.social.activities.model.SocialFileSelectedEvent;
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
-import org.guvnor.common.services.project.client.preferences.ProjectScopedResolutionStrategySupplier;
 import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.Module;
@@ -40,6 +39,7 @@ import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryRemovedEvent;
+import org.guvnor.structure.repositories.RepositoryService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.security.shared.api.identity.User;
@@ -54,7 +54,6 @@ import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.api.ProjectAssetListUpdated;
 import org.kie.workbench.common.screens.library.api.preferences.LibraryInternalPreferences;
 import org.kie.workbench.common.screens.library.client.events.AssetDetailEvent;
-import org.kie.workbench.common.screens.library.client.events.WorkbenchProjectMetricsEvent;
 import org.kie.workbench.common.screens.library.client.perspective.LibraryPerspective;
 import org.kie.workbench.common.screens.library.client.screens.importrepository.ImportProjectsSetupEvent;
 import org.kie.workbench.common.screens.library.client.screens.importrepository.ImportRepositoryPopUpPresenter;
@@ -67,9 +66,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.mockito.stubbing.Answer;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
@@ -80,10 +77,10 @@ import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
 import org.uberfire.client.workbench.events.PlaceMaximizedEvent;
 import org.uberfire.client.workbench.events.PlaceMinimizedEvent;
 import org.uberfire.ext.preferences.client.central.screen.PreferencesRootScreen;
-import org.uberfire.ext.preferences.client.event.PreferencesCentralInitializationEvent;
 import org.uberfire.ext.preferences.client.event.PreferencesCentralSaveEvent;
 import org.uberfire.ext.preferences.client.event.PreferencesCentralUndoChangesEvent;
 import org.uberfire.ext.widgets.common.client.breadcrumbs.UberfireBreadcrumbs;
+import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
@@ -176,6 +173,10 @@ public class LibraryPlacesTest {
     private ProjectBranchBreadcrumb projectBranchBreadcrumb;
 
     @Mock
+    private RepositoryService repositoryService;
+    private Caller<RepositoryService> repositoryServiceCaller;
+
+    @Mock
     private SessionInfo sessionInfo;
 
     @Mock
@@ -207,6 +208,7 @@ public class LibraryPlacesTest {
         windowParameters = new HashMap<>();
         libraryServiceCaller = new CallerMock<>(libraryService);
         vfsServiceCaller = new CallerMock<>(vfsService);
+        repositoryServiceCaller = new CallerMock<>(repositoryService);
 
         libraryBreadcrumbs = spy(new LibraryBreadcrumbs(breadcrumbs,
                                                         translationUtils,
@@ -233,7 +235,8 @@ public class LibraryPlacesTest {
                                               projectsSetupEvent,
                                               libraryBreadcrumbs,
                                               sessionInfo,
-                                              libraryInternalPreferences) {
+                                              libraryInternalPreferences,
+                                              repositoryServiceCaller) {
 
             @Override
             protected Map<String, List<String>> getParameterMap() {
@@ -993,5 +996,15 @@ public class LibraryPlacesTest {
         verify(libraryPlaces, never()).closeAllPlaces();
         verify(libraryPlaces, never()).goToLibrary();
         verify(notificationEvent, never()).fire(any());
+    }
+
+    @Test
+    public void deleteProjectTest() {
+        final HasBusyIndicator view = mock(HasBusyIndicator.class);
+
+        libraryPlaces.deleteProject(activeProject, view);
+
+        verify(repositoryService).removeRepository(activeSpace, activeRepository.getAlias());
+        verify(view).hideBusyIndicator();
     }
 }
