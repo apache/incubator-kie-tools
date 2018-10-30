@@ -956,6 +956,11 @@
       <artifactId>uberfire-metadata-backend-elasticsearch</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-metadata-backend-infinispan</artifactId>
+    </dependency>
+
     <!-- UberFire -->
     <dependency>
       <groupId>org.uberfire</groupId>

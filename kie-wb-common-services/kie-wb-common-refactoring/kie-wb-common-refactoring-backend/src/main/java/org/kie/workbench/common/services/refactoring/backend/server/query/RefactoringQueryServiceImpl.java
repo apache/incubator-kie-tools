@@ -48,6 +48,8 @@ import org.kie.workbench.common.services.refactoring.model.query.RefactoringPage
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRow;
 import org.kie.workbench.common.services.refactoring.service.RefactoringQueryService;
 import org.kie.workbench.common.services.refactoring.service.impact.QueryOperationRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.ext.metadata.MetadataConfig;
 import org.uberfire.ext.metadata.model.KObject;
 import org.uberfire.ext.metadata.search.ClusterSegment;
@@ -56,6 +58,8 @@ import org.uberfire.paging.PageResponse;
 @Service
 @ApplicationScoped
 public class RefactoringQueryServiceImpl implements RefactoringQueryService {
+
+    private Logger logger = LoggerFactory.getLogger(RefactoringQueryServiceImpl.class);
 
     private MetadataConfig config;
     private NamedQueries namedQueries;
@@ -114,7 +118,10 @@ public class RefactoringQueryServiceImpl implements RefactoringQueryService {
 
             return found.size();
         } catch (final Exception ex) {
-            throw new RuntimeException("Error during Query!",
+            String message = "Error during Query!";
+            logger.error(message,
+                         ex);
+            throw new RuntimeException(message,
                                        ex);
         }
     }

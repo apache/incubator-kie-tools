@@ -20,7 +20,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -111,7 +110,8 @@ public class LibraryIndexer extends AbstractFileIndexer {
                                                   fileName.toLowerCase(),
                                                   false,
                                                   true));
-            indexElements.add(new KPropertyImpl<>(LibraryRepositoryRootIndexTerm.TERM, repoRoot));
+            indexElements.add(new KPropertyImpl<>(LibraryRepositoryRootIndexTerm.TERM,
+                                                  repoRoot));
 
             return indexElements;
         };
@@ -167,7 +167,8 @@ public class LibraryIndexer extends AbstractFileIndexer {
     }
 
     protected KieModule getModule(final Path path) {
-        return moduleService.resolveModule(Paths.convert(path), false);
+        return moduleService.resolveModule(Paths.convert(path),
+                                           false);
     }
 
     protected Package getPackage(final Path path) {

@@ -74,6 +74,10 @@
     </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-metadata-backend-infinispan</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
       <artifactId>uberfire-io</artifactId>
       <exclusions>
         <exclusion>

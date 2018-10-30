@@ -99,6 +99,17 @@
 
     <dependency>
       <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-metadata-backend-infinispan</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>jakarta-regexp</groupId>
+          <artifactId>jakarta-regexp</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
       <artifactId>uberfire-metadata-commons-io</artifactId>
     </dependency>
 
