@@ -13,10 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.drools.workbench.screens.scenariosimulation.backend.server;
 
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -26,6 +30,7 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.drools.workbench.screens.scenariosimulation.backend.server.runner.ScenarioJunitActivator;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModelContent;
 import org.drools.workbench.screens.scenariosimulation.service.ScenarioRunnerService;
@@ -34,6 +39,12 @@ import org.drools.workbench.screens.scenariosimulation.type.ScenarioSimulationRe
 import org.guvnor.common.services.backend.config.SafeSessionInfo;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
+import org.guvnor.common.services.project.model.Dependencies;
+import org.guvnor.common.services.project.model.Dependency;
+import org.guvnor.common.services.project.model.GAV;
+import org.guvnor.common.services.project.model.POM;
+import org.guvnor.common.services.project.model.Package;
+import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.bus.server.annotations.Service;
@@ -43,6 +54,8 @@ import org.kie.workbench.common.services.backend.service.KieService;
 import org.kie.workbench.common.services.datamodel.backend.server.DataModelOracleUtilities;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
+import org.kie.workbench.common.services.shared.project.KieModule;
+import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.backend.service.SaveAndRenameServiceImpl;
@@ -94,7 +107,26 @@ public class ScenarioSimulationServiceImpl
     @Inject
     private User user;
 
+    @Inject
+    private POMService pomService;
+
+    @Inject
+    private KieModuleService kieModuleService;
+
     private SafeSessionInfo safeSessionInfo;
+
+    private Properties props = new Properties();
+
+    private static final String KIE_VERSION = "kie.version";
+
+    {
+        String propertyFileName = "kie.properties";
+        try {
+            props.load(ScenarioSimulationServiceImpl.class.getClassLoader().getResourceAsStream(propertyFileName));
+        } catch (IOException e) {
+            throw new IllegalStateException("Impossible to retrieve property file " + propertyFileName, e);
+        }
+    }
 
     public ScenarioSimulationServiceImpl() {
     }
@@ -133,6 +165,8 @@ public class ScenarioSimulationServiceImpl
             ioService.write(nioPath,
                             ScenarioSimulationXMLPersistence.getInstance().marshal(content),
                             commentedOptionFactory.makeCommentedOption(comment));
+
+            createActivatorIfNotExist(context);
 
             return newPath;
         } catch (Exception e) {
@@ -201,6 +235,8 @@ public class ScenarioSimulationServiceImpl
             fireMetadataSocialEvents(resource,
                                      currentMetadata,
                                      metadata);
+
+            createActivatorIfNotExist(resource);
             return resource;
         } catch (Exception e) {
             throw ExceptionUtilities.handleException(e);
@@ -266,5 +302,57 @@ public class ScenarioSimulationServiceImpl
                               final ScenarioSimulationModel content,
                               final String comment) {
         return saveAndRenameService.saveAndRename(path, newFileName, metadata, content, comment);
+    }
+
+    void createActivatorIfNotExist(Path context) {
+        KieModule kieModule = kieModuleService.resolveModule(context);
+        String groupId = kieModule.getPom().getGav().getGroupId();
+        Optional<Package> packageFound = kieModuleService.resolvePackages(kieModule).stream()
+                .filter(elem -> groupId.equals(elem.getPackageName()))
+                .findFirst();
+        if (!packageFound.isPresent()) {
+            throw new IllegalArgumentException("Impossible to retrieve package information from path: " + context.toURI());
+        }
+        Package targetPackage = packageFound.get();
+        final org.uberfire.java.nio.file.Path activatorPath = getActivatorPath(targetPackage);
+
+        if (!ioService.exists(activatorPath)) {
+            ioService.write(activatorPath,
+                            ScenarioJunitActivator.ACTIVATOR_CLASS_CODE.apply(groupId),
+                            commentedOptionFactory.makeCommentedOption(""));
+        }
+
+        ensureDependencies(kieModule);
+    }
+
+    void ensureDependencies(KieModule module) {
+        POM projectPom = module.getPom();
+        Dependencies dependencies = projectPom.getDependencies();
+
+        String kieVersion = props.getProperty(KIE_VERSION);
+
+        getDependecies(kieVersion).forEach(gav -> {
+            editPomIfNecessary(module.getPomXMLPath(), projectPom, dependencies, gav);
+        });
+    }
+
+    void editPomIfNecessary(Path pomPath, POM projectPom, Dependencies dependencies, GAV gav) {
+        Dependency scenarioDependency = new Dependency(gav);
+        scenarioDependency.setScope("test");
+        if (!dependencies.containsDependency(gav)) {
+            dependencies.add(scenarioDependency);
+            pomService.save(pomPath, projectPom, null, "");
+        }
+    }
+
+    org.uberfire.java.nio.file.Path getActivatorPath(Package rootModulePackage) {
+        org.uberfire.java.nio.file.Path packagePath = Paths.convert(rootModulePackage.getPackageTestSrcPath());
+        return packagePath.resolve(ScenarioJunitActivator.ACTIVATOR_CLASS_NAME + ".java");
+    }
+
+    List<GAV> getDependecies(String kieVersion) {
+        return Arrays.asList(new GAV("org.drools", "drools-wb-scenario-simulation-editor-api", kieVersion),
+                             new GAV("org.drools", "drools-wb-scenario-simulation-editor-backend", kieVersion),
+                             new GAV("org.drools", "drools-compiler", kieVersion));
     }
 }

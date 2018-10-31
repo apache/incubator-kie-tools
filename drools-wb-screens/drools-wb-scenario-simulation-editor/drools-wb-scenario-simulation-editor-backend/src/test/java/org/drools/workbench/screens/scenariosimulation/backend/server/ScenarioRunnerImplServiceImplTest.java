@@ -15,12 +15,12 @@
  */
 package org.drools.workbench.screens.scenariosimulation.backend.server;
 
-import org.drools.workbench.screens.scenariosimulation.backend.server.runner.AbstractScenarioRunner;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
 import org.guvnor.common.services.shared.test.TestResultMessage;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runner.Runner;
 import org.kie.api.runtime.KieContainer;
 import org.kie.workbench.common.services.backend.builder.service.BuildInfo;
 import org.kie.workbench.common.services.backend.builder.service.BuildInfoService;
@@ -45,7 +45,7 @@ public class ScenarioRunnerImplServiceImplTest {
     private EventSourceMock<TestResultMessage> defaultTestResultMessageEvent;
 
     @Mock
-    private AbstractScenarioRunner runnerMock;
+    private Runner runnerMock;
 
     @Mock
     private KieModuleService moduleService;

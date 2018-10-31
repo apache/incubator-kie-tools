@@ -17,7 +17,9 @@
 package org.drools.workbench.screens.scenariosimulation.backend.server.runner;
 
 import java.util.List;
+import java.util.function.Function;
 
+import org.drools.workbench.screens.scenariosimulation.backend.server.expression.BaseExpressionEvaluator;
 import org.drools.workbench.screens.scenariosimulation.backend.server.expression.ExpressionEvaluator;
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.ScenarioResult;
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.ScenarioRunnerData;
@@ -26,6 +28,7 @@ import org.drools.workbench.screens.scenariosimulation.model.Simulation;
 import org.drools.workbench.screens.scenariosimulation.model.SimulationDescriptor;
 import org.junit.internal.runners.model.EachTestNotifier;
 import org.junit.runner.Description;
+import org.junit.runner.Runner;
 import org.junit.runner.notification.RunNotifier;
 import org.kie.api.runtime.KieContainer;
 
@@ -35,9 +38,11 @@ import static org.drools.workbench.screens.scenariosimulation.backend.server.run
 import static org.drools.workbench.screens.scenariosimulation.backend.server.runner.ScenarioRunnerHelper.validateAssertion;
 import static org.drools.workbench.screens.scenariosimulation.backend.server.runner.ScenarioRunnerHelper.verifyConditions;
 
-public class ScenarioRunnerImpl extends AbstractScenarioRunner {
+public class ScenarioRunnerImpl extends Runner {
 
-    private final Description desc = Description.createSuiteDescription("Test Scenarios (Preview) tests");
+    private final ClassLoader classLoader;
+    private Function<ClassLoader, ExpressionEvaluator> expressionEvaluatorFactory = BaseExpressionEvaluator::new;
+    private final Description desc;
     private final KieContainer kieContainer;
     private final SimulationDescriptor simulationDescriptor;
     private List<Scenario> scenarios;
@@ -50,6 +55,8 @@ public class ScenarioRunnerImpl extends AbstractScenarioRunner {
         this.kieContainer = kieContainer;
         this.simulationDescriptor = simulationDescriptor;
         this.scenarios = scenarios;
+        this.desc = getDescriptionForSimulationDescriptor(simulationDescriptor);
+        this.classLoader = kieContainer.getClassLoader();
     }
 
     @Override
@@ -79,7 +86,7 @@ public class ScenarioRunnerImpl extends AbstractScenarioRunner {
 
         try {
             ExpressionEvaluator expressionEvaluator = createExpressionEvaluator();
-            extractGivenValues(simulationDescriptor, scenario.getUnmodifiableFactMappingValues(), getClassLoader(), expressionEvaluator)
+            extractGivenValues(simulationDescriptor, scenario.getUnmodifiableFactMappingValues(), classLoader, expressionEvaluator)
                     .forEach(scenarioRunnerData::addInput);
             extractExpectedValues(scenario.getUnmodifiableFactMappingValues()).forEach(scenarioRunnerData::addOutput);
 
@@ -100,5 +107,17 @@ public class ScenarioRunnerImpl extends AbstractScenarioRunner {
 
         singleNotifier.fireTestFinished();
         return scenarioRunnerData.getResultData();
+    }
+
+    public ExpressionEvaluator createExpressionEvaluator() {
+        return expressionEvaluatorFactory.apply(classLoader);
+    }
+
+    public void setExpressionEvaluatorFactory(Function<ClassLoader, ExpressionEvaluator> expressionEvaluatorFactory) {
+        this.expressionEvaluatorFactory = expressionEvaluatorFactory;
+    }
+
+    public static Description getDescriptionForSimulationDescriptor(SimulationDescriptor simulationDescriptor) {
+        return Description.createSuiteDescription("Test Scenarios (Preview) tests");
     }
 }
