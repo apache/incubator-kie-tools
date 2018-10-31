@@ -31,6 +31,7 @@
   <inherits name="org.kie.workbench.common.services.datamodel.KieWorkbenchCommonDataModelAPI"/>
   <inherits name="org.uberfire.ext.security.management.UberfireSecurityManagementWorkbench"/>
   <inherits name="org.uberfire.ext.widgets.core.UberfireWidgetsCore"/>
+  <inherits name="org.uberfire.ssh.UberfireSSHClient"/>
 
   <!-- Experimental -->
   <inherits name="org.uberfire.experimental.UberfireExperimentalAPI"/>

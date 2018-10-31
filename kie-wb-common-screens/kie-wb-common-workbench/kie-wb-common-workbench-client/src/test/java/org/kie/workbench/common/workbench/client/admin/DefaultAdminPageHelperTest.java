@@ -299,6 +299,19 @@ public class DefaultAdminPageHelperTest {
     }
 
     @Test
+    public void sshKeysAdded() {
+        defaultAdminPageHelper.setup();
+
+        final String title = defaultAdminPageHelper.constants.SSHKeys();
+
+        verify(adminPage).addTool(eq("root"),
+                                  eq(title),
+                                  any(),
+                                  eq("general"),
+                                  any(Command.class));
+    }
+
+    @Test
     public void stunnerPreferencesWasAddedTest() {
         defaultAdminPageHelper.setup();
         defaultAdminPageHelper.setup(false,

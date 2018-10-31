@@ -29,6 +29,7 @@
   <inherits name="org.uberfire.ext.security.management.UberfireSecurityManagementWorkbench"/>
   <inherits name="org.uberfire.ext.widgets.core.UberfireWidgetsCore"/>
   <inherits name="org.uberfire.preferences.UberfirePreferencesClient"/>
+  <inherits name="org.uberfire.ssh.UberfireSSHClient"/>
 
   <!-- Experimental -->
   <inherits name="org.uberfire.experimental.UberfireExperimentalAPI"/>

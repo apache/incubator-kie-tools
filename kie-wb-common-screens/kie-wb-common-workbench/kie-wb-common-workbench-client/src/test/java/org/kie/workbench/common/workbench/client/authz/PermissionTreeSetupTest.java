@@ -53,6 +53,7 @@ import static org.kie.workbench.common.workbench.client.PerspectiveIds.SECURITY_
 import static org.kie.workbench.common.workbench.client.PerspectiveIds.SERVER_MANAGEMENT;
 import static org.kie.workbench.common.workbench.client.PerspectiveIds.SOCIAL_HOME;
 import static org.kie.workbench.common.workbench.client.PerspectiveIds.SOCIAL_USER_HOME;
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.SSH_KEYS_EDITOR;
 import static org.kie.workbench.common.workbench.client.PerspectiveIds.TASKS;
 import static org.kie.workbench.common.workbench.client.PerspectiveIds.TASKS_ADMIN;
 import static org.kie.workbench.common.workbench.client.PerspectiveIds.TASK_DASHBOARD;
@@ -153,6 +154,7 @@ public class PermissionTreeSetupTest {
         verify(perspectiveTreeProvider).excludePerspectiveId(eq(PLUGIN_AUTHORING));
         verify(perspectiveTreeProvider).excludePerspectiveId(eq(SOCIAL_HOME));
         verify(perspectiveTreeProvider).excludePerspectiveId(eq(SOCIAL_USER_HOME));
+        verify(perspectiveTreeProvider).excludePerspectiveId(eq(SSH_KEYS_EDITOR));
     }
 
     @Test

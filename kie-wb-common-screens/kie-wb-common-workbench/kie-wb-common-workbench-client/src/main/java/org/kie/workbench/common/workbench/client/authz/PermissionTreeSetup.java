@@ -120,6 +120,7 @@ public class PermissionTreeSetup {
         perspectiveTreeProvider.excludePerspectiveId(APPS); /* uberfire */
         perspectiveTreeProvider.excludePerspectiveId(SOCIAL_HOME); /* uberfire */
         perspectiveTreeProvider.excludePerspectiveId(SOCIAL_USER_HOME); /* uberfire */
+        perspectiveTreeProvider.excludePerspectiveId(SSH_KEYS_EDITOR);
 
         // Include optional editors
         editorTreeProvider.registerEditor(GUIDED_DECISION_TREE,

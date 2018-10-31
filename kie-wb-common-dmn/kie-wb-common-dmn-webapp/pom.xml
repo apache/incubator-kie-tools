@@ -279,6 +279,21 @@
       <artifactId>uberfire-widgets-service-api</artifactId>
     </dependency>
 
+    <!-- Uberfire SSH -->
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-ssh-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-ssh-backend</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-ssh-client</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
     <!-- Uberfire Security Management -->
     <dependency>
       <groupId>org.uberfire</groupId>
@@ -894,6 +909,8 @@
             <compileSourcesArtifact>org.uberfire:uberfire-widgets-properties-editor-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-widgets-service-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-widgets-core-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-ssh-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-ssh-client</compileSourcesArtifact>
 
             <!-- Uberfire Preferences -->
             <compileSourcesArtifact>org.uberfire:uberfire-preferences-api</compileSourcesArtifact>

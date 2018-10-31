@@ -112,6 +112,7 @@ public class DefaultAdminPageHelper {
         addGeneralPreferences();
         addStunnerPreferences(stunnerEnabled);
         addExperimentalPreferences();
+        addSSHKeys();
     }
 
     private void addGeneralPreferences() {
@@ -148,6 +149,18 @@ public class DefaultAdminPageHelper {
                                                       accessExperimentals);
                               });
         }
+    }
+
+    private void addSSHKeys() {
+        adminPage.addTool("root",
+                          constants.SSHKeys(),
+                          new Sets.Builder().add("fa").add("fa-key").build(),
+                          "general",
+                          () -> {
+                              final Command accessSSHKeysEditor = () -> placeManager.goTo(PerspectiveIds.SSH_KEYS_EDITOR);
+                              accessSSHKeysEditor.execute();
+                              addAdminBreadcrumbs(PerspectiveIds.SSH_KEYS_EDITOR, constants.SSHKeys(), accessSSHKeysEditor);
+                          });
     }
 
     private void addSecurityPerspective() {

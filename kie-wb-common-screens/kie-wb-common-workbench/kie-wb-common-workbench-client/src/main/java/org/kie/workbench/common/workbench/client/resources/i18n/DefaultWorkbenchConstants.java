@@ -155,6 +155,8 @@ public interface DefaultWorkbenchConstants
 
     String StunnerDesignerPreferences();
 
+    String SSHKeys();
+
     String InvalidBusResponseProbablySessionTimeout();
 
     String SessionTimeout();

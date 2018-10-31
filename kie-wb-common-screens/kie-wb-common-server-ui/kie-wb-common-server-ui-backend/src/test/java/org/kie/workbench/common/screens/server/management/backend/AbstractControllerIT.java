@@ -82,6 +82,8 @@ public abstract class AbstractControllerIT {
                         "org.uberfire:uberfire-servlet-security",
                         "org.uberfire:uberfire-rest-backend",
                         "org.uberfire:uberfire-metadata-backend-lucene",
+                        "org.uberfire:uberfire-ssh-api",
+                        "org.uberfire:uberfire-ssh-backend",
                         "org.jboss.errai:errai-jboss-as-support",
                         "org.jboss.errai:errai-security-server",
                         "org.jboss.errai:errai-cdi-server",

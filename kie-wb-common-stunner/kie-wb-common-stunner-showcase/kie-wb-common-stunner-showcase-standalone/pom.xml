@@ -309,6 +309,21 @@
       <scope>provided</scope>
     </dependency>
 
+    <!-- Uberfire SSH -->
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-ssh-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-ssh-backend</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-ssh-client</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
     <!-- Uberfire Security Management -->
 
     <dependency>
@@ -925,6 +940,8 @@
             <compileSourcesArtifact>org.uberfire:uberfire-workingset-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.jboss.errai:errai-data-binding</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.services:kie-wb-common-datamodel-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-ssh-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-ssh-client</compileSourcesArtifact>
 
             <!-- UberFire extensions -->
             <compileSourcesArtifact>org.uberfire:uberfire-social-activities-api</compileSourcesArtifact>

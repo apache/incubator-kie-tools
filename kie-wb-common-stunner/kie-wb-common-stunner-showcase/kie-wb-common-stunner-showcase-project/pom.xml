@@ -1026,6 +1026,21 @@
       <scope>provided</scope>
     </dependency>
 
+    <!-- Uberfire SSH -->
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-ssh-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-ssh-backend</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-ssh-client</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
     <!-- Uberfire Security Management -->
     <dependency>
       <groupId>org.uberfire</groupId>
@@ -1200,6 +1215,8 @@
             <compileSourcesArtifact>org.uberfire:uberfire-project-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-message-console-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-message-console-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-ssh-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-ssh-client</compileSourcesArtifact>
 
             <!-- Common dependencies -->
             <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-library-client</compileSourcesArtifact>
