@@ -16,8 +16,10 @@
 
 package org.kie.workbench.common.dmn.backend;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.math.BigDecimal;
 import java.util.AbstractMap;
@@ -32,6 +34,7 @@ import java.util.Scanner;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -42,6 +45,7 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.apache.tools.ant.filters.StringInputStream;
+import org.apache.tools.ant.util.ReaderInputStream;
 import org.jboss.errai.marshalling.server.MappingContextSingleton;
 import org.junit.Assert;
 import org.junit.Before;
@@ -921,13 +925,30 @@ public class DMNMarshallerTest {
     }
 
     private DMNRuntime roundTripUnmarshalMarshalThenUnmarshalDMN(InputStream dmnXmlInputStream) throws IOException {
+        String xml = null;
+        try (BufferedReader buffer = new BufferedReader(new InputStreamReader(dmnXmlInputStream))) {
+            xml = buffer.lines().collect(Collectors.joining("\n"));
+        } catch (Exception e) {
+            throw new RuntimeException("test utily method roundTripUnmarshalMarshalThenUnmarshalDMN failed to read XML content.", e);
+        }
+        LOG.debug("ORIGINAL xml:\n{}\n", xml);
+        boolean isOriginDMNXMLwithoutErrors = false;
+        try {
+            final DMNRuntime runtime = dmnRuntimeFromDMNXML(xml);
+            if (runtime.getModels().get(0).getMessages(DMNMessage.Severity.ERROR).size() == 0) {
+                isOriginDMNXMLwithoutErrors = true;
+            }
+        } catch (Throwable t) {
+            // do nothing, leave attempt to having compiled DMN failed, and thereofre original DMN XML is with errors.
+        }
+
         DMNMarshaller m = new DMNMarshaller(new XMLEncoderDiagramMetadataMarshaller(),
                                             applicationFactoryManager);
 
         // first unmarshal from DMN XML to Stunner DMN Graph
         @SuppressWarnings("unchecked")
         Graph<?, Node<?, ?>> g = m.unmarshall(null,
-                                              dmnXmlInputStream);
+                                              new ReaderInputStream(new StringReader(xml)));
 
         // round trip to Stunner DMN Graph back to DMN XML
         DiagramImpl diagram = new DiagramImpl("",
@@ -935,20 +956,26 @@ public class DMNMarshallerTest {
         diagram.setGraph(g);
 
         String mString = m.marshall(diagram);
-        LOG.debug(mString);
+        LOG.debug("MARSHALLED ROUNTRIP RESULTING xml:\n{}\n", mString);
 
         // now unmarshal once more, from the marshalled just done above, into a DMNRuntime
+        final DMNRuntime runtime = dmnRuntimeFromDMNXML(mString);
+        if (isOriginDMNXMLwithoutErrors) {
+            assertTrue(runtime.getModels().get(0).getMessages(DMNMessage.Severity.ERROR).size() == 0);
+        }
+        return runtime;
+    }
+
+    private static DMNRuntime dmnRuntimeFromDMNXML(String mString) {
         final KieServices ks = KieServices.Factory.get();
         String uuid = UUID.uuid(8);
         final KieContainer kieContainer = KieHelper.getKieContainer(ks.newReleaseId("org.kie",
                                                                                     uuid,
                                                                                     "1.0"),
                                                                     ks.getResources().newByteArrayResource(mString.getBytes()).setTargetPath("src/main/resources/" + uuid + ".dmn"));
-
         final DMNRuntime runtime = kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
         assertNotNull(runtime);
         assertFalse(runtime.getModels().isEmpty());
-
         return runtime;
     }
 

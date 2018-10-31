@@ -56,10 +56,18 @@ public class DecisionRulePropertyConverter {
         result.setDescription(DescriptionPropertyConverter.dmnFromWB(wb.getDescription()));
 
         for (UnaryTests ie : wb.getInputEntry()) {
-            result.getInputEntry().add(UnaryTestsPropertyConverter.dmnFromWB(ie));
+            org.kie.dmn.model.api.UnaryTests inputEntryConverted = UnaryTestsPropertyConverter.dmnFromWB(ie);
+            if (inputEntryConverted != null) {
+                inputEntryConverted.setParent(inputEntryConverted);
+            }
+            result.getInputEntry().add(inputEntryConverted);
         }
         for (LiteralExpression oe : wb.getOutputEntry()) {
-            result.getOutputEntry().add(LiteralExpressionPropertyConverter.dmnFromWB(oe));
+            org.kie.dmn.model.api.LiteralExpression outputEntryConverted = LiteralExpressionPropertyConverter.dmnFromWB(oe);
+            if (outputEntryConverted != null) {
+                outputEntryConverted.setParent(result);
+            }
+            result.getOutputEntry().add(outputEntryConverted);
         }
 
         return result;

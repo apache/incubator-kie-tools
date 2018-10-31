@@ -102,13 +102,19 @@ public class DefinitionsConverter {
                                   defaultNamespace);
 
         for (ItemDefinition itemDef : wb.getItemDefinition()) {
-            org.kie.dmn.model.api.ItemDefinition itemDefConvered = ItemDefinitionPropertyConverter.dmnFromWB(itemDef);
-            itemDefConvered.setParent(result);
-            result.getItemDefinition().add(itemDefConvered);
+            org.kie.dmn.model.api.ItemDefinition itemDefConverted = ItemDefinitionPropertyConverter.dmnFromWB(itemDef);
+            if (itemDefConverted != null) {
+                itemDefConverted.setParent(result);
+            }
+            result.getItemDefinition().add(itemDefConverted);
         }
 
         for (Import i : wb.getImport()) {
-            result.getImport().add(ImportConverter.dmnFromWb(i));
+            org.kie.dmn.model.api.Import importConverted = ImportConverter.dmnFromWb(i);
+            if (importConverted != null) {
+                importConverted.setParent(result);
+            }
+            result.getImport().add(importConverted);
         }
 
         return result;

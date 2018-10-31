@@ -49,6 +49,9 @@ public class ContextPropertyConverter {
                                             result::setTypeRef);
         for (ContextEntry ce : wb.getContextEntry()) {
             org.kie.dmn.model.api.ContextEntry ceConverted = ContextEntryPropertyConverter.dmnFromWB(ce);
+            if (ceConverted != null) {
+                ceConverted.setParent(result);
+            }
             result.getContextEntry().add(ceConverted);
         }
         return result;

@@ -42,7 +42,13 @@ public class ContextEntryPropertyConverter {
         org.kie.dmn.model.api.ContextEntry result = new org.kie.dmn.model.v1_2.TContextEntry();
 
         org.kie.dmn.model.api.InformationItem variable = InformationItemPropertyConverter.dmnFromWB(wb.getVariable());
+        if (variable != null) {
+            variable.setParent(result);
+        }
         org.kie.dmn.model.api.Expression expression = ExpressionPropertyConverter.dmnFromWB(wb.getExpression());
+        if (expression != null) {
+            expression.setParent(result);
+        }
 
         result.setVariable(variable);
         result.setExpression(expression);

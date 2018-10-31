@@ -46,8 +46,17 @@ public class BindingPropertyConverter {
             return null;
         }
         org.kie.dmn.model.api.Binding result = new org.kie.dmn.model.v1_2.TBinding();
-        result.setParameter(InformationItemPropertyConverter.dmnFromWB(wb.getParameter()));
-        result.setExpression(ExpressionPropertyConverter.dmnFromWB(wb.getExpression()));
+        org.kie.dmn.model.api.InformationItem convertedParameter = InformationItemPropertyConverter.dmnFromWB(wb.getParameter());
+        org.kie.dmn.model.api.Expression convertedExpression = ExpressionPropertyConverter.dmnFromWB(wb.getExpression());
+
+        if (convertedParameter != null) {
+            convertedParameter.setParent(result);
+        }
+        result.setParameter(convertedParameter);
+        if (convertedExpression != null) {
+            convertedExpression.setParent(result);
+        }
+        result.setExpression(convertedExpression);
 
         return result;
     }

@@ -74,7 +74,11 @@ public class ItemDefinitionPropertyConverter {
         result.setTypeLanguage(wb.getTypeLanguage());
         result.setIsCollection(wb.isIsCollection());
 
-        result.setAllowedValues(UnaryTestsPropertyConverter.dmnFromWB(wb.getAllowedValues()));
+        org.kie.dmn.model.api.UnaryTests utConverted = UnaryTestsPropertyConverter.dmnFromWB(wb.getAllowedValues());
+        if (utConverted != null) {
+            utConverted.setParent(result);
+        }
+        result.setAllowedValues(utConverted);
 
         for (ItemDefinition child : wb.getItemComponent()) {
             org.kie.dmn.model.api.ItemDefinition convertedChild = ItemDefinitionPropertyConverter.dmnFromWB(child);

@@ -85,7 +85,11 @@ public class BusinessKnowledgeModelConverter implements NodeConverter<org.kie.dm
             variable.setParent(result);
         }
         result.setVariable(variable);
-        result.setEncapsulatedLogic(FunctionDefinitionPropertyConverter.dmnFromWB(source.getEncapsulatedLogic()));
+        org.kie.dmn.model.api.FunctionDefinition functionDefinition = FunctionDefinitionPropertyConverter.dmnFromWB(source.getEncapsulatedLogic());
+        if (functionDefinition != null) {
+            functionDefinition.setParent(result);
+        }
+        result.setEncapsulatedLogic(functionDefinition);
         // DMN spec table 2: Requirements connection rules
         List<Edge<?, ?>> inEdges = (List<Edge<?, ?>>) node.getInEdges();
         for (Edge<?, ?> e : inEdges) {

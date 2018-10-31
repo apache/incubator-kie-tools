@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.backend.definition.v1_1;
 
+import org.kie.dmn.model.api.UnaryTests;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InputClause;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InputClauseUnaryTests;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
@@ -50,11 +51,16 @@ public class InputClausePropertyConverter {
         result.setId(wb.getId().getValue());
         result.setDescription(DescriptionPropertyConverter.dmnFromWB(wb.getDescription()));
         org.kie.dmn.model.api.LiteralExpression expression = LiteralExpressionPropertyConverter.dmnFromWB(wb.getInputExpression());
+        UnaryTests inputValues = UnaryTestsPropertyConverter.dmnFromWB(wb.getInputValues());
+
         if (expression != null) {
             expression.setParent(result);
         }
         result.setInputExpression(expression);
-        result.setInputValues(UnaryTestsPropertyConverter.dmnFromWB(wb.getInputValues()));
+        if (inputValues != null) {
+            inputValues.setParent(result);
+        }
+        result.setInputValues(inputValues);
 
         return result;
     }

@@ -61,11 +61,17 @@ public class RelationPropertyConverter {
 
         for (InformationItem iitem : wb.getColumn()) {
             org.kie.dmn.model.api.InformationItem iitemConverted = InformationItemPropertyConverter.dmnFromWB(iitem);
+            if (iitemConverted != null) {
+                iitemConverted.setParent(result);
+            }
             result.getColumn().add(iitemConverted);
         }
 
         for (org.kie.workbench.common.dmn.api.definition.v1_1.List list : wb.getRow()) {
             org.kie.dmn.model.api.List listConverted = ListPropertyConverter.dmnFromWB(list);
+            if (listConverted != null) {
+                listConverted.setParent(result);
+            }
             result.getRow().add(listConverted);
         }
 

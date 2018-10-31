@@ -60,7 +60,11 @@ public class LiteralExpressionPropertyConverter {
                                             result::setTypeRef);
         result.setText(wb.getText().getValue());
         result.setExpressionLanguage(ExpressionLanguagePropertyConverter.dmnFromWB(wb.getExpressionLanguage()));
-        result.setImportedValues(ImportedValuesConverter.dmnFromWB(wb.getImportedValues()));
+        org.kie.dmn.model.api.ImportedValues importedValues = ImportedValuesConverter.dmnFromWB(wb.getImportedValues());
+        if (importedValues != null) {
+            importedValues.setParent(result);
+        }
+        result.setImportedValues(importedValues);
         return result;
     }
 }

@@ -99,6 +99,9 @@ public class FunctionDefinitionPropertyConverter {
 
         for (InformationItem ii : wb.getFormalParameter()) {
             org.kie.dmn.model.api.InformationItem iiConverted = InformationItemPropertyConverter.dmnFromWB(ii);
+            if (iiConverted != null) {
+                iiConverted.setParent(result);
+            }
             result.getFormalParameter().add(iiConverted);
         }
 

@@ -66,10 +66,16 @@ public class InvocationPropertyConverter {
                                             result::setTypeRef);
 
         org.kie.dmn.model.api.Expression convertedExpression = ExpressionPropertyConverter.dmnFromWB(wb.getExpression());
+        if (convertedExpression != null) {
+            convertedExpression.setParent(result);
+        }
         result.setExpression(convertedExpression);
 
         for (Binding b : wb.getBinding()) {
             org.kie.dmn.model.api.Binding bConverted = BindingPropertyConverter.dmnFromWB(b);
+            if (bConverted != null) {
+                bConverted.setParent(result);
+            }
             result.getBinding().add(bConverted);
         }
 

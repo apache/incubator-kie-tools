@@ -55,6 +55,9 @@ public class ListPropertyConverter {
 
         for (Expression e : wb.getExpression()) {
             org.kie.dmn.model.api.Expression eConverted = ExpressionPropertyConverter.dmnFromWB(e);
+            if (eConverted != null) {
+                eConverted.setParent(result);
+            }
             result.getExpression().add(eConverted);
         }
 
