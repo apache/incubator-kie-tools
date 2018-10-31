@@ -247,6 +247,71 @@ public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTable
         assertParentHierarchyEnrichment(model, 4, 1);
     }
 
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testModelEnrichmentWhenTopLevelDecisionTableWithMultipleHierachyCustomTypes() {
+        setupGraph();
+
+        final Definitions definitions = diagram.getDefinitions();
+
+        final String tSmurf = "tSmurf";
+        final String tSmurfAddress = "tSmurfAddress";
+        final QName dateBuiltInType = new QName(QName.NULL_NS_URI, BuiltInType.DATE.getName());
+        final QName stringBuiltInType = new QName(QName.NULL_NS_URI, BuiltInType.STRING.getName());
+
+        final ItemDefinition tSmurfAddressCustomDataType = new ItemDefinition();
+        tSmurfAddressCustomDataType.setName(new Name(tSmurfAddress));
+        tSmurfAddressCustomDataType.getItemComponent().add(new ItemDefinition() {{
+            setName(new Name("line1"));
+            setTypeRef(stringBuiltInType);
+        }});
+        tSmurfAddressCustomDataType.getItemComponent().add(new ItemDefinition() {{
+            setName(new Name("line2"));
+            setTypeRef(stringBuiltInType);
+        }});
+
+        final ItemDefinition tSmurfCustomDataType = new ItemDefinition();
+        tSmurfCustomDataType.setName(new Name(tSmurf));
+        tSmurfCustomDataType.getItemComponent().add(new ItemDefinition() {{
+            setName(new Name("dob"));
+            setTypeRef(dateBuiltInType);
+        }});
+        tSmurfCustomDataType.getItemComponent().add(new ItemDefinition() {{
+            setName(new Name("address"));
+            getItemComponent().add(tSmurfAddressCustomDataType);
+        }});
+
+        definitions.getItemDefinition().add(tSmurfCustomDataType);
+
+        final QName inputData1TypeRef = new QName(QName.NULL_NS_URI, tSmurf);
+        inputData1.getVariable().setTypeRef(inputData1TypeRef);
+
+        final Optional<DecisionTable> oModel = definition.getModelClass();
+        definition.enrich(Optional.of(NODE_UUID), oModel);
+
+        final DecisionTable model = oModel.get();
+        assertBasicEnrichment(model);
+
+        final List<InputClause> input = model.getInput();
+        assertThat(input.size()).isEqualTo(4);
+        assertThat(input.get(0).getInputExpression()).isInstanceOf(LiteralExpression.class);
+        assertThat(input.get(0).getInputExpression().getText().getValue()).isEqualTo(INPUT_DATA_NAME_2);
+        assertThat(input.get(0).getInputExpression().getTypeRef()).isEqualTo(INPUT_DATA_QNAME_2);
+        assertThat(input.get(1).getInputExpression()).isInstanceOf(LiteralExpression.class);
+        assertThat(input.get(1).getInputExpression().getText().getValue()).isEqualTo(INPUT_DATA_NAME_1 + ".address." + tSmurfAddress + ".line1");
+        assertThat(input.get(1).getInputExpression().getTypeRef()).isEqualTo(stringBuiltInType);
+        assertThat(input.get(2).getInputExpression()).isInstanceOf(LiteralExpression.class);
+        assertThat(input.get(2).getInputExpression().getText().getValue()).isEqualTo(INPUT_DATA_NAME_1 + ".address." + tSmurfAddress + ".line2");
+        assertThat(input.get(2).getInputExpression().getTypeRef()).isEqualTo(stringBuiltInType);
+        assertThat(input.get(3).getInputExpression()).isInstanceOf(LiteralExpression.class);
+        assertThat(input.get(3).getInputExpression().getText().getValue()).isEqualTo(INPUT_DATA_NAME_1 + ".dob");
+        assertThat(input.get(3).getInputExpression().getTypeRef()).isEqualTo(dateBuiltInType);
+
+        assertStandardOutputClauseEnrichment(model);
+        assertStandardDecisionRuleEnrichment(model, 4, 1);
+        assertParentHierarchyEnrichment(model, 4, 1);
+    }
+
     @SuppressWarnings("unchecked")
     private void setupGraph() {
         final Node<Definition, Edge> diagramNode = new NodeImpl<>(UUID.uuid());

@@ -34,6 +34,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.Definitions;
 import org.kie.workbench.common.dmn.api.definition.v1_1.HitPolicy;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InputClause;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InputData;
+import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.OutputClause;
 import org.kie.workbench.common.dmn.api.definition.v1_1.UnaryTests;
@@ -201,25 +202,21 @@ public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorMo
                 .stream()
                 .filter(itemDef -> itemDef.getName().getValue().equals(typeRef.getLocalPart()))
                 .findFirst()
-                .ifPresent(itemDefinition -> {
-                    if (itemDefinition.getItemComponent().size() == 0) {
-                        inputClauseRequirements.add(new InputClauseRequirement(text, itemDefinition.getTypeRef()));
-                    } else {
-                        itemDefinition.getItemComponent()
-                                .forEach(itemComponent -> {
-                                    if (!Objects.equals(itemDefinition.getName().getValue(),
-                                                        itemComponent.getTypeRef().getLocalPart())) {
-                                        addInputClauseRequirement(itemComponent.getTypeRef(),
-                                                                  definitions,
-                                                                  inputClauseRequirements,
-                                                                  text + "." + itemComponent.getName().getValue());
-                                    } else {
-                                        inputClauseRequirements.add(new InputClauseRequirement(text + "." + itemComponent.getName().getValue(),
-                                                                                               itemComponent.getTypeRef()));
-                                    }
-                                });
-                    }
-                });
+                .ifPresent(itemDefinition -> addInputClauseRequirement(itemDefinition, inputClauseRequirements, text));
+    }
+
+    private void addInputClauseRequirement(final ItemDefinition itemDefinition,
+                                           final List<InputClauseRequirement> inputClauseRequirements,
+                                           final String text) {
+        if (itemDefinition.getItemComponent().size() == 0) {
+            inputClauseRequirements.add(new InputClauseRequirement(text,
+                                                                   itemDefinition.getTypeRef()));
+        } else {
+            itemDefinition.getItemComponent()
+                    .forEach(itemComponent -> addInputClauseRequirement(itemComponent,
+                                                                        inputClauseRequirements,
+                                                                        text + "." + itemComponent.getName().getValue()));
+        }
     }
 
     void enrichOutputClauses(final DecisionTable dtable) {
