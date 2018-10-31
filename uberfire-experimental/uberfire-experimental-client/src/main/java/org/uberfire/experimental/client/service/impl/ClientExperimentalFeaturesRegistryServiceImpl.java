@@ -60,7 +60,14 @@ public class ClientExperimentalFeaturesRegistryServiceImpl implements ClientExpe
 
     @Override
     public boolean isFeatureEnabled(String featureId) {
-        return isExperimentalEnabled() && getFeaturesRegistry().isFeatureEnabled(featureId);
+
+        // If framework is enabled we must check the feature state
+        if(isExperimentalEnabled()) {
+            return getFeaturesRegistry().isFeatureEnabled(featureId);
+        }
+
+        // If framework is disabled only non experimental features are enabled
+        return !getFeaturesRegistry().getFeature(featureId).isPresent();
     }
 
     @Override

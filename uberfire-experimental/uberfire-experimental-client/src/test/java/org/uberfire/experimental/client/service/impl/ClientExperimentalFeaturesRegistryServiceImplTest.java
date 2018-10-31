@@ -36,6 +36,8 @@ import org.uberfire.experimental.service.registry.impl.ExperimentalFeaturesRegis
 import org.uberfire.mocks.CallerMock;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -187,7 +189,10 @@ public class ClientExperimentalFeaturesRegistryServiceImplTest {
         assertEquals(experimentalEnabled, service.isFeatureEnabled(FEATURE_1));
         assertEquals(experimentalEnabled, service.isFeatureEnabled(FEATURE_2));
 
-        assertEquals(false, service.isFeatureEnabled(FEATURE_3));
+        assertFalse(service.isFeatureEnabled(FEATURE_3));
+
+        // WRONG_FEATURE_ID isn't an experimental feature, so when asking the framework it should be always enabled.
+        assertTrue(service.isFeatureEnabled(WRONG_FEATURE_ID));
 
         assertEquals(registry, service.getFeaturesRegistry());
     }
