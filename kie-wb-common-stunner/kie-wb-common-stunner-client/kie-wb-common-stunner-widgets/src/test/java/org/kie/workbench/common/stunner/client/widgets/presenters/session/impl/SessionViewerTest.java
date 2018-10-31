@@ -71,7 +71,7 @@ public class SessionViewerTest extends AbstractCanvasHandlerViewerTest {
         super.init();
         when(canvasHandler.getDiagram()).thenReturn(diagram);
         when(metadata.getDefinitionSetId()).thenReturn(DEFINITION_SET_ID);
-        when(preferencesRegistries.get(DEFINITION_SET_ID)).thenReturn(stunnerPreferences);
+        when(preferencesRegistries.get(DEFINITION_SET_ID, StunnerPreferences.class)).thenReturn(stunnerPreferences);
         when(session.getCanvasHandler()).thenReturn(canvasHandler);
         when(session.getCanvas()).thenReturn(canvas);
         when(session.getZoomControl()).thenReturn(zoomControl);

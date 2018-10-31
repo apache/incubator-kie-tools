@@ -42,8 +42,8 @@ public class CaseManagementPreferencesRegistryTest {
         final StunnerPreferences preferences = mock(StunnerPreferences.class);
         final StunnerDiagramEditorPreferences editorPreferences = mock(StunnerDiagramEditorPreferences.class);
         when(preferences.getDiagramEditorPreferences()).thenReturn(editorPreferences);
-        tested.set(preferences);
-        assertEquals(preferences, tested.get());
+        tested.set(preferences, StunnerPreferences.class);
+        assertEquals(preferences, tested.get(StunnerPreferences.class));
         verify(editorPreferences, times(1)).setAutoHidePalettePanel(eq(true));
     }
 }

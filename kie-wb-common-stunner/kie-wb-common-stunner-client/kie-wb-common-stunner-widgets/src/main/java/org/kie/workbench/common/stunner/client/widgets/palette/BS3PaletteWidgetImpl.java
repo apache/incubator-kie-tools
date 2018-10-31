@@ -197,7 +197,7 @@ public class BS3PaletteWidgetImpl
     @SuppressWarnings("unchecked")
     protected AbstractPalette<DefaultPaletteDefinition> bind() {
         if (null != paletteDefinition) {
-            final StunnerPreferences preferences = preferencesRegistries.get(paletteDefinition.getDefinitionSetId());
+            final StunnerPreferences preferences = preferencesRegistries.get(paletteDefinition.getDefinitionSetId(), StunnerPreferences.class);
             final boolean autoHidePanel = preferences.getDiagramEditorPreferences().isAutoHidePalettePanel();
             paletteDefinition.getItems().forEach(item -> {
                 BS3PaletteWidgetPresenter widget;

@@ -16,30 +16,34 @@
 
 package org.kie.workbench.common.stunner.cm.client.preferences;
 
+import java.util.Optional;
+
 import javax.enterprise.context.ApplicationScoped;
 
 import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
-import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistryHolder;
+import org.kie.workbench.common.stunner.core.client.preferences.DefaultPreferencesRegistry;
 import org.kie.workbench.common.stunner.core.preferences.StunnerPreferences;
 
 @ApplicationScoped
 @CaseManagementEditor
-public class CaseManagementPreferencesRegistry extends StunnerPreferencesRegistryHolder {
-
-    private StunnerPreferences preferences;
+public class CaseManagementPreferencesRegistry extends DefaultPreferencesRegistry {
 
     @Override
-    public void set(final StunnerPreferences preferences) {
-        this.preferences = preferences;
-        applyCustomSettings();
-    }
-
-    private void applyCustomSettings() {
-        preferences.getDiagramEditorPreferences().setAutoHidePalettePanel(true);
+    public <T> T get(Class<T> preferenceType) {
+        return super.get(preferenceType);
     }
 
     @Override
-    public StunnerPreferences get() {
-        return preferences;
+    public <T> void set(T preferences, Class<T> preferenceType) {
+        super.set(preferences, preferenceType);
+        applyCustomSettings(preferences);
+    }
+
+    private <T> void applyCustomSettings(T preferences) {
+        Optional.of(preferences)
+                .filter(p -> p instanceof StunnerPreferences)
+                .map(p -> (StunnerPreferences) p)
+                .map(StunnerPreferences::getDiagramEditorPreferences)
+                .ifPresent(p -> p.setAutoHidePalettePanel(true));
     }
 }

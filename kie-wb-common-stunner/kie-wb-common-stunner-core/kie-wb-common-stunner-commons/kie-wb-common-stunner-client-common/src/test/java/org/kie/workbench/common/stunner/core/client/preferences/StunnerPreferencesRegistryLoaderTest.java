@@ -61,6 +61,9 @@ public class StunnerPreferencesRegistryLoaderTest {
 
     private StunnerPreferencesRegistryLoader tested;
 
+    @Mock
+    private StunnerTextPreferences textPreferences;
+
     @Before
     @SuppressWarnings("unchecked")
     public void setUp() throws Exception {
@@ -68,7 +71,8 @@ public class StunnerPreferencesRegistryLoaderTest {
         preferencesHolders = spy(new ManagedInstanceStub<>(preferencesHolder));
         tested = new StunnerPreferencesRegistryLoader(definitionUtils,
                                                       preferencesHolders,
-                                                      preferences);
+                                                      preferences,
+                                                      textPreferences);
     }
 
     @Test
@@ -76,9 +80,9 @@ public class StunnerPreferencesRegistryLoaderTest {
     public void testLoad() {
         final ParameterizedCommand<StunnerPreferences> loadCompleteCallback = mock(ParameterizedCommand.class);
         final ParameterizedCommand<Throwable> errorCallback = mock(ParameterizedCommand.class);
-        final StunnerPreferences bean = mock(StunnerPreferences.class);
+        final StunnerPreferences pre = mock(StunnerPreferences.class);
         doAnswer(invocation -> {
-            ((ParameterizedCommand<StunnerPreferences>) invocation.getArguments()[0]).execute(bean);
+            ((ParameterizedCommand<StunnerPreferences>) invocation.getArguments()[0]).execute(pre);
             return null;
         }).when(preferences).load(any(ParameterizedCommand.class),
                                   any(ParameterizedCommand.class));
@@ -86,9 +90,10 @@ public class StunnerPreferencesRegistryLoaderTest {
                     loadCompleteCallback,
                     errorCallback);
         verify(preferencesHolders, times(1)).select(eq(qualifier));
-        verify(loadCompleteCallback, times(1)).execute(eq(bean));
+        verify(loadCompleteCallback, times(1)).execute(eq(pre));
         verify(errorCallback, never()).execute(any(Throwable.class));
-        verify(preferencesHolder, times(1)).set(eq(bean));
+        verify(preferencesHolder, times(1)).set(eq(pre), eq(StunnerPreferences.class));
+        verify(preferencesHolder, times(1)).set(eq(textPreferences), eq(StunnerTextPreferences.class));
     }
 
     @Test
@@ -111,7 +116,8 @@ public class StunnerPreferencesRegistryLoaderTest {
         verify(preferencesHolders, times(1)).select(eq(qualifier));
         verify(errorCallback, times(1)).execute(eq(errorInstance));
         verify(loadCompleteCallback, never()).execute(any(StunnerPreferences.class));
-        verify(preferencesHolder, never()).set(any(StunnerPreferences.class));
+        verify(preferencesHolder, never()).set(any(StunnerPreferences.class), eq(StunnerPreferences.class));
+        verify(preferencesHolder, never()).set(any(StunnerTextPreferences.class), eq(StunnerTextPreferences.class));
     }
 
     @Test

@@ -24,10 +24,9 @@ import org.kie.workbench.common.stunner.core.client.shape.view.ShapeViewHandler;
 
 /**
  * The default view font related attributes handler to generic shape views.
- *
+ * <p>
  * It allows specifying functions which provide the different attributes for
  * handling the resulting canvas shape's font styles.
- *
  * @param <W> The domain's object type.
  * @param <V> The shape view type.
  */
@@ -82,10 +81,10 @@ public class FontHandler<W, V extends ShapeView> implements ShapeViewHandler<W, 
             if (strokeColor != null && strokeColor.trim().length() > 0) {
                 hasTitle.setTitleStrokeColor(strokeColor);
             }
-            if (fontSize != null && fontSize > 0) {
+            if (fontSize != null) {
                 hasTitle.setTitleFontSize(fontSize);
             }
-            if (strokeSize != null && strokeSize > 0) {
+            if (strokeSize != null) {
                 hasTitle.setTitleStrokeWidth(strokeSize);
             }
             if (null != alpha) {

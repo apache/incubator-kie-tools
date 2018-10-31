@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.shape.def;
 
+import java.util.function.Supplier;
+
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNGlyphFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.SequenceFlow;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
@@ -32,16 +34,24 @@ public final class SequenceFlowConnectorDef
     private static final String FONT_STROKE_COLOR = "#393f44";
     private static final double FONT_SIZE = 10d;
     private static final double STROKE_SIZE = 0.5d;
+    private final Supplier<FontHandler.Builder<SequenceFlow, ShapeView>> fontHandlerBuilder;
 
-    @Override
-    public FontHandler<SequenceFlow, ShapeView> newFontHandler() {
-        return newFontHandlerBuilder()
+    public SequenceFlowConnectorDef(final Supplier<FontHandler.Builder<SequenceFlow, ShapeView>> fontHandlerBuilder) {
+        this.fontHandlerBuilder = fontHandlerBuilder;
+    }
+
+    public SequenceFlowConnectorDef() {
+        this.fontHandlerBuilder = () -> newFontHandlerBuilder()
                 .fontFamily(c -> FONT_FAMILY)
                 .fontSize(c -> FONT_SIZE)
                 .fontColor(c -> FONT_COLOR)
                 .strokeColor(c -> FONT_STROKE_COLOR)
-                .strokeSize(c -> STROKE_SIZE)
-                .build();
+                .strokeSize(c -> STROKE_SIZE);
+    }
+
+    @Override
+    public FontHandler<SequenceFlow, ShapeView> newFontHandler() {
+        return fontHandlerBuilder.get().build();
     }
 
     @Override

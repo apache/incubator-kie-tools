@@ -16,9 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.client.preferences;
 
-import org.kie.workbench.common.stunner.core.preferences.StunnerPreferences;
-
 public interface StunnerPreferencesRegistry {
 
-    StunnerPreferences get();
+    <T> T get(Class<T> preferenceType);
+
 }

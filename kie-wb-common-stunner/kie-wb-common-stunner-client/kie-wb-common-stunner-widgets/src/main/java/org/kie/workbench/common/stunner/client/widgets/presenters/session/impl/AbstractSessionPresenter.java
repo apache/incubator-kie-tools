@@ -381,7 +381,7 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
     // This is a temporal solution. This will change once taking the "infinite" canvas approach.
     private void setCanvasSize(final Diagram diagram) {
         final String definitionSetId = diagram.getMetadata().getDefinitionSetId();
-        final StunnerPreferences preferences = preferencesRegistries.get(definitionSetId);
+        final StunnerPreferences preferences = preferencesRegistries.get(definitionSetId, StunnerPreferences.class);
         ((DefinitionSet) diagram.getGraph().getContent())
                 .setBounds(BoundsImpl.build(0,
                                             0,

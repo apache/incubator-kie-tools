@@ -51,7 +51,7 @@ public class SequenceFlowConverter {
         SequenceFlowPropertyReader p = propertyReaderFactory.of(seq);
 
         definition.setGeneral(new BPMNGeneralSet(
-                new Name(seq.getName()),
+                new Name(p.getName()),
                 new Documentation(p.getDocumentation())
         ));
 

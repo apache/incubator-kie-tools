@@ -34,7 +34,7 @@ import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SequenceFlowPropertyReader extends BasePropertyReader {
+public class SequenceFlowPropertyReader extends FlowElementPropertyReader {
 
     private static final Logger logger = LoggerFactory.getLogger(SequenceFlowPropertyReader.class);
     final FormalExpression conditionExpression;

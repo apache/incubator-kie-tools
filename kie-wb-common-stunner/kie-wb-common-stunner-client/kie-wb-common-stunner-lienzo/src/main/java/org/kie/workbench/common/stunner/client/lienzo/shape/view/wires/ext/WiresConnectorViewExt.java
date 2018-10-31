@@ -165,6 +165,7 @@ public class WiresConnectorViewExt<T>
 
     @Override
     public T setTitleFontColor(final String fillColor) {
+        label.ifPresent(l -> l.configure(text -> text.setFillColor(fillColor)));
         return cast();
     }
 

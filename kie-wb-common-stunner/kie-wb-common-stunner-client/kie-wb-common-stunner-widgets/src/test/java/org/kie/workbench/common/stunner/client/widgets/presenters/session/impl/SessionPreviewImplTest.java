@@ -194,7 +194,7 @@ public class SessionPreviewImplTest extends AbstractCanvasHandlerViewerTest {
         when(diagram.getMetadata()).thenReturn(metaData);
         when(metaData.getDefinitionSetId()).thenReturn(DEFINITION_SET_ID);
         when(definitionUtils.getQualifier(eq(DEFINITION_SET_ID))).thenReturn(qualifier);
-        when(preferencesRegistries.get(DEFINITION_SET_ID)).thenReturn(stunnerPreferences);
+        when(preferencesRegistries.get(DEFINITION_SET_ID, StunnerPreferences.class)).thenReturn(stunnerPreferences);
 
         when(customCanvasCommandFactoryInstance.get()).thenReturn(customCanvasCommandFactoryImplementation);
         when(defaultCanvasCommandFactoryInstance.get()).thenReturn(defaultCanvasCommandFactoryImplementation);

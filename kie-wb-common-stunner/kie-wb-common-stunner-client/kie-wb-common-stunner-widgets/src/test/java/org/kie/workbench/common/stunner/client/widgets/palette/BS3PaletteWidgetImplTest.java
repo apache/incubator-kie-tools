@@ -122,7 +122,7 @@ public class BS3PaletteWidgetImplTest {
         when(shapeSet.getShapeFactory()).thenReturn(shapeFactory);
         when(stunnerPreferences.getDiagramEditorPreferences()).thenReturn(diagramEditorPreferences);
 
-        when(preferencesRegistries.get(anyString())).thenReturn(stunnerPreferences);
+        when(preferencesRegistries.get(anyString(), eq(StunnerPreferences.class))).thenReturn(stunnerPreferences);
         createdCategoryWidgets.clear();
         createdItemWidgets.clear();
         this.palette = new BS3PaletteWidgetImpl(shapeManager,

@@ -16,9 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.client.preferences;
 
-import org.kie.workbench.common.stunner.core.preferences.StunnerPreferences;
-
 public abstract class StunnerPreferencesRegistryHolder implements StunnerPreferencesRegistry {
 
-    public abstract void set(StunnerPreferences preferences);
+    public abstract <T> void set(T preferences, Class<T> preferenceType);
 }

@@ -35,14 +35,17 @@ public class StunnerPreferencesRegistryLoader {
     private final DefinitionUtils definitionUtils;
     private final ManagedInstance<StunnerPreferencesRegistryHolder> preferencesHolders;
     private final StunnerPreferences preferences;
+    private final StunnerTextPreferences textPreferences;
 
     @Inject
     public StunnerPreferencesRegistryLoader(final DefinitionUtils definitionUtils,
                                             final @Any ManagedInstance<StunnerPreferencesRegistryHolder> preferencesHolders,
-                                            final StunnerPreferences preferences) {
+                                            final StunnerPreferences preferences,
+                                            final StunnerTextPreferences textPreferences) {
         this.definitionUtils = definitionUtils;
         this.preferencesHolders = preferencesHolders;
         this.preferences = preferences;
+        this.textPreferences = textPreferences;
     }
 
     public void load(final String definitionSetId,
@@ -52,8 +55,9 @@ public class StunnerPreferencesRegistryLoader {
         final StunnerPreferencesRegistryHolder holder = InstanceUtils.lookup(preferencesHolders,
                                                                              qualifier);
         preferences.load(prefs -> {
-                             holder.set(prefs);
+                             holder.set(prefs, StunnerPreferences.class);
                              loadCompleteCallback.execute(prefs);
+                             holder.set(textPreferences, StunnerTextPreferences.class);
                          },
                          errorCallback);
     }

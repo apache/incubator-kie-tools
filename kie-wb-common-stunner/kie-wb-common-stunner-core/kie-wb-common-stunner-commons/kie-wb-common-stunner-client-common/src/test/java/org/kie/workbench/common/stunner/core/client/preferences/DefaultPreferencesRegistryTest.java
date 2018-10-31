@@ -35,7 +35,7 @@ public class DefaultPreferencesRegistryTest {
     @Test
     public void testIt() {
         final StunnerPreferences preferences = mock(StunnerPreferences.class);
-        tested.set(preferences);
-        assertEquals(preferences, tested.get());
+        tested.set(preferences, StunnerPreferences.class);
+        assertEquals(preferences, tested.get(StunnerPreferences.class));
     }
 }

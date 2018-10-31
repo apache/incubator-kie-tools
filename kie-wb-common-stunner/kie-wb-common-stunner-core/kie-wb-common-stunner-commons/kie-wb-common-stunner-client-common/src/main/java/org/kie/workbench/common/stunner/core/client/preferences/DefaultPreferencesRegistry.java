@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.stunner.core.client.preferences;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Default;
 
@@ -28,13 +31,15 @@ public class DefaultPreferencesRegistry
 
     private StunnerPreferences preferences;
 
+    private Map<Class<?>, Object> preferencesMap = new HashMap<>();
+
     @Override
-    public StunnerPreferences get() {
-        return preferences;
+    public <T> T get(Class<T> preferenceType) {
+        return (T) preferencesMap.get(preferenceType);
     }
 
     @Override
-    public void set(final StunnerPreferences preferences) {
-        this.preferences = preferences;
+    public <T> void set(final T preferences, Class<T> preferenceType) {
+        preferencesMap.put(preferenceType, preferences);
     }
 }

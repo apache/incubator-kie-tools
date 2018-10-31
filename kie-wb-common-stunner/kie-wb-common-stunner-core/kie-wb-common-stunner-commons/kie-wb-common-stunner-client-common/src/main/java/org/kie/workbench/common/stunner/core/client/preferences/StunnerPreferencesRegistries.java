@@ -24,7 +24,6 @@ import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.session.impl.InstanceUtils;
-import org.kie.workbench.common.stunner.core.preferences.StunnerPreferences;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 @ApplicationScoped
@@ -40,15 +39,15 @@ public class StunnerPreferencesRegistries {
         this.preferencesRegistries = preferencesRegistries;
     }
 
-    public StunnerPreferences get(final String definitionSetId) {
+    public <T> T get(final String definitionSetId, Class<T> preferenceType) {
         final Annotation qualifier = definitionUtils.getQualifier(definitionSetId);
-        return get(qualifier);
+        return get(qualifier, preferenceType);
     }
 
-    public StunnerPreferences get(final Annotation qualifier) {
+    public <T> T get(final Annotation qualifier, Class<T> preferenceType) {
         return InstanceUtils
                 .lookup(preferencesRegistries,
                         qualifier)
-                .get();
+                .get(preferenceType);
     }
 }

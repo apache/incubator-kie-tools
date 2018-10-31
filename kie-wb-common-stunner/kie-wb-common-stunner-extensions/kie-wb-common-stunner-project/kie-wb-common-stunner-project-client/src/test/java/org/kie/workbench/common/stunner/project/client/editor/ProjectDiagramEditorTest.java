@@ -271,7 +271,7 @@ public class ProjectDiagramEditorTest {
         when(diagram.getGraph()).thenReturn(graph);
         when(graph.getContent()).thenReturn(definitionSetContent);
         when(definitionSetContent.getBounds()).thenReturn(bounds);
-        when(stunnerPreferencesRegistr.get()).thenReturn(preferences);
+        when(stunnerPreferencesRegistr.get(StunnerPreferences.class)).thenReturn(preferences);
         when(preferences.getDiagramEditorPreferences()).thenReturn(diagramEditorPreferences);
         when(diagramEditorPreferences.getCanvasWidth()).thenReturn(1200);
         when(diagramEditorPreferences.getCanvasHeight()).thenReturn(1200);

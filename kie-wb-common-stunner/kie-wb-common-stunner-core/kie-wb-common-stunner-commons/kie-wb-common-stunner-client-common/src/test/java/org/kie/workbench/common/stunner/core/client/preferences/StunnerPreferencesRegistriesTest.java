@@ -55,11 +55,15 @@ public class StunnerPreferencesRegistriesTest {
 
     private StunnerPreferencesRegistries tested;
 
+    @Mock
+    private StunnerTextPreferences textPreferences;
+
     @Before
     @SuppressWarnings("unchecked")
     public void setUp() throws Exception {
         preferencesRegistries = spy(new ManagedInstanceStub<>(preferencesRegistry));
-        when(preferencesRegistry.get()).thenReturn(preferences);
+        when(preferencesRegistry.get(StunnerPreferences.class)).thenReturn(preferences);
+        when(preferencesRegistry.get(StunnerTextPreferences.class)).thenReturn(textPreferences);
         when(definitionUtils.getQualifier(eq(DEF_SET_ID))).thenReturn(qualifier);
         tested = new StunnerPreferencesRegistries(definitionUtils,
                                                   preferencesRegistries);
@@ -68,8 +72,16 @@ public class StunnerPreferencesRegistriesTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testGet() {
-        StunnerPreferences instance = tested.get(DEF_SET_ID);
+        StunnerPreferences instance = tested.get(DEF_SET_ID, StunnerPreferences.class);
         verify(preferencesRegistries, times(1)).select(eq(qualifier));
         assertEquals(preferences, instance);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testGetTextPreferences() {
+        StunnerTextPreferences instance = tested.get(DEF_SET_ID, StunnerTextPreferences.class);
+        verify(preferencesRegistries, times(1)).select(eq(qualifier));
+        assertEquals(textPreferences, instance);
     }
 }

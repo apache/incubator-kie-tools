@@ -95,6 +95,8 @@ public class WiresConnectorViewExtTest {
         verify(labelText, times(1)).setStrokeWidth(eq(0.2d));
         tested.setTitleStrokeColor("color1");
         verify(labelText, times(1)).setStrokeColor(eq("color1"));
+        tested.setTitleFontColor("color1");
+        verify(labelText, times(1)).setFillColor(eq("color1"));
         tested.setTitleFontSize(0.3d);
         verify(labelText, times(1)).setFontSize(eq(0.3d));
         tested.moveTitleToTop();
@@ -102,5 +104,6 @@ public class WiresConnectorViewExtTest {
         tested.destroy();
         verify(label, times(1)).destroy();
         assertFalse(tested.label.isPresent());
+
     }
 }

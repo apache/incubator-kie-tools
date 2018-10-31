@@ -88,7 +88,7 @@ public class SessionEditorTest extends AbstractCanvasHandlerViewerTest {
         when(session.getContainmentAcceptorControl()).thenReturn(containmentAcceptorControl);
         when(session.getDockingAcceptorControl()).thenReturn(dockingAcceptorControl);
         when(metadata.getDefinitionSetId()).thenReturn(DEFINITION_SET_ID);
-        when(preferencesRegistries.get(DEFINITION_SET_ID)).thenReturn(stunnerPreferences);
+        when(preferencesRegistries.get(DEFINITION_SET_ID, StunnerPreferences.class)).thenReturn(stunnerPreferences);
         this.tested = new SessionEditorImpl<>(view, preferencesRegistries);
     }
 
