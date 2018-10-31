@@ -580,6 +580,14 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
         return isSelectionChanged;
     }
 
+    protected boolean hasAnyHeaderCellSelected() {
+        return getModel().getSelectedHeaderCells().size() > 0;
+    }
+
+    protected boolean hasMultipleCellsSelected() {
+        return getModel().getSelectedCells().size() > 1;
+    }
+
     protected void doAfterSelectionChange(final int uiRowIndex,
                                           final int uiColumnIndex) {
         fireDomainObjectSelectionEvent(new NOPDomainObject());

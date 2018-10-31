@@ -286,6 +286,11 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
     @Override
     protected void doAfterSelectionChange(final int uiRowIndex,
                                           final int uiColumnIndex) {
+        if (hasAnyHeaderCellSelected() || hasMultipleCellsSelected()) {
+            super.doAfterSelectionChange(uiRowIndex, uiColumnIndex);
+            return;
+        }
+
         if (expression.isPresent()) {
             final Relation relation = expression.get();
             final RelationUIModelMapperHelper.RelationSection section = RelationUIModelMapperHelper.getSection(relation, uiColumnIndex);

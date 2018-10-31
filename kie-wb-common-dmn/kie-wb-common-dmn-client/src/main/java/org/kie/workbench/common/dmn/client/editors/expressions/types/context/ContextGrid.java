@@ -61,6 +61,7 @@ import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
+import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
 import org.uberfire.ext.wires.core.grids.client.widget.dnd.GridWidgetDnDHandlersState;
@@ -321,6 +322,11 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextGridData, Co
     @Override
     protected void doAfterSelectionChange(final int uiRowIndex,
                                           final int uiColumnIndex) {
+        if (hasAnyHeaderCellSelected() || hasMultipleRowsSelected()) {
+            super.doAfterSelectionChange(uiRowIndex, uiColumnIndex);
+            return;
+        }
+
         if (uiRowIndex < model.getRowCount() - 1) {
             if (expression.isPresent()) {
                 final Context context = expression.get();
@@ -329,6 +335,10 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextGridData, Co
             }
         }
         super.doAfterSelectionChange(uiRowIndex, uiColumnIndex);
+    }
+
+    private boolean hasMultipleRowsSelected() {
+        return getModel().getSelectedCells().stream().map(GridData.SelectedCell::getRowIndex).distinct().count() > 1;
     }
 
     @Override
