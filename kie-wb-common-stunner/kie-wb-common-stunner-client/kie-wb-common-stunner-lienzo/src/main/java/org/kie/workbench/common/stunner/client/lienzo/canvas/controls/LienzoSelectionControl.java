@@ -44,7 +44,7 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 @Dependent
 @SingleSelection
 @Default
-public final class LienzoSelectionControl<H extends AbstractCanvasHandler>
+public class LienzoSelectionControl<H extends AbstractCanvasHandler>
         extends AbstractSelectionControl<H> {
 
     private static Logger LOGGER = Logger.getLogger(LienzoSelectionControl.class.getName());

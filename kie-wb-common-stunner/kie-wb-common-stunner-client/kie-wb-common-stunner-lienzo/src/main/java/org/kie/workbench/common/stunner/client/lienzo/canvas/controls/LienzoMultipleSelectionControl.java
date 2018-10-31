@@ -46,17 +46,23 @@ import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.AbstractSelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.MapSelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.MultipleSelection;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.event.ShapeLocationsChangedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
+import org.kie.workbench.common.stunner.core.graph.Element;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
+/**
+ * Default implementation of a {@link SelectionControl} that supports selection of multiple {@link Element}.
+ * @param <H> {@link AbstractCanvasHandler}
+ */
 @Dependent
 @MultipleSelection
 @Default
-public final class LienzoMultipleSelectionControl<H extends AbstractCanvasHandler>
+public class LienzoMultipleSelectionControl<H extends AbstractCanvasHandler>
         extends AbstractSelectionControl<H> {
 
     private final CursoredSelectionShapeProvider selectionShapeProvider;

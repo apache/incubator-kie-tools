@@ -17,10 +17,12 @@
 package org.kie.workbench.common.stunner.core.client.canvas.controls.select;
 
 import java.util.Collections;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.soup.commons.util.Sets;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Layer;
@@ -41,6 +43,7 @@ import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewImpl;
+import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -82,13 +85,22 @@ public class MapSelectionControlTest {
     private Diagram diagram;
 
     @Mock
+    private Index index;
+
+    @Mock
     private Metadata metadata;
 
     @Mock
     private Object definition;
 
     @Mock
+    private Object rootDefinition;
+
+    @Mock
     private Element element;
+
+    @Mock
+    private Element rootElement;
 
     @Mock
     private Shape<ShapeView> shape;
@@ -111,6 +123,9 @@ public class MapSelectionControlTest {
     public void setup() throws Exception {
         ShapeViewExtStub shapeView = new ShapeViewExtStub(shapeEventHandler,
                                                           hasControlPoints);
+        when(rootElement.getUUID()).thenReturn(ROOT_UUID);
+        when(rootElement.getContent()).thenReturn(new ViewImpl<>(rootDefinition,
+                                                                 BoundsImpl.build(0, 0, 10, 10)));
         when(element.getUUID()).thenReturn(ELEMENT_UUID);
         when(element.getContent()).thenReturn(new ViewImpl<>(definition,
                                                              BoundsImpl.build(0, 0, 10, 10)));
@@ -118,6 +133,7 @@ public class MapSelectionControlTest {
         when(diagram.getMetadata()).thenReturn(metadata);
         when(metadata.getCanvasRootUUID()).thenReturn(ROOT_UUID);
         when(canvasHandler.getCanvas()).thenReturn(canvas);
+        when(canvasHandler.getGraphIndex()).thenReturn(index);
         when(canvas.getLayer()).thenReturn(layer);
         when(canvas.getShape(eq(ELEMENT_UUID))).thenReturn(shape);
         when(canvas.getShapes()).thenReturn(Collections.singletonList(shape));
@@ -265,6 +281,55 @@ public class MapSelectionControlTest {
     }
 
     @Test
+    public void testGetSelectedItemDefinitionWithNoItemsSelected() {
+        tested.init(canvasHandler);
+
+        when(index.get(ROOT_UUID)).thenReturn(rootElement);
+
+        final Optional<Object> selectedItemDefinition = tested.getSelectedItemDefinition();
+        assertTrue(selectedItemDefinition.isPresent());
+        assertEquals(rootElement, selectedItemDefinition.get());
+    }
+
+    @Test
+    public void testGetSelectedItemDefinitionWithNoItemsSelectedAndNoDiagram() {
+        tested.init(canvasHandler);
+
+        when(canvasHandler.getDiagram()).thenReturn(null);
+
+        final Optional<Object> selectedItemDefinition = tested.getSelectedItemDefinition();
+        assertFalse(selectedItemDefinition.isPresent());
+    }
+
+    @Test
+    public void testGetSelectedItemDefinitionWithOneItemSelected() {
+        tested.init(canvasHandler);
+        tested.register(element);
+        tested.select(element.getUUID());
+
+        when(index.get(ELEMENT_UUID)).thenReturn(element);
+
+        final Optional<Object> selectedItemDefinition = tested.getSelectedItemDefinition();
+        assertTrue(selectedItemDefinition.isPresent());
+        assertEquals(element, selectedItemDefinition.get());
+    }
+
+    @Test
+    public void testGetSelectedItemDefinitionWithMultipleItemsSelected() {
+        tested.init(canvasHandler);
+        tested.register(element);
+        tested.register(rootElement);
+        tested.select(new Sets.Builder<String>().add(ROOT_UUID).add(ELEMENT_UUID).build());
+
+        when(index.get(ELEMENT_UUID)).thenReturn(element);
+        when(index.get(ROOT_UUID)).thenReturn(rootElement);
+
+        final Optional<Object> selectedItemDefinition = tested.getSelectedItemDefinition();
+        assertTrue(selectedItemDefinition.isPresent());
+        assertEquals(rootElement, selectedItemDefinition.get());
+    }
+
+    @Test
     public void testOnShapeRemovedEvent() {
         tested.init(canvasHandler);
         tested.register(element);
@@ -332,6 +397,8 @@ public class MapSelectionControlTest {
         tested.init(canvasHandler);
         tested.destroy();
         verify(layer).removeHandler(any(MouseClickHandler.class));
+
+        assertFalse(tested.getSelectedItemDefinition().isPresent());
     }
 
     private boolean isRegistered(Element e) {

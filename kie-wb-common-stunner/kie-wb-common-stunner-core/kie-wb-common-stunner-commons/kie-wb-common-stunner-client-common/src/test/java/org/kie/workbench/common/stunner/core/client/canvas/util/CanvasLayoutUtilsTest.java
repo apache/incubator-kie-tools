@@ -27,6 +27,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.TestingGraphInstanceBuilder;
 import org.kie.workbench.common.stunner.core.TestingGraphMockHandler;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
@@ -43,6 +44,7 @@ import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.core.graph.processing.index.bounds.GraphBoundsIndexer;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.registry.definition.TypeDefinitionSetRegistry;
@@ -55,7 +57,9 @@ import org.kie.workbench.common.stunner.core.validation.Violation;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -64,6 +68,8 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CanvasLayoutUtilsTest {
+
+    private final static String NODE_UUID = "uuid";
 
     private final static double NEW_NODE_HEIGHT = 100;
 
@@ -86,7 +92,13 @@ public class CanvasLayoutUtilsTest {
     private CanvasHandler canvasHandler;
 
     @Mock
+    private AbstractCanvasHandler abstractCanvasHandler;
+
+    @Mock
     private Graph<DefinitionSet, Node> graph;
+
+    @Mock
+    private Index graphIndex;
 
     @Mock
     private Canvas canvas;
@@ -442,5 +454,39 @@ public class CanvasLayoutUtilsTest {
         double[] sizeIntermNode = GraphUtils.getNodeSize(intermNode.getContent());
         assertTrue(next.getX() == sizeStartNode[0] + CanvasLayoutUtils.getPaddingX());
         assertTrue(next.getY() > sizeIntermNode[1]);
+    }
+
+    @Test
+    public void testGetElementNullCanvasHandlerAndNullUUID() {
+        when(abstractCanvasHandler.getGraphIndex()).thenReturn(graphIndex);
+
+        assertNull(CanvasLayoutUtils.getElement(null, null));
+    }
+
+    @Test
+    public void testGetElementNullCanvasHandler() {
+        when(abstractCanvasHandler.getGraphIndex()).thenReturn(graphIndex);
+
+        assertNull(CanvasLayoutUtils.getElement(null, NODE_UUID));
+    }
+
+    @Test
+    public void testGetElementNullUUID() {
+        when(abstractCanvasHandler.getGraphIndex()).thenReturn(graphIndex);
+
+        assertNull(CanvasLayoutUtils.getElement(abstractCanvasHandler, null));
+    }
+
+    @Test
+    public void testGetElementWithNullIndex() {
+        assertNull(CanvasLayoutUtils.getElement(abstractCanvasHandler, NODE_UUID));
+    }
+
+    @Test
+    public void testGetElement() {
+        when(abstractCanvasHandler.getGraphIndex()).thenReturn(graphIndex);
+        when(graphIndex.get(NODE_UUID)).thenReturn(nodeRoot);
+
+        assertEquals(nodeRoot, CanvasLayoutUtils.getElement(abstractCanvasHandler, NODE_UUID));
     }
 }

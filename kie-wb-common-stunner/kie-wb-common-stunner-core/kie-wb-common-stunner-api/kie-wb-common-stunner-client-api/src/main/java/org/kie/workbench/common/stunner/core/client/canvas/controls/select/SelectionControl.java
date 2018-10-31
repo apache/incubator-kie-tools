@@ -17,9 +17,12 @@
 package org.kie.workbench.common.stunner.core.client.canvas.controls.select;
 
 import java.util.Collection;
+import java.util.Optional;
 
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControl;
+import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.graph.Element;
 
 /**
@@ -37,4 +40,13 @@ public interface SelectionControl<C extends CanvasHandler, E extends Element>
     Collection<String> getSelectedItems();
 
     SelectionControl<C, E> clearSelection();
+
+    /**
+     * Gets the first selected object; whether a {@link Element} or a {@link DomainObject}.
+     * If multiple {@link Element} are selected the first selected will be returned. If
+     * no {@link Element} or {@link DomainObject} is selected this will attempt to return
+     * the {@link Diagram} root {@link Element}.
+     * @return The selected object or {@link Optional#empty()}
+     */
+    Optional<Object> getSelectedItemDefinition();
 }

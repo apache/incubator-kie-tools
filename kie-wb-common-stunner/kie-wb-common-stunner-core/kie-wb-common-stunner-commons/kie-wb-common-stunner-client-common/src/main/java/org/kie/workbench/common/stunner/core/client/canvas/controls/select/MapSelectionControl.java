@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -33,12 +34,16 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasRegist
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasShapeRemovedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseClickEvent;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseClickHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
+import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Element;
+import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.util.StringUtils;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
@@ -147,6 +152,35 @@ public final class MapSelectionControl<H extends AbstractCanvasHandler>
     @Override
     public SelectionControl<H, Element> clearSelection() {
         return clearSelection(true);
+    }
+
+    @Override
+    public Optional<Object> getSelectedItemDefinition() {
+        String selectedItemUUID = null;
+        final Collection<String> selectedItems = getSelectedItems();
+        if (null != selectedItems && !selectedItems.isEmpty()) {
+            selectedItemUUID = selectedItems.iterator().next();
+        }
+        if (Objects.isNull(selectedItemUUID)) {
+            final AbstractCanvasHandler canvasHandler = getCanvasHandler();
+            if (!Objects.isNull(canvasHandler)) {
+                final Diagram<?, ?> diagram = getCanvasHandler().getDiagram();
+                if (!Objects.isNull(diagram)) {
+                    final String cRoot = diagram.getMetadata().getCanvasRootUUID();
+                    // Check if there exist any canvas root element.
+                    if (!StringUtils.isEmpty(cRoot)) {
+                        selectedItemUUID = cRoot;
+                    }
+                }
+            }
+        }
+        if (!Objects.isNull(selectedItemUUID)) {
+            final Element<? extends Definition<?>> element = CanvasLayoutUtils.getElement(getCanvasHandler(),
+                                                                                          selectedItemUUID);
+            return Optional.ofNullable(element);
+        } else {
+            return Optional.empty();
+        }
     }
 
     public boolean isReadonly() {

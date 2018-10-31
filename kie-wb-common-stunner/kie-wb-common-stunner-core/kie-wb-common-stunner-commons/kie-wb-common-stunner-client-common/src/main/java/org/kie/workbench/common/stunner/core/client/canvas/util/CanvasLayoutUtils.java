@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.util;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.PreDestroy;
@@ -33,9 +34,11 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
+import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
+import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.core.graph.processing.index.bounds.GraphBoundsIndexer;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
@@ -404,9 +407,17 @@ public class CanvasLayoutUtils {
         return new double[]{lrX + relativePositionTo.getX(), lrY + relativePositionTo.getY()};
     }
 
-    public static Element<?> getElement(final AbstractCanvasHandler canvasHandler,
-                                        final String uuid) {
-        return canvasHandler.getGraphIndex().get(uuid);
+    @SuppressWarnings("unchecked")
+    public static Element<? extends Definition<?>> getElement(final AbstractCanvasHandler canvasHandler,
+                                                              final String uuid) {
+        if (Objects.isNull(canvasHandler) || Objects.isNull(uuid)) {
+            return null;
+        }
+        final Index<?, ?> index = canvasHandler.getGraphIndex();
+        if (Objects.isNull(index)) {
+            return null;
+        }
+        return index.get(uuid);
     }
 
     // TODO: This is a work around. If enabling canvas handlers just here ( without using the timer )

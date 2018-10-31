@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.core.client.canvas.controls.select;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.enterprise.event.Event;
@@ -126,6 +127,15 @@ public abstract class AbstractSelectionControl<H extends AbstractCanvasHandler>
     }
 
     protected void onClearSelection() {
+    }
+
+    @Override
+    public Optional<Object> getSelectedItemDefinition() {
+        if (null != selectionControl) {
+            return selectionControl.getSelectedItemDefinition();
+        } else {
+            return Optional.empty();
+        }
     }
 
     @Override

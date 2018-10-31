@@ -87,8 +87,8 @@ public class FormPropertiesWidget implements IsElement,
             }
 
             @Override
-            public void render(String graphUuid, DomainObject domainObject) {
-                show(graphUuid, domainObject);
+            public void render(String graphUuid, DomainObject domainObject, Command callback) {
+                show(graphUuid, domainObject, callback);
             }
 
             @Override
@@ -193,7 +193,8 @@ public class FormPropertiesWidget implements IsElement,
     }
 
     private void show(final String graphUuid,
-                      final DomainObject domainObject) {
+                      final DomainObject domainObject,
+                      final Command callback) {
         final String domainObjectUUID = domainObject.getDomainObjectUUID();
         final String domainObjectName = translationService.getTranslation(domainObject.getDomainObjectNameTranslationKey());
         final Diagram<?, ?> diagram = formSessionHandler.getDiagram();
@@ -221,6 +222,10 @@ public class FormPropertiesWidget implements IsElement,
                                           "Something wrong happened refreshing the DomainObject '"
                                                   + domainObject + "' for field '"
                                                   + fieldName + "': " + ex.getCause());
+                                  } finally {
+                                      if (null != callback) {
+                                          callback.execute();
+                                      }
                                   }
                               }, renderMode);
         propertiesOpenedEvent.fire(new FormPropertiesOpened(formSessionHandler.getSession(), domainObjectUUID, domainObjectName));

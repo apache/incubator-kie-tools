@@ -16,6 +16,7 @@
 package org.kie.workbench.common.stunner.forms.client.widgets;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 import org.jboss.errai.databinding.client.HasProperties;
 import org.jboss.errai.databinding.client.api.DataBinder;
@@ -25,6 +26,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.UpdateDomainObjectPropertyCommand;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
@@ -54,11 +56,14 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(DataBinder.class)
 public class FormsCanvasSessionHandlerTest {
+
+    private static final String GRAPH_UUID = "graph-uuid";
 
     private static final String UUID = "uuid";
 
@@ -88,6 +93,9 @@ public class FormsCanvasSessionHandlerTest {
 
     @Mock
     private CanvasCommandManager canvasCommandManager;
+
+    @Mock
+    private SelectionControl selectionControl;
 
     @Mock
     private FormsCanvasSessionHandler.FormRenderer formRenderer;
@@ -132,14 +140,53 @@ public class FormsCanvasSessionHandlerTest {
 
         when(session.getCanvasHandler()).thenReturn(abstractCanvasHandler);
         when(session.getCommandManager()).thenReturn(canvasCommandManager);
+        when(session.getSelectionControl()).thenReturn(selectionControl);
         when(abstractCanvasHandler.getGraphIndex()).thenReturn(index);
         when(abstractCanvasHandler.getDiagram()).thenReturn(diagram);
         when(index.get(eq(UUID))).thenReturn(element);
         when(diagram.getGraph()).thenReturn(graph);
+        when(graph.getUUID()).thenReturn(GRAPH_UUID);
 
         when(definitionManager.adapters()).thenReturn(adapterManager);
         when(adapterManager.forProperty()).thenReturn(propertyAdapter);
         when(propertyAdapter.getId(any())).thenReturn(FIELD_PROPERTY_ID);
+    }
+
+    @Test
+    public void testShowWithNothingSelected() {
+        handler.bind(session);
+
+        when(selectionControl.getSelectedItemDefinition()).thenReturn(Optional.empty());
+
+        handler.show();
+
+        verifyNoMoreInteractions(formRenderer);
+    }
+
+    @Test
+    public void testShowWithElementSelected() {
+        handler.bind(session);
+
+        when(selectionControl.getSelectedItemDefinition()).thenReturn(Optional.of(element));
+
+        handler.show();
+
+        verify(formRenderer).render(eq(GRAPH_UUID),
+                                    eq(element),
+                                    any(Command.class));
+    }
+
+    @Test
+    public void testShowWithDomainObjectSelected() {
+        handler.bind(session);
+
+        when(selectionControl.getSelectedItemDefinition()).thenReturn(Optional.of(domainObject));
+
+        handler.show();
+
+        verify(formRenderer).render(eq(GRAPH_UUID),
+                                    eq(domainObject),
+                                    any(Command.class));
     }
 
     @Test
@@ -190,7 +237,7 @@ public class FormsCanvasSessionHandlerTest {
 
         handler.onCanvasSelectionEvent(canvasSelectionEvent);
 
-        verify(formRenderer, never()).render(anyString(), any(DomainObject.class));
+        verify(formRenderer, never()).render(anyString(), any(DomainObject.class), any(Command.class));
     }
 
     @Test
@@ -201,7 +248,7 @@ public class FormsCanvasSessionHandlerTest {
 
         handler.onDomainObjectSelectionEvent(domainObjectSelectionEvent);
 
-        verify(formRenderer).render(anyString(), eq(domainObject));
+        verify(formRenderer).render(anyString(), eq(domainObject), any(Command.class));
     }
 
     @Test
