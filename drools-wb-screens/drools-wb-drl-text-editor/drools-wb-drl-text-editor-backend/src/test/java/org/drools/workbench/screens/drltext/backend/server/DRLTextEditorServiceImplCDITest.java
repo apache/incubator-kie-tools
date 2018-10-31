@@ -49,6 +49,7 @@ public class DRLTextEditorServiceImplCDITest extends CDITestSetup {
     private static final String CAR_DRIVING_LICENSE_IMPORT_BROKEN = RULES_ROOT + "addAdditionalStorageBroken.drl";
 
     private static final String NUMERICAL_TYPES_RULE = RULES_ROOT + "numericalTypesRule.drl";
+    private static final String INVALID_CONTENT_DRL = RULES_ROOT + "invalidContentDRL.drl";
 
     private List<ValidationMessage> validationMessages;
     private DRLTextEditorService drlService;
@@ -173,6 +174,27 @@ public class DRLTextEditorServiceImplCDITest extends CDITestSetup {
         validateResource(NUMERICAL_TYPES_RULE);
 
         Assertions.assertThat(validationMessages).isEmpty();
+    }
+
+    @Test
+    public void testInvalidContentDRL() throws Exception {
+        final String error102 = "[ERR 102] Line 1:7 mismatched input ''";
+        final String error107 = "[ERR 107] Line 1:0 mismatched input 'asd' " +
+                "expecting one of the following tokens: " +
+                "'[package, unit, import, global, declare, function, rule, query]'.";
+        final String errorPackage = "Parser returned a null Package";
+
+        //This regexp is looking for kbase instance names like "[KBase: kbase1]" in validation messages
+        final String regexpExpression = "\\A\\[(.*?)\\][:]\\s";
+
+        validateResource(INVALID_CONTENT_DRL);
+        Assertions.assertThat(validationMessages).hasSize(6);
+        Assertions.assertThat(validationMessages
+                                      .stream()
+                                      .map(validationMessage -> validationMessage
+                                              .getText()
+                                              .replaceAll(regexpExpression, "")))
+                .containsOnly(error102, error107, errorPackage);
     }
 
     private Path getPath(final String resource) throws Exception {
