@@ -29,6 +29,8 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
+import org.kie.workbench.common.stunner.core.util.StringUtils;
+import org.kie.workbench.common.stunner.core.util.UUID;
 
 public abstract class AbstractDMNDiagramFactory<M extends Metadata, D extends Diagram<Graph, M>>
         extends BindableDiagramFactory<M, D> {
@@ -73,6 +75,14 @@ public abstract class AbstractDMNDiagramFactory<M extends Metadata, D extends Di
         Stream.of(DMNModelInstrumentedBase.Namespace.values())
                 .filter(namespace -> !dmnDefinitions.getNsContext().containsValue(namespace.getUri()))
                 .forEach(namespace -> dmnDefinitions.getNsContext().put(namespace.getPrefix(), namespace.getUri()));
+
+        String defaultNamespace = !StringUtils.isEmpty(dmnDefinitions.getNamespace())
+                ? dmnDefinitions.getNamespace()
+                : DMNModelInstrumentedBase.Namespace.DEFAULT.getUri() + UUID.uuid();
+
+        dmnDefinitions.setNamespace(defaultNamespace);
+        dmnDefinitions.getNsContext().put(DMNModelInstrumentedBase.Namespace.DEFAULT.getPrefix(),
+                                          defaultNamespace);
     }
 
     private void updateName(final Node<Definition<DMNDiagram>, ?> diagramNode,

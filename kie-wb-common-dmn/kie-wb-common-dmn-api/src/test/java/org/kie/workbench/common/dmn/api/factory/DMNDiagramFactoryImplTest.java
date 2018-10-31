@@ -95,6 +95,10 @@ public class DMNDiagramFactoryImplTest {
         assertTrue(dmnDefaultNameSpaces.containsKey(DMNModelInstrumentedBase.Namespace.KIE.getPrefix()));
         assertEquals(DMNModelInstrumentedBase.Namespace.KIE.getUri(),
                      dmnDefaultNameSpaces.get(DMNModelInstrumentedBase.Namespace.KIE.getPrefix()));
+
+        assertTrue(dmnDefaultNameSpaces.containsKey(DMNModelInstrumentedBase.Namespace.DEFAULT.getPrefix()));
+        assertEquals(dmnDefinitions.getNamespace(),
+                     dmnDefaultNameSpaces.get(DMNModelInstrumentedBase.Namespace.DEFAULT.getPrefix()));
     }
 
     @Test

@@ -18,12 +18,14 @@ package org.kie.workbench.common.dmn.backend.definition.v1_1;
 
 import java.util.Map.Entry;
 
+import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Definitions;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Import;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
+import org.kie.workbench.common.stunner.core.util.StringUtils;
 import org.kie.workbench.common.stunner.core.util.UUID;
 
 public class DefinitionsConverter {
@@ -40,6 +42,8 @@ public class DefinitionsConverter {
         result.setId(id);
         result.setName(name);
         result.setNamespace(namespace);
+        result.getNsContext().put(DMNModelInstrumentedBase.Namespace.DEFAULT.getPrefix(),
+                                  namespace);
         result.setDescription(description);
         for (Entry<String, String> kv : dmn.getNsContext().entrySet()) {
             String mappedURI = kv.getValue();
@@ -85,13 +89,17 @@ public class DefinitionsConverter {
         // TODO currently DMN wb UI does not offer feature to set these required DMN properties, setting some hardcoded defaults for now.
         String defaultId = (wb.getId() != null) ? wb.getId().getValue() : UUID.uuid();
         String defaulName = (wb.getName() != null) ? wb.getName().getValue() : UUID.uuid(8);
-        String defaultNamespace = (wb.getNamespace() != null) ? wb.getNamespace() : "https://github.com/kiegroup/drools/kie-dmn/" + UUID.uuid();
+        String defaultNamespace = !StringUtils.isEmpty(wb.getNamespace())
+                ? wb.getNamespace()
+                : DMNModelInstrumentedBase.Namespace.DEFAULT.getUri() + UUID.uuid();
 
         result.setId(defaultId);
         result.setName(defaulName);
         result.setNamespace(defaultNamespace);
         result.setDescription(DescriptionPropertyConverter.dmnFromWB(wb.getDescription()));
         result.getNsContext().putAll(wb.getNsContext());
+        result.getNsContext().put(DMNModelInstrumentedBase.Namespace.DEFAULT.getPrefix(),
+                                  defaultNamespace);
 
         for (ItemDefinition itemDef : wb.getItemDefinition()) {
             org.kie.dmn.model.api.ItemDefinition itemDefConvered = ItemDefinitionPropertyConverter.dmnFromWB(itemDef);
