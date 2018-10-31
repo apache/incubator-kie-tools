@@ -16,6 +16,8 @@
 
 package org.drools.workbench.screens.scenariosimulation.backend.server.runner.model;
 
+import java.util.Optional;
+
 import org.drools.workbench.screens.scenariosimulation.model.FactIdentifier;
 import org.drools.workbench.screens.scenariosimulation.model.FactMappingValue;
 
@@ -24,13 +26,16 @@ public class ScenarioResult {
     private final FactIdentifier factIdentifier;
     private final FactMappingValue factMappingValue;
     private final Object resultValue;
-    private final Boolean result;
+    private boolean result = false;
 
-    public ScenarioResult(FactIdentifier factIdentifier, FactMappingValue factMappingValue, Object resultValue, Boolean result) {
+    public ScenarioResult(FactIdentifier factIdentifier, FactMappingValue factMappingValue) {
+        this(factIdentifier, factMappingValue, null);
+    }
+
+    public ScenarioResult(FactIdentifier factIdentifier, FactMappingValue factMappingValue, Object resultValue) {
         this.factIdentifier = factIdentifier;
         this.factMappingValue = factMappingValue;
         this.resultValue = resultValue;
-        this.result = result;
     }
 
     public FactIdentifier getFactIdentifier() {
@@ -41,11 +46,16 @@ public class ScenarioResult {
         return factMappingValue;
     }
 
-    public Object getResultValue() {
-        return resultValue;
+    public Optional<Object> getResultValue() {
+        return Optional.ofNullable(resultValue);
     }
 
-    public Boolean getResult() {
+    public ScenarioResult setResult(boolean result) {
+        this.result = result;
+        return this;
+    }
+
+    public boolean getResult() {
         return result;
     }
 }

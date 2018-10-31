@@ -17,6 +17,7 @@ package org.drools.workbench.screens.scenariosimulation.model;
 
 import java.util.Objects;
 
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
@@ -28,6 +29,8 @@ public class FactMappingValue {
     private FactIdentifier factIdentifier;
     private ExpressionIdentifier expressionIdentifier;
     private Object rawValue;
+    @XStreamOmitField
+    private boolean error = false;
 
     public FactMappingValue() {
     }
@@ -60,5 +63,13 @@ public class FactMappingValue {
         cloned.factIdentifier = factIdentifier;
         cloned.rawValue = rawValue;
         return cloned;
+    }
+
+    public boolean isError() {
+        return error;
+    }
+
+    public void setError(boolean error) {
+        this.error = error;
     }
 }

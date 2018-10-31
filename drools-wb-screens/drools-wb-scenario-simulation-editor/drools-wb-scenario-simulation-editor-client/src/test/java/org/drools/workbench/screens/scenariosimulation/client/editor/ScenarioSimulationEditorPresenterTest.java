@@ -19,6 +19,7 @@ package org.drools.workbench.screens.scenariosimulation.client.editor;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.screens.scenariosimulation.client.commands.CommandExecutor;
 import org.drools.workbench.screens.scenariosimulation.client.models.FactModelTree;
+import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
 import org.drools.workbench.screens.scenariosimulation.client.producers.ScenarioSimulationProducer;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.RightPanelPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.RightPanelView;
@@ -105,6 +106,9 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
     private ScenarioGridPanel mockScenarioGridPanel;
 
     @Mock
+    private ScenarioGridModel mockScenarioGridModel;
+
+    @Mock
     private ScenarioSimulationView mockScenarioSimulationView;
 
     @Mock
@@ -152,6 +156,8 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
         when(mockScenarioGridLayer.getScenarioGrid()).thenReturn(mockScenarioGrid);
         when(mockScenarioSimulationView.getScenarioGridPanel()).thenReturn(mockScenarioGridPanel);
         when(mockScenarioSimulationView.getScenarioGridLayer()).thenReturn(mockScenarioGridLayer);
+        when(mockScenarioGridPanel.getScenarioGrid()).thenReturn(mockScenarioGrid);
+        when(mockScenarioGrid.getModel()).thenReturn(mockScenarioGridModel);
         when(mockScenarioSimulationProducer.getScenarioSimulationView()).thenReturn(mockScenarioSimulationView);
         when(mockScenarioSimulationProducer.getCommandExecutor()).thenReturn(mockCommandExecutor);
         when(mockPlaceRequest.getIdentifier()).thenReturn(ScenarioSimulationEditorPresenter.IDENTIFIER);
@@ -310,11 +316,18 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
         doReturn(new ScenarioSimulationModelContent(model,
                                                     new Overview(),
                                                     new PackageDataModelOracleBaselinePayload())).when(scenarioSimulationService).loadContent(any());
+
+        when(scenarioSimulationService.runScenario(any(), any())).thenReturn(mock(ScenarioSimulationModel.class));
+
         presenter.onStartup(mock(ObservablePath.class), mock(PlaceRequest.class));
 
         presenter.onRunScenario();
 
         verify(scenarioSimulationService).runScenario(any(), eq(model));
+
+        verify(mockScenarioGridModel, times(1)).resetErrors();
+
+        verify(mockScenarioSimulationView, times(1)).refreshContent(any());
     }
 
     @Test

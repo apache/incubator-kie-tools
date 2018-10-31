@@ -131,6 +131,10 @@ public class Scenario {
         });
     }
 
+    public void resetErrors() {
+        factMappingValues.forEach(elem -> elem.setError(false));
+    }
+
     Scenario cloneScenario() {
         Scenario cloned = new Scenario(simulationDescriptor);
         cloned.factMappingValues.addAll(factMappingValues.stream().map(FactMappingValue::cloneFactMappingValue).collect(toList()));

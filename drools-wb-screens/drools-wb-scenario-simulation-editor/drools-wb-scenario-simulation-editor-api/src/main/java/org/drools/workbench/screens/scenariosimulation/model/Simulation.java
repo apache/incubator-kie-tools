@@ -105,6 +105,10 @@ public class Simulation {
         scenarios.forEach(Scenario::sort);
     }
 
+    public void resetErrors() {
+        scenarios.forEach(Scenario::resetErrors);
+    }
+
     private void cleanScenarios(FactMapping toRemove) {
         scenarios.forEach(e -> e.removeFactMappingValueByIdentifiers(toRemove.getFactIdentifier(), toRemove.getExpressionIdentifier()));
     }

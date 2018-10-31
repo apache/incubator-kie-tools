@@ -33,6 +33,7 @@ import org.drools.workbench.screens.scenariosimulation.model.ExpressionIdentifie
 import org.drools.workbench.screens.scenariosimulation.model.FactIdentifier;
 import org.drools.workbench.screens.scenariosimulation.model.FactMapping;
 import org.drools.workbench.screens.scenariosimulation.model.FactMappingType;
+import org.drools.workbench.screens.scenariosimulation.model.FactMappingValue;
 import org.drools.workbench.screens.scenariosimulation.model.Scenario;
 import org.drools.workbench.screens.scenariosimulation.model.Simulation;
 import org.drools.workbench.screens.scenariosimulation.model.SimulationDescriptor;
@@ -510,6 +511,38 @@ public class ScenarioGridModel extends BaseGridData {
 
     void checkSimulation() {
         Objects.requireNonNull(simulation, "Bind a simulation to the ScenarioGridModel to use it");
+    }
+
+    public void resetErrors() {
+        IntStream.range(0, getRowCount()).forEach(this::resetErrors);
+    }
+
+    public void resetErrors(int rowIndex) {
+        Scenario scenarioByIndex = simulation.getScenarioByIndex(rowIndex);
+        scenarioByIndex.resetErrors();
+        refreshErrors();
+    }
+
+    public void refreshErrors() {
+        IntStream.range(0, getRowCount()).forEach(this::refreshErrorsRow);
+    }
+
+    void refreshErrorsRow(int rowIndex) {
+        SimulationDescriptor simulationDescriptor = simulation.getSimulationDescriptor();
+        Scenario scenarioByIndex = simulation.getScenarioByIndex(rowIndex);
+        IntStream.range(0, getColumnCount()).forEach(columnIndex -> {
+            ScenarioGridCell cell = (ScenarioGridCell) getCell(rowIndex, columnIndex);
+            if (cell == null) {
+                return;
+            }
+            final FactMapping factMappingByIndex = simulationDescriptor.getFactMappingByIndex(columnIndex);
+            Optional<FactMappingValue> factMappingValue = scenarioByIndex.getFactMappingValue(factMappingByIndex.getFactIdentifier(), factMappingByIndex.getExpressionIdentifier());
+            if (factMappingValue.isPresent()) {
+                cell.setError(factMappingValue.get().isError());
+            } else {
+                cell.setError(false);
+            }
+        });
     }
 
     // Helper method to avoid potential NPE

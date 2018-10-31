@@ -142,11 +142,11 @@ public class ScenarioSimulationServiceImpl
     }
 
     @Override
-    public void runScenario(final Path path,
-                            final ScenarioSimulationModel model) {
-        scenarioRunnerService.runTest(user.getIdentifier(),
-                                      path,
-                                      model);
+    public ScenarioSimulationModel runScenario(final Path path,
+                                               final ScenarioSimulationModel model) {
+        return scenarioRunnerService.runTest(user.getIdentifier(),
+                                             path,
+                                             model);
     }
 
     @Override

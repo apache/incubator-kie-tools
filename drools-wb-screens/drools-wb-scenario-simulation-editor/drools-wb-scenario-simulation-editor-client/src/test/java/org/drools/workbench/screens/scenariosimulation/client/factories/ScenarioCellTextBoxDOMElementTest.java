@@ -30,6 +30,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.spy;
@@ -79,5 +80,6 @@ public class ScenarioCellTextBoxDOMElementTest {
     public void flush() {
         scenarioCellTextBoxDOMElement.flush("");
         verify(scenarioGridModelMock, times(1)).setCellValue(eq(ROW_INDEX), eq(COLUMN_INDEX), isA(ScenarioGridCellValue.class));
+        verify(scenarioGridModelMock, times(1)).resetErrors(anyInt());
     }
 }

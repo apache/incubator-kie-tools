@@ -38,5 +38,5 @@ public interface ScenarioSimulationService
 
     ScenarioSimulationModelContent loadContent(final Path path);
 
-    void runScenario(final Path path, final ScenarioSimulationModel model);
+    ScenarioSimulationModel runScenario(final Path path, final ScenarioSimulationModel model);
 }

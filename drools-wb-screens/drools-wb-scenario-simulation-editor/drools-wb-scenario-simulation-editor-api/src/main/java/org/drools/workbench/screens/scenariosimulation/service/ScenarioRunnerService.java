@@ -22,5 +22,5 @@ import org.uberfire.backend.vfs.Path;
 public interface ScenarioRunnerService
         extends TestService {
 
-    void runTest(final String identifier, final Path path, final ScenarioSimulationModel model);
+    ScenarioSimulationModel runTest(final String identifier, final Path path, final ScenarioSimulationModel model);
 }

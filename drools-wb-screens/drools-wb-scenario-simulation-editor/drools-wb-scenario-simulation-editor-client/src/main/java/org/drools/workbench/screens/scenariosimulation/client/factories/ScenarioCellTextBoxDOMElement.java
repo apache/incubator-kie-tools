@@ -16,6 +16,7 @@
 
 package org.drools.workbench.screens.scenariosimulation.client.factories;
 
+import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.drools.workbench.screens.scenariosimulation.client.values.ScenarioGridCellValue;
 import org.gwtbootstrap3.client.ui.TextBox;
@@ -34,8 +35,10 @@ public class ScenarioCellTextBoxDOMElement extends TextBoxDOMElement {
         final int rowIndex = context.getRowIndex();
         final int columnIndex = context.getColumnIndex();
         String actualValue = (value == null || value.trim().isEmpty()) ? null : value;
-        gridWidget.getModel().setCellValue(rowIndex,
-                                           columnIndex,
-                                           new ScenarioGridCellValue(actualValue, ScenarioSimulationEditorConstants.INSTANCE.insertValue()));
+        ScenarioGridModel model = (ScenarioGridModel) gridWidget.getModel();
+        model.setCellValue(rowIndex,
+                           columnIndex,
+                           new ScenarioGridCellValue(actualValue, ScenarioSimulationEditorConstants.INSTANCE.insertValue()));
+        model.resetErrors(rowIndex);
     }
 }

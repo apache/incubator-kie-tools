@@ -90,14 +90,17 @@ public class ScenarioRunnerImpl extends Runner {
                     .forEach(scenarioRunnerData::addInput);
             extractExpectedValues(scenario.getUnmodifiableFactMappingValues()).forEach(scenarioRunnerData::addOutput);
 
-            executeScenario(kieContainer, scenarioRunnerData.getInputData());
-            List<ScenarioResult> scenarioResults = verifyConditions(simulationDescriptor,
-                                                                    scenarioRunnerData.getInputData(),
-                                                                    scenarioRunnerData.getOutputData(),
-                                                                    expressionEvaluator);
-            validateAssertion(scenarioResults, scenario, singleNotifier);
+            executeScenario(kieContainer,
+                            scenarioRunnerData,
+                            expressionEvaluator,
+                            simulationDescriptor);
 
-            scenarioResults.forEach(scenarioRunnerData::addResult);
+            verifyConditions(simulationDescriptor,
+                             scenarioRunnerData,
+                             expressionEvaluator);
+            validateAssertion(scenarioRunnerData.getResultData(),
+                              scenario,
+                              singleNotifier);
         } catch (ScenarioException e) {
             singleNotifier.addFailure(e);
         } catch (Throwable e) {

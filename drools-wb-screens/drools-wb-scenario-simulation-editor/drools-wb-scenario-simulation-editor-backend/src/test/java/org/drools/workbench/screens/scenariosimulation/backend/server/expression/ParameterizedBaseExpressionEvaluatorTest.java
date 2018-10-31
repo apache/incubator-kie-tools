@@ -24,6 +24,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 @RunWith(Parameterized.class)
 public class ParameterizedBaseExpressionEvaluatorTest {
@@ -50,7 +51,15 @@ public class ParameterizedBaseExpressionEvaluatorTest {
                 {4, "! < 1"},
                 {1, "> -1"},
                 {10, "!= <10;!= >11"},
-                {10, "= 10; >9"}
+                {10, "= 10; >9"},
+                {Error.class, "! tru"},
+                {Error.class, "fals"},
+                {Error.class, "!= fals"},
+                {Error.class, "tru"},
+                {Error.class, "<> fals"},
+                {Error.class, "tru"},
+                {Error.class, "!m= false"},
+                {Error.class, ">> 3"}
         });
     }
 
@@ -63,6 +72,14 @@ public class ParameterizedBaseExpressionEvaluatorTest {
     @Test
     public void evaluate() {
 
-        assertTrue(baseExpressionEvaluator.evaluate(exprToTest, resultValue));
+        if (!(resultValue instanceof Class)) {
+            assertTrue(baseExpressionEvaluator.evaluate(exprToTest, resultValue));
+        } else {
+            try {
+                baseExpressionEvaluator.evaluate(exprToTest, true);
+                fail();
+            } catch (Exception ignored) {
+            }
+        }
     }
 }

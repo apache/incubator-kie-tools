@@ -32,6 +32,7 @@ import org.drools.workbench.screens.scenariosimulation.backend.server.runner.Sce
 import org.junit.Test;
 
 import static org.drools.workbench.screens.scenariosimulation.backend.server.util.ScenarioBeanUtil.convertValue;
+import static org.drools.workbench.screens.scenariosimulation.backend.server.util.ScenarioBeanUtil.loadClass;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -171,5 +172,19 @@ public class ScenarioBeanUtilTest {
     @Test(expected = IllegalArgumentException.class)
     public void convertValueFailNotStringOrTypeTest() {
         convertValue(ScenarioRunnerHelperTest.class.getCanonicalName(), 1, classLoader);
+    }
+
+    @Test
+    public void loadClassTest() {
+        assertEquals(String.class, loadClass(String.class.getCanonicalName(), classLoader));
+        assertEquals(int.class, loadClass(int.class.getCanonicalName(), classLoader));
+
+        Assertions.assertThatThrownBy(() -> loadClass(null, classLoader))
+                .isInstanceOf(ScenarioException.class)
+                .hasMessage("Impossible to load class null");
+
+        Assertions.assertThatThrownBy(() -> loadClass("NotExistingClass", classLoader))
+                .isInstanceOf(ScenarioException.class)
+                .hasMessage("Impossible to load class NotExistingClass");
     }
 }

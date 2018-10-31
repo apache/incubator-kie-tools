@@ -245,9 +245,9 @@ public class ScenarioSimulationUtils {
             case Index:
                 return 70;
             case Description:
-                return 230;
+                return 300;
             default:
-                return 150;
+                return 200;
         }
     }
 

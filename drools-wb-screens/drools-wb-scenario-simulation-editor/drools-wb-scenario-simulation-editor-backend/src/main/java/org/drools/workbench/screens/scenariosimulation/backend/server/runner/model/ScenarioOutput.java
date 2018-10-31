@@ -27,9 +27,16 @@ public class ScenarioOutput {
 
     private final List<FactMappingValue> expectedResult;
 
-    public ScenarioOutput(FactIdentifier factIdentifier, List<FactMappingValue> expectedResult) {
+    private final boolean isNewFact;
+
+    public ScenarioOutput(FactIdentifier factIdentifier, List<FactMappingValue> expectedResult, boolean isNewFact) {
         this.factIdentifier = factIdentifier;
         this.expectedResult = expectedResult;
+        this.isNewFact = isNewFact;
+    }
+
+    public ScenarioOutput(FactIdentifier factIdentifier, List<FactMappingValue> expectedResult) {
+        this(factIdentifier, expectedResult, false);
     }
 
     public FactIdentifier getFactIdentifier() {
@@ -38,5 +45,9 @@ public class ScenarioOutput {
 
     public List<FactMappingValue> getExpectedResult() {
         return expectedResult;
+    }
+
+    public boolean isNewFact() {
+        return isNewFact;
     }
 }

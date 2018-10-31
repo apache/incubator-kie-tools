@@ -14,11 +14,19 @@
  * limitations under the License.
  */
 
-package org.drools.workbench.screens.scenariosimulation.backend.server.runner;
+package org.drools.workbench.screens.scenariosimulation.backend.server.fluent;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
+import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.ScenarioResult;
+import org.drools.workbench.screens.scenariosimulation.model.FactIdentifier;
 import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.runtime.ExecutableRunner;
 import org.kie.api.runtime.KieContainer;
@@ -33,6 +41,7 @@ public class ScenarioExecutableBuilder {
 
     private final KieSessionFluent kieSessionFluent;
     private final ExecutableBuilder executableBuilder;
+    private final Map<FactIdentifier, List<FactCheckerHandle>> internalConditions = new HashMap<>();
 
     private static BiFunction<String, KieContainer, KieContainer> forcePseudoClock = (sessionName, kc) -> {
         KieSessionModel kieSessionModel = kc.getKieSessionModel(sessionName);
@@ -60,13 +69,26 @@ public class ScenarioExecutableBuilder {
         return new ScenarioExecutableBuilder(kieContainer);
     }
 
+    public void addInternalCondition(Class<?> clazz,
+                                     Function<Object, Optional<Object>> checkFunction,
+                                     ScenarioResult scenarioResult) {
+        internalConditions.computeIfAbsent(scenarioResult.getFactIdentifier(), key -> new ArrayList<>())
+                .add(new FactCheckerHandle(clazz, checkFunction, scenarioResult));
+    }
+
     public void insert(Object element) {
         kieSessionFluent.insert(element);
     }
 
     public RequestContext run() {
         Objects.requireNonNull(executableBuilder, "Executable builder is null, please invoke create(KieContainer, )");
-        kieSessionFluent.fireAllRules().dispose().end();
+
+        kieSessionFluent.fireAllRules();
+        internalConditions.values()
+                .forEach(factToCheck -> kieSessionFluent.addCommand(new ValidateFactCommand(factToCheck)));
+
+        kieSessionFluent.dispose().end();
+
         return ExecutableRunner.create().execute(executableBuilder.getExecutable());
     }
 }

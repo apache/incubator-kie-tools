@@ -15,11 +15,17 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.renderers;
 
+import com.ait.lienzo.client.core.shape.Rectangle;
 import com.ait.lienzo.client.core.shape.Text;
+import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.themes.GridRendererTheme;
 
 public interface ScenarioGridRendererTheme extends GridRendererTheme {
 
     Text getPlaceholderText();
+
+    Rectangle getBodyErrorBackground(final GridCell<?> column);
+
+    Text getErrorText();
 
 }
