@@ -32,4 +32,6 @@ public interface SecuredFileSystemProvider extends FileSystemProvider {
     void setAuthenticator(final FileSystemAuthenticator authenticator);
 
     void setAuthorizer(final FileSystemAuthorizer authorizer);
+
+    void setSSHAuthenticator(final SSHAuthenticator authenticator);
 }

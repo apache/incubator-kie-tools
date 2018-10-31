@@ -63,6 +63,7 @@ import org.uberfire.java.nio.file.attribute.UserPrincipalLookupService;
 import org.uberfire.java.nio.file.spi.FileSystemProvider;
 import org.uberfire.java.nio.security.FileSystemAuthenticator;
 import org.uberfire.java.nio.security.FileSystemAuthorizer;
+import org.uberfire.java.nio.security.SSHAuthenticator;
 import org.uberfire.java.nio.security.SecuredFileSystemProvider;
 
 /**
@@ -78,6 +79,8 @@ public class MockSecuredFilesystemProvider implements SecuredFileSystemProvider 
     public FileSystemAuthenticator authenticator;
 
     public FileSystemAuthorizer authorizer;
+
+    public SSHAuthenticator sshAuthenticator;
 
     public MockSecuredFilesystemProvider() {
         LATEST_INSTANCE = this;
@@ -270,6 +273,11 @@ public class MockSecuredFilesystemProvider implements SecuredFileSystemProvider 
     @Override
     public void setAuthorizer(FileSystemAuthorizer authorizer) {
         this.authorizer = authorizer;
+    }
+
+    @Override
+    public void setSSHAuthenticator(SSHAuthenticator authenticator) {
+        this.sshAuthenticator = authenticator;
     }
 
     private class MockPath extends AbstractPath {

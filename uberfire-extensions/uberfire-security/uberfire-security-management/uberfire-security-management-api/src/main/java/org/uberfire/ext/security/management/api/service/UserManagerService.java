@@ -16,13 +16,20 @@
 package org.uberfire.ext.security.management.api.service;
 
 import org.jboss.errai.bus.server.annotations.Remote;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.ext.security.management.api.UserManager;
+import org.uberfire.security.WorkbenchUserManager;
 
 /**
  * <p>Remote service API for the Users Manager.</p>
  * @since 0.8.0
  */
 @Remote
-public interface UserManagerService extends UserManager {
+public interface UserManagerService extends UserManager,
+                                            WorkbenchUserManager {
 
+    @Override
+    default User getUser(String identifier) {
+        return get(identifier);
+    }
 }

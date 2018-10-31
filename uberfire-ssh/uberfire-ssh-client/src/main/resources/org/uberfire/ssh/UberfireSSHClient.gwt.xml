@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.7.0//EN"
+    "http://www.gwtproject.org/doctype/2.7.0/gwt-module.dtd">
+<module>
+
+  <inherits name="org.jboss.errai.common.ErraiCommon"/>
+  <inherits name="org.jboss.errai.bus.ErraiBus"/>
+  <inherits name="org.jboss.errai.ui.UI"/>
+
+  <inherits name="org.kie.soup.commons.KIESoupCommons"/>
+
+  <inherits name="org.uberfire.UberfireAPI"/>
+  <inherits name="org.uberfire.UberfireClientAPI"/>
+  <inherits name="org.uberfire.UberfireWorkbench"/>
+
+  <inherits name="org.uberfire.ext.widgets.common.UberfireWidgetsCommons"/>
+
+  <inherits name="org.uberfire.ssh.UberfireSSHAPI"/>
+
+  <source path="client"/>
+
+</module>

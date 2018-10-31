@@ -144,6 +144,7 @@ import org.uberfire.java.nio.fs.jgit.ws.JGitFileSystemsEventsManager;
 import org.uberfire.java.nio.fs.jgit.ws.JGitWatchEvent;
 import org.uberfire.java.nio.security.FileSystemAuthenticator;
 import org.uberfire.java.nio.security.FileSystemAuthorizer;
+import org.uberfire.java.nio.security.SSHAuthenticator;
 import org.uberfire.java.nio.security.SecuredFileSystemProvider;
 
 import static java.util.Collections.emptyList;
@@ -346,6 +347,15 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
                      authorizer);
         if (gitSSHService != null) {
             gitSSHService.setAuthorizationManager(authorizer);
+        }
+    }
+
+    @Override
+    public void setSSHAuthenticator(SSHAuthenticator authenticator) {
+        checkNotNull("authenticator", authenticator);
+
+        if (gitSSHService != null) {
+            gitSSHService.setSshAuthenticator(authenticator);
         }
     }
 

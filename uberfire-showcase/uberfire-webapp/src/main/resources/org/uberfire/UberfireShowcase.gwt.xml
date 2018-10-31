@@ -25,6 +25,7 @@
   <inherits name="org.uberfire.ext.plugin.RuntimePluginClient"/>
   <inherits name="org.uberfire.ext.apps.UberfireAppsClient"/>
   <inherits name="org.uberfire.ext.widgets.core.UberfireWidgetsCore"/>
+  <inherits name="org.uberfire.ssh.UberfireSSHClient"/>
 
   <!-- Social dependencies -->
   <inherits name="org.ext.uberfire.social.activities.SocialActivitiesAPI"/>

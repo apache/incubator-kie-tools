@@ -39,6 +39,7 @@ import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
 import org.uberfire.java.nio.security.FileSystemAuthenticator;
 import org.uberfire.java.nio.security.FileSystemAuthorizer;
 import org.uberfire.java.nio.security.FileSystemUser;
+import org.uberfire.java.nio.security.SSHAuthenticator;
 
 import static org.apache.sshd.common.NamedFactory.setUpBuiltinFactories;
 import static org.apache.sshd.server.ServerBuilder.builder;
@@ -54,6 +55,7 @@ public class GitSSHService {
 
     private FileSystemAuthenticator fileSystemAuthenticator;
     private FileSystemAuthorizer fileSystemAuthorizer;
+    private SSHAuthenticator sshAuthenticator;
 
     private static SshServer buildSshServer() {
         final List<BuiltinCiphers> ciphers =
@@ -133,15 +135,27 @@ public class GitSSHService {
                 return new UnknownCommand(command);
             }
         });
-        sshd.setPublickeyAuthenticator(new CachingPublicKeyAuthenticator((username, key, session) -> false));
-        sshd.setPasswordAuthenticator((username, password, session) -> {
-            final FileSystemUser user = getUserPassAuthenticator().authenticate(username,
-                                                                                password);
+        sshd.setPublickeyAuthenticator(new CachingPublicKeyAuthenticator((username, key, session) -> {
+
+            final FileSystemUser user = getSshAuthenticator().authenticate(username, key);
+
             if (user == null) {
                 return false;
             }
-            session.setAttribute(BaseGitCommand.SUBJECT_KEY,
-                                 user);
+
+            session.setAttribute(BaseGitCommand.SUBJECT_KEY, user);
+
+            return true;
+        }));
+        sshd.setPasswordAuthenticator((username, password, session) -> {
+
+            final FileSystemUser user = getUserPassAuthenticator().authenticate(username, password);
+
+            if (user == null) {
+                return false;
+            }
+
+            session.setAttribute(BaseGitCommand.SUBJECT_KEY, user);
             return true;
         });
     }
@@ -188,5 +202,13 @@ public class GitSSHService {
 
     public void setAuthorizationManager(FileSystemAuthorizer fileSystemAuthorizer) {
         this.fileSystemAuthorizer = fileSystemAuthorizer;
+    }
+
+    public SSHAuthenticator getSshAuthenticator() {
+        return sshAuthenticator;
+    }
+
+    public void setSshAuthenticator(SSHAuthenticator sshAuthenticator) {
+        this.sshAuthenticator = sshAuthenticator;
     }
 }

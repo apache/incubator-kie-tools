@@ -33,6 +33,7 @@ import org.uberfire.java.nio.file.spi.FileSystemProvider;
 import org.uberfire.java.nio.security.FileSystemUser;
 import org.uberfire.java.nio.security.SecuredFileSystemProvider;
 import org.uberfire.security.authz.AuthorizationManager;
+import org.uberfire.ssh.service.backend.auth.SSHKeyAuthenticator;
 
 @ApplicationScoped
 @Startup
@@ -50,6 +51,9 @@ public class IOServiceSecuritySetup {
 
     @Inject
     AuthorizationManager authorizationManager;
+
+    @Inject
+    SSHKeyAuthenticator sshKeyAuthenticator;
 
     @PostConstruct
     public void setup() {
@@ -95,6 +99,15 @@ public class IOServiceSecuritySetup {
                                                   ((UserAdapter) fileSystemUser).getWrappedUser())
 
                 );
+                sfp.setSSHAuthenticator((userName, key) -> {
+                    User user = sshKeyAuthenticator.authenticate(userName, key);
+
+                    if (user != null) {
+                        return new UserAdapter(user);
+                    }
+
+                    return null;
+                });
             }
         }
     }

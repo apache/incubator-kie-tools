@@ -54,6 +54,11 @@
       <scope>provided</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-ssh-api</artifactId>
+    </dependency>
+
     <!-- Formatting -->
     <dependency>
       <groupId>org.ocpsoft.prettytime</groupId>

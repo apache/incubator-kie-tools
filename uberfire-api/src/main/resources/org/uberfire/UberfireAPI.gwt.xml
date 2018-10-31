@@ -19,6 +19,7 @@
     "http://google-web-toolkit.googlecode.com/svn/tags/2.5.0/distro-source/core/src/gwt-module.dtd">
 <module>
 
+  <inherits name="org.jboss.errai.security.SecurityShared"/>
   <inherits name='org.jboss.errai.ioc.Container'/>
 
   <source path='annotations'/>

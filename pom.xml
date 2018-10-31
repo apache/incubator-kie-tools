@@ -866,6 +866,7 @@
     <module>uberfire-structure</module>
     <module>uberfire-test-utils</module>
     <module>uberfire-workingset</module>
+    <module>uberfire-ssh</module>
     <module>uberfire-showcase</module>
     <module>dashbuilder</module>
   </modules>

@@ -40,6 +40,9 @@ public class ModalFooterYesNoCancelButtons extends ModalFooter {
     private final Command noCommand;
 
     private final Modal panel;
+
+    private boolean closeModalAfterAction = true;
+
     @UiField
     Button yesButton;
     @UiField
@@ -153,26 +156,31 @@ public class ModalFooterYesNoCancelButtons extends ModalFooter {
 
     @UiHandler("yesButton")
     public void onYesButtonClick(final ClickEvent e) {
-        if (yesCommand != null) {
-            yesCommand.execute();
-        }
-        panel.hide();
+        onButtonAction(yesCommand);
     }
 
     @UiHandler("noButton")
     public void onNoButtonClick(final ClickEvent e) {
-        if (noCommand != null) {
-            noCommand.execute();
-        }
-        panel.hide();
+        onButtonAction(noCommand);
     }
 
     @UiHandler("cancelButton")
     public void onCancelButtonClick(final ClickEvent e) {
-        if (cancelCommand != null) {
-            cancelCommand.execute();
+        onButtonAction(cancelCommand);
+    }
+
+    private void onButtonAction(Command command) {
+        if(command != null) {
+            command.execute();
         }
-        panel.hide();
+
+        if(closeModalAfterAction) {
+            panel.hide();
+        }
+    }
+
+    public void setCloseModalAfterAction(boolean closeModalAfterAction) {
+        this.closeModalAfterAction = closeModalAfterAction;
     }
 
     interface ModalFooterYesNoCancelButtonsBinder
