@@ -21,11 +21,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.ScenarioResult;
+import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.SingleFactValueResult;
 import org.drools.workbench.screens.scenariosimulation.model.FactIdentifier;
 import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.runtime.ExecutableRunner;
@@ -70,7 +70,7 @@ public class ScenarioExecutableBuilder {
     }
 
     public void addInternalCondition(Class<?> clazz,
-                                     Function<Object, Optional<Object>> checkFunction,
+                                     Function<Object, SingleFactValueResult> checkFunction,
                                      ScenarioResult scenarioResult) {
         internalConditions.computeIfAbsent(scenarioResult.getFactIdentifier(), key -> new ArrayList<>())
                 .add(new FactCheckerHandle(clazz, checkFunction, scenarioResult));

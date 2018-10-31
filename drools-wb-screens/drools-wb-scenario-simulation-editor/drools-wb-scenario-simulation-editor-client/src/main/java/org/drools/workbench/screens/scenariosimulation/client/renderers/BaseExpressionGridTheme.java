@@ -39,6 +39,8 @@ import static org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.the
 
 public class BaseExpressionGridTheme implements ScenarioGridRendererTheme {
 
+    public static final String PLACEHOLDER_COLOR = "#757575";
+
     public static final String FONT_FAMILY_HEADER = "Open Sans, Helvetica, Arial, sans-serif";
 
     public static final String FONT_FAMILY_LABEL = "Open Sans, Helvetica, Arial, sans-serif";
@@ -152,7 +154,7 @@ public class BaseExpressionGridTheme implements ScenarioGridRendererTheme {
     @Override
     public Text getPlaceholderText() {
         return new Text("")
-                .setFillColor(TABLE_TEXT)
+                .setFillColor(PLACEHOLDER_COLOR)
                 .setFontSize(FONT_SIZE)
                 .setFontFamily(FONT_FAMILY_LABEL)
                 .setFontStyle(FONT_STYLE_ITALIC)

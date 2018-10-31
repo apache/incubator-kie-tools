@@ -15,21 +15,19 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.metadata;
 
-import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioHeaderTextBoxDOMElement;
-import org.gwtbootstrap3.client.ui.TextBox;
+import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioHeaderTextBoxSingletonDOMElementFactory;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellEditContext;
-import org.uberfire.ext.wires.core.grids.client.widget.dom.single.SingletonDOMElementFactory;
 
 public class ScenarioHeaderMetaData extends BaseHeaderMetaData {
 
-    final SingletonDOMElementFactory<TextBox, ScenarioHeaderTextBoxDOMElement> factory;
+    final ScenarioHeaderTextBoxSingletonDOMElementFactory factory;
     final String columnId;
     final boolean readOnly;
     // true if this header contains the column' main informations (group, title, id)
     final boolean informationHeader;
 
-    public ScenarioHeaderMetaData(String columnId, String columnTitle, String columnGroup, final SingletonDOMElementFactory<TextBox, ScenarioHeaderTextBoxDOMElement> factory, boolean readOnly, boolean informationHeader) {
+    public ScenarioHeaderMetaData(String columnId, String columnTitle, String columnGroup, final ScenarioHeaderTextBoxSingletonDOMElementFactory factory, boolean readOnly, boolean informationHeader) {
         super(columnTitle, columnGroup);
         this.columnId = columnId;
         this.factory = factory;
@@ -37,7 +35,7 @@ public class ScenarioHeaderMetaData extends BaseHeaderMetaData {
         this.informationHeader = informationHeader;
     }
 
-    public ScenarioHeaderMetaData(String columnId, String columnTitle, String columnGroup, final SingletonDOMElementFactory<TextBox, ScenarioHeaderTextBoxDOMElement> factory,  boolean informationHeader) {
+    public ScenarioHeaderMetaData(String columnId, String columnTitle, String columnGroup, final ScenarioHeaderTextBoxSingletonDOMElementFactory factory, boolean informationHeader) {
         this(columnId, columnTitle, columnGroup, factory, false, informationHeader);
     }
 

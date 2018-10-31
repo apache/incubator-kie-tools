@@ -497,7 +497,7 @@ public class ScenarioGridModel extends BaseGridData {
     protected void updateIndexColumn() {
         final Optional<GridColumn<?>> indexColumn = this.getColumns()    // Retrieving the column list
                 .stream()  // streaming
-                .filter(gridColumn -> ((ScenarioGridColumn) gridColumn).getInformationHeaderMetaData().getTitle().equals(ExpressionIdentifier.INDEX.getName()))  // filtering by group name
+                .filter(gridColumn -> ((ScenarioGridColumn) gridColumn).getInformationHeaderMetaData().getTitle().equals(FactIdentifier.INDEX.getName()))  // filtering by group name
                 .findFirst();
         indexColumn.ifPresent(column -> {
             int indexOfColumn = getColumns().indexOf(column);

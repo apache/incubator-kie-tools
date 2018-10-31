@@ -18,7 +18,7 @@ package org.drools.workbench.screens.scenariosimulation.client.utils;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioCellTextBoxSingletonDOMElementFactory;
+import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioCellTextAreaSingletonDOMElementFactory;
 import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioHeaderTextBoxSingletonDOMElementFactory;
 import org.drools.workbench.screens.scenariosimulation.client.metadata.ScenarioHeaderMetaData;
 import org.drools.workbench.screens.scenariosimulation.client.renderers.ScenarioGridColumnRenderer;
@@ -59,13 +59,13 @@ public class ScenarioSimulationBuilders {
         private String placeHolder = "";
         private final HeaderBuilder headerBuilder;
         private ScenarioGridColumnRenderer scenarioGridColumnRenderer;
-        private final ScenarioCellTextBoxSingletonDOMElementFactory factoryCell;
+        private final ScenarioCellTextAreaSingletonDOMElementFactory factoryCell;
 
-        public static ScenarioGridColumnBuilder get(ScenarioCellTextBoxSingletonDOMElementFactory factoryCell, HeaderBuilder headerBuilder) {
+        public static ScenarioGridColumnBuilder get(ScenarioCellTextAreaSingletonDOMElementFactory factoryCell, HeaderBuilder headerBuilder) {
             return new ScenarioGridColumnBuilder(factoryCell, headerBuilder);
         }
 
-        private ScenarioGridColumnBuilder(ScenarioCellTextBoxSingletonDOMElementFactory factoryCell, HeaderBuilder headerBuilder) {
+        private ScenarioGridColumnBuilder(ScenarioCellTextAreaSingletonDOMElementFactory factoryCell, HeaderBuilder headerBuilder) {
             this.factoryCell = factoryCell;
             this.headerBuilder = headerBuilder;
         }
@@ -96,7 +96,7 @@ public class ScenarioSimulationBuilders {
         }
 
         public ScenarioGridColumn build() {
-            List<GridColumn.HeaderMetaData> headerMetaDataList =  headerBuilder.build();
+            List<GridColumn.HeaderMetaData> headerMetaDataList = headerBuilder.build();
             ScenarioGridColumnRenderer actualScenarioGridColumnRenderer = scenarioGridColumnRenderer != null ? scenarioGridColumnRenderer : new ScenarioGridColumnRenderer();
             ScenarioGridColumn toReturn = new ScenarioGridColumn(headerMetaDataList,
                                                                  actualScenarioGridColumnRenderer,

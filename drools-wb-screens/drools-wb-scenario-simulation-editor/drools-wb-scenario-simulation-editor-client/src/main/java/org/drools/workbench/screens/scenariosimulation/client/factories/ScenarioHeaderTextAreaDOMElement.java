@@ -17,16 +17,13 @@
 package org.drools.workbench.screens.scenariosimulation.client.factories;
 
 import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
-import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
-import org.drools.workbench.screens.scenariosimulation.client.values.ScenarioGridCellValue;
-import org.gwtbootstrap3.client.ui.TextBox;
-import org.uberfire.ext.wires.core.grids.client.widget.dom.impl.TextBoxDOMElement;
+import org.gwtbootstrap3.client.ui.TextArea;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 
-public class ScenarioCellTextBoxDOMElement extends TextBoxDOMElement {
+public class ScenarioHeaderTextAreaDOMElement extends ScenarioCellTextAreaDOMElement {
 
-    public ScenarioCellTextBoxDOMElement(TextBox widget, GridLayer gridLayer, GridWidget gridWidget) {
+    public ScenarioHeaderTextAreaDOMElement(TextArea widget, GridLayer gridLayer, GridWidget gridWidget) {
         super(widget, gridLayer, gridWidget);
     }
 
@@ -34,11 +31,12 @@ public class ScenarioCellTextBoxDOMElement extends TextBoxDOMElement {
     public void flush(final String value) {
         final int rowIndex = context.getRowIndex();
         final int columnIndex = context.getColumnIndex();
-        String actualValue = (value == null || value.trim().isEmpty()) ? null : value;
-        ScenarioGridModel model = (ScenarioGridModel) gridWidget.getModel();
-        model.setCellValue(rowIndex,
-                           columnIndex,
-                           new ScenarioGridCellValue(actualValue, ScenarioSimulationEditorConstants.INSTANCE.insertValue()));
-        model.resetErrors(rowIndex);
+        try {
+            ScenarioGridModel model = (ScenarioGridModel) gridWidget.getModel();
+            model.updateHeader(columnIndex, rowIndex, value);
+        } catch (Exception e) {
+            throw new IllegalArgumentException(new StringBuilder().append("Impossible to update header (").append(rowIndex)
+                                                       .append(") of column ").append(columnIndex).toString(), e);
+        }
     }
 }

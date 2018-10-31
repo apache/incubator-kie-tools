@@ -23,7 +23,7 @@ import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGri
 import org.drools.workbench.screens.scenariosimulation.client.values.ScenarioGridCellValue;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGrid;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridLayer;
-import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtbootstrap3.client.ui.TextArea;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,10 +39,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
-public class ScenarioCellTextBoxDOMElementTest {
+public class ScenarioCellTextAreaDOMElementTest {
 
     @Mock
-    private TextBox textBoxMock;
+    private TextArea textAreaMock;
     @Mock
     private ScenarioGridLayer scenarioGridLayerMock;
     @Mock
@@ -59,17 +59,17 @@ public class ScenarioCellTextBoxDOMElementTest {
     private final static int ROW_INDEX = 1;
     private final static int COLUMN_INDEX = 2;
 
-    private ScenarioCellTextBoxDOMElement scenarioCellTextBoxDOMElement;
+    private ScenarioCellTextAreaDOMElement scenarioCellTextAreaDOMElement;
 
     @Before
     public void setup() {
         when(elementMock.getStyle()).thenReturn(styleMock);
-        when(textBoxMock.getElement()).thenReturn(elementMock);
+        when(textAreaMock.getElement()).thenReturn(elementMock);
         when(contextMock.getRowIndex()).thenReturn(ROW_INDEX);
         when(contextMock.getColumnIndex()).thenReturn(COLUMN_INDEX);
         when(scenarioGridMock.getModel()).thenReturn(scenarioGridModelMock);
         when(scenarioGridLayerMock.getScenarioGrid()).thenReturn(scenarioGridMock);
-        scenarioCellTextBoxDOMElement = spy(new ScenarioCellTextBoxDOMElement(textBoxMock, scenarioGridLayerMock, scenarioGridMock) {
+        scenarioCellTextAreaDOMElement = spy(new ScenarioCellTextAreaDOMElement(textAreaMock, scenarioGridLayerMock, scenarioGridMock) {
             {
                 this.context = contextMock;
             }
@@ -78,7 +78,7 @@ public class ScenarioCellTextBoxDOMElementTest {
 
     @Test
     public void flush() {
-        scenarioCellTextBoxDOMElement.flush("");
+        scenarioCellTextAreaDOMElement.flush("");
         verify(scenarioGridModelMock, times(1)).setCellValue(eq(ROW_INDEX), eq(COLUMN_INDEX), isA(ScenarioGridCellValue.class));
         verify(scenarioGridModelMock, times(1)).resetErrors(anyInt());
     }

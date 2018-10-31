@@ -16,18 +16,18 @@
 
 package org.drools.workbench.screens.scenariosimulation.backend.server.fluent;
 
-import java.util.Optional;
 import java.util.function.Function;
 
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.ScenarioResult;
+import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.SingleFactValueResult;
 
 public class FactCheckerHandle {
 
     private final Class<?> clazz;
-    private final Function<Object, Optional<Object>> checkFuction;
+    private final Function<Object, SingleFactValueResult> checkFuction;
     private final ScenarioResult scenarioResult;
 
-    public FactCheckerHandle(Class<?> clazz, Function<Object, Optional<Object>> checkFuction, ScenarioResult scenarioResult) {
+    public FactCheckerHandle(Class<?> clazz, Function<Object, SingleFactValueResult> checkFuction, ScenarioResult scenarioResult) {
         this.clazz = clazz;
         this.checkFuction = checkFuction;
         this.scenarioResult = scenarioResult;
@@ -37,7 +37,7 @@ public class FactCheckerHandle {
         return clazz;
     }
 
-    public Function<Object, Optional<Object>> getCheckFuction() {
+    public Function<Object, SingleFactValueResult> getCheckFuction() {
         return checkFuction;
     }
 

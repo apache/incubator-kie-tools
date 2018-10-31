@@ -61,6 +61,7 @@ import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuItem;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
@@ -358,6 +359,12 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
         assertNotNull(retrieved);
         assertEquals(factName, retrieved.getFactName());
         assertEquals(SCENARIO_PACKAGE, retrieved.getFullPackage());
+    }
+
+    @Test
+    public void isDirty() {
+        when(mockScenarioSimulationView.getScenarioGridPanel()).thenThrow(new RuntimeException());
+        assertFalse(presenter.isDirty());
     }
 
     private void onClosePlaceStatusOpen() {

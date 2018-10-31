@@ -20,10 +20,10 @@ import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGr
 
 public class FactoryProvider {
 
-    public static ScenarioCellTextBoxSingletonDOMElementFactory getCellTextBoxFactory(ScenarioGridPanel scenarioGridPanel, ScenarioGridLayer gridLayer) {
-        return new ScenarioCellTextBoxSingletonDOMElementFactory(scenarioGridPanel,
-                                                                 gridLayer,
-                                                                 gridLayer.getScenarioGrid());
+    public static ScenarioCellTextAreaSingletonDOMElementFactory getCellTextBoxFactory(ScenarioGridPanel scenarioGridPanel, ScenarioGridLayer gridLayer) {
+        return new ScenarioCellTextAreaSingletonDOMElementFactory(scenarioGridPanel,
+                                                                  gridLayer,
+                                                                  gridLayer.getScenarioGrid());
     }
 
     public static ScenarioHeaderTextBoxSingletonDOMElementFactory getHeaderTextBoxFactory(ScenarioGridPanel scenarioGridPanel, ScenarioGridLayer gridLayer) {

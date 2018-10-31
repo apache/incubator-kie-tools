@@ -16,21 +16,21 @@
 
 package org.drools.workbench.screens.scenariosimulation.client.factories;
 
-import org.gwtbootstrap3.client.ui.TextBox;
-import org.uberfire.ext.wires.core.grids.client.widget.dom.impl.TextBoxDOMElement;
+import org.gwtbootstrap3.client.ui.TextArea;
+import org.uberfire.ext.wires.core.grids.client.widget.dom.impl.BaseDOMElement;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPanel;
 
-public class ScenarioCellTextBoxSingletonDOMElementFactory extends AbstractTextBoxSingletonDOMElementFactory<TextBoxDOMElement> {
+public class ScenarioCellTextAreaSingletonDOMElementFactory extends AbstractTextBoxSingletonDOMElementFactory<BaseDOMElement<String, TextArea>> {
 
-    public ScenarioCellTextBoxSingletonDOMElementFactory(GridLienzoPanel gridPanel, GridLayer gridLayer, GridWidget gridWidget) {
+    public ScenarioCellTextAreaSingletonDOMElementFactory(GridLienzoPanel gridPanel, GridLayer gridLayer, GridWidget gridWidget) {
         super(gridPanel, gridLayer, gridWidget);
     }
 
     @Override
-    protected TextBoxDOMElement internalCreateDomElement(TextBox widget, GridLayer gridLayer, GridWidget gridWidget) {
-        return new ScenarioCellTextBoxDOMElement(widget, gridLayer, gridWidget);
+    protected BaseDOMElement<String, TextArea> internalCreateDomElement(TextArea widget, GridLayer gridLayer, GridWidget gridWidget) {
+        return new ScenarioCellTextAreaDOMElement(widget, gridLayer, gridWidget);
     }
 }
 

@@ -16,14 +16,12 @@
 
 package org.drools.workbench.screens.scenariosimulation.client.metadata;
 
-import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioHeaderTextBoxDOMElement;
+import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioHeaderTextBoxSingletonDOMElementFactory;
 import org.drools.workbench.screens.scenariosimulation.model.FactMapping;
-import org.gwtbootstrap3.client.ui.TextBox;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.uberfire.ext.wires.core.grids.client.widget.dom.single.SingletonDOMElementFactory;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.times;
@@ -33,7 +31,7 @@ import static org.mockito.Mockito.verify;
 public class ScenarioHeaderMetaDataTest {
 
     @Mock
-    SingletonDOMElementFactory<TextBox, ScenarioHeaderTextBoxDOMElement> factory;
+    ScenarioHeaderTextBoxSingletonDOMElementFactory factory;
 
     @Mock
     FactMapping factMapping;

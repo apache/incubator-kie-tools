@@ -16,7 +16,7 @@
 package org.drools.workbench.screens.scenariosimulation.client.utils;
 
 import org.drools.workbench.screens.scenariosimulation.client.factories.FactoryProvider;
-import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioCellTextBoxSingletonDOMElementFactory;
+import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioCellTextAreaSingletonDOMElementFactory;
 import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioHeaderTextBoxSingletonDOMElementFactory;
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
@@ -122,7 +122,7 @@ public class ScenarioSimulationUtils {
     public static ScenarioGridColumn getScenarioGridColumn(ScenarioSimulationBuilders.HeaderBuilder headerBuilder,
                                                            ScenarioGridPanel scenarioGridPanel,
                                                            ScenarioGridLayer gridLayer) {
-        ScenarioCellTextBoxSingletonDOMElementFactory factoryCell = FactoryProvider.getCellTextBoxFactory(scenarioGridPanel, gridLayer);
+        ScenarioCellTextAreaSingletonDOMElementFactory factoryCell = FactoryProvider.getCellTextBoxFactory(scenarioGridPanel, gridLayer);
         ScenarioSimulationBuilders.ScenarioGridColumnBuilder scenarioGridColumnBuilder = getScenarioGridColumnBuilder(factoryCell,
                                                                                                                       headerBuilder,
                                                                                                                       ScenarioSimulationEditorConstants.INSTANCE.insertValue());
@@ -152,7 +152,7 @@ public class ScenarioSimulationUtils {
                                                            ScenarioGridLayer gridLayer,
                                                            boolean readOnly,
                                                            String placeHolder) {
-        ScenarioCellTextBoxSingletonDOMElementFactory factoryCell = FactoryProvider.getCellTextBoxFactory(scenarioGridPanel, gridLayer);
+        ScenarioCellTextAreaSingletonDOMElementFactory factoryCell = FactoryProvider.getCellTextBoxFactory(scenarioGridPanel, gridLayer);
         ScenarioSimulationBuilders.ScenarioGridColumnBuilder scenarioGridColumnBuilder = getScenarioGridColumnBuilder(factoryCell,
                                                                                                                       headerBuilder,
                                                                                                                       placeHolder);
@@ -179,7 +179,7 @@ public class ScenarioSimulationUtils {
      * @param placeHolder
      * @return
      */
-    public static ScenarioSimulationBuilders.ScenarioGridColumnBuilder getScenarioGridColumnBuilder(ScenarioCellTextBoxSingletonDOMElementFactory factoryCell,
+    public static ScenarioSimulationBuilders.ScenarioGridColumnBuilder getScenarioGridColumnBuilder(ScenarioCellTextAreaSingletonDOMElementFactory factoryCell,
                                                                                                     ScenarioSimulationBuilders.HeaderBuilder headerBuilder,
                                                                                                     String placeHolder) {
         ScenarioSimulationBuilders.ScenarioGridColumnBuilder toReturn = ScenarioSimulationBuilders.ScenarioGridColumnBuilder.get(factoryCell, headerBuilder);

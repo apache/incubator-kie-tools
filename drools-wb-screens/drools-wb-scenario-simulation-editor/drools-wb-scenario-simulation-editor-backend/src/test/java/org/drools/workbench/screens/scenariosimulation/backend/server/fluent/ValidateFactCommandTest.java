@@ -17,12 +17,12 @@
 package org.drools.workbench.screens.scenariosimulation.backend.server.fluent;
 
 import java.util.Collections;
-import java.util.Optional;
 import java.util.function.Function;
 
 import org.drools.core.command.RequestContextImpl;
 import org.drools.core.command.impl.RegistryContext;
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.ScenarioResult;
+import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.SingleFactValueResult;
 import org.drools.workbench.screens.scenariosimulation.model.FactMappingValue;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,7 +53,7 @@ public class ValidateFactCommandTest {
 
     @Test
     public void executeTest() {
-        Function<Object, Optional<Object>> alwaysMatchFunction = Optional::of;
+        Function<Object, SingleFactValueResult> alwaysMatchFunction = SingleFactValueResult::createResult;
 
         ValidateFactCommand validateFactCommand = new ValidateFactCommand(asList(new FactCheckerHandle(String.class, alwaysMatchFunction, scenarioResult)));
 

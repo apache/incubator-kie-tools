@@ -16,12 +16,13 @@
 
 package org.drools.workbench.screens.scenariosimulation.client.factories;
 
-import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtbootstrap3.client.ui.TextArea;
+import org.uberfire.ext.wires.core.grids.client.widget.dom.impl.BaseDOMElement;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPanel;
 
-public class ScenarioHeaderTextBoxSingletonDOMElementFactory extends AbstractTextBoxSingletonDOMElementFactory<ScenarioHeaderTextBoxDOMElement> {
+public class ScenarioHeaderTextBoxSingletonDOMElementFactory extends AbstractTextBoxSingletonDOMElementFactory<BaseDOMElement<String, TextArea>> {
 
     public ScenarioHeaderTextBoxSingletonDOMElementFactory(final GridLienzoPanel gridPanel,
                                                            final GridLayer gridLayer,
@@ -32,8 +33,8 @@ public class ScenarioHeaderTextBoxSingletonDOMElementFactory extends AbstractTex
     }
 
     @Override
-    protected ScenarioHeaderTextBoxDOMElement internalCreateDomElement(TextBox widget, GridLayer gridLayer, GridWidget gridWidget) {
-        return new ScenarioHeaderTextBoxDOMElement(widget, gridLayer, gridWidget);
+    protected BaseDOMElement<String, TextArea> internalCreateDomElement(TextArea widget, GridLayer gridLayer, GridWidget gridWidget) {
+        return new ScenarioHeaderTextAreaDOMElement(widget, gridLayer, gridWidget);
     }
 }
 

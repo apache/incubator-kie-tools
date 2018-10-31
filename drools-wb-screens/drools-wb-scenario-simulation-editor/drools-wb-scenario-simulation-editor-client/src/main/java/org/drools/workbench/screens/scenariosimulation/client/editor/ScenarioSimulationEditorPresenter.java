@@ -440,9 +440,13 @@ public class ScenarioSimulationEditorPresenter
         return this::populateRightPanel;
     }
 
-    private boolean isDirty() {
-        view.getScenarioGridPanel().getScenarioGrid().getModel().resetErrors();
-        int currentHashcode = MarshallingWrapper.toJSON(model).hashCode();
-        return originalHash != currentHashcode;
+    boolean isDirty() {
+        try {
+            view.getScenarioGridPanel().getScenarioGrid().getModel().resetErrors();
+            int currentHashcode = MarshallingWrapper.toJSON(model).hashCode();
+            return originalHash != currentHashcode;
+        } catch (Exception ignored) {
+            return false;
+        }
     }
 }

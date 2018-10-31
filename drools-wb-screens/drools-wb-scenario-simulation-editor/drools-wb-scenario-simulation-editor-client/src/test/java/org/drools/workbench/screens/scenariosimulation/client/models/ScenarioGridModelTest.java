@@ -137,7 +137,7 @@ public class ScenarioGridModelTest {
         when(mockHeaderMetaData.getColumnId()).thenReturn(GRID_COLUMN_ID);
         when(mockHeaderMetaDataList.get(1)).thenReturn(mockHeaderMetaData);
 
-        when(mockIndexHeaderMetaData.getTitle()).thenReturn(ExpressionIdentifier.INDEX.getName());
+        when(mockIndexHeaderMetaData.getTitle()).thenReturn(FactIdentifier.INDEX.getName());
         when(mockScenarioIndexGridColumn.getInformationHeaderMetaData()).thenReturn(mockIndexHeaderMetaData);
 
         when(mockScenarioGridColumn.getInformationHeaderMetaData()).thenReturn(mockHeaderMetaData);

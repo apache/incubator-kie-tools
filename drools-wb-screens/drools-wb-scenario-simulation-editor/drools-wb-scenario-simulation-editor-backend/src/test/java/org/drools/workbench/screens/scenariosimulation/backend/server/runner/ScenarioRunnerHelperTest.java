@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Function;
 
 import org.drools.workbench.screens.scenariosimulation.backend.server.expression.BaseExpressionEvaluator;
@@ -31,6 +30,7 @@ import org.drools.workbench.screens.scenariosimulation.backend.server.runner.mod
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.ScenarioOutput;
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.ScenarioResult;
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.ScenarioRunnerData;
+import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.SingleFactValueResult;
 import org.drools.workbench.screens.scenariosimulation.model.ExpressionIdentifier;
 import org.drools.workbench.screens.scenariosimulation.model.FactIdentifier;
 import org.drools.workbench.screens.scenariosimulation.model.FactMapping;
@@ -57,6 +57,7 @@ import static org.drools.workbench.screens.scenariosimulation.backend.server.run
 import static org.drools.workbench.screens.scenariosimulation.backend.server.runner.ScenarioRunnerHelper.verifyConditions;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.any;
@@ -273,6 +274,10 @@ public class ScenarioRunnerHelperTest {
         assertEquals(1, scenario1Expected.get(personFactIdentifier).size());
         assertEquals(1, scenario2Given.get(disputeFactIdentifier).size());
         assertEquals(1, scenario2Expected.get(disputeFactIdentifier).size());
+
+        Scenario scenario = new Scenario();
+        scenario.addMappingValue(FactIdentifier.EMPTY, ExpressionIdentifier.DESCRIPTION, null);
+        assertEquals(0, groupByFactIdentifierAndFilter(scenario.getUnmodifiableFactMappingValues(), FactMappingType.GIVEN).size());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -286,14 +291,23 @@ public class ScenarioRunnerHelperTest {
     public void createExtractorFunctionTest() {
         String personName = "Test";
         FactMappingValue factMappingValue = new FactMappingValue(personFactIdentifier, firstNameGivenExpressionIdentifier, personName);
-        Function<Object, Optional<Object>> extractorFunction = createExtractorFunction(expressionEvaluator, factMappingValue, simulation.getSimulationDescriptor());
+        Function<Object, SingleFactValueResult> extractorFunction = createExtractorFunction(expressionEvaluator, factMappingValue, simulation.getSimulationDescriptor());
         Person person = new Person();
 
         person.setFirstName(personName);
-        assertTrue(extractorFunction.apply(person).isPresent());
+        assertTrue(extractorFunction.apply(person).isSatisfied());
 
         person.setFirstName("OtherString");
-        assertFalse(extractorFunction.apply(person).isPresent());
+        assertFalse(extractorFunction.apply(person).isSatisfied());
+
+        Function<Object, SingleFactValueResult> extractorFunction1 = createExtractorFunction(expressionEvaluator,
+                                                                                             new FactMappingValue(personFactIdentifier,
+                                                                                                                  firstNameGivenExpressionIdentifier,
+                                                                                                                  null),
+                                                                                             simulation.getSimulationDescriptor());
+        SingleFactValueResult nullValue = extractorFunction1.apply(new Person());
+        assertTrue(nullValue.isSatisfied());
+        assertNull(nullValue.getResult());
     }
 
     @Test
@@ -305,7 +319,7 @@ public class ScenarioRunnerHelperTest {
         try {
             getParamsForBean(simulation.getSimulationDescriptor(), disputeFactIdentifier, factMappingValues, classLoader, expressionEvaluator);
             fail();
-        } catch(ScenarioException ignored) {
+        } catch (ScenarioException ignored) {
 
         }
         Assert.assertTrue(factMappingValue.isError());

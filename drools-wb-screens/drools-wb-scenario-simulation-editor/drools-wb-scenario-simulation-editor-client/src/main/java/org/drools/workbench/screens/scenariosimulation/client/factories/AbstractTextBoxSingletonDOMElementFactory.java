@@ -17,7 +17,7 @@
 package org.drools.workbench.screens.scenariosimulation.client.factories;
 
 import com.google.gwt.event.dom.client.DomEvent;
-import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtbootstrap3.client.ui.TextArea;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.impl.BaseDOMElement;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.single.impl.BaseSingletonDOMElementFactory;
@@ -25,7 +25,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPanel;
 
-public abstract class AbstractTextBoxSingletonDOMElementFactory<T extends BaseDOMElement<String, TextBox>> extends BaseSingletonDOMElementFactory<String, TextBox, T> {
+public abstract class AbstractTextBoxSingletonDOMElementFactory<T extends BaseDOMElement<String, TextArea>> extends BaseSingletonDOMElementFactory<String, TextArea, T> {
 
     public AbstractTextBoxSingletonDOMElementFactory(final GridLienzoPanel gridPanel,
                                                      final GridLayer gridLayer,
@@ -36,8 +36,8 @@ public abstract class AbstractTextBoxSingletonDOMElementFactory<T extends BaseDO
     }
 
     @Override
-    public TextBox createWidget() {
-        return new TextBox() {{
+    public TextArea createWidget() {
+        return new TextArea() {{
             addKeyDownHandler(DomEvent::stopPropagation);
             addMouseDownHandler(DomEvent::stopPropagation);
         }};
@@ -66,6 +66,6 @@ public abstract class AbstractTextBoxSingletonDOMElementFactory<T extends BaseDO
         return null;
     }
 
-    protected abstract T internalCreateDomElement(TextBox widget, GridLayer gridLayer, GridWidget gridWidget);
+    protected abstract T internalCreateDomElement(TextArea widget, GridLayer gridLayer, GridWidget gridWidget);
 }
 

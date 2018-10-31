@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -32,6 +31,7 @@ import org.drools.workbench.screens.scenariosimulation.backend.server.runner.mod
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.ScenarioOutput;
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.ScenarioResult;
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.ScenarioRunnerData;
+import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.SingleFactValueResult;
 import org.drools.workbench.screens.scenariosimulation.backend.server.util.ScenarioBeanUtil;
 import org.drools.workbench.screens.scenariosimulation.model.ExpressionElement;
 import org.drools.workbench.screens.scenariosimulation.model.ExpressionIdentifier;
@@ -47,6 +47,8 @@ import org.kie.api.runtime.RequestContext;
 
 import static java.util.stream.Collectors.toList;
 import static org.drools.workbench.screens.scenariosimulation.backend.server.fluent.ScenarioExecutableBuilder.createBuilder;
+import static org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.SingleFactValueResult.createErrorResult;
+import static org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.SingleFactValueResult.createResult;
 import static org.drools.workbench.screens.scenariosimulation.backend.server.util.ScenarioBeanUtil.fillBean;
 
 public class ScenarioRunnerHelper {
@@ -158,11 +160,11 @@ public class ScenarioRunnerHelper {
 
             for (FactMappingValue expectedResult : scenarioOutput.getExpectedResult()) {
 
-                Optional<Object> resultValue = createExtractorFunction(expressionEvaluator, expectedResult, simulationDescriptor).apply(factInstance);
+                SingleFactValueResult resultValue = createExtractorFunction(expressionEvaluator, expectedResult, simulationDescriptor).apply(factInstance);
 
-                expectedResult.setError(!resultValue.isPresent());
+                expectedResult.setError(!resultValue.isSatisfied());
 
-                scenarioResults.add(new ScenarioResult(factIdentifier, expectedResult, resultValue).setResult(resultValue.isPresent()));
+                scenarioResults.add(new ScenarioResult(factIdentifier, expectedResult, resultValue).setResult(resultValue.isSatisfied()));
             }
         }
         return scenarioResults;
@@ -203,7 +205,7 @@ public class ScenarioRunnerHelper {
             try {
                 Object value = expressionEvaluator.getValueForGiven(factMapping.getClassName(), factMappingValue.getRawValue(), classLoader);
                 paramsForBean.put(pathToField, value);
-            } catch(IllegalArgumentException e) {
+            } catch (IllegalArgumentException e) {
                 factMappingValue.setError(true);
                 throw new ScenarioException(e.getMessage(), e);
             }
@@ -217,6 +219,11 @@ public class ScenarioRunnerHelper {
         Map<FactIdentifier, List<FactMappingValue>> groupByFactIdentifier = new HashMap<>();
         for (FactMappingValue factMappingValue : factMappingValues) {
             FactIdentifier factIdentifier = factMappingValue.getFactIdentifier();
+
+            if (FactIdentifier.EMPTY.equals(factIdentifier)) {
+                continue;
+            }
+
             ExpressionIdentifier expressionIdentifier = factMappingValue.getExpressionIdentifier();
             if (expressionIdentifier == null) {
                 throw new IllegalArgumentException("ExpressionIdentifier malformed");
@@ -232,9 +239,9 @@ public class ScenarioRunnerHelper {
         return groupByFactIdentifier;
     }
 
-    public static Function<Object, Optional<Object>> createExtractorFunction(ExpressionEvaluator expressionEvaluator,
-                                                                             FactMappingValue expectedResult,
-                                                                             SimulationDescriptor simulationDescriptor) {
+    public static Function<Object, SingleFactValueResult> createExtractorFunction(ExpressionEvaluator expressionEvaluator,
+                                                                                  FactMappingValue expectedResult,
+                                                                                  SimulationDescriptor simulationDescriptor) {
         return objectToCheck -> {
 
             ExpressionIdentifier expressionIdentifier = expectedResult.getExpressionIdentifier();
@@ -246,7 +253,9 @@ public class ScenarioRunnerHelper {
             Object resultValue = ScenarioBeanUtil.navigateToObject(objectToCheck, pathToValue, false);
 
             try {
-                return expressionEvaluator.evaluate(expectedResult.getRawValue(), resultValue) ? Optional.of(resultValue) : Optional.empty();
+                return expressionEvaluator.evaluate(expectedResult.getRawValue(), resultValue) ?
+                        createResult(resultValue) :
+                        createErrorResult();
             } catch (Exception e) {
                 expectedResult.setError(true);
                 throw new ScenarioException(e.getMessage(), e);
