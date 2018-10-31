@@ -15,8 +15,9 @@
  */
 package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Map;
 
 import com.ait.lienzo.client.core.event.NodeDragEndEvent;
 import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
@@ -141,7 +142,7 @@ public class WiresConnectorHandlerImplTest {
                                                clickTimer);
 
         //clear token that controls concurrency
-        ConcurrentHashMap<String, Boolean> transientControlHandleTokenMap = (ConcurrentHashMap<String, Boolean>) Whitebox.getInternalState(tested, "transientControlHandleTokenMap");
+        Map<String, Boolean> transientControlHandleTokenMap = (HashMap<String, Boolean>) Whitebox.getInternalState(tested, "transientControlHandleTokenMap");
         transientControlHandleTokenMap.clear();
     }
 
