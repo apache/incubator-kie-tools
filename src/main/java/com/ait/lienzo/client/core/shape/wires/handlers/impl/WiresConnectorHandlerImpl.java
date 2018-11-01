@@ -9,6 +9,7 @@ import com.ait.lienzo.client.core.event.NodeDragStartEvent;
 import com.ait.lienzo.client.core.event.NodeMouseClickEvent;
 import com.ait.lienzo.client.core.event.NodeMouseMoveEvent;
 import com.ait.lienzo.client.core.shape.Shape;
+import com.ait.lienzo.client.core.shape.wires.SelectionManager;
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
@@ -68,9 +69,9 @@ public class WiresConnectorHandlerImpl implements WiresConnectorHandler {
         this.clickTimer = new Timer() {
             @Override
             public void run() {
-                if (getWiresManager().getSelectionManager() != null) {
-                    getWiresManager().getSelectionManager().selected(connector,
-                                                                     event.isShiftKeyDown);
+                if (getSelectionManager() != null)
+                {
+                    getSelectionManager().selected(connector, event.isShiftKeyDown);
                 }
                 clickEventConsumer.accept(event);
                 event = null;
@@ -174,6 +175,11 @@ public class WiresConnectorHandlerImpl implements WiresConnectorHandler {
 
     @Override
     public void onNodeMouseMove(final NodeMouseMoveEvent event) {
+        if (null == getSelectionManager())
+        {
+            return;
+        }
+
         if (!getConnector().getLine().isControlPointShape()) {
             //skipping in case the connector is not a control point shape
             return;
@@ -232,7 +238,12 @@ public class WiresConnectorHandlerImpl implements WiresConnectorHandler {
     }
 
     private boolean isSelected() {
-        return getWiresManager().getSelectionManager().getSelectedItems().getConnectors().contains(getConnector());
+        return getSelectionManager().getSelectedItems().getConnectors().contains(getConnector());
+    }
+
+    private SelectionManager getSelectionManager()
+    {
+        return getWiresManager().getSelectionManager();
     }
 
     private void destroyTransientControlHandle(boolean hideControlPoints) {
