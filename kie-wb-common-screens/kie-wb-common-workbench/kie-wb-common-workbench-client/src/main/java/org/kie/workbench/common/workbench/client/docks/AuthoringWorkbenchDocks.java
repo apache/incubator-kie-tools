@@ -94,7 +94,7 @@ public class AuthoringWorkbenchDocks {
                       PlaceRequest projectExplorerPlaceRequest) {
         this.authoringPerspectiveIdentifier = authoringPerspectiveIdentifier;
         projectExplorerDock = new UberfireDock(UberfireDockPosition.WEST,
-                                               IconType.ADJUST.toString(),
+                                               IconType.FOLDER_OPEN.toString(),
                                                projectExplorerPlaceRequest,
                                                authoringPerspectiveIdentifier).withSize(400).withLabel(constants.DocksProjectExplorerTitle());
 
