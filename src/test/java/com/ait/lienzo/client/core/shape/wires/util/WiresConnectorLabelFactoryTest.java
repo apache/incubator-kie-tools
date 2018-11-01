@@ -67,7 +67,7 @@ public class WiresConnectorLabelFactoryTest {
         assertNotNull(text.getWrapper());
         TextBoundsWrap wrapper = (TextBoundsWrap) text.getWrapper();
         assertEquals(new BoundingBox(0d, 0d, 22.808989455914087d, 11d), wrapper.getWrapBoundaries());
-        assertEquals(new Point2D(23.987684456439d, 15.865763679785857d), text.getLocation());
+        assertEquals(new Point2D(18.987684456439d, 15.865763679785857d), text.getLocation());
     }
 
     @Test
