@@ -24,6 +24,7 @@ import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.shape.wires.picker.ColorMapBackedPicker;
 import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
+import org.kie.workbench.common.stunner.cm.client.shape.view.CaseManagementShapeView;
 
 public class CaseManagementColorMapBackedPicker extends ColorMapBackedPicker {
 
@@ -39,12 +40,12 @@ public class CaseManagementColorMapBackedPicker extends ColorMapBackedPicker {
 
     @Override
     protected void addSupplementaryPaths(final WiresShape prim) {
-        if (prim instanceof AbstractCaseManagementShape) {
-            addDropZone((AbstractCaseManagementShape) prim);
+        if (prim instanceof CaseManagementShapeView) {
+            addDropZone((CaseManagementShapeView) prim);
         }
     }
 
-    void addDropZone(final AbstractCaseManagementShape<?> prim) {
+    void addDropZone(final CaseManagementShapeView prim) {
         final Optional<MultiPath> optMultiPath = prim.getDropZone();
         if (optMultiPath.isPresent()) {
             final MultiPath multiPath = optMultiPath.get();

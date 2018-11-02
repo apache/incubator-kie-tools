@@ -1,0 +1,67 @@
+{
+  "name": "CaseModeler",
+  "path": ".",
+  "css": "shapes/cm-shapes.css",
+  "stencils": [
+    {
+      "id": "stage",
+      "name": "Stage",
+      "shape": {
+        "path": "shapes/",
+        "file": "stage.svg"
+      },
+      "icon": {
+        "path": "icons/",
+        "file": "stage_icon.svg"
+      }
+    },
+    {
+      "id": "userTask",
+      "name": "User Task",
+      "shape": {
+        "path": "shapes/",
+        "file": "user_task.svg"
+      },
+      "icon": {
+        "path": "icons/",
+        "file": "task_icon.svg"
+      }
+    },
+    {
+      "id": "subprocess",
+      "name": "Subprocess",
+      "shape": {
+        "path": "shapes/",
+        "file": "subprocess.svg"
+      },
+      "icon": {
+        "path": "icons/",
+        "file": "subprocess_icon.svg"
+      }
+    },
+    {
+      "id": "subcase",
+      "name": "Subcase",
+      "shape": {
+        "path": "shapes/",
+        "file": "subcase.svg"
+      },
+      "icon": {
+        "path": "icons/",
+        "file": "subcase_icon.svg"
+      }
+    },
+    {
+      "id": "strip",
+      "name": "Stage Child Container",
+      "shape": {
+        "path": "shapes/",
+        "file": "stage_content.svg"
+      },
+      "icon": {
+        "path": "icons/",
+        "file": "stage_icon.svg"
+      }
+    }
+  ]
+}

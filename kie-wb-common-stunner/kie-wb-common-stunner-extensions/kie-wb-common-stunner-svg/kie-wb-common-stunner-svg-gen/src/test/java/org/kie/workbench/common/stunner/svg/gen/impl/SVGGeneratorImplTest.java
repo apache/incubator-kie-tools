@@ -92,6 +92,7 @@ public class SVGGeneratorImplTest {
                                                                     SVG_PKG,
                                                                     SVG_FQCN,
                                                                     "",
+                                                                    "MyViewBuilderType.class",
                                                                     mock(Messager.class));
         request.getViewSources().put(SVG_CANCEL_NAME,
                                      SVG_CANCEL_PATH);

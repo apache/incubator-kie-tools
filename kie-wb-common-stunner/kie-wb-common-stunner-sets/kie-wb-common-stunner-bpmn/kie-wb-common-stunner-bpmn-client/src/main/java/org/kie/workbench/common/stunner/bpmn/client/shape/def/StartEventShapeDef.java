@@ -84,7 +84,7 @@ public class StartEventShapeDef
     @Override
     public FontHandler<BaseStartEvent, SVGShapeView> newFontHandler() {
         return newFontHandlerBuilder()
-                .positon(event -> HasTitle.Position.BOTTOM)
+                .position(event -> HasTitle.Position.BOTTOM)
                 .build();
     }
 

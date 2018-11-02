@@ -19,9 +19,12 @@ package org.kie.workbench.common.stunner.cm.client.wires;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
-import com.ait.lienzo.client.core.shape.MultiPath;
+import com.ait.lienzo.client.core.shape.Rectangle;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
+import org.kie.workbench.common.stunner.cm.client.shape.view.CaseManagementShapeView;
+import org.kie.workbench.common.stunner.svg.client.shape.view.SVGPrimitiveShape;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.spy;
@@ -30,7 +33,7 @@ public abstract class BaseLayoutManagerTest {
 
     protected static final double PADDING = 5.0;
 
-    protected AbstractCaseManagementShape container;
+    protected CaseManagementShapeView container;
 
     protected List<WiresShape> shapes;
 
@@ -39,18 +42,22 @@ public abstract class BaseLayoutManagerTest {
     public void setup() {
         this.shapes = new ArrayList<>();
         this.handler = getLayoutHandler();
-        this.container = spy(new MockCaseManagementShape());
+        this.container = spy(new CaseManagementShapeView("mockCaseMgmtShapeView",
+                                                         new SVGPrimitiveShape(new Rectangle(0d, 0d)),
+                                                         0d,
+                                                         0d,
+                                                         false));
+        this.container.setUUID(UUID.randomUUID().toString());
         this.container.setLayoutHandler(handler);
 
         //Shapes are at (0,15), (0,30) and (0,45) by default. Set by LayoutManager.
         for (int i = 0; i < 3; i++) {
-            final int index = i;
-            final WiresShape shape = new WiresShape(new MultiPath()) {
-                @Override
-                public String toString() {
-                    return "WiresShape:" + index;
-                }
-            };
+            final CaseManagementShapeView shape = new CaseManagementShapeView("mockChildCaseMgmtShapeView" + i,
+                                                                              new SVGPrimitiveShape(new Rectangle(0d, 0d)),
+                                                                              0d,
+                                                                              0d,
+                                                                              false);
+            shape.setUUID(UUID.randomUUID().toString());
             container.add(shape);
             shapes.add(shape);
         }

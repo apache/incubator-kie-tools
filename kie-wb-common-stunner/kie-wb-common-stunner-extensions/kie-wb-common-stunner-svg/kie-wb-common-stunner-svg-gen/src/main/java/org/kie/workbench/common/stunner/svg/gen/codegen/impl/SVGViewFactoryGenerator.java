@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.kie.workbench.common.stunner.svg.client.shape.view.factory.AbstractSVGViewFactory;
 import org.kie.workbench.common.stunner.svg.gen.codegen.ViewFactoryGenerator;
 import org.kie.workbench.common.stunner.svg.gen.exception.GeneratorException;
 import org.kie.workbench.common.stunner.svg.gen.model.ViewDefinition;
@@ -70,8 +71,12 @@ public class SVGViewFactoryGenerator
                  name);
         root.put("pkg",
                  pkg);
-        root.put("implementedTypeName",
+        root.put("extendsTypeName",
+                 AbstractSVGViewFactory.class.getName());
+        root.put("implementsTypeName",
                  viewFactory.getImplementedType());
+        root.put("viewBuilder",
+                 generateViewBuilderInstance(viewFactory));
         root.put("fmethods",
                  viewsContent);
         root.put("fields",
@@ -106,5 +111,9 @@ public class SVGViewFactoryGenerator
     @Override
     protected String getTemplatePath() {
         return "SVGShapeViewFactory";
+    }
+
+    private static String generateViewBuilderInstance(ViewFactory viewFactory) {
+        return "new " + viewFactory.getViewBuilderType() + "()";
     }
 }

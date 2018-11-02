@@ -35,7 +35,6 @@ import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.IntegerTypeSerializer;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.StringTypeSerializer;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.VariablesTypeSerializer;
-import org.kie.workbench.common.stunner.bpmn.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
 import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
@@ -50,6 +49,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartSignalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartTimerEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
+import org.kie.workbench.common.stunner.cm.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
 import org.kie.workbench.common.stunner.cm.definition.ReusableSubprocess;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
@@ -94,7 +94,7 @@ public class CaseManagementOryxManagerTest {
     @Test
     public void checkGetDefinitionClasses() {
         final Set<Class<?>> classes = oryxManager.getDefinitionClasses();
-        assertEquals(17,
+        assertEquals(18,
                      classes.size());
         assertTrue(classes.contains(CaseManagementDiagram.class));
         assertTrue(classes.contains(Lane.class));

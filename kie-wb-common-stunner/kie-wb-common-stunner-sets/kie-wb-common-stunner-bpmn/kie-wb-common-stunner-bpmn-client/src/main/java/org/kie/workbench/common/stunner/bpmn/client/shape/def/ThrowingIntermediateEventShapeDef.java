@@ -53,7 +53,7 @@ public class ThrowingIntermediateEventShapeDef
     @Override
     public FontHandler<BaseThrowingIntermediateEvent, SVGShapeView> newFontHandler() {
         return newFontHandlerBuilder()
-                .positon(event -> HasTitle.Position.BOTTOM)
+                .position(event -> HasTitle.Position.BOTTOM)
                 .build();
     }
 

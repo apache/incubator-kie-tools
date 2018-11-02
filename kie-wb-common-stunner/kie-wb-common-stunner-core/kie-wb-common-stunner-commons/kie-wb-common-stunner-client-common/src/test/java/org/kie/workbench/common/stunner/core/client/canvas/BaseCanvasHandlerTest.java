@@ -32,6 +32,7 @@ import org.kie.workbench.common.stunner.core.client.shape.ElementShape;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
+import org.kie.workbench.common.stunner.core.client.shape.impl.AbstractShape;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
@@ -409,6 +410,21 @@ public class BaseCanvasHandlerTest {
         tested.notifyCanvasDomainObjectClear();
 
         verify(domainObjectListener).clear();
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testApplyElementMutation() throws Exception {
+        AbstractShape abstractShape = mock(AbstractShape.class);
+
+        tested.applyElementMutation(abstractShape,
+                                    candidate);
+
+        verify(abstractShape,
+               times(1)).beforeDraw();
+        verify(abstractShape,
+               times(1)).afterDraw();
+
     }
 
     private class BaseCanvasHandlerStub extends BaseCanvasHandler<Diagram, AbstractCanvas> {

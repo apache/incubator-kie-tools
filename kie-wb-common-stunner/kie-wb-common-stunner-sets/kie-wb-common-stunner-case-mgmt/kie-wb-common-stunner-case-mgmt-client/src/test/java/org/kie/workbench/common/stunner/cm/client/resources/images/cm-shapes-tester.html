@@ -1,0 +1,33 @@
+<!--
+  ~ Copyright 2017 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Case Modeler - SVG Shapes Tester</title>
+    <script src="https://code.jquery.com/jquery-1.11.3.js"></script>
+    <script src="/kie-wb-common-stunner/kie-wb-common-stunner-svg-gen/org/kie/workbench/common/stunner/svg/gen/tester/svg-stencil-tester.js"></script>
+</head>
+<body>
+<div id="testerPanel"></div>
+<script type="text/javascript">
+    const tester = new SVGStencilTester("cm-shapes-tester-input.json");
+    // tester.addDiagram("bpmn-shapes-tester-example1.json");
+    // tester.addDiagram("bpmn-shapes-tester-example2.json");
+    tester.show("testerPanel");
+</script>
+</body>
+</html>

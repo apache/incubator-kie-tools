@@ -36,7 +36,7 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
  * A Command to delete a set of elements.
  */
 @Portable
-public final class DeleteElementsCommand extends AbstractGraphCompositeCommand {
+public class DeleteElementsCommand extends AbstractGraphCompositeCommand {
 
     private final Collection<String> uuids;
     private transient Collection<Element> elements;
@@ -91,10 +91,9 @@ public final class DeleteElementsCommand extends AbstractGraphCompositeCommand {
             if (null != element.asNode()) {
                 final Node<?, Edge> node = element.asNode();
                 final SafeDeleteNodeCommand.Options options = SafeDeleteNodeCommand.Options.defaults();
-                commands.add(new SafeDeleteNodeCommand(node,
-                                                       callback.onDeleteNode(node,
-                                                                             options),
-                                                       options));
+                commands.add(createSafeDeleteNodeCommand(node,
+                                                         options,
+                                                         callback));
             } else {
                 final Edge<? extends View, Node> edge = (Edge<? extends View, Node>) element.asEdge();
                 commands.add(new DeleteConnectorCommand(edge));
@@ -119,12 +118,20 @@ public final class DeleteElementsCommand extends AbstractGraphCompositeCommand {
                     .forEach(e -> {
                         final Node<?, Edge> node = (Node<?, Edge>) e;
                         final SafeDeleteNodeCommand.Options options = SafeDeleteNodeCommand.Options.exclude(edgeIds);
-                        commands.add(new SafeDeleteNodeCommand(node,
-                                                               callback.onDeleteNode(node, options),
-                                                               options));
+                        commands.add(createSafeDeleteNodeCommand(node,
+                                                                 options,
+                                                                 callback));
                     });
         }
         return this;
+    }
+
+    protected SafeDeleteNodeCommand createSafeDeleteNodeCommand(final Node<?, Edge> node,
+                                                                final SafeDeleteNodeCommand.Options options,
+                                                                final DeleteCallback callback) {
+        return new SafeDeleteNodeCommand(node,
+                                        callback.onDeleteNode(node, options),
+                                        options);
     }
 
     public Collection<String> getUUIDs() {

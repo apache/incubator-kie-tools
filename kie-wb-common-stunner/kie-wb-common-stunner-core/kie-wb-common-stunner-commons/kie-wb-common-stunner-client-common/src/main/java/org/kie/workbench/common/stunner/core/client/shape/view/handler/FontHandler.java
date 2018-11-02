@@ -151,7 +151,7 @@ public class FontHandler<W, V extends ShapeView> implements ShapeViewHandler<W, 
             return this;
         }
 
-        public Builder<W, V> positon(Function<W, HasTitle.Position> provider) {
+        public Builder<W, V> position(Function<W, HasTitle.Position> provider) {
             this.positionProvider = provider;
             return this;
         }

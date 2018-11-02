@@ -70,7 +70,11 @@ public class AdHocSubprocess
     private ProcessData processData;
 
     public AdHocSubprocess() {
-        this(new BPMNGeneralSet("Sub-process"),
+        this("Sub-process");
+    }
+
+    public AdHocSubprocess(String label) {
+        this(new BPMNGeneralSet(label),
              new BackgroundSet(),
              new FontSet(),
              new RectangleDimensionsSet(),

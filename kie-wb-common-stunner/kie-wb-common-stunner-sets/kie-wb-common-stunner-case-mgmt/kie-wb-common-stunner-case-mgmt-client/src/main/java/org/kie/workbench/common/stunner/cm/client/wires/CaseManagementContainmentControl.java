@@ -27,6 +27,7 @@ import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresContainmentCont
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresParentPickerControlImpl;
 import com.ait.lienzo.client.core.types.Point2D;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.ext.WiresShapeViewExt;
+import org.kie.workbench.common.stunner.cm.client.shape.view.CaseManagementShapeView;
 
 public class CaseManagementContainmentControl implements WiresContainmentControl {
 
@@ -52,12 +53,10 @@ public class CaseManagementContainmentControl implements WiresContainmentControl
     }
 
     @Override
-    public void onMoveStart(double x,
-                            double y) {
-        containmentControl.onMoveStart(x,
-                                       y);
+    public void onMoveStart(double x, double y) {
 
-        if (!(getShape() instanceof AbstractCaseManagementShape)) {
+        containmentControl.onMoveStart(x, y);
+        if (!(getShape() instanceof CaseManagementShapeView)) {
             state.setGhost(Optional.empty());
             state.setOriginalIndex(Optional.empty());
             state.setOriginalParent(Optional.empty());
@@ -66,7 +65,7 @@ public class CaseManagementContainmentControl implements WiresContainmentControl
 
         state.setOriginalParent(Optional.ofNullable(getParent()));
         state.setOriginalIndex(Optional.ofNullable(getShapeIndex()));
-        state.setGhost(Optional.ofNullable(((AbstractCaseManagementShape) getShape()).getGhost()));
+        state.setGhost(Optional.ofNullable(((CaseManagementShapeView) getShape()).getGhost()));
 
         final WiresParentPickerControl.Index index = containmentControl.getParentPickerControl().getIndex();
         index.clear();
@@ -74,8 +73,8 @@ public class CaseManagementContainmentControl implements WiresContainmentControl
             index.exclude(state.getGhost().get());
         }
 
-        if ((getParent() instanceof AbstractCaseManagementShape)) {
-            ((AbstractCaseManagementShape) getParent()).logicallyReplace(getShape(),
+        if ((getParent() instanceof CaseManagementShapeView)) {
+            ((CaseManagementShapeView) getParent()).logicallyReplace((CaseManagementShapeView) getShape(),
                                                                          state.getGhost().get());
         }
     }
@@ -87,19 +86,22 @@ public class CaseManagementContainmentControl implements WiresContainmentControl
                                   dy);
 
         //Handle moving ghost from one container to another
-        final Optional<AbstractCaseManagementShape> ghost = state.getGhost();
+        final Optional<CaseManagementShapeView> ghost = state.getGhost();
         if (ghost.isPresent() && null != getParent() && null != getParent().getGroup()) {
             if (getWiresManager().getContainmentAcceptor().containmentAllowed(getParent(),
                                                                               new WiresShape[]{getShape()})) {
-                final double mouseX = containmentControl.getParentPickerControl().getShapeLocationControl().getMouseStartX() + dx;
-                final double mouseY = containmentControl.getParentPickerControl().getShapeLocationControl().getMouseStartY() + dy;
-                final Point2D parentAbsLoc = getParent().getGroup().getComputedLocation();
-                final Point2D mouseRelativeLoc = new Point2D(mouseX - parentAbsLoc.getX(),
-                                                             mouseY - parentAbsLoc.getY());
+
+                // Comment out the code below to leave the ghost of a subprocess to the right column
+
+//                final double mouseX = containmentControl.getParentPickerControl().getShapeLocationControl().getMouseStartX() + dx;
+//                final double mouseY = containmentControl.getParentPickerControl().getShapeLocationControl().getMouseStartY() + dy;
+//                final Point2D parentAbsLoc = getParent().getGroup().getComputedLocation();
+//                final Point2D mouseRelativeLoc = new Point2D(mouseX - parentAbsLoc.getX(),
+//                                                             mouseY - parentAbsLoc.getY());
                 //Children contains m_ghost and others excluding m_shape. This therefore moves m_ghost within children.
-                getParent().getLayoutHandler().add(ghost.get(),
-                                                   getParent(),
-                                                   mouseRelativeLoc);
+//                getParent().getLayoutHandler().add(ghost.get(),
+//                                                   getParent(),
+//                                                   mouseRelativeLoc);
 
                 containmentControl.getParentPickerControl().rebuildPicker();
             }
@@ -149,7 +151,7 @@ public class CaseManagementContainmentControl implements WiresContainmentControl
     @Override
     public void execute() {
         // Execute.
-        final AbstractCaseManagementShape ghost = state.getGhost().get();
+        final CaseManagementShapeView ghost = state.getGhost().get();
         //Children contains m_ghost and others excluding m_shape. This replaces m_ghost with m_shape.
         final WiresContainer originalParent = state.getOriginalParent().get();
         reparentDraggedShape(ghost,
@@ -165,6 +167,7 @@ public class CaseManagementContainmentControl implements WiresContainmentControl
     }
 
     private void clearState() {
+        state.getGhost().ifPresent(WiresShape::removeFromParent);
         state.getGhost().ifPresent(WiresShapeViewExt::destroy);
         state.setGhost(Optional.empty());
         state.setOriginalIndex(Optional.empty());
@@ -183,7 +186,7 @@ public class CaseManagementContainmentControl implements WiresContainmentControl
         containmentControl.destroy();
     }
 
-    private void restore(final AbstractCaseManagementShape ghost) {
+    private void restore(final CaseManagementShapeView ghost) {
         final WiresContainer originalParent = state.getOriginalParent().get();
         final int originalIndex = state.getOriginalIndex().get();
         restore(ghost,
@@ -208,54 +211,59 @@ public class CaseManagementContainmentControl implements WiresContainmentControl
     }
 
     private Integer getShapeIndex() {
-        if (getParent() == null || getShape() == null) {
-            return null;
+        if (!(getParent() instanceof CaseManagementShapeView) || getShape() == null) {
+            return 0;
         }
-        return ((AbstractCaseManagementShape) getParent()).getIndex(getShape());
+
+        return ((CaseManagementShapeView) getParent()).getIndex(getShape());
     }
 
-    private void restore(final AbstractCaseManagementShape ghost,
+    private void restore(final CaseManagementShapeView ghost,
                          final WiresContainer originalParent,
                          final int originalIndex) {
-        if (originalParent instanceof AbstractCaseManagementShape) {
+        if (originalParent instanceof CaseManagementShapeView) {
             restore(ghost,
-                    (AbstractCaseManagementShape) originalParent,
+                    (CaseManagementShapeView) originalParent,
                     originalIndex);
         } else {
             restoreGhostParent(ghost);
         }
     }
 
-    private void restore(final AbstractCaseManagementShape ghost,
-                         final AbstractCaseManagementShape parent,
+    private void restore(final CaseManagementShapeView ghost,
+                         final CaseManagementShapeView parent,
                          final int index) {
         ghost.removeFromParent();
         parent.addShape(getShape(),
                         index);
     }
 
-    private void reparentDraggedShape(final AbstractCaseManagementShape ghost,
+    private void reparentDraggedShape(final CaseManagementShapeView ghost,
                                       final WiresContainer originalParent) {
-        if (originalParent instanceof AbstractCaseManagementShape) {
-            if (originalParent.getChildShapes().contains(ghost)) {
-                ((AbstractCaseManagementShape) originalParent).logicallyReplace(ghost,
-                                                                                getShape());
-            } else {
-                restoreGhostParent(ghost);
-            }
-        } else {
+        if (!(originalParent instanceof CaseManagementShapeView)) {
             restoreGhostParent(ghost);
         }
+
+        // Comment out the code to avoid drawing shapes in the wrong column
+//        else {
+//            if (originalParent.getChildShapes().contains(ghost)) {
+//                ((CaseManagementShapeView) originalParent).logicallyReplace(ghost,
+//                                                                            (CaseManagementShapeView) getShape());
+//            } else {
+//                restoreGhostParent(ghost);
+//            }
+//        }
+
         containmentControl.execute();
     }
 
-    private void restoreGhostParent(final AbstractCaseManagementShape ghost) {
+    private void restoreGhostParent(final CaseManagementShapeView ghost) {
         if (ghost.getParent() != null) {
-            final AbstractCaseManagementShape ghostContainer = (AbstractCaseManagementShape) ghost.getParent();
+            final CaseManagementShapeView ghostContainer = (CaseManagementShapeView) ghost.getParent();
             final int ghostIndex = ghostContainer.getIndex(ghost);
-            if (ghostContainer instanceof AbstractCaseManagementShape) {
+            if (ghostContainer instanceof CaseManagementShapeView) {
                 restore(ghost,
-                        (AbstractCaseManagementShape) ghostContainer,
+                        ghostContainer,
                         ghostIndex);
             }
         }

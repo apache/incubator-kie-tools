@@ -22,7 +22,9 @@ import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.OryxIdMappings;
+import org.kie.workbench.common.stunner.cm.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
+import org.kie.workbench.common.stunner.cm.definition.EmbeddedSubprocess;
 import org.kie.workbench.common.stunner.cm.definition.ReusableSubprocess;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.mockito.Mock;
@@ -54,13 +56,28 @@ public class CaseManagementOryxIdMappingsTest {
     }
 
     @Test
-    public void checkGetDefinitionMappingsForReusableSubprocess() {
+    public void checkGetDefinitionMappings() {
         assertDefinitionMappings(ReusableSubprocess.class);
+        assertDefinitionMappings(EmbeddedSubprocess.class);
+        assertDefinitionMappings(AdHocSubprocess.class);
     }
 
     private void assertDefinitionMappings(final Class cmClass) {
         final Map<Class<?>, Map<Class<?>, String>> definitionMappings = oryxIdMappings.getDefinitionMappings();
         final Map<Class<?>, String> cmDefinitionMappings = definitionMappings.get(cmClass);
         assertNotNull(cmDefinitionMappings);
+    }
+
+    @Test
+    public void checkGetGlobalMappings() {
+        assertGlobalMappings(ReusableSubprocess.class);
+        assertGlobalMappings(EmbeddedSubprocess.class);
+        assertGlobalMappings(AdHocSubprocess.class);
+    }
+
+    private void assertGlobalMappings(final Class cmClass) {
+        final Map<Class<?>, String> globalMappings = oryxIdMappings.getGlobalMappings();
+        final String cmGlobalMappings = globalMappings.get(cmClass);
+        assertNotNull(cmGlobalMappings);
     }
 }

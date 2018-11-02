@@ -21,7 +21,6 @@ import java.util.Optional;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.command.AddCanvasNodeCommand;
-import org.kie.workbench.common.stunner.core.client.canvas.command.DeleteCanvasNodeCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
@@ -32,13 +31,16 @@ public class CaseManagementAddChildNodeCanvasCommand extends AbstractCanvasComma
     private final Node parent;
     private final Node child;
     private final String shapeSetId;
+    private final int index;
 
     public CaseManagementAddChildNodeCanvasCommand(final Node parent,
                                                    final Node child,
-                                                   final String shapeSetId) {
+                                                   final String shapeSetId,
+                                                   final int index) {
         this.parent = parent;
         this.child = child;
         this.shapeSetId = shapeSetId;
+        this.index = index;
     }
 
     @Override
@@ -48,7 +50,7 @@ public class CaseManagementAddChildNodeCanvasCommand extends AbstractCanvasComma
                                                      shapeSetId))
                 .addCommand(new CaseManagementSetChildNodeCanvasCommand(parent,
                                                                         child,
-                                                                        Optional.of(0),
+                                                                        Optional.of(index),
                                                                         Optional.empty(),
                                                                         Optional.empty()))
                 .build()
@@ -58,8 +60,9 @@ public class CaseManagementAddChildNodeCanvasCommand extends AbstractCanvasComma
     @Override
     public CommandResult<CanvasViolation> undo(final AbstractCanvasHandler context) {
         return new CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation>()
-                .addCommand(new DeleteCanvasNodeCommand(child,
-                                                        parent))
+                .addCommand(new CaseManagementDeleteCanvasNodeCommand(child,
+                                                                      parent,
+                                                                      index))
                 .build()
                 .execute(context);
     }

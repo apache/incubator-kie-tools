@@ -80,7 +80,7 @@ public class CatchingIntermediateEventShapeDef
     @Override
     public FontHandler<BaseCatchingIntermediateEvent, SVGShapeView> newFontHandler() {
         return newFontHandlerBuilder()
-                .positon(event -> HasTitle.Position.BOTTOM)
+                .position(event -> HasTitle.Position.BOTTOM)
                 .build();
     }
 

@@ -53,7 +53,7 @@ import org.kie.workbench.common.stunner.core.rule.context.impl.RuleContextBuilde
  * Deletes a node taking into account its ingoing / outgoing edges and safe remove all node's children as well, if any.
  */
 @Portable
-public final class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
+public class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
 
     private static Logger LOGGER = Logger.getLogger(SafeDeleteNodeCommand.class.getName());
 
@@ -159,8 +159,7 @@ public final class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
                     @Override
                     public void removeChild(final Element<?> parent,
                                             final Node<?, Edge> candidate) {
-                        addCommand(new RemoveChildCommand((Node<?, Edge>) parent,
-                                                          candidate));
+                        addCommand(createRemoveChildCommand(parent, candidate));
                         safeDeleteCallback.ifPresent(c -> c.removeChild(parent,
                                                                         candidate));
                     }
@@ -232,6 +231,12 @@ public final class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
                 });
 
         return this;
+    }
+
+    protected RemoveChildCommand createRemoveChildCommand(final Element<?> parent,
+                                                          final Node<?, Edge> candidate) {
+        return new RemoveChildCommand((Node<?, Edge>) parent,
+                                      candidate);
     }
 
     private boolean isElementExcluded(final Element<?> e) {

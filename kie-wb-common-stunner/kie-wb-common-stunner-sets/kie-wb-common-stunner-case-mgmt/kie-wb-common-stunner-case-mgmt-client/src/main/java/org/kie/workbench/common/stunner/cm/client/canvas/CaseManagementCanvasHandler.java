@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,12 +21,14 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
-import org.kie.workbench.common.stunner.cm.client.shape.NullShape;
+import org.kie.workbench.common.stunner.cm.client.shape.CaseManagementShape;
+import org.kie.workbench.common.stunner.cm.client.shape.view.CaseManagementShapeView;
 import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
 import org.kie.workbench.common.stunner.core.client.api.ClientDefinitionManager;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandlerImpl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.TextPropertyProvider;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.TextPropertyProviderFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementAddedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementRemovedEvent;
@@ -179,11 +181,27 @@ public class CaseManagementCanvasHandler<D extends Diagram, C extends WiresCanva
         if (!isRenderable(shape)) {
             return;
         }
-        super.applyElementMutation(shape,
-                                   candidate,
-                                   applyPosition,
-                                   applyProperties,
-                                   mutationContext);
+
+        if (shape instanceof CaseManagementShape) {
+            CaseManagementShape caseManagementShape = (CaseManagementShape) shape;
+
+            if (applyProperties) {
+                applyElementTitle(caseManagementShape,
+                                  candidate);
+            }
+
+            caseManagementShape.getShapeView().refresh();
+        }
+
+        this.applyElementMutation(shape,
+                                  candidate);
+    }
+
+    private void applyElementTitle(final CaseManagementShape shape,
+                                   final Element candidate) {
+        final TextPropertyProvider textPropertyProvider = this.getTextPropertyProviderFactory().getProvider(candidate);
+        final String name = textPropertyProvider.getText(candidate);
+        ((CaseManagementShapeView) shape.getShapeView()).setLabel(name);
     }
 
     @Override
@@ -203,7 +221,7 @@ public class CaseManagementCanvasHandler<D extends Diagram, C extends WiresCanva
 
     boolean isRenderable(final Shape... shapes) {
         for (Shape shape : shapes) {
-            if (shape == null || shape instanceof NullShape) {
+            if (shape == null) {// || shape instanceof NullShape) {
                 return false;
             }
         }

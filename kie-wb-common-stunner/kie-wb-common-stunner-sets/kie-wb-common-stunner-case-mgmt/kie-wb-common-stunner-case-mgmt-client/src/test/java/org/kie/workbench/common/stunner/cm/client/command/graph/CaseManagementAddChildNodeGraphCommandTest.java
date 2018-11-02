@@ -27,11 +27,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(MockitoJUnitRunner.class)
-public class CaseManagementAddChildNodeGraphCommandTest extends AbstractGraphCommandTest {
+public class CaseManagementAddChildNodeGraphCommandTest extends CaseManagementAbstractGraphCommandTest {
+
+    private int index;
 
     @Before
     public void setup() {
         super.setup();
+        index = parent.getOutEdges().size();
     }
 
     @Test
@@ -42,10 +45,10 @@ public class CaseManagementAddChildNodeGraphCommandTest extends AbstractGraphCom
                      parent.getOutEdges().size());
         assertEquals(1,
                      candidate.getInEdges().size());
-        assertEquals(parent.getOutEdges().get(0),
+        assertEquals(parent.getOutEdges().get(index),
                      candidate.getInEdges().get(0));
 
-        final Edge edge = parent.getOutEdges().get(0);
+        final Edge edge = parent.getOutEdges().get(index);
         assertEquals(parent,
                      edge.getSourceNode());
         assertEquals(candidate,
@@ -55,7 +58,8 @@ public class CaseManagementAddChildNodeGraphCommandTest extends AbstractGraphCom
 
     private CaseManagementAddChildNodeGraphCommand addChildNode() {
         final CaseManagementAddChildNodeGraphCommand command = new CaseManagementAddChildNodeGraphCommand(parent,
-                                                                                                          candidate);
+                                                                                                          candidate,
+                                                                                                          index);
         command.execute(context);
         return command;
     }

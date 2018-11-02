@@ -21,8 +21,9 @@
 
   <!--
   Reduce GWT compile to just one permutations (includes all locales and browsers)
-  <collapse-all-properties />
   -->
+  <collapse-all-properties />
+
   <set-property name="locale" value="default"/>
   <set-property name="user.agent" value="safari"/>
 

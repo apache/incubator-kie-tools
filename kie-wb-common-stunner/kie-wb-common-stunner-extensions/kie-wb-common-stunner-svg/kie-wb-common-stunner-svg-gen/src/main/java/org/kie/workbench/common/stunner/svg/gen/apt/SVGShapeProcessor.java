@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.svg.gen.apt;
 
 import java.util.List;
 import java.util.Set;
+import java.util.function.Supplier;
 
 import javax.annotation.processing.Messager;
 import javax.annotation.processing.RoundEnvironment;
@@ -29,6 +30,8 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.MirroredTypeException;
+import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic;
@@ -90,11 +93,14 @@ public class SVGShapeProcessor extends AbstractErrorAbsorbingProcessor {
             String absPkgPath = packageName.replaceAll("\\.",
                                                        "/");
             note("Discovered @SVGViewFactory for type [" + fqcn + "]");
-            SVGViewFactory svgViewFactoryAnn = classElement.getAnnotation(SVGViewFactory.class);
+            final SVGViewFactory svgViewFactoryAnn = classElement.getAnnotation(SVGViewFactory.class);
+            final String viewBuilderTypeName = parseAnnotationFieldTypeName(svgViewFactoryAnn::builder,
+                                                                            "No builder class specified for the @SVGViewFactory.");
             final SVGGeneratorRequest request = new SVGGeneratorRequest(name + GENERATED_TYPE_SUFFIX,
                                                                         packageName,
                                                                         fqcn,
-                                                                        absPkgPath + "/" + svgViewFactoryAnn.value(),
+                                                                        absPkgPath + "/" + svgViewFactoryAnn.cssPath(),
+                                                                        viewBuilderTypeName,
                                                                         processingEnv.getMessager());
             context.setGeneratorRequest(request);
             // Find and process method annotation as @SVGSource.
@@ -154,5 +160,21 @@ public class SVGShapeProcessor extends AbstractErrorAbsorbingProcessor {
         final Messager messager = processingEnv.getMessager();
         messager.printMessage(kind,
                               message);
+    }
+
+    private static String parseAnnotationFieldTypeName(final Supplier<Class<?>> theTypeSupplier,
+                                                       final String errorMessage) {
+        TypeMirror mirror = null;
+        try {
+            Class<?> theType = theTypeSupplier.get();
+        } catch (MirroredTypeException mte) {
+            mirror = mte.getTypeMirror();
+        }
+
+        if (null == mirror) {
+            throw new RuntimeException(errorMessage);
+        } else {
+            return mirror.toString();
+        }
     }
 }

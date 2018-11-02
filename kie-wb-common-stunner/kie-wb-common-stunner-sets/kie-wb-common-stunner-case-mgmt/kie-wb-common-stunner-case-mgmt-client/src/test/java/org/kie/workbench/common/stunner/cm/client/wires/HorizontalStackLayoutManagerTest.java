@@ -40,13 +40,13 @@ public class HorizontalStackLayoutManagerTest extends BaseLayoutManagerTest {
 
     @Test
     public void checkLayout() {
-        assertEquals(HorizontalStackLayoutManager.PADDING_X,
+        assertEquals(HorizontalStackLayoutManager.LEFT_MARGIN_PADDING,
                      shapes.get(0).getX(),
                      0.0);
-        assertEquals(HorizontalStackLayoutManager.PADDING_X * 2,
+        assertEquals(HorizontalStackLayoutManager.LEFT_MARGIN_PADDING + HorizontalStackLayoutManager.PADDING_X,
                      shapes.get(1).getX(),
                      0.0);
-        assertEquals(HorizontalStackLayoutManager.PADDING_X * 3,
+        assertEquals(HorizontalStackLayoutManager.LEFT_MARGIN_PADDING + HorizontalStackLayoutManager.PADDING_X * 2,
                      shapes.get(2).getX(),
                      0.0);
     }

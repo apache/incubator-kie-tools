@@ -31,7 +31,7 @@ public class CaseManagementCloneCanvasNodeCommand extends CloneCanvasNodeCommand
 
     @Override
     public AbstractCanvasCommand createAddCanvasChildNodeCommand(Node parent, Node candidate, String shapeSetId) {
-        return new CaseManagementAddChildNodeCanvasCommand(parent, candidate, shapeSetId);
+        return new CaseManagementAddChildNodeCanvasCommand(parent, candidate, shapeSetId, 0);
     }
 
     @Override

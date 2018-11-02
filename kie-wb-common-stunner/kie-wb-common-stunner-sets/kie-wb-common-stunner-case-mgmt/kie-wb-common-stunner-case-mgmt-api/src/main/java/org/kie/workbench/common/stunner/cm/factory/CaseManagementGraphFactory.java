@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,14 @@
 
 package org.kie.workbench.common.stunner.cm.factory;
 
+import org.kie.workbench.common.stunner.bpmn.factory.BPMNGraphFactory;
 import org.kie.workbench.common.stunner.core.factory.graph.GraphFactory;
 
 /**
  * Custom Case Management factory for graphs.
  */
-public interface CaseManagementGraphFactory extends GraphFactory {
+public interface CaseManagementGraphFactory extends BPMNGraphFactory, GraphFactory {
 
+    double GRAPH_DEFAULT_WIDTH = 2800d;
+    double GRAPH_DEFAULT_HEIGHT = 1400d;
 }

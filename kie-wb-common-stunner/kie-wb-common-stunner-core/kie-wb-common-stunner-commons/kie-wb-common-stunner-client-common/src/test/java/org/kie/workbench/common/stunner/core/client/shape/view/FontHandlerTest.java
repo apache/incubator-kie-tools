@@ -55,7 +55,7 @@ public class FontHandlerTest {
                 .fontSize(o -> 10.5d)
                 .alpha(o -> 0.7d)
                 .rotation(o -> 180d)
-                .positon(o -> HasTitle.Position.TOP)
+                .position(o -> HasTitle.Position.TOP)
                 .build();
         final Object bean = mock(Object.class);
         tested.handle(bean, view);
@@ -79,7 +79,7 @@ public class FontHandlerTest {
                 .fontSize(o -> null)
                 .alpha(o -> null)
                 .rotation(o -> null)
-                .positon(o -> null)
+                .position(o -> null)
                 .build();
         final Object bean = mock(Object.class);
         tested.handle(bean, view);

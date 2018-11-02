@@ -32,7 +32,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(MockitoJUnitRunner.class)
-public class CaseManagementSetChildNodeGraphCommandTest extends AbstractGraphCommandTest {
+public class CaseManagementSetChildNodeGraphCommandTest extends CaseManagementAbstractGraphCommandTest {
 
     private Optional<Integer> index;
     private Optional<Node> originalParent;

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright 2017 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License atå
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!-- add  filter="url(#selectShadow)"  to make the selection shadow -->
+<svg id="subprocess" version="1.1" xmlns="http://www.w3.org/2000/svg"
+     xmlns:stunner="http://kiegroup.org/2017/stunner"
+     x="0px" y="0px"
+     width="153px" height="103px"
+     viewBox="0 0 153 103">
+
+  <rect id="subprocess-background" class="subprocess_background" x="0" y="0" width="150px" height="100px" rx="2" ry="2"/>
+  <rect id="subprocess-border" class="subprocess_border" stunner:shape-state="stroke" x="0" y="0" width="150px" height="100px" rx="2" ry="2"/>
+
+  <g class="subprocess_group" stunner:transform="non-scalable" transform="translate(10,10) scale(0.05,0.05)">
+    <path class="subprocess_group_icon" d="M380,80H40C17.9,80,0,97.9,0,120v180c0,22.1,17.9,40,40,40h340c22.1,0,40-17.9,40-40V120
+	  C420,97.9,402.1,80,380,80z M380,300h-80.1v-40c0-22.1-17.9-40-40-40H160c-22.1,0-40,17.9-40,40v40H40V120h340V300z"/>
+  </g>
+  <defs>
+    <filter id="selectShadow" height="300%" width="300%" x="-75%" y="-75%">
+      <!-- Thicken out the original shape -->
+      <feMorphology operator="dilate" radius="0" in="SourceAlpha" result="thicken" />
+
+      <!-- Create a drop shadow -->
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000000" flood-opacity=".6" result="droppedShadow"/>
+
+      <!--	Layer the effects together -->
+      <feMerge>
+        <feMergeNode in="droppedShadow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+</svg>

@@ -47,16 +47,16 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class CloneNodeCommandTest extends AbstractCloneCommandTest {
 
-    private CloneNodeCommand cloneNodeCommand;
+    protected CloneNodeCommand cloneNodeCommand;
 
-    private Node<View, Edge> candidate;
+    protected Node<View, Edge> candidate;
 
-    private Node<View, Edge> parent;
+    protected Node<View, Edge> parent;
 
-    private Point2D position;
+    protected Point2D position;
 
     @Captor
-    private ArgumentCaptor<Bounds> boundsArgumentCaptor;
+    protected ArgumentCaptor<Bounds> boundsArgumentCaptor;
 
     @Before
     public void setUp() {

@@ -19,10 +19,10 @@ package org.kie.workbench.common.stunner.cm.client.palette;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.stunner.bpmn.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
 import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.Lane;
@@ -30,6 +30,9 @@ import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
 import org.kie.workbench.common.stunner.bpmn.definition.ScriptTask;
 import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
+import org.kie.workbench.common.stunner.cm.definition.AdHocSubprocess;
+import org.kie.workbench.common.stunner.cm.definition.EmbeddedSubprocess;
+import org.kie.workbench.common.stunner.cm.definition.ReusableSubprocess;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.components.palette.ExpandedPaletteDefinitionBuilder;
 import org.kie.workbench.common.stunner.core.definition.morph.MorphDefinition;
@@ -37,16 +40,17 @@ import org.kie.workbench.common.stunner.core.i18n.StunnerTranslationService;
 import org.kie.workbench.common.stunner.core.registry.impl.DefinitionsCacheRegistry;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.kie.workbench.common.stunner.cm.client.palette.CaseManagementPaletteDefinitionBuilder.ACTIVITIES;
 import static org.kie.workbench.common.stunner.cm.client.palette.CaseManagementPaletteDefinitionBuilder.STAGES;
+import static org.kie.workbench.common.stunner.cm.client.palette.CaseManagementPaletteDefinitionBuilder.SUBCASES;
+import static org.kie.workbench.common.stunner.cm.client.palette.CaseManagementPaletteDefinitionBuilder.SUBPROCESSES;
+import static org.kie.workbench.common.stunner.cm.client.palette.CaseManagementPaletteDefinitionBuilder.TASKS;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(LienzoMockitoTestRunner.class)
 public class CaseManagementPaletteDefinitionBuilderTest {
 
     @Mock
@@ -103,9 +107,9 @@ public class CaseManagementPaletteDefinitionBuilderTest {
     public void testCategories() {
         tested.init();
         Function<Object, String> categoryProvider = tested.getPaletteDefinitionBuilder().getCategoryProvider();
-        assertEquals(ACTIVITIES, categoryProvider.apply(new UserTask()));
-        assertEquals(ACTIVITIES, categoryProvider.apply(new BusinessRuleTask()));
-        assertEquals(ACTIVITIES, categoryProvider.apply(new ScriptTask()));
+        assertEquals(TASKS, categoryProvider.apply(new UserTask()));
+        assertEquals(SUBPROCESSES, categoryProvider.apply(new EmbeddedSubprocess()));
+        assertEquals(SUBCASES, categoryProvider.apply(new ReusableSubprocess()));
         assertEquals(STAGES, categoryProvider.apply(new AdHocSubprocess()));
     }
 }

@@ -61,7 +61,7 @@ import static org.kie.workbench.common.stunner.core.graph.util.GraphUtils.getPos
  * A Command to clone a node and set as a child of the given parent.
  */
 @Portable
-public final class CloneNodeCommand extends AbstractGraphCompositeCommand {
+public class CloneNodeCommand extends AbstractGraphCompositeCommand {
 
     private final Node<Definition, Edge> candidate;
     private final Optional<String> parentUuidOptional;

@@ -72,11 +72,11 @@ public class CloneNodeCommand extends AbstractCanvasGraphCommand {
         return this.command;
     }
 
-    private Point2D getClonePosition() {
+    protected Point2D getClonePosition() {
         return cloneLocation.orElseGet(() -> GraphUtils.getPosition((View) candidate.getContent()));
     }
 
-    private Consumer<Node> cloneNodeCallback(AbstractCanvasHandler context) {
+    protected Consumer<Node> cloneNodeCallback(AbstractCanvasHandler context) {
         return clone -> {
             //check if not a redo operation, in case size == 1 it was set before
             if (!command.isEmpty()) {
@@ -100,5 +100,9 @@ public class CloneNodeCommand extends AbstractCanvasGraphCommand {
 
     public Node getCandidate() {
         return candidate;
+    }
+
+    protected String getParentUuid() {
+        return parentUuid;
     }
 }

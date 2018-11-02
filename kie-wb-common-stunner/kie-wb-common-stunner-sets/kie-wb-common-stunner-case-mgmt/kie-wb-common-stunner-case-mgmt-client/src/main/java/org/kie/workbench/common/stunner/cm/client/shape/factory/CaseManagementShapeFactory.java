@@ -21,7 +21,6 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.SequenceFlowConnectorDef;
-import org.kie.workbench.common.stunner.bpmn.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
 import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
@@ -34,12 +33,13 @@ import org.kie.workbench.common.stunner.bpmn.definition.ScriptTask;
 import org.kie.workbench.common.stunner.bpmn.definition.SequenceFlow;
 import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
-import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementDiagramShapeDef;
-import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementReusableSubprocessTaskShapeDef;
-import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementSubprocessShapeDef;
-import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementTaskShapeDef;
-import org.kie.workbench.common.stunner.cm.client.shape.def.NullShapeDef;
+import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementSvgDiagramShapeDef;
+import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementSvgNullShapeDef;
+import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementSvgSubprocessShapeDef;
+import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementSvgUserTaskShapeDef;
+import org.kie.workbench.common.stunner.cm.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
+import org.kie.workbench.common.stunner.cm.definition.EmbeddedSubprocess;
 import org.kie.workbench.common.stunner.cm.definition.ReusableSubprocess;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.factory.DelegateShapeFactory;
@@ -50,16 +50,16 @@ import org.kie.workbench.common.stunner.shapes.client.factory.BasicShapesFactory
 @Dependent
 public class CaseManagementShapeFactory implements ShapeFactory<BPMNDefinition, Shape> {
 
-    private final CaseManagementShapeDefFactory caseManagementShapeDefFactory;
     private final BasicShapesFactory basicShapesFactory;
+    private final CaseManagementShapeDefFactory shapeDefFactory;
     private final DelegateShapeFactory<BPMNDefinition, Shape> delegateShapeFactory;
 
     @Inject
-    public CaseManagementShapeFactory(final CaseManagementShapeDefFactory caseManagementShapeDefFactory,
-                                      final BasicShapesFactory basicShapesFactory,
+    public CaseManagementShapeFactory(final BasicShapesFactory basicShapesFactory,
+                                      final CaseManagementShapeDefFactory shapeDefFactory,
                                       final DelegateShapeFactory<BPMNDefinition, Shape> delegateShapeFactory) {
-        this.caseManagementShapeDefFactory = caseManagementShapeDefFactory;
         this.basicShapesFactory = basicShapesFactory;
+        this.shapeDefFactory = shapeDefFactory;
         this.delegateShapeFactory = delegateShapeFactory;
     }
 
@@ -67,44 +67,47 @@ public class CaseManagementShapeFactory implements ShapeFactory<BPMNDefinition, 
     public void init() {
         delegateShapeFactory
                 .delegate(CaseManagementDiagram.class,
-                          new CaseManagementDiagramShapeDef(),
-                          () -> caseManagementShapeDefFactory)
+                          new CaseManagementSvgDiagramShapeDef(),
+                          () -> shapeDefFactory)
                 .delegate(AdHocSubprocess.class,
-                          new CaseManagementSubprocessShapeDef(),
-                          () -> caseManagementShapeDefFactory)
-                .delegate(NoneTask.class,
-                          new CaseManagementTaskShapeDef(),
-                          () -> caseManagementShapeDefFactory)
-                .delegate(UserTask.class,
-                          new CaseManagementTaskShapeDef(),
-                          () -> caseManagementShapeDefFactory)
-                .delegate(ScriptTask.class,
-                          new CaseManagementTaskShapeDef(),
-                          () -> caseManagementShapeDefFactory)
-                .delegate(BusinessRuleTask.class,
-                          new CaseManagementTaskShapeDef(),
-                          () -> caseManagementShapeDefFactory)
+                          new CaseManagementSvgSubprocessShapeDef(),
+                          () -> shapeDefFactory)
+                .delegate(EmbeddedSubprocess.class,
+                          new CaseManagementSvgSubprocessShapeDef(),
+                          () -> shapeDefFactory)
                 .delegate(ReusableSubprocess.class,
-                          new CaseManagementReusableSubprocessTaskShapeDef(),
-                          () -> caseManagementShapeDefFactory)
+                          new CaseManagementSvgSubprocessShapeDef(),
+                          () -> shapeDefFactory)
+                .delegate(UserTask.class,
+                          new CaseManagementSvgUserTaskShapeDef(),
+                          () -> shapeDefFactory)
+                .delegate(NoneTask.class,
+                          new CaseManagementSvgNullShapeDef(),
+                          () -> shapeDefFactory)
+                .delegate(ScriptTask.class,
+                          new CaseManagementSvgNullShapeDef(),
+                          () -> shapeDefFactory)
+                .delegate(BusinessRuleTask.class,
+                          new CaseManagementSvgNullShapeDef(),
+                          () -> shapeDefFactory)
                 .delegate(StartNoneEvent.class,
-                          new NullShapeDef(),
-                          () -> caseManagementShapeDefFactory)
+                          new CaseManagementSvgNullShapeDef(),
+                          () -> shapeDefFactory)
                 .delegate(ParallelGateway.class,
-                          new NullShapeDef(),
-                          () -> caseManagementShapeDefFactory)
+                          new CaseManagementSvgNullShapeDef(),
+                          () -> shapeDefFactory)
                 .delegate(ExclusiveGateway.class,
-                          new NullShapeDef(),
-                          () -> caseManagementShapeDefFactory)
+                          new CaseManagementSvgNullShapeDef(),
+                          () -> shapeDefFactory)
                 .delegate(Lane.class,
-                          new NullShapeDef(),
-                          () -> caseManagementShapeDefFactory)
+                          new CaseManagementSvgNullShapeDef(),
+                          () -> shapeDefFactory)
                 .delegate(EndTerminateEvent.class,
-                          new NullShapeDef(),
-                          () -> caseManagementShapeDefFactory)
+                          new CaseManagementSvgNullShapeDef(),
+                          () -> shapeDefFactory)
                 .delegate(EndNoneEvent.class,
-                          new NullShapeDef(),
-                          () -> caseManagementShapeDefFactory)
+                          new CaseManagementSvgNullShapeDef(),
+                          () -> shapeDefFactory)
                 .delegate(SequenceFlow.class,
                           new SequenceFlowConnectorDef(),
                           () -> basicShapesFactory);

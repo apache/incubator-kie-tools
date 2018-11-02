@@ -27,19 +27,24 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
 public class CaseManagementAddChildCommand extends org.kie.workbench.common.stunner.core.client.canvas.command.AddChildNodeCommand {
 
+    private int index;
+
     public CaseManagementAddChildCommand(final Node parent,
                                          final Node candidate,
                                          final String shapeSetId) {
         super(parent,
               candidate,
               shapeSetId);
+
+        this.index = parent.getOutEdges().size();
     }
 
     @Override
     protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand(final AbstractCanvasHandler context) {
         //This registers the Candidate in the Graph and forms the Child Relationship between Parent and Candidate
         return new CaseManagementAddChildNodeGraphCommand(parent,
-                                                          candidate);
+                                                          candidate,
+                                                          index);
     }
 
     @Override
@@ -47,6 +52,7 @@ public class CaseManagementAddChildCommand extends org.kie.workbench.common.stun
         //This needs to add Candidate to Parent which may adjust it's position and then update Graph entry bounds
         return new CaseManagementAddChildNodeCanvasCommand(parent,
                                                            candidate,
-                                                           shapeSetId);
+                                                           shapeSetId,
+                                                           index);
     }
 }

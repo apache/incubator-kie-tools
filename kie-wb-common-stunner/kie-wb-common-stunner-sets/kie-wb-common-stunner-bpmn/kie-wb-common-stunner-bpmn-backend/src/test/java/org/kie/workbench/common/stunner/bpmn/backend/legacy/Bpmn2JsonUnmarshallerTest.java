@@ -15,15 +15,20 @@
  */
 package org.kie.workbench.common.stunner.bpmn.backend.legacy;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.eclipse.bpmn2.DataObject;
 import org.eclipse.bpmn2.Definitions;
+import org.eclipse.bpmn2.ItemDefinition;
 import org.eclipse.bpmn2.Process;
+import org.eclipse.bpmn2.RootElement;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
@@ -84,5 +89,37 @@ public class Bpmn2JsonUnmarshallerTest {
         public T get() {
             return this.value;
         }
+    }
+
+
+    @Test
+    public void testAddSubprocessItemDefs() throws Exception {
+        final List<ItemDefinition> itemDefinitionList = new ArrayList<>(3);
+        final ItemDefinition itemDefinition1 = mock(ItemDefinition.class);
+        when(itemDefinition1.getId()).thenReturn("mockItemDefinition1");
+        itemDefinitionList.add(itemDefinition1);
+        final ItemDefinition itemDefinition2 = mock(ItemDefinition.class);
+        when(itemDefinition2.getId()).thenReturn("mockItemDefinition2");
+        itemDefinitionList.add(itemDefinition2);
+        final ItemDefinition itemDefinition3 = mock(ItemDefinition.class);
+        when(itemDefinition3.getId()).thenReturn("mockItemDefinition3");
+        itemDefinitionList.add(itemDefinition3);
+
+        itemDefinitionList.stream().forEach(i -> tested.addSubprocessItemDefs(i));
+
+        final List<RootElement> rootElementList = new ArrayList<>(3);
+        final Definitions definitions = mock(Definitions.class);
+        when(definitions.getRootElements()).thenReturn(rootElementList);
+
+        tested.revisitSubProcessItemDefs(definitions);
+
+        assertTrue(rootElementList.containsAll(itemDefinitionList));
+
+
+        rootElementList.clear();
+
+        tested.revisitSubProcessItemDefs(definitions);
+
+        assertTrue(rootElementList.isEmpty());
     }
 }

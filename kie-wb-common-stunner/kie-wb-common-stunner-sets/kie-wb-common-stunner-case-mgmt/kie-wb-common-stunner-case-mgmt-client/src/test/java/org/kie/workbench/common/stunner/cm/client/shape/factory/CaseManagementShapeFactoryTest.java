@@ -19,13 +19,15 @@ package org.kie.workbench.common.stunner.cm.client.shape.factory;
 import java.util.function.Consumer;
 
 import com.ait.lienzo.client.core.shape.MultiPath;
+import com.ait.lienzo.client.core.shape.Rectangle;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.google.gwt.safehtml.shared.SafeUri;
+import org.jboss.errai.ioc.client.container.SyncBeanDef;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.SequenceFlowConnectorDef;
-import org.kie.workbench.common.stunner.bpmn.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
 import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
@@ -38,19 +40,12 @@ import org.kie.workbench.common.stunner.bpmn.definition.SequenceFlow;
 import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
 import org.kie.workbench.common.stunner.cm.client.canvas.CaseManagementCanvasHandler;
-import org.kie.workbench.common.stunner.cm.client.shape.ActivityShape;
-import org.kie.workbench.common.stunner.cm.client.shape.CMContainerShape;
-import org.kie.workbench.common.stunner.cm.client.shape.NullShape;
-import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementDiagramShapeDef;
-import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementReusableSubprocessTaskShapeDef;
-import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementSubprocessShapeDef;
-import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementTaskShapeDef;
-import org.kie.workbench.common.stunner.cm.client.shape.def.NullShapeDef;
-import org.kie.workbench.common.stunner.cm.client.shape.view.ActivityView;
-import org.kie.workbench.common.stunner.cm.client.shape.view.DiagramView;
-import org.kie.workbench.common.stunner.cm.client.shape.view.NullView;
-import org.kie.workbench.common.stunner.cm.client.shape.view.StageView;
+import org.kie.workbench.common.stunner.cm.client.resources.CaseManagementSVGViewFactory;
+import org.kie.workbench.common.stunner.cm.client.shape.CaseManagementShape;
+import org.kie.workbench.common.stunner.cm.client.shape.view.CaseManagementShapeView;
+import org.kie.workbench.common.stunner.cm.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
+import org.kie.workbench.common.stunner.cm.definition.EmbeddedSubprocess;
 import org.kie.workbench.common.stunner.cm.definition.ReusableSubprocess;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
@@ -68,16 +63,21 @@ import org.kie.workbench.common.stunner.shapes.client.factory.BasicShapesFactory
 import org.kie.workbench.common.stunner.shapes.client.view.AbstractConnectorView;
 import org.kie.workbench.common.stunner.shapes.client.view.PictureShapeView;
 import org.kie.workbench.common.stunner.shapes.client.view.ShapeViewFactory;
+import org.kie.workbench.common.stunner.svg.client.shape.factory.SVGShapeFactory;
+import org.kie.workbench.common.stunner.svg.client.shape.view.SVGPrimitiveShape;
+import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeViewResource;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyDouble;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -110,32 +110,45 @@ public class CaseManagementShapeFactoryTest {
     @Mock
     private AbstractConnectorView connectorShapeView;
 
-    private Consumer<Shape> nullAssertions = (shape) -> {
-        assertNotNull(shape.getShapeView());
-        assertTrue(shape instanceof NullShape);
-        assertTrue(shape.getShapeView() instanceof NullView);
-        assertTrue(((AbstractElementShape) shape).getShapeDefinition() instanceof NullShapeDef);
-    };
+    @Mock
+    private SyncBeanManager beanManager;
+
+    private SVGPrimitiveShape stageShape;
+    private SVGPrimitiveShape taskShape;
+    private SVGPrimitiveShape subprocessShape;
+    private SVGPrimitiveShape subcaseShape;
+    private SVGPrimitiveShape rectangleShape;
 
     private Consumer<Shape> stageAssertions = (shape) -> {
         assertNotNull(shape.getShapeView());
-        assertTrue(shape instanceof CMContainerShape);
-        assertTrue(shape.getShapeView() instanceof StageView);
-        assertTrue(((AbstractElementShape) shape).getShapeDefinition() instanceof CaseManagementSubprocessShapeDef);
+        assertTrue(shape instanceof CaseManagementShape);
+        assertTrue(shape.getShapeView() instanceof CaseManagementShapeView);
+        assertSame(((CaseManagementShapeView) shape.getShapeView()).getPrimitive(),
+                   stageShape);
     };
 
-    private Consumer<Shape> activityAssertions = (shape) -> {
+    private Consumer<Shape> taskAssertions = (shape) -> {
         assertNotNull(shape.getShapeView());
-        assertTrue(shape instanceof ActivityShape);
-        assertTrue(shape.getShapeView() instanceof ActivityView);
-        assertTrue(((AbstractElementShape) shape).getShapeDefinition() instanceof CaseManagementTaskShapeDef);
+        assertTrue(shape instanceof CaseManagementShape);
+        assertTrue(shape.getShapeView() instanceof CaseManagementShapeView);
+        assertSame(((CaseManagementShapeView) shape.getShapeView()).getPrimitive(),
+                   taskShape);
     };
 
-    private Consumer<Shape> reusableSubprocessActivityAssertions = (shape) -> {
+    private Consumer<Shape> reusableSubprocessAssertions = (shape) -> {
         assertNotNull(shape.getShapeView());
-        assertTrue(shape instanceof ActivityShape);
-        assertTrue(shape.getShapeView() instanceof ActivityView);
-        assertTrue(((AbstractElementShape) shape).getShapeDefinition() instanceof CaseManagementReusableSubprocessTaskShapeDef);
+        assertTrue(shape instanceof CaseManagementShape);
+        assertTrue(shape.getShapeView() instanceof CaseManagementShapeView);
+        assertSame(((CaseManagementShapeView) shape.getShapeView()).getPrimitive(),
+                   subcaseShape);
+    };
+
+    private Consumer<Shape> embeddedSubprocessAssertions = (shape) -> {
+        assertNotNull(shape.getShapeView());
+        assertTrue(shape instanceof CaseManagementShape);
+        assertTrue(shape.getShapeView() instanceof CaseManagementShapeView);
+        assertSame(((CaseManagementShapeView) shape.getShapeView()).getPrimitive(),
+                   subprocessShape);
     };
 
     private Consumer<Shape> connectorAssertions = (shape) -> {
@@ -146,28 +159,91 @@ public class CaseManagementShapeFactoryTest {
 
     private CaseManagementShapeFactory factory;
     private DelegateShapeFactory delegate;
-    private CaseManagementShapeViewFactory cmShapeViewFactory;
-    private PictureShapeView pictureShapeView;
 
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
-        this.pictureShapeView = new PictureShapeView(new MultiPath().rect(0,
-                                                                          0,
-                                                                          10,
-                                                                          10));
-        this.cmShapeViewFactory = new CaseManagementShapeViewFactory();
+        final PictureShapeView pictureShapeView = new PictureShapeView(new MultiPath().rect(0,
+                                                                                      0,
+                                                                                      10,
+                                                                                      10));
+
+        this.stageShape = new SVGPrimitiveShape(new Rectangle(0.0d, 0.0d));
+        this.taskShape = new SVGPrimitiveShape(new Rectangle(0.0d, 0.0d));
+        this.subprocessShape = new SVGPrimitiveShape(new Rectangle(0.0d, 0.0d));
+        this.subcaseShape = new SVGPrimitiveShape(new Rectangle(0.0d, 0.0d));
+        this.rectangleShape = new SVGPrimitiveShape(new Rectangle(0.0d, 0.0d));
+
+        final SyncBeanDef beanDef = mock(SyncBeanDef.class);
+        when(beanDef.getInstance()).thenReturn(new CaseManagementSVGViewFactory() {
+
+            @Override
+            public SVGShapeViewResource stage() {
+                return new SVGShapeViewResource(arg ->
+                                                        new CaseManagementShapeView("stage",
+                                                                                    stageShape,
+                                                                                    0.0d,
+                                                                                    0.0d,
+                                                                                    false));
+            }
+
+            @Override
+            public SVGShapeViewResource task() {
+                return new SVGShapeViewResource(arg ->
+                                                        new CaseManagementShapeView("task",
+                                                                                    taskShape,
+                                                                                    0.0d,
+                                                                                    0.0d,
+                                                                                    false));
+            }
+
+            @Override
+            public SVGShapeViewResource subprocess() {
+                return new SVGShapeViewResource(arg ->
+                                                        new CaseManagementShapeView("subprocess",
+                                                                                    subprocessShape,
+                                                                                    0.0d,
+                                                                                    0.0d,
+                                                                                    false));
+            }
+
+            @Override
+            public SVGShapeViewResource subcase() {
+                return new SVGShapeViewResource(arg ->
+                                                        new CaseManagementShapeView("subcase",
+                                                                                    subcaseShape,
+                                                                                    0.0d,
+                                                                                    0.0d,
+                                                                                    false));
+            }
+
+            @Override
+            public SVGShapeViewResource rectangle() {
+                return new SVGShapeViewResource(arg ->
+                                                        new CaseManagementShapeView("rectangle",
+                                                                                    rectangleShape,
+                                                                                    0.0d,
+                                                                                    0.0d,
+                                                                                    false));
+            }
+        });
+
+        when(beanManager.lookupBean(eq(CaseManagementSVGViewFactory.class))).thenReturn(beanDef);
+
+        final ShapeDefFunctionalFactory functionalFactory = new ShapeDefFunctionalFactory();
+        final SVGShapeFactory cmShapeViewFactory = new SVGShapeFactory(beanManager, functionalFactory);
+        cmShapeViewFactory.init();
+
         final BasicShapesFactory basicShapesFactory = new BasicShapesFactory(new ShapeDefFunctionalFactory<>(),
                                                                              basicViewFactory);
         basicShapesFactory.init();
         final CaseManagementShapeDefFactory cmShapeDefFactory = new CaseManagementShapeDefFactory(cmShapeViewFactory,
-                                                                                                  basicViewFactory,
-                                                                                                  new ShapeDefFunctionalFactory<>());
+                                                                                                  new CaseManagementShapeDefFunctionalFactory<>());
         cmShapeDefFactory.init();
         this.delegate = spy(new DelegateShapeFactory());
         doReturn(glyph).when(delegate).getGlyph(anyString());
-        this.factory = new CaseManagementShapeFactory(cmShapeDefFactory,
-                                                      basicShapesFactory,
+        this.factory = new CaseManagementShapeFactory(basicShapesFactory,
+                                                      cmShapeDefFactory,
                                                       delegate);
         this.factory.init();
 
@@ -187,73 +263,74 @@ public class CaseManagementShapeFactoryTest {
         assertShapeConstruction(new CaseManagementDiagram(),
                                 (shape) -> {
                                     assertNotNull(shape.getShapeView());
-                                    assertTrue(shape instanceof CMContainerShape);
-                                    assertTrue(shape.getShapeView() instanceof DiagramView);
-                                    assertTrue(((AbstractElementShape) shape).getShapeDefinition() instanceof CaseManagementDiagramShapeDef);
+                                    assertTrue(shape instanceof CaseManagementShape);
+                                    assertTrue(shape.getShapeView() instanceof CaseManagementShapeView);
+                                    assertSame(((CaseManagementShapeView) shape.getShapeView()).getPrimitive(),
+                                               rectangleShape);
                                 });
         assertShapeGlyph(new CaseManagementDiagram());
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void checkLane() {
         assertShapeConstruction(new Lane(),
-                                nullAssertions);
+                                null);
         assertShapeGlyph(new Lane());
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void checkNoneTask() {
         assertShapeConstruction(new NoneTask(),
-                                activityAssertions);
+                                null);
         assertShapeGlyph(new NoneTask());
     }
 
     @Test
     public void checkUserTask() {
         assertShapeConstruction(new UserTask(),
-                                activityAssertions);
+                                taskAssertions);
         assertShapeGlyph(new UserTask());
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void checkBusinessRuleTask() {
         assertShapeConstruction(new BusinessRuleTask(),
-                                activityAssertions);
+                                null);
         assertShapeGlyph(new BusinessRuleTask());
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void checkStartNoneEvent() {
         assertShapeConstruction(new StartNoneEvent(),
-                                nullAssertions);
+                                null);
         assertShapeGlyph(new StartNoneEvent());
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void checkEndNoneEvent() {
         assertShapeConstruction(new EndNoneEvent(),
-                                nullAssertions);
+                                null);
         assertShapeGlyph(new EndNoneEvent());
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void checkEndTerminateEvent() {
         assertShapeConstruction(new EndTerminateEvent(),
-                                nullAssertions);
+                                null);
         assertShapeGlyph(new EndTerminateEvent());
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void checkParallelGateway() {
         assertShapeConstruction(new ParallelGateway(),
-                                nullAssertions);
+                                null);
         assertShapeGlyph(new ParallelGateway());
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void checkExclusiveDatabasedGateway() {
         assertShapeConstruction(new ExclusiveGateway(),
-                                nullAssertions);
+                                null);
         assertShapeGlyph(new ExclusiveGateway());
     }
 
@@ -267,8 +344,15 @@ public class CaseManagementShapeFactoryTest {
     @Test
     public void checkReusableSubprocess() {
         assertShapeConstruction(new ReusableSubprocess(),
-                                reusableSubprocessActivityAssertions);
+                                reusableSubprocessAssertions);
         assertShapeGlyph(new ReusableSubprocess());
+    }
+
+    @Test
+    public void checkEmbeddedSubprocess() {
+        assertShapeConstruction(new EmbeddedSubprocess(),
+                                embeddedSubprocessAssertions);
+        assertShapeGlyph(new EmbeddedSubprocess());
     }
 
     @Test
@@ -285,7 +369,7 @@ public class CaseManagementShapeFactoryTest {
 
         final Shape<? extends ShapeView> shape = factory.newShape(definition);
         assertNotNull(shape);
-        assertNotNull(((AbstractElementShape) shape).getShapeDefinition());
+        assertNotNull(shape.getShapeView());
 
         o.accept(shape);
     }

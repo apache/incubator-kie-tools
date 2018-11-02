@@ -37,12 +37,16 @@ public class VisitGraphSessionCommand extends AbstractClientSessionCommand<Clien
         checkNotNull("callback",
                      callback);
 
-        new CanvasHighlightVisitor().run(getSession().getCanvasHandler(),
+        createCanvasHighlightVisitor().run(getSession().getCanvasHandler(),
                                          callback::onSuccess);
     }
 
     @Override
     public boolean accepts(final ClientSession session) {
         return true;
+    }
+
+    protected CanvasHighlightVisitor createCanvasHighlightVisitor() {
+        return new CanvasHighlightVisitor();
     }
 }

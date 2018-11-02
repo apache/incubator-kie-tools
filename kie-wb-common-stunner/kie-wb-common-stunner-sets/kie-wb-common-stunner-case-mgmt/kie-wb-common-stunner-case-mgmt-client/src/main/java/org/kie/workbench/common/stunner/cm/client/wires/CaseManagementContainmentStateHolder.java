@@ -20,13 +20,14 @@ import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 
 import com.ait.lienzo.client.core.shape.wires.WiresContainer;
+import org.kie.workbench.common.stunner.cm.client.shape.view.CaseManagementShapeView;
 
 @ApplicationScoped
 public class CaseManagementContainmentStateHolder {
 
     private Optional<Integer> originalIndex = Optional.empty();
     private Optional<WiresContainer> originalParent = Optional.empty();
-    private Optional<AbstractCaseManagementShape> ghost = Optional.empty();
+    private Optional<CaseManagementShapeView> ghost = Optional.empty();
 
     public Optional<Integer> getOriginalIndex() {
         return originalIndex;
@@ -44,11 +45,11 @@ public class CaseManagementContainmentStateHolder {
         this.originalParent = originalParent;
     }
 
-    public Optional<AbstractCaseManagementShape> getGhost() {
+    public Optional<CaseManagementShapeView> getGhost() {
         return ghost;
     }
 
-    public void setGhost(final Optional<AbstractCaseManagementShape> ghost) {
+    public void setGhost(final Optional<CaseManagementShapeView> ghost) {
         this.ghost = ghost;
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,134 +20,61 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.safehtml.shared.SafeUri;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
-import org.kie.workbench.common.stunner.bpmn.definition.BPMNViewDefinition;
-import org.kie.workbench.common.stunner.cm.client.shape.ActivityShape;
-import org.kie.workbench.common.stunner.cm.client.shape.CMContainerShape;
-import org.kie.workbench.common.stunner.cm.client.shape.NullShape;
-import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementActivityShapeDef;
-import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementDiagramShapeDef;
-import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementReusableSubprocessTaskShapeDef;
-import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementShapeDef;
-import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementSubprocessShapeDef;
-import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementTaskShapeDef;
-import org.kie.workbench.common.stunner.cm.client.shape.def.NullShapeDef;
-import org.kie.workbench.common.stunner.cm.client.shape.def.StageShapeDef;
-import org.kie.workbench.common.stunner.cm.client.shape.view.ActivityView;
-import org.kie.workbench.common.stunner.cm.client.shape.view.DiagramView;
-import org.kie.workbench.common.stunner.cm.client.shape.view.NullView;
-import org.kie.workbench.common.stunner.cm.client.shape.view.StageView;
-import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
+import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementSvgDiagramShapeDef;
+import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementSvgNullShapeDef;
+import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementSvgShapeDef;
+import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementSvgSubprocessShapeDef;
+import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementSvgUserTaskShapeDef;
+import org.kie.workbench.common.stunner.cm.client.shape.view.CaseManagementShapeView;
+import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeDefFactory;
-import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeDefFunctionalFactory;
-import org.kie.workbench.common.stunner.core.definition.shape.ShapeDef;
-import org.kie.workbench.common.stunner.shapes.client.view.PictureShapeView;
-import org.kie.workbench.common.stunner.shapes.client.view.ShapeViewFactory;
+import org.kie.workbench.common.stunner.svg.client.shape.SVGShape;
+import org.kie.workbench.common.stunner.svg.client.shape.factory.SVGShapeFactory;
 
 @Dependent
-public class CaseManagementShapeDefFactory implements ShapeDefFactory<BPMNDefinition, CaseManagementShapeDef, Shape> {
+public class CaseManagementShapeDefFactory implements ShapeDefFactory<BPMNDefinition, CaseManagementSvgShapeDef, Shape> {
 
-    private final CaseManagementShapeViewFactory cmShapeViewFactory;
-    private final ShapeViewFactory basicShapeViewFactory;
-    private final ShapeDefFunctionalFactory<BPMNDefinition, CaseManagementShapeDef, Shape> functionalFactory;
+    private final SVGShapeFactory svgShapeFactory;
+    private final CaseManagementShapeDefFunctionalFactory<BPMNDefinition, CaseManagementSvgShapeDef, Shape> functionalFactory;
 
+    // CDI Proxy
+    @SuppressWarnings("unused")
     protected CaseManagementShapeDefFactory() {
-        this(null,
-             null,
-             null);
+        this(null, null);
     }
 
     @Inject
-    public CaseManagementShapeDefFactory(final CaseManagementShapeViewFactory cmShapeViewFactory,
-                                         final ShapeViewFactory basicShapeViewFactory,
-                                         final ShapeDefFunctionalFactory<BPMNDefinition, CaseManagementShapeDef, Shape> functionalFactory) {
+    public CaseManagementShapeDefFactory(final SVGShapeFactory svgShapeFactory,
+                                         final @CaseManagementEditor CaseManagementShapeDefFunctionalFactory
+                                                 <BPMNDefinition, CaseManagementSvgShapeDef, Shape> functionalFactory) {
+        this.svgShapeFactory = svgShapeFactory;
         this.functionalFactory = functionalFactory;
-        this.basicShapeViewFactory = basicShapeViewFactory;
-        this.cmShapeViewFactory = cmShapeViewFactory;
     }
 
     @PostConstruct
-    @SuppressWarnings("unchecked")
     public void init() {
-        // Register shape instance builders.
         functionalFactory
-                .set(NullShapeDef.class,
-                     this::newNullShape)
-                .set(CaseManagementDiagramShapeDef.class,
-                     this::newDiagramShape)
-                .set(CaseManagementSubprocessShapeDef.class,
-                     this::newStageShape)
-                .set(CaseManagementTaskShapeDef.class,
-                     this::newActivityShape)
-                .set(CaseManagementReusableSubprocessTaskShapeDef.class,
-                     this::newActivityShape);
-    }
-
-    @SuppressWarnings("unchecked")
-    private Shape newNullShape(final Object instance,
-                               final ShapeDef shapeDef) {
-        NullShapeDef nullShapeDef = (NullShapeDef) shapeDef;
-        final NullView view = cmShapeViewFactory.newNullView();
-        return new NullShape(nullShapeDef,
-                             view);
-    }
-
-    @SuppressWarnings("unchecked")
-    private Shape newDiagramShape(final Object instance,
-                                  final ShapeDef shapeDef) {
-        final CaseManagementDiagram diagram = (CaseManagementDiagram) instance;
-        final CaseManagementDiagramShapeDef cmShapeDef = (CaseManagementDiagramShapeDef) shapeDef;
-        final double width = cmShapeDef.getWidth(diagram);
-        final double height = cmShapeDef.getHeight(diagram);
-        final DiagramView view = cmShapeViewFactory.newDiagramView(width,
-                                                                   height);
-        return new CMContainerShape(cmShapeDef,
-                                    view);
-    }
-
-    @SuppressWarnings("unchecked")
-    private Shape newStageShape(final Object instance,
-                                final ShapeDef shapeDef) {
-        final BPMNViewDefinition bpmnDefinition = (BPMNViewDefinition) instance;
-        final StageShapeDef cmShapeDef = (StageShapeDef) shapeDef;
-        final double width = cmShapeDef.getWidth(bpmnDefinition);
-        final double height = cmShapeDef.getHeight(bpmnDefinition);
-        final double dropWidth = cmShapeDef.getDropAreaWidth(bpmnDefinition);
-        final double dropHeight = cmShapeDef.getDropAreaHeight(bpmnDefinition);
-        final double voffset = cmShapeDef.getVOffset(bpmnDefinition);
-        final StageView view = cmShapeViewFactory.newStageView(dropWidth,
-                                                               dropHeight,
-                                                               voffset)
-                .setWidth(width)
-                .setHeight(height);
-        return new CMContainerShape(cmShapeDef,
-                                    view);
-    }
-
-    @SuppressWarnings("unchecked")
-    private Shape newActivityShape(final Object instance,
-                                   final ShapeDef shapeDef) {
-        final BPMNViewDefinition bpmnDefinition = (BPMNViewDefinition) instance;
-        final CaseManagementActivityShapeDef cmShapeDef = (CaseManagementActivityShapeDef) shapeDef;
-        final double width = cmShapeDef.getWidth(bpmnDefinition);
-        final double height = cmShapeDef.getHeight(bpmnDefinition);
-        final ActivityView view = cmShapeViewFactory.newActivityView(width,
-                                                                     height);
-        final SafeUri iconUri = cmShapeDef.getIconUri(instance.getClass());
-        final PictureShapeView iconView = basicShapeViewFactory.pictureFromUri(iconUri,
-                                                                               15d,
-                                                                               15d);
-        return new ActivityShape(cmShapeDef,
-                                 iconView,
-                                 view);
+                .set(CaseManagementSvgDiagramShapeDef.class,
+                     this::newCaseManagementShape)
+                .set(CaseManagementSvgSubprocessShapeDef.class,
+                     this::newCaseManagementShape)
+                .set(CaseManagementSvgUserTaskShapeDef.class,
+                     this::newCaseManagementShape)
+                .set(CaseManagementSvgNullShapeDef.class,
+                     this::newCaseManagementShape);
     }
 
     @Override
-    public Shape newShape(final BPMNDefinition instance,
-                          final CaseManagementShapeDef shapeDef) {
-        return functionalFactory.newShape(instance,
-                                          shapeDef);
+    public Shape newShape(final BPMNDefinition instance, final CaseManagementSvgShapeDef svgShapeDef) {
+        return functionalFactory.newShape(instance, svgShapeDef);
+    }
+
+    @SuppressWarnings("unchecked")
+    private Shape newCaseManagementShape(final Object instance, final CaseManagementSvgShapeDef svgShapeDef) {
+        SVGShape shape = svgShapeFactory.newShape(instance, svgShapeDef);
+        CaseManagementShapeView cmShapeView = (CaseManagementShapeView) shape.getShapeView();
+        return CaseManagementShapeCommand.create(instance.getClass(), cmShapeView);
     }
 }

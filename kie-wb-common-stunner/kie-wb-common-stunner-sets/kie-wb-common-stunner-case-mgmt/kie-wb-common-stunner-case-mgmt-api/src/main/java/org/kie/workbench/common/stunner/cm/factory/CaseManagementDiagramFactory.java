@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,13 @@
 
 package org.kie.workbench.common.stunner.cm.factory;
 
+import org.kie.workbench.common.stunner.bpmn.factory.BPMNFactory;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.factory.diagram.DiagramFactory;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 
-public interface CaseManagementDiagramFactory<M extends Metadata, D extends Diagram<Graph, M>>
-        extends DiagramFactory<M, D> {
+public interface CaseManagementDiagramFactory extends BPMNFactory,
+                                                      DiagramFactory<Metadata, Diagram<Graph, Metadata>> {
 
 }

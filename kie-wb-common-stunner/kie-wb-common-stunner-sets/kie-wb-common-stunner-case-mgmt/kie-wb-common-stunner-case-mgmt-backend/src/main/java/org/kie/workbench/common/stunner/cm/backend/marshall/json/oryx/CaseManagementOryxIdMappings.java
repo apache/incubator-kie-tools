@@ -23,7 +23,9 @@ import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.BaseOryxIdMappings;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
+import org.kie.workbench.common.stunner.cm.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
+import org.kie.workbench.common.stunner.cm.definition.EmbeddedSubprocess;
 import org.kie.workbench.common.stunner.cm.definition.ReusableSubprocess;
 import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
@@ -52,7 +54,24 @@ public class CaseManagementOryxIdMappings extends BaseOryxIdMappings {
         final Map<Class<?>, String> reusableSubprocessPropertiesMap = definitionMappings.get(org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess.class);
         definitionMappings.put(ReusableSubprocess.class,
                                reusableSubprocessPropertiesMap);
+        final Map<Class<?>, String> adHocSubprocessPropertiesMap = definitionMappings.get(org.kie.workbench.common.stunner.bpmn.definition.AdHocSubprocess.class);
+        definitionMappings.put(AdHocSubprocess.class,
+                               adHocSubprocessPropertiesMap);
+        final Map<Class<?>, String> embeddedSubprocessPropertiesMap = definitionMappings.get(org.kie.workbench.common.stunner.bpmn.definition.EmbeddedSubprocess.class);
+        definitionMappings.put(EmbeddedSubprocess.class,
+                               embeddedSubprocessPropertiesMap);
 
         return definitionMappings;
+    }
+
+    @Override
+    public Map<Class<?>, String> getGlobalMappings() {
+        Map<Class<?>, String> globalMappings = super.getGlobalMappings();
+
+        globalMappings.put(EmbeddedSubprocess.class, "Subprocess");
+        globalMappings.put(AdHocSubprocess.class, "AdHocSubprocess");
+        globalMappings.put(ReusableSubprocess.class, "ReusableSubprocess");
+
+        return globalMappings;
     }
 }

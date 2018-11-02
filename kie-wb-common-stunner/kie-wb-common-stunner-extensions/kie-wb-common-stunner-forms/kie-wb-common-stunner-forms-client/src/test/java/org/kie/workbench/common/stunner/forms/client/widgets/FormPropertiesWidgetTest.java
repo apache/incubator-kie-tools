@@ -38,6 +38,7 @@ import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
+import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.impl.NodeImpl;
@@ -252,5 +253,19 @@ public class FormPropertiesWidgetTest {
         assertThat(formPropertiesOpened.getSession()).isEqualTo(session);
 
         verify(callback).execute();
+    }
+
+    @Test
+    public void testShowNullElement() {
+        tested.init();
+
+        verify(formsCanvasSessionHandler).setRenderer(formRendererArgumentCaptor.capture());
+        final FormsCanvasSessionHandler.FormRenderer formRenderer = formRendererArgumentCaptor.getValue();
+
+        final Command command = mock(Command.class);
+        formRenderer.render(GRAPH_UUID, (Element) null, command);
+
+        verify(formsContainer, never()).render(any(), any(), any(), any(), any(), any());
+        verify(command, never()).execute();
     }
 }

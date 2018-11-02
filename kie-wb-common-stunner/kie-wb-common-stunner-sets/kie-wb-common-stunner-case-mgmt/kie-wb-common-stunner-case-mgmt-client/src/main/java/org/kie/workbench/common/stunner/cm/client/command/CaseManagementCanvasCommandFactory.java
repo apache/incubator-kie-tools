@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.cm.client.command;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -28,6 +30,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.command.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
 import org.kie.workbench.common.stunner.core.graph.Edge;
+import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
@@ -43,6 +46,12 @@ public class CaseManagementCanvasCommandFactory extends DefaultCanvasCommandFact
                                               final ManagedInstance<ViewTraverseProcessor> viewTraverseProcessors) {
         super(childrenTraverseProcessors,
               viewTraverseProcessors);
+    }
+
+    @Override
+    public CanvasCommand<AbstractCanvasHandler> addNode(final Node candidate,
+                                                        final String shapeSetId) {
+        return new CaseManagementAddNodeCommand(candidate, shapeSetId);
     }
 
     @Override
@@ -98,5 +107,33 @@ public class CaseManagementCanvasCommandFactory extends DefaultCanvasCommandFact
     @Override
     public CanvasCommand<AbstractCanvasHandler> cloneNode(Node candidate, String parentUuid, Point2D cloneLocation, Consumer<Node> callback) {
         return new CaseManagementCloneNodeCommand(candidate, parentUuid, cloneLocation, callback, getChildrenTraverseProcessors());
+    }
+
+    @Override
+    public CanvasCommand<AbstractCanvasHandler> delete(Collection<Element> candidates) {
+        return new CaseManagementDeleteElementsCommand(candidates);
+    }
+
+    @Override
+    public CanvasCommand<AbstractCanvasHandler> deleteNode(Node candidate) {
+        return new CaseManagementDeleteNodeCommand(candidate);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static int getChildIndex(final Node parent,
+                                    final Node child) {
+        if (parent != null && child!= null) {
+            List<Edge> outEdges = parent.getOutEdges();
+            if (null != outEdges && !outEdges.isEmpty()) {
+                int i = 0;
+                for (final Edge edge : outEdges) {
+                    if (child.equals(edge.getTargetNode())) {
+                        return i;
+                    }
+                    i++;
+                }
+            }
+        }
+        return -1;
     }
 }

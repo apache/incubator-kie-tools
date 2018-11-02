@@ -16,7 +16,9 @@
 package org.kie.workbench.common.stunner.cm.client.resources;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ClientBundleWithLookup;
+import com.google.gwt.resources.client.DataResource;
 import com.google.gwt.resources.client.ImageResource;
 
 public interface CaseManagementImageResources extends ClientBundleWithLookup {
@@ -25,4 +27,32 @@ public interface CaseManagementImageResources extends ClientBundleWithLookup {
 
     @Source("images/cmicon.png")
     ImageResource cmicon();
+
+    @ClientBundle.Source("images/icons/stage_icon.svg")
+    @DataResource.MimeType("image/svg+xml")
+    DataResource categoryStages();
+
+    @ClientBundle.Source("images/icons/task_icon.svg")
+    @DataResource.MimeType("image/svg+xml")
+    DataResource categoryTasks();
+
+    @ClientBundle.Source("images/icons/subprocess_icon.svg")
+    @DataResource.MimeType("image/svg+xml")
+    DataResource categorySubprocesses();
+
+    @ClientBundle.Source("images/icons/subcase_icon.svg")
+    @DataResource.MimeType("image/svg+xml")
+    DataResource categorySubcases();
+
+    @ClientBundle.Source("images/icons/stage_icon.png")
+    ImageResource stage();
+
+    @ClientBundle.Source("images/icons/task_icon.png")
+    ImageResource task();
+
+    @ClientBundle.Source("images/icons/subprocess_icon.png")
+    ImageResource subprocess();
+
+    @ClientBundle.Source("images/icons/subcase_icon.png")
+    ImageResource subcase();
 }

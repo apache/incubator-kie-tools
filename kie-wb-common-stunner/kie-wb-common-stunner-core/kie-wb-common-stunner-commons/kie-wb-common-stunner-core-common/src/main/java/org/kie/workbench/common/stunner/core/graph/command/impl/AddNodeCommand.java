@@ -33,7 +33,7 @@ import org.kie.workbench.common.stunner.core.rule.context.impl.RuleContextBuilde
  * It check parent cardinality rules and containment rules as we..
  */
 @Portable
-public final class AddNodeCommand extends RegisterNodeCommand {
+public class AddNodeCommand extends RegisterNodeCommand {
 
     public AddNodeCommand(final @MapsTo("candidate") Node candidate) {
         super(candidate);

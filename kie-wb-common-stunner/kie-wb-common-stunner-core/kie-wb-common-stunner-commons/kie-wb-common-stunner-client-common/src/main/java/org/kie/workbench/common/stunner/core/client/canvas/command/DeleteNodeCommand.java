@@ -31,21 +31,27 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
 public class DeleteNodeCommand extends AbstractCanvasGraphCommand {
 
-    private final Node candidate;
-    private final SafeDeleteNodeCommand.Options options;
-    private transient CanvasDeleteProcessor deleteProcessor;
+    protected final Node candidate;
+    protected final SafeDeleteNodeCommand.Options options;
+    protected transient CanvasDeleteProcessor deleteProcessor;
 
     public DeleteNodeCommand(final Node candidate) {
         this(candidate,
              SafeDeleteNodeCommand.Options.defaults());
     }
 
-    @SuppressWarnings("unchecked")
     public DeleteNodeCommand(final Node candidate,
                              final SafeDeleteNodeCommand.Options options) {
+        this(candidate, options, new CanvasDeleteProcessor(options));
+    }
+
+    @SuppressWarnings("unchecked")
+    public DeleteNodeCommand(final Node candidate,
+                             final SafeDeleteNodeCommand.Options options,
+                             final CanvasDeleteProcessor deleteProcessor) {
         this.candidate = candidate;
         this.options = options;
-        this.deleteProcessor = new CanvasDeleteProcessor(options);
+        this.deleteProcessor = deleteProcessor;
     }
 
     public Node getCandidate() {
@@ -130,7 +136,7 @@ public class DeleteNodeCommand extends AbstractCanvasGraphCommand {
 
         private boolean doDeleteNode(final Node<?, Edge> node) {
             if (!options.getExclusions().contains(node.getUUID())) {
-                getCommand().addCommand(new DeleteCanvasNodeCommand(node));
+                getCommand().addCommand(createDeleteCanvasNodeCommand(node));
                 return true;
             }
             return false;
@@ -142,6 +148,10 @@ public class DeleteNodeCommand extends AbstractCanvasGraphCommand {
                 return true;
             }
             return false;
+        }
+
+        protected DeleteCanvasNodeCommand createDeleteCanvasNodeCommand(final Node<?, Edge> node) {
+            return new DeleteCanvasNodeCommand(node);
         }
     }
 }

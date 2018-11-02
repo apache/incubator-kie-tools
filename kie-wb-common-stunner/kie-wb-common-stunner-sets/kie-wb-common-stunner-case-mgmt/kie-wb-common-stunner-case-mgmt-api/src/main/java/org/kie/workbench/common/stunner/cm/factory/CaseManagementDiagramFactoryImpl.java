@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,38 +16,30 @@
 
 package org.kie.workbench.common.stunner.cm.factory;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
+import java.util.function.Function;
 
-import org.kie.workbench.common.stunner.bpmn.factory.BPMNDiagramFactory;
+import javax.enterprise.context.Dependent;
+
+import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
+import org.kie.workbench.common.stunner.bpmn.factory.AbstractBPMNDiagramFactory;
 import org.kie.workbench.common.stunner.cm.CaseManagementDefinitionSet;
 import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
+import org.kie.workbench.common.stunner.core.diagram.AbstractDiagram;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.diagram.DiagramImpl;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
-import org.kie.workbench.common.stunner.core.factory.impl.BindableDiagramFactory;
 import org.kie.workbench.common.stunner.core.graph.Graph;
+import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 
 @Dependent
 public class CaseManagementDiagramFactoryImpl
-        extends BindableDiagramFactory<Metadata, Diagram<Graph, Metadata>>
-        implements CaseManagementDiagramFactory<Metadata, Diagram<Graph, Metadata>> {
+        extends AbstractBPMNDiagramFactory<Metadata, Diagram<Graph, Metadata>>
+        implements CaseManagementDiagramFactory {
 
-    private final BPMNDiagramFactory bpmnDiagramFactory;
-
-    protected CaseManagementDiagramFactoryImpl() {
-        this(null);
-    }
-
-    @Inject
-    public CaseManagementDiagramFactoryImpl(final BPMNDiagramFactory bpmnDiagramFactory) {
-        this.bpmnDiagramFactory = bpmnDiagramFactory;
-    }
-
-    @PostConstruct
-    public void init() {
-        bpmnDiagramFactory.setDiagramType(CaseManagementDiagram.class);
+    public CaseManagementDiagramFactoryImpl() {
+        setDiagramType(CaseManagementDiagram.class);
     }
 
     @Override
@@ -61,11 +53,15 @@ public class CaseManagementDiagramFactoryImpl
     }
 
     @Override
-    public Diagram<Graph, Metadata> build(final String name,
-                                          final Metadata metadata,
-                                          final Graph<DefinitionSet, ?> graph) {
-        return bpmnDiagramFactory.build(name,
-                                        metadata,
-                                        graph);
+    public Diagram<Graph, Metadata> doBuild(final String name, final Metadata metadata, final Graph<DefinitionSet, ?> graph) {
+
+        final AbstractDiagram<Graph, Metadata> result = new DiagramImpl(name, metadata);
+        result.setGraph(graph);
+        return result;
+    }
+
+    @Override
+    protected void setDiagramProvider(Function<Graph, Node<Definition<BPMNDiagram>, ?>> diagramProvider) {
+        super.setDiagramProvider(diagramProvider);
     }
 }

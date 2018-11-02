@@ -77,6 +77,10 @@ public abstract class AbstractBPMNDiagramFactory<M extends Metadata, D extends D
 
     @SuppressWarnings("unchecked")
     Function<Graph, Node<Definition<BPMNDiagram>, ?>> diagramProvider =
-            graph -> GraphUtils.getFirstNode(graph,
+            graph -> GraphUtils.<BPMNDiagram>getFirstNode(graph,
                                              diagramType);
+
+    protected void setDiagramProvider(Function<Graph, Node<Definition<BPMNDiagram>, ?>> diagramProvider) {
+        this.diagramProvider = diagramProvider;
+    }
 }

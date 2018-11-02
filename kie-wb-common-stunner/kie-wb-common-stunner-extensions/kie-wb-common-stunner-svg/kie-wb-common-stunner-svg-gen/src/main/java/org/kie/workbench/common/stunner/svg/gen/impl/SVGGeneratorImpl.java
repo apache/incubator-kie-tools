@@ -64,10 +64,12 @@ public class SVGGeneratorImpl implements SVGGenerator {
         final String pkg = request.getPkg();
         final String typeOf = request.getImplementedType();
         final String cssPath = request.getCssPath();
+        final String viewBuilderType = request.getViewBuilderType();
         final Map<String, String> viewSources = request.getViewSources();
         final ViewFactoryImpl viewFactory = new ViewFactoryImpl(name,
                                                                 pkg,
-                                                                typeOf);
+                                                                typeOf,
+                                                                viewBuilderType);
 
         // Process the global CSS declaration specified in the factory, if any.
         final StyleSheetDefinition[] styleSheetDefinition = new StyleSheetDefinition[1];

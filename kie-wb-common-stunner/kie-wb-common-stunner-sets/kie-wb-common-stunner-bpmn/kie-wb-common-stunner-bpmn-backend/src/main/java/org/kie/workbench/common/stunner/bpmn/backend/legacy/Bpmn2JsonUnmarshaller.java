@@ -4075,8 +4075,7 @@ public class Bpmn2JsonUnmarshaller {
                 ItemDefinition itemDef = Bpmn2Factory.eINSTANCE.createItemDefinition();
                 itemDef.setId(sp.getId() + "_" + "multiInstanceInputItemType");
                 din.setItemSubjectRef(itemDef);
-                _subprocessItemDefs.put(itemDef.getId(),
-                                        itemDef);
+                addSubprocessItemDefs(itemDef);
                 loopCharacteristics.setInputDataItem(din);
             }
 
@@ -4107,8 +4106,7 @@ public class Bpmn2JsonUnmarshaller {
                 ItemDefinition itemDef2 = Bpmn2Factory.eINSTANCE.createItemDefinition();
                 itemDef2.setId(sp.getId() + "_" + "multiInstanceOutputItemType");
                 don.setItemSubjectRef(itemDef2);
-                _subprocessItemDefs.put(itemDef2.getId(),
-                                        itemDef2);
+                addSubprocessItemDefs(itemDef2);
                 loopCharacteristics.setOutputDataItem(don);
             }
 
@@ -4163,8 +4161,7 @@ public class Bpmn2JsonUnmarshaller {
                 }
                 prop.setItemSubjectRef(itemdef);
                 sp.getProperties().add(prop);
-                _subprocessItemDefs.put(itemdef.getId(),
-                                        itemdef);
+                addSubprocessItemDefs(itemdef);
             }
         }
         // event subprocess
@@ -7122,6 +7119,10 @@ public class Bpmn2JsonUnmarshaller {
                 }
             }
         }
+    }
+
+    protected void addSubprocessItemDefs(ItemDefinition itemdef) {
+        _subprocessItemDefs.put(itemdef.getId(), itemdef);
     }
 }
 

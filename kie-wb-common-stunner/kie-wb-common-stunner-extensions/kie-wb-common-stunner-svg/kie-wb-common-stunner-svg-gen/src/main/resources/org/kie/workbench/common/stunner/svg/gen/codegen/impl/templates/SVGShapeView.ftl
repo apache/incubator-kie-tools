@@ -15,7 +15,7 @@ private SVGShapeView ${name}View(final double width, final double height, final 
 
     SVGPrimitiveShape mainShape = SVGPrimitiveFactory.newSVGPrimitiveShape(${mainShape}, true, ${layout});
 
-    final SVGShapeViewImpl view = new SVGShapeViewImpl("${viewId}", mainShape, width, height, resizable);
+    final SVGShapeView view = getViewBuilder().build("${viewId}", mainShape, width, height, resizable);
 
     <#list children as c>
         ${c}
@@ -27,8 +27,10 @@ private SVGShapeView ${name}View(final double width, final double height, final 
 
     ${text}
 
-    view.getShapeStateHandler().setBorderShape(() -> SVGViewUtils.getVisibleShape(${stateViewIds}));
-    view.getShapeStateHandler().setRenderType(${stateViewPolicy});
+    if (view instanceof SVGShapeViewImpl) {
+        ((SVGShapeViewImpl) view).getShapeStateHandler().setBorderShape(() -> SVGViewUtils.getVisibleShape(${stateViewIds}));
+        ((SVGShapeViewImpl) view).getShapeStateHandler().setRenderType(${stateViewPolicy});
+    }
 
     return view;
 }

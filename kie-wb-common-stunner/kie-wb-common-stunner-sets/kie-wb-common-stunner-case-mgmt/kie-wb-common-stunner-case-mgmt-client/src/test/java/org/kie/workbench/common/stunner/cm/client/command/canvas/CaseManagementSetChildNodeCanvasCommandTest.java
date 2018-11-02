@@ -28,7 +28,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
-public class CaseManagementSetChildNodeCanvasCommandTest extends AbstractCanvasCommandTest {
+public class CaseManagementSetChildNodeCanvasCommandTest extends CaseManagementAbstractCanvasCommandTest {
 
     private Optional<Integer> index;
     private Optional<Node> originalParent;

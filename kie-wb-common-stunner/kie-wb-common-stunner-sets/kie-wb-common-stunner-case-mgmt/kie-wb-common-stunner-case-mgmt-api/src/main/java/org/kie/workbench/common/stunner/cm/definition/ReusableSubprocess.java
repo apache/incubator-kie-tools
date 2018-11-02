@@ -50,7 +50,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
         policy = FieldPolicy.ONLY_MARKED,
         defaultFieldSettings = {@FieldParam(name = FIELD_CONTAINER_PARAM, value = COLLAPSIBLE_CONTAINER)}
 )
-// This is a clone of org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess with different labels.
+// This is a clone of org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess with different labels and title.
 // Unfortunately extending the foregoing and providing a new set of labels leads to errai-data-binding to barf
 // presumably because there are two fields called "labels" (although I've also tried with a different name field
 // and it leads to the same errors).
@@ -71,7 +71,7 @@ public class ReusableSubprocess extends BaseSubprocess implements DataIOModel {
     protected DataIOSet dataIOSet;
 
     public ReusableSubprocess() {
-        this(new BPMNGeneralSet("Subprocess"),
+        this(new BPMNGeneralSet("Subcase"),
              new ReusableSubprocessTaskExecutionSet(),
              new DataIOSet(),
              new BackgroundSet(),

@@ -25,7 +25,9 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
-public class CaseManagementAddChildNodeCanvasCommandTest extends AbstractCanvasCommandTest {
+public class CaseManagementAddChildNodeCanvasCommandTest extends CaseManagementAbstractCanvasCommandTest {
+
+    private int index = 2;
 
     @Before
     public void setup() {
@@ -41,13 +43,14 @@ public class CaseManagementAddChildNodeCanvasCommandTest extends AbstractCanvasC
                                        eq(candidate));
         verify(canvasHandler).addChild(eq(parent),
                                        eq(candidate),
-                                       eq(0));
+                                       eq(index));
     }
 
     private CaseManagementAddChildNodeCanvasCommand addChildNode() {
         final CaseManagementAddChildNodeCanvasCommand command = new CaseManagementAddChildNodeCanvasCommand(parent,
                                                                                                             candidate,
-                                                                                                            SHAPE_SET_ID);
+                                                                                                            SHAPE_SET_ID,
+                                                                                                            index);
 
         command.execute(canvasHandler);
         return command;

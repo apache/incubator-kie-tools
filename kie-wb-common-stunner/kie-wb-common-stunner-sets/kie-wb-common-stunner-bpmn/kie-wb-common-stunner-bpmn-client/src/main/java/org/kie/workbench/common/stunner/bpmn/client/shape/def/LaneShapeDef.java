@@ -33,7 +33,7 @@ public class LaneShapeDef extends BaseDimensionedShapeDef
     @Override
     public FontHandler<Lane, SVGShapeView> newFontHandler() {
         return newFontHandlerBuilder()
-                .positon(c -> HasTitle.Position.LEFT)
+                .position(c -> HasTitle.Position.LEFT)
                 .rotation(c -> 270d)
                 .build();
     }

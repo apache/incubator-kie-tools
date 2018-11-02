@@ -1,0 +1,56 @@
+{
+  "name": "Example 1",
+  "id": "example1",
+  "width": "1200",
+  "height": "800",
+  "nodes": [
+      {
+        "id": "event1",
+        "stencilId": "startNoneEvent",
+        "x": "10",
+        "y": "50"
+      },
+    {
+      "id": "task1",
+      "stencilId": "userTask",
+      "x": "110",
+      "y": "53"
+    },
+    {
+      "id": "gateway1",
+      "stencilId": "parallelMultipleGateway",
+      "x": "310",
+      "y": "50"
+    },
+    {
+      "id": "task2",
+      "stencilId": "scriptTask",
+      "x": "410",
+      "y": "53"
+    },
+    {
+      "id": "event2",
+      "stencilId": "endTerminateEvent",
+      "x": "610",
+      "y": "50"
+    }
+  ],
+  "edges": [
+    {
+      "from": "event1",
+      "to": "task1"
+    },
+    {
+      "from": "task1",
+      "to": "gateway1"
+    },
+    {
+      "from": "gateway1",
+      "to": "task2"
+    },
+    {
+      "from": "task2",
+      "to": "event2"
+    }
+  ]
+}

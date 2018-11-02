@@ -222,6 +222,19 @@ public class AbstractCanvasTest {
                times(1)).destroy();
     }
 
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testClearShapes() throws Exception {
+        tested.shapes.put(parentShape.getUUID(), parentShape);
+        tested.shapes.put(childShape.getUUID(), childShape);
+        tested.clearShapes();
+        verify(canvasView,
+               times(1)).removeShape(eq(parentShapeView));
+        verify(canvasView,
+               times(1)).removeShape(eq(childShapeView));
+        assertTrue(tested.getShapes().isEmpty());
+    }
+
     private class AbstractCanvasStub extends AbstractCanvas<AbstractCanvas.View> {
 
         public AbstractCanvasStub(final Event<CanvasClearEvent> canvasClearEvent,

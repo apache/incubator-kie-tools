@@ -63,14 +63,26 @@ public class DeleteElementsCommand extends AbstractCanvasGraphCommand {
         return command;
     }
 
-    private class CanvasMultipleDeleteProcessor
+    protected class CanvasMultipleDeleteProcessor
             implements org.kie.workbench.common.stunner.core.graph.command.impl.DeleteElementsCommand.DeleteCallback {
 
         @Override
         public SafeDeleteNodeCommand.SafeDeleteNodeCommandCallback onDeleteNode(final Node<?, Edge> node,
                                                                                 final SafeDeleteNodeCommand.Options options) {
             final DeleteNodeCommand.CanvasDeleteProcessor processor
-                    = new DeleteNodeCommand.CanvasDeleteProcessor(options) {
+                    = createProcessor(options);
+
+            getCommand().addCommand(processor.getCommand());
+            return processor;
+        }
+
+        @Override
+        public void onDeleteEdge(final Edge<? extends View, Node> edge) {
+            getCommand().addCommand(new DeleteCanvasConnectorCommand(edge));
+        }
+
+        protected DeleteNodeCommand.CanvasDeleteProcessor createProcessor(final SafeDeleteNodeCommand.Options options) {
+            return new DeleteNodeCommand.CanvasDeleteProcessor(options) {
                 @Override
                 public boolean deleteConnector(final Edge<? extends View<?>, Node> connector) {
                     if (super.deleteConnector(connector)) {
@@ -80,13 +92,6 @@ public class DeleteElementsCommand extends AbstractCanvasGraphCommand {
                     return false;
                 }
             };
-            getCommand().addCommand(processor.getCommand());
-            return processor;
-        }
-
-        @Override
-        public void onDeleteEdge(final Edge<? extends View, Node> edge) {
-            getCommand().addCommand(new DeleteCanvasConnectorCommand(edge));
         }
     }
 }

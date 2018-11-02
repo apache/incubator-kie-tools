@@ -35,8 +35,8 @@ public class CaseManagementRemoveChildCommand extends org.kie.workbench.common.s
     @Override
     @SuppressWarnings("unchecked")
     protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand(final AbstractCanvasHandler context) {
-        return new org.kie.workbench.common.stunner.core.graph.command.impl.RemoveChildCommand(parent,
-                                                                                               child);
+        return new org.kie.workbench.common.stunner.cm.client.command.graph.CaseManagementRemoveChildCommand(parent,
+                                                                                                             child);
     }
 
     @Override

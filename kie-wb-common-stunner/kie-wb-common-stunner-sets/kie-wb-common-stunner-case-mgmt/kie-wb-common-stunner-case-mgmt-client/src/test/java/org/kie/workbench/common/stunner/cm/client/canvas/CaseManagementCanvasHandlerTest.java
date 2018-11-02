@@ -16,15 +16,14 @@
 
 package org.kie.workbench.common.stunner.cm.client.canvas;
 
-import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNViewDefinition;
-import org.kie.workbench.common.stunner.cm.client.shape.ActivityShape;
-import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementTaskShapeDef;
-import org.kie.workbench.common.stunner.cm.client.shape.view.ActivityView;
+import org.kie.workbench.common.stunner.cm.client.shape.CaseManagementShape;
+import org.kie.workbench.common.stunner.cm.client.shape.view.CaseManagementShapeView;
+import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
 import org.kie.workbench.common.stunner.core.client.api.ClientDefinitionManager;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -38,7 +37,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.registration.Ca
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
-import org.kie.workbench.common.stunner.core.client.shape.impl.AbstractElementShape;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.PropertyAdapter;
@@ -55,7 +53,6 @@ import org.kie.workbench.common.stunner.core.graph.processing.index.GraphIndexBu
 import org.kie.workbench.common.stunner.core.graph.processing.index.MutableIndex;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
-import org.kie.workbench.common.stunner.shapes.client.view.PictureShapeView;
 import org.mockito.Mock;
 import org.uberfire.mocks.EventSourceMock;
 
@@ -63,8 +60,6 @@ import static org.junit.Assert.assertFalse;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyObject;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -164,7 +159,7 @@ public class CaseManagementCanvasHandlerTest {
     @Test
     @SuppressWarnings("unchecked")
     public void checkRegisterRenderableShapes() {
-        final ActivityShape shape = makeShape();
+        final CaseManagementShape shape = makeShape();
         final Node<View<BPMNViewDefinition>, Edge> node = makeNode("uuid",
                                                                    shape);
 
@@ -177,21 +172,16 @@ public class CaseManagementCanvasHandlerTest {
     }
 
     @SuppressWarnings("unchecked")
-    private ActivityShape makeShape() {
-        final CaseManagementTaskShapeDef shapeDef = new CaseManagementTaskShapeDef();
-        final ActivityView shapeView = new ActivityView(10.0,
-                                                        20.0);
-        final ActivityShape shape = new ActivityShape(shapeDef,
-                                                      new PictureShapeView(new MultiPath()),
-                                                      shapeView);
-        return shape;
+    private CaseManagementShape makeShape() {
+        final CaseManagementShapeView shapeView = mock(CaseManagementShapeView.class);
+        return new CaseManagementShape(shapeView);
     }
 
     @SuppressWarnings("unchecked")
     private Node<View<BPMNViewDefinition>, Edge> makeNode(final String uuid,
-                                                          final AbstractElementShape shape) {
+                                                          final CaseManagementShape shape) {
         final Node<View<BPMNViewDefinition>, Edge> node = new NodeImpl<>(uuid);
-        node.setContent(new ViewImpl(shape.getShapeDefinition(),
+        node.setContent(new ViewImpl(new CaseManagementDiagram(),
                                      new BoundsImpl(new BoundImpl(0.0,
                                                                   0.0),
                                                     new BoundImpl(10.0,
@@ -208,7 +198,7 @@ public class CaseManagementCanvasHandlerTest {
 
     @Test
     public void checkDeregisterRenderableShapes() {
-        final ActivityShape shape = makeShape();
+        final CaseManagementShape shape = makeShape();
         final Node<View<BPMNViewDefinition>, Edge> node = makeNode("uuid",
                                                                    shape);
 
@@ -222,7 +212,7 @@ public class CaseManagementCanvasHandlerTest {
 
     @Test
     public void checkAddShapeRenderableShapes() {
-        final ActivityShape shape = makeShape();
+        final CaseManagementShape shape = makeShape();
 
         handler.addShape(shape);
 
@@ -233,8 +223,8 @@ public class CaseManagementCanvasHandlerTest {
     @Test
     @SuppressWarnings("unchecked")
     public void checkAddChildRenderableShapes() {
-        final ActivityShape parentShape = makeShape();
-        final ActivityShape childShape = makeShape();
+        final CaseManagementShape parentShape = makeShape();
+        final CaseManagementShape childShape = makeShape();
         final Node<View<BPMNViewDefinition>, Edge> parentNode = makeNode("parent",
                                                                          parentShape);
         final Node<View<BPMNViewDefinition>, Edge> childNode = makeNode("child",
@@ -260,8 +250,8 @@ public class CaseManagementCanvasHandlerTest {
     @Test
     @SuppressWarnings("unchecked")
     public void checkAddChildRenderableShapesAtIndex() {
-        final ActivityShape parentShape = makeShape();
-        final ActivityShape childShape = makeShape();
+        final CaseManagementShape parentShape = makeShape();
+        final CaseManagementShape childShape = makeShape();
         final Node<View<BPMNViewDefinition>, Edge> parentNode = makeNode("parent",
                                                                          parentShape);
         final Node<View<BPMNViewDefinition>, Edge> childNode = makeNode("child",
@@ -288,7 +278,7 @@ public class CaseManagementCanvasHandlerTest {
 
     @Test
     public void checkRemoveShapeRenderableShapes() {
-        final ActivityShape shape = makeShape();
+        final CaseManagementShape shape = makeShape();
 
         handler.removeShape(shape);
 
@@ -299,8 +289,8 @@ public class CaseManagementCanvasHandlerTest {
     @Test
     @SuppressWarnings("unchecked")
     public void checkRemoveChildRenderableShapes() {
-        final ActivityShape parentShape = makeShape();
-        final ActivityShape childShape = makeShape();
+        final CaseManagementShape parentShape = makeShape();
+        final CaseManagementShape childShape = makeShape();
         final Node<View<BPMNViewDefinition>, Edge> parentNode = makeNode("parent",
                                                                          parentShape);
         final Node<View<BPMNViewDefinition>, Edge> childNode = makeNode("child",
@@ -328,17 +318,13 @@ public class CaseManagementCanvasHandlerTest {
     @Test
     @SuppressWarnings("unchecked")
     public void checkApplyElementMutationRenderableShapes() {
-        final ActivityShape shape = spy(makeShape());
+        final CaseManagementShape shape = spy(makeShape());
         final Node<View<BPMNViewDefinition>, Edge> node = makeNode("uuid",
                                                                    shape);
         final MutationContext mutationContext = mock(MutationContext.class);
-        doNothing().when(shape).applyPosition(eq(node),
-                                              eq(mutationContext));
-        doNothing().when(shape).applyProperties(eq(node),
-                                                eq(mutationContext));
-        doNothing().when(shape).applyTitle(anyString(),
-                                           any(Node.class),
-                                           eq(mutationContext));
+
+        final String name = "mockName";
+        when(textPropertyProvider.getText(eq(node))).thenReturn(name);
 
         handler.applyElementMutation(shape,
                                      node,
@@ -346,28 +332,32 @@ public class CaseManagementCanvasHandlerTest {
                                      true,
                                      mutationContext);
 
+        verify(shape.getShapeView(),
+               times(1)).refresh();
+
+        verify((CaseManagementShapeView) shape.getShapeView(),
+               times(1)).setLabel(eq(name));
+
         verify(shape,
-               times(1)).applyPosition(eq(node),
-                                       eq(mutationContext));
+               times(1)).beforeDraw();
+
         verify(shape,
-               times(1)).applyProperties(eq(node),
-                                         eq(mutationContext));
+               times(1)).afterDraw();
+
+        verify(canvasElementUpdatedEvent,
+               times(1)).fire(any());
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void checkApplyShapeElementMutationRenderableShapes() {
-        final ActivityShape shape = spy(makeShape());
+        final CaseManagementShape shape = spy(makeShape());
         final Node<View<BPMNViewDefinition>, Edge> node = makeNode("uuid",
                                                                    shape);
         final MutationContext mutationContext = mock(MutationContext.class);
-        doNothing().when(shape).applyPosition(eq(node),
-                                              eq(mutationContext));
-        doNothing().when(shape).applyProperties(eq(node),
-                                                eq(mutationContext));
-        doNothing().when(shape).applyTitle(anyString(),
-                                           any(Node.class),
-                                           eq(mutationContext));
+
+        final String name = "mockName";
+        when(textPropertyProvider.getText(eq(node))).thenReturn(name);
 
         handler.register(shape,
                          node,
@@ -377,11 +367,19 @@ public class CaseManagementCanvasHandlerTest {
                                      true,
                                      mutationContext);
 
+        verify(shape.getShapeView(),
+               times(1)).refresh();
+
+        verify((CaseManagementShapeView) shape.getShapeView(),
+               times(1)).setLabel(eq(name));
+
         verify(shape,
-               times(1)).applyPosition(eq(node),
-                                       eq(mutationContext));
+               times(1)).beforeDraw();
+
         verify(shape,
-               times(1)).applyProperties(eq(node),
-                                         eq(mutationContext));
+               times(1)).afterDraw();
+
+        verify(canvasElementUpdatedEvent,
+               times(1)).fire(any());
     }
 }

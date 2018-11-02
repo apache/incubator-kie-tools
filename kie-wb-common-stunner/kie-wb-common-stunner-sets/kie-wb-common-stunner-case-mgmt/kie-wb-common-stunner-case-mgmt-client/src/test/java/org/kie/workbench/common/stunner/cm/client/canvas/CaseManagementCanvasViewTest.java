@@ -16,17 +16,19 @@
 
 package org.kie.workbench.common.stunner.cm.client.canvas;
 
+import com.ait.lienzo.client.core.shape.Rectangle;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
-import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresHandlerFactoryImpl;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.lienzo.wires.StunnerWiresControlFactory;
+import org.kie.workbench.common.stunner.client.lienzo.wires.StunnerWiresHandlerFactory;
 import org.kie.workbench.common.stunner.client.lienzo.wires.WiresManagerFactoryImpl;
-import org.kie.workbench.common.stunner.cm.client.wires.MockCaseManagementShape;
+import org.kie.workbench.common.stunner.cm.client.shape.view.CaseManagementShapeView;
 import org.kie.workbench.common.stunner.shapes.client.view.AbstractConnectorView;
 import org.kie.workbench.common.stunner.shapes.client.view.PolylineConnectorView;
+import org.kie.workbench.common.stunner.svg.client.shape.view.SVGPrimitiveShape;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -40,13 +42,17 @@ public class CaseManagementCanvasViewTest {
     @Before
     public void setup() {
         this.view = new CaseManagementCanvasView(new WiresManagerFactoryImpl(new StunnerWiresControlFactory(),
-                                                                             new WiresHandlerFactoryImpl()));
+                                                                             new StunnerWiresHandlerFactory()));
         this.view.init();
     }
 
     @Test
     public void addWiresShape() {
-        final MockCaseManagementShape shape = new MockCaseManagementShape();
+        final CaseManagementShapeView shape = new CaseManagementShapeView("mockCaseMgmtShapeView",
+                                                                          new SVGPrimitiveShape(new Rectangle(0d, 0d)),
+                                                                          0d,
+                                                                          0d,
+                                                                          false);
         final String uuid = shape.uuid();
         shape.setUUID(uuid);
 
@@ -73,8 +79,16 @@ public class CaseManagementCanvasViewTest {
 
     @Test
     public void addChildShape() {
-        final MockCaseManagementShape parent = new MockCaseManagementShape();
-        final MockCaseManagementShape child = new MockCaseManagementShape();
+        final CaseManagementShapeView parent = new CaseManagementShapeView("mockCaseMgmtShapeViewParent",
+                                                                           new SVGPrimitiveShape(new Rectangle(0d, 0d)),
+                                                                           0d,
+                                                                           0d,
+                                                                           false);
+        final CaseManagementShapeView child = new CaseManagementShapeView("mockCaseMgmtShapeViewChild",
+                                                                          new SVGPrimitiveShape(new Rectangle(0d, 0d)),
+                                                                          0d,
+                                                                          0d,
+                                                                          false);
 
         view.addChildShape(parent,
                            child,

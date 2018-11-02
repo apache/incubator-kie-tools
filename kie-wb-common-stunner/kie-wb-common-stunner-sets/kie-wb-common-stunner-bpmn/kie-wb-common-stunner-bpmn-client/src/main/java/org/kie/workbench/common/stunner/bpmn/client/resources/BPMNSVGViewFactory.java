@@ -22,7 +22,7 @@ import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeViewResour
 
 import static org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory.PATH_CSS;
 
-@SVGViewFactory(PATH_CSS)
+@SVGViewFactory(cssPath = PATH_CSS)
 public interface BPMNSVGViewFactory {
 
     /**

@@ -30,13 +30,15 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
-public class CaseManagementAddChildCommandTest extends AbstractCommandTest {
+public class CaseManagementAddChildCommandTest extends CaseManagementAbstractCommandTest {
 
     private Node<View<?>, Edge> parent;
 
     private Node<View<?>, Edge> candidate;
 
     private CaseManagementAddChildCommand command;
+
+    private int index;
 
     @Before
     public void setup() {
@@ -58,6 +60,8 @@ public class CaseManagementAddChildCommandTest extends AbstractCommandTest {
         this.command = new CaseManagementAddChildCommand(parent,
                                                          candidate,
                                                          SHAPE_SET_ID);
+
+        this.index = parent.getOutEdges().size();
     }
 
     @Test
@@ -67,7 +71,7 @@ public class CaseManagementAddChildCommandTest extends AbstractCommandTest {
         assertEquals(1,
                      parent.getOutEdges().size());
         assertEquals(candidate,
-                     parent.getOutEdges().get(0).getTargetNode());
+                     parent.getOutEdges().get(index).getTargetNode());
         assertEquals(1,
                      candidate.getInEdges().size());
         assertEquals(parent,
@@ -85,6 +89,6 @@ public class CaseManagementAddChildCommandTest extends AbstractCommandTest {
         verify(canvasHandler,
                times(1)).addChild(eq(parent),
                                   eq(candidate),
-                                  eq(0));
+                                  eq(index));
     }
 }

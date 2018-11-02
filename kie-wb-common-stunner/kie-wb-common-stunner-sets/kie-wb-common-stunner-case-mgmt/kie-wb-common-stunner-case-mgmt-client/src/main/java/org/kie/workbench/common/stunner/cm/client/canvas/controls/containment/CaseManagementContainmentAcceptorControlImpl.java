@@ -15,8 +15,10 @@
  */
 package org.kie.workbench.common.stunner.cm.client.canvas.controls.containment;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -27,8 +29,8 @@ import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.controls.AbstractAcceptorControl;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
+import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresShapeView;
 import org.kie.workbench.common.stunner.cm.client.command.CaseManagementCanvasCommandFactory;
-import org.kie.workbench.common.stunner.cm.client.wires.AbstractCaseManagementShape;
 import org.kie.workbench.common.stunner.cm.client.wires.CaseManagementContainmentStateHolder;
 import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -48,21 +50,21 @@ import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
 public class CaseManagementContainmentAcceptorControlImpl extends AbstractAcceptorControl
         implements ContainmentAcceptorControl<AbstractCanvasHandler> {
 
-    final IContainmentAcceptor CONTAINMENT_ACCEPTOR = new CanvasManagementContainmentAcceptor();
-
     private final CaseManagementCanvasCommandFactory canvasCommandFactory;
     private final CaseManagementContainmentStateHolder state;
+    final IContainmentAcceptor containmentAcceptor;
 
     @Inject
     public CaseManagementContainmentAcceptorControlImpl(final @CaseManagementEditor CaseManagementCanvasCommandFactory canvasCommandFactory,
                                                         final CaseManagementContainmentStateHolder state) {
         this.canvasCommandFactory = canvasCommandFactory;
         this.state = state;
+        this.containmentAcceptor = new CanvasManagementContainmentAcceptor();
     }
 
     @Override
     protected void onInit(final WiresCanvas.View view) {
-        view.setContainmentAcceptor(CONTAINMENT_ACCEPTOR);
+        view.setContainmentAcceptor(containmentAcceptor);
     }
 
     @Override
@@ -173,9 +175,7 @@ public class CaseManagementContainmentAcceptorControlImpl extends AbstractAccept
             if (state.getGhost().isPresent() &&
                     containmentAllowed(wiresContainer,
                                        wiresShapes)) {
-                final AbstractCaseManagementShape container = (AbstractCaseManagementShape) wiresContainer;
-                final AbstractCaseManagementShape ghost = state.getGhost().get();
-                final int index = container.getIndex(ghost);
+                final int index = getAddIndex(wiresShapes[0], wiresContainer);
                 if (index >= 0) {
                     final Optional<Integer> newIndex = Optional.of(index);
                     final Optional<WiresContainer> originalContainer = state.getOriginalParent();
@@ -211,6 +211,38 @@ public class CaseManagementContainmentAcceptorControlImpl extends AbstractAccept
                                      index,
                                      originalParent,
                                      originalIndex);
+        }
+
+        int getAddIndex(final WiresShape wiresShape,
+                                final WiresContainer container) {
+            Node parent = WiresUtils.getNode(getCanvasHandler(), container);
+
+            if (parent.getInEdges().size() == 0) {  // Add to the canvas horizontally
+                final double shapeX = wiresShape.getComputedLocation().getX();
+
+                // exclude the shape and its ghost
+                final List<WiresShape> children  = container.getChildShapes().toList().stream()
+                        .filter(s -> !((WiresShapeView) s).getUUID().equals(((WiresShapeView) wiresShape).getUUID()))
+                        .collect(Collectors.toList());
+
+                int targetIndex = children.size();
+
+                for (int idx = 0; idx < children.size(); idx++) {
+                    final WiresShape child = children.get(idx);
+                    if (shapeX < child.getComputedLocation().getX()) {
+                        targetIndex = idx;
+                        break;
+                    }
+                }
+
+                return targetIndex;
+            } else {    // Add to a stage vertically
+                if (state.getOriginalParent().isPresent() && state.getOriginalParent().get().equals(container)) {  // same stage
+                    return parent.getOutEdges().size() - 1;
+                } else {
+                    return parent.getOutEdges().size();
+                }
+            }
         }
     }
 }

@@ -20,15 +20,32 @@ import java.util.function.Consumer;
 
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.cm.client.command.canvas.CaseManagementCloneCanvasNodeCommand;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.CloneNodeCommand;
+import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.ChildrenTraverseProcessor;
+import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
 public class CaseManagementCloneNodeCommand extends CloneNodeCommand {
 
-    public CaseManagementCloneNodeCommand(Node candidate, String parentUuid, Point2D cloneLocation, Consumer<Node> cloneNodeCommandCallback, ManagedInstance<ChildrenTraverseProcessor> childrenTraverseProcessor) {
+    public CaseManagementCloneNodeCommand(Node candidate,
+                                          String parentUuid,
+                                          Point2D cloneLocation,
+                                          Consumer<Node> cloneNodeCommandCallback,
+                                          ManagedInstance<ChildrenTraverseProcessor> childrenTraverseProcessor) {
         super(candidate, parentUuid, cloneLocation, cloneNodeCommandCallback, childrenTraverseProcessor);
+    }
+
+    @Override
+    protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand(AbstractCanvasHandler context) {
+        return new org.kie.workbench.common.stunner.cm.client.command.graph.CaseManagementCloneNodeCommand(getCandidate(),
+                                                                                                           getParentUuid(),
+                                                                                                           getClonePosition(),
+                                                                                                           cloneNodeCallback(context),
+                                                                                                           getChildrenTraverseProcessor());
     }
 
     @Override

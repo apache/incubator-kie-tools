@@ -21,9 +21,14 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.kie.workbench.common.stunner.svg.client.shape.view.factory.SVGShapeViewBuilder;
+import org.kie.workbench.common.stunner.svg.client.shape.view.factory.SVGShapeViewBuilderImpl;
+
 @Retention(RetentionPolicy.SOURCE)
 @Target({ElementType.TYPE})
 public @interface SVGViewFactory {
 
-    String value() default "";
+    String cssPath() default "";
+
+    Class<? extends SVGShapeViewBuilder> builder() default SVGShapeViewBuilderImpl.class;
 }

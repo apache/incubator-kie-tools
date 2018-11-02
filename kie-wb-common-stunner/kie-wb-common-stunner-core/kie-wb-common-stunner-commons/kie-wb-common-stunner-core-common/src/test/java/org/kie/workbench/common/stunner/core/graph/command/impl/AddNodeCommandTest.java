@@ -52,9 +52,9 @@ public class AddNodeCommandTest extends AbstractGraphCommandTest {
     private static final String UUID = "nodeUUID";
 
     @Mock
-    Node node;
+    protected Node node;
 
-    private AddNodeCommand tested;
+    protected AddNodeCommand tested;
 
     @Before
     public void setup() throws Exception {

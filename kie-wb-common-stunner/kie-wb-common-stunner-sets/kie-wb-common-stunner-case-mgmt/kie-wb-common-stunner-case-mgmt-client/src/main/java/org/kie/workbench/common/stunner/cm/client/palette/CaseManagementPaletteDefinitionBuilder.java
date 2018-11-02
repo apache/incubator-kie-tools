@@ -26,20 +26,20 @@ import javax.inject.Inject;
 
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.kie.soup.commons.util.Maps;
-import org.kie.workbench.common.stunner.bpmn.definition.AdHocSubprocess;
-import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
 import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.Lane;
 import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
 import org.kie.workbench.common.stunner.bpmn.definition.ParallelGateway;
-import org.kie.workbench.common.stunner.bpmn.definition.ScriptTask;
 import org.kie.workbench.common.stunner.bpmn.definition.SequenceFlow;
 import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
 import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTask;
 import org.kie.workbench.common.stunner.client.widgets.components.glyph.BS3IconTypeGlyph;
+import org.kie.workbench.common.stunner.cm.client.resources.CaseManagementImageResources;
+import org.kie.workbench.common.stunner.cm.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
+import org.kie.workbench.common.stunner.cm.definition.EmbeddedSubprocess;
 import org.kie.workbench.common.stunner.cm.definition.ReusableSubprocess;
 import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
@@ -47,6 +47,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.components.palette.DefaultPaletteDefinition;
 import org.kie.workbench.common.stunner.core.client.components.palette.ExpandedPaletteDefinitionBuilder;
 import org.kie.workbench.common.stunner.core.client.components.palette.PaletteDefinitionBuilder;
+import org.kie.workbench.common.stunner.core.client.shape.SvgDataUriGlyph;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 
 import static org.kie.workbench.common.stunner.core.client.components.palette.DefaultPaletteDefinitionProviders.getId;
@@ -58,41 +59,65 @@ public class CaseManagementPaletteDefinitionBuilder
         implements PaletteDefinitionBuilder<AbstractCanvasHandler, DefaultPaletteDefinition> {
 
     public static final String STAGES = "Stages";
-    public static final String ACTIVITIES = "Activities";
+    public static final String TASKS = "Tasks";
+    public static final String SUBPROCESSES = "Subprocesses";
+    public static final String SUBCASES = "Subcases";
 
     private static final Map<String, String> CAT_TITLES = new Maps.Builder<String, String>()
-            .put(STAGES,
-                 STAGES)
-            .put(ACTIVITIES,
-                 ACTIVITIES)
+        .put(STAGES,
+             STAGES)
+        .put(TASKS,
+             TASKS)
+        .put(SUBPROCESSES,
+             SUBPROCESSES)
+        .put(SUBCASES,
+             SUBCASES)
             .build();
 
     private static final Map<String, Class<?>> CAT_DEFAULTS = new Maps.Builder<String, Class<?>>()
-            .put(STAGES,
-                 AdHocSubprocess.class)
-            .put(ACTIVITIES,
-                 BusinessRuleTask.class)
+        .put(STAGES,
+             AdHocSubprocess.class)
+        .put(TASKS,
+             UserTask.class)
+        .put(SUBPROCESSES,
+             EmbeddedSubprocess.class)
+        .put(SUBCASES,
+             ReusableSubprocess.class)
             .build();
 
     @SuppressWarnings("unchecked")
     private final static Map<String, Glyph> CATEGORY_GLYPHS = new Maps.Builder<String, Glyph>()
-            .put(STAGES,
-                 BS3IconTypeGlyph.create(IconType.STAR))
-            .put(ACTIVITIES,
-                 BS3IconTypeGlyph.create(IconType.TASKS))
+        .put(STAGES,
+             CaseManagementImageResources.INSTANCE != null ?
+                SvgDataUriGlyph.Builder.build(
+                        CaseManagementImageResources.INSTANCE.categoryStages().getSafeUri())
+                : BS3IconTypeGlyph.create(IconType.STAR))
+        .put(TASKS,
+             CaseManagementImageResources.INSTANCE != null ?
+                SvgDataUriGlyph.Builder.build(
+                        CaseManagementImageResources.INSTANCE.categoryTasks().getSafeUri())
+                : BS3IconTypeGlyph.create(IconType.TASKS))
+        .put(SUBPROCESSES,
+             CaseManagementImageResources.INSTANCE != null ?
+                SvgDataUriGlyph.Builder.build(
+                        CaseManagementImageResources.INSTANCE.categorySubprocesses().getSafeUri())
+                : BS3IconTypeGlyph.create(IconType.TASKS))
+        .put(SUBCASES,
+             CaseManagementImageResources.INSTANCE != null ?
+                SvgDataUriGlyph.Builder.build(
+                        CaseManagementImageResources.INSTANCE.categorySubcases().getSafeUri())
+                : BS3IconTypeGlyph.create(IconType.TASKS))
             .build();
 
     private static final Map<String, String> DEFINITION_CATEGORY_MAPPINGS = new Maps.Builder<String, String>()
-            .put(AdHocSubprocess.class.getName(),
-                 STAGES)
-            .put(UserTask.class.getName(),
-                 ACTIVITIES)
-            .put(ScriptTask.class.getName(),
-                 ACTIVITIES)
-            .put(BusinessRuleTask.class.getName(),
-                 ACTIVITIES)
-            .put(ReusableSubprocess.class.getName(),
-                 ACTIVITIES)
+        .put(AdHocSubprocess.class.getName(),
+             STAGES)
+        .put(UserTask.class.getName(),
+             TASKS)
+        .put(EmbeddedSubprocess.class.getName(),
+             SUBPROCESSES)
+        .put(ReusableSubprocess.class.getName(),
+             SUBCASES)
             .build();
 
     private final ExpandedPaletteDefinitionBuilder paletteDefinitionBuilder;

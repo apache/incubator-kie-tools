@@ -31,6 +31,7 @@ import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.cm.client.shape.view.CaseManagementShapeView;
 import org.mockito.Mock;
 
 import static org.mockito.Matchers.any;
@@ -78,12 +79,12 @@ public class CaseManagementColorMapBackedPickerTest {
         picker.addSupplementaryPaths(shape);
 
         verify(picker,
-               never()).addDropZone(any(AbstractCaseManagementShape.class));
+               never()).addDropZone(any(CaseManagementShapeView.class));
     }
 
     @Test
     public void checkDropZonesAreNotAddedForCaseManagementShapesWithNoDropZone() {
-        final AbstractCaseManagementShape shape = mock(AbstractCaseManagementShape.class);
+        final CaseManagementShapeView shape = mock(CaseManagementShapeView.class);
         when(shape.getDropZone()).thenReturn(Optional.empty());
 
         picker.addSupplementaryPaths(shape);
@@ -97,7 +98,7 @@ public class CaseManagementColorMapBackedPickerTest {
         final MultiPath dropZone = mock(MultiPath.class);
         when(dropZone.getAttributes()).thenReturn(mock(Attributes.class));
         when(dropZone.getPathPartListArray()).thenReturn(new NFastArrayList<>());
-        final AbstractCaseManagementShape shape = mock(AbstractCaseManagementShape.class);
+        final CaseManagementShapeView shape = mock(CaseManagementShapeView.class);
         when(shape.getDropZone()).thenReturn(Optional.of(dropZone));
         when(dropZone.getActualPathPartListArray()).thenReturn(new NFastArrayList<PathPartList>());
 

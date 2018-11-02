@@ -91,12 +91,15 @@ public class CaseManagementDiagram implements BPMNDiagram {
             .add("diagram")
             .build();
 
+    public static final Double WIDTH = 2800d;
+    public static final Double HEIGHT = 1400d;
+
     public CaseManagementDiagram() {
         this(new DiagramSet(""),
              new ProcessData(),
              new BackgroundSet(),
              new FontSet(),
-             new RectangleDimensionsSet());
+             new RectangleDimensionsSet(WIDTH, HEIGHT));
     }
 
     public CaseManagementDiagram(final @MapsTo("diagramSet") DiagramSet diagramSet,

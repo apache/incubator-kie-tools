@@ -28,15 +28,18 @@ public class ViewFactoryImpl implements ViewFactory {
     private final String name;
     private final String pkg;
     private final String typoF;
+    private final String viewBuilderType;
     private StyleSheetDefinition styleSheetDefinition;
     private final List<ViewDefinition<?>> viewDefinitions = new LinkedList<>();
 
     public ViewFactoryImpl(final String name,
                            final String pkg,
-                           final String typoF) {
+                           final String typoF,
+                           final String viewBuilderType) {
         this.name = name;
         this.pkg = pkg;
         this.typoF = typoF;
+        this.viewBuilderType = viewBuilderType;
     }
 
     @Override
@@ -52,6 +55,11 @@ public class ViewFactoryImpl implements ViewFactory {
     @Override
     public String getImplementedType() {
         return typoF;
+    }
+
+    @Override
+    public String getViewBuilderType() {
+        return viewBuilderType;
     }
 
     @Override

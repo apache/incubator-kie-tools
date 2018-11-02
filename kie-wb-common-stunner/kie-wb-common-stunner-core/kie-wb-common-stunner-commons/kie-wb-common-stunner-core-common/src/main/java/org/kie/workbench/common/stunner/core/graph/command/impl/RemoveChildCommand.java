@@ -107,7 +107,7 @@ public class RemoveChildCommand extends AbstractGraphCommand {
     }
 
     @SuppressWarnings("unchecked")
-    private Node<?, Edge> getParent(final GraphCommandExecutionContext context) {
+    protected Node<?, Edge> getParent(final GraphCommandExecutionContext context) {
         if (null == parent) {
             parent = getNodeNotNull(context,
                                     parentUUID);
@@ -116,7 +116,7 @@ public class RemoveChildCommand extends AbstractGraphCommand {
     }
 
     @SuppressWarnings("unchecked")
-    private Node<?, Edge> getCandidate(final GraphCommandExecutionContext context) {
+    protected Node<?, Edge> getCandidate(final GraphCommandExecutionContext context) {
         if (null == candidate) {
             candidate = getNodeNotNull(context,
                                        candidateUUID);

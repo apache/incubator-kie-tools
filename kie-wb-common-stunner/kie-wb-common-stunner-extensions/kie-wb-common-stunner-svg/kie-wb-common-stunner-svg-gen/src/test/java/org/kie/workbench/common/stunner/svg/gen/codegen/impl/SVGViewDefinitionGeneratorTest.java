@@ -59,7 +59,8 @@ public class SVGViewDefinitionGeneratorTest {
     public void testGenerate() throws Exception {
         final ViewFactory viewFactory = new ViewFactoryImpl("view1",
                                                             "org.kie.test",
-                                                            "MyType.¢lass");
+                                                            "MyType.¢lass",
+                                                            "MyViewBuilderType.class");
         final RectDefinition mainDef = new RectDefinition("rect1",
                                                           1,
                                                           2,
@@ -88,7 +89,7 @@ public class SVGViewDefinitionGeneratorTest {
         assertTrue(generated.contains("private SVGShapeView svgViewTestView(final boolean resizable)"));
         assertTrue(generated.contains("return this.svgViewTestView(25.50d, 225.45d, resizable);"));
         assertTrue(generated.contains("private SVGShapeView svgViewTestView(final double width, final double height, final boolean resizable) {"));
-        assertTrue(generated.contains("final SVGShapeViewImpl view = new SVGShapeViewImpl(\"viewDef1\", mainShape, width, height, resizable)"));
+        assertTrue(generated.contains("final SVGShapeView view = getViewBuilder().build(\"viewDef1\", mainShape, width, height, resizable)"));
         assertTrue(generated.contains("private SVGBasicShapeView svgViewTestBasicView() {"));
         assertTrue(generated.contains("return this.svgViewTestBasicView(25.50d, 225.45d);"));
         assertTrue(generated.contains("private SVGBasicShapeView svgViewTestBasicView(final double width, final double height) {"));
@@ -99,7 +100,8 @@ public class SVGViewDefinitionGeneratorTest {
     public void testCheckReferencesExist() throws Exception {
         final ViewFactory viewFactory = new ViewFactoryImpl("view1",
                                                             "org.kie.test",
-                                                            "MyType.¢lass");
+                                                            "MyType.¢lass",
+                                                            "MyViewBuilderType.class");
         final RectDefinition mainDef = new RectDefinition("rect1",
                                                           1,
                                                           2,

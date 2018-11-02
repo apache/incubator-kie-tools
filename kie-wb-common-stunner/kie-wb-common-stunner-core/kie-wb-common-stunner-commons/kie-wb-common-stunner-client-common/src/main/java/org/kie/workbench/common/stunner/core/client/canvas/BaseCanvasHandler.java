@@ -228,15 +228,16 @@ public abstract class BaseCanvasHandler<D extends Diagram, C extends AbstractCan
             graphShape.applyProperties(candidate,
                                        mutationContext);
         }
-        beforeDraw(candidate,
-                   graphShape);
-        beforeElementUpdated(candidate,
-                             graphShape);
-        afterDraw(candidate,
-                  graphShape);
+
+        this.applyElementMutation(graphShape, candidate);
+    }
+
+    protected void applyElementMutation(final Shape shape, final Element candidate) {
+        beforeDraw(candidate, shape);
+        beforeElementUpdated(candidate, shape);
+        afterDraw(candidate, shape);
         notifyCanvasElementUpdated(candidate);
-        afterElementUpdated(candidate,
-                            graphShape);
+        afterElementUpdated(candidate, shape);
     }
 
     @SuppressWarnings("unchecked")

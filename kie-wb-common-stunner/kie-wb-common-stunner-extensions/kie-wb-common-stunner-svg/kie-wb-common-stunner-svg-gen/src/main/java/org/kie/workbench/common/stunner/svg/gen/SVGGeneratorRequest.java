@@ -27,6 +27,7 @@ public class SVGGeneratorRequest {
     private final String pkg;
     private final String typeOf;
     private final String cssPath;
+    private final String viewBuilderType;
     private final Map<String, String> viewSources = new LinkedHashMap<>();
     private final Messager messager;
 
@@ -34,11 +35,13 @@ public class SVGGeneratorRequest {
                                final String pkg,
                                final String typeOf,
                                final String cssPath,
+                               final String viewBuilderType,
                                final Messager messager) {
         this.name = name;
         this.pkg = pkg;
         this.typeOf = typeOf;
         this.cssPath = cssPath;
+        this.viewBuilderType = viewBuilderType;
         this.messager = messager;
     }
 
@@ -56,6 +59,10 @@ public class SVGGeneratorRequest {
 
     public String getCssPath() {
         return cssPath;
+    }
+
+    public String getViewBuilderType() {
+        return viewBuilderType;
     }
 
     public String put(final String methodName,

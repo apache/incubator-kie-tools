@@ -46,8 +46,8 @@ public class CanvasHighlightVisitor {
     private static Logger LOGGER = Logger.getLogger(CanvasHighlightVisitor.class.getName());
     private static final int TIMER_DELAY = 500;
 
-    private CanvasHandler canvasHandler;
-    private final List<Shape> shapes = new LinkedList<Shape>();
+    protected CanvasHandler canvasHandler;
+    protected final List<Shape> shapes = new LinkedList<Shape>();
 
     public CanvasHighlightVisitor() {
     }
@@ -87,7 +87,7 @@ public class CanvasHighlightVisitor {
     }
 
     @SuppressWarnings("unchecked")
-    private void prepareVisit(final Command command) {
+    protected void prepareVisit(final Command command) {
         final Graph graph = canvasHandler.getDiagram().getGraph();
         final TreeWalkTraverseProcessor treeWalkTraverseProcessor =
                 new TreeWalkTraverseProcessorImpl()

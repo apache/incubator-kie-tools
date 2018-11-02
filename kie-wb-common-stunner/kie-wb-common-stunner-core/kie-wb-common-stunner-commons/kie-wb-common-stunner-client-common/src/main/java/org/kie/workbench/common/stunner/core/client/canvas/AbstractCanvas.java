@@ -287,16 +287,21 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.View>
     }
 
     private AbstractCanvas clear(final boolean fireEvents) {
-        if (!shapes.isEmpty()) {
-            shapes.values().stream().collect(Collectors.toList()).forEach(this::deleteShape);
-            shapes.clear();
-        }
+        clearShapes();
+
         fireCanvasClear();
         if (fireEvents) {
             canvasClearEvent.fire(new CanvasClearEvent(this));
         }
         view.clear();
         return this;
+    }
+
+    protected void clearShapes() {
+        if (!shapes.isEmpty()) {
+            shapes.values().stream().collect(Collectors.toList()).forEach(this::deleteShape);
+            shapes.clear();
+        }
     }
 
     @Override

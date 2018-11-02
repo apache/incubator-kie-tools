@@ -31,7 +31,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 @RunWith(MockitoJUnitRunner.class)
-public class CaseManagementUpdatePositionCommandTest extends AbstractCommandTest {
+public class CaseManagementUpdatePositionCommandTest extends CaseManagementAbstractCommandTest {
 
     private Node<View<?>, Edge> candidate;
 

@@ -21,6 +21,7 @@ import com.ait.lienzo.client.core.shape.wires.WiresContainer;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
+import org.kie.workbench.common.stunner.cm.client.shape.view.CaseManagementShapeView;
 
 public class VerticalStackLayoutManager extends AbstractNestedLayoutHandler {
 
@@ -28,32 +29,38 @@ public class VerticalStackLayoutManager extends AbstractNestedLayoutHandler {
     static final double PADDING_Y = 15.0;
 
     @Override
-    protected void orderChildren(final WiresShape shape,
+    protected void orderChildren(final WiresShape wiresShape,
                                  final WiresContainer container,
                                  final Point2D mouseRelativeLoc) {
         if (container == null) {
             return;
         }
-        final double my = mouseRelativeLoc.getY();
+
+        CaseManagementShapeView shape = (CaseManagementShapeView) wiresShape;
+//        final double my = mouseRelativeLoc.getY();
 
         final NFastArrayList<WiresShape> nChildren = container.getChildShapes().copy();
         final List<WiresShape> children = nChildren.remove(shape).toList();
 
         int targetIndex = children.size();
 
-        for (int idx = 0; idx < children.size(); idx++) {
-            final WiresShape child = children.get(idx);
-            if (my < child.getY()) {
-                targetIndex = idx;
-                break;
-            }
-        }
+        /**
+         * TODO: It is not yet supported that drag/drop a child element to reorder it under a stage
+         * @see <a href="https://issues.jboss.org/browse/JBPM-7888">JBPM-7888</a>
+         */
+//        for (int idx = 0; idx < children.size(); idx++) {
+//            final WiresShape child = children.get(idx);
+//            if (my < child.getY()) {
+//                targetIndex = idx;
+//                break;
+//            }
+//        }
 
-        if (container instanceof AbstractCaseManagementShape) {
-            final int currentIndex = ((AbstractCaseManagementShape) container).getIndex(shape);
+        if (container instanceof CaseManagementShapeView) {
+            final int currentIndex = ((CaseManagementShapeView) container).getIndex(shape);
             if (currentIndex != targetIndex) {
-                ((AbstractCaseManagementShape) container).addShape(shape,
-                                                                   targetIndex);
+                ((CaseManagementShapeView) container).addShape(shape,
+                                                               targetIndex);
             }
         }
     }
@@ -69,7 +76,17 @@ public class VerticalStackLayoutManager extends AbstractNestedLayoutHandler {
         for (WiresShape ws : container.getChildShapes()) {
             ws.setLocation(new Point2D(PADDING_X,
                                        y));
-            y = y + ws.getPath().getBoundingBox().getHeight() + PADDING_Y;
+            y = y + getTotalHeight(ws) + PADDING_Y;
         }
+    }
+
+    private double getTotalHeight(WiresShape ws) {
+        double height = ws.getPath().getBoundingBox().getHeight();
+
+        for (WiresShape child : ws.getChildShapes()) {
+            height += (getTotalHeight(child) + PADDING_Y);
+        }
+
+        return height;
     }
 }

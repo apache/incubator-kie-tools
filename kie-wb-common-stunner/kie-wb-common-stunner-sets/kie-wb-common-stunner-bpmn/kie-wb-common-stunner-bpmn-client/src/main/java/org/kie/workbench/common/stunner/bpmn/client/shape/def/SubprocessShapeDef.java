@@ -66,7 +66,7 @@ public class SubprocessShapeDef extends BaseDimensionedShapeDef
     @Override
     public FontHandler<BaseSubprocess, SVGShapeView> newFontHandler() {
         return newFontHandlerBuilder()
-                .positon(SubprocessShapeDef::getSubprocessTextPosition)
+                .position(SubprocessShapeDef::getSubprocessTextPosition)
                 .build();
     }
 

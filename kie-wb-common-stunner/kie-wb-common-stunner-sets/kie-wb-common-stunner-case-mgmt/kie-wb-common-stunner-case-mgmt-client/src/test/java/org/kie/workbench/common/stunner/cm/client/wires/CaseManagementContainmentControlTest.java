@@ -22,7 +22,6 @@ import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.wires.IContainmentAcceptor;
 import com.ait.lienzo.client.core.shape.wires.ILayoutHandler;
-import com.ait.lienzo.client.core.shape.wires.PickerPart;
 import com.ait.lienzo.client.core.shape.wires.WiresContainer;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
@@ -37,6 +36,7 @@ import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.cm.client.shape.view.CaseManagementShapeView;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
@@ -44,6 +44,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -77,47 +79,37 @@ public class CaseManagementContainmentControlTest {
     private CaseManagementContainmentStateHolder state;
 
     @Mock
-    private AbstractCaseManagementShape parent;
+    private CaseManagementShapeView parent;
 
     @Mock
     private ILayoutHandler parentLayoutHandler;
 
     @Mock
-    private AbstractCaseManagementShape ghost;
+    private CaseManagementShapeView ghost;
+
+    @Mock
+    private WiresParentPickerControl.Index index;
 
     private CaseManagementContainmentControl control;
-    private MockCaseManagementShape shape;
+
+    @Mock
+    private CaseManagementShapeView shape;
+
     private Layer layer;
 
     @Before
     public void setup() {
         layer = spy(new Layer());
-        shape = spy(new MockCaseManagementShape());
+
         final Group shapeGroup = mock(Group.class);
         when(shapeGroup.getLayer()).thenReturn(layer);
         when(shape.getGroup()).thenReturn(shapeGroup);
         when(shape.getWiresManager()).thenReturn(wiresManager);
-        when(shape.getGhost()).thenReturn(ghost);
+        doReturn(ghost).when(shape).getGhost();
         when(wiresManager.getContainmentAcceptor()).thenReturn(containmentAcceptor);
-        when(parentPickerControl.getIndex()).thenReturn(new WiresParentPickerControl.Index() {
-            @Override
-            public void exclude(final WiresContainer shape) {
-                PICKER_OPTIONS.getShapesToSkip().add(shape);
-            }
-
-            @Override
-            public PickerPart findShapeAt(final int x,
-                                          final int y) {
-                return parentPickerControl.getPicker().findShapeAt(x, y);
-            }
-
-            @Override
-            public void clear() {
-                PICKER_OPTIONS.getShapesToSkip().clear();
-            }
-        });
         when(parentPickerControl.getPickerOptions()).thenReturn(PICKER_OPTIONS);
         when(parentPickerControl.getShapeLocationControl()).thenReturn(shapeLocationControl);
+        when(parentPickerControl.getIndex()).thenReturn(index);
         when(containmentControl.getParentPickerControl()).thenReturn(parentPickerControl);
         when(containmentControl.getShape()).thenReturn(shape);
         when(containmentControl.getParent()).thenReturn(parent);
@@ -155,8 +147,8 @@ public class CaseManagementContainmentControlTest {
         verify(state, times(1)).setGhost(eq(Optional.empty()));
         verify(state, times(1)).setOriginalIndex(eq(Optional.empty()));
         verify(state, times(1)).setOriginalParent(eq(Optional.empty()));
-        verify(parent, never()).logicallyReplace(any(WiresShape.class),
-                                                 any(WiresShape.class));
+        verify(parent, never()).logicallyReplace(any(CaseManagementShapeView.class),
+                                                 any(CaseManagementShapeView.class));
     }
 
     @Test
@@ -169,8 +161,8 @@ public class CaseManagementContainmentControlTest {
         verify(state, times(1)).setGhost(eq(Optional.of(ghost)));
         verify(state, times(1)).setOriginalIndex(eq(Optional.of(0)));
         verify(state, times(1)).setOriginalParent(eq(Optional.of(parent)));
-        assertEquals(1, PICKER_OPTIONS.getShapesToSkip().size());
-        assertEquals(ghost, PICKER_OPTIONS.getShapesToSkip().get(0));
+//        assertEquals(1, PICKER_OPTIONS.getShapesToSkip().size());
+//        assertEquals(ghost, PICKER_OPTIONS.getShapesToSkip().get(0));
         verify(parent, times(1)).logicallyReplace(eq(shape),
                                                   eq(ghost));
     }
@@ -203,7 +195,7 @@ public class CaseManagementContainmentControlTest {
         control.onMove(x, y);
         verify(containmentControl, times(1)).onMove(eq(x),
                                                     eq(y));
-        verify(parentLayoutHandler, times(1)).add(eq(ghost),
+        verify(parentLayoutHandler, never()).add(eq(ghost),
                                                   eq(parent),
                                                   eq(new Point2D(x, y)));
         verify(parentPickerControl, times(1)).rebuildPicker();
@@ -251,7 +243,7 @@ public class CaseManagementContainmentControlTest {
     @Test
     public void testExecuteAndRestoreGhost() {
         control.execute();
-        verify(parent, times(1)).logicallyReplace(eq(ghost),
+        verify(parent, never()).logicallyReplace(eq(ghost),
                                                   eq(shape));
         verify(ghost, times(1)).destroy();
         verify(state, times(1)).setGhost(Optional.empty());
@@ -272,11 +264,25 @@ public class CaseManagementContainmentControlTest {
     @Test
     public void testReset() {
         control.reset();
-        verify(ghost, times(1)).removeFromParent();
+        verify(ghost, times(2)).removeFromParent();
         verify(parent, times(1)).addShape(eq(shape),
                                           eq(0));
         verify(state, times(1)).setGhost(Optional.empty());
         verify(state, times(1)).setOriginalParent(Optional.empty());
         verify(state, times(1)).setOriginalIndex(Optional.empty());
+    }
+
+    @Test
+    public void testReparentDraggedShape() {
+        when(state.getOriginalParent()).thenReturn(Optional.of(mock(WiresContainer.class)));
+        final CaseManagementShapeView ghostParent = mock(CaseManagementShapeView.class);
+        when(ghost.getParent()).thenReturn(ghostParent);
+        when(ghostParent.getIndex(eq(ghost))).thenReturn(1);
+
+        control.execute();
+
+        verify(containmentControl, times(1)).execute();
+        verify(ghost, atLeast(1)).removeFromParent();
+        verify(ghostParent, times(1)).addShape(eq(shape), eq(1));
     }
 }

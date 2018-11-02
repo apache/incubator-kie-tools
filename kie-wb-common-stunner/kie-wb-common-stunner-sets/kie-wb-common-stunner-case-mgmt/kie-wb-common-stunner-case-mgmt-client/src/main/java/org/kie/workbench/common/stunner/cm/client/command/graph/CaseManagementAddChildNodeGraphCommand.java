@@ -18,17 +18,24 @@ package org.kie.workbench.common.stunner.cm.client.command.graph;
 
 import java.util.Optional;
 
+import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.impl.RegisterNodeCommand;
+import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
 @SuppressWarnings("unchecked")
 public class CaseManagementAddChildNodeGraphCommand extends org.kie.workbench.common.stunner.core.graph.command.impl.AddChildNodeCommand {
 
+    private final int index;
+
     public CaseManagementAddChildNodeGraphCommand(final Node parent,
-                                                  final Node child) {
+                                                  final Node child,
+                                                  final int index) {
         super(parent,
               child);
+
+        this.index = index;
     }
 
     @Override
@@ -38,9 +45,14 @@ public class CaseManagementAddChildNodeGraphCommand extends org.kie.workbench.co
         this.addCommand(new RegisterNodeCommand(child));
         this.addCommand(new CaseManagementSetChildNodeGraphCommand(parent,
                                                                    child,
-                                                                   Optional.of(0),
+                                                                   Optional.of(index),
                                                                    Optional.empty(),
                                                                    Optional.empty()));
         return this;
+    }
+
+    @Override
+    public CommandResult<RuleViolation> undo(GraphCommandExecutionContext context) {
+        return new CaseManagementSafeDeleteNodeCommand(getCandidate()).execute(context);
     }
 }
