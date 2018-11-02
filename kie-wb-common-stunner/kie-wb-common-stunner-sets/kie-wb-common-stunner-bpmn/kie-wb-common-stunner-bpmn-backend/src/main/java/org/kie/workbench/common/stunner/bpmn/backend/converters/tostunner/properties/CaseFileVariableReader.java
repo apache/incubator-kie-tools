@@ -22,32 +22,36 @@ import java.util.stream.Collectors;
 
 import org.eclipse.bpmn2.ItemDefinition;
 import org.eclipse.bpmn2.Property;
+import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseFileVariables;
 
-class ProcessVariableReader {
+class CaseFileVariableReader {
 
-    static String getProcessVariables(List<Property> properties) {
+    static String getCaseFileVariables(List<Property> properties) {
         return properties
                 .stream()
-                .filter(ProcessVariableReader::isProcessVariable)
-                .map(ProcessVariableReader::toProcessVariableString)
+                .filter(CaseFileVariableReader::isCaseFileVariable)
+                .map(CaseFileVariableReader::toCaseFileVariableString)
                 .collect(Collectors.joining(","));
     }
 
-    private static String toProcessVariableString(Property p) {
-        String processVariableName = getProcessVariableName(p);
+    private static String toCaseFileVariableString(Property p) {
+        String variableName = getCaseFileVariableName(p);
+        String caseFileVariableName = variableName.substring(CaseFileVariables.CASE_FILE_PREFIX.length());
+
         return Optional.ofNullable(p.getItemSubjectRef())
                 .map(ItemDefinition::getStructureRef)
-                .map(type -> processVariableName + ":" + type)
-                .orElse(processVariableName);
+                .map(type -> caseFileVariableName + ":" + type)
+                .orElse(caseFileVariableName);
     }
 
-    public static String getProcessVariableName(Property p) {
+    private static String getCaseFileVariableName(Property p) {
         String name = p.getName();
         // legacy uses ID instead of name
-        return name == null? p.getId() : name;
+        return name == null ? p.getId() : name;
     }
 
-    public static boolean isProcessVariable(Property p) {
-        return !CaseFileVariableReader.isCaseFileVariable(p);
+    public static boolean isCaseFileVariable(Property p) {
+        String name = getCaseFileVariableName(p);
+        return name.startsWith(CaseFileVariables.CASE_FILE_PREFIX);
     }
 }

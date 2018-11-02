@@ -26,17 +26,18 @@ import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
+import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseFileVariables;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessVariables;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.uberfire.commons.data.Pair;
 
-public class ProcessVariablesProvider
+public class VariablesProvider
         extends AbstractProcessFilteredNodeProvider {
 
     @Inject
-    public ProcessVariablesProvider(final SessionManager sessionManager) {
+    public VariablesProvider(final SessionManager sessionManager) {
         super(sessionManager);
     }
 
@@ -68,16 +69,34 @@ public class ProcessVariablesProvider
             Object oDefinition = ((View) node.getContent()).getDefinition();
             if (oDefinition instanceof BPMNDiagram) {
                 BPMNDiagramImpl bpmnDiagram = (BPMNDiagramImpl) oDefinition;
+
                 ProcessVariables processVars = bpmnDiagram.getProcessData().getProcessVariables();
-                if (processVars.getValue().length() > 0) {
-                    List<String> list = Arrays.asList(processVars.getValue().split(","));
-                    list.forEach(s1 -> {
-                        String value = s1.split(":")[0];
-                        result.add(new Pair<>(value, value));
-                    });
-                }
+                addPropertyVariableToResult(result, processVars.getValue());
+
+                CaseFileVariables caseVars = bpmnDiagram.getCaseManagementSet().getCaseFileVariables();
+                addCaseFileVariableToResult(result, caseVars.getValue());
             }
         }
         return result;
+    }
+
+    private void addPropertyVariableToResult(Collection<Pair<Object, String>> result, String element) {
+        if (element.length() > 0) {
+            List<String> list = Arrays.asList(element.split(","));
+            list.forEach(s1 -> {
+                String value = s1.split(":")[0];
+                result.add(new Pair<>(value, value));
+            });
+        }
+    }
+
+    private void addCaseFileVariableToResult(Collection<Pair<Object, String>> result, String element) {
+        if (element.length() > 0) {
+            List<String> list = Arrays.asList(element.split(","));
+            list.forEach(s1 -> {
+                String value = CaseFileVariables.CASE_FILE_PREFIX + s1.split(":")[0];
+                result.add(new Pair<>(value, value));
+            });
+        }
     }
 }

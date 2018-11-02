@@ -32,6 +32,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.lane
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.ProcessPropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.PropertyWriterFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
+import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseFileVariables;
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseManagementSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseRoles;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.DiagramSet;
@@ -71,6 +72,9 @@ public class RootProcessConverterTest {
     private CaseRoles caseRoles;
 
     @Mock
+    private CaseFileVariables caseFileVariables;
+
+    @Mock
     private ProcessPropertyWriter processPropertyWriter;
 
     @Mock
@@ -94,6 +98,7 @@ public class RootProcessConverterTest {
         when(node.getContent()).thenReturn(content);
         when(content.getDefinition()).thenReturn(diagram);
         when(caseManagementSet.getCaseRoles()).thenReturn(caseRoles);
+        when(caseManagementSet.getCaseFileVariables()).thenReturn(caseFileVariables);
         when(converterFactory.subProcessConverter()).thenReturn(subProcessConverter);
         when(converterFactory.viewDefinitionConverter()).thenReturn(viewDefinitionConverter);
         when(converterFactory.laneConverter()).thenReturn(laneConverter);
@@ -103,5 +108,6 @@ public class RootProcessConverterTest {
     public void convertProcessWithCaseRoles() {
         final ProcessPropertyWriter propertyWriter = converter.convertProcess();
         verify(propertyWriter).setCaseRoles(caseRoles);
+        verify(propertyWriter).setCaseFileVariables(caseFileVariables);
     }
 }

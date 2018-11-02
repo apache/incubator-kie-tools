@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.bpmn.definition.property.cm;
 
+import java.util.Objects;
+
 import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
@@ -25,6 +27,7 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
+import org.kie.workbench.common.stunner.bpmn.forms.model.VariablesEditorFieldType;
 import org.kie.workbench.common.stunner.bpmn.forms.model.cm.RolesEditorFieldType;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
@@ -46,12 +49,21 @@ public class CaseManagementSet implements BPMNPropertySet {
     @Valid
     private CaseRoles caseRoles;
 
+    @Property
+    @FormField(
+            type = VariablesEditorFieldType.class
+    )
+    @Valid
+    private CaseFileVariables caseFileVariables;
+
     public CaseManagementSet() {
-        this(new CaseRoles());
+        this(new CaseRoles(), new CaseFileVariables());
     }
 
-    public CaseManagementSet(final @MapsTo("caseRoles") CaseRoles caseRoles) {
+    public CaseManagementSet(final @MapsTo("caseRoles") CaseRoles caseRoles,
+                             final @MapsTo("caseFileVariables") CaseFileVariables caseFileVariables) {
         this.caseRoles = caseRoles;
+        this.caseFileVariables = caseFileVariables;
     }
 
     public CaseRoles getCaseRoles() {
@@ -62,16 +74,27 @@ public class CaseManagementSet implements BPMNPropertySet {
         this.caseRoles = caseRoles;
     }
 
+    public CaseFileVariables getCaseFileVariables() {
+        return caseFileVariables;
+    }
+
+    public void setCaseFileVariables(CaseFileVariables caseFileVariables) {
+        this.caseFileVariables = caseFileVariables;
+    }
+
     @Override
     public int hashCode() {
-        return HashUtil.combineHashCodes(caseRoles.hashCode());
+        return HashUtil.combineHashCodes(caseRoles.hashCode(),
+                                         caseFileVariables.hashCode());
     }
 
     @Override
     public boolean equals(Object o) {
         if (o instanceof CaseManagementSet) {
             CaseManagementSet other = (CaseManagementSet) o;
-            return caseRoles.equals(other.caseRoles);
+            return Objects.equals(caseRoles, other.caseRoles) &&
+                    Objects.equals(caseFileVariables, other.caseFileVariables);
+
         }
         return false;
     }

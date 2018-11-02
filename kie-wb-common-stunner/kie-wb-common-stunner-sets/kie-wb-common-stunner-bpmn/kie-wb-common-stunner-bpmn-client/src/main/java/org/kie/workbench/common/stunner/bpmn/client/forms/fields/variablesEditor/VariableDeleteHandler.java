@@ -26,7 +26,7 @@ import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 
-public class BPMNProcessVariableDeleteHandler {
+public class VariableDeleteHandler {
 
     private final String PROPERTY_IN_PREFIX = "[din]";
     private final String PROPERTY_OUT_PREFIX = "[dout]";

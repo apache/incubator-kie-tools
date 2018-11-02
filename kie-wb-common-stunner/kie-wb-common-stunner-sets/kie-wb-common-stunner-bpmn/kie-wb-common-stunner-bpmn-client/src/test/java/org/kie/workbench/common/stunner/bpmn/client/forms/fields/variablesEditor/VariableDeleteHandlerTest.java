@@ -35,7 +35,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class BPMNProcessVariableDeleteHandlerTest {
+public class VariableDeleteHandlerTest {
 
     private final String PROPERTY_ID_INPUT = "[din]test_input_task->test_input_process";
     private final String PROPERTY_ID_OUTPUT = "[dout]test_output_task->test_output_process";
@@ -66,12 +66,12 @@ public class BPMNProcessVariableDeleteHandlerTest {
     @Mock
     private Definition definition;
 
-    private BPMNProcessVariableDeleteHandler bpmnProcessVariableDeleteHandler;
+    private VariableDeleteHandler variableDeleteHandler;
 
     @Before
     public void setUp() throws Exception {
         assignmentsInfoString = PROPERTY_ID_INPUT + "," + PROPERTY_ID_OUTPUT;
-        bpmnProcessVariableDeleteHandler = new BPMNProcessVariableDeleteHandler();
+        variableDeleteHandler = new VariableDeleteHandler();
         this.graphTestHandler = new TestingGraphMockHandler();
         graphInstance = TestingGraphInstanceBuilder.newGraph2(graphTestHandler);
         when(userTask.getExecutionSet()).thenReturn(userTaskExecutionSet);
@@ -86,64 +86,64 @@ public class BPMNProcessVariableDeleteHandlerTest {
     @Test
     public void testGetVariableListInputUserTask() {
         when(definition.getDefinition()).thenReturn(userTask);
-        boolean isVariableBound = bpmnProcessVariableDeleteHandler.isVariableBoundToNodes(graphInstance.graph,
-                                                                                          VARIABLE_ID_INPUT);
+        boolean isVariableBound = variableDeleteHandler.isVariableBoundToNodes(graphInstance.graph,
+                                                                               VARIABLE_ID_INPUT);
         assertTrue(isVariableBound);
     }
 
     @Test
     public void testGetVariableListOutputUserTask() {
         when(definition.getDefinition()).thenReturn(userTask);
-        boolean isVariableBound = bpmnProcessVariableDeleteHandler.isVariableBoundToNodes(graphInstance.graph,
-                                                                                          VARIABLE_ID_OUTPUT);
+        boolean isVariableBound = variableDeleteHandler.isVariableBoundToNodes(graphInstance.graph,
+                                                                               VARIABLE_ID_OUTPUT);
         assertTrue(isVariableBound);
     }
 
     @Test
     public void testGetVariableListInputBusinessRuleTask() {
         when(definition.getDefinition()).thenReturn(businessRuleTask);
-        boolean isVariableBound = bpmnProcessVariableDeleteHandler.isVariableBoundToNodes(graphInstance.graph,
-                                                                                          VARIABLE_ID_INPUT);
+        boolean isVariableBound = variableDeleteHandler.isVariableBoundToNodes(graphInstance.graph,
+                                                                               VARIABLE_ID_INPUT);
         assertTrue(isVariableBound);
     }
 
     @Test
     public void testGetVariableListOutputBusinessRule() {
         when(definition.getDefinition()).thenReturn(businessRuleTask);
-        boolean isVariableBound = bpmnProcessVariableDeleteHandler.isVariableBoundToNodes(graphInstance.graph,
-                                                                                          VARIABLE_ID_OUTPUT);
+        boolean isVariableBound = variableDeleteHandler.isVariableBoundToNodes(graphInstance.graph,
+                                                                               VARIABLE_ID_OUTPUT);
         assertTrue(isVariableBound);
     }
 
     @Test
     public void testGetVariableListInputUserTaskNoResult() {
         when(definition.getDefinition()).thenReturn(userTask);
-        boolean isVariableBound = bpmnProcessVariableDeleteHandler.isVariableBoundToNodes(graphInstance.graph,
-                                                                                          VARIABLE_ID_INPUT_NO_RESULT);
+        boolean isVariableBound = variableDeleteHandler.isVariableBoundToNodes(graphInstance.graph,
+                                                                               VARIABLE_ID_INPUT_NO_RESULT);
         assertFalse(isVariableBound);
     }
 
     @Test
     public void testGetVariableListOutputUserTaskNoResult() {
         when(definition.getDefinition()).thenReturn(userTask);
-        boolean isVariableBound = bpmnProcessVariableDeleteHandler.isVariableBoundToNodes(graphInstance.graph,
-                                                                                          VARIABLE_ID_OUTPUT_NO_RESULT);
+        boolean isVariableBound = variableDeleteHandler.isVariableBoundToNodes(graphInstance.graph,
+                                                                               VARIABLE_ID_OUTPUT_NO_RESULT);
         assertFalse(isVariableBound);
     }
 
     @Test
     public void testGetVariableListInputBusinessRuleTaskNoResult() {
         when(definition.getDefinition()).thenReturn(businessRuleTask);
-        boolean isVariableBound = bpmnProcessVariableDeleteHandler.isVariableBoundToNodes(graphInstance.graph,
-                                                                                          VARIABLE_ID_INPUT_NO_RESULT);
+        boolean isVariableBound = variableDeleteHandler.isVariableBoundToNodes(graphInstance.graph,
+                                                                               VARIABLE_ID_INPUT_NO_RESULT);
         assertFalse(isVariableBound);
     }
 
     @Test
     public void testGetVariableListOutputBusinessRuleNoResult() {
         when(definition.getDefinition()).thenReturn(businessRuleTask);
-        boolean isVariableBound = bpmnProcessVariableDeleteHandler.isVariableBoundToNodes(graphInstance.graph,
-                                                                                          VARIABLE_ID_OUTPUT_NO_RESULT);
+        boolean isVariableBound = variableDeleteHandler.isVariableBoundToNodes(graphInstance.graph,
+                                                                               VARIABLE_ID_OUTPUT_NO_RESULT);
         assertFalse(isVariableBound);
     }
 }

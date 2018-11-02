@@ -60,7 +60,7 @@ public class VariablesEditorFieldRendererTest {
     private SessionManager abstractClientSessionManager;
 
     @Mock
-    private BPMNProcessVariableDeleteHandler deleteHandler;
+    private VariableDeleteHandler deleteHandler;
 
     @Mock
     private Graph graph;

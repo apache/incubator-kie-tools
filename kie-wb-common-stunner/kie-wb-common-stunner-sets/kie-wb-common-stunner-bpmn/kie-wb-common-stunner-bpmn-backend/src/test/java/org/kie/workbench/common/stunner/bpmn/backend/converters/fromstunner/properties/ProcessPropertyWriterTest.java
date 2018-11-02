@@ -23,6 +23,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
+import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseFileVariables;
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseRoles;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -97,6 +98,13 @@ public class ProcessPropertyWriterTest {
         p.setCaseRoles(caseRole);
         String cdata = CustomElement.caseRole.of(p.getProcess()).get();
         assertThat("role").isEqualTo(CustomElement.caseRole.stripCData(cdata));
+    }
+
+    @Test
+    public void caseFileVariables() {
+        CaseFileVariables caseFileVariables = new CaseFileVariables("CFV1:Boolean,CFV2:Boolean,CFV3:Boolean");
+        p.setCaseFileVariables(caseFileVariables);
+        assertThat(p.itemDefinitions.size() == 3);
     }
 
     @Test

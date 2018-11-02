@@ -47,7 +47,7 @@ public class MultipleInstanceSubprocessTaskExecutionSet implements BPMNPropertyS
     @FormField(type = ListBoxFieldType.class)
     @SelectorDataProvider(
             type = SelectorDataProvider.ProviderType.CLIENT,
-            className = "org.kie.workbench.common.stunner.bpmn.client.dataproviders.ProcessVariablesProvider"
+            className = "org.kie.workbench.common.stunner.bpmn.client.dataproviders.VariablesProvider"
     )
     @Valid
     private MultipleInstanceCollectionInput multipleInstanceCollectionInput;
@@ -66,7 +66,7 @@ public class MultipleInstanceSubprocessTaskExecutionSet implements BPMNPropertyS
     )
     @SelectorDataProvider(
             type = SelectorDataProvider.ProviderType.CLIENT,
-            className = "org.kie.workbench.common.stunner.bpmn.client.dataproviders.ProcessVariablesProvider"
+            className = "org.kie.workbench.common.stunner.bpmn.client.dataproviders.VariablesProvider"
     )
     @Valid
     private MultipleInstanceCollectionOutput multipleInstanceCollectionOutput;

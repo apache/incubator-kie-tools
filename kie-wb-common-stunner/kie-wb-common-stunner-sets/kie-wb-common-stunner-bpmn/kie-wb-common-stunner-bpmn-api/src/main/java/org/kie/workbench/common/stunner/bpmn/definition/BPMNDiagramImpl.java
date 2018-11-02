@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kie.workbench.common.stunner.bpmn.definition;
 
 import java.util.Set;
@@ -59,6 +58,7 @@ public class BPMNDiagramImpl implements BPMNDiagram {
     @Category
     public static final transient String category = BPMNCategories.CONTAINERS;
     public static final String DIAGRAM_SET = "diagramSet";
+    public static final String PROCESS_DATA = "processData";
     public static final String CASE_MANAGEMENT_SET = "caseManagementSet";
 
     @PropertySet
@@ -75,7 +75,7 @@ public class BPMNDiagramImpl implements BPMNDiagram {
 
     @PropertySet
     @FormField(
-            afterElement = DIAGRAM_SET
+            afterElement = PROCESS_DATA
     )
     protected CaseManagementSet caseManagementSet;
 
@@ -108,17 +108,17 @@ public class BPMNDiagramImpl implements BPMNDiagram {
     }
 
     public BPMNDiagramImpl(final @MapsTo(DIAGRAM_SET) DiagramSet diagramSet,
-                           final @MapsTo("processData") ProcessData processData,
+                           final @MapsTo(PROCESS_DATA) ProcessData processData,
                            final @MapsTo(CASE_MANAGEMENT_SET) CaseManagementSet caseManagementSet,
                            final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
                            final @MapsTo("fontSet") FontSet fontSet,
                            final @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet) {
         this.diagramSet = diagramSet;
         this.processData = processData;
+        this.caseManagementSet = caseManagementSet;
         this.backgroundSet = backgroundSet;
         this.fontSet = fontSet;
         this.dimensionsSet = dimensionsSet;
-        this.caseManagementSet = caseManagementSet;
     }
 
     public String getCategory() {
@@ -133,24 +133,12 @@ public class BPMNDiagramImpl implements BPMNDiagram {
         return diagramSet;
     }
 
-    public RectangleDimensionsSet getDimensionsSet() {
-        return dimensionsSet;
-    }
-
-    public void setDimensionsSet(final RectangleDimensionsSet dimensionsSet) {
-        this.dimensionsSet = dimensionsSet;
-    }
-
     public ProcessData getProcessData() {
         return processData;
     }
 
     public CaseManagementSet getCaseManagementSet() {
         return caseManagementSet;
-    }
-
-    public void setCaseManagementSet(CaseManagementSet caseManagementSet) {
-        this.caseManagementSet = caseManagementSet;
     }
 
     public BackgroundSet getBackgroundSet() {
@@ -161,6 +149,10 @@ public class BPMNDiagramImpl implements BPMNDiagram {
         return fontSet;
     }
 
+    public RectangleDimensionsSet getDimensionsSet() {
+        return dimensionsSet;
+    }
+
     public void setDiagramSet(final DiagramSet diagramSet) {
         this.diagramSet = diagramSet;
     }
@@ -169,12 +161,20 @@ public class BPMNDiagramImpl implements BPMNDiagram {
         this.processData = processData;
     }
 
+    public void setCaseManagementSet(final CaseManagementSet caseManagementSet) {
+        this.caseManagementSet = caseManagementSet;
+    }
+
     public void setBackgroundSet(final BackgroundSet backgroundSet) {
         this.backgroundSet = backgroundSet;
     }
 
     public void setFontSet(final FontSet fontSet) {
         this.fontSet = fontSet;
+    }
+
+    public void setDimensionsSet(final RectangleDimensionsSet dimensionsSet) {
+        this.dimensionsSet = dimensionsSet;
     }
 
     @Override

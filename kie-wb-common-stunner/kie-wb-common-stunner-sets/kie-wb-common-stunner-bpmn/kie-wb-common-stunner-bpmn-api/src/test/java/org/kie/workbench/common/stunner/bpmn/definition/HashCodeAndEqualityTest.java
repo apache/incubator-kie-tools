@@ -102,11 +102,9 @@ public class HashCodeAndEqualityTest {
     @Test
     public void testAdHocSubprocessEquals() {
         AdHocSubprocess a = new AdHocSubprocess();
-        AdHocSubprocess b = new AdHocSubprocess();;
-        assertEquals(a,
-                     b);
-        assertEquals(new AdHocSubprocess(),
-                     new AdHocSubprocess());
+        AdHocSubprocess b = new AdHocSubprocess();
+        assertEquals(a, b);
+        assertEquals(new AdHocSubprocess(), new AdHocSubprocess());
         assertFalse(a.equals(19));
         assertFalse(a.equals(null));
     }

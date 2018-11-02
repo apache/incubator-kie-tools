@@ -31,6 +31,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.BPMNBaseInfo;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNCategories;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseManagementSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.DiagramSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.RectangleDimensionsSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
@@ -63,6 +64,9 @@ public class CaseManagementDiagram implements BPMNDiagram {
 
     @Category
     public static final transient String category = BPMNCategories.CONTAINERS;
+    public static final String DIAGRAM_SET = "diagramSet";
+    public static final String PROCESS_DATA = "processData";
+    public static final String CASE_MANAGEMENT_SET = "caseManagementSet";
 
     @PropertySet
     @FormField
@@ -71,10 +75,16 @@ public class CaseManagementDiagram implements BPMNDiagram {
 
     @PropertySet
     @FormField(
-            afterElement = "diagramSet"
+            afterElement = DIAGRAM_SET
     )
     @Valid
     protected ProcessData processData;
+
+    @PropertySet
+    @FormField(
+            afterElement = PROCESS_DATA
+    )
+    protected CaseManagementSet caseManagementSet;
 
     @PropertySet
     private BackgroundSet backgroundSet;
@@ -97,18 +107,21 @@ public class CaseManagementDiagram implements BPMNDiagram {
     public CaseManagementDiagram() {
         this(new DiagramSet(""),
              new ProcessData(),
+             new CaseManagementSet(),
              new BackgroundSet(),
              new FontSet(),
              new RectangleDimensionsSet(WIDTH, HEIGHT));
     }
 
-    public CaseManagementDiagram(final @MapsTo("diagramSet") DiagramSet diagramSet,
-                                 final @MapsTo("processData") ProcessData processData,
+    public CaseManagementDiagram(final @MapsTo(DIAGRAM_SET) DiagramSet diagramSet,
+                                 final @MapsTo(PROCESS_DATA) ProcessData processData,
+                                 final @MapsTo(CASE_MANAGEMENT_SET) CaseManagementSet caseManagementSet,
                                  final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
                                  final @MapsTo("fontSet") FontSet fontSet,
                                  final @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet) {
         this.diagramSet = diagramSet;
         this.processData = processData;
+        this.caseManagementSet = caseManagementSet;
         this.backgroundSet = backgroundSet;
         this.fontSet = fontSet;
         this.dimensionsSet = dimensionsSet;
@@ -126,16 +139,12 @@ public class CaseManagementDiagram implements BPMNDiagram {
         return diagramSet;
     }
 
-    public RectangleDimensionsSet getDimensionsSet() {
-        return dimensionsSet;
-    }
-
-    public void setDimensionsSet(final RectangleDimensionsSet dimensionsSet) {
-        this.dimensionsSet = dimensionsSet;
-    }
-
     public ProcessData getProcessData() {
         return processData;
+    }
+
+    public CaseManagementSet getCaseManagementSet() {
+        return caseManagementSet;
     }
 
     public BackgroundSet getBackgroundSet() {
@@ -146,6 +155,10 @@ public class CaseManagementDiagram implements BPMNDiagram {
         return fontSet;
     }
 
+    public RectangleDimensionsSet getDimensionsSet() {
+        return dimensionsSet;
+    }
+
     public void setDiagramSet(final DiagramSet diagramSet) {
         this.diagramSet = diagramSet;
     }
@@ -154,12 +167,20 @@ public class CaseManagementDiagram implements BPMNDiagram {
         this.processData = processData;
     }
 
+    public void setCaseManagementSet(final CaseManagementSet caseManagementSet) {
+        this.caseManagementSet = caseManagementSet;
+    }
+
     public void setBackgroundSet(final BackgroundSet backgroundSet) {
         this.backgroundSet = backgroundSet;
     }
 
     public void setFontSet(final FontSet fontSet) {
         this.fontSet = fontSet;
+    }
+
+    public void setDimensionsSet(final RectangleDimensionsSet dimensionsSet) {
+        this.dimensionsSet = dimensionsSet;
     }
 
     @Override
@@ -171,6 +192,7 @@ public class CaseManagementDiagram implements BPMNDiagram {
     public int hashCode() {
         return HashUtil.combineHashCodes(diagramSet.hashCode(),
                                          processData.hashCode(),
+                                         caseManagementSet.hashCode(),
                                          backgroundSet.hashCode(),
                                          fontSet.hashCode(),
                                          dimensionsSet.hashCode());
@@ -182,6 +204,7 @@ public class CaseManagementDiagram implements BPMNDiagram {
             CaseManagementDiagram other = (CaseManagementDiagram) o;
             return diagramSet.equals(other.diagramSet) &&
                     processData.equals(other.processData) &&
+                    caseManagementSet.equals(other.caseManagementSet) &&
                     backgroundSet.equals(other.backgroundSet) &&
                     fontSet.equals(other.fontSet) &&
                     dimensionsSet.equals(other.dimensionsSet);

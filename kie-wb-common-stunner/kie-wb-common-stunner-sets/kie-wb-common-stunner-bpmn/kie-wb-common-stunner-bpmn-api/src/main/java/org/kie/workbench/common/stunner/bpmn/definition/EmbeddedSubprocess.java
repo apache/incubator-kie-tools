@@ -144,10 +144,8 @@ public class EmbeddedSubprocess extends BaseSubprocess implements DataIOModel {
         if (o instanceof EmbeddedSubprocess) {
             EmbeddedSubprocess other = (EmbeddedSubprocess) o;
             return super.equals(other) &&
-                    Objects.equals(executionSet,
-                                   other.executionSet) &&
-                    Objects.equals(processData,
-                                   other.processData);
+                    Objects.equals(executionSet, other.executionSet) &&
+                    Objects.equals(processData, other.processData);
         }
         return false;
     }

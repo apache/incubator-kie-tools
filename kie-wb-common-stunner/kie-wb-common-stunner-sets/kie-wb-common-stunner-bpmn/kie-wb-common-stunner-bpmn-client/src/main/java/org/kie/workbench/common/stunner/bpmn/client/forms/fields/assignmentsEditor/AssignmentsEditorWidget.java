@@ -56,6 +56,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.EmbeddedSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.EventSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.MultipleInstanceSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
+import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseFileVariables;
+import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseManagementSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOModel;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessVariables;
 import org.kie.workbench.common.stunner.bpmn.service.DataTypesService;
@@ -321,6 +323,16 @@ public class AssignmentsEditorWidget extends Composite implements HasValue<Strin
                             variables.append(",");
                         }
                         variables.append(processVariables.getValue());
+                    }
+                    CaseManagementSet caseManagementSet = bpmnDiagram.getCaseManagementSet();
+                    if (caseManagementSet != null) {
+                        CaseFileVariables caseFileVariables = caseManagementSet.getCaseFileVariables();
+                        if (caseFileVariables != null) {
+                            if (variables.length() > 0) {
+                                variables.append(",");
+                            }
+                            variables.append(caseFileVariables.getRawValue());
+                        }
                     }
                 }
                 if (parent != null) {

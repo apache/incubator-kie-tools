@@ -66,6 +66,10 @@ public class ProcessPropertyReader extends BasePropertyReader {
         return ProcessVariableReader.getProcessVariables(process.getProperties());
     }
 
+    public String getCaseFileVariables() {
+        return CaseFileVariableReader.getCaseFileVariables(process.getProperties());
+    }
+
     public String getCaseRoles() {
         return CustomElement.caseRole.of(process).get();
     }

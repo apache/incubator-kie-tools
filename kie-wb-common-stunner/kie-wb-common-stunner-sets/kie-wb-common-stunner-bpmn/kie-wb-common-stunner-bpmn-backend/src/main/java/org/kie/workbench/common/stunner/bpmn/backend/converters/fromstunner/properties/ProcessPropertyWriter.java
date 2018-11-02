@@ -44,6 +44,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.DeclarationList;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.ElementContainer;
+import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseFileVariables;
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseRoles;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessVariables;
 
@@ -173,6 +174,21 @@ public class ProcessPropertyWriter extends BasePropertyWriter implements Element
         declarationList.getDeclarations().forEach(decl -> {
             VariableScope.Variable variable =
                     variableScope.declare(this.process.getId(), decl.getIdentifier(), decl.getType());
+            properties.add(variable.getTypedIdentifier());
+            this.itemDefinitions.add(variable.getTypeDeclaration());
+        });
+    }
+
+    public void setCaseFileVariables(CaseFileVariables caseFileVariables) {
+        String value = caseFileVariables.getValue();
+        DeclarationList declarationList = DeclarationList.fromString(value);
+
+        List<Property> properties = process.getProperties();
+        declarationList.getDeclarations().forEach(decl -> {
+            VariableScope.Variable variable =
+                    variableScope.declare(this.process.getId(),
+                                          CaseFileVariables.CASE_FILE_PREFIX + decl.getIdentifier(),
+                                          decl.getType());
             properties.add(variable.getTypedIdentifier());
             this.itemDefinitions.add(variable.getTypeDeclaration());
         });

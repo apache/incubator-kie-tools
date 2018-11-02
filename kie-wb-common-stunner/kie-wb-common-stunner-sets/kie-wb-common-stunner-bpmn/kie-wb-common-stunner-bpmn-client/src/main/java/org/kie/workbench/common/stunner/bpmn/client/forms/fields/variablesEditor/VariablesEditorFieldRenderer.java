@@ -45,7 +45,7 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
         implements VariablesEditorWidgetView.Presenter {
 
     private final SessionManager sessionManager;
-    private final BPMNProcessVariableDeleteHandler deleteHandler;
+    private final VariableDeleteHandler deleteHandler;
     Map<String, String> mapDataTypeNamesToDisplayNames = null;
     Map<String, String> mapDataTypeDisplayNamesToNames = null;
     ListBoxValues dataTypeListBoxValues;
@@ -62,7 +62,7 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
     @Inject
     public VariablesEditorFieldRenderer(final VariablesEditorWidgetView variablesEditor,
                                         final SessionManager sessionManager,
-                                        final BPMNProcessVariableDeleteHandler deleteHandler) {
+                                        final VariableDeleteHandler deleteHandler) {
         this.view = variablesEditor;
         this.sessionManager = sessionManager;
         this.deleteHandler = deleteHandler;

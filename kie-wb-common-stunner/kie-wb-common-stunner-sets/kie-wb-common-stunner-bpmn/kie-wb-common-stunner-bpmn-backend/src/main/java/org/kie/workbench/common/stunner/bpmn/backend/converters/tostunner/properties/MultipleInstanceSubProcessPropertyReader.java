@@ -38,7 +38,7 @@ public class MultipleInstanceSubProcessPropertyReader extends SubProcessProperty
                 .orElse(null);
         return process.getDataInputAssociations().stream()
                 .filter(dia -> dia.getTargetRef().getId().equals(ieDataInput.getId()))
-                .map(dia -> ProcessVariableReader.getProcessVariableName((Property) dia.getSourceRef().get(0)))
+                .map(dia -> getVariableName((Property) dia.getSourceRef().get(0)))
                 .findFirst()
                 .orElse(null);
     }
@@ -49,7 +49,7 @@ public class MultipleInstanceSubProcessPropertyReader extends SubProcessProperty
                 .orElse(null);
         return process.getDataOutputAssociations().stream()
                 .filter(doa -> doa.getSourceRef().get(0).getId().equals(ieDataOutput.getId()))
-                .map(doa -> ProcessVariableReader.getProcessVariableName((Property) doa.getTargetRef()))
+                .map(doa -> getVariableName((Property) doa.getTargetRef()))
                 .findFirst()
                 .orElse(null);
     }
@@ -76,5 +76,9 @@ public class MultipleInstanceSubProcessPropertyReader extends SubProcessProperty
 
     private Optional<MultiInstanceLoopCharacteristics> getMultiInstanceLoopCharacteristics() {
         return Optional.ofNullable((MultiInstanceLoopCharacteristics) process.getLoopCharacteristics());
+    }
+
+    private static String getVariableName(Property property) {
+        return ProcessVariableReader.getProcessVariableName(property);
     }
 }
