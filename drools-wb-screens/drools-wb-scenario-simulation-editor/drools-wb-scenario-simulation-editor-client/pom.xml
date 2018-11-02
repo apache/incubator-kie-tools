@@ -127,6 +127,11 @@
       <artifactId>kie-wb-config-resource-widget</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-commons-editor-api</artifactId>
+    </dependency>
+
     <!--Wires Grids dependencies-->
     <dependency>
       <groupId>org.uberfire</groupId>

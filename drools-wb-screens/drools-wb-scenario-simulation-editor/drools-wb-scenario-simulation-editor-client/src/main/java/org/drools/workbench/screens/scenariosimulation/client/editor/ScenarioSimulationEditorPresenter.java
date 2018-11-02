@@ -44,6 +44,7 @@ import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGr
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModelContent;
 import org.drools.workbench.screens.scenariosimulation.service.ScenarioSimulationService;
+import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.enterprise.client.jaxrs.MarshallingWrapper;
@@ -66,6 +67,10 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.PlaceStatus;
 import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
 import org.uberfire.client.workbench.events.PlaceHiddenEvent;
+import org.uberfire.ext.editor.commons.service.support.SupportsCopy;
+import org.uberfire.ext.editor.commons.service.support.SupportsDelete;
+import org.uberfire.ext.editor.commons.service.support.SupportsRename;
+import org.uberfire.ext.editor.commons.service.support.SupportsSaveAndRename;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnMayClose;
@@ -448,5 +453,25 @@ public class ScenarioSimulationEditorPresenter
         } catch (Exception ignored) {
             return false;
         }
+    }
+
+    @Override
+    protected Caller<? extends SupportsDelete> getDeleteServiceCaller() {
+        return service;
+    }
+
+    @Override
+    protected Caller<? extends SupportsRename> getRenameServiceCaller() {
+        return service;
+    }
+
+    @Override
+    protected Caller<? extends SupportsCopy> getCopyServiceCaller() {
+        return service;
+    }
+
+    @Override
+    protected Caller<? extends SupportsSaveAndRename<ScenarioSimulationModel, Metadata>> getSaveAndRenameServiceCaller() {
+        return service;
     }
 }
