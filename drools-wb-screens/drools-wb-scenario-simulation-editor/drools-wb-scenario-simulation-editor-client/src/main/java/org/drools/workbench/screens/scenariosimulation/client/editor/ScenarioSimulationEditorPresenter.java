@@ -41,6 +41,7 @@ import org.drools.workbench.screens.scenariosimulation.client.type.ScenarioSimul
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModelContent;
+import org.drools.workbench.screens.scenariosimulation.model.SimulationDescriptor;
 import org.drools.workbench.screens.scenariosimulation.service.ScenarioSimulationService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.common.client.api.Caller;
@@ -88,6 +89,19 @@ public class ScenarioSimulationEditorPresenter
 
     public static final String IDENTIFIER = "ScenarioSimulationEditor";
 
+    protected AsyncPackageDataModelOracle oracle;
+
+    //Package for which this Scenario Simulation relates
+    protected String packageName = "";
+
+    protected PlaceRequest rightPanelRequest;
+
+    protected ObservablePath path;
+
+    protected EventBus eventBus;
+
+    protected ScenarioGridPanel scenarioGridPanel;
+
     private ImportsWidgetPresenter importsWidget;
 
     private AsyncPackageDataModelOracleFactory oracleFactory;
@@ -98,8 +112,6 @@ public class ScenarioSimulationEditorPresenter
 
     private ScenarioSimulationResourceType type;
 
-    AsyncPackageDataModelOracle oracle;
-
     private ScenarioSimulationView view;
 
     private CommandExecutor commandExecutor;
@@ -108,12 +120,6 @@ public class ScenarioSimulationEditorPresenter
 
     private TestRunnerReportingScreen testRunnerReportingScreen;
 
-    //Package for which this Scenario Simulation relates
-    protected String packageName = "";
-    protected ObservablePath path;
-    protected EventBus eventBus;
-    protected
-    ScenarioGridPanel scenarioGridPanel;
     private ScenarioSimulationDocksHandler scenarioSimulationDocksHandler;
 
     public ScenarioSimulationEditorPresenter() {
@@ -140,14 +146,11 @@ public class ScenarioSimulationEditorPresenter
         this.placeManager = placeManager;
         this.commandExecutor = scenarioSimulationProducer.getCommandExecutor();
         this.eventBus = scenarioSimulationProducer.getEventBus();
-
         scenarioGridPanel = view.getScenarioGridPanel();
         commandExecutor.setScenarioGridPanel(scenarioGridPanel);
-
+        commandExecutor.setScenarioSimulationEditorPresenter(this);
         view.init(this);
-
         populateRightPanelCommand = getPopulateRightPanelCommand();
-
         scenarioGridPanel.select();
     }
 
@@ -200,7 +203,7 @@ public class ScenarioSimulationEditorPresenter
         if (placeRequest.getIdentifier().equals(ScenarioSimulationEditorPresenter.IDENTIFIER)
                 && placeRequest.getPath().equals(this.path)) {
             scenarioSimulationDocksHandler.addDocks();
-            scenarioSimulationDocksHandler.expandToolsDock();
+            expandToolsDock();
             registerRightPanelCallback();
             populateRightPanel();
         }
@@ -222,6 +225,10 @@ public class ScenarioSimulationEditorPresenter
         }
     }
 
+    public void expandToolsDock() {
+        scenarioSimulationDocksHandler.expandToolsDock();
+    }
+
     public ScenarioSimulationView getView() {
         return view;
     }
@@ -230,11 +237,20 @@ public class ScenarioSimulationEditorPresenter
         return model;
     }
 
+    /**
+     * To be called to force right panel reload
+     * @param disable set this to <code>true</code> to <b>also</b> disable the panel
+     */
+    public void reloadRightPanel(boolean disable) {
+        populateRightPanelCommand.execute();
+        if (disable) {
+            getRightPanelPresenter().ifPresent(RightPanelView.Presenter::onDisableEditorTab);
+        }
+    }
+
     public void onRunScenario() {
         view.getScenarioGridPanel().getScenarioGrid().getModel().resetErrors();
-        service.call(refreshModel())
-                .runScenario(versionRecordManager.getCurrentPath(),
-                             model);
+        service.call(refreshModel()).runScenario(versionRecordManager.getCurrentPath(), model);
     }
 
     RemoteCallback<ScenarioSimulationModel> refreshModel() {
@@ -291,7 +307,7 @@ public class ScenarioSimulationEditorPresenter
     void populateRightPanel() {
         // Execute only when RightPanelPresenter is actually available
         getRightPanelPresenter().ifPresent(presenter -> {
-            presenter.onDisableEditorTab();
+            // presenter.onDisableEditorTab();
             commandExecutor.setRightPanelPresenter(presenter);
             presenter.setEventBus(eventBus);
             populateRightPanel(presenter);
@@ -304,7 +320,7 @@ public class ScenarioSimulationEditorPresenter
         // Execute only when oracle has been set
         if (oracle == null) {
             if (rightPanelPresenter != null) {
-                rightPanelPresenter.setFactTypeFieldsMap(factTypeFieldsMap);
+                rightPanelPresenter.setDataObjectFieldsMap(factTypeFieldsMap);
             }
             return;
         }
@@ -312,7 +328,7 @@ public class ScenarioSimulationEditorPresenter
         String[] factTypes = oracle.getFactTypes();
         if (factTypes.length == 0) {  // We do not have to set nothing
             if (rightPanelPresenter != null) {
-                rightPanelPresenter.setFactTypeFieldsMap(factTypeFieldsMap);
+                rightPanelPresenter.setDataObjectFieldsMap(factTypeFieldsMap);
             }
             return;
         }
@@ -405,7 +421,26 @@ public class ScenarioSimulationEditorPresenter
             factTypeFieldsMap.put(result.getFactName(), result);
             if (factTypeFieldsMap.size() == expectedElements) {
                 factTypeFieldsMap.values().forEach(factModelTree -> populateFactModel(factModelTree, factTypeFieldsMap));
-                rightPanelPresenter.setFactTypeFieldsMap(factTypeFieldsMap);
+                rightPanelPresenter.setDataObjectFieldsMap(factTypeFieldsMap);
+                SortedMap<String, FactModelTree> instanceFieldsMap = new TreeMap<>();
+                // map instance name top data model class
+                if (model != null) {
+                    final SimulationDescriptor simulationDescriptor = model.getSimulation().getSimulationDescriptor();
+                    simulationDescriptor.getUnmodifiableFactMappings().forEach(factMapping -> {
+                        String dataObjectName = factMapping.getFactIdentifier().getClassName();
+                        if (dataObjectName.contains(".")) {
+                            dataObjectName = dataObjectName.substring(dataObjectName.lastIndexOf(".") + 1);
+                        }
+                        final String instanceName = factMapping.getFactAlias();
+                        if (!instanceName.equals(dataObjectName)) {
+                            final FactModelTree factModelTree = factTypeFieldsMap.get(dataObjectName);
+                            if (factModelTree != null) {
+                                instanceFieldsMap.put(instanceName, factModelTree);
+                            }
+                        }
+                    });
+                }
+                rightPanelPresenter.setInstanceFieldsMap(instanceFieldsMap);
             }
         };
     }

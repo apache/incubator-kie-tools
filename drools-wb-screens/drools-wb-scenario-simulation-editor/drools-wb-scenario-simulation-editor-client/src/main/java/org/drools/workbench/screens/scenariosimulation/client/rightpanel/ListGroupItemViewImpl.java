@@ -15,6 +15,8 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.rightpanel;
 
+import java.util.Objects;
+
 import javax.enterprise.context.Dependent;
 
 import com.google.gwt.dom.client.DivElement;
@@ -39,42 +41,58 @@ public class ListGroupItemViewImpl implements ListGroupItemView {
     public static final String LIST_VIEW_PF_EXPAND_ACTIVE = "list-view-pf-expand-active";
     public static final String HIDDEN = "hidden";
 
+    @DataField("listGroupExpansion")
+    protected DivElement listGroupExpansion = Document.get().createDivElement();
+
     @DataField("listGroupItem")
-    DivElement listGroupItem = Document.get().createDivElement();
+    protected DivElement listGroupItem = Document.get().createDivElement();
 
     @DataField("listGroupItemHeader")
-    DivElement listGroupItemHeader = Document.get().createDivElement();
+    protected DivElement listGroupItemHeader = Document.get().createDivElement();
 
     @DataField("listGroupItemContainer")
-    DivElement listGroupItemContainer = Document.get().createDivElement();
+    protected DivElement listGroupItemContainer = Document.get().createDivElement();
 
     @DataField("faAngleRight")
-    SpanElement faAngleRight = Document.get().createSpanElement();
+    protected SpanElement faAngleRight = Document.get().createSpanElement();
 
     @DataField("fullClassName")
-    DivElement fullClassName = Document.get().createDivElement();
+    protected DivElement fullClassName = Document.get().createDivElement();
 
     @DataField("factProperties")
-    UListElement factProperties = Document.get().createULElement();
+    protected UListElement factProperties = Document.get().createULElement();
 
-    Presenter presenter;
+    protected Presenter presenter;
 
-    String parentPath = "";
+    protected String parentPath = "";
 
-    String factName;
+    protected String factName;
 
-    String factType;
+    protected String factType;
 
-    boolean toExpand = false;
+    protected boolean toExpand = false;
 
     @Override
     public Widget asWidget() {
         return null;
     }
 
-    @EventHandler("listGroupItemHeader")
-    public void onListGroupItemHeaderClick(ClickEvent event) {
-        presenter.onToggleRowExpansion(this, listGroupItemHeader.getClassName().contains(LIST_VIEW_PF_EXPAND_ACTIVE));
+    @Override
+    public String getActualClassName() {
+        return parentPath.isEmpty() ? factName : parentPath + "." + factName;
+    }
+
+    @EventHandler("fullClassName")
+    public void onFullClassNameClick(ClickEvent event) {
+        if (!fullClassName.getClassName().contains("disabled")) {
+            listGroupItem.addClassName("selected");
+            presenter.onSelectedElement(this);
+        }
+    }
+
+    @EventHandler("faAngleRight")
+    public void onFaAngleRightClick(ClickEvent event) {
+        presenter.onToggleRowExpansion(this, isShown());
     }
 
     @Override
@@ -93,6 +111,41 @@ public class ListGroupItemViewImpl implements ListGroupItemView {
     }
 
     @Override
+    public void unselect() {
+        listGroupItem.removeClassName("selected");
+    }
+
+    @Override
+    public void enable() {
+//        fullClassName.addClassName("disabled");
+//        factProperties.removeClassName("disabled");
+//        IntStream.range(0, factProperties.getChildNodes().getLength())
+//                .forEach(index -> {
+//                    ((Element) factProperties.getChild(index)).removeClassName("disabled");
+//                });
+//        listGroupItemContainer.removeClassName("disabled");
+//        IntStream.range(0, listGroupItemContainer.getChildNodes().getLength())
+//                .forEach(index -> {
+//                    ((Element) listGroupItemContainer.getChild(index)).removeClassName("disabled");
+//                });
+    }
+
+    @Override
+    public void disable() {
+//        fullClassName.removeClassName("disabled");
+//        factProperties.addClassName("disabled");
+//        IntStream.range(0, factProperties.getChildNodes().getLength())
+//                .forEach(index -> {
+//                    ((Element) factProperties.getChild(index)).addClassName("disabled");
+//                });
+//        listGroupItemContainer.addClassName("disabled");
+//        IntStream.range(0, listGroupItemContainer.getChildNodes().getLength())
+//                .forEach(index -> {
+//                    ((Element) listGroupItemContainer.getChild(index)).addClassName("disabled");
+//                });
+    }
+
+    @Override
     public void setFactName(String factName) {
         this.factName = factName;
         this.factType = factName;
@@ -105,10 +158,10 @@ public class ListGroupItemViewImpl implements ListGroupItemView {
         this.factName = factName;
         this.factType = factType;
         String innerHtml = new StringBuilder()
-                .append("<b>")
                 .append(factName)
-                .append("</b> ")
+                .append(" [")
                 .append(factType)
+                .append("]")
                 .toString();
         fullClassName.setInnerHTML(innerHtml);
         fullClassName.setAttribute("factName", factName);
@@ -120,6 +173,11 @@ public class ListGroupItemViewImpl implements ListGroupItemView {
     @Override
     public void setParentPath(String parentPath) {
         this.parentPath = this.parentPath.isEmpty() ? parentPath : this.parentPath + "." + parentPath;
+        if (this.parentPath.isEmpty()) {
+            fullClassName.removeClassName("disabled");
+        } else {
+            fullClassName.addClassName("disabled");
+        }
     }
 
     @Override
@@ -148,7 +206,11 @@ public class ListGroupItemViewImpl implements ListGroupItemView {
     }
 
     @Override
-    public DivElement getDivElement() {
+    public DivElement getListGroupExpansion() {
+        return listGroupExpansion;
+    }
+
+    public DivElement getListGroupItem() {
         return listGroupItem;
     }
 
@@ -164,5 +226,39 @@ public class ListGroupItemViewImpl implements ListGroupItemView {
         listGroupItemHeader.addClassName(LIST_VIEW_PF_EXPAND_ACTIVE);
         listGroupItemContainer.removeClassName(HIDDEN);
         faAngleRight.addClassName(FA_ANGLE_DOWN);
+    }
+
+    @Override
+    public boolean isShown() {
+        return listGroupItemHeader.getClassName().contains(LIST_VIEW_PF_EXPAND_ACTIVE);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ListGroupItemViewImpl that = (ListGroupItemViewImpl) o;
+        return Objects.equals(getParentPath(), that.getParentPath()) &&
+                Objects.equals(getFactName(), that.getFactName()) &&
+                Objects.equals(getFactType(), that.getFactType());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getParentPath(), getFactName(), getFactType());
+    }
+
+    @Override
+    public String toString() {
+        return "ListGroupItemViewImpl{" +
+                "fullClassName=" + fullClassName +
+                ", parentPath='" + parentPath + '\'' +
+                ", factName='" + factName + '\'' +
+                ", factType='" + factType + '\'' +
+                '}';
     }
 }

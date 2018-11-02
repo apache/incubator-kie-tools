@@ -27,15 +27,17 @@ public class InsertColumnEvent extends GwtEvent<InsertColumnEventHandler> {
 
     private int columnIndex;
     private boolean isRight;
+    private boolean asProperty;
 
     /**
-     *
      * @param columnIndex
      * @param isRight when <code>true</code>, column will be inserted to the right of the given index (i.e. at position columnIndex +1), otherwise to the left (i.e. at position columnIndex)
+     * @param asProperty when <code>true</code>, column will use the <b>instance</b> header of the original one, so to create a new "property" header under the same instance
      */
-    public InsertColumnEvent(int columnIndex, boolean isRight) {
+    public InsertColumnEvent(int columnIndex, boolean isRight, boolean asProperty) {
         this.columnIndex = columnIndex;
         this.isRight = isRight;
+        this.asProperty = asProperty;
     }
 
     @Override
@@ -49,6 +51,10 @@ public class InsertColumnEvent extends GwtEvent<InsertColumnEventHandler> {
 
     public boolean isRight() {
         return isRight;
+    }
+
+    public boolean isAsProperty() {
+        return asProperty;
     }
 
     @Override

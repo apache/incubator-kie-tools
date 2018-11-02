@@ -16,6 +16,8 @@
 
 package org.drools.workbench.screens.scenariosimulation.client.rightpanel;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 
@@ -26,7 +28,8 @@ import javax.inject.Inject;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.workbench.screens.scenariosimulation.client.events.SetColumnValueEvent;
+import org.drools.workbench.screens.scenariosimulation.client.events.SetInstanceHeaderEvent;
+import org.drools.workbench.screens.scenariosimulation.client.events.SetPropertyHeaderEvent;
 import org.drools.workbench.screens.scenariosimulation.client.models.FactModelTree;
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.uberfire.client.annotations.DefaultPosition;
@@ -51,11 +54,16 @@ public class RightPanelPresenter implements RightPanelView.Presenter {
 
     private ListGroupItemPresenter listGroupItemPresenter;
 
-    Map<String, FactModelTree> factTypeFieldsMap;
+    protected Map<String, FactModelTree> dataObjectFieldsMap;
 
-    EventBus eventBus;
+    protected Map<String, FactModelTree> instanceFieldsMap;
 
-    boolean editingColumnEnabled = false;
+    protected EventBus eventBus;
+
+    protected boolean editingColumnEnabled = false;
+
+    protected ListGroupItemView selectedListGroupItemView;
+    protected FieldItemView selectedFieldItemView;
 
     public RightPanelPresenter() {
         //Zero argument constructor for CDI
@@ -71,6 +79,7 @@ public class RightPanelPresenter implements RightPanelView.Presenter {
     @PostConstruct
     public void setup() {
         view.init(this);
+        view.disableEditorTab();
     }
 
     @DefaultPosition
@@ -107,20 +116,37 @@ public class RightPanelPresenter implements RightPanelView.Presenter {
     }
 
     @Override
-    public void clearList() {
-        view.getListContainer().removeAllChildren();
+    public void clearDataObjectList() {
+        view.getDataObjectListContainer().removeAllChildren();
     }
 
     @Override
-    public FactModelTree getFactModelTree(String factName) {
-        return factTypeFieldsMap.get(factName);
+    public void clearInstanceList() {
+        view.getInstanceListContainer().removeAllChildren();
     }
 
     @Override
-    public void setFactTypeFieldsMap(SortedMap<String, FactModelTree> factTypeFieldsMap) {
-        clearList();
-        this.factTypeFieldsMap = factTypeFieldsMap;
-        this.factTypeFieldsMap.forEach(this::addListGroupItemView);
+    public FactModelTree getFactModelTreeFromFactTypeMap(String factName) {
+        return dataObjectFieldsMap.get(factName);
+    }
+
+    @Override
+    public FactModelTree getFactModelTreeFromInstanceMap(String factName) {
+        return instanceFieldsMap.get(factName);
+    }
+
+    @Override
+    public void setDataObjectFieldsMap(SortedMap<String, FactModelTree> dataObjectFieldsMap) {
+        clearDataObjectList();
+        this.dataObjectFieldsMap = dataObjectFieldsMap;
+        this.dataObjectFieldsMap.forEach(this::addDataObjectListGroupItemView);
+    }
+
+    @Override
+    public void setInstanceFieldsMap(SortedMap<String, FactModelTree> instanceFieldsMap) {
+        clearInstanceList();
+        this.instanceFieldsMap = instanceFieldsMap;
+        this.instanceFieldsMap.forEach(this::addInstanceListGroupItemView);
     }
 
     @Override
@@ -135,44 +161,128 @@ public class RightPanelPresenter implements RightPanelView.Presenter {
 
     @Override
     public void onSearchedEvent(String search) {
-        clearList();
-        if (factTypeFieldsMap.isEmpty()) {
+        clearDataObjectList();
+        clearInstanceList();
+        if (dataObjectFieldsMap.isEmpty()) {
             return;
         }
-        factTypeFieldsMap
+        dataObjectFieldsMap
                 .entrySet()
                 .stream()
                 .filter(entry -> entry.getKey().toLowerCase().contains(search.toLowerCase()))
-                .forEach(filteredEntry -> addListGroupItemView(filteredEntry.getKey(), filteredEntry.getValue()));
+                .forEach(filteredEntry -> addDataObjectListGroupItemView(filteredEntry.getKey(), filteredEntry.getValue()));
+        instanceFieldsMap
+                .entrySet()
+                .stream()
+                .filter(entry -> entry.getKey().toLowerCase().contains(search.toLowerCase()))
+                .forEach(filteredEntry -> addInstanceListGroupItemView(filteredEntry.getKey(), filteredEntry.getValue()));
     }
 
     @Override
-    public void addListGroupItemView(String factName, FactModelTree factModelTree) {
+    public void onPerfectMatchSearchedEvent(String search, boolean notEqualsSearch) {
+        clearDataObjectList();
+        clearInstanceList();
+        if (dataObjectFieldsMap.isEmpty()) {
+            return;
+        }
+        dataObjectFieldsMap
+                .entrySet()
+                .stream()
+                .filter(entry -> filterTerm(entry.getKey(), search, notEqualsSearch))
+                .forEach(filteredEntry -> addDataObjectListGroupItemView(filteredEntry.getKey(), filteredEntry.getValue()));
+        instanceFieldsMap
+                .entrySet()
+                .stream()
+                .filter(entry -> filterTerm(entry.getKey(), search, notEqualsSearch))
+                .forEach(filteredEntry -> addInstanceListGroupItemView(filteredEntry.getKey(), filteredEntry.getValue()));
+    }
+
+    @Override
+    public void addDataObjectListGroupItemView(String factName, FactModelTree factModelTree) {
         DivElement toAdd = listGroupItemPresenter.getDivElement(factName, factModelTree);
-        view.getListContainer().appendChild(toAdd);
+        view.getDataObjectListContainer().appendChild(toAdd);
+    }
+
+    @Override
+    public void addInstanceListGroupItemView(String instanceName, FactModelTree factModelTree) {
+        DivElement toAdd = listGroupItemPresenter.getDivElement(instanceName, factModelTree);
+        view.getInstanceListContainer().appendChild(toAdd);
     }
 
     @Override
     public void onEnableEditorTab() {
-        listGroupItemPresenter.setDisabled(false);
+        onDisableEditorTab();
+        onSearchedEvent("");
+        listGroupItemPresenter.enable();
         editingColumnEnabled = true;
         view.enableEditorTab();
     }
 
     @Override
-    public void onDisableEditorTab() {
-        listGroupItemPresenter.setDisabled(true);
-        editingColumnEnabled = false;
-        view.disableEditorTab();
+    public void onEnableEditorTab(String factName, String propertyName, boolean notEqualsSearch) {
+        onDisableEditorTab();
+        onPerfectMatchSearchedEvent(factName, notEqualsSearch);
+        listGroupItemPresenter.enable(factName);
+        editingColumnEnabled = true;
+        view.enableEditorTab();
+        if (propertyName != null && !notEqualsSearch) {
+            listGroupItemPresenter.selectProperty(factName, propertyName);
+        }
     }
 
     @Override
-    public void onModifyColumn(String factName, String fieldName, String valueClassName) {
+    public void onDisableEditorTab() {
+        listGroupItemPresenter.disable();
+        editingColumnEnabled = false;
+        view.disableEditorTab();
+        selectedFieldItemView = null;
+        selectedListGroupItemView = null;
+    }
+
+    @Override
+    public void setSelectedElement(ListGroupItemView selected) {
+        selectedListGroupItemView = selected;
+        selectedFieldItemView = null;
+        view.enableAddButton();
+    }
+
+    @Override
+    public void setSelectedElement(FieldItemView selected) {
+        selectedFieldItemView = selected;
+        selectedListGroupItemView = null;
+        view.enableAddButton();
+    }
+
+    @Override
+    public void onModifyColumn() {
         if (editingColumnEnabled) {
-            String value = factName + "." + fieldName;
-            String baseClass = factName.split("\\.")[0];
-            String fullPackage = getFactModelTree(baseClass).getFullPackage();
-            eventBus.fireEvent(new SetColumnValueEvent(fullPackage, value, valueClassName));
+            if (selectedListGroupItemView != null) {
+                String className = selectedListGroupItemView.getActualClassName();
+                FactModelTree factModelTree = getFactModelTreeFromFactTypeMap(className);
+                if (factModelTree == null) {
+                    factModelTree = getFactModelTreeFromInstanceMap(className);
+                }
+                String fullPackage = factModelTree.getFullPackage();
+                eventBus.fireEvent(new SetInstanceHeaderEvent(fullPackage, className));
+            } else if (selectedFieldItemView != null) {
+                String value = selectedFieldItemView.getFullPath() + "." + selectedFieldItemView.getFieldName();
+                String baseClass = selectedFieldItemView.getFullPath().split("\\.")[0];
+                FactModelTree factModelTree = getFactModelTreeFromFactTypeMap(baseClass);
+                if (factModelTree == null) {
+                    factModelTree = getFactModelTreeFromInstanceMap(baseClass);
+                }
+                String fullPackage = factModelTree.getFullPackage();
+                eventBus.fireEvent(new SetPropertyHeaderEvent(fullPackage, value, selectedFieldItemView.getClassName()));
+            }
+        }
+    }
+
+    protected boolean filterTerm(String key, String search, boolean notEqualsSearch) {
+        List<String> terms = Arrays.asList(search.split(";"));
+        if (notEqualsSearch) {
+            return !terms.contains(key);
+        } else {
+            return terms.contains(key);
         }
     }
 }

@@ -33,6 +33,7 @@ import static org.drools.workbench.screens.scenariosimulation.client.rightpanel.
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -42,25 +43,28 @@ import static org.mockito.Mockito.when;
 public class ListGroupItemViewImplTest extends AbstractRightPanelTest {
 
     @Mock
-    private ListGroupItemPresenter mockListGroupItemPresenter;
+    private ListGroupItemPresenter listGroupItemPresenterMock;
 
     @Mock
-    private DivElement mockListGroupItemHeader;
+    private DivElement listGroupItemMock;
 
     @Mock
-    private DivElement mockListGroupItemContainer;
+    private DivElement listGroupItemHeaderMock;
 
     @Mock
-    private DivElement mockFullClassName;
+    private DivElement listGroupItemContainerMock;
 
     @Mock
-    private SpanElement mockFaAngleRight;
+    private DivElement fullClassNameMock;
 
     @Mock
-    private UListElement mockFactProperties;
+    private SpanElement faAngleRightMock;
 
     @Mock
-    private LIElement mockFactField;
+    private UListElement factPropertiesMock;
+
+    @Mock
+    private LIElement factFieldMock;
 
     private ListGroupItemViewImpl listGroupItemView;
 
@@ -73,52 +77,65 @@ public class ListGroupItemViewImplTest extends AbstractRightPanelTest {
         this.listGroupItemView = spy(new ListGroupItemViewImpl() {
             {
                 this.factName = FACT_NAME;
-                this.listGroupItemHeader = mockListGroupItemHeader;
-                this.listGroupItemContainer = mockListGroupItemContainer;
-                this.faAngleRight = mockFaAngleRight;
-                this.fullClassName = mockFullClassName;
-                this.factProperties = mockFactProperties;
+                this.listGroupItem = listGroupItemMock;
+                this.listGroupItemHeader = listGroupItemHeaderMock;
+                this.listGroupItemContainer = listGroupItemContainerMock;
+                this.faAngleRight = faAngleRightMock;
+                this.fullClassName = fullClassNameMock;
+                this.factProperties = factPropertiesMock;
             }
         });
-        listGroupItemView.init(mockListGroupItemPresenter);
+        listGroupItemView.init(listGroupItemPresenterMock);
     }
 
     @Test
-    public void onListGroupItemHeaderClick() {
+    public void onSelectedElement() {
+        when(fullClassNameMock.getClassName()).thenReturn("not-empty disabled");
+        listGroupItemView.onFullClassNameClick(mock(ClickEvent.class));
+        verify(listGroupItemMock, never()).addClassName(eq("selected"));
+        verify(listGroupItemPresenterMock, never()).onSelectedElement(eq(listGroupItemView));
+        when(fullClassNameMock.getClassName()).thenReturn("empty");
+        listGroupItemView.onFullClassNameClick(mock(ClickEvent.class));
+        verify(listGroupItemMock, times(1)).addClassName(eq("selected"));
+        verify(listGroupItemPresenterMock, times(1)).onSelectedElement(eq(listGroupItemView));
+    }
+
+    @Test
+    public void onFaAngleRightClick() {
         String toReturn =  LIST_GROUP_ITEM + " " + LIST_VIEW_PF_EXPAND_ACTIVE;
-        when(mockListGroupItemHeader.getClassName()).thenReturn(toReturn);
-        listGroupItemView.onListGroupItemHeaderClick(mock(ClickEvent.class));
-        verify(mockListGroupItemPresenter, times(1)).onToggleRowExpansion(eq(listGroupItemView), eq(true));
-        when(mockListGroupItemHeader.getClassName()).thenReturn(LIST_GROUP_ITEM);
-        listGroupItemView.onListGroupItemHeaderClick(mock(ClickEvent.class));
-        verify(mockListGroupItemPresenter, times(1)).onToggleRowExpansion(eq(listGroupItemView), eq(false));
+        when(listGroupItemHeaderMock.getClassName()).thenReturn(toReturn);
+        listGroupItemView.onFaAngleRightClick(mock(ClickEvent.class));
+        verify(listGroupItemPresenterMock, times(1)).onToggleRowExpansion(eq(listGroupItemView), eq(true));
+        when(listGroupItemHeaderMock.getClassName()).thenReturn(LIST_GROUP_ITEM);
+        listGroupItemView.onFaAngleRightClick(mock(ClickEvent.class));
+        verify(listGroupItemPresenterMock, times(1)).onToggleRowExpansion(eq(listGroupItemView), eq(false));
     }
 
     @Test
     public void setFactName() {
         listGroupItemView.setFactName(FACT_NAME);
-        verify(mockFullClassName, times(1)).setInnerText(eq(FACT_NAME));
+        verify(fullClassNameMock, times(1)).setInnerText(eq(FACT_NAME));
     }
 
     @Test
     public void addFactField() {
-        listGroupItemView.addFactField(mockFactField);
-        verify(mockFactProperties, times(1)).appendChild(anyObject());
+        listGroupItemView.addFactField(factFieldMock);
+        verify(factPropertiesMock, times(1)).appendChild(anyObject());
     }
 
     @Test
     public void closeRow() {
         listGroupItemView.closeRow();
-        verify(mockListGroupItemHeader, times(1)).removeClassName(eq(LIST_VIEW_PF_EXPAND_ACTIVE));
-        verify(mockListGroupItemContainer, times(1)).addClassName(eq(HIDDEN));
-        verify(mockFaAngleRight, times(1)).removeClassName(eq(FA_ANGLE_DOWN));
+        verify(listGroupItemHeaderMock, times(1)).removeClassName(eq(LIST_VIEW_PF_EXPAND_ACTIVE));
+        verify(listGroupItemContainerMock, times(1)).addClassName(eq(HIDDEN));
+        verify(faAngleRightMock, times(1)).removeClassName(eq(FA_ANGLE_DOWN));
     }
 
     @Test
     public void expandRow() {
         listGroupItemView.expandRow();
-        verify(mockListGroupItemHeader, times(1)).addClassName(eq(LIST_VIEW_PF_EXPAND_ACTIVE));
-        verify(mockListGroupItemContainer, times(1)).removeClassName(eq(HIDDEN));
-        verify(mockFaAngleRight, times(1)).addClassName(eq(FA_ANGLE_DOWN));
+        verify(listGroupItemHeaderMock, times(1)).addClassName(eq(LIST_VIEW_PF_EXPAND_ACTIVE));
+        verify(listGroupItemContainerMock, times(1)).removeClassName(eq(HIDDEN));
+        verify(faAngleRightMock, times(1)).addClassName(eq(FA_ANGLE_DOWN));
     }
 }

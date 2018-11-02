@@ -68,8 +68,8 @@ public class GridContextMenu extends AbstractColumnMenuPresenter {
         deleteRowLIElement = addExecutableMenuItem(GRIDCONTEXTMENU_DELETE_ROW, constants.deleteRow(), "deleteRow");
     }
 
-    public void show(final int mx, final int my, int columnIndex, int rowIndex, String group) {
-        super.show(mx, my, columnIndex, group);
+    public void show(final int mx, final int my, int columnIndex, int rowIndex, String group, boolean asProperty) {
+        super.show(mx, my, columnIndex, group, asProperty);
         columnContextLIElement
                 .getChild(1) //  a  element
                 .getChild(3) // span element

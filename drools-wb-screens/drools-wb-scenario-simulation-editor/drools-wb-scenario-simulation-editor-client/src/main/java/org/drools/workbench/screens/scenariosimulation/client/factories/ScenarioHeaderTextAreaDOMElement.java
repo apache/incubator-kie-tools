@@ -33,6 +33,10 @@ public class ScenarioHeaderTextAreaDOMElement extends ScenarioCellTextAreaDOMEle
         final int columnIndex = context.getColumnIndex();
         try {
             ScenarioGridModel model = (ScenarioGridModel) gridWidget.getModel();
+
+            if (!model.validateHeaderUpdate(value, rowIndex, columnIndex)) {
+                return;
+            }
             model.updateHeader(columnIndex, rowIndex, value);
         } catch (Exception e) {
             throw new IllegalArgumentException(new StringBuilder().append("Impossible to update header (").append(rowIndex)

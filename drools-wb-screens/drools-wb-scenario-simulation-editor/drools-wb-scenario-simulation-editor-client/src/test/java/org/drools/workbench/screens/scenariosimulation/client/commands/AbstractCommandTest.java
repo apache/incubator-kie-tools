@@ -16,9 +16,12 @@
 
 package org.drools.workbench.screens.scenariosimulation.client.commands;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import com.google.gwt.event.shared.EventBus;
+import org.drools.workbench.screens.scenariosimulation.client.editor.ScenarioSimulationEditorPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioHeaderTextBoxSingletonDOMElementFactory;
 import org.drools.workbench.screens.scenariosimulation.client.metadata.ScenarioHeaderMetaData;
 import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
@@ -28,48 +31,61 @@ import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGr
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridLayer;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
+import org.drools.workbench.screens.scenariosimulation.model.ExpressionIdentifier;
 import org.drools.workbench.screens.scenariosimulation.model.FactMappingType;
+import org.drools.workbench.screens.scenariosimulation.model.Scenario;
+import org.drools.workbench.screens.scenariosimulation.model.Simulation;
+import org.drools.workbench.screens.scenariosimulation.model.SimulationDescriptor;
 import org.junit.Before;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
+import org.uberfire.ext.wires.core.grids.client.model.GridData;
+import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 public abstract class AbstractCommandTest {
 
-    @Mock
-    protected ScenarioGridModel mockScenarioGridModel;
+    protected ScenarioGridModel scenarioGridModelMock;
 
     @Mock
-    protected ScenarioGridPanel mockScenarioGridPanel;
-    @Mock
-    protected ScenarioGridLayer mockScenarioGridLayer;
-    @Mock
-    protected ScenarioGrid mockScenarioGrid;
+    protected Simulation simulationMock;
 
     @Mock
-    protected RightPanelPresenter mockRightPanelPresenter;
+    protected SimulationDescriptor simulationDescriptorMock;
 
     @Mock
-    protected EventBus mockEventBus;
+    protected ScenarioGridPanel scenarioGridPanelMock;
+    @Mock
+    protected ScenarioGridLayer scenarioGridLayerMock;
+    @Mock
+    protected ScenarioGrid scenarioGridMock;
 
     @Mock
-    protected List<ScenarioGridColumn> mockColumns;
+    protected ScenarioSimulationEditorPresenter scenarioSimulationEditorPresenterMock;
 
     @Mock
-    protected ScenarioGridColumn mockGridColumn;
+    protected RightPanelPresenter rightPanelPresenterMock;
 
     @Mock
-    protected List<GridColumn.HeaderMetaData> mockHeaderMetaDatas;
+    protected EventBus eventBusMock;
+
     @Mock
-    protected ScenarioHeaderMetaData mockHeaderMetaData;
+    protected ScenarioGridColumn gridColumnMock;
+
+    @Mock
+    protected List<GridColumn.HeaderMetaData> headerMetaDatasMock;
+    @Mock
+    protected ScenarioHeaderMetaData informationHeaderMetaDataMock;
+    @Mock
+    protected ScenarioHeaderMetaData propertyHeaderMetaDataMock;
     @Mock
     protected ScenarioHeaderTextBoxSingletonDOMElementFactory scenarioHeaderTextBoxSingletonDOMElementFactoryMock;
     @Mock
     protected ScenarioSimulationBuilders.HeaderBuilder headerBuilderMock;
 
+    private List<GridColumn<?>> gridColumns = new ArrayList<>();
 
     protected final String COLUMN_ID = "COLUMN ID";
 
@@ -78,6 +94,8 @@ public abstract class AbstractCommandTest {
     protected final String FULL_PACKAGE = "test.scesim";
 
     protected final String VALUE = "VALUE";
+
+    protected final String FULL_CLASS_NAME = FULL_PACKAGE + ".testclass";
 
     protected final String VALUE_CLASS_NAME = String.class.getName();
 
@@ -90,17 +108,89 @@ public abstract class AbstractCommandTest {
 
     @Before
     public void setup() {
-        when(mockHeaderMetaData.getColumnGroup()).thenReturn(COLUMN_GROUP);
-        when(mockHeaderMetaDatas.get(1)).thenReturn(mockHeaderMetaData);
-        when(mockGridColumn.getHeaderMetaData()).thenReturn(mockHeaderMetaDatas);
-        when(mockGridColumn.getInformationHeaderMetaData()).thenReturn(mockHeaderMetaData);
-        when(mockColumns.get(COLUMN_INDEX)).thenReturn(mockGridColumn);
-        doReturn(mockColumns).when(mockScenarioGridModel).getColumns();
-        when(mockScenarioGrid.getModel()).thenReturn(mockScenarioGridModel);
-        when(mockScenarioGridLayer.getScenarioGrid()).thenReturn(mockScenarioGrid);
-        when(mockScenarioGridPanel.getScenarioGridLayer()).thenReturn(mockScenarioGridLayer);
-        when(mockScenarioGridModel.getFirstIndexLeftOfGroup(eq(COLUMN_GROUP))).thenReturn(FIRST_INDEX_LEFT);
-        when(mockScenarioGridModel.getFirstIndexRightOfGroup(eq(COLUMN_GROUP))).thenReturn(FIRST_INDEX_RIGHT);
-        doReturn(mockGridColumn).when(mockScenarioGridModel).getSelectedColumn();
+
+        when(simulationMock.getSimulationDescriptor()).thenReturn(simulationDescriptorMock);
+
+        IntStream.range(0, 4).forEach(index -> gridColumns.add(gridColumnMock));
+
+        when(informationHeaderMetaDataMock.getTitle()).thenReturn(VALUE);
+        when(informationHeaderMetaDataMock.getColumnGroup()).thenReturn(COLUMN_GROUP);
+        when(headerMetaDatasMock.get(1)).thenReturn(informationHeaderMetaDataMock);
+        when(gridColumnMock.getHeaderMetaData()).thenReturn(headerMetaDatasMock);
+        when(gridColumnMock.getInformationHeaderMetaData()).thenReturn(informationHeaderMetaDataMock);
+        when(gridColumnMock.getPropertyHeaderMetaData()).thenReturn(propertyHeaderMetaDataMock);
+        GridData.Range range = new GridData.Range(FIRST_INDEX_LEFT, FIRST_INDEX_RIGHT - 1);
+
+        scenarioGridModelMock = spy(new ScenarioGridModel(false) {
+            {
+                this.simulation = simulationMock;
+                this.columns = gridColumns;
+            }
+
+            @Override
+            protected void commonAddColumn(int index, GridColumn<?> column) {
+                //
+            }
+
+            @Override
+            protected void commonAddColumn(final int index, final GridColumn<?> column, ExpressionIdentifier ei) {
+                //
+            }
+
+            @Override
+            protected void commonAddRow(int rowIndex) {
+                //
+            }
+
+            @Override
+            public List<GridColumn<?>> getColumns() {
+                return columns;
+            }
+
+            @Override
+            public Range getInstanceLimits(int columnIndex) {
+                return range;
+            }
+
+            @Override
+            public int getFirstIndexLeftOfGroup(String groupName) {
+                return FIRST_INDEX_LEFT;
+            }
+
+            @Override
+            public int getFirstIndexRightOfGroup(String groupName) {
+                return FIRST_INDEX_RIGHT;
+            }
+
+            @Override
+            public GridColumn<?> getSelectedColumn() {
+                return gridColumnMock;
+            }
+
+            @Override
+            public void deleteColumn(final GridColumn<?> column) {
+                //
+            }
+
+            @Override
+            public Range deleteRow(int rowIndex) {
+                return range;
+            }
+
+            @Override
+            public void insertRowGridOnly(final int rowIndex,
+                                          final GridRow row, final Scenario scenario) {
+                //
+            }
+
+            @Override
+            public void insertRow(int rowIndex, GridRow row) {
+
+            }
+        });
+
+        when(scenarioGridMock.getModel()).thenReturn(scenarioGridModelMock);
+        when(scenarioGridLayerMock.getScenarioGrid()).thenReturn(scenarioGridMock);
+        when(scenarioGridPanelMock.getScenarioGridLayer()).thenReturn(scenarioGridLayerMock);
     }
 }

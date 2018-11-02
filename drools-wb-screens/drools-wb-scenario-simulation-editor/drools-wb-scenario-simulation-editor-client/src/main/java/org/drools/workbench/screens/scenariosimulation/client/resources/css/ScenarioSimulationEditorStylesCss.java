@@ -28,6 +28,9 @@ public interface ScenarioSimulationEditorStylesCss extends CssResource {
     @ClassName("list-group-item-container")
     String listGroupItemContainer();
 
+    @ClassName("list-view-pf-expand-active")
+    String listViewPfExpandActive();
+
     @ClassName("kie-tree-list-view-pf-view--compact")
     String kieTreeListViewPfViewCompact();
 
@@ -37,9 +40,12 @@ public interface ScenarioSimulationEditorStylesCss extends CssResource {
     @ClassName("list-group-item")
     String listGroupItem();
 
-    @ClassName("ul--plain")
-    String ulPlain();
-
     @ClassName("list-view-pf-expand")
     String listViewPfExpand();
+
+    @ClassName("selected")
+    String selected();
+
+    @ClassName("ul--plain")
+    String ulPlain();
 }

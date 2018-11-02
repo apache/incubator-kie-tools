@@ -36,18 +36,23 @@ public class ScenarioHeaderMetaDataTest {
     @Mock
     FactMapping factMapping;
 
+    @Test(expected = IllegalStateException.class)
+    public void constructorFail() {
+        new ScenarioHeaderMetaData("", "", "", factory, true, true);
+    }
+
     @Test
     public void editTest() {
         ScenarioHeaderMetaData scenarioHeaderMetaData = new ScenarioHeaderMetaData("", "", "", factory, false, false);
+        scenarioHeaderMetaData.setReadOnly(false);
         scenarioHeaderMetaData.edit(null);
-
         verify(factory, times(1)).attachDomElement(any(), any(), any());
     }
 
     @Test(expected = IllegalStateException.class)
     public void editFailTest() {
         ScenarioHeaderMetaData scenarioHeaderMetaData = new ScenarioHeaderMetaData("", "", "", factory, true, false);
-
+        scenarioHeaderMetaData.setReadOnly(true);
         scenarioHeaderMetaData.edit(null);
     }
 }

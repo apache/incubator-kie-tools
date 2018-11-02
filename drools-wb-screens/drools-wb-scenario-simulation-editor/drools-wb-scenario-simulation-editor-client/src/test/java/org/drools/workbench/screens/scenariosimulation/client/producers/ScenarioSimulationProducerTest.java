@@ -46,6 +46,7 @@ public class ScenarioSimulationProducerTest extends AbstractProducerTest {
                 this.preserveDeletePopupPresenter = preserveDeletePopupPresenterMock;
                 this.eventBusProducer = eventBusProducerMock;
                 this.scenarioSimulationViewProducer = scenarioSimulationViewProducerMock;
+                this.notificationEvent = notificationEventNew;
             }
         });
     }
@@ -75,5 +76,6 @@ public class ScenarioSimulationProducerTest extends AbstractProducerTest {
         verify(commandExecutorMock, times(1)).setScenarioGridPanel(eq(scenarioGridPanelMock));
         verify(commandExecutorMock, times(1)).setDeletePopupPresenter(eq(deletePopupPresenterMock));
         verify(commandExecutorMock, times(1)).setPreserveDeletePopupPresenter(eq(preserveDeletePopupPresenterMock));
+        verify(commandExecutorMock, times(1)).setNotificationEvent(eq(notificationEventNew));
     }
 }

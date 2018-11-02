@@ -16,6 +16,7 @@
 package org.drools.workbench.screens.scenariosimulation.client.commands;
 
 import java.util.Date;
+import java.util.Map;
 
 import javax.enterprise.context.Dependent;
 
@@ -23,7 +24,6 @@ import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGri
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridLayer;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
-import org.drools.workbench.screens.scenariosimulation.model.FactMapping;
 import org.drools.workbench.screens.scenariosimulation.model.FactMappingType;
 
 /**
@@ -61,14 +61,17 @@ public class DeleteColumnCommand extends AbstractCommand {
         model.deleteColumn(columnIndex);
         if (model.getGroupSize(columnGroup) < 1) {
             FactMappingType factMappingType = FactMappingType.valueOf(columnGroup.toUpperCase());
-            String columnTitle = FactMapping.getPlaceHolder(factMappingType, model.nextColumnCount());
-            model.insertColumn(columnIndex, getScenarioGridColumnLocal(columnTitle,
-                                                                  String.valueOf(new Date().getTime()),
-                                                                  columnGroup,
-                                                                  factMappingType,
-                                                                  scenarioGridPanel,
-                                                                  scenarioGridLayer,
-                                                                  ScenarioSimulationEditorConstants.INSTANCE.defineValidType()));
+            Map.Entry<String, String> validPlaceholders = model.getValidPlaceholders();
+            String instanceTitle = validPlaceholders.getKey();
+            String propertyTitle = validPlaceholders.getValue();
+            model.insertColumn(columnIndex, getScenarioGridColumnLocal(instanceTitle,
+                                                                       propertyTitle,
+                                                                       String.valueOf(new Date().getTime()),
+                                                                       columnGroup,
+                                                                       factMappingType,
+                                                                       scenarioGridPanel,
+                                                                       scenarioGridLayer,
+                                                                       ScenarioSimulationEditorConstants.INSTANCE.defineValidType()));
         }
     }
 }

@@ -31,12 +31,24 @@ public interface FieldItemView {
          */
         LIElement getLIElement(String parentPath, String factName, String fieldName, String className);
 
-        void onFieldElementDoubleClick(String fullPath, String fieldName, String className);
+        void onFieldElementClick(FieldItemView selected);
 
-        void setRightPanelPresenter(RightPanelView.Presenter rightPanelPresenter);
+        void setListGroupItemPresenter(ListGroupItemView.Presenter listGroupItemPresenter);
+
+        void unselectAll();
     }
 
+    String getFullPath();
+
+    String getFactName();
+
+    String getFieldName();
+
+    String getClassName();
+
     void setPresenter(FieldItemView.Presenter fieldItemPresenter);
+
+    void onFieldElementClick();
 
     /**
      * @param fullPath The parent path (empty if the properties belongs to a <b>top-level</b> element)
@@ -47,4 +59,7 @@ public interface FieldItemView {
     void setFieldData(String fullPath, String factName, String fieldName, String className);
 
     LIElement getLIElement();
+
+    void unselect();
+
 }

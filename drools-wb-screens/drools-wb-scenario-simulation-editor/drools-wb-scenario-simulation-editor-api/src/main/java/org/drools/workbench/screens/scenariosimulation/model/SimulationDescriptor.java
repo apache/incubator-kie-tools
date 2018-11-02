@@ -96,15 +96,15 @@ public class SimulationDescriptor {
         return addFactMapping(factMappings.size(), factIdentifier, expressionIdentifier);
     }
 
-    public FactMapping addFactMapping(String expressionAlias, FactIdentifier factIdentifier, ExpressionIdentifier expressionIdentifier) {
-        return addFactMapping(factMappings.size(), expressionAlias, factIdentifier, expressionIdentifier);
+    public FactMapping addFactMapping(String factAlias, FactIdentifier factIdentifier, ExpressionIdentifier expressionIdentifier) {
+        return addFactMapping(factMappings.size(), factAlias, factIdentifier, expressionIdentifier);
     }
 
     public FactMapping addFactMapping(int index, FactIdentifier factIdentifier, ExpressionIdentifier expressionIdentifier) {
         return addFactMapping(index, expressionIdentifier.getName(), factIdentifier, expressionIdentifier);
     }
 
-    public FactMapping addFactMapping(int index, String expressionAlias, FactIdentifier factIdentifier, ExpressionIdentifier expressionIdentifier) {
+    public FactMapping addFactMapping(int index, String factAlias, FactIdentifier factIdentifier, ExpressionIdentifier expressionIdentifier) {
         if (getFactMapping(factIdentifier, expressionIdentifier).isPresent()) {
             throw new IllegalArgumentException(
                     new StringBuilder().append("An expression with name '").append(expressionIdentifier.getName())
@@ -115,7 +115,7 @@ public class SimulationDescriptor {
                     new StringBuilder().append("Impossible to add an element at position ").append(index)
                             .append(" because there are only ").append(factMappings.size()).append(" elements").toString());
         }
-        FactMapping factMapping = new FactMapping(expressionAlias, factIdentifier, expressionIdentifier);
+        FactMapping factMapping = new FactMapping(factAlias, factIdentifier, expressionIdentifier);
         factMappings.add(index, factMapping);
         return factMapping;
     }

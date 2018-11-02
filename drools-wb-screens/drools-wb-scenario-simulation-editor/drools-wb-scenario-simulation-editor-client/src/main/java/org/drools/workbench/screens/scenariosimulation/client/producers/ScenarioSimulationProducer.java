@@ -16,6 +16,7 @@
 package org.drools.workbench.screens.scenariosimulation.client.producers;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.event.shared.EventBus;
@@ -23,6 +24,7 @@ import org.drools.workbench.screens.scenariosimulation.client.commands.CommandEx
 import org.drools.workbench.screens.scenariosimulation.client.editor.ScenarioSimulationView;
 import org.drools.workbench.screens.scenariosimulation.client.popup.DeletePopupPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.popup.PreserveDeletePopupPresenter;
+import org.uberfire.workbench.events.NotificationEvent;
 
 /**
  * <code>@Dependent</code> Class meant to be the only <i>Producer</i> for a given {@link org.drools.workbench.screens.scenariosimulation.client.editor.ScenarioSimulationEditorPresenter}
@@ -45,6 +47,9 @@ public class ScenarioSimulationProducer {
     @Inject
     CommandExecutor commandExecutor;
 
+    @Inject
+    Event<NotificationEvent> notificationEvent;
+
     public EventBus getEventBus() {
         return eventBusProducer.getEventBus();
     }
@@ -58,6 +63,7 @@ public class ScenarioSimulationProducer {
         commandExecutor.setScenarioGridPanel(getScenarioSimulationView().getScenarioGridPanel());
         commandExecutor.setDeletePopupPresenter(deletePopupPresenter);
         commandExecutor.setPreserveDeletePopupPresenter(preserveDeletePopupPresenter);
+        commandExecutor.setNotificationEvent(notificationEvent);
         return commandExecutor;
     }
 }

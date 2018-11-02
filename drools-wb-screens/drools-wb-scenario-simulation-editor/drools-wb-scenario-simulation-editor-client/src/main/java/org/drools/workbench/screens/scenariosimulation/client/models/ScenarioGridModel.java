@@ -15,8 +15,10 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.models;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -24,7 +26,10 @@ import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
 import com.google.gwt.event.shared.EventBus;
+import org.drools.workbench.screens.scenariosimulation.client.events.ReloadRightPanelEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.ScenarioGridReloadEvent;
+import org.drools.workbench.screens.scenariosimulation.client.events.ScenarioNotificationEvent;
+import org.drools.workbench.screens.scenariosimulation.client.metadata.ScenarioHeaderMetaData;
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.drools.workbench.screens.scenariosimulation.client.values.ScenarioGridCellValue;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridCell;
@@ -42,18 +47,19 @@ import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
+import org.uberfire.workbench.events.NotificationEvent;
 
 public class ScenarioGridModel extends BaseGridData {
 
-    public static final int HEADER_ROW_COUNT = 2;
+    public static final int HEADER_ROW_COUNT = 3;
 
-    Simulation simulation;
+    protected Simulation simulation;
 
-    EventBus eventBus;
+    protected EventBus eventBus;
 
-    AtomicInteger columnCounter = new AtomicInteger(0);
+    protected AtomicInteger columnCounter = new AtomicInteger(0);
 
-    GridColumn<?> selectedColumn = null;
+    protected GridColumn<?> selectedColumn = null;
 
     public ScenarioGridModel() {
     }
@@ -79,6 +85,18 @@ public class ScenarioGridModel extends BaseGridData {
 
     public int nextColumnCount() {
         return columnCounter.getAndIncrement();
+    }
+
+    public Map.Entry<String, String> getValidPlaceholders() {
+        String instanceTitle;
+        String propertyTitle;
+        do {
+            int nextColumnCount = nextColumnCount();
+            instanceTitle = FactMapping.getInstancePlaceHolder(nextColumnCount);
+            propertyTitle = FactMapping.getPropertyPlaceHolder(nextColumnCount);
+        } while (!isNewInstanceName(instanceTitle) ||
+                !isNewPropertyName(propertyTitle));
+        return new AbstractMap.SimpleEntry<>(instanceTitle, propertyTitle);
     }
 
     /**
@@ -107,7 +125,7 @@ public class ScenarioGridModel extends BaseGridData {
             if (value.getRawValue() == null || value.getRawValue() instanceof String) { // Let' put a placeholder
                 String stringValue = (String) value.getRawValue();
                 int columnIndex = simulation.getSimulationDescriptor().getIndexByIdentifier(factIdentifier, expressionIdentifier);
-                String placeHolder = FactIdentifier.EMPTY.equals(factIdentifier) ? ScenarioSimulationEditorConstants.INSTANCE.defineValidType() : ScenarioSimulationEditorConstants.INSTANCE.insertValue();
+                String placeHolder = ((ScenarioGridColumn) columns.get(columnIndex)).getPlaceHolder();
                 setCell(rowIndex, columnIndex, () -> new ScenarioGridCell(new ScenarioGridCellValue(stringValue, placeHolder)));
             } else {
                 throw new UnsupportedOperationException("Only string is supported at the moment");
@@ -185,11 +203,28 @@ public class ScenarioGridModel extends BaseGridData {
     }
 
     /**
+     * This method update the instance mapped inside a given column
+     * @param columnIndex
+     * @param column
+     */
+    public void updateColumnInstance(int columnIndex, final GridColumn<?> column) {
+        checkSimulation();
+        deleteColumn(columnIndex);
+        String group = ((ScenarioGridColumn) column).getInformationHeaderMetaData().getColumnGroup();
+        String columnId = ((ScenarioGridColumn) column).getInformationHeaderMetaData().getColumnId();
+        ExpressionIdentifier ei = ExpressionIdentifier.create(columnId, FactMappingType.valueOf(group));
+        commonAddColumn(columnIndex, column, ei);
+    }
+
+    /**
      * This method update the type mapped inside a give column and updates the underlying model
      * @param columnIndex
+     * @param column
      * @param value
+     * @param lastLevelClassName
+     * @param keepData
      */
-    public void updateColumnType(int columnIndex, final GridColumn<?> column, String fullPackage, String value, String lastLevelClassName, boolean keepData) {
+    public void updateColumnProperty(int columnIndex, final GridColumn<?> column, String value, String lastLevelClassName, boolean keepData) {
         checkSimulation();
         List<GridCellValue<?>> originalValues = new ArrayList<>();
         if (keepData) {
@@ -200,22 +235,15 @@ public class ScenarioGridModel extends BaseGridData {
         String group = ((ScenarioGridColumn) column).getInformationHeaderMetaData().getColumnGroup();
         String columnId = ((ScenarioGridColumn) column).getInformationHeaderMetaData().getColumnId();
         String[] elements = value.split("\\.");
-        if (!fullPackage.endsWith(".")) {
-            fullPackage += ".";
-        }
-        String canonicalClassName = fullPackage + elements[0];
-        FactIdentifier factIdentifier = FactIdentifier.create(canonicalClassName, canonicalClassName);
         ExpressionIdentifier ei = ExpressionIdentifier.create(columnId, FactMappingType.valueOf(group));
-        commonAddColumn(columnIndex, column, factIdentifier, ei);
+        commonAddColumn(columnIndex, column, ei);
         final FactMapping factMappingByIndex = simulation.getSimulationDescriptor().getFactMappingByIndex(columnIndex);
-        factMappingByIndex.setExpressionAlias(value);
         IntStream.range(1, elements.length)
                 .forEach(stepIndex -> factMappingByIndex.addExpressionElement(elements[stepIndex], lastLevelClassName));
         if (keepData) {
             IntStream.range(0, getRowCount())
                     .forEach(rowIndex -> setCellValue(rowIndex, columnIndex, originalValues.get(rowIndex)));
         }
-        selectColumn(columnIndex);
     }
 
     /**
@@ -241,8 +269,8 @@ public class ScenarioGridModel extends BaseGridData {
         Range toReturn = super.setCell(rowIndex, columnIndex, cellSupplier);
         try {
             Optional<?> optionalValue = getCellValue(getCell(rowIndex, columnIndex));
-            Object rawValue = optionalValue.isPresent() ? optionalValue.get() : null;
-            String cellValue = (rawValue != null && rawValue instanceof String) ? (String) rawValue : null;
+            Object rawValue = optionalValue.orElse(null);
+            String cellValue = (rawValue instanceof String) ? (String) rawValue : null;
             Scenario scenarioByIndex = simulation.getScenarioByIndex(rowIndex);
             FactMapping factMappingByIndex = simulation.getSimulationDescriptor().getFactMappingByIndex(columnIndex);
             FactIdentifier factIdentifier = factMappingByIndex.getFactIdentifier();
@@ -269,18 +297,42 @@ public class ScenarioGridModel extends BaseGridData {
     }
 
     /**
+     * This methods returns the <code>Range</code> of a <b>single</b> block of columns of the same instance/data object.
+     * A <code>single</code> block is made of all the columns immediately to the left and right of the selected one with the same "label".
+     * If there is another column with the same "label" but separated by a different column, it is not part of the group.
+     * @param columnIndex
+     * @return
+     */
+    public Range getInstanceLimits(int columnIndex) {
+        final ScenarioGridColumn selectedColumn = (ScenarioGridColumn) columns.get(columnIndex);
+        final String originalColumnGroup = selectedColumn.getInformationHeaderMetaData().getColumnGroup();
+        final ScenarioHeaderMetaData selectedInformationHeaderMetaData = selectedColumn.getInformationHeaderMetaData();
+        String originalColumnTitle = selectedInformationHeaderMetaData.getTitle();
+        int leftPosition = columnIndex;
+        while (leftPosition > 1 && ((ScenarioGridColumn) columns.get(leftPosition - 1)).getInformationHeaderMetaData().getColumnGroup().equals(originalColumnGroup) && ((ScenarioGridColumn) columns.get(leftPosition - 1)).getInformationHeaderMetaData().getTitle().equals(originalColumnTitle)) {
+            leftPosition--;
+        }
+        int rightPosition = columnIndex;
+        while (rightPosition < columns.size() - 1 && ((ScenarioGridColumn) columns.get(rightPosition + 1)).getInformationHeaderMetaData().getColumnGroup().equals(originalColumnGroup) && ((ScenarioGridColumn) columns.get(rightPosition + 1)).getInformationHeaderMetaData().getTitle().equals(originalColumnTitle)) {
+            rightPosition++;
+        }
+        return new Range(leftPosition, rightPosition);
+    }
+
+    /**
      * Return the first index to the left of the given group, i.e. <b>excluded</b> the left-most index of <b>that</b> group
      * @param groupName
      * @return
      */
     public int getFirstIndexLeftOfGroup(String groupName) {
         // HORRIBLE TRICK BECAUSE gridColumn.getIndex() DOES NOT REFLECT ACTUAL POSITION, BUT ONLY ORDER OF INSERTION
-        final Optional<Integer> first = this.getColumns()    // Retrieving the column list
+        final List<GridColumn<?>> columns = this.getColumns();
+        final Optional<Integer> first = columns    // Retrieving the column list
                 .stream()  // streaming
                 .filter(gridColumn -> ((ScenarioGridColumn) gridColumn).getInformationHeaderMetaData().getColumnGroup().equals(groupName))  // filtering by group name
                 .findFirst()
                 .map(gridColumn -> {
-                    int indexOfColumn = this.getColumns().indexOf(gridColumn);
+                    int indexOfColumn = columns.indexOf(gridColumn);
                     return indexOfColumn > -1 ? indexOfColumn : 0;   // mapping the retrieved column to its index inside the list, or 0
                 });
         return first.orElseGet(() -> 0); // returning the retrieved value or, if null, 0
@@ -316,9 +368,27 @@ public class ScenarioGridModel extends BaseGridData {
                 .count();
     }
 
-    public void updateHeader(int columnIndex, int rowIndex, String value) {
-        getColumns().get(columnIndex).getHeaderMetaData().get(rowIndex).setTitle(value);
-        simulation.getSimulationDescriptor().getFactMappingByIndex(columnIndex).setExpressionAlias(value);
+    public void updateHeader(int columnIndex, int headerRowIndex, String value) {
+        final ScenarioHeaderMetaData editedMetadata = (ScenarioHeaderMetaData) getColumns().get(columnIndex).getHeaderMetaData().get(headerRowIndex);
+        // do not update if old and new value are the same
+        if (Objects.equals(editedMetadata.getTitle(), value)) {
+            return;
+        }
+        SimulationDescriptor simulationDescriptor = simulation.getSimulationDescriptor();
+        FactMapping factMappingToEdit = simulationDescriptor.getFactMappingByIndex(columnIndex);
+        if (editedMetadata.isInstanceHeader()) { // we have to update title and value for every column of the group
+            IntStream.range(0, getColumnCount()).forEach(index -> {
+                FactMapping factMappingToCheck = simulationDescriptor.getFactMappingByIndex(index);
+                if (Objects.equals(factMappingToCheck.getFactIdentifier(), factMappingToEdit.getFactIdentifier())) {
+                    ((ScenarioGridColumn) columns.get(index)).getInformationHeaderMetaData().setTitle(value);
+                    factMappingToCheck.setFactAlias(value);
+                }
+            });
+            eventBus.fireEvent(new ReloadRightPanelEvent(false));
+        } else {
+            editedMetadata.setTitle(value);
+            factMappingToEdit.setExpressionAlias(value);
+        }
     }
 
     public void clear() {
@@ -349,9 +419,12 @@ public class ScenarioGridModel extends BaseGridData {
         if (columnIndex > getColumnCount() - 1) {
             return;
         }
+        if (!selectedHeaderCells.isEmpty()) {
+            final SelectedCell selectedHeaderCell = selectedHeaderCells.get(0);
+            selectedHeaderCells.clear();
+            selectHeaderCell(selectedHeaderCell.getRowIndex(), columnIndex);
+        }
         selectedColumn = getColumns().get(columnIndex);
-        int rows = getRowCount();
-        IntStream.range(0, rows).forEach(rowIndex -> selectCell(rowIndex, columnIndex));
     }
 
     /**
@@ -380,7 +453,7 @@ public class ScenarioGridModel extends BaseGridData {
      * @return
      */
     public boolean isSelectedColumnEmpty() {
-        return selectedColumn == null ? true : isColumnEmpty(getColumns().indexOf(selectedColumn));
+        return selectedColumn == null || isColumnEmpty(getColumns().indexOf(selectedColumn));
     }
 
     /**
@@ -402,7 +475,7 @@ public class ScenarioGridModel extends BaseGridData {
      * @return
      */
     public boolean isSameSelectedColumnProperty(String propertyName) {
-        return selectedColumn == null ? true : isSameSelectedColumnProperty(getColumns().indexOf(selectedColumn), propertyName);
+        return selectedColumn == null || isSameSelectedColumnProperty(getColumns().indexOf(selectedColumn), propertyName);
     }
 
     /**
@@ -423,7 +496,7 @@ public class ScenarioGridModel extends BaseGridData {
      * @return
      */
     public boolean isSameSelectedColumnType(String className) {
-        return selectedColumn == null ? true : isSameSelectedColumnType(getColumns().indexOf(selectedColumn), className);
+        return selectedColumn == null || isSameSelectedColumnType(getColumns().indexOf(selectedColumn), className);
     }
 
     /**
@@ -447,8 +520,8 @@ public class ScenarioGridModel extends BaseGridData {
     protected void commonAddColumn(final int index, final GridColumn<?> column) {
         String group = ((ScenarioGridColumn) column).getInformationHeaderMetaData().getColumnGroup();
         String columnId = ((ScenarioGridColumn) column).getInformationHeaderMetaData().getColumnId();
-        ExpressionIdentifier ei = ExpressionIdentifier.create(columnId, FactMappingType.valueOf(group));
-        commonAddColumn(index, column, FactIdentifier.EMPTY, ei);
+        final ExpressionIdentifier ei = ExpressionIdentifier.create(columnId, FactMappingType.valueOf(group));
+        commonAddColumn(index, column, ei);
     }
 
     /**
@@ -456,30 +529,36 @@ public class ScenarioGridModel extends BaseGridData {
      * If index == -1 -> add, otherwise insert.
      * @param index
      * @param column
-     * @param factIdentifier
      * @param ei
      */
-    protected void commonAddColumn(final int index, final GridColumn<?> column, FactIdentifier factIdentifier, ExpressionIdentifier ei) {
+    protected void commonAddColumn(final int index, final GridColumn<?> column, ExpressionIdentifier ei) {
         SimulationDescriptor simulationDescriptor = simulation.getSimulationDescriptor();
-        String title = ((ScenarioGridColumn) column).getInformationHeaderMetaData().getTitle();
+        String instanceTitle = ((ScenarioGridColumn) column).getInformationHeaderMetaData().getTitle();
+        String propertyTitle = ((ScenarioGridColumn) column).getPropertyHeaderMetaData().getTitle();
         final int columnIndex = index == -1 ? getColumnCount() : index;
         try {
-            simulationDescriptor.addFactMapping(columnIndex, title, factIdentifier, ei);
+            final FactMapping createdFactMapping = simulationDescriptor.addFactMapping(columnIndex, instanceTitle, ((ScenarioGridColumn) column).getFactIdentifier(), ei);
+            createdFactMapping.setExpressionAlias(propertyTitle);
             if (index == -1) {  // This is actually an append
                 super.appendColumn(column);
             } else {
                 super.insertColumn(index, column);
             }
+            final Range instanceLimits = getInstanceLimits(columnIndex);
+            IntStream.range(instanceLimits.getMinRowIndex(), instanceLimits.getMaxRowIndex() + 1)
+                    .filter(currentIndex -> currentIndex != columnIndex)
+                    .forEach(currentIndex -> simulationDescriptor.getFactMappingByIndex(currentIndex).setFactAlias(createdFactMapping.getFactAlias()));
+            selectColumn(columns.indexOf(column));
         } catch (Throwable t) {
+            eventBus.fireEvent(new ScenarioNotificationEvent("Error during column creation: " + t.getMessage(), NotificationEvent.NotificationType.ERROR));
             eventBus.fireEvent(new ScenarioGridReloadEvent());
             return;
         }
+
         final List<Scenario> scenarios = simulation.getUnmodifiableScenarios();
+        String placeHolder = ((ScenarioGridColumn) column).getPlaceHolder();
         IntStream.range(0, scenarios.size())
-                .forEach(rowIndex -> {
-                    String placeHolder = FactIdentifier.EMPTY.equals(factIdentifier) ? ScenarioSimulationEditorConstants.INSTANCE.defineValidType() : ScenarioSimulationEditorConstants.INSTANCE.insertValue();
-                    setCell(rowIndex, columnIndex, () -> new ScenarioGridCell(new ScenarioGridCellValue(null, placeHolder)));
-                });
+                .forEach(rowIndex -> setCell(rowIndex, columnIndex, () -> new ScenarioGridCell(new ScenarioGridCellValue(null, placeHolder))));
     }
 
     protected void commonAddRow(int rowIndex) {
@@ -511,6 +590,43 @@ public class ScenarioGridModel extends BaseGridData {
 
     void checkSimulation() {
         Objects.requireNonNull(simulation, "Bind a simulation to the ScenarioGridModel to use it");
+    }
+
+    public boolean validateHeaderUpdate(String value, int rowIndex, int columnIndex) {
+        ScenarioHeaderMetaData headerToEdit = (ScenarioHeaderMetaData) getColumns().get(columnIndex).getHeaderMetaData().get(rowIndex);
+        boolean isValid = !headerToEdit.isInstanceHeader() || isUnique(value, rowIndex, columnIndex);
+        if (!isValid) {
+            eventBus.fireEvent(new ScenarioNotificationEvent("Name '" + value + "' is already used",
+                                                             NotificationEvent.NotificationType.ERROR));
+        }
+        return isValid;
+    }
+
+    boolean isUnique(String value, int rowIndex, int columnIndex) {
+        Range instanceLimits = getInstanceLimits(columnIndex);
+        SimulationDescriptor simulationDescriptor = simulation.getSimulationDescriptor();
+        FactIdentifier factIdentifier = simulationDescriptor.getFactMappingByIndex(columnIndex).getFactIdentifier();
+        return IntStream.range(0, getColumnCount())
+                .filter(index -> index < instanceLimits.getMinRowIndex() || index > instanceLimits.getMaxRowIndex())
+                .filter(index -> !Objects.equals(factIdentifier, simulationDescriptor.getFactMappingByIndex(index).getFactIdentifier()))
+                .mapToObj(index -> getColumns().get(index))
+                .filter(elem -> elem.getHeaderMetaData().size() > rowIndex)
+                .map(elem -> (ScenarioHeaderMetaData) elem.getHeaderMetaData().get(rowIndex))
+                .noneMatch(elem -> Objects.equals(elem.getTitle(), value));
+    }
+
+    boolean isNewInstanceName(String value) {
+        return getColumns().stream()
+                .map(elem -> ((ScenarioGridColumn) elem).getInformationHeaderMetaData())
+                .filter(Objects::nonNull)
+                .noneMatch(elem -> Objects.equals(elem.getTitle(), value));
+    }
+
+    boolean isNewPropertyName(String value) {
+        return getColumns().stream()
+                .map(elem -> ((ScenarioGridColumn) elem).getPropertyHeaderMetaData())
+                .filter(Objects::nonNull)
+                .noneMatch(elem -> Objects.equals(elem.getTitle(), value));
     }
 
     public void resetErrors() {

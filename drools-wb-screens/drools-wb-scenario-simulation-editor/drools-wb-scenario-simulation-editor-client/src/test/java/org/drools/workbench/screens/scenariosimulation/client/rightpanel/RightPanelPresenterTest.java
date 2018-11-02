@@ -16,10 +16,15 @@
 
 package org.drools.workbench.screens.scenariosimulation.client.rightpanel;
 
+import java.util.ArrayList;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.drools.workbench.screens.scenariosimulation.client.events.SetColumnValueEvent;
+import org.drools.workbench.screens.scenariosimulation.client.events.SetInstanceHeaderEvent;
+import org.drools.workbench.screens.scenariosimulation.client.events.SetPropertyHeaderEvent;
 import org.drools.workbench.screens.scenariosimulation.client.models.FactModelTree;
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.junit.Before;
@@ -27,12 +32,16 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
+import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -42,34 +51,57 @@ import static org.mockito.Mockito.when;
 public class RightPanelPresenterTest extends AbstractRightPanelTest {
 
     @Mock
-    private RightPanelView mockRightPanelView;
+    private RightPanelView rightPanelViewMock;
 
     @Mock
-    private DivElement mockListContainer;
+    private DivElement dataObjectListContainerMock;
 
     @Mock
-    private ListGroupItemPresenter mockListGroupItemPresenter;
+    private DivElement instanceListContainerMock;
+
     @Mock
-    private EventBus mockEventBus;
+    private ListGroupItemPresenter listGroupItemPresenterMock;
+
+    @Mock
+    private  ListGroupItemView selectedListGroupItemViewMock;
+    @Mock
+    private  FieldItemView selectedFieldItemViewMock;
+
+    @Mock
+    private EventBus eventBusMock;
 
     private RightPanelPresenter rightPanelPresenter;
-    private RightPanelPresenter rightPanelPresenterSpy;
 
     @Before
     public void setup() {
         super.setup();
-        when(mockRightPanelView.getListContainer()).thenReturn(mockListContainer);
-        when(mockListGroupItemPresenter.getDivElement(FACT_NAME, FACT_MODEL_TREE)).thenReturn(mockListContainer);
-        this.rightPanelPresenter = new RightPanelPresenter(mockRightPanelView, mockListGroupItemPresenter);
-        rightPanelPresenter.factTypeFieldsMap = mockTopLevelMap;
-        rightPanelPresenter.eventBus = mockEventBus;
-        rightPanelPresenterSpy = spy(rightPanelPresenter);
+        final String firstKey = dataObjectFactTreeMap.firstKey();
+        final FactModelTree factModelTree = dataObjectFactTreeMap.get(firstKey);
+        final String firstPropertyKey = (String) new ArrayList(factModelTree.getSimpleProperties().keySet()).get(0);
+        final String firstPropertyClass = factModelTree.getSimpleProperties().get(firstPropertyKey);
+
+        when(selectedListGroupItemViewMock.getActualClassName()).thenReturn(firstKey);
+
+        when(selectedFieldItemViewMock.getFullPath()).thenReturn(firstKey/* + "." + firstPropertyKey*/);
+        when(selectedFieldItemViewMock.getFieldName()).thenReturn(firstPropertyKey);
+        when(selectedFieldItemViewMock.getClassName()).thenReturn(firstPropertyClass);
+
+        when(rightPanelViewMock.getDataObjectListContainer()).thenReturn(dataObjectListContainerMock);
+        when(rightPanelViewMock.getInstanceListContainer()).thenReturn(instanceListContainerMock);
+        when(listGroupItemPresenterMock.getDivElement(FACT_NAME, FACT_MODEL_TREE)).thenReturn(dataObjectListContainerMock);
+        this.rightPanelPresenter = spy(new RightPanelPresenter(rightPanelViewMock, listGroupItemPresenterMock) {
+            {
+                this.dataObjectFieldsMap = dataObjectFactTreeMap;
+                this.instanceFieldsMap = instanceFactTreeMap;
+                this.eventBus = eventBusMock;
+            }
+        });
     }
 
     @Test
     public void onSetup() {
         rightPanelPresenter.setup();
-        verify(mockRightPanelView, times(1)).init(rightPanelPresenter);
+        verify(rightPanelViewMock, times(1)).init(rightPanelPresenter);
     }
 
     @Test
@@ -79,78 +111,149 @@ public class RightPanelPresenterTest extends AbstractRightPanelTest {
 
     @Test
     public void onClearSearch() {
-        rightPanelPresenterSpy.onClearSearch();
-        verify(mockRightPanelView, times(1)).clearInputSearch();
-        verify(mockRightPanelView, times(1)).hideClearButton();
+        rightPanelPresenter.onClearSearch();
+        verify(rightPanelViewMock, times(1)).clearInputSearch();
+        verify(rightPanelViewMock, times(1)).hideClearButton();
     }
 
     @Test
     public void onClearNameField() {
-        rightPanelPresenterSpy.onClearNameField();
-        verify(mockRightPanelView, times(1)).clearNameField();
+        rightPanelPresenter.onClearNameField();
+        verify(rightPanelViewMock, times(1)).clearNameField();
     }
 
     @Test
     public void onClearStatus() {
-        rightPanelPresenterSpy.onClearStatus();
-        verify(rightPanelPresenterSpy, times(1)).onClearSearch();
-        verify(rightPanelPresenterSpy, times(1)).onClearNameField();
-        verify(rightPanelPresenterSpy, times(1)).clearList();
+        rightPanelPresenter.onClearStatus();
+        verify(rightPanelPresenter, times(1)).onClearSearch();
+        verify(rightPanelPresenter, times(1)).onClearNameField();
+        verify(rightPanelPresenter, times(1)).clearDataObjectList();
     }
 
     @Test
+    public void clearDataObjectList() {
+        rightPanelPresenter.clearDataObjectList();
+        verify(rightPanelViewMock, times(1)).getDataObjectListContainer();
+        verify(dataObjectListContainerMock, times(1)).removeAllChildren();
+    }
+
+    @Test
+    public void clearInstanceList() {
+        rightPanelPresenter.clearInstanceList();
+        verify(rightPanelViewMock, times(1)).getInstanceListContainer();
+        verify(instanceListContainerMock, times(1)).removeAllChildren();
+    }
+
+
+    @Test
     public void getFactModelTree() {
-        rightPanelPresenter.setFactTypeFieldsMap(mockTopLevelMap);
-        String factName = getRandomFactModelTree(mockTopLevelMap, 0);
-        FactModelTree retrieved = rightPanelPresenter.getFactModelTree(factName);
+        rightPanelPresenter.setDataObjectFieldsMap(dataObjectFactTreeMap);
+        String factName = getRandomFactModelTree(dataObjectFactTreeMap, 0);
+        FactModelTree retrieved = rightPanelPresenter.getFactModelTreeFromFactTypeMap(factName);
         assertNotNull(retrieved);
-        assertEquals(mockTopLevelMap.get(factName), retrieved);
+        assertEquals(dataObjectFactTreeMap.get(factName), retrieved);
     }
 
     @Test
     public void setFactTypeFieldsMap() {
-        rightPanelPresenterSpy.setFactTypeFieldsMap(mockTopLevelMap);
-        verify(rightPanelPresenterSpy, times(mockTopLevelMap.size())).addListGroupItemView(anyString(), anyObject());
+        rightPanelPresenter.setDataObjectFieldsMap(dataObjectFactTreeMap);
+        verify(rightPanelPresenter, times(dataObjectFactTreeMap.size())).addDataObjectListGroupItemView(anyString(), anyObject());
     }
 
     @Test
     public void onShowClearButton() {
         rightPanelPresenter.onShowClearButton();
-        verify(mockRightPanelView, times(1)).showClearButton();
+        verify(rightPanelViewMock, times(1)).showClearButton();
     }
 
     @Test
     public void setEventBus() {
-        rightPanelPresenterSpy.setEventBus(mockEventBus);
-        assertEquals(mockEventBus, rightPanelPresenterSpy.eventBus);
+        rightPanelPresenter.setEventBus(eventBusMock);
+        assertEquals(eventBusMock, rightPanelPresenter.eventBus);
+    }
+
+    @Test
+    public void onSearchedEvent() {
+        rightPanelPresenter.onSearchedEvent("");
+        verify(rightPanelPresenter, times(1)).clearDataObjectList();
+        verify(rightPanelPresenter, times(1)).clearInstanceList();
     }
 
     @Test
     public void addListGroupItemView() {
-        rightPanelPresenter.addListGroupItemView(FACT_NAME, FACT_MODEL_TREE);
-        verify(mockRightPanelView, times(1)).getListContainer();
-        verify(mockListGroupItemPresenter, times(1)).getDivElement(eq(FACT_NAME), eq(FACT_MODEL_TREE));
-        verify(mockListContainer, times(1)).appendChild(anyObject());
+        rightPanelPresenter.addDataObjectListGroupItemView(FACT_NAME, FACT_MODEL_TREE);
+        verify(rightPanelViewMock, times(1)).getDataObjectListContainer();
+        verify(listGroupItemPresenterMock, times(1)).getDivElement(eq(FACT_NAME), eq(FACT_MODEL_TREE));
+        verify(dataObjectListContainerMock, times(1)).appendChild(anyObject());
     }
 
     @Test
-    public void onEnableEditorTab() {
+    public void onEnableEditorTabWithoutFactName() {
         rightPanelPresenter.onEnableEditorTab();
-        verify(mockListGroupItemPresenter, times(1)).setDisabled(eq(false));
-        verify(mockRightPanelView, times(1)).enableEditorTab();
+        verify(rightPanelPresenter, times(1)).onSearchedEvent(eq(""));
+        verify(listGroupItemPresenterMock, times(1)).enable();
+        verify(listGroupItemPresenterMock, never()).enable(anyString());
+        verify(rightPanelViewMock, times(1)).enableEditorTab();
+    }
+
+    @Test
+    public void onEnableEditorTabWithFactName() {
+        rightPanelPresenter.onEnableEditorTab(FACT_NAME, null, false);
+        verify(rightPanelPresenter, times(1)).onPerfectMatchSearchedEvent(eq(FACT_NAME), eq(false));
+        verify(listGroupItemPresenterMock, times(1)).enable(eq(FACT_NAME));
+        verify(listGroupItemPresenterMock, never()).enable();
+        verify(rightPanelViewMock, times(1)).enableEditorTab();
     }
 
     @Test
     public void onDisableEditorTab() {
         rightPanelPresenter.onDisableEditorTab();
-        verify(mockListGroupItemPresenter, times(1)).setDisabled(eq(true));
-        verify(mockRightPanelView, times(1)).disableEditorTab();
+        verify(listGroupItemPresenterMock, times(1)).disable();
+        verify(listGroupItemPresenterMock, never()).enable();
+        verify(rightPanelViewMock, times(1)).disableEditorTab();
     }
 
     @Test
     public void onModifyColumn() {
         rightPanelPresenter.editingColumnEnabled = true;
-        rightPanelPresenter.onModifyColumn(FACT_NAME, VALUE, VALUE_CLASS_NAME);
-        verify(mockEventBus, times(1)).fireEvent(isA(SetColumnValueEvent.class));
+        rightPanelPresenter.selectedFieldItemView = null;
+        rightPanelPresenter.selectedListGroupItemView = null;
+        rightPanelPresenter.onModifyColumn();
+        verify(eventBusMock, never()).fireEvent(isA(SetInstanceHeaderEvent.class));
+        verify(eventBusMock, never()).fireEvent(isA(SetPropertyHeaderEvent.class));
+
+        reset(eventBusMock);
+        rightPanelPresenter.selectedListGroupItemView = null;
+        rightPanelPresenter.selectedFieldItemView = selectedFieldItemViewMock;
+        rightPanelPresenter.onModifyColumn();
+        verify(eventBusMock, times(1)).fireEvent(isA(SetPropertyHeaderEvent.class));
+        verify(eventBusMock, never()).fireEvent(isA(SetInstanceHeaderEvent.class));
+
+        reset(eventBusMock);
+        rightPanelPresenter.selectedListGroupItemView = selectedListGroupItemViewMock;
+        rightPanelPresenter.selectedFieldItemView = null;
+        rightPanelPresenter.onModifyColumn();
+        verify(eventBusMock, never()).fireEvent(isA(SetPropertyHeaderEvent.class));
+        verify(eventBusMock, times(1)).fireEvent(isA(SetInstanceHeaderEvent.class));
+
     }
+
+    @Test
+    public void filterTerm() {
+        String key = getRandomString();
+        String search = String.join(";", IntStream.range(0, 4)
+                .mapToObj(i -> getRandomString())
+                .collect(Collectors.toSet()));
+        assertTrue(rightPanelPresenter.filterTerm(key, key, false));
+        assertFalse(rightPanelPresenter.filterTerm(key, key, true));
+
+        assertFalse(rightPanelPresenter.filterTerm(key, search, false));
+        assertTrue(rightPanelPresenter.filterTerm(key, search, true));
+
+        search += ";" + key;
+        assertTrue(rightPanelPresenter.filterTerm(key, search, false));
+        assertFalse(rightPanelPresenter.filterTerm(key, search, true));
+
+    }
+
 }

@@ -21,22 +21,55 @@ import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellEditC
 
 public class ScenarioHeaderMetaData extends BaseHeaderMetaData {
 
+
+    /*
+    `HeaderMetaData` now has a `CellSelectionStrategy` method (default is to select single cells)
+    you'd be able to add your own `CellSelectionStrategy` to your `HeaderMetaData` and do was you wish (e.g. select whole column)
+     */
+
     final ScenarioHeaderTextBoxSingletonDOMElementFactory factory;
     final String columnId;
-    final boolean readOnly;
-    // true if this header contains the column' main informations (group, title, id)
-    final boolean informationHeader;
+    private boolean readOnly;
+    // true if this header contains the column' main informations (group, title, id) and/or it is an instance header
+    final boolean instanceHeader;
+    // true if this header contains the column' main informations (group, title, id) and/or it is an instance header
+    final boolean propertyHeader;
 
-    public ScenarioHeaderMetaData(String columnId, String columnTitle, String columnGroup, final ScenarioHeaderTextBoxSingletonDOMElementFactory factory, boolean readOnly, boolean informationHeader) {
+    /**
+     * Constructor for ScenarioHeaderMetaData
+     * @param columnId
+     * @param columnTitle
+     * @param columnGroup
+     * @param factory
+     * @param readOnly
+     * @param instanceHeader Set <code>true</code> for <i>instance</i>' header <b>or</b> the description/id ones, <code>false</code>
+     * @param propertyHeader Set <code>true</code> for <i>property</i>' header <b>or</b> the description/id ones, <code>false</code>
+     * @throws IllegalStateException if both <code>instanceHeader</code> and <code>propertyHeader</code> are <code>true</code>
+     */
+    public ScenarioHeaderMetaData(String columnId, String columnTitle, String columnGroup, final ScenarioHeaderTextBoxSingletonDOMElementFactory factory, boolean readOnly, boolean instanceHeader, boolean propertyHeader) throws IllegalStateException {
         super(columnTitle, columnGroup);
+        if (instanceHeader && propertyHeader) {
+            throw new IllegalStateException("A ScenarioHeaderMetaData can not be both InstanceHeader and PropertyHeader");
+        }
         this.columnId = columnId;
         this.factory = factory;
         this.readOnly = readOnly;
-        this.informationHeader = informationHeader;
+        this.instanceHeader = instanceHeader;
+        this.propertyHeader = propertyHeader;
     }
 
-    public ScenarioHeaderMetaData(String columnId, String columnTitle, String columnGroup, final ScenarioHeaderTextBoxSingletonDOMElementFactory factory, boolean informationHeader) {
-        this(columnId, columnTitle, columnGroup, factory, false, informationHeader);
+    /**
+     * Constructor for ScenarioHeaderMetaData - readonly default to <code>false</code>
+     * @param columnId
+     * @param columnTitle
+     * @param columnGroup
+     * @param factory
+     * @param instanceHeader Set <code>true</code> for <i>instance</i>' header <b>or</b> the description/id ones, <code>false</code>
+     * @param propertyHeader Set <code>true</code> for <i>property</i>' header <b>or</b> the description/id ones, <code>false</code>
+     * @throws IllegalStateException if both <code>instanceHeader</code> and <code>propertyHeader</code> are <code>true</code>
+     */
+    public ScenarioHeaderMetaData(String columnId, String columnTitle, String columnGroup, final ScenarioHeaderTextBoxSingletonDOMElementFactory factory, boolean instanceHeader, boolean propertyHeader) throws IllegalStateException {
+        this(columnId, columnTitle, columnGroup, factory, false, instanceHeader, propertyHeader);
     }
 
     public void edit(final GridBodyCellEditContext context) {
@@ -56,7 +89,24 @@ public class ScenarioHeaderMetaData extends BaseHeaderMetaData {
         return readOnly;
     }
 
-    public boolean isInformationHeader() {
-        return informationHeader;
+    public void setReadOnly(boolean readOnly) {
+        this.readOnly = readOnly;
+    }
+
+    public boolean isInstanceHeader() {
+        return instanceHeader;
+    }
+
+    public boolean isPropertyHeader() {
+        return propertyHeader;
+    }
+
+    @Override
+    public String toString() {
+        return "ScenarioHeaderMetaData{" +
+                "title=" + getTitle() +
+                ", columnGroup=" + getColumnGroup() +
+                ", columnId=" + getColumnId() +
+                '}';
     }
 }

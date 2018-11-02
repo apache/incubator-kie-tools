@@ -53,6 +53,14 @@ public class FactIdentifier {
     }
 
     @Override
+    public String toString() {
+        return "FactIdentifier{" +
+                "name='" + name + '\'' +
+                ", className='" + className + '\'' +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

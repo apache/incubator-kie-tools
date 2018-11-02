@@ -56,7 +56,8 @@ public abstract class AbstractUtilsTest {
 
     protected final static String PLACEHOLDER = "PLACEHOLDER";
     protected final static String COLUMN_ID = "COLUMN_ID";
-    protected final static String COLUMN_TITLE_FIRST = "COLUMN_TITLE_FIRST";
+    protected final static String COLUMN_INSTANCE_TITLE_FIRST = "COLUMN_INSTANCE_TITLE_FIRST";
+    protected final static String COLUMN_PROPERTY_TITLE_FIRST = "COLUMN_PROPERTY_TITLE_FIRST";
     protected final static String COLUMN_GROUP_FIRST = "OTHER";
     protected final FactMappingType factMappingType = FactMappingType.valueOf(COLUMN_GROUP_FIRST);
 

@@ -16,11 +16,11 @@
 package org.drools.workbench.screens.scenariosimulation.client.handlers;
 
 import com.google.gwt.event.shared.EventHandler;
-import org.drools.workbench.screens.scenariosimulation.client.events.SetColumnValueEvent;
+import org.drools.workbench.screens.scenariosimulation.client.events.SetPropertyHeaderEvent;
 
 /**
- * <code>EventHandler</code> for {@link SetColumnValueEvent}
+ * <code>EventHandler</code> for {@link SetPropertyHeaderEvent}
  */
-public interface SetColumnValueEventHandler extends EventHandler {
-    void onEvent(SetColumnValueEvent event);
+public interface SetPropertyHeaderEventHandler extends EventHandler {
+    void onEvent(SetPropertyHeaderEvent event);
 }

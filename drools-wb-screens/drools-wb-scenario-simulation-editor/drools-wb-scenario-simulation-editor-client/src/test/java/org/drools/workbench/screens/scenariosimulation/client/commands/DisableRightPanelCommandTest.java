@@ -34,12 +34,12 @@ public class DisableRightPanelCommandTest extends AbstractCommandTest {
     @Before
     public void setup() {
         super.setup();
-        disableRightPanelCommand = new DisableRightPanelCommand(mockRightPanelPresenter);
+        disableRightPanelCommand = new DisableRightPanelCommand(rightPanelPresenterMock);
     }
 
     @Test
     public void execute() {
         disableRightPanelCommand.execute();
-        verify(mockRightPanelPresenter, times(1)).onDisableEditorTab();
+        verify(rightPanelPresenterMock, times(1)).onDisableEditorTab();
     }
 }

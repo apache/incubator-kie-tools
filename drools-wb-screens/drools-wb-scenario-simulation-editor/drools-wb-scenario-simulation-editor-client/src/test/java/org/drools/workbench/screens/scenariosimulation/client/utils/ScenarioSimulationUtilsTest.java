@@ -30,13 +30,13 @@ public class ScenarioSimulationUtilsTest extends AbstractUtilsTest {
 
     @Test
     public void getScenarioGridColumn1() {
-        final ScenarioGridColumn retrieved = ScenarioSimulationUtils.getScenarioGridColumn(COLUMN_TITLE_FIRST, COLUMN_ID, COLUMN_GROUP_FIRST, factMappingType, mockScenarioGridPanel, mockScenarioGridLayer);
+        final ScenarioGridColumn retrieved = ScenarioSimulationUtils.getScenarioGridColumn(COLUMN_INSTANCE_TITLE_FIRST, COLUMN_PROPERTY_TITLE_FIRST, COLUMN_ID, COLUMN_GROUP_FIRST, factMappingType, mockScenarioGridPanel, mockScenarioGridLayer);
         assertNotNull(retrieved);
     }
 
     @Test
     public void getScenarioGridColumn2() {
-        final ScenarioGridColumn retrieved = ScenarioSimulationUtils.getScenarioGridColumn(COLUMN_TITLE_FIRST, COLUMN_ID, COLUMN_GROUP_FIRST, factMappingType, mockScenarioGridPanel, mockScenarioGridLayer, PLACEHOLDER);
+        final ScenarioGridColumn retrieved = ScenarioSimulationUtils.getScenarioGridColumn(COLUMN_INSTANCE_TITLE_FIRST, COLUMN_PROPERTY_TITLE_FIRST, COLUMN_ID, COLUMN_GROUP_FIRST, factMappingType, mockScenarioGridPanel, mockScenarioGridLayer, PLACEHOLDER);
         assertNotNull(retrieved);
     }
 
@@ -60,7 +60,7 @@ public class ScenarioSimulationUtilsTest extends AbstractUtilsTest {
 
     @Test
     public void getHeaderBuilder() {
-        final ScenarioSimulationBuilders.HeaderBuilder retrieved = ScenarioSimulationUtils.getHeaderBuilder(COLUMN_TITLE_FIRST, COLUMN_ID, COLUMN_GROUP_FIRST, factMappingType, scenarioHeaderTextBoxSingletonDOMElementFactoryMock);
+        final ScenarioSimulationBuilders.HeaderBuilder retrieved = ScenarioSimulationUtils.getHeaderBuilder(COLUMN_INSTANCE_TITLE_FIRST, COLUMN_PROPERTY_TITLE_FIRST, COLUMN_ID, COLUMN_GROUP_FIRST, factMappingType, scenarioHeaderTextBoxSingletonDOMElementFactoryMock);
         assertNotNull(retrieved);
     }
 
@@ -72,5 +72,4 @@ public class ScenarioSimulationUtilsTest extends AbstractUtilsTest {
         assertEquals(200, ScenarioSimulationUtils.getColumnWidth(ExpressionIdentifier.NAME.Expected.name()), 0);
         assertEquals(200, ScenarioSimulationUtils.getColumnWidth(ExpressionIdentifier.NAME.Other.name()), 0);
     }
-
 }

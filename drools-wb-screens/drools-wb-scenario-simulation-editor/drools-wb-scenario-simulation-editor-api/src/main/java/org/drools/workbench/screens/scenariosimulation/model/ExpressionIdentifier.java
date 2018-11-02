@@ -60,6 +60,14 @@ public class ExpressionIdentifier {
     }
 
     @Override
+    public String toString() {
+        return "ExpressionIdentifier{" +
+                "name='" + name + '\'' +
+                ", type=" + type +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

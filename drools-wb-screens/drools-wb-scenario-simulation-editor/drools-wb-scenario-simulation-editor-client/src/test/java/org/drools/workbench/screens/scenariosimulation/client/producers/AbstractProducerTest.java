@@ -16,6 +16,10 @@
 
 package org.drools.workbench.screens.scenariosimulation.client.producers;
 
+import java.lang.annotation.Annotation;
+
+import javax.enterprise.event.Event;
+
 import com.google.gwt.event.shared.EventBus;
 import org.drools.workbench.screens.scenariosimulation.client.commands.CommandExecutor;
 import org.drools.workbench.screens.scenariosimulation.client.editor.ScenarioSimulationView;
@@ -25,6 +29,7 @@ import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGr
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
 import org.junit.Before;
 import org.mockito.Mock;
+import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.when;
@@ -57,8 +62,26 @@ public abstract class AbstractProducerTest {
     @Mock
     protected ScenarioGrid scenarioGridMock;
 
+    protected Event<NotificationEvent> notificationEventNew;
+
     @Before
     public void setup() {
+        notificationEventNew = new Event<NotificationEvent>() {
+            @Override
+            public void fire(NotificationEvent notificationEvent) {
+
+            }
+
+            @Override
+            public Event<NotificationEvent> select(Annotation... annotations) {
+                return null;
+            }
+
+            @Override
+            public <U extends NotificationEvent> Event<U> select(Class<U> aClass, Annotation... annotations) {
+                return null;
+            }
+        };
         when(scenarioGridPanelMock.getScenarioGrid()).thenReturn(scenarioGridMock);
         when(eventBusProducerMock.getEventBus()).thenReturn(eventBusMock);
         when(scenarioSimulationViewMock.getScenarioGridPanel()).thenReturn(scenarioGridPanelMock);

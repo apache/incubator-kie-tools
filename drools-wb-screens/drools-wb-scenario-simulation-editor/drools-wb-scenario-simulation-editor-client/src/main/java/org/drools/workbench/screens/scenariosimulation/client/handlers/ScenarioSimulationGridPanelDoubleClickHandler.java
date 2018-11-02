@@ -56,11 +56,12 @@ public class ScenarioSimulationGridPanelDoubleClickHandler extends BaseGridWidge
     }
 
     protected boolean manageDoubleClick(final NodeMouseDoubleClickEvent event) {
-        if (!handleHeaderCellDoubleClick(event)) {
-            return handleBodyCellDoubleClick(event);
-        } else {
-            return true;
-        }
+        return true;
+//        if (!handleHeaderCellDoubleClick(event)) {
+//            return handleBodyCellDoubleClick(event);
+//        } else {
+//            return true;
+//        }
     }
 
     @Override

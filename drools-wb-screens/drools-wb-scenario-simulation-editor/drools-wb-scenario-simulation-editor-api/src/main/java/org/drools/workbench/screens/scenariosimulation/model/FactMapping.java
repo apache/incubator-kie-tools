@@ -33,12 +33,12 @@ public class FactMapping {
     private List<ExpressionElement> expressionElements = new LinkedList<>();
 
     /**
-     * Identifier of this expression (it contains the type of expression, i.e. given/expected)
+     * Identifier of this expression (it contains the type of expression, i.e. given/expected) - it is mapped to the <b>property</b> header
      */
     private ExpressionIdentifier expressionIdentifier;
 
     /**
-     * Identify the fact by name and class name
+     * Identify the fact by name and class name - it is mapped to <b>Instance</b> header
      */
     private FactIdentifier factIdentifier;
 
@@ -47,6 +47,14 @@ public class FactMapping {
      */
     private String className;
 
+    /**
+     * Alias to customize the <b>instance</b> label
+     */
+    private String factAlias;
+
+    /**
+     * Alias to customize the <b>property</b> label
+     */
     private String expressionAlias;
 
     public FactMapping() {
@@ -56,8 +64,8 @@ public class FactMapping {
         this(expressionIdentifier.getName(), factIdentifier, expressionIdentifier);
     }
 
-    public FactMapping(String expressionAlias, FactIdentifier factIdentifier, ExpressionIdentifier expressionIdentifier) {
-        this.expressionAlias = expressionAlias;
+    public FactMapping(String factAlias, FactIdentifier factIdentifier, ExpressionIdentifier expressionIdentifier) {
+        this.factAlias = factAlias;
         this.expressionIdentifier = expressionIdentifier;
         this.className = factIdentifier.getClassName();
         this.factIdentifier = factIdentifier;
@@ -88,6 +96,14 @@ public class FactMapping {
         return factIdentifier;
     }
 
+    public String getFactAlias() {
+        return factAlias;
+    }
+
+    public void setFactAlias(String factAlias) {
+        this.factAlias = factAlias;
+    }
+
     public String getExpressionAlias() {
         return expressionAlias;
     }
@@ -102,5 +118,13 @@ public class FactMapping {
 
     public static String getPlaceHolder(FactMappingType factMappingType, int index) {
         return getPlaceHolder(factMappingType) + " " + index;
+    }
+
+    public static String getInstancePlaceHolder(int index) {
+        return "INSTANCE " + index;
+    }
+
+    public static String getPropertyPlaceHolder(int index) {
+        return "PROPERTY " + index;
     }
 }

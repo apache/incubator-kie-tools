@@ -15,6 +15,8 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.commands;
 
+import java.util.Optional;
+
 import org.drools.workbench.screens.scenariosimulation.client.factories.FactoryProvider;
 import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioHeaderTextBoxSingletonDOMElementFactory;
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
@@ -22,6 +24,7 @@ import org.drools.workbench.screens.scenariosimulation.client.utils.ScenarioSimu
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridLayer;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
+import org.drools.workbench.screens.scenariosimulation.model.FactIdentifier;
 import org.drools.workbench.screens.scenariosimulation.model.FactMappingType;
 import org.uberfire.mvp.Command;
 
@@ -45,7 +48,6 @@ public abstract class AbstractCommand implements Command {
         this.scenarioGridLayer = scenarioGridLayer;
     }
 
-
     protected ScenarioHeaderTextBoxSingletonDOMElementFactory getHeaderTextBoxFactoryLocal() {
         // indirection add for test
         return getHeaderTextBoxFactory(scenarioGridPanel, scenarioGridLayer);
@@ -60,12 +62,13 @@ public abstract class AbstractCommand implements Command {
      * isMovable: <code>false</code>;
      * </p>
      * <p>
-     * isReadOnly: <code>true</code>;
+     * isPropertyAssigned: <code>false</code>;
      * </p>
      * <p>
      * columnRenderer: new ScenarioGridColumnRenderer()
      * </p>
-     * @param title
+     * @param instanceTitle
+     * @param propertyTitle
      * @param columnId
      * @param columnGroup
      * @param factMappingType
@@ -73,20 +76,28 @@ public abstract class AbstractCommand implements Command {
      * @param gridLayer
      * @return
      */
-    protected ScenarioGridColumn getScenarioGridColumnLocal(String title,
-                                                           String columnId,
-                                                           String columnGroup,
-                                                           FactMappingType factMappingType,
-                                                           ScenarioGridPanel scenarioGridPanel,
-                                                           ScenarioGridLayer gridLayer,
-                                                           String placeHolder) {
+    protected ScenarioGridColumn getScenarioGridColumnLocal(String instanceTitle,
+                                                            String propertyTitle,
+                                                            String columnId,
+                                                            String columnGroup,
+                                                            FactMappingType factMappingType,
+                                                            ScenarioGridPanel scenarioGridPanel,
+                                                            ScenarioGridLayer gridLayer,
+                                                            String placeHolder) {
         ScenarioHeaderTextBoxSingletonDOMElementFactory factoryHeader = FactoryProvider.getHeaderTextBoxFactory(scenarioGridPanel, gridLayer);
-        ScenarioSimulationBuilders.HeaderBuilder headerBuilder = getHeaderBuilder(title, columnId, columnGroup, factMappingType, factoryHeader);
-        return getScenarioGridColumn(headerBuilder, scenarioGridPanel, gridLayer, true, placeHolder);
+        ScenarioSimulationBuilders.HeaderBuilder headerBuilder = getHeaderBuilder(instanceTitle, propertyTitle, columnId, columnGroup, factMappingType, factoryHeader);
+        return getScenarioGridColumn(headerBuilder, scenarioGridPanel, gridLayer, false, placeHolder);
     }
 
     protected ScenarioGridColumn getScenarioGridColumnLocal(ScenarioSimulationBuilders.HeaderBuilder headerBuilder) {
         // indirection add for test
         return getScenarioGridColumn(headerBuilder, scenarioGridPanel, scenarioGridLayer, false, ScenarioSimulationEditorConstants.INSTANCE.insertValue());
+    }
+
+    protected Optional<FactIdentifier> getFactIdentifierByColumnTitle(String columnTitle) {
+        return scenarioGridLayer.getScenarioGrid().getModel().getColumns().stream()
+                .filter(column -> columnTitle.equals (((ScenarioGridColumn)column).getInformationHeaderMetaData().getTitle()))
+                .findFirst()
+                .map(column -> ((ScenarioGridColumn)column).getFactIdentifier());
     }
 }

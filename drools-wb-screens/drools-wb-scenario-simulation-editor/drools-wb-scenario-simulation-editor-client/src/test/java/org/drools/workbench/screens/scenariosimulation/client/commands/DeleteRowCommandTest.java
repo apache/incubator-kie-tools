@@ -35,12 +35,12 @@ public class DeleteRowCommandTest extends AbstractCommandTest {
     @Before
     public void setup() {
         super.setup();
-        deleteRowCommand = new DeleteRowCommand(mockScenarioGridModel, ROW_INDEX);
+        deleteRowCommand = new DeleteRowCommand(scenarioGridModelMock, ROW_INDEX);
     }
 
     @Test
     public void execute() {
         deleteRowCommand.execute();
-        verify(mockScenarioGridModel, times(1)).deleteRow(eq(ROW_INDEX));
+        verify(scenarioGridModelMock, times(1)).deleteRow(eq(ROW_INDEX));
     }
 }

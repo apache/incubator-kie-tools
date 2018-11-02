@@ -16,8 +16,6 @@
 
 package org.drools.workbench.screens.scenariosimulation.model;
 
-import java.util.stream.IntStream;
-
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.soup.project.datamodel.imports.HasImports;
@@ -45,20 +43,19 @@ public class ScenarioSimulationModel
         int row = simulation.getUnmodifiableScenarios().indexOf(scenario);
         scenario.setDescription(null);
 
-        // Add GIVEN Facts
-        IntStream.range(2, 4).forEach(id -> {
-            ExpressionIdentifier givenExpression = ExpressionIdentifier.create(row + "|" + id, FactMappingType.GIVEN);
-            simulationDescriptor.addFactMapping(FactMapping.getPlaceHolder(FactMappingType.GIVEN, id), FactIdentifier.EMPTY, givenExpression);
-            scenario.addMappingValue(FactIdentifier.EMPTY, givenExpression, null);
-        });
+        // Add GIVEN Fact
+        int id = 1;
+        ExpressionIdentifier givenExpression = ExpressionIdentifier.create(row + "|" + id, FactMappingType.GIVEN);
+        final FactMapping givenFactMapping = simulationDescriptor.addFactMapping(FactMapping.getInstancePlaceHolder(id), FactIdentifier.EMPTY, givenExpression);
+        givenFactMapping.setExpressionAlias(FactMapping.getPropertyPlaceHolder(id));
+        scenario.addMappingValue(FactIdentifier.EMPTY, givenExpression, null);
 
-        // Add EXPECTED Facts
-        IntStream.range(2, 4).forEach(id -> {
-            id += 2; // This is to have consistent labels/names even when adding columns at runtime
-            ExpressionIdentifier expectedExpression = ExpressionIdentifier.create(row + "|" + id, FactMappingType.EXPECTED);
-            simulationDescriptor.addFactMapping(FactMapping.getPlaceHolder(FactMappingType.EXPECTED, id), FactIdentifier.EMPTY, expectedExpression);
-            scenario.addMappingValue(FactIdentifier.EMPTY, expectedExpression, null);
-        });
+        // Add EXPECTED Fact
+        id = 2;
+        ExpressionIdentifier expectedExpression = ExpressionIdentifier.create(row + "|" + id, FactMappingType.EXPECTED);
+        final FactMapping expectedFactMapping = simulationDescriptor.addFactMapping(FactMapping.getInstancePlaceHolder(id), FactIdentifier.EMPTY, expectedExpression);
+        expectedFactMapping.setExpressionAlias(FactMapping.getPropertyPlaceHolder(id));
+        scenario.addMappingValue(FactIdentifier.EMPTY, expectedExpression, null);
     }
 
     public ScenarioSimulationModel(Simulation simulation) {

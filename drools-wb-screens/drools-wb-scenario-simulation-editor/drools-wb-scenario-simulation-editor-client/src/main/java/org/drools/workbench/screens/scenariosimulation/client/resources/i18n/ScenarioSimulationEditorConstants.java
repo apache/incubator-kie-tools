@@ -117,4 +117,16 @@ public interface ScenarioSimulationEditorConstants
     String preserveValues();
 
     String defineValidType();
+
+    String changeType();
+
+    String changeTypeMainTitle();
+
+    String changeTypeMainQuestion();
+
+    String changeTypeText1();
+
+    String changeTypeTextQuestion();
+
+    String changeTypeTextDanger();
 }

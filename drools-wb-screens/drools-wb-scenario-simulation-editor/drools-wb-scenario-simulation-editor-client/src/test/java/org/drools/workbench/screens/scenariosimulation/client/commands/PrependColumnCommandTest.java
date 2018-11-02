@@ -40,10 +40,10 @@ public class PrependColumnCommandTest extends AbstractCommandTest {
     @Before
     public void setup() {
         super.setup();
-        prependColumnCommand = spy(new PrependColumnCommand(mockScenarioGridModel, COLUMN_ID, COLUMN_GROUP, mockScenarioGridPanel, mockScenarioGridLayer) {
+        prependColumnCommand = spy(new PrependColumnCommand(scenarioGridModelMock, COLUMN_ID, COLUMN_GROUP, scenarioGridPanelMock, scenarioGridLayerMock) {
             @Override
-            protected ScenarioGridColumn getScenarioGridColumnLocal(String title, String columnId, String columnGroup, FactMappingType factMappingType, ScenarioGridPanel scenarioGridPanel, ScenarioGridLayer gridLayer, String placeHolder) {
-                return mockGridColumn;
+            protected ScenarioGridColumn getScenarioGridColumnLocal(String instanceTitle, String propertyTitle, String columnId, String columnGroup, FactMappingType factMappingType, ScenarioGridPanel scenarioGridPanel, ScenarioGridLayer gridLayer, String placeHolder) {
+                return gridColumnMock;
             }
         });
     }
@@ -51,8 +51,8 @@ public class PrependColumnCommandTest extends AbstractCommandTest {
     @Test
     public void execute() {
         prependColumnCommand.execute();
-        verify(prependColumnCommand, times(1)).getScenarioGridColumnLocal(anyString(), anyString(), eq(COLUMN_GROUP), eq(factMappingType), eq(mockScenarioGridPanel), eq(mockScenarioGridLayer), eq(ScenarioSimulationEditorConstants.INSTANCE.defineValidType()));
-        verify(mockScenarioGridModel, times(1)).getFirstIndexLeftOfGroup(eq(COLUMN_GROUP));
-        verify(mockScenarioGridModel, times(1)).insertColumn(eq(FIRST_INDEX_LEFT), eq(mockGridColumn));
+        verify(prependColumnCommand, times(1)).getScenarioGridColumnLocal(anyString(), anyString(), anyString(), eq(COLUMN_GROUP), eq(factMappingType), eq(scenarioGridPanelMock), eq(scenarioGridLayerMock), eq(ScenarioSimulationEditorConstants.INSTANCE.defineValidType()));
+        verify(scenarioGridModelMock, times(1)).getFirstIndexLeftOfGroup(eq(COLUMN_GROUP));
+        verify(scenarioGridModelMock, times(1)).insertColumn(eq(FIRST_INDEX_LEFT), eq(gridColumnMock));
     }
 }

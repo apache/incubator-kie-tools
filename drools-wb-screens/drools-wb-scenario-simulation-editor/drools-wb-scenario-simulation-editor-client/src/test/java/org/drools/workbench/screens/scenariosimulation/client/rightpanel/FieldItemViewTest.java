@@ -37,11 +37,11 @@ public class FieldItemViewTest extends AbstractRightPanelTest {
     @Before
     public void setup() {
         super.setup();
-        INNER_HTML = "<a title=\"" + FACT_NAME + "\" href=\"#\">"  + FACT_NAME + "</a> " + FACT_MODEL_TREE.getFactName();
+        INNER_HTML = "<a>" + FACT_NAME + "</a> [" + FACT_MODEL_TREE.getFactName() + "]";
         ID_ATTRIBUTE = "fieldElement-" + FACT_NAME + "-" + FACT_MODEL_TREE.getFactName();
         this.fieldItemView = spy(new FieldItemViewImpl() {
             {
-                this.fieldElement = mockLIElement;
+                this.fieldElement = lIElementMock;
             }
         });
     }
@@ -49,7 +49,7 @@ public class FieldItemViewTest extends AbstractRightPanelTest {
     @Test
     public void setFieldData() {
         fieldItemView.setFieldData("", FACT_NAME, FACT_NAME, FACT_MODEL_TREE.getFactName());
-        verify(mockLIElement, times(1)).setInnerHTML(eq(INNER_HTML));
-        verify(mockLIElement, times(1)).setAttribute(eq("id"), eq(ID_ATTRIBUTE));
+        verify(lIElementMock, times(1)).setInnerHTML(eq(INNER_HTML));
+        verify(lIElementMock, times(1)).setAttribute(eq("id"), eq(ID_ATTRIBUTE));
     }
 }

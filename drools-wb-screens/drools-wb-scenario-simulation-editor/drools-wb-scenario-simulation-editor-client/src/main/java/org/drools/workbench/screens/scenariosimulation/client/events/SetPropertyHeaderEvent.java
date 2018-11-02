@@ -16,27 +16,34 @@
 package org.drools.workbench.screens.scenariosimulation.client.events;
 
 import com.google.gwt.event.shared.GwtEvent;
-import org.drools.workbench.screens.scenariosimulation.client.handlers.SetColumnValueEventHandler;
+import org.drools.workbench.screens.scenariosimulation.client.handlers.SetPropertyHeaderEventHandler;
 
 /**
- * <code>GwtEvent</code> to set a specific value for a given column
+ * <code>GwtEvent</code> to set the <i>property</i> level header for a given column
  */
-public class SetColumnValueEvent extends GwtEvent<SetColumnValueEventHandler> {
+public class SetPropertyHeaderEvent extends GwtEvent<SetPropertyHeaderEventHandler> {
 
-    public static Type<SetColumnValueEventHandler> TYPE = new Type<>();
+    public static Type<SetPropertyHeaderEventHandler> TYPE = new Type<>();
 
     private String fullPackage;
-    private final String value;
+    private String value;
     private String valueClassName;
 
-    public SetColumnValueEvent(String fullPackage, String value, String valueClassName) {
+    /**
+     * Use this constructor to modify the <i>property</i> level header
+     *
+     * @param fullPackage
+     * @param value
+     * @param valueClassName
+     */
+    public SetPropertyHeaderEvent(String fullPackage, String value, String valueClassName) {
         this.fullPackage = fullPackage;
         this.value = value;
         this.valueClassName = valueClassName;
     }
 
     @Override
-    public Type<SetColumnValueEventHandler> getAssociatedType() {
+    public Type<SetPropertyHeaderEventHandler> getAssociatedType() {
         return TYPE;
     }
 
@@ -53,7 +60,7 @@ public class SetColumnValueEvent extends GwtEvent<SetColumnValueEventHandler> {
     }
 
     @Override
-    protected void dispatch(SetColumnValueEventHandler handler) {
+    protected void dispatch(SetPropertyHeaderEventHandler handler) {
         handler.onEvent(this);
     }
 }

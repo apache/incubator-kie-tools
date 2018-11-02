@@ -25,8 +25,67 @@ public class EnableRightPanelEvent extends GwtEvent<EnableRightPanelEventHandler
 
     public static Type<EnableRightPanelEventHandler> TYPE = new Type<>();
 
+    /**
+     * The string to use for filtering in right panel
+     */
+    private final String filterTerm;
 
+    /**
+     * flag to decide which kind of filter (<b>equals</b> or <b>not euals</b>) is to be applied.
+     * Default to false (= <b>equals</b> filter)
+     */
+    private final boolean notEqualsSearch;
+
+    /**
+     * The string to <b>eventually</b> use to select the prooperty in the right panel
+     */
+    private final String propertyName;
+
+    /**
+     * Fire this event to show all the first-level data models <b>enabled</b> (i.e. <b>double-clickable</b> to map to an <i>instance</i> header/column)
+     * and their properties <b>disabled</b> (i.e. <b>not double-clickable</b>)
+     */
     public EnableRightPanelEvent() {
+        filterTerm = null;
+        notEqualsSearch = false;
+        propertyName = null;
+    }
+
+    /**
+     * Fire this event to show only the data model with the given name, <b>disabled</b> (i.e. <b>not double-clickable</b>)
+     * and their properties <b>enabled</b> (i.e. <b>double-clickable</b> to map to a <i>property</i> header/column below the belonging data model instance one).
+     * It show only results <b>equals</b> to filterTerm
+     * @param filterTerm
+     */
+    public EnableRightPanelEvent(String filterTerm) {
+        this.filterTerm = filterTerm;
+        notEqualsSearch = false;
+        propertyName = null;
+    }
+
+    /**
+     * Fire this event to show only the data model with the given name, <b>disabled</b> (i.e. <b>not double-clickable</b>) and to highlight the given property
+     * and their properties <b>enabled</b> (i.e. <b>double-clickable</b> to map to a <i>property</i> header/column below the belonging data model instance one).
+     * It show only results <b>equals</b> to filterTerm
+     * @param filterTerm
+     * @param propertyName
+     */
+    public EnableRightPanelEvent(String filterTerm, String propertyName) {
+        this.filterTerm = filterTerm;
+        notEqualsSearch = false;
+        this.propertyName = propertyName;
+    }
+
+    /**
+     * Fire this event to filter the data model with the given name, <b>disabled</b> (i.e. <b>not double-clickable</b>)
+     * and their properties <b>enabled</b> (i.e. <b>double-clickable</b> to map to a <i>property</i> header/column below the belonging data model instance one)
+     * @param
+     * @param notEqualsSearch set to <code>true</code> to perform a <b>not</b> filter, i.e. to show only results <b>different</b> than filterTerm
+     */
+    public EnableRightPanelEvent(String filterTerm, boolean notEqualsSearch) {
+        this.filterTerm = filterTerm;
+        this.notEqualsSearch = notEqualsSearch;
+        propertyName = null;
     }
 
     @Override
@@ -34,10 +93,20 @@ public class EnableRightPanelEvent extends GwtEvent<EnableRightPanelEventHandler
         return TYPE;
     }
 
+    public String getFilterTerm() {
+        return filterTerm;
+    }
+
+    public boolean isNotEqualsSearch() {
+        return notEqualsSearch;
+    }
+
+    public String getPropertyName() {
+        return propertyName;
+    }
+
     @Override
     protected void dispatch(EnableRightPanelEventHandler handler) {
         handler.onEvent(this);
     }
-
-
 }

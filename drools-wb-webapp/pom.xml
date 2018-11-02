@@ -1485,7 +1485,7 @@
         <artifactId>gwt-maven-plugin</artifactId>
         <configuration>
           <deploy>${project.build.directory}/gwt-symbols-deploy</deploy>
-          <extraJvmArgs>-Xmx5G -Xms1024m -Xss1M -XX:CompileThreshold=7000 -Derrai.jboss.home=${errai.jboss.home} -Derrai.marshalling.server.classOutput=${project.build.outputDirectory} -Derrai.dynamic_validation.enabled=true -Djava.io.tmpdir=${project.build.directory}</extraJvmArgs>
+          <extraJvmArgs>-Xmx8G -Xms1024m -Xss1M -XX:CompileThreshold=7000 -Derrai.jboss.home=${errai.jboss.home} -Derrai.marshalling.server.classOutput=${project.build.outputDirectory} -Derrai.dynamic_validation.enabled=true -Djava.io.tmpdir=${project.build.directory}</extraJvmArgs>
           <module>org.drools.workbench.DroolsWorkbench</module>
           <logLevel>INFO</logLevel>
           <noServer>false</noServer>

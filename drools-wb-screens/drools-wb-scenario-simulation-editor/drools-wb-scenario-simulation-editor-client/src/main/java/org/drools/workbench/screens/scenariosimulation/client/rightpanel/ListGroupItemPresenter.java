@@ -15,8 +15,8 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.rightpanel;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.enterprise.context.Dependent;
@@ -30,42 +30,94 @@ import org.drools.workbench.screens.scenariosimulation.client.utils.ViewsProvide
 public class ListGroupItemPresenter implements ListGroupItemView.Presenter {
 
     @Inject
-    ViewsProvider viewsProvider;
+    protected ViewsProvider viewsProvider;
 
     @Inject
-    FieldItemPresenter fieldItemPresenter;
+    protected FieldItemPresenter fieldItemPresenter;
 
-    RightPanelView.Presenter rightPanelPresenter;
+    protected RightPanelView.Presenter rightPanelPresenter;
 
-    List<ListGroupItemView> listGroupItemViewList = new ArrayList<>();
+    protected Map<String, ListGroupItemView> listGroupItemViewMap = new HashMap<>();
 
     private AtomicBoolean disabled = new AtomicBoolean(true);
 
-    public void setDisabled(boolean disabled) {
-        this.disabled.set(disabled);
-        if (disabled) {
-            listGroupItemViewList.forEach(ListGroupItemView::closeRow);
+    private String factName = null;
+
+    @Override
+    public void enable() {
+        this.disabled.set(false);
+        factName = null;
+        listGroupItemViewMap.values().forEach(ListGroupItemView::disable);
+    }
+
+    @Override
+    public void enable(String factName) {
+        this.disabled.set(false);
+        this.factName = factName;
+        listGroupItemViewMap.values().forEach(ListGroupItemView::enable);
+    }
+
+    @Override
+    public void unselectAll() {
+        listGroupItemViewMap.values().forEach(ListGroupItemView::unselect);
+    }
+
+    @Override
+    public void selectProperty(String factName, String propertyName) {
+        final ListGroupItemView listGroupItemView = listGroupItemViewMap.get(factName);
+        if (!listGroupItemView.isShown()) {
+            onToggleRowExpansion(listGroupItemView, false);
         }
+        String key;
+        if (propertyName.contains(".")) {
+            key = factName + "." + propertyName.substring(0, propertyName.indexOf("."));
+            final ListGroupItemView subListGroupItemView = listGroupItemViewMap.get(key);
+            if (!subListGroupItemView.isShown()) {
+                onToggleRowExpansion(subListGroupItemView, false);
+            }
+        }
+        key = factName + "." + propertyName;
+        if (fieldItemPresenter.fieldItemMap.containsKey(key)) {
+            fieldItemPresenter.fieldItemMap.get(key).onFieldElementClick();
+        }
+    }
+
+    @Override
+    public void disable() {
+        this.disabled.set(true);
+        factName = null;
+        listGroupItemViewMap.values().forEach(ListGroupItemView::closeRow);
+        unselectAll();
+        fieldItemPresenter.unselectAll();
     }
 
     @Override
     public void init(RightPanelView.Presenter rightPanelPresenter) {
         this.rightPanelPresenter = rightPanelPresenter;
-        fieldItemPresenter.setRightPanelPresenter(rightPanelPresenter);
+        fieldItemPresenter.setListGroupItemPresenter(this);
     }
 
     @Override
     public DivElement getDivElement(String factName, FactModelTree factModelTree) {
-        ListGroupItemView listGroupItemView = commonGetListGroupItemView("", false);
-        populateListGroupItemView(listGroupItemView, "", factName, factModelTree);
-        return listGroupItemView.getDivElement();
+        if (listGroupItemViewMap.containsKey(factName)) {
+            return listGroupItemViewMap.get(factName).getListGroupItem();
+        } else {
+            final ListGroupItemView listGroupItemView = commonGetListGroupItemView("", factName, false);
+            populateListGroupItemView(listGroupItemView, "", factName, factModelTree);
+            return listGroupItemView.getListGroupItem();
+        }
     }
 
     @Override
     public DivElement getDivElement(String fullPath, String factName, String factModelTreeClass) {
-        ListGroupItemView listGroupItemView = commonGetListGroupItemView(fullPath, true);
-        populateListGroupItemView(listGroupItemView, factName, factModelTreeClass);
-        return listGroupItemView.getDivElement();
+        String key = fullPath.isEmpty() ? factName : fullPath + "." + factName;
+        if (listGroupItemViewMap.containsKey(key)) {
+            return listGroupItemViewMap.get(key).getListGroupItem();
+        } else {
+            final ListGroupItemView listGroupItemView = commonGetListGroupItemView(fullPath, factName, true);
+            populateListGroupItemView(listGroupItemView, factName, factModelTreeClass);
+            return listGroupItemView.getListGroupExpansion();
+        }
     }
 
     @Override
@@ -73,18 +125,34 @@ public class ListGroupItemPresenter implements ListGroupItemView.Presenter {
         if (disabled.get()) {
             return;
         }
-        if (listGroupItemViewList.contains(listGroupItemView)) {
-            if (currentlyShown) {
-                listGroupItemView.closeRow();
-            } else {
-                if (listGroupItemView.isToExpand()) {
-                    FactModelTree factModelTree = rightPanelPresenter.getFactModelTree(listGroupItemView.getFactType());
-                    populateListGroupItemView(listGroupItemView, listGroupItemView.getParentPath(), listGroupItemView.getFactName(), factModelTree);
-                    listGroupItemView.setToExpand(false);
+        if (currentlyShown) {
+            listGroupItemView.closeRow();
+        } else {
+            if (listGroupItemView.isToExpand()) {
+                FactModelTree factModelTree = rightPanelPresenter.getFactModelTreeFromFactTypeMap(listGroupItemView.getFactType());
+                populateListGroupItemView(listGroupItemView, listGroupItemView.getParentPath(), listGroupItemView.getFactName(), factModelTree);
+                listGroupItemView.setToExpand(false);
+                if (factName != null) {
+                    listGroupItemView.disable();
+                } else {
+                    listGroupItemView.enable();
                 }
-                listGroupItemView.expandRow();
             }
+            listGroupItemView.expandRow();
         }
+    }
+
+    @Override
+    public void onSelectedElement(ListGroupItemView selected) {
+        rightPanelPresenter.setSelectedElement(selected);
+        listGroupItemViewMap.values().stream().filter(listGroupItemView -> !listGroupItemView.equals(selected)).forEach(ListGroupItemView::unselect);
+        fieldItemPresenter.unselectAll();
+    }
+
+    @Override
+    public void onSelectedElement(FieldItemView selected) {
+        rightPanelPresenter.setSelectedElement(selected);
+        listGroupItemViewMap.values().forEach(ListGroupItemView::unselect);
     }
 
     /**
@@ -118,15 +186,17 @@ public class ListGroupItemPresenter implements ListGroupItemView.Presenter {
 
     /**
      * @param parentPath the parent' path - empty for <b>top-level</b> elements
+     * @param factName
      * @param toExpand If <code>true</code>, on {@link #onToggleRowExpansion(ListGroupItemView, boolean)} inner properties will be populated
      * @return
      */
-    protected ListGroupItemView commonGetListGroupItemView(String parentPath, boolean toExpand) {
-        ListGroupItemView listGroupItemView = viewsProvider.getListGroupItemView();
-        listGroupItemView.init(this);
-        listGroupItemView.setToExpand(toExpand);
-        listGroupItemView.setParentPath(parentPath);
-        listGroupItemViewList.add(listGroupItemView);
-        return listGroupItemView;
+    protected ListGroupItemView commonGetListGroupItemView(String parentPath, String factName, boolean toExpand) {
+        String key = parentPath.isEmpty() ? factName : parentPath + "." + factName;
+        ListGroupItemView toReturn = viewsProvider.getListGroupItemView();
+        toReturn.init(this);
+        toReturn.setToExpand(toExpand);
+        toReturn.setParentPath(parentPath);
+        listGroupItemViewMap.put(key, toReturn);
+        return toReturn;
     }
 }

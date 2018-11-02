@@ -16,6 +16,9 @@
 
 package org.drools.workbench.screens.scenariosimulation.client.rightpanel;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -26,25 +29,37 @@ import org.drools.workbench.screens.scenariosimulation.client.utils.ViewsProvide
 public class FieldItemPresenter implements FieldItemView.Presenter {
 
     @Inject
-    ViewsProvider viewsProvider;
+    protected ViewsProvider viewsProvider;
 
-    RightPanelView.Presenter rightPanelPresenter;
+    protected ListGroupItemView.Presenter listGroupItemPresenter;
+
+    protected Map<String, FieldItemView> fieldItemMap = new HashMap<>();
+
 
     @Override
     public LIElement getLIElement(String parentPath, String factName, String fieldName, String className) {
-        FieldItemView fieldItemView = viewsProvider.getFieldItemView();
-        fieldItemView.setFieldData(parentPath, factName, fieldName, className);
-        fieldItemView.setPresenter(this);
-        LIElement toReturn = fieldItemView.getLIElement();
-        return toReturn;
+        String key = parentPath  + "." + fieldName;
+        if (!fieldItemMap.containsKey(key)) {
+            FieldItemView fieldItemView = viewsProvider.getFieldItemView();
+            fieldItemView.setFieldData(parentPath, factName, fieldName, className);
+            fieldItemView.setPresenter(this);
+            fieldItemMap.put(key, fieldItemView);
+        }
+        return fieldItemMap.get(key).getLIElement();
     }
 
     @Override
-    public void setRightPanelPresenter(RightPanelView.Presenter rightPanelPresenter) {
-        this.rightPanelPresenter = rightPanelPresenter;
+    public void setListGroupItemPresenter(ListGroupItemView.Presenter listGroupItemPresenter) {
+        this.listGroupItemPresenter = listGroupItemPresenter;
     }
 
-    public void onFieldElementDoubleClick(String fullPath, String fieldName, String className) {
-        rightPanelPresenter.onModifyColumn(fullPath, fieldName, className);
+    public void onFieldElementClick(FieldItemView selected) {
+        listGroupItemPresenter.onSelectedElement(selected);
+        fieldItemMap.values().stream().filter(fieldItemView -> !fieldItemView.equals(selected)).forEach(FieldItemView::unselect);
+    }
+
+    @Override
+    public void unselectAll() {
+        fieldItemMap.values().forEach(FieldItemView::unselect);
     }
 }

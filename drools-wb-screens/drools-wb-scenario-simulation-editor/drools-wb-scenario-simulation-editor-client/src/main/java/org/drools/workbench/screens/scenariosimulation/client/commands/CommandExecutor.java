@@ -21,9 +21,11 @@ import java.util.List;
 
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
+import org.drools.workbench.screens.scenariosimulation.client.editor.ScenarioSimulationEditorPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.events.AppendColumnEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.AppendRowEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.DeleteColumnEvent;
@@ -35,8 +37,11 @@ import org.drools.workbench.screens.scenariosimulation.client.events.InsertColum
 import org.drools.workbench.screens.scenariosimulation.client.events.InsertRowEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.PrependColumnEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.PrependRowEvent;
+import org.drools.workbench.screens.scenariosimulation.client.events.ReloadRightPanelEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.ScenarioGridReloadEvent;
-import org.drools.workbench.screens.scenariosimulation.client.events.SetColumnValueEvent;
+import org.drools.workbench.screens.scenariosimulation.client.events.ScenarioNotificationEvent;
+import org.drools.workbench.screens.scenariosimulation.client.events.SetInstanceHeaderEvent;
+import org.drools.workbench.screens.scenariosimulation.client.events.SetPropertyHeaderEvent;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.AppendColumnEventHandler;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.AppendRowEventHandler;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.DeleteColumnEventHandler;
@@ -48,17 +53,22 @@ import org.drools.workbench.screens.scenariosimulation.client.handlers.InsertCol
 import org.drools.workbench.screens.scenariosimulation.client.handlers.InsertRowEventHandler;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.PrependColumnEventHandler;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.PrependRowEventHandler;
+import org.drools.workbench.screens.scenariosimulation.client.handlers.ReloadRightPanelEventHandler;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioGridReloadEventHandler;
-import org.drools.workbench.screens.scenariosimulation.client.handlers.SetColumnValueEventHandler;
+import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioNotificationEventHandler;
+import org.drools.workbench.screens.scenariosimulation.client.handlers.SetInstanceHeaderEventHandler;
+import org.drools.workbench.screens.scenariosimulation.client.handlers.SetPropertyHeaderEventHandler;
 import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
 import org.drools.workbench.screens.scenariosimulation.client.popup.DeletePopupPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.popup.PreserveDeletePopupPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.RightPanelView;
+import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridLayer;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.mvp.Command;
+import org.uberfire.workbench.events.NotificationEvent;
 
 /**
  * This class is meant to be a centralized listener for events fired up by UI, responding to them with specific <code>Command</code>s.
@@ -77,19 +87,25 @@ public class CommandExecutor implements AppendColumnEventHandler,
                                         InsertRowEventHandler,
                                         PrependColumnEventHandler,
                                         PrependRowEventHandler,
+                                        ReloadRightPanelEventHandler,
                                         ScenarioGridReloadEventHandler,
-                                        SetColumnValueEventHandler {
+                                        ScenarioNotificationEventHandler,
+                                        SetInstanceHeaderEventHandler,
+                                        SetPropertyHeaderEventHandler {
 
-    ScenarioGridModel model;
-    ScenarioGridPanel scenarioGridPanel;
-    ScenarioGridLayer scenarioGridLayer;
-    RightPanelView.Presenter rightPanelPresenter;
-    DeletePopupPresenter deletePopupPresenter;
-    PreserveDeletePopupPresenter preserveDeletePopupPresenter;
+    protected ScenarioGridModel model;
+    protected ScenarioGridPanel scenarioGridPanel;
+    protected ScenarioGridLayer scenarioGridLayer;
+    protected ScenarioSimulationEditorPresenter scenarioSimulationEditorPresenter;
+    protected RightPanelView.Presenter rightPanelPresenter;
+    protected DeletePopupPresenter deletePopupPresenter;
+    protected PreserveDeletePopupPresenter preserveDeletePopupPresenter;
 
-    EventBus eventBus;
+    protected EventBus eventBus;
 
-    List<HandlerRegistration> handlerRegistrationList = new ArrayList<>();
+    protected List<HandlerRegistration> handlerRegistrationList = new ArrayList<>();
+
+    protected Event<NotificationEvent> notificationEvent;
 
     public CommandExecutor() {
         // CDI
@@ -98,6 +114,10 @@ public class CommandExecutor implements AppendColumnEventHandler,
     public void setEventBus(EventBus eventBus) {
         this.eventBus = eventBus;
         registerHandlers();
+    }
+
+    public void setScenarioSimulationEditorPresenter(ScenarioSimulationEditorPresenter scenarioSimulationEditorPresenter) {
+        this.scenarioSimulationEditorPresenter = scenarioSimulationEditorPresenter;
     }
 
     public void setRightPanelPresenter(RightPanelView.Presenter rightPanelPresenter) {
@@ -121,6 +141,10 @@ public class CommandExecutor implements AppendColumnEventHandler,
 
     public void setPreserveDeletePopupPresenter(PreserveDeletePopupPresenter preserveDeletePopupPresenter) {
         this.preserveDeletePopupPresenter = preserveDeletePopupPresenter;
+    }
+
+    public void setNotificationEvent(Event<NotificationEvent> notificationEvent) {
+        this.notificationEvent = notificationEvent;
     }
 
     @PreDestroy
@@ -168,14 +192,17 @@ public class CommandExecutor implements AppendColumnEventHandler,
 
     @Override
     public void onEvent(EnableRightPanelEvent event) {
+        if (scenarioSimulationEditorPresenter != null) {
+            scenarioSimulationEditorPresenter.expandToolsDock();
+        }
         if (rightPanelPresenter != null) {
-            commonExecute(new EnableRightPanelCommand(rightPanelPresenter));
+            commonExecute(new EnableRightPanelCommand(rightPanelPresenter, event.getFilterTerm(), event.getPropertyName(), event.isNotEqualsSearch()));
         }
     }
 
     @Override
     public void onEvent(InsertColumnEvent event) {
-        commonExecute(new InsertColumnCommand(model, String.valueOf(new Date().getTime()), event.getColumnIndex(), event.isRight(), scenarioGridPanel, scenarioGridLayer));
+        commonExecute(new InsertColumnCommand(model, String.valueOf(new Date().getTime()), event.getColumnIndex(), event.isRight(), event.isAsProperty(), scenarioGridPanel, scenarioGridLayer));
     }
 
     @Override
@@ -194,22 +221,55 @@ public class CommandExecutor implements AppendColumnEventHandler,
     }
 
     @Override
+    public void onEvent(ReloadRightPanelEvent event) {
+        if (scenarioSimulationEditorPresenter != null) {
+            scenarioSimulationEditorPresenter.reloadRightPanel(event.isDisable());
+        }
+    }
+
+    @Override
     public void handle(ScenarioGridReloadEvent event) {
         scenarioGridPanel.onResize();
     }
 
     @Override
-    public void onEvent(SetColumnValueEvent event) {
+    public void onEvent(ScenarioNotificationEvent event) {
+        notificationEvent.fire(new NotificationEvent(event.getMessage(), event.getType()));
+    }
+
+    @Override
+    public void onEvent(SetInstanceHeaderEvent event) {
+        if (model.getSelectedColumn() == null) {
+            return;
+        }
+        if (model.isSameSelectedColumnType(event.getClassName())) {
+            return;
+        } else if (((ScenarioGridColumn) model.getSelectedColumn()).isInstanceAssigned()) {
+            Command okPreserveCommand = () -> commonExecute(new SetInstanceHeaderCommand(model, event.getFullPackage(), event.getClassName(), scenarioGridPanel, scenarioGridLayer));
+            deletePopupPresenter.show(ScenarioSimulationEditorConstants.INSTANCE.changeTypeMainTitle(),
+                                      ScenarioSimulationEditorConstants.INSTANCE.changeTypeMainQuestion(),
+                                      ScenarioSimulationEditorConstants.INSTANCE.changeTypeText1(),
+                                      ScenarioSimulationEditorConstants.INSTANCE.changeTypeTextQuestion(),
+                                      ScenarioSimulationEditorConstants.INSTANCE.changeTypeTextDanger(),
+                                      ScenarioSimulationEditorConstants.INSTANCE.changeType(),
+                                      okPreserveCommand);
+        } else {
+            commonExecute(new SetInstanceHeaderCommand(model, event.getFullPackage(), event.getClassName(), scenarioGridPanel, scenarioGridLayer));
+        }
+    }
+
+    @Override
+    public void onEvent(SetPropertyHeaderEvent event) {
         if (model.getSelectedColumn() == null) {
             return;
         }
         if (model.isSelectedColumnEmpty()) {
-            commonExecute(new SetColumnValueCommand(model, String.valueOf(new Date().getTime()), event.getFullPackage(), event.getValue(), event.getValueClassName(), scenarioGridPanel, scenarioGridLayer, false));
+            commonExecute(new SetPropertyHeaderCommand(model, event.getFullPackage(), event.getValue(), event.getValueClassName(), scenarioGridPanel, scenarioGridLayer, false));
         } else if (model.isSameSelectedColumnProperty(event.getValue())) {
             return;
         } else if (model.isSameSelectedColumnType(event.getValueClassName())) {
-            Command okDeleteCommand = () -> commonExecute(new SetColumnValueCommand(model, String.valueOf(new Date().getTime()), event.getFullPackage(), event.getValue(), event.getValueClassName(), scenarioGridPanel, scenarioGridLayer, false));
-            Command okPreserveCommand = () -> commonExecute(new SetColumnValueCommand(model, String.valueOf(new Date().getTime()), event.getFullPackage(), event.getValue(), event.getValueClassName(), scenarioGridPanel, scenarioGridLayer, true));
+            Command okDeleteCommand = () -> commonExecute(new SetPropertyHeaderCommand(model, event.getFullPackage(), event.getValue(), event.getValueClassName(), scenarioGridPanel, scenarioGridLayer, false));
+            Command okPreserveCommand = () -> commonExecute(new SetPropertyHeaderCommand(model, event.getFullPackage(), event.getValue(), event.getValueClassName(), scenarioGridPanel, scenarioGridLayer, true));
             preserveDeletePopupPresenter.show(ScenarioSimulationEditorConstants.INSTANCE.preserveDeleteScenarioMainTitle(),
                                               ScenarioSimulationEditorConstants.INSTANCE.preserveDeleteScenarioMainQuestion(),
                                               ScenarioSimulationEditorConstants.INSTANCE.preserveDeleteScenarioText1(),
@@ -221,7 +281,7 @@ public class CommandExecutor implements AppendColumnEventHandler,
                                               okPreserveCommand,
                                               okDeleteCommand);
         } else if (!model.isSameSelectedColumnType(event.getValueClassName())) {
-            Command okPreserveCommand = () -> commonExecute(new SetColumnValueCommand(model, String.valueOf(new Date().getTime()), event.getFullPackage(), event.getValue(), event.getValueClassName(), scenarioGridPanel, scenarioGridLayer, false));
+            Command okPreserveCommand = () -> commonExecute(new SetPropertyHeaderCommand(model, event.getFullPackage(), event.getValue(), event.getValueClassName(), scenarioGridPanel, scenarioGridLayer, false));
             deletePopupPresenter.show(ScenarioSimulationEditorConstants.INSTANCE.deleteScenarioMainTitle(),
                                       ScenarioSimulationEditorConstants.INSTANCE.deleteScenarioMainQuestion(),
                                       ScenarioSimulationEditorConstants.INSTANCE.deleteScenarioText1(),
@@ -229,6 +289,9 @@ public class CommandExecutor implements AppendColumnEventHandler,
                                       ScenarioSimulationEditorConstants.INSTANCE.deleteScenarioTextDanger(),
                                       ScenarioSimulationEditorConstants.INSTANCE.deleteValues(),
                                       okPreserveCommand);
+        }
+        if (scenarioSimulationEditorPresenter != null) {
+            scenarioSimulationEditorPresenter.reloadRightPanel(false);
         }
     }
 
@@ -250,7 +313,10 @@ public class CommandExecutor implements AppendColumnEventHandler,
         handlerRegistrationList.add(eventBus.addHandler(InsertRowEvent.TYPE, this));
         handlerRegistrationList.add(eventBus.addHandler(PrependColumnEvent.TYPE, this));
         handlerRegistrationList.add(eventBus.addHandler(PrependRowEvent.TYPE, this));
+        handlerRegistrationList.add(eventBus.addHandler(ReloadRightPanelEvent.TYPE, this));
         handlerRegistrationList.add(eventBus.addHandler(ScenarioGridReloadEvent.TYPE, this));
-        handlerRegistrationList.add(eventBus.addHandler(SetColumnValueEvent.TYPE, this));
+        handlerRegistrationList.add(eventBus.addHandler(ScenarioNotificationEvent.TYPE, this));
+        handlerRegistrationList.add(eventBus.addHandler(SetInstanceHeaderEvent.TYPE, this));
+        handlerRegistrationList.add(eventBus.addHandler(SetPropertyHeaderEvent.TYPE, this));
     }
 }

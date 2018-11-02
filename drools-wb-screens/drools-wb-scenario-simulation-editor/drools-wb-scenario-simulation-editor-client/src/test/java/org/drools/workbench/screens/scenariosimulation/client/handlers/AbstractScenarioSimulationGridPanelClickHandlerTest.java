@@ -64,52 +64,52 @@ public abstract class AbstractScenarioSimulationGridPanelClickHandlerTest {
     protected Point2D point2DMock;
 
     @Mock
-    protected ScenarioGrid mockScenarioGrid;
+    protected ScenarioGrid scenarioGridMock;
 
     @Mock
     protected ScenarioGridCell scenarioGridCellMock;
 
     @Mock
-    protected ScenarioHeaderMetaData headerMetaData;
+    protected ScenarioHeaderMetaData headerMetaDataMock;
 
     @Mock
-    protected ContextMenuEvent mockContextMenuEvent;
+    protected ContextMenuEvent contextMenuEventMock;
 
     @Mock
-    private ScenarioGridPanel mockScenarioGridPanel;
+    private ScenarioGridPanel scenarioGridPanelMock;
 
     @Mock
     private ScenarioGridModel scenarioGridModelMock;
 
     @Mock
-    private GridRenderer scenarioGridRenderer;
+    private GridRenderer scenarioGridRendererMock;
 
     @Mock
-    private BaseGridRendererHelper scenarioGridRendererHelper;
+    private BaseGridRendererHelper scenarioGridRendererHelperMock;
 
     @Mock
-    private BaseGridRendererHelper.RenderingInformation scenarioRenderingInformation;
+    private BaseGridRendererHelper.RenderingInformation scenarioRenderingInformationMock;
 
     @Mock
-    private Element mockTarget;
+    private Element targetMock;
 
     @Mock
-    private NativeEvent mockNativeEvent;
+    private NativeEvent nativeEventMock;
 
     @Mock
-    private Document mockDocument;
+    private Document documentMock;
 
     @Before
     public void setUp() throws Exception {
         doReturn(scenarioGridCellMock).when(scenarioGridModelMock).getCell(UI_ROW_INDEX, UI_COLUMN_INDEX);
-        when(mockScenarioGridPanel.getScenarioGrid()).thenReturn(mockScenarioGrid);
-        when(mockScenarioGrid.getWidth()).thenReturn(GRID_WIDTH);
-        when(mockScenarioGrid.getModel()).thenReturn(scenarioGridModelMock);
-        when(mockScenarioGrid.getRenderer()).thenReturn(scenarioGridRenderer);
-        when(mockScenarioGrid.getRendererHelper()).thenReturn(scenarioGridRendererHelper);
-        when(scenarioGridRenderer.getHeaderHeight()).thenReturn(HEADER_HEIGHT);
-        when(scenarioGridRenderer.getHeaderRowHeight()).thenReturn(HEADER_ROW_HEIGHT);
-        when(scenarioGridRendererHelper.getRenderingInformation()).thenReturn(scenarioRenderingInformation);
+        when(scenarioGridPanelMock.getScenarioGrid()).thenReturn(scenarioGridMock);
+        when(scenarioGridMock.getWidth()).thenReturn(GRID_WIDTH);
+        when(scenarioGridMock.getModel()).thenReturn(scenarioGridModelMock);
+        when(scenarioGridMock.getRenderer()).thenReturn(scenarioGridRendererMock);
+        when(scenarioGridMock.getRendererHelper()).thenReturn(scenarioGridRendererHelperMock);
+        when(scenarioGridRendererMock.getHeaderHeight()).thenReturn(HEADER_HEIGHT);
+        when(scenarioGridRendererMock.getHeaderRowHeight()).thenReturn(HEADER_ROW_HEIGHT);
+        when(scenarioGridRendererHelperMock.getRenderingInformation()).thenReturn(scenarioRenderingInformationMock);
 
         // mock single column in grid
         ScenarioGridColumn column = mock(ScenarioGridColumn.class);
@@ -120,27 +120,27 @@ public abstract class AbstractScenarioSimulationGridPanelClickHandlerTest {
         // presence of header metadata is prerequisite to handle header click
         // to simplify test, return just one header metadata
         // it simulates just one row in column header rows
-        when(column.getHeaderMetaData()).thenReturn(Collections.singletonList(headerMetaData));
-        when(headerMetaData.getColumnGroup()).thenReturn(FactMappingType.GIVEN.name());
+        when(column.getHeaderMetaData()).thenReturn(Collections.singletonList(headerMetaDataMock));
+        when(headerMetaDataMock.getColumnGroup()).thenReturn(FactMappingType.GIVEN.name());
 
         // mock that column to index 0
         BaseGridRendererHelper.ColumnInformation columnInformation =
                 new BaseGridRendererHelper.ColumnInformation(column, UI_COLUMN_INDEX, OFFSET_X);
-        when(scenarioGridRendererHelper.getColumnInformation(CLICK_POINT_X)).thenReturn(columnInformation);
+        when(scenarioGridRendererHelperMock.getColumnInformation(CLICK_POINT_X)).thenReturn(columnInformation);
 
-        when(mockNativeEvent.getClientX()).thenReturn(NATIVE_EVENT_CLIENT_X);
-        when(mockNativeEvent.getClientY()).thenReturn(NATIVE_EVENT_CLIENT_Y);
+        when(nativeEventMock.getClientX()).thenReturn(NATIVE_EVENT_CLIENT_X);
+        when(nativeEventMock.getClientY()).thenReturn(NATIVE_EVENT_CLIENT_Y);
 
-        when(mockTarget.getOwnerDocument()).thenReturn(mockDocument);
-        when(mockTarget.getAbsoluteLeft()).thenReturn(TARGET_ABSOLUTE_LEFT);
-        when(mockTarget.getScrollLeft()).thenReturn(TARGET_SCROLL_LEFT);
-        when(mockTarget.getAbsoluteTop()).thenReturn(TARGET_ABSOLUTE_TOP);
-        when(mockTarget.getScrollTop()).thenReturn(TARGET_SCROLL_TOP);
+        when(targetMock.getOwnerDocument()).thenReturn(documentMock);
+        when(targetMock.getAbsoluteLeft()).thenReturn(TARGET_ABSOLUTE_LEFT);
+        when(targetMock.getScrollLeft()).thenReturn(TARGET_SCROLL_LEFT);
+        when(targetMock.getAbsoluteTop()).thenReturn(TARGET_ABSOLUTE_TOP);
+        when(targetMock.getScrollTop()).thenReturn(TARGET_SCROLL_TOP);
 
-        when(mockDocument.getScrollLeft()).thenReturn(DOCUMENT_SCROLL_LEFT);
-        when(mockDocument.getScrollTop()).thenReturn(DOCUMENT_SCROLL_TOP);
+        when(documentMock.getScrollLeft()).thenReturn(DOCUMENT_SCROLL_LEFT);
+        when(documentMock.getScrollTop()).thenReturn(DOCUMENT_SCROLL_TOP);
 
-        when(mockContextMenuEvent.getNativeEvent()).thenReturn(mockNativeEvent);
-        when(mockContextMenuEvent.getRelativeElement()).thenReturn(mockTarget);
+        when(contextMenuEventMock.getNativeEvent()).thenReturn(nativeEventMock);
+        when(contextMenuEventMock.getRelativeElement()).thenReturn(targetMock);
     }
 }

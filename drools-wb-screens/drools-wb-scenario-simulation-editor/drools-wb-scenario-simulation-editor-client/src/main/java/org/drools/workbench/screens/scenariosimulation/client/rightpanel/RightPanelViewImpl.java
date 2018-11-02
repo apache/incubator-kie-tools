@@ -44,22 +44,31 @@ public class RightPanelViewImpl
     private UListElement rightPanelTabs = Document.get().createULElement();
 
     @DataField("clearSearchButton")
-    ButtonElement clearSearchButton = Document.get().createButtonElement();
+    protected ButtonElement clearSearchButton = Document.get().createButtonElement();
 
     @DataField("searchButton")
-    ButtonElement searchButton = Document.get().createButtonElement();
+    protected ButtonElement searchButton = Document.get().createButtonElement();
 
     @DataField("inputSearch")
-    InputElement inputSearch = Document.get().createTextInputElement();
+    protected InputElement inputSearch = Document.get().createTextInputElement();
 
     @DataField("nameField")
-    InputElement nameField = Document.get().createTextInputElement();
+    protected InputElement nameField = Document.get().createTextInputElement();
 
-    @DataField("listContainer")
-    DivElement listContainer = Document.get().createDivElement();
+    @DataField("dataObjectListContainer")
+    protected DivElement dataObjectListContainer = Document.get().createDivElement();
+
+    @DataField("instanceListContainer")
+    protected DivElement instanceListContainer = Document.get().createDivElement();
 
     @DataField("conditionsButton")
-    ButtonElement conditionsButton = Document.get().createButtonElement();
+    protected ButtonElement conditionsButton = Document.get().createButtonElement();
+
+    @DataField("addButton")
+    protected ButtonElement addButton = Document.get().createButtonElement();
+
+    @DataField("kieTestEditorTabContent")
+    protected DivElement kieTestEditorTabContent = Document.get().createDivElement();
 
     public RightPanelViewImpl() {
 
@@ -69,6 +78,7 @@ public class RightPanelViewImpl
     public void init(Presenter presenter) {
         this.presenter = presenter;
         disableEditorTab();
+        addButton.setDisabled(true);
     }
 
     @Override
@@ -98,6 +108,13 @@ public class RightPanelViewImpl
         presenter.onSearchedEvent(inputSearch.getValue());
     }
 
+    @EventHandler("addButton")
+    public void onAddButtonClicked(ClickEvent event) {
+        presenter.onModifyColumn();
+        addButton.setDisabled(true);
+        presenter.onDisableEditorTab();
+    }
+
     @Override
     public void clearInputSearch() {
         inputSearch.setValue("");
@@ -121,8 +138,13 @@ public class RightPanelViewImpl
     }
 
     @Override
-    public DivElement getListContainer() {
-        return listContainer;
+    public DivElement getDataObjectListContainer() {
+        return dataObjectListContainer;
+    }
+
+    @Override
+    public DivElement getInstanceListContainer() {
+        return instanceListContainer;
     }
 
     @Override
@@ -135,21 +157,32 @@ public class RightPanelViewImpl
         setDisabledStatus(true);
     }
 
+    @Override
+    public void enableAddButton() {
+        addButton.setDisabled(false);
+    }
+
     protected void setDisabledStatus(boolean disabled) {
         clearSearchButton.setDisabled(disabled);
         searchButton.setDisabled(disabled);
         inputSearch.setDisabled(disabled);
         nameField.setDisabled(disabled);
         conditionsButton.setDisabled(disabled);
-        setListContainerDisabledStatus(disabled);
-    }
-
-    protected void setListContainerDisabledStatus(boolean disabled) {
+        setContainersDisabledStatus(disabled);
         if (disabled) {
-            listContainer.addClassName("disabled");
+            kieTestEditorTabContent.addClassName("disabled");
         } else {
-            listContainer.removeClassName("disabled");
+            kieTestEditorTabContent.removeClassName("disabled");
         }
     }
 
+    protected void setContainersDisabledStatus(boolean disabled) {
+        if (disabled) {
+            dataObjectListContainer.addClassName("disabled");
+            instanceListContainer.addClassName("disabled");
+        } else {
+            dataObjectListContainer.removeClassName("disabled");
+            instanceListContainer.removeClassName("disabled");
+        }
+    }
 }
