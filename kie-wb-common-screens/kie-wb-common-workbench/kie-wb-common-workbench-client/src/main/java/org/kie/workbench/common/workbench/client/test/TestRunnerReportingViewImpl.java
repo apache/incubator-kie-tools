@@ -41,9 +41,6 @@ public class TestRunnerReportingViewImpl
 
     private Presenter presenter;
 
-    @Inject
-    private Event<PublishBatchMessagesEvent> publishBatchMessagesEvent;
-
     @DataField
     private HTMLDivElement resultPanel;
 
@@ -65,16 +62,11 @@ public class TestRunnerReportingViewImpl
     @DataField
     private HTMLAnchorElement viewAlerts;
 
-    List<SystemMessage> systemMessages = new ArrayList<>();
-
     private TranslationService translationService;
 
     @EventHandler("viewAlerts")
     public void onClickEvent(ClickEvent event) {
-        PublishBatchMessagesEvent messagesEvent = new PublishBatchMessagesEvent();
-        messagesEvent.setCleanExisting(true);
-        messagesEvent.setMessagesToPublish(systemMessages);
-        publishBatchMessagesEvent.fire(messagesEvent);
+        presenter.onViewAlerts();
     }
 
     @Override
@@ -89,11 +81,6 @@ public class TestRunnerReportingViewImpl
     @Override
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
-    }
-
-    @Override
-    public void setSystemMessages(List<SystemMessage> systemMessages){
-        this.systemMessages = systemMessages;
     }
 
     @Override

@@ -27,13 +27,12 @@ public interface TestRunnerReportingView
 
     interface Presenter {
 
+        void onViewAlerts();
     }
 
     void reset();
 
     void setPresenter(Presenter presenter);
-
-    void setSystemMessages(List<SystemMessage> systemMessages);
 
     void showSuccess();
 

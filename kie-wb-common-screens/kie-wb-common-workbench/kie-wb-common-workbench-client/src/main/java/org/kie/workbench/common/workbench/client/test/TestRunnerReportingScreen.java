@@ -16,11 +16,13 @@
 
 package org.kie.workbench.common.workbench.client.test;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
@@ -29,6 +31,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.shared.message.Level;
 import org.guvnor.common.services.shared.test.Failure;
 import org.guvnor.common.services.shared.test.TestResultMessage;
+import org.guvnor.messageconsole.events.PublishBatchMessagesEvent;
 import org.guvnor.messageconsole.events.SystemMessage;
 import org.uberfire.client.annotations.DefaultPosition;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
@@ -43,14 +46,20 @@ public class TestRunnerReportingScreen
         implements TestRunnerReportingView.Presenter {
 
     private TestRunnerReportingView view;
+    private List<SystemMessage> systemMessages = new ArrayList<>();
+
+    private Event<PublishBatchMessagesEvent> publishBatchMessagesEvent;
 
     public TestRunnerReportingScreen() {
         //Zero argument constructor for CDI
     }
 
+
     @Inject
-    public TestRunnerReportingScreen(TestRunnerReportingView view) {
+    public TestRunnerReportingScreen(TestRunnerReportingView view,
+                                     Event<PublishBatchMessagesEvent> publishBatchMessagesEvent) {
         this.view = view;
+        this.publishBatchMessagesEvent = publishBatchMessagesEvent;
         view.setPresenter(this);
     }
 
@@ -70,16 +79,27 @@ public class TestRunnerReportingScreen
     }
 
     public void reset() {
+        systemMessages = new ArrayList<>();
         view.reset();
     }
 
+    @Override
+    public void onViewAlerts() {
+
+        PublishBatchMessagesEvent messagesEvent = new PublishBatchMessagesEvent();
+        messagesEvent.setCleanExisting(true);
+        messagesEvent.setMessagesToPublish(systemMessages);
+        publishBatchMessagesEvent.fire(messagesEvent);
+    }
+
     public void onTestRun(@Observes TestResultMessage testResultMessage) {
+        reset();
+
         if (testResultMessage.wasSuccessful()) {
             view.showSuccess();
         } else {
             if (testResultMessage.getFailures() != null) {
-                List<SystemMessage> systemMessages = testResultMessage.getFailures().stream().map(this::convert).collect(Collectors.toList());
-                view.setSystemMessages(systemMessages);
+                systemMessages = testResultMessage.getFailures().stream().map(this::convert).collect(Collectors.toList());
             }
             view.showFailure();
         }

@@ -21,35 +21,92 @@ import java.util.Collections;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.guvnor.common.services.shared.test.Failure;
 import org.guvnor.common.services.shared.test.TestResultMessage;
-import org.guvnor.messageconsole.events.SystemMessage;
+import org.guvnor.messageconsole.events.PublishBatchMessagesEvent;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.mockito.Mock;
+import org.uberfire.mocks.EventSourceMock;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class TestRunnerReportingScreenTest {
 
+    @Captor
+    private ArgumentCaptor<PublishBatchMessagesEvent> publishEventCaptor;
+    @Mock
     private TestRunnerReportingView view;
-    private TestRunnerReportingScreen screen;
+    @Mock
     private Failure failure;
 
-    @Captor
-    ArgumentCaptor<ArrayList<SystemMessage>> captor;
+    @Mock
+    private EventSourceMock event;
+
+    private TestRunnerReportingScreen screen;
 
     @Before
     public void setUp() throws Exception {
-        view = mock(TestRunnerReportingView.class);
-        screen = new TestRunnerReportingScreen(view);
-        failure = mock(Failure.class);
+        screen = new TestRunnerReportingScreen(view,
+                                               event);
+    }
+
+    @Test
+    public void onViewAlerts() {
+
+        screen.onViewAlerts();
+
+        verify(event).fire(publishEventCaptor.capture());
+
+        final PublishBatchMessagesEvent value = publishEventCaptor.getValue();
+
+        assertTrue(value.isCleanExisting());
+        assertTrue(value.getMessagesToPublish().isEmpty());
+    }
+
+    @Test
+    public void onViewAlertsSendMessage() {
+
+        TestResultMessage testResultMessage = new TestResultMessage("id",
+                                                                    1,
+                                                                    2500,
+                                                                    Collections.singletonList(failure));
+        screen.onTestRun(testResultMessage);
+        screen.onViewAlerts();
+
+        verify(event).fire(publishEventCaptor.capture());
+
+        final PublishBatchMessagesEvent value = publishEventCaptor.getValue();
+
+        assertFalse(value.getMessagesToPublish().isEmpty());
+    }
+
+    @Test
+    public void onViewAlerts_resetBetweenRuns() {
+
+        screen.onTestRun(new TestResultMessage("id",
+                                               1,
+                                               2500,
+                                               Collections.singletonList(failure)));
+
+        screen.onTestRun(new TestResultMessage("id",
+                                               1,
+                                               2500,
+                                               new ArrayList<>()));
+        screen.onViewAlerts();
+
+        verify(event).fire(publishEventCaptor.capture());
+
+        final PublishBatchMessagesEvent value = publishEventCaptor.getValue();
+
+        assertTrue(value.getMessagesToPublish().isEmpty());
     }
 
     @Test
@@ -79,8 +136,6 @@ public class TestRunnerReportingScreenTest {
                                                                     2500,
                                                                     Collections.singletonList(failure));
         screen.onTestRun(testResultMessage);
-        verify(view).setSystemMessages(captor.capture());
-        assertThat("Expected true but was false. : This is a non-null message").isEqualTo(captor.getValue().get(0).getText());
         verify(view).showFailure();
         verify(view).setRunStatus(any(),
                                   eq("1"),
