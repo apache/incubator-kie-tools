@@ -18,8 +18,6 @@ package org.kie.workbench.common.dmn.api.definition.v1_1;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.validation.Valid;
-
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.dmn.api.definition.HasName;
@@ -28,6 +26,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.ExpressionLanguage;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
+import org.kie.workbench.common.dmn.api.property.dmn.Text;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
@@ -39,18 +38,12 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 @Bindable
 @PropertySet
 @FormDefinition(policy = FieldPolicy.ONLY_MARKED, startElement = "id")
-public class Definitions extends DMNElement implements HasName,
-                                                       DMNPropertySet {
+public class Definitions extends NamedElement implements HasName,
+                                                         DMNPropertySet {
 
     public static final String DEFAULT_EXPRESSION_LANGUAGE = Namespace.FEEL.getUri();
 
     public static final String DEFAULT_TYPE_LANGUAGE = Namespace.FEEL.getUri();
-
-    //Definitions should extend NamedElement however we want Name to be read-only
-    @Property
-    @FormField(afterElement = "description", readonly = true)
-    @Valid
-    private Name name;
 
     private List<Import> _import;
     private List<ItemDefinition> itemDefinition;
@@ -64,7 +57,11 @@ public class Definitions extends DMNElement implements HasName,
     protected ExpressionLanguage expressionLanguage;
 
     private String typeLanguage;
-    private String namespace;
+
+    @Property
+    @FormField(afterElement = "expressionLanguage")
+    private Text namespace;
+
     private String exporter;
     private String exporterVersion;
 
@@ -80,7 +77,7 @@ public class Definitions extends DMNElement implements HasName,
              new ArrayList<>(),
              new ExpressionLanguage(),
              null,
-             null,
+             new Text(),
              null,
              null);
     }
@@ -96,12 +93,12 @@ public class Definitions extends DMNElement implements HasName,
                        final List<BusinessContextElement> businessContextElement,
                        final ExpressionLanguage expressionLanguage,
                        final String typeLanguage,
-                       final String namespace,
+                       final Text namespace,
                        final String exporter,
                        final String exporterVersion) {
         super(id,
-              description);
-        this.name = name;
+              description,
+              name);
         this._import = _import;
         this.itemDefinition = itemDefinition;
         this.drgElement = drgElement;
@@ -118,16 +115,6 @@ public class Definitions extends DMNElement implements HasName,
     // -----------------------
     // DMN properties
     // -----------------------
-
-    @Override
-    public Name getName() {
-        return name;
-    }
-
-    @Override
-    public void setName(final Name name) {
-        this.name = name;
-    }
 
     public List<Import> getImport() {
         if (_import == null) {
@@ -195,11 +182,11 @@ public class Definitions extends DMNElement implements HasName,
         this.typeLanguage = value;
     }
 
-    public String getNamespace() {
+    public Text getNamespace() {
         return namespace;
     }
 
-    public void setNamespace(final String value) {
+    public void setNamespace(final Text value) {
         this.namespace = value;
     }
 

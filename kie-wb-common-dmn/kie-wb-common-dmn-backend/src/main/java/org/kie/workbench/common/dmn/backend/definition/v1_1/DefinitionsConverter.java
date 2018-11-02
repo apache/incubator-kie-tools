@@ -25,6 +25,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
+import org.kie.workbench.common.dmn.api.property.dmn.Text;
 import org.kie.workbench.common.stunner.core.util.StringUtils;
 import org.kie.workbench.common.stunner.core.util.UUID;
 
@@ -41,7 +42,7 @@ public class DefinitionsConverter {
         Definitions result = new Definitions();
         result.setId(id);
         result.setName(name);
-        result.setNamespace(namespace);
+        result.setNamespace(new Text(namespace));
         result.getNsContext().put(DMNModelInstrumentedBase.Namespace.DEFAULT.getPrefix(),
                                   namespace);
         result.setDescription(description);
@@ -88,13 +89,13 @@ public class DefinitionsConverter {
 
         // TODO currently DMN wb UI does not offer feature to set these required DMN properties, setting some hardcoded defaults for now.
         String defaultId = (wb.getId() != null) ? wb.getId().getValue() : UUID.uuid();
-        String defaulName = (wb.getName() != null) ? wb.getName().getValue() : UUID.uuid(8);
-        String defaultNamespace = !StringUtils.isEmpty(wb.getNamespace())
-                ? wb.getNamespace()
+        String defaultName = (wb.getName() != null) ? wb.getName().getValue() : UUID.uuid(8);
+        String defaultNamespace = !StringUtils.isEmpty(wb.getNamespace().getValue())
+                ? wb.getNamespace().getValue()
                 : DMNModelInstrumentedBase.Namespace.DEFAULT.getUri() + UUID.uuid();
 
         result.setId(defaultId);
-        result.setName(defaulName);
+        result.setName(defaultName);
         result.setNamespace(defaultNamespace);
         result.setDescription(DescriptionPropertyConverter.dmnFromWB(wb.getDescription()));
         result.getNsContext().putAll(wb.getNsContext());

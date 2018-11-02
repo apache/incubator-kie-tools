@@ -20,6 +20,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Definitions;
+import org.kie.workbench.common.dmn.api.property.dmn.Text;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -42,13 +43,15 @@ public class DefinitionsConverterTest {
     public void wbFromDMN() {
         Definitions wb = DefinitionsConverter.wbFromDMN(apiDefinitions);
         String defaultNs = wb.getNsContext().get(DMNModelInstrumentedBase.Namespace.DEFAULT.getPrefix());
-        String namespace = wb.getNamespace();
+        String namespace = wb.getNamespace().getValue();
 
         assertEquals(defaultNs, namespace);
     }
 
     @Test
     public void dmnFromWB() {
+        when(wbDefinitions.getNamespace()).thenReturn(new Text());
+
         org.kie.dmn.model.api.Definitions dmn = DefinitionsConverter.dmnFromWB(wbDefinitions);
         String defaultNs = dmn.getNsContext().get(DMNModelInstrumentedBase.Namespace.DEFAULT.getPrefix());
         String namespace = dmn.getNamespace();
@@ -56,7 +59,7 @@ public class DefinitionsConverterTest {
         assertNotNull(defaultNs);
         assertEquals(defaultNs, namespace);
 
-        when(wbDefinitions.getNamespace()).thenReturn(NAMESPACE);
+        when(wbDefinitions.getNamespace()).thenReturn(new Text(NAMESPACE));
 
         dmn = DefinitionsConverter.dmnFromWB(wbDefinitions);
         defaultNs = dmn.getNsContext().get(DMNModelInstrumentedBase.Namespace.DEFAULT.getPrefix());

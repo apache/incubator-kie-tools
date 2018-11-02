@@ -48,6 +48,8 @@ public class DMNDiagramFactoryImplTest {
 
     private static final String NAME = "name";
 
+    private static final String EXISTING_NAME = "existing-name";
+
     @Mock
     private Metadata metadata;
 
@@ -97,7 +99,7 @@ public class DMNDiagramFactoryImplTest {
                      dmnDefaultNameSpaces.get(DMNModelInstrumentedBase.Namespace.KIE.getPrefix()));
 
         assertTrue(dmnDefaultNameSpaces.containsKey(DMNModelInstrumentedBase.Namespace.DEFAULT.getPrefix()));
-        assertEquals(dmnDefinitions.getNamespace(),
+        assertEquals(dmnDefinitions.getNamespace().getValue(),
                      dmnDefaultNameSpaces.get(DMNModelInstrumentedBase.Namespace.DEFAULT.getPrefix()));
     }
 
@@ -113,5 +115,21 @@ public class DMNDiagramFactoryImplTest {
         final Definitions dmnDefinitions = dmnDiagram.getDefinitions();
 
         assertEquals(NAME, dmnDefinitions.getName().getValue());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testModelNameWithNonEmptyExistingName() {
+        final Node<View, Edge> existingRoot = (Node<View, Edge>) graph.nodes().iterator().next();
+        final DMNDiagram existingDMNDiagram = (DMNDiagram) existingRoot.getContent().getDefinition();
+        final Definitions existingDMNDefinitions = existingDMNDiagram.getDefinitions();
+        existingDMNDefinitions.getName().setValue(EXISTING_NAME);
+
+        final Diagram<Graph, Metadata> newDiagram = factory.build(NAME, metadata, graph);
+        final Node<View, Edge> newRoot = (Node<View, Edge>) newDiagram.getGraph().nodes().iterator().next();
+        final DMNDiagram newDMNDiagram = (DMNDiagram) newRoot.getContent().getDefinition();
+        final Definitions newDMNDefinitions = newDMNDiagram.getDefinitions();
+
+        assertEquals(EXISTING_NAME, newDMNDefinitions.getName().getValue());
     }
 }

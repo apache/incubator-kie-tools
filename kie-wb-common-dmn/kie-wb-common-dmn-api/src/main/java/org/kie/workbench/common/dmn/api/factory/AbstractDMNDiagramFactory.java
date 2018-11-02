@@ -21,6 +21,8 @@ import java.util.stream.Stream;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNDiagram;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Definitions;
+import org.kie.workbench.common.dmn.api.property.dmn.Name;
+import org.kie.workbench.common.dmn.api.property.dmn.Text;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.factory.impl.BindableDiagramFactory;
@@ -76,11 +78,11 @@ public abstract class AbstractDMNDiagramFactory<M extends Metadata, D extends Di
                 .filter(namespace -> !dmnDefinitions.getNsContext().containsValue(namespace.getUri()))
                 .forEach(namespace -> dmnDefinitions.getNsContext().put(namespace.getPrefix(), namespace.getUri()));
 
-        String defaultNamespace = !StringUtils.isEmpty(dmnDefinitions.getNamespace())
-                ? dmnDefinitions.getNamespace()
+        String defaultNamespace = !StringUtils.isEmpty(dmnDefinitions.getNamespace().getValue())
+                ? dmnDefinitions.getNamespace().getValue()
                 : DMNModelInstrumentedBase.Namespace.DEFAULT.getUri() + UUID.uuid();
 
-        dmnDefinitions.setNamespace(defaultNamespace);
+        dmnDefinitions.setNamespace(new Text(defaultNamespace));
         dmnDefinitions.getNsContext().put(DMNModelInstrumentedBase.Namespace.DEFAULT.getPrefix(),
                                           defaultNamespace);
     }
@@ -89,6 +91,9 @@ public abstract class AbstractDMNDiagramFactory<M extends Metadata, D extends Di
                             final String name) {
         final DMNDiagram dmnDiagram = diagramNode.getContent().getDefinition();
         final Definitions dmnDefinitions = dmnDiagram.getDefinitions();
-        dmnDefinitions.getName().setValue(name);
+        final Name dmnName = dmnDefinitions.getName();
+        if (StringUtils.isEmpty(dmnName.getValue())) {
+            dmnName.setValue(name);
+        }
     }
 }
