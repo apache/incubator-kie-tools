@@ -36,8 +36,9 @@ import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasDomain
 import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasElementListener;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
-import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
+import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
+import org.kie.workbench.common.stunner.core.client.session.Session;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
@@ -59,6 +60,7 @@ public class FormsCanvasSessionHandler {
     private final CanvasCommandFactory<AbstractCanvasHandler> commandFactory;
     private final FormsCanvasListener canvasListener;
     private final FormsDomainObjectCanvasListener domainObjectCanvasListener;
+    private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
 
     private ClientSession session;
     private FormFeaturesSessionProvider featuresSessionProvider;
@@ -66,11 +68,13 @@ public class FormsCanvasSessionHandler {
 
     @Inject
     public FormsCanvasSessionHandler(final DefinitionManager definitionManager,
-                                     final CanvasCommandFactory<AbstractCanvasHandler> commandFactory) {
+                                     final CanvasCommandFactory<AbstractCanvasHandler> commandFactory,
+                                     final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager) {
         this.definitionManager = definitionManager;
         this.commandFactory = commandFactory;
         this.canvasListener = getFormsCanvasListener();
         this.domainObjectCanvasListener = getFormsDomainObjectCanvasListener();
+        this.sessionCommandManager = sessionCommandManager;
     }
 
     protected FormsCanvasListener getFormsCanvasListener() {
@@ -144,8 +148,7 @@ public class FormsCanvasSessionHandler {
         final String propertyId = getModifiedPropertyId(hasProperties, fieldName);
         canvasListener.startProcessing();
         final CommandResult result =
-                featuresSessionProvider
-                        .getCommandManager(session)
+               sessionCommandManager
                         .execute(getCanvasHandler(),
                                  commandFactory.updatePropertyValue(element,
                                                                     propertyId,
@@ -162,8 +165,7 @@ public class FormsCanvasSessionHandler {
         final String propertyId = getModifiedPropertyId(hasProperties, fieldName);
         domainObjectCanvasListener.startProcessing();
         final CommandResult result =
-                featuresSessionProvider
-                        .getCommandManager(session)
+                sessionCommandManager
                         .execute(getCanvasHandler(),
                                  commandFactory.updateDomainObjectPropertyValue(domainObject,
                                                                                 propertyId,
@@ -456,11 +458,6 @@ public class FormsCanvasSessionHandler {
          */
         SelectionControl getSelectionControl(S session);
 
-        /**
-         * Returns the session's command manager instance, if not available, it returns
-         * <code>null</code>.
-         */
-        CanvasCommandManager<AbstractCanvasHandler> getCommandManager(S session);
     }
 
     private static class FormFeaturesReadOnlySessionProvider implements FormFeaturesSessionProvider<ViewerSession> {
@@ -473,11 +470,6 @@ public class FormsCanvasSessionHandler {
         @Override
         public SelectionControl getSelectionControl(final ViewerSession session) {
             return cast(session).getSelectionControl();
-        }
-
-        @Override
-        public CanvasCommandManager<AbstractCanvasHandler> getCommandManager(final ViewerSession session) {
-            return null;
         }
 
         private ViewerSession cast(final ClientSession session) {
@@ -495,11 +487,6 @@ public class FormsCanvasSessionHandler {
         @Override
         public SelectionControl getSelectionControl(final EditorSession session) {
             return cast(session).getSelectionControl();
-        }
-
-        @Override
-        public CanvasCommandManager<AbstractCanvasHandler> getCommandManager(final EditorSession session) {
-            return cast(session).getCommandManager();
         }
 
         private EditorSession cast(final ClientSession session) {

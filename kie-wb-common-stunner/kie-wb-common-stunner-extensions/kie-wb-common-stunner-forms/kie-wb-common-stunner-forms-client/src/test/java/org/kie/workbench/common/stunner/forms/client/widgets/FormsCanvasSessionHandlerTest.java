@@ -30,7 +30,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.select.Selec
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
-import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
+import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.PropertyAdapter;
@@ -92,9 +92,6 @@ public class FormsCanvasSessionHandlerTest {
     private CanvasCommandFactory<AbstractCanvasHandler> commandFactory;
 
     @Mock
-    private CanvasCommandManager canvasCommandManager;
-
-    @Mock
     private SelectionControl selectionControl;
 
     @Mock
@@ -126,11 +123,14 @@ public class FormsCanvasSessionHandlerTest {
 
     private FormsCanvasSessionHandler handler;
 
+    @Mock
+    private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
+
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
         this.refreshFormPropertiesEvent = new RefreshFormPropertiesEvent(session, UUID);
-        this.handler = spy(new FormsCanvasSessionHandler(definitionManager, commandFactory) {
+        this.handler = spy(new FormsCanvasSessionHandler(definitionManager, commandFactory, sessionCommandManager) {
             @Override
             protected FormsCanvasSessionHandler.FormsDomainObjectCanvasListener getFormsDomainObjectCanvasListener() {
                 return domainObjectCanvasListener;
@@ -139,7 +139,6 @@ public class FormsCanvasSessionHandlerTest {
         this.handler.setRenderer(formRenderer);
 
         when(session.getCanvasHandler()).thenReturn(abstractCanvasHandler);
-        when(session.getCommandManager()).thenReturn(canvasCommandManager);
         when(session.getSelectionControl()).thenReturn(selectionControl);
         when(abstractCanvasHandler.getGraphIndex()).thenReturn(index);
         when(abstractCanvasHandler.getDiagram()).thenReturn(diagram);
@@ -281,15 +280,15 @@ public class FormsCanvasSessionHandlerTest {
 
         final InOrder inOrder = inOrder(domainObjectCanvasListener,
                                         commandFactory,
-                                        canvasCommandManager,
+                                        sessionCommandManager,
                                         domainObjectCanvasListener);
 
         inOrder.verify(domainObjectCanvasListener).startProcessing();
         inOrder.verify(commandFactory).updateDomainObjectPropertyValue(eq(domainObject),
                                                                        eq(FIELD_PROPERTY_ID),
                                                                        eq(FIELD_VALUE));
-        inOrder.verify(canvasCommandManager).execute(eq(abstractCanvasHandler),
-                                                     any(UpdateDomainObjectPropertyCommand.class));
+        inOrder.verify(sessionCommandManager).execute(eq(abstractCanvasHandler),
+                                                      any(UpdateDomainObjectPropertyCommand.class));
         inOrder.verify(domainObjectCanvasListener).endProcessing();
     }
 }
