@@ -49,6 +49,11 @@
       <artifactId>errai-common</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.kie.server</groupId>
+      <artifactId>kie-server-common</artifactId>
+    </dependency>
+
   </dependencies>
 
 </project>

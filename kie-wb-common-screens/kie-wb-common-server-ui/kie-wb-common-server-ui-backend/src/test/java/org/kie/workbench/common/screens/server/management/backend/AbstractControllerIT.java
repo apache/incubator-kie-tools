@@ -40,7 +40,7 @@ import org.kie.workbench.common.screens.server.management.backend.service.SpecMa
 import org.kie.workbench.common.screens.server.management.backend.storage.ServerTemplateVFSStorage;
 import org.kie.workbench.common.screens.server.management.backend.storage.migration.ServerTemplateMigration;
 import org.kie.workbench.common.screens.server.management.backend.utils.ControllerExtension;
-import org.kie.workbench.common.screens.server.management.backend.utils.ControllerUtils;
+import org.kie.workbench.common.screens.server.management.utils.ControllerUtils;
 import org.kie.workbench.common.screens.server.management.backend.utils.EmbeddedController;
 import org.kie.workbench.common.screens.server.management.backend.utils.MVELEvaluatorProducer;
 import org.kie.workbench.common.screens.server.management.backend.utils.MockTestService;

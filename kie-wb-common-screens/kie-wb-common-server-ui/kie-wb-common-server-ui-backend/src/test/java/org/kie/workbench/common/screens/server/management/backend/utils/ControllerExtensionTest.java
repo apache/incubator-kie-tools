@@ -24,8 +24,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.screens.server.management.backend.KieServerEmbeddedControllerProducer;
 import org.kie.workbench.common.screens.server.management.backend.KieServerStandaloneControllerProducer;
+import org.kie.workbench.common.screens.server.management.utils.ControllerUtils;
 
-import static org.kie.workbench.common.screens.server.management.backend.utils.ControllerUtils.KIE_SERVER_CONTROLLER;
+import static org.kie.workbench.common.screens.server.management.utils.ControllerUtils.KIE_SERVER_CONTROLLER;
 import static org.mockito.Mockito.*;
 
 public class ControllerExtensionTest {

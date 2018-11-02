@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.server.management.backend.utils;
+package org.kie.workbench.common.screens.server.management.utils;
 
 import static org.kie.server.common.KeyStoreHelperUtil.loadControllerPassword;
 

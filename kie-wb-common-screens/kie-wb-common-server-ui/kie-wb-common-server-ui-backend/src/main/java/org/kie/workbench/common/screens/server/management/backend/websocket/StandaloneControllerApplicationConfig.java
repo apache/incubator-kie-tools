@@ -25,7 +25,7 @@ import javax.websocket.server.ServerEndpointConfig;
 import org.kie.server.controller.websocket.WebSocketKieServerControllerImpl;
 import org.kie.server.controller.websocket.management.WebSocketKieServerMgmtControllerImpl;
 import org.kie.server.controller.websocket.notification.WebSocketKieServerControllerNotification;
-import org.kie.workbench.common.screens.server.management.backend.utils.ControllerUtils;
+import org.kie.workbench.common.screens.server.management.utils.ControllerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

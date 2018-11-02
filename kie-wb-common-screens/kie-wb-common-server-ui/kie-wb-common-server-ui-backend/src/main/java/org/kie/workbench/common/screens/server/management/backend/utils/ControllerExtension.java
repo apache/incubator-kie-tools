@@ -17,14 +17,11 @@
 package org.kie.workbench.common.screens.server.management.backend.utils;
 
 import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
-import javax.enterprise.inject.spi.ProcessProducer;
 import javax.enterprise.inject.spi.WithAnnotations;
-import javax.ws.rs.Path;
 
-import org.kie.server.controller.rest.RestKieServerControllerImpl;
+import org.kie.workbench.common.screens.server.management.utils.ControllerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

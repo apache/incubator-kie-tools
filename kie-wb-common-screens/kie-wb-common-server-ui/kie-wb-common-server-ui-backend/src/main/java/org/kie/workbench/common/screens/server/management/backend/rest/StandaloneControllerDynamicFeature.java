@@ -24,7 +24,7 @@ import javax.ws.rs.ext.Provider;
 import org.kie.server.controller.rest.RestKieServerControllerImpl;
 import org.kie.server.controller.rest.RestRuntimeManagementServiceImpl;
 import org.kie.server.controller.rest.RestSpecManagementServiceImpl;
-import org.kie.workbench.common.screens.server.management.backend.utils.ControllerUtils;
+import org.kie.workbench.common.screens.server.management.utils.ControllerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

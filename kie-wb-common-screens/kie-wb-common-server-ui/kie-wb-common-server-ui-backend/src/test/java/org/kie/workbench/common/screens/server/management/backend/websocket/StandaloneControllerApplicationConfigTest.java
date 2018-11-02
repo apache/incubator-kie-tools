@@ -19,14 +19,12 @@ package org.kie.workbench.common.screens.server.management.backend.websocket;
 import java.util.Set;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.server.controller.websocket.WebSocketKieServerControllerImpl;
 import org.kie.server.controller.websocket.management.WebSocketKieServerMgmtControllerImpl;
 import org.kie.server.controller.websocket.notification.WebSocketKieServerControllerNotification;
-import org.kie.workbench.common.screens.server.management.backend.utils.ControllerUtils;
+import org.kie.workbench.common.screens.server.management.utils.ControllerUtils;
 import org.mockito.internal.util.collections.Sets;
 
 import static org.junit.Assert.*;
