@@ -34,6 +34,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.commands.general.ClearExpressionTypeCommand;
+import org.kie.workbench.common.dmn.client.commands.general.SetHasNameCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
@@ -179,6 +180,12 @@ public class ExpressionContainerGrid extends BaseGridWidget implements HasListSe
         return existingWidth;
     }
 
+    /**
+     * Proxy {@link HasExpression} to be able intercept interactions with the original
+     * to update the expression label in {@link ExpressionEditorView} when the {@link Expression} changes.
+     * @param hasExpression A {@link HasExpression} to be proxied.
+     * @return A proxy that intercepts interactions with the wrapped {@link HasExpression}
+     */
     HasExpression spyHasExpression(final HasExpression hasExpression) {
         final HasExpression spy = new HasExpression() {
             @Override
@@ -206,26 +213,20 @@ public class ExpressionContainerGrid extends BaseGridWidget implements HasListSe
         return spy;
     }
 
+    /**
+     * Proxy {@link HasName} to be able intercept interactions with the original to update the
+     * navigation label in {@link ExpressionEditorView#setReturnToDRGText(Optional)} when the {@link Name}
+     * changes. The {@link Name} changes by a {@link SetHasNameCommand#execute(AbstractCanvasHandler)} or
+     * {@link SetHasNameCommand#undo(AbstractCanvasHandler)} that ensures the {@link HasName#setName(Name)}
+     * method is called.
+     * @param hasName A {@link HasName} to be proxied.
+     * @return A proxy that intercepts interactions with the wrapped {@link HasName}
+     */
     Optional<HasName> spyHasName(final Optional<HasName> hasName) {
-        final Name name = new Name() {
-            @Override
-            public String getValue() {
-                return hasName.orElse(HasName.NOP).getName().getValue();
-            }
-
-            @Override
-            public void setValue(final String value) {
-                hasName.ifPresent(hn -> {
-                    hn.getName().setValue(value);
-                    onHasNameChanged.execute(hasName);
-                });
-            }
-        };
-
         final HasName spy = new HasName() {
             @Override
             public Name getName() {
-                return name;
+                return hasName.orElse(HasName.NOP).getName();
             }
 
             @Override

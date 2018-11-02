@@ -35,6 +35,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.commands.general.ClearExpressionTypeCommand;
+import org.kie.workbench.common.dmn.client.commands.general.SetHasNameCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
@@ -430,24 +431,6 @@ public class ExpressionContainerGridTest {
     }
 
     @Test
-    public void testSpyHasNameWithHasNameSetNameValue() {
-        final String NEW_NAME = "new-name";
-
-        grid.setExpression(NODE_UUID,
-                           hasExpression,
-                           Optional.of(hasName));
-
-        final Optional<HasName> spy = grid.spyHasName(Optional.of(hasName));
-
-        assertThat(spy.isPresent()).isTrue();
-        spy.get().getName().setValue(NEW_NAME);
-
-        assertThat(hasName.getName().getValue()).isEqualTo(NEW_NAME);
-        verify(onHasNameChanged).execute(hasNameCaptor.capture());
-        assertThat(hasNameCaptor.getValue().get().getName().getValue()).isEqualTo(NEW_NAME);
-    }
-
-    @Test
     public void testSpyHasNameWithHasNameSetNameObject() {
         final String NEW_NAME = "new-name";
 
@@ -481,24 +464,6 @@ public class ExpressionContainerGridTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testSpyHasNameWithoutHasNameSetNameValue() {
-        final String NEW_NAME = "new-name";
-
-        grid.setExpression(NODE_UUID,
-                           hasExpression,
-                           Optional.empty());
-
-        final Optional<HasName> spy = grid.spyHasName(Optional.empty());
-
-        assertThat(spy.isPresent()).isTrue();
-        spy.get().getName().setValue(NEW_NAME);
-
-        assertThat(hasName.getName().getValue()).isEqualTo(NAME);
-        verify(onHasNameChanged, never()).execute(any(Optional.class));
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
     public void testSpyHasNameWithoutHasNameSetNameObject() {
         final String NEW_NAME = "new-name";
 
@@ -515,6 +480,29 @@ public class ExpressionContainerGridTest {
 
         assertThat(hasName.getName().getValue()).isEqualTo(NAME);
         verify(onHasNameChanged, never()).execute(any(Optional.class));
+    }
+
+    @Test
+    public void testSpyHasNameUpdateUndoWithSetHasNameCommand() {
+        grid.setExpression(NODE_UUID,
+                           hasExpression,
+                           Optional.of(hasName));
+
+        final Optional<HasName> spy = grid.spyHasName(Optional.of(hasName));
+
+        final Name newName = new Name("new-name");
+        final Name oldName = spy.get().getName();
+        final org.uberfire.mvp.Command canvasOperation = mock(org.uberfire.mvp.Command.class);
+
+        final SetHasNameCommand command = new SetHasNameCommand(spy.get(),
+                                                                newName,
+                                                                canvasOperation);
+
+        command.execute(canvasHandler);
+        spy.ifPresent(name -> assertThat(name.getName().getValue()).isEqualTo(newName.getValue()));
+
+        command.undo(canvasHandler);
+        spy.ifPresent(name -> assertThat(name.getName().getValue()).isEqualTo(oldName.getValue()));
     }
 
     @Test
