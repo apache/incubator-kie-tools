@@ -41,6 +41,7 @@ import com.ait.lienzo.client.core.types.Shadow;
 import com.ait.lienzo.shared.core.types.ColorName;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.LienzoShapeView;
+import org.kie.workbench.common.stunner.core.client.shape.common.DashArray;
 import org.kie.workbench.common.stunner.core.client.shape.view.BoundingBox;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasDragBounds;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasManageableControlPoints;
@@ -560,6 +561,13 @@ public class WiresConnectorView<T> extends WiresConnector
     @Override
     public T removeShadow() {
         getDirectionalLine().setShadow(null);
+        return cast();
+    }
+
+    public T setDashArray(DashArray dashArray) {
+        if (dashArray != null) {
+            getDirectionalLine().setDashArray(dashArray.getDash(), dashArray.getDashes());
+        }
         return cast();
     }
 

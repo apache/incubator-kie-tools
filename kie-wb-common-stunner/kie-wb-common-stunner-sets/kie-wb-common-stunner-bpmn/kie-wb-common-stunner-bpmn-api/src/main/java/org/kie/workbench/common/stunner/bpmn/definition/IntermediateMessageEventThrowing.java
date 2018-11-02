@@ -57,7 +57,12 @@ public class IntermediateMessageEventThrowing extends BaseThrowingIntermediateEv
     @PropertySet
     @FormField(afterElement = "general")
     @Valid
-    protected MessageEventExecutionSet executionSet;
+    private MessageEventExecutionSet executionSet;
+
+    @PropertySet
+    @FormField(afterElement = "executionSet")
+    @Valid
+    private DataIOSet dataIOSet;
 
     public IntermediateMessageEventThrowing() {
         this(new BPMNGeneralSet(""),
@@ -75,10 +80,10 @@ public class IntermediateMessageEventThrowing extends BaseThrowingIntermediateEv
                                             final @MapsTo("dimensionsSet") CircleDimensionSet dimensionsSet,
                                             final @MapsTo("executionSet") MessageEventExecutionSet executionSet) {
         super(general,
-              dataIOSet,
               backgroundSet,
               fontSet,
               dimensionsSet);
+        this.dataIOSet = dataIOSet;
         this.executionSet = executionSet;
     }
 
@@ -106,16 +111,27 @@ public class IntermediateMessageEventThrowing extends BaseThrowingIntermediateEv
         this.executionSet = executionSet;
     }
 
+    public DataIOSet getDataIOSet() {
+        return dataIOSet;
+    }
+
+    public void setDataIOSet(DataIOSet dataIOSet) {
+        this.dataIOSet = dataIOSet;
+    }
+
     @Override
     public int hashCode() {
         return HashUtil.combineHashCodes(super.hashCode(),
-                                         executionSet.hashCode(),
-                                         dataIOSet.hashCode(),
-                                         labels.hashCode());
+                                         Objects.hashCode(executionSet),
+                                         Objects.hashCode(dataIOSet),
+                                         Objects.hashCode(labels));
     }
 
     @Override
     public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
         if (o instanceof IntermediateMessageEventThrowing) {
             IntermediateMessageEventThrowing other = (IntermediateMessageEventThrowing) o;
             return super.equals(other) &&

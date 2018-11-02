@@ -17,8 +17,8 @@
 /*
     The tester HTML template URI.
  */
-const testerHtmlTemplatePath = "https://rawgit.com/kiegroup/kie-wb-common/master/kie-wb-common-stunner/kie-wb-common-stunner-extensions/kie-wb-common-stunner-svg/kie-wb-common-stunner-svg-gen/src/test/resources/org/kie/workbench/common/stunner/svg/gen/tester/svg-shape-tester.html";
-//const testerHtmlTemplatePath = "/kie-wb-common-stunner/kie-wb-common-stunner-svg-gen/org/kie/workbench/common/stunner/svg/gen/tester/svg-shape-tester.html";
+//const testerHtmlTemplatePath = "https://rawgit.com/kiegroup/kie-wb-common/master/kie-wb-common-stunner/kie-wb-common-stunner-extensions/kie-wb-common-stunner-svg/kie-wb-common-stunner-svg-gen/src/test/resources/org/kie/workbench/common/stunner/svg/gen/tester/svg-shape-tester.html";
+const testerHtmlTemplatePath = "/kie-wb-common-stunner/kie-wb-common-stunner-svg-gen/org/kie/workbench/common/stunner/svg/gen/tester/svg-shape-tester.html";
 const ICON_SIZE = 32;
 var currentTester = undefined;
 

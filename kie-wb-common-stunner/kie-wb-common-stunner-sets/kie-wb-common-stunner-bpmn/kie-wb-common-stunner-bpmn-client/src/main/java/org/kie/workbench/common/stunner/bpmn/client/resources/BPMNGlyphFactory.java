@@ -61,4 +61,9 @@ public interface BPMNGlyphFactory {
     ImageStripGlyph EVENT_INTERMEDIATE_ESCALATION = ImageStripGlyph.create(BPMNIconsStrip.class, 38);
     ImageStripGlyph EVENT_INTERMEDIATE_THROWING_ESCALATION = ImageStripGlyph.create(BPMNIconsStrip.class, 39);
     ImageStripGlyph EVENT_END_ESCALATION = ImageStripGlyph.create(BPMNIconsStrip.class, 40);
+    ImageStripGlyph EVENT_START_COMPENSATION = ImageStripGlyph.create(BPMNIconsStrip.class, 43);
+    ImageStripGlyph EVENT_INTERMEDIATE_COMPENSATION = ImageStripGlyph.create(BPMNIconsStrip.class, 44);
+    ImageStripGlyph EVENT_INTERMEDIATE_THROWING_COMPENSATION = ImageStripGlyph.create(BPMNIconsStrip.class, 45);
+    ImageStripGlyph EVENT_END_COMPENSATION = ImageStripGlyph.create(BPMNIconsStrip.class, 46);
+    ImageStripGlyph ASSOCIATION = ImageStripGlyph.create(BPMNIconsStrip.class, 63);
 }

@@ -21,6 +21,7 @@
 
   <inherits name='com.google.gwt.user.User'/>
   <inherits name="org.kie.workbench.common.stunner.core.StunnerCoreCommon"/>
+  <inherits name="org.kie.workbench.common.stunner.core.StunnerClientCommon"/>
 
   <source path="factory"/>
   <source path="def"/>

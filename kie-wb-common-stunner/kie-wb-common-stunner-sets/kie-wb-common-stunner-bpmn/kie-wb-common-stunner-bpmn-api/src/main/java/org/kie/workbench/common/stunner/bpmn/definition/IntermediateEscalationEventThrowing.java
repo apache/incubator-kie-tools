@@ -59,6 +59,11 @@ public class IntermediateEscalationEventThrowing extends BaseThrowingIntermediat
     @Valid
     private EscalationEventExecutionSet executionSet;
 
+    @PropertySet
+    @FormField(afterElement = "executionSet")
+    @Valid
+    private DataIOSet dataIOSet;
+
     public IntermediateEscalationEventThrowing() {
         this(new BPMNGeneralSet(""),
              new DataIOSet(),
@@ -75,10 +80,10 @@ public class IntermediateEscalationEventThrowing extends BaseThrowingIntermediat
                                                final @MapsTo("dimensionsSet") CircleDimensionSet dimensionsSet,
                                                final @MapsTo("executionSet") EscalationEventExecutionSet executionSet) {
         super(general,
-              dataIOSet,
               backgroundSet,
               fontSet,
               dimensionsSet);
+        this.dataIOSet = dataIOSet;
         this.executionSet = executionSet;
     }
 
@@ -90,10 +95,29 @@ public class IntermediateEscalationEventThrowing extends BaseThrowingIntermediat
         this.executionSet = executionSet;
     }
 
+    public DataIOSet getDataIOSet() {
+        return dataIOSet;
+    }
+
+    public void setDataIOSet(DataIOSet dataIOSet) {
+        this.dataIOSet = dataIOSet;
+    }
+
+    @Override
+    public boolean hasInputVars() {
+        return true;
+    }
+
+    @Override
+    public boolean isSingleInputVar() {
+        return true;
+    }
+
     @Override
     public int hashCode() {
         return HashUtil.combineHashCodes(super.hashCode(),
-                                         Objects.hashCode(executionSet));
+                                         Objects.hashCode(executionSet),
+                                         Objects.hashCode(dataIOSet));
     }
 
     @Override
@@ -104,7 +128,8 @@ public class IntermediateEscalationEventThrowing extends BaseThrowingIntermediat
         if (o instanceof IntermediateEscalationEventThrowing) {
             IntermediateEscalationEventThrowing other = (IntermediateEscalationEventThrowing) o;
             return super.equals(other) &&
-                    Objects.equals(executionSet, other.executionSet);
+                    Objects.equals(executionSet, other.executionSet) &&
+                    Objects.equals(dataIOSet, other.dataIOSet);
         }
         return false;
     }

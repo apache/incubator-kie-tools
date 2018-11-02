@@ -16,9 +16,12 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -121,6 +124,13 @@ public class BPMNDirectDiagramMarshaller implements DiagramMarshaller<Graph, Met
         String outputString = renderToString(resource);
         LOG.trace(outputString);
         return outputString;
+    }
+
+    public Definitions marshallToBpmn2Definitions(final Diagram<Graph, Metadata> diagram) throws IOException {
+        String marshalled = marshall(diagram);
+        try (InputStream inputStream = new BufferedInputStream(new ByteArrayInputStream(marshalled.getBytes(StandardCharsets.UTF_8)))) {
+            return parseDefinitions(inputStream);
+        }
     }
 
     private String renderToString(Bpmn2Resource resource) throws IOException {

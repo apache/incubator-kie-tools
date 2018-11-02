@@ -22,6 +22,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.prop
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.PropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.PropertyWriterFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseStartEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.StartCompensationEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartConditionalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartErrorEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartEscalationEvent;
@@ -58,6 +59,7 @@ public class StartEventConverter {
                 .when(StartMessageEvent.class, this::messageEvent)
                 .when(StartConditionalEvent.class, this::conditionalEvent)
                 .when(StartEscalationEvent.class, this::escalationEvent)
+                .when(StartCompensationEvent.class, this::compensationEvent)
                 .apply(node).value();
     }
 
@@ -212,6 +214,24 @@ public class StartEventConverter {
 
         p.setAssignmentsInfo(definition.getDataIOSet().getAssignmentsinfo());
 
+        return p;
+    }
+
+    private PropertyWriter compensationEvent(Node<View<StartCompensationEvent>, ?> n) {
+        StartEvent event = bpmn2.createStartEvent();
+        event.setId(n.getUUID());
+
+        StartCompensationEvent definition = n.getContent().getDefinition();
+        CatchEventPropertyWriter p = propertyWriterFactory.of(event);
+
+        event.setIsInterrupting(definition.getIsInterrupting().getValue());
+        p.addCompensation();
+
+        BPMNGeneralSet general = definition.getGeneral();
+        p.setName(general.getName().getValue());
+        p.setDocumentation(general.getDocumentation().getValue());
+        p.setSimulationSet(definition.getSimulationSet());
+        p.setBounds(n.getContent().getBounds());
         return p;
     }
 

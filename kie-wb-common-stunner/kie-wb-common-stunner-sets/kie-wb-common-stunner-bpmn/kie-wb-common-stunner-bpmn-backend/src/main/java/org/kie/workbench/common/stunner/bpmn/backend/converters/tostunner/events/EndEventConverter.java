@@ -34,6 +34,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.proper
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.EventPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.PropertyReaderFactory;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.ThrowEventPropertyReader;
+import org.kie.workbench.common.stunner.bpmn.definition.EndCompensationEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndErrorEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndEscalationEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndMessageEvent;
@@ -41,6 +42,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndSignalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.compensation.ActivityRef;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.compensation.CompensationEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.error.ErrorEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.error.ErrorRef;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.escalation.EscalationEventExecutionSet;
@@ -80,7 +83,7 @@ public class EndEventConverter {
                         .when(MessageEventDefinition.class, e -> messageEventDefinition(event, e))
                         .when(ErrorEventDefinition.class, e -> errorEventDefinition(event, e))
                         .when(EscalationEventDefinition.class, e -> escalationEventDefinition(event, e))
-                        .missing(CompensateEventDefinition.class)
+                        .when(CompensateEventDefinition.class, e -> compensationEventDefinition(event, e))
                         .missing(CancelEventDefinition.class)
                         .apply(eventDefinitions.get(0)).value();
             default:
@@ -237,6 +240,33 @@ public class EndEventConverter {
 
         definition.setExecutionSet(new EscalationEventExecutionSet(
                 new EscalationRef(EventDefinitionReader.escalationRefOf(e))
+        ));
+
+        node.getContent().setBounds(p.getBounds());
+
+        definition.setDimensionsSet(p.getCircleDimensionSet());
+        definition.setFontSet(p.getFontSet());
+        definition.setBackgroundSet(p.getBackgroundSet());
+
+        return BpmnNode.of(node);
+    }
+
+    private BpmnNode compensationEventDefinition(EndEvent event,
+                                                 CompensateEventDefinition eventDefinition) {
+        Node<View<EndCompensationEvent>, Edge> node =
+                factoryManager.newNode(event.getId(),
+                                       EndCompensationEvent.class);
+
+        EndCompensationEvent definition = node.getContent().getDefinition();
+        EventPropertyReader p = propertyReaderFactory.of(event);
+
+        definition.setGeneral(new BPMNGeneralSet(
+                new Name(p.getName()),
+                new Documentation(p.getDocumentation())
+        ));
+
+        definition.setExecutionSet(new CompensationEventExecutionSet(
+                new ActivityRef(EventDefinitionReader.activityRefOf(eventDefinition))
         ));
 
         node.getContent().setBounds(p.getBounds());

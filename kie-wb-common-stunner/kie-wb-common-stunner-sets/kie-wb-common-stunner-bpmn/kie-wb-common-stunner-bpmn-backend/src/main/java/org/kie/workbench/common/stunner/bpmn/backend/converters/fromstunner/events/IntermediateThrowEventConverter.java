@@ -22,6 +22,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.prop
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.PropertyWriterFactory;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.ThrowEventPropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseThrowingIntermediateEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateCompensationEventThrowing;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateEscalationEventThrowing;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEventThrowing;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventThrowing;
@@ -45,6 +46,7 @@ public class IntermediateThrowEventConverter {
                 .when(IntermediateMessageEventThrowing.class, this::messageEvent)
                 .when(IntermediateSignalEventThrowing.class, this::signalEvent)
                 .when(IntermediateEscalationEventThrowing.class, this::escalationEvent)
+                .when(IntermediateCompensationEventThrowing.class, this::compensationEvent)
                 .apply(node).value();
     }
 
@@ -106,6 +108,23 @@ public class IntermediateThrowEventConverter {
                 definition.getDataIOSet().getAssignmentsinfo());
 
         p.addEscalation(definition.getExecutionSet().getEscalationRef());
+
+        p.setBounds(n.getContent().getBounds());
+        return p;
+    }
+
+    private PropertyWriter compensationEvent(Node<View<IntermediateCompensationEventThrowing>, ?> n) {
+        IntermediateThrowEvent event = bpmn2.createIntermediateThrowEvent();
+        event.setId(n.getUUID());
+
+        IntermediateCompensationEventThrowing definition = n.getContent().getDefinition();
+        ThrowEventPropertyWriter p = propertyWriterFactory.of(event);
+
+        BPMNGeneralSet general = definition.getGeneral();
+        p.setName(general.getName().getValue());
+        p.setDocumentation(general.getDocumentation().getValue());
+
+        p.addCompensation();
 
         p.setBounds(n.getContent().getBounds());
         return p;

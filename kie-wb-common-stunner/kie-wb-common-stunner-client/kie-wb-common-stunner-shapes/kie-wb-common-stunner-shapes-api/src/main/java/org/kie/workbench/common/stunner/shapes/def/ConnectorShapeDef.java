@@ -16,12 +16,19 @@
 
 package org.kie.workbench.common.stunner.shapes.def;
 
+import org.kie.workbench.common.stunner.core.client.shape.common.DashArray;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.kie.workbench.common.stunner.core.definition.shape.ShapeDef;
 
 public interface ConnectorShapeDef<W, V extends ShapeView>
         extends BasicShapeViewDef<W, V> {
+
+    String FONT_FAMILY = "Open Sans";
+    String FONT_COLOR = "#000000";
+    String FONT_STROKE_COLOR = "#393f44";
+    double FONT_SIZE = 10d;
+    double STROKE_SIZE = 0.5d;
 
     ConnectorGlyph GLYPH = ConnectorGlyph.create();
 
@@ -34,5 +41,9 @@ public interface ConnectorShapeDef<W, V extends ShapeView>
     @Override
     default Class<? extends ShapeDef> getType() {
         return ConnectorShapeDef.class;
+    }
+
+    default DashArray getDashArray(final W element) {
+        return null;
     }
 }

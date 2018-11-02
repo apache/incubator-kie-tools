@@ -31,6 +31,7 @@ import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContex
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.util.SafeComparator;
 import org.uberfire.commons.data.Pair;
 
 public abstract class AbstractProcessFilteredNodeProvider
@@ -52,30 +53,18 @@ public abstract class AbstractProcessFilteredNodeProvider
     public abstract Function<Node, Pair<Object, String>> getMapper();
 
     public Comparator<Object> getComparator() {
-        return (obj1, obj2) -> obj1.toString().compareTo(obj2.toString());
+        return SafeComparator.TO_STRING_COMPARATOR;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public SelectorData getSelectorData(final FormRenderingContext context) {
-        Map<Object, String> values = new TreeMap<>(this::safeCompare);
+        Map<Object, String> values = new TreeMap<>(SafeComparator.of(this::getComparator));
         findElements(getFilter(),
                      getMapper()).forEach(pair -> values.put(pair.getK1(),
                                                              pair.getK2()));
         return new SelectorData(values,
                                 null);
-    }
-
-    protected int safeCompare(final Object obj1,
-                              final Object obj2) {
-        if (obj1 == null) {
-            return obj2 != null ? -1 : 0;
-        } else if (obj2 == null) {
-            return 1;
-        } else {
-            return getComparator().compare(obj1,
-                                           obj2);
-        }
     }
 
     protected Collection<Pair<Object, String>> findElements(final Predicate<Node> filter,

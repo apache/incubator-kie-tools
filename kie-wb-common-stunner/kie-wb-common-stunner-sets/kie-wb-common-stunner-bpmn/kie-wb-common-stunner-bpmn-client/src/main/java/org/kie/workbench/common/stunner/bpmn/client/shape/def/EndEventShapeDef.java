@@ -22,6 +22,7 @@ import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNGlyphFactory;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseEndEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.EndCompensationEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndErrorEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndEscalationEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndMessageEvent;
@@ -51,7 +52,9 @@ public class EndEventShapeDef
                     .put(EndErrorEvent.class,
                          BPMNSVGViewFactory::endErrorEvent)
                     .put(EndEscalationEvent.class,
-                         BPMNSVGViewFactory::endEscalationEvent);
+                         BPMNSVGViewFactory::endEscalationEvent)
+                    .put(EndCompensationEvent.class,
+                         BPMNSVGViewFactory::endCompensationEvent);
 
     public static final Map<Class<? extends BaseEndEvent>, Glyph> GLYPHS =
             new Maps.Builder<Class<? extends BaseEndEvent>, Glyph>()
@@ -67,6 +70,7 @@ public class EndEventShapeDef
                          BPMNGlyphFactory.EVENT_END_ERROR)
                     .put(EndEscalationEvent.class,
                          BPMNGlyphFactory.EVENT_END_ESCALATION)
+                    .put(EndCompensationEvent.class, BPMNGlyphFactory.EVENT_END_COMPENSATION)
                     .build();
 
     @Override

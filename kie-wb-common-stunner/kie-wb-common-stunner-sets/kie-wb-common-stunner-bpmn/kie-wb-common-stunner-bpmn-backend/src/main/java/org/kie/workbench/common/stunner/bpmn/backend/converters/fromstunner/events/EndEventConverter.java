@@ -22,6 +22,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.prop
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.PropertyWriterFactory;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.ThrowEventPropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseEndEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.EndCompensationEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndErrorEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndEscalationEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndMessageEvent;
@@ -53,6 +54,7 @@ public class EndEventConverter {
                 .when(EndTerminateEvent.class, this::terminateEvent)
                 .when(EndErrorEvent.class, this::errorEvent)
                 .when(EndEscalationEvent.class, this::escalationEvent)
+                .when(EndCompensationEvent.class, this::compensationEvent)
                 .apply(node).value();
     }
 
@@ -169,6 +171,23 @@ public class EndEventConverter {
 
         EscalationEventExecutionSet executionSet = definition.getExecutionSet();
         p.addEscalation(executionSet.getEscalationRef());
+
+        p.setBounds(n.getContent().getBounds());
+        return p;
+    }
+
+    private PropertyWriter compensationEvent(Node<View<EndCompensationEvent>, ?> n) {
+        EndEvent event = bpmn2.createEndEvent();
+        event.setId(n.getUUID());
+
+        EndCompensationEvent definition = n.getContent().getDefinition();
+        ThrowEventPropertyWriter p = propertyWriterFactory.of(event);
+
+        BPMNGeneralSet general = definition.getGeneral();
+        p.setName(general.getName().getValue());
+        p.setDocumentation(general.getDocumentation().getValue());
+
+        p.addCompensation();
 
         p.setBounds(n.getContent().getBounds());
         return p;

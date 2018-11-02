@@ -21,32 +21,48 @@ import java.util.List;
 import java.util.Map;
 
 import bpsim.ElementParameters;
+import org.eclipse.bpmn2.Artifact;
+import org.eclipse.bpmn2.FlowElement;
 import org.eclipse.bpmn2.FlowElementsContainer;
 import org.eclipse.bpmn2.ItemDefinition;
+import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.RootElement;
+import org.eclipse.bpmn2.SubProcess;
 
 class Processes {
     static void addChildElement(
-            PropertyWriter p,
+            BasePropertyWriter p,
             Map<String, BasePropertyWriter> childElements,
             FlowElementsContainer process,
             Collection<ElementParameters> simulationParameters,
             List<ItemDefinition> itemDefinitions,
             List<RootElement> rootElements) {
         childElements.put(p.getElement().getId(), p);
-        // compatibility fix: boundary events should always occur at the bottom
-        // otherwise they will be drawn at an incorrect position on load
-        if (p instanceof BoundaryEventPropertyWriter) {
-            process.getFlowElements().add(p.getFlowElement());
-        } else {
-            process.getFlowElements().add(0, p.getFlowElement());
+
+        if (p.getElement() instanceof FlowElement) {
+            // compatibility fix: boundary events should always occur at the bottom
+            // otherwise they will be drawn at an incorrect position on load
+            if (p instanceof BoundaryEventPropertyWriter) {
+                process.getFlowElements().add((FlowElement) p.getElement());
+            } else {
+                process.getFlowElements().add(0, (FlowElement) p.getElement());
+                                              p.getElement();
+            }
+        } else if (p.getElement() instanceof Artifact)  {
+            if (process instanceof Process) {
+                ((Process)process).getArtifacts().add((Artifact)p.getElement());
+            } else if (process instanceof SubProcess) {
+                ((SubProcess)process).getArtifacts().add((Artifact)p.getElement());
+            }
         }
 
-        ElementParameters sp = p.getSimulationParameters();
-        if (sp!= null) {
-            simulationParameters.add(sp);
+        if (p instanceof PropertyWriter) {
+            ElementParameters sp = ((PropertyWriter)p).getSimulationParameters();
+            if (sp != null) {
+                simulationParameters.add(sp);
+            }
         }
         itemDefinitions.addAll(p.getItemDefinitions());
-        rootElements.addAll(p.rootElements);
+        rootElements.addAll(p.getRootElements());
     }
 }

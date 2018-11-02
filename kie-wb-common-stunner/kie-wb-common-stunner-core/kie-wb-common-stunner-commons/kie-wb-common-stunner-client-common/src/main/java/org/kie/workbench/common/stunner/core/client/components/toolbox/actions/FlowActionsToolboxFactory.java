@@ -34,7 +34,6 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.lookup.domain.CommonDomainLookups;
-import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.uberfire.mvp.Command;
 
 /**
@@ -55,7 +54,6 @@ import org.uberfire.mvp.Command;
 public class FlowActionsToolboxFactory
         extends AbstractActionsToolboxFactory {
 
-    private final DefinitionUtils definitionUtils;
     private final ToolboxDomainLookups toolboxDomainLookups;
     private final Supplier<CreateConnectorAction> createConnectorActions;
     private final Command createConnectorActionsDestroyer;
@@ -65,13 +63,11 @@ public class FlowActionsToolboxFactory
     private final Command viewsDestroyer;
 
     @Inject
-    public FlowActionsToolboxFactory(final DefinitionUtils definitionUtils,
-                                     final ToolboxDomainLookups toolboxDomainLookups,
+    public FlowActionsToolboxFactory(final ToolboxDomainLookups toolboxDomainLookups,
                                      final @Any ManagedInstance<CreateConnectorAction> createConnectorActions,
                                      final @Any @FlowActionsToolbox ManagedInstance<CreateNodeAction> createNodeActions,
                                      final @Any @FlowActionsToolbox ManagedInstance<ActionsToolboxView> views) {
-        this(definitionUtils,
-             toolboxDomainLookups,
+        this(toolboxDomainLookups,
              createConnectorActions::get,
              createConnectorActions::destroyAll,
              createNodeActions::get,
@@ -80,15 +76,13 @@ public class FlowActionsToolboxFactory
              views::destroyAll);
     }
 
-    FlowActionsToolboxFactory(final DefinitionUtils definitionUtils,
-                              final ToolboxDomainLookups toolboxDomainLookups,
+    FlowActionsToolboxFactory(final ToolboxDomainLookups toolboxDomainLookups,
                               final Supplier<CreateConnectorAction> createConnectorActions,
                               final Command createConnectorActionsDestroyer,
                               final Supplier<CreateNodeAction> createNodeActions,
                               final Command createNodeActionsDestroyer,
                               final Supplier<ActionsToolboxView> views,
                               final Command viewsDestroyer) {
-        this.definitionUtils = definitionUtils;
         this.toolboxDomainLookups = toolboxDomainLookups;
         this.createConnectorActions = createConnectorActions;
         this.createConnectorActionsDestroyer = createConnectorActionsDestroyer;
@@ -113,16 +107,15 @@ public class FlowActionsToolboxFactory
         final Node<Definition<Object>, Edge> node = (Node<Definition<Object>, Edge>) element;
         // Look for the default connector type and create a button for it.
         final CommonDomainLookups lookup = toolboxDomainLookups.get(defSetId);
-        lookup
-                .lookupTargetConnectors(node)
-                .forEach(connectorDefId -> actions.add(createConnectorActions.get()
-                                                               .setEdgeId(connectorDefId)));
+        final Set<String> targetConnectors = lookup.lookupTargetConnectors(node);
+        targetConnectors.forEach(connectorDefId -> actions.add(createConnectorActions.get()
+                                                                       .setEdgeId(connectorDefId)));
 
         // It uses the default connector's identifier, for the actual definition set,
         // to check the resulting nodes that can be created.
         // It also groups the resuling nodes to be created by it's morph base type, and just
         // create an action for each morph target.
-        final String defaultConnectorId = definitionUtils.getDefaultConnectorId(defSetId);
+        final String defaultConnectorId = !targetConnectors.isEmpty() ?  targetConnectors.iterator().next() : null;
         if (null != defaultConnectorId) {
             final Set<String> targets = lookup.lookupTargetNodes(diagram.getGraph(),
                                                                  node,

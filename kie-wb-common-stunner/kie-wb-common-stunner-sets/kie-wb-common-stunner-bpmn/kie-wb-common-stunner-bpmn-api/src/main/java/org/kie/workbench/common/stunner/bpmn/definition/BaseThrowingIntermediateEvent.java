@@ -25,7 +25,6 @@ import javax.validation.Valid;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOModel;
-import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.CircleDimensionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
@@ -44,17 +43,12 @@ public abstract class BaseThrowingIntermediateEvent
     public static final transient String category = BPMNCategories.INTERMEDIATE_EVENTS;
 
     @Labels
-    protected final Set<String> labels = new HashSet<String>();
+    protected final Set<String> labels = new HashSet<>();
 
     @PropertySet
     @FormField
     @Valid
     protected BPMNGeneralSet general;
-
-    @PropertySet
-    @FormField(afterElement = "executionSet")
-    @Valid
-    protected DataIOSet dataIOSet;
 
     @PropertySet
     @Valid
@@ -85,13 +79,11 @@ public abstract class BaseThrowingIntermediateEvent
     }
 
     public BaseThrowingIntermediateEvent(final BPMNGeneralSet general,
-                                         final DataIOSet dataIOSet,
                                          final BackgroundSet backgroundSet,
                                          final FontSet fontSet,
                                          final CircleDimensionSet dimensionsSet) {
         this();
         this.general = general;
-        this.dataIOSet = dataIOSet;
         this.backgroundSet = backgroundSet;
         this.fontSet = fontSet;
         this.dimensionsSet = dimensionsSet;
@@ -99,12 +91,12 @@ public abstract class BaseThrowingIntermediateEvent
 
     @Override
     public boolean hasInputVars() {
-        return true;
+        return false;
     }
 
     @Override
     public boolean isSingleInputVar() {
-        return true;
+        return false;
     }
 
     @Override
@@ -127,14 +119,6 @@ public abstract class BaseThrowingIntermediateEvent
 
     public void setGeneral(BPMNGeneralSet general) {
         this.general = general;
-    }
-
-    public DataIOSet getDataIOSet() {
-        return dataIOSet;
-    }
-
-    public void setDataIOSet(DataIOSet dataIOSet) {
-        this.dataIOSet = dataIOSet;
     }
 
     public BackgroundSet getBackgroundSet() {
@@ -169,7 +153,6 @@ public abstract class BaseThrowingIntermediateEvent
     public int hashCode() {
         return HashUtil.combineHashCodes(Objects.hashCode(getClass()),
                                          Objects.hashCode(general),
-                                         Objects.hashCode(dataIOSet),
                                          Objects.hashCode(backgroundSet),
                                          Objects.hashCode(fontSet),
                                          Objects.hashCode(dimensionsSet),
@@ -178,10 +161,12 @@ public abstract class BaseThrowingIntermediateEvent
 
     @Override
     public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
         if (o instanceof BaseThrowingIntermediateEvent) {
             BaseThrowingIntermediateEvent other = (BaseThrowingIntermediateEvent) o;
             return Objects.equals(general, other.general) &&
-                    Objects.equals(dataIOSet, other.dataIOSet) &&
                     Objects.equals(backgroundSet, other.backgroundSet) &&
                     Objects.equals(fontSet, other.fontSet) &&
                     Objects.equals(dimensionsSet, other.dimensionsSet) &&

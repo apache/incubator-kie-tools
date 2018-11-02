@@ -24,6 +24,7 @@ import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNGlyphFactory;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory;
 import org.kie.workbench.common.stunner.bpmn.client.shape.view.handler.EventInterruptingViewHandler;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseStartEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.StartCompensationEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartConditionalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartErrorEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartEscalationEvent;
@@ -57,7 +58,9 @@ public class StartEventShapeDef
                     .put(StartConditionalEvent.class,
                          BPMNSVGViewFactory::startConditionalEvent)
                     .put(StartEscalationEvent.class,
-                         BPMNSVGViewFactory::startEscalationEvent);
+                         BPMNSVGViewFactory::startEscalationEvent)
+                    .put(StartCompensationEvent.class,
+                         BPMNSVGViewFactory::startCompensationEvent);
 
     public static final Map<Class<? extends BaseStartEvent>, Glyph> GLYPHS =
             new Maps.Builder<Class<? extends BaseStartEvent>, Glyph>()
@@ -75,6 +78,7 @@ public class StartEventShapeDef
                          BPMNGlyphFactory.EVENT_START_CONDITIONAL)
                     .put(StartEscalationEvent.class,
                          BPMNGlyphFactory.EVENT_START_ESCALATION)
+                    .put(StartCompensationEvent.class, BPMNGlyphFactory.EVENT_START_COMPENSATION)
                     .build();
 
     @Override

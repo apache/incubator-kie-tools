@@ -261,6 +261,18 @@
       }
     },
     {
+      "id": "startCompensationEvent",
+      "name": "Start Event - Compensation",
+      "shape": {
+        "path": "shapes/",
+        "file": "event-all.svg"
+      },
+      "icon": {
+        "path": "icons/event/",
+        "file": "event-start-compensation.svg"
+      }
+    },
+    {
       "id": "intermediateTimerEvent",
       "name": "Intermediate Event - Timer",
       "shape": {
@@ -334,6 +346,18 @@
       }
     },
     {
+      "id": "intermediateCompensationCatchingEvent",
+      "name": "Catching Intermediate Event - Compensation",
+      "shape": {
+        "path": "shapes/",
+        "file": "event-all.svg"
+      },
+      "icon": {
+        "path": "icons/event/",
+        "file": "event-intermediate-compensation.svg"
+      }
+    },
+    {
       "id": "intermediateSignalThrowingEvent",
       "name": "Throwing Intermediate Event - Signal",
       "shape": {
@@ -367,6 +391,18 @@
       "icon": {
         "path": "icons/event/",
         "file": "event-intermediate-escalation-throwing.svg"
+      }
+    },
+    {
+      "id": "intermediateCompensationThrowingEvent",
+      "name": "Throwing Intermediate Event - Compensation",
+      "shape": {
+        "path": "shapes/",
+        "file": "event-all.svg"
+      },
+      "icon": {
+        "path": "icons/event/",
+        "file": "event-intermediate-compensation-throwing.svg"
       }
     },
     {
@@ -440,6 +476,18 @@
       "icon": {
         "path": "icons/event/",
         "file": "event-end-escalation.svg"
+      }
+    },
+    {
+      "id": "endCompensationEvent",
+      "name": "End Event - Compensation",
+      "shape": {
+        "path": "shapes/",
+        "file": "event-all.svg"
+      },
+      "icon": {
+        "path": "icons/event/",
+        "file": "event-end-compensation.svg"
       }
     }
   ]

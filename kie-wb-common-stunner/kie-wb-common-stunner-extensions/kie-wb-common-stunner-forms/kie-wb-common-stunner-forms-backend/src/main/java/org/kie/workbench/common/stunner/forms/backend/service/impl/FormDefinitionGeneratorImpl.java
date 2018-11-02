@@ -27,7 +27,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.eclipse.bpmn2.Definitions;
-import org.eclipse.bpmn2.util.Bpmn2Resource;
 import org.kie.workbench.common.forms.jbpm.model.authoring.JBPMFormModel;
 import org.kie.workbench.common.forms.jbpm.model.authoring.process.BusinessProcessFormModel;
 import org.kie.workbench.common.forms.jbpm.model.authoring.task.TaskFormModel;
@@ -171,7 +170,6 @@ public class FormDefinitionGeneratorImpl implements FormDefinitionGenerator {
     }
 
     protected Definitions toDefinitions(Diagram diagram) throws IOException {
-        final Bpmn2Resource generated = (Bpmn2Resource) providers.getModelProvider(diagram).generate(diagram);
-        return (Definitions) generated.getContents().get(0);
+        return (Definitions) providers.getModelProvider(diagram).generate(diagram);
     }
 }

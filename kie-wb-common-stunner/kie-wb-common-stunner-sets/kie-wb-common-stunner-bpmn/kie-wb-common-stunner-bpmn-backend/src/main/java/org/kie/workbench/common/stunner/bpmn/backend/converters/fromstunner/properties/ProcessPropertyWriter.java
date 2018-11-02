@@ -27,13 +27,11 @@ import bpsim.BpsimPackage;
 import bpsim.ElementParameters;
 import bpsim.Scenario;
 import bpsim.ScenarioParameters;
-import org.eclipse.bpmn2.Documentation;
 import org.eclipse.bpmn2.ExtensionAttributeValue;
 import org.eclipse.bpmn2.LaneSet;
 import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.Property;
 import org.eclipse.bpmn2.Relationship;
-import org.eclipse.bpmn2.RootElement;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.di.BPMNPlane;
@@ -52,7 +50,6 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.variables.Proce
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpmn2;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpsim;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.di;
-import static org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.Scripts.asCData;
 
 public class ProcessPropertyWriter extends BasePropertyWriter implements ElementContainer {
 
@@ -111,7 +108,7 @@ public class ProcessPropertyWriter extends BasePropertyWriter implements Element
         return bpmnDiagram;
     }
 
-    public void addChildElement(PropertyWriter p) {
+    public void addChildElement(BasePropertyWriter p) {
         Processes.addChildElement(
                 p,
                 childElements,
@@ -150,12 +147,6 @@ public class ProcessPropertyWriter extends BasePropertyWriter implements Element
 
     public void setExecutable(Boolean value) {
         process.setIsExecutable(value);
-    }
-
-    public void setDocumentation(String documentation) {
-        Documentation d = bpmn2.createDocumentation();
-        d.setText(asCData(documentation));
-        process.getDocumentation().add(d);
     }
 
     public void setPackage(String value) {
@@ -229,9 +220,5 @@ public class ProcessPropertyWriter extends BasePropertyWriter implements Element
         defaultScenario.getElementParameters().addAll(simulationParameters);
 
         return relationship;
-    }
-
-    public Collection<RootElement> getRootElements() {
-        return rootElements;
     }
 }

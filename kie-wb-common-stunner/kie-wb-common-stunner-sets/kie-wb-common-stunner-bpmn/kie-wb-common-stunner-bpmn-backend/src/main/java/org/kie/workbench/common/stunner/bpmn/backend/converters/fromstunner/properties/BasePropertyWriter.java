@@ -32,6 +32,7 @@ import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunn
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.dc;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.di;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.Scripts.asCData;
+import static org.kie.workbench.common.stunner.core.util.StringUtils.isEmpty;
 
 public abstract class BasePropertyWriter {
 
@@ -73,9 +74,11 @@ public abstract class BasePropertyWriter {
     }
 
     public void setDocumentation(String value) {
-        Documentation documentation = bpmn2.createDocumentation();
-        documentation.setText(asCData(value));
-        baseElement.getDocumentation().add(documentation);
+        if (!isEmpty(value)) {
+            Documentation documentation = bpmn2.createDocumentation();
+            documentation.setText(asCData(value));
+            baseElement.getDocumentation().add(documentation);
+        }
     }
 
     /**
@@ -158,5 +161,9 @@ public abstract class BasePropertyWriter {
 
     public List<ItemDefinition> getItemDefinitions() {
         return itemDefinitions;
+    }
+
+    public List<RootElement> getRootElements() {
+        return rootElements;
     }
 }

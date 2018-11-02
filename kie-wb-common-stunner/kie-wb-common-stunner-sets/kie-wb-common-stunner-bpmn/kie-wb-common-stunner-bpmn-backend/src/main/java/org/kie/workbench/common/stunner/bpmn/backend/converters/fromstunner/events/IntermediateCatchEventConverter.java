@@ -21,6 +21,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.prop
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.PropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.PropertyWriterFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseCatchingIntermediateEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateCompensationEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateConditionalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateErrorEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateEscalationEvent;
@@ -57,6 +58,7 @@ public class IntermediateCatchEventConverter {
                 .when(IntermediateTimerEvent.class, this::timerEvent)
                 .when(IntermediateConditionalEvent.class, this::conditionalEvent)
                 .when(IntermediateEscalationEvent.class, this::escalationEvent)
+                .when(IntermediateCompensationEvent.class, this::compensationEvent)
 
                 .apply(node).value();
     }
@@ -176,6 +178,22 @@ public class IntermediateCatchEventConverter {
         CancellingEscalationEventExecutionSet executionSet = definition.getExecutionSet();
         p.setCancelActivity(executionSet.getCancelActivity().getValue());
         p.addEscalation(executionSet.getEscalationRef());
+
+        p.setBounds(n.getContent().getBounds());
+        return p;
+    }
+
+    private PropertyWriter compensationEvent(Node<View<IntermediateCompensationEvent>, ?> n) {
+        CatchEventPropertyWriter p = createCatchEventPropertyWriter(n);
+        p.getFlowElement().setId(n.getUUID());
+
+        IntermediateCompensationEvent definition = n.getContent().getDefinition();
+
+        BPMNGeneralSet general = definition.getGeneral();
+        p.setName(general.getName().getValue());
+        p.setDocumentation(general.getDocumentation().getValue());
+
+        p.addCompensation();
 
         p.setBounds(n.getContent().getBounds());
         return p;

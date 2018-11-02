@@ -36,6 +36,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.Circ
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.Radius;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.CancelActivity;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.IsInterrupting;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.compensation.ActivityRef;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.compensation.CompensationEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.conditional.CancellingConditionalEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.conditional.InterruptingConditionalEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.escalation.CancellingEscalationEventExecutionSet;
@@ -1840,7 +1842,7 @@ public class HashCodeAndEqualityTest {
     }
 
     @Test
-    public void testEndEscalationThrowingEventEqualsAndHashCode() {
+    public void testEndEscalationEventEqualsAndHashCode() {
         String ESCALATION_REF = "ESCALATION_REF";
         String ESCALATION_REF_1 = "ESCALATION_REF_1";
         TestCaseBuilder.newTestCase()
@@ -1878,6 +1880,145 @@ public class HashCodeAndEqualityTest {
     }
 
     @Test
+    public void testStartCompensationEventAndHashCode() {
+        TestCaseBuilder.newTestCase()
+                .addTrueCase(new StartCompensationEvent(),
+                             new StartCompensationEvent())
+
+                .addTrueCase(new StartCompensationEvent(new BPMNGeneralSet(), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new SimulationAttributeSet(), new IsInterrupting()),
+                             new StartCompensationEvent(new BPMNGeneralSet(), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new SimulationAttributeSet(), new IsInterrupting()))
+
+                .addTrueCase(new StartCompensationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new SimulationAttributeSet(), new IsInterrupting()),
+                             new StartCompensationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new SimulationAttributeSet(), new IsInterrupting()))
+
+                .addFalseCase(new StartCompensationEvent(), null)
+
+                .addFalseCase(new StartCompensationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new SimulationAttributeSet(), new IsInterrupting()),
+                              new StartCompensationEvent(new BPMNGeneralSet("name1", "doc1"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new SimulationAttributeSet(), new IsInterrupting()))
+
+                .test();
+    }
+
+    @Test
+    public void testIntermediateCompensationEventAndHashCode() {
+        TestCaseBuilder.newTestCase()
+                .addTrueCase(new IntermediateCompensationEvent(),
+                             new IntermediateCompensationEvent())
+
+                .addTrueCase(new IntermediateCompensationEvent(new BPMNGeneralSet(), new BackgroundSet(), new FontSet(), new CircleDimensionSet()),
+                             new IntermediateCompensationEvent(new BPMNGeneralSet(), new BackgroundSet(), new FontSet(), new CircleDimensionSet()))
+
+                .addTrueCase(new IntermediateCompensationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet()),
+                             new IntermediateCompensationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet()))
+
+                .addFalseCase(new IntermediateCompensationEvent(), null)
+
+                .addFalseCase(new IntermediateCompensationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet()),
+                              new IntermediateCompensationEvent(new BPMNGeneralSet("name1", "doc1"), new BackgroundSet(), new FontSet(), new CircleDimensionSet()))
+
+                .test();
+    }
+
+    @Test
+    public void testIntermediateCompensationThrowingEventEqualsAndHashCode() {
+        String ACTIVITY_REF = "ACTIVITY_REF";
+        String ACTIVITY_REF_1 = "ACTIVITY_REF_1";
+        TestCaseBuilder.newTestCase()
+                .addTrueCase(new IntermediateCompensationEventThrowing(),
+                             new IntermediateCompensationEventThrowing())
+
+                .addTrueCase(new IntermediateCompensationEventThrowing(new BPMNGeneralSet(), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new CompensationEventExecutionSet()),
+                             new IntermediateCompensationEventThrowing(new BPMNGeneralSet(), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new CompensationEventExecutionSet()))
+
+                .addFalseCase(new IntermediateCompensationEventThrowing(),
+                              null)
+
+                .addTrueCase(new IntermediateCompensationEventThrowing(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new CompensationEventExecutionSet()),
+                             new IntermediateCompensationEventThrowing(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new CompensationEventExecutionSet()))
+
+                .addTrueCase(new IntermediateCompensationEventThrowing(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new CompensationEventExecutionSet(new ActivityRef(ACTIVITY_REF))),
+                             new IntermediateCompensationEventThrowing(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new CompensationEventExecutionSet(new ActivityRef(ACTIVITY_REF))))
+
+                .addFalseCase(new IntermediateCompensationEventThrowing(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new CompensationEventExecutionSet(new ActivityRef(ACTIVITY_REF))),
+                              new IntermediateCompensationEventThrowing(new BPMNGeneralSet("name1", "doc1"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new CompensationEventExecutionSet(new ActivityRef(ACTIVITY_REF))))
+
+                .addFalseCase(new IntermediateCompensationEventThrowing(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new CompensationEventExecutionSet(new ActivityRef(ACTIVITY_REF))),
+                              new IntermediateCompensationEventThrowing(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new CompensationEventExecutionSet(new ActivityRef(ACTIVITY_REF_1))))
+
+                .addFalseCase(new IntermediateCompensationEventThrowing(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new CompensationEventExecutionSet(new ActivityRef(ACTIVITY_REF))),
+                              new IntermediateCompensationEventThrowing(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new CompensationEventExecutionSet(null)))
+
+                .addFalseCase(new IntermediateCompensationEventThrowing(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new CompensationEventExecutionSet(new ActivityRef(ACTIVITY_REF))),
+                              new IntermediateCompensationEventThrowing(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), null))
+
+                .test();
+    }
+
+    @Test
+    public void testEndCompensationEventEqualsAndHashCode() {
+        String ACTIVITY_REF = "ACTIVITY_REF";
+        String ACTIVITY_REF_1 = "ACTIVITY_REF_1";
+        TestCaseBuilder.newTestCase()
+                .addTrueCase(new EndCompensationEvent(),
+                             new EndCompensationEvent())
+
+                .addTrueCase(new EndCompensationEvent(new BPMNGeneralSet(), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new CompensationEventExecutionSet()),
+                             new EndCompensationEvent(new BPMNGeneralSet(), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new CompensationEventExecutionSet()))
+
+                .addFalseCase(new EndCompensationEvent(),
+                              null)
+
+                .addTrueCase(new EndCompensationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new CompensationEventExecutionSet()),
+                             new EndCompensationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new CompensationEventExecutionSet()))
+
+                .addTrueCase(new EndCompensationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new CompensationEventExecutionSet(new ActivityRef(ACTIVITY_REF))),
+                             new EndCompensationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new CompensationEventExecutionSet(new ActivityRef(ACTIVITY_REF))))
+
+                .addFalseCase(new EndCompensationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new CompensationEventExecutionSet(new ActivityRef(ACTIVITY_REF))),
+                              new EndCompensationEvent(new BPMNGeneralSet("name1", "doc1"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new CompensationEventExecutionSet(new ActivityRef(ACTIVITY_REF))))
+
+                .addFalseCase(new EndCompensationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new CompensationEventExecutionSet(new ActivityRef(ACTIVITY_REF))),
+                              new EndCompensationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new CompensationEventExecutionSet(new ActivityRef(ACTIVITY_REF_1))))
+
+                .addFalseCase(new EndCompensationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new CompensationEventExecutionSet(new ActivityRef(ACTIVITY_REF))),
+                              new EndCompensationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new CompensationEventExecutionSet(new ActivityRef(ACTIVITY_REF_1))))
+
+
+                .addFalseCase(new EndCompensationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new CompensationEventExecutionSet(new ActivityRef(ACTIVITY_REF))),
+                              new EndCompensationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new CompensationEventExecutionSet(null)))
+
+
+                .addFalseCase(new EndCompensationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new CompensationEventExecutionSet(new ActivityRef(ACTIVITY_REF))),
+                              new EndCompensationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), null))
+
+                .test();
+    }
+
+    @Test
+    public void testActivityRefEqualsAndHashCode() {
+        TestCaseBuilder.newTestCase()
+                .addTrueCase(new ActivityRef(), new ActivityRef())
+                .addTrueCase(new ActivityRef(null), new ActivityRef(null))
+                .addTrueCase(new ActivityRef("a"), new ActivityRef("a"))
+                .addFalseCase(new ActivityRef(), new ActivityRef("b"))
+                .addFalseCase(new ActivityRef("a"), new ActivityRef("b"))
+                .test();
+    }
+
+    @Test
+    public void testCompensationEventExecutionSetEqualsAndHashCode() {
+        TestCaseBuilder.newTestCase()
+                .addTrueCase(new CompensationEventExecutionSet(), new CompensationEventExecutionSet())
+                .addTrueCase(new CompensationEventExecutionSet(null), new CompensationEventExecutionSet(null))
+                .addTrueCase(new CompensationEventExecutionSet(new ActivityRef()), new CompensationEventExecutionSet(new ActivityRef()))
+                .addTrueCase(new CompensationEventExecutionSet(new ActivityRef("a")), new CompensationEventExecutionSet(new ActivityRef("a")))
+                .addFalseCase(new CompensationEventExecutionSet(new ActivityRef("a")), new CompensationEventExecutionSet(new ActivityRef("b")))
+                .addFalseCase(new CompensationEventExecutionSet(new ActivityRef("a")), new CompensationEventExecutionSet(new ActivityRef(null)))
+                .addFalseCase(new CompensationEventExecutionSet(new ActivityRef("a")), new CompensationEventExecutionSet(new ActivityRef()))
+                .test();
+    }
+
+    @Test
     public void testSignalScopeEqualsAndHashCode() {
         TestCaseBuilder.newTestCase()
                 .addTrueCase(new SignalScope(), new SignalScope())
@@ -1895,6 +2036,19 @@ public class HashCodeAndEqualityTest {
                 .addTrueCase(new SignalRef(null), new SignalRef(null))
                 .addFalseCase(new SignalRef("ref"), null)
                 .addFalseCase(new SignalRef("ref"), new SignalRef("ref1"))
+                .test();
+    }
+
+    @Test
+    public void testAssociationEqualsAndHashCode() {
+        TestCaseBuilder.newTestCase()
+                .addTrueCase(new Association(), new Association())
+                .addTrueCase(new Association(new BPMNGeneralSet(), new BackgroundSet(), new FontSet()),
+                             new Association(new BPMNGeneralSet(), new BackgroundSet(), new FontSet()))
+                .addFalseCase(new Association(),
+                              new Association(new BPMNGeneralSet(), new BackgroundSet(), new FontSet()))
+                .addFalseCase(new Association(),
+                              new Association(null, null, null))
                 .test();
     }
 

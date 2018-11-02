@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.pro
 
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.AdHocSubProcess;
+import org.eclipse.bpmn2.Association;
 import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.BusinessRuleTask;
 import org.eclipse.bpmn2.CallActivity;
@@ -88,6 +89,10 @@ public class PropertyWriterFactory {
 
     public SequenceFlowPropertyWriter of(SequenceFlow e) {
         return new SequenceFlowPropertyWriter(e, variableScope);
+    }
+
+    public AssociationPropertyWriter of(Association e) {
+        return new AssociationPropertyWriter(e, variableScope);
     }
 
     public GatewayPropertyWriter of(Gateway e) {

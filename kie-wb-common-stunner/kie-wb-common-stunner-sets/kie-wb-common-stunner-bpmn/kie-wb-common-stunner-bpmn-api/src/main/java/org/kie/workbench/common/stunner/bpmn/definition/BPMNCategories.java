@@ -32,6 +32,8 @@ public class BPMNCategories {
 
     public static final String CONNECTING_OBJECTS = "ConnectingObjects";
 
+    public static final String ARTIFACTS = "Artifacts";
+
     public static final String GATEWAYS = "Gateways";
 
     public static final String SERVICE_TASKS = "ServiceTasks";

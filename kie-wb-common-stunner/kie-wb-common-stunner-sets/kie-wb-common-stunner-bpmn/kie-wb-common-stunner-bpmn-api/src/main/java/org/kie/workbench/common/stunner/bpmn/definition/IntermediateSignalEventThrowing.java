@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.bpmn.definition;
 
+import java.util.Objects;
+
 import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
@@ -55,7 +57,12 @@ public class IntermediateSignalEventThrowing extends BaseThrowingIntermediateEve
     @PropertySet
     @FormField(afterElement = "general")
     @Valid
-    protected ScopedSignalEventExecutionSet executionSet;
+    private ScopedSignalEventExecutionSet executionSet;
+
+    @PropertySet
+    @FormField(afterElement = "executionSet")
+    @Valid
+    private DataIOSet dataIOSet;
 
     public IntermediateSignalEventThrowing() {
         this(new BPMNGeneralSet(""),
@@ -73,10 +80,10 @@ public class IntermediateSignalEventThrowing extends BaseThrowingIntermediateEve
                                            final @MapsTo("dimensionsSet") CircleDimensionSet dimensionsSet,
                                            final @MapsTo("executionSet") ScopedSignalEventExecutionSet executionSet) {
         super(general,
-              dataIOSet,
               backgroundSet,
               fontSet,
               dimensionsSet);
+        this.dataIOSet = dataIOSet;
         this.executionSet = executionSet;
     }
 
@@ -88,18 +95,41 @@ public class IntermediateSignalEventThrowing extends BaseThrowingIntermediateEve
         this.executionSet = executionSet;
     }
 
+    public DataIOSet getDataIOSet() {
+        return dataIOSet;
+    }
+
+    public void setDataIOSet(DataIOSet dataIOSet) {
+        this.dataIOSet = dataIOSet;
+    }
+
+    @Override
+    public boolean hasInputVars() {
+        return true;
+    }
+
+    @Override
+    public boolean isSingleInputVar() {
+        return true;
+    }
+
     @Override
     public int hashCode() {
         return HashUtil.combineHashCodes(super.hashCode(),
-                                         executionSet.hashCode());
+                                         Objects.hashCode(executionSet),
+                                         Objects.hashCode(dataIOSet));
     }
 
     @Override
     public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
         if (o instanceof IntermediateSignalEventThrowing) {
             IntermediateSignalEventThrowing other = (IntermediateSignalEventThrowing) o;
             return super.equals(other) &&
-                    executionSet.equals(other.executionSet);
+                    Objects.equals(executionSet, other.executionSet) &&
+                    Objects.equals(dataIOSet, other.dataIOSet);
         }
         return false;
     }

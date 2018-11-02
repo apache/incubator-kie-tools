@@ -34,6 +34,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.proper
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.EventDefinitionReader;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.EventPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.PropertyReaderFactory;
+import org.kie.workbench.common.stunner.bpmn.definition.StartCompensationEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartConditionalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartErrorEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartEscalationEvent;
@@ -85,7 +86,7 @@ public class StartEventConverter {
                         .when(ErrorEventDefinition.class, e -> errorEvent(event, e))
                         .when(ConditionalEventDefinition.class, e -> conditionalEvent(event, e))
                         .when(EscalationEventDefinition.class, e -> escalationEvent(event, e))
-                        .missing(CompensateEventDefinition.class)
+                        .when(CompensateEventDefinition.class, e -> compensationEvent(event, e))
                         .apply(eventDefinitions.get(0)).value();
             default:
                 throw new UnsupportedOperationException("Multiple event definitions not supported for start event");
@@ -301,6 +302,32 @@ public class StartEventConverter {
         );
 
         definition.setSimulationSet(p.getSimulationSet());
+
+        node.getContent().setBounds(p.getBounds());
+
+        definition.setDimensionsSet(p.getCircleDimensionSet());
+        definition.setFontSet(p.getFontSet());
+        definition.setBackgroundSet(p.getBackgroundSet());
+
+        return BpmnNode.of(node);
+    }
+
+    private BpmnNode compensationEvent(
+            StartEvent event,
+            CompensateEventDefinition e) {
+        Node<View<StartCompensationEvent>, Edge> node =
+                factoryManager.newNode(event.getId(), StartCompensationEvent.class);
+
+        StartCompensationEvent definition = node.getContent().getDefinition();
+        EventPropertyReader p = propertyReaderFactory.of(event);
+
+        definition.setGeneral(new BPMNGeneralSet(
+                new Name(p.getName()),
+                new Documentation(p.getDocumentation())
+        ));
+
+        definition.setSimulationSet(p.getSimulationSet());
+        definition.setIsInterrupting(new IsInterrupting(false));
 
         node.getContent().setBounds(p.getBounds());
 

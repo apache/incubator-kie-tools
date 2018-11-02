@@ -18,6 +18,8 @@ package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.prope
 
 import java.util.Optional;
 
+import org.eclipse.bpmn2.Activity;
+import org.eclipse.bpmn2.CompensateEventDefinition;
 import org.eclipse.bpmn2.Error;
 import org.eclipse.bpmn2.ErrorEventDefinition;
 import org.eclipse.bpmn2.Escalation;
@@ -43,5 +45,11 @@ public class EventDefinitionReader {
         return Optional.ofNullable(e.getEscalationRef())
                 .map(Escalation::getEscalationCode)
                 .orElse("");
+    }
+
+    public static String activityRefOf(CompensateEventDefinition e) {
+        return Optional.ofNullable(e.getActivityRef())
+                .map(Activity::getId)
+                .orElse(null);
     }
 }

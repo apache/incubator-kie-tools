@@ -113,8 +113,6 @@ public class FlowActionsToolboxFactoryTest {
         when(metadata.getDefinitionSetId()).thenReturn(DS_ID);
         when(element.getUUID()).thenReturn(E_UUID);
         when(element.asNode()).thenReturn(element);
-        when(definitionUtils.getDefaultConnectorId(eq(DS_ID)))
-                .thenReturn(EDGE_ID);
         when(toolboxLookups.get(anyString())).thenReturn(domainLookups);
         when(domainLookups.lookupTargetConnectors(eq(element)))
                 .thenReturn(Collections.singleton(EDGE_ID));
@@ -124,8 +122,7 @@ public class FlowActionsToolboxFactoryTest {
                 .thenReturn(Collections.singleton(NODE_ID));
         when(domainLookups.lookupMorphBaseDefinitions(anySet()))
                 .thenReturn(Collections.singleton(NODE_ID));
-        this.tested = new FlowActionsToolboxFactory(definitionUtils,
-                                                    toolboxLookups,
+        this.tested = new FlowActionsToolboxFactory(toolboxLookups,
                                                     () -> createConnectorAction,
                                                     createConnectorActionDestroyer,
                                                     () -> createNodeAction,

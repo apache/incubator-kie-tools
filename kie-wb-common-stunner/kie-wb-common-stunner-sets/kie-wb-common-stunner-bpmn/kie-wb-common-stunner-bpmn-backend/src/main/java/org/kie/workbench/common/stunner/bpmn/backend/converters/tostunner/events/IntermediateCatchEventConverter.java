@@ -35,6 +35,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.BpmnNo
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.CatchEventPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.EventDefinitionReader;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.PropertyReaderFactory;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateCompensationEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateConditionalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateErrorEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateEscalationEvent;
@@ -85,7 +86,7 @@ public class IntermediateCatchEventConverter {
                         .when(ErrorEventDefinition.class, e -> errorEvent(event, e))
                         .when(ConditionalEventDefinition.class, e -> conditionalEvent(event, e))
                         .when(EscalationEventDefinition.class, e -> escalationEvent(event, e))
-                        .missing(CompensateEventDefinition.class)
+                        .when(CompensateEventDefinition.class, e -> compensationEvent(event, e))
                         .apply(eventDefinitions.get(0)).value();
             default:
                 throw new UnsupportedOperationException("Multiple definitions not supported for intermediate catch event");
@@ -106,7 +107,7 @@ public class IntermediateCatchEventConverter {
                         .when(ErrorEventDefinition.class, e -> errorEvent(event, e))
                         .when(ConditionalEventDefinition.class, e -> conditionalEvent(event, e))
                         .when(EscalationEventDefinition.class, e -> escalationEvent(event, e))
-                        .missing(CompensateEventDefinition.class)
+                        .when(CompensateEventDefinition.class, e -> compensationEvent(event, e))
                         .apply(eventDefinitions.get(0)).value()
                         .docked();
             default:
@@ -276,6 +277,29 @@ public class IntermediateCatchEventConverter {
         definition.setExecutionSet(new CancellingEscalationEventExecutionSet(
                 new CancelActivity(p.isCancelActivity()),
                 new EscalationRef(EventDefinitionReader.escalationRefOf(e))
+        ));
+
+        node.getContent().setBounds(p.getBounds());
+
+        definition.setDimensionsSet(p.getCircleDimensionSet());
+        definition.setFontSet(p.getFontSet());
+        definition.setBackgroundSet(p.getBackgroundSet());
+
+        return BpmnNode.of(node);
+    }
+
+    private BpmnNode compensationEvent(CatchEvent event,
+                                       CompensateEventDefinition e) {
+        String nodeId = event.getId();
+        Node<View<IntermediateCompensationEvent>, Edge> node = factoryManager.newNode(nodeId,
+                                                                                      IntermediateCompensationEvent.class);
+
+        IntermediateCompensationEvent definition = node.getContent().getDefinition();
+        CatchEventPropertyReader p = propertyReaderFactory.of(event);
+
+        definition.setGeneral(new BPMNGeneralSet(
+                new Name(p.getName()),
+                new Documentation(p.getDocumentation())
         ));
 
         node.getContent().setBounds(p.getBounds());

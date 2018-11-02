@@ -36,6 +36,7 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.soup.commons.util.Lists;
 import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNImageResources;
+import org.kie.workbench.common.stunner.bpmn.definition.Association;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNCategories;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseSubprocess;
@@ -229,6 +230,7 @@ public class BPMNPaletteDefinitionBuilder
         return isType(BPMNDiagramImpl.class)
                 .or(isType(NoneTask.class))
                 .or(isType(SequenceFlow.class))
+                .or(isType(Association.class))
                 .negate();
     }
 

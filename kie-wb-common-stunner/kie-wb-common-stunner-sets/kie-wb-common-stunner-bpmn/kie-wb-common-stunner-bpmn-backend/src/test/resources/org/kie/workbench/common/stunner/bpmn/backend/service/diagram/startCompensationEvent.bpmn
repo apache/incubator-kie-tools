@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/bpmn20" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:bpsim="http://www.bpsim.org/schemas/1.0" xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:drools="http://www.jboss.org/drools" id="_KEsyUMeoEeiB0clEXOh8Kw" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd" exporter="jBPM Designer" exporterVersion="1.0" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.omg.org/bpmn20" typeLanguage="http://www.java.com/javaTypes">
+  <bpmn2:process id="com.myspace.test.StartCompensationEvent" drools:packageName="com.myspace.test" drools:version="1.0" name="StartCompensationEvent" isExecutable="true">
+    <bpmn2:startEvent id="_19C23644-6CF0-4508-81B2-4CA2179137AB" drools:selectable="true" color:background-color="#9acd32" color:border-color="#000000" color:color="#000000" name="StartCompensationEventName" isInterrupting="false">
+      <bpmn2:documentation id="_KEsyUceoEeiB0clEXOh8Kw"><![CDATA[StartCompensationEventDocumentation]]></bpmn2:documentation>
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[StartCompensationEventName]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:compensateEventDefinition id="_KEsyUseoEeiB0clEXOh8Kw"/>
+    </bpmn2:startEvent>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="_KEsyU8eoEeiB0clEXOh8Kw">
+    <bpmndi:BPMNPlane id="_KEsyVMeoEeiB0clEXOh8Kw" bpmnElement="com.myspace.test.StartCompensationEvent">
+      <bpmndi:BPMNShape id="_KEsyVceoEeiB0clEXOh8Kw" bpmnElement="_19C23644-6CF0-4508-81B2-4CA2179137AB">
+        <dc:Bounds height="30.0" width="30.0" x="180.0" y="120.0"/>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+  <bpmn2:relationship id="_KEsyVseoEeiB0clEXOh8Kw" type="BPSimData">
+    <bpmn2:extensionElements>
+      <bpsim:BPSimData>
+        <bpsim:Scenario xsi:type="bpsim:Scenario" id="default" name="Simulationscenario">
+          <bpsim:ScenarioParameters xsi:type="bpsim:ScenarioParameters" baseTimeUnit="min"/>
+          <bpsim:ElementParameters xsi:type="bpsim:ElementParameters" elementRef="_19C23644-6CF0-4508-81B2-4CA2179137AB" id="_KEsyV8eoEeiB0clEXOh8Kw">
+            <bpsim:TimeParameters xsi:type="bpsim:TimeParameters">
+              <bpsim:ProcessingTime xsi:type="bpsim:Parameter">
+                <bpsim:UniformDistribution max="10.0" min="5.0"/>
+              </bpsim:ProcessingTime>
+            </bpsim:TimeParameters>
+            <bpsim:ControlParameters xsi:type="bpsim:ControlParameters">
+              <bpsim:Probability xsi:type="bpsim:Parameter">
+                <bpsim:FloatingParameter value="100.0"/>
+              </bpsim:Probability>
+            </bpsim:ControlParameters>
+          </bpsim:ElementParameters>
+        </bpsim:Scenario>
+      </bpsim:BPSimData>
+    </bpmn2:extensionElements>
+    <bpmn2:source>_KEsyUMeoEeiB0clEXOh8Kw</bpmn2:source>
+    <bpmn2:target>_KEsyUMeoEeiB0clEXOh8Kw</bpmn2:target>
+  </bpmn2:relationship>
+</bpmn2:definitions>

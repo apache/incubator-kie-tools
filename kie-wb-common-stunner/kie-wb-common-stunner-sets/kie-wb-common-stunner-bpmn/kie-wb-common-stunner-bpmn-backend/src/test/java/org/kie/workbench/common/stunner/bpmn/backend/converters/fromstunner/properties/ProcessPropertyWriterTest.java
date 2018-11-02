@@ -28,6 +28,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpmn2;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.di;
 
@@ -95,5 +97,13 @@ public class ProcessPropertyWriterTest {
         p.setCaseRoles(caseRole);
         String cdata = CustomElement.caseRole.of(p.getProcess()).get();
         assertThat("role").isEqualTo(CustomElement.caseRole.stripCData(cdata));
+    }
+
+    @Test
+    public void testSetDocumentationNotEmpty() {
+        p.setDocumentation("DocumentationValue");
+        assertNotNull(p.getProcess().getDocumentation());
+        assertEquals(1, p.getProcess().getDocumentation().size());
+        assertEquals("<![CDATA[DocumentationValue]]>", p.getProcess().getDocumentation().get(0).getText());
     }
 }

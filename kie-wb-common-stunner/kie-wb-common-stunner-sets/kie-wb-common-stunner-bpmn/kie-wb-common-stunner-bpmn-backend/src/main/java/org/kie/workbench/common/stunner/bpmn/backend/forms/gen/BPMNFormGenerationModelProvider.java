@@ -22,18 +22,21 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.eclipse.bpmn2.Definitions;
 import org.kie.workbench.common.stunner.bpmn.BPMNDefinitionSet;
+import org.kie.workbench.common.stunner.bpmn.backend.BPMNBackendService;
 import org.kie.workbench.common.stunner.bpmn.backend.BPMNDiagramMarshaller;
-import org.kie.workbench.common.stunner.bpmn.backend.legacy.resource.JBPMBpmn2ResourceImpl;
+import org.kie.workbench.common.stunner.bpmn.backend.BPMNDirectDiagramMarshaller;
+import org.kie.workbench.common.stunner.core.definition.service.DiagramMarshaller;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.forms.backend.gen.FormGenerationModelProvider;
 
 @ApplicationScoped
 public class BPMNFormGenerationModelProvider
-        implements FormGenerationModelProvider<JBPMBpmn2ResourceImpl> {
+        implements FormGenerationModelProvider<Definitions> {
 
-    private final BPMNDiagramMarshaller bpmnDiagramMarshaller;
+    private BPMNBackendService bpmnBackendService;
     private final DefinitionUtils definitionUtils;
     private String definitionSetId;
 
@@ -44,9 +47,9 @@ public class BPMNFormGenerationModelProvider
     }
 
     @Inject
-    public BPMNFormGenerationModelProvider(final BPMNDiagramMarshaller bpmnDiagramMarshaller,
+    public BPMNFormGenerationModelProvider(final BPMNBackendService bpmnBackendService,
                                            final DefinitionUtils definitionUtils) {
-        this.bpmnDiagramMarshaller = bpmnDiagramMarshaller;
+        this.bpmnBackendService = bpmnBackendService;
         this.definitionUtils = definitionUtils;
     }
 
@@ -62,7 +65,13 @@ public class BPMNFormGenerationModelProvider
 
     @Override
     @SuppressWarnings("unchecked")
-    public JBPMBpmn2ResourceImpl generate(final Diagram diagram) throws IOException {
-        return bpmnDiagramMarshaller.marshallToBpmn2Resource(diagram);
+    public Definitions generate(final Diagram diagram) throws IOException {
+        DiagramMarshaller diagramMarshaller = bpmnBackendService.getDiagramMarshaller();
+        if (diagramMarshaller instanceof BPMNDiagramMarshaller) {
+            return (Definitions)((BPMNDiagramMarshaller)diagramMarshaller).marshallToBpmn2Resource(diagram).getContents().get(0);
+        } else if (diagramMarshaller instanceof BPMNDirectDiagramMarshaller) {
+            return ((BPMNDirectDiagramMarshaller)diagramMarshaller).marshallToBpmn2Definitions(diagram);
+        }
+        throw new IOException("Unexpected diagram marshaller type: " + diagramMarshaller.getMetadataMarshaller().getClass());
     }
 }

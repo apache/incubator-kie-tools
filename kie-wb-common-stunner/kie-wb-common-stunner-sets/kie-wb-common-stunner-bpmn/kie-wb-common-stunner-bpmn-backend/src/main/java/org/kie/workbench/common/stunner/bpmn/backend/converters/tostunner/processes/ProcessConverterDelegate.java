@@ -20,6 +20,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.FlowElement;
 import org.eclipse.bpmn2.LaneSet;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.Result;
@@ -72,7 +73,7 @@ final class ProcessConverterDelegate {
         return freeFloatingNodes;
     }
 
-    void convertEdges(BpmnNode processRoot, List<FlowElement> flowElements, Map<String, BpmnNode> nodes) {
+    void convertEdges(BpmnNode processRoot, List<BaseElement> flowElements, Map<String, BpmnNode> nodes) {
         flowElements.stream()
                 .map(e -> converterFactory.edgeConverter().convertEdge(e, nodes))
                 .filter(Result::isSuccess)

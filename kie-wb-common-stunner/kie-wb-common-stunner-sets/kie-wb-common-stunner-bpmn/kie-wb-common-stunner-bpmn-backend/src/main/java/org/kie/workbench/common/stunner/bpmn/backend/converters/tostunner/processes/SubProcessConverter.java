@@ -17,6 +17,8 @@
 package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.processes;
 
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.eclipse.bpmn2.SubProcess;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.TypedFactoryManager;
@@ -88,7 +90,8 @@ public class SubProcessConverter {
 
         delegate.convertEdges(
                 subProcessRoot,
-                subProcess.getFlowElements(),
+                Stream.concat(subProcess.getFlowElements().stream(),
+                              subProcess.getArtifacts().stream()).collect(Collectors.toList()),
                 nodes);
 
         return subProcessRoot;

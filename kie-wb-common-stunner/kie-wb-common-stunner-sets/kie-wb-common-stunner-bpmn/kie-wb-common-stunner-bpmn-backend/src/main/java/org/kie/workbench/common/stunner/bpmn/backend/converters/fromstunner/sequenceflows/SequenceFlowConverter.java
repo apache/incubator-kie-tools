@@ -41,7 +41,7 @@ public class SequenceFlowConverter {
         this.propertyWriterFactory = propertyWriterFactory;
     }
 
-    public Result<SequenceFlowPropertyWriter> toFlowElement(Edge<?, ?> edge, ElementContainer process) {
+    public Result<BasePropertyWriter> toFlowElement(Edge<?, ?> edge, ElementContainer process) {
         ViewConnector<SequenceFlow> connector = (ViewConnector<SequenceFlow>) edge.getContent();
         SequenceFlow definition = connector.getDefinition();
         org.eclipse.bpmn2.SequenceFlow seq = bpmn2.createSequenceFlow();

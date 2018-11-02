@@ -21,6 +21,7 @@ import java.util.Optional;
 
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.AdHocSubProcess;
+import org.eclipse.bpmn2.Association;
 import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.BusinessRuleTask;
 import org.eclipse.bpmn2.CatchEvent;
@@ -59,6 +60,10 @@ public class PropertyReaderFactory {
 
     public SequenceFlowPropertyReader of(SequenceFlow el) {
         return new SequenceFlowPropertyReader(el, plane, definitionResolver);
+    }
+
+    public AssociationPropertyReader of(Association el) {
+        return new AssociationPropertyReader(el, plane, definitionResolver);
     }
 
     public GatewayPropertyReader of(Gateway el) {

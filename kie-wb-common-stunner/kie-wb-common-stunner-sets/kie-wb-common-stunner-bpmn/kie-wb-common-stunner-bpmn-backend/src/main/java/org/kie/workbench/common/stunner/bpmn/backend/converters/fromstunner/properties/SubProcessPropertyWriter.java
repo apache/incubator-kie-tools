@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 
 import bpsim.ElementParameters;
-import org.eclipse.bpmn2.Documentation;
 import org.eclipse.bpmn2.LaneSet;
 import org.eclipse.bpmn2.Property;
 import org.eclipse.bpmn2.SubProcess;
@@ -39,7 +38,6 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnExitActi
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessVariables;
 
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpmn2;
-import static org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.Scripts.asCData;
 
 public class SubProcessPropertyWriter extends ActivityPropertyWriter implements ElementContainer {
 
@@ -52,7 +50,7 @@ public class SubProcessPropertyWriter extends ActivityPropertyWriter implements 
         this.process = process;
     }
 
-    public void addChildElement(PropertyWriter p) {
+    public void addChildElement(BasePropertyWriter p) {
         p.setParent(this);
         Processes.addChildElement(
                 p,
@@ -75,12 +73,6 @@ public class SubProcessPropertyWriter extends ActivityPropertyWriter implements 
     @Override
     public void addChildEdge(BPMNEdge edge) {
 
-    }
-
-    public void setDocumentation(String documentation) {
-        Documentation d = bpmn2.createDocumentation();
-        d.setText(asCData(documentation));
-        process.getDocumentation().add(d);
     }
 
     public void setDescription(String value) {

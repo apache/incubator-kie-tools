@@ -187,7 +187,6 @@
     stroke-dasharray: 15, 15;
     stroke-width: 5px;
     stroke: #4aa241;
-
 }
 #startSignalEvent #signal-catching {
     opacity: 1;
@@ -206,7 +205,6 @@
     stroke-dasharray: 15, 15;
     stroke-width: 5px;
     stroke: #4aa241;
-
 }
 #startEscalationEvent #escalation-catching {
     opacity: 1;
@@ -225,7 +223,6 @@
     stroke-dasharray: 15, 15;
     stroke-width: 5px;
     stroke: #4aa241;
-
 }
 #startMessageEvent #message-catching {
     opacity: 1;
@@ -244,7 +241,6 @@
     stroke-dasharray: 15, 15;
     stroke-width: 5px;
     stroke: #4aa241;
-
 }
 #startTimerEvent #wait {
     opacity: 1;
@@ -282,6 +278,24 @@
     fill: #4aa241;
 }
 
+#startCompensationEvent #event-background {
+    opacity: 1;
+    fill: #e8fae6;
+}
+#startCompensationEvent #start {
+    opacity: 1;
+    fill-opacity: 1;
+    fill: #4aa241;
+    stroke-opacity: 0;
+    stroke-dasharray: 15, 15;
+    stroke-width: 5px;
+    stroke: #4aa241;
+}
+#startCompensationEvent #compensation-catching {
+    opacity: 1;
+    fill: #4aa241;
+}
+
 #intermediateTimerEvent #event-background {
     opacity: 1;
     fill: #fbefcf;
@@ -294,7 +308,6 @@
     stroke-dasharray: 15, 15;
     stroke-width: 5px;
     stroke: #e5a000;
-
 }
 #intermediateTimerEvent #wait {
     opacity: 1;
@@ -313,7 +326,6 @@
     stroke-dasharray: 15, 15;
     stroke-width: 5px;
     stroke: #e5a000;
-
 }
 #intermediateConditionalEvent #conditional-catching {
     opacity: 1;
@@ -332,7 +344,6 @@
     stroke-dasharray: 15, 15;
     stroke-width: 5px;
     stroke: #e5a000;
-
 }
 #intermediateSignalCatchingEvent #signal-catching {
     opacity: 1;
@@ -351,9 +362,26 @@
     stroke-dasharray: 15, 15;
     stroke-width: 5px;
     stroke: #e5a000;
-
 }
 #intermediateEscalationCatchingEvent #escalation-catching {
+    opacity: 1;
+    fill: #e5a000;
+}
+
+#intermediateCompensationCatchingEvent #event-background {
+    opacity: 1;
+    fill: #fbefcf;
+}
+#intermediateCompensationCatchingEvent #intermediate {
+    opacity: 1;
+    fill-opacity: 1;
+    fill: #e5a000;
+    stroke-opacity: 0;
+    stroke-dasharray: 15, 15;
+    stroke-width: 5px;
+    stroke: #e5a000;
+}
+#intermediateCompensationCatchingEvent #compensation-catching {
     opacity: 1;
     fill: #e5a000;
 }
@@ -428,6 +456,18 @@
     fill: #007a87;
 }
 
+#intermediateCompensationThrowingEvent #event-background {
+    opacity: 1;
+    fill: #bedee1;
+}
+#intermediateCompensationThrowingEvent #intermediate {
+    opacity: 1;
+    fill: #007a87;
+}
+#intermediateCompensationThrowingEvent #compensation-throwing {
+    opacity: 1;
+    fill: #007a87;
+}
 
 #endNoneEvent #event-background {
     opacity: 1;
@@ -437,7 +477,6 @@
     opacity: 1;
     fill: #a30000;
 }
-
 
 #endSignalEvent #event-background {
     opacity: 1;
@@ -461,6 +500,19 @@
     fill: #a30000;
 }
 #endEscalationEvent #escalation-catching {
+    opacity: 1;
+    fill: #a30000;
+}
+
+#endCompensationEvent #event-background {
+    opacity: 1;
+    fill: #fce7e7;
+}
+#endCompensationEvent #end {
+    opacity: 1;
+    fill: #a30000;
+}
+#endCompensationEvent #compensation-catching {
     opacity: 1;
     fill: #a30000;
 }

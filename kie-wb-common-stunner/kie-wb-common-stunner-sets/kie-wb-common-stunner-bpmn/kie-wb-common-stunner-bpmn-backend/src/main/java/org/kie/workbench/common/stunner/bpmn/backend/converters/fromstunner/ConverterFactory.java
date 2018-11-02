@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner;
 
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.activities.ReusableSubprocessConverter;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.associations.AssociationConverter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.events.EndEventConverter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.events.IntermediateCatchEventConverter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.events.IntermediateThrowEventConverter;
@@ -43,6 +44,8 @@ public class ConverterFactory {
     private final GatewayConverter gatewayConverter;
     private final ReusableSubprocessConverter reusableSubprocessConverter;
     private final DefinitionsBuildingContext context;
+    private final EdgeConverter edgeConverter;
+    private final FlowElementPostConverter flowElementPostConverter;
 
     public ConverterFactory(DefinitionsBuildingContext context, PropertyWriterFactory propertyWriterFactory) {
         this.context = context;
@@ -58,6 +61,8 @@ public class ConverterFactory {
 
         this.flowElementConverter = new FlowElementConverter(this);
         this.reusableSubprocessConverter = new ReusableSubprocessConverter(propertyWriterFactory);
+        this.edgeConverter = new EdgeConverter(this);
+        this.flowElementPostConverter = new FlowElementPostConverter();
     }
 
     public TaskConverter taskConverter() {
@@ -104,7 +109,19 @@ public class ConverterFactory {
         return new SubProcessConverter(context, propertyWriterFactory, this);
     }
 
+    public EdgeConverter edgeElementConverter() {
+        return edgeConverter;
+    }
+
     public SequenceFlowConverter sequenceFlowConverter() {
         return new SequenceFlowConverter(propertyWriterFactory);
+    }
+
+    public AssociationConverter associationFlowConverter() {
+        return new AssociationConverter(propertyWriterFactory);
+    }
+
+    public FlowElementPostConverter flowElementPostConverter() {
+        return flowElementPostConverter;
     }
 }

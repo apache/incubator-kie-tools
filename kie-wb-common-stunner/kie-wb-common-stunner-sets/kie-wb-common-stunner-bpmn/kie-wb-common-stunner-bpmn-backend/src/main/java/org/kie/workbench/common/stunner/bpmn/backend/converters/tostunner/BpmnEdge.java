@@ -18,7 +18,6 @@ package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner;
 
 import java.util.List;
 
-import org.kie.workbench.common.stunner.bpmn.definition.SequenceFlow;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
@@ -28,7 +27,7 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 public interface BpmnEdge {
 
     static BpmnEdge.Simple of(
-            Edge<View<SequenceFlow>, Node> edge,
+            Edge<? extends View<?>, Node> edge,
             BpmnNode source, Connection sourceConnection,
             List<Point2D> controlPoints,
             BpmnNode target, Connection targetConnection) {
@@ -45,14 +44,14 @@ public interface BpmnEdge {
 
     class Simple implements BpmnEdge {
 
-        private final Edge<View<SequenceFlow>, Node> edge;
+        private final Edge<? extends View<?>, Node> edge;
         private final BpmnNode source;
         private final Connection sourceConnection;
         private final List<Point2D> controlPoints;
         private final BpmnNode target;
         private final Connection targetConnection;
 
-        private Simple(Edge<View<SequenceFlow>, Node> edge, BpmnNode source, Connection sourceConnection, List<Point2D> controlPoints, BpmnNode target, Connection targetConnection) {
+        private Simple(Edge<? extends View<?>, Node> edge, BpmnNode source, Connection sourceConnection, List<Point2D> controlPoints, BpmnNode target, Connection targetConnection) {
             this.edge = edge;
             this.source = source;
             this.sourceConnection = sourceConnection;
@@ -61,7 +60,7 @@ public interface BpmnEdge {
             this.targetConnection = targetConnection;
         }
 
-        public Edge<View<SequenceFlow>, Node> getEdge() {
+        public Edge<? extends View<?>, Node> getEdge() {
             return edge;
         }
 

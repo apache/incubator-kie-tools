@@ -21,9 +21,11 @@ import javax.enterprise.context.ApplicationScoped;
 import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.stunner.bpmn.definition.AdHocSubprocess;
+import org.kie.workbench.common.stunner.bpmn.definition.Association;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
 import org.kie.workbench.common.stunner.bpmn.definition.EmbeddedSubprocess;
+import org.kie.workbench.common.stunner.bpmn.definition.EndCompensationEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndErrorEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndEscalationEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndMessageEvent;
@@ -33,6 +35,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EventSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.InclusiveGateway;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateCompensationEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateCompensationEventThrowing;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateConditionalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateErrorEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateEscalationEvent;
@@ -49,6 +53,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.ParallelGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.ScriptTask;
 import org.kie.workbench.common.stunner.bpmn.definition.SequenceFlow;
+import org.kie.workbench.common.stunner.bpmn.definition.StartCompensationEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartConditionalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartErrorEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartEscalationEvent;
@@ -84,21 +89,25 @@ import org.kie.workbench.common.stunner.core.rule.annotation.Occurrences;
                 StartErrorEvent.class,
                 StartConditionalEvent.class,
                 StartEscalationEvent.class,
+                StartCompensationEvent.class,
                 EndNoneEvent.class,
                 EndSignalEvent.class,
                 EndMessageEvent.class,
                 EndTerminateEvent.class,
                 EndErrorEvent.class,
                 EndEscalationEvent.class,
+                EndCompensationEvent.class,
                 IntermediateTimerEvent.class,
                 IntermediateMessageEventCatching.class,
                 IntermediateSignalEventCatching.class,
                 IntermediateSignalEventThrowing.class,
                 IntermediateErrorEventCatching.class,
                 IntermediateEscalationEvent.class,
+                IntermediateCompensationEvent.class,
                 IntermediateMessageEventThrowing.class,
                 IntermediateConditionalEvent.class,
                 IntermediateEscalationEventThrowing.class,
+                IntermediateCompensationEventThrowing.class,
                 ParallelGateway.class,
                 ExclusiveGateway.class,
                 InclusiveGateway.class,
@@ -107,7 +116,8 @@ import org.kie.workbench.common.stunner.core.rule.annotation.Occurrences;
                 EventSubprocess.class,
                 AdHocSubprocess.class,
                 MultipleInstanceSubprocess.class,
-                SequenceFlow.class
+                SequenceFlow.class,
+                Association.class
         },
         builder = BPMNDefinitionSet.BPMNDefinitionSetBuilder.class
 )

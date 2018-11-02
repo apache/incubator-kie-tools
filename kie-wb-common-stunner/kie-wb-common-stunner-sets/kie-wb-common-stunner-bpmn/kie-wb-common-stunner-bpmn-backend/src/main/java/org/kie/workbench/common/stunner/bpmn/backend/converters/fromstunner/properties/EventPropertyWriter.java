@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties;
 
+import org.eclipse.bpmn2.CompensateEventDefinition;
 import org.eclipse.bpmn2.ConditionalEventDefinition;
 import org.eclipse.bpmn2.Error;
 import org.eclipse.bpmn2.ErrorEventDefinition;
@@ -192,6 +193,12 @@ public abstract class EventPropertyWriter extends PropertyWriter {
 
         CustomAttribute.esccode.of(escalationEventDefinition).set(escalationCode);
         addRootElement(escalation);
+    }
+
+    public void addCompensation() {
+        CompensateEventDefinition compensationEventDefinition =
+                bpmn2.createCompensateEventDefinition();
+        addEventDefinition(compensationEventDefinition);
     }
 
     protected abstract void addEventDefinition(EventDefinition eventDefinition);
