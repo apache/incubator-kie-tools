@@ -44,6 +44,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.OutputClause;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.dmn.api.property.dmn.Text;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.AddDecisionRuleCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.AddInputClauseCommand;
@@ -83,7 +84,9 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasGraphCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.command.UpdateElementPropertyCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
@@ -192,6 +195,9 @@ public class DecisionTableGridTest {
 
     @Mock
     private CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
+
+    @Mock
+    private UpdateElementPropertyCommand updateElementPropertyCommand;
 
     @Mock
     private DMNSession session;
@@ -337,7 +343,8 @@ public class DecisionTableGridTest {
         when(definitionUtils.getNameIdentifier(any())).thenReturn("name");
         when(canvasCommandFactory.updatePropertyValue(any(Element.class),
                                                       anyString(),
-                                                      any())).thenReturn(mock(UpdateElementPropertyCommand.class));
+                                                      any())).thenReturn(updateElementPropertyCommand);
+        when(updateElementPropertyCommand.execute(canvasHandler)).thenReturn(CanvasCommandResultBuilder.SUCCESS);
 
         doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).format(anyString());
         doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).getTranslation(anyString());
@@ -354,9 +361,8 @@ public class DecisionTableGridTest {
     }
 
     private Optional<HasName> makeHasNameForDecision() {
-        final Decision decision = new Decision();
-        decision.setName(new Name(HASNAME_NAME));
-        return Optional.of(decision);
+        hasExpression.setName(new Name(HASNAME_NAME));
+        return Optional.of(hasExpression);
     }
 
     @Test
@@ -1039,55 +1045,195 @@ public class DecisionTableGridTest {
     }
 
     @Test
-    public void testSetDisplayNameWithEmptyValue() {
+    @SuppressWarnings("unchecked")
+    public void testSetDisplayNameSingleInputClauseWithEmptyValue() {
         setupGrid(makeHasNameForDecision(), 0);
 
         final Consumer<NameAndDataTypeHeaderMetaData> test = (md) -> md.setName(new Name());
 
         assertHeaderMetaDataTest(0, 1, test, DeleteHasNameCommand.class);
-        assertHeaderMetaDataTest(0, 2, test, DeleteHasNameCommand.class, UpdateElementPropertyCommand.class);
 
-        addOutputClause(3);
-
-        assertHeaderMetaDataTest(0, 2, test, DeleteHasNameCommand.class, UpdateElementPropertyCommand.class);
-        assertHeaderMetaDataTest(1, 2, test, DeleteHasNameCommand.class);
-        assertHeaderMetaDataTest(0, 3, test, DeleteHasNameCommand.class, UpdateElementPropertyCommand.class);
-        assertHeaderMetaDataTest(1, 3, test, DeleteHasNameCommand.class);
+        compositeCommandCaptor.getValue().execute(canvasHandler);
+        assertThat(expression.get().getInput().get(0).getInputExpression().getText()).isEqualTo(new Text());
     }
 
     @Test
-    public void testSetDisplayNameWithNullValue() {
+    @SuppressWarnings("unchecked")
+    public void testSetDisplayNameSingleOutputClauseWithEmptyValue() {
+        setupGrid(makeHasNameForDecision(), 0);
+
+        final Consumer<NameAndDataTypeHeaderMetaData> test = (md) -> md.setName(new Name());
+
+        assertHeaderMetaDataTest(0, 2, test, DeleteHasNameCommand.class, DeleteHasNameCommand.class, UpdateElementPropertyCommand.class);
+
+        compositeCommandCaptor.getValue().execute(canvasHandler);
+        assertThat(hasExpression.getName().getValue()).isEqualTo("");
+        assertThat(expression.get().getOutput().get(0).getName()).isEqualTo("");
+    }
+
+    @Test
+    public void testSetDisplayNameMultipleOutputClauseWithEmptyValue() {
+        setupGrid(makeHasNameForDecision(), 0);
+
+        final Consumer<NameAndDataTypeHeaderMetaData> test = (md) -> md.setName(new Name());
+
+        addOutputClause(3);
+
+        assertDisplayNameMultipleOutputClause(test);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void assertDisplayNameMultipleOutputClause(final Consumer<NameAndDataTypeHeaderMetaData> test) {
+        final String defaultName = "defaultName";
+
+        final ArgumentCaptor<CompositeCommand> compositeCommandCaptor1 = ArgumentCaptor.forClass(CompositeCommand.class);
+        hasExpression.getName().setValue(defaultName);
+        expression.get().getOutput().get(0).setName(defaultName);
+        assertHeaderMetaDataTest(0, 2, test, compositeCommandCaptor1, DeleteHasNameCommand.class, UpdateElementPropertyCommand.class);
+
+        compositeCommandCaptor1.getValue().execute(canvasHandler);
+        assertThat(hasExpression.getName().getValue()).isEqualTo("");
+        assertThat(expression.get().getOutput().get(0).getName()).isEqualTo(defaultName);
+
+        final ArgumentCaptor<CompositeCommand> compositeCommandCaptor2 = ArgumentCaptor.forClass(CompositeCommand.class);
+        hasExpression.getName().setValue(defaultName);
+        expression.get().getOutput().get(0).setName(defaultName);
+        assertHeaderMetaDataTest(1, 2, test, compositeCommandCaptor2, DeleteHasNameCommand.class);
+
+        compositeCommandCaptor2.getValue().execute(canvasHandler);
+        assertThat(hasExpression.getName().getValue()).isEqualTo(defaultName);
+        assertThat(expression.get().getOutput().get(0).getName()).isEqualTo("");
+
+        final ArgumentCaptor<CompositeCommand> compositeCommandCaptor3 = ArgumentCaptor.forClass(CompositeCommand.class);
+        hasExpression.getName().setValue(defaultName);
+        expression.get().getOutput().get(1).setName(defaultName);
+        assertHeaderMetaDataTest(0, 3, test, compositeCommandCaptor3, DeleteHasNameCommand.class, UpdateElementPropertyCommand.class);
+
+        compositeCommandCaptor3.getValue().execute(canvasHandler);
+        assertThat(hasExpression.getName().getValue()).isEqualTo("");
+        assertThat(expression.get().getOutput().get(1).getName()).isEqualTo(defaultName);
+
+        final ArgumentCaptor<CompositeCommand> compositeCommandCaptor4 = ArgumentCaptor.forClass(CompositeCommand.class);
+        hasExpression.getName().setValue(defaultName);
+        expression.get().getOutput().get(1).setName(defaultName);
+        assertHeaderMetaDataTest(1, 3, test, compositeCommandCaptor4, DeleteHasNameCommand.class);
+
+        compositeCommandCaptor4.getValue().execute(canvasHandler);
+        assertThat(hasExpression.getName().getValue()).isEqualTo(defaultName);
+        assertThat(expression.get().getOutput().get(0).getName()).isEqualTo("");
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testSetDisplayNameSingleInputClauseWithNullValue() {
         setupGrid(makeHasNameForDecision(), 0);
 
         final Consumer<NameAndDataTypeHeaderMetaData> test = (md) -> md.setName(null);
 
         assertHeaderMetaDataTest(0, 1, test, DeleteHasNameCommand.class);
-        assertHeaderMetaDataTest(0, 2, test, DeleteHasNameCommand.class, UpdateElementPropertyCommand.class);
 
-        addOutputClause(3);
-
-        assertHeaderMetaDataTest(0, 2, test, DeleteHasNameCommand.class, UpdateElementPropertyCommand.class);
-        assertHeaderMetaDataTest(1, 2, test, DeleteHasNameCommand.class);
-        assertHeaderMetaDataTest(0, 3, test, DeleteHasNameCommand.class, UpdateElementPropertyCommand.class);
-        assertHeaderMetaDataTest(1, 3, test, DeleteHasNameCommand.class);
+        compositeCommandCaptor.getValue().execute(canvasHandler);
+        assertThat(expression.get().getInput().get(0).getInputExpression().getText()).isEqualTo(new Text());
     }
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testSetDisplayNameWithNonEmptyValue() {
+    public void testSetDisplayNameSingleOutputClauseWithNullValue() {
+        setupGrid(makeHasNameForDecision(), 0);
+
+        final Consumer<NameAndDataTypeHeaderMetaData> test = (md) -> md.setName(null);
+
+        assertHeaderMetaDataTest(0, 2, test, DeleteHasNameCommand.class, DeleteHasNameCommand.class, UpdateElementPropertyCommand.class);
+
+        compositeCommandCaptor.getValue().execute(canvasHandler);
+        assertThat(hasExpression.getName().getValue()).isEqualTo("");
+        assertThat(expression.get().getOutput().get(0).getName()).isEqualTo("");
+    }
+
+    @Test
+    public void testSetDisplayNameMultipleOutputClauseWithNullValue() {
+        setupGrid(makeHasNameForDecision(), 0);
+
+        final Consumer<NameAndDataTypeHeaderMetaData> test = (md) -> md.setName(null);
+
+        addOutputClause(3);
+
+        assertDisplayNameMultipleOutputClause(test);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testSetDisplayNameSingleInputClauseWithNonEmptyValue() {
         setupGrid(makeHasNameForDecision(), 0);
 
         final Consumer<NameAndDataTypeHeaderMetaData> test = (md) -> md.setName(new Name(NAME_NEW));
 
         assertHeaderMetaDataTest(0, 1, test, SetHasNameCommand.class);
-        assertHeaderMetaDataTest(0, 2, test, SetHasNameCommand.class, UpdateElementPropertyCommand.class);
+
+        compositeCommandCaptor.getValue().execute(canvasHandler);
+        assertThat(expression.get().getInput().get(0).getInputExpression().getText()).isEqualTo(new Text(NAME_NEW));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testSetDisplayNameSingleOutputClauseWithNonEmptyValue() {
+        setupGrid(makeHasNameForDecision(), 0);
+
+        final Consumer<NameAndDataTypeHeaderMetaData> test = (md) -> md.setName(new Name(NAME_NEW));
+
+        assertHeaderMetaDataTest(0, 2, test, SetHasNameCommand.class, SetHasNameCommand.class, UpdateElementPropertyCommand.class);
+
+        compositeCommandCaptor.getValue().execute(canvasHandler);
+        assertThat(hasExpression.getName()).isEqualTo(new Name(NAME_NEW));
+        assertThat(expression.get().getOutput().get(0).getName()).isEqualTo(NAME_NEW);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testSetDisplayNameMultipleOutputClauseWithNonEmptyValue() {
+        setupGrid(makeHasNameForDecision(), 0);
+
+        final String defaultName = "default-name";
+
+        final Consumer<NameAndDataTypeHeaderMetaData> test = (md) -> md.setName(new Name(NAME_NEW));
 
         addOutputClause(3);
 
-        assertHeaderMetaDataTest(0, 2, test, SetHasNameCommand.class, UpdateElementPropertyCommand.class);
-        assertHeaderMetaDataTest(1, 2, test, SetHasNameCommand.class);
-        assertHeaderMetaDataTest(0, 3, test, SetHasNameCommand.class, UpdateElementPropertyCommand.class);
-        assertHeaderMetaDataTest(1, 3, test, SetHasNameCommand.class);
+        final ArgumentCaptor<CompositeCommand> compositeCommandCaptor1 = ArgumentCaptor.forClass(CompositeCommand.class);
+        hasExpression.getName().setValue(defaultName);
+        expression.get().getOutput().get(0).setName(defaultName);
+        assertHeaderMetaDataTest(0, 2, test, compositeCommandCaptor1, SetHasNameCommand.class, UpdateElementPropertyCommand.class);
+
+        compositeCommandCaptor1.getValue().execute(canvasHandler);
+        assertThat(hasExpression.getName().getValue()).isEqualTo(NAME_NEW);
+        assertThat(expression.get().getOutput().get(0).getName()).isEqualTo(defaultName);
+
+        final ArgumentCaptor<CompositeCommand> compositeCommandCaptor2 = ArgumentCaptor.forClass(CompositeCommand.class);
+        hasExpression.getName().setValue(defaultName);
+        expression.get().getOutput().get(0).setName(defaultName);
+        assertHeaderMetaDataTest(1, 2, test, compositeCommandCaptor2, SetHasNameCommand.class);
+
+        compositeCommandCaptor2.getValue().execute(canvasHandler);
+        assertThat(hasExpression.getName().getValue()).isEqualTo(defaultName);
+        assertThat(expression.get().getOutput().get(0).getName()).isEqualTo(NAME_NEW);
+
+        final ArgumentCaptor<CompositeCommand> compositeCommandCaptor3 = ArgumentCaptor.forClass(CompositeCommand.class);
+        hasExpression.getName().setValue(defaultName);
+        expression.get().getOutput().get(1).setName(defaultName);
+        assertHeaderMetaDataTest(0, 3, test, compositeCommandCaptor3, SetHasNameCommand.class, UpdateElementPropertyCommand.class);
+
+        compositeCommandCaptor3.getValue().execute(canvasHandler);
+        assertThat(hasExpression.getName().getValue()).isEqualTo(NAME_NEW);
+        assertThat(expression.get().getOutput().get(1).getName()).isEqualTo(defaultName);
+
+        final ArgumentCaptor<CompositeCommand> compositeCommandCaptor4 = ArgumentCaptor.forClass(CompositeCommand.class);
+        hasExpression.getName().setValue(defaultName);
+        expression.get().getOutput().get(1).setName(defaultName);
+        assertHeaderMetaDataTest(1, 3, test, compositeCommandCaptor4, SetHasNameCommand.class);
+
+        compositeCommandCaptor4.getValue().execute(canvasHandler);
+        assertThat(hasExpression.getName().getValue()).isEqualTo(defaultName);
+        assertThat(expression.get().getOutput().get(0).getName()).isEqualTo(NAME_NEW);
     }
 
     @Test
@@ -1106,21 +1252,87 @@ public class DecisionTableGridTest {
     }
 
     @Test
-    public void testSetTypeRef() {
+    @SuppressWarnings("unchecked")
+    public void testSetTypeRefSingleInputClause() {
         setupGrid(makeHasNameForDecision(), 0);
 
-        final Consumer<NameAndDataTypeHeaderMetaData> test = (md) -> md.setTypeRef(new QName(QName.NULL_NS_URI,
-                                                                                             BuiltInType.DATE.getName()));
+        final QName typeRef = new QName(QName.NULL_NS_URI,
+                                        BuiltInType.DATE.getName());
 
-        assertHeaderMetaDataTest(0, 1, test, SetTypeRefCommand.class);
-        assertHeaderMetaDataTest(0, 2, test, SetTypeRefCommand.class);
+        final Consumer<NameAndDataTypeHeaderMetaData> test = (md) -> md.setTypeRef(typeRef);
+        final ArgumentCaptor<CanvasCommand> canvasCommandCaptor = ArgumentCaptor.forClass(CanvasCommand.class);
+
+        assertHeaderMetaDataTest(0, 1, test, canvasCommandCaptor, SetTypeRefCommand.class);
+
+        canvasCommandCaptor.getValue().execute(canvasHandler);
+        assertThat(expression.get().getInput().get(0).getInputExpression().getTypeRef()).isEqualTo(typeRef);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testSetTypeRefSingleOutputClause() {
+        setupGrid(makeHasNameForDecision(), 0);
+
+        final QName typeRef = new QName(QName.NULL_NS_URI,
+                                        BuiltInType.DATE.getName());
+
+        final Consumer<NameAndDataTypeHeaderMetaData> test = (md) -> md.setTypeRef(typeRef);
+
+        assertHeaderMetaDataTest(0, 2, test, SetTypeRefCommand.class, SetTypeRefCommand.class);
+
+        compositeCommandCaptor.getValue().execute(canvasHandler);
+        assertThat(hasExpression.getVariable().getTypeRef()).isEqualTo(typeRef);
+        assertThat(expression.get().getOutput().get(0).getTypeRef()).isEqualTo(typeRef);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testSetTypeRefMultipleOutputClauses() {
+        setupGrid(makeHasNameForDecision(), 0);
+
+        final QName typeRef = new QName(QName.NULL_NS_URI,
+                                        BuiltInType.DATE.getName());
+        final QName defaultTypeRef = new QName();
+
+        final Consumer<NameAndDataTypeHeaderMetaData> test = (md) -> md.setTypeRef(typeRef);
 
         addOutputClause(3);
 
-        assertHeaderMetaDataTest(0, 2, test, SetTypeRefCommand.class);
-        assertHeaderMetaDataTest(1, 2, test, SetTypeRefCommand.class);
-        assertHeaderMetaDataTest(0, 3, test, SetTypeRefCommand.class);
-        assertHeaderMetaDataTest(1, 3, test, SetTypeRefCommand.class);
+        final ArgumentCaptor<CanvasCommand> canvasCommandCaptor1 = ArgumentCaptor.forClass(CanvasCommand.class);
+        hasExpression.getVariable().setTypeRef(defaultTypeRef);
+        expression.get().getOutput().get(0).setTypeRef(defaultTypeRef);
+        assertHeaderMetaDataTest(0, 2, test, canvasCommandCaptor1, SetTypeRefCommand.class);
+
+        canvasCommandCaptor1.getValue().execute(canvasHandler);
+        assertThat(hasExpression.getVariable().getTypeRef()).isEqualTo(typeRef);
+        assertThat(expression.get().getOutput().get(0).getTypeRef()).isEqualTo(defaultTypeRef);
+
+        final ArgumentCaptor<CanvasCommand> canvasCommandCaptor2 = ArgumentCaptor.forClass(CanvasCommand.class);
+        hasExpression.getVariable().setTypeRef(defaultTypeRef);
+        expression.get().getOutput().get(0).setTypeRef(defaultTypeRef);
+        assertHeaderMetaDataTest(1, 2, test, canvasCommandCaptor2, SetTypeRefCommand.class);
+
+        canvasCommandCaptor2.getValue().execute(canvasHandler);
+        assertThat(hasExpression.getVariable().getTypeRef()).isEqualTo(defaultTypeRef);
+        assertThat(expression.get().getOutput().get(0).getTypeRef()).isEqualTo(typeRef);
+
+        final ArgumentCaptor<CanvasCommand> canvasCommandCaptor3 = ArgumentCaptor.forClass(CanvasCommand.class);
+        hasExpression.getVariable().setTypeRef(defaultTypeRef);
+        expression.get().getOutput().get(1).setTypeRef(defaultTypeRef);
+        assertHeaderMetaDataTest(0, 3, test, canvasCommandCaptor3, SetTypeRefCommand.class);
+
+        canvasCommandCaptor3.getValue().execute(canvasHandler);
+        assertThat(hasExpression.getVariable().getTypeRef()).isEqualTo(typeRef);
+        assertThat(expression.get().getOutput().get(1).getTypeRef()).isEqualTo(defaultTypeRef);
+
+        final ArgumentCaptor<CanvasCommand> canvasCommandCaptor4 = ArgumentCaptor.forClass(CanvasCommand.class);
+        hasExpression.getVariable().setTypeRef(defaultTypeRef);
+        expression.get().getOutput().get(1).setTypeRef(defaultTypeRef);
+        assertHeaderMetaDataTest(1, 3, test, canvasCommandCaptor4, SetTypeRefCommand.class);
+
+        canvasCommandCaptor4.getValue().execute(canvasHandler);
+        assertThat(hasExpression.getVariable().getTypeRef()).isEqualTo(defaultTypeRef);
+        assertThat(expression.get().getOutput().get(1).getTypeRef()).isEqualTo(typeRef);
     }
 
     @Test
@@ -1145,6 +1357,19 @@ public class DecisionTableGridTest {
                                           final int uiColumnIndex,
                                           final Consumer<NameAndDataTypeHeaderMetaData> test,
                                           final Class... commands) {
+        assertHeaderMetaDataTest(uiHeaderRowIndex,
+                                 uiColumnIndex,
+                                 test,
+                                 compositeCommandCaptor,
+                                 commands);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void assertHeaderMetaDataTest(final int uiHeaderRowIndex,
+                                          final int uiColumnIndex,
+                                          final Consumer<NameAndDataTypeHeaderMetaData> test,
+                                          final ArgumentCaptor<? extends org.kie.workbench.common.stunner.core.command.Command> argumentCaptor,
+                                          final Class... commands) {
         reset(sessionCommandManager);
 
         test.accept(extractHeaderMetaData(uiHeaderRowIndex, uiColumnIndex));
@@ -1154,8 +1379,8 @@ public class DecisionTableGridTest {
                                                            any(org.kie.workbench.common.stunner.core.command.Command.class));
         } else {
             verify(sessionCommandManager).execute(eq(canvasHandler),
-                                                  compositeCommandCaptor.capture());
-            GridFactoryCommandUtils.assertCommands(compositeCommandCaptor.getValue(),
+                                                  argumentCaptor.capture());
+            GridFactoryCommandUtils.assertCommands(argumentCaptor.getValue(),
                                                    commands);
         }
     }
