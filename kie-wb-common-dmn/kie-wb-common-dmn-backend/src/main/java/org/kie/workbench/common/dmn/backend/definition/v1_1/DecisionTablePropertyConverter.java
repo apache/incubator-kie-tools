@@ -32,7 +32,7 @@ public class DecisionTablePropertyConverter {
     public static DecisionTable wbFromDMN(final org.kie.dmn.model.api.DecisionTable dmn) {
         Id id = new Id(dmn.getId());
         Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
-        QName typeRef = QNamePropertyConverter.wbFromDMN(dmn.getTypeRef());
+        QName typeRef = QNamePropertyConverter.wbFromDMN(dmn.getTypeRef(), dmn);
 
         DecisionTable result = new DecisionTable();
         result.setId(id);

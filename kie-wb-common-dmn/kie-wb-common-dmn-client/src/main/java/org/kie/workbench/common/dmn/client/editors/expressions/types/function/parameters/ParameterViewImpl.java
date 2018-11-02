@@ -24,6 +24,9 @@ import org.jboss.errai.common.client.dom.Button;
 import org.jboss.errai.common.client.dom.Input;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
+import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.dmn.client.editors.types.DataTypePickerWidget;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 
@@ -34,6 +37,9 @@ public class ParameterViewImpl implements ParameterView {
     @DataField("name")
     private Input name;
 
+    @DataField("typeRefEditor")
+    private DataTypePickerWidget typeRefEditor;
+
     @DataField("remove")
     private Button remove;
 
@@ -43,14 +49,23 @@ public class ParameterViewImpl implements ParameterView {
 
     @Inject
     public ParameterViewImpl(final Input name,
+                             final DataTypePickerWidget typeRefEditor,
                              final Button remove) {
         this.name = name;
+        this.typeRefEditor = typeRefEditor;
+        this.typeRefEditor.hideManageLabel();
         this.remove = remove;
     }
 
     @Override
     public void setName(final String name) {
         this.name.setValue(name);
+    }
+
+    @Override
+    public void setTypeRef(final HasTypeRef hasTypeRef) {
+        typeRefEditor.setDMNModel(hasTypeRef.asDMNModelInstrumentedBase());
+        typeRefEditor.setValue(hasTypeRef.getTypeRef(), false);
     }
 
     @Override
@@ -65,6 +80,11 @@ public class ParameterViewImpl implements ParameterView {
         name.addEventListener(BrowserEvents.BLUR,
                               (e) -> command.execute(name.getValue()),
                               false);
+    }
+
+    @Override
+    public void addParameterTypeRefChangeHandler(final ParameterizedCommand<QName> command) {
+        typeRefEditor.addValueChangeHandler(e -> command.execute(e.getValue()));
     }
 
     @Override

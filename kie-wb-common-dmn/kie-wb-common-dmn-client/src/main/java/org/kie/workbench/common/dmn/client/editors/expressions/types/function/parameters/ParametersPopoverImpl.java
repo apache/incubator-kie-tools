@@ -24,6 +24,7 @@ import javax.inject.Inject;
 
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
+import org.kie.workbench.common.dmn.api.property.dmn.QName;
 
 @ApplicationScoped
 public class ParametersPopoverImpl implements ParametersPopoverView.Presenter {
@@ -99,5 +100,12 @@ public class ParametersPopoverImpl implements ParametersPopoverView.Presenter {
                                     final String name) {
         binding.ifPresent(b -> b.updateParameterName(parameter,
                                                      name));
+    }
+
+    @Override
+    public void updateParameterTypeRef(final InformationItem parameter,
+                                       final QName typeRef) {
+        binding.ifPresent(b -> b.updateParameterTypeRef(parameter,
+                                                        typeRef));
     }
 }

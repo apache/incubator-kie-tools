@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.function.p
 import java.util.List;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
+import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.uberfire.mvp.Command;
 
 public interface HasParametersControl {
@@ -32,4 +33,7 @@ public interface HasParametersControl {
 
     void updateParameterName(final InformationItem parameter,
                              final String name);
+
+    void updateParameterTypeRef(final InformationItem parameter,
+                                final QName typeRef);
 }

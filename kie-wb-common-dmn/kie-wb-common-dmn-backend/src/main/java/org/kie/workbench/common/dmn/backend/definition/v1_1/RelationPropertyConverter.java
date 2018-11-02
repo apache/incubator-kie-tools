@@ -30,7 +30,7 @@ public class RelationPropertyConverter {
     public static Relation wbFromDMN(final org.kie.dmn.model.api.Relation dmn) {
         Id id = new Id(dmn.getId());
         Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
-        QName typeRef = QNamePropertyConverter.wbFromDMN(dmn.getTypeRef());
+        QName typeRef = QNamePropertyConverter.wbFromDMN(dmn.getTypeRef(), dmn);
 
         List<org.kie.dmn.model.api.InformationItem> column = dmn.getColumn();
         List<org.kie.dmn.model.api.List> row = dmn.getRow();

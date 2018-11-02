@@ -42,6 +42,7 @@ import org.kie.workbench.common.dmn.client.commands.expressions.types.function.C
 import org.kie.workbench.common.dmn.client.commands.expressions.types.function.RemoveParameterCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.function.SetKindCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.function.UpdateParameterNameCommand;
+import org.kie.workbench.common.dmn.client.commands.expressions.types.function.UpdateParameterTypeRefCommand;
 import org.kie.workbench.common.dmn.client.commands.general.DeleteHasNameCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetHasNameCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetTypeRefCommand;
@@ -213,6 +214,9 @@ public class FunctionGridTest {
 
     @Captor
     private ArgumentCaptor<UpdateParameterNameCommand> updateParameterNameCommandCaptor;
+
+    @Captor
+    private ArgumentCaptor<UpdateParameterTypeRefCommand> updateParameterTypeRefCommandCaptor;
 
     @Captor
     private ArgumentCaptor<SetKindCommand> setKindCommandCaptor;
@@ -573,6 +577,23 @@ public class FunctionGridTest {
 
         final UpdateParameterNameCommand updateParameterNameCommand = updateParameterNameCommandCaptor.getValue();
         updateParameterNameCommand.execute(canvasHandler);
+
+        verify(gridLayer).batch();
+    }
+
+    @Test
+    public void testUpdateParameterTypeRef() {
+        setupGrid(0);
+
+        grid.updateParameterTypeRef(parameter,
+                                    new QName(QName.NULL_NS_URI,
+                                              BuiltInType.DATE.getName()));
+
+        verify(sessionCommandManager).execute(eq(canvasHandler),
+                                              updateParameterTypeRefCommandCaptor.capture());
+
+        final UpdateParameterTypeRefCommand updateParameterTypeRefCommand = updateParameterTypeRefCommandCaptor.getValue();
+        updateParameterTypeRefCommand.execute(canvasHandler);
 
         verify(gridLayer).batch();
     }

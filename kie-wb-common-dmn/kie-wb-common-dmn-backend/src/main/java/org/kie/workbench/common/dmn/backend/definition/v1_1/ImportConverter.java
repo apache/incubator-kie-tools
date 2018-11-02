@@ -32,7 +32,7 @@ public final class ImportConverter {
         Import result = new Import(dmn.getNamespace(), locationURI, dmn.getImportType());
         Map<QName, String> additionalAttributes = new HashMap<>();
         for (Map.Entry<javax.xml.namespace.QName, String> entry : dmn.getAdditionalAttributes().entrySet()) {
-            additionalAttributes.put(QNamePropertyConverter.wbFromDMN(entry.getKey()), entry.getValue());
+            additionalAttributes.put(QNamePropertyConverter.wbFromDMN(entry.getKey(), dmn), entry.getValue());
         }
         result.setAdditionalAttributes(additionalAttributes);
         String id = dmn.getId();

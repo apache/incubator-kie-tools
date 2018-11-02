@@ -320,6 +320,24 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGri
     }
 
     @Override
+    protected void doAfterSelectionChange(final int uiRowIndex,
+                                          final int uiColumnIndex) {
+        if (hasAnyHeaderCellSelected() || hasMultipleCellsSelected()) {
+            super.doAfterSelectionChange(uiRowIndex, uiColumnIndex);
+            return;
+        }
+
+        if (uiColumnIndex == InvocationUIModelMapper.BINDING_PARAMETER_COLUMN_INDEX) {
+            if (expression.isPresent()) {
+                final Invocation invocation = expression.get();
+                fireDomainObjectSelectionEvent(invocation.getBinding().get(uiRowIndex).getVariable());
+                return;
+            }
+        }
+        super.doAfterSelectionChange(uiRowIndex, uiColumnIndex);
+    }
+
+    @Override
     protected void doAfterHeaderSelectionChange(final int uiHeaderRowIndex,
                                                 final int uiHeaderColumnIndex) {
         if (uiHeaderRowIndex == 0 && uiHeaderColumnIndex == InvocationUIModelMapper.BINDING_PARAMETER_COLUMN_INDEX) {

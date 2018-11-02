@@ -95,9 +95,10 @@ public class ParametersPopoverViewImpl extends AbstractPopoverViewImpl implement
     private ParameterView makeParameterView(final InformationItem parameter) {
         final ParameterView parameterView = parameterViews.get();
         parameterView.setName(parameter.getName().getValue());
+        parameterView.setTypeRef(parameter);
         parameterView.addRemoveClickHandler(() -> presenter.removeParameter(parameter));
-        parameterView.addParameterNameChangeHandler((name) -> presenter.updateParameterName(parameter,
-                                                                                            name));
+        parameterView.addParameterNameChangeHandler((name) -> presenter.updateParameterName(parameter, name));
+        parameterView.addParameterTypeRefChangeHandler((typeRef) -> presenter.updateParameterTypeRef(parameter, typeRef));
         return parameterView;
     }
 

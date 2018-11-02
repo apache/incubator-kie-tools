@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.function.parameters;
 
+import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
+import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 
@@ -23,9 +25,13 @@ public interface ParameterView extends org.jboss.errai.ui.client.local.api.IsEle
 
     void setName(final String text);
 
+    void setTypeRef(final HasTypeRef hasTypeRef);
+
     void addRemoveClickHandler(final Command command);
 
     void addParameterNameChangeHandler(final ParameterizedCommand<String> command);
+
+    void addParameterTypeRefChangeHandler(final ParameterizedCommand<QName> command);
 
     void focus();
 }

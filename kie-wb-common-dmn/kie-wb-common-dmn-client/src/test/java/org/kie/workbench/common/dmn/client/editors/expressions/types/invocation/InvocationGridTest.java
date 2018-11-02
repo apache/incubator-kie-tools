@@ -76,6 +76,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.selection.Domai
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
+import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
@@ -832,6 +833,63 @@ public class InvocationGridTest {
     }
 
     @Test
+    public void testSelectRow() {
+        setupGrid(0);
+
+        grid.selectCell(0, InvocationUIModelMapper.ROW_NUMBER_COLUMN_INDEX, false, false);
+
+        assertNOPDomainObjectSelection();
+    }
+
+    @Test
+    public void testSelectParameterBinding() {
+        setupGrid(0);
+
+        grid.selectCell(0, InvocationUIModelMapper.BINDING_PARAMETER_COLUMN_INDEX, false, false);
+
+        assertDomainObjectSelection(expression.get().getBinding().get(0).getVariable());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testSelectMultipleParameterBindings() {
+        setupGrid(0);
+
+        addParameterBinding(0);
+
+        //Reset DomainObjectSelectionEvent fired when the new row is added.
+        reset(domainObjectSelectionEvent);
+
+        grid.selectCell(0, InvocationUIModelMapper.BINDING_PARAMETER_COLUMN_INDEX, false, false);
+
+        assertDomainObjectSelection(expression.get().getBinding().get(0).getVariable());
+
+        //Reset DomainObjectSelectionEvent tested above.
+        reset(domainObjectSelectionEvent);
+
+        grid.selectCell(1, InvocationUIModelMapper.BINDING_PARAMETER_COLUMN_INDEX, false, true);
+
+        assertNOPDomainObjectSelection();
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testSelectSingleParameterBindingWithHeaderSelected() {
+        setupGrid(0);
+
+        grid.selectHeaderCell(0, InvocationUIModelMapper.BINDING_PARAMETER_COLUMN_INDEX, false, false);
+
+        assertDomainObjectSelection(hasExpression);
+
+        //Reset DomainObjectSelectionEvent tested above.
+        reset(domainObjectSelectionEvent);
+
+        grid.selectCell(0, InvocationUIModelMapper.BINDING_PARAMETER_COLUMN_INDEX, false, true);
+
+        assertNOPDomainObjectSelection();
+    }
+
+    @Test
     public void testSelectHeaderRowColumn() {
         setupGrid(0);
 
@@ -868,6 +926,13 @@ public class InvocationGridTest {
         grid.selectHeaderCell(0, InvocationUIModelMapper.BINDING_EXPRESSION_COLUMN_INDEX, false, false);
 
         assertNOPDomainObjectSelection();
+    }
+
+    private void assertDomainObjectSelection(final DomainObject domainObject) {
+        verify(domainObjectSelectionEvent).fire(domainObjectSelectionEventCaptor.capture());
+
+        final DomainObjectSelectionEvent domainObjectSelectionEvent = domainObjectSelectionEventCaptor.getValue();
+        assertThat(domainObjectSelectionEvent.getDomainObject()).isEqualTo(domainObject);
     }
 
     private void assertNOPDomainObjectSelection() {

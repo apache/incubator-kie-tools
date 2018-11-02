@@ -33,11 +33,13 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.FunctionDefinition;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
+import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.function.AddParameterCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.function.ClearExpressionTypeCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.function.RemoveParameterCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.function.SetKindCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.function.UpdateParameterNameCommand;
+import org.kie.workbench.common.dmn.client.commands.expressions.types.function.UpdateParameterTypeRefCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
@@ -282,6 +284,17 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
                                           new UpdateParameterNameCommand(parameter,
                                                                          name,
                                                                          gridLayer::batch));
+        });
+    }
+
+    @Override
+    public void updateParameterTypeRef(final InformationItem parameter,
+                                       final QName typeRef) {
+        expression.ifPresent(e -> {
+            sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
+                                          new UpdateParameterTypeRefCommand(parameter,
+                                                                            typeRef,
+                                                                            gridLayer::batch));
         });
     }
 

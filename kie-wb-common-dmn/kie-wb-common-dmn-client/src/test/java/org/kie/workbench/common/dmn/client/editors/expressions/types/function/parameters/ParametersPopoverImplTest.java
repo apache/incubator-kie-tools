@@ -24,6 +24,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
+import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -49,6 +51,9 @@ public class ParametersPopoverImplTest {
 
     private static final String PARAMETER_NAME = "name";
 
+    private static final QName PARAMETER_TYPE_REF = new QName(QName.NULL_NS_URI,
+                                                              BuiltInType.DATE.getName());
+
     @Mock
     private ParametersPopoverView view;
 
@@ -60,6 +65,9 @@ public class ParametersPopoverImplTest {
 
     @Captor
     private ArgumentCaptor<String> parameterNameCaptor;
+
+    @Captor
+    private ArgumentCaptor<QName> parameterTYpeRefCaptor;
 
     private ParametersPopoverView.Presenter presenter;
 
@@ -86,6 +94,11 @@ public class ParametersPopoverImplTest {
         @Override
         public void updateParameterName(final InformationItem parameter,
                                         final String name) {
+        }
+
+        @Override
+        public void updateParameterTypeRef(final InformationItem parameter,
+                                           final QName typeRef) {
         }
     }
 
@@ -272,5 +285,29 @@ public class ParametersPopoverImplTest {
                                             parameterNameCaptor.capture());
 
         assertThat(parameterNameCaptor.getValue()).isEqualTo(PARAMETER_NAME);
+    }
+
+    @Test
+    public void testUpdateParameterTypeRefNullControl() {
+        presenter.updateParameterTypeRef(parameter,
+                                         PARAMETER_TYPE_REF);
+
+        verify(control, never()).updateParameterTypeRef(any(InformationItem.class),
+                                                        any(QName.class));
+    }
+
+    @Test
+    public void testUpdateParameterTypeRefNonNullControl() {
+        presenter.bind(control,
+                       ROW_INDEX,
+                       COLUMN_INDEX);
+
+        presenter.updateParameterTypeRef(parameter,
+                                         PARAMETER_TYPE_REF);
+
+        verify(control).updateParameterTypeRef(eq(parameter),
+                                               parameterTYpeRefCaptor.capture());
+
+        assertThat(parameterTYpeRefCaptor.getValue()).isEqualTo(PARAMETER_TYPE_REF);
     }
 }

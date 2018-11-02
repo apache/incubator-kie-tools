@@ -29,6 +29,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
+import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.uberfire.client.views.pfly.widgets.JQueryProducer;
@@ -54,6 +56,9 @@ public class ParametersPopoverViewImplTest {
     private static final String PARAMETER2_NAME = "parameter2";
 
     private static final String PARAMETER_NAME_NEW = "new name";
+
+    private static final QName PARAMETER_TYPE_REF_NEW = new QName(QName.NULL_NS_URI,
+                                                                  BuiltInType.DATE.getName());
 
     @Mock
     private Div parametersContainer;
@@ -124,10 +129,12 @@ public class ParametersPopoverViewImplTest {
         verify(parameterView1).setName(eq(PARAMETER1_NAME));
         verifyRemoveClickHandler(parameter1, parameterView1);
         verifyParameterNameChangeHandler(parameter1, parameterView1);
+        verifyParameterTypeRefChangeHandler(parameter1, parameterView1);
 
         verify(parameterView2).setName(eq(PARAMETER2_NAME));
         verifyRemoveClickHandler(parameter2, parameterView2);
         verifyParameterNameChangeHandler(parameter2, parameterView2);
+        verifyParameterTypeRefChangeHandler(parameter2, parameterView2);
 
         verify(parametersContainer, times(2)).appendChild(element);
     }
@@ -153,6 +160,18 @@ public class ParametersPopoverViewImplTest {
         commandArgumentCaptor.getValue().execute(PARAMETER_NAME_NEW);
 
         verify(presenter).updateParameterName(parameter, PARAMETER_NAME_NEW);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void verifyParameterTypeRefChangeHandler(final InformationItem parameter,
+                                                     final ParameterView view) {
+        final ArgumentCaptor<ParameterizedCommand> commandArgumentCaptor = ArgumentCaptor.forClass(ParameterizedCommand.class);
+
+        verify(view).addParameterTypeRefChangeHandler(commandArgumentCaptor.capture());
+
+        commandArgumentCaptor.getValue().execute(PARAMETER_TYPE_REF_NEW);
+
+        verify(presenter).updateParameterTypeRef(parameter, PARAMETER_TYPE_REF_NEW);
     }
 
     @Test

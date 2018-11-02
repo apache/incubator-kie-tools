@@ -28,6 +28,8 @@ import org.gwtbootstrap3.extras.select.client.ui.OptGroup;
 import org.gwtbootstrap3.extras.select.client.ui.Option;
 import org.gwtbootstrap3.extras.select.client.ui.Select;
 import org.jboss.errai.common.client.dom.Anchor;
+import org.jboss.errai.common.client.dom.CSSStyleDeclaration;
+import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.Span;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
@@ -72,6 +74,12 @@ public class DataTypePickerWidgetTest {
 
     @Mock
     private Anchor typeButton;
+
+    @Mock
+    private Div manageContainer;
+
+    @Mock
+    private CSSStyleDeclaration manageContainerStyle;
 
     @Mock
     private Span manageLabel;
@@ -134,10 +142,12 @@ public class DataTypePickerWidgetTest {
         when(option.getElement()).thenReturn(optionElement);
         when(dmnGraphUtils.getDefinitions()).thenReturn(definitions);
         when(dmnModel.getPrefixForNamespaceURI(anyString())).thenReturn(Optional.empty());
+        when(manageContainer.getStyle()).thenReturn(manageContainerStyle);
 
         when(translationService.getTranslation(anyString())).thenAnswer(i -> i.getArguments()[0]);
 
         this.picker = spy(new DataTypePickerWidget(typeButton,
+                                                   manageContainer,
                                                    manageLabel,
                                                    translationService,
                                                    qNameConverter,
@@ -330,12 +340,26 @@ public class DataTypePickerWidgetTest {
 
     @Test
     public void testOnClickTypeButton() {
-
         final ClickEvent clickEvent = mock(ClickEvent.class);
 
         picker.onClickTypeButton(clickEvent);
 
         verify(dataTypeModal).show();
+    }
+
+    @Test
+    public void testShowManageLabel() {
+        picker.showManageLabel();
+
+        verify(manageContainerStyle).removeProperty(eq(DataTypePickerWidget.CSS_DISPLAY));
+    }
+
+    @Test
+    public void testHideManageLabel() {
+        picker.hideManageLabel();
+
+        verify(manageContainerStyle).setProperty(eq(DataTypePickerWidget.CSS_DISPLAY),
+                                                 eq(DataTypePickerWidget.CSS_DISPLAY_NONE));
     }
 
     @Test

@@ -33,7 +33,7 @@ public class LiteralExpressionPropertyConverter {
         }
         Id id = new Id(dmn.getId());
         Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
-        QName typeRef = QNamePropertyConverter.wbFromDMN(dmn.getTypeRef());
+        QName typeRef = QNamePropertyConverter.wbFromDMN(dmn.getTypeRef(), dmn);
         Text text = new Text(dmn.getText() != null ? dmn.getText() : "");
         ExpressionLanguage expressionLanguage = ExpressionLanguagePropertyConverter.wbFromDMN(dmn.getExpressionLanguage());
         ImportedValues importedValues = ImportedValuesConverter.wbFromDMN(dmn.getImportedValues());

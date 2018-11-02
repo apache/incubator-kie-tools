@@ -31,7 +31,7 @@ public class ItemDefinitionPropertyConverter {
         }
         Id id = new Id(dmn.getId());
         Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
-        QName typeRef = QNamePropertyConverter.wbFromDMN(dmn.getTypeRef());
+        QName typeRef = QNamePropertyConverter.wbFromDMN(dmn.getTypeRef(), dmn);
         Name name = new Name(dmn.getName());
 
         ItemDefinition result = new ItemDefinition();
