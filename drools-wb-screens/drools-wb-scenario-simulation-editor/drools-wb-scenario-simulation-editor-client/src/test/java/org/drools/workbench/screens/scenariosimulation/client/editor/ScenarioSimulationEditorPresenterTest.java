@@ -18,6 +18,7 @@ package org.drools.workbench.screens.scenariosimulation.client.editor;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.screens.scenariosimulation.client.commands.CommandExecutor;
+import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioSimulationDocksHandler;
 import org.drools.workbench.screens.scenariosimulation.client.models.FactModelTree;
 import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
 import org.drools.workbench.screens.scenariosimulation.client.producers.ScenarioSimulationProducer;
@@ -147,9 +148,7 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
     @Mock
     TestRunnerReportingScreen testRunnerReportingScreen;
     @Mock
-    private EventSourceMock showScenarioSimulationDockEvent;
-    @Mock
-    private EventSourceMock hideScenarioSimulationDockEvent;
+    ScenarioSimulationDocksHandler scenarioSimulationDocksHandler;
 
     @Before
     public void setup() {
@@ -177,8 +176,7 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
                                                                mockOracleFactory,
                                                                mockPlaceManager,
                                                                testRunnerReportingScreen,
-                                                               showScenarioSimulationDockEvent,
-                                                               hideScenarioSimulationDockEvent) {
+                                                               scenarioSimulationDocksHandler) {
             {
                 this.kieView = mockKieView;
                 this.overviewWidget = mockOverviewWidget;
@@ -282,7 +280,8 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
         when(mockPlaceGainFocusEvent.getPlace()).thenReturn(mockPlaceRequest);
         when(mockPlaceManager.getStatus(mockPlaceRequest)).thenReturn(PlaceStatus.CLOSE);
         presenter.onPlaceGainFocusEvent(mockPlaceGainFocusEvent);
-        verify(showScenarioSimulationDockEvent).fire(any());
+        verify(scenarioSimulationDocksHandler).addDocks();
+        verify(scenarioSimulationDocksHandler).expandToolsDock();
     }
 
     @Test
@@ -291,7 +290,7 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
         when(mockPlaceHiddenEvent.getPlace()).thenReturn(mockPlaceRequest);
         when(mockPlaceManager.getStatus(mockPlaceRequest)).thenReturn(PlaceStatus.OPEN);
         presenter.onPlaceHiddenEvent(mockPlaceHiddenEvent);
-        verify(hideScenarioSimulationDockEvent).fire(any());
+        verify(scenarioSimulationDocksHandler).removeDocks();
         verify(testRunnerReportingScreen).reset();
         verify(mockScenarioGrid, times(1)).clearSelections();
     }
@@ -329,6 +328,8 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
         verify(mockScenarioGridModel, times(1)).resetErrors();
 
         verify(mockScenarioSimulationView, times(1)).refreshContent(any());
+
+        verify(scenarioSimulationDocksHandler).expandTestResultsDock();
     }
 
     @Test

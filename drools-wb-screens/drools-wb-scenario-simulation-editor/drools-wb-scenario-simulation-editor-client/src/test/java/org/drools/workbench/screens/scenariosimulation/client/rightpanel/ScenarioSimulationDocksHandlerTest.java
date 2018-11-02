@@ -15,17 +15,51 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.rightpanel;
 
+import java.util.Collection;
+
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioSimulationDocksHandler;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.workbench.client.docks.AuthoringWorkbenchDocks;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.uberfire.client.workbench.docks.UberfireDock;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.verify;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class ScenarioSimulationDocksHandlerTest {
 
+    @Mock
+    AuthoringWorkbenchDocks authoringWorkbenchDocks;
+
+    @InjectMocks
+    ScenarioSimulationDocksHandler scenarioSimulationDocksHandler;
+
     @Test
     public void correctAmountOfItems() {
-        assertEquals(2, new ScenarioSimulationDocksHandler().provideDocks("identifier").size());
+        assertEquals(2, scenarioSimulationDocksHandler.provideDocks("identifier").size());
+    }
+
+    @Test
+    public void expandToolsDock() {
+        final Collection<UberfireDock> docks = scenarioSimulationDocksHandler.provideDocks("id");
+        final UberfireDock toolsDock = (UberfireDock) docks.toArray()[0];
+
+        scenarioSimulationDocksHandler.expandToolsDock();
+
+        verify(authoringWorkbenchDocks).expandAuthoringDock(toolsDock);
+    }
+
+    @Test
+    public void expandTestResultsDock() {
+        final Collection<UberfireDock> docks = scenarioSimulationDocksHandler.provideDocks("id");
+        final UberfireDock reportDock = (UberfireDock) docks.toArray()[1];
+
+        scenarioSimulationDocksHandler.expandTestResultsDock();
+
+        verify(authoringWorkbenchDocks).expandAuthoringDock(reportDock);
     }
 }

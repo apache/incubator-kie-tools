@@ -26,17 +26,15 @@ import java.util.TreeMap;
 import java.util.function.Supplier;
 
 import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.screens.scenariosimulation.client.commands.CommandExecutor;
+import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioSimulationDocksHandler;
 import org.drools.workbench.screens.scenariosimulation.client.models.FactModelTree;
 import org.drools.workbench.screens.scenariosimulation.client.producers.ScenarioSimulationProducer;
-import org.drools.workbench.screens.scenariosimulation.client.rightpanel.OnHideScenarioSimulationDockEvent;
-import org.drools.workbench.screens.scenariosimulation.client.rightpanel.OnShowScenarioSimulationDockEvent;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.RightPanelPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.RightPanelView;
 import org.drools.workbench.screens.scenariosimulation.client.type.ScenarioSimulationResourceType;
@@ -90,9 +88,6 @@ public class ScenarioSimulationEditorPresenter
 
     public static final String IDENTIFIER = "ScenarioSimulationEditor";
 
-    private Event<OnShowScenarioSimulationDockEvent> showScenarioSimulationDockEvent;
-    private Event<OnHideScenarioSimulationDockEvent> hideScenarioSimulationDockEvent;
-
     private ImportsWidgetPresenter importsWidget;
 
     private AsyncPackageDataModelOracleFactory oracleFactory;
@@ -114,13 +109,12 @@ public class ScenarioSimulationEditorPresenter
     private TestRunnerReportingScreen testRunnerReportingScreen;
 
     //Package for which this Scenario Simulation relates
-    String packageName = "";
-
-    ObservablePath path;
-
-    EventBus eventBus;
-
+    protected String packageName = "";
+    protected ObservablePath path;
+    protected EventBus eventBus;
+    protected
     ScenarioGridPanel scenarioGridPanel;
+    private ScenarioSimulationDocksHandler scenarioSimulationDocksHandler;
 
     public ScenarioSimulationEditorPresenter() {
         //Zero-parameter constructor for CDI proxies
@@ -134,12 +128,10 @@ public class ScenarioSimulationEditorPresenter
                                              final AsyncPackageDataModelOracleFactory oracleFactory,
                                              final PlaceManager placeManager,
                                              final TestRunnerReportingScreen testRunnerReportingScreen,
-                                             final Event<OnShowScenarioSimulationDockEvent> showScenarioSimulationDockEvent,
-                                             final Event<OnHideScenarioSimulationDockEvent> hideScenarioSimulationDockEvent) {
+                                             final ScenarioSimulationDocksHandler scenarioSimulationDocksHandler) {
         super(scenarioSimulationProducer.getScenarioSimulationView());
         this.testRunnerReportingScreen = testRunnerReportingScreen;
-        this.showScenarioSimulationDockEvent = showScenarioSimulationDockEvent;
-        this.hideScenarioSimulationDockEvent = hideScenarioSimulationDockEvent;
+        this.scenarioSimulationDocksHandler = scenarioSimulationDocksHandler;
         this.view = (ScenarioSimulationView) baseView;
         this.service = service;
         this.type = type;
@@ -207,7 +199,8 @@ public class ScenarioSimulationEditorPresenter
         PathPlaceRequest placeRequest = (PathPlaceRequest) placeGainFocusEvent.getPlace();
         if (placeRequest.getIdentifier().equals(ScenarioSimulationEditorPresenter.IDENTIFIER)
                 && placeRequest.getPath().equals(this.path)) {
-            showScenarioSimulationDockEvent.fire(new OnShowScenarioSimulationDockEvent());
+            scenarioSimulationDocksHandler.addDocks();
+            scenarioSimulationDocksHandler.expandToolsDock();
             registerRightPanelCallback();
             populateRightPanel();
         }
@@ -221,7 +214,7 @@ public class ScenarioSimulationEditorPresenter
         PathPlaceRequest placeRequest = (PathPlaceRequest) placeHiddenEvent.getPlace();
         if (placeRequest.getIdentifier().equals(ScenarioSimulationEditorPresenter.IDENTIFIER)
                 && placeRequest.getPath().equals(this.path)) {
-            hideScenarioSimulationDockEvent.fire(new OnHideScenarioSimulationDockEvent());
+            scenarioSimulationDocksHandler.removeDocks();
             view.getScenarioGridLayer().getScenarioGrid().clearSelections();
             unRegisterRightPanelCallback();
             clearRightPanelStatus();
@@ -248,6 +241,7 @@ public class ScenarioSimulationEditorPresenter
         return newModel -> {
             this.model = newModel;
             view.refreshContent(newModel.getSimulation());
+            scenarioSimulationDocksHandler.expandTestResultsDock();
         };
     }
 

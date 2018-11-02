@@ -46,6 +46,7 @@ import org.kie.workbench.common.widgets.configresource.client.widget.bound.Impor
 import org.kie.workbench.common.widgets.metadata.client.KieEditor;
 import org.kie.workbench.common.workbench.client.test.OnHideTestPanelEvent;
 import org.kie.workbench.common.workbench.client.test.OnShowTestPanelEvent;
+import org.kie.workbench.common.workbench.client.test.TestReportingDocksHandler;
 import org.kie.workbench.common.workbench.client.test.TestRunnerReportingScreen;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.annotations.WorkbenchEditor;
@@ -86,6 +87,7 @@ public class ScenarioEditorPresenter
 
     private TestRunFailedErrorCallback testRunFailedErrorCallback;
 
+    private TestReportingDocksHandler testReportingDocksHandler;
     private Event<OnShowTestPanelEvent> showTestPanelEvent;
     private Event<OnHideTestPanelEvent> hideTestPanelEvent;
 
@@ -102,6 +104,7 @@ public class ScenarioEditorPresenter
                                    final SettingsPage settingsPage,
                                    final AuditPage auditPage,
                                    final TestRunnerReportingScreen testRunnerReportingScreen,
+                                   final TestReportingDocksHandler testReportingDocksHandler,
                                    final Event<OnShowTestPanelEvent> showTestPanelEvent,
                                    final Event<OnHideTestPanelEvent> hideTestPanelEvent) {
         super(view);
@@ -115,6 +118,7 @@ public class ScenarioEditorPresenter
         this.settingsPage = settingsPage;
         this.auditPage = auditPage;
         this.testRunnerReportingScreen = testRunnerReportingScreen;
+        this.testReportingDocksHandler = testReportingDocksHandler;
         this.showTestPanelEvent = showTestPanelEvent;
         this.hideTestPanelEvent = hideTestPanelEvent;
 
@@ -216,6 +220,7 @@ public class ScenarioEditorPresenter
                              view.hideBusyIndicator();
 
                              redraw();
+                             testReportingDocksHandler.expandTestResultsDock();
                          }
                      },
                      getTestRunFailedCallback()).runScenario(user.getIdentifier(),

@@ -56,6 +56,7 @@ import org.kie.workbench.common.widgets.configresource.client.widget.bound.Impor
 import org.kie.workbench.common.widgets.metadata.client.KieEditorWrapperView;
 import org.kie.workbench.common.widgets.metadata.client.validation.AssetUpdateValidator;
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
+import org.kie.workbench.common.workbench.client.test.TestReportingDocksHandler;
 import org.kie.workbench.common.workbench.client.test.TestRunnerReportingScreen;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -166,6 +167,9 @@ public class ScenarioEditorPresenterTest {
     @Mock
     TestRunnerReportingScreen testRunnerReportingScreen;
 
+    @Mock
+    TestReportingDocksHandler testReportingDocksHandler;
+
     private CallerMock<ScenarioTestEditorService> fakeService;
     private ScenarioEditorPresenter editor;
     private Scenario scenario;
@@ -188,6 +192,7 @@ public class ScenarioEditorPresenterTest {
                                                  settingsPage,
                                                  auditPage,
                                                  testRunnerReportingScreen,
+                                                 testReportingDocksHandler,
                                                  showTestPanelEvent,
                                                  hideTestPanelEvent) {
             {
