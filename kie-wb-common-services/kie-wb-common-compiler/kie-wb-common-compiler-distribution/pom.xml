@@ -21,7 +21,7 @@
     <container.host>localhost</container.host>
     <container.port>8090</container.port>
     <kie.compiler.url>http://${container.host}:${container.port}/${deployable.context}</kie.compiler.url>
-    <version.wildfly11>11.0.0.Final</version.wildfly11>
+    <version.wildfly14>14.0.1.Final</version.wildfly14>
   </properties>
 
   <dependencyManagement>
@@ -325,7 +325,7 @@
                 <artifactItem>
                   <groupId>org.wildfly</groupId>
                   <artifactId>wildfly-dist</artifactId>
-                  <version>11.0.0.Final</version>
+                  <version>14.0.1.Final</version>
                   <type>zip</type>
                   <overWrite>false</overWrite>
                   <outputDirectory>${project.build.directory}</outputDirectory>

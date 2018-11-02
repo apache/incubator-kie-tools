@@ -6,7 +6,7 @@
 
   <container qualifier="widlfly-managed" default="true">
     <configuration>
-      <property name="jbossHome">${project.basedir}/target/wildfly-11.0.0.Final</property>
+      <property name="jbossHome">${project.basedir}/target/wildfly-14.0.1.Final</property>
       <property name="org.uberfire.nio.git.daemon.enabled">false</property>
       <property name="org.uberfire.nio.git.ssh.enabled">false</property>
       <!-- enable for remote debug

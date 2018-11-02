@@ -161,7 +161,7 @@ The following assumes that the Standalone Showcase will be utilized. Some eviden
         -XX:CompileThreshold=7000
         -Djava.util.prefs.syncInterval=200000
         -Dorg.uberfire.nio.git.dir=/tmp/project/dir
-        -Derrai.jboss.home=/[YOUR_DIR_LOCATION]/kie-wb-common/kie-wb-common-stunner/kie-wb-common-stunner-showcase/kie-wb-common-stunner-showcase-project/target/wildfly-11.0.0.Final
+        -Derrai.jboss.home=/[YOUR_DIR_LOCATION]/kie-wb-common/kie-wb-common-stunner/kie-wb-common-stunner-showcase/kie-wb-common-stunner-showcase-project/target/wildfly-14.0.1.Final
         -Derrai.jboss.args="-b 0.0.0.0 -bmanagement 0.0.0.0"
 
 8. Change *Dev Mode parameters* to the following:
