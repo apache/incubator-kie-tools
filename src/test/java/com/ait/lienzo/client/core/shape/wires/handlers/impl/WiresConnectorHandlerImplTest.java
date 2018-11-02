@@ -207,6 +207,14 @@ public class WiresConnectorHandlerImplTest {
     }
 
     @Test
+    public void testSelectionManagerIsNull()
+    {
+        // no assert intentionally, before the fix this tests failed with NullPointer Exception
+        when(wiresManager.getSelectionManager()).thenReturn(null);
+        tested.onNodeMouseMove(moveEvent);
+    }
+
+    @Test
     public void testMoveAndCreateControlPoint() {
         when(moveEvent.getX()).thenReturn(20);
         when(moveEvent.getY()).thenReturn(20);
