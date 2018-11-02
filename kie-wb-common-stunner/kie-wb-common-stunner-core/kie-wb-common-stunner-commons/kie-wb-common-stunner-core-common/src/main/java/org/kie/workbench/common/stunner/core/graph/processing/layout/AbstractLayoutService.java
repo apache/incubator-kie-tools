@@ -36,7 +36,7 @@ public abstract class AbstractLayoutService implements LayoutService {
      */
     @Override
     public boolean hasLayoutInformation(final Graph<?, ?> graph) {
-        final int threshold = getLayoutInformationThreshold(graph);
+        final double threshold = getLayoutInformationThreshold(graph);
         int nodesWithLayout = 0;
         for (final Node n : graph.nodes()) {
 
@@ -55,10 +55,10 @@ public abstract class AbstractLayoutService implements LayoutService {
         return false;
     }
 
-    protected int getLayoutInformationThreshold(final Graph<?, ?> graph) {
+    protected double getLayoutInformationThreshold(final Graph<?, ?> graph) {
         final List<Node> list = new ArrayList<>();
         graph.nodes().iterator().forEachRemaining(list::add);
-        return list.size() / 4;
+        return list.size() / 4.0D;
     }
 
     private static boolean isNullOrCloseToZero(final Bounds bounds) {
