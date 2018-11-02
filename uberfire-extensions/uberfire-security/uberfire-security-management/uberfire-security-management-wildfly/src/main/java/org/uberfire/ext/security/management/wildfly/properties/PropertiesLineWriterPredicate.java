@@ -53,6 +53,7 @@ import org.jboss.as.domain.management.security.UserPropertiesFileLoader;
  */
 public class PropertiesLineWriterPredicate implements Predicate<String> {
 
+    public static final Pattern PROPERTY_PATTERN = Pattern.compile("#?+((?:[,.\\-@/a-zA-Z0-9]++|(?:\\\\[=\\\\])++)++)=(.++)");
     public static final Pattern EMPTY_PROPERTY_PATTERN = Pattern.compile("#?+((?:[,.\\-@/a-zA-Z0-9]++|(?:\\\\[=\\\\])++)++)=(\\[\\].*?)*");
 
     private final Function<String, String> keyRawValueProvider;
@@ -102,7 +103,7 @@ public class PropertiesLineWriterPredicate implements Predicate<String> {
         if (trimmed.length() > 0) {
             Matcher userLineMatcher = null;
             boolean isEmptyValue = false;
-            final Matcher defaultPatternMatcher = PropertiesFileLoader.PROPERTY_PATTERN.matcher(trimmed);
+            final Matcher defaultPatternMatcher = PROPERTY_PATTERN.matcher(trimmed);
             if (defaultPatternMatcher.matches()) {
                 userLineMatcher = defaultPatternMatcher;
             } else if (allowEmptyEntryValue) {

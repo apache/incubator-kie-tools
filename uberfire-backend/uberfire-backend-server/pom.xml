@@ -126,6 +126,11 @@
       <artifactId>jasypt</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>xerces</groupId>
+      <artifactId>xercesImpl</artifactId>
+    </dependency>
+
     <!-- EJB for AsyncDispatcher -->
     <dependency>
       <groupId>org.jboss.spec.javax.ejb</groupId>
