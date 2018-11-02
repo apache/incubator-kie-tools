@@ -18,7 +18,12 @@ package org.kie.workbench.common.stunner.core.client.components.layout;
 
 import javax.inject.Inject;
 
+import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
+import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Graph;
+import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.HasBounds;
+import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.processing.layout.Layout;
 import org.kie.workbench.common.stunner.core.graph.processing.layout.LayoutExecutor;
 import org.kie.workbench.common.stunner.core.graph.processing.layout.LayoutService;
@@ -35,10 +40,22 @@ public final class LayoutHelper {
         this.layoutExecutor = layoutExecutor;
     }
 
-    public void applyLayout(final Graph graph) {
+    public void applyLayout(final Diagram diagram) {
+        final Graph graph = diagram.getGraph();
         if (graph != null && !this.layoutService.hasLayoutInformation(graph)) {
             final Layout layout = this.layoutService.createLayout(graph);
             this.layoutExecutor.applyLayout(layout, graph);
+
+            for (final Object n : graph.nodes()) {
+                if (n instanceof Node) {
+                    final Node node = ((Node) n);
+                    if (CanvasLayoutUtils.isCanvasRoot(diagram, node)) {
+                        if (node.getContent() instanceof HasBounds) {
+                            ((HasBounds) node.getContent()).setBounds(BoundsImpl.build(0, 0, 0, 0));
+                        }
+                    }
+                }
+            }
         }
     }
 }

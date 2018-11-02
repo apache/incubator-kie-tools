@@ -298,7 +298,7 @@ public class SessionDiagramEditorScreen {
     void open(final Diagram diagram,
               final Command callback) {
         screenPanelView.setWidget(presenter.getView());
-        layoutHelper.applyLayout(diagram.getGraph());
+        layoutHelper.applyLayout(diagram);
         presenter
                 .withToolbar(true)
                 .withPalette(true)

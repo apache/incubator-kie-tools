@@ -143,7 +143,7 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
 
     @Override
     public void open(final ProjectDiagram diagram) {
-        this.layoutHelper.applyLayout(diagram.getGraph());
+        this.layoutHelper.applyLayout(diagram);
         super.open(diagram);
     }
 
