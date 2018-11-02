@@ -17,6 +17,7 @@
 package org.kie.workbench.common.workbench.client.docks;
 
 import java.util.Collection;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
@@ -109,6 +110,7 @@ public class AuthoringWorkbenchDocks {
     }
 
     public void setActiveHandler(WorkbenchDocksHandler handler) {
+
         if (!isAuthoringActive()) {
             return;
         }
@@ -148,6 +150,7 @@ public class AuthoringWorkbenchDocks {
     }
 
     public void hide() {
+
         if (componentPaletteEnabled) {
             uberfireDocks.remove(componentPaletteDock);
             componentPaletteEnabled = false;
@@ -158,6 +161,7 @@ public class AuthoringWorkbenchDocks {
     }
 
     public void show() {
+
         uberfireDocks.show(UberfireDockPosition.WEST,
                              authoringPerspectiveIdentifier);
         projectExplorerEnabled = true;
@@ -174,6 +178,14 @@ public class AuthoringWorkbenchDocks {
     public void expandProjectExplorer() {
         if (projectExplorerDock != null && !componentPaletteEnabled) {
             uberfireDocks.open(projectExplorerDock);
+        }
+    }
+
+    public void expandAuthoringDock(final UberfireDock dockToOpen) {
+        uberfireDocks.show(UberfireDockPosition.EAST, authoringPerspectiveIdentifier);
+
+        if (dockToOpen != null) {
+            uberfireDocks.open(dockToOpen);
         }
     }
 
@@ -220,7 +232,6 @@ public class AuthoringWorkbenchDocks {
             uberfireDocks.open(dockToOpen);
         }
     }
-
     public void onLayoutEditorFocus(@Observes LayoutEditorFocusEvent event) {
         refreshWestDocks(true, componentPaletteDock);
     }

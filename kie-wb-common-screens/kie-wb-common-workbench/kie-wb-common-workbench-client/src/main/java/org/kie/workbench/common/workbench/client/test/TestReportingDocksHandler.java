@@ -19,27 +19,35 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import javax.enterprise.context.Dependent;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
+import javax.inject.Inject;
 
+import org.kie.workbench.common.workbench.client.docks.AuthoringWorkbenchDocks;
 import org.kie.workbench.common.workbench.client.docks.impl.AbstractWorkbenchDocksHandler;
 import org.kie.workbench.common.workbench.client.resources.i18n.DefaultWorkbenchConstants;
 import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
-@Dependent
+@ApplicationScoped
 public class TestReportingDocksHandler
         extends AbstractWorkbenchDocksHandler {
+
+    @Inject
+    private AuthoringWorkbenchDocks authoringWorkbenchDocks;
+
+    private UberfireDock testReportDock;
 
     @Override
     public Collection<UberfireDock> provideDocks(String perspectiveIdentifier) {
         List<UberfireDock> result = new ArrayList<>();
 
-        result.add(new UberfireDock(UberfireDockPosition.EAST,
-                                    "PLAY_CIRCLE",
-                                    new DefaultPlaceRequest("org.kie.guvnor.TestResults"),
-                                    perspectiveIdentifier).withSize(450).withLabel(DefaultWorkbenchConstants.INSTANCE.TestReport()));
+        testReportDock = new UberfireDock(UberfireDockPosition.EAST,
+                                          "PLAY_CIRCLE",
+                                          new DefaultPlaceRequest("org.kie.guvnor.TestResults"),
+                                          perspectiveIdentifier);
+        result.add(testReportDock.withSize(450).withLabel(DefaultWorkbenchConstants.INSTANCE.TestReport()));
 
         return result;
     }
@@ -54,4 +62,7 @@ public class TestReportingDocksHandler
                      true);
     }
 
+    public void expandTestResultsDock() {
+        authoringWorkbenchDocks.expandAuthoringDock(testReportDock);
+    }
 }

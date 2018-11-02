@@ -39,8 +39,18 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.rpc.SessionInfo;
 
-import static org.mockito.Mockito.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyBoolean;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class AuthoringWorkbenchDocksTest {
@@ -268,6 +278,25 @@ public class AuthoringWorkbenchDocksTest {
 
         verify(authoringWorkbenchDocks,
                never()).setProjectExplorerExpandedPreference(anyBoolean());
+    }
+
+    @Test
+    public void expandAuthoringDock() {
+        final UberfireDock dockToOpen = mock(UberfireDock.class);
+        authoringWorkbenchDocks.expandAuthoringDock(dockToOpen);
+
+        verify(uberfireDocks).show(UberfireDockPosition.EAST, AUTHORING_PERSPECTIVE);
+        verify(uberfireDocks).open(dockToOpen);
+    }
+
+    @Test
+    public void doNotExpandAuthoringDockWhenTheDockIsNull() {
+        reset(uberfireDocks);
+
+        authoringWorkbenchDocks.expandAuthoringDock(null);
+
+        verify(uberfireDocks).show(UberfireDockPosition.EAST, AUTHORING_PERSPECTIVE);
+        verify(uberfireDocks, never()).open(any());
     }
 
     private UberfireDocksInteractionEvent createUberfireDocksInteractionEvent(final UberfireDock uberfireDock,

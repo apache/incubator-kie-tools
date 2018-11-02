@@ -15,17 +15,39 @@
  */
 package org.kie.workbench.common.workbench.client.test;
 
+import java.util.Collection;
+
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.workbench.client.docks.AuthoringWorkbenchDocks;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.uberfire.client.workbench.docks.UberfireDock;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.verify;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class TestReportingDocksHandlerTest {
 
+    @Mock
+    private AuthoringWorkbenchDocks authoringWorkbenchDocks;
+
+    @InjectMocks
+    private TestReportingDocksHandler testReportingDocksHandler;
+
     @Test
     public void amountOfItems() {
-        assertEquals(1, new TestReportingDocksHandler().provideDocks("id").size());
+        assertEquals(1, testReportingDocksHandler.provideDocks("id").size());
+    }
+
+    @Test
+    public void expandTestResultsDock() {
+        final Collection<UberfireDock> docks = testReportingDocksHandler.provideDocks("id");
+        final UberfireDock dock = docks.iterator().next();
+
+        testReportingDocksHandler.expandTestResultsDock();
+        verify(authoringWorkbenchDocks).expandAuthoringDock(dock);
     }
 }
