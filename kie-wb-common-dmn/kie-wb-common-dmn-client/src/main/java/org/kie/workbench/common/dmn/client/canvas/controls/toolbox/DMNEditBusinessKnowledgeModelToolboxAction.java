@@ -22,10 +22,7 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.BusinessKnowledgeModel;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -86,27 +83,7 @@ public class DMNEditBusinessKnowledgeModelToolboxAction implements ToolboxAction
         final BusinessKnowledgeModel bkm = bkmNode.getContent().getDefinition();
         editExpressionEvent.fire(new EditExpressionEvent(sessionManager.getCurrentSession(),
                                                          uuid,
-                                                         new HasExpression() {
-                                                             @Override
-                                                             public Expression getExpression() {
-                                                                 return bkm.getEncapsulatedLogic();
-                                                             }
-
-                                                             @Override
-                                                             public void setExpression(final Expression expression) {
-                                                                 throw new UnsupportedOperationException("It is not possible to set the EncapsulatedLogic of a BusinessKnowledgeModel.");
-                                                             }
-
-                                                             @Override
-                                                             public DMNModelInstrumentedBase asDMNModelInstrumentedBase() {
-                                                                 return bkm.getEncapsulatedLogic();
-                                                             }
-
-                                                             @Override
-                                                             public boolean isClearSupported() {
-                                                                 return false;
-                                                             }
-                                                         },
+                                                         bkm.asHasExpression(),
                                                          Optional.of(bkm)));
 
         return this;

@@ -240,17 +240,18 @@ public class DecisionNavigatorNestedItemFactoryTest {
     public void testGetOptionalHasExpressionWhenNodeIsBusinessKnowledgeModel() {
 
         final View content = mock(View.class);
-        final BusinessKnowledgeModel businessKnowledgeModel = mock(BusinessKnowledgeModel.class);
-        final FunctionDefinition expectedHasExpression = mock(FunctionDefinition.class);
+        final BusinessKnowledgeModel businessKnowledgeModel = new BusinessKnowledgeModel();
+        final FunctionDefinition encapsulatedLogic = mock(FunctionDefinition.class);
+        businessKnowledgeModel.setEncapsulatedLogic(encapsulatedLogic);
 
         when(node.getContent()).thenReturn(content);
         when(content.getDefinition()).thenReturn(businessKnowledgeModel);
-        when(businessKnowledgeModel.getEncapsulatedLogic()).thenReturn(expectedHasExpression);
 
         final Optional<HasExpression> actualHasExpression = factory.getOptionalHasExpression(node);
 
         assertTrue(actualHasExpression.isPresent());
-        assertEquals(expectedHasExpression, actualHasExpression.get());
+        assertEquals(businessKnowledgeModel, actualHasExpression.get().asDMNModelInstrumentedBase());
+        assertEquals(encapsulatedLogic, actualHasExpression.get().getExpression());
     }
 
     @Test

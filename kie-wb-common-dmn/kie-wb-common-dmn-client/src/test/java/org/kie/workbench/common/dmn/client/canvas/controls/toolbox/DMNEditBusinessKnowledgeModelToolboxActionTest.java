@@ -129,7 +129,7 @@ public class DMNEditBusinessKnowledgeModelToolboxActionTest {
         final HasExpression hasExpression = editExprEvent.getHasExpression();
         assertEquals(bkm.getEncapsulatedLogic(),
                      hasExpression.getExpression());
-        assertEquals(bkm.getEncapsulatedLogic(),
+        assertEquals(bkm,
                      hasExpression.asDMNModelInstrumentedBase());
         assertFalse(hasExpression.isClearSupported());
         assertEquals(bkm,

@@ -149,7 +149,7 @@ public class DecisionNavigatorNestedItemFactory {
         final HasExpression expression;
 
         if (definition instanceof BusinessKnowledgeModel) {
-            expression = ((BusinessKnowledgeModel) definition).getEncapsulatedLogic();
+            expression = ((BusinessKnowledgeModel) definition).asHasExpression();
         } else if (definition instanceof Decision) {
             expression = (Decision) definition;
         } else {
