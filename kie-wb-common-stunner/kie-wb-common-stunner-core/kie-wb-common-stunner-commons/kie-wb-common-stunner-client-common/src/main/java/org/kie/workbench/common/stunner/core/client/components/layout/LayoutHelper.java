@@ -41,18 +41,15 @@ public final class LayoutHelper {
     }
 
     public void applyLayout(final Diagram diagram) {
-        final Graph graph = diagram.getGraph();
+        final Graph<?, Node> graph = diagram.getGraph();
         if (graph != null && !this.layoutService.hasLayoutInformation(graph)) {
             final Layout layout = this.layoutService.createLayout(graph);
             this.layoutExecutor.applyLayout(layout, graph);
 
-            for (final Object n : graph.nodes()) {
-                if (n instanceof Node) {
-                    final Node node = ((Node) n);
-                    if (CanvasLayoutUtils.isCanvasRoot(diagram, node)) {
-                        if (node.getContent() instanceof HasBounds) {
-                            ((HasBounds) node.getContent()).setBounds(BoundsImpl.build(0, 0, 0, 0));
-                        }
+            for (final Node node : graph.nodes()) {
+                if (CanvasLayoutUtils.isCanvasRoot(diagram, node)) {
+                    if (node.getContent() instanceof HasBounds) {
+                        ((HasBounds) node.getContent()).setBounds(BoundsImpl.build(0, 0, 0, 0));
                     }
                 }
             }

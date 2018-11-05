@@ -34,7 +34,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -119,16 +119,12 @@ public class LayoutHelperTest {
 
         final Bounds bounds = argumentCaptor.getValue();
 
-        assertTrue(isZero(bounds.getLowerRight()));
-        assertTrue(isZero(bounds.getUpperLeft()));
+        isCloseToZero(bounds.getLowerRight());
+        isCloseToZero(bounds.getUpperLeft());
     }
 
-    private static boolean isZero(final Bounds.Bound bound) {
-        return isCloseToZero(bound.getX())
-                && isCloseToZero(bound.getY());
-    }
-
-    private static boolean isCloseToZero(final double value) {
-        return Math.abs(value - 0) < 0.01;
+    private static void isCloseToZero(final Bounds.Bound bound) {
+        assertEquals(0.0, bound.getX(), 0.01);
+        assertEquals(0.0, bound.getY(), 0.01);
     }
 }
