@@ -16,10 +16,13 @@
 
 package org.kie.workbench.common.stunner.project.service;
 
+import java.util.Optional;
+
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.shared.file.SupportsUpdate;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.bus.server.annotations.Remote;
+
 import org.kie.workbench.common.stunner.core.service.BaseDiagramService;
 import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
 import org.kie.workbench.common.stunner.project.diagram.ProjectMetadata;
@@ -34,8 +37,9 @@ public interface ProjectDiagramService extends BaseDiagramService<ProjectMetadat
     Path create(final Path path,
                 final String name,
                 final String defSetId,
-                final String projName,
-                final Package projPkg);
+                final String projectName,
+                final Package projectPkg,
+                final Optional<String> projectType);
 
     Path saveAsXml(final Path path,
                    final String xml,

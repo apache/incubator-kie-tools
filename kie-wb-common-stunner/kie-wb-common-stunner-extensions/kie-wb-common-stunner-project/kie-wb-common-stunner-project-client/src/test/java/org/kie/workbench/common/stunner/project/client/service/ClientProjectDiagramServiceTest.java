@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.project.client.service;
 
+import java.util.Optional;
+
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.common.client.api.Caller;
@@ -75,12 +77,14 @@ public class ClientProjectDiagramServiceTest extends AbstractClientDiagramServic
         final String projName = "project-name";
         final Package projPackage = mock(Package.class);
         final ServiceCallback<Path> callback = mock(ServiceCallback.class);
+        final Optional<String> projectType = Optional.of("type");
 
         tested.create(path,
                       name,
                       defSetId,
                       projName,
                       projPackage,
+                      projectType,
                       callback);
 
         verify(diagramService,
@@ -88,7 +92,8 @@ public class ClientProjectDiagramServiceTest extends AbstractClientDiagramServic
                                 eq(name),
                                 eq(defSetId),
                                 eq(projName),
-                                eq(projPackage));
+                                eq(projPackage),
+                                eq(projectType));
         verify(callback,
                times(1)).onSuccess(any(Path.class));
         verify(callback,

@@ -60,12 +60,15 @@ public abstract class AbstractFactoryManager {
 
     public Element<?> newElement(final String uuid,
                                  final String id) {
+        return newElement(uuid, id, null);
+    }
+
+    private Element<?> newElement(final String uuid,
+                                  final String id,
+                                  final Metadata metadata) {
         final Object defSet = getDefinitionSet(id);
         final boolean isDefSet = null != defSet;
-        return !isDefSet ? doBuildElement(uuid,
-                                          id) : doBuildGraph(uuid,
-                                                             id,
-                                                             defSet);
+        return !isDefSet ? doBuildElement(uuid, id) : doBuildGraph(uuid, id, defSet, metadata);
     }
 
     public Element<?> newElement(final String uuid,
@@ -83,8 +86,7 @@ public abstract class AbstractFactoryManager {
     public <M extends Metadata, D extends Diagram> D newDiagram(final String name,
                                                                 final String id,
                                                                 final M metadata) {
-        final Graph<DefinitionSet, ?> graph = (Graph<DefinitionSet, ?>) newElement(UUID.uuid(),
-                                                                                   id);
+        final Graph<DefinitionSet, ?> graph = (Graph<DefinitionSet, ?>) newElement(UUID.uuid(), id, metadata);
         return (D) checkDiagramFactoryNotNull(graph.getContent().getDefinition(),
                                               metadata).build(name,
                                                               metadata,
@@ -134,10 +136,10 @@ public abstract class AbstractFactoryManager {
     @SuppressWarnings("unchecked")
     private <C extends DefinitionSet> Element<C> doBuildGraph(final String uuid,
                                                               final String defSetId,
-                                                              final Object defSet) {
+                                                              final Object defSet,
+                                                              final Metadata metadata) {
         final Class<? extends ElementFactory> factoryType = definitionManager.adapters().forDefinitionSet().getGraphFactoryType(defSet);
         final ElementFactory<String, DefinitionSet, Element<DefinitionSet>> factory = factoryRegistry.getElementFactory(factoryType);
-        return (Element<C>) factory.build(uuid,
-                                          defSetId);
+        return (Element<C>) factory.build(uuid, defSetId, metadata);
     }
 }

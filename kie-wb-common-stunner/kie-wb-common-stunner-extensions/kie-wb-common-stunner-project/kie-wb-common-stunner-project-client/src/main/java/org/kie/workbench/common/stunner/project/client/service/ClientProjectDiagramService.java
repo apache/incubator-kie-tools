@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.project.client.service;
 
+import java.util.Optional;
+
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Specializes;
@@ -64,8 +66,9 @@ public class ClientProjectDiagramService extends ClientDiagramServiceImpl<Projec
     public void create(final Path path,
                        final String name,
                        final String defSetId,
-                       final String projName,
-                       final Package projPkg,
+                       final String projectName,
+                       final Package projectPkg,
+                       final Optional<String> projectType,
                        final ServiceCallback<Path> callback) {
         diagramServiceCaller.call((RemoteCallback<Path>) callback::onSuccess,
                                   (message, throwable) -> {
@@ -74,8 +77,9 @@ public class ClientProjectDiagramService extends ClientDiagramServiceImpl<Projec
                                   }).create(path,
                                             name,
                                             defSetId,
-                                            projName,
-                                            projPkg);
+                                            projectName,
+                                            projectPkg,
+                                            projectType);
     }
 
     public void saveOrUpdate(final Path path,

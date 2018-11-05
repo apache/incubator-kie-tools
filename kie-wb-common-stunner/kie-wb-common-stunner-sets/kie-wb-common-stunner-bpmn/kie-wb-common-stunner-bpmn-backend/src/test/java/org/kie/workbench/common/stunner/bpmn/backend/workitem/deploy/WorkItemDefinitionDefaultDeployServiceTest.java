@@ -76,7 +76,11 @@ public class WorkItemDefinitionDefaultDeployServiceTest {
     @Mock
     private Asset serviceNodeIcon;
 
+    @Mock
+    private Asset milestoneNodeIcon;
+
     private WorkItemDefinitionDefaultDeployService tested;
+
 
     @Before
     public void init() {
@@ -98,6 +102,10 @@ public class WorkItemDefinitionDefaultDeployServiceTest {
         when(assetBuilder.apply(eq(WorkItemDefinitionDefaultDeployService.SERVICE_NODE_ICON),
                                 eq(getClassPath(WorkItemDefinitionDefaultDeployService.SERVICE_NODE_ICON))))
                 .thenReturn(serviceNodeIcon);
+        when(assetBuilder.apply(eq(WorkItemDefinitionDefaultDeployService.MILESTONE_ICON),
+                                eq(getClassPath(WorkItemDefinitionDefaultDeployService.MILESTONE_ICON))))
+                .thenReturn(milestoneNodeIcon);
+
         when(resources.resolveGlobalPath(eq(metadata))).thenReturn(globalPath);
         tested = new WorkItemDefinitionDefaultDeployService(resources,
                                                             backendFileSystemManager, assetBuilder);
@@ -112,13 +120,14 @@ public class WorkItemDefinitionDefaultDeployServiceTest {
                         assetsArgumentCaptor.capture(),
                         anyString());
         Collection<Asset> assets = assetsArgumentCaptor.getValue().getAssets();
-        assertEquals(6, assets.size());
+        assertEquals(WorkItemDefinitionDefaultDeployService.ASSETS.length, assets.size());
         assertTrue(assets.contains(widAsset));
         assertTrue(assets.contains(emailIcon));
         assertTrue(assets.contains(brIcon));
         assertTrue(assets.contains(decisionIcon));
         assertTrue(assets.contains(logIcon));
         assertTrue(assets.contains(serviceNodeIcon));
+        assertTrue(assets.contains(milestoneNodeIcon));
     }
 
     private static String getClassPath(final String asset) {

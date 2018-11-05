@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.project.backend.service;
 
+import java.util.Optional;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -113,13 +115,15 @@ public class ProjectDiagramServiceImpl extends KieService<ProjectDiagram>
     public Path create(final Path path,
                        final String name,
                        final String defSetId,
-                       final String projName,
-                       final Package projPkg) {
+                       final String projectName,
+                       final Package projectPkg,
+                       final Optional<String> projectType) {
         return controller.create(path,
                                  name,
                                  defSetId,
-                                 projName,
-                                 projPkg);
+                                 projectName,
+                                 projectPkg,
+                                 projectType);
     }
 
     @Override

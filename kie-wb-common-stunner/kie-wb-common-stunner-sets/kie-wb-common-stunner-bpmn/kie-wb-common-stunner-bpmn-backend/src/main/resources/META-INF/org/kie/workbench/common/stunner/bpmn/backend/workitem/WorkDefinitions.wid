@@ -79,6 +79,15 @@
      "displayName" : "Decision Task",
      "icon" : "defaultdecisionicon.png",
      "category" : "Decision tasks"
-   ]
+   ],
 
+   [
+    "name" : "Milestone",
+    "parameters" : [
+        "Condition" : new StringDataType()
+    ],
+    "displayName" : "Milestone",
+    "icon" : "defaultmilestoneicon.png",
+    "category" : "Milestone"
+    ]
 ]

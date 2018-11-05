@@ -94,6 +94,18 @@ public final class UpdateElementPropertyValueCommand extends AbstractGraphComman
         return oldValue;
     }
 
+    public String getPropertyId() {
+        return propertyId;
+    }
+
+    public Object getValue() {
+        return value;
+    }
+
+    public Node<?, Edge> getNode() {
+        return node;
+    }
+
     private Node<?, Edge> checkNodeNotNull(final GraphCommandExecutionContext context) {
         if (null == node) {
             node = super.getNodeNotNull(context,

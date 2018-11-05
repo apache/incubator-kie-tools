@@ -126,7 +126,7 @@ public class BPMNShapeFactory
         this.basicShapesFactory = basicShapesFactory;
         this.svgShapeFactory = svgShapeFactory;
         this.delegateShapeFactory = delegateShapeFactory;
-        this.workItemDefinitionRegistry = workItemDefinitionRegistry::get;
+        this.workItemDefinitionRegistry =  workItemDefinitionRegistry::get;
         this.definitionUtils = definitionUtils;
         this.preferencesRegistries = preferencesRegistries;
     }
@@ -165,7 +165,7 @@ public class BPMNShapeFactory
                           new TaskShapeDef(),
                           () -> svgShapeFactory)
                 .delegate(ServiceTask.class,
-                          new ServiceTaskShapeDef(workItemDefinitionRegistry::get),
+                          new ServiceTaskShapeDef(workItemDefinitionRegistry),
                           () -> svgShapeFactory)
                 .delegate(StartNoneEvent.class,
                           new StartEventShapeDef(),

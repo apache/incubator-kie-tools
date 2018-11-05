@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.cm.factory;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.bpmn.factory.BPMNGraphFactoryImpl;
 import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
@@ -51,6 +52,8 @@ import static org.mockito.Mockito.when;
 public class CaseManagementGraphFactoryImplTest {
 
     @Mock
+    private BPMNGraphFactoryImpl bpmnGraphFactory;
+    @Mock
     private DefinitionManager definitionManager;
     @Mock
     private FactoryManager factoryManager;
@@ -72,7 +75,8 @@ public class CaseManagementGraphFactoryImplTest {
                                                      ruleManager,
                                                      graphCommandManager,
                                                      graphCommandFactory,
-                                                     indexBuilder);
+                                                     indexBuilder,
+                                                     bpmnGraphFactory);
     }
 
     @Test

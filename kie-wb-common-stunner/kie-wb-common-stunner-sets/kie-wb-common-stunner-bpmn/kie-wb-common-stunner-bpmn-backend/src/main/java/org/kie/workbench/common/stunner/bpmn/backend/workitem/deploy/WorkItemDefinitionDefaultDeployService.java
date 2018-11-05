@@ -47,13 +47,15 @@ public class WorkItemDefinitionDefaultDeployService implements WorkItemDefinitio
     static final String DECISION_ICON = "defaultdecisionicon.png";
     static final String LOG_ICON = "defaultlogicon.gif";
     static final String SERVICE_NODE_ICON = "defaultservicenodeicon.png";
+    static final String MILESTONE_ICON = "defaultmilestoneicon.png";
     static final String[] ASSETS = new String[]{
             WID_FILE,
             EMAIL_ICON,
             BR_ICON,
             DECISION_ICON,
             LOG_ICON,
-            SERVICE_NODE_ICON
+            SERVICE_NODE_ICON,
+            MILESTONE_ICON
     };
 
     private final WorkItemDefinitionResources resources;

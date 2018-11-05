@@ -33,6 +33,7 @@ public class ProjectMetadataImpl extends AbstractMetadata implements ProjectMeta
     private String moduleName;
     private Package projectPkg;
     private Overview overview;
+    private String projectType;
 
     public ProjectMetadataImpl() {
     }
@@ -40,11 +41,13 @@ public class ProjectMetadataImpl extends AbstractMetadata implements ProjectMeta
     private ProjectMetadataImpl(final @MapsTo("definitionSetId") String definitionSetId,
                                 final @MapsTo("projectPkg") Package projectPkg,
                                 final @MapsTo("overview") Overview overview,
-                                final @MapsTo("moduleName") String moduleName) {
+                                final @MapsTo("moduleName") String moduleName,
+                                final @MapsTo("projectType") String projectType) {
         super(definitionSetId);
         this.moduleName = moduleName;
         this.projectPkg = projectPkg;
         this.overview = overview;
+        this.projectType = projectType;
     }
 
     @Override
@@ -60,6 +63,11 @@ public class ProjectMetadataImpl extends AbstractMetadata implements ProjectMeta
     @Override
     public Overview getOverview() {
         return overview;
+    }
+
+    @Override
+    public String getProjectType() {
+        return projectType;
     }
 
     @Override
@@ -96,6 +104,7 @@ public class ProjectMetadataImpl extends AbstractMetadata implements ProjectMeta
         private Package pPkg;
         private Overview overview;
         private Path path;
+        private String projectType;
 
         public ProjectMetadataBuilder forDefinitionSetId(final String s) {
             this.defSetId = s;
@@ -127,11 +136,17 @@ public class ProjectMetadataImpl extends AbstractMetadata implements ProjectMeta
             return this;
         }
 
+        public ProjectMetadataBuilder forProjectType(final String projectType) {
+            this.projectType = projectType;
+            return this;
+        }
+
         public ProjectMetadataImpl build() {
             final ProjectMetadataImpl result = new ProjectMetadataImpl(defSetId,
                                                                        pPkg,
                                                                        overview,
-                                                                       pName);
+                                                                       pName,
+                                                                       projectType);
             result.setPath(path);
             result.setRoot(pPkg.getModuleRootPath());
             result.setTitle(title);

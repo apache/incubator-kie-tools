@@ -15,6 +15,7 @@
  */
 package org.kie.workbench.common.stunner.project.client.handlers;
 
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -73,11 +74,17 @@ public abstract class AbstractProjectDiagramNewResourceHandler<R extends ClientR
         final String setId = getId(type);
         final String moduleName = context.getActiveModule().isPresent() ? context.getActiveModule().get().getModuleName() : "";
 
+        createDiagram(pkg, name, presenter, path, setId, moduleName, Optional.empty());
+    }
+
+    public void createDiagram(Package pkg, String name, NewResourcePresenter presenter, Path path, String setId,
+                         String moduleName, Optional<String> projectType) {
         projectDiagramServices.create(path,
                                       name,
                                       setId,
                                       moduleName,
                                       pkg,
+                                      projectType,
                                       new ServiceCallback<Path>() {
                                           @Override
                                           public void onSuccess(final Path path) {

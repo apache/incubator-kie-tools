@@ -18,10 +18,13 @@ package org.kie.workbench.common.stunner.cm.factory;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
+import org.kie.workbench.common.stunner.bpmn.factory.BPMNGraphFactory;
+import org.kie.workbench.common.stunner.bpmn.factory.BPMNGraphFactoryImpl;
 import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
@@ -54,11 +57,13 @@ public class CaseManagementGraphFactoryImpl extends AbstractGraphFactory impleme
     private final GraphCommandManager graphCommandManager;
     private final GraphCommandFactory graphCommandFactory;
     private final FactoryManager factoryManager;
+    private final BPMNGraphFactory bpmnGraphFactory;
 
     private Class<? extends BPMNDiagram> diagramType;
 
     protected CaseManagementGraphFactoryImpl() {
         this(null,
+             null,
              null,
              null,
              null,
@@ -72,7 +77,8 @@ public class CaseManagementGraphFactoryImpl extends AbstractGraphFactory impleme
                                           final RuleManager ruleManager,
                                           final GraphCommandManager graphCommandManager,
                                           final GraphCommandFactory graphCommandFactory,
-                                          final GraphIndexBuilder<?> indexBuilder) {
+                                          final GraphIndexBuilder<?> indexBuilder,
+                                          final BPMNGraphFactoryImpl graphFactory) {
         this.definitionManager = definitionManager;
         this.factoryManager = factoryManager;
         this.ruleManager = ruleManager;
@@ -80,6 +86,12 @@ public class CaseManagementGraphFactoryImpl extends AbstractGraphFactory impleme
         this.graphCommandFactory = graphCommandFactory;
         this.indexBuilder = indexBuilder;
         this.diagramType = CaseManagementDiagram.class;
+        this.bpmnGraphFactory = graphFactory;
+    }
+
+    @PostConstruct
+    public void init() {
+        bpmnGraphFactory.setDiagramType(CaseManagementDiagram.class);
     }
 
     public void setDiagramType(final Class<? extends BPMNDiagram> diagramType) {

@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.project.backend.service;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.enterprise.inject.Instance;
 import javax.inject.Named;
@@ -119,8 +120,11 @@ public class ProjectDiagramServiceImplTest {
 
     private ArgumentCaptor<ResourceOpenedEvent> eventArgumentCaptor;
 
+    private Optional<String> projectType;
+
     @Before
     public void setUp() {
+        projectType = Optional.of("type");
         eventArgumentCaptor = ArgumentCaptor.forClass(ResourceOpenedEvent.class);
         diagramService = new ProjectDiagramServiceImpl(definitionManager,
                                                        factoryManager,
@@ -181,18 +185,21 @@ public class ProjectDiagramServiceImplTest {
                                              NAME,
                                              DEF_SET_ID,
                                              PROJECT,
-                                             PACKAGE)).thenReturn(resultPath);
+                                             PACKAGE,
+                                             projectType)).thenReturn(resultPath);
         Path result = diagramService.create(path,
                                             NAME,
                                             DEF_SET_ID,
                                             PROJECT,
-                                            PACKAGE);
+                                            PACKAGE,
+                                            projectType);
         verify(diagramServiceController,
                times(1)).create(path,
                                 NAME,
                                 DEF_SET_ID,
                                 PROJECT,
-                                PACKAGE);
+                                PACKAGE,
+                                projectType);
         assertEquals(resultPath,
                      result);
     }

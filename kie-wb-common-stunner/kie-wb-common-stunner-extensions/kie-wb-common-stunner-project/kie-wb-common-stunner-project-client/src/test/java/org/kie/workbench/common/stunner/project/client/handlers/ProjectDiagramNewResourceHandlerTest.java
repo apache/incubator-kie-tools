@@ -117,6 +117,7 @@ public class ProjectDiagramNewResourceHandlerTest {
                                 eq(DEFSET_ID),
                                 eq(MODULE_NAME),
                                 any(Package.class),
+                                eq(Optional.empty()),
                                 any(ServiceCallback.class));
     }
 

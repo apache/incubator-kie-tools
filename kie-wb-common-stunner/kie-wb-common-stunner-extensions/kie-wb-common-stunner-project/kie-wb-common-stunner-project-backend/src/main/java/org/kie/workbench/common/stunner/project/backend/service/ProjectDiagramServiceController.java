@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.project.backend.service;
 
 import java.util.Map;
+import java.util.Optional;
 
 import javax.enterprise.inject.Instance;
 
@@ -85,20 +86,23 @@ class ProjectDiagramServiceController extends AbstractVFSDiagramService<ProjectM
                       name,
                       defSetId,
                       getCurrentModule(path).getModuleName(),
-                      null);
+                      null,
+                      Optional.empty());
     }
 
     public Path create(final Path path,
                        final String name,
                        final String defSetId,
                        final String moduleName,
-                       final Package projPkg) {
+                       final Package projectPkg,
+                       final Optional<String> projectType) {
         final ProjectMetadata metadata = buildProjectMetadataInstance(path,
                                                                       name,
                                                                       defSetId,
                                                                       moduleName,
-                                                                      projPkg,
-                                                                      overviewLoader.loadOverview(path));
+                                                                      projectPkg,
+                                                                      overviewLoader.loadOverview(path),
+                                                                      projectType);
         return this.create(path,
                            name,
                            defSetId,
@@ -116,7 +120,8 @@ class ProjectDiagramServiceController extends AbstractVFSDiagramService<ProjectM
                                             defSetId,
                                             kieModule.getModuleName(),
                                             modulePackage,
-                                            overviewLoader.loadOverview(path));
+                                            overviewLoader.loadOverview(path),
+                                            Optional.empty());
     }
 
     private KieModule getCurrentModule(final Path path) {
@@ -128,7 +133,8 @@ class ProjectDiagramServiceController extends AbstractVFSDiagramService<ProjectM
                                                          final String defSetId,
                                                          final String moduleName,
                                                          final Package projPkg,
-                                                         final Overview overview) {
+                                                         final Overview overview,
+                                                         final Optional<String> projectType) {
         return new ProjectMetadataImpl.ProjectMetadataBuilder()
                 .forDefinitionSetId(defSetId)
                 .forModuleName(moduleName)
@@ -136,6 +142,7 @@ class ProjectDiagramServiceController extends AbstractVFSDiagramService<ProjectM
                 .forOverview(overview)
                 .forTitle(name)
                 .forPath(path)
+                .forProjectType(projectType.orElse(null))
                 .build();
     }
 

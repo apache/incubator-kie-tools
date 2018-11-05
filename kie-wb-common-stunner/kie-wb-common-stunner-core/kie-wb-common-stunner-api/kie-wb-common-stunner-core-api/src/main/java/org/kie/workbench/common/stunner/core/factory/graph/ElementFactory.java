@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.factory.graph;
 
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.factory.Factory;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
@@ -32,4 +33,8 @@ public interface ElementFactory<C, D extends Definition<C>, T extends Element<D>
 
     T build(final String uuid,
             final C definition);
+
+    default T build(final String uuid, final C definition, final Metadata metadata) {
+        return build(uuid, definition);
+    }
 }

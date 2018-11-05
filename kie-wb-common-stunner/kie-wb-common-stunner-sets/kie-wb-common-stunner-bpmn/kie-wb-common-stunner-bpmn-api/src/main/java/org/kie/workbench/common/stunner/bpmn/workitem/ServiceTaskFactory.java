@@ -62,7 +62,7 @@ public class ServiceTaskFactory
                 ServiceTaskBuilder.newInstance();
     }
 
-    private ServiceTask buildItem(final String workItemName) {
+    public ServiceTask buildItem(final String workItemName) {
         final WorkItemDefinition workItemDefinition = getRegistry().get(workItemName);
         if (null != workItemDefinition) {
             return new ServiceTaskBuilder(workItemDefinition)

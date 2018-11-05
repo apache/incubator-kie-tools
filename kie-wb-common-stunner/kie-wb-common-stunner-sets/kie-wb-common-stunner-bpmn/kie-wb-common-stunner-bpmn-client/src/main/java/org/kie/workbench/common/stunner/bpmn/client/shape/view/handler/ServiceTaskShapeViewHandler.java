@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.shape.view.handler;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 
 import com.ait.lienzo.client.core.shape.Picture;
@@ -59,6 +60,11 @@ public class ServiceTaskShapeViewHandler
             LienzoPictureUtils.forceLoad(picture,
                                          iconData,
                                          view::refresh);
+        }
+        if (Objects.equals(bean.getDimensionsSet().getHeight().getValue(), 0d)
+                && Objects.equals(bean.getDimensionsSet().getWidth().getValue(), 0d)) {
+            bean.getDimensionsSet().getHeight().setValue(view.getPrimitive().get().getAttributes().getHeight());
+            bean.getDimensionsSet().getWidth().setValue(view.getPrimitive().get().getAttributes().getWidth());
         }
     }
 
