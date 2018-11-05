@@ -27,6 +27,7 @@ import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.LegacyNumericRangeQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.WildcardQuery;
@@ -42,7 +43,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Collections.emptyList;
 import static org.apache.lucene.search.BooleanClause.Occur.MUST;
 import static org.apache.lucene.search.BooleanClause.Occur.SHOULD;
-import static org.apache.lucene.search.LegacyNumericRangeQuery.newLongRange;
 import static org.uberfire.ext.metadata.engine.MetaIndexEngine.FULL_TEXT_FIELD;
 
 public class ElasticSearchSearchIndex implements SearchIndex {
@@ -148,11 +148,11 @@ public class ElasticSearchSearchIndex implements SearchIndex {
             if (entry.getValue() instanceof DateRange) {
                 final Long from = ((DateRange) entry.getValue()).after().getTime();
                 final Long to = ((DateRange) entry.getValue()).before().getTime();
-                query.add(newLongRange(entry.getKey(),
-                                       from,
-                                       to,
-                                       true,
-                                       true),
+                query.add(LegacyNumericRangeQuery.newLongRange(entry.getKey(),
+                                                               from,
+                                                               to,
+                                                               true,
+                                                               true),
                           MUST);
             } else if (entry.getValue() instanceof String) {
                 query.add(new WildcardQuery(new Term(entry.getKey(),
