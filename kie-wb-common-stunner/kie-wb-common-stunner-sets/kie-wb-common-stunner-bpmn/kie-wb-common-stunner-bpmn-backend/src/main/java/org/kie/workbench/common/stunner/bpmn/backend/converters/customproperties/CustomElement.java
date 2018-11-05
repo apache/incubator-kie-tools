@@ -38,6 +38,7 @@ public class CustomElement<T> {
             return getStringValue(element).orElse(defaultValue);
         }
     };
+    public static final ElementDefinition<String> caseIdPrefix = new StringElement("customCaseIdPrefix", "");
     public static final ElementDefinition<String> caseRole = new StringElement("customCaseRoles", "");
 
     private final ElementDefinition<T> elementDefinition;

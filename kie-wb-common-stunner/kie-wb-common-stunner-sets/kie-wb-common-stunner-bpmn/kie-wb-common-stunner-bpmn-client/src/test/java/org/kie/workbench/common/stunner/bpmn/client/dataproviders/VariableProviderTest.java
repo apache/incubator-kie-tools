@@ -26,6 +26,7 @@ import org.kie.workbench.common.forms.dynamic.model.config.SelectorData;
 import org.kie.workbench.common.forms.dynamic.model.config.SelectorDataProvider;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseFileVariables;
+import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseIdPrefix;
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseManagementSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseRoles;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessData;
@@ -120,6 +121,7 @@ public class VariableProviderTest
         BPMNDiagramImpl rootNode = new BPMNDiagramImpl();
         rootNode.setProcessData(new ProcessData(new ProcessVariables(processVariables)));
         rootNode.setCaseManagementSet((new CaseManagementSet(
+                new CaseIdPrefix(""),
                 new CaseRoles(""),
                 new CaseFileVariables(caseFileVariables))));
         return mockNode(rootNode);

@@ -45,6 +45,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.DeclarationList;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.ElementContainer;
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseFileVariables;
+import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseIdPrefix;
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseRoles;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessVariables;
 
@@ -192,6 +193,10 @@ public class ProcessPropertyWriter extends BasePropertyWriter implements Element
             properties.add(variable.getTypedIdentifier());
             this.itemDefinitions.add(variable.getTypeDeclaration());
         });
+    }
+
+    public void setCaseIdPrefix(CaseIdPrefix caseIdPrefix) {
+        CustomElement.caseIdPrefix.of(process).set(caseIdPrefix.getValue());
     }
 
     public void setCaseRoles(CaseRoles roles) {

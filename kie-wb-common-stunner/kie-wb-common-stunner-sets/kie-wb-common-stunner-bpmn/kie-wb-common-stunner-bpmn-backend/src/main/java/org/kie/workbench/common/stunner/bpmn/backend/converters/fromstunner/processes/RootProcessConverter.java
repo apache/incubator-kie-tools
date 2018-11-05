@@ -23,6 +23,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.prop
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.PropertyWriterFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseFileVariables;
+import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseIdPrefix;
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseRoles;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.DiagramSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessData;
@@ -74,6 +75,9 @@ public class RootProcessConverter {
         p.setProcessVariables(processData.getProcessVariables());
 
         //Case Management
+        final CaseIdPrefix caseIdPrefix = definition.getCaseManagementSet().getCaseIdPrefix();
+        p.setCaseIdPrefix(caseIdPrefix);
+
         final CaseRoles caseRoles = definition.getCaseManagementSet().getCaseRoles();
         p.setCaseRoles(caseRoles);
 
