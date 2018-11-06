@@ -208,6 +208,16 @@
       <artifactId>errai-data-binding</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-experimental-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-experimental-client</artifactId>
+    </dependency>
+
     <!-- Lienzo -->
     <dependency>
       <groupId>org.kie</groupId>
