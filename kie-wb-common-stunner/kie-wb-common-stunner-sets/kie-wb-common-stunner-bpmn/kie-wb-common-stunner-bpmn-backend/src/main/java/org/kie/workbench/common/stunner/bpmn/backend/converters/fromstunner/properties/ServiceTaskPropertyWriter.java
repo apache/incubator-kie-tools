@@ -19,14 +19,18 @@ package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.pro
 import org.eclipse.bpmn2.Task;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomAttribute;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomInput;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.Scripts;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnEntryAction;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnExitAction;
 
 public class ServiceTaskPropertyWriter extends ActivityPropertyWriter {
 
+    private final Task task;
+
     public ServiceTaskPropertyWriter(Task task, VariableScope variableScope) {
         super(task, variableScope);
+        this.task = task;
     }
 
     public void setAsync(Boolean value) {
@@ -47,5 +51,9 @@ public class ServiceTaskPropertyWriter extends ActivityPropertyWriter {
 
     public void setServiceTaskName(String name) {
         CustomAttribute.serviceTaskName.of(flowElement).set(name);
+    }
+
+    public void setTaskName(String value) {
+        CustomInput.taskName.of(task).set(value);
     }
 }

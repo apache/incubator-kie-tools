@@ -91,8 +91,6 @@ public abstract class ServiceTask<T extends BaseServiceTask> extends Task<T> {
         assertEquals(value, dataIOSet.getAssignmentsinfo().getValue());
     }
 
-    @Ignore("The test is ignored because there is a bug in new Marshaller.\n" +
-            "Delete this test from this class after https://issues.jboss.org/browse/JBPM-7726 will be resolved.")
     // The test is already defined in parent Task test class.
     @Test
     @Override
@@ -100,8 +98,6 @@ public abstract class ServiceTask<T extends BaseServiceTask> extends Task<T> {
         checkTaskMarshalling(getEmptyTopLevelTaskId(), ZERO_INCOME_EDGES, HAS_NO_OUTCOME_EDGE);
     }
 
-    @Ignore("The test is ignored because there is a bug in new Marshaller.\n" +
-            "Delete this test from this class after https://issues.jboss.org/browse/JBPM-7726 will be resolved.")
     // The test is already defined in parent Task test class.
     @Test
     @Override
@@ -109,8 +105,6 @@ public abstract class ServiceTask<T extends BaseServiceTask> extends Task<T> {
         checkTaskMarshalling(getEmptySubprocessLevelTaskOneIncomeId(), ONE_INCOME_EDGE, HAS_OUTCOME_EDGE);
     }
 
-    @Ignore("The test is ignored because there is a bug in new Marshaller.\n" +
-            "Delete this test from this class after https://issues.jboss.org/browse/JBPM-7726 will be resolved.")
     // The test is already defined in parent Task test class.
     @Test
     @Override
@@ -118,8 +112,6 @@ public abstract class ServiceTask<T extends BaseServiceTask> extends Task<T> {
         checkTaskMarshalling(getEmptySubprocessLevelTaskTwoIncomesId(), TWO_INCOME_EDGES, HAS_OUTCOME_EDGE);
     }
 
-    @Ignore("The test is ignored because there is a bug in new Marshaller.\n" +
-            "Delete this test from this class after https://issues.jboss.org/browse/JBPM-7726 will be resolved.")
     // The test is already defined in parent Task test class.
     @Test
     @Override
@@ -127,8 +119,6 @@ public abstract class ServiceTask<T extends BaseServiceTask> extends Task<T> {
         checkTaskMarshalling(getEmptyTopLevelTaskOneIncomeId(), ONE_INCOME_EDGE, HAS_OUTCOME_EDGE);
     }
 
-    @Ignore("The test is ignored because there is a bug in new Marshaller.\n" +
-            "Delete this test from this class after https://issues.jboss.org/browse/JBPM-7726 will be resolved.")
     // The test is already defined in parent Task test class.
     @Test
     @Override
@@ -136,8 +126,6 @@ public abstract class ServiceTask<T extends BaseServiceTask> extends Task<T> {
         checkTaskMarshalling(getEmptyTopLevelTaskTwoIncomesId(), TWO_INCOME_EDGES, HAS_OUTCOME_EDGE);
     }
 
-    @Ignore("The test is ignored because there is a bug in new Marshaller.\n" +
-            "Delete this test from this class after https://issues.jboss.org/browse/JBPM-7726 will be resolved.")
     // The test is already defined in parent Task test class.
     @Test
     @Override

@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.tasks;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.Marshaller;
 import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTask;
@@ -139,10 +138,6 @@ public class RestServiceTaskTest extends org.kie.workbench.common.stunner.bpmn.b
         assertDataIOSet(filledTopLevelTaskMvel.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
     }
 
-    @Ignore("The test is ignored because there is a bug in new Marshaller.\n" +
-            "It should be enabled after these issues will be resolved:\n" +
-            "https://issues.jboss.org/browse/JBPM-7072\n" +
-            "https://issues.jboss.org/browse/JBPM-7726")
     @Test
     @Override
     public void testUnmarshallTopLevelEmptyTaskProperties() throws Exception {
@@ -231,10 +226,6 @@ public class RestServiceTaskTest extends org.kie.workbench.common.stunner.bpmn.b
         assertDataIOSet(filledSubprocessLevelTaskMvel.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
     }
 
-    @Ignore("The test is ignored because there is a bug in new Marshaller.\n" +
-            "It should be enabled after these issues will be resolved:\n" +
-            "https://issues.jboss.org/browse/JBPM-7072\n" +
-            "https://issues.jboss.org/browse/JBPM-7726")
     @Test
     @Override
     public void testUnmarshallSubprocessLevelTaskEmptyProperties() throws Exception {
@@ -322,10 +313,6 @@ public class RestServiceTaskTest extends org.kie.workbench.common.stunner.bpmn.b
         assertDataIOSet(filledTopLevelTaskMvel.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
     }
 
-    @Ignore("The test is ignored because there is a bug in new Marshaller.\n" +
-            "It should be enabled after these issues will be resolved:\n" +
-            "https://issues.jboss.org/browse/JBPM-7072\n" +
-            "https://issues.jboss.org/browse/JBPM-7726")
     @Test
     @Override
     public void testUnmarshallTopLevelTaskOneIncomeEmptyProperties() throws Exception {
@@ -347,10 +334,6 @@ public class RestServiceTaskTest extends org.kie.workbench.common.stunner.bpmn.b
         assertDataIOSet(emptyTopLevelTask.getDataIOSet(), EMPTY_TASK_DATA_INPUT_OUTPUT);
     }
 
-    @Ignore("The test is ignored because there is a bug in new Marshaller.\n" +
-            "It should be enabled after these issues will be resolved:\n" +
-            "https://issues.jboss.org/browse/JBPM-7072\n" +
-            "https://issues.jboss.org/browse/JBPM-7726")
     @Test
     @Override
     public void testUnmarshallSubprocessLevelTaskOneIncomeEmptyProperties() throws Exception {
@@ -504,10 +487,6 @@ public class RestServiceTaskTest extends org.kie.workbench.common.stunner.bpmn.b
         assertDataIOSet(filledTopLevelTaskMvel.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
     }
 
-    @Ignore("The test is ignored because there is a bug in new Marshaller.\n" +
-            "It should be enabled after these issues will be resolved:\n" +
-            "https://issues.jboss.org/browse/JBPM-7072\n" +
-            "https://issues.jboss.org/browse/JBPM-7726")
     @Test
     @Override
     public void testUnmarshallTopLevelTaskTwoIncomesEmptyProperties() throws Exception {
@@ -529,10 +508,6 @@ public class RestServiceTaskTest extends org.kie.workbench.common.stunner.bpmn.b
         assertDataIOSet(emptyTopLevelTask.getDataIOSet(), EMPTY_TASK_DATA_INPUT_OUTPUT);
     }
 
-    @Ignore("The test is ignored because there is a bug in new Marshaller.\n" +
-            "It should be enabled after these issues will be resolved:\n" +
-            "https://issues.jboss.org/browse/JBPM-7072\n" +
-            "https://issues.jboss.org/browse/JBPM-7726")
     @Test
     @Override
     public void testUnmarshallSubprocessLevelTaskTwoIncomesEmptyProperties() throws Exception {
@@ -620,8 +595,6 @@ public class RestServiceTaskTest extends org.kie.workbench.common.stunner.bpmn.b
         assertDataIOSet(filledSubprocessLevelTaskMvel.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
     }
 
-    @Ignore("The test is ignored because there is a bug in new Marshaller.\n" +
-            "It should be enabled after https://issues.jboss.org/browse/JBPM-7726 will be resolved.")
     @Test
     @Override
     public void testMarshallTopLevelTaskFilledProperties() throws Exception {
@@ -630,8 +603,6 @@ public class RestServiceTaskTest extends org.kie.workbench.common.stunner.bpmn.b
         checkTaskMarshalling(FILLED_TOP_LEVEL_TASK_MVEL_ID, ZERO_INCOME_EDGES, HAS_NO_OUTCOME_EDGE);
     }
 
-    @Ignore("The test is ignored because there is a bug in new Marshaller.\n" +
-            "It should be enabled after https://issues.jboss.org/browse/JBPM-7726 will be resolved.")
     @Test
     @Override
     public void testMarshallSubprocessLevelTaskFilledProperties() throws Exception {
@@ -640,8 +611,6 @@ public class RestServiceTaskTest extends org.kie.workbench.common.stunner.bpmn.b
         checkTaskMarshalling(FILLED_SUBPROCESS_LEVEL_TASK_MVEL_ID, ZERO_INCOME_EDGES, HAS_NO_OUTCOME_EDGE);
     }
 
-    @Ignore("The test is ignored because there is a bug in new Marshaller.\n" +
-            "It should be enabled after https://issues.jboss.org/browse/JBPM-7726 will be resolved.")
     @Test
     @Override
     public void testMarshallTopLevelTaskOneIncomeFilledProperties() throws Exception {
@@ -650,8 +619,6 @@ public class RestServiceTaskTest extends org.kie.workbench.common.stunner.bpmn.b
         checkTaskMarshalling(FILLED_ONE_INCOME_TOP_LEVEL_TASK_MVEL_ID, ONE_INCOME_EDGE, HAS_OUTCOME_EDGE);
     }
 
-    @Ignore("The test is ignored because there is a bug in new Marshaller.\n" +
-            "It should be enabled after https://issues.jboss.org/browse/JBPM-7726 will be resolved.")
     @Test
     @Override
     public void testMarshallSubprocessLevelTaskOneIncomeFilledProperties() throws Exception {
@@ -660,8 +627,6 @@ public class RestServiceTaskTest extends org.kie.workbench.common.stunner.bpmn.b
         checkTaskMarshalling(FILLED_ONE_INCOME_SUBPROCESS_LEVEL_TASK_MVEL_ID, ONE_INCOME_EDGE, HAS_OUTCOME_EDGE);
     }
 
-    @Ignore("The test is ignored because there is a bug in new Marshaller.\n" +
-            "It should be enabled after https://issues.jboss.org/browse/JBPM-7726 will be resolved.")
     @Test
     @Override
     public void testMarshallTopLevelTaskTwoIncomesFilledProperties() throws Exception {
@@ -670,8 +635,6 @@ public class RestServiceTaskTest extends org.kie.workbench.common.stunner.bpmn.b
         checkTaskMarshalling(FILLED_TWO_INCOMES_TOP_LEVEL_TASK_MVEL_ID, TWO_INCOME_EDGES, HAS_OUTCOME_EDGE);
     }
 
-    @Ignore("The test is ignored because there is a bug in new Marshaller.\n" +
-            "It should be enabled after https://issues.jboss.org/browse/JBPM-7726 will be resolved.")
     @Test
     @Override
     public void testMarshallSubprocessLevelTaskTwoIncomesFilledProperties() throws Exception {

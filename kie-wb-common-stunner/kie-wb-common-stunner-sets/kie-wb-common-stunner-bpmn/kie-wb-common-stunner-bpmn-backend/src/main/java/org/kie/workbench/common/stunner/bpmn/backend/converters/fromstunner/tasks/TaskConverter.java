@@ -62,6 +62,7 @@ public class TaskConverter {
     private PropertyWriter serviceTask(Node<View<ServiceTask>, ?> n) {
         org.eclipse.bpmn2.Task task = bpmn2.createTask();
         task.setId(n.getUUID());
+
         ServiceTask definition = n.getContent().getDefinition();
         ServiceTaskPropertyWriter p = propertyWriterFactory.of(task);
 
@@ -71,15 +72,17 @@ public class TaskConverter {
         p.setName(general.getName().getValue());
         p.setDocumentation(general.getDocumentation().getValue());
 
+        p.setAssignmentsInfo(
+                definition.getDataIOSet().getAssignmentsinfo());
+
         ServiceTaskExecutionSet executionSet =
                 definition.getExecutionSet();
 
+        p.setTaskName(executionSet.getTaskName().getValue());
         p.setAsync(executionSet.getIsAsync().getValue());
         p.setOnEntryAction(executionSet.getOnEntryAction());
         p.setOnExitAction(executionSet.getOnExitAction());
         p.setAdHocAutostart(executionSet.getAdHocAutostart().getValue());
-
-        p.setAssignmentsInfo(definition.getDataIOSet().getAssignmentsinfo());
 
         p.setSimulationSet(definition.getSimulationSet());
 
