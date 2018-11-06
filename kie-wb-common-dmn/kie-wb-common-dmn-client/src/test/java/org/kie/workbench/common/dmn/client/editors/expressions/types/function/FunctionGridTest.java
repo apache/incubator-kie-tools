@@ -295,7 +295,7 @@ public class FunctionGridTest {
                                                                                       headerEditor));
 
         expression = definition.getModelClass();
-        definition.enrich(Optional.empty(), expression);
+        definition.enrich(Optional.empty(), hasExpression, expression);
         expression.get().getFormalParameter().add(parameter);
         parameter.getName().setValue(PARAMETER_NAME);
 
@@ -701,7 +701,7 @@ public class FunctionGridTest {
                                eq(expression.get()),
                                expressionCaptor.capture(),
                                gridWidgetCaptor.capture());
-        verify(definition).enrich(any(Optional.class), any(Optional.class));
+        verify(definition).enrich(any(Optional.class), eq(hasExpression), any(Optional.class));
         final Expression expression = expressionCaptor.getValue().get();
         final BaseExpressionGrid gridWidget = gridWidgetCaptor.getValue().get();
         assertThat(expectedExpressionType).isAssignableFrom(expression.getClass());

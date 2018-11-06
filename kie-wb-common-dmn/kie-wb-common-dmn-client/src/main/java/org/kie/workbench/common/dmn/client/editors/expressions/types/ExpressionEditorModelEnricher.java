@@ -18,11 +18,13 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types;
 
 import java.util.Optional;
 
+import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 
 public interface ExpressionEditorModelEnricher<T extends Expression> {
 
     default void enrich(final Optional<String> nodeUUID,
+                        final HasExpression hasExpression,
                         final Optional<T> expression) {
     }
 }

@@ -134,7 +134,7 @@ public abstract class BaseFunctionSupplementaryGridTest<D extends ExpressionEdit
         definition = getEditorDefinition();
 
         expression = definition.getModelClass();
-        definition.enrich(Optional.empty(), expression);
+        definition.enrich(Optional.empty(), hasExpression, expression);
         final ExpressionEditorDefinitions expressionEditorDefinitions = new ExpressionEditorDefinitions();
         expressionEditorDefinitions.add((ExpressionEditorDefinition) definition);
         expressionEditorDefinitions.add(literalExpressionEditorDefinition);

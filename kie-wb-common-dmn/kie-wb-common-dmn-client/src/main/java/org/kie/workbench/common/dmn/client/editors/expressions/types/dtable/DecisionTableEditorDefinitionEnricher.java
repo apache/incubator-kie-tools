@@ -26,6 +26,8 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.kie.workbench.common.dmn.api.definition.HasExpression;
+import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ContextEntry;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionRule;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
@@ -42,6 +44,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorModelEnricher;
+import org.kie.workbench.common.dmn.client.editors.expressions.util.TypeRefUtils;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -80,6 +83,7 @@ public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorMo
 
     @Override
     public void enrich(final Optional<String> nodeUUID,
+                       final HasExpression hasExpression,
                        final Optional<DecisionTable> expression) {
         expression.ifPresent(dtable -> {
             dtable.setHitPolicy(HitPolicy.ANY);
@@ -122,6 +126,11 @@ public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorMo
                 enrichInputClauses(nodeUUID.get(), dtable);
             } else {
                 enrichOutputClauses(dtable);
+            }
+
+            if (dtable.getOutput().size() > 0) {
+                final HasTypeRef hasTypeRef = TypeRefUtils.getTypeRefOfExpression(dtable, hasExpression);
+                dtable.getOutput().get(0).setTypeRef(hasTypeRef.getTypeRef());
             }
         });
     }

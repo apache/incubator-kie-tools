@@ -252,7 +252,7 @@ public class RelationGridTest {
         decision.setName(new Name("name"));
         hasName = Optional.of(decision);
         expression = definition.getModelClass();
-        definition.enrich(Optional.empty(), expression);
+        definition.enrich(Optional.empty(), hasExpression, expression);
 
         doReturn(canvasHandler).when(session).getCanvasHandler();
         doReturn(parentGridData).when(parentGridWidget).getModel();

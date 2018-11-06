@@ -162,7 +162,7 @@ public class InvocationEditorDefinitionTest {
     @Test
     public void testModelEnrichment() {
         final Optional<Invocation> oModel = definition.getModelClass();
-        definition.enrich(Optional.empty(), oModel);
+        definition.enrich(Optional.empty(), hasExpression, oModel);
 
         final Invocation model = oModel.get();
         assertNotNull(model.getExpression());

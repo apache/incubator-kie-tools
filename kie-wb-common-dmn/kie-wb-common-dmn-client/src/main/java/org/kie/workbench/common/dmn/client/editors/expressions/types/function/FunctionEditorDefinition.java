@@ -105,6 +105,7 @@ public class FunctionEditorDefinition extends BaseEditorDefinition<FunctionDefin
 
     @Override
     public void enrich(final Optional<String> nodeUUID,
+                       final HasExpression hasExpression,
                        final Optional<FunctionDefinition> expression) {
         expression.ifPresent(function -> {
             KindUtilities.setKind(function,

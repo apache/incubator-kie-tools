@@ -279,7 +279,7 @@ public class InvocationGridTest {
                                                     headerEditor);
 
         expression = definition.getModelClass();
-        definition.enrich(Optional.empty(), expression);
+        definition.enrich(Optional.empty(), hasExpression, expression);
         expression.ifPresent(invocation -> ((LiteralExpression) invocation.getExpression()).getText().setValue("invocation-expression"));
         final ExpressionEditorDefinitions expressionEditorDefinitions = new ExpressionEditorDefinitions();
         expressionEditorDefinitions.add((ExpressionEditorDefinition) definition);

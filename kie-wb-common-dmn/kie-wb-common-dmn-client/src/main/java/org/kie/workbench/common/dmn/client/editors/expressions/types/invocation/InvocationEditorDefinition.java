@@ -99,6 +99,7 @@ public class InvocationEditorDefinition extends BaseEditorDefinition<Invocation,
 
     @Override
     public void enrich(final Optional<String> nodeUUID,
+                       final HasExpression hasExpression,
                        final Optional<Invocation> expression) {
         expression.ifPresent(invocation -> {
             final LiteralExpression literalExpression = new LiteralExpression();

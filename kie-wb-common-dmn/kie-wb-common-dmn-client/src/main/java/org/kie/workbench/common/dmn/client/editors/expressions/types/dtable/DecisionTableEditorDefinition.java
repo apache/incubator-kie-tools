@@ -97,8 +97,9 @@ public class DecisionTableEditorDefinition extends BaseEditorDefinition<Decision
 
     @Override
     public void enrich(final Optional<String> nodeUUID,
+                       final HasExpression hasExpression,
                        final Optional<DecisionTable> expression) {
-        enricher.enrich(nodeUUID, expression);
+        enricher.enrich(nodeUUID, hasExpression, expression);
     }
 
     @Override

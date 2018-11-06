@@ -171,7 +171,7 @@ public class FunctionEditorDefinitionTest {
     @Test
     public void testModelEnrichment() {
         final Optional<FunctionDefinition> oModel = definition.getModelClass();
-        definition.enrich(Optional.empty(), oModel);
+        definition.enrich(Optional.empty(), hasExpression, oModel);
 
         final FunctionDefinition model = oModel.get();
         assertEquals(FunctionDefinition.Kind.FEEL.code(),

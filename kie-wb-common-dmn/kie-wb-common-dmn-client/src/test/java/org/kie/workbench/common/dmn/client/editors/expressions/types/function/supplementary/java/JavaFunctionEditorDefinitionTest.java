@@ -155,7 +155,7 @@ public class JavaFunctionEditorDefinitionTest {
     @Test
     public void testModelEnrichment() {
         final Optional<Context> oModel = definition.getModelClass();
-        definition.enrich(Optional.empty(), oModel);
+        definition.enrich(Optional.empty(), hasExpression, oModel);
 
         final Context model = oModel.get();
         assertEquals(2,

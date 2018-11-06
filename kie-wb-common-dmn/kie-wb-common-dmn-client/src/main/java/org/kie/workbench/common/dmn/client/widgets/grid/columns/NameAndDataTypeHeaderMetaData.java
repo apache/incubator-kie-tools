@@ -25,11 +25,11 @@ import java.util.function.Supplier;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
-import org.kie.workbench.common.dmn.api.definition.HasVariable;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.dmn.client.editors.expressions.util.TypeRefUtils;
 import org.kie.workbench.common.dmn.client.editors.types.HasNameAndTypeRef;
 import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
@@ -52,7 +52,7 @@ public abstract class NameAndDataTypeHeaderMetaData<E extends Expression> extend
                                          final NameAndDataTypePopoverView.Presenter editor,
                                          final Optional<String> editorTitle) {
         this(hasName,
-             () -> getTypeRefOfExpression(expression, hasExpression),
+             () -> TypeRefUtils.getTypeRefOfExpression(expression.get(), hasExpression),
              clearDisplayNameConsumer,
              setDisplayNameConsumer,
              setTypeRefConsumer,
@@ -77,18 +77,6 @@ public abstract class NameAndDataTypeHeaderMetaData<E extends Expression> extend
         this.clearDisplayNameConsumer = clearDisplayNameConsumer;
         this.setDisplayNameConsumer = setDisplayNameConsumer;
         this.setTypeRefConsumer = setTypeRefConsumer;
-    }
-
-    private static <E extends Expression> HasTypeRef getTypeRefOfExpression(final Optional<E> expression,
-                                                                            final HasExpression hasExpression) {
-        HasTypeRef hasTypeRef = expression.orElseThrow(() -> new UnsupportedOperationException("'expression' should never be null for grids supporting NameAndDataTypeHeaderMetaData."));
-        final DMNModelInstrumentedBase base = hasExpression.asDMNModelInstrumentedBase();
-        if (base instanceof HasVariable) {
-            final HasVariable hasVariable = (HasVariable) base;
-            hasTypeRef = hasVariable.getVariable();
-        }
-
-        return hasTypeRef;
     }
 
     @Override

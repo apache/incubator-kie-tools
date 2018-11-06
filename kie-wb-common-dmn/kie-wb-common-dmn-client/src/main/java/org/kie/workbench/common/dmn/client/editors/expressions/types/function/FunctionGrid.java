@@ -327,7 +327,7 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
                                                                      0,
                                                                      this);
             final Optional<Expression> expression = definition.getModelClass();
-            definition.enrich(nodeUUID, expression);
+            definition.enrich(nodeUUID, hasExpression, expression);
 
             final Optional<BaseExpressionGrid> gridWidget = definition.getEditor(expressionParent,
                                                                                  Optional.empty(),

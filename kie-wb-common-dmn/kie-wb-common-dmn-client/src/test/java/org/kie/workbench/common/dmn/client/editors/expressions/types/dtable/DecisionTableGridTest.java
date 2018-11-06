@@ -321,7 +321,7 @@ public class DecisionTableGridTest {
                                                                                                       new DMNGraphUtils(sessionManager)));
 
         expression = definition.getModelClass();
-        definition.enrich(Optional.empty(), expression);
+        definition.enrich(Optional.empty(), hasExpression, expression);
 
         doReturn(canvasHandler).when(session).getCanvasHandler();
         doReturn(graphCommandContext).when(canvasHandler).getGraphExecutionContext();

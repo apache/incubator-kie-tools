@@ -92,6 +92,7 @@ public class RelationEditorDefinition extends BaseEditorDefinition<Relation, Rel
 
     @Override
     public void enrich(final Optional<String> nodeUUID,
+                       final HasExpression hasExpression,
                        final Optional<Relation> expression) {
         expression.ifPresent(relation -> {
             final InformationItem column = new InformationItem();

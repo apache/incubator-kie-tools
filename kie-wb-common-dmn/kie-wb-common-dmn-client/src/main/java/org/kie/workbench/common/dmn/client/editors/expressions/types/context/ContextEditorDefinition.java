@@ -99,6 +99,7 @@ public class ContextEditorDefinition extends BaseEditorDefinition<Context, Conte
 
     @Override
     public void enrich(final Optional<String> nodeUUID,
+                       final HasExpression hasExpression,
                        final Optional<Context> expression) {
         expression.ifPresent(context -> {
             final ContextEntry contextEntry = new ContextEntry();

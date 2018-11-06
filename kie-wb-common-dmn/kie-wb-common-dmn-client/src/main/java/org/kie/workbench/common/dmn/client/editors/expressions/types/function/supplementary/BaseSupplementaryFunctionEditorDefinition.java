@@ -79,6 +79,7 @@ public abstract class BaseSupplementaryFunctionEditorDefinition extends BaseEdit
 
     @Override
     public void enrich(final Optional<String> nodeUUID,
+                       final HasExpression hasExpression,
                        final Optional<Context> expression) {
         expression.ifPresent(context -> {
             getVariableNames().forEach(name -> {

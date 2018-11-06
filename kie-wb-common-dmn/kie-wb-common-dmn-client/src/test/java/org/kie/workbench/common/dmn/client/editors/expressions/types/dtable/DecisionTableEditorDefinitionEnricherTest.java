@@ -25,6 +25,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ContextEntry;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNDiagram;
+import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
+import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Definitions;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
@@ -45,6 +47,8 @@ import org.kie.workbench.common.stunner.core.graph.impl.NodeImpl;
 import org.kie.workbench.common.stunner.core.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTableEditorDefinitionTest {
@@ -55,9 +59,11 @@ public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTable
 
     private static final String INPUT_DATA_NAME_2 = "a-inputData2";
 
-    private static final QName INPUT_DATA_QNAME_1 = new QName(QName.NULL_NS_URI, BuiltInType.STRING.getName());
+    private static final QName INPUT_DATA_QNAME_1 = BuiltInType.STRING.asQName();
 
-    private static final QName INPUT_DATA_QNAME_2 = new QName(QName.NULL_NS_URI, BuiltInType.NUMBER.getName());
+    private static final QName INPUT_DATA_QNAME_2 = BuiltInType.NUMBER.asQName();
+
+    private static final QName OUTPUT_DATA_QNAME = BuiltInType.DATE.asQName();
 
     private DMNDiagram diagram;
 
@@ -80,7 +86,7 @@ public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTable
         setupGraph();
 
         final Optional<DecisionTable> oModel = definition.getModelClass();
-        definition.enrich(Optional.of(NODE_UUID), oModel);
+        definition.enrich(Optional.of(NODE_UUID), hasExpression, oModel);
 
         final DecisionTable model = oModel.get();
         assertBasicEnrichment(model);
@@ -117,7 +123,7 @@ public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTable
         inputData1.getVariable().setTypeRef(inputData1TypeRef);
 
         final Optional<DecisionTable> oModel = definition.getModelClass();
-        definition.enrich(Optional.of(NODE_UUID), oModel);
+        definition.enrich(Optional.of(NODE_UUID), hasExpression, oModel);
 
         final DecisionTable model = oModel.get();
         assertBasicEnrichment(model);
@@ -165,7 +171,7 @@ public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTable
         inputData1.getVariable().setTypeRef(inputData1TypeRef);
 
         final Optional<DecisionTable> oModel = definition.getModelClass();
-        definition.enrich(Optional.of(NODE_UUID), oModel);
+        definition.enrich(Optional.of(NODE_UUID), hasExpression, oModel);
 
         final DecisionTable model = oModel.get();
         assertBasicEnrichment(model);
@@ -222,7 +228,7 @@ public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTable
         inputData1.getVariable().setTypeRef(inputData1TypeRef);
 
         final Optional<DecisionTable> oModel = definition.getModelClass();
-        definition.enrich(Optional.of(NODE_UUID), oModel);
+        definition.enrich(Optional.of(NODE_UUID), hasExpression, oModel);
 
         final DecisionTable model = oModel.get();
         assertBasicEnrichment(model);
@@ -287,7 +293,7 @@ public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTable
         inputData1.getVariable().setTypeRef(inputData1TypeRef);
 
         final Optional<DecisionTable> oModel = definition.getModelClass();
-        definition.enrich(Optional.of(NODE_UUID), oModel);
+        definition.enrich(Optional.of(NODE_UUID), hasExpression, oModel);
 
         final DecisionTable model = oModel.get();
         assertBasicEnrichment(model);
@@ -358,7 +364,7 @@ public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTable
         graph.addNode(node);
 
         final Optional<DecisionTable> oModel = definition.getModelClass();
-        definition.enrich(Optional.of(uuid), oModel);
+        definition.enrich(Optional.of(uuid), hasExpression, oModel);
 
         final DecisionTable model = oModel.get();
         assertBasicEnrichment(model);
@@ -379,7 +385,7 @@ public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTable
         final Optional<DecisionTable> oModel = definition.getModelClass();
         oModel.get().setParent(contextEntry);
 
-        definition.enrich(Optional.empty(), oModel);
+        definition.enrich(Optional.empty(), hasExpression, oModel);
 
         final DecisionTable model = oModel.get();
         assertBasicEnrichment(model);
@@ -388,6 +394,53 @@ public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTable
         final List<OutputClause> output = model.getOutput();
         assertThat(output.size()).isEqualTo(1);
         assertThat(output.get(0).getName()).isEqualTo(NAME);
+
+        assertStandardDecisionRuleEnrichment(model, 1, 1);
+        assertParentHierarchyEnrichment(model, 1, 1);
+    }
+
+    @Test
+    public void testModelEnrichmentWhenHasExpressionIsHasVariable() {
+        final Decision decision = new Decision();
+        final InformationItem variable = new InformationItem();
+        variable.setTypeRef(OUTPUT_DATA_QNAME);
+        decision.setVariable(variable);
+
+        when(hasExpression.asDMNModelInstrumentedBase()).thenReturn(decision);
+
+        final Optional<DecisionTable> oModel = definition.getModelClass();
+
+        definition.enrich(Optional.empty(), hasExpression, oModel);
+
+        final DecisionTable model = oModel.get();
+        assertBasicEnrichment(model);
+        assertStandardInputClauseEnrichment(model);
+
+        final List<OutputClause> output = model.getOutput();
+        assertThat(output.size()).isEqualTo(1);
+        assertThat(output.get(0).getName()).isEqualTo("output-1");
+        assertThat(output.get(0).getTypeRef()).isEqualTo(OUTPUT_DATA_QNAME);
+
+        assertStandardDecisionRuleEnrichment(model, 1, 1);
+        assertParentHierarchyEnrichment(model, 1, 1);
+    }
+
+    @Test
+    public void testModelEnrichmentWhenHasExpressionIsNotHasVariable() {
+        when(hasExpression.asDMNModelInstrumentedBase()).thenReturn(mock(DMNModelInstrumentedBase.class));
+
+        final Optional<DecisionTable> oModel = definition.getModelClass();
+
+        definition.enrich(Optional.empty(), hasExpression, oModel);
+
+        final DecisionTable model = oModel.get();
+        assertBasicEnrichment(model);
+        assertStandardInputClauseEnrichment(model);
+
+        final List<OutputClause> output = model.getOutput();
+        assertThat(output.size()).isEqualTo(1);
+        assertThat(output.get(0).getName()).isEqualTo("output-1");
+        assertThat(output.get(0).getTypeRef()).isEqualTo(BuiltInType.STRING.asQName());
 
         assertStandardDecisionRuleEnrichment(model, 1, 1);
         assertParentHierarchyEnrichment(model, 1, 1);
