@@ -21,7 +21,10 @@ import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 
@@ -116,7 +119,7 @@ public class ReflectionAdapterUtils {
     }
 
     public static <T> Field getField(final T object,
-                                     final String fieldName) throws IllegalAccessException {
+                                     final String fieldName) throws SecurityException {
         Class<?> c = object.getClass();
         while (!c.getName().equals(Object.class.getName())) {
             Field result = getField(c,
@@ -130,7 +133,7 @@ public class ReflectionAdapterUtils {
     }
 
     public static Field getField(final Class<?> sourceType,
-                                 final String fieldName) throws IllegalAccessException {
+                                 final String fieldName) throws SecurityException {
         Field[] fields = sourceType.getDeclaredFields();
         if (null != fields) {
             for (Field field : fields) {
@@ -140,6 +143,10 @@ public class ReflectionAdapterUtils {
             }
         }
         return null;
+    }
+
+    public static List<Field> getFields(final Class<?> sourceType) throws SecurityException {
+        return Stream.of(sourceType.getDeclaredFields()).collect(Collectors.toList());
     }
 
     public static <T extends Annotation> T getClassAnnotation(final Class<?> type,

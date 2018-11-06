@@ -20,7 +20,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.TextAnnotation;
-import org.kie.workbench.common.dmn.api.property.dmn.Text;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.TextPropertyProvider;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
@@ -28,19 +27,23 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 @ApplicationScoped
 public class TextAnnotationTextPropertyProviderImpl implements TextPropertyProvider {
 
     private CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
+    private DefinitionUtils definitionUtils;
 
     public TextAnnotationTextPropertyProviderImpl() {
         //CDI proxy
     }
 
     @Inject
-    public TextAnnotationTextPropertyProviderImpl(final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory) {
+    public TextAnnotationTextPropertyProviderImpl(final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
+                                                  final DefinitionUtils definitionUtils) {
         this.canvasCommandFactory = canvasCommandFactory;
+        this.definitionUtils = definitionUtils;
     }
 
     @Override
@@ -58,9 +61,11 @@ public class TextAnnotationTextPropertyProviderImpl implements TextPropertyProvi
                         final CanvasCommandManager<AbstractCanvasHandler> commandManager,
                         final Element<? extends Definition> element,
                         final String text) {
-        final CanvasCommand<AbstractCanvasHandler> command = canvasCommandFactory.updatePropertyValue(element,
-                                                                                                      Text.class.getName(),
-                                                                                                      text);
+        final Object definition = element.getContent().getDefinition();
+        final CanvasCommand<AbstractCanvasHandler> command =
+                canvasCommandFactory.updatePropertyValue(element,
+                                                         definitionUtils.getNameIdentifier(definition),
+                                                         text);
         commandManager.execute(canvasHandler,
                                command);
     }

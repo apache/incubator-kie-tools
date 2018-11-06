@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.definition.adapter;
 
+import java.util.Optional;
 import java.util.Set;
 
 import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
@@ -49,6 +50,11 @@ public abstract class DefinitionAdapterWrapper<T, A extends DefinitionAdapter<T>
     }
 
     @Override
+    public Optional<String> getNameField(T pojo) {
+        return adapter.getNameField(pojo);
+    }
+
+    @Override
     public String getDescription(final T pojo) {
         return adapter.getDescription(pojo);
     }
@@ -66,6 +72,11 @@ public abstract class DefinitionAdapterWrapper<T, A extends DefinitionAdapter<T>
     @Override
     public Set<?> getProperties(final T pojo) {
         return adapter.getProperties(pojo);
+    }
+
+    @Override
+    public Optional<?> getProperty(T pojo, String propertyName) {
+        return adapter.getProperty(pojo, propertyName);
     }
 
     @Override

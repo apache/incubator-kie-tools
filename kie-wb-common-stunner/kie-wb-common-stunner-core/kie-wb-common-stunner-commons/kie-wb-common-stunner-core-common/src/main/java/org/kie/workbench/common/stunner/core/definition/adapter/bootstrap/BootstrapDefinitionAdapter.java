@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.definition.adapter.bootstrap;
 
+import java.util.Optional;
 import java.util.Set;
 
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
@@ -47,6 +48,11 @@ class BootstrapDefinitionAdapter implements DefinitionAdapter<Object> {
     }
 
     @Override
+    public Optional<String> getNameField(Object pojo) {
+        return getWrapped(pojo).getNameField(pojo);
+    }
+
+    @Override
     public String getDescription(final Object pojo) {
         return getWrapped(pojo).getDescription(pojo);
     }
@@ -64,6 +70,11 @@ class BootstrapDefinitionAdapter implements DefinitionAdapter<Object> {
     @Override
     public Set<?> getProperties(final Object pojo) {
         return getWrapped(pojo).getProperties(pojo);
+    }
+
+    @Override
+    public Optional<?> getProperty(Object pojo, String propertyName) {
+        return getWrapped(pojo).getProperty(pojo, propertyName);
     }
 
     @Override

@@ -18,7 +18,10 @@ package org.kie.workbench.common.stunner.core.client.definition.adapter.binding;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.AbstractBindableDefinitionAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
@@ -65,6 +68,11 @@ class ClientBindableDefinitionAdapter extends AbstractBindableDefinitionAdapter<
     }
 
     @Override
+    public Optional<String> getNameField(Object pojo) {
+        return Optional.ofNullable(propertyNameFields.get(pojo.getClass()));
+    }
+
+    @Override
     public String getDescription(final Object pojo) {
         String description = translationService.getDefinitionDescription(pojo.getClass().getName());
         if (description != null) {
@@ -92,6 +100,17 @@ class ClientBindableDefinitionAdapter extends AbstractBindableDefinitionAdapter<
     protected Set<?> getBindProperties(final Object pojo) {
         return getProxiedSet(pojo,
                              getPropertiesFieldNames().get(pojo.getClass()));
+    }
+
+    @Override
+    public Optional<?> getProperty(Object pojo, String propertyName) {
+        return Stream.concat(Optional.ofNullable(getPropertiesFieldNames().get(pojo.getClass()))
+                                     .orElse(Collections.emptySet()).stream(),
+                             Optional.ofNullable(getPropertySetsFieldNames().get(pojo.getClass()))
+                                     .orElse(Collections.emptySet()).stream())
+                .filter(name -> Objects.equals(name, propertyName))
+                .findFirst()
+                .map(prop -> getProxiedValue(pojo, prop));
     }
 
     private <T, R> R getProxiedValue(final T pojo,

@@ -173,19 +173,6 @@ public class GraphUtilsTest {
         assertEquals(PROPERTY, GraphUtils.getProperty(definitionManager, element, PROPERTY_ID));
     }
 
-    @Test
-    @SuppressWarnings("unchecked")
-    public void testGetPropertyForNullDomainObject() {
-        assertNull(GraphUtils.getProperty(definitionManager, (DomainObject) null, PROPERTY_ID));
-    }
-
-    @Test
-    public void testGetPropertyForNonNullDomainObject() {
-        setupDefinitionManager();
-
-        assertEquals(PROPERTY, GraphUtils.getProperty(definitionManager, domainObject, PROPERTY_ID));
-    }
-
     @SuppressWarnings("unchecked")
     private void setupDefinitionManager() {
         final Definition<String> definition = mock(Definition.class);

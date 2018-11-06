@@ -23,6 +23,7 @@ import java.lang.annotation.Target;
 
 import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.definition.builder.VoidBuilder;
+import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
 
 @Inherited
@@ -34,4 +35,19 @@ public @interface Definition {
 
     @Deprecated
     Class<? extends Builder<?>> builder() default VoidBuilder.class;
+
+    /**
+     * Corresponds to the field that represents the <b>Name</b> of the annotated class.
+     * The name field should be expressed with the namespace if applied.
+     * </br>
+     *
+     * Example: nameField = "general.text"
+     * "general" is the attribute name on the current Definition(annotated class) and "text" is the attribute name
+     * contained in "general".     *
+     * </br>
+     *
+     * Note: If nameField is not set, than the first attribute annotated with {@link PropertyMetaTypes#NAME}
+     * will be used to return the name as a default behavior.
+     */
+    String nameField() default "";
 }

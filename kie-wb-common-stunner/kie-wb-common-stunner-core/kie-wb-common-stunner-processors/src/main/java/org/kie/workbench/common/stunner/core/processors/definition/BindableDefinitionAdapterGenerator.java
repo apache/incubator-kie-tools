@@ -80,6 +80,9 @@ public class BindableDefinitionAdapterGenerator extends AbstractBindableAdapterG
         addSetFields("propertiesFieldNames",
                      root,
                      processingDefinitionAnnotations.getPropertyFieldNames());
+        addFields("nameFields",
+                  root,
+                  processingDefinitionAnnotations.getNameFields());
 
         // Meta-properties.
         final Map<String, String> metaMap = new LinkedHashMap<>();

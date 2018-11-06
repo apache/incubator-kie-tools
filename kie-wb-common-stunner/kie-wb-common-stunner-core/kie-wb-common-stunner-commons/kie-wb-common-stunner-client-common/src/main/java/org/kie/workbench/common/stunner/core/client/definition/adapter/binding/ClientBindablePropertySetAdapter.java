@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.core.client.definition.adapter.binding;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
@@ -58,6 +59,15 @@ class ClientBindablePropertySetAdapter extends AbstractClientBindableAdapter<Obj
     public Set<?> getProperties(final Object pojo) {
         return getProxiedSet(pojo,
                              getPropertiesFieldNames().get(pojo.getClass()));
+    }
+
+    @Override
+    public <P> P getProperty(Object pojo, String propertyName) {
+        return (P) getPropertiesFieldNames().get(pojo.getClass()).stream()
+                .filter(name -> Objects.equals(name, propertyName))
+                .findFirst()
+                .map(prop -> getProxiedValue(pojo , prop))
+                .orElse(null);
     }
 
     @Override

@@ -17,6 +17,8 @@
 package org.kie.workbench.common.stunner.core.backend.definition.adapter.bind;
 
 import java.util.Collections;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.AbstractBindableDefinitionAdapter;
@@ -82,6 +84,16 @@ class BackendBindableDefinitionAdapter<T> extends AbstractBindableDefinitionAdap
     }
 
     @Override
+    public Optional<String> getNameField(T definition) {
+        try {
+            return getFieldValue(definition, propertyNameFields.get(definition.getClass()));
+        } catch (IllegalAccessException e) {
+            LOG.error("Error obtaining title for Definition with id " + getId(definition));
+            return Optional.empty();
+        }
+    }
+
+    @Override
     public String getDescription(final T definition) {
         Class<?> type = definition.getClass();
         try {
@@ -131,5 +143,21 @@ class BackendBindableDefinitionAdapter<T> extends AbstractBindableDefinitionAdap
             LOG.error("Error obtaining properties for Definition with id " + getId(definition));
         }
         return Collections.emptySet();
+    }
+
+    @Override
+    public Optional<?> getProperty(T definition, String propertyName) {
+        return propertiesFieldNames.get(definition.getClass()).stream()
+                .filter(name -> Objects.equals(name, propertyName))
+                .findFirst()
+                .map(prop -> {
+                         try {
+                             return getFieldValue(definition, prop);
+                         } catch (IllegalAccessException e) {
+                             LOG.error("Error obtaining properties for Definition with id " + getId(definition));
+                             return null;
+                         }
+                     }
+                );
     }
 }

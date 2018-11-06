@@ -40,6 +40,7 @@ public abstract class AbstractBindableDefinitionAdapter<T> implements BindableDe
     protected Map<Class, String> propertyTitleFieldNames;
     protected Map<Class, String> propertyCategoryFieldNames;
     protected Map<Class, String> propertyDescriptionFieldNames;
+    protected Map<Class, String> propertyNameFields;
 
     public AbstractBindableDefinitionAdapter(final DefinitionUtils definitionUtils) {
         this.definitionUtils = definitionUtils;
@@ -57,7 +58,9 @@ public abstract class AbstractBindableDefinitionAdapter<T> implements BindableDe
                             final Map<Class, String> propertyLabelsFieldNames,
                             final Map<Class, String> propertyTitleFieldNames,
                             final Map<Class, String> propertyCategoryFieldNames,
-                            final Map<Class, String> propertyDescriptionFieldNames) {
+                            final Map<Class, String> propertyDescriptionFieldNames,
+                            final Map<Class, String> propertyNameFields
+    ) {
         this.metaPropertyTypeClasses = metaPropertyTypeClasses;
         this.baseTypes = baseTypes;
         this.propertySetsFieldNames = propertySetsFieldNames;
@@ -68,6 +71,7 @@ public abstract class AbstractBindableDefinitionAdapter<T> implements BindableDe
         this.propertyTitleFieldNames = propertyTitleFieldNames;
         this.propertyCategoryFieldNames = propertyCategoryFieldNames;
         this.propertyDescriptionFieldNames = propertyDescriptionFieldNames;
+        this.propertyNameFields = propertyNameFields;
     }
 
     @Override

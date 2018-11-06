@@ -28,13 +28,12 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.Fiel
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.I18nMode;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.property.Value;
-import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 @Bindable
 @FieldDefinition(i18nMode = I18nMode.OVERRIDE_I18N_KEY)
-@Property(meta = PropertyMetaTypes.NAME)
+@Property
 public class CaseIdPrefix {
 
     @Value

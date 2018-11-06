@@ -19,6 +19,8 @@ package org.kie.workbench.common.stunner.core.util;
 import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -46,6 +48,7 @@ import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
+import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.registry.factory.FactoryRegistry;
 import org.kie.workbench.common.stunner.core.registry.impl.DefinitionsCacheRegistry;
 
@@ -89,11 +92,21 @@ public class DefinitionUtils {
     }
 
     public <T> String getName(final T definition) {
+        final Optional<String> nameField = definitionManager.adapters().forDefinition().getNameField(definition);
+
+        //first try to get by name field from Definition annotation
+        if (nameField.isPresent()) {
+            final Object property = GraphUtils.getPropertyByField(definitionManager, definition,
+                                                                  nameField.get());
+            return String.valueOf(definitionManager.adapters().forProperty().getValue(property));
+        }
+
+        //default getting by metadata
         final Object name =
                 definitionManager.adapters().forDefinition().getMetaProperty(PropertyMetaTypes.NAME,
                                                                              definition);
         if (null != name) {
-            return (String) definitionManager.adapters().forProperty().getValue(name);
+            return String.valueOf(definitionManager.adapters().forProperty().getValue(name));
         }
         return null;
     }
@@ -140,12 +153,17 @@ public class DefinitionUtils {
     }
 
     public <T> String getNameIdentifier(final T definition) {
-        final Object name = definitionManager.adapters().forDefinition().getMetaProperty(PropertyMetaTypes.NAME,
-                                                                                         definition);
-        if (null != name) {
-            return definitionManager.adapters().forProperty().getId(name);
-        }
-        return null;
+        return definitionManager.adapters()
+                .forDefinition()
+                .getNameField(definition)
+                .orElseGet(
+                        () -> Optional.ofNullable(definitionManager.adapters()
+                                                          .forDefinition()
+                                                          .getMetaProperty(PropertyMetaTypes.NAME, definition))
+                                .filter(Objects::nonNull)
+                                .map(name -> definitionManager.adapters().forProperty().getId(name))
+                                .orElse(null)
+                );
     }
 
     public <T> MorphDefinition getMorphDefinition(final T definition) {

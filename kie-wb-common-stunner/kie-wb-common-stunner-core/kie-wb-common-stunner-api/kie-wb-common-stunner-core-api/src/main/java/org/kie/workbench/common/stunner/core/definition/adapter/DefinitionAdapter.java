@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.definition.adapter;
 
+import java.util.Optional;
 import java.util.Set;
 
 import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
@@ -64,6 +65,14 @@ public interface DefinitionAdapter<T> extends PriorityAdapter {
     Set<?> getProperties(final T pojo);
 
     /**
+     * Returns the property instance with the given name.
+     * @param pojo definition
+     * @param propertyName property field name on the class
+     * @return
+     */
+    Optional<?> getProperty(final T pojo, final String propertyName);
+
+    /**
      * Returns the property bean instance for the given meta-property type..
      * Stunner provides some built-in features that could require model updates,
      * so this meta-properties are used for binding these features with the property beans.
@@ -75,4 +84,11 @@ public interface DefinitionAdapter<T> extends PriorityAdapter {
      * Returns the definition's graph element factory class for a given pojo.
      */
     Class<? extends ElementFactory> getGraphFactoryType(final T pojo);
+
+    /**
+     * Respective name field with namespace (i.e. attribue1.attribue2.name)
+     * @param pojo definition
+     * @return the field with namespace if applied
+     */
+    Optional<String> getNameField(final T pojo);
 }

@@ -60,9 +60,7 @@ public final class UpdateDomainObjectPropertyValueCommand extends AbstractGraphC
     @SuppressWarnings("unchecked")
     public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext context) {
         final DefinitionManager definitionManager = context.getDefinitionManager();
-        final Object p = GraphUtils.getProperty(definitionManager,
-                                                domainObject,
-                                                propertyId);
+        final Object p = GraphUtils.getPropertyByField(definitionManager, domainObject, propertyId);
         final AdapterManager adapterManager = definitionManager.adapters();
         final AdapterRegistry adapterRegistry = adapterManager.registry();
         final PropertyAdapter<Object, Object> adapter = (PropertyAdapter<Object, Object>) adapterRegistry.getPropertyAdapter(p.getClass());

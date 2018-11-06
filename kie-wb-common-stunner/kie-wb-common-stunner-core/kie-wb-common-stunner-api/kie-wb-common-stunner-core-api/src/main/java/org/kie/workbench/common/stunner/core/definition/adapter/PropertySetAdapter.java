@@ -37,4 +37,10 @@ public interface PropertySetAdapter<T> extends PriorityAdapter {
      * Returns the property set's properties for a given pojo.
      */
     Set<?> getProperties(final T pojo);
+
+    /**
+     * Returns property of a given pojo and the property name.
+     */
+    //todo:tiago return optional
+    <P> P getProperty(final T pojo, final String propertyName);
 }

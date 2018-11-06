@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.core.graph.util;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +30,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
-import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Graph;
@@ -50,30 +50,40 @@ public class GraphUtils {
     public static Object getProperty(final DefinitionManager definitionManager,
                                      final Element<? extends Definition> element,
                                      final String id) {
-        if (null != element) {
-            final Object def = element.getContent().getDefinition();
-            final Set<?> properties = definitionManager.adapters().forDefinition().getProperties(def);
-            return getProperty(definitionManager,
-                               properties,
-                               id);
-        }
-        return null;
+
+        return Optional.ofNullable(element)
+                .map(Element::getContent)
+                .map(Definition::getDefinition)
+                .map(def -> Exceptions.<Set>swallow(() -> definitionManager.adapters().forDefinition().getProperties(def),
+                                               Collections.emptySet()))
+                .map(properties -> Exceptions.swallow(() -> getProperty(definitionManager, properties, id), null))
+                .orElseGet(
+                        //getting by field if not found by the id (class name)
+                        () -> Optional.ofNullable(element)
+                                .map(e -> getPropertyByField(definitionManager, e.getContent().getDefinition(), id))
+                                .orElse(null)
+                );
     }
 
-    public static Object getProperty(final DefinitionManager definitionManager,
-                                     final DomainObject domainObject,
-                                     final String id) {
-        if (null != domainObject) {
-            final Set<?> properties = definitionManager.adapters().forDefinition().getProperties(domainObject);
-            return getProperty(definitionManager,
-                               properties,
-                               id);
-        }
-        return null;
+    public static Object getPropertyByField(final DefinitionManager definitionManager,
+                                            final Object definition,
+                                            final String field) {
+
+        final int index = field.indexOf('.');
+        final String firstField = index > -1 ? field.substring(0, index) : field;
+        final Object property =
+                Exceptions.<Optional>swallow(() -> definitionManager.adapters().forDefinition().getProperty(definition
+                        , firstField), Optional.empty())
+                        .orElseGet(() -> Exceptions.swallow(() -> definitionManager.adapters().forPropertySet().getProperty(definition, firstField), null));
+
+        return (index > 0 && Objects.nonNull(property))
+                ? getPropertyByField(definitionManager, property, field.substring(index + 1))
+                : property;
     }
 
+
     public static Object getProperty(final DefinitionManager definitionManager,
-                                     final Set<?> properties,
+                                     final Set properties,
                                      final String id) {
         if (null != id && null != properties) {
             for (final Object property : properties) {
@@ -333,12 +343,14 @@ public class GraphUtils {
                 .collect(Collectors.toList());
     }
 
-    public static List<Edge<? extends ViewConnector<?>, Node>> getSourceConnections(final Node<?, ? extends Edge> element) {
+    public static List<Edge<? extends ViewConnector<?>, Node>> getSourceConnections(
+            final Node<?, ? extends Edge> element) {
         Objects.requireNonNull(element.getOutEdges());
         return getConnections(element.getOutEdges());
     }
 
-    public static List<Edge<? extends ViewConnector<?>, Node>> getTargetConnections(final Node<?, ? extends Edge> element) {
+    public static List<Edge<? extends ViewConnector<?>, Node>> getTargetConnections(
+            final Node<?, ? extends Edge> element) {
         Objects.requireNonNull(element.getInEdges());
         return getConnections(element.getInEdges());
     }

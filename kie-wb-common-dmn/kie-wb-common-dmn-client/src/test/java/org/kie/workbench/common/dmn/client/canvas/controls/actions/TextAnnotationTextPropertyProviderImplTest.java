@@ -35,6 +35,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.mock;
@@ -76,7 +77,7 @@ public class TextAnnotationTextPropertyProviderImplTest {
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
-        this.provider = new TextAnnotationTextPropertyProviderImpl(canvasCommandFactory);
+        this.provider = new TextAnnotationTextPropertyProviderImpl(canvasCommandFactory, definitionUtils);
         when(element.getContent()).thenReturn(content);
         when(content.getDefinition()).thenReturn(definition);
         when(definition.getText()).thenReturn(text);
@@ -120,8 +121,9 @@ public class TextAnnotationTextPropertyProviderImplTest {
                          element,
                          "text");
 
+        //todo:tiago fix
         verify(canvasCommandFactory).updatePropertyValue(eq(element),
-                                                         eq(Text.class.getName()),
+                                                         any(),
                                                          eq("text"));
         verify(commandManager).execute(eq(canvasHandler),
                                        eq(command));

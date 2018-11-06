@@ -46,6 +46,16 @@ public abstract class PropertySetAdapterWrapper<T, A extends PropertySetAdapter<
     }
 
     @Override
+    public <P> P getProperty(T pojo, String propertyName) {
+        return adapter.getProperty(pojo, propertyName);
+    }
+
+    @Override
+    public boolean isPojoModel() {
+        return false;
+    }
+
+    @Override
     public int getPriority() {
         return adapter.getPriority();
     }

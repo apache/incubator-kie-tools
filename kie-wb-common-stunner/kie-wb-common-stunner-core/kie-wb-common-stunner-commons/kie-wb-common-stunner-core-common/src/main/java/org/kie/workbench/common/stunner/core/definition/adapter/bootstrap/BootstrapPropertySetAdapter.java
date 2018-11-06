@@ -45,6 +45,11 @@ class BootstrapPropertySetAdapter implements PropertySetAdapter<Object> {
     }
 
     @Override
+    public <P> P getProperty(Object pojo, String propertyName) {
+        return getWrapped(pojo).getProperty(pojo, propertyName);
+    }
+
+    @Override
     public int getPriority() {
         return 0;
     }

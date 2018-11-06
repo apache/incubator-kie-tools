@@ -463,6 +463,13 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
             String fqcn = mirror.toString();
             processingContext.getDefinitionAnnotations().getGraphFactoryFieldNames().put(defintionClassName,
                                                                                          fqcn);
+
+            //Title Field
+            if (StringUtils.isNotBlank(definitionAnn.nameField())) {
+                processingContext.getDefinitionAnnotations().getNameFields().put(defintionClassName,
+                                                                                 definitionAnn.nameField());
+            }
+
             // PropertySets fields.
             Map<String, Element> propertySetElements = getFieldNames(classElement,
                                                                      ANNOTATION_PROPERTY_SET);

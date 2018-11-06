@@ -35,7 +35,8 @@ public interface BindableDefinitionAdapter<T> extends DefinitionAdapter<T>,
                      Map<Class, String> propertyLabelsFieldNames,
                      Map<Class, String> propertyTitleFieldNames,
                      Map<Class, String> propertyCategoryFieldNames,
-                     Map<Class, String> propertyDescriptionFieldNames);
+                     Map<Class, String> propertyDescriptionFieldNames,
+                     Map<Class, String> propertyNameFields);
 
     Class<? extends ElementFactory> getGraphFactory(final Class<?> type);
 }

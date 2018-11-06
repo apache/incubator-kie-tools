@@ -18,7 +18,6 @@ package org.kie.workbench.common.stunner.forms.client.widgets;
 import java.util.Arrays;
 import java.util.Optional;
 
-import org.jboss.errai.databinding.client.HasProperties;
 import org.jboss.errai.databinding.client.api.DataBinder;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,7 +42,6 @@ import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.mockito.InOrder;
 import org.mockito.Mock;
-import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.uberfire.mvp.Command;
@@ -126,6 +124,9 @@ public class FormsCanvasSessionHandlerTest {
     @Mock
     private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
 
+    @Mock
+    private UpdateDomainObjectPropertyCommand updateDomainObjectPropertyCommand;
+
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
@@ -149,6 +150,8 @@ public class FormsCanvasSessionHandlerTest {
         when(definitionManager.adapters()).thenReturn(adapterManager);
         when(adapterManager.forProperty()).thenReturn(propertyAdapter);
         when(propertyAdapter.getId(any())).thenReturn(FIELD_PROPERTY_ID);
+        when(commandFactory.updateDomainObjectPropertyValue(domainObject, FIELD_NAME, FIELD_VALUE))
+                .thenReturn(updateDomainObjectPropertyCommand);
     }
 
     @Test
@@ -264,16 +267,7 @@ public class FormsCanvasSessionHandlerTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testExecuteUpdateDomainObjectProperty() {
-        PowerMockito.mockStatic(DataBinder.class);
-
-        final DataBinder dataBinder = mock(DataBinder.class);
-        final HasProperties hasProperties = mock(HasProperties.class);
-        when(DataBinder.forModel(eq(domainObject))).thenReturn(dataBinder);
-        when(dataBinder.getModel()).thenReturn(hasProperties);
-        when(hasProperties.get(eq(FIELD_NAME))).thenReturn(String.class);
-
         handler.bind(session);
-
         handler.executeUpdateDomainObjectProperty(domainObject,
                                                   FIELD_NAME,
                                                   FIELD_VALUE);
@@ -283,12 +277,9 @@ public class FormsCanvasSessionHandlerTest {
                                         sessionCommandManager,
                                         domainObjectCanvasListener);
 
+        inOrder.verify(commandFactory).updateDomainObjectPropertyValue(domainObject, FIELD_NAME, FIELD_VALUE);
         inOrder.verify(domainObjectCanvasListener).startProcessing();
-        inOrder.verify(commandFactory).updateDomainObjectPropertyValue(eq(domainObject),
-                                                                       eq(FIELD_PROPERTY_ID),
-                                                                       eq(FIELD_VALUE));
-        inOrder.verify(sessionCommandManager).execute(eq(abstractCanvasHandler),
-                                                      any(UpdateDomainObjectPropertyCommand.class));
+        inOrder.verify(sessionCommandManager).execute(abstractCanvasHandler, updateDomainObjectPropertyCommand);
         inOrder.verify(domainObjectCanvasListener).endProcessing();
     }
 }

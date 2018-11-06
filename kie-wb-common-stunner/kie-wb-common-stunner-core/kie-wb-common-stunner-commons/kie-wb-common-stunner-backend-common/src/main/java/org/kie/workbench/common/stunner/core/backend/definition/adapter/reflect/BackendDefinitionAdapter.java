@@ -22,12 +22,15 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.backend.definition.adapter.AbstractReflectAdapter;
+import org.kie.workbench.common.stunner.core.backend.definition.adapter.ReflectionAdapterUtils;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.HasInheritance;
@@ -133,6 +136,12 @@ public class BackendDefinitionAdapter<T> extends AbstractReflectAdapter<T>
     }
 
     @Override
+    public Optional<String> getNameField(T definition) {
+        return Optional.ofNullable(getDefinitionAnnotation(definition.getClass()))
+                .map(Definition::nameField);
+    }
+
+    @Override
     public String getDescription(final T definition) {
         try {
             return getAnnotatedFieldValue(definition,
@@ -201,6 +210,18 @@ public class BackendDefinitionAdapter<T> extends AbstractReflectAdapter<T>
             }
         }
         return Collections.emptySet();
+    }
+
+    @Override
+    public Optional<?> getProperty(T pojo, String propertyName) {
+        try {
+            return ReflectionAdapterUtils.getFields(pojo.getClass()).stream()
+                    .filter(f -> Objects.equals(propertyName, f.getName()))
+                    .findFirst();
+        } catch (SecurityException e) {
+            LOG.error("Error obtaining fields from definition " + getId(pojo));
+            return Optional.empty();
+        }
     }
 
     @SuppressWarnings("unchecked")

@@ -16,6 +16,7 @@
 package org.kie.workbench.common.stunner.core.backend.definition.adapter.bind;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import org.kie.workbench.common.stunner.core.backend.definition.adapter.AbstractReflectAdapter;
@@ -69,6 +70,22 @@ class BackendBindablePropertySetAdapter<T> extends AbstractReflectAdapter<T>
             LOG.error("Error obtaining properties for Property Set with id " + getId(propertySet));
         }
         return null;
+    }
+
+    @Override
+    public <P> P getProperty(T pojo, String propertyName) {
+        return (P) propertiesFieldNames.get(pojo.getClass()).stream()
+                .filter(name -> Objects.equals(name, propertyName))
+                .findFirst()
+                .map(prop -> {
+                    try {
+                        return getFieldValue(pojo, prop);
+                    } catch (IllegalAccessException e) {
+                        LOG.error("Error obtaining properties for Property Set with id " + getId(pojo));
+                        return null;
+                    }
+                })
+                .orElse(null);
     }
 
     @Override

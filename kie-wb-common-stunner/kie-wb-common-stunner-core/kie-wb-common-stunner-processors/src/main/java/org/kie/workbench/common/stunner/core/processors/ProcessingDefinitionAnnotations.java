@@ -35,6 +35,8 @@ public class ProcessingDefinitionAnnotations {
     private final Map<String, String> descriptionFieldNames = new HashMap<>();
     private final Map<String, TypeConstructor> builderFieldNames = new HashMap<>();
     private final Map<String, String[]> shapeDefs = new HashMap<>();
+    private final Map<String, String> nameFields = new HashMap<>();
+
 
     public Map<String, String> getBaseTypes() {
         return baseTypes;
@@ -78,5 +80,9 @@ public class ProcessingDefinitionAnnotations {
 
     public Map<String, String[]> getShapeDefinitions() {
         return shapeDefs;
+    }
+
+    public Map<String, String> getNameFields() {
+        return nameFields;
     }
 }
