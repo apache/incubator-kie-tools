@@ -37,17 +37,24 @@ import org.jboss.errai.security.shared.service.AuthenticationService;
 public class BasicAuthSecurityFilter implements Filter {
 
     public static final String REALM_NAME_PARAM = "realmName";
+    public static final String INVALIDATE_PARAM = "invalidate";
+
 
     @Inject
     AuthenticationService authenticationService;
 
     private String realmName = "UberFire Security Extension Default Realm";
+    private Boolean invalidate = true;
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         final String realmName = filterConfig.getInitParameter(REALM_NAME_PARAM);
         if (realmName != null) {
             this.realmName = realmName;
+        }
+        final String invalidate = filterConfig.getInitParameter(INVALIDATE_PARAM);
+        if (invalidate != null) {
+            this.invalidate = Boolean.valueOf(invalidate);
         }
     }
 
@@ -81,9 +88,9 @@ public class BasicAuthSecurityFilter implements Filter {
                                response);
             }
         } finally {
-            // invalidate session only when it did not exists before this request
-            // and was created as part of this request
-            if (session == null) {
+            // invalidate session only when it did not exists before this request,
+            // it was created as part of this request and filter is configured to invalidate.
+            if (session == null && invalidate) {
                 session = request.getSession(false);
                 if (session != null) {
                     session.invalidate();

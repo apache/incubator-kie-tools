@@ -17,6 +17,7 @@
 package org.uberfire.ext.security.server;
 
 import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -58,12 +59,7 @@ public class BasicAuthSecurityFilterTest {
                                                               1);
 
         when(authenticationService.getUser()).thenReturn(new UserImpl("testUser"));
-        when(request.getSession(anyBoolean())).then(new Answer<HttpSession>() {
-            @Override
-            public HttpSession answer(InvocationOnMock invocationOnMock) throws Throwable {
-                return sessionProvider.provideSession();
-            }
-        });
+        when(request.getSession(anyBoolean())).then((InvocationOnMock invocationOnMock) -> sessionProvider.provideSession());
 
         final BasicAuthSecurityFilter filter = new BasicAuthSecurityFilter();
         filter.authenticationService = authenticationService;
@@ -81,14 +77,31 @@ public class BasicAuthSecurityFilterTest {
         SessionProvider sessionProvider = new SessionProvider(httpSession);
 
         when(authenticationService.getUser()).thenReturn(new UserImpl("testUser"));
-        when(request.getSession(anyBoolean())).then(new Answer<HttpSession>() {
-            @Override
-            public HttpSession answer(InvocationOnMock invocationOnMock) throws Throwable {
-                return sessionProvider.provideSession();
-            }
-        });
+        when(request.getSession(anyBoolean())).then((InvocationOnMock invocationOnMock) -> sessionProvider.provideSession());
 
         final BasicAuthSecurityFilter filter = new BasicAuthSecurityFilter();
+        filter.authenticationService = authenticationService;
+        filter.doFilter(request,
+                        response,
+                        chain);
+
+        verify(httpSession,
+               never()).invalidate();
+    }
+
+    @Test
+    public void testNotInvalidateSession() throws Exception {
+
+        SessionProvider sessionProvider = new SessionProvider(httpSession,
+                                                              1);
+
+        when(authenticationService.getUser()).thenReturn(new UserImpl("testUser"));
+        when(request.getSession(anyBoolean())).then((InvocationOnMock invocationOnMock) -> sessionProvider.provideSession());
+
+        final BasicAuthSecurityFilter filter = new BasicAuthSecurityFilter();
+        final FilterConfig config = mock(FilterConfig.class);
+        when(config.getInitParameter(BasicAuthSecurityFilter.INVALIDATE_PARAM)).thenReturn("false");
+        filter.init(config);
         filter.authenticationService = authenticationService;
         filter.doFilter(request,
                         response,
