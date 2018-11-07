@@ -27,13 +27,27 @@ public class ReloadRightPanelEvent extends GwtEvent<ReloadRightPanelEventHandler
 
     private final boolean disable;
 
+    private final boolean openDock;
+
     /**
-     * Fire this event to reload the right panel content
+     * Fire this event to reload the right panel content. With this constructor the dock <b>does not</b> open if it is closed
      *
-     * @param disable set this to <code>true</code> to <b>also</b> disable the panel
+     * @param disable set this to <code>true</code> to <b>also</b> disable the panel.
      */
     public ReloadRightPanelEvent(boolean disable) {
         this.disable = disable;
+        openDock = false;
+    }
+
+    /**
+     * Fire this event to reload the right panel content.
+     *
+     * @param disable set this to <code>true</code> to <b>also</b> disable the panel.
+     * @param openDock set this to <code>true</code> to <b>also</b> open the dock in case it is closed
+     */
+    public ReloadRightPanelEvent(boolean disable, boolean openDock) {
+        this.disable = disable;
+        this.openDock = openDock;
     }
 
 
@@ -44,6 +58,10 @@ public class ReloadRightPanelEvent extends GwtEvent<ReloadRightPanelEventHandler
 
     public boolean isDisable() {
         return disable;
+    }
+
+    public boolean isOpenDock() {
+        return openDock;
     }
 
     @Override

@@ -44,20 +44,7 @@ public class EnableRightPanelCommand implements Command {
      */
     private final String propertyName;
 
-
     public EnableRightPanelCommand() {
-        this.filterTerm = null;
-        notEqualsSearch = false;
-        propertyName = null;
-    }
-
-    /**
-     * Execute this command to show all the first-level data models <b>enabled</b> (i.e. <b>selectable</b> to map to an <i>instance</i> header/column)
-     * and their properties <b>disabled</b> (i.e. <b>not double-clickable</b>)
-     * @param rightPanelPresenter
-     */
-    public EnableRightPanelCommand(RightPanelView.Presenter rightPanelPresenter) {
-        this.rightPanelPresenter = rightPanelPresenter;
         this.filterTerm = null;
         notEqualsSearch = false;
         propertyName = null;
@@ -66,7 +53,6 @@ public class EnableRightPanelCommand implements Command {
     /**
      * Execute this command to to show only the data model with the given name, <b>disabled</b> (i.e. <b>not selectable</b>)
      * and their properties <b>enabled</b> (i.e. <b>selectable</b> to map to a <i>property</i> header/column below the belonging data model instance one)
-     *
      * @param rightPanelPresenter
      * @param filterTerm the term used to filter the right panel ()relates to instance name)
      * @param propertyName the string to <b>eventually</b> use to select the property in the right panel
@@ -81,10 +67,12 @@ public class EnableRightPanelCommand implements Command {
 
     @Override
     public void execute() {
-        if (filterTerm == null) {
-            rightPanelPresenter.onEnableEditorTab();
-        } else {
-            rightPanelPresenter.onEnableEditorTab(filterTerm, propertyName, notEqualsSearch);
+        if (rightPanelPresenter != null) {
+            if (filterTerm == null) {
+                rightPanelPresenter.onEnableEditorTab();
+            } else {
+                rightPanelPresenter.onEnableEditorTab(filterTerm, propertyName, notEqualsSearch);
+            }
         }
     }
 }

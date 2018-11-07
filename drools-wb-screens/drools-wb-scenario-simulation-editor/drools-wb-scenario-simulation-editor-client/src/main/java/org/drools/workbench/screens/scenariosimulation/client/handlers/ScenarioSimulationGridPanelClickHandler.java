@@ -355,6 +355,7 @@ public class ScenarioSimulationGridPanelClickHandler implements ClickHandler,
                     clickedScenarioHeaderMetadata.edit(context);
                 }
                 if (scenarioGridColumn.isInstanceAssigned() && clickedScenarioHeaderMetadata.isInstanceHeader()) {
+                    eventBus.fireEvent(new ReloadRightPanelEvent(true, true));
                     return true;
                 }
                 scenarioGrid.setSelectedColumnAndHeader(scenarioGridColumn.getHeaderMetaData().indexOf(clickedScenarioHeaderMetadata), uiColumnIndex);
