@@ -56,8 +56,8 @@ public class MavenArtifactResolverTest {
     }
 
     private Artifact getArtifact() {
-        Artifact jarArtifact = new DefaultArtifact("org.uberfire",
-                                                   "uberfire-m2repo-editor-backend",
+        Artifact jarArtifact = new DefaultArtifact("fake.org.uberfire",
+                                                   "fake-uberfire-m2repo-editor-backend",
                                                    "jar",
                                                    "100-SNAPSHOT");
         return jarArtifact;
@@ -69,7 +69,7 @@ public class MavenArtifactResolverTest {
         RepositorySystemSession session = Aether.getAether().getSession();
         assertThat(checksIfArtifactIsPresent(session)).isFalse();
 
-        File file = new File("target/test-classes/uberfire-m2repo-editor-backend-100-SNAPSHOT.jar");
+        File file = new File("target/test-classes/fake-uberfire-m2repo-editor-backend-100-SNAPSHOT.jar");
         assertThat(file).exists();
 
         Artifact artifact = getArtifact();
@@ -106,7 +106,7 @@ public class MavenArtifactResolverTest {
                                    artifact.getArtifactId(),
                                    artifact.getVersion());
         assertThat(uri).isNotNull();
-        assertThat(uri.getPath()).endsWith(File.separator + "uberfire-m2repo-editor-backend" + File.separator + "100-SNAPSHOT" + File.separator + "uberfire-m2repo-editor-backend-100-SNAPSHOT.jar");
+        assertThat(uri.getPath()).endsWith(File.separator + "fake-uberfire-m2repo-editor-backend" + File.separator + "100-SNAPSHOT" + File.separator + "fake-uberfire-m2repo-editor-backend-100-SNAPSHOT.jar");
         result = Aether.getAether().getSystem().resolveArtifact(session,
                                                                 artifactRequest);
         assertThat(result.isMissing()).isFalse();
@@ -120,7 +120,7 @@ public class MavenArtifactResolverTest {
         RepositorySystemSession session = Aether.getAether().getSession();
         assertThat(checksIfArtifactIsPresent(session)).isFalse();
 
-        File file = new File("target/test-classes/uberfire-m2repo-editor-backend-100-SNAPSHOT.jar");
+        File file = new File("target/test-classes/fake-uberfire-m2repo-editor-backend-100-SNAPSHOT.jar");
         assertThat(file).exists();
 
         Artifact artifact = getArtifact();
@@ -157,7 +157,7 @@ public class MavenArtifactResolverTest {
                                    artifact.getArtifactId(),
                                    artifact.getVersion());
         assertThat(uri).isNotNull();
-        assertThat(uri.getPath()).endsWith(File.separator + "uberfire-m2repo-editor-backend" + File.separator + "100-SNAPSHOT" + File.separator + "uberfire-m2repo-editor-backend-100-SNAPSHOT.jar");
+        assertThat(uri.getPath()).endsWith(File.separator + "fake-uberfire-m2repo-editor-backend" + File.separator + "100-SNAPSHOT" + File.separator + "fake-uberfire-m2repo-editor-backend-100-SNAPSHOT.jar");
         result = Aether.getAether().getSystem().resolveArtifact(session,
                                                                 artifactRequest);
         assertThat(result.isMissing()).isFalse();
