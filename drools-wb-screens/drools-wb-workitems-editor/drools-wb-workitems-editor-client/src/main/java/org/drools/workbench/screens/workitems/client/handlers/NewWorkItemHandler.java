@@ -16,6 +16,9 @@
 
 package org.drools.workbench.screens.workitems.client.handlers;
 
+import java.util.Arrays;
+import java.util.List;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -27,6 +30,7 @@ import org.drools.workbench.screens.workitems.client.type.WorkItemsResourceType;
 import org.drools.workbench.screens.workitems.service.WorkItemsEditorService;
 import org.guvnor.common.services.project.model.Package;
 import org.jboss.errai.common.client.api.Caller;
+import org.kie.workbench.common.profile.api.preferences.Profile;
 import org.kie.workbench.common.widgets.client.handlers.DefaultNewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
@@ -79,6 +83,11 @@ public class NewWorkItemHandler extends DefaultNewResourceHandler {
                                                                                                                             resourceType ),
                                                                                                              "",
                                                                                                              "" );
+    }
+    
+    @Override
+    public List<Profile> getProfiles() {
+        return Arrays.asList(Profile.FULL);
     }
 
 }
