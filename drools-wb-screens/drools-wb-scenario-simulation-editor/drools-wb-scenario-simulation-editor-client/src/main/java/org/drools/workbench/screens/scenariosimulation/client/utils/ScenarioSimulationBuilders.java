@@ -55,7 +55,6 @@ public class ScenarioSimulationBuilders {
 
         private double width = 150;
         private boolean isMovable = false;
-        private boolean isReadOnly = false;
         private String placeHolder = "";
         private final HeaderBuilder headerBuilder;
         private ScenarioGridColumnRenderer scenarioGridColumnRenderer;
@@ -80,33 +79,21 @@ public class ScenarioSimulationBuilders {
             return this;
         }
 
-        public ScenarioGridColumnBuilder setReadOnly(boolean readOnly) {
-            isReadOnly = readOnly;
-            return this;
-        }
-
         public ScenarioGridColumnBuilder setPlaceHolder(String placeHolder) {
             this.placeHolder = placeHolder;
-            return this;
-        }
-
-        public ScenarioGridColumnBuilder setScenarioGridColumnRenderer(ScenarioGridColumnRenderer scenarioGridColumnRenderer) {
-            this.scenarioGridColumnRenderer = scenarioGridColumnRenderer;
             return this;
         }
 
         public ScenarioGridColumn build() {
             List<GridColumn.HeaderMetaData> headerMetaDataList = headerBuilder.build();
             ScenarioGridColumnRenderer actualScenarioGridColumnRenderer = scenarioGridColumnRenderer != null ? scenarioGridColumnRenderer : new ScenarioGridColumnRenderer();
-            ScenarioGridColumn toReturn = new ScenarioGridColumn(headerMetaDataList,
+            return new ScenarioGridColumn(headerMetaDataList,
                                                                  actualScenarioGridColumnRenderer,
                                                                  width,
                                                                  isMovable,
                                                                  factoryCell,
                                                                  placeHolder
             );
-            toReturn.setReadOnly(isReadOnly);
-            return toReturn;
         }
     }
 

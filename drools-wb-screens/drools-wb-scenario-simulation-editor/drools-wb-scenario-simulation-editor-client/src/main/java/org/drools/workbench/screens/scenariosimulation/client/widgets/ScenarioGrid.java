@@ -112,10 +112,9 @@ public class ScenarioGrid extends BaseGridWidget {
         boolean isInstanceAssigned = isInstanceAssigned(factIdentifier);
         boolean isPropertyAssigned = isPropertyAssigned(isInstanceAssigned, factMapping);
         String placeHolder = getPlaceholder(isPropertyAssigned);
-        ScenarioGridColumn scenarioGridColumn = getScenarioGridColumnLocal(instanceTitle, propertyTitle, columnId, columnGroup, factMapping.getExpressionIdentifier().getType(), isPropertyAssigned, placeHolder);
+        ScenarioGridColumn scenarioGridColumn = getScenarioGridColumnLocal(instanceTitle, propertyTitle, columnId, columnGroup, factMapping.getExpressionIdentifier().getType(), placeHolder);
         scenarioGridColumn.setInstanceAssigned(isInstanceAssigned);
         scenarioGridColumn.setPropertyAssigned(isPropertyAssigned);
-        scenarioGridColumn.setReadOnly(!isPropertyAssigned);
         scenarioGridColumn.setFactIdentifier(factIdentifier);
         ((ScenarioGridModel) model).insertColumnGridOnly(columnIndex, scenarioGridColumn);
     }
@@ -179,15 +178,14 @@ public class ScenarioGrid extends BaseGridWidget {
     }
 
     protected ScenarioGridColumn getScenarioGridColumnLocal(String instanceTitle, String propertyTitle, String
-            columnId, String columnGroup, FactMappingType factMappingType, boolean readOnly, String placeHolder) {
+            columnId, String columnGroup, FactMappingType factMappingType, String placeHolder) {
         ScenarioHeaderTextBoxSingletonDOMElementFactory factoryHeader = getScenarioHeaderTextBoxSingletonDOMElementFactory();
         ScenarioSimulationBuilders.HeaderBuilder headerBuilder = getHeaderBuilderLocal(instanceTitle, propertyTitle, columnId, columnGroup, factMappingType, factoryHeader);
-        return getScenarioGridColumnLocal(headerBuilder, readOnly, placeHolder);
+        return getScenarioGridColumnLocal(headerBuilder, placeHolder);
     }
 
-    protected ScenarioGridColumn getScenarioGridColumnLocal(ScenarioSimulationBuilders.HeaderBuilder headerBuilder,
-                                                            boolean readOnly, String placeHolder) {
-        return ScenarioSimulationUtils.getScenarioGridColumn(headerBuilder, scenarioGridPanel, scenarioGridLayer, readOnly, placeHolder);
+    protected ScenarioGridColumn getScenarioGridColumnLocal(ScenarioSimulationBuilders.HeaderBuilder headerBuilder, String placeHolder) {
+        return ScenarioSimulationUtils.getScenarioGridColumn(headerBuilder, scenarioGridPanel, scenarioGridLayer, placeHolder);
     }
 
     protected ScenarioSimulationBuilders.HeaderBuilder getHeaderBuilderLocal(String instanceTitle, String

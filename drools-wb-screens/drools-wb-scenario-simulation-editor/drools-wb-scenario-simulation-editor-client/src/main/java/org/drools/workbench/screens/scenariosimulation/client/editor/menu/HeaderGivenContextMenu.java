@@ -23,7 +23,7 @@ import org.drools.workbench.screens.scenariosimulation.client.events.AppendColum
 import org.drools.workbench.screens.scenariosimulation.client.events.PrependColumnEvent;
 
 /**
- * The contextual menu of the top level <i>EXPECTED</i> group.
+ * The contextual menu of the top level <i>EXPECT</i> group.
  * It differ from <code>GivenContextMenu</code> because it manage column (insert/remove) in different way
  */
 @Dependent

@@ -89,7 +89,7 @@ public class ScenarioRunnerHelper {
         List<ScenarioOutput> scenarioOutput = new ArrayList<>();
 
         Map<FactIdentifier, List<FactMappingValue>> groupByFactIdentifier =
-                groupByFactIdentifierAndFilter(factMappingValues, FactMappingType.EXPECTED);
+                groupByFactIdentifierAndFilter(factMappingValues, FactMappingType.EXPECT);
 
         Set<FactIdentifier> inputFacts = factMappingValues.stream()
                 .filter(elem -> FactMappingType.GIVEN.equals(elem.getExpressionIdentifier().getType()))

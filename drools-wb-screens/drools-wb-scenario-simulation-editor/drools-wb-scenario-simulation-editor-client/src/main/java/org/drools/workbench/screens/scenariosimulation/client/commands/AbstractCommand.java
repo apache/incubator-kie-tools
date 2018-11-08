@@ -86,18 +86,18 @@ public abstract class AbstractCommand implements Command {
                                                             String placeHolder) {
         ScenarioHeaderTextBoxSingletonDOMElementFactory factoryHeader = FactoryProvider.getHeaderTextBoxFactory(scenarioGridPanel, gridLayer);
         ScenarioSimulationBuilders.HeaderBuilder headerBuilder = getHeaderBuilder(instanceTitle, propertyTitle, columnId, columnGroup, factMappingType, factoryHeader);
-        return getScenarioGridColumn(headerBuilder, scenarioGridPanel, gridLayer, false, placeHolder);
+        return getScenarioGridColumn(headerBuilder, scenarioGridPanel, gridLayer, placeHolder);
     }
 
     protected ScenarioGridColumn getScenarioGridColumnLocal(ScenarioSimulationBuilders.HeaderBuilder headerBuilder) {
         // indirection add for test
-        return getScenarioGridColumn(headerBuilder, scenarioGridPanel, scenarioGridLayer, false, ScenarioSimulationEditorConstants.INSTANCE.insertValue());
+        return getScenarioGridColumn(headerBuilder, scenarioGridPanel, scenarioGridLayer, ScenarioSimulationEditorConstants.INSTANCE.insertValue());
     }
 
     protected Optional<FactIdentifier> getFactIdentifierByColumnTitle(String columnTitle) {
         return scenarioGridLayer.getScenarioGrid().getModel().getColumns().stream()
-                .filter(column -> columnTitle.equals (((ScenarioGridColumn)column).getInformationHeaderMetaData().getTitle()))
+                .filter(column -> columnTitle.equals(((ScenarioGridColumn) column).getInformationHeaderMetaData().getTitle()))
                 .findFirst()
-                .map(column -> ((ScenarioGridColumn)column).getFactIdentifier());
+                .map(column -> ((ScenarioGridColumn) column).getFactIdentifier());
     }
 }

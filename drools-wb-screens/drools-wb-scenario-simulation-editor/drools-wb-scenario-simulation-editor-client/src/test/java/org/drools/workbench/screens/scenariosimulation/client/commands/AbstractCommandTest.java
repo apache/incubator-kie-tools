@@ -89,7 +89,7 @@ public abstract class AbstractCommandTest {
 
     protected final String COLUMN_ID = "COLUMN ID";
 
-    protected final String COLUMN_GROUP = FactMappingType.EXPECTED.name();
+    protected final String COLUMN_GROUP = FactMappingType.EXPECT.name();
 
     protected final String FULL_PACKAGE = "test.scesim";
 

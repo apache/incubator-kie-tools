@@ -38,7 +38,7 @@ public class SimulationDescriptorTest {
     public void init() {
         simulationDescriptor = new SimulationDescriptor();
         factIdentifier = FactIdentifier.create("test fact", String.class.getCanonicalName());
-        expressionIdentifier = ExpressionIdentifier.create("test expression", FactMappingType.EXPECTED);
+        expressionIdentifier = ExpressionIdentifier.create("test expression", FactMappingType.EXPECT);
     }
 
     @Test(expected = IllegalArgumentException.class)

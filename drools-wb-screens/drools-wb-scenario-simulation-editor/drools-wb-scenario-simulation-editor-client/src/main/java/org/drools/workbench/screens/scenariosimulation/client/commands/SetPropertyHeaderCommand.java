@@ -89,7 +89,6 @@ public class SetPropertyHeaderCommand extends AbstractCommand {
         selectedColumn.getPropertyHeaderMetaData().setTitle(title);
         selectedColumn.getPropertyHeaderMetaData().setReadOnly(false);
         selectedColumn.setPropertyAssigned(true);
-        selectedColumn.setReadOnly(false);
         model.updateColumnProperty(columnIndex,
                                    selectedColumn,
                                    value,

@@ -567,7 +567,7 @@ public class ScenarioGridModel extends BaseGridData {
         IntStream.range(1, getColumnCount()).forEach(columnIndex -> {
             final FactMapping factMappingByIndex = simulationDescriptor.getFactMappingByIndex(columnIndex);
             scenario.addMappingValue(factMappingByIndex.getFactIdentifier(), factMappingByIndex.getExpressionIdentifier(), null);
-            String placeHolder = FactIdentifier.EMPTY.equals(factMappingByIndex.getFactIdentifier()) ? ScenarioSimulationEditorConstants.INSTANCE.defineValidType() : ScenarioSimulationEditorConstants.INSTANCE.insertValue();
+            String placeHolder = ((ScenarioGridColumn) columns.get(columnIndex)).isPropertyAssigned() ? ScenarioSimulationEditorConstants.INSTANCE.insertValue() : ScenarioSimulationEditorConstants.INSTANCE.defineValidType();
             setCell(rowIndex, columnIndex, () -> new ScenarioGridCell(new ScenarioGridCellValue(null, placeHolder)));
         });
         updateIndexColumn();

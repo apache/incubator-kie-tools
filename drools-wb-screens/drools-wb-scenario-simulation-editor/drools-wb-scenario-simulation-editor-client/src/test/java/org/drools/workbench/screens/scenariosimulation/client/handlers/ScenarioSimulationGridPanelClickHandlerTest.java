@@ -60,26 +60,26 @@ public class ScenarioSimulationGridPanelClickHandlerTest extends AbstractScenari
     private final int EXPECTED_RELATIVE_Y = NATIVE_EVENT_CLIENT_Y - TARGET_ABSOLUTE_TOP + TARGET_SCROLL_TOP + DOCUMENT_SCROLL_TOP;
 
     @Mock
-    private OtherContextMenu mockOtherContextMenu;
+    private OtherContextMenu otherContextMenuMock;
     @Mock
-    private HeaderGivenContextMenu mockHeaderGivenContextMenu;
+    private HeaderGivenContextMenu headerGivenContextMenuMock;
     @Mock
-    private HeaderExpectedContextMenu mockHeaderExpectedContextMenu;
+    private HeaderExpectedContextMenu headerExpectContextMenuMock;
     @Mock
-    private GivenContextMenu mockGivenContextMenu;
+    private GivenContextMenu givenContextMenuMock;
     @Mock
-    private ExpectedContextMenu mockExpectedContextMenu;
+    private ExpectedContextMenu expectContextMenuMock;
     @Mock
-    private GridContextMenu mockGridContextMenu;
+    private GridContextMenu gridContextMenuMock;
     @Mock
-    private UnmodifiableColumnGridContextMenu mockUnmodifiableColumnGridContextMenu;
+    private UnmodifiableColumnGridContextMenu nnmodifiableColumnGridContextMenuMock;
     @Mock
-    private Set<AbstractHeaderMenuPresenter> mockManagedMenus;
+    private Set<AbstractHeaderMenuPresenter> managedMenusMock;
     @Mock
     private ScenarioGridColumn gridColumnMock;
 
     @Mock
-    private EventBus mockEventBus;
+    private EventBus eventBusMock;
 
     @Before
     public void setUp() throws Exception {
@@ -88,20 +88,20 @@ public class ScenarioSimulationGridPanelClickHandlerTest extends AbstractScenari
         scenarioSimulationGridPanelClickHandler = spy(new ScenarioSimulationGridPanelClickHandler() {
             {
                 scenarioGrid = scenarioGridMock;
-                otherContextMenu = mockOtherContextMenu;
-                headerGivenContextMenu = mockHeaderGivenContextMenu;
-                headerExpectedContextMenu = mockHeaderExpectedContextMenu;
-                givenContextMenu = mockGivenContextMenu;
-                expectedContextMenu = mockExpectedContextMenu;
-                gridContextMenu = mockGridContextMenu;
-                unmodifiableColumnGridContextMenu = mockUnmodifiableColumnGridContextMenu;
-                managedMenus.add(mockOtherContextMenu);
-                managedMenus.add(mockHeaderGivenContextMenu);
-                managedMenus.add(mockHeaderExpectedContextMenu);
-                managedMenus.add(mockGivenContextMenu);
-                managedMenus.add(mockExpectedContextMenu);
-                managedMenus.add(mockGridContextMenu);
-                managedMenus.add(mockUnmodifiableColumnGridContextMenu);
+                otherContextMenu = otherContextMenuMock;
+                headerGivenContextMenu = headerGivenContextMenuMock;
+                headerExpectedContextMenu = headerExpectContextMenuMock;
+                givenContextMenu = givenContextMenuMock;
+                expectedContextMenu = expectContextMenuMock;
+                gridContextMenu = gridContextMenuMock;
+                unmodifiableColumnGridContextMenu = nnmodifiableColumnGridContextMenuMock;
+                managedMenus.add(otherContextMenuMock);
+                managedMenus.add(headerGivenContextMenuMock);
+                managedMenus.add(headerExpectContextMenuMock);
+                managedMenus.add(givenContextMenuMock);
+                managedMenus.add(expectContextMenuMock);
+                managedMenus.add(gridContextMenuMock);
+                managedMenus.add(nnmodifiableColumnGridContextMenuMock);
             }
 
             @Override
@@ -119,7 +119,7 @@ public class ScenarioSimulationGridPanelClickHandlerTest extends AbstractScenari
                 return "test.name";
             }
         });
-        mockManagedMenus = spy(scenarioSimulationGridPanelClickHandler.managedMenus);
+        managedMenusMock = spy(scenarioSimulationGridPanelClickHandler.managedMenus);
     }
 
     @Test
@@ -130,56 +130,56 @@ public class ScenarioSimulationGridPanelClickHandlerTest extends AbstractScenari
 
     @Test
     public void setOtherContextMenu() {
-        scenarioSimulationGridPanelClickHandler.setOtherContextMenu(mockOtherContextMenu);
-        assertEquals(mockOtherContextMenu, scenarioSimulationGridPanelClickHandler.otherContextMenu);
+        scenarioSimulationGridPanelClickHandler.setOtherContextMenu(otherContextMenuMock);
+        assertEquals(otherContextMenuMock, scenarioSimulationGridPanelClickHandler.otherContextMenu);
     }
 
     @Test
     public void setHeaderGivenContextMenu() {
-        scenarioSimulationGridPanelClickHandler.setHeaderGivenContextMenu(mockHeaderGivenContextMenu);
-        assertEquals(mockHeaderGivenContextMenu, scenarioSimulationGridPanelClickHandler.headerGivenContextMenu);
+        scenarioSimulationGridPanelClickHandler.setHeaderGivenContextMenu(headerGivenContextMenuMock);
+        assertEquals(headerGivenContextMenuMock, scenarioSimulationGridPanelClickHandler.headerGivenContextMenu);
     }
 
     @Test
     public void setHeaderExpectedContextMenu() {
-        scenarioSimulationGridPanelClickHandler.setHeaderExpectedContextMenu(mockHeaderExpectedContextMenu);
-        assertEquals(mockHeaderExpectedContextMenu, scenarioSimulationGridPanelClickHandler.headerExpectedContextMenu);
+        scenarioSimulationGridPanelClickHandler.setHeaderExpectedContextMenu(headerExpectContextMenuMock);
+        assertEquals(headerExpectContextMenuMock, scenarioSimulationGridPanelClickHandler.headerExpectedContextMenu);
     }
 
     @Test
     public void setGivenContextMenu() {
-        scenarioSimulationGridPanelClickHandler.setGivenContextMenu(mockGivenContextMenu);
-        assertEquals(mockGivenContextMenu, scenarioSimulationGridPanelClickHandler.givenContextMenu);
+        scenarioSimulationGridPanelClickHandler.setGivenContextMenu(givenContextMenuMock);
+        assertEquals(givenContextMenuMock, scenarioSimulationGridPanelClickHandler.givenContextMenu);
     }
 
     @Test
     public void setExpectedContextMenu() {
-        scenarioSimulationGridPanelClickHandler.setExpectedContextMenu(mockExpectedContextMenu);
-        assertEquals(mockExpectedContextMenu, scenarioSimulationGridPanelClickHandler.expectedContextMenu);
+        scenarioSimulationGridPanelClickHandler.setExpectedContextMenu(expectContextMenuMock);
+        assertEquals(expectContextMenuMock, scenarioSimulationGridPanelClickHandler.expectedContextMenu);
     }
 
     @Test
     public void setGridContextMenu() {
-        scenarioSimulationGridPanelClickHandler.setGridContextMenu(mockGridContextMenu);
-        assertEquals(mockGridContextMenu, scenarioSimulationGridPanelClickHandler.gridContextMenu);
+        scenarioSimulationGridPanelClickHandler.setGridContextMenu(gridContextMenuMock);
+        assertEquals(gridContextMenuMock, scenarioSimulationGridPanelClickHandler.gridContextMenu);
     }
 
     @Test
     public void setUnmodifiableColumnGridContextMenu() {
-        scenarioSimulationGridPanelClickHandler.setUnmodifiableColumnGridContextMenu(mockUnmodifiableColumnGridContextMenu);
-        assertEquals(mockUnmodifiableColumnGridContextMenu, scenarioSimulationGridPanelClickHandler.unmodifiableColumnGridContextMenu);
+        scenarioSimulationGridPanelClickHandler.setUnmodifiableColumnGridContextMenu(nnmodifiableColumnGridContextMenuMock);
+        assertEquals(nnmodifiableColumnGridContextMenuMock, scenarioSimulationGridPanelClickHandler.unmodifiableColumnGridContextMenu);
     }
 
     @Test
     public void setEventBus() {
-        scenarioSimulationGridPanelClickHandler.setEventBus(mockEventBus);
-        verify(mockOtherContextMenu, times(1)).setEventBus(eq(mockEventBus));
-        verify(mockHeaderGivenContextMenu, times(1)).setEventBus(eq(mockEventBus));
-        verify(mockHeaderExpectedContextMenu, times(1)).setEventBus(eq(mockEventBus));
-        verify(mockGivenContextMenu, times(1)).setEventBus(eq(mockEventBus));
-        verify(mockExpectedContextMenu, times(1)).setEventBus(eq(mockEventBus));
-        verify(mockGridContextMenu, times(1)).setEventBus(eq(mockEventBus));
-        verify(mockUnmodifiableColumnGridContextMenu, times(1)).setEventBus(eq(mockEventBus));
+        scenarioSimulationGridPanelClickHandler.setEventBus(eventBusMock);
+        verify(otherContextMenuMock, times(1)).setEventBus(eq(eventBusMock));
+        verify(headerGivenContextMenuMock, times(1)).setEventBus(eq(eventBusMock));
+        verify(headerExpectContextMenuMock, times(1)).setEventBus(eq(eventBusMock));
+        verify(givenContextMenuMock, times(1)).setEventBus(eq(eventBusMock));
+        verify(expectContextMenuMock, times(1)).setEventBus(eq(eventBusMock));
+        verify(gridContextMenuMock, times(1)).setEventBus(eq(eventBusMock));
+        verify(nnmodifiableColumnGridContextMenuMock, times(1)).setEventBus(eq(eventBusMock));
     }
 
     @Test
@@ -197,13 +197,13 @@ public class ScenarioSimulationGridPanelClickHandlerTest extends AbstractScenari
     @Test
     public void commonClickManagement() {
         scenarioSimulationGridPanelClickHandler.hideMenus();
-        verify(mockOtherContextMenu, times(1)).hide();
-        verify(mockHeaderGivenContextMenu, times(1)).hide();
-        verify(mockHeaderExpectedContextMenu, times(1)).hide();
-        verify(mockGivenContextMenu, times(1)).hide();
-        verify(mockExpectedContextMenu, times(1)).hide();
-        verify(mockGridContextMenu, times(1)).hide();
-        verify(mockUnmodifiableColumnGridContextMenu, times(1)).hide();
+        verify(otherContextMenuMock, times(1)).hide();
+        verify(headerGivenContextMenuMock, times(1)).hide();
+        verify(headerExpectContextMenuMock, times(1)).hide();
+        verify(givenContextMenuMock, times(1)).hide();
+        verify(expectContextMenuMock, times(1)).hide();
+        verify(gridContextMenuMock, times(1)).hide();
+        verify(nnmodifiableColumnGridContextMenuMock, times(1)).hide();
     }
 
     @Test
@@ -216,28 +216,28 @@ public class ScenarioSimulationGridPanelClickHandlerTest extends AbstractScenari
 
     @Test
     public void testManageLeftClick() {
-        scenarioSimulationGridPanelClickHandler.setEventBus(mockEventBus);
+        scenarioSimulationGridPanelClickHandler.setEventBus(eventBusMock);
         assertTrue("Click to only header cell of the only present column.",
                    scenarioSimulationGridPanelClickHandler.manageLeftClick(CLICK_POINT_X,
                                                                            CLICK_POINT_Y,
                                                                            SHIFT_PRESSED,
                                                                            CTRL_PRESSED));
         verify(scenarioGridMock, times(1)).setSelectedColumnAndHeader(anyInt(), eq(UI_COLUMN_INDEX));
-        verify(mockEventBus).fireEvent(any(EnableRightPanelEvent.class));
+        verify(eventBusMock).fireEvent(any(EnableRightPanelEvent.class));
     }
 
     @Test
     public void testManageLeftClick_ReadOnly() {
         when(headerMetaDataMock.isReadOnly()).thenReturn(true);
 
-        scenarioSimulationGridPanelClickHandler.setEventBus(mockEventBus);
+        scenarioSimulationGridPanelClickHandler.setEventBus(eventBusMock);
         assertFalse("Click to readonly header cell.",
                     scenarioSimulationGridPanelClickHandler.manageLeftClick(CLICK_POINT_X,
                                                                             CLICK_POINT_Y,
                                                                             SHIFT_PRESSED,
                                                                             CTRL_PRESSED));
         verify(scenarioGridMock, never()).setSelectedColumnAndHeader(anyInt(), anyInt());
-        verify(mockEventBus, never()).fireEvent(any(EnableRightPanelEvent.class));
+        verify(eventBusMock, never()).fireEvent(any(EnableRightPanelEvent.class));
     }
 
     @Test
@@ -248,7 +248,7 @@ public class ScenarioSimulationGridPanelClickHandlerTest extends AbstractScenari
                                                                             SHIFT_PRESSED,
                                                                             CTRL_PRESSED));
         verify(scenarioGridMock, never()).setSelectedColumnAndHeader(anyInt(), anyInt());
-        verify(mockEventBus, never()).fireEvent(any(EnableRightPanelEvent.class));
+        verify(eventBusMock, never()).fireEvent(any(EnableRightPanelEvent.class));
     }
 
     @Test
@@ -259,13 +259,13 @@ public class ScenarioSimulationGridPanelClickHandlerTest extends AbstractScenari
                                                                             SHIFT_PRESSED,
                                                                             CTRL_PRESSED));
         verify(scenarioGridMock, never()).setSelectedColumnAndHeader(anyInt(), anyInt());
-        verify(mockEventBus, never()).fireEvent(any(EnableRightPanelEvent.class));
+        verify(eventBusMock, never()).fireEvent(any(EnableRightPanelEvent.class));
     }
 
     @Test
     public void testManageGridLeftClickReadOnlyTrue() {
         when(headerMetaDataMock.isReadOnly()).thenReturn(true);
-        scenarioSimulationGridPanelClickHandler.setEventBus(mockEventBus);
+        scenarioSimulationGridPanelClickHandler.setEventBus(eventBusMock);
         when(scenarioGridCellMock.isEditing()).thenReturn(true);
         boolean retrieved = scenarioSimulationGridPanelClickHandler.manageGridLeftClick(scenarioGridMock, UI_ROW_INDEX, UI_COLUMN_INDEX, gridColumnMock);
         verify(scenarioGridCellMock, never()).setEditing(anyBoolean());
@@ -280,7 +280,7 @@ public class ScenarioSimulationGridPanelClickHandlerTest extends AbstractScenari
     public void testManageGridLeftClickReadOnlyFalse() {
         when(scenarioGridMock.startEditingCell(UI_ROW_INDEX, UI_COLUMN_INDEX)).thenReturn(true);
         when(headerMetaDataMock.isReadOnly()).thenReturn(false);
-        scenarioSimulationGridPanelClickHandler.setEventBus(mockEventBus);
+        scenarioSimulationGridPanelClickHandler.setEventBus(eventBusMock);
         when(scenarioGridCellMock.isEditing()).thenReturn(true);
         boolean retrieved = scenarioSimulationGridPanelClickHandler.manageGridLeftClick(scenarioGridMock, UI_ROW_INDEX, UI_COLUMN_INDEX, gridColumnMock);
         assertTrue(retrieved);

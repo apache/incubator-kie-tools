@@ -35,8 +35,6 @@ public class ScenarioGridColumn extends BaseGridColumn<String> {
     protected final ScenarioHeaderMetaData informationHeaderMetaData;
     protected final ScenarioHeaderMetaData propertyHeaderMetaData;
 
-    protected boolean readOnly = false;
-
     protected String placeHolder;
     /**
      * flag to know if an <b>instance</b> has been already assigned to this column; <code>false</code> on instantiation
@@ -77,12 +75,19 @@ public class ScenarioGridColumn extends BaseGridColumn<String> {
                                  e -> e.getWidget().setFocus(true));
     }
 
+    /**
+     * Dynamically evaluated status to know if the values of the given column are editable or not
+     * @return
+     */
     public boolean isReadOnly() {
-        return readOnly;
-    }
-
-    public void setReadOnly(boolean readOnly) {
-        this.readOnly = readOnly;
+        if (FactIdentifier.INDEX.equals(factIdentifier) || FactIdentifier.EMPTY.equals(factIdentifier)) {
+            return true;
+        }
+        if (FactIdentifier.DESCRIPTION.equals(factIdentifier)) {
+            return false;
+        } else {
+            return !isPropertyAssigned();
+        }
     }
 
     public boolean isInstanceAssigned() {
@@ -132,7 +137,6 @@ public class ScenarioGridColumn extends BaseGridColumn<String> {
     public String getPlaceHolder() {
         return placeHolder;
     }
-
 
     public FactIdentifier getFactIdentifier() {
         return factIdentifier;

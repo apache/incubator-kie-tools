@@ -105,11 +105,11 @@ public class ScenarioRunnerHelperTest {
         amountNameGivenFactMapping = simulation.getSimulationDescriptor().addFactMapping(disputeFactIdentifier, amountGivenExpressionIdentifier);
         amountNameGivenFactMapping.addExpressionElement("amount", Double.class.getCanonicalName());
 
-        firstNameExpectedExpressionIdentifier = ExpressionIdentifier.create("First Name Expected", FactMappingType.EXPECTED);
+        firstNameExpectedExpressionIdentifier = ExpressionIdentifier.create("First Name Expected", FactMappingType.EXPECT);
         firstNameExpectedFactMapping = simulation.getSimulationDescriptor().addFactMapping(personFactIdentifier, firstNameExpectedExpressionIdentifier);
         firstNameExpectedFactMapping.addExpressionElement("firstName", String.class.getCanonicalName());
 
-        amountExpectedExpressionIdentifier = ExpressionIdentifier.create("Amount Expected", FactMappingType.EXPECTED);
+        amountExpectedExpressionIdentifier = ExpressionIdentifier.create("Amount Expected", FactMappingType.EXPECT);
         amountNameExpectedFactMapping = simulation.getSimulationDescriptor().addFactMapping(disputeFactIdentifier, amountExpectedExpressionIdentifier);
         amountNameExpectedFactMapping.addExpressionElement("amount", Double.class.getCanonicalName());
 
@@ -147,7 +147,7 @@ public class ScenarioRunnerHelperTest {
         assertEquals(1, scenario1Outputs.size());
 
         scenario2.addOrUpdateMappingValue(FactIdentifier.create("TEST", String.class.getCanonicalName()),
-                                          ExpressionIdentifier.create("TEST", FactMappingType.EXPECTED),
+                                          ExpressionIdentifier.create("TEST", FactMappingType.EXPECT),
                                           "TEST");
         List<ScenarioOutput> scenario2Outputs = extractExpectedValues(scenario2.getUnmodifiableFactMappingValues());
         assertEquals(3, scenario2Outputs.size());
@@ -261,9 +261,9 @@ public class ScenarioRunnerHelperTest {
     @Test
     public void groupByFactIdentifierAndFilterTest() {
         Map<FactIdentifier, List<FactMappingValue>> scenario1Given = groupByFactIdentifierAndFilter(scenario1.getUnmodifiableFactMappingValues(), FactMappingType.GIVEN);
-        Map<FactIdentifier, List<FactMappingValue>> scenario1Expected = groupByFactIdentifierAndFilter(scenario1.getUnmodifiableFactMappingValues(), FactMappingType.EXPECTED);
+        Map<FactIdentifier, List<FactMappingValue>> scenario1Expected = groupByFactIdentifierAndFilter(scenario1.getUnmodifiableFactMappingValues(), FactMappingType.EXPECT);
         Map<FactIdentifier, List<FactMappingValue>> scenario2Given = groupByFactIdentifierAndFilter(scenario2.getUnmodifiableFactMappingValues(), FactMappingType.GIVEN);
-        Map<FactIdentifier, List<FactMappingValue>> scenario2Expected = groupByFactIdentifierAndFilter(scenario2.getUnmodifiableFactMappingValues(), FactMappingType.EXPECTED);
+        Map<FactIdentifier, List<FactMappingValue>> scenario2Expected = groupByFactIdentifierAndFilter(scenario2.getUnmodifiableFactMappingValues(), FactMappingType.EXPECT);
 
         assertEquals(1, scenario1Given.keySet().size());
         assertEquals(1, scenario1Expected.keySet().size());

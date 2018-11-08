@@ -228,7 +228,7 @@ public class ScenarioSimulationGridPanelClickHandler implements ClickHandler,
                     case "GIVEN":
                         headerGivenContextMenu.show(left, top);
                         break;
-                    case "EXPECTED":
+                    case "EXPECT":
                         headerExpectedContextMenu.show(left, top);
                         break;
                     default:
@@ -238,7 +238,7 @@ public class ScenarioSimulationGridPanelClickHandler implements ClickHandler,
             case "GIVEN":
                 givenContextMenu.show(left, top, uiColumnIndex, group, columnMetadata.isPropertyHeader());
                 break;
-            case "EXPECTED":
+            case "EXPECT":
                 expectedContextMenu.show(left, top, uiColumnIndex, group, columnMetadata.isPropertyHeader());
                 break;
             default:
@@ -273,7 +273,7 @@ public class ScenarioSimulationGridPanelClickHandler implements ClickHandler,
         String group = scenarioGridColumn.getInformationHeaderMetaData().getColumnGroup();
         switch (group) {
             case "GIVEN":
-            case "EXPECTED":
+            case "EXPECT":
                 gridContextMenu.show(left, top, uiColumnIndex, uiRowIndex, group, true);
                 break;
             default:
@@ -344,7 +344,7 @@ public class ScenarioSimulationGridPanelClickHandler implements ClickHandler,
         String group = clickedScenarioHeaderMetadata.getColumnGroup();
         switch (group) {
             case "GIVEN":
-            case "EXPECTED":
+            case "EXPECT":
                 if (rendererHelper != null) {
                     final BaseGridRendererHelper.RenderingInformation ri = rendererHelper.getRenderingInformation();
                     final BaseGridRendererHelper.ColumnInformation ci = rendererHelper.getColumnInformation(rp.getX());

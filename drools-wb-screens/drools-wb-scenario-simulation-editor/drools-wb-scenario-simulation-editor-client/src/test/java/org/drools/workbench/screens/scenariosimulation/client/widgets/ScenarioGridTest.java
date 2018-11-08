@@ -117,7 +117,7 @@ public class ScenarioGridTest {
             }
 
             @Override
-            protected ScenarioGridColumn getScenarioGridColumnLocal(ScenarioSimulationBuilders.HeaderBuilder headerBuilder, boolean readOnly, String placeHolder) {
+            protected ScenarioGridColumn getScenarioGridColumnLocal(ScenarioSimulationBuilders.HeaderBuilder headerBuilder, String placeHolder) {
                 return scenarioGridColumnMock;
             }
         });
@@ -157,7 +157,6 @@ public class ScenarioGridTest {
                                                                   eq(columnId),
                                                                   eq(columnGroup),
                                                                   eq(type),
-                                                                  eq(true),
                                                                   eq(ScenarioSimulationEditorConstants.INSTANCE.insertValue()));
         reset(scenarioGrid);
         columnId = factMappingGiven.getExpressionIdentifier().getName();
@@ -171,7 +170,6 @@ public class ScenarioGridTest {
                                                                   eq(columnId),
                                                                   eq(columnGroup),
                                                                   eq(type),
-                                                                  eq(false),
                                                                   eq(ScenarioSimulationEditorConstants.INSTANCE.defineValidType()));
     }
 
@@ -182,7 +180,7 @@ public class ScenarioGridTest {
         String propertyTitle = "PROPERTY TITLE";
         final FactMappingType type = factMappingDescription.getExpressionIdentifier().getType();
         String columnGroup = type.name();
-        scenarioGrid.getScenarioGridColumnLocal(instanceTitle, propertyTitle, columnId, columnGroup, type, false, ScenarioSimulationEditorConstants.INSTANCE.insertValue());
+        scenarioGrid.getScenarioGridColumnLocal(instanceTitle, propertyTitle, columnId, columnGroup, type, ScenarioSimulationEditorConstants.INSTANCE.insertValue());
         verify(scenarioGrid, times(1)).getScenarioHeaderTextBoxSingletonDOMElementFactory();
         verify(scenarioGrid, times(1)).getHeaderBuilderLocal(eq(instanceTitle),
                                                              eq(propertyTitle),
@@ -246,10 +244,10 @@ public class ScenarioGridTest {
             scenario.addMappingValue(FactIdentifier.EMPTY, givenExpression, null);
         });
 
-        // Add EXPECTED Facts
+        // Add EXPECT Facts
         IntStream.range(2, 4).forEach(id -> {
             id += 2; // This is to have consistent labels/names even when adding columns at runtime
-            ExpressionIdentifier expectedExpression = ExpressionIdentifier.create(row + "|" + id, FactMappingType.EXPECTED);
+            ExpressionIdentifier expectedExpression = ExpressionIdentifier.create(row + "|" + id, FactMappingType.EXPECT);
             simulationDescriptor.addFactMapping(FactMapping.getInstancePlaceHolder(id), FactIdentifier.EMPTY, expectedExpression);
             scenario.addMappingValue(FactIdentifier.EMPTY, expectedExpression, null);
         });

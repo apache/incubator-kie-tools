@@ -23,36 +23,36 @@ import org.drools.workbench.screens.scenariosimulation.client.events.AppendColum
 import org.drools.workbench.screens.scenariosimulation.client.events.PrependColumnEvent;
 
 /**
- * The contextual menu of the top level <i>EXPECTED</i> group.
+ * The contextual menu of the top level <i>EXPECT</i> group.
  * It differ from <code>ExpectedContextMenu</code> because it manage column (insert/remove) in different way
  */
 @Dependent
 public class HeaderExpectedContextMenu extends AbstractHeaderGroupMenuPresenter {
 
     // This strings are used to give unique id in the final dom
-    private final String HEADEREXPECTEDCONTEXTMENU_EXPECTED = "headerexpectedcontextmenu-expected";
-    private final String HEADEREXPECTEDCONTEXTMENU_SCENARIO = "headerexpectedcontextmenu-scenario";
-    private final String HEADEREXPECTEDCONTEXTMENU_INSERT_COLUMN_LEFT = "headerexpectedcontextmenu-insert-column-left";
-    private final String HEADEREXPECTEDCONTEXTMENU_INSERT_COLUMN_RIGHT = "headerexpectedcontextmenu-insert-column-right";
-    private final String HEADEREXPECTEDCONTEXTMENU_DELETE_COLUMN = "headerexpectedcontextmenu-delete-column";
-    private final String HEADEREXPECTEDCONTEXTMENU_INSERT_ROW_ABOVE = "headerexpectedcontextmenu-insert-row-above";
-    private final String HEADEREXPECTEDCONTEXTMENU_INSERT_ROW_BELOW = "headerexpectedcontextmenu-insert-row-below";
+    private final String HEADEREXPECTCONTEXTMENU_EXPECT = "headerexpectcontextmenu-expect";
+    private final String HEADEREXPECTCONTEXTMENU_SCENARIO = "headerexpectcontextmenu-scenario";
+    private final String HEADEREXPECTCONTEXTMENU_INSERT_COLUMN_LEFT = "headerexpectcontextmenu-insert-column-left";
+    private final String HEADEREXPECTCONTEXTMENU_INSERT_COLUMN_RIGHT = "headerexpectcontextmenu-insert-column-right";
+    private final String HEADEREXPECTCONTEXTMENU_DELETE_COLUMN = "headerexpectcontextmenu-delete-column";
+    private final String HEADEREXPECTCONTEXTMENU_INSERT_ROW_ABOVE = "headerexpectcontextmenu-insert-row-above";
+    private final String HEADEREXPECTCONTEXTMENU_INSERT_ROW_BELOW = "headerexpectcontextmenu-insert-row-below";
 
-    private final AppendColumnEvent appendExpectedColumnEvent = new AppendColumnEvent("EXPECTED");
-    private final PrependColumnEvent prependExpectedColumnEvent = new PrependColumnEvent("EXPECTED");
+    private final AppendColumnEvent appendExpectedColumnEvent = new AppendColumnEvent("EXPECT");
+    private final PrependColumnEvent prependExpectedColumnEvent = new PrependColumnEvent("EXPECT");
 
     @PostConstruct
     @Override
     public void initMenu() {
-        HEADERCONTEXTMENU_GROUP = HEADEREXPECTEDCONTEXTMENU_EXPECTED;
-        HEADERCONTEXTMENU_SCENARIO = HEADEREXPECTEDCONTEXTMENU_SCENARIO;
-        HEADERCONTEXTMENU_INSERT_COLUMN_LEFT = HEADEREXPECTEDCONTEXTMENU_INSERT_COLUMN_LEFT;
-        HEADERCONTEXTMENU_INSERT_COLUMN_RIGHT = HEADEREXPECTEDCONTEXTMENU_INSERT_COLUMN_RIGHT;
-        HEADERCONTEXTMENU_DELETE_COLUMN = HEADEREXPECTEDCONTEXTMENU_DELETE_COLUMN;
-        HEADERCONTEXTMENU_PREPEND_ROW = HEADEREXPECTEDCONTEXTMENU_INSERT_ROW_ABOVE;
-        HEADERCONTEXTMENU_APPEND_ROW = HEADEREXPECTEDCONTEXTMENU_INSERT_ROW_BELOW;
-        HEADERCONTEXTMENU_LABEL = constants.expected().toUpperCase();
-        HEADERCONTEXTMENU_I18N = "expected";
+        HEADERCONTEXTMENU_GROUP = HEADEREXPECTCONTEXTMENU_EXPECT;
+        HEADERCONTEXTMENU_SCENARIO = HEADEREXPECTCONTEXTMENU_SCENARIO;
+        HEADERCONTEXTMENU_INSERT_COLUMN_LEFT = HEADEREXPECTCONTEXTMENU_INSERT_COLUMN_LEFT;
+        HEADERCONTEXTMENU_INSERT_COLUMN_RIGHT = HEADEREXPECTCONTEXTMENU_INSERT_COLUMN_RIGHT;
+        HEADERCONTEXTMENU_DELETE_COLUMN = HEADEREXPECTCONTEXTMENU_DELETE_COLUMN;
+        HEADERCONTEXTMENU_PREPEND_ROW = HEADEREXPECTCONTEXTMENU_INSERT_ROW_ABOVE;
+        HEADERCONTEXTMENU_APPEND_ROW = HEADEREXPECTCONTEXTMENU_INSERT_ROW_BELOW;
+        HEADERCONTEXTMENU_LABEL = constants.expect().toUpperCase();
+        HEADERCONTEXTMENU_I18N = "expect";
         appendColumnEvent = appendExpectedColumnEvent;
         prependColumnEvent = prependExpectedColumnEvent;
         super.initMenu();

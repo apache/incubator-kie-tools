@@ -39,7 +39,7 @@ public class ScenarioTest {
         simulationDescriptor = simulation.getSimulationDescriptor();
         scenario = simulation.addScenario();
         factIdentifier = FactIdentifier.create("test fact", String.class.getCanonicalName());
-        expressionIdentifier = ExpressionIdentifier.create("test expression", FactMappingType.EXPECTED);
+        expressionIdentifier = ExpressionIdentifier.create("test expression", FactMappingType.EXPECT);
     }
 
     @Test

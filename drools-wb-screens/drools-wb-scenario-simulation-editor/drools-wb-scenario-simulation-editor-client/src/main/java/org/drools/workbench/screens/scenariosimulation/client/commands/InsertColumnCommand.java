@@ -84,7 +84,6 @@ public class InsertColumnCommand extends AbstractCommand {
                                                                                       scenarioGridPanel,
                                                                                       scenarioGridLayer,
                                                                                       placeHolder);
-        scenarioGridColumnLocal.setReadOnly(true);
         scenarioGridColumnLocal.setInstanceAssigned(cloneInstance);
         scenarioGridColumnLocal.setPropertyAssigned(false);
         if (cloneInstance) {

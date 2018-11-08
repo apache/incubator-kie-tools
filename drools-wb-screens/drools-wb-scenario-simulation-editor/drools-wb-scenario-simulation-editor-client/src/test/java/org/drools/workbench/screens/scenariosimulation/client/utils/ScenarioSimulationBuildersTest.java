@@ -43,12 +43,11 @@ public class ScenarioSimulationBuildersTest extends AbstractUtilsTest {
     @Test
     public void testScenarioGridColumnBuilder() {
         ScenarioSimulationBuilders.ScenarioGridColumnBuilder builder = ScenarioSimulationBuilders.ScenarioGridColumnBuilder.get(scenarioCellTextAreaSingletonDOMElementFactoryMock, headerBuilderMock);
-        builder.setReadOnly(false);
         builder.setPlaceHolder(PLACEHOLDER);
         ScenarioGridColumn retrieved = builder.build();
         assertNotNull(retrieved);
         assertEquals(PLACEHOLDER, retrieved.getPlaceHolder());
-        assertFalse(retrieved.isReadOnly());
+        assertTrue(retrieved.isReadOnly());
         assertFalse(retrieved.isMovable());
         assertNotNull(retrieved.getHeaderMetaData());
         assertFalse(retrieved.getHeaderMetaData().isEmpty());

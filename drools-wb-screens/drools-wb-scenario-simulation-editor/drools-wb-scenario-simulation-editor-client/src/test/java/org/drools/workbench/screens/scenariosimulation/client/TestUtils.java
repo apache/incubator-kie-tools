@@ -36,7 +36,7 @@ public class TestUtils {
         // generate simulationDescriptor
         IntStream.range(0, numberOfColumns).forEach(columnIndex -> {
             simulationDescriptor.addFactMapping(FactIdentifier.create(getFactName(columnIndex), String.class.getCanonicalName()),
-                                                ExpressionIdentifier.create(getColName(columnIndex), FactMappingType.EXPECTED)
+                                                ExpressionIdentifier.create(getColName(columnIndex), FactMappingType.EXPECT)
             );
         });
         // generate scenarios
@@ -45,7 +45,7 @@ public class TestUtils {
             scenario.setDescription(getRowName(rowIndex));
             IntStream.range(0, numberOfColumns).forEach( columnIndex -> {
                 scenario.addMappingValue(FactIdentifier.create(getFactName(columnIndex), String.class.getCanonicalName()),
-                                         ExpressionIdentifier.create(getColName(columnIndex), FactMappingType.EXPECTED),
+                                         ExpressionIdentifier.create(getColName(columnIndex), FactMappingType.EXPECT),
                                          getCellValue(columnIndex, rowIndex));
             });
         });

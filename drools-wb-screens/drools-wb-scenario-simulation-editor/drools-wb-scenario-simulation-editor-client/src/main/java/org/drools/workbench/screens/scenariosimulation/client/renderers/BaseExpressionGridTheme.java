@@ -85,7 +85,7 @@ public class BaseExpressionGridTheme implements ScenarioGridRendererTheme {
             colorToApply = HEADER_BACKGROUND_LIGHT_BLUE;
         }
         // EXPECT
-        else if (FactMappingType.EXPECTED.name().equalsIgnoreCase(column.getHeaderMetaData().get(0).getTitle())) {
+        else if (FactMappingType.EXPECT.name().equalsIgnoreCase(column.getHeaderMetaData().get(0).getTitle())) {
             colorToApply = HEADER_BACKGROUND_DARK_BLUE;
         }
         // DEFAULT
