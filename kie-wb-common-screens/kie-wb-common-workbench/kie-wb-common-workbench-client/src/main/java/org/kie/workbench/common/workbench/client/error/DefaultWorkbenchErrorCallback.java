@@ -22,6 +22,7 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.Window;
 import org.dashbuilder.dataset.exception.DataSetLookupException;
 import org.jboss.errai.bus.client.api.InvalidBusContentException;
+import org.kie.server.api.exception.KieServicesException;
 import org.kie.server.api.exception.KieServicesHttpException;
 import org.kie.workbench.common.workbench.client.entrypoint.GenericErrorPopup;
 import org.kie.workbench.common.workbench.client.resources.i18n.DefaultWorkbenchConstants;
@@ -89,9 +90,21 @@ public class DefaultWorkbenchErrorCallback {
             return;
         }
 
+        if (throwable instanceof DataSetLookupException) {
+            DataSetLookupException ex = (DataSetLookupException) throwable;
+            ErrorPopup.showMessage(CommonConstants.INSTANCE.ExceptionGeneric0(ex.getCause() == null ? ex.getMessage() : ex.getCause().getMessage()));
+            return;
+        }
+
         if (throwable instanceof KieServicesHttpException) {
             KieServicesHttpException ex = (KieServicesHttpException) throwable;
             ErrorPopup.showMessage(CommonConstants.INSTANCE.ExceptionGeneric0(ex.getExceptionMessage()));
+            return;
+        }
+
+        if (throwable instanceof KieServicesException) {
+            KieServicesException ex = (KieServicesException) throwable;
+            ErrorPopup.showMessage(CommonConstants.INSTANCE.ExceptionGeneric0(ex.getCause() == null ? ex.getMessage() : ex.getCause().getMessage()));
             return;
         }
 
