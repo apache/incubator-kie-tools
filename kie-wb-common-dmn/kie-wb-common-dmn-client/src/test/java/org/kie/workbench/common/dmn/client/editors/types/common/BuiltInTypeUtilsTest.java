@@ -34,8 +34,8 @@ public class BuiltInTypeUtilsTest {
     }
 
     @Test
-    public void testIsDefaultWhenTypeIsDefaultWithAnUpperCaseCharacter() {
-        assertTrue(BuiltInTypeUtils.isDefault("String"));
+    public void testIsNotDefaultWhenTypeIsDefaultWithAnUpperCaseCharacter() {
+        assertFalse(BuiltInTypeUtils.isDefault("String"));
     }
 
     @Test
