@@ -63,6 +63,7 @@ import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.backend.marshalling.v1x.DMNMarshallerFactory;
 import org.kie.dmn.core.util.KieHelper;
+import org.kie.dmn.model.api.DecisionTable;
 import org.kie.dmn.model.api.Definitions;
 import org.kie.dmn.model.api.FunctionKind;
 import org.kie.dmn.model.api.dmndi.Bounds;
@@ -145,9 +146,12 @@ import org.uberfire.commons.uuid.UUID;
 import org.xml.sax.InputSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -322,6 +326,31 @@ public class DMNMarshallerTest {
         }});
         DMNResult dmnResult = runtime.evaluateByName(model, dmnContext, "Credit Score Rating");
         assertFalse(dmnResult.getMessages().toString(), dmnResult.hasErrors());
+    }
+
+    @Test
+    public void test_DecisionTableInputOutputClausesWhenEmpty() throws IOException {
+        DMNRuntime runtime = roundTripUnmarshalMarshalThenUnmarshalDMN(this.getClass().getResourceAsStream("/qGslQdo2.dmn"));
+        Assert.assertNotNull(runtime);
+
+        DMNModel model = runtime.getModel("https://github.com/kiegroup/drools/kie-dmn/_A2C75C01-7EAD-46B8-A499-D85D6C07D273", "_5FE8CBFD-821B-41F6-A6C7-42BE3FC45F2F");
+        Assert.assertNotNull(model);
+        assertThat(model.hasErrors(), is(false));
+
+        DMNContext dmnContext = runtime.newContext();
+        dmnContext.set("my number", -99);
+
+        DMNResult dmnResult = runtime.evaluateAll(model, dmnContext);
+        LOG.debug("{}", dmnResult);
+        assertThat(dmnResult.hasErrors(), is(false));
+        assertThat(dmnResult.getDecisionResultByName("my decision").getEvaluationStatus(), is(DecisionEvaluationStatus.SUCCEEDED));
+        assertThat(dmnResult.getDecisionResultByName("my decision").getResult(), is("negative"));
+
+        org.kie.dmn.model.api.DecisionTable dmnDT = (DecisionTable) model.getDecisionByName("my decision").getDecision().getExpression();
+        assertThat(dmnDT.getInput().get(0).getInputValues(), nullValue()); // DROOLS-3262
+        assertThat(dmnDT.getOutput().get(0).getOutputValues(), nullValue()); // DROOLS-3262
+        assertThat(dmnDT.getOutput().get(0).getDefaultOutputEntry(), nullValue()); // DROOLS-3262
+        assertThat(dmnDT.getOutput().get(0).getName(), nullValue()); // DROOLS-3281
     }
 
     @Test

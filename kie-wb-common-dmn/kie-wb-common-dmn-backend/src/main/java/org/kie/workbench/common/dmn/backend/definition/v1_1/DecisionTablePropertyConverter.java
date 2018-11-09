@@ -95,6 +95,9 @@ public class DecisionTablePropertyConverter {
             }
             result.getOutput().add(c);
         }
+        if (result.getOutput().size() == 1) {
+            result.getOutput().get(0).setName(null); // DROOLS-3281
+        }
         for (DecisionRule dr : wb.getRule()) {
             org.kie.dmn.model.api.DecisionRule c = DecisionRulePropertyConverter.dmnFromWB(dr);
             if (c != null) {

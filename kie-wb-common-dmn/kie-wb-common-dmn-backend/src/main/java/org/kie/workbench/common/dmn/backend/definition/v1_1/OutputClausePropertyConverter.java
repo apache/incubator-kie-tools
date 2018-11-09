@@ -24,6 +24,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.OutputClauseUnaryTests;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.stunner.core.util.StringUtils;
 
 public class OutputClausePropertyConverter {
 
@@ -57,16 +58,19 @@ public class OutputClausePropertyConverter {
         result.setId(wb.getId().getValue());
         result.setName(wb.getName());
         result.setDescription(DescriptionPropertyConverter.dmnFromWB(wb.getDescription()));
+
         UnaryTests outputValues = UnaryTestsPropertyConverter.dmnFromWB(wb.getOutputValues());
-        if (outputValues != null) {
+        if (outputValues != null && StringUtils.nonEmpty(outputValues.getText())) {
             outputValues.setParent(result);
+            result.setOutputValues(outputValues);
         }
-        result.setOutputValues(outputValues);
+
         LiteralExpression defaultOutputEntry = LiteralExpressionPropertyConverter.dmnFromWB(wb.getDefaultOutputEntry());
-        if (defaultOutputEntry != null) {
+        if (defaultOutputEntry != null && StringUtils.nonEmpty(defaultOutputEntry.getText())) {
             defaultOutputEntry.setParent(result);
+            result.setDefaultOutputEntry(defaultOutputEntry);
         }
-        result.setDefaultOutputEntry(defaultOutputEntry);
+
         QNamePropertyConverter.setDMNfromWB(wb.getTypeRef(), result::setTypeRef);
 
         return result;
