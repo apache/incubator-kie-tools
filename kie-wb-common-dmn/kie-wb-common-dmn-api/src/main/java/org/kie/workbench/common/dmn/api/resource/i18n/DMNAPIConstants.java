@@ -35,6 +35,9 @@ public class DMNAPIConstants {
     public static final String InformationItem_DomainObjectName = "InformationItem.DomainObjectName";
 
     @TranslationKey(defaultValue = "")
+    public static final String InformationItemPrimary_DomainObjectName = "InformationItemPrimary.DomainObjectName";
+
+    @TranslationKey(defaultValue = "")
     public static final String Decision_DomainObjectName = "Decision.DomainObjectName";
 
     @TranslationKey(defaultValue = "")

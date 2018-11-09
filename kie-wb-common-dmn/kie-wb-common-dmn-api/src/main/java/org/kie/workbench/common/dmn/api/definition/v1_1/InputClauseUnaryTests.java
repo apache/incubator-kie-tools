@@ -19,8 +19,6 @@ package org.kie.workbench.common.dmn.api.definition.v1_1;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.dmn.api.property.DMNPropertySet;
-import org.kie.workbench.common.dmn.api.property.dmn.Description;
-import org.kie.workbench.common.dmn.api.property.dmn.ExpressionLanguage;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Text;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
@@ -46,38 +44,35 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 @FormDefinition(policy = FieldPolicy.ONLY_MARKED,
         defaultFieldSettings = {@FieldParam(name = FIELD_CONTAINER_PARAM, value = COLLAPSIBLE_CONTAINER)},
         i18n = @I18nSettings(keyPreffix = "org.kie.workbench.common.dmn.api.definition.v1_1.InputClauseUnaryTests"),
-        startElement = "id")
-public class InputClauseUnaryTests extends DMNElement implements IsUnaryTests,
-                                                                 DMNPropertySet {
+        startElement = "text")
+public class InputClauseUnaryTests extends DMNModelInstrumentedBase implements IsUnaryTests,
+                                                                               DMNPropertySet {
+
+    protected Id id;
 
     @Property
     @FormField(afterElement = "description", labelKey = "text")
     protected Text text;
 
-    @Property
-    @FormField(afterElement = "text")
-    protected ExpressionLanguage expressionLanguage;
-
     public InputClauseUnaryTests() {
         this(new Id(),
-             new Description(),
-             new Text(),
-             new ExpressionLanguage());
+             new Text());
     }
 
     public InputClauseUnaryTests(final Id id,
-                                 final Description description,
-                                 final Text text,
-                                 final ExpressionLanguage expressionLanguage) {
-        super(id,
-              description);
+                                 final Text text) {
+        this.id = id;
         this.text = text;
-        this.expressionLanguage = expressionLanguage;
     }
 
     // -----------------------
     // DMN properties
     // -----------------------
+
+    @Override
+    public Id getId() {
+        return id;
+    }
 
     @Override
     public Text getText() {
@@ -86,15 +81,6 @@ public class InputClauseUnaryTests extends DMNElement implements IsUnaryTests,
 
     public void setText(final Text value) {
         this.text = value;
-    }
-
-    @Override
-    public ExpressionLanguage getExpressionLanguage() {
-        return expressionLanguage;
-    }
-
-    public void setExpressionLanguage(final ExpressionLanguage value) {
-        this.expressionLanguage = value;
     }
 
     @Override
@@ -111,20 +97,12 @@ public class InputClauseUnaryTests extends DMNElement implements IsUnaryTests,
         if (id != null ? !id.equals(that.id) : that.id != null) {
             return false;
         }
-        if (description != null ? !description.equals(that.description) : that.description != null) {
-            return false;
-        }
-        if (text != null ? !text.equals(that.text) : that.text != null) {
-            return false;
-        }
-        return expressionLanguage != null ? expressionLanguage.equals(that.expressionLanguage) : that.expressionLanguage == null;
+        return text != null ? text.equals(that.text) : that.text == null;
     }
 
     @Override
     public int hashCode() {
         return HashUtil.combineHashCodes(id != null ? id.hashCode() : 0,
-                                         description != null ? description.hashCode() : 0,
-                                         text != null ? text.hashCode() : 0,
-                                         expressionLanguage != null ? expressionLanguage.hashCode() : 0);
+                                         text != null ? text.hashCode() : 0);
     }
 }

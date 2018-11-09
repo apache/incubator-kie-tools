@@ -17,8 +17,6 @@
 package org.kie.workbench.common.dmn.backend.definition.v1_1;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.InputClauseUnaryTests;
-import org.kie.workbench.common.dmn.api.property.dmn.Description;
-import org.kie.workbench.common.dmn.api.property.dmn.ExpressionLanguage;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Text;
 
@@ -29,12 +27,8 @@ public class InputClauseUnaryTestsPropertyConverter {
             return null;
         }
         Id id = new Id(dmn.getId());
-        Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
-        ExpressionLanguage expressionLanguage = ExpressionLanguagePropertyConverter.wbFromDMN(dmn.getExpressionLanguage());
         InputClauseUnaryTests result = new InputClauseUnaryTests(id,
-                                                                 description,
-                                                                 new Text(dmn.getText()),
-                                                                 expressionLanguage);
+                                                                 new Text(dmn.getText()));
         return result;
     }
 }

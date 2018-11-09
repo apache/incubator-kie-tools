@@ -30,6 +30,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Definitions;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
+import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItemPrimary;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InputClause;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InputData;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
@@ -402,7 +403,7 @@ public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTable
     @Test
     public void testModelEnrichmentWhenHasExpressionIsHasVariable() {
         final Decision decision = new Decision();
-        final InformationItem variable = new InformationItem();
+        final InformationItemPrimary variable = new InformationItemPrimary();
         variable.setTypeRef(OUTPUT_DATA_QNAME);
         decision.setVariable(variable);
 

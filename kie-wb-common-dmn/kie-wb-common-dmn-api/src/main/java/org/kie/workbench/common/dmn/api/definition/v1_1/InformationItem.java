@@ -23,7 +23,6 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.soup.commons.util.Sets;
 import org.kie.workbench.common.dmn.api.definition.HasName;
-import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.property.DMNPropertySet;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
@@ -40,7 +39,6 @@ import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
-import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
@@ -50,9 +48,8 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 @Definition(graphFactory = NodeFactory.class)
 @FormDefinition(policy = FieldPolicy.ONLY_MARKED, startElement = "id")
 public class InformationItem extends NamedElement implements HasName,
-                                                             HasTypeRef,
                                                              DMNPropertySet,
-                                                             DomainObject {
+                                                             IsInformationItem {
 
     @Category
     private static final String stunnerCategory = Categories.DOMAIN_OBJECTS;
@@ -138,7 +135,7 @@ public class InformationItem extends NamedElement implements HasName,
 
     @Override
     public String getDomainObjectNameTranslationKey() {
-        return DMNAPIConstants.InformationItem_DomainObjectName;
+        return DMNAPIConstants.InformationItemPrimary_DomainObjectName;
     }
 
     @Override

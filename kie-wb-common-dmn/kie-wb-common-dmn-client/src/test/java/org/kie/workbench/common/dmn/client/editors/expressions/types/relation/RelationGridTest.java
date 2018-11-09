@@ -31,6 +31,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.NOPDomainObject;
+import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
 import org.kie.workbench.common.dmn.api.definition.v1_1.List;
@@ -910,6 +911,8 @@ public class RelationGridTest {
     public void testAsDMNModelInstrumentedBase() {
         setupGrid(0);
 
-        assertThat(extractHeaderMetaData().asDMNModelInstrumentedBase()).isInstanceOf(hasExpression.getVariable().getClass());
+        final DMNModelInstrumentedBase actual = extractHeaderMetaData().asDMNModelInstrumentedBase();
+
+        assertThat(actual).isInstanceOf(InformationItem.class);
     }
 }

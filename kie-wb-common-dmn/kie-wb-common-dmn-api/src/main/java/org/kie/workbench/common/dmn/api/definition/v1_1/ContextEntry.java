@@ -22,7 +22,7 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 public class ContextEntry extends DMNModelInstrumentedBase implements HasExpression,
-                                                                      HasVariable {
+                                                                      HasVariable<InformationItem> {
 
     private InformationItem variable;
     private Expression expression;

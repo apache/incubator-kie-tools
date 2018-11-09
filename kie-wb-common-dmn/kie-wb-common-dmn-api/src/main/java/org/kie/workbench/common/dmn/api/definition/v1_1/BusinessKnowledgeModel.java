@@ -15,6 +15,7 @@
  */
 package org.kie.workbench.common.dmn.api.definition.v1_1;
 
+import java.util.Optional;
 import java.util.Set;
 
 import javax.validation.Valid;
@@ -52,7 +53,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 @FormDefinition(policy = FieldPolicy.ONLY_MARKED,
         defaultFieldSettings = {@FieldParam(name = FIELD_CONTAINER_PARAM, value = COLLAPSIBLE_CONTAINER)},
         startElement = "id")
-public class BusinessKnowledgeModel extends DRGElement implements HasVariable,
+public class BusinessKnowledgeModel extends DRGElement implements HasVariable<InformationItemPrimary>,
                                                                   DMNViewDefinition,
                                                                   DomainObject {
 
@@ -67,7 +68,7 @@ public class BusinessKnowledgeModel extends DRGElement implements HasVariable,
     @PropertySet
     @FormField(afterElement = "name")
     @Valid
-    protected InformationItem variable;
+    protected InformationItemPrimary variable;
 
     protected FunctionDefinition encapsulatedLogic;
 
@@ -90,7 +91,7 @@ public class BusinessKnowledgeModel extends DRGElement implements HasVariable,
         this(new Id(),
              new org.kie.workbench.common.dmn.api.property.dmn.Description(),
              new Name(),
-             new InformationItem(),
+             new InformationItemPrimary(),
              null,
              new BackgroundSet(),
              new FontSet(),
@@ -100,7 +101,7 @@ public class BusinessKnowledgeModel extends DRGElement implements HasVariable,
     public BusinessKnowledgeModel(final Id id,
                                   final org.kie.workbench.common.dmn.api.property.dmn.Description description,
                                   final Name name,
-                                  final InformationItem variable,
+                                  final InformationItemPrimary variable,
                                   final FunctionDefinition encapsulatedLogic,
                                   final BackgroundSet backgroundSet,
                                   final FontSet fontSet,
@@ -113,12 +114,13 @@ public class BusinessKnowledgeModel extends DRGElement implements HasVariable,
         this.backgroundSet = backgroundSet;
         this.fontSet = fontSet;
         this.dimensionsSet = dimensionsSet;
+
+        setVariableParent();
     }
 
     // -----------------------
     // Stunner core properties
     // -----------------------
-
     public String getStunnerCategory() {
         return stunnerCategory;
     }
@@ -157,14 +159,13 @@ public class BusinessKnowledgeModel extends DRGElement implements HasVariable,
     // -----------------------
     // DMN properties
     // -----------------------
-
     @Override
-    public InformationItem getVariable() {
+    public InformationItemPrimary getVariable() {
         return variable;
     }
 
     @Override
-    public void setVariable(final InformationItem variable) {
+    public void setVariable(final InformationItemPrimary variable) {
         this.variable = variable;
     }
 
@@ -208,7 +209,6 @@ public class BusinessKnowledgeModel extends DRGElement implements HasVariable,
     // ------------------------------------------------------
     // DomainObject requirements - to use in Properties Panel
     // ------------------------------------------------------
-
     @Override
     public String getDomainObjectUUID() {
         return getId().getValue();
@@ -264,5 +264,9 @@ public class BusinessKnowledgeModel extends DRGElement implements HasVariable,
                                          backgroundSet != null ? backgroundSet.hashCode() : 0,
                                          fontSet != null ? fontSet.hashCode() : 0,
                                          dimensionsSet != null ? dimensionsSet.hashCode() : 0);
+    }
+
+    private void setVariableParent() {
+        Optional.ofNullable(variable).ifPresent(v -> v.setParent(this));
     }
 }

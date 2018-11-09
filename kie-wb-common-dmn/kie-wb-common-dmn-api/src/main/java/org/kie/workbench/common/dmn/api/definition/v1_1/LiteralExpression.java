@@ -121,7 +121,6 @@ public class LiteralExpression extends Expression implements IsLiteralExpression
         this.importedValues = importedValues;
     }
 
-    @Override
     public ExpressionLanguage getExpressionLanguage() {
         return expressionLanguage;
     }

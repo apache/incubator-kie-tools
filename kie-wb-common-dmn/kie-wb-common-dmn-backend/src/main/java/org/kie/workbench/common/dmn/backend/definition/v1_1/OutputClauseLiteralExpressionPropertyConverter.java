@@ -18,8 +18,6 @@ package org.kie.workbench.common.dmn.backend.definition.v1_1;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.ImportedValues;
 import org.kie.workbench.common.dmn.api.definition.v1_1.OutputClauseLiteralExpression;
-import org.kie.workbench.common.dmn.api.property.dmn.Description;
-import org.kie.workbench.common.dmn.api.property.dmn.ExpressionLanguage;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.property.dmn.Text;
@@ -31,17 +29,13 @@ public class OutputClauseLiteralExpressionPropertyConverter {
             return null;
         }
         Id id = new Id(dmn.getId());
-        Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
         QName typeRef = QNamePropertyConverter.wbFromDMN(dmn.getTypeRef(), dmn);
         Text text = new Text(dmn.getText());
-        ExpressionLanguage expressionLanguage = ExpressionLanguagePropertyConverter.wbFromDMN(dmn.getExpressionLanguage());
         ImportedValues importedValues = ImportedValuesConverter.wbFromDMN(dmn.getImportedValues());
         OutputClauseLiteralExpression result = new OutputClauseLiteralExpression(id,
-                                                                                 description,
                                                                                  typeRef,
                                                                                  text,
-                                                                                 importedValues,
-                                                                                 expressionLanguage);
+                                                                                 importedValues);
         if (importedValues != null) {
             importedValues.setParent(result);
         }

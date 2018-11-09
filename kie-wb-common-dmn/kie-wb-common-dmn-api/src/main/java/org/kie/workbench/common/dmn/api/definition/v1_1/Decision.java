@@ -15,6 +15,7 @@
  */
 package org.kie.workbench.common.dmn.api.definition.v1_1;
 
+import java.util.Optional;
 import java.util.Set;
 
 import javax.validation.Valid;
@@ -55,10 +56,10 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 @FormDefinition(policy = FieldPolicy.ONLY_MARKED,
         defaultFieldSettings = {@FieldParam(name = FIELD_CONTAINER_PARAM, value = COLLAPSIBLE_CONTAINER)},
         startElement = "id")
-public class Decision extends DRGElement implements HasExpression,
-                                                    HasVariable,
+public class Decision extends DRGElement implements DomainObject,
+                                                    HasExpression,
                                                     DMNViewDefinition,
-                                                    DomainObject {
+                                                    HasVariable<InformationItemPrimary> {
 
     @Category
     private static final String stunnerCategory = Categories.NODES;
@@ -81,7 +82,7 @@ public class Decision extends DRGElement implements HasExpression,
     @PropertySet
     @FormField(afterElement = "allowedAnswers")
     @Valid
-    protected InformationItem variable;
+    protected InformationItemPrimary variable;
 
     protected Expression expression;
 
@@ -106,7 +107,7 @@ public class Decision extends DRGElement implements HasExpression,
              new Name(),
              new Question(),
              new AllowedAnswers(),
-             new InformationItem(),
+             new InformationItemPrimary(),
              null,
              new BackgroundSet(),
              new FontSet(),
@@ -118,7 +119,7 @@ public class Decision extends DRGElement implements HasExpression,
                     final Name name,
                     final Question question,
                     final AllowedAnswers allowedAnswers,
-                    final InformationItem variable,
+                    final InformationItemPrimary variable,
                     final Expression expression,
                     final BackgroundSet backgroundSet,
                     final FontSet fontSet,
@@ -133,6 +134,8 @@ public class Decision extends DRGElement implements HasExpression,
         this.backgroundSet = backgroundSet;
         this.fontSet = fontSet;
         this.dimensionsSet = dimensionsSet;
+
+        setVariableParent();
     }
 
     // -----------------------
@@ -195,12 +198,12 @@ public class Decision extends DRGElement implements HasExpression,
     }
 
     @Override
-    public InformationItem getVariable() {
+    public InformationItemPrimary getVariable() {
         return variable;
     }
 
     @Override
-    public void setVariable(final InformationItem variable) {
+    public void setVariable(final InformationItemPrimary variable) {
         this.variable = variable;
     }
 
@@ -287,5 +290,9 @@ public class Decision extends DRGElement implements HasExpression,
                                          backgroundSet != null ? backgroundSet.hashCode() : 0,
                                          fontSet != null ? fontSet.hashCode() : 0,
                                          dimensionsSet != null ? dimensionsSet.hashCode() : 0);
+    }
+
+    private void setVariableParent() {
+        Optional.ofNullable(variable).ifPresent(v -> v.setParent(this));
     }
 }

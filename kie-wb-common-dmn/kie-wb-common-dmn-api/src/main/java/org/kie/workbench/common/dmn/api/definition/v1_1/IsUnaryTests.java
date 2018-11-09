@@ -16,8 +16,6 @@
 
 package org.kie.workbench.common.dmn.api.definition.v1_1;
 
-import org.kie.workbench.common.dmn.api.property.dmn.Description;
-import org.kie.workbench.common.dmn.api.property.dmn.ExpressionLanguage;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Text;
 
@@ -26,8 +24,4 @@ public interface IsUnaryTests {
     Id getId();
 
     Text getText();
-
-    Description getDescription();
-
-    ExpressionLanguage getExpressionLanguage();
 }

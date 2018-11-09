@@ -14,20 +14,18 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.backend.definition.v1_1;
+package org.kie.workbench.common.dmn.api.definition.v1_1;
 
-import org.kie.workbench.common.dmn.api.definition.v1_1.OutputClauseUnaryTests;
+import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
-import org.kie.workbench.common.dmn.api.property.dmn.Text;
+import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 
-public class OutputClauseUnaryTestsPropertyConverter {
+public interface IsInformationItem extends DomainObject,
+                                           HasTypeRef {
 
-    public static OutputClauseUnaryTests wbFromDMN(final org.kie.dmn.model.api.UnaryTests dmn) {
-        if (dmn == null) {
-            return null;
-        }
-        Id id = new Id(dmn.getId());
-        OutputClauseUnaryTests result = new OutputClauseUnaryTests(id, new Text(dmn.getText()));
-        return result;
-    }
+    Id getId();
+
+    DMNModelInstrumentedBase getParent();
+
+    void setParent(final DMNModelInstrumentedBase parent);
 }

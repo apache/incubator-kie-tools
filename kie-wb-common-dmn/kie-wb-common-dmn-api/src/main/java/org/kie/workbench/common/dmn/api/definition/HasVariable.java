@@ -16,13 +16,13 @@
 package org.kie.workbench.common.dmn.api.definition;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
-import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
+import org.kie.workbench.common.dmn.api.definition.v1_1.IsInformationItem;
 
-public interface HasVariable {
+public interface HasVariable<T extends IsInformationItem> {
 
-    InformationItem getVariable();
+    T getVariable();
 
-    void setVariable(final InformationItem informationItem);
+    void setVariable(final T informationItem);
 
     DMNModelInstrumentedBase asDMNModelInstrumentedBase();
 }

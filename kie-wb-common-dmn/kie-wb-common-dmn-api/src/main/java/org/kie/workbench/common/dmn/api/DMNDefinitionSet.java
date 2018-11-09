@@ -27,6 +27,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.DMNDiagram;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ImportedValues;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
+import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItemPrimary;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationRequirement;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InputClause;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InputData;
@@ -64,6 +65,7 @@ import org.kie.workbench.common.stunner.core.rule.annotation.Occurrences;
                 ImportedValues.class,
                 UnaryTests.class,
                 InformationItem.class,
+                InformationItemPrimary.class,
                 InputClause.class,
                 OutputClause.class,
                 NOPDomainObject.class
