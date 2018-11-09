@@ -306,7 +306,7 @@ public class DataTypeManagerTest {
 
         assertEquals("uuid", dataType.getUUID());
         assertEquals("--", dataType.getName());
-        assertEquals("string", dataType.getType());
+        assertEquals("Any", dataType.getType());
         assertEquals("", dataType.getConstraint());
         assertEquals(emptyList(), dataType.getSubDataTypes());
         assertFalse(dataType.hasSubDataTypes());

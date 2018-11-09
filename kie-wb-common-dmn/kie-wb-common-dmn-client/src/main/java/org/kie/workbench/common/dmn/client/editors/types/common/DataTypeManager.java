@@ -166,7 +166,7 @@ public class DataTypeManager {
     }
 
     private DataTypeManager withDefaultType() {
-        return withType(BuiltInType.STRING.getName());
+        return withType(BuiltInType.ANY.getName());
     }
 
     DataTypeManager newDataType() {

@@ -79,7 +79,7 @@ public class DataTypeUtilsTest {
         final List<DataType> dataTypes = utils.defaultDataTypes();
 
         assertEquals(10, dataTypes.size());
-        assertEquals("any", dataTypes.get(0).getType());
+        assertEquals("Any", dataTypes.get(0).getType());
         assertEquals("boolean", dataTypes.get(1).getType());
         assertEquals("context", dataTypes.get(2).getType());
         assertEquals("date", dataTypes.get(3).getType());

@@ -30,7 +30,7 @@ public enum BuiltInType {
     DATE_TIME("date and time", "dateTime"),
 
     //Requested by Edson Tirelli
-    ANY("any"),
+    ANY("Any"),
     DATE("date"),
     CONTEXT("context");
 

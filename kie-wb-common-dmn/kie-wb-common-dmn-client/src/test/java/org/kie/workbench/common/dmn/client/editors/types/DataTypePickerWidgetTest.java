@@ -70,7 +70,7 @@ public class DataTypePickerWidgetTest {
 
     private static final QName VALUE = new QName();
 
-    private static final String WIDGET_VALUE = "[][string][]";
+    private static final String WIDGET_VALUE = "[][Any][]";
 
     @Mock
     private Anchor typeButton;
@@ -253,7 +253,7 @@ public class DataTypePickerWidgetTest {
 
         assertTrue(oo.isPresent());
         assertEquals(bit.getName(), optionTextCaptor.getValue());
-        assertEquals("[][any][]", optionValueCaptor.getValue());
+        assertEquals("[][Any][]", optionValueCaptor.getValue());
     }
 
     @Test

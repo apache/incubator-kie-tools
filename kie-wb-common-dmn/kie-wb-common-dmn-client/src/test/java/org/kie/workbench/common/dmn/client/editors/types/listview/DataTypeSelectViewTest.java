@@ -203,7 +203,7 @@ public class DataTypeSelectViewTest {
         final List<DataType> dataTypes = dataTypeCaptor.getAllValues();
 
         //Check the items were sorted correctly
-        assertEquals("any", dataTypes.get(0).getType());
+        assertEquals("Any", dataTypes.get(0).getType());
         assertEquals("boolean", dataTypes.get(1).getType());
         assertEquals("context", dataTypes.get(2).getType());
         assertEquals("date", dataTypes.get(3).getType());
