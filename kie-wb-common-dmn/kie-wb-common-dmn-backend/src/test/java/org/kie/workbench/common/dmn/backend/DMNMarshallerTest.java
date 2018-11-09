@@ -465,6 +465,23 @@ public class DMNMarshallerTest {
                                                this::checkEdgewaypoint);
     }
 
+    @Test
+    public void test_decisionqa() throws IOException {
+        roundTripUnmarshalThenMarshalUnmarshal(this.getClass().getResourceAsStream("/decisionqa.dmn"),
+                                               this::checkDecisionqa);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void checkDecisionqa(Graph<?, Node<?, ?>> graph) {
+        Node<?, ?> decision = graph.getNode("_7052d0f6-ccee-462b-bd89-76afc3b6f67b");
+        assertNodeContentDefinitionIs(decision,
+                                      Decision.class);
+        Decision decisionDefinition = ((View<Decision>) decision.getContent()).getDefinition();
+        assertEquals("hardcoded question", decisionDefinition.getName().getValue());
+        assertEquals("What is the codename?", decisionDefinition.getQuestion().getValue());
+        assertEquals("47.", decisionDefinition.getAllowedAnswers().getValue());
+    }
+
     @SuppressWarnings("unchecked")
     private void checkEdgewaypoint(Graph<?, Node<?, ?>> graph) {
         Node<?, ?> decision = graph.getNode("_7647e26b-6c7c-46db-aa34-1a1a2b4d8d79");

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.trisotech.com/dmn/definitions/_14bbf601-fc1b-4f53-9c67-6578357b4c80" id="_14bbf601-fc1b-4f53-9c67-6578357b4c80" namespace="http://www.trisotech.com/dmn/definitions/_14bbf601-fc1b-4f53-9c67-6578357b4c80"          exporter="DMN Modeler" exporterVersion="6.1.13" name="Drawing 1" triso:logoChoice="Default">
+    <semantic:extensionElements/>
+    <semantic:decision id="_7052d0f6-ccee-462b-bd89-76afc3b6f67b" name="hardcoded question" triso:useOutputTypeAsAnswer="false">
+        <semantic:question>What is the codename?</semantic:question>
+        <semantic:allowedAnswers>47.</semantic:allowedAnswers>
+        <semantic:variable name="hardcoded question" id="_c2d4d1b9-92e8-4aaf-be16-34ad49ddc4a7" typeRef="number"/>
+        <semantic:literalExpression id="_9253b769-f924-426a-9e57-ad6e76b9971a" typeRef="number">
+            <semantic:text>47</semantic:text>
+        </semantic:literalExpression>
+    </semantic:decision>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram id="_5c2fa150-8cc0-4e0d-8e7d-399b540fbe3b" name="Page 1">
+            <dmndi:Size height="1050" width="1485"/>
+            <dmndi:DMNShape id="_fcd18ee5-98d3-4443-9442-e11c9bd8bdaf" dmnElementRef="_7052d0f6-ccee-462b-bd89-76afc3b6f67b">
+                <dc:Bounds x="113" y="113" width="153" height="60"/>
+                <dmndi:DMNLabel sharedStyle="LS_14bbf601-fc1b-4f53-9c67-6578357b4c80_0" xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn" trisodmn:defaultBounds="true">
+                    <dc:Bounds height="12" width="146" x="116" y="137"/>
+                </dmndi:DMNLabel>
+            </dmndi:DMNShape>
+        </dmndi:DMNDiagram>
+        <dmndi:DMNStyle id="LS_14bbf601-fc1b-4f53-9c67-6578357b4c80_0" fontFamily="arial,helvetica,sans-serif" fontSize="11" fontBold="false" fontItalic="false" fontUnderline="false" fontStrikeThrough="false"/>
+    </dmndi:DMNDI>
+</semantic:definitions>
