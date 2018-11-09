@@ -73,6 +73,7 @@ import org.kie.dmn.model.api.dmndi.DMNStyle;
 import org.kie.dmn.model.api.dmndi.Point;
 import org.kie.dmn.model.v1_2.TDecision;
 import org.kie.dmn.model.v1_2.TInputData;
+import org.kie.dmn.model.v1_2.TTextAnnotation;
 import org.kie.workbench.common.dmn.api.DMNDefinitionSet;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Association;
 import org.kie.workbench.common.dmn.api.definition.v1_1.AuthorityRequirement;
@@ -81,6 +82,8 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ContextEntry;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNDiagram;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNElement;
+import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
+import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase.Namespace;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.FunctionDefinition;
@@ -90,9 +93,11 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.KnowledgeRequirement;
 import org.kie.workbench.common.dmn.api.definition.v1_1.KnowledgeSource;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.TextAnnotation;
+import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.kie.workbench.common.dmn.backend.definition.v1_1.DecisionConverter;
 import org.kie.workbench.common.dmn.backend.definition.v1_1.InputDataConverter;
+import org.kie.workbench.common.dmn.backend.definition.v1_1.TextAnnotationConverter;
 import org.kie.workbench.common.stunner.backend.definition.factory.TestScopeModelFactory;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.backend.BackendFactoryManager;
@@ -1313,6 +1318,8 @@ public class DMNMarshallerTest {
                                                                BindableAdapterUtils.getDefinitionSetId(DMNDefinitionSet.class),
                                                                null);
         Graph g = diagram.getGraph();
+        Node diagramRoot = DMNMarshaller.findDMNDiagramRoot(g);
+        testAugmentWithNSPrefixes(((DMNDiagram) ((View<?>) diagramRoot.getContent()).getDefinition()).getDefinitions());
 
         org.kie.dmn.model.api.InputData dmnInputData = (org.kie.dmn.model.api.InputData) new TInputData();
         dmnInputData.setId("inputDataID");
@@ -1338,7 +1345,6 @@ public class DMNMarshallerTest {
         connectionContent.setSourceConnection(MagnetConnection.Builder.forElement(inputDataNode).setLocation(null).setAuto(true));
         connectionContent.setTargetConnection(MagnetConnection.Builder.forElement(decisionNode).setLocation(null).setAuto(true));
 
-        Node diagramRoot = DMNMarshaller.findDMNDiagramRoot(g);
         DMNMarshaller.connectRootWithChild(diagramRoot, inputDataNode);
         DMNMarshaller.connectRootWithChild(diagramRoot, decisionNode);
 
@@ -1356,6 +1362,64 @@ public class DMNMarshallerTest {
         Point wpTarget = dmndiEdge.getWaypoint().get(1);
         assertThat(wpTarget.getX()).isEqualByComparingTo(250d);
         assertThat(wpTarget.getY()).isEqualByComparingTo(225d);
+    }
+
+    /**
+     * DROOLS-2569 [DMN Designer] Marshalling of magnet positions -- Association DMN Edge DMNDI serialization.
+     * This test re-create by hard-code the graph to simulate the behavior of the Stunner framework programmatically.
+     */
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testAssociationEdgeDMNDI() throws IOException {
+        Diagram diagram = applicationFactoryManager.newDiagram("testDiagram",
+                                                               BindableAdapterUtils.getDefinitionSetId(DMNDefinitionSet.class),
+                                                               null);
+        Graph g = diagram.getGraph();
+        Node diagramRoot = DMNMarshaller.findDMNDiagramRoot(g);
+        testAugmentWithNSPrefixes(((DMNDiagram) ((View<?>) diagramRoot.getContent()).getDefinition()).getDefinitions());
+
+        org.kie.dmn.model.api.InputData dmnInputData = new TInputData();
+        dmnInputData.setId("inputDataID");
+        dmnInputData.setName(dmnInputData.getId());
+        Node inputDataNode = new InputDataConverter(applicationFactoryManager).nodeFromDMN(dmnInputData);
+        org.kie.dmn.model.api.TextAnnotation dmnTextAnnotation = new TTextAnnotation();
+        dmnTextAnnotation.setId("textAnnotationID");
+        Node textAnnotationNode = new TextAnnotationConverter(applicationFactoryManager).nodeFromDMN(dmnTextAnnotation);
+        g.addNode(inputDataNode);
+        g.addNode(textAnnotationNode);
+        View content = (View) textAnnotationNode.getContent();
+        content.setBounds(BoundsImpl.build(200, 200, 300, 250));
+        final String edgeID = "edgeID";
+        final String associationID = "associationID";
+        Edge myEdge = applicationFactoryManager.newElement(edgeID, org.kie.workbench.common.dmn.api.definition.v1_1.Association.class).asEdge();
+        final View<?> edgeView = (View<?>) myEdge.getContent();
+        ((Association) edgeView.getDefinition()).setId(new Id(associationID));
+        myEdge.setSourceNode(inputDataNode);
+        myEdge.setTargetNode(textAnnotationNode);
+        inputDataNode.getOutEdges().add(myEdge);
+        textAnnotationNode.getInEdges().add(myEdge);
+        ViewConnector connectionContent = (ViewConnector) myEdge.getContent();
+        connectionContent.setSourceConnection(MagnetConnection.Builder.forElement(inputDataNode));
+        connectionContent.setTargetConnection(MagnetConnection.Builder.forElement(textAnnotationNode));
+
+        DMNMarshaller.connectRootWithChild(diagramRoot, inputDataNode);
+        DMNMarshaller.connectRootWithChild(diagramRoot, textAnnotationNode);
+
+        DMNMarshaller m = new DMNMarshaller(new XMLEncoderDiagramMetadataMarshaller(),
+                                            applicationFactoryManager);
+        String output = m.marshall(diagram);
+        LOG.debug(output);
+
+        Definitions dmnDefinitions = DMNMarshallerFactory.newDefaultMarshaller().unmarshal(output);
+        assertThat(dmnDefinitions.getDMNDI().getDMNDiagram().get(0).getDMNDiagramElement().stream().filter(DMNEdge.class::isInstance).count()).isEqualTo(1);
+        DMNEdge dmndiEdge = findEdgeByDMNI(dmnDefinitions.getDMNDI().getDMNDiagram().get(0), associationID);
+        assertThat(dmndiEdge.getWaypoint()).hasSize(2);
+    }
+
+    private static void testAugmentWithNSPrefixes(org.kie.workbench.common.dmn.api.definition.v1_1.Definitions definitions) {
+        for (Namespace nsp : DMNModelInstrumentedBase.Namespace.values()) {
+            definitions.getNsContext().put(nsp.getPrefix(), nsp.getUri());
+        }
     }
 
     @SuppressWarnings("unchecked")

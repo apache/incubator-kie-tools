@@ -99,8 +99,8 @@ public class DefinitionsConverter {
         result.setNamespace(defaultNamespace);
         result.setDescription(DescriptionPropertyConverter.dmnFromWB(wb.getDescription()));
         result.getNsContext().putAll(wb.getNsContext());
-        result.getNsContext().put(DMNModelInstrumentedBase.Namespace.DEFAULT.getPrefix(),
-                                  defaultNamespace);
+        result.getNsContext().putIfAbsent(DMNModelInstrumentedBase.Namespace.DEFAULT.getPrefix(),
+                                          defaultNamespace);
 
         for (ItemDefinition itemDef : wb.getItemDefinition()) {
             org.kie.dmn.model.api.ItemDefinition itemDefConverted = ItemDefinitionPropertyConverter.dmnFromWB(itemDef);

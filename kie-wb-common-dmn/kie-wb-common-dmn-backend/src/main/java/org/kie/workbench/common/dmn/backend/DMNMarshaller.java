@@ -518,8 +518,17 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
                             }
 
                             DMNEdge dmnEdge = new org.kie.dmn.model.v1_2.dmndi.DMNEdge();
-                            dmnEdge.setId("dmnedge-" + e.getUUID());
-                            dmnEdge.setDmnElementRef(new QName(e.getUUID()));
+                            // DMNDI edge elementRef is uuid of Stunner edge, 
+                            // with the only exception when edge contains as content a DMN Association (Association is an edge)
+                            String uuid = e.getUUID();
+                            if (e.getContent() instanceof View<?>) {
+                                final View<?> edgeView = (View<?>) e.getContent();
+                                if (edgeView.getDefinition() instanceof Association) {
+                                    uuid = ((Association) edgeView.getDefinition()).getId().getValue();
+                                }
+                            }
+                            dmnEdge.setId("dmnedge-" + uuid);
+                            dmnEdge.setDmnElementRef(new QName(uuid));
 
                             dmnEdge.getWaypoint().add(PointUtils.point2dToDMNDIPoint(sourcePoint));
                             for (ControlPoint cp : connectionContent.getControlPoints()) {
