@@ -104,7 +104,7 @@ public class ExpressionEditor implements ExpressionEditorView.Presenter {
             if (element.getContent() instanceof Definition) {
                 final Definition definition = (Definition) element.getContent();
                 hasExpression.ifPresent(e -> {
-                    if (Objects.equals(e, definition.getDefinition())) {
+                    if (Objects.equals(e.asDMNModelInstrumentedBase(), definition.getDefinition())) {
                         view.setReturnToDRGText(Optional.ofNullable((HasName) definition.getDefinition()));
                     }
                 });

@@ -16,31 +16,76 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorPresenter;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
+import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanvasControl;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementUpdatedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasDomainObjectListener;
+import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
+import org.kie.workbench.common.stunner.core.graph.Graph;
+import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 
 @Dependent
 public class ExpressionEditorControlImpl extends AbstractCanvasControl<AbstractCanvas> implements ExpressionEditorControl {
 
     private ExpressionEditorView view;
     private DecisionNavigatorPresenter decisionNavigator;
+    private Event<CanvasElementUpdatedEvent> canvasElementUpdatedEvent;
+
+    private Optional<DMNSession> session = Optional.empty();
     private Optional<ExpressionEditorView.Presenter> expressionEditor = Optional.empty();
+
+    private class RefreshEditorDomainObjectListener implements CanvasDomainObjectListener {
+
+        private DMNSession session;
+
+        public RefreshEditorDomainObjectListener(final DMNSession session) {
+            this.session = session;
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public void update(final DomainObject domainObject) {
+            final CanvasHandler canvasHandler = session.getCanvasHandler();
+            final Diagram diagram = canvasHandler.getDiagram();
+            final Graph<?, Node> graph = diagram.getGraph();
+
+            for (final Node node : graph.nodes()) {
+                if (node.getContent() instanceof Definition) {
+                    final Definition definition = (Definition) node.getContent();
+                    if (definition.getDefinition() instanceof DomainObject) {
+                        final DomainObject d = (DomainObject) definition.getDefinition();
+                        if (Objects.equals(d.getDomainObjectUUID(), domainObject.getDomainObjectUUID())) {
+                            canvasElementUpdatedEvent.fire(new CanvasElementUpdatedEvent(canvasHandler, node));
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private RefreshEditorDomainObjectListener refreshEditorDomainObjectListener;
 
     @Inject
     public ExpressionEditorControlImpl(final ExpressionEditorView view,
-                                       final DecisionNavigatorPresenter decisionNavigator) {
+                                       final DecisionNavigatorPresenter decisionNavigator,
+                                       final Event<CanvasElementUpdatedEvent> canvasElementUpdatedEvent) {
         this.view = view;
         this.decisionNavigator = decisionNavigator;
+        this.canvasElementUpdatedEvent = canvasElementUpdatedEvent;
     }
 
     @Override
@@ -48,7 +93,10 @@ public class ExpressionEditorControlImpl extends AbstractCanvasControl<AbstractC
         final ExpressionEditorView.Presenter editor = makeExpressionEditor(view,
                                                                            decisionNavigator);
         editor.bind(session);
-        expressionEditor = Optional.of(editor);
+        this.session = Optional.of(session);
+        this.expressionEditor = Optional.of(editor);
+        this.refreshEditorDomainObjectListener = new RefreshEditorDomainObjectListener(session);
+        session.getCanvasHandler().addDomainObjectListener(refreshEditorDomainObjectListener);
     }
 
     ExpressionEditorView.Presenter makeExpressionEditor(final ExpressionEditorView view,
@@ -65,15 +113,14 @@ public class ExpressionEditorControlImpl extends AbstractCanvasControl<AbstractC
     protected void doDestroy() {
         view = null;
         decisionNavigator = null;
+        session.ifPresent(s -> s.getCanvasHandler().removeDomainObjectListener(refreshEditorDomainObjectListener));
+        session = Optional.empty();
         expressionEditor = Optional.empty();
     }
 
     @Override
     public ExpressionEditorView.Presenter getExpressionEditor() {
-        if (expressionEditor.isPresent()) {
-            return expressionEditor.get();
-        }
-        return null;
+        return expressionEditor.orElse(null);
     }
 
     @SuppressWarnings("unused")

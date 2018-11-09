@@ -22,7 +22,9 @@ import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
+import org.kie.workbench.common.dmn.api.definition.v1_1.BusinessKnowledgeModel;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
 import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorPresenter;
 import org.kie.workbench.common.dmn.client.editors.toolbar.ToolbarStateHandler;
@@ -72,9 +74,6 @@ public class ExpressionEditorTest {
     private ToolbarStateHandler toolbarStateHandler;
 
     @Mock
-    private Decision decision;
-
-    @Mock
     private Command command;
 
     @Mock
@@ -92,6 +91,8 @@ public class ExpressionEditorTest {
     @Captor
     private ArgumentCaptor<Optional<HasName>> optionalHasNameCaptor;
 
+    private Decision decision;
+
     private ExpressionEditor testedEditor;
 
     private ExpressionGridCache expressionGridCache;
@@ -99,6 +100,7 @@ public class ExpressionEditorTest {
     @Before
     @SuppressWarnings("unchecked")
     public void setUp() throws Exception {
+        this.decision = new Decision();
         this.expressionGridCache = new ExpressionGridCacheImpl();
 
         testedEditor = spy(new ExpressionEditor(view,
@@ -116,7 +118,7 @@ public class ExpressionEditorTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testSetExpression() {
-        setupExpression(toolbarStateHandler);
+        setupExpression(decision, decision, toolbarStateHandler);
 
         verify(view).setExpression(eq(NODE_UUID),
                                    eq(decision),
@@ -127,7 +129,7 @@ public class ExpressionEditorTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testExitWithCommand() {
-        setupExpression(toolbarStateHandler);
+        setupExpression(decision, decision, toolbarStateHandler);
 
         testedEditor.setExitCommand(command);
 
@@ -142,7 +144,7 @@ public class ExpressionEditorTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testSetExpressionWithoutToolbar() {
-        setupExpression(null);
+        setupExpression(decision, decision, null);
 
         verifyNoMoreInteractions(toolbarStateHandler);
     }
@@ -150,7 +152,7 @@ public class ExpressionEditorTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testExitWithCommandWithoutToolbar() {
-        setupExpression(null);
+        setupExpression(decision, decision, null);
 
         testedEditor.setExitCommand(command);
 
@@ -163,16 +165,18 @@ public class ExpressionEditorTest {
     }
 
     @SuppressWarnings("unchecked")
-    private void setupExpression(final ToolbarStateHandler toolbarStateHandler) {
+    private void setupExpression(final HasExpression hasExpression,
+                                 final HasName hasName,
+                                 final ToolbarStateHandler toolbarStateHandler) {
         testedEditor.setToolbarStateHandler(toolbarStateHandler);
 
         testedEditor.setExpression(NODE_UUID,
-                                   decision,
-                                   Optional.of(decision));
+                                   hasExpression,
+                                   Optional.of(hasName));
 
         verify(view).setExpression(eq(NODE_UUID),
-                                   eq(decision),
-                                   eq(Optional.of(decision)));
+                                   eq(hasExpression),
+                                   eq(Optional.of(hasName)));
     }
 
     @Test
@@ -182,7 +186,7 @@ public class ExpressionEditorTest {
         when(node.getContent()).thenReturn(definition);
         when(definition.getDefinition()).thenReturn(decision);
 
-        setupExpression(toolbarStateHandler);
+        setupExpression(decision, decision, toolbarStateHandler);
 
         testedEditor.handleCanvasElementUpdated(event);
 
@@ -195,6 +199,26 @@ public class ExpressionEditorTest {
     }
 
     @Test
+    public void testOnCanvasElementUpdatedBusinessKnowledgeModel() {
+        final BusinessKnowledgeModel bkm = new BusinessKnowledgeModel();
+        final CanvasElementUpdatedEvent event = new CanvasElementUpdatedEvent(canvasHandler, node);
+
+        when(node.getContent()).thenReturn(definition);
+        when(definition.getDefinition()).thenReturn(bkm);
+
+        setupExpression(bkm.asHasExpression(), bkm, toolbarStateHandler);
+
+        testedEditor.handleCanvasElementUpdated(event);
+
+        verify(view).setReturnToDRGText(optionalHasNameCaptor.capture());
+
+        final Optional<HasName> optionalHasName = optionalHasNameCaptor.getValue();
+        assertTrue(optionalHasName.isPresent());
+        assertEquals(bkm,
+                     optionalHasName.get());
+    }
+
+    @Test
     public void testOnCanvasElementUpdatedDifferentNode() {
         final CanvasElementUpdatedEvent event = new CanvasElementUpdatedEvent(canvasHandler, node);
 
@@ -203,7 +227,7 @@ public class ExpressionEditorTest {
         when(node.getContent()).thenReturn(definition);
         when(definition.getDefinition()).thenReturn(differentNodeDefinition);
 
-        setupExpression(toolbarStateHandler);
+        setupExpression(decision, decision, toolbarStateHandler);
 
         testedEditor.handleCanvasElementUpdated(event);
 

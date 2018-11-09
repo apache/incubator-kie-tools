@@ -16,25 +16,39 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions;
 
+import java.util.Collections;
+
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorPresenter;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
-import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementUpdatedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasDomainObjectListener;
+import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
+import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
+import org.uberfire.mocks.EventSourceMock;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class ExpressionEditorControlImplTest {
@@ -49,25 +63,47 @@ public class ExpressionEditorControlImplTest {
     private DecisionNavigatorPresenter decisionNavigator;
 
     @Mock
+    private EventSourceMock<CanvasElementUpdatedEvent> canvasElementUpdatedEvent;
+
+    @Mock
     private ExpressionEditorView.Presenter editor;
 
     @Mock
-    private CanvasHandler canvasHandler;
+    private AbstractCanvasHandler canvasHandler;
+
+    @Mock
+    private Diagram diagram;
+
+    @Mock
+    private Graph<?, Node> graph;
 
     @Mock
     private Node node;
 
     @Mock
+    private DomainObject domainObject;
+
+    @Mock
     private CanvasSelectionEvent event;
+
+    @Captor
+    private ArgumentCaptor<CanvasDomainObjectListener> domainObjectListenerCaptor;
+
+    @Captor
+    private ArgumentCaptor<CanvasElementUpdatedEvent> canvasElementUpdatedEventCaptor;
 
     private ExpressionEditorControlImpl control;
 
     @Before
     public void setup() {
         this.control = spy(new ExpressionEditorControlImpl(view,
-                                                           decisionNavigator));
+                                                           decisionNavigator,
+                                                           canvasElementUpdatedEvent));
         doReturn(editor).when(control).makeExpressionEditor(any(ExpressionEditorView.class),
                                                             any(DecisionNavigatorPresenter.class));
+        when(session.getCanvasHandler()).thenReturn(canvasHandler);
+        when(canvasHandler.getDiagram()).thenReturn(diagram);
+        when(diagram.getGraph()).thenReturn(graph);
     }
 
     @Test
@@ -76,6 +112,43 @@ public class ExpressionEditorControlImplTest {
 
         assertNotNull(control.getExpressionEditor());
         verify(editor).bind(session);
+        verify(canvasHandler).addDomainObjectListener(any(CanvasDomainObjectListener.class));
+    }
+
+    @Test
+    public void testBindDomainObjectListenerWithNodeMatch() {
+        final Definition definition = mock(Definition.class);
+        when(graph.nodes()).thenReturn(Collections.singletonList(node));
+        when(node.getContent()).thenReturn(definition);
+        when(definition.getDefinition()).thenReturn(domainObject);
+        when(domainObject.getDomainObjectUUID()).thenReturn("uuid");
+
+        control.bind(session);
+
+        verify(canvasHandler).addDomainObjectListener(domainObjectListenerCaptor.capture());
+
+        final CanvasDomainObjectListener domainObjectListener = domainObjectListenerCaptor.getValue();
+        domainObjectListener.update(domainObject);
+
+        verify(canvasElementUpdatedEvent).fire(canvasElementUpdatedEventCaptor.capture());
+
+        final CanvasElementUpdatedEvent canvasElementUpdatedEvent = canvasElementUpdatedEventCaptor.getValue();
+        assertThat(canvasElementUpdatedEvent.getCanvasHandler()).isEqualTo(canvasHandler);
+        assertThat(canvasElementUpdatedEvent.getElement()).isEqualTo(node);
+    }
+
+    @Test
+    public void testBindDomainObjectListenerWithNoNodeMatch() {
+        when(graph.nodes()).thenReturn(Collections.emptyList());
+
+        control.bind(session);
+
+        verify(canvasHandler).addDomainObjectListener(domainObjectListenerCaptor.capture());
+
+        final CanvasDomainObjectListener domainObjectListener = domainObjectListenerCaptor.getValue();
+        domainObjectListener.update(domainObject);
+
+        verify(canvasElementUpdatedEvent, never()).fire(any(CanvasElementUpdatedEvent.class));
     }
 
     @Test
@@ -91,9 +164,13 @@ public class ExpressionEditorControlImplTest {
     public void testDoDestroy() {
         control.bind(session);
 
+        verify(canvasHandler).addDomainObjectListener(domainObjectListenerCaptor.capture());
+
         control.doDestroy();
 
         assertNull(control.getExpressionEditor());
+        final CanvasDomainObjectListener domainObjectListener = domainObjectListenerCaptor.getValue();
+        verify(canvasHandler).removeDomainObjectListener(domainObjectListener);
     }
 
     @Test
