@@ -17,6 +17,7 @@
 package org.drools.workbench.screens.scenariosimulation.client.handlers;
 
 import java.util.Collections;
+import java.util.List;
 
 import com.ait.lienzo.client.core.types.Point2D;
 import com.google.gwt.dom.client.Document;
@@ -32,11 +33,11 @@ import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGr
 import org.drools.workbench.screens.scenariosimulation.model.FactMappingType;
 import org.junit.Before;
 import org.mockito.Mock;
+import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
 
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public abstract class AbstractScenarioSimulationGridPanelClickHandlerTest {
@@ -76,6 +77,12 @@ public abstract class AbstractScenarioSimulationGridPanelClickHandlerTest {
     protected ContextMenuEvent contextMenuEventMock;
 
     @Mock
+    protected ScenarioGridColumn scenarioGridColumnMock;
+
+    @Mock
+    protected List<GridColumn<?>> columnsMock;
+
+    @Mock
     private ScenarioGridPanel scenarioGridPanelMock;
 
     @Mock
@@ -112,20 +119,20 @@ public abstract class AbstractScenarioSimulationGridPanelClickHandlerTest {
         when(scenarioGridRendererHelperMock.getRenderingInformation()).thenReturn(scenarioRenderingInformationMock);
 
         // mock single column in grid
-        ScenarioGridColumn column = mock(ScenarioGridColumn.class);
         when(scenarioGridModelMock.getHeaderRowCount()).thenReturn(1);
-        when(scenarioGridModelMock.getColumns()).thenReturn(Collections.singletonList(column));
+        doReturn(scenarioGridColumnMock).when(columnsMock).get(0);
+        when(scenarioGridModelMock.getColumns()).thenReturn(columnsMock);
         when(scenarioGridModelMock.getColumnCount()).thenReturn(1);
 
         // presence of header metadata is prerequisite to handle header click
         // to simplify test, return just one header metadata
         // it simulates just one row in column header rows
-        when(column.getHeaderMetaData()).thenReturn(Collections.singletonList(headerMetaDataMock));
+        when(scenarioGridColumnMock.getHeaderMetaData()).thenReturn(Collections.singletonList(headerMetaDataMock));
         when(headerMetaDataMock.getColumnGroup()).thenReturn(FactMappingType.GIVEN.name());
 
         // mock that column to index 0
         BaseGridRendererHelper.ColumnInformation columnInformation =
-                new BaseGridRendererHelper.ColumnInformation(column, UI_COLUMN_INDEX, OFFSET_X);
+                new BaseGridRendererHelper.ColumnInformation(scenarioGridColumnMock, UI_COLUMN_INDEX, OFFSET_X);
         when(scenarioGridRendererHelperMock.getColumnInformation(CLICK_POINT_X)).thenReturn(columnInformation);
 
         when(nativeEventMock.getClientX()).thenReturn(NATIVE_EVENT_CLIENT_X);

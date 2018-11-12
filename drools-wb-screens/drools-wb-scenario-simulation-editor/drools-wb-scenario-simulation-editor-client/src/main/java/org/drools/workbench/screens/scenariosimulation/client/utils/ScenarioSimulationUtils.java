@@ -15,6 +15,8 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.utils;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.drools.workbench.screens.scenariosimulation.client.factories.FactoryProvider;
 import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioCellTextAreaSingletonDOMElementFactory;
 import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioHeaderTextBoxSingletonDOMElementFactory;
@@ -26,6 +28,14 @@ import org.drools.workbench.screens.scenariosimulation.model.ExpressionIdentifie
 import org.drools.workbench.screens.scenariosimulation.model.FactMappingType;
 
 public class ScenarioSimulationUtils {
+
+
+    protected static AtomicInteger subGroupCounter = new AtomicInteger(0);
+
+
+    public static String getPropertyMetaDataGroup(String columnGroup) {
+        return columnGroup + "-" + subGroupCounter.getAndIncrement();
+    }
 
     /**
      * Returns a <code>ScenarioGridColumn</code> with the following default values:
@@ -238,7 +248,7 @@ public class ScenarioSimulationUtils {
         // The "property" header
         instanceHeader.newLevel()
                 .setColumnTitle(propertyTitle)
-                .setColumnGroup(columnGroup)
+                .setColumnGroup(getPropertyMetaDataGroup(columnGroup))
                 .setReadOnly(false)
                 .setInstanceHeader(false)
                 .setPropertyHeader(true);

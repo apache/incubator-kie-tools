@@ -27,6 +27,8 @@ import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGr
 import org.drools.workbench.screens.scenariosimulation.model.FactIdentifier;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 
+import static org.drools.workbench.screens.scenariosimulation.client.utils.ScenarioSimulationUtils.getPropertyMetaDataGroup;
+
 /**
  * <code>Command</code> to to set the <i>property</i> level header for a given column
  */
@@ -85,7 +87,7 @@ public class SetPropertyHeaderCommand extends AbstractCommand {
                 });
         String placeHolder = ScenarioSimulationEditorConstants.INSTANCE.insertValue();
         selectedColumn.setPlaceHolder(placeHolder);
-        selectedColumn.getPropertyHeaderMetaData().setColumnGroup(selectedColumn.getInformationHeaderMetaData().getColumnGroup());
+        selectedColumn.getPropertyHeaderMetaData().setColumnGroup(getPropertyMetaDataGroup(selectedColumn.getInformationHeaderMetaData().getColumnGroup()));
         selectedColumn.getPropertyHeaderMetaData().setTitle(title);
         selectedColumn.getPropertyHeaderMetaData().setReadOnly(false);
         selectedColumn.setPropertyAssigned(true);

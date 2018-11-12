@@ -29,6 +29,7 @@ import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 
 import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.spy;
@@ -66,7 +67,7 @@ public class SetPropertyHeaderCommandTest extends AbstractCommandTest {
     public void executeFalse() {
         setPropertyHeaderCommand.keepData = false;
         setPropertyHeaderCommand.execute();
-        verify(propertyHeaderMetaDataMock, times(1)).setColumnGroup(COLUMN_GROUP);
+        verify(propertyHeaderMetaDataMock, times(1)).setColumnGroup(anyString());
         verify(propertyHeaderMetaDataMock, times(1)).setTitle(VALUE);
         verify(propertyHeaderMetaDataMock, times(1)).setReadOnly(false);
         verify(scenarioGridModelMock, times(1)).updateColumnProperty(anyInt(), isA(ScenarioGridColumn.class), eq(VALUE), eq(VALUE_CLASS_NAME), eq(false));
@@ -76,7 +77,7 @@ public class SetPropertyHeaderCommandTest extends AbstractCommandTest {
     public void executeTrue() {
         setPropertyHeaderCommand.keepData = true;
         setPropertyHeaderCommand.execute();
-        verify(propertyHeaderMetaDataMock, times(1)).setColumnGroup(COLUMN_GROUP);
+        verify(propertyHeaderMetaDataMock, times(1)).setColumnGroup(anyString());
         verify(propertyHeaderMetaDataMock, times(1)).setTitle(VALUE);
         verify(propertyHeaderMetaDataMock, times(1)).setReadOnly(false);
         verify(scenarioGridModelMock, times(1)).updateColumnProperty(anyInt(), eq(gridColumnMock), eq(VALUE), eq(VALUE_CLASS_NAME), eq(true));
