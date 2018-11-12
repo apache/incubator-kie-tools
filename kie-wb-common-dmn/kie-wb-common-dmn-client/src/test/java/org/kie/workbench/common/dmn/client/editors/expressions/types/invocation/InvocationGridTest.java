@@ -413,6 +413,23 @@ public class InvocationGridTest {
     }
 
     @Test
+    public void testNameColumnMetaDataWhenNested() {
+        setupGrid(1);
+
+        final GridColumn<?> column = grid.getModel().getColumns().get(InvocationUIModelMapper.BINDING_PARAMETER_COLUMN_INDEX);
+        final List<GridColumn.HeaderMetaData> header = column.getHeaderMetaData();
+
+        assertEquals(1,
+                     header.size());
+        assertTrue(header.get(0) instanceof InvocationColumnExpressionHeaderMetaData);
+
+        final InvocationColumnExpressionHeaderMetaData md1 = (InvocationColumnExpressionHeaderMetaData) header.get(0);
+
+        assertEquals("invocation-expression",
+                     md1.getTitle());
+    }
+
+    @Test
     public void testExpressionColumnMetaData() {
         setupGrid(0);
 
@@ -431,6 +448,23 @@ public class InvocationGridTest {
                      md1.getTitle());
         assertEquals("invocation-expression",
                      md2.getTitle());
+    }
+
+    @Test
+    public void testExpressionColumnMetaDataWhenNested() {
+        setupGrid(1);
+
+        final GridColumn<?> column = grid.getModel().getColumns().get(InvocationUIModelMapper.BINDING_EXPRESSION_COLUMN_INDEX);
+        final List<GridColumn.HeaderMetaData> header = column.getHeaderMetaData();
+
+        assertEquals(1,
+                     header.size());
+        assertTrue(header.get(0) instanceof InvocationColumnExpressionHeaderMetaData);
+
+        final InvocationColumnExpressionHeaderMetaData md1 = (InvocationColumnExpressionHeaderMetaData) header.get(0);
+
+        assertEquals("invocation-expression",
+                     md1.getTitle());
     }
 
     @Test

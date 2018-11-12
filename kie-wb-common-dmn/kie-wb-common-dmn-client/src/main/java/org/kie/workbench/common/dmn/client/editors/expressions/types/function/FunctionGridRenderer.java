@@ -16,27 +16,28 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.function;
 
-import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridRenderer;
+import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridTheme;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRenderer;
 
-public class FunctionGridRenderer extends BaseExpressionGridRenderer {
+public class FunctionGridRenderer extends BaseGridRenderer {
 
     static final double HEADER_ROW_HEIGHT = 48;
 
-    static final double HEADER_HEIGHT = HEADER_ROW_HEIGHT * 2;
+    private final DMNGridData gridData;
 
-    @SuppressWarnings("unused")
-    public FunctionGridRenderer(final boolean isHeaderHidden) {
-        //TODO {manstis} We need to hide only the first header row when header is hidden
-        super(false);
+    public FunctionGridRenderer(final DMNGridData gridData) {
+        super(new BaseExpressionGridTheme());
+        this.gridData = gridData;
     }
 
     @Override
-    protected double getRequiredHeaderHeight(final boolean isHeaderHidden) {
-        return isHeaderHidden ? 0.0 : HEADER_HEIGHT;
+    public double getHeaderHeight() {
+        return HEADER_ROW_HEIGHT * gridData.getHeaderRowCount();
     }
 
     @Override
-    protected double getRequiredHeaderRowHeight(final boolean isHeaderHidden) {
-        return isHeaderHidden ? 0.0 : HEADER_ROW_HEIGHT;
+    public double getHeaderRowHeight() {
+        return HEADER_ROW_HEIGHT;
     }
 }

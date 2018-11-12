@@ -27,7 +27,6 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
-import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
@@ -173,14 +172,12 @@ public class ContextEditorDefinitionTest {
                      model.getContextEntry().get(0).getVariable().getName().getValue());
 
         assertNull(model.getContextEntry().get(1).getVariable());
-        assertTrue(model.getContextEntry().get(1).getExpression() instanceof LiteralExpression);
+        assertNull(model.getContextEntry().get(1).getExpression());
 
         model.getContextEntry().forEach(ce -> assertEquals(model, ce.getParent()));
 
         assertEquals(model.getContextEntry().get(0),
                      model.getContextEntry().get(0).getVariable().getParent());
-        assertEquals(model.getContextEntry().get(1),
-                     model.getContextEntry().get(1).getExpression().getParent());
     }
 
     @Test

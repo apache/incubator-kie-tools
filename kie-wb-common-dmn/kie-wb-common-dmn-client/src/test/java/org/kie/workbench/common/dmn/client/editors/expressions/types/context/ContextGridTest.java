@@ -372,7 +372,7 @@ public class ContextGridTest {
                      ((InformationItemCell.HasNameCell) uiModel.getCell(1, 1).getValue().getValue()).getName().getValue());
         assertTrue(uiModel.getCell(1, 2).getValue() instanceof ExpressionCellValue);
         final ExpressionCellValue dcv1 = (ExpressionCellValue) uiModel.getCell(1, 2).getValue();
-        assertEquals(literalExpressionEditor,
+        assertEquals(undefinedExpressionEditor,
                      dcv1.getValue().get());
     }
 
@@ -472,6 +472,49 @@ public class ContextGridTest {
                                true);
 
         ((HasListSelectorControl.ListSelectorTextItem) items.get(CLEAR_EXPRESSION_TYPE)).getCommand().execute();
+        verify(cellEditorControls).hide();
+        verify(sessionCommandManager).execute(eq(canvasHandler),
+                                              any(ClearExpressionTypeCommand.class));
+    }
+
+    @Test
+    public void testGetItemsRowNumberColumnDefaultResultRow() {
+        setupGrid(0);
+
+        assertThat(grid.getItems(1, 0)).isEmpty();
+    }
+
+    @Test
+    public void testOnItemSelectedNameColumnDefaultResultRow() {
+        setupGrid(0);
+
+        assertThat(grid.getItems(1, 1)).isEmpty();
+    }
+
+    @Test
+    public void testOnItemSelectedExpressionColumnUndefinedExpressionTypeDefaultResultRow() {
+        setupGrid(0);
+
+        assertThat(grid.getItems(1, 2)).isEmpty();
+    }
+
+    @Test
+    public void testOnItemSelectedExpressionColumnDefinedExpressionTypeDefaultResultRow() {
+        setupGrid(0);
+
+        //Set an editor for expression at (1, 2)
+        final BaseExpressionGrid editor = mock(BaseExpressionGrid.class);
+        grid.getModel().setCellValue(1, 2, new ExpressionCellValue(Optional.of(editor)));
+
+        final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(1, 2);
+
+        assertThat(items.size()).isEqualTo(1);
+
+        assertListSelectorItem(items.get(0),
+                               DMNEditorConstants.ExpressionEditor_Clear,
+                               true);
+
+        ((HasListSelectorControl.ListSelectorTextItem) items.get(0)).getCommand().execute();
         verify(cellEditorControls).hide();
         verify(sessionCommandManager).execute(eq(canvasHandler),
                                               any(ClearExpressionTypeCommand.class));

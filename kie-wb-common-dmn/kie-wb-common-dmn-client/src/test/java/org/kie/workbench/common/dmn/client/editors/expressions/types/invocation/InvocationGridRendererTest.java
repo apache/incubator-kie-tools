@@ -16,18 +16,33 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.invocation;
 
+import org.junit.Before;
 import org.junit.Test;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public class InvocationGridRendererTest {
 
-    @Test
-    public void testHeaderDimensionsWhenHeaderNotHidden() {
-        final GridRenderer renderer = new InvocationGridRenderer(false);
+    @Mock
+    private InvocationGridData gridData;
 
-        assertEquals(InvocationGridRenderer.HEADER_HEIGHT,
+    private InvocationGridRenderer renderer;
+
+    @Before
+    public void setup() {
+        this.renderer = new InvocationGridRenderer(gridData);
+    }
+
+    @Test
+    public void testHeaderDimensionsWhenHeaderHasOneRow() {
+        when(gridData.getHeaderRowCount()).thenReturn(1);
+
+        assertEquals(InvocationGridRenderer.HEADER_ROW_HEIGHT,
                      renderer.getHeaderHeight(),
                      0.0);
         assertEquals(InvocationGridRenderer.HEADER_ROW_HEIGHT,
@@ -36,10 +51,10 @@ public class InvocationGridRendererTest {
     }
 
     @Test
-    public void testHeaderDimensionsWhenHeaderIsNotHidden() {
-        final GridRenderer renderer = new InvocationGridRenderer(true);
+    public void testHeaderDimensionsWhenHeaderHasTwoRows() {
+        when(gridData.getHeaderRowCount()).thenReturn(2);
 
-        assertEquals(InvocationGridRenderer.HEADER_HEIGHT,
+        assertEquals(InvocationGridRenderer.HEADER_ROW_HEIGHT * 2,
                      renderer.getHeaderHeight(),
                      0.0);
         assertEquals(InvocationGridRenderer.HEADER_ROW_HEIGHT,

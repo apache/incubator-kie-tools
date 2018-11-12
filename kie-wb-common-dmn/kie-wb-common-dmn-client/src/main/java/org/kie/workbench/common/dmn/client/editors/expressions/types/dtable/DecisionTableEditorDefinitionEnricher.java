@@ -130,7 +130,9 @@ public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorMo
 
             if (dtable.getOutput().size() > 0) {
                 final HasTypeRef hasTypeRef = TypeRefUtils.getTypeRefOfExpression(dtable, hasExpression);
-                dtable.getOutput().get(0).setTypeRef(hasTypeRef.getTypeRef());
+                if (!Objects.isNull(hasTypeRef)) {
+                    dtable.getOutput().get(0).setTypeRef(hasTypeRef.getTypeRef());
+                }
             }
         });
     }

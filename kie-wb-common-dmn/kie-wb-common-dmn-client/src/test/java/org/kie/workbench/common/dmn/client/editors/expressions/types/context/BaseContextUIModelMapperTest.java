@@ -70,13 +70,13 @@ public abstract class BaseContextUIModelMapperTest<M extends ContextUIModelMappe
     private ExpressionEditorDefinition literalExpressionEditorDefinition;
 
     @Mock
-    private LiteralExpressionGrid literalExpressionEditor;
+    protected LiteralExpressionGrid literalExpressionEditor;
 
     @Mock
     private UndefinedExpressionEditorDefinition undefinedExpressionEditorDefinition;
 
     @Mock
-    private BaseExpressionGrid undefinedExpressionEditor;
+    protected BaseExpressionGrid undefinedExpressionEditor;
 
     private LiteralExpression literalExpression = new LiteralExpression();
 

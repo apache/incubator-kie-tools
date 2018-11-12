@@ -88,6 +88,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase
 import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.FunctionDefinition;
+import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationRequirement;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InputData;
 import org.kie.workbench.common.dmn.api.definition.v1_1.KnowledgeRequirement;
@@ -151,6 +152,7 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
@@ -399,7 +401,7 @@ public class DMNMarshallerTest {
         DMNShape myname = findShapeByDMNI(ddRoot, "_4cd17e52-6253-41d6-820d-5824bf5197f3");
         assertBounds(500, 500, 100, 50, myname.getBounds());
         assertColor(255, 255, 255, ((DMNStyle) myname.getStyle()).getFillColor());
-        assertColor(0, 0, 0,       ((DMNStyle) myname.getStyle()).getStrokeColor());
+        assertColor(0, 0, 0, ((DMNStyle) myname.getStyle()).getStrokeColor());
         assertDMNStyle("Open Sans", 24, 255, 0, 0, (DMNStyle) myname.getStyle());
 
         DMNShape prefix = findShapeByDMNI(ddRoot, "_e920f38a-293c-41b8-adb3-69d0dc184fab");
@@ -442,20 +444,20 @@ public class DMNMarshallerTest {
 
     private static DMNShape findShapeByDMNI(org.kie.dmn.model.api.dmndi.DMNDiagram root, String id) {
         return root.getDMNDiagramElement().stream()
-                   .filter(DMNShape.class::isInstance)
-                   .map(DMNShape.class::cast)
-                   .filter(shape -> shape.getDmnElementRef().getLocalPart().equals(id))
-                   .findFirst()
-                   .orElseThrow(() -> new UnsupportedOperationException("There is no DMNShape with id '" + id + "' in DMNDiagram " + root));
+                .filter(DMNShape.class::isInstance)
+                .map(DMNShape.class::cast)
+                .filter(shape -> shape.getDmnElementRef().getLocalPart().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new UnsupportedOperationException("There is no DMNShape with id '" + id + "' in DMNDiagram " + root));
     }
 
     private static DMNEdge findEdgeByDMNI(org.kie.dmn.model.api.dmndi.DMNDiagram root, String id) {
         return root.getDMNDiagramElement().stream()
-                   .filter(DMNEdge.class::isInstance)
-                   .map(DMNEdge.class::cast)
-                   .filter(shape -> shape.getDmnElementRef().getLocalPart().equals(id))
-                   .findFirst()
-                   .orElseThrow(() -> new UnsupportedOperationException("There is no DMNEdge with id '" + id + "' in DMNDiagram " + root));
+                .filter(DMNEdge.class::isInstance)
+                .map(DMNEdge.class::cast)
+                .filter(shape -> shape.getDmnElementRef().getLocalPart().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new UnsupportedOperationException("There is no DMNEdge with id '" + id + "' in DMNDiagram " + root));
     }
 
     @Test
@@ -486,6 +488,18 @@ public class DMNMarshallerTest {
     public void testDecisionWithContext() throws Exception {
         roundTripUnmarshalThenMarshalUnmarshal(this.getClass().getResourceAsStream("/DecisionWithContext.dmn"),
                                                this::checkDecisionWithContext);
+    }
+
+    @Test
+    public void testDecisionWithContextWithDefaultResult() throws Exception {
+        roundTripUnmarshalThenMarshalUnmarshal(this.getClass().getResourceAsStream("/DecisionWithContextWithDefaultResult.dmn"),
+                                               this::checkDecisionWithContextWithDefaultResult);
+    }
+
+    @Test
+    public void testDecisionWithContextWithoutDefaultResult() throws Exception {
+        roundTripUnmarshalThenMarshalUnmarshal(this.getClass().getResourceAsStream("/DecisionWithContextWithoutDefaultResult.dmn"),
+                                               this::checkDecisionWithContextWithoutDefaultResult);
     }
 
     @Test
@@ -667,11 +681,45 @@ public class DMNMarshallerTest {
                      ((DMNElement) (literalExpression1).getParent()
                              .getParent()).getId().getValue());
 
-        Expression literalExpression2 = context.getContextEntry().get(0).getExpression();
+        Expression literalExpression2 = context.getContextEntry().get(1).getExpression();
         assertEquals("literalExpression2's parent-parent is contextNode",
                      "_0f38d114-5d6e-40dd-aa9c-9f031f9b0571",
                      ((DMNElement) (literalExpression2).getParent()
                              .getParent()).getId().getValue());
+    }
+
+    private void checkDecisionWithContextWithDefaultResult(Graph<?, Node<?, ?>> g) {
+        Node<?, ?> decisionNode = g.getNode("_30810b88-8416-4c02-8ed1-8c19b7606243");
+        assertNodeContentDefinitionIs(decisionNode,
+                                      Decision.class);
+
+        Context context = (Context) ((Decision) ((View<?>) decisionNode.getContent()).getDefinition()).getExpression();
+
+        InformationItem defaultResultVariable = context.getContextEntry().get(1).getVariable();
+        assertNull("Default result variable",
+                   defaultResultVariable);
+        Expression defaultResultExpression = context.getContextEntry().get(1).getExpression();
+        assertNotNull("Default result expression",
+                      defaultResultExpression);
+        assertEquals("defaultResultExpression's parent-parent is contextNode",
+                     "_0f38d114-5d6e-40dd-aa9c-9f031f9b0571",
+                     ((DMNElement) (defaultResultExpression).getParent()
+                             .getParent()).getId().getValue());
+    }
+
+    private void checkDecisionWithContextWithoutDefaultResult(Graph<?, Node<?, ?>> g) {
+        Node<?, ?> decisionNode = g.getNode("_30810b88-8416-4c02-8ed1-8c19b7606243");
+        assertNodeContentDefinitionIs(decisionNode,
+                                      Decision.class);
+
+        Context context = (Context) ((Decision) ((View<?>) decisionNode.getContent()).getDefinition()).getExpression();
+
+        InformationItem defaultResultVariable = context.getContextEntry().get(1).getVariable();
+        assertNull("Default result variable",
+                   defaultResultVariable);
+        Expression defaultResultExpression = context.getContextEntry().get(1).getExpression();
+        assertNull("Default result expression",
+                   defaultResultExpression);
     }
 
     @SuppressWarnings("unchecked")
@@ -1173,7 +1221,7 @@ public class DMNMarshallerTest {
 
         // although the DMN file is schema valid but is not a valid-DMN (a context-entry value is a literal expression missing text, which is null)
         // DROOLS-3152: once roundtripped through the Stunner marshaller it will receive an empty text. (empty expression, but a LiteralExpression with an empty text child xml element)
-        // this will still naturally throw some error because unable to FEEL-parse/compile an empty epression.
+        // this will still naturally throw some error because unable to FEEL-parse/compile an empty expression.
         assertTrue(dmnModel.hasErrors());
 
         // identify the error message for context-entry "ciao":
@@ -1354,7 +1402,7 @@ public class DMNMarshallerTest {
     /**
      * DROOLS-3184: If the "connection source/target location is null" assume it's the centre of the shape.
      * [source/target location is null] If the connection was created from the Toolbox (i.e. add a InputData and then the Decision from it using the Decision toolbox icon).
-     * 
+     * <p>
      * This test re-create by hard-code the behavior of the Stunner framework "Toolbox" by instrumenting API calls to achieve the same behavior.
      */
     @SuppressWarnings("unchecked")
@@ -1398,7 +1446,7 @@ public class DMNMarshallerTest {
                                             applicationFactoryManager);
         String output = m.marshall(diagram);
         LOG.debug(output);
-        
+
         Definitions dmnDefinitions = DMNMarshallerFactory.newDefaultMarshaller().unmarshal(output);
         DMNEdge dmndiEdge = findEdgeByDMNI(dmnDefinitions.getDMNDI().getDMNDiagram().get(0), irID);
         assertThat(dmndiEdge.getWaypoint()).hasSize(2);

@@ -206,31 +206,29 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextGridData, Co
     public List<ListSelectorItem> getItems(final int uiRowIndex,
                                            final int uiColumnIndex) {
         final List<ListSelectorItem> items = new ArrayList<>();
-        if (uiRowIndex == model.getRowCount() - 1) {
-            return items;
-        }
-
         final boolean isMultiRow = SelectionUtils.isMultiRow(model);
         final boolean isMultiSelect = SelectionUtils.isMultiSelect(model);
 
-        items.add(ListSelectorTextItem.build(translationService.format(DMNEditorConstants.ContextEditor_InsertContextEntryAbove),
-                                             !isMultiRow,
-                                             () -> {
-                                                 cellEditorControls.hide();
-                                                 expression.ifPresent(e -> addContextEntry(uiRowIndex));
-                                             }));
-        items.add(ListSelectorTextItem.build(translationService.format(DMNEditorConstants.ContextEditor_InsertContextEntryBelow),
-                                             !isMultiRow,
-                                             () -> {
-                                                 cellEditorControls.hide();
-                                                 expression.ifPresent(e -> addContextEntry(uiRowIndex + 1));
-                                             }));
-        items.add(ListSelectorTextItem.build(translationService.format(DMNEditorConstants.ContextEditor_DeleteContextEntry),
-                                             !isMultiRow && model.getRowCount() > 2 && uiRowIndex < model.getRowCount() - 1,
-                                             () -> {
-                                                 cellEditorControls.hide();
-                                                 deleteContextEntry(uiRowIndex);
-                                             }));
+        if (uiRowIndex < model.getRowCount() - 1) {
+            items.add(ListSelectorTextItem.build(translationService.format(DMNEditorConstants.ContextEditor_InsertContextEntryAbove),
+                                                 !isMultiRow,
+                                                 () -> {
+                                                     cellEditorControls.hide();
+                                                     expression.ifPresent(e -> addContextEntry(uiRowIndex));
+                                                 }));
+            items.add(ListSelectorTextItem.build(translationService.format(DMNEditorConstants.ContextEditor_InsertContextEntryBelow),
+                                                 !isMultiRow,
+                                                 () -> {
+                                                     cellEditorControls.hide();
+                                                     expression.ifPresent(e -> addContextEntry(uiRowIndex + 1));
+                                                 }));
+            items.add(ListSelectorTextItem.build(translationService.format(DMNEditorConstants.ContextEditor_DeleteContextEntry),
+                                                 !isMultiRow && model.getRowCount() > 2 && uiRowIndex < model.getRowCount() - 1,
+                                                 () -> {
+                                                     cellEditorControls.hide();
+                                                     deleteContextEntry(uiRowIndex);
+                                                 }));
+        }
 
         //If not ExpressionEditor column don't add extra items
         if (ContextUIModelMapperHelper.getSection(uiColumnIndex) != ContextUIModelMapperHelper.ContextSection.EXPRESSION) {
@@ -248,7 +246,9 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextGridData, Co
             return items;
         }
 
-        items.add(new ListSelectorDividerItem());
+        if (items.size() > 0) {
+            items.add(new ListSelectorDividerItem());
+        }
         items.add(ListSelectorTextItem.build(translationService.format(DMNEditorConstants.ExpressionEditor_Clear),
                                              !isMultiSelect,
                                              () -> {

@@ -29,7 +29,6 @@ import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ContextEntry;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
-import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.BaseEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
@@ -110,15 +109,12 @@ public class ContextEditorDefinition extends BaseEditorDefinition<Context, Conte
 
             //Add (default) "result" entry
             final ContextEntry resultEntry = new ContextEntry();
-            final LiteralExpression literalExpression = new LiteralExpression();
-            resultEntry.setExpression(literalExpression);
             context.getContextEntry().add(resultEntry);
 
             //Setup parent relationships
             contextEntry.setParent(context);
             informationItem.setParent(contextEntry);
             resultEntry.setParent(context);
-            literalExpression.setParent(resultEntry);
         });
     }
 

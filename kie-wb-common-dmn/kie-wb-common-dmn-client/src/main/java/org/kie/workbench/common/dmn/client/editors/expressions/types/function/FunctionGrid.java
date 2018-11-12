@@ -17,7 +17,6 @@
 package org.kie.workbench.common.dmn.client.editors.expressions.types.function;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -110,7 +109,7 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
               gridPanel,
               gridLayer,
               gridData,
-              new FunctionGridRenderer(nesting > 0),
+              new FunctionGridRenderer(gridData),
               definitionUtils,
               sessionManager,
               sessionCommandManager,
@@ -150,22 +149,26 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
 
     @Override
     protected void initialiseUiColumns() {
+        final List<GridColumn.HeaderMetaData> headerMetaData = new ArrayList<>();
+        if (nesting == 0) {
+            headerMetaData.add(new FunctionColumnNameHeaderMetaData(hasExpression,
+                                                                    expression,
+                                                                    hasName,
+                                                                    clearDisplayNameConsumer(true),
+                                                                    setDisplayNameConsumer(true),
+                                                                    setTypeRefConsumer(),
+                                                                    cellEditorControls,
+                                                                    headerEditor,
+                                                                    Optional.of(translationService.getTranslation(DMNEditorConstants.FunctionEditor_EditExpression))));
+        }
+        headerMetaData.add(new FunctionColumnParametersHeaderMetaData(expression::get,
+                                                                      translationService,
+                                                                      cellEditorControls,
+                                                                      parametersEditor,
+                                                                      Optional.of(translationService.getTranslation(DMNEditorConstants.FunctionEditor_EditParameters)),
+                                                                      this));
         final GridColumn expressionColumn = new FunctionColumn(gridLayer,
-                                                               Arrays.asList(new FunctionColumnNameHeaderMetaData(hasExpression,
-                                                                                                                  expression,
-                                                                                                                  hasName,
-                                                                                                                  clearDisplayNameConsumer(true),
-                                                                                                                  setDisplayNameConsumer(true),
-                                                                                                                  setTypeRefConsumer(),
-                                                                                                                  cellEditorControls,
-                                                                                                                  headerEditor,
-                                                                                                                  Optional.of(translationService.getTranslation(DMNEditorConstants.FunctionEditor_EditExpression))),
-                                                                             new FunctionColumnParametersHeaderMetaData(expression::get,
-                                                                                                                        translationService,
-                                                                                                                        cellEditorControls,
-                                                                                                                        parametersEditor,
-                                                                                                                        Optional.of(translationService.getTranslation(DMNEditorConstants.FunctionEditor_EditParameters)),
-                                                                                                                        this)),
+                                                               headerMetaData,
                                                                this);
 
         model.appendColumn(expressionColumn);

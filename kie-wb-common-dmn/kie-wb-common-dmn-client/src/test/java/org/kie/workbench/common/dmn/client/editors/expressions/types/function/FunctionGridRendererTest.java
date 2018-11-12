@@ -16,18 +16,34 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.function;
 
+import org.junit.Before;
 import org.junit.Test;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
+import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public class FunctionGridRendererTest {
 
-    @Test
-    public void testHeaderDimensionsWhenHeaderNotHidden() {
-        final GridRenderer renderer = new FunctionGridRenderer(false);
+    @Mock
+    private DMNGridData gridData;
 
-        assertEquals(FunctionGridRenderer.HEADER_HEIGHT,
+    private FunctionGridRenderer renderer;
+
+    @Before
+    public void setup() {
+        this.renderer = new FunctionGridRenderer(gridData);
+    }
+
+    @Test
+    public void testHeaderDimensionsWhenHeaderHasOneRow() {
+        when(gridData.getHeaderRowCount()).thenReturn(1);
+
+        assertEquals(FunctionGridRenderer.HEADER_ROW_HEIGHT,
                      renderer.getHeaderHeight(),
                      0.0);
         assertEquals(FunctionGridRenderer.HEADER_ROW_HEIGHT,
@@ -36,10 +52,10 @@ public class FunctionGridRendererTest {
     }
 
     @Test
-    public void testHeaderDimensionsWhenHeaderIsNotHidden() {
-        final GridRenderer renderer = new FunctionGridRenderer(true);
+    public void testHeaderDimensionsWhenHeaderHasTwoRows() {
+        when(gridData.getHeaderRowCount()).thenReturn(2);
 
-        assertEquals(FunctionGridRenderer.HEADER_HEIGHT,
+        assertEquals(FunctionGridRenderer.HEADER_ROW_HEIGHT * 2,
                      renderer.getHeaderHeight(),
                      0.0);
         assertEquals(FunctionGridRenderer.HEADER_ROW_HEIGHT,

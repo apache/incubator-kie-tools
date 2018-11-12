@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.dmn.backend.definition.v1_1;
 
+import java.util.Objects;
+
 import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ContextEntry;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
@@ -38,6 +40,15 @@ public class ContextPropertyConverter {
             }
             result.getContextEntry().add(ceConverted);
         }
+
+        //The UI requires a ContextEntry for the _default_ result even if none has been defined
+        final int contextEntriesCount = result.getContextEntry().size();
+        if (contextEntriesCount == 0) {
+            result.getContextEntry().add(new ContextEntry());
+        } else if (!Objects.isNull(result.getContextEntry().get(contextEntriesCount - 1).getVariable())) {
+            result.getContextEntry().add(new ContextEntry());
+        }
+
         return result;
     }
 
@@ -54,6 +65,16 @@ public class ContextPropertyConverter {
             }
             result.getContextEntry().add(ceConverted);
         }
+
+        //The UI appends a ContextEntry for the _default_ result that may contain an undefined Expression.
+        //If this is the case then DMN does not require the ContextEntry to be written out to the XML.
+        //Conversion of ContextEntries will always create a _mock_ LiteralExpression if no Expression has
+        //been defined therefore remove the last entry from the org.kie.dmn.model if the WB had no Expression.
+        final int contextEntriesCount = result.getContextEntry().size();
+        if (Objects.isNull(wb.getContextEntry().get(contextEntriesCount - 1).getExpression())) {
+            result.getContextEntry().remove(contextEntriesCount - 1);
+        }
+
         return result;
     }
 }

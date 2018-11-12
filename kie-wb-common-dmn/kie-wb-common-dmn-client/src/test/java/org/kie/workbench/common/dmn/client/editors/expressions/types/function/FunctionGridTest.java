@@ -414,6 +414,25 @@ public class FunctionGridTest {
     }
 
     @Test
+    public void testColumnMetaDataWhenNested() {
+        setupGrid(1);
+
+        final GridColumn<?> column = grid.getModel().getColumns().get(0);
+        final List<GridColumn.HeaderMetaData> header = column.getHeaderMetaData();
+
+        assertEquals(1,
+                     header.size());
+        assertTrue(header.get(0) instanceof FunctionColumnParametersHeaderMetaData);
+
+        final FunctionColumnParametersHeaderMetaData md1 = (FunctionColumnParametersHeaderMetaData) header.get(0);
+
+        assertEquals("F",
+                     md1.getExpressionLanguageTitle());
+        assertEquals("(" + PARAMETER_NAME + ")",
+                     md1.getFormalParametersTitle());
+    }
+
+    @Test
     public void testOnItemSelectedExpressionColumnDefinedExpressionType() {
         setupGrid(0);
 

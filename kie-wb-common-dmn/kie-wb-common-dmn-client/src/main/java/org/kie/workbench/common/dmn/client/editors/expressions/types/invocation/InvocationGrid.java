@@ -17,7 +17,6 @@
 package org.kie.workbench.common.dmn.client.editors.expressions.types.invocation;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -65,6 +64,7 @@ import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
+import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 
@@ -103,7 +103,7 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGri
               gridPanel,
               gridLayer,
               gridData,
-              new InvocationGridRenderer(nesting > 0),
+              new InvocationGridRenderer(gridData),
               definitionUtils,
               sessionManager,
               sessionCommandManager,
@@ -143,16 +143,25 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGri
         final InvocationColumnExpressionHeaderMetaData expressionHeaderMetaData = new InvocationColumnExpressionHeaderMetaData(this::getExpressionText,
                                                                                                                                this::setExpressionText,
                                                                                                                                getHeaderTextAreaFactory());
-        final InvocationParameterColumn nameColumn = new InvocationParameterColumn(Arrays.asList(new InvocationColumnHeaderMetaData(hasExpression,
-                                                                                                                                    expression,
-                                                                                                                                    hasName,
-                                                                                                                                    clearDisplayNameConsumer(true),
-                                                                                                                                    setDisplayNameConsumer(true),
-                                                                                                                                    setTypeRefConsumer(),
-                                                                                                                                    cellEditorControls,
-                                                                                                                                    headerEditor,
-                                                                                                                                    Optional.of(translationService.getTranslation(DMNEditorConstants.InvocationEditor_EditExpression))),
-                                                                                                 expressionHeaderMetaData),
+        final List<GridColumn.HeaderMetaData> nameColumnHeaderMetaData = new ArrayList<>();
+        final List<GridColumn.HeaderMetaData> expressionColumnHeaderMetaData = new ArrayList<>();
+        if (nesting == 0) {
+            nameColumnHeaderMetaData.add(new InvocationColumnHeaderMetaData(hasExpression,
+                                                                            expression,
+                                                                            hasName,
+                                                                            clearDisplayNameConsumer(true),
+                                                                            setDisplayNameConsumer(true),
+                                                                            setTypeRefConsumer(),
+                                                                            cellEditorControls,
+                                                                            headerEditor,
+                                                                            Optional.of(translationService.getTranslation(DMNEditorConstants.InvocationEditor_EditExpression))));
+            expressionColumnHeaderMetaData.add(new BaseHeaderMetaData("",
+                                                                      EXPRESSION_COLUMN_GROUP));
+        }
+        nameColumnHeaderMetaData.add(expressionHeaderMetaData);
+        expressionColumnHeaderMetaData.add(expressionHeaderMetaData);
+
+        final InvocationParameterColumn nameColumn = new InvocationParameterColumn(nameColumnHeaderMetaData,
                                                                                    this,
                                                                                    rowIndex -> true,
                                                                                    clearDisplayNameConsumer(false),
@@ -162,9 +171,7 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGri
                                                                                    headerEditor,
                                                                                    Optional.of(translationService.getTranslation(DMNEditorConstants.InvocationEditor_EditParameter)));
         final ExpressionEditorColumn expressionColumn = new ExpressionEditorColumn(gridLayer,
-                                                                                   Arrays.asList(new BaseHeaderMetaData("",
-                                                                                                                        EXPRESSION_COLUMN_GROUP),
-                                                                                                 expressionHeaderMetaData),
+                                                                                   expressionColumnHeaderMetaData,
                                                                                    this);
 
         model.appendColumn(new RowNumberColumn());

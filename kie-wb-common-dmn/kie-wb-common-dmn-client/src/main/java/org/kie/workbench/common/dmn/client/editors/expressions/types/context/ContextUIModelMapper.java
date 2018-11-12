@@ -38,7 +38,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.impl.RowS
 
 public class ContextUIModelMapper extends BaseUIModelMapper<Context> {
 
-    public static final String DEFAULT_ROW_CAPTION = "default";
+    public static final String DEFAULT_ROW_CAPTION = "<result>";
 
     private final GridWidget gridWidget;
 
@@ -111,16 +111,11 @@ public class ContextUIModelMapper extends BaseUIModelMapper<Context> {
                                                                                  expression,
                                                                                  Optional.ofNullable(ce.getVariable()),
                                                                                  nesting + 1);
-                        if (!isLastRow) {
-                            uiModel.get().setCell(rowIndex,
-                                                  columnIndex,
-                                                  () -> new ContextGridCell<>(new ExpressionCellValue(editor),
-                                                                              listSelector));
-                        } else {
-                            uiModel.get().setCell(rowIndex,
-                                                  columnIndex,
-                                                  () -> new DMNGridCell<>(new ExpressionCellValue(editor)));
-                        }
+
+                        uiModel.get().setCell(rowIndex,
+                                              columnIndex,
+                                              () -> new ContextGridCell<>(new ExpressionCellValue(editor),
+                                                                          listSelector));
                     });
             }
         });

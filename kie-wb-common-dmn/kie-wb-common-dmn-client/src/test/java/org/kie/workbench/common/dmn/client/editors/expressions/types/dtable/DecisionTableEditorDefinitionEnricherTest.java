@@ -256,7 +256,7 @@ public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTable
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testModelEnrichmentWhenTopLevelDecisionTableWithMultipleHierachyCustomTypes() {
+    public void testModelEnrichmentWhenTopLevelDecisionTableWithMultipleHierarchyCustomTypes() {
         setupGraph();
 
         final Definitions definitions = diagram.getDefinitions();
@@ -377,14 +377,16 @@ public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTable
 
     @Test
     public void testModelEnrichmentWhenParentIsContextEntry() {
-        final String NAME = "context-entry";
+        final String name = "context-entry";
+        final QName typeRef = BuiltInType.DATE.asQName();
         final ContextEntry contextEntry = new ContextEntry();
         final InformationItem variable = new InformationItem();
-        variable.getName().setValue(NAME);
+        variable.getName().setValue(name);
         contextEntry.setVariable(variable);
 
         final Optional<DecisionTable> oModel = definition.getModelClass();
         oModel.get().setParent(contextEntry);
+        oModel.get().setTypeRef(typeRef);
 
         definition.enrich(Optional.empty(), hasExpression, oModel);
 
@@ -394,7 +396,31 @@ public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTable
 
         final List<OutputClause> output = model.getOutput();
         assertThat(output.size()).isEqualTo(1);
-        assertThat(output.get(0).getName()).isEqualTo(NAME);
+        assertThat(output.get(0).getName()).isEqualTo(name);
+        assertThat(output.get(0).getTypeRef()).isEqualTo(typeRef);
+
+        assertStandardDecisionRuleEnrichment(model, 1, 1);
+        assertParentHierarchyEnrichment(model, 1, 1);
+    }
+
+    @Test
+    public void testModelEnrichmentWhenParentIsContextEntryDefaultResult() {
+        final String name = "output-1";
+        final ContextEntry contextEntry = new ContextEntry();
+
+        final Optional<DecisionTable> oModel = definition.getModelClass();
+        oModel.get().setParent(contextEntry);
+
+        definition.enrich(Optional.of(NODE_UUID), hasExpression, oModel);
+
+        final DecisionTable model = oModel.get();
+        assertBasicEnrichment(model);
+        assertStandardInputClauseEnrichment(model);
+
+        final List<OutputClause> output = model.getOutput();
+        assertThat(output.size()).isEqualTo(1);
+        assertThat(output.get(0).getName()).isEqualTo(name);
+        assertThat(output.get(0).getTypeRef()).isEqualTo(new QName());
 
         assertStandardDecisionRuleEnrichment(model, 1, 1);
         assertParentHierarchyEnrichment(model, 1, 1);
