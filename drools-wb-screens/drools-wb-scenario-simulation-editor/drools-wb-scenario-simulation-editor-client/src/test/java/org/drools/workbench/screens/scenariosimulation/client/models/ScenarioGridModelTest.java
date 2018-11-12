@@ -416,12 +416,12 @@ public class ScenarioGridModelTest {
     @Test
     public void refreshErrorsTest() {
         scenarioGridModel.refreshErrors();
-        verify(gridCellMock, times(24)).setError(eq(true));
+        verify(gridCellMock, times(24)).setErrorMode(eq(true));
 
         reset(gridCellMock);
         when(factMappingValueMock.isError()).thenReturn(false);
         scenarioGridModel.refreshErrors();
-        verify(gridCellMock, times(24)).setError(eq(false));
+        verify(gridCellMock, times(24)).setErrorMode(eq(false));
     }
 
     @Test
@@ -431,10 +431,10 @@ public class ScenarioGridModelTest {
 
         when(scenarioMock.getFactMappingValue(any(), any())).thenReturn(Optional.empty());
         scenarioGridModel.refreshErrorsRow(0);
-        verify(gridCellMock, times(6)).setError(false);
+        verify(gridCellMock, times(6)).setErrorMode(false);
 
         when(scenarioMock.getFactMappingValue(any(), any())).thenReturn(Optional.of(factMappingValue));
         scenarioGridModel.refreshErrorsRow(0);
-        verify(gridCellMock, times(6)).setError(true);
+        verify(gridCellMock, times(6)).setErrorMode(true);
     }
 }

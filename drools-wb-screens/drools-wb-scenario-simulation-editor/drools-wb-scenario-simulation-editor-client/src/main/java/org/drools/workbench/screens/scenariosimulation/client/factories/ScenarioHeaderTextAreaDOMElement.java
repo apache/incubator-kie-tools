@@ -16,6 +16,7 @@
 
 package org.drools.workbench.screens.scenariosimulation.client.factories;
 
+import org.drools.workbench.screens.scenariosimulation.client.metadata.ScenarioHeaderMetaData;
 import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
 import org.gwtbootstrap3.client.ui.TextArea;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
@@ -23,8 +24,18 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 
 public class ScenarioHeaderTextAreaDOMElement extends ScenarioCellTextAreaDOMElement {
 
+    private ScenarioHeaderMetaData scenarioHeaderMetaData;
+
     public ScenarioHeaderTextAreaDOMElement(TextArea widget, GridLayer gridLayer, GridWidget gridWidget) {
         super(widget, gridLayer, gridWidget);
+    }
+
+    /**
+     * Set the <code>ScenarioHeaderMetaData</code> this element is bind to
+     * @param scenarioHeaderMetaData
+     */
+    public void setScenarioHeaderMetaData(ScenarioHeaderMetaData scenarioHeaderMetaData) {
+        this.scenarioHeaderMetaData = scenarioHeaderMetaData;
     }
 
     @Override
@@ -38,6 +49,9 @@ public class ScenarioHeaderTextAreaDOMElement extends ScenarioCellTextAreaDOMEle
                 return;
             }
             model.updateHeader(columnIndex, rowIndex, value);
+            if (scenarioHeaderMetaData != null) {
+                scenarioHeaderMetaData.setEditingMode(false);
+            }
         } catch (Exception e) {
             throw new IllegalArgumentException(new StringBuilder().append("Impossible to update header (").append(rowIndex)
                                                        .append(") of column ").append(columnIndex).toString(), e);

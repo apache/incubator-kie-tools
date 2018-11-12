@@ -24,6 +24,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -31,28 +32,40 @@ import static org.mockito.Mockito.verify;
 public class ScenarioHeaderMetaDataTest {
 
     @Mock
-    ScenarioHeaderTextBoxSingletonDOMElementFactory factory;
+    private ScenarioHeaderTextBoxSingletonDOMElementFactory factoryMock;
 
     @Mock
-    FactMapping factMapping;
+    private FactMapping factMapping;
 
     @Test(expected = IllegalStateException.class)
     public void constructorFail() {
-        new ScenarioHeaderMetaData("", "", "", factory, true, true);
+        new ScenarioHeaderMetaData("", "", "", factoryMock, true, true);
     }
 
-    @Test
-    public void editTest() {
-        ScenarioHeaderMetaData scenarioHeaderMetaData = new ScenarioHeaderMetaData("", "", "", factory, false, false);
-        scenarioHeaderMetaData.setReadOnly(false);
-        scenarioHeaderMetaData.edit(null);
-        verify(factory, times(1)).attachDomElement(any(), any(), any());
-    }
 
     @Test(expected = IllegalStateException.class)
-    public void editFailTest() {
-        ScenarioHeaderMetaData scenarioHeaderMetaData = new ScenarioHeaderMetaData("", "", "", factory, true, false);
+    public void edit_ReadOnly() {
+        ScenarioHeaderMetaData scenarioHeaderMetaData = new ScenarioHeaderMetaData("", "", "", factoryMock, true, false);
         scenarioHeaderMetaData.setReadOnly(true);
         scenarioHeaderMetaData.edit(null);
     }
+
+    @Test
+    public void editTest_EditingMode() {
+        ScenarioHeaderMetaData scenarioHeaderMetaData = new ScenarioHeaderMetaData("", "", "", factoryMock, false, false);
+        scenarioHeaderMetaData.setReadOnly(false);
+        scenarioHeaderMetaData.setEditingMode(true);
+        scenarioHeaderMetaData.edit(null);
+        verify(factoryMock, never()).attachDomElement(any(), any(), any());
+    }
+
+    @Test
+    public void editTest_NotEditingMode() {
+        ScenarioHeaderMetaData scenarioHeaderMetaData = new ScenarioHeaderMetaData("", "", "", factoryMock, false, false);
+        scenarioHeaderMetaData.setReadOnly(false);
+        scenarioHeaderMetaData.setEditingMode(false);
+        scenarioHeaderMetaData.edit(null);
+        verify(factoryMock, times(1)).attachDomElement(any(), any(), any());
+    }
+
 }

@@ -125,7 +125,7 @@ public class ScenarioGridColumnRendererTest {
         reset(scenarioGridColumnRenderer);
 
         cell = new ScenarioGridCell(new ScenarioGridCellValue(VALUE));
-        ((ScenarioGridCell) cell).setError(true);
+        ((ScenarioGridCell) cell).setErrorMode(true);
         retrieved = scenarioGridColumnRenderer.renderCell(cell, contextMock);
         assertNotNull(retrieved);
         verify(scenarioGridColumnRenderer, times(1)).internalRenderCell(any(), eq(contextMock), eq(errorTextMock), eq(VALUE));
@@ -144,13 +144,13 @@ public class ScenarioGridColumnRendererTest {
     public void applyBackgroundColor() {
         Group group = mock(Group.class);
 
-        when(scenarioGridCell.isError()).thenReturn(true);
+        when(scenarioGridCell.isErrorMode()).thenReturn(true);
         scenarioGridColumnRenderer.applyBackgroundColor(scenarioGridCell, contextMock, group, themeMock);
         verify(group, times(1)).add(any());
 
         reset(group);
 
-        when(scenarioGridCell.isError()).thenReturn(false);
+        when(scenarioGridCell.isErrorMode()).thenReturn(false);
         scenarioGridColumnRenderer.applyBackgroundColor(scenarioGridCell, contextMock, group, themeMock);
         verify(group, never()).add(any());
 

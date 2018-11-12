@@ -15,25 +15,25 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.metadata;
 
+import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioHeaderTextAreaDOMElement;
 import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioHeaderTextBoxSingletonDOMElementFactory;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellEditContext;
 
 public class ScenarioHeaderMetaData extends BaseHeaderMetaData {
 
-
     /*
     `HeaderMetaData` now has a `CellSelectionStrategy` method (default is to select single cells)
     you'd be able to add your own `CellSelectionStrategy` to your `HeaderMetaData` and do was you wish (e.g. select whole column)
      */
-
     final ScenarioHeaderTextBoxSingletonDOMElementFactory factory;
     final String columnId;
     private boolean readOnly;
-    // true if this header contains the column' main informations (group, title, id) and/or it is an instance header
+    // true if this header contains the column' informations (group, title, id) and it is an instance header
     final boolean instanceHeader;
-    // true if this header contains the column' main informations (group, title, id) and/or it is an instance header
+    // true if this header contains the column' informations (group, title, id) and it is a property header
     final boolean propertyHeader;
+    private boolean isEditingMode = false;
 
     /**
      * Constructor for ScenarioHeaderMetaData
@@ -76,9 +76,17 @@ public class ScenarioHeaderMetaData extends BaseHeaderMetaData {
         if (readOnly) {
             throw new IllegalStateException("A read only header cannot be edited");
         }
-        factory.attachDomElement(context,
-                                 (e) -> e.getWidget().setText(getTitle()),
-                                 (e) -> e.getWidget().setFocus(true));
+        if (!isEditingMode) {
+            factory.attachDomElement(context,
+                                     (e) -> {
+                                         e.getWidget().setText(getTitle());
+                                         if (e instanceof ScenarioHeaderTextAreaDOMElement) {
+                                             ((ScenarioHeaderTextAreaDOMElement) e).setScenarioHeaderMetaData(this);
+                                         }
+                                     },
+                                     (e) -> e.getWidget().setFocus(true));
+            isEditingMode = true;
+        }
     }
 
     public String getColumnId() {
@@ -99,6 +107,14 @@ public class ScenarioHeaderMetaData extends BaseHeaderMetaData {
 
     public boolean isPropertyHeader() {
         return propertyHeader;
+    }
+
+    public boolean isEditingMode() {
+        return isEditingMode;
+    }
+
+    public void setEditingMode(boolean editingMode) {
+        isEditingMode = editingMode;
     }
 
     @Override

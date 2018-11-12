@@ -674,9 +674,9 @@ public class ScenarioGridModel extends BaseGridData {
             final FactMapping factMappingByIndex = simulationDescriptor.getFactMappingByIndex(columnIndex);
             Optional<FactMappingValue> factMappingValue = scenarioByIndex.getFactMappingValue(factMappingByIndex.getFactIdentifier(), factMappingByIndex.getExpressionIdentifier());
             if (factMappingValue.isPresent()) {
-                cell.setError(factMappingValue.get().isError());
+                cell.setErrorMode(factMappingValue.get().isError());
             } else {
-                cell.setError(false);
+                cell.setErrorMode(false);
             }
         });
     }

@@ -351,35 +351,25 @@ public class ScenarioSimulationGridPanelClickHandler implements ClickHandler,
         switch (group) {
             case "GIVEN":
             case "EXPECT":
-                return manageGivenExpectGridLeftClick(clickedScenarioHeaderMetadata, scenarioGridColumn, group, uiColumnIndex, uiHeaderRowIndex, rp);
+                return manageGivenExpectHeaderLeftClick(clickedScenarioHeaderMetadata, scenarioGridColumn, group, uiColumnIndex, uiHeaderRowIndex, rp);
             default:
                 return false;
         }
     }
 
     /**
-     * This method check if the click happened on an <i>writable</i> column of a <b>grid row</b>. If it is so, start editing the cell,
-     * otherwise returns <code>false</code>
-     * @param scenarioGrid
-     * @param uiRowIndex
-     * @param uiColumnIndex
+     * This method manage the click happened on an <i>GIVEN</i> or <i>EXPECT</i> header, starting editing it if not already did.
+     *
+     * @param clickedScenarioHeaderMetadata
      * @param scenarioGridColumn
+     * @param group
+     * @param uiColumnIndex
+     * @param uiHeaderRowIndex
+     * @param rp
      * @return
      */
-    protected boolean manageGridLeftClick(ScenarioGrid scenarioGrid, Integer uiRowIndex, Integer uiColumnIndex, ScenarioGridColumn scenarioGridColumn) {
-        final GridCell<?> cell = scenarioGrid.getModel().getCell(uiRowIndex, uiColumnIndex);
-        if (cell == null) {
-            return false;
-        }
-        if (((ScenarioGridCell) cell).isEditing()) {
-            return true;
-        }
-        ((ScenarioGridCell) cell).setEditing((!scenarioGridColumn.isReadOnly()) && scenarioGrid.startEditingCell(uiRowIndex, uiColumnIndex));
-        return ((ScenarioGridCell) cell).isEditing();
-    }
-
-    protected boolean manageGivenExpectGridLeftClick(ScenarioHeaderMetaData clickedScenarioHeaderMetadata, ScenarioGridColumn scenarioGridColumn, String group, Integer uiColumnIndex, Integer uiHeaderRowIndex, Point2D rp) {
-        if (rendererHelper != null) {
+    protected boolean manageGivenExpectHeaderLeftClick(ScenarioHeaderMetaData clickedScenarioHeaderMetadata, ScenarioGridColumn scenarioGridColumn, String group, Integer uiColumnIndex, Integer uiHeaderRowIndex, Point2D rp) {
+        if (rendererHelper != null && !clickedScenarioHeaderMetadata.isEditingMode()) {
             final BaseGridRendererHelper.RenderingInformation ri = rendererHelper.getRenderingInformation();
             final BaseGridRendererHelper.ColumnInformation ci = rendererHelper.getColumnInformation(rp.getX());
             final GridBodyCellEditContext context = ScenarioSimulationGridHeaderUtilities.makeRenderContext(scenarioGrid,
@@ -410,6 +400,27 @@ public class ScenarioSimulationGridPanelClickHandler implements ClickHandler,
         }
         eventBus.fireEvent(toFire);
         return true;
+    }
+
+    /**
+     * This method check if the click happened on an <i>writable</i> column of a <b>grid row</b>. If it is so, start editing the cell,
+     * otherwise returns <code>false</code>
+     * @param scenarioGrid
+     * @param uiRowIndex
+     * @param uiColumnIndex
+     * @param scenarioGridColumn
+     * @return
+     */
+    protected boolean manageGridLeftClick(ScenarioGrid scenarioGrid, Integer uiRowIndex, Integer uiColumnIndex, ScenarioGridColumn scenarioGridColumn) {
+        final GridCell<?> cell = scenarioGrid.getModel().getCell(uiRowIndex, uiColumnIndex);
+        if (cell == null) {
+            return false;
+        }
+        if (((ScenarioGridCell) cell).isEditingMode()) {
+            return true;
+        }
+        ((ScenarioGridCell) cell).setEditingMode((!scenarioGridColumn.isReadOnly()) && scenarioGrid.startEditingCell(uiRowIndex, uiColumnIndex));
+        return ((ScenarioGridCell) cell).isEditingMode();
     }
 
     protected String getExistingInstances(String group, ScenarioGridModel scenarioGridModel) {
