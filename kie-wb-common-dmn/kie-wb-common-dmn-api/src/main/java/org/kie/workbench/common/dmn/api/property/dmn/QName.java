@@ -36,7 +36,7 @@ public class QName implements DMNProperty {
 
     public QName() {
         this(NULL_NS_URI,
-             BuiltInType.ANY.getName());
+             BuiltInType.UNDEFINED.getName());
     }
 
     public QName(final String namespaceURI,

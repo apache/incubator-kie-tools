@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.dmn.backend.definition.v1_1;
 
+import java.util.Optional;
+
 import javax.xml.XMLConstants;
 
 import org.junit.Test;
@@ -29,10 +31,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class QNamePropertyConverterTest {
 
     static final Decision parent11 = new org.kie.dmn.model.v1_1.TDecision();
+
     static {
         parent11.getNsContext().put(Namespace.FEEL.getPrefix(), parent11.getURIFEEL());
     }
+
     static final Decision parent12 = new org.kie.dmn.model.v1_2.TDecision();
+
     static {
         parent12.getNsContext().put(Namespace.FEEL.getPrefix(), parent12.getURIFEEL());
     }
@@ -41,7 +46,16 @@ public class QNamePropertyConverterTest {
     public void testWBfromDMNnull() {
         final QName wb = QNamePropertyConverter.wbFromDMN(null, parent11);
 
-        assertThat(wb).isNull();
+        assertThat(wb).isNotNull();
+        assertThat(wb).isEqualTo(BuiltInType.UNDEFINED.asQName());
+    }
+
+    @Test
+    public void testDMNfromWBnull() {
+        Optional<javax.xml.namespace.QName> dmn = QNamePropertyConverter.dmnFromWB(new QName(XMLConstants.NULL_NS_URI,
+                                                                                             BuiltInType.UNDEFINED.getName(),
+                                                                                             Namespace.FEEL.getPrefix()));
+        assertThat(dmn).isEmpty();
     }
 
     @Test

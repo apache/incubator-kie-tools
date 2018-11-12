@@ -22,6 +22,7 @@ import java.util.function.Consumer;
 
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 
 public class QNamePropertyConverter {
 
@@ -30,7 +31,7 @@ public class QNamePropertyConverter {
      */
     public static QName wbFromDMN(final javax.xml.namespace.QName qName, final DMNModelInstrumentedBase parent) {
         if (Objects.isNull(qName)) {
-            return null;
+            return BuiltInType.UNDEFINED.asQName();
         }
         //Convert DMN1.1 QName typeRefs to DMN1.2 (the editor only supports DMN1.2)
         if (parent instanceof org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase && parent.getURIFEEL().equals(parent.getNamespaceURI(qName.getPrefix()))) {
@@ -53,6 +54,9 @@ public class QNamePropertyConverter {
 
     public static Optional<javax.xml.namespace.QName> dmnFromWB(final QName wb) {
         if (wb != null) {
+            if (Objects.equals(wb, BuiltInType.UNDEFINED.asQName())) {
+                return Optional.empty();
+            }
             return Optional.of(new javax.xml.namespace.QName(wb.getNamespaceURI(),
                                                              wb.getLocalPart(),
                                                              wb.getPrefix()));

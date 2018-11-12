@@ -441,7 +441,7 @@ public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTable
         final List<OutputClause> output = model.getOutput();
         assertThat(output.size()).isEqualTo(1);
         assertThat(output.get(0).getName()).isEqualTo("output-1");
-        assertThat(output.get(0).getTypeRef()).isEqualTo(BuiltInType.ANY.asQName());
+        assertThat(output.get(0).getTypeRef()).isEqualTo(BuiltInType.UNDEFINED.asQName());
 
         assertStandardDecisionRuleEnrichment(model, 1, 1);
         assertParentHierarchyEnrichment(model, 1, 1);

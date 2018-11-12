@@ -70,7 +70,7 @@ public class DataTypePickerWidgetTest {
 
     private static final QName VALUE = new QName();
 
-    private static final String WIDGET_VALUE = "[][Any][]";
+    private static final String WIDGET_VALUE = "[][<Undefined>][]";
 
     @Mock
     private Anchor typeButton;
@@ -198,6 +198,9 @@ public class DataTypePickerWidgetTest {
 
         //Check the items were sorted correctly
         assertTrue(Ordering.from(DataTypePickerWidget.BUILT_IN_TYPE_COMPARATOR).isOrdered(builtInTypesAddedToWidget));
+
+        //First item must be "<Undefined>"
+        assertEquals(builtInTypesAddedToWidget.get(0).getName(), BuiltInType.UNDEFINED.getName());
     }
 
     @Test

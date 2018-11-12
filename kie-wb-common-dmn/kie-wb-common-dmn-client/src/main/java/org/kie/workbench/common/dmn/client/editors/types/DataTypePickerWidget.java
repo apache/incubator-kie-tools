@@ -62,7 +62,12 @@ public class DataTypePickerWidget extends Composite implements HasValue<QName>,
 
     static final String CSS_DISPLAY_NONE = "none";
 
-    static final Comparator<BuiltInType> BUILT_IN_TYPE_COMPARATOR = Comparator.comparing(o -> o.getName());
+    static final Comparator<BuiltInType> BUILT_IN_TYPE_COMPARATOR = Comparator.comparing(o -> {
+        if (o == BuiltInType.UNDEFINED) {
+            return "";
+        }
+        return o.getName();
+    });
 
     static final Comparator<ItemDefinition> ITEM_DEFINITION_COMPARATOR = Comparator.comparing(o -> o.getName().getValue());
 

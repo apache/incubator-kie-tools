@@ -64,7 +64,7 @@ public class QNameTest {
     public void testZeroArgumentConstructor() {
         final QName implicitQName = new QName();
         final QName explicitQName = new QName(QName.NULL_NS_URI,
-                                              BuiltInType.ANY.getName(),
+                                              BuiltInType.UNDEFINED.getName(),
                                               DMNModelInstrumentedBase.Namespace.FEEL.getPrefix());
 
         assertEquals(explicitQName, implicitQName);

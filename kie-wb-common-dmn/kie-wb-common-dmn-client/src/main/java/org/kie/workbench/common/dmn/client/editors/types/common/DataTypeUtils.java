@@ -46,6 +46,7 @@ public class DataTypeUtils {
     public List<DataType> defaultDataTypes() {
         return Stream
                 .of(BuiltInType.values())
+                .filter(builtInType -> !builtInType.equals(BuiltInType.UNDEFINED))
                 .map(bit -> dataTypeManager.from(bit).get())
                 .sorted(Comparator.comparing(DataType::getType))
                 .collect(toList());
