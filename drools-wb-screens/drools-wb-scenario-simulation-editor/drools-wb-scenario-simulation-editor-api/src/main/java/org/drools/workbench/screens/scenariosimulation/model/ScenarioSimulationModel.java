@@ -26,7 +26,7 @@ public class ScenarioSimulationModel
         implements HasImports {
 
     @XStreamAsAttribute()
-    private String version = "1.0";
+    private String version = "1.1";
 
     private Simulation simulation;
 
@@ -78,5 +78,9 @@ public class ScenarioSimulationModel
     @Override
     public void setImports(Imports imports) {
         this.imports = imports;
+    }
+
+    public String getVersion() {
+        return version;
     }
 }

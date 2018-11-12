@@ -16,8 +16,14 @@
 
 package org.drools.workbench.screens.scenariosimulation.backend.server;
 
+import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
+import org.drools.workbench.screens.scenariosimulation.backend.server.util.InMemoryMigrationStrategy;
+import org.drools.workbench.screens.scenariosimulation.backend.server.util.MigrationStrategy;
 import org.drools.workbench.screens.scenariosimulation.model.ExpressionElement;
 import org.drools.workbench.screens.scenariosimulation.model.ExpressionIdentifier;
 import org.drools.workbench.screens.scenariosimulation.model.FactIdentifier;
@@ -36,6 +42,9 @@ public class ScenarioSimulationXMLPersistence {
 
     private XStream xt;
     private static final ScenarioSimulationXMLPersistence INSTANCE = new ScenarioSimulationXMLPersistence();
+    private static final String currentVersion = new ScenarioSimulationModel().getVersion();
+    private static final Pattern p = Pattern.compile("version=\"([0-9]+\\.[0-9]+)");
+    private MigrationStrategy migrationStrategy = new InMemoryMigrationStrategy();
 
     private ScenarioSimulationXMLPersistence() {
         xt = XStreamUtils.createTrustingXStream(new DomDriver());
@@ -65,15 +74,60 @@ public class ScenarioSimulationXMLPersistence {
         return xt.toXML(sc);
     }
 
-    public ScenarioSimulationModel unmarshal(final String xml) {
-        if (xml == null) {
+    public ScenarioSimulationModel unmarshal(final String rawXml) {
+        if (rawXml == null) {
             return new ScenarioSimulationModel();
         }
-        if (xml.trim().equals("")) {
+        if (rawXml.trim().equals("")) {
             return new ScenarioSimulationModel();
         }
-        Object o = xt.fromXML(xml);
 
+        String xml = migrateIfNecessary(rawXml);
+
+        return internalUnmarshal(xml);
+    }
+
+    public String migrateIfNecessary(String rawXml) {
+        String fileVersion = extractVersion(rawXml);
+        Function<String, String> migrator = getMigrationStrategy().start();
+        boolean supported = currentVersion.equals(fileVersion);
+        switch (fileVersion) {
+            case "1.0":
+                migrator = migrator.andThen(getMigrationStrategy().from1_0to1_1());
+                supported = true;
+        }
+        if(!supported) {
+            throw new IllegalArgumentException(new StringBuilder().append("Version ").append(fileVersion)
+                                                       .append(" of the file is not supported. Current version is ")
+                                                       .append(currentVersion).toString());
+        }
+        migrator = migrator.andThen(getMigrationStrategy().end());
+        return migrator.apply(rawXml);
+    }
+
+    public String extractVersion(String rawXml) {
+        Matcher m = p.matcher(rawXml);
+
+        if (m.find()) {
+            return m.group(1);
+        }
+        throw new IllegalArgumentException("Impossible to extract version from the file");
+    }
+
+    public MigrationStrategy getMigrationStrategy() {
+        return migrationStrategy;
+    }
+
+    public void setMigrationStrategy(MigrationStrategy migrationStrategy) {
+        this.migrationStrategy = migrationStrategy;
+    }
+
+    public static String getCurrentVersion() {
+        return currentVersion;
+    }
+
+    protected ScenarioSimulationModel internalUnmarshal(String xml) {
+        Object o = xt.fromXML(xml);
         return (ScenarioSimulationModel) o;
     }
 }
