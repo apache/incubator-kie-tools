@@ -92,6 +92,16 @@
       <artifactId>wildfly-elytron</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.jboss</groupId>
+      <artifactId>jboss-dmr</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.msc</groupId>
+      <artifactId>jboss-msc</artifactId>
+    </dependency>
+
     <!-- 
       NOTE:
       If deploying into a JBoss Wildfly or EAP, there is no need to include these dependencies, 

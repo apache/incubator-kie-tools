@@ -94,6 +94,11 @@
     </dependency>
 
     <dependency>
+      <groupId>org.gwtbootstrap3</groupId>
+      <artifactId>gwtbootstrap3</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-wires-bayesian-parser-backend</artifactId>
     </dependency>

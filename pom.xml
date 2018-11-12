@@ -55,6 +55,8 @@
     <!-- Exception as it is needed for gwt-maven-plugin version-->
     <version.com.google.gwt>2.8.2</version.com.google.gwt>
     <version.com.allen-sauer.gwt.dnd>3.3.3</version.com.allen-sauer.gwt.dnd>
+    <version.com.google.elemental2>1.0.0-beta-1</version.com.google.elemental2>
+    <version.com.google.jsinterop.base>1.0.0-beta-1</version.com.google.jsinterop.base>
     <version.com.google.guava>20.0</version.com.google.guava>
     <version.org.apache.tomcat>7.0.61</version.org.apache.tomcat>
     <!-- Version 1.1.0.Final which is coming from ip-bom is not compatible with GWT 2.8.0 -->
@@ -81,6 +83,8 @@
     <version.org.gwtbootstrap3>0.9.3</version.org.gwtbootstrap3>
 
     <version.org.jboss.byteman>3.0.10</version.org.jboss.byteman>
+    <version.org.jboss.jboss-dmr>1.4.1.Final</version.org.jboss.jboss-dmr>
+    <version.org.jboss.jboss-msc>1.2.7.SP1</version.org.jboss.jboss-msc>
 
     <version.org.picketlink>2.6.0.Final</version.org.picketlink>
     <version.org.wildfly.security>1.1.3.Final</version.org.wildfly.security>
@@ -106,16 +110,15 @@
     <version.bundle.plugin>3.3.0</version.bundle.plugin><!-- 3.2.0 sometimes fails with NPE during parallel build-->
     <!-- Make OSGi happy -->
     <osgi.snapshot.qualifier>${maven.build.timestamp}</osgi.snapshot.qualifier>
-    <!-- TODO fix all the modules to have all direct dependencies specified, then remove this property -->
-    <illegaltransitivereportonly>true</illegaltransitivereportonly>
     <jboss.releases.repo.url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</jboss.releases.repo.url>
     <jboss.snapshots.repo.url>https://repository.jboss.org/nexus/content/repositories/snapshots/</jboss.snapshots.repo.url>
 
     <version.io.netty.old>3.10.6.Final</version.io.netty.old>
-    <version.elasticsearch.client>5.6.1</version.elasticsearch.client>
+    <version.org.elasticsearch>5.6.1</version.org.elasticsearch>
     <version.org.apache.lucene>6.6.1</version.org.apache.lucene>
     <version.com.unboundid>3.2.0</version.com.unboundid>
     <version.org.infinispan>9.3.2.Final</version.org.infinispan>
+    <version.org.infinispan.protostream>4.2.2.Final</version.org.infinispan.protostream>
 
     <!-- Newer version in ip-bom causes ServiceLoader error -->
     <version.ch.qos.logback>1.1.3</version.ch.qos.logback>
@@ -941,6 +944,17 @@
       </dependency>
 
       <dependency>
+        <groupId>org.keycloak</groupId>
+        <artifactId>keycloak-core</artifactId>
+        <version>${version.org.keycloak}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.keycloak</groupId>
+        <artifactId>keycloak-common</artifactId>
+        <version>${version.org.keycloak}</version>
+      </dependency>
+
+      <dependency>
         <groupId>org.apache.tomcat</groupId>
         <artifactId>tomcat-catalina</artifactId>
         <version>${version.org.apache.tomcat}</version>
@@ -969,6 +983,10 @@
         <version>${version.com.google.gwt}</version>
         <exclusions>
           <exclusion>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+          </exclusion>
+          <exclusion>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
           </exclusion>
@@ -977,6 +995,30 @@
             <artifactId>javax.annotation-api</artifactId>
           </exclusion>
         </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.elemental2</groupId>
+        <artifactId>elemental2-core</artifactId>
+        <version>${version.com.google.elemental2}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.elemental2</groupId>
+        <artifactId>elemental2-dom</artifactId>
+        <version>${version.com.google.elemental2}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.elemental2</groupId>
+        <artifactId>elemental2-promise</artifactId>
+        <version>${version.com.google.elemental2}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.jsinterop</groupId>
+        <artifactId>base</artifactId>
+        <version>${version.com.google.jsinterop.base}</version>
       </dependency>
 
       <!-- RHDM-588 freemarker -->
@@ -990,6 +1032,12 @@
         <groupId>com.allen-sauer.gwt.dnd</groupId>
         <artifactId>gwt-dnd</artifactId>
         <version>${version.com.allen-sauer.gwt.dnd}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
 
       <dependency>
@@ -1086,7 +1134,23 @@
       <dependency>
         <groupId>org.elasticsearch.client</groupId>
         <artifactId>transport</artifactId>
-        <version>${version.elasticsearch.client}</version>
+        <version>${version.org.elasticsearch}</version>
+        <exclusions>
+          <exclusion>
+            <artifactId>commons-logging</artifactId>
+            <groupId>commons-logging</groupId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.elasticsearch</groupId>
+        <artifactId>elasticsearch</artifactId>
+        <version>${version.org.elasticsearch}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.elasticsearch.client</groupId>
+        <artifactId>elasticsearch-rest-client</artifactId>
+        <version>${version.org.elasticsearch}</version>
         <exclusions>
           <exclusion>
             <artifactId>commons-logging</artifactId>
@@ -1170,6 +1234,11 @@
             <artifactId>jboss-marshalling-osgi</artifactId>
           </exclusion>
         </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.infinispan.protostream</groupId>
+        <artifactId>protostream</artifactId>
+        <version>${version.org.infinispan.protostream}</version>
       </dependency>
       <dependency>
         <groupId>org.wildfly.security</groupId>
@@ -1307,6 +1376,11 @@
         </exclusions>
       </dependency>
 
+      <dependency>
+        <groupId>com.jcraft</groupId>
+        <artifactId>jsch</artifactId>
+        <version>${version.com.jcraft}</version>
+      </dependency>
 
       <!-- Required to run the ElasticSearch server when performing the unit test executions.
           The ELS data provider requires groovy scripts enabled on the server.-->
@@ -1329,6 +1403,18 @@
         <groupId>com.googlecode.jtype</groupId>
         <artifactId>jtype</artifactId>
         <version>${version.com.googlecode.jtype}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss</groupId>
+        <artifactId>jboss-dmr</artifactId>
+        <version>${version.org.jboss.jboss-dmr}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.msc</groupId>
+        <artifactId>jboss-msc</artifactId>
+        <version>${version.org.jboss.jboss-msc}</version>
       </dependency>
 
       <!-- log4j-to-slf4j -->

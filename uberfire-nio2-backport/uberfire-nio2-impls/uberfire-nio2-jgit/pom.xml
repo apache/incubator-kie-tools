@@ -57,6 +57,11 @@
       <artifactId>commons-io</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>com.jcraft</groupId>
+      <artifactId>jsch</artifactId>
+    </dependency>
+
     <!-- Core Library -->
     <dependency>
       <groupId>org.apache.sshd</groupId>

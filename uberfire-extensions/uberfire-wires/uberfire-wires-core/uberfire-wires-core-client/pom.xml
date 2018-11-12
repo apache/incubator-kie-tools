@@ -77,6 +77,11 @@
       <scope>provided</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.gwtbootstrap3</groupId>
+      <artifactId>gwtbootstrap3</artifactId>
+    </dependency>
+
     <!-- Property Editor - Uberfire Extensions -->
     <dependency>
       <groupId>org.uberfire</groupId>

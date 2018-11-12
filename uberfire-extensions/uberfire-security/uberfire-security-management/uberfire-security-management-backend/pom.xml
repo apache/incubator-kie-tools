@@ -36,6 +36,11 @@
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-api</artifactId>
     </dependency>
+    
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-backend-server</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>org.uberfire</groupId>
@@ -61,7 +66,7 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-bus</artifactId>
@@ -70,7 +75,7 @@
   </dependencies>
 
   <build>
-    
+
     <plugins>
 
       <!-- Build the test-jar artifact as tests for other service implementation modules depends on these ones. -->
@@ -85,9 +90,9 @@
           </execution>
         </executions>
       </plugin>
-      
+
     </plugins>
-    
+
   </build>
-  
+
 </project>
