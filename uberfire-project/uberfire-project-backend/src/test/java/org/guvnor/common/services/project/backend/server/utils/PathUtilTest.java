@@ -15,8 +15,6 @@
 
 package org.guvnor.common.services.project.backend.server.utils;
 
-import java.util.Optional;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -56,18 +54,6 @@ public class PathUtilTest {
     }
 
     @Test
-    public void extractPresentBranchName() throws Exception {
-        final Optional<String> result = pathUtil.extractBranch("git://master@space/repo/some/path");
-        assertEquals(Optional.of("master"), result);
-    }
-
-    @Test
-    public void extractMissingBranchName() throws Exception {
-        final Optional<String> result = pathUtil.extractBranch("git://space/repo/some/path");
-        assertEquals(Optional.empty(), result);
-    }
-
-    @Test
     public void replaceBranchName() {
         final String newUri = pathUtil.replaceBranch("new-branch", "git://current-branch@space/repo/some/path");
         assertEquals("git://new-branch@space/repo/some/path", newUri);
@@ -77,6 +63,12 @@ public class PathUtilTest {
     public void replaceMissingBranchName() {
         final String newUri = pathUtil.replaceBranch("new-branch", "git://space/repo/some/path");
         assertEquals("git://space/repo/some/path", newUri);
+    }
+
+    @Test
+    public void replaceBranchNameWith$() {
+        final String newUri = pathUtil.replaceBranch("new$branch", "git://current-branch@space/repo/some/path");
+        assertEquals("git://new$branch@space/repo/some/path", newUri);
     }
 
 }

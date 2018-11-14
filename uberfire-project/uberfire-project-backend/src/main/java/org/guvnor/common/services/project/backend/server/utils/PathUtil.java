@@ -22,6 +22,7 @@ import java.util.regex.Pattern;
 
 import javax.inject.Singleton;
 
+import org.guvnor.structure.backend.repositories.git.GitPathUtil;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.java.nio.fs.jgit.JGitPathImpl;
 
@@ -34,7 +35,6 @@ public class PathUtil {
 
     private final Pattern repoAndSpace = Pattern.compile("^[^/]+/[^/]+/");
     private final Pattern protocolAndBranch = Pattern.compile("^[A-Za-z]+://([^@]+@)?");
-    private final Pattern branchNameExtractor = Pattern.compile("^[A-Za-z]+://([^@]+)@.*");
     private final Pattern branchNameReplacer = Pattern.compile("(^[A-Za-z]+://)([^@]+)(@.*)");
 
     public org.uberfire.backend.vfs.Path normalizePath(org.uberfire.backend.vfs.Path path) {
@@ -75,17 +75,12 @@ public class PathUtil {
     }
 
     public Optional<String> extractBranch(String uri) {
-        final Matcher matcher = branchNameExtractor.matcher(uri);
-        if (matcher.matches()) {
-            return Optional.of(matcher.group(1));
-        } else {
-            return Optional.empty();
-        }
+        return GitPathUtil.extractBranch(uri);
     }
 
     public String replaceBranch(final String newBranchName,
                                 final String uri) {
         final Matcher matcher = branchNameReplacer.matcher(uri);
-        return matcher.replaceFirst("$1" + newBranchName + "$3");
+        return matcher.replaceFirst("$1" + newBranchName.replace("$", "\\$") + "$3");
     }
 }

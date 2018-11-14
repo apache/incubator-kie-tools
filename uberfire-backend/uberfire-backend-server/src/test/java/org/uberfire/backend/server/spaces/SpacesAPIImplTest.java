@@ -35,7 +35,7 @@ public class SpacesAPIImplTest {
     }
 
     @Test
-    public void resolveFileSystemURI() {
+    public void resolveFileSystemURITest() {
 
         assertEquals("default://system/system",
                      spaces.resolveFileSystemURI(SpacesAPI.Scheme.DEFAULT,
@@ -44,12 +44,18 @@ public class SpacesAPIImplTest {
     }
 
     @Test
-    public void trimBranchName() throws Exception {
+    public void resolveSpaceNameTest() throws Exception {
         Optional<Space> space = spaces.resolveSpace("default://master@myteam/mortgages/");
 
         assertTrue(space.isPresent());
         assertEquals("myteam", space.get().getName());
     }
 
-    //TODO eder
+    @Test
+    public void resolveSpaceNameWhenBranchNameHasSlashesTest() throws Exception {
+        Optional<Space> space = spaces.resolveSpace("default://my/master/branch@myteam/mortgages/");
+
+        assertTrue(space.isPresent());
+        assertEquals("myteam", space.get().getName());
+    }
 }

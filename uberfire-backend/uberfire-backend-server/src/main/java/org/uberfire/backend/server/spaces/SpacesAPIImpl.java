@@ -30,7 +30,7 @@ import org.uberfire.spaces.SpacesAPI;
 @Startup(StartupType.BOOTSTRAP)
 public class SpacesAPIImpl implements SpacesAPI {
 
-    private static final String PATH_PATTERN = "^[A-Za-z]+://([^/]+)/.*";
+    private static final String PATH_PATTERN = "^[A-Za-z]+://[^@]+[@]([^/]+)/.*";
     private static final Pattern PATH_REGEX = Pattern.compile(PATH_PATTERN);
 
     @Override

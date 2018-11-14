@@ -20,6 +20,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.enterprise.event.Event;
 
@@ -179,12 +182,6 @@ public class GitRepositoryBuilder {
 
     protected String getBranchName(final org.uberfire.java.nio.file.Path path) {
         URI uri = path.toUri();
-        String gitBranch = uri.getAuthority();
-
-        if (gitBranch.contains("@")) {
-            return gitBranch.split("@")[0];
-        }
-
-        return gitBranch;
+        return GitPathUtil.extractBranch(uri.toString()).get();
     }
 }
