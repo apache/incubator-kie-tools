@@ -19,12 +19,18 @@ import com.ait.lienzo.client.core.shape.Line;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.Rectangle;
 import com.ait.lienzo.client.core.shape.Text;
+import com.ait.lienzo.shared.core.types.TextAlign;
+import com.ait.lienzo.shared.core.types.TextBaseLine;
+import com.ait.lienzo.shared.core.types.TextUnit;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.themes.impl.KIEColours;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.themes.impl.KIEStyles;
 
 /**
  * Definition of themes used by a render for the pluggable rendering mechanism.
  */
 public interface GridRendererTheme {
+
 
     /**
      * Returns a display name for the theme.
@@ -108,4 +114,20 @@ public interface GridRendererTheme {
      * @return A {@link Line} for the divider.
      */
     Line getGridHeaderBodyDivider();
+
+    /**
+     * Delegates the Body's Text to sub-classes.
+     * @return A {@link Text} used to render the placeholder in the body.
+     */
+    default Text getPlaceholderText() {
+        return new Text("")
+                .setFillColor(KIEColours.PLACEHOLDER_COLOR)
+                .setFontSize(KIEStyles.FONT_SIZE)
+                .setFontFamily(KIEStyles.FONT_FAMILY_LABEL)
+                .setFontStyle(KIEStyles.FONT_STYLE_ITALIC)
+                .setTextUnit(TextUnit.PT)
+                .setListening(false)
+                .setTextBaseLine(TextBaseLine.MIDDLE)
+                .setTextAlign(TextAlign.CENTER);
+    }
 }
