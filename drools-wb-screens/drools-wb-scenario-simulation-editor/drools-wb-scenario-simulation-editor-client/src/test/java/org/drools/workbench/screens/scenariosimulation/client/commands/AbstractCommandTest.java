@@ -26,7 +26,6 @@ import org.drools.workbench.screens.scenariosimulation.client.factories.Scenario
 import org.drools.workbench.screens.scenariosimulation.client.metadata.ScenarioHeaderMetaData;
 import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.RightPanelPresenter;
-import org.drools.workbench.screens.scenariosimulation.client.utils.ScenarioSimulationBuilders;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGrid;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridLayer;
@@ -83,7 +82,7 @@ public abstract class AbstractCommandTest {
     @Mock
     protected ScenarioHeaderTextBoxSingletonDOMElementFactory scenarioHeaderTextBoxSingletonDOMElementFactoryMock;
     @Mock
-    protected ScenarioSimulationBuilders.HeaderBuilder headerBuilderMock;
+    protected List<GridRow> rowsMock;
 
     private List<GridColumn<?>> gridColumns = new ArrayList<>();
 
@@ -125,6 +124,7 @@ public abstract class AbstractCommandTest {
             {
                 this.simulation = simulationMock;
                 this.columns = gridColumns;
+                this.rows = rowsMock;
             }
 
             @Override
@@ -186,6 +186,11 @@ public abstract class AbstractCommandTest {
             @Override
             public void insertRow(int rowIndex, GridRow row) {
 
+            }
+
+            @Override
+            public List<GridRow> getRows() {
+                return rowsMock;
             }
         });
 

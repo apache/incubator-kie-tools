@@ -28,12 +28,9 @@ public class GivenContextMenu extends AbstractColumnMenuPresenter {
 
     // This strings are used to give unique id in the final dom
     private final String GIVENCONTEXTMENU_GIVEN = "givencontextmenu-given";
-    private final String GIVENCONTEXTMENU_SCENARIO = "givencontextmenu-scenario";
     private final String GIVENCONTEXTMENU_INSERT_COLUMN_LEFT = "givencontextmenu-insert-column-left";
     private final String GIVENCONTEXTMENU_INSERT_COLUMN_RIGHT = "givencontextmenu-insert-column-right";
     private final String GIVENCONTEXTMENU_DELETE_COLUMN = "givencontextmenu-delete-column";
-    private final String GIVENCONTEXTMENU_PREPEND_ROW = "givencontextmenu-prepend-row";
-    private final String GIVENCONTEXTMENU_APPEND_ROW = "givencontextmenu-append-row";
 
     @PostConstruct
     @Override
@@ -46,9 +43,6 @@ public class GivenContextMenu extends AbstractColumnMenuPresenter {
         COLUMNCONTEXTMENU_LABEL = constants.given().toUpperCase();
         COLUMNCONTEXTMENU_I18N = "given";
         // SCENARIO MENU
-        HEADERCONTEXTMENU_SCENARIO = GIVENCONTEXTMENU_SCENARIO;
-        HEADERCONTEXTMENU_PREPEND_ROW = GIVENCONTEXTMENU_PREPEND_ROW;
-        HEADERCONTEXTMENU_APPEND_ROW = GIVENCONTEXTMENU_APPEND_ROW;
         super.initMenu();
     }
 }

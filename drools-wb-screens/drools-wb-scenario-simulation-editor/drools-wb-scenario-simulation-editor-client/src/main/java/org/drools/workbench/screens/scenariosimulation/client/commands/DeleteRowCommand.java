@@ -18,6 +18,7 @@ package org.drools.workbench.screens.scenariosimulation.client.commands;
 import javax.enterprise.context.Dependent;
 
 import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
+import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridRow;
 import org.uberfire.mvp.Command;
 
 /**
@@ -44,5 +45,8 @@ public class DeleteRowCommand implements Command {
     @Override
     public void execute() {
         model.deleteRow(rowIndex);
+        if (model.getRows().isEmpty()) {
+            model.insertRow(0, new ScenarioGridRow());
+        }
     }
 }

@@ -28,14 +28,12 @@ public class OtherContextMenu extends AbstractHeaderMenuPresenter {
     // This strings are used to give unique id in the final dom
     private final String OTHERCONTEXTMENU_SCENARIO = "othercontextmenu-scenario";
     private final String OTHERCONTEXTMENU_INSERT_ROW_ABOVE = "othercontextmenu-insert-row-above";
-    private final String OTHERCONTEXTMENU_INSERT_ROW_BELOW = "othercontextmenu-insert-row-below";
 
     @PostConstruct
     @Override
     public void initMenu() {
         HEADERCONTEXTMENU_SCENARIO = OTHERCONTEXTMENU_SCENARIO;
         HEADERCONTEXTMENU_PREPEND_ROW = OTHERCONTEXTMENU_INSERT_ROW_ABOVE;
-        HEADERCONTEXTMENU_APPEND_ROW = OTHERCONTEXTMENU_INSERT_ROW_BELOW;
         super.initMenu();
     }
 }

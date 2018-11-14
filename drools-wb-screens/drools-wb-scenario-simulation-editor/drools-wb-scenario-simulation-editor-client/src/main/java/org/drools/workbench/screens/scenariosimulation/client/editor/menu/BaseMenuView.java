@@ -49,17 +49,10 @@ public interface BaseMenuView<M extends BaseMenu> extends UberView<M> {
          * @param label
          * @param i18n
          * @param event the <code>Event</code> to fire on click
-         */
-        void addExecutableMenuItem(String id, String label, String i18n, Event event);
-
-        /**
-         * This method retrieve an <b>EXECUTABLE</b> element (i.e. with a behaviour) to be put inside the menu
-         * It is an <b>overload</b> of {@link #getLExecutableMenuElement(String, String, Event)} to dynamically provide
-         * an event at runtime
-         * @param id
-         * @param innerText
          * @return
          */
+        LIElement addExecutableMenuItem(String id, String label, String i18n, Event event);
+
 
         /**
          * Add an <i>executable</i> menu voice in form of <code>LIElement</code> to the underlying view
@@ -70,6 +63,12 @@ public interface BaseMenuView<M extends BaseMenu> extends UberView<M> {
          * @param i18n
          */
         LIElement addExecutableMenuItem(String id, String label, String i18n);
+
+        /**
+         * Remove a menu voice from the given menu
+         * @param toRemove
+         */
+        void removeMenuItem(LIElement toRemove);
 
         /**
          * Method to map an <code>Event</code> to a given <b>EXECUTABLE</b> <code>LIElement</code>.

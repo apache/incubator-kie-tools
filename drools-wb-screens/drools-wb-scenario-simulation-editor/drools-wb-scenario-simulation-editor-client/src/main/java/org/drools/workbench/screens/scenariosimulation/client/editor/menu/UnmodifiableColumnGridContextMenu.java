@@ -31,8 +31,6 @@ import org.drools.workbench.screens.scenariosimulation.client.events.InsertRowEv
 public class UnmodifiableColumnGridContextMenu extends AbstractHeaderMenuPresenter {
 
     // This strings are used to give unique id in the final dom
-    private final String UCGRIDCONTEXTMENU_GRID = "ucgridcontextmenu-grid";
-    private final String UCGRIDCONTEXTMENU_SCENARIO = "ucgridcontextmenu-scenario";
     private final String UCGRIDCONTEXTMENU_INSERT_ROW_ABOVE = "ucgridcontextmenu-insert-row-above";
     private final String UCGRIDCONTEXTMENU_INSERT_ROW_BELOW = "ucgridcontextmenu-insert-row-below";
     private final String UCGRIDCONTEXTMENU_DELETE_ROW = "ucgridcontextmenu-delete-row";
@@ -47,10 +45,6 @@ public class UnmodifiableColumnGridContextMenu extends AbstractHeaderMenuPresent
     @Override
     public void initMenu() {
         // SCENARIO MENU
-        HEADERCONTEXTMENU_SCENARIO = UCGRIDCONTEXTMENU_SCENARIO;
-        HEADERCONTEXTMENU_PREPEND_ROW = UCGRIDCONTEXTMENU_INSERT_ROW_ABOVE;
-        HEADERCONTEXTMENU_APPEND_ROW = UCGRIDCONTEXTMENU_INSERT_ROW_BELOW;
-        super.initMenu();
         insertRowAboveLIElement = addExecutableMenuItem(UCGRIDCONTEXTMENU_INSERT_ROW_ABOVE, constants.insertRowAbove(), "insertRowAbove");
         insertRowBelowLIElement = addExecutableMenuItem(UCGRIDCONTEXTMENU_INSERT_ROW_BELOW, constants.insertRowBelow(), "insertRowBelow");
         duplicateRowLIElement = addExecutableMenuItem(UCGRIDCONTEXTMENU_DUPLICATE_ROW, constants.duplicateRow(), "duplicateRow");

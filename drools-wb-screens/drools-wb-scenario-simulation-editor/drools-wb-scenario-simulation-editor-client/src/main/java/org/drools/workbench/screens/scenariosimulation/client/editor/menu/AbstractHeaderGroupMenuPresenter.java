@@ -24,15 +24,16 @@ import org.drools.workbench.screens.scenariosimulation.client.events.PrependColu
  */
 public abstract class AbstractHeaderGroupMenuPresenter extends AbstractHeaderMenuPresenter {
 
-    String HEADERCONTEXTMENU_GROUP;
-    String HEADERCONTEXTMENU_INSERT_COLUMN_LEFT;
-    String HEADERCONTEXTMENU_INSERT_COLUMN_RIGHT;
-    String HEADERCONTEXTMENU_DELETE_COLUMN;
-    String HEADERCONTEXTMENU_LABEL;
-    String HEADERCONTEXTMENU_I18N;
+    protected String HEADERCONTEXTMENU_GROUP;
+    protected String HEADERCONTEXTMENU_INSERT_COLUMN_LEFT;
+    protected String HEADERCONTEXTMENU_INSERT_COLUMN_RIGHT;
+    protected String HEADERCONTEXTMENU_DELETE_COLUMN;
+    protected String HEADERCONTEXTMENU_LABEL;
+    protected String HEADERCONTEXTMENU_I18N;
 
-    AppendColumnEvent appendColumnEvent;
-    PrependColumnEvent prependColumnEvent;
+
+    protected AppendColumnEvent appendColumnEvent;
+    protected PrependColumnEvent prependColumnEvent;
 
     /**
      * This method set <b>group-specific</b> menu items and common <b>SCENARIO</b> menu items

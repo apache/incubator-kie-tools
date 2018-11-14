@@ -17,13 +17,19 @@
 package org.drools.workbench.screens.scenariosimulation.client.commands;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridRow;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class DeleteRowCommandTest extends AbstractCommandTest {
@@ -40,7 +46,14 @@ public class DeleteRowCommandTest extends AbstractCommandTest {
 
     @Test
     public void execute() {
+        when(rowsMock.isEmpty()).thenReturn(false);
         deleteRowCommand.execute();
         verify(scenarioGridModelMock, times(1)).deleteRow(eq(ROW_INDEX));
+        verify(scenarioGridModelMock, never()).insertRow(anyInt(), isA(ScenarioGridRow.class));
+        reset(scenarioGridModelMock);
+        when(rowsMock.isEmpty()).thenReturn(true);
+        deleteRowCommand.execute();
+        verify(scenarioGridModelMock, times(1)).deleteRow(eq(ROW_INDEX));
+        verify(scenarioGridModelMock, times(1)).insertRow(eq(0), isA(ScenarioGridRow.class));
     }
 }

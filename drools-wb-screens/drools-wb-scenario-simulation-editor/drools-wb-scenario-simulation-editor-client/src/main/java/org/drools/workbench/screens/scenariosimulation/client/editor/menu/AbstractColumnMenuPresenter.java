@@ -25,12 +25,12 @@ import org.drools.workbench.screens.scenariosimulation.client.events.InsertColum
  */
 public abstract class AbstractColumnMenuPresenter extends AbstractHeaderMenuPresenter {
 
-    String COLUMNCONTEXTMENU_COLUMN;
-    String COLUMNCONTEXTMENU_INSERT_COLUMN_LEFT;
-    String COLUMNCONTEXTMENU_INSERT_COLUMN_RIGHT;
-    String COLUMNCONTEXTMENU_DELETE_COLUMN;
-    String COLUMNCONTEXTMENU_LABEL;
-    String COLUMNCONTEXTMENU_I18N;
+    protected String COLUMNCONTEXTMENU_COLUMN;
+    protected String COLUMNCONTEXTMENU_INSERT_COLUMN_LEFT;
+    protected String COLUMNCONTEXTMENU_INSERT_COLUMN_RIGHT;
+    protected String COLUMNCONTEXTMENU_DELETE_COLUMN;
+    protected String COLUMNCONTEXTMENU_LABEL;
+    protected String COLUMNCONTEXTMENU_I18N;
 
     private LIElement insertColumnLeftLIElement;
     private LIElement insertColumnRightLIElement;

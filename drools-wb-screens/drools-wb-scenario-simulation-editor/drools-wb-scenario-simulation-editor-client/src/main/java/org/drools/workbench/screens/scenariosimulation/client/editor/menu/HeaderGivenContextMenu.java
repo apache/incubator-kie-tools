@@ -23,7 +23,7 @@ import org.drools.workbench.screens.scenariosimulation.client.events.AppendColum
 import org.drools.workbench.screens.scenariosimulation.client.events.PrependColumnEvent;
 
 /**
- * The contextual menu of the top level <i>EXPECT</i> group.
+ * The contextual menu of the top level <i>GIVEN</i> group.
  * It differ from <code>GivenContextMenu</code> because it manage column (insert/remove) in different way
  */
 @Dependent
@@ -35,10 +35,7 @@ public class HeaderGivenContextMenu extends AbstractHeaderGroupMenuPresenter {
     private final String HEADERGIVENCONTEXTMENU_INSERT_COLUMN_RIGHT = "headergivencontextmenu-insert-column-right";
     private final String HEADERGIVENCONTEXTMENU_DELETE_COLUMN = "headergivencontextmenu-delete-column";
     private final String HEADERGIVENCONTEXTMENU_INSERT_ROW_ABOVE = "headergivencontextmenu-insert-row-above";
-    private final String HEADERGIVENCONTEXTMENU_INSERT_ROW_BELOW = "headergivencontextmenu-insert-row-below";
 
-    private final AppendColumnEvent appendGivenColumnEvent = new AppendColumnEvent("GIVEN");
-    private final PrependColumnEvent prependGivenColumnEvent = new PrependColumnEvent("GIVEN");
 
     @PostConstruct
     @Override
@@ -49,11 +46,10 @@ public class HeaderGivenContextMenu extends AbstractHeaderGroupMenuPresenter {
         HEADERCONTEXTMENU_INSERT_COLUMN_RIGHT = HEADERGIVENCONTEXTMENU_INSERT_COLUMN_RIGHT;
         HEADERCONTEXTMENU_DELETE_COLUMN = HEADERGIVENCONTEXTMENU_DELETE_COLUMN;
         HEADERCONTEXTMENU_PREPEND_ROW = HEADERGIVENCONTEXTMENU_INSERT_ROW_ABOVE;
-        HEADERCONTEXTMENU_APPEND_ROW = HEADERGIVENCONTEXTMENU_INSERT_ROW_BELOW;
         HEADERCONTEXTMENU_LABEL = constants.given().toUpperCase();
         HEADERCONTEXTMENU_I18N = "given";
-        appendColumnEvent = appendGivenColumnEvent;
-        prependColumnEvent = prependGivenColumnEvent;
+        appendColumnEvent = new AppendColumnEvent("GIVEN");
+        prependColumnEvent = new PrependColumnEvent("GIVEN");
         super.initMenu();
     }
 }
