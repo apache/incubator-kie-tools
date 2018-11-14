@@ -27,6 +27,7 @@ import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -47,21 +48,20 @@ public class ScenarioGridPanelProducerTest extends AbstractProducerTest {
                 this.scenarioGridLayer = scenarioGridLayerMock;
                 this.scenarioGridPanel = scenarioGridPanelMock;
             }
-
-            @Override
-            ScenarioGrid newScenarioGrid(ScenarioGridPanel scenarioGridPanel, ScenarioGridLayer scenarioGridLayer) {
-                return scenarioGridMock;
-            }
         });
+    }
+
+    @Test
+    public void init() {
+        scenarioGridPanelProducer.init();
+        verify(scenarioGridLayerMock, times(1)).addScenarioGrid(isA(ScenarioGrid.class));
+        verify(scenarioGridPanelMock, times(1)).add(eq(scenarioGridLayerMock));
     }
 
     @Test
     public void getScenarioGridPanel() {
         final ScenarioGridPanel retrieved = scenarioGridPanelProducer.getScenarioGridPanel();
         assertEquals(scenarioGridPanelMock, retrieved);
-        verify(scenarioGridPanelProducer, times(1)).newScenarioGrid(eq(scenarioGridPanelMock), eq(scenarioGridLayerMock));
-        verify(scenarioGridLayerMock, times(1)).addScenarioGrid(eq(scenarioGridMock));
-        verify(scenarioGridPanelMock, times(1)).add(eq(scenarioGridLayerMock));
     }
 
 }

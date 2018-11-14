@@ -15,6 +15,7 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.producers;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -31,23 +32,24 @@ import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGr
 public class ScenarioGridPanelProducer {
 
     @Inject
-    ScenarioGridLayer scenarioGridLayer;
+    protected ScenarioGridLayer scenarioGridLayer;
 
     @Inject
-    ScenarioGridPanel scenarioGridPanel;
+    protected ScenarioGridPanel scenarioGridPanel;
+
+    @PostConstruct
+    public void init() {
+        final ScenarioGrid scenarioGrid = new ScenarioGrid(new ScenarioGridModel(false),
+                                                           scenarioGridLayer,
+                                                           new ScenarioGridRenderer(false),
+                                                           scenarioGridPanel);
+        scenarioGridLayer.addScenarioGrid(scenarioGrid);
+        scenarioGridPanel.add(scenarioGridLayer);
+
+    }
 
     public ScenarioGridPanel getScenarioGridPanel() {
-        scenarioGridLayer.addScenarioGrid(newScenarioGrid(scenarioGridPanel,
-                                                          scenarioGridLayer));
-        scenarioGridPanel.add(scenarioGridLayer);
         return scenarioGridPanel;
     }
 
-    ScenarioGrid newScenarioGrid(final ScenarioGridPanel scenarioGridPanel,
-                                         final ScenarioGridLayer scenarioGridLayer) {
-        return new ScenarioGrid(new ScenarioGridModel(false),
-                                scenarioGridLayer,
-                                new ScenarioGridRenderer(false),
-                                scenarioGridPanel);
-    }
 }
