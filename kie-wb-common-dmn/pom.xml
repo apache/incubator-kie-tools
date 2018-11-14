@@ -31,9 +31,6 @@
   <packaging>pom</packaging>
 
   <properties>
-    <!-- See https://github.com/AppFormer/uberfire/commit/a4cf2e727c01a48fdf91ec5dd58f82dc1422913a#commitcomment-23311379 -->
-    <version.org.eclipse.jgit>4.8.0.201706111038-r</version.org.eclipse.jgit>
-    <version.org.apache.sshd>1.6.0</version.org.apache.sshd>
     <checkstyle.failOnViolation>true</checkstyle.failOnViolation>
     <checkstyle.logViolationsToConsole>true</checkstyle.logViolationsToConsole>
     <jacoco.haltOnFailure>true</jacoco.haltOnFailure>
