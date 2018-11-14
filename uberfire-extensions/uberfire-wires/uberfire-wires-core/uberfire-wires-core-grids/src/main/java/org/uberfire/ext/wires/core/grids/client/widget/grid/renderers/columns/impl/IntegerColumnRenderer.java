@@ -27,27 +27,20 @@ public class IntegerColumnRenderer extends BaseGridColumnRenderer<Integer> {
     @Override
     public Group renderCell(final GridCell<Integer> cell,
                             final GridBodyCellRenderContext context) {
-        if (isToReturnNull(cell)) {
+        if (cell == null || cell.getValue() == null || cell.getValue().getValue() == null) {
             return null;
         }
 
         final GridRenderer renderer = context.getRenderer();
         final GridRendererTheme theme = renderer.getTheme();
 
-        Text text;
-        String value;
-
-        if (isPlaceHolderToBeShown(cell)) {
-            text = theme.getPlaceholderText();
-            value = cell.getValue().getPlaceHolder();
-        } else {
-            text = theme.getBodyText();
-            value = cell.getValue() != null ? Integer.toString(cell.getValue().getValue()) : null;
-        }
-
-        return internalRenderCell(cell,
-                                  context,
-                                  text,
-                                  value);
+        final Group g = new Group();
+        final Text t = theme.getBodyText();
+        t.setText(Integer.toString(cell.getValue().getValue()));
+        t.setListening(false);
+        t.setX(context.getCellWidth() / 2);
+        t.setY(context.getCellHeight() / 2);
+        g.add(t);
+        return g;
     }
 }

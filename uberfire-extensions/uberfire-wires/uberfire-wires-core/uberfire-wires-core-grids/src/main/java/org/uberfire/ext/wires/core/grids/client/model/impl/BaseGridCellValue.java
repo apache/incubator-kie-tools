@@ -24,26 +24,14 @@ import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 public class BaseGridCellValue<T> implements GridCellValue<T> {
 
     protected T value;
-    private String placeHolder = null;
-
 
     public BaseGridCellValue(final T value) {
         this.value = value;
     }
 
-    public BaseGridCellValue(T value, String placeHolder) {
-        this(value);
-        this.placeHolder = placeHolder;
-    }
-
     @Override
     public T getValue() {
         return value;
-    }
-
-    @Override
-    public String getPlaceHolder() {
-        return placeHolder;
     }
 
     @Override

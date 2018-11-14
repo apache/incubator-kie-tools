@@ -26,11 +26,9 @@ import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.google.gwt.core.client.GWT;
-import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.util.ColumnIndexUtilities;
-import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyColumnRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridHeaderColumnRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.GridColumnRenderer;
@@ -248,40 +246,5 @@ public abstract class BaseGridColumnRenderer<T> implements GridColumnRenderer<T>
                                                            renderingInformation,
                                                            columnRenderingConstraint);
         }
-    }
-
-    /**
-     * Return the <code>Group</code> holding the <b>cell</b> data
-     * @param cell
-     * @param context
-     * @param text code the <code>Text</code> that will contain the data to show
-     * @param value the String to show
-     * @return
-     */
-    protected Group internalRenderCell(final GridCell<T> cell,
-                                       final GridBodyCellRenderContext context,
-                                       final Text text,
-                                       final String value) {
-        if (value == null) {
-            return null;
-        }
-
-        final Group g = new Group();
-
-        text.setText(value);
-        text.setListening(false);
-        text.setX(context.getCellWidth() / 2);
-        text.setY(context.getCellHeight() / 2);
-
-        g.add(text);
-        return g;
-    }
-
-    protected boolean isToReturnNull(final GridCell<T> cell) {
-        return cell == null || cell.getValue() == null || (cell.getValue().getValue() == null && cell.getValue().getPlaceHolder() == null);
-    }
-
-    protected boolean isPlaceHolderToBeShown(final GridCell<T> cell) {
-        return cell.getValue() != null && cell.getValue().getValue() == null && cell.getValue().getPlaceHolder() != null;
     }
 }

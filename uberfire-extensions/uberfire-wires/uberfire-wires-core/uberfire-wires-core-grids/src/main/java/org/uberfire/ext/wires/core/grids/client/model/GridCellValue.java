@@ -28,10 +28,4 @@ public interface GridCellValue<T> {
      * @return
      */
     T getValue();
-
-    /**
-     * Returns the (optional) <b>placeholder</b> to use when no actual value has been set
-     * @return
-     */
-    String getPlaceHolder();
 }

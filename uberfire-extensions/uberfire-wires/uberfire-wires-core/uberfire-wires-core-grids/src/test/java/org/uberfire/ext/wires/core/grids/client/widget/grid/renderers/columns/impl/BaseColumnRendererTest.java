@@ -48,7 +48,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -90,12 +89,6 @@ public abstract class BaseColumnRendererTest<T, R extends GridColumnRenderer<T>>
     @Mock
     private Node textNode;
 
-    @Mock
-    private Text placeHolderText;
-
-    @Mock
-    private Node placeHolderTextNode;
-
     @GwtMock
     @SuppressWarnings("unused")
     private Group headerGroup;
@@ -117,8 +110,6 @@ public abstract class BaseColumnRendererTest<T, R extends GridColumnRenderer<T>>
 
     protected R renderer;
 
-    protected String PLACEHOLDER = "PLACEHOLDER";
-
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
@@ -135,9 +126,7 @@ public abstract class BaseColumnRendererTest<T, R extends GridColumnRenderer<T>>
         when(gridRenderer.getTheme()).thenReturn(theme);
         when(theme.getBodyText()).thenReturn(text);
         when(theme.getHeaderText()).thenReturn(text);
-        when(theme.getPlaceholderText()).thenReturn(placeHolderText);
         when(text.asNode()).thenReturn(textNode);
-        when(placeHolderText.asNode()).thenReturn(placeHolderTextNode);
         when(headerGroup.asNode()).thenReturn(headerGroupNode);
         when(parentGroup.asNode()).thenReturn(parentGroupNode);
         when(renderContext.getGroup()).thenReturn(parentGroup);
@@ -183,23 +172,6 @@ public abstract class BaseColumnRendererTest<T, R extends GridColumnRenderer<T>>
         assertEquals(text,
                      g.getChildNodes().get(0));
     }
-
-    @Test
-    public void testRenderingPlaceHolder() {
-        doReturn(cellValue).when(cell).getValue();
-        doReturn(null).when(cellValue).getValue();
-        doReturn(PLACEHOLDER).when(cellValue).getPlaceHolder();
-
-        final Group g = renderer.renderCell(cell, context);
-        assertNotNull(g);
-
-        assertEquals(1,
-                     g.getChildNodes().size());
-        assertEquals(placeHolderText,
-                     g.getChildNodes().get(0));
-        verify(placeHolderText, times(1)).setText(eq(PLACEHOLDER));
-    }
-
 
     @Test
     public void testRenderHeader() {

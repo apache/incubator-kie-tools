@@ -40,6 +40,4 @@ public class KIEColours {
     public static final String CELL_ERROR_FOCUS = "#CC0000";
 
     public static final String CELL_ERROR_BACKGROUND = "#FFE6E6";
-
-    public static final String PLACEHOLDER_COLOR = "#757575";
 }
