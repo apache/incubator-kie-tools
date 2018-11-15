@@ -232,6 +232,21 @@ public class JGitFileSystemsEventsManagerTest {
                never()).close();
     }
 
+    @Test
+    public void testShutdown() {
+        manager.newWatchService("fsPetra");
+        manager.newWatchService("fsEureka");
+
+        JGitFileSystemWatchServices fsDoraWServices = manager.getFsWatchServices().get("fsPetra");
+        JGitFileSystemWatchServices fsBentoWServices = manager.getFsWatchServices().get("fsEureka");
+
+        manager.shutdown();
+
+        verify(fsDoraWServices).close();
+        verify(fsBentoWServices).close();
+        verify(manager.jGitEventsBroadcast).close();
+    }
+
     private void setupClusterParameters() {
         System.setProperty(ClusterParameters.APPFORMER_JMS_CONNECTION_MODE,
                            ConnectionMode.REMOTE.toString());

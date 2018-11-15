@@ -57,7 +57,6 @@ import org.uberfire.java.nio.file.FileSystemNotFoundException;
 import org.uberfire.java.nio.file.NoSuchFileException;
 import org.uberfire.java.nio.file.NotDirectoryException;
 import org.uberfire.java.nio.file.Path;
-import org.uberfire.java.nio.file.Paths;
 import org.uberfire.java.nio.file.StandardWatchEventKind;
 import org.uberfire.java.nio.file.WatchEvent;
 import org.uberfire.java.nio.file.WatchKey;
@@ -66,6 +65,7 @@ import org.uberfire.java.nio.file.attribute.BasicFileAttributeView;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 import org.uberfire.java.nio.file.attribute.FileTime;
 import org.uberfire.java.nio.file.extensions.FileSystemHooks;
+import org.uberfire.java.nio.fs.jgit.manager.JGitFileSystemsManager;
 import org.uberfire.java.nio.fs.jgit.util.Git;
 import org.uberfire.java.nio.fs.jgit.util.GitImpl;
 import org.uberfire.java.nio.fs.jgit.util.commands.Commit;
@@ -2147,6 +2147,24 @@ public class JGitFileSystemImplProviderTest extends AbstractTestInfra {
         assertEquals(1, fileSystemHooksMap.size());
         assertTrue(fileSystemHooksMap.keySet().contains(FileSystemHooks.ExternalUpdate));
         assertEquals(hook, fileSystemHooksMap.get(FileSystemHooks.ExternalUpdate));
+    }
+
+    @Test
+    public void testCloseFileSystem(){
+
+        JGitFileSystemProvider fsProvider = spy(new JGitFileSystemProvider(getGitPreferences()){
+
+            @Override
+            protected void setupFileSystemsManager() {
+                fsManager = mock(JGitFileSystemsManager.class);
+                when(fsManager.allTheFSAreClosed()).thenReturn(true);
+            }
+        });
+
+        fsProvider.onCloseFileSystem(mock(JGitFileSystem.class));
+
+        verify(fsProvider,times(1)).shutdownEventsManager();
+
     }
 
     private interface MyAttrs extends BasicFileAttributes {

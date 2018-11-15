@@ -251,7 +251,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
         fsEventsManager = new JGitFileSystemsEventsManager();
     }
 
-    private void setupFileSystemsManager() {
+    protected void setupFileSystemsManager() {
         fsManager = new JGitFileSystemsManager(this,
                                                config);
     }
@@ -324,7 +324,12 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
         if (fsManager.allTheFSAreClosed()) {
             forceStopDaemon();
             shutdownSSH();
+            shutdownEventsManager();
         }
+    }
+
+    protected void shutdownEventsManager() {
+        this.fsEventsManager.shutdown();
     }
 
     public void onDisposeFileSystem(final JGitFileSystem fileSystem) {
