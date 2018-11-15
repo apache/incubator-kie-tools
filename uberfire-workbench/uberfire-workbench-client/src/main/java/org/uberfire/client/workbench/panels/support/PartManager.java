@@ -61,7 +61,7 @@ public class PartManager {
         if(partDef.equals(activePart.getK1()))
             throw new IllegalArgumentException("Cannot remove active part: "+ partDef.getPlace().getIdentifier());
             */
-        if (partDef.equals(activePart)) {
+        if (partDef.equals(activePart.getK1())) {
             activePart = null;
         }
 

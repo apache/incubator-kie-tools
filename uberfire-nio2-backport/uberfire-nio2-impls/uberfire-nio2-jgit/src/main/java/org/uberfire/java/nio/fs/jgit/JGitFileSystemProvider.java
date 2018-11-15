@@ -1715,7 +1715,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
 
     private boolean hasSameFileSystem(final JGitPathImpl source,
                                       final JGitPathImpl target) {
-        return source.getFileSystem().equals(target);
+        return source.getFileSystem().equals(target.getFileSystem());
     }
 
     @Override

@@ -97,7 +97,7 @@ public class TreeHierarchyInternalItemPresenter implements HierarchyInternalItem
     }
 
     public void hierarchyItemSelectedEvent(@Observes HierarchyItemSelectedEvent hierarchyItemSelectedEvent) {
-        if (!hierarchyElement.getId().equals(hierarchyItemSelectedEvent)) {
+        if (!hierarchyElement.getId().equals(hierarchyItemSelectedEvent.getHierarchyElement().getId())) {
             view.deselect();
         }
     }
