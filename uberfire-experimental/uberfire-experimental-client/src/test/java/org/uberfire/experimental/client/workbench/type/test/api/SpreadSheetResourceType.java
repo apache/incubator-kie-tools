@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package org.uberfire.experimental.client.workbench.type.test;
+package org.uberfire.experimental.client.workbench.type.test.api;
 
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.workbench.category.Category;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
-public class DiagramResourceType implements ResourceTypeDefinition {
+public class SpreadSheetResourceType implements ResourceTypeDefinition {
 
     @Override
     public String getShortName() {

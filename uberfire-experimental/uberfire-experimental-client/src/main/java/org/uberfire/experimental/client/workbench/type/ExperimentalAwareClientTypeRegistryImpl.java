@@ -83,7 +83,13 @@ public class ExperimentalAwareClientTypeRegistryImpl extends ClientTypeRegistryI
     private Optional<ExperimentalFeature> getFeatureForResourceType(SyncBeanDef<ResourceTypeDefinition> resourceType, SyncBeanDef<ResourceTypeDefinition> clientResourceType) {
         ExperimentalFeaturesRegistry registry = registryService.getFeaturesRegistry();
 
-        return Optional.ofNullable(registry.getFeature(resourceType.getBeanClass().getName())).orElse(registry.getFeature(clientResourceType.getBeanClass().getName()));
+        Optional<ExperimentalFeature> optional = registry.getFeature(resourceType.getBeanClass().getName());
+
+        if(optional.isPresent()) {
+            return optional;
+        }
+
+        return registry.getFeature(clientResourceType.getBeanClass().getName());
     }
 
     @Override

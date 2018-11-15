@@ -30,15 +30,12 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.experimental.client.service.ClientExperimentalFeaturesRegistryService;
-import org.uberfire.experimental.client.workbench.type.test.ClientDiagramResourceType;
-import org.uberfire.experimental.client.workbench.type.test.ClientFormResourceType;
-import org.uberfire.experimental.client.workbench.type.test.ClientJavaResourceType;
-import org.uberfire.experimental.client.workbench.type.test.ClientTextFileResourceType;
-import org.uberfire.experimental.client.workbench.type.test.DiagramResourceType;
-import org.uberfire.experimental.client.workbench.type.test.FormResourceType;
-import org.uberfire.experimental.client.workbench.type.test.JavaResourceType;
-import org.uberfire.experimental.client.workbench.type.test.TextFileResourceType;
-import org.uberfire.experimental.client.workbench.type.test.WrongClientResourceType;
+import org.uberfire.experimental.client.workbench.type.test.client.*;
+import org.uberfire.experimental.client.workbench.type.test.api.DiagramResourceType;
+import org.uberfire.experimental.client.workbench.type.test.api.FormResourceType;
+import org.uberfire.experimental.client.workbench.type.test.api.JavaResourceType;
+import org.uberfire.experimental.client.workbench.type.test.api.TextFileResourceType;
+import org.uberfire.experimental.client.workbench.type.test.api.WrongClientResourceType;
 import org.uberfire.experimental.service.registry.impl.ExperimentalFeatureImpl;
 import org.uberfire.experimental.service.registry.impl.ExperimentalFeaturesRegistryImpl;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
@@ -65,6 +62,7 @@ public class ExperimentalAwareClientTypeRegistryImplTest {
     private ClientFormResourceType clientFormResourceType = new ClientFormResourceType();
     private ClientDiagramResourceType clientDiagramResourceType = new ClientDiagramResourceType();
     private ClientTextFileResourceType clientTextFileResourceType = new ClientTextFileResourceType();
+    private ClientSpreadSheetResourceType clientSpreadSheetResourceType = new ClientSpreadSheetResourceType();
 
     private List<SyncBeanDef<ClientResourceType>> clientTypes = new ArrayList<>();
     private List<SyncBeanDef<ResourceTypeDefinition>> allResourceTypes = new ArrayList<>();
@@ -74,8 +72,9 @@ public class ExperimentalAwareClientTypeRegistryImplTest {
 
         List<ExperimentalFeatureImpl> features = new ArrayList<>();
         features.add(new ExperimentalFeatureImpl(JavaResourceType.class.getName(), true));
-        features.add(new ExperimentalFeatureImpl(ClientFormResourceType.class.getName(), true));
+        features.add(new ExperimentalFeatureImpl(ClientFormResourceType.class.getName(), false));
         features.add(new ExperimentalFeatureImpl(TextFileResourceType.class.getName(), false));
+        features.add(new ExperimentalFeatureImpl(ClientSpreadSheetResourceType.class.getName(), true));
 
         ExperimentalFeaturesRegistryImpl experimentalFeaturesRegistry = new ExperimentalFeaturesRegistryImpl(features);
 
@@ -86,6 +85,7 @@ public class ExperimentalAwareClientTypeRegistryImplTest {
         clientTypes.add((SyncBeanDef<ClientResourceType>) createBeanDef(ClientFormResourceType.class, clientFormResourceType));
         clientTypes.add((SyncBeanDef<ClientResourceType>) createBeanDef(ClientDiagramResourceType.class, clientDiagramResourceType));
         clientTypes.add((SyncBeanDef<ClientResourceType>) createBeanDef(ClientTextFileResourceType.class, clientTextFileResourceType));
+        clientTypes.add((SyncBeanDef<ClientResourceType>) createBeanDef(ClientSpreadSheetResourceType.class, clientSpreadSheetResourceType));
 
         when(manager.lookupBeans(ClientResourceType.class)).thenReturn(clientTypes);
 
@@ -93,6 +93,7 @@ public class ExperimentalAwareClientTypeRegistryImplTest {
         allResourceTypes.add((SyncBeanDef<ResourceTypeDefinition>) createBeanDef(ClientFormResourceType.class, clientFormResourceType));
         allResourceTypes.add((SyncBeanDef<ResourceTypeDefinition>) createBeanDef(ClientDiagramResourceType.class, clientDiagramResourceType));
         allResourceTypes.add((SyncBeanDef<ResourceTypeDefinition>) createBeanDef(ClientTextFileResourceType.class, clientTextFileResourceType));
+        allResourceTypes.add((SyncBeanDef<ResourceTypeDefinition>) createBeanDef(ClientSpreadSheetResourceType.class, clientSpreadSheetResourceType));
         allResourceTypes.add((SyncBeanDef<ResourceTypeDefinition>) createBeanDef(JavaResourceType.class, null));
         allResourceTypes.add((SyncBeanDef<ResourceTypeDefinition>) createBeanDef(FormResourceType.class, null));
         allResourceTypes.add((SyncBeanDef<ResourceTypeDefinition>) createBeanDef(DiagramResourceType.class, null));
@@ -114,9 +115,10 @@ public class ExperimentalAwareClientTypeRegistryImplTest {
     @Test
     public void testIsEnabled() {
         assertTrue(clientTypeRegistry.isEnabled(clientJavaResourceType));
-        assertTrue(clientTypeRegistry.isEnabled(clientFormResourceType));
+        assertFalse(clientTypeRegistry.isEnabled(clientFormResourceType));
         assertTrue(clientTypeRegistry.isEnabled(clientDiagramResourceType));
         assertFalse(clientTypeRegistry.isEnabled(clientTextFileResourceType));
+        assertTrue(clientTypeRegistry.isEnabled(clientSpreadSheetResourceType));
         assertFalse(clientTypeRegistry.isEnabled(new WrongClientResourceType()));
     }
 

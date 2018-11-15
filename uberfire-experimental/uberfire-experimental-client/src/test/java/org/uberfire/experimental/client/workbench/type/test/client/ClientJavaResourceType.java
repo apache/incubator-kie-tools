@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package org.uberfire.experimental.client.workbench.type.test;
+package org.uberfire.experimental.client.workbench.type.test.client;
 
 import org.uberfire.client.workbench.type.ClientResourceType;
+import org.uberfire.experimental.client.workbench.type.test.api.JavaResourceType;
 
-public class ClientDiagramResourceType extends DiagramResourceType implements ClientResourceType {
+public class ClientJavaResourceType extends JavaResourceType implements ClientResourceType {
 
 }

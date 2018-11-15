@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package org.uberfire.experimental.client.workbench.type.test;
+package org.uberfire.experimental.client.workbench.type.test.client;
 
 import org.uberfire.client.workbench.type.ClientResourceType;
+import org.uberfire.experimental.client.workbench.type.test.api.SpreadSheetResourceType;
 
-public class ClientTextFileResourceType extends TextFileResourceType implements ClientResourceType {
+public class ClientSpreadSheetResourceType extends SpreadSheetResourceType implements ClientResourceType {
 
 }
