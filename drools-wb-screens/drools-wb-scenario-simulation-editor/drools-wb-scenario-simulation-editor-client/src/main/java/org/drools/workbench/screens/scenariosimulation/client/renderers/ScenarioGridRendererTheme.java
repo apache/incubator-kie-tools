@@ -22,8 +22,6 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.themes.Gri
 
 public interface ScenarioGridRendererTheme extends GridRendererTheme {
 
-    Text getPlaceholderText();
-
     Rectangle getBodyErrorBackground(final GridCell<?> column);
 
     Text getErrorText();

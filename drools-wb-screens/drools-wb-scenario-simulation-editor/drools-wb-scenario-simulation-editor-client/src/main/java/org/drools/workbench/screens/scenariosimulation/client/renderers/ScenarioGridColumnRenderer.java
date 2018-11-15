@@ -21,7 +21,6 @@ import java.util.function.BiFunction;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Rectangle;
 import com.ait.lienzo.client.core.shape.Text;
-import org.drools.workbench.screens.scenariosimulation.client.values.ScenarioGridCellValue;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
@@ -37,7 +36,7 @@ public class ScenarioGridColumnRenderer extends StringColumnRenderer {
     @Override
     public Group renderCell(final GridCell<String> cell,
                             final GridBodyCellRenderContext context) {
-        if (cell == null) { // nothing to render
+        if (cell == null || cell.getValue() == null || (cell.getValue().getValue() == null && cell.getValue().getPlaceHolder() == null)) {
             return null;
         }
 
@@ -47,22 +46,23 @@ public class ScenarioGridColumnRenderer extends StringColumnRenderer {
         String value;
 
         // Show placeholder only if the following conditions are met
-        if ((cell instanceof ScenarioGridCell) && cell.getValue() != null && cell.getValue().getValue() == null && ((ScenarioGridCellValue) cell.getValue()).getPlaceHolder() != null) {
+        if ((cell instanceof ScenarioGridCell) && cell.getValue() != null && cell.getValue().getValue() == null && cell.getValue().getPlaceHolder() != null) {
             // Render as placeholder
             text = theme.getPlaceholderText();
-            value = ((ScenarioGridCellValue) cell.getValue()).getPlaceHolder();
+            value = cell.getValue().getPlaceHolder();
         } else {
             text = ((ScenarioGridCell) cell).isErrorMode() ? theme.getErrorText() : theme.getBodyText();
             value = cell.getValue() != null ? cell.getValue().getValue() : null;
         }
 
-        return internalRenderCell((ScenarioGridCell) cell,
+        return internalRenderCell(cell,
                                   context,
                                   text,
                                   value);
     }
 
-    Group internalRenderCell(final ScenarioGridCell cell,
+    @Override
+    protected Group internalRenderCell(final GridCell<String> cell,
                              final GridBodyCellRenderContext context,
                              final Text text,
                              final String value) {
@@ -80,7 +80,7 @@ public class ScenarioGridColumnRenderer extends StringColumnRenderer {
         text.setX(context.getCellWidth() / 2);
         text.setY(context.getCellHeight() / 2);
 
-        applyBackgroundColor(cell, context, g, theme);
+        applyBackgroundColor((ScenarioGridCell)cell, context, g, theme);
 
         g.add(text);
         return g;

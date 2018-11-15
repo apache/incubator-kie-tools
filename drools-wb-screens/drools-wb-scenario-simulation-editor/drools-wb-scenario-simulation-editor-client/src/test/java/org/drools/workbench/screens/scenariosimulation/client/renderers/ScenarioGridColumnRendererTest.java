@@ -97,13 +97,13 @@ public class ScenarioGridColumnRendererTest {
         cell = new ScenarioGridCell(null);
         retrieved = scenarioGridColumnRenderer.renderCell(cell, contextMock);
         assertNull(retrieved);
-        verify(scenarioGridColumnRenderer, times(1)).internalRenderCell(any(), eq(contextMock), eq(textMock), eq(null));
+        verify(scenarioGridColumnRenderer, never()).internalRenderCell(any(), eq(contextMock), eq(textMock), eq(null));
         reset(scenarioGridColumnRenderer);
 
         cell = new ScenarioGridCell(new ScenarioGridCellValue(null));
         retrieved = scenarioGridColumnRenderer.renderCell(cell, contextMock);
         assertNull(retrieved);
-        verify(scenarioGridColumnRenderer, times(1)).internalRenderCell(any(), eq(contextMock), eq(textMock), eq(null));
+        verify(scenarioGridColumnRenderer, never()).internalRenderCell(any(), eq(contextMock), eq(textMock), eq(null));
         reset(scenarioGridColumnRenderer);
 
         cell = new ScenarioGridCell(new ScenarioGridCellValue(VALUE));

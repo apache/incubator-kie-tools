@@ -35,7 +35,6 @@ public class ScenarioGridColumn extends BaseGridColumn<String> {
     protected final ScenarioHeaderMetaData informationHeaderMetaData;
     protected final ScenarioHeaderMetaData propertyHeaderMetaData;
 
-    protected String placeHolder;
     /**
      * flag to know if an <b>instance</b> has been already assigned to this column; <code>false</code> on instantiation
      */

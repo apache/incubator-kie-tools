@@ -19,18 +19,11 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 
 public class ScenarioGridCellValue extends BaseGridCellValue<String> {
 
-    private String placeHolder = null;
-
-    public ScenarioGridCellValue(String value, String placeHolder) {
-        super(value);
-        this.placeHolder = placeHolder;
-    }
-
     public ScenarioGridCellValue(String value) {
         super(value);
     }
 
-    public String getPlaceHolder() {
-        return placeHolder;
+    public ScenarioGridCellValue(String value, String placeHolder) {
+        super(value, placeHolder);
     }
 }

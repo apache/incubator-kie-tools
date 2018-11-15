@@ -180,7 +180,17 @@ public class ConsumerFactoryTest {
         return new GridCell<Date>() {
             @Override
             public GridCellValue<Date> getValue() {
-                return () -> date;
+                return new GridCellValue<Date>() {
+                    @Override
+                    public Date getValue() {
+                        return date;
+                    }
+
+                    @Override
+                    public String getPlaceHolder() {
+                        return null;
+                    }
+                };
             }
 
             @Override
