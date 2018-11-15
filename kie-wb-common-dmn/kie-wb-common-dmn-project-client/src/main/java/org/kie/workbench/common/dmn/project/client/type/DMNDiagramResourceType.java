@@ -25,24 +25,23 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.resource.DMNDefinitionSetResourceType;
 import org.kie.workbench.common.dmn.project.client.resources.DMNProjectImageResources;
 import org.kie.workbench.common.dmn.project.client.resources.i18n.DMNProjectClientConstants;
-import org.kie.workbench.common.stunner.project.client.type.AbstractStunnerClientResourceType;
+import org.uberfire.client.workbench.type.ClientResourceType;
 
 @ApplicationScoped
-public class DMNDiagramResourceType extends AbstractStunnerClientResourceType<DMNDefinitionSetResourceType> {
+public class DMNDiagramResourceType extends DMNDefinitionSetResourceType implements ClientResourceType {
 
     private static final Image ICON = new Image(DMNProjectImageResources.INSTANCE.dmnIcon());
 
     private final TranslationService translationService;
 
     protected DMNDiagramResourceType() {
-        this(null, null, null);
+        this(null, null);
     }
 
     @Inject
-    public DMNDiagramResourceType(final DMNDefinitionSetResourceType definitionSetResourceType,
-                                  final Decision category,
+    public DMNDiagramResourceType(final Decision category,
                                   final TranslationService translationService) {
-        super(definitionSetResourceType, category);
+        super(category);
 
         this.translationService = translationService;
     }
@@ -53,12 +52,12 @@ public class DMNDiagramResourceType extends AbstractStunnerClientResourceType<DM
     }
 
     @Override
-    protected String getTranslatedShortName() {
+    public String getShortName() {
         return translationService.getTranslation(DMNProjectClientConstants.DMNDiagramResourceType);
     }
 
     @Override
-    protected String getTranslatedDescription() {
+    public String getDescription() {
         return translationService.getTranslation(DMNProjectClientConstants.DMNDiagramResourceTypeDescription);
     }
 }

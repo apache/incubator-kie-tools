@@ -26,32 +26,31 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.stunner.cm.client.resources.CaseManagementImageResources;
 import org.kie.workbench.common.stunner.cm.project.client.resources.i18n.CaseManagementProjectClientConstants;
 import org.kie.workbench.common.stunner.cm.resource.CaseManagementDefinitionSetResourceType;
-import org.kie.workbench.common.stunner.project.client.type.AbstractStunnerClientResourceType;
+import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.experimental.definition.annotations.ExperimentalFeature;
 
-import static org.kie.workbench.common.stunner.cm.project.client.resources.i18n.CaseManagementProjectClientConstants.CaseManagementDiagramResourceTypeDescription;
-import static org.kie.workbench.common.stunner.cm.project.client.resources.i18n.CaseManagementProjectClientConstants.CaseManagementDiagramResourceTypeShortName;
+import static org.kie.workbench.common.stunner.cm.project.client.resources.i18n.CaseManagementProjectClientConstants.CaseManagementDiagramResourceTypeExperimentalDescription;
+import static org.kie.workbench.common.stunner.cm.project.client.resources.i18n.CaseManagementProjectClientConstants.CaseManagementDiagramResourceTypeExperimentalName;
 import static org.uberfire.experimental.definition.annotations.ExperimentalFeature.Scope.GLOBAL;
 
 @ApplicationScoped
 @ExperimentalFeature(scope = GLOBAL,
-        nameI18nKey = CaseManagementDiagramResourceTypeShortName,
-        descriptionI18nKey = CaseManagementDiagramResourceTypeDescription)
-public class CaseManagementDiagramResourceType extends AbstractStunnerClientResourceType<CaseManagementDefinitionSetResourceType> {
+        nameI18nKey = CaseManagementDiagramResourceTypeExperimentalName,
+        descriptionI18nKey = CaseManagementDiagramResourceTypeExperimentalDescription)
+public class CaseManagementDiagramResourceType extends CaseManagementDefinitionSetResourceType implements ClientResourceType {
 
     private static final Image ICON = new Image(CaseManagementImageResources.INSTANCE.cmicon());
 
     private final TranslationService translationService;
 
     protected CaseManagementDiagramResourceType() {
-        this(null, null, null);
+        this(null, null);
     }
 
     @Inject
-    public CaseManagementDiagramResourceType(final CaseManagementDefinitionSetResourceType definitionSetResourceType,
-                                             final Process category,
+    public CaseManagementDiagramResourceType(final Process category,
                                              final TranslationService translationService) {
-        super(definitionSetResourceType, category);
+        super(category);
         this.translationService = translationService;
     }
 
@@ -61,12 +60,12 @@ public class CaseManagementDiagramResourceType extends AbstractStunnerClientReso
     }
 
     @Override
-    protected String getTranslatedShortName() {
+    public String getShortName() {
         return translationService.getTranslation(CaseManagementProjectClientConstants.CaseManagementDiagramResourceTypeShortName);
     }
 
     @Override
-    protected String getTranslatedDescription() {
+    public String getDescription() {
         return translationService.getTranslation(CaseManagementProjectClientConstants.CaseManagementDiagramResourceTypeDescription);
     }
 }

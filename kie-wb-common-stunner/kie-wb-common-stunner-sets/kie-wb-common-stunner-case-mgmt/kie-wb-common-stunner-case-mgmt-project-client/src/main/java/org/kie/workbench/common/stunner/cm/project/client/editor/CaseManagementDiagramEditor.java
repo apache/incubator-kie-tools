@@ -59,15 +59,15 @@ import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.menu.Menus;
 
-import static org.kie.workbench.common.stunner.cm.project.client.resources.i18n.CaseManagementProjectClientConstants.CaseManagementDiagramResourceTypeDescription;
-import static org.kie.workbench.common.stunner.cm.project.client.resources.i18n.CaseManagementProjectClientConstants.CaseManagementDiagramResourceTypeShortName;
+import static org.kie.workbench.common.stunner.cm.project.client.resources.i18n.CaseManagementProjectClientConstants.CaseManagementDiagramEditorExperimentalDescription;
+import static org.kie.workbench.common.stunner.cm.project.client.resources.i18n.CaseManagementProjectClientConstants.CaseManagementDiagramEditorExperimentalName;
 import static org.uberfire.experimental.definition.annotations.ExperimentalFeature.Scope.GLOBAL;
 
 @Dependent
 @DiagramEditor
 @ExperimentalFeature(scope = GLOBAL,
-        nameI18nKey = CaseManagementDiagramResourceTypeShortName,
-        descriptionI18nKey = CaseManagementDiagramResourceTypeDescription)
+        nameI18nKey = CaseManagementDiagramEditorExperimentalName,
+        descriptionI18nKey = CaseManagementDiagramEditorExperimentalDescription)
 @WorkbenchEditor(identifier = CaseManagementDiagramEditor.EDITOR_ID, supportedTypes = {CaseManagementDiagramResourceType.class})
 public class CaseManagementDiagramEditor extends AbstractProjectDiagramEditor<CaseManagementDiagramResourceType> {
 

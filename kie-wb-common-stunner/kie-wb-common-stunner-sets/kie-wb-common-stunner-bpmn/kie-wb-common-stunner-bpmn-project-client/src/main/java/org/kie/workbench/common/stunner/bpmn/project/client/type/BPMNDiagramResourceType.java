@@ -25,41 +25,34 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.stunner.bpmn.project.client.resources.BPMNClientConstants;
 import org.kie.workbench.common.stunner.bpmn.project.client.resources.BPMNProjectImageResources;
 import org.kie.workbench.common.stunner.bpmn.resource.BPMNDefinitionSetResourceType;
-import org.kie.workbench.common.stunner.project.client.type.AbstractStunnerClientResourceType;
-import org.uberfire.workbench.category.Category;
+import org.uberfire.client.workbench.type.ClientResourceType;
 
 @ApplicationScoped
-public class BPMNDiagramResourceType extends AbstractStunnerClientResourceType<BPMNDefinitionSetResourceType> {
+public class BPMNDiagramResourceType extends BPMNDefinitionSetResourceType implements ClientResourceType {
 
     private final Image ICON = newIcon();
 
     private final TranslationService translationService;
 
     protected BPMNDiagramResourceType() {
-        this(null, null, null);
+        this(null, null);
     }
 
     @Inject
-    public BPMNDiagramResourceType(final BPMNDefinitionSetResourceType definitionSetResourceType,
-                                   final Process category,
+    public BPMNDiagramResourceType(final Process category,
                                    final TranslationService translationService) {
-        super(definitionSetResourceType, category);
+        super(category);
         this.translationService = translationService;
     }
 
     @Override
-    protected String getTranslatedShortName() {
+    public String getShortName() {
         return translationService.getTranslation(BPMNClientConstants.BPMNDiagramResourceTypeShortName);
     }
 
     @Override
-    protected String getTranslatedDescription() {
+    public String getDescription() {
         return translationService.getTranslation(BPMNClientConstants.BPMNDiagramResourceTypeDescription);
-    }
-
-    @Override
-    public Category getCategory() {
-        return new Process();
     }
 
     @Override

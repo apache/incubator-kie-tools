@@ -30,6 +30,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.verify;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class DMNDiagramResourceTypeTest {
@@ -37,7 +38,6 @@ public class DMNDiagramResourceTypeTest {
     private DMNDefinitionSetResourceType definitionSetResourceType;
 
     @Mock
-
     private TranslationService translationService;
 
     private DMNDiagramResourceType resourceType;
@@ -46,9 +46,7 @@ public class DMNDiagramResourceTypeTest {
     public void setup() {
         final Decision category = new Decision();
         this.definitionSetResourceType = new DMNDefinitionSetResourceType(category);
-        this.resourceType = new DMNDiagramResourceType(definitionSetResourceType,
-                                                       category,
-                                                       translationService);
+        this.resourceType = new DMNDiagramResourceType(category, translationService);
 
         doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).getTranslation(anyString());
     }
@@ -60,13 +58,14 @@ public class DMNDiagramResourceTypeTest {
 
     @Test
     public void testTranslatedShortName() {
-        assertEquals(DMNProjectClientConstants.DMNDiagramResourceType,
-                     resourceType.getTranslatedShortName());
+        assertEquals(DMNProjectClientConstants.DMNDiagramResourceType, resourceType.getShortName());
+        verify(translationService).getTranslation(DMNProjectClientConstants.DMNDiagramResourceType);
     }
 
     @Test
     public void testTranslatedDescription() {
-        assertEquals(DMNProjectClientConstants.DMNDiagramResourceTypeDescription,
-                     resourceType.getTranslatedDescription());
+        assertEquals(DMNProjectClientConstants.DMNDiagramResourceTypeDescription, resourceType.getDescription());
+
+        verify(translationService).getTranslation(DMNProjectClientConstants.DMNDiagramResourceTypeDescription);
     }
 }
