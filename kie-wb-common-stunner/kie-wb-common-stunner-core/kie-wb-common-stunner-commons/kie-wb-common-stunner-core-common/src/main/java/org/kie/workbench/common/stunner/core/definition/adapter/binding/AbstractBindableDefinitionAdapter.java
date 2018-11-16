@@ -59,8 +59,7 @@ public abstract class AbstractBindableDefinitionAdapter<T> implements BindableDe
                             final Map<Class, String> propertyTitleFieldNames,
                             final Map<Class, String> propertyCategoryFieldNames,
                             final Map<Class, String> propertyDescriptionFieldNames,
-                            final Map<Class, String> propertyNameFields
-    ) {
+                            final Map<Class, String> propertyNameFields) {
         this.metaPropertyTypeClasses = metaPropertyTypeClasses;
         this.baseTypes = baseTypes;
         this.propertySetsFieldNames = propertySetsFieldNames;

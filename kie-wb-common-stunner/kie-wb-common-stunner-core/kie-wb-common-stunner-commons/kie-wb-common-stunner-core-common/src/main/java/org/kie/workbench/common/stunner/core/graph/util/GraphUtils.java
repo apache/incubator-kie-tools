@@ -55,12 +55,14 @@ public class GraphUtils {
                 .map(Element::getContent)
                 .map(Definition::getDefinition)
                 .map(def -> Exceptions.<Set>swallow(() -> definitionManager.adapters().forDefinition().getProperties(def),
-                                               Collections.emptySet()))
+                                                    Collections.emptySet()))
                 .map(properties -> Exceptions.swallow(() -> getProperty(definitionManager, properties, id), null))
                 .orElseGet(
                         //getting by field if not found by the id (class name)
                         () -> Optional.ofNullable(element)
-                                .map(e -> getPropertyByField(definitionManager, e.getContent().getDefinition(), id))
+                                .map(Element::getContent)
+                                .map(Definition::getDefinition)
+                                .map(def -> getPropertyByField(definitionManager, def, id))
                                 .orElse(null)
                 );
     }
@@ -72,15 +74,21 @@ public class GraphUtils {
         final int index = field.indexOf('.');
         final String firstField = index > -1 ? field.substring(0, index) : field;
         final Object property =
-                Exceptions.<Optional>swallow(() -> definitionManager.adapters().forDefinition().getProperty(definition
-                        , firstField), Optional.empty())
-                        .orElseGet(() -> Exceptions.swallow(() -> definitionManager.adapters().forPropertySet().getProperty(definition, firstField), null));
+                Exceptions.<Optional>swallow(() -> definitionManager
+                        .adapters()
+                        .forDefinition()
+                        .getProperty(definition, firstField), Optional.empty())
+                        .orElseGet(() -> Exceptions.<Optional>swallow(() -> definitionManager
+                                .adapters()
+                                .forPropertySet()
+                                .getProperty(definition, firstField), Optional.empty())
+                                .orElse(null)
+                        );
 
         return (index > 0 && Objects.nonNull(property))
                 ? getPropertyByField(definitionManager, property, field.substring(index + 1))
                 : property;
     }
-
 
     public static Object getProperty(final DefinitionManager definitionManager,
                                      final Set properties,

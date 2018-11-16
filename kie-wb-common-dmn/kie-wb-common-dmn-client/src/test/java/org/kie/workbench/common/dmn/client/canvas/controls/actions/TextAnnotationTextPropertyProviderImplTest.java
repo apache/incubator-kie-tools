@@ -35,7 +35,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.mock;
@@ -45,6 +44,8 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class TextAnnotationTextPropertyProviderImplTest {
 
+    public static final String NAME_FIELD = "name";
+    public static final String NAME_VALUE = "text";
     @Mock
     private DefinitionUtils definitionUtils;
 
@@ -81,8 +82,7 @@ public class TextAnnotationTextPropertyProviderImplTest {
         when(element.getContent()).thenReturn(content);
         when(content.getDefinition()).thenReturn(definition);
         when(definition.getText()).thenReturn(text);
-
-        when(definitionUtils.getNameIdentifier(eq(definition))).thenReturn("name");
+        when(definitionUtils.getNameIdentifier(eq(definition))).thenReturn(NAME_FIELD);
         when(canvasCommandFactory.updatePropertyValue(eq(element),
                                                       anyString(),
                                                       anyString())).thenReturn(command);
@@ -116,16 +116,9 @@ public class TextAnnotationTextPropertyProviderImplTest {
 
     @Test
     public void checkWriteUsesCommandToUpdateTextProperty() {
-        provider.setText(canvasHandler,
-                         commandManager,
-                         element,
-                         "text");
+        provider.setText(canvasHandler, commandManager, element, NAME_VALUE);
 
-        //todo:tiago fix
-        verify(canvasCommandFactory).updatePropertyValue(eq(element),
-                                                         any(),
-                                                         eq("text"));
-        verify(commandManager).execute(eq(canvasHandler),
-                                       eq(command));
+        verify(canvasCommandFactory).updatePropertyValue(element, NAME_FIELD, NAME_VALUE);
+        verify(commandManager).execute(eq(canvasHandler), eq(command));
     }
 }

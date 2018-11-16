@@ -18,7 +18,6 @@ package org.kie.workbench.common.stunner.forms.client.widgets;
 import java.util.Arrays;
 import java.util.Optional;
 
-import org.jboss.errai.databinding.client.api.DataBinder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,8 +41,7 @@ import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.mockito.InOrder;
 import org.mockito.Mock;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.mvp.Command;
 
 import static org.mockito.Matchers.any;
@@ -57,8 +55,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(DataBinder.class)
+@RunWith(MockitoJUnitRunner.class)
 public class FormsCanvasSessionHandlerTest {
 
     private static final String GRAPH_UUID = "graph-uuid";

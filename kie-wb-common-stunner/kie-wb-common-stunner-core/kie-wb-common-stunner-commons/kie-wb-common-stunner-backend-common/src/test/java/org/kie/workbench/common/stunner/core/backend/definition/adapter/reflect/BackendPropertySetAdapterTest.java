@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.core.backend.definition.adapter;
+package org.kie.workbench.common.stunner.core.backend.definition.adapter.reflect;
 
+import java.util.Optional;
 import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.stunner.core.backend.definition.adapter.reflect.AbstractBackendAdapterTest;
-import org.kie.workbench.common.stunner.core.backend.definition.adapter.reflect.BackendPropertySetAdapter;
+import org.kie.workbench.common.stunner.core.backend.definition.adapter.FooPropertySetTestBean;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
@@ -32,36 +32,37 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class BackendPropertySetAdapterTest extends AbstractBackendAdapterTest {
 
-    private static final String FOO1_VALUE = "foo1";
-
     private BackendPropertySetAdapter<Object> tested;
-    private FooPropertySetTestBean instance;
 
     @Before
     public void setup() {
         super.setup();
-        instance = new FooPropertySetTestBean(FOO1_VALUE);
         tested = new BackendPropertySetAdapter<>();
         when(adapterManager.forPropertySet()).thenReturn(tested);
     }
 
     @Test
     public void testGetId() {
-        final String id = tested.getId(instance);
+        final String id = tested.getId(instancePropertySet);
         assertEquals(FooPropertySetTestBean.class.getName(), id);
     }
 
     @Test
     public void testName() {
-        final String name = tested.getName(instance);
+        final String name = tested.getName(instancePropertySet);
         assertEquals(FooPropertySetTestBean.NAME, name);
     }
 
     @Test
     public void testProperties() {
-        final Set properties = tested.getProperties(instance);
+        final Set properties = tested.getProperties(instancePropertySet);
         assertEquals(1, properties.size());
-        ;
-        assertTrue(properties.contains(instance.fooProperty));
+        assertTrue(properties.contains(instancePropertySet.fooProperty));
+    }
+
+    @Test
+    public void testGetPropertyByName() {
+        final Optional<?> property = tested.getProperty(instancePropertySet, FooPropertySetTestBean.FOO_PROPERTY_NAME);
+        assertEquals(property.get(), instancePropertySet.fooProperty);
     }
 }

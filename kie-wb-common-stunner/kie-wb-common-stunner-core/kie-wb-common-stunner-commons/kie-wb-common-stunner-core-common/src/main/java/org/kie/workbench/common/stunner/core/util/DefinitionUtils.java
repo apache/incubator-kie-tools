@@ -92,23 +92,29 @@ public class DefinitionUtils {
     }
 
     public <T> String getName(final T definition) {
-        final Optional<String> nameField = definitionManager.adapters().forDefinition().getNameField(definition);
+        final Optional<String> nameField = definitionManager.adapters()
+                .forDefinition()
+                .getNameField(definition);
 
         //first try to get by name field from Definition annotation
         if (nameField.isPresent()) {
-            final Object property = GraphUtils.getPropertyByField(definitionManager, definition,
-                                                                  nameField.get());
-            return String.valueOf(definitionManager.adapters().forProperty().getValue(property));
+            return getPropertyValueAsString(GraphUtils.getPropertyByField(definitionManager,
+                                                                          definition,
+                                                                          nameField.get()));
         }
 
         //default getting by metadata
-        final Object name =
-                definitionManager.adapters().forDefinition().getMetaProperty(PropertyMetaTypes.NAME,
-                                                                             definition);
-        if (null != name) {
-            return String.valueOf(definitionManager.adapters().forProperty().getValue(name));
-        }
-        return null;
+        return Optional.ofNullable(definitionManager.adapters()
+                                           .forDefinition()
+                                           .getMetaProperty(PropertyMetaTypes.NAME, definition))
+                .map(this::getPropertyValueAsString)
+                .orElse(null);
+    }
+
+    private String getPropertyValueAsString(Object property) {
+        return Optional.ofNullable(definitionManager.adapters().forProperty().getValue(property))
+                .map(String::valueOf)
+                .orElse("");
     }
 
     public <T> String getTitle(final String definitionId) {

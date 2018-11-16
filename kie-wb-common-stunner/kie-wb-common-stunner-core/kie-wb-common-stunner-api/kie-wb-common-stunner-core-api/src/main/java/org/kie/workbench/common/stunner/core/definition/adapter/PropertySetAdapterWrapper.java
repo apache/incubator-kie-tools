@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.definition.adapter;
 
+import java.util.Optional;
 import java.util.Set;
 
 public abstract class PropertySetAdapterWrapper<T, A extends PropertySetAdapter<T>> implements PropertySetAdapter<T> {
@@ -46,7 +47,7 @@ public abstract class PropertySetAdapterWrapper<T, A extends PropertySetAdapter<
     }
 
     @Override
-    public <P> P getProperty(T pojo, String propertyName) {
+    public Optional<?> getProperty(T pojo, String propertyName) {
         return adapter.getProperty(pojo, propertyName);
     }
 

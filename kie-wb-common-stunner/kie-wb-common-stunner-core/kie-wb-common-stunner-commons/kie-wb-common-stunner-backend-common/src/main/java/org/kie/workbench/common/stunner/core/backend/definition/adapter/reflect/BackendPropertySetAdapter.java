@@ -17,13 +17,11 @@ package org.kie.workbench.common.stunner.core.backend.definition.adapter.reflect
 
 import java.lang.reflect.Field;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 import javax.enterprise.context.Dependent;
 
 import org.kie.workbench.common.stunner.core.backend.definition.adapter.AbstractReflectAdapter;
-import org.kie.workbench.common.stunner.core.backend.definition.adapter.ReflectionAdapterUtils;
 import org.kie.workbench.common.stunner.core.definition.adapter.PropertySetAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 import org.kie.workbench.common.stunner.core.definition.annotation.Name;
@@ -77,20 +75,6 @@ public class BackendPropertySetAdapter<T> extends AbstractReflectAdapter<T> impl
             }
         }
         return result;
-    }
-
-    @Override
-    public <P> P getProperty(T pojo, String propertyName) {
-        try {
-            return ReflectionAdapterUtils.getFields(pojo.getClass()).stream()
-                    .filter(f -> Objects.equals(propertyName, f.getName()))
-                    .findFirst()
-                    .map(property -> (P) property)
-                    .orElse(null);
-        } catch (SecurityException e) {
-            LOG.error("Error obtaining annotated properties for T with id " + getId(pojo));
-            return null;
-        }
     }
 
     @Override

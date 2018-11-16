@@ -24,6 +24,7 @@ import java.util.Set;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.AbstractBindableDefinitionAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableDefinitionAdapter;
+import org.kie.workbench.common.stunner.core.graph.util.Exceptions;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,12 +86,10 @@ class BackendBindableDefinitionAdapter<T> extends AbstractBindableDefinitionAdap
 
     @Override
     public Optional<String> getNameField(T definition) {
-        try {
-            return getFieldValue(definition, propertyNameFields.get(definition.getClass()));
-        } catch (IllegalAccessException e) {
-            LOG.error("Error obtaining title for Definition with id " + getId(definition));
-            return Optional.empty();
-        }
+        return Exceptions
+                .swallow(() -> Optional.ofNullable(getFieldValue(definition,
+                                                                 propertyNameFields.get(definition.getClass()))),
+                         Optional.empty());
     }
 
     @Override
@@ -147,17 +146,11 @@ class BackendBindableDefinitionAdapter<T> extends AbstractBindableDefinitionAdap
 
     @Override
     public Optional<?> getProperty(T definition, String propertyName) {
-        return propertiesFieldNames.get(definition.getClass()).stream()
+        return Optional.ofNullable(propertiesFieldNames.get(definition.getClass()))
+                .orElse(Collections.emptySet())
+                .stream()
                 .filter(name -> Objects.equals(name, propertyName))
                 .findFirst()
-                .map(prop -> {
-                         try {
-                             return getFieldValue(definition, prop);
-                         } catch (IllegalAccessException e) {
-                             LOG.error("Error obtaining properties for Definition with id " + getId(definition));
-                             return null;
-                         }
-                     }
-                );
+                .map(prop -> Exceptions.swallow(() -> getFieldValue(definition, prop), null));
     }
 }

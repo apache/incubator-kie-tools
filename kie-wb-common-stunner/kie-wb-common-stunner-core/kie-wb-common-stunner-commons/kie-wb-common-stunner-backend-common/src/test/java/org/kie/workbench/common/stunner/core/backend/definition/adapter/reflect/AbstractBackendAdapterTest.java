@@ -17,6 +17,8 @@
 package org.kie.workbench.common.stunner.core.backend.definition.adapter.reflect;
 
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
+import org.kie.workbench.common.stunner.core.backend.definition.adapter.FooPropertySetTestBean;
+import org.kie.workbench.common.stunner.core.backend.definition.adapter.FooTestBean;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.Mock;
@@ -24,6 +26,9 @@ import org.mockito.Mock;
 import static org.mockito.Mockito.when;
 
 public abstract class AbstractBackendAdapterTest {
+
+    protected static final String FOO1_VALUE = "foo1";
+    protected static final String FOO2_VALUE = "foo2";
 
     @Mock
     protected DefinitionUtils utils;
@@ -34,11 +39,17 @@ public abstract class AbstractBackendAdapterTest {
     @Mock
     protected AdapterManager adapterManager;
 
+    protected FooTestBean instance;
+
+    protected FooPropertySetTestBean instancePropertySet;
+
     public void setup() {
         when(utils.getDefinitionManager()).thenReturn(definitionManager);
         when(definitionManager.adapters()).thenReturn(adapterManager);
         when(adapterManager.forDefinition()).thenReturn(new BackendDefinitionAdapter<Object>(utils));
         when(adapterManager.forPropertySet()).thenReturn(new BackendPropertySetAdapter<Object>());
         when(adapterManager.forProperty()).thenReturn(new BackendPropertyAdapter<Object>());
+        instance = new FooTestBean(FOO1_VALUE, FOO2_VALUE);
+        instancePropertySet = new FooPropertySetTestBean(FOO1_VALUE);
     }
 }

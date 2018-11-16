@@ -16,8 +16,6 @@
 
 package org.kie.workbench.common.stunner.core.graph.util;
 
-import java.util.function.Supplier;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,6 +23,15 @@ import org.slf4j.LoggerFactory;
  * Utility class that allows working with functional programming and streams easier when having exceptions.
  */
 public class Exceptions {
+
+    /**
+     * The same as {@link java.util.function.Supplier} but supports throwing Exceptions.
+     * @param <T>
+     */
+    @FunctionalInterface
+    public interface Supplier<T> {
+        T get() throws Exception;
+    }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Exceptions.class);
 

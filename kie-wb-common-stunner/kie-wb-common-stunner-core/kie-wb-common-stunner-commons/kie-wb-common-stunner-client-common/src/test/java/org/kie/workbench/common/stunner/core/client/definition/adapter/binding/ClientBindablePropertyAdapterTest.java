@@ -24,12 +24,12 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
 import org.kie.workbench.common.stunner.core.definition.property.type.BooleanType;
 import org.kie.workbench.common.stunner.core.definition.property.type.StringType;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(PowerMockRunner.class)
 public class ClientBindablePropertyAdapterTest extends AbstractClientBindableAdapterTest {
 
     private ClientBindablePropertyAdapter clientBindablePropertyAdapter;

@@ -19,11 +19,11 @@ package org.kie.workbench.common.stunner.core.client.definition.adapter.binding;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import static org.junit.Assert.assertNotNull;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(PowerMockRunner.class)
 public class ClientBindableAdapterFactoryTest extends AbstractClientBindableAdapterTest {
 
     private ClientBindableAdapterFactory clientBindableAdapterFactory;

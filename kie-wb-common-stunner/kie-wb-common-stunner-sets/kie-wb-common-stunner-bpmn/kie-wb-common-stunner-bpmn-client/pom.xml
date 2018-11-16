@@ -323,6 +323,12 @@
       <type>test-jar</type>
     </dependency>
 
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+
     <!-- powermock -->
     <dependency>
       <groupId>org.powermock</groupId>

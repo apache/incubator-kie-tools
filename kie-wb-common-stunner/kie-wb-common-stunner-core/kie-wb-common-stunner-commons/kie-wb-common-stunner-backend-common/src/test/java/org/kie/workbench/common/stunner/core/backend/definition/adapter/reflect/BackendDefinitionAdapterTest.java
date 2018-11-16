@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.core.backend.definition.adapter.reflect;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import org.junit.Before;
@@ -35,17 +36,12 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class BackendDefinitionAdapterTest extends AbstractBackendAdapterTest {
 
-    private static final String FOO1_VALUE = "foo1";
-    private static final String FOO2_VALUE = "foo2";
-
     private BackendDefinitionAdapter<Object> tested;
-    private FooTestBean instance;
 
     @Before
     public void setup() {
         super.setup();
-        instance = new FooTestBean(FOO1_VALUE,
-                                   FOO2_VALUE);
+
         final Set p = new HashSet<Object>() {{
             add(instance.fooPropertySet.fooProperty);
         }};
@@ -103,5 +99,17 @@ public class BackendDefinitionAdapterTest extends AbstractBackendAdapterTest {
         assertEquals(2, properties.size());
         assertTrue(properties.contains(instance.fooProperty));
         assertTrue(properties.contains(instance.fooPropertySet.fooProperty));
+    }
+
+    @Test
+    public void getNameField() {
+        final Optional<String> nameField = tested.getNameField(instance);
+        assertEquals(nameField.get(), FooTestBean.FOO_PROPERTY_NAME);
+    }
+
+    @Test
+    public void getPropertyByName() {
+        final Optional<?> property = tested.getProperty(instance, FooTestBean.FOO_PROPERTY_NAME);
+        assertEquals(property.get(), instance.fooProperty);
     }
 }

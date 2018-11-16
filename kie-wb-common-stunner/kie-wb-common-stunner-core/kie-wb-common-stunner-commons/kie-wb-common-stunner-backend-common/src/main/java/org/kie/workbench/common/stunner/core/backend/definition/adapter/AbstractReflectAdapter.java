@@ -18,9 +18,12 @@ package org.kie.workbench.common.stunner.core.backend.definition.adapter;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.Collection;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 import org.kie.workbench.common.stunner.core.definition.adapter.PriorityAdapter;
+import org.kie.workbench.common.stunner.core.graph.util.Exceptions;
 
 public abstract class AbstractReflectAdapter<T> implements PriorityAdapter {
 
@@ -100,5 +103,12 @@ public abstract class AbstractReflectAdapter<T> implements PriorityAdapter {
     @Override
     public int getPriority() {
         return 100;
+    }
+
+    public Optional<?> getProperty(T pojo, String propertyName) {
+        return ReflectionAdapterUtils.getFields(pojo.getClass()).stream()
+                .filter(field -> Objects.equals(propertyName, field.getName()))
+                .map(field -> Exceptions.swallow(() -> field.get(pojo), null))
+                .findFirst();
     }
 }

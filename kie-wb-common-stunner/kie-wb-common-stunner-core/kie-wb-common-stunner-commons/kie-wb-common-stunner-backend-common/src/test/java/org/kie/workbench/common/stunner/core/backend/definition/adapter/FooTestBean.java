@@ -28,8 +28,10 @@ import org.kie.workbench.common.stunner.core.definition.annotation.definition.La
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Title;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 
-@Definition(graphFactory = NodeFactory.class)
+@Definition(graphFactory = NodeFactory.class, nameField = FooTestBean.FOO_PROPERTY_NAME)
 public class FooTestBean {
+
+    public static final String FOO_PROPERTY_NAME = "fooProperty";
 
     @Category
     public static final String CATEGORY = "cat1";
