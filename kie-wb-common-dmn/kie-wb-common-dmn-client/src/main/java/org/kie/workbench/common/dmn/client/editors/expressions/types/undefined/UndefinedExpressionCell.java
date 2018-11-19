@@ -20,6 +20,7 @@ import java.util.Optional;
 
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridCell;
+import org.uberfire.ext.wires.core.grids.client.model.GridCellEditAction;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 
 public class UndefinedExpressionCell extends DMNGridCell<String> {
@@ -34,5 +35,10 @@ public class UndefinedExpressionCell extends DMNGridCell<String> {
     @Override
     public Optional<Editor> getEditor() {
         return Optional.of(listSelector);
+    }
+
+    @Override
+    public GridCellEditAction getSupportedEditAction() {
+        return GridCellEditAction.SINGLE_CLICK;
     }
 }

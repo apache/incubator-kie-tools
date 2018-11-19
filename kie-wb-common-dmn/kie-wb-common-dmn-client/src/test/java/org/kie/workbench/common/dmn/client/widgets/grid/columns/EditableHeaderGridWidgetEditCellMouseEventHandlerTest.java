@@ -18,17 +18,21 @@ package org.kie.workbench.common.dmn.client.widgets.grid.columns;
 
 import java.util.Collections;
 
+import com.ait.lienzo.client.core.event.NodeMouseClickEvent;
 import com.ait.lienzo.client.core.event.NodeMouseDoubleClickEvent;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import com.google.gwt.event.dom.client.DoubleClickEvent;
+import com.google.gwt.event.dom.client.MouseEvent;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.uberfire.ext.wires.core.grids.client.model.GridCellEditAction;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
@@ -37,16 +41,18 @@ import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellEditC
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
-import org.uberfire.ext.wires.core.grids.client.widget.layer.GridSelectionManager;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.GridPinnedModeManager;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyDouble;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
-public class EditableHeaderGridWidgetMouseDoubleClickHandlerTest {
+public class EditableHeaderGridWidgetEditCellMouseEventHandlerTest {
 
     private static final int MOUSE_EVENT_X = 32;
 
@@ -69,16 +75,16 @@ public class EditableHeaderGridWidgetMouseDoubleClickHandlerTest {
     private Viewport viewport;
 
     @Mock
-    private GridSelectionManager selectionManager;
-
-    @Mock
     private GridPinnedModeManager pinnedModeManager;
 
     @Mock
     private GridRenderer renderer;
 
     @Mock
-    private NodeMouseDoubleClickEvent event;
+    private MouseEvent nativeClickEvent;
+
+    @Mock
+    private DoubleClickEvent nativeDoubleClickEvent;
 
     @Mock
     private BaseGridRendererHelper rendererHelper;
@@ -98,9 +104,15 @@ public class EditableHeaderGridWidgetMouseDoubleClickHandlerTest {
     @Captor
     private ArgumentCaptor<GridBodyCellEditContext> gridBodyCellEditContextCaptor;
 
+    private NodeMouseClickEvent clickEvent;
+
+    private NodeMouseDoubleClickEvent doubleClickEvent;
+
     private GridData uiModel;
 
-    private EditableHeaderGridWidgetMouseDoubleClickHandler handler;
+    private EditableHeaderGridWidgetEditCellMouseEventHandler handler;
+
+    private Point2D relativeLocation = new Point2D(MOUSE_EVENT_X, MOUSE_EVENT_Y);
 
     private Point2D computedLocation = new Point2D(GRID_COMPUTED_LOCATION_X, GRID_COMPUTED_LOCATION_Y);
 
@@ -109,6 +121,8 @@ public class EditableHeaderGridWidgetMouseDoubleClickHandlerTest {
     public void setup() {
         this.uiModel = new BaseGridData(false);
         this.uiModel.appendColumn(gridColumn);
+        this.clickEvent = new NodeMouseClickEvent(nativeClickEvent);
+        this.doubleClickEvent = new NodeMouseDoubleClickEvent(nativeDoubleClickEvent);
 
         when(gridWidget.getModel()).thenReturn(uiModel);
         when(gridWidget.getRendererHelper()).thenReturn(rendererHelper);
@@ -127,35 +141,68 @@ public class EditableHeaderGridWidgetMouseDoubleClickHandlerTest {
         when(renderingInformation.getBodyBlockInformation()).thenReturn(renderingBlockInformation);
         when(renderingInformation.getFloatingBlockInformation()).thenReturn(renderingBlockInformation);
 
-        when(event.getX()).thenReturn(MOUSE_EVENT_X);
-        when(event.getY()).thenReturn(MOUSE_EVENT_Y);
+        when(editableHeaderMetaData.getSupportedEditAction()).thenReturn(GridCellEditAction.SINGLE_CLICK);
 
-        this.handler = new EditableHeaderGridWidgetMouseDoubleClickHandler(gridWidget,
-                                                                           selectionManager,
-                                                                           pinnedModeManager,
-                                                                           renderer);
+        this.handler = new EditableHeaderGridWidgetEditCellMouseEventHandler();
     }
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testHandleHeaderCellDoubleClick_NonEditableColumn() {
-        assertThat(handler.handleHeaderCellDoubleClick(event)).isFalse();
+    public void testHandleHeaderCell_NonEditableColumn() {
+        assertThat(handler.handleHeaderCell(gridWidget,
+                                            relativeLocation,
+                                            0,
+                                            0,
+                                            clickEvent)).isFalse();
+
+        verify(editableHeaderMetaData, never()).edit(any(GridBodyCellEditContext.class));
     }
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testHandleHeaderCellDoubleClick_EditableColumn_NotEditableRow() {
+    public void testHandleHeaderCell_EditableColumn_NotEditableRow() {
         when(gridColumn.getHeaderMetaData()).thenReturn(Collections.singletonList(new BaseHeaderMetaData("column")));
 
-        assertThat(handler.handleHeaderCellDoubleClick(event)).isFalse();
+        assertThat(handler.handleHeaderCell(gridWidget,
+                                            relativeLocation,
+                                            0,
+                                            0,
+                                            clickEvent)).isFalse();
+
+        verify(editableHeaderMetaData, never()).edit(any(GridBodyCellEditContext.class));
     }
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testHandleHeaderCellDoubleClick_EditableColumn_EditableRow() {
+    public void testHandleHeaderCell_EditableColumn_EditableRow_ClickEvent() {
         when(gridColumn.getHeaderMetaData()).thenReturn(Collections.singletonList(editableHeaderMetaData));
 
-        assertThat(handler.handleHeaderCellDoubleClick(event)).isTrue();
+        uiModel.selectHeaderCell(0, 0);
+
+        assertHeaderCellEdited();
+    }
+
+    @Test
+    public void testHandleHeaderCell_EditableMergedColumns_EditableRow_ClickEvent() {
+        final GridColumn gridColumn2 = mock(GridColumn.class);
+        uiModel.appendColumn(gridColumn2);
+        when(gridColumn.getHeaderMetaData()).thenReturn(Collections.singletonList(editableHeaderMetaData));
+        when(gridColumn2.getHeaderMetaData()).thenReturn(Collections.singletonList(editableHeaderMetaData));
+        when(gridColumn.getIndex()).thenReturn(0);
+        when(gridColumn2.getIndex()).thenReturn(1);
+
+        uiModel.selectHeaderCell(0, 0);
+        uiModel.selectHeaderCell(0, 1);
+
+        assertHeaderCellEdited();
+    }
+
+    private void assertHeaderCellEdited() {
+        assertThat(handler.handleHeaderCell(gridWidget,
+                                            relativeLocation,
+                                            0,
+                                            0,
+                                            clickEvent)).isTrue();
 
         verify(editableHeaderMetaData).edit(gridBodyCellEditContextCaptor.capture());
 
@@ -166,5 +213,21 @@ public class EditableHeaderGridWidgetMouseDoubleClickHandlerTest {
         final Point2D relativeLocation = gridBodyCellEditContext.getRelativeLocation().get();
         assertThat(relativeLocation.getX()).isEqualTo(MOUSE_EVENT_X + GRID_COMPUTED_LOCATION_X);
         assertThat(relativeLocation.getY()).isEqualTo(MOUSE_EVENT_Y + GRID_COMPUTED_LOCATION_Y);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testHandleHeaderCell_EditableColumn_EditableRow_DoubleClickEvent() {
+        when(gridColumn.getHeaderMetaData()).thenReturn(Collections.singletonList(editableHeaderMetaData));
+
+        uiModel.selectHeaderCell(0, 0);
+
+        assertThat(handler.handleHeaderCell(gridWidget,
+                                            relativeLocation,
+                                            0,
+                                            0,
+                                            doubleClickEvent)).isFalse();
+
+        verify(editableHeaderMetaData, never()).edit(any(GridBodyCellEditContext.class));
     }
 }

@@ -23,6 +23,7 @@ import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.BrowserEvents;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -125,7 +126,7 @@ public class CellEditorControlsViewImpl implements CellEditorControlsView {
 
         activeEditor = Optional.of(editor);
 
-        editor.show(editorTitle);
+        Scheduler.get().scheduleDeferred(() -> editor.show(editorTitle));
     }
 
     @Override

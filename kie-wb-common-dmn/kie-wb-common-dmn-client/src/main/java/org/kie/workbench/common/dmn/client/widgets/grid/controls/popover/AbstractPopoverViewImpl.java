@@ -53,6 +53,7 @@ public class AbstractPopoverViewImpl implements PopoverView {
     public void show(final Optional<String> editorTitle) {
         final PopoverOptions options = new PopoverOptions();
         options.setContent((element) -> popoverContentElement);
+        options.setAnimation(false);
         options.setHtml(true);
 
         editorTitle.ifPresent(t -> popoverElement.setAttribute("title", t));

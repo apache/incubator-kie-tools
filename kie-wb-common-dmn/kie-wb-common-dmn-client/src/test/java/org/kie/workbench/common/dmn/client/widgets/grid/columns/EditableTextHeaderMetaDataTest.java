@@ -29,9 +29,11 @@ import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.dom.TextBoxDOMElement;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.ext.wires.core.grids.client.model.GridCellEditAction;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellEditContext;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.single.SingletonDOMElementFactory;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.mockito.Matchers.any;
@@ -125,6 +127,11 @@ public class EditableTextHeaderMetaDataTest {
 
         assertNotEquals(header,
                         other);
+    }
+
+    @Test
+    public void testSupportedEditAction() {
+        assertThat(header.getSupportedEditAction()).isEqualTo(GridCellEditAction.DOUBLE_CLICK);
     }
 
     private static class MockEditableHeaderMetaData extends EditableTextHeaderMetaData<TextBox, TextBoxDOMElement> {

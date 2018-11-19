@@ -27,10 +27,12 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.HasCellEditorControls;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.mockito.Mock;
+import org.uberfire.ext.wires.core.grids.client.model.GridCellEditAction;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellEditContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
@@ -153,6 +155,11 @@ public class EditablePopupHeaderMetaDataTest {
         header.destroyResources();
 
         verify(editor).hide();
+    }
+
+    @Test
+    public void testSupportedEditAction() {
+        assertThat(header.getSupportedEditAction()).isEqualTo(GridCellEditAction.SINGLE_CLICK);
     }
 
     private static class MockEditableHeaderMetaData extends EditablePopupHeaderMetaData<GridWidget, MockEditor> {

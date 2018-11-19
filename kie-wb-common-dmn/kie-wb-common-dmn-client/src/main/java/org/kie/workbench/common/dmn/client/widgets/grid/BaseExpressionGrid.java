@@ -28,7 +28,6 @@ import java.util.function.Predicate;
 import javax.enterprise.event.Event;
 
 import com.ait.lienzo.client.core.event.INodeXYEvent;
-import com.ait.lienzo.client.core.event.NodeMouseDoubleClickHandler;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Viewport;
@@ -49,7 +48,7 @@ import org.kie.workbench.common.dmn.client.commands.general.SetHasNameCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetHeaderValueCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetTypeRefCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
-import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableHeaderGridWidgetMouseDoubleClickHandler;
+import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableHeaderGridWidgetEditCellMouseEventHandler;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableHeaderMetaData;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextBoxSingletonDOMElementFactory;
@@ -82,8 +81,10 @@ import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.util.CoordinateUtilities;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.NodeMouseEventHandler;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidget;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.DefaultGridWidgetCellSelectorMouseEventHandler;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridSelectionManager;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLayerRedrawManager;
@@ -328,12 +329,19 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
     }
 
     @Override
-    protected NodeMouseDoubleClickHandler getGridMouseDoubleClickHandler(final GridSelectionManager selectionManager,
-                                                                         final GridPinnedModeManager pinnedModeManager) {
-        return new EditableHeaderGridWidgetMouseDoubleClickHandler(this,
-                                                                   selectionManager,
-                                                                   pinnedModeManager,
-                                                                   renderer);
+    protected List<NodeMouseEventHandler> getNodeMouseClickEventHandlers(final GridSelectionManager selectionManager) {
+        final List<NodeMouseEventHandler> handlers = new ArrayList<>();
+        handlers.add(new DefaultGridWidgetCellSelectorMouseEventHandler(selectionManager));
+        handlers.add(new EditableHeaderGridWidgetEditCellMouseEventHandler());
+        return handlers;
+    }
+
+    @Override
+    protected List<NodeMouseEventHandler> getNodeMouseDoubleClickEventHandlers(final GridSelectionManager selectionManager,
+                                                                               final GridPinnedModeManager pinnedModeManager) {
+        final List<NodeMouseEventHandler> handlers = new ArrayList<>();
+        handlers.add(new EditableHeaderGridWidgetEditCellMouseEventHandler());
+        return handlers;
     }
 
     @Override

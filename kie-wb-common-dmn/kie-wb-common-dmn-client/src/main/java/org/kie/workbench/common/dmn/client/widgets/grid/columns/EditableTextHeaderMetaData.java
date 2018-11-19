@@ -22,6 +22,7 @@ import java.util.function.Supplier;
 import com.google.gwt.user.client.TakesValue;
 import com.google.gwt.user.client.ui.Focusable;
 import org.gwtbootstrap3.client.ui.base.ValueBoxBase;
+import org.uberfire.ext.wires.core.grids.client.model.GridCellEditAction;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellEditContext;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.impl.BaseDOMElement;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.single.SingletonDOMElementFactory;
@@ -84,6 +85,11 @@ public abstract class EditableTextHeaderMetaData<W extends ValueBoxBase<String>,
         factory.attachDomElement(context,
                                  (e) -> e.setValue(getTitle()),
                                  (e) -> e.setFocus(true));
+    }
+
+    @Override
+    public GridCellEditAction getSupportedEditAction() {
+        return GridCellEditAction.DOUBLE_CLICK;
     }
 
     @Override

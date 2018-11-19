@@ -43,6 +43,7 @@ import org.kie.workbench.common.dmn.client.commands.general.SetHeaderValueComman
 import org.kie.workbench.common.dmn.client.commands.general.SetTypeRefCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.GridFactoryCommandUtils;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
+import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableHeaderGridWidgetEditCellMouseEventHandler;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableHeaderMetaData;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
@@ -69,7 +70,9 @@ import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.NodeMouseEventHandler;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.DefaultGridWidgetCellSelectorMouseEventHandler;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.GridColumnRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLayerRedrawManager;
 
@@ -206,6 +209,25 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
                 return false;
             }
         };
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testDefaultNodeMouseClickHandlers() {
+        final List<NodeMouseEventHandler> handlers = grid.getNodeMouseClickEventHandlers(gridLayer);
+
+        assertThat(handlers).hasSize(2);
+        assertThat(handlers.get(0)).isInstanceOf(DefaultGridWidgetCellSelectorMouseEventHandler.class);
+        assertThat(handlers.get(1)).isInstanceOf(EditableHeaderGridWidgetEditCellMouseEventHandler.class);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testDefaultNodeMouseDoubleClickHandlers() {
+        final List<NodeMouseEventHandler> handlers = grid.getNodeMouseDoubleClickEventHandlers(gridLayer, gridLayer);
+
+        assertThat(handlers).hasSize(1);
+        assertThat(handlers.get(0)).isInstanceOf(EditableHeaderGridWidgetEditCellMouseEventHandler.class);
     }
 
     @Test

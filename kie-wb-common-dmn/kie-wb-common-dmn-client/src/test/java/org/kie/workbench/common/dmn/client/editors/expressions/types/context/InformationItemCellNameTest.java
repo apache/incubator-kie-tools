@@ -27,6 +27,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.InformationItemCell.HasNameCell;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.mockito.Mock;
+import org.uberfire.ext.wires.core.grids.client.model.GridCellEditAction;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.themes.GridRendererTheme;
@@ -81,6 +82,11 @@ public class InformationItemCellNameTest {
     protected InformationItemCell makeInformationItemCell() {
         return new InformationItemCell(() -> HasNameCell.wrap(VALUE1),
                                        listSelector);
+    }
+
+    @Test
+    public void testSupportedEditAction() {
+        assertThat(cell.getSupportedEditAction()).isEqualTo(GridCellEditAction.SINGLE_CLICK);
     }
 
     @Test

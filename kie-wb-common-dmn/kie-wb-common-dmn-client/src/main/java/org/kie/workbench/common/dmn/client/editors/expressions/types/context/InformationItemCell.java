@@ -27,6 +27,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.client.editors.expressions.util.RendererUtils;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
+import org.uberfire.ext.wires.core.grids.client.model.GridCellEditAction;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCell;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
@@ -113,5 +114,10 @@ public class InformationItemCell extends ContextGridCell<InformationItemCell.Has
     @Override
     public GridCellValue<HasNameCell> getValue() {
         return new BaseGridCellValue<>(supplier.get());
+    }
+
+    @Override
+    public GridCellEditAction getSupportedEditAction() {
+        return GridCellEditAction.SINGLE_CLICK;
     }
 }

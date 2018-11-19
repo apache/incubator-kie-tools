@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.widgets.grid.columns;
 
+import org.uberfire.ext.wires.core.grids.client.model.GridCellEditAction;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellEditContext;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.HasDOMElementResources;
@@ -24,4 +25,12 @@ public interface EditableHeaderMetaData extends GridColumn.HeaderMetaData,
                                                 HasDOMElementResources {
 
     void edit(final GridBodyCellEditContext context);
+
+    /**
+     * Returns the default action that will trigger editing of the cells value.
+     * @return
+     */
+    default GridCellEditAction getSupportedEditAction() {
+        return GridCellEditAction.SINGLE_CLICK;
+    }
 }
