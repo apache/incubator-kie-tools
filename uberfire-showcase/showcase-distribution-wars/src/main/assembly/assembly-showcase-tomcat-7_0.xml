@@ -46,7 +46,6 @@
         <include>javax.activation:activation:jar</include>
 
         <include>org.slf4j:slf4j-api:jar</include>
-        <include>org.slf4j:slf4j-ext:jar</include>
         <!-- Use JUL as logging impl as that is used by Tomcat itself. -->
         <include>org.slf4j:slf4j-jdk14</include>
         <include>ch.qos.cal10n:cal10n-api:jar</include>

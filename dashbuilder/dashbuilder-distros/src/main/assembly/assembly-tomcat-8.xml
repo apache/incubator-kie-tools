@@ -28,7 +28,6 @@
         <include>org.jboss.logging:jboss-logging</include>
         <include>org.slf4j:slf4j-api:jar</include>
         <include>org.slf4j:jcl-over-slf4j</include>
-        <include>org.slf4j:slf4j-ext</include>
         <include>org.codehaus.woodstox:woodstox-core-asl</include>
         <include>org.codehaus.woodstox:stax2-api</include>
         <include>wsdl4j:wsdl4j</include>
