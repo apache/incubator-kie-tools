@@ -32,6 +32,7 @@ import com.ait.lienzo.shared.core.types.IColor;
 import com.ait.tooling.common.api.java.util.function.Predicate;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.user.client.Window;
@@ -504,6 +505,33 @@ public class LienzoPanel extends FocusPanel implements RequiresResize, ProvidesR
     {
         return getElement().getStyle().getBackgroundColor();
     }
+
+    @Override
+    public void setFocus(final boolean focused)
+    {
+        if (focused)
+        {
+            nativeFocus(getElement());
+        }
+        else
+        {
+            super.setFocus(false);
+        }
+    }
+
+    // IE11/Ege specific check - The "setActive" method does not cause scrolling on parent element, as setFocus does, and
+    // it results in the same behavior.
+    public static native void nativeFocus(final Element element)
+    /*-{
+        if (element.setActive)
+        {
+            element.setActive();
+        }
+        else
+        {
+            element.focus();
+        }
+    }-*/;
 
     /**
      * Returns the {@link Mediators} for this panels {@link Viewport}.
