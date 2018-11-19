@@ -17,6 +17,17 @@
 
 package org.kie.workbench.common.screens.library.client.screens.assets.add;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
+import static org.uberfire.mocks.ParametrizedCommandMock.executeParametrizedCommandWith;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -33,17 +44,17 @@ import org.kie.workbench.common.screens.library.client.util.CategoryUtils;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.screens.library.client.util.ResourceHandlerManager;
 import org.kie.workbench.common.screens.library.client.widgets.project.NewAssetHandlerCardWidget;
+import org.kie.workbench.common.profile.api.preferences.ProfilePreferences;
+import org.kie.workbench.common.profile.api.preferences.Profile;
 import org.kie.workbench.common.widgets.client.handlers.NewResourceHandler;
 import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.client.mvp.CategoriesManagerCache;
+import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.workbench.category.Others;
 import org.uberfire.workbench.category.Undefined;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AddAssetScreenTest {
@@ -74,6 +85,9 @@ public class AddAssetScreenTest {
 
     @Mock
     private CategoriesManagerCache categoriesManagerCache;
+    
+    @Mock
+    private ProfilePreferences profilePreferences;
 
     private AddAssetScreen addAssetScreen;
 
@@ -86,8 +100,12 @@ public class AddAssetScreenTest {
                                                      this.newAssetHandlerCardWidgets,
                                                      this.libraryConstants,
                                                      this.categoryUtils,
-                                                     this.libraryPlaces));
+                                                     this.libraryPlaces,
+                                                     this.profilePreferences));
         doNothing().when(addAssetScreen).update();
+        executeParametrizedCommandWith(0, new ProfilePreferences(Profile.FULL))
+                .when(profilePreferences).load(any(ParameterizedCommand.class), 
+                                                any(ParameterizedCommand.class));       
     }
 
     @Test
@@ -154,4 +172,45 @@ public class AddAssetScreenTest {
         assertEquals(rh2,
                      addAssetScreen.newResourceHandlers.get(0));
     }
+    
+    @Test
+    public void testProfileFilter() {
+
+        NewResourceHandler rhFull =  mock(NewResourceHandler.class);
+        NewResourceHandler rhDroolsPlanner = mock(NewResourceHandler.class);
+        NewResourceHandler rhAll = mock(NewResourceHandler.class);
+        
+        when(rhFull.isProjectAsset()).thenReturn(true);
+        when(rhDroolsPlanner.isProjectAsset()).thenReturn(true);
+        when(rhAll.isProjectAsset()).thenReturn(true);
+        when(rhFull.getProfiles()).thenReturn(Arrays.asList(Profile.FULL));
+        when(rhDroolsPlanner.getProfiles()).thenReturn(Arrays.asList(Profile.PLANNER_AND_RULES));
+        when(rhAll.getProfiles()).thenReturn(Arrays.asList(Profile.values()));
+        
+        doReturn(Arrays.asList(rhFull,rhDroolsPlanner, rhAll))
+                 .when(resourceHandlerManager).getNewResourceHandlers();
+        addAssetScreen.initialize();
+        List<NewResourceHandler> filteredResourceHandlers = this.addAssetScreen.filterNewResourceHandlers(
+                                                                        new ProfilePreferences(Profile.FULL));
+        assertEquals(2, filteredResourceHandlers.size());
+        
+        filteredResourceHandlers = this.addAssetScreen.filterNewResourceHandlers(
+                                                                        new ProfilePreferences(Profile.PLANNER_AND_RULES));
+        assertEquals(2, filteredResourceHandlers.size());
+        
+        doReturn(Arrays.asList(rhFull, rhDroolsPlanner))
+                 .when(resourceHandlerManager).getNewResourceHandlers();
+        
+        filteredResourceHandlers = this.addAssetScreen.filterNewResourceHandlers(
+                                                                        new ProfilePreferences(Profile.PLANNER_AND_RULES));
+        assertEquals(1, filteredResourceHandlers.size());
+        assertEquals(Profile.PLANNER_AND_RULES, filteredResourceHandlers.get(0).getProfiles().get(0));
+        
+        filteredResourceHandlers = this.addAssetScreen.filterNewResourceHandlers(
+                                                                        new ProfilePreferences(Profile.FULL));
+        assertEquals(1, filteredResourceHandlers.size());
+        assertEquals(Profile.FULL, filteredResourceHandlers.get(0).getProfiles().get(0));
+        
+         
+    }    
 }

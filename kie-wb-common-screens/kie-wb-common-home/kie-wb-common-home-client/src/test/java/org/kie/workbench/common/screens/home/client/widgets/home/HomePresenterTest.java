@@ -16,6 +16,15 @@
 
 package org.kie.workbench.common.screens.home.client.widgets.home;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.uberfire.mocks.ParametrizedCommandMock.executeParametrizedCommandWith;
+
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
@@ -25,14 +34,14 @@ import org.kie.workbench.common.screens.home.client.widgets.shortcut.ShortcutPre
 import org.kie.workbench.common.screens.home.model.HomeModel;
 import org.kie.workbench.common.screens.home.model.HomeModelProvider;
 import org.kie.workbench.common.screens.home.model.ModelUtils;
+import org.kie.workbench.common.profile.api.preferences.ProfilePreferences;
+import org.kie.workbench.common.profile.api.preferences.Profile;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.mvp.Command;
+import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.security.ResourceAction;
 import org.uberfire.security.ResourceType;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class HomePresenterTest {
@@ -49,12 +58,19 @@ public class HomePresenterTest {
     private HomeModelProvider modelProvider;
 
     private HomePresenter presenter;
+    
+    @Mock
+    ProfilePreferences profilePreferences;
 
     @Before
     public void setup() {
         doReturn(mock(ShortcutPresenter.class)).when(shortcutPresenters).get();
 
-        modelProvider = () -> {
+        executeParametrizedCommandWith(0, new ProfilePreferences(Profile.FULL))
+                .when(profilePreferences).load(any(ParameterizedCommand.class), 
+                                                any(ParameterizedCommand.class)); 
+        
+        modelProvider = ProfilePreferences -> {
             final HomeModel homeModel = new HomeModel("welcome",
                                                       "description",
                                                       "backgroundImageUrl");
@@ -81,7 +97,8 @@ public class HomePresenterTest {
         presenter = new HomePresenter(view,
                                       translationService,
                                       modelProvider,
-                                      shortcutPresenters);
+                                      shortcutPresenters,
+                                      profilePreferences);
     }
 
     @Test

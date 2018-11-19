@@ -17,6 +17,7 @@
   <description>Kie Workbench - Common</description>
 
   <modules>
+    <module>kie-wb-common-profile</module>
     <module>kie-wb-common-widgets</module>
     <module>kie-wb-testing-utils</module>
     <module>kie-wb-common-screens</module>

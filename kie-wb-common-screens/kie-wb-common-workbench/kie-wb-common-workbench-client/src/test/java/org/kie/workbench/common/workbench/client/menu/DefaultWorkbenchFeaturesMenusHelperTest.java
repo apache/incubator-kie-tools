@@ -16,11 +16,39 @@
 
 package org.kie.workbench.common.workbench.client.menu;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.CONTENT_MANAGEMENT;
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.EXECUTION_ERRORS;
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.HOME;
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.JOBS;
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.LIBRARY;
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.PROCESS_DASHBOARD;
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.PROCESS_DEFINITIONS;
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.PROCESS_INSTANCES;
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.PROVISIONING;
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.SERVER_MANAGEMENT;
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.TASKS;
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.TASK_DASHBOARD;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.RETURNS_DEFAULTS;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.uberfire.mocks.ParametrizedCommandMock.executeParametrizedCommandWith;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
+import java.util.function.Consumer;
 
-import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.dashbuilder.navigation.NavTree;
 import org.dashbuilder.navigation.impl.NavTreeBuilder;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
@@ -31,6 +59,8 @@ import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.profile.api.preferences.ProfilePreferences;
+import org.kie.workbench.common.profile.api.preferences.Profile;
 import org.kie.workbench.common.widgets.client.menu.AboutCommand;
 import org.kie.workbench.common.workbench.client.admin.DefaultAdminPageHelper;
 import org.kie.workbench.common.workbench.client.resources.i18n.DefaultWorkbenchConstants;
@@ -46,15 +76,14 @@ import org.uberfire.client.views.pfly.menu.UserMenu;
 import org.uberfire.client.workbench.widgets.menu.UtilityMenuBar;
 import org.uberfire.client.workbench.widgets.menu.megamenu.WorkbenchMegaMenuPresenter;
 import org.uberfire.mvp.Command;
+import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.menu.MenuGroup;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
 
-import static org.junit.Assert.*;
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.*;
-import static org.mockito.Mockito.*;
+import com.google.gwtmockito.GwtMockitoTestRunner;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class DefaultWorkbenchFeaturesMenusHelperTest {
@@ -92,6 +121,9 @@ public class DefaultWorkbenchFeaturesMenusHelperTest {
     @Spy
     @InjectMocks
     private DefaultWorkbenchFeaturesMenusHelper menusHelper;
+    
+    @Mock
+    protected ProfilePreferences profilePreferences;
 
     @Before
     public void setup() {
@@ -100,6 +132,9 @@ public class DefaultWorkbenchFeaturesMenusHelperTest {
         mockRoles();
         mockGroups();
         mockIocManager();
+        executeParametrizedCommandWith(0, new ProfilePreferences(Profile.FULL))
+                .when(profilePreferences).load(any(ParameterizedCommand.class), 
+                                                any(ParameterizedCommand.class)); 
     }
 
     @Test

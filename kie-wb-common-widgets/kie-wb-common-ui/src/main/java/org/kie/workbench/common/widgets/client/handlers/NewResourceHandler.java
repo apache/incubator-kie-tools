@@ -15,15 +15,18 @@
  */
 package org.kie.workbench.common.widgets.client.handlers;
 
+import java.util.Arrays;
 import java.util.List;
 
-import com.google.gwt.core.client.Callback;
-import com.google.gwt.user.client.ui.IsWidget;
 import org.guvnor.common.services.project.model.Package;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.editor.commons.client.validation.ValidatorWithReasonCallback;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
+import org.kie.workbench.common.profile.api.preferences.Profile;
+
+import com.google.gwt.core.client.Callback;
+import com.google.gwt.user.client.ui.IsWidget;
 
 /**
  * Definition of Handler to support creation of new resources
@@ -116,5 +119,15 @@ public interface NewResourceHandler {
      */
     default boolean isProjectAsset() {
         return true;
+    }
+    
+    /**
+     * Defines the list of profiles where this resource handler should be used. <br>
+     * By default it supports all profiles.
+     * 
+     * @return the list of supported Profiles
+     */
+    default List<Profile> getProfiles() {
+        return Arrays.asList(Profile.values());
     }
 }

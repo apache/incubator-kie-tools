@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.stunner.bpmn.project.client.handlers;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -27,6 +29,7 @@ import org.guvnor.common.services.project.client.context.WorkspaceProjectContext
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.jboss.errai.common.client.api.Caller;
+import org.kie.workbench.common.profile.api.preferences.Profile;
 import org.kie.workbench.common.stunner.bpmn.BPMNDefinitionSet;
 import org.kie.workbench.common.stunner.bpmn.project.client.resources.BPMNProjectImageResources;
 import org.kie.workbench.common.stunner.bpmn.project.client.type.BPMNDiagramResourceType;
@@ -39,6 +42,7 @@ import org.kie.workbench.common.stunner.project.client.service.ClientProjectDiag
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
+
 
 @ApplicationScoped
 public class CaseDefinitionNewResourceHandler extends AbstractProjectDiagramNewResourceHandler<BPMNDiagramResourceType> {
@@ -97,5 +101,9 @@ public class CaseDefinitionNewResourceHandler extends AbstractProjectDiagramNewR
                             .filter(ProjectType.CASE::equals)
                             .ifPresent(p -> callback.onSuccess(true));
                 }).getProjectType(path));
+    }
+    
+    public List<Profile> getProfiles() {
+        return Arrays.asList(Profile.FULL);
     }
 }

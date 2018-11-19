@@ -26,6 +26,7 @@
 
   <inherits name="org.uberfire.UberfireWorkbench"/>
 
+  <inherits name="org.kie.workbench.common.profile.ProfileAPI"/>
   <inherits name="org.kie.workbench.common.screens.home.KieWorkbenchCommonHomeAPI"/>
 
   <source path="client"/>

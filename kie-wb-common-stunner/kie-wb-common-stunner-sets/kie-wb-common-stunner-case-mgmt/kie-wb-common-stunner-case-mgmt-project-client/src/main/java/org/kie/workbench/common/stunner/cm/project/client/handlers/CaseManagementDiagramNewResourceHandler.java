@@ -16,10 +16,15 @@
 
 package org.kie.workbench.common.stunner.cm.project.client.handlers;
 
+import java.util.Arrays;
+import java.util.List;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
+
+import org.kie.workbench.common.profile.api.preferences.Profile;
 import org.kie.workbench.common.stunner.cm.CaseManagementDefinitionSet;
 import org.kie.workbench.common.stunner.cm.project.client.editor.CaseManagementDiagramEditor;
 import org.kie.workbench.common.stunner.cm.project.client.type.CaseManagementDiagramResourceType;
@@ -88,5 +93,10 @@ public class CaseManagementDiagramNewResourceHandler extends AbstractProjectDiag
                                                               ActivityResourceType.EDITOR),
                                               ResourceAction.READ,
                                               sessionInfo.getIdentity());
+    }
+    
+    @Override
+    public List<Profile> getProfiles() {
+        return Arrays.asList(Profile.FULL);
     }
 }

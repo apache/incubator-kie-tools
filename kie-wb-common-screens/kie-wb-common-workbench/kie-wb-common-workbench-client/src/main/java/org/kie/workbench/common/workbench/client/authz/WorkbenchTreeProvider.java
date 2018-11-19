@@ -36,6 +36,7 @@ import static org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures.
 import static org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures.EDIT_SOURCES;
 import static org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures.GUIDED_DECISION_TABLE_EDIT_COLUMNS;
 import static org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures.PLANNER_AVAILABLE;
+import static org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures.EDIT_PROFILE_PREFERENCES;;
 
 /**
  * A tree permission provider which add general workbench permissions non tied to any specific resource.
@@ -103,8 +104,11 @@ public class WorkbenchTreeProvider implements PermissionTreeProvider {
                                                  i18n.EditGlobalPreferences(),
                                                  i18n.EditGlobalPreferencesHelp()));
         permissions.add(createPermissionLeafNode(GUIDED_DECISION_TABLE_EDIT_COLUMNS,
-                                                 i18n.GuidedDecisionTableEditColumns(),
-                                                 i18n.GuidedDecisionTableEditColumnsHelp()));
+                                                 i18n.EditProfilePreferences(),
+                                                 i18n.EditProfilePreferences()));
+        permissions.add(createPermissionLeafNode(EDIT_PROFILE_PREFERENCES,
+                                                 i18n.EditProfilePreferences(),
+                                                 i18n.EditProfilePreferencesHelp()));        
 
         return permissions;
     }

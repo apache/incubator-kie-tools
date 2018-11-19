@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.project.client.home;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.kie.workbench.common.profile.api.preferences.ProfilePreferences;
 import org.kie.workbench.common.screens.home.model.HomeModel;
 import org.kie.workbench.common.screens.home.model.HomeModelProvider;
 import org.kie.workbench.common.screens.home.model.HomeShortcut;
@@ -38,7 +39,7 @@ public class HomeProducer implements HomeModelProvider {
     @Inject
     private PlaceManager placeManager;
 
-    public HomeModel get() {
+    public HomeModel get(ProfilePreferences preferences) {
         final HomeModel model = new HomeModel("Welcome to KIE Workbench",
                                               "KIE Workbench offers a set of flexible tools, that support the way you need to work. Select a tool below to get started.",
                                               "images/home_bg.jpg");

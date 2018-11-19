@@ -15,6 +15,7 @@
  */
 package org.kie.workbench.common.forms.editor.client.handler;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -32,6 +33,7 @@ import org.kie.workbench.common.forms.editor.client.handler.formModel.FormModels
 import org.kie.workbench.common.forms.editor.client.resources.i18n.FormEditorConstants;
 import org.kie.workbench.common.forms.editor.client.type.FormDefinitionResourceType;
 import org.kie.workbench.common.forms.editor.service.shared.FormEditorService;
+import org.kie.workbench.common.profile.api.preferences.Profile;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.kie.workbench.common.widgets.client.handlers.DefaultNewResourceHandler;
@@ -138,5 +140,10 @@ public class NewFormDefinitionlHandler extends DefaultNewResourceHandler {
 
     protected ErrorCallback<Message> getErrorCallback() {
         return new HasBusyIndicatorDefaultErrorCallback(busyIndicatorView);
+    }
+    
+    @Override
+    public List<Profile> getProfiles() {
+        return Arrays.asList(Profile.FULL);
     }
 }

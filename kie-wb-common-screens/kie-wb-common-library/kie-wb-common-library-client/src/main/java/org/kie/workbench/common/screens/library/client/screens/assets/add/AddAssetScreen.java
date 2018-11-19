@@ -18,6 +18,8 @@ package org.kie.workbench.common.screens.library.client.screens.assets.add;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.annotation.PostConstruct;
@@ -33,6 +35,7 @@ import org.kie.workbench.common.screens.library.client.util.CategoryUtils;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.screens.library.client.util.ResourceHandlerManager;
 import org.kie.workbench.common.screens.library.client.widgets.project.NewAssetHandlerCardWidget;
+import org.kie.workbench.common.profile.api.preferences.ProfilePreferences;
 import org.kie.workbench.common.widgets.client.handlers.NewResourceHandler;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
@@ -60,6 +63,8 @@ public class AddAssetScreen {
     private String filter;
     private String filterType;
     List<NewResourceHandler> newResourceHandlers;
+    
+    ProfilePreferences profilesPreferences;
 
     public AddAssetScreen() {
     }
@@ -72,7 +77,8 @@ public class AddAssetScreen {
                           final ManagedInstance<NewAssetHandlerCardWidget> newAssetHandlerCardWidgets,
                           final LibraryConstants libraryConstants,
                           final CategoryUtils categoryUtils,
-                          final LibraryPlaces libraryPlaces) {
+                          final LibraryPlaces libraryPlaces,
+                          final ProfilePreferences profilesPreferences) {
         this.view = view;
         this.ts = ts;
         this.resourceHandlerManager = resourceHandlerManager;
@@ -81,6 +87,7 @@ public class AddAssetScreen {
         this.libraryConstants = libraryConstants;
         this.categoryUtils = categoryUtils;
         this.libraryPlaces = libraryPlaces;
+        this.profilesPreferences = profilesPreferences;
     }
 
     @PostConstruct
@@ -88,6 +95,9 @@ public class AddAssetScreen {
         this.filter = "";
         this.view.init(this);
         this.view.setTitle(this.getTitle());
+        this.view.setCategories(this.categoryUtils.createCategories());
+       
+        profilesPreferences.load(this::filterNewResourcesHandlersAndUpdate, RuntimeException::new); 
     }
 
     @OnOpen
@@ -112,6 +122,20 @@ public class AddAssetScreen {
                 view.addNewAssetWidget(widget.getView());
             }
         };
+    }
+    
+    protected void filterNewResourcesHandlersAndUpdate(ProfilePreferences loadedProfilePreferences) {
+        this.newResourceHandlers = filterNewResourceHandlers(loadedProfilePreferences);
+        this.update();
+    }
+
+    protected List<NewResourceHandler> filterNewResourceHandlers(ProfilePreferences loadedProfilePreferences) {
+        Function<NewResourceHandler, Boolean> newResourceHandlerFilter = 
+                asset -> asset.isProjectAsset() &&
+                    asset.getProfiles().stream()
+                               .filter(p ->  p == loadedProfilePreferences.getProfile())
+                               .findFirst().isPresent();
+       return this.resourceHandlerManager.getNewResourceHandlers(newResourceHandlerFilter);
     }
 
     void update() {
@@ -175,4 +199,5 @@ public class AddAssetScreen {
 
         void setTitle(String title);
     }
+    
 }

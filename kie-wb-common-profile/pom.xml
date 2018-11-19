@@ -2,21 +2,23 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
   <parent>
-    <artifactId>kie-wb-common-screens</artifactId>
-    <groupId>org.kie.workbench.screens</groupId>
+    <groupId>org.kie.workbench</groupId>
+    <artifactId>kie-wb-common</artifactId>
     <version>7.15.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>kie-wb-common-workbench</artifactId>
+  <artifactId>kie-wb-common-profile</artifactId>
+  <groupId>org.kie.workbench.profile</groupId>
   <packaging>pom</packaging>
 
-  <name>Kie Workbench - Common - Workbench</name>
-  <description>Kie Workbench - Common - Workbench</description>
+  <name>Kie Workbench - Common - Profile</name>
+  <description>Kie Workbench - Common - Profile</description>
 
   <modules>
-    <module>kie-wb-common-workbench-backend</module>
-    <module>kie-wb-common-workbench-client</module>
+    <module>kie-wb-common-profile-api</module>
   </modules>
+
 </project>

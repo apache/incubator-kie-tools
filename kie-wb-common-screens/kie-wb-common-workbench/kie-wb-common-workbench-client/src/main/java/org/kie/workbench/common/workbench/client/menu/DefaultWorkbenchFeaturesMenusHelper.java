@@ -16,15 +16,28 @@
 
 package org.kie.workbench.common.workbench.client.menu;
 
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.ADMIN;
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.ADMINISTRATION;
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.APPS;
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.DATASET_AUTHORING;
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.DATASOURCE_MANAGEMENT;
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.GUVNOR_M2REPO;
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.LIBRARY;
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.PLUGIN_AUTHORING;
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.PROCESS_DEFINITIONS;
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.PROCESS_INSTANCES;
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.SOCIAL_HOME;
+import static org.kie.workbench.common.workbench.client.PerspectiveIds.SOCIAL_USER_HOME;
+import static org.uberfire.workbench.model.menu.MenuFactory.newSimpleItem;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.i18n.client.LocaleInfo;
 import org.dashbuilder.navigation.NavDivider;
 import org.dashbuilder.navigation.NavGroup;
 import org.dashbuilder.navigation.NavItem;
@@ -58,11 +71,14 @@ import org.uberfire.security.ResourceRef;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.workbench.model.ActivityResourceType;
 import org.uberfire.workbench.model.menu.MenuFactory;
+import org.uberfire.workbench.model.menu.MenuFactory.Builder;
+import org.uberfire.workbench.model.menu.MenuFactory.MenuBuilder;
+import org.uberfire.workbench.model.menu.MenuFactory.TopLevelMenusBuilder;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
 
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.*;
-import static org.uberfire.workbench.model.menu.MenuFactory.*;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.i18n.client.LocaleInfo;
 
 @ApplicationScoped
 public class DefaultWorkbenchFeaturesMenusHelper {
@@ -155,10 +171,8 @@ public class DefaultWorkbenchFeaturesMenusHelper {
 
     public List<? extends MenuItem> getProcessManagementViews() {
         final List<MenuItem> result = new ArrayList<>(2);
-
         result.add(MenuFactory.newSimpleItem(constants.ProcessDefinitions()).perspective(PROCESS_DEFINITIONS).endMenu().build().getItems().get(0));
         result.add(MenuFactory.newSimpleItem(constants.ProcessInstances()).perspective(PROCESS_INSTANCES).endMenu().build().getItems().get(0));
-
         return result;
     }
 
@@ -389,4 +403,5 @@ public class DefaultWorkbenchFeaturesMenusHelper {
     public static native void redirect(String url)/*-{
         $wnd.location = url;
     }-*/;
+
 }
