@@ -37,7 +37,7 @@ public class StringColumnDOMElementRenderer extends BaseGridColumnMultipleDOMEle
         final Group g = new Group();
         factory.attachDomElement(context,
                                  e -> e.getWidget().setValue(cell.getValue().getValue()),
-                                 e -> { });
+                                 result -> {/*Nothing*/});
         return g;
     }
 }

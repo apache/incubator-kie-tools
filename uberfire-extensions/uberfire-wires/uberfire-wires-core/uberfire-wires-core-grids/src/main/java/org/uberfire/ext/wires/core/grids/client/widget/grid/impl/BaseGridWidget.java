@@ -47,6 +47,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.dnd.GridWidgetDnDHandlers
 import org.uberfire.ext.wires.core.grids.client.widget.dom.HasDOMElementResources;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.multiple.HasMultipleDOMElementResources;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.NodeMouseEventHandler;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.SelectionsTransformer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
@@ -114,7 +115,6 @@ public class BaseGridWidget extends Group implements GridWidget {
 
         //Click handlers
         addNodeMouseClickHandler(getGridMouseClickHandler(selectionManager));
-        addNodeMouseClickHandler(getGridMouseCellSelectorClickHandler(selectionManager));
         addNodeMouseDoubleClickHandler(getGridMouseDoubleClickHandler(selectionManager,
                                                                       pinnedModeManager));
 
@@ -175,23 +175,30 @@ public class BaseGridWidget extends Group implements GridWidget {
     }
 
     protected NodeMouseClickHandler getGridMouseClickHandler(final GridSelectionManager selectionManager) {
-        return new BaseGridWidgetMouseClickHandler(this,
-                                                   selectionManager,
-                                                   renderer);
+        return new BaseGridWidgetMouseClickHandler(this, getNodeMouseClickEventHandlers(selectionManager));
     }
 
-    protected NodeMouseClickHandler getGridMouseCellSelectorClickHandler(final GridSelectionManager selectionManager) {
-        return new GridCellSelectorMouseClickHandler(this,
-                                                     selectionManager,
-                                                     renderer);
+    protected List<NodeMouseEventHandler> getNodeMouseClickEventHandlers(final GridSelectionManager selectionManager) {
+        final List<NodeMouseEventHandler> handlers = new ArrayList<>();
+        handlers.add(new DefaultGridWidgetCellSelectorMouseEventHandler(selectionManager));
+        handlers.add(new DefaultGridWidgetCollapsedCellMouseEventHandler(renderer));
+        handlers.add(new DefaultGridWidgetLinkedColumnMouseEventHandler(selectionManager,
+                                                                        renderer));
+        return handlers;
     }
 
     protected NodeMouseDoubleClickHandler getGridMouseDoubleClickHandler(final GridSelectionManager selectionManager,
                                                                          final GridPinnedModeManager pinnedModeManager) {
-        return new BaseGridWidgetMouseDoubleClickHandler(this,
-                                                         selectionManager,
-                                                         pinnedModeManager,
-                                                         renderer);
+        return new BaseGridWidgetMouseDoubleClickHandler(this, getNodeMouseDoubleClickEventHandlers(selectionManager, pinnedModeManager));
+    }
+
+    protected List<NodeMouseEventHandler> getNodeMouseDoubleClickEventHandlers(final GridSelectionManager selectionManager,
+                                                                               final GridPinnedModeManager pinnedModeManager) {
+        final List<NodeMouseEventHandler> handlers = new ArrayList<>();
+        handlers.add(new DefaultGridWidgetEditCellMouseEventHandler());
+        handlers.add(new DefaultGridWidgetPinnedModeMouseEventHandler(pinnedModeManager,
+                                                                      renderer));
+        return handlers;
     }
 
     @Override

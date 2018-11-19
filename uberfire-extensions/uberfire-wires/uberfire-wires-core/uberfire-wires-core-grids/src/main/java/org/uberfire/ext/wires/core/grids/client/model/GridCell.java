@@ -80,4 +80,12 @@ public interface GridCell<T> {
      * @return
      */
     void setSelectionStrategy(final CellSelectionStrategy selectionStrategy);
+
+    /**
+     * Returns the default action that will trigger editing of the cells value.
+     * @return
+     */
+    default GridCellEditAction getSupportedEditAction() {
+        return GridCellEditAction.DOUBLE_CLICK;
+    }
 }

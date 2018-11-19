@@ -37,7 +37,7 @@ public class BooleanColumnDOMElementRenderer extends BaseGridColumnMultipleDOMEl
         final Group g = new Group();
         factory.attachDomElement(context,
                                  e -> e.getWidget().setValue(cell.getValue().getValue()),
-                                 result -> {});
+                                 result -> {/*Nothing*/});
         return g;
     }
 }
