@@ -15,11 +15,12 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.widgets;
 
+import java.util.List;
 import java.util.stream.IntStream;
 
-import com.ait.lienzo.client.core.event.NodeMouseDoubleClickHandler;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioHeaderTextBoxSingletonDOMElementFactory;
+import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioSimulationGridWidgetMouseEventHandler;
 import org.drools.workbench.screens.scenariosimulation.client.metadata.ScenarioHeaderMetaData;
 import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
 import org.drools.workbench.screens.scenariosimulation.client.renderers.ScenarioGridRenderer;
@@ -37,18 +38,16 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.uberfire.ext.wires.core.grids.client.widget.layer.GridSelectionManager;
-import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.GridPinnedModeManager;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.NodeMouseEventHandler;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.DefaultGridWidgetCellSelectorMouseEventHandler;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -124,9 +123,22 @@ public class ScenarioGridTest {
     }
 
     @Test
-    public void getGridMouseDoubleClickHandler() {
-        NodeMouseDoubleClickHandler retrieved = scenarioGrid.getGridMouseDoubleClickHandler(mock(GridSelectionManager.class), mock(GridPinnedModeManager.class));
-        assertNotNull(retrieved);
+    @SuppressWarnings("unchecked")
+    public void testDefaultNodeMouseClickHandlers() {
+        final List<NodeMouseEventHandler> handlers = scenarioGrid.getNodeMouseClickEventHandlers(mockScenarioGridLayer);
+
+        assertEquals(1, handlers.size());
+        assertTrue(handlers.get(0) instanceof DefaultGridWidgetCellSelectorMouseEventHandler);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testDefaultNodeMouseDoubleClickHandlers() {
+        final List<NodeMouseEventHandler> handlers = scenarioGrid.getNodeMouseDoubleClickEventHandlers(mockScenarioGridLayer,
+                                                                                                       mockScenarioGridLayer);
+
+        assertEquals(1, handlers.size());
+        assertTrue(handlers.get(0) instanceof ScenarioSimulationGridWidgetMouseEventHandler);
     }
 
     @Test

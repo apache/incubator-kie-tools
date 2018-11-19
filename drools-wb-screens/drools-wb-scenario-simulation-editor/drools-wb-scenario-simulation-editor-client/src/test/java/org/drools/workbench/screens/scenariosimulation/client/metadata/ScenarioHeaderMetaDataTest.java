@@ -22,7 +22,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.ext.wires.core.grids.client.model.GridCellEditAction;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -41,7 +43,6 @@ public class ScenarioHeaderMetaDataTest {
     public void constructorFail() {
         new ScenarioHeaderMetaData("", "", "", factoryMock, true, true);
     }
-
 
     @Test(expected = IllegalStateException.class)
     public void edit_ReadOnly() {
@@ -68,4 +69,9 @@ public class ScenarioHeaderMetaDataTest {
         verify(factoryMock, times(1)).attachDomElement(any(), any(), any());
     }
 
+    @Test
+    public void testSupportedEditAction() {
+        ScenarioHeaderMetaData scenarioHeaderMetaData = new ScenarioHeaderMetaData("", "", "", factoryMock, false, false);
+        assertEquals(GridCellEditAction.DOUBLE_CLICK, scenarioHeaderMetaData.getSupportedEditAction());
+    }
 }

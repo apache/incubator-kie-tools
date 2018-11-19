@@ -17,6 +17,7 @@ package org.drools.workbench.screens.scenariosimulation.client.metadata;
 
 import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioHeaderTextAreaDOMElement;
 import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioHeaderTextBoxSingletonDOMElementFactory;
+import org.uberfire.ext.wires.core.grids.client.model.GridCellEditAction;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellEditContext;
 
@@ -115,6 +116,10 @@ public class ScenarioHeaderMetaData extends BaseHeaderMetaData {
 
     public void setEditingMode(boolean editingMode) {
         isEditingMode = editingMode;
+    }
+
+    public GridCellEditAction getSupportedEditAction() {
+        return GridCellEditAction.DOUBLE_CLICK;
     }
 
     @Override

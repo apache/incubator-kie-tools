@@ -15,14 +15,14 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.widgets;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import com.ait.lienzo.client.core.event.NodeMouseDoubleClickHandler;
 import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import org.drools.workbench.screens.scenariosimulation.client.factories.FactoryProvider;
 import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioHeaderTextBoxSingletonDOMElementFactory;
-import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioSimulationGridPanelDoubleClickHandler;
+import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioSimulationGridWidgetMouseEventHandler;
 import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
 import org.drools.workbench.screens.scenariosimulation.client.renderers.ScenarioGridRenderer;
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
@@ -33,7 +33,9 @@ import org.drools.workbench.screens.scenariosimulation.model.FactMapping;
 import org.drools.workbench.screens.scenariosimulation.model.FactMappingType;
 import org.drools.workbench.screens.scenariosimulation.model.Scenario;
 import org.drools.workbench.screens.scenariosimulation.model.Simulation;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.NodeMouseEventHandler;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidget;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.DefaultGridWidgetCellSelectorMouseEventHandler;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridSelectionManager;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.GridPinnedModeManager;
 
@@ -87,12 +89,18 @@ public class ScenarioGrid extends BaseGridWidget {
     }
 
     @Override
-    protected NodeMouseDoubleClickHandler getGridMouseDoubleClickHandler(final GridSelectionManager selectionManager,
-                                                                         final GridPinnedModeManager pinnedModeManager) {
-        return new ScenarioSimulationGridPanelDoubleClickHandler(this,
-                                                                 selectionManager,
-                                                                 pinnedModeManager,
-                                                                 renderer);
+    protected List<NodeMouseEventHandler> getNodeMouseClickEventHandlers(final GridSelectionManager selectionManager) {
+        final List<NodeMouseEventHandler> handlers = new ArrayList<>();
+        handlers.add(new DefaultGridWidgetCellSelectorMouseEventHandler(selectionManager));
+        return handlers;
+    }
+
+    @Override
+    protected List<NodeMouseEventHandler> getNodeMouseDoubleClickEventHandlers(final GridSelectionManager selectionManager,
+                                                                               final GridPinnedModeManager pinnedModeManager) {
+        final List<NodeMouseEventHandler> handlers = new ArrayList<>();
+        handlers.add(new ScenarioSimulationGridWidgetMouseEventHandler());
+        return handlers;
     }
 
     protected void setHeaderColumns(Simulation simulation) {
