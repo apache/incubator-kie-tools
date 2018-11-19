@@ -24,10 +24,12 @@ import com.google.gwt.user.cellview.client.TextHeader;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.gwtbootstrap3.client.ui.gwt.DataGrid;
 import org.gwtbootstrap3.client.ui.gwt.Widget;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
@@ -73,8 +75,22 @@ public class UberfireColumnPickerTest {
                times(2)).add(any(Widget.class));
     }
 
-    private ColumnMeta createColumnTextCell(final String value,
-                                            String dataStoreName) {
+    private ColumnMeta createColumnMeta(final String value,
+                                        final String dataStoreName,
+                                        boolean isVisible,
+                                        boolean isVisibleIndex) {
+
+        final Header<String> header = new TextHeader(value);
+        ColumnMeta<String> columnMeta = new ColumnMeta(createColumn(value,dataStoreName),
+                                                       dataStoreName);
+        columnMeta.setHeader(header);
+        columnMeta.setVisible(isVisible);
+        columnMeta.setVisibleIndex(isVisibleIndex);
+        return columnMeta;
+    }
+
+    private Column createColumn(final String value,
+                                final String dataStoreName){
         Column<String, String> testColumn = new Column<String, String>(new TextCell()) {
             @Override
             public String getValue(String object) {
@@ -84,11 +100,12 @@ public class UberfireColumnPickerTest {
         testColumn.setSortable(true);
         testColumn.setDataStoreName(dataStoreName);
 
-        final Header<String> header = new TextHeader(value);
-        ColumnMeta<String> columnMeta = new ColumnMeta(testColumn,
-                                                       dataStoreName);
-        columnMeta.setHeader(header);
-        return columnMeta;
+        return testColumn;
+    }
+    private ColumnMeta createColumnTextCell(final String value,
+                                            String dataStoreName) {
+
+        return createColumnMeta(value,dataStoreName,true, true);
     }
 
     private ColumnMeta createColumnCheckboxCell(String dataStoreName) {
@@ -114,6 +131,41 @@ public class UberfireColumnPickerTest {
                                                                  "");
         checkColMeta.setHeader(selectPageHeader);
         return checkColMeta;
+    }
+
+    @Test
+    public void testAddColumnBeforeActions(){
+        UberfireColumnPicker<String> columnPicker = new UberfireColumnPicker<>(new DataGrid<>());
+        ColumnMeta<String> name = createColumnMeta("Name","name", true,true);
+        ColumnMeta<String> age = createColumnMeta("Age","age", true,true);
+        ColumnMeta<String> description = createColumnMeta("Description","description", false,true);
+        ColumnMeta<String> actions = createColumnMeta("Actions","actions", true,false);
+        ColumnMeta<String> etc = createColumnMeta("Etc","etc", false,true);
+
+        columnPicker.addColumn(name);
+        columnPicker.addColumn(age);
+        columnPicker.addColumn(description);
+        columnPicker.addColumn(actions);
+        columnPicker.addColumn(etc);
+
+        assertEquals(3, columnPicker.getDataGrid().getColumnCount());
+        assertEquals("name", columnPicker.getDataGrid().getColumn(0).getDataStoreName());
+        assertEquals("age", columnPicker.getDataGrid().getColumn(1).getDataStoreName());
+        assertEquals("actions", columnPicker.getDataGrid().getColumn(2).getDataStoreName());
+
+        columnPicker.addColumnOnDataGrid(true, etc);
+
+        assertEquals(4, columnPicker.getDataGrid().getColumnCount());
+        assertEquals("etc" , columnPicker.getDataGrid().getColumn(2).getDataStoreName());
+        assertEquals("actions" , columnPicker.getDataGrid().getColumn(3).getDataStoreName());
+
+        columnPicker.addColumnOnDataGrid(true, description);
+
+        assertEquals(5, columnPicker.getDataGrid().getColumnCount());
+        assertEquals("description" , columnPicker.getDataGrid().getColumn(2).getDataStoreName());
+        assertEquals("etc" , columnPicker.getDataGrid().getColumn(3).getDataStoreName());
+        assertEquals("actions" , columnPicker.getDataGrid().getColumn(4).getDataStoreName());
+
     }
 }
 

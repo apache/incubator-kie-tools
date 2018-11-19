@@ -26,6 +26,7 @@ public class ColumnMeta<T> implements Comparable {
     private boolean visible = true;
     private int position = -1;
     private boolean extraColumn;
+    private boolean isVisibleIndex = true;
 
     public ColumnMeta(Column<T, ?> column,
                       String caption) {
@@ -99,6 +100,14 @@ public class ColumnMeta<T> implements Comparable {
 
     public void setPosition(int position) {
         this.position = position;
+    }
+
+    public boolean isVisibleIndex() {
+        return isVisibleIndex;
+    }
+
+    public void setVisibleIndex(boolean visibleIndex) {
+        isVisibleIndex = visibleIndex;
     }
 
     @Override
