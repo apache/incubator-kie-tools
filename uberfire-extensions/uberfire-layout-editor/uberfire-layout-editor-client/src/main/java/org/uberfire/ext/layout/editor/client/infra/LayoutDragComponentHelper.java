@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
@@ -65,7 +66,7 @@ public class LayoutDragComponentHelper {
         Collection<SyncBeanDef<LayoutDragComponent>> iocBeanDefs = beanManager.lookupBeans(LayoutDragComponent.class);
 
         Optional<SyncBeanDef<LayoutDragComponent>> optional = iocBeanDefs.stream()
-                .filter(beanDef -> beanDef.getBeanClass().getName().equals(dragTypeClassName))
+                .filter(syncBeanDefBeanClassNamePredicate(dragTypeClassName))
                 .findAny();
 
         if (optional.isPresent()) {
@@ -73,8 +74,8 @@ public class LayoutDragComponentHelper {
 
             LayoutDragComponent instance;
 
-            if (experimentalFeaturesRegistryService.isFeatureEnabled(beanDef.getBeanClass().getName())) {
-                instance = beanDef.newInstance();
+            if (isAnEnabledExperimentalFeature(beanDef)) {
+                instance = beanDef.getInstance();
             } else {
                 DisabledExperimentalLayoutComponent disabled = beanManager.lookupBean(DisabledExperimentalLayoutComponent.class).newInstance();
                 disabled.setFeatureId(beanDef.getBeanClass().getName());
@@ -86,6 +87,14 @@ public class LayoutDragComponentHelper {
         }
 
         return null;
+    }
+
+    boolean isAnEnabledExperimentalFeature(SyncBeanDef<LayoutDragComponent> beanDef) {
+        return experimentalFeaturesRegistryService.isFeatureEnabled(beanDef.getBeanClass().getName());
+    }
+
+    Predicate<SyncBeanDef<LayoutDragComponent>> syncBeanDefBeanClassNamePredicate(String dragTypeClassName) {
+        return beanDef -> beanDef.getBeanClass().getName().equals(dragTypeClassName);
     }
 
     public String getRealBeanClass(LayoutDragComponent instance) {
