@@ -51,6 +51,8 @@ public class ReusableSubprocessConverter {
         p.setDocumentation(general.getDocumentation().getValue());
 
         ReusableSubprocessTaskExecutionSet executionSet = definition.getExecutionSet();
+        p.setOnEntryAction(executionSet.getOnEntryAction());
+        p.setOnExitAction(executionSet.getOnExitAction());
         p.setCalledElement(executionSet.getCalledElement().getValue());
         p.setAsync(executionSet.getIsAsync().getValue());
         p.setIndependent(executionSet.getIndependent().getValue());

@@ -20,6 +20,7 @@ import javax.validation.Valid;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.annotations.field.selector.SelectorDataProvider;
@@ -41,8 +42,7 @@ public class ReusableSubprocessTaskExecutionSet implements BPMNPropertySet {
     @SelectorDataProvider(
             type = SelectorDataProvider.ProviderType.REMOTE,
             className = "org.kie.workbench.common.stunner.bpmn.backend.dataproviders.CalledElementFormProvider")
-    @FormField(
-            type = ListBoxFieldType.class
+    @FormField(type = ListBoxFieldType.class
     )
     @Valid
     protected CalledElement calledElement;
@@ -68,21 +68,43 @@ public class ReusableSubprocessTaskExecutionSet implements BPMNPropertySet {
     @Valid
     private IsAsync isAsync;
 
+    @Property
+    @FormField(afterElement = "isAsync",
+            settings = {@FieldParam(name = "mode", value = "ACTION_SCRIPT")}
+    )
+    @Valid
+    private OnEntryAction onEntryAction;
+
+    @Property
+    @FormField(afterElement = "onEntryAction",
+            settings = {@FieldParam(name = "mode", value = "ACTION_SCRIPT")}
+    )
+    @Valid
+    private OnExitAction onExitAction;
+
     public ReusableSubprocessTaskExecutionSet() {
         this(new CalledElement(),
              new Independent(),
              new WaitForCompletion(),
-             new IsAsync());
+             new IsAsync(),
+             new OnEntryAction(new ScriptTypeListValue().addValue(new ScriptTypeValue("java",
+                                                                                      ""))),
+             new OnExitAction(new ScriptTypeListValue().addValue(new ScriptTypeValue("java",
+                                                                                     ""))));
     }
 
     public ReusableSubprocessTaskExecutionSet(final @MapsTo("calledElement") CalledElement calledElement,
                                               final @MapsTo("independent") Independent independent,
                                               final @MapsTo("waitForCompletion") WaitForCompletion waitForCompletion,
-                                              final @MapsTo("isAsync") IsAsync isAsync) {
+                                              final @MapsTo("isAsync") IsAsync isAsync,
+                                              final @MapsTo("onEntryAction") OnEntryAction onEntryAction,
+                                              final @MapsTo("onExitAction") OnExitAction onExitAction) {
         this.calledElement = calledElement;
         this.independent = independent;
         this.waitForCompletion = waitForCompletion;
         this.isAsync = isAsync;
+        this.onEntryAction = onEntryAction;
+        this.onExitAction = onExitAction;
     }
 
     public CalledElement getCalledElement() {
@@ -117,12 +139,30 @@ public class ReusableSubprocessTaskExecutionSet implements BPMNPropertySet {
         this.isAsync = isAsync;
     }
 
+    public OnEntryAction getOnEntryAction() {
+        return onEntryAction;
+    }
+
+    public void setOnEntryAction(final OnEntryAction onEntryAction) {
+        this.onEntryAction = onEntryAction;
+    }
+
+    public OnExitAction getOnExitAction() {
+        return onExitAction;
+    }
+
+    public void setOnExitAction(final OnExitAction onExitAction) {
+        this.onExitAction = onExitAction;
+    }
+
     @Override
     public int hashCode() {
         return HashUtil.combineHashCodes(calledElement.hashCode(),
                                          independent.hashCode(),
                                          waitForCompletion.hashCode(),
-                                         isAsync.hashCode());
+                                         isAsync.hashCode(),
+                                         onEntryAction.hashCode(),
+                                         onExitAction.hashCode());
     }
 
     @Override
@@ -132,7 +172,9 @@ public class ReusableSubprocessTaskExecutionSet implements BPMNPropertySet {
             return calledElement.equals(other.calledElement) &&
                     independent.equals(other.independent) &&
                     waitForCompletion.equals(other.waitForCompletion) &&
-                    isAsync.equals(other.isAsync);
+                    isAsync.equals(other.isAsync) &&
+                    onEntryAction.equals(other.onEntryAction) &&
+                    onExitAction.equals(other.onExitAction);
         }
         return false;
     }

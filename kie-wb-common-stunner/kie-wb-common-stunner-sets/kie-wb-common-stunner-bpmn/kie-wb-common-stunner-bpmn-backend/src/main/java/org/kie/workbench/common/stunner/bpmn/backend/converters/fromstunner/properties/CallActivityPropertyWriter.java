@@ -19,6 +19,9 @@ package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.pro
 import org.eclipse.bpmn2.CallActivity;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomAttribute;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.Scripts;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnEntryAction;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnExitAction;
 
 public class CallActivityPropertyWriter extends ActivityPropertyWriter {
 
@@ -27,6 +30,14 @@ public class CallActivityPropertyWriter extends ActivityPropertyWriter {
     public CallActivityPropertyWriter(CallActivity activity, VariableScope variableScope) {
         super(activity, variableScope);
         this.activity = activity;
+    }
+
+    public void setOnEntryAction(OnEntryAction onEntryAction) {
+        Scripts.setOnEntryAction(activity, onEntryAction);
+    }
+
+    public void setOnExitAction(OnExitAction onExitAction) {
+        Scripts.setOnExitAction(activity, onExitAction);
     }
 
     public void setIndependent(Boolean independent) {

@@ -29,6 +29,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.CalledElement;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.Independent;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.IsAsync;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnEntryAction;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnExitAction;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ReusableSubprocessTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.WaitForCompletion;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -61,7 +63,9 @@ public class CallActivityConverter {
                 new CalledElement(activity.getCalledElement()),
                 new Independent(p.isIndependent()),
                 new WaitForCompletion(p.isWaitForCompletion()),
-                new IsAsync(p.isAsync())
+                new IsAsync(p.isAsync()),
+                new OnEntryAction(p.getOnEntryAction()),
+                new OnExitAction(p.getOnExitAction())
         ));
 
         definition.setDataIOSet(new DataIOSet(

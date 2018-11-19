@@ -27,6 +27,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.AssignmentsInfo;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeListValue;
 
 public class ActivityPropertyReader extends FlowElementPropertyReader {
 
@@ -37,6 +38,14 @@ public class ActivityPropertyReader extends FlowElementPropertyReader {
         super(activity, plane, definitionResolver.getShape(activity.getId()));
         this.activity = activity;
         this.definitionResolver = definitionResolver;
+    }
+
+    public ScriptTypeListValue getOnEntryAction() {
+        return Scripts.onEntry(element.getExtensionValues());
+    }
+
+    public ScriptTypeListValue getOnExitAction() {
+        return Scripts.onExit(element.getExtensionValues());
     }
 
     public boolean isIndependent() {
