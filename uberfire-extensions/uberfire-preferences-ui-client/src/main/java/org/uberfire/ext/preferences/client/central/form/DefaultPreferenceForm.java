@@ -17,8 +17,11 @@
 package org.uberfire.ext.preferences.client.central.form;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
@@ -45,6 +48,8 @@ import org.uberfire.preferences.shared.PropertyFormType;
 import org.uberfire.preferences.shared.bean.BasePreferencePortable;
 import org.uberfire.preferences.shared.bean.PreferenceHierarchyElement;
 import org.uberfire.preferences.shared.impl.validation.ValidationResult;
+
+import com.google.gwt.core.client.GWT;
 
 @WorkbenchScreen(identifier = DefaultPreferenceForm.IDENTIFIER)
 public class DefaultPreferenceForm {
@@ -113,8 +118,15 @@ public class DefaultPreferenceForm {
             final PropertyEditorFieldInfo fieldInfo = createFieldInfo(propertyName,
                                                                       propertyType,
                                                                       propertyValue);
-
             category.withField(fieldInfo);
+        }
+    }
+
+    private void fillEnumValues(final Object propertyValue, final PropertyEditorFieldInfo fieldInfo) {
+        if (propertyValue instanceof Enum) {
+            Enum<?>[] enumConstants = ((Enum<?>) propertyValue).getDeclaringClass().getEnumConstants();
+            List<String> enumValues = Arrays.stream(enumConstants).map(Object::toString).collect(Collectors.toList());
+            fieldInfo.withComboValues(enumValues);
         }
     }
 
@@ -133,6 +145,10 @@ public class DefaultPreferenceForm {
                           fieldInfo);
         setupFieldKey(propertyName,
                       fieldInfo);
+        
+        if (propertyType == PropertyEditorType.COMBO) {
+            fillEnumValues(propertyValue, fieldInfo);
+        }
 
         return fieldInfo;
     }
@@ -193,11 +209,25 @@ public class DefaultPreferenceForm {
         if (event.getProperty().getEventId().equals(id)) {
             final String propertyName = event.getProperty().getKey();
             final PropertyFormType propertyType = preference.getPropertyType(propertyName);
-            final Object newValue = propertyType.fromString(event.getNewValue());
-
+            Object newValue = propertyType.fromString(event.getNewValue());
+            Object currentValue = preference.get(propertyName);
+            if (currentValue instanceof Enum) {
+                newValue = getEnumValue(event, currentValue);
+            } 
             preference.set(propertyName,
                            newValue);
+            
         }
+    }
+
+    private Enum<?> getEnumValue(PropertyEditorChangeEvent event, Object currentValue) {
+        String selectedValue = event.getProperty().getCurrentStringValue();
+        Object[] enumConstants = ((Enum<?>) currentValue).getDeclaringClass().getEnumConstants();
+        Enum<?> enumValue = Arrays.stream(enumConstants)
+            .filter(e -> e.toString().equals(selectedValue))
+            .map(e -> (Enum<?>) e)
+            .findFirst().orElseThrow(RuntimeException::new);
+        return enumValue;
     }
 
     public void saveEvent(@Observes PreferencesCentralSaveEvent event) {

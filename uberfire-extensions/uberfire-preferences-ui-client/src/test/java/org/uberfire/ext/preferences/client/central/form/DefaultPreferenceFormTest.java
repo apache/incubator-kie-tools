@@ -120,6 +120,40 @@ public class DefaultPreferenceFormTest {
         assertEquals(PropertyEditorFieldOption.DISABLED,
                      fieldInfo.getOptions().get(0));
     }
+    
+    @Test
+    public void testCreateFieldInfoCombo() {
+        fireInitializationEvent("preference-id");
+
+        final PropertyEditorFieldInfo fieldInfo = formPresenter.createFieldInfo("property",
+                                                                                PropertyEditorType.COMBO,
+                                                                                EnumForComboTest.val1);
+
+        assertEquals("property",
+                     fieldInfo.getKey());
+        assertEquals(1,
+                     fieldInfo.getValidators().size());
+        assertEquals("propertyBundleKey",
+                     fieldInfo.getLabel());
+        assertEquals("propertyHelpBundleKey",
+                     fieldInfo.getHelpText());
+        assertEquals(1,
+                     fieldInfo.getOptions().size());
+        assertEquals(PropertyEditorFieldOption.DISABLED,
+                     fieldInfo.getOptions().get(0));
+        
+        assertEquals(EnumForComboTest.val1.name(),
+                fieldInfo.getCurrentStringValue());
+        
+        assertEquals(EnumForComboTest.values().length, 
+               fieldInfo.getComboValues().size());
+        
+        assertTrue(fieldInfo.getComboValues()
+                .contains(EnumForComboTest.val1.name()));
+        assertTrue(fieldInfo.getComboValues()
+                .contains(EnumForComboTest.val2.name()));
+      
+    }
 
     private void firePropertyChangedEvent(final String eventId) {
         final PropertyEditorFieldInfo propertyInfo = mock(PropertyEditorFieldInfo.class);

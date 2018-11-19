@@ -26,6 +26,7 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -43,6 +44,7 @@ import org.uberfire.preferences.shared.PreferenceScope;
 import org.uberfire.preferences.shared.PreferenceScopeFactory;
 import org.uberfire.preferences.shared.PreferenceScopeTypes;
 import org.uberfire.preferences.shared.PreferenceStorage;
+import org.uberfire.preferences.shared.event.PreferenceUpdatedEvent;
 import org.uberfire.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
 import org.uberfire.preferences.shared.impl.PreferenceScopedValue;
 import org.uberfire.preferences.shared.impl.exception.InvalidPreferenceScopeException;
@@ -67,6 +69,8 @@ public class PreferenceStorageImpl implements PreferenceStorage {
     private PreferenceScopeFactory scopeFactory;
 
     private ObjectStorage objectStorage;
+    
+    private Event<PreferenceUpdatedEvent> preferenceUpdatedEvent;
 
     protected PreferenceStorageImpl() {
     }
@@ -77,13 +81,15 @@ public class PreferenceStorageImpl implements PreferenceStorage {
                                  @Customizable final PreferenceScopeTypes scopeTypes,
                                  final PreferenceScopeFactory scopeFactory,
                                  final ObjectStorage objectStorage,
-                                 final SpacesAPI spaces) {
+                                 final SpacesAPI spaces,
+                                 final Event<PreferenceUpdatedEvent> preferenceUpdatedEvent) {
         this.ioService = ioService;
         this.sessionInfo = sessionInfo;
         this.scopeTypes = scopeTypes;
         this.scopeFactory = scopeFactory;
         this.objectStorage = objectStorage;
         this.spaces = spaces;
+        this.preferenceUpdatedEvent = preferenceUpdatedEvent;
     }
 
     @PostConstruct
@@ -157,7 +163,9 @@ public class PreferenceStorageImpl implements PreferenceStorage {
                       final Object value) {
         objectStorage.write(buildScopedPreferencePath(preferenceScope,
                                                       key),
-                            value);
+                                                      value);
+        preferenceUpdatedEvent.fire(new PreferenceUpdatedEvent(key, 
+                                                               value));
     }
 
     @Override

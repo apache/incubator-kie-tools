@@ -16,6 +16,8 @@
 
 package org.uberfire.preferences.shared;
 
+import com.google.common.graph.ElementOrder.Type;
+
 /**
  * Enum used to define a property type for default form generation purposes.
  */
@@ -75,9 +77,21 @@ public enum PropertyFormType {
         public String toString(final Object realValue) {
             return String.valueOf(realValue);
         }
+    },
+    COMBO {
+        @Override
+        public Object fromString(final String stringValue) {
+            return stringValue;
+        }
+
+        @Override
+        public String toString(final Object realValue) {
+            return String.valueOf(realValue);
+        }
     };
 
     public abstract Object fromString(String stringValue);
 
     public abstract String toString(Object realValue);
+    
 }
