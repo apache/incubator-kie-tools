@@ -28,7 +28,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.BPMNDefinitionSet;
-import org.kie.workbench.common.stunner.bpmn.project.client.editor.BPMNDiagramEditor;
 import org.kie.workbench.common.stunner.bpmn.project.client.type.BPMNDiagramResourceType;
 import org.kie.workbench.common.stunner.bpmn.service.BPMNDiagramService;
 import org.kie.workbench.common.stunner.bpmn.service.ProjectType;
@@ -114,12 +113,6 @@ public class CaseDefinitionNewResourceHandlerTest {
     public void getDefinitionSetType() {
         final Class<?> definitionSetType = tested.getDefinitionSetType();
         assertThat(definitionSetType).isEqualTo(BPMNDefinitionSet.class);
-    }
-
-    @Test
-    public void getEditorIdentifier() {
-        final String editorIdentifier = tested.getEditorIdentifier();
-        assertThat(editorIdentifier).isEqualTo(BPMNDiagramEditor.EDITOR_ID);
     }
 
     @Test

@@ -69,11 +69,6 @@ public class CaseManagementDiagramNewResourceHandler extends AbstractProjectDiag
     }
 
     @Override
-    protected String getEditorIdentifier() {
-        return CaseManagementDiagramEditor.EDITOR_ID;
-    }
-
-    @Override
     public String getDescription() {
         return getCaseManagementDiagramResourceType().getDescription();
     }

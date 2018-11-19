@@ -28,7 +28,6 @@ import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.jboss.errai.common.client.api.Caller;
 import org.kie.workbench.common.stunner.bpmn.BPMNDefinitionSet;
-import org.kie.workbench.common.stunner.bpmn.project.client.editor.BPMNDiagramEditor;
 import org.kie.workbench.common.stunner.bpmn.project.client.resources.BPMNProjectImageResources;
 import org.kie.workbench.common.stunner.bpmn.project.client.type.BPMNDiagramResourceType;
 import org.kie.workbench.common.stunner.bpmn.service.BPMNDiagramService;
@@ -81,11 +80,6 @@ public class CaseDefinitionNewResourceHandler extends AbstractProjectDiagramNewR
     @Override
     protected Class<?> getDefinitionSetType() {
         return BPMNDefinitionSet.class;
-    }
-
-    @Override
-    protected String getEditorIdentifier() {
-        return BPMNDiagramEditor.EDITOR_ID;
     }
 
     @Override

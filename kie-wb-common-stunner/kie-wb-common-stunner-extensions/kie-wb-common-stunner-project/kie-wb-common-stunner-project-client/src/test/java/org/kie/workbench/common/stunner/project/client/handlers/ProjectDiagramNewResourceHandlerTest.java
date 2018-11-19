@@ -123,7 +123,6 @@ public class ProjectDiagramNewResourceHandlerTest {
 
     private class ProjectDiagramNewResourceHandlerStub extends AbstractProjectDiagramNewResourceHandler<ClientResourceType> {
 
-        static final String EDITOR_ID = "mockEditorId";
         static final String EDITOR_DESC = "mockEditorDesc";
 
         public ProjectDiagramNewResourceHandlerStub(DefinitionManager definitionManager,
@@ -140,11 +139,6 @@ public class ProjectDiagramNewResourceHandlerTest {
         @Override
         protected Class<?> getDefinitionSetType() {
             return ProjectDiagramNewResourceHandlerStub.class;
-        }
-
-        @Override
-        protected String getEditorIdentifier() {
-            return EDITOR_ID;
         }
 
         @Override

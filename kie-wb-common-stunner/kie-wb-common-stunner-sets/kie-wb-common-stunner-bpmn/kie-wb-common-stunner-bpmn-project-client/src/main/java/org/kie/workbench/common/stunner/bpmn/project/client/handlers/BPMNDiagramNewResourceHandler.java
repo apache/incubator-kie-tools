@@ -68,11 +68,6 @@ public class BPMNDiagramNewResourceHandler extends AbstractProjectDiagramNewReso
     }
 
     @Override
-    protected String getEditorIdentifier() {
-        return BPMNDiagramEditor.EDITOR_ID;
-    }
-
-    @Override
     public String getDescription() {
         return getBPMNDiagramResourceType().getShortName();
     }

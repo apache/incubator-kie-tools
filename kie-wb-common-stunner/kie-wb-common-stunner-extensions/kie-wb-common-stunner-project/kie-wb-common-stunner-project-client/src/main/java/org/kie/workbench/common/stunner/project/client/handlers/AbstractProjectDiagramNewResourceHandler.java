@@ -32,8 +32,6 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
-import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 public abstract class AbstractProjectDiagramNewResourceHandler<R extends ClientResourceType> extends DefaultNewResourceHandler {
@@ -56,8 +54,6 @@ public abstract class AbstractProjectDiagramNewResourceHandler<R extends ClientR
     }
 
     protected abstract Class<?> getDefinitionSetType();
-
-    protected abstract String getEditorIdentifier();
 
     @Override
     public ResourceTypeDefinition getResourceType() {
@@ -92,9 +88,8 @@ public abstract class AbstractProjectDiagramNewResourceHandler<R extends ClientR
                                               presenter.complete();
                                               notifySuccess();
                                               newResourceSuccessEvent.fire(new NewResourceSuccessEvent(path));
-                                              PlaceRequest place = new PathPlaceRequest(path,
-                                                                                        getEditorIdentifier());
-                                              placeManager.goTo(place);
+
+                                              placeManager.goTo(path);
                                           }
 
                                           @Override

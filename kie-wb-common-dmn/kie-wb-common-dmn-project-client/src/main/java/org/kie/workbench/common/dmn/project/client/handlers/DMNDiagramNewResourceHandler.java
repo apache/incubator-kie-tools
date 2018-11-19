@@ -76,11 +76,6 @@ public class DMNDiagramNewResourceHandler extends AbstractProjectDiagramNewResou
     }
 
     @Override
-    protected String getEditorIdentifier() {
-        return DMNDiagramEditor.EDITOR_ID;
-    }
-
-    @Override
     public String getDescription() {
         return getDiagramResourceType().getDescription();
     }
