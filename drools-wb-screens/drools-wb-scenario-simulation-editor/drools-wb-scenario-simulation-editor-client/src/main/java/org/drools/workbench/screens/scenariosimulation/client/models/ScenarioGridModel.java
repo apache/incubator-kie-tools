@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
@@ -60,6 +61,8 @@ public class ScenarioGridModel extends BaseGridData {
     protected AtomicInteger columnCounter = new AtomicInteger(0);
 
     protected GridColumn<?> selectedColumn = null;
+
+    protected Set<String> dataObjectsInstancesName;
 
     public ScenarioGridModel() {
     }
@@ -507,6 +510,38 @@ public class ScenarioGridModel extends BaseGridData {
         return factMappingByIndex.getClassName().equals(className);
     }
 
+    public boolean validateHeaderUpdate(String value, int rowIndex, int columnIndex) {
+        ScenarioHeaderMetaData headerToEdit = (ScenarioHeaderMetaData) getColumns().get(columnIndex).getHeaderMetaData().get(rowIndex);
+        boolean isValid = !headerToEdit.isInstanceHeader() || (!isDataObjectInstanceName(value) && isUnique(value, rowIndex, columnIndex));
+        if (!isValid) {
+            eventBus.fireEvent(new ScenarioNotificationEvent("Name '" + value + "' can not be used",
+                                                             NotificationEvent.NotificationType.ERROR));
+        }
+        return isValid;
+    }
+
+    public void resetErrors() {
+        IntStream.range(0, getRowCount()).forEach(this::resetErrors);
+    }
+
+    public void resetErrors(int rowIndex) {
+        Scenario scenarioByIndex = simulation.getScenarioByIndex(rowIndex);
+        scenarioByIndex.resetErrors();
+        refreshErrors();
+    }
+
+    public void refreshErrors() {
+        IntStream.range(0, getRowCount()).forEach(this::refreshErrorsRow);
+    }
+
+    /**
+     * Set the names of alredy existing Data Objects/Instances, used inside updateHeaderValidation
+     * @param dataObjectsInstancesName
+     */
+    public void setDataObjectsInstancesName(Set<String> dataObjectsInstancesName) {
+        this.dataObjectsInstancesName = dataObjectsInstancesName;
+    }
+
     /**
      * If the <code>FactIdentifier</code> of the given <code>FactMapping</code> equals the one at <b>index</b>, update the <code>FactMapping.FactAlias</code> at <b>index</b>
      * position with the provided <b>value</b>
@@ -608,21 +643,11 @@ public class ScenarioGridModel extends BaseGridData {
         });
     }
 
-    void checkSimulation() {
+    protected void checkSimulation() {
         Objects.requireNonNull(simulation, "Bind a simulation to the ScenarioGridModel to use it");
     }
 
-    public boolean validateHeaderUpdate(String value, int rowIndex, int columnIndex) {
-        ScenarioHeaderMetaData headerToEdit = (ScenarioHeaderMetaData) getColumns().get(columnIndex).getHeaderMetaData().get(rowIndex);
-        boolean isValid = !headerToEdit.isInstanceHeader() || isUnique(value, rowIndex, columnIndex);
-        if (!isValid) {
-            eventBus.fireEvent(new ScenarioNotificationEvent("Name '" + value + "' is already used",
-                                                             NotificationEvent.NotificationType.ERROR));
-        }
-        return isValid;
-    }
-
-    boolean isUnique(String value, int rowIndex, int columnIndex) {
+    protected boolean isUnique(String value, int rowIndex, int columnIndex) {
         Range instanceLimits = getInstanceLimits(columnIndex);
         SimulationDescriptor simulationDescriptor = simulation.getSimulationDescriptor();
         FactIdentifier factIdentifier = simulationDescriptor.getFactMappingByIndex(columnIndex).getFactIdentifier();
@@ -635,35 +660,29 @@ public class ScenarioGridModel extends BaseGridData {
                 .noneMatch(elem -> Objects.equals(elem.getTitle(), value));
     }
 
-    boolean isNewInstanceName(String value) {
+    protected boolean isNewInstanceName(String value) {
         return getColumns().stream()
                 .map(elem -> ((ScenarioGridColumn) elem).getInformationHeaderMetaData())
                 .filter(Objects::nonNull)
                 .noneMatch(elem -> Objects.equals(elem.getTitle(), value));
     }
 
-    boolean isNewPropertyName(String value) {
+    protected  boolean isNewPropertyName(String value) {
         return getColumns().stream()
                 .map(elem -> ((ScenarioGridColumn) elem).getPropertyHeaderMetaData())
                 .filter(Objects::nonNull)
                 .noneMatch(elem -> Objects.equals(elem.getTitle(), value));
     }
 
-    public void resetErrors() {
-        IntStream.range(0, getRowCount()).forEach(this::resetErrors);
+    protected boolean isDataObjectInstanceName(String value) {
+        if (dataObjectsInstancesName == null || dataObjectsInstancesName.isEmpty()) {
+            return false;
+        }
+        return dataObjectsInstancesName.contains(value);
+
     }
 
-    public void resetErrors(int rowIndex) {
-        Scenario scenarioByIndex = simulation.getScenarioByIndex(rowIndex);
-        scenarioByIndex.resetErrors();
-        refreshErrors();
-    }
-
-    public void refreshErrors() {
-        IntStream.range(0, getRowCount()).forEach(this::refreshErrorsRow);
-    }
-
-    void refreshErrorsRow(int rowIndex) {
+    protected void refreshErrorsRow(int rowIndex) {
         SimulationDescriptor simulationDescriptor = simulation.getSimulationDescriptor();
         Scenario scenarioByIndex = simulation.getScenarioByIndex(rowIndex);
         IntStream.range(0, getColumnCount()).forEach(columnIndex -> {

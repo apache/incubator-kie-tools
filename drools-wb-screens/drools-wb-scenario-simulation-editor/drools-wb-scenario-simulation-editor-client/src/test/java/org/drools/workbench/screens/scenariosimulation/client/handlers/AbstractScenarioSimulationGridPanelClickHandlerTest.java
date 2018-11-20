@@ -92,7 +92,7 @@ public abstract class AbstractScenarioSimulationGridPanelClickHandlerTest {
     private GridRenderer scenarioGridRendererMock;
 
     @Mock
-    private BaseGridRendererHelper scenarioGridRendererHelperMock;
+    protected BaseGridRendererHelper scenarioGridRendererHelperMock;
 
     @Mock
     private BaseGridRendererHelper.RenderingInformation scenarioRenderingInformationMock;

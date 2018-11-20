@@ -1,0 +1,61 @@
+/*
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.drools.workbench.screens.scenariosimulation.client.factories;
+
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.user.client.Element;
+import org.drools.workbench.screens.scenariosimulation.client.editor.AbstractScenarioSimulationEditorTest;
+import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
+import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGrid;
+import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridLayer;
+import org.gwtbootstrap3.client.ui.TextArea;
+import org.junit.Before;
+import org.mockito.Mock;
+import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
+
+import static org.mockito.Mockito.when;
+
+public abstract class AbstractFactoriesTest extends AbstractScenarioSimulationEditorTest {
+
+    @Mock
+    protected TextArea textAreaMock;
+    @Mock
+    protected GridBodyCellRenderContext contextMock;
+    @Mock
+    protected Element elementMock;
+    @Mock
+    protected Style styleMock;
+    @Mock
+    protected ScenarioGridLayer scenarioGridLayerMock;
+    @Mock
+    protected ScenarioGrid scenarioGridMock;
+    @Mock
+    protected ScenarioGridModel scenarioGridModelMock;
+
+    protected final static int ROW_INDEX = 1;
+    protected final static int COLUMN_INDEX = 2;
+
+    @Before
+    public void setup() {
+        super.setup();
+        when(elementMock.getStyle()).thenReturn(styleMock);
+        when(textAreaMock.getElement()).thenReturn(elementMock);
+        when(contextMock.getRowIndex()).thenReturn(ROW_INDEX);
+        when(contextMock.getColumnIndex()).thenReturn(COLUMN_INDEX);
+        when(scenarioGridMock.getModel()).thenReturn(scenarioGridModelMock);
+        when(scenarioGridLayerMock.getScenarioGrid()).thenReturn(scenarioGridMock);
+    }
+}

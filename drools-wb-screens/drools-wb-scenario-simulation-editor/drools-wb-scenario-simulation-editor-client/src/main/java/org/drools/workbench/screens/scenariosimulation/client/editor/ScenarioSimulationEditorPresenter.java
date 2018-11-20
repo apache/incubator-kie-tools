@@ -18,9 +18,11 @@ package org.drools.workbench.screens.scenariosimulation.client.editor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.function.Supplier;
@@ -441,6 +443,9 @@ public class ScenarioSimulationEditorPresenter
                     });
                 }
                 rightPanelPresenter.setInstanceFieldsMap(instanceFieldsMap);
+                Set<String> dataObjectsInstancesName = new HashSet<>(factTypeFieldsMap.keySet());
+                dataObjectsInstancesName.addAll(instanceFieldsMap.keySet());
+                scenarioGridPanel.getScenarioGrid().getModel().setDataObjectsInstancesName(dataObjectsInstancesName);
             }
         };
     }

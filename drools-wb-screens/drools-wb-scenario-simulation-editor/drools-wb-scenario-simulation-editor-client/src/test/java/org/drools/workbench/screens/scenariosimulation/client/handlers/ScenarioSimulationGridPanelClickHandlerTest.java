@@ -107,6 +107,7 @@ public class ScenarioSimulationGridPanelClickHandlerTest extends AbstractScenari
                 managedMenus.add(gridContextMenuMock);
                 managedMenus.add(nnmodifiableColumnGridContextMenuMock);
                 eventBus = eventBusMock;
+                rendererHelper = scenarioGridRendererHelperMock;
             }
 
             @Override
@@ -409,6 +410,36 @@ public class ScenarioSimulationGridPanelClickHandlerTest extends AbstractScenari
         when(headerMetaDataMock.getColumnGroup()).thenReturn("OTHER-SOMETHING");
         scenarioSimulationGridPanelClickHandler.manageHeaderRightClick(scenarioGridMock, 10, 10, GRID_Y, 1);
         verify(otherContextMenuMock, times(1)).show(eq(10), eq(10));
+    }
+
+    @Test
+    public void isHeaderEditable() {
+        // rendereHelper == null
+        scenarioSimulationGridPanelClickHandler.rendererHelper = null;
+        assertFalse(scenarioSimulationGridPanelClickHandler.isHeaderEditable(headerMetaDataMock, scenarioGridColumnMock));
+        // headerMetadata already in editing mode
+        scenarioSimulationGridPanelClickHandler.rendererHelper = scenarioGridRendererHelperMock;
+        when(headerMetaDataMock.isEditingMode()).thenReturn(true);
+        assertFalse(scenarioSimulationGridPanelClickHandler.isHeaderEditable(headerMetaDataMock, scenarioGridColumnMock));
+        // instance not assigned to column
+        when(headerMetaDataMock.isEditingMode()).thenReturn(false);
+        when(scenarioGridColumnMock.isInstanceAssigned()).thenReturn(false);
+        assertFalse(scenarioSimulationGridPanelClickHandler.isHeaderEditable(headerMetaDataMock, scenarioGridColumnMock));
+        // instance assigned to column and headermetadata == instance header
+        when(scenarioGridColumnMock.isInstanceAssigned()).thenReturn(true);
+        when(headerMetaDataMock.isInstanceHeader()).thenReturn(true);
+        assertTrue(scenarioSimulationGridPanelClickHandler.isHeaderEditable(headerMetaDataMock, scenarioGridColumnMock));
+        // headermetadata not instance header and not property header
+        when(headerMetaDataMock.isInstanceHeader()).thenReturn(false);
+        when(headerMetaDataMock.isPropertyHeader()).thenReturn(false);
+        assertFalse(scenarioSimulationGridPanelClickHandler.isHeaderEditable(headerMetaDataMock, scenarioGridColumnMock));
+        // property not assigned to column and headermetadata property header
+        when(scenarioGridColumnMock.isPropertyAssigned()).thenReturn(false);
+        when(headerMetaDataMock.isPropertyHeader()).thenReturn(true);
+        assertFalse(scenarioSimulationGridPanelClickHandler.isHeaderEditable(headerMetaDataMock, scenarioGridColumnMock));
+        // property assigned to column and headermetadata property header
+        when(scenarioGridColumnMock.isPropertyAssigned()).thenReturn(true);
+        assertTrue(scenarioSimulationGridPanelClickHandler.isHeaderEditable(headerMetaDataMock, scenarioGridColumnMock));
     }
 
     private void commontTestManageHeaderLeftClick_Group(String group, boolean assertExpected) {

@@ -16,6 +16,8 @@
 
 package org.drools.workbench.screens.scenariosimulation.client.factories;
 
+import java.util.Objects;
+
 import org.drools.workbench.screens.scenariosimulation.client.metadata.ScenarioHeaderMetaData;
 import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
 import org.gwtbootstrap3.client.ui.TextArea;
@@ -40,18 +42,25 @@ public class ScenarioHeaderTextAreaDOMElement extends ScenarioCellTextAreaDOMEle
 
     @Override
     public void flush(final String value) {
+        if (scenarioHeaderMetaData != null) {
+            scenarioHeaderMetaData.setEditingMode(false);
+            if (Objects.equals(value, scenarioHeaderMetaData.getTitle())) {
+                return;
+            }
+        }
+        internalFlush(value);
+    }
+
+    protected void internalFlush(final String value) {
         final int rowIndex = context.getRowIndex();
         final int columnIndex = context.getColumnIndex();
         try {
             ScenarioGridModel model = (ScenarioGridModel) gridWidget.getModel();
-
             if (!model.validateHeaderUpdate(value, rowIndex, columnIndex)) {
                 return;
             }
             model.updateHeader(columnIndex, rowIndex, value);
-            if (scenarioHeaderMetaData != null) {
-                scenarioHeaderMetaData.setEditingMode(false);
-            }
+            originalValue = value;
         } catch (Exception e) {
             throw new IllegalArgumentException(new StringBuilder().append("Impossible to update header (").append(rowIndex)
                                                        .append(") of column ").append(columnIndex).toString(), e);

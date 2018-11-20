@@ -33,7 +33,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 public class ScenarioCellTextAreaDOMElement extends BaseDOMElement<String, TextArea> implements TakesValue<String>,
                                                                                                 Focusable {
 
-    private String originalValue;
+    protected String originalValue;
 
     public ScenarioCellTextAreaDOMElement(final TextArea widget,
                                           final GridLayer gridLayer,

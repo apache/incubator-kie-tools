@@ -369,7 +369,7 @@ public class ScenarioSimulationGridPanelClickHandler implements ClickHandler,
      * @return
      */
     protected boolean manageGivenExpectHeaderLeftClick(ScenarioHeaderMetaData clickedScenarioHeaderMetadata, ScenarioGridColumn scenarioGridColumn, String group, Integer uiColumnIndex, Integer uiHeaderRowIndex, Point2D rp) {
-        if (rendererHelper != null && !clickedScenarioHeaderMetadata.isEditingMode()) {
+        if (isHeaderEditable(clickedScenarioHeaderMetadata, scenarioGridColumn)) {
             final BaseGridRendererHelper.RenderingInformation ri = rendererHelper.getRenderingInformation();
             final BaseGridRendererHelper.ColumnInformation ci = rendererHelper.getColumnInformation(rp.getX());
             final GridBodyCellEditContext context = ScenarioSimulationGridHeaderUtilities.makeRenderContext(scenarioGrid,
@@ -456,5 +456,12 @@ public class ScenarioSimulationGridPanelClickHandler implements ClickHandler,
     // Indirection add for test
     protected boolean isEditableHeaderLocal(GridColumn<?> scenarioGridColumn, Integer uiHeaderRowIndex) {
         return ScenarioSimulationGridHeaderUtilities.isEditableHeader(scenarioGridColumn, uiHeaderRowIndex);
+    }
+
+    protected boolean isHeaderEditable(ScenarioHeaderMetaData clickedScenarioHeaderMetadata, ScenarioGridColumn scenarioGridColumn) {
+        if (rendererHelper == null || clickedScenarioHeaderMetadata.isEditingMode() || !scenarioGridColumn.isInstanceAssigned()) {
+            return false;
+        }
+        return (clickedScenarioHeaderMetadata.isInstanceHeader() || (clickedScenarioHeaderMetadata.isPropertyHeader() && scenarioGridColumn.isPropertyAssigned()));
     }
 }
