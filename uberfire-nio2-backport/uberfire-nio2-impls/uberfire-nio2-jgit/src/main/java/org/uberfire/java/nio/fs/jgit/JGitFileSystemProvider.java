@@ -1495,8 +1495,8 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
 
     private void copyBranch(final JGitPathImpl source,
                             final JGitPathImpl target) {
-        checkCondition("source and taget should have same setup",
-                       !hasSameFileSystem(source,
+        checkCondition("source and target should have same file system",
+                       hasSameFileSystem(source,
                                           target));
         if (existsBranch(target)) {
             throw new FileAlreadyExistsException(target.toString());
@@ -1753,8 +1753,8 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
     private void moveBranch(final JGitPathImpl source,
                             final JGitPathImpl target,
                             final CopyOption... options) {
-        checkCondition("source and taget should have same setup",
-                       !hasSameFileSystem(source,
+        checkCondition("source and target should have same file system",
+                       hasSameFileSystem(source,
                                           target));
 
         if (!exists(source)) {

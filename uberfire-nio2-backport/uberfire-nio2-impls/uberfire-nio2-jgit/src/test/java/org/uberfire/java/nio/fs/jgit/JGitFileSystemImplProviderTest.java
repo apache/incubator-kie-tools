@@ -17,6 +17,7 @@
 package org.uberfire.java.nio.fs.jgit;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -594,12 +595,7 @@ public class JGitFileSystemImplProviderTest extends AbstractTestInfra {
 
         final Path path = provider.getPath(URI.create("git://master@inputstream-test-repo/myfile.txt"));
 
-        final InputStream inputStream = provider.newInputStream(path);
-        assertThat(inputStream).isNotNull();
-
-        final String content = new Scanner(inputStream).useDelimiter("\\A").next();
-
-        inputStream.close();
+        final String content = extractContent(path);
 
         assertThat(content).isNotNull().isEqualTo("temp\n.origin\n.content");
     }
@@ -640,12 +636,7 @@ public class JGitFileSystemImplProviderTest extends AbstractTestInfra {
 
         final Path path = provider.getPath(URI.create("git://master@xinputstream-test-repo/path/to/file/myfile.txt"));
 
-        final InputStream inputStream = provider.newInputStream(path);
-        assertThat(inputStream).isNotNull();
-
-        final String content = new Scanner(inputStream).useDelimiter("\\A").next();
-
-        inputStream.close();
+        final String content = extractContent(path);
 
         assertThat(content).isNotNull().isEqualTo("temp\n.origin\n.content");
     }
@@ -895,14 +886,12 @@ public class JGitFileSystemImplProviderTest extends AbstractTestInfra {
 
         final File parentDir1 = doraRepoDir.getParentFile();
 
-
         assertEquals(parentDir, parentDir1);
 
         provider.delete(doraFS.getPath(null));
         assertFalse(doraRepoDir.exists());
         assertTrue(parentDir.exists());
         assertTrue(gitProviderDir.exists());
-
 
         provider.delete(doraFS1.getPath(null));
         assertFalse(dora1RepoDir.exists());
@@ -2138,7 +2127,8 @@ public class JGitFileSystemImplProviderTest extends AbstractTestInfra {
     @Test
     public void extractFSHooksTest() {
         Map<String, Object> env = new HashMap<>();
-        Object hook = (FileSystemHooks.FileSystemHook<String>) fsName -> { };
+        Object hook = (FileSystemHooks.FileSystemHook<String>) fsName -> {
+        };
         env.put("dora", "bento");
         env.put(FileSystemHooks.ExternalUpdate.name(), hook);
 
@@ -2150,9 +2140,9 @@ public class JGitFileSystemImplProviderTest extends AbstractTestInfra {
     }
 
     @Test
-    public void testCloseFileSystem(){
+    public void testCloseFileSystem() {
 
-        JGitFileSystemProvider fsProvider = spy(new JGitFileSystemProvider(getGitPreferences()){
+        JGitFileSystemProvider fsProvider = spy(new JGitFileSystemProvider(getGitPreferences()) {
 
             @Override
             protected void setupFileSystemsManager() {
@@ -2163,8 +2153,126 @@ public class JGitFileSystemImplProviderTest extends AbstractTestInfra {
 
         fsProvider.onCloseFileSystem(mock(JGitFileSystem.class));
 
-        verify(fsProvider,times(1)).shutdownEventsManager();
+        verify(fsProvider, times(1)).shutdownEventsManager();
+    }
 
+    @Test
+    public void moveBranchesTest() throws IOException {
+        final URI newRepo = URI.create("git://movebranch-repo");
+        provider.newFileSystem(newRepo,
+                               EMPTY_ENV);
+
+        {
+            final Path path = provider.getPath(URI.create("git://another-branch@movebranch-repo/dorinha.txt"));
+
+            final OutputStream outStream = provider.newOutputStream(path);
+            outStream.write("little baby another-branch".getBytes());
+            outStream.close();
+        }
+
+        final Path source = provider.getPath(URI.create("git://another-branch@movebranch-repo/"));
+        final Path target = provider.getPath(URI.create("git://another-branch-moved@movebranch-repo/"));
+
+        provider.move(source,
+                      target);
+
+        Throwable extractContentCall = catchThrowable(() -> extractContent(provider.getPath(URI.create("git://another-branch@movebranch-repo/dorinha.txt"))));
+
+        assertThat(extractContentCall).isInstanceOf(NoSuchFileException.class);
+
+        final String contentMoved = extractContent(provider.getPath(URI.create("git://another-branch-moved@movebranch-repo/dorinha.txt")));
+
+        assertThat(contentMoved).isNotNull().isEqualTo("little baby another-branch");
+    }
+
+    @Test
+    public void moveBranchesNotAtTheSameFSShouldNotBeAllowedTest() throws IOException {
+        final URI newRepo = URI.create("git://movebranch-repo");
+        provider.newFileSystem(newRepo,
+                               EMPTY_ENV);
+
+        final URI anotherRepo = URI.create("git://another-repo");
+        provider.newFileSystem(anotherRepo,
+                               EMPTY_ENV);
+
+        {
+            final Path path = provider.getPath(URI.create("git://another-branch@movebranch-repo/dorinha.txt"));
+
+            final OutputStream outStream = provider.newOutputStream(path);
+            outStream.write("little baby another-branch".getBytes());
+            outStream.close();
+        }
+
+        final Path source = provider.getPath(URI.create("git://another-branch@movebranch-repo/"));
+        final Path target = provider.getPath(URI.create("git://another-branch-moved@another-repo/"));
+
+        assertThatThrownBy(() -> provider.move(source, target))
+                .isInstanceOf(IllegalStateException.class);
+    }
+
+    @Test
+    public void copyBranchesNotAtTheSameFSShouldNotBeAllowedTest() throws IOException {
+        final URI newRepo = URI.create("git://movebranch-repo");
+        provider.newFileSystem(newRepo,
+                               EMPTY_ENV);
+
+        final URI anotherRepo = URI.create("git://another-repo");
+        provider.newFileSystem(anotherRepo,
+                               EMPTY_ENV);
+
+        {
+            final Path path = provider.getPath(URI.create("git://another-branch@movebranch-repo/dorinha.txt"));
+
+            final OutputStream outStream = provider.newOutputStream(path);
+            outStream.write("little baby another-branch".getBytes());
+            outStream.close();
+        }
+
+        final Path source = provider.getPath(URI.create("git://another-branch@movebranch-repo/"));
+        final Path target = provider.getPath(URI.create("git://another-branch-moved@another-repo/"));
+
+        assertThatThrownBy(() -> provider.copy(source, target))
+                .isInstanceOf(IllegalStateException.class);
+    }
+
+    @Test
+    public void copyBranchesTest() throws IOException {
+        final URI newRepo = URI.create("git://movebranch-repo");
+        provider.newFileSystem(newRepo,
+                               EMPTY_ENV);
+
+        {
+            final Path path = provider.getPath(URI.create("git://another-branch@movebranch-repo/dorinha.txt"));
+
+            final OutputStream outStream = provider.newOutputStream(path);
+            outStream.write("little baby another-branch".getBytes());
+            outStream.close();
+        }
+
+        final Path source = provider.getPath(URI.create("git://another-branch@movebranch-repo/"));
+        final Path target = provider.getPath(URI.create("git://another-branch-moved@movebranch-repo/"));
+
+        provider.copy(source,
+                      target);
+
+        final String originalContent = extractContent(provider.getPath(URI.create("git://another-branch@movebranch-repo/dorinha.txt")));
+
+        assertThat(originalContent).isNotNull().isEqualTo("little baby another-branch");
+
+        final String contentMoved = extractContent(provider.getPath(URI.create("git://another-branch-moved@movebranch-repo/dorinha.txt")));
+
+        assertThat(contentMoved).isNotNull().isEqualTo("little baby another-branch");
+    }
+
+    private String extractContent(Path path) throws IOException {
+        final InputStream inputStream = provider.newInputStream(path);
+        assertThat(inputStream).isNotNull();
+
+        final String content = new Scanner(inputStream).useDelimiter("\\A").next();
+
+        inputStream.close();
+
+        return content;
     }
 
     private interface MyAttrs extends BasicFileAttributes {
