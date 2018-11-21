@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import bpsim.BPSimDataType;
 import bpsim.BpsimPackage;
@@ -75,7 +76,7 @@ public class ProcessPropertyWriter extends BasePropertyWriter implements Element
 
     public void setId(String value) {
         // ids should be properly sanitized at a higher level
-        String sanitized = value.replaceAll("\\s", "");
+        String sanitized = Objects.nonNull(value) ? value.replaceAll("\\s", "") : value;
         process.setId(sanitized);
     }
 

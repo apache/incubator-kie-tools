@@ -24,7 +24,10 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.BPMNDefinitionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.DiagramSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Id;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Package;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -62,26 +65,47 @@ public class BPMNProjectDiagramFactoryTest {
 
     @Mock
     private ProjectMetadata metadata;
+
     @Mock
     private Graph graph;
+
     @Mock
     private Node diagramNode;
+
     @Mock
     private Bounds bounds;
+
     private BPMNDiagramImpl diagram;
+
     private final List<Node> graphNodes = new ArrayList<>(1);
 
     private BPMNProjectDiagramFactoryImpl tested;
 
+    @Mock
+    private DiagramSet diagramSet;
+
+    private Id id;
+
+    private Name name;
+
+    private Package packageProperty;
+
     @Before
     public void setup() {
         diagram = new BPMNDiagramImpl();
-        View<BPMNDiagram> diagramNodeContent = new ViewImpl<>(diagram,
-                                                                         bounds);
+        id = new Id();
+        name = new Name();
+        packageProperty = new Package();
+        diagram.setDiagramSet(diagramSet);
+        View<BPMNDiagram> diagramNodeContent = new ViewImpl<>(diagram, bounds);
         graphNodes.add(diagramNode);
         when(diagramNode.getUUID()).thenReturn(DIAGRAM_NODE_UUID);
         when(diagramNode.getContent()).thenReturn(diagramNodeContent);
         when(graph.nodes()).thenReturn(graphNodes);
+        when(diagramSet.getId()).thenReturn(id);
+        when(diagramSet.getPackageProperty()).thenReturn(packageProperty);
+        when(diagramSet.getName()).thenReturn(name);
+
         tested = new BPMNProjectDiagramFactoryImpl();
     }
 
@@ -104,15 +128,28 @@ public class BPMNProjectDiagramFactoryTest {
     public void testBuildNoPackageSpecified() {
         when(metadata.getProjectPackage()).thenReturn(null);
         ProjectDiagram pdiagram = tested.build(NAME, metadata, graph);
+
         assertNotNull(pdiagram);
-        assertEquals(graph,
-                     pdiagram.getGraph());
-        assertEquals(NAME,
-                     diagram.getDiagramSet().getId().getValue());
-        assertEquals(Package.DEFAULT_PACKAGE,
-                     diagram.getDiagramSet().getPackageProperty().getValue());
-        verify(metadata,
-               times(1)).setCanvasRootUUID(eq(DIAGRAM_NODE_UUID));
+        assertEquals(graph, pdiagram.getGraph());
+        assertEquals(NAME, id.getValue());
+        assertEquals(NAME, name.getValue());
+        assertEquals(Package.DEFAULT_PACKAGE, packageProperty.getValue());
+        verify(metadata, times(1)).setCanvasRootUUID(eq(DIAGRAM_NODE_UUID));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testBuildWithAttributesSet() {
+        final String id2 = "id";
+        final String name2 = "name2";
+        
+        this.id.setValue(id2);
+        name.setValue(name2);
+
+        ProjectDiagram pdiagram = tested.build(NAME, metadata, graph);
+
+        assertEquals(id2, this.id.getValue());
+        assertEquals(name2, name.getValue());
     }
 
     @Test
@@ -124,13 +161,9 @@ public class BPMNProjectDiagramFactoryTest {
         ProjectDiagram pdiagram = tested.build(NAME, metadata, graph);
 
         assertNotNull(pdiagram);
-        assertEquals(graph,
-                     pdiagram.getGraph());
-        assertEquals(pName + "." + NAME,
-                     diagram.getDiagramSet().getId().getValue());
-        assertEquals("packageName",
-                     diagram.getDiagramSet().getPackageProperty().getValue());
-        verify(metadata,
-               times(1)).setCanvasRootUUID(eq(DIAGRAM_NODE_UUID));
+        assertEquals(graph, pdiagram.getGraph());
+        assertEquals(pName + "." + NAME, id.getValue());
+        assertEquals("packageName", packageProperty.getValue());
+        verify(metadata, times(1)).setCanvasRootUUID(eq(DIAGRAM_NODE_UUID));
     }
 }

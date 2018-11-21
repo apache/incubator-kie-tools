@@ -72,9 +72,6 @@ public class BPMNProjectDiagramFactoryImpl
     protected void updateDiagramProperties(final String name,
                                            final Node<Definition<BPMNDiagram>, ?> diagramNode,
                                            final ProjectMetadata metadata) {
-        super.updateDiagramProperties(name,
-                                      diagramNode,
-                                      metadata);
         // Set kie related properties for the current project.
         final BPMNDiagram diagram = diagramNode.getContent().getDefinition();
         final DiagramSet diagramSet = diagram.getDiagramSet();
@@ -95,5 +92,7 @@ public class BPMNProjectDiagramFactoryImpl
         if (null == diagramName || diagramName.isEmpty()) {
             diagramSet.getName().setValue(name);
         }
+
+        super.updateDiagramProperties(name, diagramNode, metadata);
     }
 }

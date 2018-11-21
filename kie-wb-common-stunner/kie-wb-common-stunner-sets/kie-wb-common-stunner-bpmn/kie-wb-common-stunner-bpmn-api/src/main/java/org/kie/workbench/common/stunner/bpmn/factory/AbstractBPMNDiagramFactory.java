@@ -16,9 +16,12 @@
 
 package org.kie.workbench.common.stunner.bpmn.factory;
 
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.DiagramSet;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.factory.impl.BindableDiagramFactory;
@@ -61,7 +64,21 @@ public abstract class AbstractBPMNDiagramFactory<M extends Metadata, D extends D
     protected void updateDiagramProperties(final String name,
                                            final Node<Definition<BPMNDiagram>, ?> diagramNode,
                                            final M metadata) {
-        // For additional initializations.
+        // Default initializations.
+        final Optional<DiagramSet> diagramSet = Optional.ofNullable(diagramNode)
+                .map(Node::<Definition<BPMNDiagram>>getContent)
+                .map(Definition::getDefinition)
+                .map(BPMNDiagram::getDiagramSet);
+
+        diagramSet
+                .map(DiagramSet::getId)
+                .filter(id -> Objects.isNull(id.getValue()))
+                .ifPresent(id -> id.setValue(metadata.getTitle()));
+
+        diagramSet
+                .map(DiagramSet::getName)
+                .filter(attr -> Objects.isNull(attr.getValue()))
+                .ifPresent(attr -> attr.setValue(name));
     }
 
     private void updateProperties(final String name,
@@ -78,7 +95,7 @@ public abstract class AbstractBPMNDiagramFactory<M extends Metadata, D extends D
     @SuppressWarnings("unchecked")
     Function<Graph, Node<Definition<BPMNDiagram>, ?>> diagramProvider =
             graph -> GraphUtils.<BPMNDiagram>getFirstNode(graph,
-                                             diagramType);
+                                                          diagramType);
 
     protected void setDiagramProvider(Function<Graph, Node<Definition<BPMNDiagram>, ?>> diagramProvider) {
         this.diagramProvider = diagramProvider;

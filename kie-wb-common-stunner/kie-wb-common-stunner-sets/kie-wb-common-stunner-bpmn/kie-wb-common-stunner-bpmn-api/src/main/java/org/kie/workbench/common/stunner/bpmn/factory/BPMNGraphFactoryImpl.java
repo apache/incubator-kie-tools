@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Typed;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
@@ -55,7 +54,6 @@ import org.kie.workbench.common.stunner.core.util.UUID;
  * these commands.
  */
 @Dependent
-@Typed(BPMNGraphFactoryImpl.class)
 public class BPMNGraphFactoryImpl
         extends AbstractGraphFactory
         implements BPMNGraphFactory {
