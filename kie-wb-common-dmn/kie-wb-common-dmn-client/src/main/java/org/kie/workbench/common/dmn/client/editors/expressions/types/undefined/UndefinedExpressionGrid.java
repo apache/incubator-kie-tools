@@ -34,6 +34,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionE
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.selector.UndefinedExpressionSelectorPopoverView;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCache;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.HasCellEditorControls;
@@ -64,6 +65,7 @@ public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, DMNG
 
     private static final String EXPRESSION_COLUMN_GROUP = "UndefinedExpressionGrid$ExpressionColumn";
 
+    private final UndefinedExpressionSelectorPopoverView.Presenter undefinedExpressionSelector;
     private final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
     private final ExpressionGridCache expressionGridCache;
 
@@ -85,6 +87,7 @@ public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, DMNG
                                    final ListSelectorView.Presenter listSelector,
                                    final TranslationService translationService,
                                    final int nesting,
+                                   final UndefinedExpressionSelectorPopoverView.Presenter undefinedExpressionSelector,
                                    final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
                                    final ExpressionGridCache expressionGridCache) {
         super(parent,
@@ -106,6 +109,7 @@ public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, DMNG
               listSelector,
               translationService,
               nesting);
+        this.undefinedExpressionSelector = undefinedExpressionSelector;
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
         this.expressionGridCache = expressionGridCache;
 
@@ -137,7 +141,8 @@ public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, DMNG
                                                                                                           EXPRESSION_COLUMN_GROUP),
                                                                                    this,
                                                                                    cellEditorControls,
-                                                                                   expressionEditorDefinitionsSupplier);
+                                                                                   undefinedExpressionSelector,
+                                                                                   translationService);
         undefinedExpressionColumn.setMovable(false);
         undefinedExpressionColumn.setResizable(false);
 
@@ -199,7 +204,7 @@ public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, DMNG
         }
     }
 
-    void onExpressionTypeChanged(final ExpressionType type) {
+    public void onExpressionTypeChanged(final ExpressionType type) {
         final Optional<Expression> expression = expressionEditorDefinitionsSupplier
                 .get()
                 .stream()

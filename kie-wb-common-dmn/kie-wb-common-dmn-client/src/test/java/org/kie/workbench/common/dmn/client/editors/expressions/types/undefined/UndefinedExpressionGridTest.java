@@ -40,6 +40,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionE
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ContextGrid;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.literal.LiteralExpressionCell;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.selector.UndefinedExpressionSelectorPopoverView;
 import org.kie.workbench.common.dmn.client.session.DMNEditorSession;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCache;
@@ -135,6 +136,9 @@ public class UndefinedExpressionGridTest {
     private TranslationService translationService;
 
     @Mock
+    private UndefinedExpressionSelectorPopoverView.Presenter undefinedExpressionSelector;
+
+    @Mock
     private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
 
     @Mock
@@ -214,6 +218,7 @@ public class UndefinedExpressionGridTest {
                                                              domainObjectSelectionEvent,
                                                              listSelector,
                                                              translationService,
+                                                             undefinedExpressionSelector,
                                                              expressionEditorDefinitionsSupplier);
 
         expression = definition.getModelClass();

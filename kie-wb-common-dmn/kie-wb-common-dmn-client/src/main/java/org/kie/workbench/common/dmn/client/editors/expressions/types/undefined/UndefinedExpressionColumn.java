@@ -16,48 +16,49 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.undefined;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
-import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
-import org.kie.workbench.common.dmn.client.widgets.grid.controls.HasCellEditorControls;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.selector.UndefinedExpressionSelectorPopoverView;
+import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
-import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellEditContext;
 
-public class UndefinedExpressionColumn extends DMNGridColumn<UndefinedExpressionGrid, String> implements HasListSelectorControl {
+public class UndefinedExpressionColumn extends DMNGridColumn<UndefinedExpressionGrid, String> {
 
     private final CellEditorControlsView.Presenter cellEditorControls;
-    private final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
+    private final UndefinedExpressionSelectorPopoverView.Presenter undefinedExpressionSelector;
+    private final TranslationService translationService;
 
     public UndefinedExpressionColumn(final HeaderMetaData headerMetaData,
                                      final UndefinedExpressionGrid gridWidget,
                                      final CellEditorControlsView.Presenter cellEditorControls,
-                                     final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier) {
+                                     final UndefinedExpressionSelectorPopoverView.Presenter undefinedExpressionSelector,
+                                     final TranslationService translationService) {
         this(Collections.singletonList(headerMetaData),
              gridWidget,
              cellEditorControls,
-             expressionEditorDefinitionsSupplier);
+             undefinedExpressionSelector,
+             translationService);
     }
 
     public UndefinedExpressionColumn(final List<HeaderMetaData> headerMetaData,
                                      final UndefinedExpressionGrid gridWidget,
                                      final CellEditorControlsView.Presenter cellEditorControls,
-                                     final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier) {
+                                     final UndefinedExpressionSelectorPopoverView.Presenter undefinedExpressionSelector,
+                                     final TranslationService translationService) {
         super(headerMetaData,
               new UndefinedExpressionColumnRenderer(),
               gridWidget);
         this.cellEditorControls = cellEditorControls;
-        this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
+        this.undefinedExpressionSelector = undefinedExpressionSelector;
+        this.translationService = translationService;
     }
 
     @Override
@@ -70,64 +71,24 @@ public class UndefinedExpressionColumn extends DMNGridColumn<UndefinedExpression
         final double absoluteCellX = context.getAbsoluteCellX();
         final double absoluteCellY = context.getAbsoluteCellY();
 
-        if (cell == null) {
-            return;
-        }
-
-        if (cell instanceof HasCellEditorControls) {
-            final HasCellEditorControls hasControls = (HasCellEditorControls) cell;
-            final Optional<HasCellEditorControls.Editor> editor = hasControls.getEditor();
-            editor.ifPresent(e -> {
-                e.bind(this, uiRowIndex, uiColumnIndex);
-                final double[] dxy = {absoluteCellX, absoluteCellY};
-                final Optional<com.ait.lienzo.client.core.types.Point2D> rx = context.getRelativeLocation();
-                rx.ifPresent(r -> {
-                    dxy[0] = r.getX();
-                    dxy[1] = r.getY();
-                });
-                cellEditorControls.show(e,
-                                        Optional.empty(),
-                                        (int) (dxy[0]),
-                                        (int) (dxy[1]));
-            });
-        }
+        undefinedExpressionSelector.bind(gridWidget,
+                                         uiRowIndex,
+                                         uiColumnIndex);
+        final double[] dxy = {absoluteCellX, absoluteCellY};
+        final Optional<com.ait.lienzo.client.core.types.Point2D> rx = context.getRelativeLocation();
+        rx.ifPresent(r -> {
+            dxy[0] = r.getX();
+            dxy[1] = r.getY();
+        });
+        cellEditorControls.show(undefinedExpressionSelector,
+                                Optional.of(translationService.getTranslation(DMNEditorConstants.UndefinedExpressionEditor_SelectorTitle)),
+                                (int) (dxy[0]),
+                                (int) (dxy[1]));
     }
 
     @Override
     public void setWidth(final double width) {
         super.setWidth(width);
         updateWidthOfPeers();
-    }
-
-    @Override
-    @SuppressWarnings("unused")
-    public List<ListSelectorItem> getItems(final int uiRowIndex,
-                                           final int uiColumnIndex) {
-        final List<ListSelectorItem> items = new ArrayList<>();
-        items.addAll(expressionEditorDefinitionsSupplier
-                             .get()
-                             .stream()
-                             .filter(definition -> definition.getModelClass().isPresent())
-                             .map(this::makeListSelectorItem)
-                             .collect(Collectors.toList()));
-
-        return items;
-    }
-
-    ListSelectorTextItem makeListSelectorItem(final ExpressionEditorDefinition definition) {
-        return ListSelectorTextItem.build(definition.getName(),
-                                          true,
-                                          () -> {
-                                              cellEditorControls.hide();
-                                              gridWidget.onExpressionTypeChanged(definition.getType());
-                                          });
-    }
-
-    @Override
-    public void onItemSelected(final ListSelectorItem item) {
-        if (item instanceof ListSelectorTextItem) {
-            final ListSelectorTextItem li = (ListSelectorTextItem) item;
-            li.getCommand().execute();
-        }
     }
 }

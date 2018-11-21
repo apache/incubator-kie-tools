@@ -31,6 +31,7 @@ import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.BaseEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.selector.UndefinedExpressionSelectorPopoverView;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
@@ -49,6 +50,7 @@ import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 @ApplicationScoped
 public class UndefinedExpressionEditorDefinition extends BaseEditorDefinition<Expression, DMNGridData> {
 
+    private UndefinedExpressionSelectorPopoverView.Presenter undefinedExpressionSelector;
     private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
 
     public UndefinedExpressionEditorDefinition() {
@@ -64,6 +66,7 @@ public class UndefinedExpressionEditorDefinition extends BaseEditorDefinition<Ex
                                                final Event<DomainObjectSelectionEvent> domainObjectSelectionEvent,
                                                final ListSelectorView.Presenter listSelector,
                                                final TranslationService translationService,
+                                               final UndefinedExpressionSelectorPopoverView.Presenter undefinedExpressionSelector,
                                                final @DMNEditor Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier) {
         super(definitionUtils,
               sessionManager,
@@ -73,6 +76,7 @@ public class UndefinedExpressionEditorDefinition extends BaseEditorDefinition<Ex
               domainObjectSelectionEvent,
               listSelector,
               translationService);
+        this.undefinedExpressionSelector = undefinedExpressionSelector;
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
     }
 
@@ -116,6 +120,7 @@ public class UndefinedExpressionEditorDefinition extends BaseEditorDefinition<Ex
                                                        listSelector,
                                                        translationService,
                                                        nesting,
+                                                       undefinedExpressionSelector,
                                                        expressionEditorDefinitionsSupplier,
                                                        ((DMNSession) sessionManager.getCurrentSession()).getExpressionGridCache()));
     }
