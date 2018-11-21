@@ -22,25 +22,28 @@ import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.Element;
-import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLElement;
 import org.kie.workbench.common.dmn.client.editors.types.common.JQuery;
 import org.kie.workbench.common.dmn.client.editors.types.common.JQueryEvent;
 
 import static org.kie.workbench.common.dmn.client.editors.types.common.JQuery.$;
 
 /**
- * This class implements a workaround for the kebab menu.
+ * This class implements a workaround for menus.
  * <p>
- * The kebab menu cannot be affected by the "overflow: hidden" CSS property from the dialog content.
+ * Menus in a dialog cannot be affected by the "overflow: hidden" CSS property from the dialog content.
  * Thus, this workaround moves the dropdown element to the ".modal.in" element when the menu is opened, and it
  * moves the dropdown element back to the "kebabMenu" when the menu closed.
  */
-public class KebabMenuInitializer {
+public class MenuInitializer {
 
-    private final HTMLDivElement kebabMenu;
+    private final HTMLElement menu;
+    private final String dropDownClass;
 
-    public KebabMenuInitializer(final HTMLDivElement kebabMenu) {
-        this.kebabMenu = kebabMenu;
+    public MenuInitializer(final HTMLElement menu,
+                           final String dropDownClass) {
+        this.menu = menu;
+        this.dropDownClass = dropDownClass;
     }
 
     public void init() {
@@ -63,7 +66,7 @@ public class KebabMenuInitializer {
     JQuery.CallbackFunction moveDropDownToKebabContainer() {
         return (event) -> {
             final JavaScriptObject properties = emptyProperties().getJavaScriptObject();
-            $(kebabMenu).append($(event.target).css(properties).detach());
+            $(menu).append($(event.target).css(properties).detach());
         };
     }
 
@@ -94,7 +97,7 @@ public class KebabMenuInitializer {
     }
 
     Element dropdown() {
-        return kebabMenu.querySelector(".dropdown");
+        return menu.querySelector(dropDownClass);
     }
 
     double offsetLeft(final Element target) {

@@ -43,16 +43,16 @@ import static org.powermock.api.mockito.PowerMockito.when;
 
 @PrepareForTest({JQuery.class})
 @RunWith(PowerMockRunner.class)
-public class KebabMenuInitializerTest {
+public class MenuInitializerTest {
 
     @Mock
     private HTMLDivElement kebabMenu;
 
-    private KebabMenuInitializer initializer;
+    private MenuInitializer initializer;
 
     @Before
     public void setup() {
-        this.initializer = spy(new KebabMenuInitializer(kebabMenu));
+        this.initializer = spy(new MenuInitializer(kebabMenu, ".dropdown"));
     }
 
     @Test

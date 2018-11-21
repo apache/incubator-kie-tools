@@ -40,8 +40,8 @@ import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper;
-import org.kie.workbench.common.dmn.client.editors.types.listview.common.KebabMenuInitializer;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper;
+import org.kie.workbench.common.dmn.client.editors.types.listview.common.MenuInitializer;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.SmallSwitchComponent;
 
 import static org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper.hide;
@@ -170,7 +170,7 @@ public class DataTypeListItemView implements DataTypeListItem.View {
 
     @PostConstruct
     public void setupKebabElement() {
-        new KebabMenuInitializer(kebabMenu).init();
+        new MenuInitializer(kebabMenu, ".dropdown").init();
     }
 
     @Override
@@ -377,7 +377,12 @@ public class DataTypeListItemView implements DataTypeListItem.View {
     @Override
     public void setupSelectComponent(final DataTypeSelect typeSelect) {
         type.innerHTML = "";
-        type.appendChild(typeSelect.getElement());
+
+        final HTMLElement element = typeSelect.getElement();
+
+        new MenuInitializer(element, ".btn-group").init();
+
+        type.appendChild(element);
     }
 
     @Override
