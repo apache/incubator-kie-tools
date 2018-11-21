@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.editors.types.listview;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -85,13 +86,19 @@ public class DataTypeListViewTest {
     private HTMLButtonElement addButton;
 
     @Mock
+    private HTMLDivElement listItemsNo;
+
+    @Mock
     private DataTypeList presenter;
 
     private DataTypeListView view;
 
     @Before
     public void setup() {
-        view = spy(new DataTypeListView(listItems, collapsedDescription, expandedDescription, viewMore, viewLess, addButton));
+        listItemsNo.classList = mock(DOMTokenList.class);
+        listItems.classList = mock(DOMTokenList.class);
+        listItems.childNodes = new NodeList<>();
+        view = spy(new DataTypeListView(listItems, collapsedDescription, expandedDescription, viewMore, viewLess, addButton, listItemsNo));
         view.init(presenter);
         doReturn(element).when(view).getElement();
     }
@@ -111,6 +118,7 @@ public class DataTypeListViewTest {
 
         verify(listItems).appendChild(eq(element1));
         verify(listItems).appendChild(eq(element2));
+        verify(view).showOrHideNoCustomItemsMessage();
     }
 
     @Test
@@ -174,6 +182,7 @@ public class DataTypeListViewTest {
         verifyStatic();
         ElementHelper.insertAfter(listItemElement1, dataTypeRow);
         ElementHelper.insertAfter(listItemElement2, listItemElement1);
+        verify(view).showOrHideNoCustomItemsMessage();
     }
 
     @Test
@@ -187,6 +196,7 @@ public class DataTypeListViewTest {
         view.addSubItem(listItem);
 
         verify(listItems).appendChild(element);
+        verify(view).showOrHideNoCustomItemsMessage();
     }
 
     @Test
@@ -202,6 +212,33 @@ public class DataTypeListViewTest {
 
         verify(view).scrollTo(listItems, expectedScrollTop);
         verify(presenter).addDataType();
+    }
+
+    @Test
+    public void testHideNoCustomItemsMessageWhenThereIsCustomItem() {
+
+        final DataTypeListItem gridItem1 = mock(DataTypeListItem.class);
+        final DataTypeListItem gridItem2 = mock(DataTypeListItem.class);
+        final HTMLElement element1 = mock(HTMLElement.class);
+        final HTMLElement element2 = mock(HTMLElement.class);
+
+        when(gridItem1.getElement()).thenReturn(element1);
+        when(gridItem2.getElement()).thenReturn(element2);
+
+        when(view.hasCustomDataType()).thenReturn(true);
+        view.setupListItems(Arrays.asList(gridItem1, gridItem2));
+
+        verify(listItems.classList).remove(HIDDEN_CSS_CLASS);
+        verify(listItemsNo.classList).add(HIDDEN_CSS_CLASS);
+    }
+
+    @Test
+    public void testShowNoCustomItemsMessageWhenThereIsNoCustomItem() {
+
+        view.setupListItems(new ArrayList<>());
+
+        verify(listItemsNo.classList).remove(HIDDEN_CSS_CLASS);
+        verify(listItems.classList).add(HIDDEN_CSS_CLASS);
     }
 
     @Test
@@ -377,6 +414,7 @@ public class DataTypeListViewTest {
 
         verify(view).cleanSubTypes(uuid);
         verify(parentNode).removeChild(dataTypeElement);
+        verify(view).showOrHideNoCustomItemsMessage();
     }
 
     @Test
