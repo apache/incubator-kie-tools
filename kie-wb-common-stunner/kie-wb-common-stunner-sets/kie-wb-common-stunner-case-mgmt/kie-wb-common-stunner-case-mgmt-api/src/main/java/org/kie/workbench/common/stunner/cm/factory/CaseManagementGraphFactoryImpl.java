@@ -145,14 +145,6 @@ public class CaseManagementGraphFactoryImpl extends AbstractGraphFactory impleme
                 (Node<Definition<CaseManagementDiagram>, Edge>) factoryManager.newElement(UUID.uuid(), diagramType);
         commands.add(graphCommandFactory.addNode(diagramNode));
 
-//        final Node<Definition<AdHocSubprocess>, Edge> firstStage =
-//                (Node<Definition<AdHocSubprocess>, Edge>) factoryManager.newElement(UUID.uuid(), AdHocSubprocess.class);
-//        commands.add(graphCommandFactory.addChildNode(diagramNode, firstStage, new Point2D(50d, 25d)));
-//
-//        final Node<Definition<UserTask>, Edge> exampleChild =
-//                (Node<Definition<UserTask>, Edge>) factoryManager.newElement(UUID.uuid(), UserTask.class);
-//        commands.add(graphCommandFactory.addChildNode(diagramNode, exampleChild, new Point2D(75d, 130d)));
-
         return commands;
     }
 

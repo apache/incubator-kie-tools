@@ -31,7 +31,6 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.MirroredTypeException;
-import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic;
@@ -164,17 +163,13 @@ public class SVGShapeProcessor extends AbstractErrorAbsorbingProcessor {
 
     private static String parseAnnotationFieldTypeName(final Supplier<Class<?>> theTypeSupplier,
                                                        final String errorMessage) {
-        TypeMirror mirror = null;
         try {
-            Class<?> theType = theTypeSupplier.get();
+            theTypeSupplier.get();
         } catch (MirroredTypeException mte) {
-            mirror = mte.getTypeMirror();
+            return mte.getTypeMirror().toString();
         }
 
-        if (null == mirror) {
-            throw new RuntimeException(errorMessage);
-        } else {
-            return mirror.toString();
-        }
+        // Failed to parse the field type name
+        throw new RuntimeException(errorMessage);
     }
 }

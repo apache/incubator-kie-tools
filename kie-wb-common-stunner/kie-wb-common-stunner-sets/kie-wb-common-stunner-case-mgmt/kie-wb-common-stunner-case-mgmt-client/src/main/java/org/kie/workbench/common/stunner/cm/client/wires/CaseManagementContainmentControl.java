@@ -90,19 +90,6 @@ public class CaseManagementContainmentControl implements WiresContainmentControl
         if (ghost.isPresent() && null != getParent() && null != getParent().getGroup()) {
             if (getWiresManager().getContainmentAcceptor().containmentAllowed(getParent(),
                                                                               new WiresShape[]{getShape()})) {
-
-                // Comment out the code below to leave the ghost of a subprocess to the right column
-
-//                final double mouseX = containmentControl.getParentPickerControl().getShapeLocationControl().getMouseStartX() + dx;
-//                final double mouseY = containmentControl.getParentPickerControl().getShapeLocationControl().getMouseStartY() + dy;
-//                final Point2D parentAbsLoc = getParent().getGroup().getComputedLocation();
-//                final Point2D mouseRelativeLoc = new Point2D(mouseX - parentAbsLoc.getX(),
-//                                                             mouseY - parentAbsLoc.getY());
-                //Children contains m_ghost and others excluding m_shape. This therefore moves m_ghost within children.
-//                getParent().getLayoutHandler().add(ghost.get(),
-//                                                   getParent(),
-//                                                   mouseRelativeLoc);
-
                 containmentControl.getParentPickerControl().rebuildPicker();
             }
         }
@@ -243,16 +230,6 @@ public class CaseManagementContainmentControl implements WiresContainmentControl
         if (!(originalParent instanceof CaseManagementShapeView)) {
             restoreGhostParent(ghost);
         }
-
-        // Comment out the code to avoid drawing shapes in the wrong column
-//        else {
-//            if (originalParent.getChildShapes().contains(ghost)) {
-//                ((CaseManagementShapeView) originalParent).logicallyReplace(ghost,
-//                                                                            (CaseManagementShapeView) getShape());
-//            } else {
-//                restoreGhostParent(ghost);
-//            }
-//        }
 
         containmentControl.execute();
     }

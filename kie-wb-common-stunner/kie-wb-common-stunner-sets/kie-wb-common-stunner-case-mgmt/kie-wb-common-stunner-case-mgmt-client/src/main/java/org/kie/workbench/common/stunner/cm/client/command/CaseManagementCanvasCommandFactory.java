@@ -125,12 +125,10 @@ public class CaseManagementCanvasCommandFactory extends DefaultCanvasCommandFact
         if (parent != null && child!= null) {
             List<Edge> outEdges = parent.getOutEdges();
             if (null != outEdges && !outEdges.isEmpty()) {
-                int i = 0;
-                for (final Edge edge : outEdges) {
-                    if (child.equals(edge.getTargetNode())) {
+                for (int i = 0, n = outEdges.size(); i < n; i++) {
+                    if (child.equals(outEdges.get(i).getTargetNode())) {
                         return i;
                     }
-                    i++;
                 }
             }
         }

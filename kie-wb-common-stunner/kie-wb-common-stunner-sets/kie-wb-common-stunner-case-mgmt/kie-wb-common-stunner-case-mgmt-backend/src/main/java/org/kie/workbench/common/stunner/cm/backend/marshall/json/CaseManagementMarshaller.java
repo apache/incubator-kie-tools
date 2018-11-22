@@ -26,7 +26,7 @@ import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 
 public class CaseManagementMarshaller extends Bpmn2Marshaller {
 
-    private List<ItemDefinition> _subprocessItemDefs = new LinkedList<>();
+    private List<ItemDefinition> subprocessItemDefs = new LinkedList<>();
 
     public CaseManagementMarshaller(DefinitionManager definitionManager, OryxManager oryxManager) {
         super(definitionManager, oryxManager);
@@ -34,12 +34,12 @@ public class CaseManagementMarshaller extends Bpmn2Marshaller {
 
     @Override
     public void revisitSubProcessItemDefs(Definitions def) {
-        _subprocessItemDefs.forEach(i -> def.getRootElements().add(i));
-        _subprocessItemDefs.clear();
+        subprocessItemDefs.forEach(i -> def.getRootElements().add(i));
+        subprocessItemDefs.clear();
     }
 
     @Override
     protected void addSubprocessItemDefs(ItemDefinition itemdef) {
-        _subprocessItemDefs.add(itemdef);
+        subprocessItemDefs.add(itemdef);
     }
 }

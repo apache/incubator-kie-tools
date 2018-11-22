@@ -221,7 +221,7 @@ public class CaseManagementCanvasHandler<D extends Diagram, C extends WiresCanva
 
     boolean isRenderable(final Shape... shapes) {
         for (Shape shape : shapes) {
-            if (shape == null) {// || shape instanceof NullShape) {
+            if (shape == null) {
                 return false;
             }
         }

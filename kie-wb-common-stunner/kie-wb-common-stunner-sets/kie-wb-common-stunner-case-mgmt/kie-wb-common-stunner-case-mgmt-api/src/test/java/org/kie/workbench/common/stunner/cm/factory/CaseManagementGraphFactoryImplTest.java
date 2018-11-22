@@ -95,25 +95,24 @@ public class CaseManagementGraphFactoryImplTest {
         when(factoryManager.newElement(anyString(),
                                        eq(CaseManagementDiagram.class))).thenReturn(diagramNode);
 
-        final Graph<DefinitionSet, Node> graph = factory.build("uuid1",
-                                                              "defSetId");
+        final Graph<DefinitionSet, Node> graph = factory.build("uuid1", "defSetId");
+
         assertNotNull(graph);
-        assertEquals("uuid1",
-                     graph.getUUID());
-        assertEquals(1,
-                     graph.getLabels().size());
+        assertEquals("uuid1", graph.getUUID());
+        assertEquals(1, graph.getLabels().size());
         assertTrue(graph.getLabels().contains("defSetId"));
+
         final ArgumentCaptor<Command> commandCaptor = ArgumentCaptor.forClass(Command.class);
+
         verify(graphCommandFactory,
                times(1)).addNode(eq(diagramNode));
 
         verify(graphCommandManager,
-               times(1)).execute(any(GraphCommandExecutionContext.class),
-                                 commandCaptor.capture());
+               times(1)).execute(any(GraphCommandExecutionContext.class), commandCaptor.capture());
+
         final Command command = commandCaptor.getValue();
         assertTrue(command instanceof CompositeCommand);
         final CompositeCommand compositeCommand = (CompositeCommand) command;
-        assertEquals(1,
-                     compositeCommand.size());
+        assertEquals(1, compositeCommand.size());
     }
 }

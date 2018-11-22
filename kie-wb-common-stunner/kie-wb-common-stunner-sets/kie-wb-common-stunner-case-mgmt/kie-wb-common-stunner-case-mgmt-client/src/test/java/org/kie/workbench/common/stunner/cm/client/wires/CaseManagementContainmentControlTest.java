@@ -161,8 +161,6 @@ public class CaseManagementContainmentControlTest {
         verify(state, times(1)).setGhost(eq(Optional.of(ghost)));
         verify(state, times(1)).setOriginalIndex(eq(Optional.of(0)));
         verify(state, times(1)).setOriginalParent(eq(Optional.of(parent)));
-//        assertEquals(1, PICKER_OPTIONS.getShapesToSkip().size());
-//        assertEquals(ghost, PICKER_OPTIONS.getShapesToSkip().get(0));
         verify(parent, times(1)).logicallyReplace(eq(shape),
                                                   eq(ghost));
     }

@@ -420,11 +420,8 @@ public class BaseCanvasHandlerTest {
         tested.applyElementMutation(abstractShape,
                                     candidate);
 
-        verify(abstractShape,
-               times(1)).beforeDraw();
-        verify(abstractShape,
-               times(1)).afterDraw();
-
+        verify(abstractShape, times(1)).beforeDraw();
+        verify(abstractShape, times(1)).afterDraw();
     }
 
     private class BaseCanvasHandlerStub extends BaseCanvasHandler<Diagram, AbstractCanvas> {

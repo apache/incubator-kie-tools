@@ -95,12 +95,15 @@ public class Bpmn2JsonUnmarshallerTest {
     @Test
     public void testAddSubprocessItemDefs() throws Exception {
         final List<ItemDefinition> itemDefinitionList = new ArrayList<>(3);
+
         final ItemDefinition itemDefinition1 = mock(ItemDefinition.class);
         when(itemDefinition1.getId()).thenReturn("mockItemDefinition1");
         itemDefinitionList.add(itemDefinition1);
+
         final ItemDefinition itemDefinition2 = mock(ItemDefinition.class);
         when(itemDefinition2.getId()).thenReturn("mockItemDefinition2");
         itemDefinitionList.add(itemDefinition2);
+
         final ItemDefinition itemDefinition3 = mock(ItemDefinition.class);
         when(itemDefinition3.getId()).thenReturn("mockItemDefinition3");
         itemDefinitionList.add(itemDefinition3);
@@ -112,14 +115,10 @@ public class Bpmn2JsonUnmarshallerTest {
         when(definitions.getRootElements()).thenReturn(rootElementList);
 
         tested.revisitSubProcessItemDefs(definitions);
-
         assertTrue(rootElementList.containsAll(itemDefinitionList));
 
-
         rootElementList.clear();
-
         tested.revisitSubProcessItemDefs(definitions);
-
         assertTrue(rootElementList.isEmpty());
     }
 }

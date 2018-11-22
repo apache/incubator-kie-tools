@@ -214,10 +214,11 @@ public class CaseManagementContainmentAcceptorControlImpl extends AbstractAccept
         }
 
         int getAddIndex(final WiresShape wiresShape,
-                                final WiresContainer container) {
+                        final WiresContainer container) {
             Node parent = WiresUtils.getNode(getCanvasHandler(), container);
 
-            if (parent.getInEdges().size() == 0) {  // Add to the canvas horizontally
+            // Add to the canvas horizontally
+            if (parent.getInEdges().size() == 0) {
                 final double shapeX = wiresShape.getComputedLocation().getX();
 
                 // exclude the shape and its ghost
@@ -236,13 +237,15 @@ public class CaseManagementContainmentAcceptorControlImpl extends AbstractAccept
                 }
 
                 return targetIndex;
-            } else {    // Add to a stage vertically
-                if (state.getOriginalParent().isPresent() && state.getOriginalParent().get().equals(container)) {  // same stage
-                    return parent.getOutEdges().size() - 1;
-                } else {
-                    return parent.getOutEdges().size();
-                }
             }
+
+            // Otherwise, add to a stage vertically
+            // And if it is the same stage
+            if (state.getOriginalParent().isPresent() && state.getOriginalParent().get().equals(container)) {
+                return parent.getOutEdges().size() - 1;
+            }
+
+            return parent.getOutEdges().size();
         }
     }
 }

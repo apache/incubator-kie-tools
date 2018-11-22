@@ -115,7 +115,7 @@ public class CaseManagementDiagramMarshaller extends BaseDiagramMarshaller<CaseM
      */
     private boolean validateDiagram(Diagram diagram) {
         Node<Definition<CaseManagementDiagram>, ?> node = GraphUtils.getFirstNode(diagram.getGraph(), CaseManagementDiagram.class);
-        if (node != null) {
+        if (node != null && node.getContent() != null) {
             CaseManagementDiagram definition = node.getContent().getDefinition();
             if (definition != null) {
                 DiagramSet diagramSet = definition.getDiagramSet();

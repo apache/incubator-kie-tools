@@ -73,18 +73,12 @@ public class CaseManagementDiagramFactoryImplTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testBuild() {
-        final Diagram<Graph, Metadata> diagram = factory.build(NAME,
-                                                              metadata,
-                                                              graph);
+        final Diagram<Graph, Metadata> diagram = factory.build(NAME, metadata, graph);
 
         assertNotNull(diagram);
-        assertEquals(NAME,
-                     diagram.getName());
-        assertEquals(metadata,
-                     diagram.getMetadata());
-        assertEquals(graph,
-                     diagram.getGraph());
-        verify(metadata,
-               times(1)).setCanvasRootUUID(eq(DIAGRAM_NODE_UUID));
+        assertEquals(NAME, diagram.getName());
+        assertEquals(metadata, diagram.getMetadata());
+        assertEquals(graph, diagram.getGraph());
+        verify(metadata, times(1)).setCanvasRootUUID(eq(DIAGRAM_NODE_UUID));
     }
 }

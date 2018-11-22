@@ -107,14 +107,13 @@ public class CaseManagementShapeView extends SVGShapeViewImpl implements HasSize
     public int getIndex(final WiresShape shape) {
 
         final NFastArrayList<WiresShape> children = getChildShapes();
-        int i = 0;
-        for (WiresShape child : children) {
+        for (int i = 0, n = children.size(); i < n; i++) {
+            final WiresShape child = children.get(i);
             if (child == shape || isUUIDSame(shape, child)) {
                 return i;
             }
-            i++;
         }
-        return i;
+        return children.size();
     }
 
     private boolean isUUIDSame(WiresShape shape, WiresShape child) {
@@ -159,8 +158,7 @@ public class CaseManagementShapeView extends SVGShapeViewImpl implements HasSize
         thisGhost.setLayoutHandler(new VerticalStackLayoutManager());
 
         for (WiresShape wiresShape : getChildShapes()) {
-            final CaseManagementShapeView childGhost = ((CaseManagementShapeView) wiresShape).getGhost();
-            thisGhost.add(childGhost);
+            thisGhost.add(((CaseManagementShapeView) wiresShape).getGhost());
         }
         return thisGhost;
     }

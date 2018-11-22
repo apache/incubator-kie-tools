@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,8 +45,8 @@ public class CaseManagementSvgNullShapeDef extends BaseDimensionedShapeDef
     @Override
     public SVGShapeView<?> newViewInstance(final CaseManagementSVGViewFactory factory,
                                            final BPMNViewDefinition bean) {
-        return newViewInstance(Optional.ofNullable(new Width(0d)),
-                               Optional.ofNullable(new Height(0d)),
+        return newViewInstance(Optional.of(new Width(0d)),
+                               Optional.of(new Height(0d)),
                                factory.task());
     }
 

@@ -53,6 +53,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
@@ -304,7 +305,7 @@ public class CaseManagementContainmentAcceptorControlImplTest {
 
         int result = ((CaseManagementContainmentAcceptorControlImpl.CanvasManagementContainmentAcceptor) control.containmentAcceptor).getAddIndex(childShape, parentShape);
 
-        assertTrue(0 == result);
+        assertEquals(0, result);
     }
 
     @Test
@@ -321,7 +322,7 @@ public class CaseManagementContainmentAcceptorControlImplTest {
 
         int result = ((CaseManagementContainmentAcceptorControlImpl.CanvasManagementContainmentAcceptor) control.containmentAcceptor).getAddIndex(childShape, parentShape);
 
-        assertTrue(1 == result);
+        assertEquals(1, result);
     }
 
     @Test
@@ -346,7 +347,7 @@ public class CaseManagementContainmentAcceptorControlImplTest {
 
         int result = ((CaseManagementContainmentAcceptorControlImpl.CanvasManagementContainmentAcceptor) control.containmentAcceptor).getAddIndex(childShape, parentShape);
 
-        assertTrue(2 == result);
+        assertEquals(2, result);
     }
 
     @Test
@@ -365,7 +366,7 @@ public class CaseManagementContainmentAcceptorControlImplTest {
 
         int result = ((CaseManagementContainmentAcceptorControlImpl.CanvasManagementContainmentAcceptor) control.containmentAcceptor).getAddIndex(childShape, parentShape);
 
-        assertTrue(1 == result);
+        assertEquals(1, result);
     }
 
     @Test
@@ -388,6 +389,6 @@ public class CaseManagementContainmentAcceptorControlImplTest {
 
         int result = ((CaseManagementContainmentAcceptorControlImpl.CanvasManagementContainmentAcceptor) control.containmentAcceptor).getAddIndex(childShape, parentShape);
 
-        assertTrue(1 == result);
+        assertEquals(1, result);
     }
 }
