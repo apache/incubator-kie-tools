@@ -124,14 +124,23 @@ public class ProcessPropertyWriter extends BasePropertyWriter implements Element
         addChildEdge(p.getEdge());
 
         if (p instanceof SubProcessPropertyWriter) {
-            Collection<BasePropertyWriter> childElements =
-                    ((SubProcessPropertyWriter) p).getChildElements();
-
-            childElements.forEach(el -> {
-                addChildShape(el.getShape());
-                addChildEdge(el.getEdge());
-            });
+            addSubProcess((SubProcessPropertyWriter) p);
         }
+    }
+
+    // recursively add all child shapes and edges (`di:` namespace)
+    // because these DO NOT nest (as opposed to `bpmn2:` namespace where subProcesses nest)
+    private void addSubProcess(SubProcessPropertyWriter p) {
+        Collection<BasePropertyWriter> childElements =
+                p.getChildElements();
+
+        childElements.forEach(el -> {
+            addChildShape(el.getShape());
+            addChildEdge(el.getEdge());
+            if (el instanceof SubProcessPropertyWriter) {
+                addSubProcess((SubProcessPropertyWriter) el);
+            }
+        });
     }
 
     @Override

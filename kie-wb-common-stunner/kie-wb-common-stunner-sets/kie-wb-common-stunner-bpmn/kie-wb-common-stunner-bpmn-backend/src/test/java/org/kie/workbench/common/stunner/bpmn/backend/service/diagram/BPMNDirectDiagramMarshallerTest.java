@@ -2634,6 +2634,19 @@ public class BPMNDirectDiagramMarshallerTest {
     }
 
     @Test
+    public void testMarshallEmbeddedSubprocessNestedDuplicates() throws Exception {
+        String f = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/subprocessNested.bpmn";
+        Diagram<Graph, Metadata> diagram = unmarshall(f);
+
+        String result = tested.marshall(diagram);
+
+        assertFalse(
+                "should not contain the same node twice",
+                result.replaceFirst("id=\"_CANDIDATE_\"", "BLAH")
+                        .contains("id=\"_CANDIDATE_\""));
+    }
+
+    @Test
     public void testMarshallMultipleInstanceSubprocess() throws Exception {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_MULTIPLE_INSTANCE_SUBPROCESS);
         assertDiagram(diagram,

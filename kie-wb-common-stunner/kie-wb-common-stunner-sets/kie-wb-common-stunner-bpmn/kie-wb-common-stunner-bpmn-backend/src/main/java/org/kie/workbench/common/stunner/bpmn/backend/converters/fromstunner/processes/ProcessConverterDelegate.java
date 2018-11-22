@@ -54,14 +54,17 @@ class ProcessConverterDelegate {
                         .map(Result::value)
                         .collect(toList());
 
+        // keep track of nested children to avoid adding them again to ancestors
         Set<String> processed = subprocesses.stream()
                 .flatMap(sub -> sub.getChildElements().stream().map(BasePropertyWriter::getId))
                 .collect(toSet());
 
-        subprocesses.forEach(p::addChildElement);
+        subprocesses.stream()
+                .filter(e -> !processed.contains(e.getId())) // skip processed
+                .forEach(p::addChildElement);
 
         context.nodes()
-                .filter(e -> !processed.contains(e.getUUID()))
+                .filter(e -> !processed.contains(e.getUUID())) // skip processed
                 .map(converterFactory.viewDefinitionConverter()::toFlowElement)
                 .filter(Result::notIgnored)
                 .map(Result::value)
