@@ -19,11 +19,11 @@ package org.kie.workbench.common.services.backend.builder.core;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.compiler.kie.builder.impl.MessageImpl;
 import org.guvnor.common.services.project.builder.model.BuildMessage;
 import org.guvnor.common.services.shared.message.Level;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.kie.api.builder.Message;
+import org.kie.internal.builder.InternalMessage;
 
 import static org.kie.workbench.common.services.backend.builder.core.BaseFileNameResolver.getBaseFileName;
 
@@ -92,8 +92,8 @@ class MessageConverter {
 
     private static String convertMessageText(final Message message) {
         final StringBuilder sb = new StringBuilder();
-        if (message instanceof MessageImpl) {
-            final MessageImpl impl = (MessageImpl) message;
+        if (message instanceof InternalMessage) {
+            final InternalMessage impl = (InternalMessage) message;
             final String kieBaseName = impl.getKieBaseName();
             if (!(kieBaseName == null || kieBaseName.isEmpty())) {
                 sb.append("[KBase: ").append(kieBaseName).append("]: ");

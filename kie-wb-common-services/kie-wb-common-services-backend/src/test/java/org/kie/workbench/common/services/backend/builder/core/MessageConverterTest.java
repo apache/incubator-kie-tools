@@ -17,7 +17,7 @@ package org.kie.workbench.common.services.backend.builder.core;
 
 import java.util.function.Supplier;
 
-import org.drools.compiler.kie.builder.impl.MessageImpl;
+import org.drools.core.kie.impl.MessageImpl;
 import org.guvnor.common.services.project.builder.model.BuildMessage;
 import org.guvnor.common.services.shared.message.Level;
 import org.junit.Before;
@@ -28,8 +28,8 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MessageConverterTest {
