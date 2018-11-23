@@ -180,6 +180,7 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
         verify(expressionEditor).setToolbarStateHandler(any(ProjectToolbarStateHandler.class));
         verify(decisionNavigatorDock).setupContent(eq(canvasHandler));
         verify(decisionNavigatorDock).open();
+        verify(layoutHelper).applyLayout(diagram);
     }
 
     @Test
