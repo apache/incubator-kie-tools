@@ -16,31 +16,13 @@
 
 package org.drools.workbench.services.verifier.plugin.client;
 
-import java.util.ArrayList;
-import java.util.List;
+public class UpdateException
+        extends Throwable {
 
-public class Logger {
-
-    private static List<String> list = new ArrayList();
-
-    public static void add(final String message) {
-        list.add(message);
+    public UpdateException(final String s) {
+        super(s);
     }
 
-    public static String log() {
-        final StringBuilder builder = new StringBuilder();
-
-        for (final String line : list) {
-            builder.append(line);
-            builder.append("\n");
-        }
-
-        final String log = builder.toString();
-        list.clear();
-        return log;
-    }
-
-    public static boolean isEmpty() {
-        return list.isEmpty();
+    public UpdateException() {
     }
 }

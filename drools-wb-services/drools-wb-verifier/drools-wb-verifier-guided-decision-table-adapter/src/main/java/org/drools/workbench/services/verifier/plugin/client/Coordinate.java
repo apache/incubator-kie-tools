@@ -21,11 +21,12 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
 public class Coordinate {
+
     private final int col;
     private final int row;
 
-    public Coordinate( @MapsTo("row") final int row,
-                       @MapsTo("col") final int col ) {
+    public Coordinate(@MapsTo("row") final int row,
+                      @MapsTo("col") final int col) {
         this.col = col;
         this.row = row;
     }
@@ -37,7 +38,6 @@ public class Coordinate {
     public int getRow() {
         return row;
     }
-
 
     @Override
     public String toString() {

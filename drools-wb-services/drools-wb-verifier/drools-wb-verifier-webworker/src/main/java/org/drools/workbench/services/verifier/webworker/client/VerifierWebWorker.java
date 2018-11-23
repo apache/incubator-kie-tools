@@ -17,6 +17,8 @@
 package org.drools.workbench.services.verifier.webworker.client;
 
 import com.google.gwt.core.client.EntryPoint;
+import org.drools.workbench.services.verifier.plugin.client.Poster;
+import org.drools.workbench.services.verifier.plugin.client.Receiver;
 import org.jboss.errai.enterprise.client.jaxrs.MarshallingWrapper;
 import org.kie.workbench.common.services.verifier.api.client.api.WebWorkerException;
 import org.kie.workbench.common.services.verifier.api.client.api.WebWorkerLogMessage;
