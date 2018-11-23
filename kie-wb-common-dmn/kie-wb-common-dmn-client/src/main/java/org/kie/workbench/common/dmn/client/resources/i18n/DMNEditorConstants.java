@@ -176,9 +176,6 @@ public class DMNEditorConstants {
     public static final String DecisionTableEditor_BuiltinAggregatorLabel = "DecisionTableEditor.BuiltinAggregatorLabel";
 
     @TranslationKey(defaultValue = "")
-    public static final String DecisionTableEditor_DecisionTableOrientationLabel = "DecisionTableEditor.DecisionTableOrientationLabel";
-
-    @TranslationKey(defaultValue = "")
     public static final String UndefinedExpressionEditor_SelectorTitle = "UndefinedExpressionEditor.SelectorTitle";
 
     @TranslationKey(defaultValue = "")

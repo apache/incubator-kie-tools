@@ -34,7 +34,6 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.BuiltinAggregator;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionRule;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTableOrientation;
 import org.kie.workbench.common.dmn.api.definition.v1_1.HitPolicy;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InputClause;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
@@ -50,7 +49,6 @@ import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.Del
 import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.DeleteOutputClauseCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.SetBuiltinAggregatorCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.SetHitPolicyCommand;
-import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.SetOrientationCommand;
 import org.kie.workbench.common.dmn.client.commands.general.DeleteHasNameCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetHasNameCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetTypeRefCommand;
@@ -579,11 +577,6 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
     }
 
     @Override
-    public DecisionTableOrientation getDecisionTableOrientation() {
-        return expression.orElseThrow(() -> new IllegalArgumentException("DecisionTable has not been set.")).getPreferredOrientation();
-    }
-
-    @Override
     public void setHitPolicy(final HitPolicy hitPolicy,
                              final Command onSuccess) {
         expression.ifPresent(dtable -> {
@@ -610,16 +603,6 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
                                           new SetBuiltinAggregatorCommand(dtable,
                                                                           aggregator,
                                                                           gridLayer::batch));
-        });
-    }
-
-    @Override
-    public void setDecisionTableOrientation(final DecisionTableOrientation orientation) {
-        expression.ifPresent(dtable -> {
-            sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
-                                          new SetOrientationCommand(dtable,
-                                                                    orientation,
-                                                                    gridLayer::batch));
         });
     }
 

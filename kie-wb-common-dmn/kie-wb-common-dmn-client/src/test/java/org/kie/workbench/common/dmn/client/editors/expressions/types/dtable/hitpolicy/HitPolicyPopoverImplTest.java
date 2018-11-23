@@ -25,7 +25,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.v1_1.BuiltinAggregator;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTableOrientation;
 import org.kie.workbench.common.dmn.api.definition.v1_1.HitPolicy;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -66,9 +65,6 @@ public class HitPolicyPopoverImplTest {
     private ArgumentCaptor<List<BuiltinAggregator>> builtInAggregatorsCaptor;
 
     @Captor
-    private ArgumentCaptor<List<DecisionTableOrientation>> orientationsCaptor;
-
-    @Captor
     private ArgumentCaptor<Command> commandCaptor;
 
     private HitPolicyPopoverView.Presenter editor;
@@ -83,7 +79,6 @@ public class HitPolicyPopoverImplTest {
 
         when(control.getHitPolicy()).thenReturn(null);
         when(control.getBuiltinAggregator()).thenReturn(null);
-        when(control.getDecisionTableOrientation()).thenReturn(null);
 
         doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).format(anyString());
     }
@@ -93,11 +88,9 @@ public class HitPolicyPopoverImplTest {
         verify(view).init(eq(editor));
         verify(view).initHitPolicies(hitPoliciesCaptor.capture());
         verify(view).initBuiltinAggregators(builtInAggregatorsCaptor.capture());
-        verify(view).initDecisionTableOrientations(orientationsCaptor.capture());
 
         assertThat(hitPoliciesCaptor.getValue()).containsOnly(HitPolicy.values());
         assertThat(builtInAggregatorsCaptor.getValue()).containsOnlyElementsOf(builtinAggregatorUtils.getAllValues());
-        assertThat(orientationsCaptor.getValue()).containsOnly(DecisionTableOrientation.values());
     }
 
     @Test
@@ -128,7 +121,6 @@ public class HitPolicyPopoverImplTest {
 
         verify(view).enableHitPolicies(eq(false));
         verify(view).enableBuiltinAggregators(eq(false));
-        verify(view).enableDecisionTableOrientation(eq(false));
     }
 
     @Test
@@ -146,7 +138,6 @@ public class HitPolicyPopoverImplTest {
         verify(view).enableHitPolicies(eq(true));
         verify(view).initSelectedHitPolicy(eq(hitPolicy));
         verify(view).enableBuiltinAggregators(eq(false));
-        verify(view).enableDecisionTableOrientation(eq(false));
     }
 
     @Test
@@ -179,25 +170,6 @@ public class HitPolicyPopoverImplTest {
         verify(view).initSelectedHitPolicy(eq(hitPolicy));
         verify(view).enableBuiltinAggregators(eq(HitPolicy.COLLECT.equals(hitPolicy)));
         verify(view).initSelectedBuiltinAggregator(eq(builtinAggregator));
-        verify(view).enableDecisionTableOrientation(eq(false));
-    }
-
-    @Test
-    public void testBindNonNullControlOrientation() {
-        final DecisionTableOrientation orientation = DecisionTableOrientation.RULE_AS_ROW;
-
-        reset(view);
-
-        when(control.getDecisionTableOrientation()).thenReturn(orientation);
-
-        editor.bind(control,
-                    UI_ROW_INDEX,
-                    UI_COLUMN_INDEX);
-
-        verify(view).enableHitPolicies(eq(false));
-        verify(view).enableBuiltinAggregators(eq(false));
-        verify(view).enableDecisionTableOrientation(eq(true));
-        verify(view).initSelectedDecisionTableOrientation(eq(orientation));
     }
 
     @Test
@@ -252,30 +224,6 @@ public class HitPolicyPopoverImplTest {
         editor.setBuiltinAggregator(aggregator);
 
         verify(control).setBuiltinAggregator(eq(aggregator));
-    }
-
-    @Test
-    public void testSetOrientationNullControl() {
-        editor.setDecisionTableOrientation(DecisionTableOrientation.RULE_AS_ROW);
-
-        verify(control, never()).setDecisionTableOrientation(any(DecisionTableOrientation.class));
-    }
-
-    @Test
-    public void testSetOrientationNonNullControl() {
-        final DecisionTableOrientation orientation = DecisionTableOrientation.RULE_AS_ROW;
-
-        when(control.getDecisionTableOrientation()).thenReturn(orientation);
-
-        editor.bind(control,
-                    UI_ROW_INDEX,
-                    UI_COLUMN_INDEX);
-
-        reset(view);
-
-        editor.setDecisionTableOrientation(orientation);
-
-        verify(control).setDecisionTableOrientation(eq(orientation));
     }
 
     @Test

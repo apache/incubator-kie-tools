@@ -24,7 +24,6 @@ import javax.inject.Inject;
 
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.kie.workbench.common.dmn.api.definition.v1_1.BuiltinAggregator;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTableOrientation;
 import org.kie.workbench.common.dmn.api.definition.v1_1.HitPolicy;
 
 @ApplicationScoped
@@ -45,7 +44,6 @@ public class HitPolicyPopoverImpl implements HitPolicyPopoverView.Presenter {
         view.init(this);
         view.initHitPolicies(Arrays.asList(HitPolicy.values()));
         view.initBuiltinAggregators(builtinAggregatorUtils.getAllValues());
-        view.initDecisionTableOrientations(Arrays.asList(DecisionTableOrientation.values()));
     }
 
     @Override
@@ -72,13 +70,6 @@ public class HitPolicyPopoverImpl implements HitPolicyPopoverView.Presenter {
                 view.enableBuiltinAggregators(HitPolicy.COLLECT.equals(b.getHitPolicy()));
                 view.initSelectedBuiltinAggregator(b.getBuiltinAggregator());
             }
-
-            if (b.getDecisionTableOrientation() == null) {
-                view.enableDecisionTableOrientation(false);
-            } else {
-                view.enableDecisionTableOrientation(true);
-                view.initSelectedDecisionTableOrientation(b.getDecisionTableOrientation());
-            }
         });
     }
 
@@ -91,11 +82,6 @@ public class HitPolicyPopoverImpl implements HitPolicyPopoverView.Presenter {
     @Override
     public void setBuiltinAggregator(final BuiltinAggregator aggregator) {
         binding.ifPresent(b -> b.setBuiltinAggregator(aggregator));
-    }
-
-    @Override
-    public void setDecisionTableOrientation(final DecisionTableOrientation orientation) {
-        binding.ifPresent(b -> b.setDecisionTableOrientation(orientation));
     }
 
     @Override

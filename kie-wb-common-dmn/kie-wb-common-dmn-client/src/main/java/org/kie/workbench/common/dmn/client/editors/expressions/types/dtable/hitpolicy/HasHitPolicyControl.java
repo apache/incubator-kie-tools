@@ -17,7 +17,6 @@
 package org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.hitpolicy;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.BuiltinAggregator;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTableOrientation;
 import org.kie.workbench.common.dmn.api.definition.v1_1.HitPolicy;
 import org.uberfire.mvp.Command;
 
@@ -27,12 +26,8 @@ public interface HasHitPolicyControl {
 
     BuiltinAggregator getBuiltinAggregator();
 
-    DecisionTableOrientation getDecisionTableOrientation();
-
     void setHitPolicy(final HitPolicy hitPolicy,
                       final Command onSuccess);
 
     void setBuiltinAggregator(final BuiltinAggregator aggregator);
-
-    void setDecisionTableOrientation(final DecisionTableOrientation orientation);
 }

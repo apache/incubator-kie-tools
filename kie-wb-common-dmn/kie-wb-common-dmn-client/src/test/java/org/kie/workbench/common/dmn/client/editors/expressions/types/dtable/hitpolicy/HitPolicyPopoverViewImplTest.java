@@ -30,7 +30,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.v1_1.BuiltinAggregator;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTableOrientation;
 import org.kie.workbench.common.dmn.api.definition.v1_1.HitPolicy;
 import org.mockito.Mock;
 import org.uberfire.client.views.pfly.widgets.JQueryProducer;
@@ -61,12 +60,6 @@ public class HitPolicyPopoverViewImplTest {
     private HTMLElement lstBuiltinAggregatorElement;
 
     @Mock
-    private Select lstDecisionTableOrientation;
-
-    @Mock
-    private HTMLElement lstDecisionTableOrientationElement;
-
-    @Mock
     private HTMLElement element;
 
     @Mock
@@ -80,9 +73,6 @@ public class HitPolicyPopoverViewImplTest {
 
     @Mock
     private Span builtinAggregatorLabel;
-
-    @Mock
-    private Span decisionTableOrientationLabel;
 
     @Mock
     private JQueryProducer.JQuery<Popover> jQueryProducer;
@@ -101,18 +91,15 @@ public class HitPolicyPopoverViewImplTest {
     public void setUp() throws Exception {
         doReturn(lstHitPoliciesElement).when(lstHitPolicies).getElement();
         doReturn(lstBuiltinAggregatorElement).when(lstBuiltinAggregator).getElement();
-        doReturn(lstDecisionTableOrientationElement).when(lstDecisionTableOrientation).getElement();
 
         builtinAggregatorUtils = new BuiltinAggregatorUtils(translationService);
         view = spy(new HitPolicyPopoverViewImpl(lstHitPolicies,
                                                 lstBuiltinAggregator,
-                                                lstDecisionTableOrientation,
                                                 builtinAggregatorUtils,
                                                 popoverElement,
                                                 popoverContentElement,
                                                 hitPolicyLabel,
                                                 builtinAggregatorLabel,
-                                                decisionTableOrientationLabel,
                                                 jQueryProducer,
                                                 translationService));
 
@@ -135,14 +122,6 @@ public class HitPolicyPopoverViewImplTest {
         view.initBuiltinAggregators(aggregators);
 
         aggregators.stream().forEach(agg -> verify(lstBuiltinAggregator).addOption(builtinAggregatorUtils.toString(agg)));
-    }
-
-    @Test
-    public void testInitOrientations() throws Exception {
-        final List<DecisionTableOrientation> orientations = Arrays.asList(DecisionTableOrientation.values());
-        view.initDecisionTableOrientations(orientations);
-
-        orientations.stream().forEach(orientation -> verify(lstDecisionTableOrientation).addOption(orientation.value()));
     }
 
     @Test
@@ -171,20 +150,6 @@ public class HitPolicyPopoverViewImplTest {
         view.enableBuiltinAggregators(false);
 
         verify(lstBuiltinAggregator).disable();
-    }
-
-    @Test
-    public void testEnableOrientations() throws Exception {
-        view.enableDecisionTableOrientation(true);
-
-        verify(lstDecisionTableOrientation).enable();
-    }
-
-    @Test
-    public void testDisableOrientations() throws Exception {
-        view.enableDecisionTableOrientation(false);
-
-        verify(lstDecisionTableOrientation).disable();
     }
 
     @Test

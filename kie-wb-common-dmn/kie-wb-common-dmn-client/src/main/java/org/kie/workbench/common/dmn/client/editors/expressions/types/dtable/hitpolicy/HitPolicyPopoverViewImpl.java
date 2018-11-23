@@ -28,7 +28,6 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.dmn.api.definition.v1_1.BuiltinAggregator;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTableOrientation;
 import org.kie.workbench.common.dmn.api.definition.v1_1.HitPolicy;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.popover.AbstractPopoverViewImpl;
@@ -47,17 +46,11 @@ public class HitPolicyPopoverViewImpl extends AbstractPopoverViewImpl implements
     @DataField("lstBuiltinAggregator")
     private Select lstBuiltinAggregator;
 
-    @DataField("lstDecisionTableOrientation")
-    private Select lstDecisionTableOrientation;
-
     @DataField("hitPolicyLabel")
     private Span hitPolicyLabel;
 
     @DataField("builtinAggregatorLabel")
     private Span builtinAggregatorLabel;
-
-    @DataField("decisionTableOrientationLabel")
-    private Span decisionTableOrientationLabel;
 
     private BuiltinAggregatorUtils builtinAggregatorUtils;
 
@@ -70,13 +63,11 @@ public class HitPolicyPopoverViewImpl extends AbstractPopoverViewImpl implements
     @Inject
     public HitPolicyPopoverViewImpl(final Select lstHitPolicies,
                                     final Select lstBuiltinAggregator,
-                                    final Select lstDecisionTableOrientation,
                                     final BuiltinAggregatorUtils builtinAggregatorUtils,
                                     final Div popoverElement,
                                     final Div popoverContentElement,
                                     final Span hitPolicyLabel,
                                     final Span builtinAggregatorLabel,
-                                    final Span decisionTableOrientationLabel,
                                     final JQueryProducer.JQuery<Popover> jQueryPopover,
                                     final TranslationService translationService) {
         super(popoverElement,
@@ -85,20 +76,16 @@ public class HitPolicyPopoverViewImpl extends AbstractPopoverViewImpl implements
 
         this.lstHitPolicies = lstHitPolicies;
         this.lstBuiltinAggregator = lstBuiltinAggregator;
-        this.lstDecisionTableOrientation = lstDecisionTableOrientation;
         this.builtinAggregatorUtils = builtinAggregatorUtils;
 
         this.hitPolicyLabel = hitPolicyLabel;
         this.builtinAggregatorLabel = builtinAggregatorLabel;
-        this.decisionTableOrientationLabel = decisionTableOrientationLabel;
 
         this.hitPolicyLabel.setTextContent(translationService.getTranslation(DMNEditorConstants.DecisionTableEditor_HitPolicyLabel));
         this.builtinAggregatorLabel.setTextContent(translationService.getTranslation(DMNEditorConstants.DecisionTableEditor_BuiltinAggregatorLabel));
-        this.decisionTableOrientationLabel.setTextContent(translationService.getTranslation(DMNEditorConstants.DecisionTableEditor_DecisionTableOrientationLabel));
 
         setupHitPolicyEventHandler();
         setupBuiltinAggregatorEventHandler();
-        setupDecisionTableOrientationEventHandler();
     }
 
     private void setupHitPolicyEventHandler() {
@@ -114,14 +101,6 @@ public class HitPolicyPopoverViewImpl extends AbstractPopoverViewImpl implements
                                 () -> {
                                     final BuiltinAggregator aggregator = builtinAggregatorUtils.toEnum(lstBuiltinAggregator.getValue());
                                     presenter.setBuiltinAggregator(aggregator);
-                                });
-    }
-
-    private void setupDecisionTableOrientationEventHandler() {
-        setupChangeEventHandler(lstDecisionTableOrientation,
-                                () -> {
-                                    final DecisionTableOrientation orientation = DecisionTableOrientation.fromValue(lstDecisionTableOrientation.getValue());
-                                    presenter.setDecisionTableOrientation(orientation);
                                 });
     }
 
@@ -149,11 +128,6 @@ public class HitPolicyPopoverViewImpl extends AbstractPopoverViewImpl implements
     }
 
     @Override
-    public void initDecisionTableOrientations(final List<DecisionTableOrientation> orientations) {
-        orientations.forEach(o -> lstDecisionTableOrientation.addOption(o.value()));
-    }
-
-    @Override
     public void initSelectedHitPolicy(final HitPolicy hitPolicy) {
         initSelect(lstHitPolicies,
                    hitPolicy.value());
@@ -163,12 +137,6 @@ public class HitPolicyPopoverViewImpl extends AbstractPopoverViewImpl implements
     public void initSelectedBuiltinAggregator(final BuiltinAggregator aggregator) {
         initSelect(lstBuiltinAggregator,
                    builtinAggregatorUtils.toString(aggregator));
-    }
-
-    @Override
-    public void initSelectedDecisionTableOrientation(final DecisionTableOrientation orientation) {
-        initSelect(lstDecisionTableOrientation,
-                   orientation.value());
     }
 
     private void initSelect(final Select select,
@@ -194,10 +162,5 @@ public class HitPolicyPopoverViewImpl extends AbstractPopoverViewImpl implements
     @Override
     public void enableBuiltinAggregators(final boolean enabled) {
         enableSelect(lstBuiltinAggregator, enabled);
-    }
-
-    @Override
-    public void enableDecisionTableOrientation(final boolean enabled) {
-        enableSelect(lstDecisionTableOrientation, enabled);
     }
 }

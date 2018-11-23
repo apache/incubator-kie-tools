@@ -19,7 +19,6 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.hit
 import java.util.List;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.BuiltinAggregator;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTableOrientation;
 import org.kie.workbench.common.dmn.api.definition.v1_1.HitPolicy;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.HasCellEditorControls;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.popover.PopoverView;
@@ -33,25 +32,17 @@ public interface HitPolicyPopoverView extends PopoverView,
         void setHitPolicy(final HitPolicy hitPolicy);
 
         void setBuiltinAggregator(final BuiltinAggregator aggregator);
-
-        void setDecisionTableOrientation(final DecisionTableOrientation orientation);
     }
 
     void initHitPolicies(final List<HitPolicy> hitPolicies);
 
     void initBuiltinAggregators(final List<BuiltinAggregator> aggregators);
 
-    void initDecisionTableOrientations(final List<DecisionTableOrientation> orientations);
-
     void initSelectedHitPolicy(final HitPolicy hitPolicy);
 
     void initSelectedBuiltinAggregator(final BuiltinAggregator aggregator);
 
-    void initSelectedDecisionTableOrientation(final DecisionTableOrientation orientation);
-
     void enableHitPolicies(final boolean enabled);
 
     void enableBuiltinAggregators(final boolean enabled);
-
-    void enableDecisionTableOrientation(final boolean enabled);
 }

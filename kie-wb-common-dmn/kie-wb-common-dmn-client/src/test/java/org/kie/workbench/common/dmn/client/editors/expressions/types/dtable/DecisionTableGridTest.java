@@ -37,7 +37,6 @@ import org.kie.workbench.common.dmn.api.definition.NOPDomainObject;
 import org.kie.workbench.common.dmn.api.definition.v1_1.BuiltinAggregator;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTableOrientation;
 import org.kie.workbench.common.dmn.api.definition.v1_1.HitPolicy;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItemPrimary;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
@@ -54,7 +53,6 @@ import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.Del
 import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.DeleteOutputClauseCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.SetBuiltinAggregatorCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.SetHitPolicyCommand;
-import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.SetOrientationCommand;
 import org.kie.workbench.common.dmn.client.commands.general.DeleteCellValueCommand;
 import org.kie.workbench.common.dmn.client.commands.general.DeleteHasNameCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetCellValueCommand;
@@ -276,9 +274,6 @@ public class DecisionTableGridTest {
 
     @Captor
     private ArgumentCaptor<SetBuiltinAggregatorCommand> setBuiltInAggregatorCommandCaptor;
-
-    @Captor
-    private ArgumentCaptor<SetOrientationCommand> setOrientationCommandCaptor;
 
     @Captor
     private ArgumentCaptor<GridLayerRedrawManager.PrioritizedCommand> redrawCommandCaptor;
@@ -926,23 +921,6 @@ public class DecisionTableGridTest {
 
         final SetBuiltinAggregatorCommand setBuiltinAggregatorCommand = setBuiltInAggregatorCommandCaptor.getValue();
         setBuiltinAggregatorCommand.execute(canvasHandler);
-
-        verify(gridLayer).batch();
-    }
-
-    @Test
-    public void testSetDecisionTableOrientation() {
-        final DecisionTableOrientation orientation = DecisionTableOrientation.RULE_AS_ROW;
-
-        setupGrid(makeHasNameForDecision(), 0);
-
-        grid.setDecisionTableOrientation(orientation);
-
-        verify(sessionCommandManager).execute(eq(canvasHandler),
-                                              setOrientationCommandCaptor.capture());
-
-        final SetOrientationCommand setOrientationCommand = setOrientationCommandCaptor.getValue();
-        setOrientationCommand.execute(canvasHandler);
 
         verify(gridLayer).batch();
     }
