@@ -41,10 +41,6 @@ import org.drools.workbench.screens.scenariosimulation.model.Simulation;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.internal.runners.model.EachTestNotifier;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import static java.util.stream.Collectors.toList;
 import static org.drools.workbench.screens.scenariosimulation.backend.server.runner.ScenarioRunnerHelper.createExtractorFunction;
@@ -60,12 +56,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
-@RunWith(MockitoJUnitRunner.class)
 public class ScenarioRunnerHelperTest {
 
     private static final String NAME = "NAME";
@@ -88,9 +79,6 @@ public class ScenarioRunnerHelperTest {
     private ExpressionIdentifier amountExpectedExpressionIdentifier;
     private FactMapping amountNameExpectedFactMapping;
     private FactMappingValue amountNameExpectedFactMappingValue;
-
-    @Mock
-    private EachTestNotifier singleNotifier;
 
     @Before
     public void setup() {
@@ -242,20 +230,14 @@ public class ScenarioRunnerHelperTest {
         List<ScenarioResult> scenarioFailResult = new ArrayList<>();
         scenarioFailResult.add(new ScenarioResult(disputeFactIdentifier, amountNameExpectedFactMappingValue, "SOMETHING_ELSE"));
         try {
-            validateAssertion(scenarioFailResult, scenario2, singleNotifier);
+            validateAssertion(scenarioFailResult, scenario2);
             fail();
         } catch (ScenarioException ignored) {
         }
 
-        verify(singleNotifier, times(1)).addFailedAssumption(any());
-
-        reset(singleNotifier);
-
         List<ScenarioResult> scenarioSuccessResult = new ArrayList<>();
         scenarioSuccessResult.add(new ScenarioResult(disputeFactIdentifier, amountNameExpectedFactMappingValue, amountNameExpectedFactMappingValue.getRawValue()).setResult(true));
-        validateAssertion(scenarioSuccessResult, scenario2, singleNotifier);
-
-        verify(singleNotifier, times(0)).addFailedAssumption(any());
+        validateAssertion(scenarioSuccessResult, scenario2);
     }
 
     @Test

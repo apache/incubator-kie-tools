@@ -134,7 +134,7 @@ public class ScenarioSimulationServiceImplTest {
     private Path path = PathFactory.newPath("contextpath", "file:///contextpath");
 
     @Before
-    public void setuo() {
+    public void setup() {
         Set<Package> packages = new HashSet<>();
         packages.add(new Package(path, path, path, path, path, "Test", "", ""));
         when(kieModuleService.resolveModule(any())).thenReturn(module);

@@ -14,19 +14,25 @@
  * limitations under the License.
  */
 
-package org.drools.workbench.screens.scenariosimulation.backend.server.runner;
+package org.drools.workbench.screens.scenariosimulation.backend.server.runner.model;
 
-public class ScenarioException extends IllegalArgumentException {
+import org.drools.workbench.screens.scenariosimulation.model.Simulation;
 
-    public ScenarioException(String message) {
-        super(message);
+public class SimulationWithFileName {
+
+    private final Simulation simulation;
+    private final String fileName;
+
+    public SimulationWithFileName(Simulation simulation, String fileName) {
+        this.simulation = simulation;
+        this.fileName = fileName;
     }
 
-    public ScenarioException(String message, Throwable cause) {
-        super(message, cause);
+    public Simulation getSimulation() {
+        return simulation;
     }
 
-    public ScenarioException(Throwable cause) {
-        super(cause.getMessage(), cause);
+    public String getFileName() {
+        return fileName;
     }
 }

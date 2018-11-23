@@ -19,17 +19,18 @@ package org.drools.workbench.screens.scenariosimulation.backend.server.runner;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.drools.workbench.screens.scenariosimulation.backend.server.ScenarioSimulationXMLPersistence;
+import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.SimulationWithFileName;
 import org.drools.workbench.screens.scenariosimulation.model.Simulation;
 import org.drools.workbench.screens.scenariosimulation.type.ScenarioSimulationResourceTypeDefinition;
 import org.junit.runner.Description;
 import org.junit.runner.RunWith;
-import org.junit.runner.Runner;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.ParentRunner;
 import org.junit.runners.model.InitializationError;
@@ -38,7 +39,7 @@ import org.kie.api.runtime.KieContainer;
 
 import static org.drools.workbench.screens.scenariosimulation.backend.server.util.ResourceHelper.getResourcesByExtension;
 
-public class ScenarioJunitActivator extends ParentRunner<Simulation> {
+public class ScenarioJunitActivator extends ParentRunner<SimulationWithFileName> {
 
     public static final String ACTIVATOR_CLASS_NAME = "ScenarioJunitActivatorTest";
 
@@ -54,11 +55,11 @@ public class ScenarioJunitActivator extends ParentRunner<Simulation> {
     }
 
     @Override
-    protected List<Simulation> getChildren() {
+    protected List<SimulationWithFileName> getChildren() {
         return getResources().map(elem -> {
             try {
                 String rawFile = new Scanner(new File(elem)).useDelimiter("\\Z").next();
-                return getXmlReader().unmarshal(rawFile).getSimulation();
+                return new SimulationWithFileName(getXmlReader().unmarshal(rawFile).getSimulation(), elem);
             } catch (FileNotFoundException e) {
                 throw new ScenarioException("File not found, this should not happen: " + elem, e);
             }
@@ -66,14 +67,15 @@ public class ScenarioJunitActivator extends ParentRunner<Simulation> {
     }
 
     @Override
-    protected Description describeChild(Simulation child) {
-        return ScenarioRunnerImpl.getDescriptionForSimulationDescriptor(child.getSimulationDescriptor());
+    protected Description describeChild(SimulationWithFileName child) {
+        return ScenarioRunnerImpl.getDescriptionForSimulation(Optional.of(child.getFileName()), child.getSimulation());
     }
 
     @Override
-    protected void runChild(Simulation child, RunNotifier notifier) {
+    protected void runChild(SimulationWithFileName child, RunNotifier notifier) {
         KieContainer kieClasspathContainer = getKieContainer();
-        Runner scenarioRunner = newRunner(kieClasspathContainer, child);
+        ScenarioRunnerImpl scenarioRunner = newRunner(kieClasspathContainer, child.getSimulation());
+        scenarioRunner.setFileName(child.getFileName());
         scenarioRunner.run(notifier);
     }
 
@@ -90,7 +92,7 @@ public class ScenarioJunitActivator extends ParentRunner<Simulation> {
         return KieServices.get().getKieClasspathContainer();
     }
 
-    Runner newRunner(KieContainer kieContainer, Simulation simulation) {
+    ScenarioRunnerImpl newRunner(KieContainer kieContainer, Simulation simulation) {
         return new ScenarioRunnerImpl(kieContainer, simulation);
     }
 }

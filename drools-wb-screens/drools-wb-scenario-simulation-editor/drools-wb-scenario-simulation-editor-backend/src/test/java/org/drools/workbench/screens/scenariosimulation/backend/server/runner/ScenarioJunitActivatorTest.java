@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import org.drools.workbench.screens.scenariosimulation.backend.server.ScenarioSimulationXMLPersistence;
+import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.SimulationWithFileName;
 import org.drools.workbench.screens.scenariosimulation.backend.server.util.ResourceHelper;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
 import org.drools.workbench.screens.scenariosimulation.model.Simulation;
@@ -27,7 +28,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runner.Runner;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.model.InitializationError;
 import org.kie.api.runtime.KieContainer;
@@ -43,46 +43,49 @@ import static org.mockito.Mockito.when;
 public class ScenarioJunitActivatorTest {
 
     @Mock
-    private ScenarioSimulationXMLPersistence xmlReader;
+    private ScenarioSimulationXMLPersistence xmlReaderMock;
 
     @Mock
-    private KieContainer kieContainer;
+    private KieContainer kieContainerMock;
 
     @Mock
-    private Runner runner;
+    private ScenarioRunnerImpl runnerMock;
 
     @Mock
-    private Simulation simulation;
+    private Simulation simulationMock;
 
     @Mock
-    private ScenarioSimulationModel scenarioSimulationModel;
+    private SimulationWithFileName simulationWithFileNameMock;
 
     @Mock
-    private RunNotifier runNotifier;
+    private ScenarioSimulationModel scenarioSimulationModelMock;
+
+    @Mock
+    private RunNotifier runNotifierMock;
 
     @Before
     public void setup() {
-        when(xmlReader.unmarshal(any())).thenReturn(scenarioSimulationModel);
-        when(scenarioSimulationModel.getSimulation()).thenReturn(simulation);
+        when(xmlReaderMock.unmarshal(any())).thenReturn(scenarioSimulationModelMock);
+        when(scenarioSimulationModelMock.getSimulation()).thenReturn(simulationMock);
     }
 
     @Test
     public void getChildrenTest() throws InitializationError {
-        List<Simulation> children = getScenarioJunitActivator().getChildren();
+        List<SimulationWithFileName> children = getScenarioJunitActivator().getChildren();
         Assert.assertEquals(1, children.size());
     }
 
     @Test
     public void runChildTest() throws InitializationError {
-        getScenarioJunitActivator().runChild(simulation, runNotifier);
-        verify(runner, times(1)).run(runNotifier);
+        getScenarioJunitActivator().runChild(simulationWithFileNameMock, runNotifierMock);
+        verify(runnerMock, times(1)).run(runNotifierMock);
     }
 
     private ScenarioJunitActivator getScenarioJunitActivator() throws InitializationError {
         return new ScenarioJunitActivator(ScenarioJunitActivator.class) {
             @Override
             ScenarioSimulationXMLPersistence getXmlReader() {
-                return xmlReader;
+                return xmlReaderMock;
             }
 
             @Override
@@ -92,12 +95,12 @@ public class ScenarioJunitActivatorTest {
 
             @Override
             KieContainer getKieContainer() {
-                return kieContainer;
+                return kieContainerMock;
             }
 
             @Override
-            Runner newRunner(KieContainer kieContainer, Simulation simulation) {
-                return runner;
+            ScenarioRunnerImpl newRunner(KieContainer kieContainer, Simulation simulation) {
+                return runnerMock;
             }
         };
     }
