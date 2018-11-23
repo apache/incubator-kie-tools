@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.invocation;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -52,6 +53,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.GridFactory
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.InformationItemCell;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionGrid;
 import org.kie.workbench.common.dmn.client.editors.types.HasNameAndTypeRef;
@@ -63,7 +65,6 @@ import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextBoxS
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellValueTuple;
@@ -203,6 +204,15 @@ public class InvocationGridTest {
     private NameAndDataTypePopoverView.Presenter headerEditor;
 
     @Mock
+    private GridWidget parentGridWidget;
+
+    @Mock
+    private GridData parentGridData;
+
+    @Mock
+    private GridColumn parentGridColumn;
+
+    @Mock
     private GridCellTuple parent;
 
     @Mock
@@ -259,6 +269,10 @@ public class InvocationGridTest {
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
+        when(parent.getGridWidget()).thenReturn(parentGridWidget);
+        when(parentGridWidget.getModel()).thenReturn(parentGridData);
+        when(parentGridData.getColumns()).thenReturn(Collections.singletonList(parentGridColumn));
+
         when(sessionManager.getCurrentSession()).thenReturn(session);
         when(session.getGridPanel()).thenReturn(gridPanel);
         when(session.getGridLayer()).thenReturn(gridLayer);
@@ -739,7 +753,7 @@ public class InvocationGridTest {
         clearExpressionTypeCommand.undo(canvasHandler);
 
         //Verify Expression has been restored and UndefinedExpressionEditor resized
-        assertThat(grid.getModel().getColumns().get(2).getWidth()).isEqualTo(DMNGridColumn.DEFAULT_WIDTH);
+        assertThat(grid.getModel().getColumns().get(2).getWidth()).isEqualTo(UndefinedExpressionColumn.DEFAULT_WIDTH);
         verify(grid).resize(BaseExpressionGrid.RESIZE_EXISTING_MINIMUM);
 
         verify(grid).selectExpressionEditorFirstCell(eq(0), eq(InvocationUIModelMapper.BINDING_EXPRESSION_COLUMN_INDEX));

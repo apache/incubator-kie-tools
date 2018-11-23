@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.function;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -56,6 +57,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.function.pa
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.supplementary.FunctionSupplementaryGrid;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.literal.LiteralExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.literal.LiteralExpressionGrid;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionColumn;
 import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
@@ -63,7 +65,6 @@ import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
@@ -183,6 +184,15 @@ public class FunctionGridTest {
     private ParametersPopoverView.Presenter parametersEditor;
 
     @Mock
+    private GridWidget parentGridWidget;
+
+    @Mock
+    private GridData parentGridData;
+
+    @Mock
+    private GridColumn parentGridColumn;
+
+    @Mock
     private GridCellTuple parent;
 
     @Mock
@@ -267,6 +277,10 @@ public class FunctionGridTest {
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
+        when(parent.getGridWidget()).thenReturn(parentGridWidget);
+        when(parentGridWidget.getModel()).thenReturn(parentGridData);
+        when(parentGridData.getColumns()).thenReturn(Collections.singletonList(parentGridColumn));
+
         when(sessionManager.getCurrentSession()).thenReturn(session);
         when(session.getGridPanel()).thenReturn(gridPanel);
         when(session.getGridLayer()).thenReturn(gridLayer);
@@ -789,7 +803,7 @@ public class FunctionGridTest {
         clearExpressionTypeCommand.undo(canvasHandler);
 
         //Verify Expression has been restored and UndefinedExpressionEditor resized
-        assertThat(grid.getModel().getColumns().get(0).getWidth()).isEqualTo(DMNGridColumn.DEFAULT_WIDTH);
+        assertThat(grid.getModel().getColumns().get(0).getWidth()).isEqualTo(UndefinedExpressionColumn.DEFAULT_WIDTH);
         verify(grid).resize(BaseExpressionGrid.RESIZE_EXISTING_MINIMUM);
 
         verify(grid).selectExpressionEditorFirstCell(eq(0), eq(0));

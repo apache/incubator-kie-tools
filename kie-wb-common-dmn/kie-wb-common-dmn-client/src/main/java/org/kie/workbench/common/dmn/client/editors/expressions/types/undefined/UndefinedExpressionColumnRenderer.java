@@ -17,16 +17,30 @@
 package org.kie.workbench.common.dmn.client.editors.expressions.types.undefined;
 
 import com.ait.lienzo.client.core.shape.Group;
-import org.kie.workbench.common.dmn.client.editors.expressions.util.RendererUtils;
+import com.ait.lienzo.client.core.shape.Text;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.impl.BaseGridColumnRenderer;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.themes.GridRendererTheme;
 
 public class UndefinedExpressionColumnRenderer extends BaseGridColumnRenderer<String> {
 
     @Override
     public Group renderCell(final GridCell<String> cell,
                             final GridBodyCellRenderContext context) {
-        return RendererUtils.getCenteredCellText(context, cell);
+        if (isToReturnNull(cell)) {
+            return null;
+        }
+
+        final GridRenderer renderer = context.getRenderer();
+        final GridRendererTheme theme = renderer.getTheme();
+        final Text text = theme.getPlaceholderText();
+        final String value = cell.getValue().getPlaceHolder();
+
+        return internalRenderCell(cell,
+                                  context,
+                                  text,
+                                  value);
     }
 }

@@ -179,6 +179,9 @@ public class DMNEditorConstants {
     public static final String UndefinedExpressionEditor_SelectorTitle = "UndefinedExpressionEditor.SelectorTitle";
 
     @TranslationKey(defaultValue = "")
+    public static final String UndefinedExpressionEditor_SelectExpression = "UndefinedExpressionEditor.SelectExpression";
+
+    @TranslationKey(defaultValue = "")
     public static final String DecisionNavigatorPresenter_DecisionNavigator = "DecisionNavigatorPresenter.DecisionNavigator";
 
     @TranslationKey(defaultValue = "")

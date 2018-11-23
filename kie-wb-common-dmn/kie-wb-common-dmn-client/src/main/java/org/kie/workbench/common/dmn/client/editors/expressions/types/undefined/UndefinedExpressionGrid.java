@@ -41,6 +41,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.controls.HasCellEditorCo
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
@@ -56,7 +57,6 @@ import org.kie.workbench.common.stunner.core.client.command.SessionCommandManage
 import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
-import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
 
 public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, DMNGridData, UndefinedExpressionUIModelMapper> implements HasListSelectorControl {
@@ -132,17 +132,18 @@ public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, DMNG
         return new UndefinedExpressionUIModelMapper(this::getModel,
                                                     () -> expression,
                                                     listSelector,
+                                                    translationService,
                                                     hasExpression);
     }
 
     @Override
     protected void initialiseUiColumns() {
-        final GridColumn undefinedExpressionColumn = new UndefinedExpressionColumn(new BaseHeaderMetaData("",
-                                                                                                          EXPRESSION_COLUMN_GROUP),
-                                                                                   this,
-                                                                                   cellEditorControls,
-                                                                                   undefinedExpressionSelector,
-                                                                                   translationService);
+        final DMNGridColumn undefinedExpressionColumn = new UndefinedExpressionColumn(new BaseHeaderMetaData("",
+                                                                                                             EXPRESSION_COLUMN_GROUP),
+                                                                                      this,
+                                                                                      cellEditorControls,
+                                                                                      undefinedExpressionSelector,
+                                                                                      translationService);
         undefinedExpressionColumn.setMovable(false);
         undefinedExpressionColumn.setResizable(false);
 

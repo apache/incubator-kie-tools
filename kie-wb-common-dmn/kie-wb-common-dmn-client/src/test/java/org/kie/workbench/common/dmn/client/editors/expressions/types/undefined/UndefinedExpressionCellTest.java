@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.undefined;
 
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,11 +33,15 @@ public class UndefinedExpressionCellTest {
     @Mock
     private ListSelectorView.Presenter listSelector;
 
+    @Mock
+    private TranslationService translationService;
+
     private UndefinedExpressionCell cell;
 
     @Before
     public void setup() {
-        this.cell = new UndefinedExpressionCell(listSelector);
+        this.cell = new UndefinedExpressionCell(listSelector,
+                                                translationService);
     }
 
     @Test

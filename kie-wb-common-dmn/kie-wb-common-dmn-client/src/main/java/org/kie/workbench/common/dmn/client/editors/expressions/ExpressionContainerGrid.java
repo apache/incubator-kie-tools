@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -172,8 +173,9 @@ public class ExpressionContainerGrid extends BaseGridWidget implements HasListSe
                 final Optional<BaseExpressionGrid> editor = ecv.getValue();
                 if (editor.isPresent()) {
                     final BaseExpressionGrid beg = editor.get();
-                    existingWidth = Math.max(existingWidth,
-                                             beg.getWidth() + beg.getPadding() * 2);
+                    existingWidth = Collections.max(Arrays.asList(existingWidth,
+                                                                  beg.getWidth() + beg.getPadding() * 2,
+                                                                  beg.getMinimumWidth() + beg.getPadding() * 2));
                 }
             }
         }

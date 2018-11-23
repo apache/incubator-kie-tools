@@ -103,16 +103,16 @@ public class UndefinedExpressionColumnTest {
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
+        doReturn(parent).when(gridWidget).getParentInformation();
+        doReturn(parentGridWidget).when(parent).getGridWidget();
+        doReturn(parentGridData).when(parentGridWidget).getModel();
+        doReturn(Collections.singletonList(parentGridColumn)).when(parentGridData).getColumns();
+
         this.column = spy(new UndefinedExpressionColumn(headerMetaData,
                                                         gridWidget,
                                                         cellEditorControls,
                                                         undefinedExpressionSelector,
                                                         translationService));
-
-        doReturn(parent).when(gridWidget).getParentInformation();
-        doReturn(parentGridWidget).when(parent).getGridWidget();
-        doReturn(parentGridData).when(parentGridWidget).getModel();
-        doReturn(Collections.singletonList(parentGridColumn)).when(parentGridData).getColumns();
 
         when(context.getRowIndex()).thenReturn(ROW_INDEX);
         when(context.getColumnIndex()).thenReturn(COLUMN_INDEX);

@@ -18,6 +18,8 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.undefined;
 
 import java.util.Optional;
 
+import org.jboss.errai.ui.client.local.spi.TranslationService;
+import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellEditAction;
@@ -27,9 +29,17 @@ public class UndefinedExpressionCell extends DMNGridCell<String> {
 
     private final ListSelectorView.Presenter listSelector;
 
-    public UndefinedExpressionCell(final ListSelectorView.Presenter listSelector) {
-        super(new BaseGridCellValue<>("--"));
+    public UndefinedExpressionCell(final ListSelectorView.Presenter listSelector,
+                                   final TranslationService translationService) {
+        super(new UndefinedExpressionCellValue(translationService.getTranslation(DMNEditorConstants.UndefinedExpressionEditor_SelectExpression)));
         this.listSelector = listSelector;
+    }
+
+    private static class UndefinedExpressionCellValue extends BaseGridCellValue<String> {
+
+        public UndefinedExpressionCellValue(final String placeHolder) {
+            super(null, placeHolder);
+        }
     }
 
     @Override

@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.undefined;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -60,6 +61,9 @@ public class UndefinedExpressionUIModelMapperTest {
     private ListSelectorView.Presenter listSelector;
 
     @Mock
+    private TranslationService translationService;
+
+    @Mock
     private UndefinedExpressionColumn uiColumn;
 
     private GridData uiModel;
@@ -77,6 +81,7 @@ public class UndefinedExpressionUIModelMapperTest {
         this.mapper = new UndefinedExpressionUIModelMapper(() -> uiModel,
                                                            () -> Optional.ofNullable(expression),
                                                            listSelector,
+                                                           translationService,
                                                            hasExpression);
         this.cellValueSupplier = () -> Optional.of(new ExpressionCellValue(Optional.of(editor)));
 

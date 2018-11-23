@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
@@ -58,6 +59,8 @@ public class ExpressionEditorColumn extends DMNGridColumn<GridWidget, Optional<B
               gridWidget);
         setMovable(false);
         setResizable(false);
+
+        setWidthInternal(UndefinedExpressionColumn.DEFAULT_WIDTH);
     }
 
     @Override

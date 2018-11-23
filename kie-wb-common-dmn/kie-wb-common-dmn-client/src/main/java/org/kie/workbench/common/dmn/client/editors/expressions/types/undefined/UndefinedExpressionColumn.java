@@ -32,6 +32,8 @@ import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellEditC
 
 public class UndefinedExpressionColumn extends DMNGridColumn<UndefinedExpressionGrid, String> {
 
+    public static final double DEFAULT_WIDTH = 150.0;
+
     private final CellEditorControlsView.Presenter cellEditorControls;
     private final UndefinedExpressionSelectorPopoverView.Presenter undefinedExpressionSelector;
     private final TranslationService translationService;
@@ -59,6 +61,8 @@ public class UndefinedExpressionColumn extends DMNGridColumn<UndefinedExpression
         this.cellEditorControls = cellEditorControls;
         this.undefinedExpressionSelector = undefinedExpressionSelector;
         this.translationService = translationService;
+
+        setWidthInternal(UndefinedExpressionColumn.DEFAULT_WIDTH);
     }
 
     @Override

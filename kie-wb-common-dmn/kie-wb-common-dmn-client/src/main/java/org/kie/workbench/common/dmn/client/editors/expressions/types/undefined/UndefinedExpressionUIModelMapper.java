@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.undefined;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
@@ -30,15 +31,18 @@ import org.uberfire.ext.wires.core.grids.client.model.GridData;
 public class UndefinedExpressionUIModelMapper extends BaseUIModelMapper<Expression> {
 
     private final ListSelectorView.Presenter listSelector;
+    private final TranslationService translationService;
     private final HasExpression hasExpression;
 
     public UndefinedExpressionUIModelMapper(final Supplier<GridData> uiModel,
                                             final Supplier<Optional<Expression>> dmnModel,
                                             final ListSelectorView.Presenter listSelector,
+                                            final TranslationService translationService,
                                             final HasExpression hasExpression) {
         super(uiModel,
               dmnModel);
         this.listSelector = listSelector;
+        this.translationService = translationService;
         this.hasExpression = hasExpression;
     }
 
@@ -47,7 +51,7 @@ public class UndefinedExpressionUIModelMapper extends BaseUIModelMapper<Expressi
                              final int columnIndex) {
         uiModel.get().setCell(rowIndex,
                               columnIndex,
-                              () -> new UndefinedExpressionCell(listSelector));
+                              () -> new UndefinedExpressionCell(listSelector, translationService));
     }
 
     @Override

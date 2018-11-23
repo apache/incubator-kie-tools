@@ -40,6 +40,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionE
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionGrid;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
@@ -95,7 +96,7 @@ public class ExpressionContainerGridTest {
 
     private static final String NAME = "name";
 
-    private static final double COLUMN_NEW_WIDTH = 200.0;
+    private static final double COLUMN_NEW_WIDTH = 300.0;
 
     @Mock
     private CellEditorControlsView.Presenter cellEditorControls;
@@ -215,6 +216,7 @@ public class ExpressionContainerGridTest {
         expressionEditorDefinitions.add(literalExpressionEditorDefinition);
 
         doReturn(expressionEditorDefinitions).when(expressionEditorDefinitionsSupplier).get();
+        doReturn(true).when(literalExpressionEditor).isCacheable();
         doReturn(parent).when(literalExpressionEditor).getParentInformation();
         doReturn(new BaseGridData()).when(literalExpressionEditor).getModel();
         doReturn(Optional.of(literalExpression)).when(literalExpressionEditorDefinition).getModelClass();
@@ -324,6 +326,27 @@ public class ExpressionContainerGridTest {
 
         //Verify width is preserved
         assertThat(grid.getModel().getColumns().get(0).getWidth()).isEqualTo(COLUMN_NEW_WIDTH);
+    }
+
+    @Test
+    public void testSetDefinedExpressionWhenReopeningWhenWorkbenchRestarted() {
+        //Emulate User setting expression and resizing column
+        when(hasExpression.getExpression()).thenReturn(literalExpression);
+
+        grid.setExpression(NODE_UUID,
+                           hasExpression,
+                           Optional.of(hasName));
+
+        //Emulate re-starting the Workbench and re-opening the editor
+        when(literalExpressionEditor.getWidth()).thenReturn(DMNGridColumn.DEFAULT_WIDTH);
+        when(literalExpressionEditor.getMinimumWidth()).thenReturn(UndefinedExpressionColumn.DEFAULT_WIDTH);
+        expressionGridCache.removeExpressionGrid(NODE_UUID);
+        grid.setExpression(NODE_UUID,
+                           hasExpression,
+                           Optional.of(hasName));
+
+        //Verify width is equal to the minimum required
+        assertThat(grid.getModel().getColumns().get(0).getWidth()).isEqualTo(UndefinedExpressionColumn.DEFAULT_WIDTH);
     }
 
     @Test
