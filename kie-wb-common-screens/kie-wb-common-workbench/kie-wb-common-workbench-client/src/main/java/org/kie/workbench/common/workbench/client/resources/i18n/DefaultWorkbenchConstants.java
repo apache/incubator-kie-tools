@@ -151,8 +151,6 @@ public interface DefaultWorkbenchConstants
 
     String StunnerDesigner();
 
-    String DMNDesigner();
-
     String StunnerDesignerPreferences();
 
     String SSHKeys();

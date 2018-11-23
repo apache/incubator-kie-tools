@@ -31,8 +31,8 @@ import org.uberfire.workbench.category.Category;
 public class DMNDefinitionSetResourceType extends AbstractDefinitionSetResourceType {
 
     static final String DMN_EXTENSION = "dmn";
-    static final String NAME = "DMN (Preview)";
-    static final String DESCRIPTION = "DMN (Preview)";
+    static final String NAME = "DMN";
+    static final String DESCRIPTION = "DMN";
 
     private Category category;
 
