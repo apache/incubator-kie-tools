@@ -24,6 +24,11 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.CellSelec
 public interface GridCell<T> {
 
     /**
+     * The default {@link GridCellEditAction} when otherwise undefined.
+     */
+    GridCellEditAction DEFAULT_EDIT_ACTION = GridCellEditAction.DOUBLE_CLICK;
+
+    /**
      * Returns the value holder for the cell. It should be noted there is intentionally no "setter" as
      * mutation of the value may require further mutation to other data within the grid. Therefore mutation
      * of cell values is via the GridData interface to ensure the integrity of all data within the grid.
@@ -86,6 +91,6 @@ public interface GridCell<T> {
      * @return
      */
     default GridCellEditAction getSupportedEditAction() {
-        return GridCellEditAction.DOUBLE_CLICK;
+        return DEFAULT_EDIT_ACTION;
     }
 }

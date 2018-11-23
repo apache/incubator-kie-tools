@@ -73,7 +73,8 @@ public class DefaultGridWidgetEditCellMouseEventHandler implements NodeMouseEven
         final GridData gridData = gridWidget.getModel();
         if (gridData.getSelectedCells().size() == 1) {
             final GridCell<?> cell = gridData.getCell(uiRowIndex, uiColumnIndex);
-            if (Objects.equals(cell.getSupportedEditAction(), GridCellEditAction.getSupportedEditAction(event))) {
+            final GridCellEditAction cellEditAction = cell == null ? GridCell.DEFAULT_EDIT_ACTION : cell.getSupportedEditAction();
+            if (Objects.equals(cellEditAction, GridCellEditAction.getSupportedEditAction(event))) {
                 return gridWidget.startEditingCell(relativeLocation);
             }
         }

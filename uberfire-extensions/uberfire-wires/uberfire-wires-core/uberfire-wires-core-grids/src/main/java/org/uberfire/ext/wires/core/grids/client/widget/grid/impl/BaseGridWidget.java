@@ -272,32 +272,16 @@ public class BaseGridWidget extends Group implements GridWidget {
     @Override
     public void select() {
         isSelected = true;
-        if (renderingInformation == null) {
-            return;
-        }
-        assertSelectionWidget();
-        add(selection);
     }
 
     @Override
     public void deselect() {
         isSelected = false;
-        if (selection != null) {
-            remove(selection);
-        }
     }
 
     @Override
     public boolean isSelected() {
         return isSelected;
-    }
-
-    private void assertSelectionWidget() {
-        this.selection = new Group();
-        addCommandToRenderQueue(selection,
-                                renderer.renderSelector(getWidth(),
-                                                        getHeight(),
-                                                        renderingInformation));
     }
 
     /**
@@ -369,6 +353,7 @@ public class BaseGridWidget extends Group implements GridWidget {
         this.floatingBodySelections = null;
         this.floatingHeaderSelections = null;
         this.boundary = null;
+        this.selection = null;
         this.allColumns.clear();
         this.bodyColumns.clear();
         this.floatingColumns.clear();
@@ -484,7 +469,11 @@ public class BaseGridWidget extends Group implements GridWidget {
                                     renderGridBoundary(renderingInformation));
         }
         if (isSelected) {
-            assertSelectionWidget();
+            this.selection = new Group();
+            addCommandToRenderQueue(selection,
+                                    renderer.renderSelector(getWidth(),
+                                                            getHeight(),
+                                                            renderingInformation));
         }
     }
 
@@ -521,7 +510,7 @@ public class BaseGridWidget extends Group implements GridWidget {
         }
 
         //Include selection indicator if required
-        if (isSelected) {
+        if (selection != null) {
             add(selection);
         }
     }

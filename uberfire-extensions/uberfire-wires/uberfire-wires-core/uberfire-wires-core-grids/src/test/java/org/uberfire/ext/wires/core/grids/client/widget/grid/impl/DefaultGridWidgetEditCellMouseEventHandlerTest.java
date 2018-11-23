@@ -87,6 +87,24 @@ public class DefaultGridWidgetEditCellMouseEventHandlerTest extends BaseGridWidg
     }
 
     @Test
+    @SuppressWarnings("unchecked")
+    public void testEditBodyCellWithANullSelectedCell() {
+        when(uiModel.getSelectedCells()).thenReturn(Collections.singletonList(new GridData.SelectedCell(0, 1)));
+        when(uiModel.getCell(eq(0), eq(1))).thenReturn(null);
+
+        assertThat(handler.onNodeMouseEvent(gridWidget,
+                                            relativeLocation,
+                                            Optional.empty(),
+                                            Optional.empty(),
+                                            Optional.of(0),
+                                            Optional.of(1),
+                                            event)).isFalse();
+
+        verify(gridWidget, never()).startEditingCell(anyInt(), anyInt());
+        verify(gridWidget).startEditingCell(eq(relativeLocation));
+    }
+
+    @Test
     public void testEditBodyCellWithMultipleSelectedCells() {
         when(uiModel.getSelectedCells()).thenReturn(Arrays.asList(new GridData.SelectedCell(0, 0),
                                                                   new GridData.SelectedCell(0, 1)));

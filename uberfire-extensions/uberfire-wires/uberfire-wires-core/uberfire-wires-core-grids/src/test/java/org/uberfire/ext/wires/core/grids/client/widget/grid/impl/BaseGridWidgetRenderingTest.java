@@ -25,6 +25,7 @@ import java.util.function.Function;
 
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.Group;
+import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.BoundingBox;
@@ -55,6 +56,9 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.DefaultGridLay
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.GridPinnedModeManager;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyDouble;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
@@ -107,6 +111,9 @@ public class BaseGridWidgetRenderingTest {
     private Group selections;
 
     @Mock
+    private Group selector;
+
+    @Mock
     private Group boundary;
 
     private BaseGridWidget gridWidget;
@@ -136,6 +143,7 @@ public class BaseGridWidgetRenderingTest {
         mockHeader();
         mockBody();
         mockSelections();
+        mockSelector();
         mockBoundary();
     }
 
@@ -172,6 +180,14 @@ public class BaseGridWidgetRenderingTest {
                                           any(List.class),
                                           any(BiFunction.class),
                                           any(Function.class))).thenReturn((rc) -> rc.getGroup().add(selections));
+    }
+
+    @SuppressWarnings("unchecked")
+    private void mockSelector() {
+        when(selector.asNode()).thenReturn(mock(Node.class));
+        when(renderer.renderSelector(anyDouble(),
+                                     anyDouble(),
+                                     any(BaseGridRendererHelper.RenderingInformation.class))).thenReturn((rc) -> rc.getGroup().add(selector));
     }
 
     @SuppressWarnings("unchecked")
@@ -361,6 +377,36 @@ public class BaseGridWidgetRenderingTest {
         assertEquals(ROW_HEIGHT * 2,
                      strategy.apply(selectedRange),
                      0.0);
+    }
+
+    @Test
+    public void testSelection() {
+        gridWidget.select();
+
+        assertTrue(gridWidget.isSelected());
+
+        verify(gridWidget, never()).add(any(IPrimitive.class));
+
+        mockGridRendering(0, BaseGridWidgetRenderingTestUtils.HEADER_HEIGHT, 0);
+
+        verify(renderer).renderSelector(anyDouble(),
+                                        anyDouble(),
+                                        any(BaseGridRendererHelper.RenderingInformation.class));
+    }
+
+    @Test
+    public void testDeselection() {
+        gridWidget.deselect();
+
+        assertFalse(gridWidget.isSelected());
+
+        verify(gridWidget, never()).remove(any(IPrimitive.class));
+
+        mockGridRendering(0, BaseGridWidgetRenderingTestUtils.HEADER_HEIGHT, 0);
+
+        verify(renderer, never()).renderSelector(anyDouble(),
+                                                 anyDouble(),
+                                                 any(BaseGridRendererHelper.RenderingInformation.class));
     }
 
     @SuppressWarnings("unchecked")
