@@ -35,21 +35,21 @@ public enum BaseExpressionOperator {
         }
 
         @Override
-        protected boolean eval(Object raw, Object resultValue, ClassLoader classLoader) {
+        protected boolean eval(Object raw, Object resultValue, Class<?> resultClass, ClassLoader classLoader) {
             if (!(raw instanceof String) || !match((String) raw).isPresent()) {
                 return false;
             }
             String rawValue = (String) raw;
             List<Boolean> results = Arrays.stream(rawValue.split(symbols.get(0)))
-                    .map(elem -> findOperator(elem.trim()).eval(elem.trim(), resultValue, classLoader))
+                    .map(elem -> findOperator(elem.trim()).eval(elem.trim(), resultValue, resultClass, classLoader))
                     .collect(Collectors.toList());
             return results.stream().allMatch(a -> a);
         }
     },
     LIST_OF_VALUES(1, "[") {
         @Override
-        public boolean eval(Object rawValue, Object resultValue, ClassLoader classLoader) {
-            List<Boolean> results = getValues(rawValue).stream().map(e -> EQUALS.eval(e, resultValue, classLoader)).collect(Collectors.toList());
+        public boolean eval(Object rawValue, Object resultValue, Class<?> resultClass, ClassLoader classLoader) {
+            List<Boolean> results = getValues(rawValue).stream().map(e -> EQUALS.eval(e, resultValue, resultClass, classLoader)).collect(Collectors.toList());
             return results.stream().anyMatch(a -> a);
         }
 
@@ -79,10 +79,10 @@ public enum BaseExpressionOperator {
 
         @SuppressWarnings("unchecked")
         @Override
-        public boolean eval(Object rawValue, Object resultValue, ClassLoader classLoader) {
+        public boolean eval(Object rawValue, Object resultValue, Class<?> resultClass, ClassLoader classLoader) {
             Object parsedResults = rawValue;
             if (parsedResults instanceof String) {
-                parsedResults = getValueForGiven(resultValue.getClass().getCanonicalName(), (String) rawValue, classLoader);
+                parsedResults = getValueForGiven(resultClass.getCanonicalName(), (String) rawValue, classLoader);
             }
             if (parsedResults == null) {
                 return resultValue == null;
@@ -96,7 +96,7 @@ public enum BaseExpressionOperator {
     NOT_EQUALS(3, "!", "!=", "<>") {
         @SuppressWarnings("unchecked")
         @Override
-        public boolean eval(Object rawValue, Object resultValue, ClassLoader classLoader) {
+        public boolean eval(Object rawValue, Object resultValue, Class<?> resultClass, ClassLoader classLoader) {
             Object valueToTest = rawValue;
             BaseExpressionOperator operator = EQUALS;
             // remove symbol to reuse EQUALS.eval
@@ -106,12 +106,12 @@ public enum BaseExpressionOperator {
                 operator = findOperator((String) valueToTest);
             }
 
-            return !operator.eval(valueToTest, resultValue, classLoader);
+            return !operator.eval(valueToTest, resultValue, resultClass, classLoader);
         }
     },
     RANGE(4, "<", ">", "<=", ">=") {
         @Override
-        public boolean eval(Object raw, Object resultValue, ClassLoader classLoader) {
+        public boolean eval(Object raw, Object resultValue, Class<?> resultClass, ClassLoader classLoader) {
             if (!(raw instanceof String) || !match((String) raw).isPresent()) {
                 return false;
             }
@@ -119,7 +119,7 @@ public enum BaseExpressionOperator {
             String rawValue = (String) raw;
             String operator = match(rawValue).get();
             String cleanValue = removeOperator(rawValue);
-            Object stepValue = convertValue(resultValue.getClass().getCanonicalName(), cleanValue, classLoader);
+            Object stepValue = convertValue(resultClass.getCanonicalName(), cleanValue, classLoader);
             if (!areComparable(stepValue, resultValue)) {
                 return false;
             }
@@ -164,7 +164,7 @@ public enum BaseExpressionOperator {
         return BaseExpressionOperator.EQUALS;
     }
 
-    protected abstract boolean eval(Object rawValue, Object resultValue, ClassLoader classLoader);
+    protected abstract boolean eval(Object rawValue, Object resultValue, Class<?> resultClass, ClassLoader classLoader);
 
     protected Object getValueForGiven(String className, String value, ClassLoader classLoader) {
         throw new IllegalStateException("This operator cannot be used into a Given clause");

@@ -14,11 +14,23 @@
  * limitations under the License.
  */
 
-package org.drools.workbench.screens.scenariosimulation.backend.server.expression;
+package org.drools.workbench.screens.scenariosimulation.backend.server.util;
 
-public interface ExpressionEvaluator {
+public class ScenarioBeanWrapper<T> {
 
-    boolean evaluate(Object rawExpression, Object resultValue, Class<?> resultClass);
+    private final Object bean;
+    private final Class<T> beanClass;
 
-    Object getValueForGiven(String className, Object raw, ClassLoader classLoader);
+    public ScenarioBeanWrapper(Object bean, Class<T> beanClass) {
+        this.beanClass = beanClass;
+        this.bean = bean;
+    }
+
+    public Object getBean() {
+        return bean;
+    }
+
+    public Class<T> getBeanClass() {
+        return beanClass;
+    }
 }

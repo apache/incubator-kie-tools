@@ -35,31 +35,36 @@ public class ParameterizedBaseExpressionEvaluatorTest {
     @Parameterized.Parameters(name = "{index}: Expr \"{0} {1}\" should be true")
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                {1, 1},
-                {1, "1"},
-                {2, "!= 1"},
-                {"String", "<> Test"},
-                {"Test", "= Test"},
-                {1, "<2"},
-                {1, "<2; >0"},
-                {2, " <= 2 "},
-                {2, " >= 2"},
-                {1, "[ 1, 2 ,3]"},
-                {2, "[ 1, 2 ,3]"},
-                {"3", "[ 1, 2 ,3]"},
-                {4, "![ 1, 2 ,3]"},
-                {4, "! < 1"},
-                {1, "> -1"},
-                {10, "!= <10;!= >11"},
-                {10, "= 10; >9"},
-                {Error.class, "! tru"},
-                {Error.class, "fals"},
-                {Error.class, "!= fals"},
-                {Error.class, "tru"},
-                {Error.class, "<> fals"},
-                {Error.class, "tru"},
-                {Error.class, "!m= false"},
-                {Error.class, ">> 3"}
+                {1, 1, int.class},
+                {1, "1", int.class},
+                {2, "!= 1", int.class},
+                {"String", "<> Test", String.class},
+                {"Test", "= Test", String.class},
+                {1, "<2", int.class},
+                {1, "<2; >0", int.class},
+                {2, " <= 2 ", int.class},
+                {2, " >= 2", int.class},
+                {1, "[ 1, 2 ,3]", int.class},
+                {2, "[ 1, 2 ,3]", int.class},
+                {"3", "[ 1, 2 ,3]", String.class},
+                {4, "![ 1, 2 ,3]", int.class},
+                {4, "! < 1", int.class},
+                {1, "> -1", int.class},
+                {10, "!= <10;!= >11", int.class},
+                {10, "= 10; >9", int.class},
+                {null, null, Integer.class},
+                {null, "!1", Integer.class},
+                {'b', "!a", Character.class},
+                {"0".getBytes()[0], "!b", Byte.class},
+                {(short)1, ">0", Short.class},
+                {Error.class, "! tru", void.class},
+                {Error.class, "fals", void.class},
+                {Error.class, "!= fals", void.class},
+                {Error.class, "tru", void.class},
+                {Error.class, "<> fals", void.class},
+                {Error.class, "tru", void.class},
+                {Error.class, "!m= false", void.class},
+                {Error.class, ">> 3", void.class}
         });
     }
 
@@ -69,14 +74,17 @@ public class ParameterizedBaseExpressionEvaluatorTest {
     @Parameterized.Parameter(1)
     public Object exprToTest;
 
+    @Parameterized.Parameter(2)
+    public Class<?> clazz;
+
     @Test
     public void evaluate() {
 
         if (!(resultValue instanceof Class)) {
-            assertTrue(baseExpressionEvaluator.evaluate(exprToTest, resultValue));
+            assertTrue(baseExpressionEvaluator.evaluate(exprToTest, resultValue, clazz));
         } else {
             try {
-                baseExpressionEvaluator.evaluate(exprToTest, true);
+                baseExpressionEvaluator.evaluate(exprToTest, true, clazz);
                 fail();
             } catch (Exception ignored) {
             }

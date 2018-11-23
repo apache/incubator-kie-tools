@@ -33,6 +33,7 @@ import org.drools.workbench.screens.scenariosimulation.backend.server.runner.mod
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.ScenarioRunnerData;
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.SingleFactValueResult;
 import org.drools.workbench.screens.scenariosimulation.backend.server.util.ScenarioBeanUtil;
+import org.drools.workbench.screens.scenariosimulation.backend.server.util.ScenarioBeanWrapper;
 import org.drools.workbench.screens.scenariosimulation.model.ExpressionElement;
 import org.drools.workbench.screens.scenariosimulation.model.ExpressionIdentifier;
 import org.drools.workbench.screens.scenariosimulation.model.FactIdentifier;
@@ -250,10 +251,11 @@ public class ScenarioRunnerHelper {
                     .orElseThrow(() -> new IllegalStateException("Wrong expression, this should not happen"));
 
             List<String> pathToValue = factMapping.getExpressionElements().stream().map(ExpressionElement::getStep).collect(toList());
-            Object resultValue = ScenarioBeanUtil.navigateToObject(objectToCheck, pathToValue, false);
+            ScenarioBeanWrapper<?> scenarioBeanWrapper = ScenarioBeanUtil.navigateToObject(objectToCheck, pathToValue, false);
+            Object resultValue = scenarioBeanWrapper.getBean();
 
             try {
-                return expressionEvaluator.evaluate(expectedResult.getRawValue(), resultValue) ?
+                return expressionEvaluator.evaluate(expectedResult.getRawValue(), resultValue, scenarioBeanWrapper.getBeanClass()) ?
                         createResult(resultValue) :
                         createErrorResult();
             } catch (Exception e) {

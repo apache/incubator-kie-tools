@@ -25,13 +25,13 @@ public class BaseExpressionEvaluator implements ExpressionEvaluator {
 
     @SuppressWarnings("unchecked")
     @Override
-    public boolean evaluate(Object raw, Object resultValue) {
+    public boolean evaluate(Object raw, Object resultValue, Class<?> resultClass) {
         if (!(raw instanceof String)) {
-            return BaseExpressionOperator.EQUALS.eval(raw, resultValue, classLoader);
+            return BaseExpressionOperator.EQUALS.eval(raw, resultValue, resultClass, classLoader);
         }
 
         String rawValue = (String) raw;
-        return BaseExpressionOperator.findOperator(rawValue).eval(rawValue, resultValue, classLoader);
+        return BaseExpressionOperator.findOperator(rawValue).eval(rawValue, resultValue, resultClass, classLoader);
     }
 
     @Override

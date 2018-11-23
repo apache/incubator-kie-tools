@@ -68,14 +68,14 @@ public class BaseExpressionOperatorTest {
         MyComparableTestClass comparableTest1 = new MyComparableTestClass();
 
         // Tested via Objects.equals
-        assertTrue(BaseExpressionOperator.EQUALS.eval(test1, test1, classLoader));
-        assertFalse(BaseExpressionOperator.EQUALS.eval(test1, test2, classLoader));
+        assertTrue(BaseExpressionOperator.EQUALS.eval(test1, test1, test1.getClass(), classLoader));
+        assertFalse(BaseExpressionOperator.EQUALS.eval(test1, test2, test1.getClass(), classLoader));
         // Tested via Comparable.compareTo
-        assertTrue(BaseExpressionOperator.EQUALS.eval(comparableTest1, comparableTest1, classLoader));
+        assertTrue(BaseExpressionOperator.EQUALS.eval(comparableTest1, comparableTest1, comparableTest1.getClass(), classLoader));
 
-        assertTrue(BaseExpressionOperator.EQUALS.eval("1", 1, classLoader));
+        assertTrue(BaseExpressionOperator.EQUALS.eval("1", 1, int.class, classLoader));
 
-        assertTrue(BaseExpressionOperator.EQUALS.eval(null, null, classLoader));
+        assertTrue(BaseExpressionOperator.EQUALS.eval(null, null, null, classLoader));
     }
 
     @Test
@@ -85,43 +85,46 @@ public class BaseExpressionOperatorTest {
         MyComparableTestClass comparableTest1 = new MyComparableTestClass();
 
         // Tested via Objects.equals
-        assertFalse(BaseExpressionOperator.NOT_EQUALS.eval(test1, test1, classLoader));
-        assertTrue(BaseExpressionOperator.NOT_EQUALS.eval(test1, test2, classLoader));
+        assertFalse(BaseExpressionOperator.NOT_EQUALS.eval(test1, test1, test1.getClass(), classLoader));
+        assertTrue(BaseExpressionOperator.NOT_EQUALS.eval(test1, test2, test1.getClass(), classLoader));
         // Tested via Comparable.compareTo
-        assertFalse(BaseExpressionOperator.NOT_EQUALS.eval(comparableTest1, comparableTest1, classLoader));
+        assertFalse(BaseExpressionOperator.NOT_EQUALS.eval(comparableTest1, comparableTest1, comparableTest1.getClass(), classLoader));
 
-        assertTrue(BaseExpressionOperator.NOT_EQUALS.eval("<> 1", 2, classLoader));
+        assertTrue(BaseExpressionOperator.NOT_EQUALS.eval("<> 1", 2, int.class, classLoader));
 
-        assertFalse(BaseExpressionOperator.NOT_EQUALS.eval(null, null, classLoader));
+        assertFalse(BaseExpressionOperator.NOT_EQUALS.eval(null, null, null, classLoader));
 
         // NOT_EQUALS can be composed
-        assertTrue(BaseExpressionOperator.NOT_EQUALS.eval("! <1", 2, classLoader));
-        assertTrue(BaseExpressionOperator.NOT_EQUALS.eval("! [1, 3]", 2, classLoader));
+        assertTrue(BaseExpressionOperator.NOT_EQUALS.eval("! <1", 2, int.class, classLoader));
+        assertTrue(BaseExpressionOperator.NOT_EQUALS.eval("! [1, 3]", 2, int.class, classLoader));
     }
 
     @Test
     public void rangeTest() {
-        assertFalse(BaseExpressionOperator.RANGE.eval(new Object(), "", classLoader));
+        Object o = new Object();
+        assertFalse(BaseExpressionOperator.RANGE.eval(o, "", o.getClass(), classLoader));
 
-        assertTrue(BaseExpressionOperator.RANGE.eval(">2", 3, classLoader));
+        assertTrue(BaseExpressionOperator.RANGE.eval(">2", 3, int.class, classLoader));
     }
 
     @Test
     public void listOfValuesTest() {
-        assertFalse(BaseExpressionOperator.LIST_OF_VALUES.eval(new Object(), "", classLoader));
+        Object o = new Object();
+        assertFalse(BaseExpressionOperator.LIST_OF_VALUES.eval(o, "", o.getClass(), classLoader));
 
-        assertThatThrownBy(() -> BaseExpressionOperator.LIST_OF_VALUES.eval("[ 2", "", classLoader))
+        assertThatThrownBy(() -> BaseExpressionOperator.LIST_OF_VALUES.eval("[ 2", "", String.class, classLoader))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Malformed expression: [ 2");
 
-        assertTrue(BaseExpressionOperator.LIST_OF_VALUES.eval("[ Test, Another Test]", "Another Test", classLoader));
+        assertTrue(BaseExpressionOperator.LIST_OF_VALUES.eval("[ Test, Another Test]", "Another Test", String.class, classLoader));
     }
 
     @Test
     public void listOfConditionsTest() {
-        assertFalse(BaseExpressionOperator.LIST_OF_CONDITION.eval(new Object(), "", classLoader));
+        Object o = new Object();
+        assertFalse(BaseExpressionOperator.LIST_OF_CONDITION.eval(o, "", o.getClass(), classLoader));
 
-        assertTrue(BaseExpressionOperator.LIST_OF_CONDITION.eval("=1; ![2, 3]; <10", 1, classLoader));
+        assertTrue(BaseExpressionOperator.LIST_OF_CONDITION.eval("=1; ![2, 3]; <10", 1, int.class, classLoader));
     }
 
     private class MyTestClass {
