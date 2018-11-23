@@ -44,10 +44,12 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.tools.ant.filters.StringInputStream;
 import org.apache.tools.ant.util.ReaderInputStream;
 import org.jboss.errai.marshalling.server.MappingContextSingleton;
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -304,6 +306,18 @@ public class DMNMarshallerTest {
                                                       any(Metadata.class));
 
         MappingContextSingleton.loadDynamicMarshallers();
+    }
+
+    /**
+     * Two issues bellow prevents us from running marshalling tests on IBM jdk
+     * https://support.oracle.com/knowledge/Middleware/1459269_1.html
+     * https://www-01.ibm.com/support/docview.wss?uid=swg1PK99682
+     */
+    @Before
+    public void doNotRunTestsOnIbmJdk() {
+        final String ibmVendorName = "IBM";
+        final String javaVendorPropertyKey = "java.vendor";
+        Assume.assumeFalse(StringUtils.containsIgnoreCase(System.getProperty(javaVendorPropertyKey), ibmVendorName));
     }
 
     @Test
