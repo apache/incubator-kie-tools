@@ -17,13 +17,11 @@
 package org.uberfire.java.nio.fs.jgit.util.commands;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.Optional;
 
 import org.eclipse.jgit.internal.ketch.KetchLeaderCache;
 import org.eclipse.jgit.internal.storage.file.WindowCache;
-import org.eclipse.jgit.lib.StoredConfig;
 import org.eclipse.jgit.storage.file.WindowCacheConfig;
 import org.eclipse.jgit.transport.CredentialsProvider;
 import org.eclipse.jgit.transport.RefSpec;
@@ -40,6 +38,7 @@ import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull
 
 public class Clone {
 
+    public static final String REFS_MIRRORED = "+refs/heads/*:refs/remotes/origin/*";
     private final File repoDir;
     private final String origin;
     private final CredentialsProvider credentialsProvider;
@@ -82,7 +81,7 @@ public class Clone {
 
                 final Collection<RefSpec> refSpecList;
                 if (isMirror) {
-                    refSpecList = singletonList(new RefSpec("+refs/*:refs/*"));
+                    refSpecList = singletonList(new RefSpec(REFS_MIRRORED));
                 } else {
                     refSpecList = emptyList();
                 }
@@ -91,19 +90,6 @@ public class Clone {
                 git.fetch(credentialsProvider,
                           remote,
                           refSpecList);
-
-                if (isMirror) {
-                    final StoredConfig config = git.getRepository().getConfig();
-                    config.setBoolean("remote",
-                                      "origin",
-                                      "mirror",
-                                      true);
-                    try {
-                        config.save();
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
 
                 git.syncRemote(remote);
 

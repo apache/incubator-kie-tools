@@ -19,14 +19,20 @@ package org.uberfire.java.nio.fs.jgit;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNull;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.hooks.PostCommitHook;
 import org.eclipse.jgit.hooks.PreCommitHook;
+import org.eclipse.jgit.lib.Ref;
+import org.eclipse.jgit.lib.StoredConfig;
+import org.eclipse.jgit.storage.file.FileBasedConfig;
 import org.eclipse.jgit.transport.CredentialsProvider;
 import org.junit.Test;
 import org.uberfire.java.nio.fs.jgit.util.Git;
@@ -103,22 +109,22 @@ public class JGitCloneTest extends AbstractTestInfra {
                                            null).execute().get())
                 .isInstanceOf(Clone.CloneException.class);
     }
-    
+
     @Test
     public void testCloneWithHookDir() throws IOException, GitAPIException {
     	final File hooksDir = createTempDirectory();
 
         writeMockHook(hooksDir, PostCommitHook.NAME);
         writeMockHook(hooksDir, PreCommitHook.NAME);
-    	
+
     	final File parentFolder = createTempDirectory();
 
         final File gitSource = new File(parentFolder,
-                                        SOURCE_GIT + ".git");
+                SOURCE_GIT + ".git");
 
         final File gitTarget = new File(parentFolder,
                                         TARGET_GIT + ".git");
-        		
+
 
         final Git origin = setupGitRepo(gitSource, hooksDir);
 
@@ -137,7 +143,7 @@ public class JGitCloneTest extends AbstractTestInfra {
 
         assertThat(new ListRefs(cloned.getRepository()).execute().get(0).getName()).isEqualTo("refs/heads/master");
         assertThat(new ListRefs(cloned.getRepository()).execute().get(1).getName()).isEqualTo("refs/heads/user_branch");
-        
+
         boolean foundPreCommitHook = false;
         boolean foundPostCommitHook = false;
         File[] hooks = new File(cloned.getRepository().getDirectory(), "hooks").listFiles();
@@ -183,4 +189,63 @@ public class JGitCloneTest extends AbstractTestInfra {
                    }}).execute();
         return origin;
     }
+
+    @Test
+    public void cloneNotMirrorRepoConfigTest() throws IOException {
+        final File parentFolder = createTempDirectory();
+
+        final File gitSource = new File(parentFolder,
+                                        SOURCE_GIT + ".git");
+
+        final File gitTarget = new File(parentFolder,
+                                        TARGET_GIT + ".git");
+
+        final Git origin = setupGitRepo(gitSource, null);
+
+        boolean isMirror = false;
+        final Git clonedNotMirror = new Clone(gitTarget,
+                                              gitSource.getAbsolutePath(),
+                                              isMirror,
+                                              CredentialsProvider.getDefault(),
+                                              null,
+                                              null).execute().get();
+
+        assertThat(clonedNotMirror).isNotNull();
+
+        StoredConfig config = clonedNotMirror.getRepository().getConfig();
+
+        assertNotEquals(Clone.REFS_MIRRORED, config.getString("remote", "origin", "fetch"));
+        assertNull(config.getString("remote", "origin", "mirror"));
+        assertEquals(gitSource.getAbsolutePath(), config.getString("remote", "origin", "url"));
+    }
+
+    @Test
+    public void cloneMirrorRepoConfigTest() throws IOException {
+        final File parentFolder = createTempDirectory();
+
+        final File gitSource = new File(parentFolder,
+                                        SOURCE_GIT + ".git");
+
+        final File gitTarget = new File(parentFolder,
+                                        TARGET_GIT + ".git");
+
+        final Git origin = setupGitRepo(gitSource, null);
+
+        boolean isMirror = true;
+        final Git clonedMirror = new Clone(gitTarget,
+                                           gitSource.getAbsolutePath(),
+                                           isMirror,
+                                           CredentialsProvider.getDefault(),
+                                           null,
+                                           null).execute().get();
+
+        assertThat(clonedMirror).isNotNull();
+
+        StoredConfig config = clonedMirror.getRepository().getConfig();
+
+        assertEquals(Clone.REFS_MIRRORED, config.getString("remote", "origin", "fetch"));
+        assertNull(config.getString("remote", "origin", "mirror"));
+        assertEquals(gitSource.getAbsolutePath(), config.getString("remote", "origin", "url"));
+    }
+
 }
