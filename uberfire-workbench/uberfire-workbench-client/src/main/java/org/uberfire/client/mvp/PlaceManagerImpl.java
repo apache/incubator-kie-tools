@@ -1019,7 +1019,8 @@ public class PlaceManagerImpl
 
         for (PartDefinition part : ensureIterable(panel.getParts())) {
             activitiesAuthorizationManager.securePart(part, panel);
-
+            final PlaceRequest place = part.getPlace().clone();
+            part.setPlace(place);
             goTo(part, panel);
         }
         for (PanelDefinition child : ensureIterable(panel.getChildren())) {
