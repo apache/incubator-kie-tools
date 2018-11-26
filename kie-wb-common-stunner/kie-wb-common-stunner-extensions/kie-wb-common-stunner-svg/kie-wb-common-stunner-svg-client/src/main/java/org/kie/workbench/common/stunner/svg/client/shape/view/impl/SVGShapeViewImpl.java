@@ -52,9 +52,13 @@ public class SVGShapeViewImpl
         this.name = name;
         this.svgPrimitive = svgPrimitive;
         this.childViewHandler = new SVGChildViewHandler(this);
-        this.shapeStateHandler = new ShapeStateDefaultHandler()
+        this.shapeStateHandler = createShapeStateDefaultHandler()
                 .setBorderShape((() -> this))
                 .setBackgroundShape(() -> this);
+    }
+
+    protected ShapeStateDefaultHandler createShapeStateDefaultHandler() {
+        return new ShapeStateDefaultHandler();
     }
 
     @Override

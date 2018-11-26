@@ -24,6 +24,7 @@ import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.shared.core.types.ColorName;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
+import org.kie.workbench.common.stunner.client.lienzo.shape.impl.ShapeStateDefaultHandler;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresShapeView;
 import org.kie.workbench.common.stunner.cm.client.wires.VerticalStackLayoutManager;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasSize;
@@ -53,6 +54,11 @@ public class CaseManagementShapeView extends SVGShapeViewImpl implements HasSize
         this.optDropZone = makeDropZone();
         this.optDropZone.ifPresent((dz) -> dz.setDraggable(false));
         this.primitiveShape = svgPrimitive;
+    }
+
+    @Override
+    protected ShapeStateDefaultHandler createShapeStateDefaultHandler() {
+        return new CaseManagementShapeStateDefaultHandler();
     }
 
     public void setLabel(String shapeLabel) {

@@ -31,6 +31,7 @@ import org.uberfire.mvp.Command;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyDouble;
 import static org.mockito.Matchers.anyInt;
@@ -147,5 +148,27 @@ public class ShapeStateDefaultHandlerTest {
                                                    anyInt(),
                                                    anyDouble(),
                                                    anyDouble());
+    }
+
+    @Test
+    public void testSetBorderShape() {
+        tested.setBorderShape(() -> borderShape);
+        ArgumentCaptor<Supplier> viewCaptor = ArgumentCaptor.forClass(Supplier.class);
+        verify(delegateHandler, times(1)).setView(viewCaptor.capture());
+        Supplier<LienzoShapeView<?>> viewSupplier = viewCaptor.getValue();
+        assertEquals(borderShape, viewSupplier.get());
+        verifyShapeTypeAttributeWasSet(borderShape, "shapeType=BORDER");
+    }
+
+    @Test
+    public void testSetBackgroundShape() {
+        tested.setBackgroundShape(() -> backgroundShape);
+        verifyShapeTypeAttributeWasSet(backgroundShape, "shapeType=BACKGROUND");
+    }
+
+    private void verifyShapeTypeAttributeWasSet(LienzoShapeView<?> shape, String value) {
+        ArgumentCaptor<Object> viewUserDataCaptor = ArgumentCaptor.forClass(Object.class);
+        verify(shape).setUserData(viewUserDataCaptor.capture());
+        assertTrue(viewUserDataCaptor.getValue().toString().endsWith(value));
     }
 }
