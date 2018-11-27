@@ -11,23 +11,10 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 package org.guvnor.common.services.project.backend.server;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Stream;
-
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-
+import org.eclipse.jgit.lib.RefUpdate;
 import org.guvnor.common.services.project.backend.server.utils.PathUtil;
 import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.model.Module;
@@ -42,12 +29,28 @@ import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryEnvironmentConfigurations;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.guvnor.structure.repositories.impl.git.GitRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.java.nio.file.Path;
+import org.uberfire.java.nio.fs.jgit.JGitPathImpl;
+import org.uberfire.java.nio.fs.jgit.util.Git;
+import org.uberfire.java.nio.fs.jgit.util.commands.RemoveRemote;
+import org.uberfire.java.nio.fs.jgit.util.exceptions.GitException;
+
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 
-public class WorkspaceProjectMigrationServiceImpl
-                                                  implements WorkspaceProjectMigrationService {
+public class WorkspaceProjectMigrationServiceImpl implements WorkspaceProjectMigrationService {
+
+    private static final Logger log = LoggerFactory.getLogger(WorkspaceProjectMigrationServiceImpl.class);
+    public static final String REMOTE_ORIGIN_REF = "refs/remotes/origin/master";
 
     private WorkspaceProjectService workspaceProjectService;
     private RepositoryService repositoryService;
@@ -55,7 +58,8 @@ public class WorkspaceProjectMigrationServiceImpl
     private ModuleService<? extends Module> moduleService;
     private PathUtil pathUtil;
 
-    public WorkspaceProjectMigrationServiceImpl() {}
+    public WorkspaceProjectMigrationServiceImpl() {
+    }
 
     @Inject
     public WorkspaceProjectMigrationServiceImpl(final WorkspaceProjectService workspaceProjectService,
@@ -92,36 +96,50 @@ public class WorkspaceProjectMigrationServiceImpl
         final Map<Partition, List<Module>> modulesByDirectory = getModulesByRootDirAndSpace(ou, legacyRepository);
 
         return modulesByDirectory.entrySet()
-                                 .stream()
-                                 .map(entry -> createSubdirectoryCloneRepository(ou, legacyRepository, entry))
-                                 .collect(toList());
+                .stream()
+                .map(entry -> createSubdirectoryCloneRepository(ou, legacyRepository, entry))
+                .collect(toList());
     }
 
     private Repository createSubdirectoryCloneRepository(final OrganizationalUnit ou, final Repository legacyRepository, Entry<Partition, List<Module>> entry) {
         final Partition partition = entry.getKey();
-         final List<Module> modules = entry.getValue();
-         final String alias = modules.stream()
-                                     .map(module -> module.getModuleName())
-                                     .findFirst()
-                                     .orElse("migratedproject");
-         final RepositoryEnvironmentConfigurations configurations = subdirectoryCloneConfiguration(legacyRepository,
-                                                                                                   partition,
-                                                                                                   modules);
+        final List<Module> modules = entry.getValue();
+        final String alias = modules.stream()
+                .map(module -> module.getModuleName())
+                .findFirst()
+                .orElse("migratedproject");
+        final RepositoryEnvironmentConfigurations configurations = subdirectoryCloneConfiguration(legacyRepository,
+                partition,
+                modules);
 
-         return repositoryService.createRepository(ou, GitRepository.SCHEME.toString(), alias, configurations);
+        Repository newRepository = repositoryService.createRepository(ou, GitRepository.SCHEME.toString(), alias, configurations);
+
+        cleanupOrigin(newRepository);
+
+        return newRepository;
     }
 
     private RepositoryEnvironmentConfigurations subdirectoryCloneConfiguration(final Repository legacyRepository, final Partition root, final List<Module> modules) {
         final RepositoryEnvironmentConfigurations configurations = new RepositoryEnvironmentConfigurations();
-         configurations.setInit(false);
-         configurations.setOrigin(getNiogitRepoPath(legacyRepository));
-         final String rootWithoutRepoAndSpace = root.branchlessPath.replaceFirst("^[^/]+/[^/]+/", "");
-         configurations.setSubdirectory(rootWithoutRepoAndSpace);
-         configurations.setMirror(false);
-         final List<String> branches = existingBranchesOf(modules);
+        configurations.setInit(false);
+        configurations.setOrigin(getNiogitRepoPath(legacyRepository));
+        final String rootWithoutRepoAndSpace = root.branchlessPath.replaceFirst("^[^/]+/[^/]+/", "");
+        configurations.setSubdirectory(rootWithoutRepoAndSpace);
+        configurations.setMirror(false);
+        final List<String> branches = existingBranchesOf(modules);
         configurations.setBranches(branches);
 
         return configurations;
+    }
+
+    protected void cleanupOrigin(Repository repository) {
+        try {
+            // AF-1715: Cleaning origin to prevent errors while importing the new generated repo.
+            Git git = ((JGitPathImpl) pathUtil.convert(repository.getDefaultBranch().get().getPath())).getFileSystem().getGit();
+            new RemoveRemote(git,"origin",REMOTE_ORIGIN_REF).execute();
+        } catch (GitException e) {
+            log.warn("Error cleaning up origin for repository '{}': {}", repository.getAlias(), e);
+        }
     }
 
     /**
@@ -129,7 +147,7 @@ public class WorkspaceProjectMigrationServiceImpl
      */
     private List<String> existingBranchesOf(final List<Module> modules) {
         final List<String> branches =
-                 modules.stream()
+                modules.stream()
                         .flatMap(module -> {
                             Optional<String> oBranch = getBranchName(pathUtil.convert(module.getRootPath()));
                             if (oBranch.isPresent()) {
@@ -145,16 +163,16 @@ public class WorkspaceProjectMigrationServiceImpl
     private Map<Partition, List<Module>> getModulesByRootDirAndSpace(final OrganizationalUnit ou, final Repository legacyRepository) {
         final Map<Partition, List<Module>> modulesByDirectory = new HashMap<>();
         legacyRepository.getBranches()
-                        .stream()
-                        .flatMap(branch -> moduleService.getAllModules(branch).stream())
-                        .forEach(module -> {
-                            final String fullURI = pathUtil.normalizePath(module.getRootPath()).toURI();
-                            final String branchlessPath = fullURI.replaceFirst("^[A-Za-z]+://([^@]+@)?", "");
-                            final Partition partition = new Partition(branchlessPath, ou);
-                            final List<Module> modules = modulesByDirectory.computeIfAbsent(partition,
-                                                                                            ignore -> new ArrayList<>());
-                            modules.add(module);
-                        });
+                .stream()
+                .flatMap(branch -> moduleService.getAllModules(branch).stream())
+                .forEach(module -> {
+                    final String fullURI = pathUtil.normalizePath(module.getRootPath()).toURI();
+                    final String branchlessPath = fullURI.replaceFirst("^[A-Za-z]+://([^@]+@)?", "");
+                    final Partition partition = new Partition(branchlessPath, ou);
+                    final List<Module> modules = modulesByDirectory.computeIfAbsent(partition,
+                            ignore -> new ArrayList<>());
+                    modules.add(module);
+                });
         return modulesByDirectory;
     }
 

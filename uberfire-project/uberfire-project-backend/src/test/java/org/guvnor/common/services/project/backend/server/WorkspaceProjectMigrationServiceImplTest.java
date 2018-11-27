@@ -62,6 +62,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -149,12 +150,14 @@ public class WorkspaceProjectMigrationServiceImplTest {
         });
         when(pathUtil.getNiogitRepoPath(any())).thenReturn(NIOGIT_PATH);
 
-        service = new WorkspaceProjectMigrationServiceImpl(workspaceProjectService,
+        service = spy(new WorkspaceProjectMigrationServiceImpl(workspaceProjectService,
                                                            repositoryService,
                                                            organizationalUnitService,
                                                            pathUtil,
                                                            newProjectEvent,
-                                                           moduleService);
+                                                           moduleService));
+
+        doAnswer(invocation -> null).when(service).cleanupOrigin(any(Repository.class));
 
         legacyMasterBranch = mockBranch("legacyMasterBranch");
         legacyDevBranch = mockBranch("legacyDevBranch");
@@ -211,6 +214,8 @@ public class WorkspaceProjectMigrationServiceImplTest {
             } else {
                 throw new AssertionError("Unrecognized subdirectory: " + subdirectory);
             }
+
+            verify(service,times(2)).cleanupOrigin(any());
 
             assertEquals("Unexpected branches for subdirectory " + subdirectory, new HashSet<>(expectedBranches), new HashSet<>(branches));
         });
