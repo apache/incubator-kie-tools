@@ -208,7 +208,7 @@ public class ProjectImportServiceImpl extends BaseProjectImportService implement
             configurations.setBranches(getBranches(rootPath,
                                                    importProject.getRoot()));
             Credentials credentials = importProject.getCredentials();
-            if (credentials != null) {
+            if (credentials != null && credentials.getUsername() != null && credentials.getPassword() != null) {
                 configurations.setUserName(credentials.getUsername());
                 configurations.setPassword(credentials.getPassword());
             }
