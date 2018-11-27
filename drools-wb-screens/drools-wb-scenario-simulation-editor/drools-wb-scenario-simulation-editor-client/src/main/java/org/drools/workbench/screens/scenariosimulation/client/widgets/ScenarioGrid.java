@@ -33,6 +33,7 @@ import org.drools.workbench.screens.scenariosimulation.model.FactMapping;
 import org.drools.workbench.screens.scenariosimulation.model.FactMappingType;
 import org.drools.workbench.screens.scenariosimulation.model.Scenario;
 import org.drools.workbench.screens.scenariosimulation.model.Simulation;
+import org.uberfire.ext.wires.core.grids.client.model.GridColumn.ColumnWidthMode;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.NodeMouseEventHandler;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.DefaultGridWidgetCellSelectorMouseEventHandler;
@@ -124,6 +125,11 @@ public class ScenarioGrid extends BaseGridWidget {
         scenarioGridColumn.setInstanceAssigned(isInstanceAssigned);
         scenarioGridColumn.setPropertyAssigned(isPropertyAssigned);
         scenarioGridColumn.setFactIdentifier(factIdentifier);
+        // by default ScenarioGridColumnBuilders.ScenarioGridColumnBuilder.build() set ColumnWidthMode.auto to all generated columns
+        if (FactMappingType.OTHER.equals(factMapping.getExpressionIdentifier().getType())) {
+            scenarioGridColumn.setColumnWidthMode(ColumnWidthMode.FIXED);
+            scenarioGridColumn.setMinimumWidth(scenarioGridColumn.getWidth());
+        }
         ((ScenarioGridModel) model).insertColumnGridOnly(columnIndex, scenarioGridColumn);
     }
 

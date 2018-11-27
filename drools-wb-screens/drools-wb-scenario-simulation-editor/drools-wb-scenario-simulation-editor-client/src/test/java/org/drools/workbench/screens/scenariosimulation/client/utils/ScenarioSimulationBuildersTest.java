@@ -24,16 +24,16 @@ import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGr
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.uberfire.ext.wires.core.grids.client.model.GridColumn.ColumnWidthMode;
+import static org.uberfire.ext.wires.core.grids.client.model.GridColumn.HeaderMetaData;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class ScenarioSimulationBuildersTest extends AbstractUtilsTest {
-
 
     @Before
     public void setup() {
@@ -51,6 +51,7 @@ public class ScenarioSimulationBuildersTest extends AbstractUtilsTest {
         assertFalse(retrieved.isMovable());
         assertNotNull(retrieved.getHeaderMetaData());
         assertFalse(retrieved.getHeaderMetaData().isEmpty());
+        assertEquals(ColumnWidthMode.AUTO, retrieved.getColumnWidthMode());
     }
 
     @Test
@@ -59,10 +60,10 @@ public class ScenarioSimulationBuildersTest extends AbstractUtilsTest {
         builder.setColumnTitle(COLUMN_INSTANCE_TITLE_FIRST);
         builder.setColumnGroup(COLUMN_GROUP_FIRST);
         builder.setInstanceHeader(true);
-        List<GridColumn.HeaderMetaData> retrieved = builder.build();
+        List<HeaderMetaData> retrieved = builder.build();
         assertNotNull(retrieved);
         assertEquals(1, retrieved.size());
-        ScenarioHeaderMetaData headerMetaData = (ScenarioHeaderMetaData)retrieved.get(0);
+        ScenarioHeaderMetaData headerMetaData = (ScenarioHeaderMetaData) retrieved.get(0);
         assertNotNull(headerMetaData);
         assertEquals(COLUMN_INSTANCE_TITLE_FIRST, headerMetaData.getTitle());
         assertEquals(COLUMN_GROUP_FIRST, headerMetaData.getColumnGroup());

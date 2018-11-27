@@ -49,22 +49,22 @@ public class ScenarioGridColumn extends BaseGridColumn<String> {
      */
     protected FactIdentifier factIdentifier = FactIdentifier.EMPTY;
 
-    public ScenarioGridColumn(HeaderMetaData headerMetaData, GridColumnRenderer<String> columnRenderer, double width, boolean isMovable, ScenarioCellTextAreaSingletonDOMElementFactory factory, String placeHolder) {
-        super(headerMetaData, columnRenderer, width);
-        this.informationHeaderMetaData = (ScenarioHeaderMetaData) headerMetaData;
-        propertyHeaderMetaData = null;
-        this.setMovable(isMovable);
-        this.factory = factory;
-        this.placeHolder = placeHolder;
-    }
-
-    public ScenarioGridColumn(List<HeaderMetaData> headerMetaData, GridColumnRenderer<String> columnRenderer, double width, boolean isMovable, ScenarioCellTextAreaSingletonDOMElementFactory factory, String placeHolder) {
+    public ScenarioGridColumn(List<HeaderMetaData> headerMetaData,
+                              GridColumnRenderer<String> columnRenderer,
+                              double width,
+                              boolean isMovable,
+                              ScenarioCellTextAreaSingletonDOMElementFactory factory,
+                              String placeHolder) {
         super(headerMetaData, columnRenderer, width);
         this.informationHeaderMetaData = (ScenarioHeaderMetaData) headerMetaData.stream().filter(hdm -> ((ScenarioHeaderMetaData) hdm).isInstanceHeader()).findFirst().orElse(headerMetaData.get(0));
         this.propertyHeaderMetaData = (ScenarioHeaderMetaData) headerMetaData.stream().filter(hdm -> ((ScenarioHeaderMetaData) hdm).isPropertyHeader()).findFirst().orElse(null);
         this.setMovable(isMovable);
         this.factory = factory;
         this.placeHolder = placeHolder;
+        this.setMinimumWidth(width);
+
+        // by default scenario columns should be auto to have auto resize
+        this.setColumnWidthMode(ColumnWidthMode.AUTO);
     }
 
     @Override

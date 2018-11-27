@@ -38,6 +38,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.uberfire.ext.wires.core.grids.client.model.GridColumn.ColumnWidthMode;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.NodeMouseEventHandler;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.DefaultGridWidgetCellSelectorMouseEventHandler;
 
@@ -48,6 +49,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -58,13 +60,13 @@ import static org.mockito.Mockito.when;
 public class ScenarioGridTest {
 
     @Mock
-    private ScenarioGridModel mockScenarioGridModel;
+    private ScenarioGridModel scenarioGridModelMock;
     @Mock
-    private ScenarioGridLayer mockScenarioGridLayer;
+    private ScenarioGridLayer scenarioGridLayerMock;
     @Mock
-    private ScenarioGridRenderer mockScenarioGridRenderer;
+    private ScenarioGridRenderer scenarioGridRendererMock;
     @Mock
-    private ScenarioGridPanel mockScenarioGridPanel;
+    private ScenarioGridPanel scenarioGridPanelMock;
     @Mock
     private ScenarioHeaderTextBoxSingletonDOMElementFactory scenarioHeaderTextBoxSingletonDOMElementFactoryMock;
     @Mock
@@ -74,7 +76,6 @@ public class ScenarioGridTest {
     @Mock
     private ScenarioHeaderMetaData propertyHeaderMetadataMock;
 
-    private final FactMappingType factMappingType = FactMappingType.valueOf("OTHER");
     private final String EXPRESSION_ALIAS_DESCRIPTION = "EXPRESSION_ALIAS_DESCRIPTION";
     private final String EXPRESSION_ALIAS_GIVEN = "EXPRESSION_ALIAS_GIVEN";
     private final String EXPRESSION_ALIAS_INDEX = "EXPRESSION_ALIAS_INDEX";
@@ -98,7 +99,7 @@ public class ScenarioGridTest {
         factMappingGiven = new FactMapping(EXPRESSION_ALIAS_GIVEN, factIdentifierGiven, new ExpressionIdentifier("GIVEN", FactMappingType.GIVEN));
         factMappingIndex = new FactMapping(EXPRESSION_ALIAS_INDEX, FactIdentifier.INDEX, ExpressionIdentifier.INDEX);
         simulation = getSimulation();
-        scenarioGrid = spy(new ScenarioGrid(mockScenarioGridModel, mockScenarioGridLayer, mockScenarioGridRenderer, mockScenarioGridPanel) {
+        scenarioGrid = spy(new ScenarioGrid(scenarioGridModelMock, scenarioGridLayerMock, scenarioGridRendererMock, scenarioGridPanelMock) {
 
             @Override
             protected void appendRow(int rowIndex, Scenario scenario) {
@@ -125,7 +126,7 @@ public class ScenarioGridTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testDefaultNodeMouseClickHandlers() {
-        final List<NodeMouseEventHandler> handlers = scenarioGrid.getNodeMouseClickEventHandlers(mockScenarioGridLayer);
+        final List<NodeMouseEventHandler> handlers = scenarioGrid.getNodeMouseClickEventHandlers(scenarioGridLayerMock);
 
         assertEquals(1, handlers.size());
         assertTrue(handlers.get(0) instanceof DefaultGridWidgetCellSelectorMouseEventHandler);
@@ -134,8 +135,8 @@ public class ScenarioGridTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testDefaultNodeMouseDoubleClickHandlers() {
-        final List<NodeMouseEventHandler> handlers = scenarioGrid.getNodeMouseDoubleClickEventHandlers(mockScenarioGridLayer,
-                                                                                                       mockScenarioGridLayer);
+        final List<NodeMouseEventHandler> handlers = scenarioGrid.getNodeMouseDoubleClickEventHandlers(scenarioGridLayerMock,
+                                                                                                       scenarioGridLayerMock);
 
         assertEquals(1, handlers.size());
         assertTrue(handlers.get(0) instanceof ScenarioSimulationGridWidgetMouseEventHandler);
@@ -144,8 +145,8 @@ public class ScenarioGridTest {
     @Test
     public void setContent() {
         scenarioGrid.setContent(simulation);
-        verify(mockScenarioGridModel, times(1)).clear();
-        verify(mockScenarioGridModel, times(1)).bindContent(eq(simulation));
+        verify(scenarioGridModelMock, times(1)).clear();
+        verify(scenarioGridModelMock, times(1)).bindContent(eq(simulation));
         verify(scenarioGrid, times(1)).setHeaderColumns(eq(simulation));
         verify(scenarioGrid, times(1)).appendRows(eq(simulation));
     }
@@ -170,7 +171,11 @@ public class ScenarioGridTest {
                                                                   eq(columnGroup),
                                                                   eq(type),
                                                                   eq(ScenarioSimulationEditorConstants.INSTANCE.insertValue()));
+        verify(scenarioGridColumnMock, times(1)).setColumnWidthMode(ColumnWidthMode.FIXED);
+
         reset(scenarioGrid);
+        reset(scenarioGridColumnMock);
+        reset(scenarioGridModelMock);
         columnId = factMappingGiven.getExpressionIdentifier().getName();
         type = factMappingGiven.getExpressionIdentifier().getType();
         columnGroup = type.name();
@@ -183,6 +188,7 @@ public class ScenarioGridTest {
                                                                   eq(columnGroup),
                                                                   eq(type),
                                                                   eq(ScenarioSimulationEditorConstants.INSTANCE.defineValidType()));
+        verify(scenarioGridColumnMock, never()).setColumnWidthMode(any());
     }
 
     @Test

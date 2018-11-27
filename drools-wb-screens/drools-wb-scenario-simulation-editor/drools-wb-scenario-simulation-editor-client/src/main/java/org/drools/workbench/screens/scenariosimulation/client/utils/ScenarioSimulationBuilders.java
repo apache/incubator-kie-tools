@@ -88,11 +88,11 @@ public class ScenarioSimulationBuilders {
             List<GridColumn.HeaderMetaData> headerMetaDataList = headerBuilder.build();
             ScenarioGridColumnRenderer actualScenarioGridColumnRenderer = scenarioGridColumnRenderer != null ? scenarioGridColumnRenderer : new ScenarioGridColumnRenderer();
             return new ScenarioGridColumn(headerMetaDataList,
-                                                                 actualScenarioGridColumnRenderer,
-                                                                 width,
-                                                                 isMovable,
-                                                                 factoryCell,
-                                                                 placeHolder
+                                          actualScenarioGridColumnRenderer,
+                                          width,
+                                          isMovable,
+                                          factoryCell,
+                                          placeHolder
             );
         }
     }
