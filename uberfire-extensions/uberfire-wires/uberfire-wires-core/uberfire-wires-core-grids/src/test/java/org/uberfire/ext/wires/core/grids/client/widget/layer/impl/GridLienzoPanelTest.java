@@ -30,6 +30,8 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
+import org.uberfire.ext.wires.core.grids.client.model.GridData;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.scrollbars.GridLienzoScrollHandler;
 
 import static org.mockito.Mockito.anyInt;
@@ -39,7 +41,9 @@ import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class GridLienzoPanelTest {
@@ -229,5 +233,23 @@ public class GridLienzoPanelTest {
         gridLienzoPanel.refreshScrollPosition();
 
         verify(lienzoScrollHandler).refreshScrollPosition();
+    }
+
+    @Test
+    public void propagateNewPanelSize() {
+        int visibleWidth = 100;
+        int visibleHeight = 100;
+        GridData gridData = mock(GridData.class);
+        GridWidget gridWidget = mock(GridWidget.class);
+        DefaultGridLayer defaultGridLayer = new DefaultGridLayer();
+        defaultGridLayer.register(gridWidget);
+        when(gridWidget.getModel()).thenReturn(gridData);
+        gridLienzoPanel.propagateNewPanelSize(visibleWidth, visibleHeight);
+        verify(gridData, never()).setVisibleSizeAndRefresh(anyInt(), anyInt());
+
+        gridLienzoPanel.add(defaultGridLayer);
+        gridLienzoPanel.propagateNewPanelSize(visibleWidth, visibleHeight);
+
+        verify(gridData, times(1)).setVisibleSizeAndRefresh(visibleWidth, visibleHeight);
     }
 }

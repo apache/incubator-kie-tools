@@ -296,6 +296,39 @@ public interface GridData {
                     final int columnIndex);
 
     /**
+     * Updates the width of columns with {@link GridColumn.ColumnWidthMode#AUTO}
+     * @return a boolean that indicates if grid need to be redraw or not
+     */
+    boolean refreshWidth();
+
+    /**
+     * Updates the width of columns with {@link GridColumn.ColumnWidthMode#AUTO}
+     * @param currentWidth is the grid width before this resize iteration
+     * @return a boolean that indicates if grid need to be redraw or not
+     */
+    boolean refreshWidth(double currentWidth);
+
+    /**
+     * Update visible size information and refresh columns width. See {@link GridData#refreshWidth()}
+     * @param width
+     * @param height
+     * @return a boolean that indicates if grid need to be redraw or not
+     */
+    boolean setVisibleSizeAndRefresh(int width, int height);
+
+    /**
+     * Get visible width
+     * @return
+     */
+    int getVisibleWidth();
+
+    /**
+     * Get visible height
+     * @return
+     */
+    int getVisibleHeight();
+
+    /**
      * A range of rows.
      */
     class Range {

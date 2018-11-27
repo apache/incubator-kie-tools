@@ -220,4 +220,34 @@ public interface GridColumn<T> {
             return HeaderSingleCellSelectionStrategy.INSTANCE;
         }
     }
+
+    /**
+     * Get column width mode
+     * @return
+     */
+    ColumnWidthMode getColumnWidthMode();
+
+    /**
+     * Set column width mode
+     * @return
+     */
+    void setColumnWidthMode(ColumnWidthMode columnWidthMode);
+
+    /**
+     * Enum that identify the width mode of a column
+     */
+    enum ColumnWidthMode {
+        // FIXED means that no automatic resize will be done, only the user can manually resize it
+        FIXED,
+        // AUTO means that its width will be calculate to fit all the available space
+        AUTO;
+
+        static public boolean isAuto(GridColumn<?> column) {
+            return column != null && AUTO.equals(column.getColumnWidthMode());
+        }
+
+        static public boolean isFixed(GridColumn<?> column) {
+            return column != null && FIXED.equals(column.getColumnWidthMode());
+        }
+    }
 }

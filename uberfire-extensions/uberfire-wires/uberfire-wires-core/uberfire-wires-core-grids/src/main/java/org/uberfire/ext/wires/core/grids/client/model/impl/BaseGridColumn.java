@@ -41,6 +41,7 @@ public class BaseGridColumn<T> implements GridColumn<T> {
     private int index = -1;
     private List<HeaderMetaData> headerMetaData = new ArrayList<HeaderMetaData>();
     private GridColumnRenderer<T> columnRenderer;
+    private ColumnWidthMode columnWidthMode = ColumnWidthMode.FIXED;
 
     protected String placeHolder = null;
 
@@ -195,6 +196,16 @@ public class BaseGridColumn<T> implements GridColumn<T> {
 
     public void setPlaceHolder(String placeHolder) {
         this.placeHolder = placeHolder;
+    }
+
+    @Override
+    public ColumnWidthMode getColumnWidthMode() {
+        return columnWidthMode;
+    }
+
+    @Override
+    public void setColumnWidthMode(ColumnWidthMode columnWidthMode) {
+        this.columnWidthMode = columnWidthMode;
     }
 
     @Override

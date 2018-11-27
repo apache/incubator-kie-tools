@@ -17,6 +17,7 @@ package org.uberfire.ext.wires.core.grids.client.widget.dnd;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import com.ait.lienzo.client.core.event.NodeMouseMoveEvent;
 import com.ait.lienzo.client.core.event.NodeMouseMoveHandler;
@@ -442,9 +443,54 @@ public class GridWidgetDnDMouseMoveHandler implements NodeMouseMoveHandler {
                 columnNewWidth = columnMaximumWidth;
             }
         }
+
         destroyColumns(allGridColumns);
-        activeGridColumn.setWidth(columnNewWidth);
+
+        activeGridColumn.setWidth(adjustColumnWidth(columnNewWidth, activeGridColumn, activeGridWidget));
         layer.batch();
+    }
+
+    protected double adjustColumnWidth(double columnNewWidth, GridColumn<?> activeGridColumn, GridWidget activeGridWidget) {
+        final GridData activeGridModel = activeGridWidget.getModel();
+
+        double originalLeftColumnWidth = activeGridColumn.getWidth();
+        double delta = originalLeftColumnWidth - columnNewWidth;
+
+        int visibleWidth = activeGridModel.getVisibleWidth();
+        double gridWidgetWidth = activeGridWidget.getWidth();
+        double newGridWidth = gridWidgetWidth - delta;
+
+        // if the grid is becoming less than 100% width
+        if (newGridWidth < visibleWidth && delta > 0) {
+
+            // look for a column with AUTO width on the right
+            Optional<GridColumn<?>> rightGridColumn = getFirstRightAutoColumn(activeGridColumn, activeGridModel);
+            if (rightGridColumn.isPresent()) {
+                GridColumn<?> rightColumn = rightGridColumn.get();
+                double originalRightColumnWidth = rightColumn.getWidth();
+                double newWidth = originalRightColumnWidth + delta;
+
+                rightColumn.setWidth(newWidth);
+            }
+            // or revert column resizing if the column itself has AUTO width
+            else if (GridColumn.ColumnWidthMode.isAuto(activeGridColumn)){
+                columnNewWidth = originalLeftColumnWidth;
+            }
+        }
+        return columnNewWidth;
+    }
+
+    Optional<GridColumn<?>> getFirstRightAutoColumn(GridColumn<?> target, GridData model) {
+        List<GridColumn<?>> columns = model.getColumns();
+        int targetIndex = columns.indexOf(target);
+
+        for(int i = targetIndex + 1; i < columns.size(); i += 1) {
+            GridColumn<?> gridColumn = columns.get(i);
+            if(GridColumn.ColumnWidthMode.isAuto(gridColumn)) {
+                return Optional.of(gridColumn);
+            }
+        }
+        return Optional.empty();
     }
 
     @SuppressWarnings("unchecked")

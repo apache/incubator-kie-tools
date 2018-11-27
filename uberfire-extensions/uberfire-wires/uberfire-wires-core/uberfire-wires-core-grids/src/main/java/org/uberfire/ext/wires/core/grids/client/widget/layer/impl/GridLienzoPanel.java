@@ -28,6 +28,7 @@ import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.ProvidesResize;
 import com.google.gwt.user.client.ui.RequiresResize;
 import org.uberfire.ext.wires.core.grids.client.model.Bounds;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.scrollbars.GridLienzoScrollHandler;
 import org.uberfire.ext.wires.core.grids.client.widget.scrollbars.GridLienzoScrollable;
 
@@ -182,16 +183,35 @@ public class GridLienzoPanel extends FocusPanel implements RequiresResize,
         final Integer scrollbarWidth = getGridLienzoScrollHandler().scrollbarWidth();
         final Integer scrollbarHeight = getGridLienzoScrollHandler().scrollbarHeight();
 
-        getDomElementContainer().setPixelSize(width - scrollbarWidth,
-                                              height - scrollbarHeight);
-        getLienzoPanel().setPixelSize(width - scrollbarWidth,
-                                      height - scrollbarHeight);
+        final int visibleWidth = width - scrollbarWidth;
+        final int visibleHeight = height - scrollbarHeight;
+
+        getDomElementContainer().setPixelSize(visibleWidth,
+                                              visibleHeight);
+        getLienzoPanel().setPixelSize(visibleWidth,
+                                      visibleHeight);
+
+        propagateNewPanelSize(visibleWidth, visibleHeight);
     }
 
     private void updateScrollPanelSize(final int width,
                                        final int height) {
         getScrollPanel().setPixelSize(width,
                                       height);
+    }
+
+    protected void propagateNewPanelSize(int visibleWidth, int visibleHeight) {
+        if (getDefaultGridLayer() == null) {
+            return;
+        }
+        // propagate to all widgets the new visible width and refresh the layer if needed
+        boolean toRefresh = false;
+        for (GridWidget gridWidget : getDefaultGridLayer().getGridWidgets()) {
+            toRefresh = toRefresh || gridWidget.getModel().setVisibleSizeAndRefresh(visibleWidth, visibleHeight);
+        }
+        if (toRefresh) {
+            this.getDefaultGridLayer().batch();
+        }
     }
 
     @Override
