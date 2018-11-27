@@ -16,18 +16,9 @@
 
 package org.uberfire.client.workbench.panels.impl;
 
-import java.lang.annotation.Annotation;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.HasWidgets;
+import org.assertj.core.api.Assertions;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ioc.client.QualifierUtil;
 import org.jboss.errai.ioc.client.container.IOC;
@@ -36,40 +27,20 @@ import org.jboss.errai.ioc.client.container.SyncBeanManagerImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.AdditionalAnswers;
-import org.mockito.InOrder;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.mockito.*;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.mvp.AbstractPopupActivity;
-import org.uberfire.client.mvp.Activity;
-import org.uberfire.client.mvp.ActivityManager;
-import org.uberfire.client.mvp.BookmarkableUrlHelper;
-import org.uberfire.client.mvp.ContextActivity;
-import org.uberfire.client.mvp.PerspectiveActivity;
-import org.uberfire.client.mvp.PerspectiveManager;
-import org.uberfire.client.mvp.PlaceHistoryHandler;
-import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.mvp.PlaceManagerImpl;
-import org.uberfire.client.mvp.PlaceStatus;
-import org.uberfire.client.mvp.SplashScreenActivity;
-import org.uberfire.client.mvp.UIPart;
-import org.uberfire.client.mvp.WorkbenchActivity;
-import org.uberfire.client.mvp.WorkbenchScreenActivity;
+import org.uberfire.client.mvp.*;
 import org.uberfire.client.util.MockIOCBeanDef;
 import org.uberfire.client.workbench.LayoutSelection;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.WorkbenchLayout;
 import org.uberfire.client.workbench.docks.UberfireDocks;
-import org.uberfire.client.workbench.events.BeforeClosePlaceEvent;
-import org.uberfire.client.workbench.events.ClosePlaceEvent;
-import org.uberfire.client.workbench.events.NewSplashScreenActiveEvent;
-import org.uberfire.client.workbench.events.PlaceLostFocusEvent;
-import org.uberfire.client.workbench.events.SelectPlaceEvent;
+import org.uberfire.client.workbench.events.*;
+import org.uberfire.experimental.service.auth.ExperimentalActivitiesAuthorizationManager;
 import org.uberfire.mvp.BiParameterizedCommand;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
@@ -77,17 +48,20 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.ConditionalPlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
-import org.uberfire.workbench.model.ActivityResourceType;
-import org.uberfire.workbench.model.PanelDefinition;
-import org.uberfire.workbench.model.PartDefinition;
-import org.uberfire.workbench.model.PerspectiveDefinition;
-import org.uberfire.workbench.model.Position;
+import org.uberfire.workbench.model.*;
 import org.uberfire.workbench.model.impl.CustomPanelDefinitionImpl;
 import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
+
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import java.lang.annotation.Annotation;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Function;
 
 import static java.util.Collections.singleton;
 import static org.junit.Assert.*;
@@ -145,6 +119,8 @@ public class PlaceManagerTest {
     WorkbenchLayout workbenchLayout;
     @Mock
     LayoutSelection layoutSelection;
+    @Mock
+    ExperimentalActivitiesAuthorizationManager activitiesAuthorizationManager;
     /**
      * This is the thing we're testing. Weeee!
      */
@@ -667,6 +643,83 @@ public class PlaceManagerTest {
                 .switchToPerspective(any(PlaceRequest.class),
                                      any(PerspectiveActivity.class),
                                      any(ParameterizedCommand.class));
+    }
+
+    @Test
+    public void testOpenPerspectiveWithPanels() throws Exception {
+        final String perspectiveId = "perspective";
+        final String panelId = "panel";
+
+        final String param1 = "param1";
+        final String param2 = "param2";
+        final String param3 = "param3";
+
+        PerspectiveActivity perspectiveActivity = mock(PerspectiveActivity.class);
+        WorkbenchScreenActivity screenActivity = mock(WorkbenchScreenActivity.class);
+
+        PlaceRequest panelPlaceRequest = spy(new DefaultPlaceRequest(panelId) {
+            {
+                addParameter(param1, param1);
+                addParameter(param2, param2);
+                addParameter(param3, param3);
+            }
+        });
+        when(panelPlaceRequest.getIdentifier()).thenReturn(panelId);
+
+        PlaceRequest mainPlaceRequest = new DefaultPlaceRequest(perspectiveId);
+
+        final PerspectiveDefinition perspectiveDefinition = new PerspectiveDefinitionImpl();
+        perspectiveDefinition.setName("name");
+
+        final PartDefinition panelPart = spy(new PartDefinitionImpl(panelPlaceRequest));
+        perspectiveDefinition.getRoot().addPart(panelPart);
+
+        when(perspectiveActivity.getDefaultPerspectiveLayout()).thenReturn(perspectiveDefinition);
+        when(perspectiveActivity.getPlace()).thenReturn(mainPlaceRequest);
+        when(perspectiveActivity.isType(ActivityResourceType.PERSPECTIVE.name())).thenReturn(true);
+        when(perspectiveActivity.getIdentifier()).thenReturn(perspectiveId);
+
+        when(screenActivity.getIdentifier()).thenReturn(panelId);
+        when(screenActivity.isType(ActivityResourceType.SCREEN.name())).thenReturn(true);
+
+        when(activityManager.getActivities(any(PlaceRequest.class))).then((Answer<Set<Activity>>) invocationOnMock -> {
+            PlaceRequest request = (PlaceRequest) invocationOnMock.getArguments()[0];
+
+            if (request.equals(panelPlaceRequest)) {
+                return singleton(screenActivity);
+            } else if(request.equals(mainPlaceRequest)) {
+                return singleton(perspectiveActivity);
+            }
+
+            return null;
+        });
+
+        placeManager.goTo(mainPlaceRequest);
+
+        verify(activitiesAuthorizationManager).securePart(eq(panelPart), eq(perspectiveDefinition.getRoot()));
+
+        verify(panelPlaceRequest).clone();
+
+        ArgumentCaptor<PlaceRequest> requestArgumentCaptor = ArgumentCaptor.forClass(PlaceRequest.class);
+
+        verify(panelPart).setPlace(requestArgumentCaptor.capture());
+
+        PlaceRequest captured = requestArgumentCaptor.getValue();
+
+        Assertions.assertThat(captured)
+                .isNotNull()
+                .isNotSameAs(panelPlaceRequest)
+                .returns(panelId, (Function<PlaceRequest, String>) placeRequest -> placeRequest.getIdentifier());
+
+        Assertions.assertThat(captured.getParameters())
+                .containsOnly(Assertions.entry(param1, param1), Assertions.entry(param2, param2), Assertions.entry(param3, param3));
+
+        verify(perspectiveActivity).onOpen();
+        verify(perspectiveManager).savePerspectiveState(any(Command.class));
+        verify(perspectiveManager)
+                .switchToPerspective(any(PlaceRequest.class),
+                        any(PerspectiveActivity.class),
+                        any(ParameterizedCommand.class));
     }
 
     /**
