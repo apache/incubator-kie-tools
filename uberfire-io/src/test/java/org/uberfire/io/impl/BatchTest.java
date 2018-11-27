@@ -870,8 +870,9 @@ public class BatchTest {
                                                   String[] args) throws JGitInternalException {
                 if (hookName.equals(PostCommitHook.NAME)) {
                     postCommitHookCalled.incrementAndGet();
+                    return new ProcessResult(1, ProcessResult.Status.OK);
                 }
-                return null;
+                return new ProcessResult(ProcessResult.Status.NOT_PRESENT);
             }
         });
 

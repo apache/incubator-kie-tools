@@ -89,4 +89,6 @@ public interface JGitFileSystem extends FileSystem,
     boolean hasBeenInUse();
 
     void notifyExternalUpdate();
+
+    void notifyPostCommit(int exitCode);
 }

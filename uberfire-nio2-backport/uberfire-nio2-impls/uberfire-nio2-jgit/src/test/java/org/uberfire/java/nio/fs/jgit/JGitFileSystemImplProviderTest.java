@@ -2127,8 +2127,9 @@ public class JGitFileSystemImplProviderTest extends AbstractTestInfra {
     @Test
     public void extractFSHooksTest() {
         Map<String, Object> env = new HashMap<>();
-        Object hook = (FileSystemHooks.FileSystemHook<String>) fsName -> {
-        };
+
+        Object hook = (FileSystemHooks.FileSystemHook) context -> { };
+
         env.put("dora", "bento");
         env.put(FileSystemHooks.ExternalUpdate.name(), hook);
 

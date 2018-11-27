@@ -182,6 +182,11 @@ public class JGitFileSystemProxy implements JGitFileSystem {
     }
 
     @Override
+    public void notifyPostCommit(int exitCode) {
+        cachedSupplier.get().notifyPostCommit(exitCode);
+    }
+
+    @Override
     public FileSystemProvider provider() {
         return cachedSupplier.get().provider();
     }

@@ -16,20 +16,6 @@
 
 package org.uberfire.java.nio.fs.jgit;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Set;
-import java.util.TimeZone;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.transport.CredentialsProvider;
 import org.slf4j.Logger;
@@ -37,20 +23,20 @@ import org.slf4j.LoggerFactory;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.base.FileSystemState;
 import org.uberfire.java.nio.base.options.CommentedOption;
-import org.uberfire.java.nio.file.FileStore;
-import org.uberfire.java.nio.file.InvalidPathException;
-import org.uberfire.java.nio.file.Path;
-import org.uberfire.java.nio.file.PathMatcher;
-import org.uberfire.java.nio.file.PatternSyntaxException;
-import org.uberfire.java.nio.file.WatchEvent;
-import org.uberfire.java.nio.file.WatchService;
+import org.uberfire.java.nio.file.*;
 import org.uberfire.java.nio.file.attribute.UserPrincipalLookupService;
+import org.uberfire.java.nio.file.extensions.FileSystemHookExecutionContext;
+import org.uberfire.java.nio.file.extensions.FileSystemHooks;
+import org.uberfire.java.nio.file.extensions.FileSystemHooksConstants;
 import org.uberfire.java.nio.file.spi.FileSystemProvider;
 import org.uberfire.java.nio.fs.jgit.util.Git;
-import org.uberfire.java.nio.file.extensions.FileSystemHooks;
 import org.uberfire.java.nio.fs.jgit.util.extensions.JGitFSHooks;
 import org.uberfire.java.nio.fs.jgit.util.model.CommitInfo;
 import org.uberfire.java.nio.fs.jgit.ws.JGitFileSystemsEventsManager;
+
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableSet;
@@ -515,7 +501,19 @@ public class JGitFileSystemImpl implements JGitFileSystem {
     public void notifyExternalUpdate() {
         Object hook = fsHooks.get(FileSystemHooks.ExternalUpdate);
         if(hook != null){
-            JGitFSHooks.executeFSHooks(hook, FileSystemHooks.ExternalUpdate, name);
+            JGitFSHooks.executeFSHooks(hook, FileSystemHooks.ExternalUpdate, new FileSystemHookExecutionContext(name));
+        }
+    }
+
+    @Override
+    public void notifyPostCommit(int exitCode) {
+        Object hook = fsHooks.get(FileSystemHooks.PostCommit);
+        if(hook != null){
+
+            FileSystemHookExecutionContext ctx = new FileSystemHookExecutionContext(name);
+            ctx.addParam(FileSystemHooksConstants.POST_COMMIT_EXIT_CODE, exitCode);
+
+            JGitFSHooks.executeFSHooks(hook, FileSystemHooks.ExternalUpdate, ctx);
         }
     }
 }

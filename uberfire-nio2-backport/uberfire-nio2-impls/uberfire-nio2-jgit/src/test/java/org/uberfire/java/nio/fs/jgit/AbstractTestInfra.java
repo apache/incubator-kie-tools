@@ -78,7 +78,7 @@ public abstract class AbstractTestInfra {
 
     protected static final Map<String, Object> EMPTY_ENV = Collections.emptyMap();
 
-    private static final List<File> tempFiles = new ArrayList<>();
+    protected static final List<File> tempFiles = new ArrayList<>();
 
     protected JGitFileSystemProvider provider;
 

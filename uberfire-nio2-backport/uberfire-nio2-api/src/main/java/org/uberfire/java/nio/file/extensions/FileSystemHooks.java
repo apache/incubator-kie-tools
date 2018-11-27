@@ -16,16 +16,16 @@ package org.uberfire.java.nio.file.extensions;
 
 public enum FileSystemHooks {
 
-    ExternalUpdate;
+    ExternalUpdate, PostCommit;
 
     @FunctionalInterface
-    public interface FileSystemHook<String> {
+    public interface FileSystemHook {
 
         /**
          * Performs this operation in a FileSystemHooks
-         * @param fsName the fileSystem name that this hook executes
+         * @param context execution context
          */
-        void execute(String fsName);
+        void execute(FileSystemHookExecutionContext context);
     }
 
 }

@@ -15,11 +15,7 @@
 
 package org.guvnor.structure.backend.repositories.git;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import javax.inject.Named;
-
+import org.guvnor.structure.backend.repositories.git.hooks.PostCommitNotificationService;
 import org.guvnor.structure.repositories.EnvironmentParameters;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryExternalUpdateEvent;
@@ -29,6 +25,11 @@ import org.guvnor.structure.server.config.PasswordService;
 import org.guvnor.structure.server.repositories.RepositoryFactoryHelper;
 import org.uberfire.io.IOService;
 import org.uberfire.spaces.SpacesAPI;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import static org.guvnor.structure.repositories.impl.git.GitRepository.SCHEME;
 import static org.kie.soup.commons.validation.Preconditions.checkNotNull;
@@ -44,6 +45,8 @@ public class GitRepositoryFactoryHelper implements RepositoryFactoryHelper {
 
     private Event<RepositoryExternalUpdateEvent> repositoryExternalUpdate;
 
+    private PostCommitNotificationService postCommitNotificationService;
+
     @Inject
     private PasswordService secureService;
 
@@ -54,11 +57,13 @@ public class GitRepositoryFactoryHelper implements RepositoryFactoryHelper {
     public GitRepositoryFactoryHelper(@Named("ioStrategy") IOService indexedIOService,
                                       @Named("configIO") IOService notIndexedIOService,
                                       SpacesAPI spacesAPI,
-                                      Event<RepositoryExternalUpdateEvent> repositoryExternalUpdate) {
+                                      Event<RepositoryExternalUpdateEvent> repositoryExternalUpdate,
+                                      PostCommitNotificationService postCommitNotificationService) {
         this.indexedIOService = indexedIOService;
         this.notIndexedIOService = notIndexedIOService;
         this.spacesAPI = spacesAPI;
         this.repositoryExternalUpdate = repositoryExternalUpdate;
+        this.postCommitNotificationService = postCommitNotificationService;
     }
 
     @Override
@@ -82,13 +87,15 @@ public class GitRepositoryFactoryHelper implements RepositoryFactoryHelper {
             return new GitRepositoryBuilder(notIndexedIOService,
                                             secureService,
                                             spacesAPI,
-                                            repositoryExternalUpdate).build(repoConfig);
+                                            repositoryExternalUpdate,
+                                            postCommitNotificationService).build(repoConfig);
         }
 
         return new GitRepositoryBuilder(indexedIOService,
                                         secureService,
                                         spacesAPI,
-                                        repositoryExternalUpdate).build(repoConfig);
+                                        repositoryExternalUpdate,
+                                        postCommitNotificationService).build(repoConfig);
     }
 
     private void validate(ConfigGroup repoConfig) {

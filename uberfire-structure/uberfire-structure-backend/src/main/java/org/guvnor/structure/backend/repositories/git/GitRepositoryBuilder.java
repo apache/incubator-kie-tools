@@ -14,23 +14,8 @@
  */
 package org.guvnor.structure.backend.repositories.git;
 
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.enterprise.event.Event;
-
-import org.guvnor.structure.repositories.Branch;
-import org.guvnor.structure.repositories.EnvironmentParameters;
-import org.guvnor.structure.repositories.PublicURI;
-import org.guvnor.structure.repositories.Repository;
-import org.guvnor.structure.repositories.RepositoryExternalUpdateEvent;
+import org.guvnor.structure.backend.repositories.git.hooks.PostCommitNotificationService;
+import org.guvnor.structure.repositories.*;
 import org.guvnor.structure.repositories.impl.DefaultPublicURI;
 import org.guvnor.structure.repositories.impl.git.GitRepository;
 import org.guvnor.structure.server.config.ConfigGroup;
@@ -41,7 +26,12 @@ import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
 import org.uberfire.java.nio.file.extensions.FileSystemHooks;
+import org.uberfire.java.nio.file.extensions.FileSystemHooksConstants;
 import org.uberfire.spaces.SpacesAPI;
+
+import javax.enterprise.event.Event;
+import java.net.URI;
+import java.util.*;
 
 import static org.uberfire.backend.server.util.Paths.convert;
 
@@ -51,16 +41,19 @@ public class GitRepositoryBuilder {
     private final PasswordService secureService;
     private SpacesAPI spacesAPI;
     private Event<RepositoryExternalUpdateEvent> repositoryExternalUpdate;
+    private PostCommitNotificationService postCommitNotificationService;
     private GitRepository repo;
 
     public GitRepositoryBuilder(final IOService ioService,
                                 final PasswordService secureService,
                                 final SpacesAPI spacesAPI,
-                                Event<RepositoryExternalUpdateEvent> repositoryExternalUpdate) {
+                                final Event<RepositoryExternalUpdateEvent> repositoryExternalUpdate,
+                                final PostCommitNotificationService postCommitNotificationService) {
         this.ioService = ioService;
         this.secureService = secureService;
         this.spacesAPI = spacesAPI;
         this.repositoryExternalUpdate = repositoryExternalUpdate;
+        this.postCommitNotificationService = postCommitNotificationService;
     }
 
     public Repository build(final ConfigGroup repoConfig) {
@@ -69,8 +62,7 @@ public class GitRepositoryBuilder {
         if (space == null) {
             throw new IllegalStateException("Repository " + repoConfig.getName() + " space is not valid");
         }
-        repo = new GitRepository(repoConfig.getName(),
-                                 spacesAPI.getSpace(space.getValue().toString()));
+        repo = new GitRepository(repoConfig.getName(), spacesAPI.getSpace(space.getValue().toString()));
 
         if (!repo.isValid()) {
             throw new IllegalStateException("Repository " + repoConfig.getName() + " not valid");
@@ -94,8 +86,7 @@ public class GitRepositoryBuilder {
 
         for (final String s : uris) {
             final int protocolStart = s.indexOf("://");
-            publicURIs.add(getPublicURI(s,
-                                        protocolStart));
+            publicURIs.add(getPublicURI(s, protocolStart));
         }
         repo.setPublicURIs(publicURIs);
     }
@@ -103,9 +94,7 @@ public class GitRepositoryBuilder {
     private PublicURI getPublicURI(final String s,
                                    final int protocolStart) {
         if (protocolStart > 0) {
-            return new DefaultPublicURI(s.substring(0,
-                                                    protocolStart),
-                                        s);
+            return new DefaultPublicURI(s.substring(0, protocolStart), s);
         } else {
             return new DefaultPublicURI(s);
         }
@@ -121,16 +110,16 @@ public class GitRepositoryBuilder {
         for (final ConfigItem item : items) {
             if (item instanceof SecureConfigItem) {
                 repo.addEnvironmentParameter(item.getName(),
-                                             secureService.decrypt(item.getValue().toString()));
+                        secureService.decrypt(item.getValue().toString()));
             } else {
                 repo.addEnvironmentParameter(item.getName(),
-                                             item.getValue());
+                        item.getValue());
             }
         }
     }
 
     private FileSystem createFileSystem(final GitRepository repo) {
-        FileSystem fs = null;
+        FileSystem fs;
         URI uri = null;
         try {
             uri = URI.create(repo.getUri());
@@ -151,17 +140,21 @@ public class GitRepositoryBuilder {
 
     private FileSystem newFileSystem(URI uri) {
         return ioService.newFileSystem(uri,
-                                       new HashMap<String, Object>(repo.getEnvironment()) {{
-                                           if (!repo.getEnvironment().containsKey("origin")) {
-                                               put("init",
-                                                   true);
-                                           }
-                                           put(FileSystemHooks.ExternalUpdate.name(), externalUpdatedCallBack());
-                                       }});
+                new HashMap<String, Object>(repo.getEnvironment()) {{
+                    if (!repo.getEnvironment().containsKey("origin")) {
+                        put("init", true);
+                    }
+                    put(FileSystemHooks.ExternalUpdate.name(), externalUpdatedCallBack());
+                    put(FileSystemHooks.PostCommit.name(), postCommitCallback());
+                }});
     }
 
-    private FileSystemHooks.FileSystemHook<String> externalUpdatedCallBack() {
-        return fsName -> repositoryExternalUpdate.fire(new RepositoryExternalUpdateEvent(repo));
+    private FileSystemHooks.FileSystemHook externalUpdatedCallBack() {
+        return ctx -> repositoryExternalUpdate.fire(new RepositoryExternalUpdateEvent(repo));
+    }
+
+    private FileSystemHooks.FileSystemHook postCommitCallback() {
+        return ctx -> postCommitNotificationService.notifyUser(repo, (Integer) ctx.getParamValue(FileSystemHooksConstants.POST_COMMIT_EXIT_CODE));
     }
 
     /**

@@ -16,38 +16,6 @@
 
 package org.uberfire.java.nio.fs.jgit;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FilterOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.RandomAccessFile;
-import java.io.UnsupportedEncodingException;
-import java.net.Authenticator;
-import java.net.InetSocketAddress;
-import java.net.URI;
-import java.net.URLEncoder;
-import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Set;
-import java.util.TimeZone;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.errors.RepositoryNotFoundException;
 import org.eclipse.jgit.internal.ketch.KetchLeaderCache;
@@ -59,18 +27,14 @@ import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevTree;
 import org.eclipse.jgit.storage.file.WindowCacheConfig;
-import org.eclipse.jgit.transport.CredentialsProvider;
-import org.eclipse.jgit.transport.ReceiveCommand;
-import org.eclipse.jgit.transport.ReceivePack;
-import org.eclipse.jgit.transport.ServiceMayNotContinueException;
-import org.eclipse.jgit.transport.SshSessionFactory;
-import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
+import org.eclipse.jgit.transport.*;
 import org.eclipse.jgit.transport.resolver.ReceivePackFactory;
 import org.eclipse.jgit.transport.resolver.RepositoryResolver;
 import org.eclipse.jgit.transport.resolver.ServiceNotAuthorizedException;
 import org.eclipse.jgit.transport.resolver.ServiceNotEnabledException;
 import org.eclipse.jgit.util.FS;
 import org.eclipse.jgit.util.FileUtils;
+import org.eclipse.jgit.util.ProcessResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.commons.async.DescriptiveThreadFactory;
@@ -79,12 +43,7 @@ import org.uberfire.commons.data.Pair;
 import org.uberfire.commons.lifecycle.Disposable;
 import org.uberfire.java.nio.EncodingUtil;
 import org.uberfire.java.nio.IOException;
-import org.uberfire.java.nio.base.AbstractPath;
-import org.uberfire.java.nio.base.BasicFileAttributesImpl;
-import org.uberfire.java.nio.base.ExtendedAttributeView;
-import org.uberfire.java.nio.base.FileDiff;
-import org.uberfire.java.nio.base.FileSystemState;
-import org.uberfire.java.nio.base.SeekableByteChannelFileBasedImpl;
+import org.uberfire.java.nio.base.*;
 import org.uberfire.java.nio.base.attributes.HiddenAttributeView;
 import org.uberfire.java.nio.base.attributes.HiddenAttributes;
 import org.uberfire.java.nio.base.dotfiles.DotFileOption;
@@ -96,50 +55,22 @@ import org.uberfire.java.nio.base.version.VersionAttributeView;
 import org.uberfire.java.nio.base.version.VersionAttributes;
 import org.uberfire.java.nio.channels.AsynchronousFileChannel;
 import org.uberfire.java.nio.channels.SeekableByteChannel;
-import org.uberfire.java.nio.file.AccessDeniedException;
-import org.uberfire.java.nio.file.AccessMode;
-import org.uberfire.java.nio.file.AmbiguousFileSystemNameException;
-import org.uberfire.java.nio.file.AtomicMoveNotSupportedException;
-import org.uberfire.java.nio.file.CopyOption;
-import org.uberfire.java.nio.file.DeleteOption;
-import org.uberfire.java.nio.file.DirectoryNotEmptyException;
-import org.uberfire.java.nio.file.DirectoryStream;
-import org.uberfire.java.nio.file.FileAlreadyExistsException;
-import org.uberfire.java.nio.file.FileStore;
+import org.uberfire.java.nio.file.*;
 import org.uberfire.java.nio.file.FileSystem;
-import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
-import org.uberfire.java.nio.file.FileSystemNotFoundException;
-import org.uberfire.java.nio.file.LinkOption;
-import org.uberfire.java.nio.file.NoSuchFileException;
-import org.uberfire.java.nio.file.NotDirectoryException;
-import org.uberfire.java.nio.file.OpenOption;
-import org.uberfire.java.nio.file.Option;
-import org.uberfire.java.nio.file.Path;
-import org.uberfire.java.nio.file.StandardCopyOption;
-import org.uberfire.java.nio.file.StandardDeleteOption;
-import org.uberfire.java.nio.file.StandardOpenOption;
-import org.uberfire.java.nio.file.WatchEvent;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributeView;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 import org.uberfire.java.nio.file.attribute.FileAttribute;
 import org.uberfire.java.nio.file.attribute.FileAttributeView;
+import org.uberfire.java.nio.file.extensions.FileSystemHooks;
 import org.uberfire.java.nio.fs.jgit.daemon.git.Daemon;
 import org.uberfire.java.nio.fs.jgit.daemon.ssh.BaseGitCommand;
 import org.uberfire.java.nio.fs.jgit.daemon.ssh.GitSSHService;
 import org.uberfire.java.nio.fs.jgit.manager.JGitFileSystemsManager;
 import org.uberfire.java.nio.fs.jgit.util.Git;
-import org.uberfire.java.nio.file.extensions.FileSystemHooks;
 import org.uberfire.java.nio.fs.jgit.util.ProxyAuthenticator;
 import org.uberfire.java.nio.fs.jgit.util.commands.Clone;
 import org.uberfire.java.nio.fs.jgit.util.commands.PathUtil;
-import org.uberfire.java.nio.fs.jgit.util.model.CommitContent;
-import org.uberfire.java.nio.fs.jgit.util.model.CommitInfo;
-import org.uberfire.java.nio.fs.jgit.util.model.CopyCommitContent;
-import org.uberfire.java.nio.fs.jgit.util.model.DefaultCommitContent;
-import org.uberfire.java.nio.fs.jgit.util.model.MoveCommitContent;
-import org.uberfire.java.nio.fs.jgit.util.model.PathInfo;
-import org.uberfire.java.nio.fs.jgit.util.model.PathType;
-import org.uberfire.java.nio.fs.jgit.util.model.RevertCommitContent;
+import org.uberfire.java.nio.fs.jgit.util.model.*;
 import org.uberfire.java.nio.fs.jgit.ws.JGitFileSystemsEventsManager;
 import org.uberfire.java.nio.fs.jgit.ws.JGitWatchEvent;
 import org.uberfire.java.nio.security.FileSystemAuthenticator;
@@ -147,32 +78,33 @@ import org.uberfire.java.nio.security.FileSystemAuthorizer;
 import org.uberfire.java.nio.security.SSHAuthenticator;
 import org.uberfire.java.nio.security.SecuredFileSystemProvider;
 
+import java.io.*;
+import java.net.Authenticator;
+import java.net.InetSocketAddress;
+import java.net.URI;
+import java.net.URLEncoder;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
+import java.util.*;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 import static java.util.Collections.emptyList;
 import static org.eclipse.jgit.lib.Constants.DOT_GIT_EXT;
-import static org.kie.soup.commons.validation.PortablePreconditions.checkCondition;
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotEmpty;
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.soup.commons.validation.PortablePreconditions.*;
 import static org.uberfire.commons.data.Pair.newPair;
 import static org.uberfire.java.nio.base.dotfiles.DotFileUtils.buildDotFile;
 import static org.uberfire.java.nio.base.dotfiles.DotFileUtils.dot;
 import static org.uberfire.java.nio.file.StandardOpenOption.READ;
 import static org.uberfire.java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
-import static org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration.DEFAULT_SCHEME_SIZE;
-import static org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration.GIT_ENV_KEY_BRANCH_LIST;
-import static org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration.GIT_ENV_KEY_DEFAULT_REMOTE_NAME;
-import static org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration.GIT_ENV_KEY_DEST_PATH;
-import static org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration.GIT_ENV_KEY_INIT;
-import static org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration.GIT_ENV_KEY_MIRROR;
-import static org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration.GIT_ENV_KEY_PASSWORD;
-import static org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration.GIT_ENV_KEY_SUBDIRECTORY;
-import static org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration.GIT_ENV_KEY_USER_NAME;
-import static org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration.SCHEME;
-import static org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration.SCHEME_SIZE;
+import static org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration.*;
 import static org.uberfire.java.nio.fs.jgit.util.model.PathType.DIRECTORY;
 import static org.uberfire.java.nio.fs.jgit.util.model.PathType.NOT_FOUND;
 
-public class JGitFileSystemProvider implements SecuredFileSystemProvider,
-                                               Disposable {
+public class JGitFileSystemProvider implements SecuredFileSystemProvider, Disposable {
 
     private static final Logger LOG = LoggerFactory.getLogger(JGitFileSystemProvider.class);
 
@@ -2115,7 +2047,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
                 if (isOriginalStateBatch && !fileSystem.isOnBatch()) {
                     fileSystem.setBatchCommitInfo(null);
                     firePostponedBatchEvents(fileSystem);
-                    postCommitHook(fileSystem.getGit().getRepository());
+                    postCommitHook(fileSystem);
                 }
                 fileSystem.setHadCommitOnBatchState(false);
             } finally {
@@ -2322,7 +2254,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
 
                 final ObjectId newHead = path.getFileSystem().getGit().getTreeFromRef(branchName);
 
-                postCommitHook(git.getRepository());
+                postCommitHook(fileSystem);
 
                 notifyDiffs(path.getFileSystem(),
                             branchName,
@@ -2369,10 +2301,13 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
         }
     }
 
-    private void postCommitHook(final Repository repository) {
-        detectedFS.runHookIfPresent(repository,
-                                    "post-commit",
-                                    new String[0]);
+    private void postCommitHook(final JGitFileSystem fileSystem) {
+
+        ProcessResult result = detectedFS.runHookIfPresent(fileSystem.getGit().getRepository(), "post-commit", new String[0]);
+
+        if(result.getStatus().equals(ProcessResult.Status.OK)) {
+            fileSystem.notifyPostCommit(result.getExitCode());
+        }
     }
 
     private void firePostponedBatchEvents(JGitFileSystem fileSystem) {

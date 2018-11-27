@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.uberfire.java.nio.file.extensions.FileSystemHookExecutionContext;
 import org.uberfire.java.nio.file.extensions.FileSystemHooks;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemImpl;
 
@@ -27,24 +28,24 @@ public class JGitFSHooks {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JGitFileSystemImpl.class);
 
-    public static void executeFSHooks(Object fsHook, FileSystemHooks hookType, String fsName) {
+    public static void executeFSHooks(Object fsHook, FileSystemHooks hookType, FileSystemHookExecutionContext ctx) {
         if(fsHook == null){
             return;
         }
         if (fsHook instanceof List) {
             List hooks = (List) fsHook;
-            hooks.forEach(h -> executeHook(h, hookType, fsName));
+            hooks.forEach(h -> executeHook(h, hookType, ctx));
         } else {
-            executeHook(fsHook, hookType, fsName);
+            executeHook(fsHook, hookType, ctx);
         }
     }
 
-    private static void executeHook(Object hook, FileSystemHooks hookType, String fsName) {
+    private static void executeHook(Object hook, FileSystemHooks hookType, FileSystemHookExecutionContext ctx) {
         if (hook instanceof FileSystemHooks.FileSystemHook) {
             FileSystemHooks.FileSystemHook fsHook = (FileSystemHooks.FileSystemHook) hook;
-            fsHook.execute(fsName);
+            fsHook.execute(ctx);
         } else {
-            LOGGER.error("Error executing FS Hook FS " + hookType + " on " + fsName +
+            LOGGER.error("Error executing FS Hook FS " + hookType + " on " + ctx.getFsName() +
                                  ". Callback methods should implement FileSystemHooks.FileSystemHook. ");
         }
     }

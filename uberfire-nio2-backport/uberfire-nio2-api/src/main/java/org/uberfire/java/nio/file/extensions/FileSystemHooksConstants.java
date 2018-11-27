@@ -1,11 +1,11 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,19 +14,10 @@
  * limitations under the License.
  */
 
-package org.guvnor.structure.backend.repositories.git;
+package org.uberfire.java.nio.file.extensions;
 
-import org.junit.Before;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+public interface FileSystemHooksConstants {
 
-@RunWith(MockitoJUnitRunner.class)
-public class GitRepositoryFactoryHelperTest extends GitRepositoryFactoryHelperBaseTest {
+    String POST_COMMIT_EXIT_CODE = "POST_COMMIT_EXIT_CODE";
 
-    @Before
-    public void setUp() {
-        mode = Mode.INDEXED;
-
-        super.init();
-    }
 }
