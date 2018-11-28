@@ -17,7 +17,7 @@
 package org.drools.workbench.screens.scenariosimulation.client.editor;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.drools.workbench.screens.scenariosimulation.client.commands.CommandExecutor;
+import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioSimulationDocksHandler;
 import org.drools.workbench.screens.scenariosimulation.client.models.FactModelTree;
 import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
@@ -79,116 +79,116 @@ import static org.mockito.Mockito.when;
 @RunWith(GwtMockitoTestRunner.class)
 public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimulationEditorTest {
 
+    private static final String SCENARIO_PACKAGE = "scenario.package";
+
     private ScenarioSimulationEditorPresenter presenter;
 
     private ScenarioSimulationEditorPresenter presenterSpy;
 
     @Mock
-    private KieEditorWrapperView mockKieView;
+    private KieEditorWrapperView kieViewMock;
 
     @Mock
-    private OverviewWidgetPresenter mockOverviewWidget;
+    private OverviewWidgetPresenter overviewWidgetPresenterMock;
 
     @Mock
-    private DefaultFileNameValidator mockFileNameValidator;
+    private DefaultFileNameValidator fileNameValidatorMock;
 
     @Mock
-    private AlertsButtonMenuItemBuilder mockAlertsButtonMenuItemBuilder;
+    private AlertsButtonMenuItemBuilder alertsButtonMenuItemBuilderMock;
 
     @Mock
-    private EventSourceMock<NotificationEvent> mockNotification;
+    private EventSourceMock<NotificationEvent> notificationMock;
 
     @Mock
-    private ScenarioGrid mockScenarioGrid;
+    private ScenarioGrid scenarioGridMock;
 
     @Mock
-    private ScenarioGridLayer mockScenarioGridLayer;
+    private ScenarioGridLayer scenarioGridLayerMock;
 
     @Mock
-    private ScenarioGridPanel mockScenarioGridPanel;
+    private ScenarioGridPanel scenarioGridPanelMock;
 
     @Mock
-    private ScenarioGridModel mockScenarioGridModel;
+    private ScenarioGridModel scenarioGridModelMock;
 
     @Mock
-    private ScenarioSimulationView mockScenarioSimulationView;
+    private ScenarioSimulationView scenarioSimulationViewMock;
 
     @Mock
-    private ScenarioSimulationProducer mockScenarioSimulationProducer;
+    private ScenarioSimulationProducer scenarioSimulationProducerMock;
 
     @Mock
-    private ImportsWidgetPresenter mockImportsWidget;
+    private ImportsWidgetPresenter importsWidgetPresenterMock;
 
     @Mock
-    private AsyncPackageDataModelOracleFactory mockOracleFactory;
+    private AsyncPackageDataModelOracleFactory oracleFactoryMock;
 
     @Mock
-    private AsyncPackageDataModelOracle mockOracle;
+    private AsyncPackageDataModelOracle oracleMock;
 
     @Mock
-    private PlaceManager mockPlaceManager;
-
-    private static final String SCENARIO_PACKAGE = "scenario.package";
+    private PlaceManager placeManagerMock;
 
     @Mock
-    private AbstractWorkbenchActivity mockRightPanelActivity;
+    private AbstractWorkbenchActivity rightPanelActivityMock;
 
     @Mock
-    private RightPanelView mockRightPanelView;
+    private RightPanelView rightPanelViewMock;
 
     @Mock
-    private RightPanelPresenter mockRightPanelPresenter;
+    private RightPanelPresenter rightPanelPresenterMock;
 
     @Mock
-    private ObservablePath mockPath;
+    private ObservablePath pathMock;
     @Mock
-    private PathPlaceRequest mockPlaceRequest;
+    private PathPlaceRequest placeRequestMock;
     @Mock
-    private CommandExecutor mockCommandExecutor;
+    private ScenarioSimulationContext contextMock;
     @Mock
-    TestRunnerReportingScreen testRunnerReportingScreen;
+    private TestRunnerReportingScreen testRunnerReportingScreenMock;
     @Mock
-    ScenarioSimulationDocksHandler scenarioSimulationDocksHandler;
+    private ScenarioSimulationDocksHandler scenarioSimulationDocksHandlerMock;
 
     @Before
     public void setup() {
         super.setup();
-        when(mockScenarioGridLayer.getScenarioGrid()).thenReturn(mockScenarioGrid);
-        when(mockScenarioSimulationView.getScenarioGridPanel()).thenReturn(mockScenarioGridPanel);
-        when(mockScenarioSimulationView.getScenarioGridLayer()).thenReturn(mockScenarioGridLayer);
-        when(mockScenarioGridPanel.getScenarioGrid()).thenReturn(mockScenarioGrid);
-        when(mockScenarioGrid.getModel()).thenReturn(mockScenarioGridModel);
-        when(mockScenarioSimulationProducer.getScenarioSimulationView()).thenReturn(mockScenarioSimulationView);
-        when(mockScenarioSimulationProducer.getCommandExecutor()).thenReturn(mockCommandExecutor);
-        when(mockPlaceRequest.getIdentifier()).thenReturn(ScenarioSimulationEditorPresenter.IDENTIFIER);
+        when(scenarioGridLayerMock.getScenarioGrid()).thenReturn(scenarioGridMock);
+        when(scenarioSimulationViewMock.getScenarioGridPanel()).thenReturn(scenarioGridPanelMock);
+        when(scenarioSimulationViewMock.getScenarioGridLayer()).thenReturn(scenarioGridLayerMock);
+        when(scenarioGridPanelMock.getScenarioGrid()).thenReturn(scenarioGridMock);
+        when(scenarioGridMock.getModel()).thenReturn(scenarioGridModelMock);
+        when(scenarioSimulationProducerMock.getScenarioSimulationView()).thenReturn(scenarioSimulationViewMock);
+        when(scenarioSimulationProducerMock.getScenarioSimulationContext()).thenReturn(contextMock);
+        when(placeRequestMock.getIdentifier()).thenReturn(ScenarioSimulationEditorPresenter.IDENTIFIER);
 
-        when(mockOracleFactory.makeAsyncPackageDataModelOracle(anyObject(), anyObject(), anyObject())).thenReturn(mockOracle);
+        when(oracleFactoryMock.makeAsyncPackageDataModelOracle(anyObject(), anyObject(), anyObject())).thenReturn(oracleMock);
 
-        when(mockRightPanelView.getPresenter()).thenReturn(mockRightPanelPresenter);
-        when(mockRightPanelActivity.getWidget()).thenReturn(mockRightPanelView);
+        when(rightPanelViewMock.getPresenter()).thenReturn(rightPanelPresenterMock);
+        when(rightPanelActivityMock.getWidget()).thenReturn(rightPanelViewMock);
 
-        when(mockPlaceRequest.getPath()).thenReturn(mockPath);
+        when(placeRequestMock.getPath()).thenReturn(pathMock);
 
-        this.presenter = new ScenarioSimulationEditorPresenter(new CallerMock<>(scenarioSimulationService),
-                                                               mockScenarioSimulationProducer,
+        this.presenter = new ScenarioSimulationEditorPresenter(new CallerMock<>(scenarioSimulationServiceMock),
+                                                               scenarioSimulationProducerMock,
                                                                mock(ScenarioSimulationResourceType.class),
-                                                               mockImportsWidget,
-                                                               mockOracleFactory,
-                                                               mockPlaceManager,
-                                                               testRunnerReportingScreen,
-                                                               scenarioSimulationDocksHandler) {
+                                                               importsWidgetPresenterMock,
+                                                               oracleFactoryMock,
+                                                               placeManagerMock,
+                                                               testRunnerReportingScreenMock,
+                                                               scenarioSimulationDocksHandlerMock) {
             {
-                this.kieView = mockKieView;
-                this.overviewWidget = mockOverviewWidget;
-                this.fileMenuBuilder = mockFileMenuBuilder;
-                this.fileNameValidator = mockFileNameValidator;
-                this.versionRecordManager = mockVersionRecordManager;
-                this.notification = mockNotification;
-                this.workbenchContext = mockWorkbenchContext;
-                this.alertsButtonMenuItemBuilder = mockAlertsButtonMenuItemBuilder;
-                this.path = mockPath;
-                this.scenarioGridPanel = mockScenarioGridPanel;
-                this.oracle = mockOracle;
+                this.kieView = kieViewMock;
+                this.overviewWidget = overviewWidgetPresenterMock;
+                this.fileMenuBuilder = fileMenuBuilderMock;
+                this.fileNameValidator = fileNameValidatorMock;
+                this.versionRecordManager = versionRecordManagerMock;
+                this.notification = notificationMock;
+                this.workbenchContext = workbenchContextMock;
+                this.alertsButtonMenuItemBuilder = alertsButtonMenuItemBuilderMock;
+                this.path = pathMock;
+                this.scenarioGridPanel = scenarioGridPanelMock;
+                this.oracle = oracleMock;
                 this.packageName = SCENARIO_PACKAGE;
             }
 
@@ -221,24 +221,24 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
 
     @Test
     public void testPresenterInit() throws Exception {
-        verify(mockScenarioSimulationView).init(presenter);
+        verify(scenarioSimulationViewMock).init(presenter);
     }
 
     @Test
     public void testOnStartup() {
 
         final AsyncPackageDataModelOracle oracle = mock(AsyncPackageDataModelOracle.class);
-        when(mockOracleFactory.makeAsyncPackageDataModelOracle(any(),
+        when(oracleFactoryMock.makeAsyncPackageDataModelOracle(any(),
                                                                eq(model),
                                                                eq(content.getDataModel()))).thenReturn(oracle);
         presenter.onStartup(mock(ObservablePath.class),
                             mock(PlaceRequest.class));
-        verify(mockImportsWidget).setContent(oracle,
-                                             model.getImports(),
-                                             false);
-        verify(mockKieView).addImportsTab(mockImportsWidget);
-        verify(mockScenarioSimulationView).showLoading();
-        verify(mockScenarioSimulationView).hideBusyIndicator();
+        verify(importsWidgetPresenterMock).setContent(oracle,
+                                                      model.getImports(),
+                                                      false);
+        verify(kieViewMock).addImportsTab(importsWidgetPresenterMock);
+        verify(scenarioSimulationViewMock).showLoading();
+        verify(scenarioSimulationViewMock).hideBusyIndicator();
     }
 
     @Test
@@ -253,58 +253,58 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
     public void runScenarioButtonIsAdded() throws Exception {
 
         final MenuItem menuItem = mock(MenuItem.class);
-        doReturn(menuItem).when(mockScenarioSimulationView).getRunScenarioMenuItem();
+        doReturn(menuItem).when(scenarioSimulationViewMock).getRunScenarioMenuItem();
 
         presenter.onStartup(mock(ObservablePath.class),
                             mock(PlaceRequest.class));
 
-        verify(mockFileMenuBuilder).addNewTopLevelMenu(menuItem);
+        verify(fileMenuBuilderMock).addNewTopLevelMenu(menuItem);
     }
 
     @Test
     public void save() {
         presenter.onStartup(mock(ObservablePath.class),
                             mock(PlaceRequest.class));
-        reset(mockScenarioSimulationView);
+        reset(scenarioSimulationViewMock);
 
         presenter.save("save message");
 
-        verify(mockScenarioSimulationView).hideBusyIndicator();
-        verify(mockNotification).fire(any(NotificationEvent.class));
-        verify(mockVersionRecordManager).reloadVersions(any(Path.class));
+        verify(scenarioSimulationViewMock).hideBusyIndicator();
+        verify(notificationMock).fire(any(NotificationEvent.class));
+        verify(versionRecordManagerMock).reloadVersions(any(Path.class));
     }
 
     @Test
     public void onPlaceGainFocusEvent() {
         PlaceGainFocusEvent mockPlaceGainFocusEvent = mock(PlaceGainFocusEvent.class);
-        when(mockPlaceGainFocusEvent.getPlace()).thenReturn(mockPlaceRequest);
-        when(mockPlaceManager.getStatus(mockPlaceRequest)).thenReturn(PlaceStatus.CLOSE);
+        when(mockPlaceGainFocusEvent.getPlace()).thenReturn(placeRequestMock);
+        when(placeManagerMock.getStatus(placeRequestMock)).thenReturn(PlaceStatus.CLOSE);
         presenter.onPlaceGainFocusEvent(mockPlaceGainFocusEvent);
-        verify(scenarioSimulationDocksHandler).addDocks();
-        verify(scenarioSimulationDocksHandler).expandToolsDock();
+        verify(scenarioSimulationDocksHandlerMock).addDocks();
+        verify(scenarioSimulationDocksHandlerMock).expandToolsDock();
     }
 
     @Test
     public void onPlaceHiddenEvent() {
         PlaceHiddenEvent mockPlaceHiddenEvent = mock(PlaceHiddenEvent.class);
-        when(mockPlaceHiddenEvent.getPlace()).thenReturn(mockPlaceRequest);
-        when(mockPlaceManager.getStatus(mockPlaceRequest)).thenReturn(PlaceStatus.OPEN);
+        when(mockPlaceHiddenEvent.getPlace()).thenReturn(placeRequestMock);
+        when(placeManagerMock.getStatus(placeRequestMock)).thenReturn(PlaceStatus.OPEN);
         presenter.onPlaceHiddenEvent(mockPlaceHiddenEvent);
-        verify(scenarioSimulationDocksHandler).removeDocks();
-        verify(testRunnerReportingScreen).reset();
-        verify(mockScenarioGrid, times(1)).clearSelections();
+        verify(scenarioSimulationDocksHandlerMock).removeDocks();
+        verify(testRunnerReportingScreenMock).reset();
+        verify(scenarioGridMock, times(1)).clearSelections();
     }
 
     @Test
     public void onClose() {
-        when(mockPlaceManager.getStatus(mockPlaceRequest)).thenReturn(PlaceStatus.OPEN);
+        when(placeManagerMock.getStatus(placeRequestMock)).thenReturn(PlaceStatus.OPEN);
         presenter.onClose();
         onClosePlaceStatusOpen();
-        reset(mockScenarioGridPanel);
-        reset(mockVersionRecordManager);
-        reset(mockPlaceManager);
-        reset(mockScenarioSimulationView);
-        when(mockPlaceManager.getStatus(mockPlaceRequest)).thenReturn(PlaceStatus.CLOSE);
+        reset(scenarioGridPanelMock);
+        reset(versionRecordManagerMock);
+        reset(placeManagerMock);
+        reset(scenarioSimulationViewMock);
+        when(placeManagerMock.getStatus(placeRequestMock)).thenReturn(PlaceStatus.CLOSE);
         presenter.onClose();
         onClosePlaceStatusClose();
     }
@@ -315,21 +315,21 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
         final ScenarioSimulationModel model = new ScenarioSimulationModel();
         doReturn(new ScenarioSimulationModelContent(model,
                                                     new Overview(),
-                                                    new PackageDataModelOracleBaselinePayload())).when(scenarioSimulationService).loadContent(any());
+                                                    new PackageDataModelOracleBaselinePayload())).when(scenarioSimulationServiceMock).loadContent(any());
 
-        when(scenarioSimulationService.runScenario(any(), any())).thenReturn(mock(ScenarioSimulationModel.class));
+        when(scenarioSimulationServiceMock.runScenario(any(), any())).thenReturn(mock(ScenarioSimulationModel.class));
 
         presenter.onStartup(mock(ObservablePath.class), mock(PlaceRequest.class));
 
         presenter.onRunScenario();
 
-        verify(scenarioSimulationService).runScenario(any(), eq(model));
+        verify(scenarioSimulationServiceMock).runScenario(any(), eq(model));
 
-        verify(mockScenarioGridModel, times(1)).resetErrors();
+        verify(scenarioGridModelMock, times(1)).resetErrors();
 
-        verify(mockScenarioSimulationView, times(1)).refreshContent(any());
+        verify(scenarioSimulationViewMock, times(1)).refreshContent(any());
 
-        verify(scenarioSimulationDocksHandler).expandTestResultsDock();
+        verify(scenarioSimulationDocksHandlerMock).expandTestResultsDock();
     }
 
     @Test
@@ -350,12 +350,12 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
                                                 FieldAccessorsAndMutators.BOTH,
                                                 int.class.getName());
         ModelField[] modelFields = {modelField1, modelField2};
-        when(mockOracle.getFQCNByFactName(factName)).thenReturn(fullFactname);
+        when(oracleMock.getFQCNByFactName(factName)).thenReturn(fullFactname);
         FactModelTree retrieved = presenter.getFactModelTree(factName, modelFields);
         assertNotNull(retrieved);
         assertEquals(factName, retrieved.getFactName());
         assertEquals(factPackage, retrieved.getFullPackage());
-        when(mockOracle.getFQCNByFactName(factName)).thenReturn(null);
+        when(oracleMock.getFQCNByFactName(factName)).thenReturn(null);
         retrieved = presenter.getFactModelTree(factName, modelFields);
         assertNotNull(retrieved);
         assertEquals(factName, retrieved.getFactName());
@@ -364,18 +364,18 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
 
     @Test
     public void isDirty() {
-        when(mockScenarioSimulationView.getScenarioGridPanel()).thenThrow(new RuntimeException());
+        when(scenarioSimulationViewMock.getScenarioGridPanel()).thenThrow(new RuntimeException());
         assertFalse(presenter.isDirty());
     }
 
     private void onClosePlaceStatusOpen() {
-        verify(mockVersionRecordManager, times(1)).clear();
-        verify(mockScenarioGridPanel, times(1)).unregister();
+        verify(versionRecordManagerMock, times(1)).clear();
+        verify(scenarioGridPanelMock, times(1)).unregister();
     }
 
     private void onClosePlaceStatusClose() {
-        verify(mockVersionRecordManager, times(1)).clear();
-        verify(mockPlaceManager, times(0)).closePlace(mockPlaceRequest);
-        verify(mockScenarioGridPanel, times(1)).unregister();
+        verify(versionRecordManagerMock, times(1)).clear();
+        verify(placeManagerMock, times(0)).closePlace(placeRequestMock);
+        verify(scenarioGridPanelMock, times(1)).unregister();
     }
 }

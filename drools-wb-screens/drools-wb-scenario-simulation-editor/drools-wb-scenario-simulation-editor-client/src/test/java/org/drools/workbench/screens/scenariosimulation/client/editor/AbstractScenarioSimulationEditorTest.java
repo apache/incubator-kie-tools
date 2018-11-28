@@ -42,34 +42,34 @@ import static org.mockito.Mockito.when;
 public abstract class AbstractScenarioSimulationEditorTest {
 
     @Mock
-    protected VersionRecordManager mockVersionRecordManager;
+    protected VersionRecordManager versionRecordManagerMock;
 
     @Mock
-    protected FileMenuBuilder mockFileMenuBuilder;
+    protected FileMenuBuilder fileMenuBuilderMock;
 
     @Mock
-    protected ScenarioSimulationService scenarioSimulationService;
+    protected ScenarioSimulationService scenarioSimulationServiceMock;
 
     @Mock
-    protected ObservablePath mockObservablePath;
+    protected ObservablePath observablePathMock;
 
     @Mock
-    protected Overview mockOverview;
+    protected Overview overviewMock;
 
     @Mock
-    protected GridContextMenu mockGridContextMenu;
+    protected GridContextMenu gridContextMenuMock;
 
     @Mock
-    protected HeaderGivenContextMenu mockHeaderGivenContextMenu;
+    protected HeaderGivenContextMenu headerGivenContextMenuMock;
 
     @Mock
-    protected BaseMenuView mockGridContextMenuView;
+    protected BaseMenuView gridContextMenuViewMock;
 
     @Mock
-    protected BaseMenuView mockHeaderContextMenuView;
+    protected BaseMenuView headerContextMenuViewMock;
 
     @Mock
-    protected WorkspaceProjectContext mockWorkbenchContext;
+    protected WorkspaceProjectContext workbenchContextMock;
 
     protected ScenarioSimulationModelContent content;
     protected ScenarioSimulationModel model;
@@ -77,26 +77,26 @@ public abstract class AbstractScenarioSimulationEditorTest {
     public void setup() {
 
         // Mock FileMenuBuilder usage since we cannot use FileMenuBuilderImpl either
-        when(mockFileMenuBuilder.addSave(any(MenuItem.class))).thenReturn(mockFileMenuBuilder);
-        when(mockFileMenuBuilder.addCopy(any(ObservablePath.class), any(DefaultFileNameValidator.class))).thenReturn(mockFileMenuBuilder);
-        when(mockFileMenuBuilder.addRename(any(Command.class))).thenReturn(mockFileMenuBuilder);
-        when(mockFileMenuBuilder.addDelete(any(ObservablePath.class))).thenReturn(mockFileMenuBuilder);
-        when(mockFileMenuBuilder.addValidate(any(Command.class))).thenReturn(mockFileMenuBuilder);
-        when(mockFileMenuBuilder.addNewTopLevelMenu(any(MenuItem.class))).thenReturn(mockFileMenuBuilder);
+        when(fileMenuBuilderMock.addSave(any(MenuItem.class))).thenReturn(fileMenuBuilderMock);
+        when(fileMenuBuilderMock.addCopy(any(ObservablePath.class), any(DefaultFileNameValidator.class))).thenReturn(fileMenuBuilderMock);
+        when(fileMenuBuilderMock.addRename(any(Command.class))).thenReturn(fileMenuBuilderMock);
+        when(fileMenuBuilderMock.addDelete(any(ObservablePath.class))).thenReturn(fileMenuBuilderMock);
+        when(fileMenuBuilderMock.addValidate(any(Command.class))).thenReturn(fileMenuBuilderMock);
+        when(fileMenuBuilderMock.addNewTopLevelMenu(any(MenuItem.class))).thenReturn(fileMenuBuilderMock);
 
-        when(mockVersionRecordManager.getCurrentPath()).thenReturn(mockObservablePath);
-        when(mockVersionRecordManager.getPathToLatest()).thenReturn(mockObservablePath);
+        when(versionRecordManagerMock.getCurrentPath()).thenReturn(observablePathMock);
+        when(versionRecordManagerMock.getPathToLatest()).thenReturn(observablePathMock);
 
-        when(mockWorkbenchContext.getActiveWorkspaceProject()).thenReturn(Optional.empty());
+        when(workbenchContextMock.getActiveWorkspaceProject()).thenReturn(Optional.empty());
 
-        when(mockGridContextMenu.getView()).thenReturn(mockGridContextMenuView);
-        when(mockHeaderGivenContextMenu.getView()).thenReturn(mockHeaderContextMenuView);
+        when(gridContextMenuMock.getView()).thenReturn(gridContextMenuViewMock);
+        when(headerGivenContextMenuMock.getView()).thenReturn(headerContextMenuViewMock);
 
         this.model = new ScenarioSimulationModel();
         this.content = new ScenarioSimulationModelContent(model,
-                                                          mockOverview,
+                                                          overviewMock,
                                                           mock(PackageDataModelOracleBaselinePayload.class));
 
-        when(scenarioSimulationService.loadContent(mockObservablePath)).thenReturn(content);
+        when(scenarioSimulationServiceMock.loadContent(observablePathMock)).thenReturn(content);
     }
 }

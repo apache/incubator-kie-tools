@@ -44,5 +44,7 @@
 
   <inherits name="org.guvnor.common.services.project.GuvnorProjectClient" />
 
+  <inherits name="org.kie.workbench.common.command.CommonCommandAPI" />
+
 
 </module>

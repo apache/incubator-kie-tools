@@ -128,7 +128,7 @@ public interface RightPanelView
         void onDisableEditorTab();
 
         /**
-         * Method to fire a <code>SetPropertyHeaderCommand</code>  or <code>SetPropertyHeaderCommand</code>,
+         * Method to fire a <code>SetPropertyHeaderScenarioSImulationCommand</code>  or <code>SetPropertyHeaderScenarioSImulationCommand</code>,
          * depending on the element currently selected
          */
         void onModifyColumn();

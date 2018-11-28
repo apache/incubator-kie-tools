@@ -34,21 +34,21 @@ import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioS
 public class ScenarioSimulationGridPanelClickHandlerProducer {
 
     @Inject
-    OtherContextMenu otherContextMenu;
+    protected OtherContextMenu otherContextMenu;
     @Inject
-    HeaderGivenContextMenu headerGivenContextMenu;
+    protected HeaderGivenContextMenu headerGivenContextMenu;
     @Inject
-    HeaderExpectedContextMenu headerExpectedContextMenu;
+    protected HeaderExpectedContextMenu headerExpectedContextMenu;
     @Inject
-    GivenContextMenu givenContextMenu;
+    protected GivenContextMenu givenContextMenu;
     @Inject
-    ExpectedContextMenu expectedContextMenu;
+    protected ExpectedContextMenu expectedContextMenu;
     @Inject
-    GridContextMenu gridContextMenu;
+    protected GridContextMenu gridContextMenu;
     @Inject
-    UnmodifiableColumnGridContextMenu unmodifiableColumnGridContextMenu;
+    protected UnmodifiableColumnGridContextMenu unmodifiableColumnGridContextMenu;
     @Inject
-    ScenarioSimulationGridPanelClickHandler scenarioSimulationGridPanelClickHandler;
+    protected ScenarioSimulationGridPanelClickHandler scenarioSimulationGridPanelClickHandler;
 
     public ScenarioSimulationGridPanelClickHandler getScenarioSimulationGridPanelClickHandler() {
         scenarioSimulationGridPanelClickHandler.setExpectedContextMenu(expectedContextMenu);

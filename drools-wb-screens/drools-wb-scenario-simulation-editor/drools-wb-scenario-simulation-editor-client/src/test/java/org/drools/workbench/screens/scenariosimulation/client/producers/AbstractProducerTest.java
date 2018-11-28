@@ -21,12 +21,11 @@ import java.lang.annotation.Annotation;
 import javax.enterprise.event.Event;
 
 import com.google.gwt.event.shared.EventBus;
-import org.drools.workbench.screens.scenariosimulation.client.commands.CommandExecutor;
+import org.drools.workbench.screens.scenariosimulation.client.AbstractScenarioSimulationTest;
+import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationEventHandler;
 import org.drools.workbench.screens.scenariosimulation.client.editor.ScenarioSimulationView;
 import org.drools.workbench.screens.scenariosimulation.client.popup.DeletePopupPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.popup.PreserveDeletePopupPresenter;
-import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGrid;
-import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
 import org.junit.Before;
 import org.mockito.Mock;
 import org.uberfire.workbench.events.NotificationEvent;
@@ -34,38 +33,29 @@ import org.uberfire.workbench.events.NotificationEvent;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.when;
 
-public abstract class AbstractProducerTest {
+public abstract class AbstractProducerTest extends AbstractScenarioSimulationTest {
 
     @Mock
     protected EventBusProducer eventBusProducerMock;
-
     @Mock
     protected ScenarioSimulationViewProducer scenarioSimulationViewProducerMock;
-
     @Mock
     protected EventBus eventBusMock;
-
     @Mock
     protected DeletePopupPresenter deletePopupPresenterMock;
     @Mock
     protected PreserveDeletePopupPresenter preserveDeletePopupPresenterMock;
-
     @Mock
-    protected CommandExecutor commandExecutorMock;
-
+    protected ScenarioSimulationEventHandler scenarioSimulationEventHandlerMock;
     @Mock
     protected ScenarioSimulationView scenarioSimulationViewMock;
 
-    @Mock
-    protected ScenarioGridPanel scenarioGridPanelMock;
-
-    @Mock
-    protected ScenarioGrid scenarioGridMock;
 
     protected Event<NotificationEvent> notificationEventNew;
 
     @Before
     public void setup() {
+        super.setup();
         notificationEventNew = new Event<NotificationEvent>() {
             @Override
             public void fire(NotificationEvent notificationEvent) {
@@ -82,7 +72,6 @@ public abstract class AbstractProducerTest {
                 return null;
             }
         };
-        when(scenarioGridPanelMock.getScenarioGrid()).thenReturn(scenarioGridMock);
         when(eventBusProducerMock.getEventBus()).thenReturn(eventBusMock);
         when(scenarioSimulationViewMock.getScenarioGridPanel()).thenReturn(scenarioGridPanelMock);
         when(scenarioSimulationViewProducerMock.getScenarioSimulationView(isA(EventBus.class))).thenReturn(scenarioSimulationViewMock);

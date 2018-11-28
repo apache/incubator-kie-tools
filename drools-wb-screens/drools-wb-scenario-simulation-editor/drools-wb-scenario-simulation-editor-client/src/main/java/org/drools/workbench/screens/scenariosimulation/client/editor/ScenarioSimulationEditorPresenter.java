@@ -33,7 +33,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.drools.workbench.screens.scenariosimulation.client.commands.CommandExecutor;
+import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioSimulationDocksHandler;
 import org.drools.workbench.screens.scenariosimulation.client.models.FactModelTree;
 import org.drools.workbench.screens.scenariosimulation.client.producers.ScenarioSimulationProducer;
@@ -116,7 +116,7 @@ public class ScenarioSimulationEditorPresenter
 
     private ScenarioSimulationView view;
 
-    private CommandExecutor commandExecutor;
+    private ScenarioSimulationContext context;
 
     private Command populateRightPanelCommand;
 
@@ -146,11 +146,11 @@ public class ScenarioSimulationEditorPresenter
         this.importsWidget = importsWidget;
         this.oracleFactory = oracleFactory;
         this.placeManager = placeManager;
-        this.commandExecutor = scenarioSimulationProducer.getCommandExecutor();
+        this.context = scenarioSimulationProducer.getScenarioSimulationContext();
         this.eventBus = scenarioSimulationProducer.getEventBus();
         scenarioGridPanel = view.getScenarioGridPanel();
-        commandExecutor.setScenarioGridPanel(scenarioGridPanel);
-        commandExecutor.setScenarioSimulationEditorPresenter(this);
+//        context.setScenarioGridPanel(scenarioGridPanel);
+        context.setScenarioSimulationEditorPresenter(this);
         view.init(this);
         populateRightPanelCommand = getPopulateRightPanelCommand();
         scenarioGridPanel.select();
@@ -310,7 +310,7 @@ public class ScenarioSimulationEditorPresenter
         // Execute only when RightPanelPresenter is actually available
         getRightPanelPresenter().ifPresent(presenter -> {
             // presenter.onDisableEditorTab();
-            commandExecutor.setRightPanelPresenter(presenter);
+            context.setRightPanelPresenter(presenter);
             presenter.setEventBus(eventBus);
             populateRightPanel(presenter);
         });
