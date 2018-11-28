@@ -96,7 +96,7 @@ public class InformationItemCell extends ContextGridCell<InformationItemCell.Has
 
                 @Override
                 public Group render(final GridBodyCellRenderContext context) {
-                    return RendererUtils.getNameAndDataTypeText(this, context);
+                    return RendererUtils.getNameAndDataTypeCellText(this, context);
                 }
             };
         }

@@ -49,13 +49,18 @@ public class NameAndDataTypeDOMElementColumnRenderer<W extends TextBoxBase, E ex
         }
 
         final GridColumn.HeaderMetaData headerRowMetaData = headerMetaData.get(headerRowIndex);
-        if (headerRowMetaData instanceof NameAndDataTypeHeaderMetaData) {
-            return RendererUtils.getNameAndDataTypeText((NameAndDataTypeHeaderMetaData) headerRowMetaData,
-                                                        context,
-                                                        blockWidth,
-                                                        rowHeight);
-        }
+        if (headerRowMetaData instanceof EditableHeaderMetaData) {
+            final EditableHeaderMetaData editableHeaderMetaData = (EditableHeaderMetaData) headerRowMetaData;
+            if (EditableHeaderUtilities.isPlaceHolderToBeShown(editableHeaderMetaData)) {
+                return editableHeaderMetaData.renderPlaceHolder(context,
+                                                                blockWidth,
+                                                                rowHeight);
+            }
 
+            return ((EditableHeaderMetaData) headerRowMetaData).render(context,
+                                                                       blockWidth,
+                                                                       rowHeight);
+        }
         return super.renderHeaderContent(headerMetaData,
                                          context,
                                          headerRowIndex,

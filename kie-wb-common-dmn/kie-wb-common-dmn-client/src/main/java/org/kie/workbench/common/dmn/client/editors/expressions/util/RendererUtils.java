@@ -24,6 +24,7 @@ import com.google.gwt.core.client.GWT;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.InformationItemCell;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridTheme;
+import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableHeaderMetaData;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.NameAndDataTypeHeaderMetaData;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
@@ -41,19 +42,8 @@ public class RendererUtils {
                                               final GridCell<String> gridCell) {
         final GridRenderer gridRenderer = context.getRenderer();
         final GridRendererTheme theme = gridRenderer.getTheme();
-
-        final Group g = GWT.create(Group.class);
-        final Text t = theme.getBodyText();
-        t.setText(gridCell.getValue().getValue());
-        t.setListening(false);
-        t.setX(5);
-        t.setY(5);
-        t.setFontFamily(BaseExpressionGridTheme.FONT_FAMILY_EXPRESSION);
-        t.setTextAlign(TextAlign.LEFT);
-        t.setWrapper(new TextLineBreakWrap(t));
-        g.add(t);
-
-        return g;
+        return getExpressionText(theme,
+                                 gridCell.getValue().getValue());
     }
 
     public static Group getCenteredCellText(final GridBodyCellRenderContext context,
@@ -71,10 +61,27 @@ public class RendererUtils {
         return g;
     }
 
-    public static Group getNameAndDataTypeText(final NameAndDataTypeHeaderMetaData headerMetaData,
-                                               final GridHeaderColumnRenderContext context,
-                                               final double blockWidth,
-                                               final double blockHeight) {
+    public static Group getNameAndDataTypeCellText(final InformationItemCell.HasNameAndDataTypeCell hasNameAndDataTypeCell,
+                                                   final GridBodyCellRenderContext context) {
+        return getNameAndDataTypeText(context.getRenderer().getTheme(),
+                                      hasNameAndDataTypeCell.getName().getValue(),
+                                      hasNameAndDataTypeCell.getTypeRef(),
+                                      context.getCellWidth(),
+                                      context.getCellHeight());
+    }
+
+    public static Group getExpressionHeaderText(final EditableHeaderMetaData headerMetaData,
+                                                final GridHeaderColumnRenderContext context) {
+        final GridRenderer gridRenderer = context.getRenderer();
+        final GridRendererTheme theme = gridRenderer.getTheme();
+        return getExpressionText(theme,
+                                 headerMetaData.getTitle());
+    }
+
+    public static Group getNameAndDataTypeHeaderText(final NameAndDataTypeHeaderMetaData headerMetaData,
+                                                     final GridHeaderColumnRenderContext context,
+                                                     final double blockWidth,
+                                                     final double blockHeight) {
         return getNameAndDataTypeText(context.getRenderer().getTheme(),
                                       headerMetaData.getTitle(),
                                       headerMetaData.getTypeRef(),
@@ -82,13 +89,62 @@ public class RendererUtils {
                                       blockHeight);
     }
 
-    public static Group getNameAndDataTypeText(final InformationItemCell.HasNameAndDataTypeCell hasNameAndDataTypeCell,
-                                               final GridBodyCellRenderContext context) {
-        return getNameAndDataTypeText(context.getRenderer().getTheme(),
-                                      hasNameAndDataTypeCell.getName().getValue(),
-                                      hasNameAndDataTypeCell.getTypeRef(),
-                                      context.getCellWidth(),
-                                      context.getCellHeight());
+    public static Group getEditableHeaderText(final EditableHeaderMetaData headerMetaData,
+                                              final GridHeaderColumnRenderContext context,
+                                              final double blockWidth,
+                                              final double blockHeight) {
+        final Group headerGroup = GWT.create(Group.class);
+        final GridRenderer renderer = context.getRenderer();
+        final GridRendererTheme theme = renderer.getTheme();
+        final Text text = theme.getHeaderText();
+        final String value = headerMetaData.getTitle();
+
+        text.setX(blockWidth / 2);
+        text.setY(blockHeight / 2);
+        text.setText(value);
+        text.setListening(false);
+
+        headerGroup.add(text);
+        return headerGroup;
+    }
+
+    public static Group getEditableHeaderPlaceHolderText(final EditableHeaderMetaData headerMetaData,
+                                                         final GridHeaderColumnRenderContext context,
+                                                         final double blockWidth,
+                                                         final double blockHeight) {
+        final Group headerGroup = GWT.create(Group.class);
+
+        headerMetaData.getPlaceHolder().ifPresent(placeHolder -> {
+            final GridRenderer renderer = context.getRenderer();
+            final GridRendererTheme theme = renderer.getTheme();
+            final Text text = theme.getPlaceholderText();
+
+            text.setX(blockWidth / 2);
+            text.setY(blockHeight / 2);
+            text.setText(placeHolder);
+            text.setListening(false);
+
+            headerGroup.add(text);
+        });
+
+        return headerGroup;
+    }
+
+    private static Group getExpressionText(final GridRendererTheme theme,
+                                           final String text) {
+        final Group g = GWT.create(Group.class);
+
+        final Text t = theme.getBodyText();
+        t.setText(text);
+        t.setListening(false);
+        t.setX(5);
+        t.setY(5);
+        t.setFontFamily(BaseExpressionGridTheme.FONT_FAMILY_EXPRESSION);
+        t.setTextAlign(TextAlign.LEFT);
+        t.setWrapper(new TextLineBreakWrap(t));
+        g.add(t);
+
+        return g;
     }
 
     private static Group getNameAndDataTypeText(final GridRendererTheme theme,

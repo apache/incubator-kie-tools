@@ -21,8 +21,7 @@ import java.util.List;
 import com.ait.lienzo.client.core.shape.Group;
 import com.google.gwt.core.client.GWT;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumnRenderer;
-import org.kie.workbench.common.dmn.client.editors.expressions.util.RendererUtils;
-import org.kie.workbench.common.dmn.client.widgets.grid.columns.NameAndDataTypeHeaderMetaData;
+import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableHeaderMetaData;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridHeaderColumnRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridWidgetRegistry;
@@ -46,11 +45,11 @@ public class FunctionColumnRenderer extends ExpressionEditorColumnRenderer {
         }
 
         final GridColumn.HeaderMetaData headerRowMetaData = headerMetaData.get(headerRowIndex);
-        if (headerRowMetaData instanceof NameAndDataTypeHeaderMetaData) {
-            return RendererUtils.getNameAndDataTypeText((NameAndDataTypeHeaderMetaData) headerRowMetaData,
-                                                        context,
-                                                        blockWidth,
-                                                        rowHeight);
+        if (headerRowMetaData instanceof EditableHeaderMetaData) {
+            final EditableHeaderMetaData editableHeaderMetaData = (EditableHeaderMetaData) headerRowMetaData;
+            return editableHeaderMetaData.render(context,
+                                                 blockWidth,
+                                                 rowHeight);
         }
 
         return super.renderHeaderContent(headerMetaData,

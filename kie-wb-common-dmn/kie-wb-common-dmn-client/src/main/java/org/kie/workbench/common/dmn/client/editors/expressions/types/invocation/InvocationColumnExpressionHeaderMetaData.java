@@ -16,24 +16,45 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.invocation;
 
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import com.ait.lienzo.client.core.shape.Group;
 import org.gwtbootstrap3.client.ui.TextArea;
+import org.kie.workbench.common.dmn.client.editors.expressions.util.RendererUtils;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableTextHeaderMetaData;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.dom.TextAreaDOMElement;
+import org.uberfire.ext.wires.core.grids.client.widget.context.GridHeaderColumnRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.single.SingletonDOMElementFactory;
 
 public class InvocationColumnExpressionHeaderMetaData extends EditableTextHeaderMetaData<TextArea, TextAreaDOMElement> {
 
     static final String EXPRESSION_COLUMN_GROUP = "InvocationColumnExpressionHeaderMetaData$Expression";
 
+    private final Optional<String> placeHolder;
+
     public InvocationColumnExpressionHeaderMetaData(final Supplier<String> titleGetter,
                                                     final Consumer<String> titleSetter,
-                                                    final SingletonDOMElementFactory<TextArea, TextAreaDOMElement> factory) {
+                                                    final SingletonDOMElementFactory<TextArea, TextAreaDOMElement> factory,
+                                                    final Optional<String> placeHolder) {
         super(titleGetter,
               titleSetter,
               factory,
               EXPRESSION_COLUMN_GROUP);
+        this.placeHolder = placeHolder;
+    }
+
+    @Override
+    public Group render(final GridHeaderColumnRenderContext context,
+                        final double blockWidth,
+                        final double blockHeight) {
+        return RendererUtils.getExpressionHeaderText(this,
+                                                     context);
+    }
+
+    @Override
+    public Optional<String> getPlaceHolder() {
+        return placeHolder;
     }
 }

@@ -21,6 +21,7 @@ import java.util.Optional;
 
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.types.Point2D;
+import org.kie.workbench.common.stunner.core.util.StringUtils;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellEditContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
@@ -36,6 +37,10 @@ public class EditableHeaderUtilities {
     public static boolean isEditableHeader(final GridColumn<?> column,
                                            final Integer uiHeaderRowIndex) {
         return column.getHeaderMetaData().get(uiHeaderRowIndex) instanceof EditableHeaderMetaData;
+    }
+
+    public static boolean isPlaceHolderToBeShown(final EditableHeaderMetaData headerMetaData) {
+        return StringUtils.isEmpty(headerMetaData.getTitle()) && headerMetaData.getPlaceHolder().isPresent();
     }
 
     public static GridBodyCellEditContext makeRenderContext(final GridWidget gridWidget,

@@ -22,6 +22,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import com.ait.lienzo.client.core.shape.Group;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
@@ -29,10 +30,12 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.dmn.client.editors.expressions.util.RendererUtils;
 import org.kie.workbench.common.dmn.client.editors.expressions.util.TypeRefUtils;
 import org.kie.workbench.common.dmn.client.editors.types.HasNameAndTypeRef;
 import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
+import org.uberfire.ext.wires.core.grids.client.widget.context.GridHeaderColumnRenderContext;
 
 public abstract class NameAndDataTypeHeaderMetaData<E extends Expression> extends EditablePopupHeaderMetaData<HasNameAndTypeRef, NameAndDataTypePopoverView.Presenter> implements HasNameAndTypeRef {
 
@@ -122,6 +125,16 @@ public abstract class NameAndDataTypeHeaderMetaData<E extends Expression> extend
         }
 
         setTypeRefConsumer.accept(hasTypeRef.get(), typeRef);
+    }
+
+    @Override
+    public Group render(final GridHeaderColumnRenderContext context,
+                        final double blockWidth,
+                        final double blockHeight) {
+        return RendererUtils.getNameAndDataTypeHeaderText(this,
+                                                          context,
+                                                          blockWidth,
+                                                          blockHeight);
     }
 
     @Override

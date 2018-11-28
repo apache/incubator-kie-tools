@@ -16,15 +16,57 @@
 
 package org.kie.workbench.common.dmn.client.widgets.grid.columns;
 
+import java.util.Optional;
+
+import com.ait.lienzo.client.core.shape.Group;
+import org.kie.workbench.common.dmn.client.editors.expressions.util.RendererUtils;
+import org.kie.workbench.common.stunner.core.util.StringUtils;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellEditAction;
-import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
+import org.uberfire.ext.wires.core.grids.client.model.GridColumn.HeaderMetaData;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellEditContext;
+import org.uberfire.ext.wires.core.grids.client.widget.context.GridHeaderColumnRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.HasDOMElementResources;
 
-public interface EditableHeaderMetaData extends GridColumn.HeaderMetaData,
+public interface EditableHeaderMetaData extends HeaderMetaData,
                                                 HasDOMElementResources {
 
+    /**
+     * Puts the {@link HeaderMetaData} into 'edit' mode.
+     * @param context The context of a Grid's cell header during the rendering phase.
+     */
     void edit(final GridBodyCellEditContext context);
+
+    /**
+     * Delegates rendering to the {@link HeaderMetaData}.
+     * @param context The context of a Grid's cell header during the rendering phase.
+     * @param blockWidth Width of the {@link HeaderMetaData} column(s) block.
+     * @param blockHeight Width of the {@link HeaderMetaData} row(s) block.
+     * @return
+     */
+    default Group render(final GridHeaderColumnRenderContext context,
+                         final double blockWidth,
+                         final double blockHeight) {
+        return RendererUtils.getEditableHeaderText(this,
+                                                   context,
+                                                   blockWidth,
+                                                   blockHeight);
+    }
+
+    /**
+     * Delegates rendering of the 'place holder' to the {@link HeaderMetaData}.
+     * @param context The context of a Grid's cell header during the rendering phase.
+     * @param blockWidth Width of the {@link HeaderMetaData} column(s) block.
+     * @param blockHeight Width of the {@link HeaderMetaData} row(s) block.
+     * @return
+     */
+    default Group renderPlaceHolder(final GridHeaderColumnRenderContext context,
+                                    final double blockWidth,
+                                    final double blockHeight) {
+        return RendererUtils.getEditableHeaderPlaceHolderText(this,
+                                                              context,
+                                                              blockWidth,
+                                                              blockHeight);
+    }
 
     /**
      * Returns the default action that will trigger editing of the cells value.
@@ -32,5 +74,13 @@ public interface EditableHeaderMetaData extends GridColumn.HeaderMetaData,
      */
     default GridCellEditAction getSupportedEditAction() {
         return GridCellEditAction.SINGLE_CLICK;
+    }
+
+    /**
+     * Returns 'place holder' text to show if the {@link HeaderMetaData#getTitle()} is {@link StringUtils#isEmpty(String)}
+     * @return Optional text to show as the 'place holder'
+     */
+    default Optional<String> getPlaceHolder() {
+        return Optional.empty();
     }
 }

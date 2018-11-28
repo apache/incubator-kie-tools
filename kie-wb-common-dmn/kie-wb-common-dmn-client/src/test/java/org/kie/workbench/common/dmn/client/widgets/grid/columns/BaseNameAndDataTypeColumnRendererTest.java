@@ -18,6 +18,7 @@ package org.kie.workbench.common.dmn.client.widgets.grid.columns;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Node;
@@ -42,6 +43,8 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.Grid
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.themes.GridRendererTheme;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyDouble;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -51,6 +54,8 @@ import static org.mockito.Mockito.when;
 public abstract class BaseNameAndDataTypeColumnRendererTest<R extends BaseGridColumnRenderer, C> {
 
     protected static final String TITLE = "title";
+
+    protected static final String PLACE_HOLDER = "placeHolder";
 
     protected static final QName TYPE_REF = new QName();
 
@@ -118,6 +123,7 @@ public abstract class BaseNameAndDataTypeColumnRendererTest<R extends BaseGridCo
         when(gridRenderer.getTheme()).thenReturn(gridRendererTheme);
         when(gridRendererTheme.getHeaderText()).thenReturn(text1, text2);
         when(gridRendererTheme.getBodyText()).thenReturn(text1);
+        when(gridRendererTheme.getPlaceholderText()).thenReturn(text1);
         when(text1.asNode()).thenReturn(mock(Node.class));
         when(text2.asNode()).thenReturn(mock(Node.class));
     }
@@ -148,6 +154,7 @@ public abstract class BaseNameAndDataTypeColumnRendererTest<R extends BaseGridCo
     @Test
     public void testRenderHeaderContentWithNameAndDataTypeHeaderMetaData() {
         final NameAndDataTypeHeaderMetaData metaData = mock(NameAndDataTypeHeaderMetaData.class);
+        when(metaData.render(any(GridHeaderColumnRenderContext.class), anyDouble(), anyDouble())).thenCallRealMethod();
         this.headerMetaData = Collections.singletonList(metaData);
 
         when(metaData.getTitle()).thenReturn(TITLE);
@@ -171,6 +178,26 @@ public abstract class BaseNameAndDataTypeColumnRendererTest<R extends BaseGridCo
 
         verify(headerGroup).add(text1);
         verify(headerGroup).add(text2);
+    }
+
+    @Test
+    public void testRenderHeaderContentWithNameAndDataTypeHeaderMetaDataWithPlaceHolder() {
+        final NameAndDataTypeHeaderMetaData metaData = mock(NameAndDataTypeHeaderMetaData.class);
+        when(metaData.renderPlaceHolder(any(GridHeaderColumnRenderContext.class), anyDouble(), anyDouble())).thenCallRealMethod();
+        when(metaData.getPlaceHolder()).thenReturn(Optional.of(PLACE_HOLDER));
+        this.headerMetaData = Collections.singletonList(metaData);
+
+        renderer.renderHeaderContent(headerMetaData,
+                                     headerContext,
+                                     0,
+                                     BLOCK_WIDTH,
+                                     ROW_HEIGHT);
+
+        verify(text1).setText(eq(PLACE_HOLDER));
+        verify(text1).setX(BLOCK_WIDTH / 2);
+        verify(text1).setY(ROW_HEIGHT / 2);
+
+        verify(headerGroup).add(text1);
     }
 
     @Test

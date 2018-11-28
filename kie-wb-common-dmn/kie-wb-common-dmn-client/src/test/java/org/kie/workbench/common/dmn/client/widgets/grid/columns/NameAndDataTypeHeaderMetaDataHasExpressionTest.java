@@ -23,11 +23,14 @@ import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.kie.workbench.common.dmn.client.editors.expressions.util.RendererUtils;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(RendererUtils.class)
 public class NameAndDataTypeHeaderMetaDataHasExpressionTest extends BaseNameAndDataTypeHeaderMetaDataTest {
 
     private Decision hasExpression = new Decision();

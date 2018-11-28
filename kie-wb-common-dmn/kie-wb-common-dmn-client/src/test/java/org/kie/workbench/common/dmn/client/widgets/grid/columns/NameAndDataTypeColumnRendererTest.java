@@ -30,7 +30,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 
 @RunWith(LienzoMockitoTestRunner.class)
-public class EditableNameAndDataTypeColumnRendererTest extends BaseNameAndDataTypeColumnRendererTest<NameAndDataTypeColumnRenderer, InformationItemCell.HasNameCell> {
+public class NameAndDataTypeColumnRendererTest extends BaseNameAndDataTypeColumnRendererTest<NameAndDataTypeColumnRenderer, InformationItemCell.HasNameCell> {
 
     @Mock
     private TextAreaSingletonDOMElementFactory factory;

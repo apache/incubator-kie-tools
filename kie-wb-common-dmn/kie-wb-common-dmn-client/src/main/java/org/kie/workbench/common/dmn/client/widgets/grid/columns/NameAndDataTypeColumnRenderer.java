@@ -21,7 +21,6 @@ import java.util.List;
 import com.ait.lienzo.client.core.shape.Group;
 import com.google.gwt.core.client.GWT;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.InformationItemCell;
-import org.kie.workbench.common.dmn.client.editors.expressions.util.RendererUtils;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
@@ -47,13 +46,18 @@ public class NameAndDataTypeColumnRenderer extends BaseGridColumnRenderer<Inform
         }
 
         final GridColumn.HeaderMetaData headerRowMetaData = headerMetaData.get(headerRowIndex);
-        if (headerRowMetaData instanceof NameAndDataTypeHeaderMetaData) {
-            return RendererUtils.getNameAndDataTypeText((NameAndDataTypeHeaderMetaData) headerRowMetaData,
-                                                        context,
-                                                        blockWidth,
-                                                        rowHeight);
-        }
+        if (headerRowMetaData instanceof EditableHeaderMetaData) {
+            final EditableHeaderMetaData editableHeaderMetaData = (EditableHeaderMetaData) headerRowMetaData;
+            if (EditableHeaderUtilities.isPlaceHolderToBeShown(editableHeaderMetaData)) {
+                return editableHeaderMetaData.renderPlaceHolder(context,
+                                                                blockWidth,
+                                                                rowHeight);
+            }
 
+            return ((EditableHeaderMetaData) headerRowMetaData).render(context,
+                                                                       blockWidth,
+                                                                       rowHeight);
+        }
         return super.renderHeaderContent(headerMetaData,
                                          context,
                                          headerRowIndex,

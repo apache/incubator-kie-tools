@@ -17,8 +17,10 @@
 package org.kie.workbench.common.dmn.client.editors.expressions.util;
 
 import java.util.Collections;
+import java.util.Optional;
 
 import com.ait.lienzo.client.core.shape.Group;
+import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.client.core.types.Transform;
@@ -33,6 +35,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.InformationItemCell;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.literal.LiteralExpressionColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridTheme;
+import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableHeaderMetaData;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.NameAndDataTypeHeaderMetaData;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
@@ -43,8 +46,10 @@ import org.uberfire.ext.wires.core.grids.client.widget.context.GridHeaderColumnR
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.themes.GridRendererTheme;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -90,7 +95,13 @@ public class RendererUtilsTest {
     private Text headerText2;
 
     @Mock
+    private Text placeHolderText;
+
+    @Mock
     private Transform transform;
+
+    @Mock
+    private EditableHeaderMetaData headerMetaData;
 
     @GwtMock
     @SuppressWarnings("unused")
@@ -129,34 +140,37 @@ public class RendererUtilsTest {
         when(cellContext.getCellHeight()).thenReturn(HEIGHT);
 
         when(gridTheme.getHeaderText()).thenReturn(headerText1, headerText2);
+        when(gridTheme.getPlaceholderText()).thenReturn(placeHolderText);
         when(headerText1.asNode()).thenReturn(mock(Node.class));
         when(headerText2.asNode()).thenReturn(mock(Node.class));
+        when(placeHolderText.asNode()).thenReturn(mock(Node.class));
     }
 
     @Test
-    public void testCenteredText() throws Exception {
+    public void testRenderCenteredText() throws Exception {
         final BaseGridCell<String> cell = new BaseGridCell<>(new BaseGridCellValue<>(VALUE));
 
         RendererUtils.getCenteredCellText(cellContext, cell);
 
-        verify(text).setText(VALUE);
-        verify(text).setListening(false);
-        verify(text).setX(WIDTH / 2);
-        verify(text).setY(HEIGHT / 2);
+        assertCenteredRendering(text);
     }
 
     @Test
-    public void testLeftAlignTest() throws Exception {
+    public void testRenderExpressionCellText() throws Exception {
         final BaseGridCell<String> cell = new BaseGridCell<>(new BaseGridCellValue<>(VALUE));
 
         RendererUtils.getExpressionCellText(cellContext, cell);
 
-        verify(text).setText(VALUE);
-        verify(text).setListening(false);
-        verify(text).setX(5);
-        verify(text).setY(5);
-        verify(text).setFontFamily(BaseExpressionGridTheme.FONT_FAMILY_EXPRESSION);
-        verify(text).setTextAlign(TextAlign.LEFT);
+        assertExpressionRendering();
+    }
+
+    @Test
+    public void testRenderExpressionHeaderText() throws Exception {
+        when(headerMetaData.getTitle()).thenReturn(VALUE);
+
+        RendererUtils.getExpressionHeaderText(headerMetaData, headerContext);
+
+        assertExpressionRendering();
     }
 
     @Test
@@ -166,10 +180,10 @@ public class RendererUtilsTest {
         when(metaData.getTitle()).thenReturn(TITLE);
         when(metaData.getTypeRef()).thenReturn(TYPE_REF);
 
-        RendererUtils.getNameAndDataTypeText(metaData,
-                                             headerContext,
-                                             BLOCK_WIDTH,
-                                             ROW_HEIGHT);
+        RendererUtils.getNameAndDataTypeHeaderText(metaData,
+                                                   headerContext,
+                                                   BLOCK_WIDTH,
+                                                   ROW_HEIGHT);
 
         assertHasNameAndDataTypeRendering();
     }
@@ -182,10 +196,53 @@ public class RendererUtilsTest {
         when(informationItemCell.getName()).thenReturn(name);
         when(informationItemCell.getTypeRef()).thenReturn(TYPE_REF);
 
-        RendererUtils.getNameAndDataTypeText(informationItemCell,
-                                             bodyContext);
+        RendererUtils.getNameAndDataTypeCellText(informationItemCell,
+                                                 bodyContext);
 
         assertHasNameAndDataTypeRendering();
+    }
+
+    @Test
+    public void testRenderEditableHeaderText() {
+        when(headerMetaData.getTitle()).thenReturn(VALUE);
+
+        RendererUtils.getEditableHeaderText(headerMetaData, headerContext, WIDTH, HEIGHT);
+
+        assertCenteredRendering(headerText1);
+    }
+
+    @Test
+    public void testRenderEditableHeaderPlaceHolderText() {
+        when(headerMetaData.getPlaceHolder()).thenReturn(Optional.of(VALUE));
+
+        RendererUtils.getEditableHeaderPlaceHolderText(headerMetaData, headerContext, WIDTH, HEIGHT);
+
+        assertCenteredRendering(placeHolderText);
+    }
+
+    @Test
+    public void testRenderEditableHeaderPlaceHolderTextWhenEmpty() {
+        when(headerMetaData.getPlaceHolder()).thenReturn(Optional.empty());
+
+        RendererUtils.getEditableHeaderPlaceHolderText(headerMetaData, headerContext, WIDTH, HEIGHT);
+
+        verify(headerGroup, never()).add(any(IPrimitive.class));
+    }
+
+    private void assertCenteredRendering(final Text text) {
+        verify(text).setText(VALUE);
+        verify(text).setListening(false);
+        verify(text).setX(WIDTH / 2);
+        verify(text).setY(HEIGHT / 2);
+    }
+
+    private void assertExpressionRendering() {
+        verify(text).setText(VALUE);
+        verify(text).setListening(false);
+        verify(text).setX(5);
+        verify(text).setY(5);
+        verify(text).setFontFamily(BaseExpressionGridTheme.FONT_FAMILY_EXPRESSION);
+        verify(text).setTextAlign(TextAlign.LEFT);
     }
 
     private void assertHasNameAndDataTypeRendering() {

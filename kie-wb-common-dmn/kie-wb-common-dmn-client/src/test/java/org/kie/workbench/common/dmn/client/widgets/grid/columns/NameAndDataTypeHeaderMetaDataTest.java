@@ -20,9 +20,12 @@ import java.util.Optional;
 
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasName;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.kie.workbench.common.dmn.client.editors.expressions.util.RendererUtils;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(RendererUtils.class)
 public class NameAndDataTypeHeaderMetaDataTest extends BaseNameAndDataTypeHeaderMetaDataTest {
 
     public void setup(final Optional<HasName> hasName) {

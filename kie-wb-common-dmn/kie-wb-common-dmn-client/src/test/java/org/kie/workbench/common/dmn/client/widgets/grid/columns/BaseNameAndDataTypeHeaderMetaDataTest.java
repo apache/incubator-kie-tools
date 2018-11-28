@@ -26,9 +26,11 @@ import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.dmn.client.editors.expressions.util.RendererUtils;
 import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.mockito.Mock;
+import org.uberfire.ext.wires.core.grids.client.widget.context.GridHeaderColumnRenderContext;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
@@ -36,6 +38,8 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 
 public abstract class BaseNameAndDataTypeHeaderMetaDataTest {
 
@@ -44,6 +48,10 @@ public abstract class BaseNameAndDataTypeHeaderMetaDataTest {
     protected static final Optional<String> EDITOR_TITLE = Optional.of("editor");
 
     protected static final Name NAME = new Name("name");
+
+    protected static final double BLOCK_WIDTH = 10.0;
+
+    protected static final double BLOCK_HEIGHT = 20.0;
 
     @Mock
     protected HasTypeRef hasTypeRef;
@@ -62,6 +70,9 @@ public abstract class BaseNameAndDataTypeHeaderMetaDataTest {
 
     @Mock
     protected NameAndDataTypePopoverView.Presenter headerEditor;
+
+    @Mock
+    protected GridHeaderColumnRenderContext context;
 
     protected NameAndDataTypeHeaderMetaData metaData;
 
@@ -188,5 +199,35 @@ public abstract class BaseNameAndDataTypeHeaderMetaDataTest {
         when(hasTypeRef.asDMNModelInstrumentedBase()).thenReturn(decision);
 
         assertThat(metaData.asDMNModelInstrumentedBase()).isEqualTo(decision);
+    }
+
+    @Test
+    public void testRender() {
+        setup(Optional.empty());
+
+        mockStatic(RendererUtils.class);
+
+        metaData.render(context, BLOCK_WIDTH, BLOCK_HEIGHT);
+
+        verifyStatic();
+        RendererUtils.getNameAndDataTypeHeaderText(eq(metaData),
+                                                   eq(context),
+                                                   eq(BLOCK_WIDTH),
+                                                   eq(BLOCK_HEIGHT));
+    }
+
+    @Test
+    public void testRenderPlaceHolder() {
+        setup(Optional.empty());
+
+        mockStatic(RendererUtils.class);
+
+        metaData.renderPlaceHolder(context, BLOCK_WIDTH, BLOCK_HEIGHT);
+
+        verifyStatic();
+        RendererUtils.getEditableHeaderPlaceHolderText(eq(metaData),
+                                                       eq(context),
+                                                       eq(BLOCK_WIDTH),
+                                                       eq(BLOCK_HEIGHT));
     }
 }

@@ -92,7 +92,6 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseBounds;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
-import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
 import org.uberfire.ext.wires.core.grids.client.widget.dnd.GridWidgetDnDHandlersState;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
@@ -452,13 +451,13 @@ public class InvocationGridTest {
 
         assertEquals(2,
                      header.size());
-        assertTrue(header.get(0) instanceof BaseHeaderMetaData);
+        assertTrue(header.get(0) instanceof InvocationColumnHeaderMetaData);
         assertTrue(header.get(1) instanceof InvocationColumnExpressionHeaderMetaData);
 
-        final BaseHeaderMetaData md1 = (BaseHeaderMetaData) header.get(0);
+        final InvocationColumnHeaderMetaData md1 = (InvocationColumnHeaderMetaData) header.get(0);
         final InvocationColumnExpressionHeaderMetaData md2 = (InvocationColumnExpressionHeaderMetaData) header.get(1);
 
-        assertEquals("",
+        assertEquals("name",
                      md1.getTitle());
         assertEquals("invocation-expression",
                      md2.getTitle());

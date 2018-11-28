@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.client.editors.expressions.types.function;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.BaseNameAndDataTypeColumnRendererTest;
 import org.mockito.Mock;
@@ -31,5 +32,12 @@ public class FunctionColumnRendererTest extends BaseNameAndDataTypeColumnRendere
     @Override
     protected FunctionColumnRenderer getColumnRenderer() {
         return new FunctionColumnRenderer(registry);
+    }
+
+    @Test
+    @Override
+    public void testRenderHeaderContentWithNameAndDataTypeHeaderMetaDataWithPlaceHolder() {
+        //FunctionColumnRenderer does not render place-holders and invokes normal rendering.
+        super.testRenderHeaderContentWithNameAndDataTypeHeaderMetaData();
     }
 }
