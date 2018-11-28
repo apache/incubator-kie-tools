@@ -104,7 +104,7 @@ public class Select implements IsElement,
 
     @Override
     public String getValue() {
-        return getValue(select);
+        return select.getValue();
     }
 
     @Override
@@ -123,6 +123,18 @@ public class Select implements IsElement,
         refresh();
     }
 
+    public void hide() {
+        selectpicker(select, "hide");
+    }
+
+    public void show() {
+        selectpicker(select, "show");
+    }
+
+    public void toggle() {
+        selectpicker(select, "toggle");
+    }
+
     public void setTitle(final String title) {
         select.setTitle(title);
     }
@@ -137,10 +149,6 @@ public class Select implements IsElement,
 
     private native void refreshElement(final HTMLElement e) /*-{
         $wnd.jQuery(e).selectpicker('refresh');
-    }-*/;
-
-    private native String getValue(final HTMLElement e) /*-{
-        return $wnd.jQuery(e).selectpicker('val');
     }-*/;
 
     private native void setValue(final HTMLElement e,
@@ -159,4 +167,9 @@ public class Select implements IsElement,
     private native void removeAllOptions(final HTMLElement e) /*-{
         $wnd.jQuery(e).find('option').remove();
     }-*/;
+
+    private native void selectpicker(final HTMLElement e, final String method) /*-{
+        $wnd.jQuery(e).selectpicker(method);
+    }-*/;
+
 }

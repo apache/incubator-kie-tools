@@ -24,6 +24,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -77,6 +78,14 @@ public class SelectTest {
         select.setWidth("auto");
 
         verify(selectMock).setAttribute("data-width", "auto");
+    }
+
+    @Test
+    public void testValue() {
+        final String value = "somevalue";
+        when(selectMock.getValue()).thenReturn(value);
+
+        assertEquals(value, select.getValue());
     }
 
 }
