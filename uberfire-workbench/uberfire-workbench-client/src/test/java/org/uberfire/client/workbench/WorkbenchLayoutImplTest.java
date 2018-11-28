@@ -42,6 +42,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.uberfire.client.workbench.docks.UberfireDocksContainer;
+import org.uberfire.client.workbench.events.WorkbenchProfileCssClass;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchPickupDragController;
 import org.uberfire.mvp.Command;
@@ -237,5 +238,18 @@ public class WorkbenchLayoutImplTest {
         verify(footerPanel,
                times(2)).appendChild(any());
         verify(root).setFooterWidget(any());
+    }
+
+    @Test
+    public void addWorkbenchProfileCssClass() {
+
+        when(root.getStyleName()).thenReturn("current stylename");
+
+        workbenchLayout.addWorkbenchProfileCssClass(new WorkbenchProfileCssClass("dora"));
+
+        verify(root).removeStyleName("current stylename");
+        verify(root).addStyleName(WorkbenchLayoutImpl.UF_ROOT_CSS_CLASS);
+        verify(root).addStyleName("dora");
+
     }
 }

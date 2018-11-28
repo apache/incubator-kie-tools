@@ -23,11 +23,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.animation.client.Animation;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Position;
@@ -49,6 +52,7 @@ import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.util.Layouts;
 import org.uberfire.client.workbench.docks.UberfireDocksContainer;
+import org.uberfire.client.workbench.events.WorkbenchProfileCssClass;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchPickupDragController;
 import org.uberfire.mvp.Command;
@@ -64,11 +68,13 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
 
     public static final String UF_MAXIMIZED_PANEL = "uf-maximized-panel";
 
+    public static final String UF_ROOT_CSS_CLASS = "uf-workbench-layout";
     /**
      * Holder for style information that was modified in order to maximize a panel.
      */
 
     private static final int MAXIMIZED_PANEL_Z_INDEX = 100;
+
     /**
      * Dock Layout panel: in center root perspective and also (if available) with east west south docks
      */
@@ -138,7 +144,7 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
         headerPanel.setId("workbenchHeaderPanel");
         footerPanel.setId("workbenchFooterPanel");
         dragController.getBoundaryPanel().ensureDebugId("workbenchDragBoundary");
-        root.addStyleName("uf-workbench-layout");
+        root.addStyleName(UF_ROOT_CSS_CLASS);
     }
 
     @Override
@@ -322,6 +328,12 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
              });
 
         return instances;
+    }
+
+    public void addWorkbenchProfileCssClass(@Observes WorkbenchProfileCssClass workbenchProfileCssClass) {
+        root.removeStyleName(root.getStyleName());
+        root.addStyleName(UF_ROOT_CSS_CLASS);
+        root.addStyleName(workbenchProfileCssClass.getClassName());
     }
 
     protected Div getHeaderPanel() {
