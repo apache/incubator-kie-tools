@@ -41,7 +41,6 @@ import org.uberfire.client.views.pfly.widgets.Popover;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -111,10 +110,14 @@ public class NameAndDataTypePopoverViewImplTest {
                                                       nameLabel,
                                                       dataTypeLabel,
                                                       jQueryProducer,
-                                                      translationService));
+                                                      translationService) {
+            @Override
+            public HTMLElement getElement() {
+                return element;
+            }
+        });
         view.init(presenter);
 
-        doReturn(element).when(view).getElement();
         when(valueChangeEvent.getValue()).thenReturn(typeRef);
         when(jQueryProducer.wrap(element)).thenReturn(popover);
 

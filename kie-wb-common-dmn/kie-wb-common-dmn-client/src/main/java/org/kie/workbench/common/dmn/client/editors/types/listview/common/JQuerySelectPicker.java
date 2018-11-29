@@ -29,6 +29,9 @@ public abstract class JQuerySelectPicker {
     @JsMethod(namespace = GLOBAL, name = "jQuery")
     public native static JQuerySelectPicker $(final Element selector);
 
+    @JsMethod(namespace = GLOBAL, name = "jQuery")
+    public native static JQuerySelectPicker $(final String selector);
+
     public native JQuerySelectPicker selectpicker(final String method);
 
     public native JQuerySelectPicker selectpicker(final String method,
@@ -36,6 +39,8 @@ public abstract class JQuerySelectPicker {
 
     public native JQuerySelectPicker on(final String event,
                                         final CallbackFunction callbackFunction);
+
+    public native JQuerySelectPicker off(final String event);
 
     @JsFunction
     public interface CallbackFunction {
