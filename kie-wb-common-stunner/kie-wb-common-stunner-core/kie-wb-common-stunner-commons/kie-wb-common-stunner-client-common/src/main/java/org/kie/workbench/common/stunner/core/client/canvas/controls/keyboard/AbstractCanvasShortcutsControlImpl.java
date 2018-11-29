@@ -45,7 +45,6 @@ public abstract class AbstractCanvasShortcutsControlImpl extends AbstractCanvasH
 
     @Override
     public void register(Element element) {
-        focusCanvasToActivateKeyboardCanvasControl();
     }
 
     @Override
@@ -83,9 +82,4 @@ public abstract class AbstractCanvasShortcutsControlImpl extends AbstractCanvasH
         }
     }
 
-    private void focusCanvasToActivateKeyboardCanvasControl() {
-        if (editorSession != null && editorSession.getCanvas() != null) {
-            editorSession.getCanvas().focus();
-        }
-    }
 }

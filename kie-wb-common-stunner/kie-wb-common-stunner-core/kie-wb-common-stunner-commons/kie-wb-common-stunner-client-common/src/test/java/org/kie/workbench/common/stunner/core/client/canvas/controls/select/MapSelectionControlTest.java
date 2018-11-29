@@ -231,6 +231,7 @@ public class MapSelectionControlTest {
         verify(shape, never()).applyState(eq(ShapeState.NONE));
         verify(shape, never()).applyState(eq(ShapeState.INVALID));
         verify(shape, never()).applyState(eq(ShapeState.HIGHLIGHT));
+        verify(canvas, times(1)).focus();
         final ArgumentCaptor<CanvasSelectionEvent> elementSelectedEventArgumentCaptor =
                 ArgumentCaptor.forClass(CanvasSelectionEvent.class);
         verify(elementSelectedEvent,
@@ -250,6 +251,7 @@ public class MapSelectionControlTest {
         verify(shape, never()).applyState(eq(ShapeState.NONE));
         verify(shape, never()).applyState(eq(ShapeState.INVALID));
         verify(shape, times(1)).applyState(eq(ShapeState.HIGHLIGHT));
+        verify(canvas, times(1)).focus();
     }
 
     @Test

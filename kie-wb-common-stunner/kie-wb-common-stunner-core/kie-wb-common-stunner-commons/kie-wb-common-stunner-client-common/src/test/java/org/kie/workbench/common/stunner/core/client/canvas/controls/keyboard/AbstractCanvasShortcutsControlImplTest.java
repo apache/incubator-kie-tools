@@ -75,27 +75,6 @@ public class AbstractCanvasShortcutsControlImplTest {
     }
 
     @Test
-    public void testRegisterCauseCanvasFocus_SessionIsNull() {
-        final Element element = mock(Element.class);
-        canvasShortcutsControl.register(element);
-
-        verify(canvas, never()).focus();
-    }
-
-    @Test
-    public void testRegisterCauseCanvasFocus_CanvasIsNull() {
-        final EditorSession session = mock(EditorSession.class);
-        final KeyboardControl keyboardControl = mock(KeyboardControl.class);
-        doReturn(keyboardControl).when(session).getKeyboardControl();
-        canvasShortcutsControl.bind(session);
-
-        final Element element = mock(Element.class);
-        canvasShortcutsControl.register(element);
-
-        verify(canvas, never()).focus();
-    }
-
-    @Test
     public void testRegisterCauseCanvasFocus() {
         final EditorSession session = mock(EditorSession.class);
         final KeyboardControl keyboardControl = mock(KeyboardControl.class);
@@ -106,7 +85,9 @@ public class AbstractCanvasShortcutsControlImplTest {
         final Element element = mock(Element.class);
         canvasShortcutsControl.register(element);
 
-        verify(canvas).focus();
+        // Ensure never focus the canvas here, as it's probably not initialized yet, at least in IE11,
+        // so the focus will fail at runtime. See RHPAM-1681.
+        verify(canvas, never()).focus();
     }
 
     @Test

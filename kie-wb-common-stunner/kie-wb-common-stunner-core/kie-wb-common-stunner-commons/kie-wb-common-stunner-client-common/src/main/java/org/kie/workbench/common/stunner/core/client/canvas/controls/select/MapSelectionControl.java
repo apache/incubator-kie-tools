@@ -235,6 +235,7 @@ public final class MapSelectionControl<H extends AbstractCanvasHandler>
                         shape.applyState(ShapeState.NONE);
                     }
                 });
+        getCanvas().focus();
     }
 
     @Override
