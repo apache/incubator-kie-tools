@@ -38,6 +38,12 @@ public class ParameterizedBaseExpressionEvaluatorTest {
                 {1, 1, int.class},
                 {1, "1", int.class},
                 {2, "!= 1", int.class},
+                {-1, "- 1", int.class},
+                {-2, "< -  1", int.class},
+                {-2L, "< -  1", long.class},
+                {-2D, "< -  1", double.class},
+                {-2F, "< -  1", float.class},
+                {(short) -2, "< - 1", short.class},
                 {"String", "<> Test", String.class},
                 {"Test", "= Test", String.class},
                 {1, "<2", int.class},
@@ -56,7 +62,7 @@ public class ParameterizedBaseExpressionEvaluatorTest {
                 {null, "!1", Integer.class},
                 {'b', "!a", Character.class},
                 {"0".getBytes()[0], "!b", Byte.class},
-                {(short)1, ">0", Short.class},
+                {(short) 1, ">0", Short.class},
                 {Error.class, "! tru", void.class},
                 {Error.class, "fals", void.class},
                 {Error.class, "!= fals", void.class},
@@ -64,7 +70,8 @@ public class ParameterizedBaseExpressionEvaluatorTest {
                 {Error.class, "<> fals", void.class},
                 {Error.class, "tru", void.class},
                 {Error.class, "!m= false", void.class},
-                {Error.class, ">> 3", void.class}
+                {Error.class, ">> 3", void.class},
+                {Error.class, "< - 1 1", int.class}
         });
     }
 
