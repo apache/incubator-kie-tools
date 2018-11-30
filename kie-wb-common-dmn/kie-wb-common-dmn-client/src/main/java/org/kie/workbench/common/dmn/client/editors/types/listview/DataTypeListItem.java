@@ -21,6 +21,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import elemental2.dom.HTMLElement;
@@ -35,6 +36,7 @@ import static org.kie.workbench.common.dmn.client.editors.types.persistence.Crea
 import static org.kie.workbench.common.dmn.client.editors.types.persistence.CreationType.BELOW;
 import static org.kie.workbench.common.dmn.client.editors.types.persistence.CreationType.NESTED;
 
+@Dependent
 public class DataTypeListItem {
 
     private final View view;

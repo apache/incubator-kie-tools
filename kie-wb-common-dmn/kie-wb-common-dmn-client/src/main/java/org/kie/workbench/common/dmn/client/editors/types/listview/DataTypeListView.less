@@ -15,6 +15,12 @@
  */
 
 [data-i18n-prefix="DataTypeListView."] {
+  padding: 0 20px 10px;
+  height: 100%;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+
   h3 {
     font-weight: 600;
     font-size: 14px;
@@ -52,5 +58,41 @@
 
   ul {
     padding: 0 15px;
+  }
+
+  & > * {
+    flex: 0 1 auto;
+  }
+
+  [data-field="list-items"] {
+    height: ~"calc(100% - 120px)";
+    overflow-y: scroll;
+    flex: 1 1 auto;
+  }
+
+  [data-field="list-items-no"] {
+    height: ~"calc(100% - 120px)";
+    width: ~"calc(100%)";
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow-y: hidden;
+    flex: 1 1 auto;
+  }
+}
+
+.tab-content {
+  & > div > div > div {
+    height: 100%;
+
+    & > div {
+      height: ~"calc(100% - 30px)";
+    }
+  }
+
+  & > div > div {
+    /* "overflow: auto" is set inline by UberFire/AppFormer since since most of editors have scroll bars.
+     * However the DMN Data Types has a fixed header with internal scrollbars. */
+    overflow: hidden !important;
   }
 }

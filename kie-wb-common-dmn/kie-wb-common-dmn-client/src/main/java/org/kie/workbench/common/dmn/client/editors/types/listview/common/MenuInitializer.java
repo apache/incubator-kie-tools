@@ -22,7 +22,6 @@ import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.Element;
-import elemental2.dom.HTMLElement;
 import org.kie.workbench.common.dmn.client.editors.types.common.JQuery;
 import org.kie.workbench.common.dmn.client.editors.types.common.JQueryEvent;
 
@@ -32,15 +31,15 @@ import static org.kie.workbench.common.dmn.client.editors.types.common.JQuery.$;
  * This class implements a workaround for menus.
  * <p>
  * Menus in a dialog cannot be affected by the "overflow: hidden" CSS property from the dialog content.
- * Thus, this workaround moves the dropdown element to the ".modal.in" element when the menu is opened, and it
- * moves the dropdown element back to the "kebabMenu" when the menu closed.
+ * Thus, this workaround moves the dropdown element to the "body" element when the menu is opened, and it
+ * moves the dropdown element back to the "menu" when the menu closed.
  */
 public class MenuInitializer {
 
-    private final HTMLElement menu;
+    private final Element menu;
     private final String dropDownClass;
 
-    public MenuInitializer(final HTMLElement menu,
+    public MenuInitializer(final Element menu,
                            final String dropDownClass) {
         this.menu = menu;
         this.dropDownClass = dropDownClass;
@@ -56,7 +55,7 @@ public class MenuInitializer {
     JQuery.CallbackFunction moveDropDownToBody() {
         return (event) -> {
             final JavaScriptObject properties = bodyDropdownProperties(event).getJavaScriptObject();
-            JQuery $ = $(modalInElement());
+            JQuery $ = $(body());
             JQuery css = $(event.target).css(properties);
             JQuery detach = css.detach();
             $.append(detach);
@@ -73,7 +72,6 @@ public class MenuInitializer {
     JSONObject bodyDropdownProperties(final JQueryEvent e) {
         final JSONObject jsonObject = makeJsonObject();
         jsonObject.put("position", new JSONString("absolute"));
-        jsonObject.put("zIndex", new JSONNumber(1051)); // Bootstrap modal z-index value is 1050
         jsonObject.put("left", new JSONNumber(offsetLeft(e.target)));
         jsonObject.put("top", new JSONNumber(offsetTop(e.target)));
         return jsonObject;
@@ -82,7 +80,6 @@ public class MenuInitializer {
     JSONObject emptyProperties() {
         final JSONObject jsonObject = makeJsonObject();
         jsonObject.put("position", new JSONString(""));
-        jsonObject.put("zIndex", new JSONString(""));
         jsonObject.put("left", new JSONString(""));
         jsonObject.put("top", new JSONString(""));
         return jsonObject;
@@ -92,8 +89,8 @@ public class MenuInitializer {
         return new JSONObject();
     }
 
-    Element modalInElement() {
-        return DomGlobal.document.querySelector(".modal.in");
+    Element body() {
+        return DomGlobal.document.body;
     }
 
     Element dropdown() {
@@ -101,10 +98,10 @@ public class MenuInitializer {
     }
 
     double offsetLeft(final Element target) {
-        return target.getBoundingClientRect().left + modalInElement().scrollLeft;
+        return target.getBoundingClientRect().left + body().scrollLeft;
     }
 
     double offsetTop(final Element target) {
-        return target.getBoundingClientRect().top + modalInElement().scrollTop;
+        return target.getBoundingClientRect().top + body().scrollTop;
     }
 }

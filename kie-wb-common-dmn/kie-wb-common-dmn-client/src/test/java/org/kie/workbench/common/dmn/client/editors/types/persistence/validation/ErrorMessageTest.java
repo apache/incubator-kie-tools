@@ -42,7 +42,7 @@ public class ErrorMessageTest {
         final DataTypeFlashMessage.Type expectedType = ERROR;
         final String expectedStrongMessage = "expectedStrongMessage";
         final String expectedRegularMessage = "expectedRegularMessage";
-        final String expectedErrorElementSelector = "[data-row-uuid=\"uuid\"] [data-field=\"name-input\"]";
+        final String expectedErrorElementSelector = "[data-row-uuid=\"uuid\"] [data-type-field=\"name-input\"]";
         final DataType dataType = mock(DataType.class);
         final ErrorMessage errorMessage = new ErrorMessage(translationService) {
 

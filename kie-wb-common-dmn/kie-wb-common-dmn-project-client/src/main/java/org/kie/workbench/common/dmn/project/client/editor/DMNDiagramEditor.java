@@ -29,6 +29,8 @@ import org.kie.workbench.common.dmn.api.factory.DMNGraphFactory;
 import org.kie.workbench.common.dmn.client.commands.general.NavigateToExpressionEditorCommand;
 import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorDock;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
+import org.kie.workbench.common.dmn.client.editors.types.DataTypePageTabActiveEvent;
+import org.kie.workbench.common.dmn.client.editors.types.DataTypesPage;
 import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.project.client.type.DMNDiagramResourceType;
@@ -80,12 +82,14 @@ import org.uberfire.workbench.model.menu.Menus;
 public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramResourceType> {
 
     public static final String EDITOR_ID = "DMNDiagramEditor";
+    private static final int DATA_TYPES_PAGE_INDEX = 2;
 
     private final SessionManager sessionManager;
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
     private final Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent;
     private final DecisionNavigatorDock decisionNavigatorDock;
     private final LayoutHelper layoutHelper;
+    private final DataTypesPage dataTypesPage;
 
     @Inject
     public DMNDiagramEditor(final View view,
@@ -109,7 +113,8 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
                             final SessionManager sessionManager,
                             final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                             final DecisionNavigatorDock decisionNavigatorDock,
-                            final LayoutHelper layoutHelper) {
+                            final LayoutHelper layoutHelper,
+                            final DataTypesPage dataTypesPage) {
         super(view,
               placeManager,
               errorPopupPresenter,
@@ -132,6 +137,7 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
         this.refreshFormPropertiesEvent = refreshFormPropertiesEvent;
         this.decisionNavigatorDock = decisionNavigatorDock;
         this.layoutHelper = layoutHelper;
+        this.dataTypesPage = dataTypesPage;
     }
 
     @OnStartup
@@ -139,6 +145,21 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
                           final PlaceRequest place) {
         superDoStartUp(path, place);
         decisionNavigatorDock.init(PerspectiveIds.LIBRARY);
+    }
+
+    @Override
+    protected void initialiseKieEditorForSession(final ProjectDiagram diagram) {
+        superInitialiseKieEditorForSession(diagram);
+
+        kieView.getMultiPage().addPage(dataTypesPage);
+    }
+
+    public void onDataTypePageNavTabActiveEvent(final @Observes DataTypePageTabActiveEvent event) {
+        kieView.getMultiPage().selectPage(DATA_TYPES_PAGE_INDEX);
+    }
+
+    void superInitialiseKieEditorForSession(final ProjectDiagram diagram) {
+        super.initialiseKieEditorForSession(diagram);
     }
 
     @Override
@@ -178,6 +199,7 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
             expressionEditor.setToolbarStateHandler(new ProjectToolbarStateHandler(getMenuSessionItems()));
             decisionNavigatorDock.setupContent(c);
             decisionNavigatorDock.open();
+            dataTypesPage.reload();
         });
     }
 
@@ -185,11 +207,13 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
     public void onFocus() {
         superDoFocus();
         onDiagramLoad();
+        dataTypesPage.onFocus();
     }
 
     @OnLostFocus
     public void onLostFocus() {
         super.doLostFocus();
+        dataTypesPage.onLostFocus();
     }
 
     @Override

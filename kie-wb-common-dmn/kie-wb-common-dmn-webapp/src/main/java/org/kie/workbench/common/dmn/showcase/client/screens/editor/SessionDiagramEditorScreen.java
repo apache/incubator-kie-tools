@@ -32,6 +32,8 @@ import org.kie.workbench.common.dmn.client.commands.general.NavigateToExpression
 import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorDock;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
 import org.kie.workbench.common.dmn.client.editors.toolbar.ToolbarStateHandler;
+import org.kie.workbench.common.dmn.client.editors.types.DataTypePageTabActiveEvent;
+import org.kie.workbench.common.dmn.client.editors.types.DataTypesPage;
 import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.client.widgets.toolbar.DMNEditorToolbar;
@@ -68,6 +70,7 @@ import org.kie.workbench.common.stunner.core.validation.DiagramElementViolation;
 import org.kie.workbench.common.stunner.core.validation.Violation;
 import org.kie.workbench.common.stunner.core.validation.impl.ValidationUtils;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
+import org.kie.workbench.common.widgets.metadata.client.KieEditorWrapperView;
 import org.uberfire.client.annotations.WorkbenchContextId;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
@@ -86,12 +89,11 @@ import org.uberfire.workbench.model.menu.Menus;
 @Dependent
 @DiagramEditor
 @WorkbenchScreen(identifier = SessionDiagramEditorScreen.SCREEN_ID)
-public class SessionDiagramEditorScreen {
-
-    private static Logger LOGGER = Logger.getLogger(SessionDiagramEditorScreen.class.getName());
+public class SessionDiagramEditorScreen implements KieEditorWrapperView.KieEditorWrapperPresenter {
 
     public static final String SCREEN_ID = "SessionDiagramEditorScreen";
-
+    private static final int DATA_TYPES_PAGE_INDEX = 1;
+    private static Logger LOGGER = Logger.getLogger(SessionDiagramEditorScreen.class.getName());
     private final DefinitionManager definitionManager;
     private final ClientFactoryService clientFactoryServices;
     private final ShowcaseDiagramService diagramService;
@@ -106,6 +108,9 @@ public class SessionDiagramEditorScreen {
     private final ScreenErrorView screenErrorView;
     private final DecisionNavigatorDock decisionNavigatorDock;
     private final LayoutHelper layoutHelper;
+    private final KieEditorWrapperView kieView;
+    private final DataTypesPage dataTypesPage;
+
     private PlaceRequest placeRequest;
     private String title = "Authoring Screen";
     private Menus menu = null;
@@ -124,7 +129,9 @@ public class SessionDiagramEditorScreen {
                                       final ScreenPanelView screenPanelView,
                                       final ScreenErrorView screenErrorView,
                                       final DecisionNavigatorDock decisionNavigatorDock,
-                                      final LayoutHelper layoutHelper) {
+                                      final LayoutHelper layoutHelper,
+                                      final KieEditorWrapperView kieView,
+                                      final DataTypesPage dataTypesPage) {
         this.definitionManager = definitionManager;
         this.clientFactoryServices = clientFactoryServices;
         this.diagramService = diagramService;
@@ -139,11 +146,21 @@ public class SessionDiagramEditorScreen {
         this.screenErrorView = screenErrorView;
         this.decisionNavigatorDock = decisionNavigatorDock;
         this.layoutHelper = layoutHelper;
+        this.kieView = kieView;
+        this.dataTypesPage = dataTypesPage;
     }
 
     @PostConstruct
     public void init() {
         decisionNavigatorDock.init(AuthoringPerspective.PERSPECTIVE_ID);
+        kieView.setPresenter(this);
+        kieView.clear();
+        kieView.addMainEditorPage(screenPanelView.asWidget());
+        kieView.getMultiPage().addPage(dataTypesPage);
+    }
+
+    public void onDataTypePageNavTabActiveEvent(final @Observes DataTypePageTabActiveEvent event) {
+        kieView.getMultiPage().selectPage(DATA_TYPES_PAGE_INDEX);
     }
 
     @OnStartup
@@ -309,6 +326,7 @@ public class SessionDiagramEditorScreen {
                           final ExpressionEditorView.Presenter expressionEditor = ((DMNSession) sessionManager.getCurrentSession()).getExpressionEditor();
                           expressionEditor.setToolbarStateHandler(toolbarStateHandler);
                           openDock(presenter.getInstance());
+                          dataTypesPage.reload();
                           callback.execute();
                       }));
     }
@@ -358,7 +376,7 @@ public class SessionDiagramEditorScreen {
 
     @WorkbenchPartView
     public IsWidget getWidget() {
-        return screenPanelView.asWidget();
+        return kieView.asWidget();
     }
 
     @WorkbenchContextId
@@ -366,35 +384,24 @@ public class SessionDiagramEditorScreen {
         return "sessionDiagramEditorScreenContext";
     }
 
-    private final class ScreenPresenterCallback implements SessionPresenter.SessionPresenterCallback<Diagram> {
+    @Override
+    public void onSourceTabSelected() {
 
-        private final Command callback;
+    }
 
-        private ScreenPresenterCallback(final Command callback) {
-            this.callback = callback;
-        }
+    @Override
+    public void onEditTabSelected() {
 
-        @Override
-        public void afterSessionOpened() {
+    }
 
-        }
+    @Override
+    public void onEditTabUnselected() {
 
-        @Override
-        public void afterCanvasInitialized() {
+    }
 
-        }
+    @Override
+    public void onOverviewSelected() {
 
-        @Override
-        public void onSuccess() {
-            BusyPopup.close();
-            callback.execute();
-        }
-
-        @Override
-        public void onError(final ClientRuntimeError error) {
-            showError(error);
-            callback.execute();
-        }
     }
 
     private void updateTitle(final String title) {
@@ -451,6 +458,37 @@ public class SessionDiagramEditorScreen {
         if (LogConfiguration.loggingIsEnabled()) {
             LOGGER.log(level,
                        message);
+        }
+    }
+
+    private final class ScreenPresenterCallback implements SessionPresenter.SessionPresenterCallback<Diagram> {
+
+        private final Command callback;
+
+        private ScreenPresenterCallback(final Command callback) {
+            this.callback = callback;
+        }
+
+        @Override
+        public void afterSessionOpened() {
+
+        }
+
+        @Override
+        public void afterCanvasInitialized() {
+
+        }
+
+        @Override
+        public void onSuccess() {
+            BusyPopup.close();
+            callback.execute();
+        }
+
+        @Override
+        public void onError(final ClientRuntimeError error) {
+            showError(error);
+            callback.execute();
         }
     }
 }

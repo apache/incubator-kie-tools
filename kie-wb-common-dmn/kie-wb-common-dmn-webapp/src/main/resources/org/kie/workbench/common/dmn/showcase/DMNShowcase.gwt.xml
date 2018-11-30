@@ -30,6 +30,7 @@
   <inherits name="org.uberfire.ext.widgets.core.UberfireWidgetsCore"/>
   <inherits name="org.uberfire.preferences.UberfirePreferencesClient"/>
   <inherits name="org.uberfire.ssh.UberfireSSHClient"/>
+  <inherits name="org.uberfire.ext.preferences.UberfirePreferences"/>
 
   <!-- Experimental -->
   <inherits name="org.uberfire.experimental.UberfireExperimentalAPI"/>
@@ -37,6 +38,11 @@
 
   <!-- Stunner -->
   <inherits name="org.kie.workbench.common.stunner.client.StunnerWidgets"/>
+  <inherits name="org.kie.workbench.common.widgets.KieWorkbenchWidgetsCommon"/>
+  <inherits name="org.kie.workbench.common.widgets.metadata.KieWorkbenchMetadataWidget"/>
+  <inherits name="org.kie.workbench.common.widgets.configresource.KieWorkbenchConfigResourceWidget"/>
+  <inherits name="org.guvnor.common.services.project.GuvnorProjectClient"/>
+  <inherits name="org.kie.workbench.common.profile.ProfileAPI"/>
 
   <!-- DMN Editor -->
   <inherits name="org.kie.workbench.common.dmn.DMNClient"/>

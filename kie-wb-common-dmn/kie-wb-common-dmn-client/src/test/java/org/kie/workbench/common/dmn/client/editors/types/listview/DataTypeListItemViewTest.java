@@ -16,10 +16,11 @@
 
 package org.kie.workbench.common.dmn.client.editors.types.listview;
 
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import elemental2.dom.DOMTokenList;
 import elemental2.dom.Element;
+import elemental2.dom.Element.OnclickCallbackFn;
+import elemental2.dom.Event;
 import elemental2.dom.HTMLAnchorElement;
 import elemental2.dom.HTMLButtonElement;
 import elemental2.dom.HTMLDivElement;
@@ -39,6 +40,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper.HIDDEN_CSS_CLASS;
+import static org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItemView.NAME_DATA_FIELD;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItemView.PARENT_UUID_ATTR;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItemView.UUID_ATTR;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper.DOWN_ARROW_CSS_CLASS;
@@ -126,7 +128,7 @@ public class DataTypeListItemViewTest {
 
     @Before
     public void setup() {
-        view = spy(new DataTypeListItemView(row, arrow, nameText, constraintText, nameInput, type, collectionContainer, collectionYes, constraint, constraintContainer, editButton, saveButton, closeButton, removeButton, insertFieldAbove, insertFieldBelow, insertNestedField, kebabMenu, translationService));
+        view = spy(new DataTypeListItemView(row, translationService));
         view.init(presenter);
 
         doReturn(dataTypeListElement).when(view).dataTypeListElement();
@@ -142,6 +144,7 @@ public class DataTypeListItemViewTest {
         doNothing().when(view).setupIndentationLevel();
         doNothing().when(view).setupReadOnly(dataType);
         doNothing().when(view).setupActionButtons();
+        doNothing().when(view).setupEventHandlers();
 
         view.setDataType(dataType);
 
@@ -150,6 +153,7 @@ public class DataTypeListItemViewTest {
         verify(view).setupIndentationLevel();
         verify(view).setupReadOnly(dataType);
         verify(view).setupActionButtons();
+        verify(view).setupEventHandlers();
     }
 
     @Test
@@ -200,6 +204,7 @@ public class DataTypeListItemViewTest {
 
         final DOMTokenList classList = mock(DOMTokenList.class);
 
+        doReturn(arrow).when(view).getArrow();
         arrow.classList = classList;
 
         view.toggleArrow(true);
@@ -212,6 +217,7 @@ public class DataTypeListItemViewTest {
 
         final DOMTokenList classList = mock(DOMTokenList.class);
 
+        doReturn(arrow).when(view).getArrow();
         arrow.classList = classList;
 
         view.toggleArrow(false);
@@ -225,6 +231,7 @@ public class DataTypeListItemViewTest {
         final DataType dataType = mock(DataType.class);
         final DOMTokenList classList = mock(DOMTokenList.class);
 
+        doReturn(arrow).when(view).getArrow();
         when(dataType.hasSubDataTypes()).thenReturn(true);
         arrow.classList = classList;
 
@@ -239,6 +246,7 @@ public class DataTypeListItemViewTest {
         final DataType dataType = mock(DataType.class);
         final DOMTokenList classList = mock(DOMTokenList.class);
 
+        doReturn(arrow).when(view).getArrow();
         when(dataType.hasSubDataTypes()).thenReturn(false);
         arrow.classList = classList;
 
@@ -278,6 +286,7 @@ public class DataTypeListItemViewTest {
 
         doNothing().when(view).setName(name);
         doNothing().when(view).setConstraint(constraint);
+        doReturn(nameInput).when(view).getNameInput();
         when(dataType.getName()).thenReturn(name);
         when(dataType.getConstraint()).thenReturn(constraint);
         nameInput.classList = classList;
@@ -294,6 +303,9 @@ public class DataTypeListItemViewTest {
 
         final String name = "name";
 
+        doReturn(nameInput).when(view).getNameInput();
+        doReturn(nameText).when(view).getNameText();
+
         view.setName(name);
 
         assertEquals(name, nameText.textContent);
@@ -305,6 +317,8 @@ public class DataTypeListItemViewTest {
 
         final String constraint = null;
         constraintText.classList = mock(DOMTokenList.class);
+
+        doReturn(constraintText).when(view).getConstraintText();
 
         view.setConstraint(constraint);
 
@@ -318,6 +332,8 @@ public class DataTypeListItemViewTest {
         final String constraint = "";
         constraintText.classList = mock(DOMTokenList.class);
 
+        doReturn(constraintText).when(view).getConstraintText();
+
         view.setConstraint(constraint);
 
         assertEquals("", constraintText.textContent);
@@ -329,6 +345,8 @@ public class DataTypeListItemViewTest {
 
         final String constraint = "(1..20)";
         constraintText.classList = mock(DOMTokenList.class);
+
+        doReturn(constraintText).when(view).getConstraintText();
         when(translationService.format(DataTypeListItemView_Constraints, constraint)).thenReturn("Constraints: " + constraint);
 
         view.setConstraint(constraint);
@@ -338,57 +356,132 @@ public class DataTypeListItemViewTest {
     }
 
     @Test
+    public void testSetupEventHandlers() {
+
+        final Element editButton = mock(Element.class);
+        final Element saveButton = mock(Element.class);
+        final Element closeButton = mock(Element.class);
+        final Element arrow = mock(Element.class);
+        final Element insertFieldAbove = mock(Element.class);
+        final Element insertFieldBelow = mock(Element.class);
+        final Element insertNestedField = mock(Element.class);
+        final Element removeButton = mock(Element.class);
+        final OnclickCallbackFn onEditAction = mock(OnclickCallbackFn.class);
+        final OnclickCallbackFn onSaveAction = mock(OnclickCallbackFn.class);
+        final OnclickCallbackFn onCloseAction = mock(OnclickCallbackFn.class);
+        final OnclickCallbackFn onArrowClickAction = mock(OnclickCallbackFn.class);
+        final OnclickCallbackFn onInsertFieldAboveAction = mock(OnclickCallbackFn.class);
+        final OnclickCallbackFn onInsertFieldBelowAction = mock(OnclickCallbackFn.class);
+        final OnclickCallbackFn onInsertNestedFieldAction = mock(OnclickCallbackFn.class);
+        final OnclickCallbackFn onRemoveButtonAction = mock(OnclickCallbackFn.class);
+
+        doReturn(editButton).when(view).getEditButton();
+        doReturn(saveButton).when(view).getSaveButton();
+        doReturn(closeButton).when(view).getCloseButton();
+        doReturn(arrow).when(view).getArrow();
+        doReturn(insertFieldAbove).when(view).getInsertFieldAbove();
+        doReturn(insertFieldBelow).when(view).getInsertFieldBelow();
+        doReturn(insertNestedField).when(view).getInsertNestedField();
+        doReturn(removeButton).when(view).getRemoveButton();
+        doReturn(onEditAction).when(view).getOnEditAction();
+        doReturn(onSaveAction).when(view).getOnSaveAction();
+        doReturn(onCloseAction).when(view).getOnCloseAction();
+        doReturn(onArrowClickAction).when(view).getOnArrowClickAction();
+        doReturn(onInsertFieldAboveAction).when(view).getOnInsertFieldAboveAction();
+        doReturn(onInsertFieldBelowAction).when(view).getOnInsertFieldBelowAction();
+        doReturn(onInsertNestedFieldAction).when(view).getOnInsertNestedFieldAction();
+        doReturn(onRemoveButtonAction).when(view).getOnRemoveButtonAction();
+
+        editButton.onclick = null;
+        saveButton.onclick = null;
+        closeButton.onclick = null;
+        arrow.onclick = null;
+        insertFieldAbove.onclick = null;
+        insertFieldBelow.onclick = null;
+        insertNestedField.onclick = null;
+        removeButton.onclick = null;
+
+        view.setupEventHandlers();
+
+        assertEquals(onEditAction, editButton.onclick);
+        assertEquals(onSaveAction, saveButton.onclick);
+        assertEquals(onCloseAction, closeButton.onclick);
+        assertEquals(onArrowClickAction, arrow.onclick);
+        assertEquals(onInsertFieldAboveAction, insertFieldAbove.onclick);
+        assertEquals(onInsertFieldBelowAction, insertFieldBelow.onclick);
+        assertEquals(onInsertNestedFieldAction, insertNestedField.onclick);
+        assertEquals(onRemoveButtonAction, removeButton.onclick);
+    }
+
+    @Test
     public void testOnArrowClickEvent() {
-        view.onArrowClickEvent(mock(ClickEvent.class));
+
+        final OnclickCallbackFn action = view.getOnArrowClickAction();
+
+        assertTrue((Boolean) action.onInvoke(mock(Event.class)));
 
         verify(presenter).expandOrCollapseSubTypes();
     }
 
     @Test
     public void testOnInsertFieldAbove() {
-        view.onInsertFieldAbove(mock(ClickEvent.class));
+        final OnclickCallbackFn action = view.getOnInsertFieldAboveAction();
+
+        assertTrue((Boolean) action.onInvoke(mock(Event.class)));
 
         verify(presenter).insertFieldAbove();
     }
 
     @Test
     public void testOnInsertFieldBelow() {
-        view.onInsertFieldBelow(mock(ClickEvent.class));
+        final OnclickCallbackFn action = view.getOnInsertFieldBelowAction();
+
+        assertTrue((Boolean) action.onInvoke(mock(Event.class)));
 
         verify(presenter).insertFieldBelow();
     }
 
     @Test
     public void testOnInsertNestedField() {
-        view.onInsertNestedField(mock(ClickEvent.class));
+        final OnclickCallbackFn action = view.getOnInsertNestedFieldAction();
+
+        assertTrue((Boolean) action.onInvoke(mock(Event.class)));
 
         verify(presenter).insertNestedField();
     }
 
     @Test
     public void testOnRemoveButton() {
-        view.onRemoveButton(mock(ClickEvent.class));
+        final OnclickCallbackFn action = view.getOnRemoveButtonAction();
+
+        assertTrue((Boolean) action.onInvoke(mock(Event.class)));
 
         verify(presenter).remove();
     }
 
     @Test
     public void testOnEditClick() {
-        view.onEditClick(mock(ClickEvent.class));
+        final OnclickCallbackFn action = view.getOnEditAction();
+
+        assertTrue((Boolean) action.onInvoke(mock(Event.class)));
 
         verify(presenter).enableEditMode();
     }
 
     @Test
     public void testOnSaveClick() {
-        view.onSaveClick(mock(ClickEvent.class));
+        final OnclickCallbackFn action = view.getOnSaveAction();
+
+        assertTrue((Boolean) action.onInvoke(mock(Event.class)));
 
         verify(presenter).saveAndCloseEditMode();
     }
 
     @Test
     public void testOnCloseClick() {
-        view.onCloseClick(mock(ClickEvent.class));
+        final OnclickCallbackFn action = view.getOnCloseAction();
+
+        assertTrue((Boolean) action.onInvoke(mock(Event.class)));
 
         verify(presenter).disableEditMode();
     }
@@ -399,7 +492,9 @@ public class DataTypeListItemViewTest {
         final DataTypeSelect select = mock(DataTypeSelect.class);
         final HTMLElement htmlElement = mock(HTMLElement.class);
 
+        doReturn(type).when(view).getType();
         when(select.getElement()).thenReturn(htmlElement);
+
         type.innerHTML = "previous content";
 
         view.setupSelectComponent(select);
@@ -414,6 +509,7 @@ public class DataTypeListItemViewTest {
         final DataTypeConstraint constraintComponent = mock(DataTypeConstraint.class);
         final HTMLElement htmlElement = mock(HTMLElement.class);
 
+        doReturn(constraint).when(view).getConstraint();
         when(constraintComponent.getElement()).thenReturn(htmlElement);
         constraint.innerHTML = "previous content";
 
@@ -432,6 +528,7 @@ public class DataTypeListItemViewTest {
 
         when(switchComponent.getElement()).thenReturn(htmlElement);
         doReturn(collectionTextNode).when(view).collectionTextNode();
+        doReturn(collectionContainer).when(view).getCollectionContainer();
         collectionContainer.innerHTML = "previous content";
 
         view.setupCollectionComponent(switchComponent);
@@ -443,6 +540,8 @@ public class DataTypeListItemViewTest {
 
     @Test
     public void testShowConstraintContainer() {
+
+        doReturn(constraintContainer).when(view).getConstraintContainer();
         constraintContainer.classList = mock(DOMTokenList.class);
 
         view.showConstraintContainer();
@@ -453,6 +552,7 @@ public class DataTypeListItemViewTest {
     @Test
     public void testHideConstraintContainer() {
 
+        doReturn(constraintContainer).when(view).getConstraintContainer();
         constraintContainer.classList = mock(DOMTokenList.class);
 
         view.hideConstraintContainer();
@@ -462,6 +562,8 @@ public class DataTypeListItemViewTest {
 
     @Test
     public void testShowCollectionContainer() {
+
+        doReturn(collectionContainer).when(view).getCollectionContainer();
         collectionContainer.classList = mock(DOMTokenList.class);
 
         view.showCollectionContainer();
@@ -472,6 +574,7 @@ public class DataTypeListItemViewTest {
     @Test
     public void testHideCollectionContainer() {
 
+        doReturn(collectionContainer).when(view).getCollectionContainer();
         collectionContainer.classList = mock(DOMTokenList.class);
 
         view.hideCollectionContainer();
@@ -481,6 +584,8 @@ public class DataTypeListItemViewTest {
 
     @Test
     public void testShowCollectionYesLabel() {
+
+        doReturn(collectionYes).when(view).getCollectionYes();
         collectionYes.classList = mock(DOMTokenList.class);
 
         view.showCollectionYesLabel();
@@ -491,6 +596,7 @@ public class DataTypeListItemViewTest {
     @Test
     public void testHideCollectionYesLabel() {
 
+        doReturn(collectionYes).when(view).getCollectionYes();
         collectionYes.classList = mock(DOMTokenList.class);
 
         view.hideCollectionYesLabel();
@@ -500,6 +606,8 @@ public class DataTypeListItemViewTest {
 
     @Test
     public void testShowConstraintTextWhenConstraintTextIsNull() {
+
+        doReturn(constraintText).when(view).getConstraintText();
         constraintText.classList = mock(DOMTokenList.class);
         constraintText.textContent = null;
 
@@ -510,6 +618,8 @@ public class DataTypeListItemViewTest {
 
     @Test
     public void testShowConstraintTextWhenConstraintTextIsBlank() {
+
+        doReturn(constraintText).when(view).getConstraintText();
         constraintText.classList = mock(DOMTokenList.class);
         constraintText.textContent = "";
 
@@ -520,6 +630,8 @@ public class DataTypeListItemViewTest {
 
     @Test
     public void testShowConstraintTextWhenConstraintTextIsPresent() {
+
+        doReturn(constraintText).when(view).getConstraintText();
         constraintText.classList = mock(DOMTokenList.class);
         constraintText.textContent = "Constraint: (1..30)";
 
@@ -530,6 +642,8 @@ public class DataTypeListItemViewTest {
 
     @Test
     public void testHideConstraintText() {
+
+        doReturn(constraintText).when(view).getConstraintText();
         constraintText.classList = mock(DOMTokenList.class);
 
         view.hideConstraintText();
@@ -558,6 +672,10 @@ public class DataTypeListItemViewTest {
         saveButton.classList = saveClassList;
         closeButton.classList = closeClassList;
 
+        doReturn(editButton).when(view).getEditButton();
+        doReturn(saveButton).when(view).getSaveButton();
+        doReturn(closeButton).when(view).getCloseButton();
+
         view.showEditButton();
 
         verify(editClassList).remove(HIDDEN_CSS_CLASS);
@@ -575,6 +693,10 @@ public class DataTypeListItemViewTest {
         editButton.classList = editClassList;
         saveButton.classList = saveClassList;
         closeButton.classList = closeClassList;
+
+        doReturn(editButton).when(view).getEditButton();
+        doReturn(saveButton).when(view).getSaveButton();
+        doReturn(closeButton).when(view).getCloseButton();
 
         view.showSaveButton();
 
@@ -717,6 +839,7 @@ public class DataTypeListItemViewTest {
         doReturn(parentDataType).when(view).getDataType();
         doReturn(child1).when(children).getAt(0);
         doReturn(child2).when(children).getAt(1);
+        doReturn(nameInput).when(view).getNameInput();
         mockDOMElementByUUID(parentDataTypeUUID, parentElement);
         mockDOMElementsByParentUUID(parentDataTypeUUID, children);
         children.length = 2;
@@ -762,6 +885,7 @@ public class DataTypeListItemViewTest {
 
         final String expectedName = "name";
         nameInput.value = expectedName;
+        doReturn(nameInput).when(view).getNameInput();
 
         final String actualName = view.getName();
 
@@ -773,6 +897,9 @@ public class DataTypeListItemViewTest {
 
         nameText.classList = mock(DOMTokenList.class);
         nameInput.classList = mock(DOMTokenList.class);
+
+        doReturn(nameText).when(view).getNameText();
+        doReturn(nameInput).when(view).getNameInput();
 
         view.showDataTypeNameInput();
 
@@ -789,6 +916,8 @@ public class DataTypeListItemViewTest {
 
         nameText.classList = mock(DOMTokenList.class);
         nameInput.classList = mock(DOMTokenList.class);
+        doReturn(nameText).when(view).getNameText();
+        doReturn(nameInput).when(view).getNameInput();
 
         view.hideDataTypeNameInput();
 
@@ -803,15 +932,136 @@ public class DataTypeListItemViewTest {
         final String expectedName = "-";
 
         nameInput.value = "";
-
         nameText.classList = mock(DOMTokenList.class);
         nameInput.classList = mock(DOMTokenList.class);
+
+        doReturn(nameText).when(view).getNameText();
+        doReturn(nameInput).when(view).getNameInput();
 
         view.hideDataTypeNameInput();
 
         assertEquals(expectedName, nameText.textContent);
         verify(nameText.classList).remove(HIDDEN_CSS_CLASS);
         verify(nameInput.classList).add(HIDDEN_CSS_CLASS);
+    }
+
+    @Test
+    public void testGetConstraintContainer() {
+        final Element element = mock(Element.class);
+        doReturn(element).when(view).querySelector("constraint-container");
+        assertEquals(element, view.getConstraintContainer());
+    }
+
+    @Test
+    public void testGetCollectionContainer() {
+        final Element element = mock(Element.class);
+        doReturn(element).when(view).querySelector("collection-container");
+        assertEquals(element, view.getCollectionContainer());
+    }
+
+    @Test
+    public void testGetCollectionYes() {
+        final Element element = mock(Element.class);
+        doReturn(element).when(view).querySelector("collection-yes");
+        assertEquals(element, view.getCollectionYes());
+    }
+
+    @Test
+    public void testGetEditButton() {
+        final Element element = mock(Element.class);
+        doReturn(element).when(view).querySelector("edit-button");
+        assertEquals(element, view.getEditButton());
+    }
+
+    @Test
+    public void testGetSaveButton() {
+        final Element element = mock(Element.class);
+        doReturn(element).when(view).querySelector("save-button");
+        assertEquals(element, view.getSaveButton());
+    }
+
+    @Test
+    public void testGetCloseButton() {
+        final Element element = mock(Element.class);
+        doReturn(element).when(view).querySelector("close-button");
+        assertEquals(element, view.getCloseButton());
+    }
+
+    @Test
+    public void testGetRemoveButton() {
+        final Element element = mock(Element.class);
+        doReturn(element).when(view).querySelector("remove-button");
+        assertEquals(element, view.getRemoveButton());
+    }
+
+    @Test
+    public void testGetInsertFieldAbove() {
+        final Element element = mock(Element.class);
+        doReturn(element).when(view).querySelector("insert-field-above");
+        assertEquals(element, view.getInsertFieldAbove());
+    }
+
+    @Test
+    public void testGetInsertFieldBelow() {
+        final Element element = mock(Element.class);
+        doReturn(element).when(view).querySelector("insert-field-below");
+        assertEquals(element, view.getInsertFieldBelow());
+    }
+
+    @Test
+    public void testGetInsertNestedField() {
+        final Element element = mock(Element.class);
+        doReturn(element).when(view).querySelector("insert-nested-field");
+        assertEquals(element, view.getInsertNestedField());
+    }
+
+    @Test
+    public void testGetKebabMenu() {
+        final Element element = mock(Element.class);
+        doReturn(element).when(view).querySelector("kebab-menu");
+        assertEquals(element, view.getKebabMenu());
+    }
+
+    @Test
+    public void testGetArrow() {
+        final Element element = mock(Element.class);
+        doReturn(element).when(view).querySelector("arrow-button");
+        assertEquals(element, view.getArrow());
+    }
+
+    @Test
+    public void testGetNameText() {
+        final Element element = mock(Element.class);
+        doReturn(element).when(view).querySelector("name-text");
+        assertEquals(element, view.getNameText());
+    }
+
+    @Test
+    public void testGetConstraintText() {
+        final Element element = mock(Element.class);
+        doReturn(element).when(view).querySelector("constraint-text");
+        assertEquals(element, view.getConstraintText());
+    }
+
+    @Test
+    public void testGetNameInput() {
+        final HTMLInputElement element = mock(HTMLInputElement.class);
+        doReturn(element).when(view).querySelector(NAME_DATA_FIELD);
+        assertEquals(element, view.getNameInput());
+    }
+
+    @Test
+    public void testGetType() {
+        final Element element = mock(Element.class);
+        doReturn(element).when(view).querySelector("type");
+        assertEquals(element, view.getType());
+    }
+
+    @Test
+    public void testGetConstraint() {
+        final Element element = mock(Element.class);
+        doReturn(element).when(view).querySelector("constraint");
+        assertEquals(element, view.getConstraint());
     }
 
     public Element makeChildElement(final String uuid) {

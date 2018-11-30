@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.client.editors.types;
 import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.event.dom.client.BlurEvent;
@@ -190,5 +191,9 @@ public class NameAndDataTypePopoverViewImpl extends AbstractPopoverViewImpl impl
     @SuppressWarnings("unused")
     void onNameChange(final BlurEvent event) {
         presenter.setName(nameEditor.getValue());
+    }
+
+    public void onDataTypePageNavTabActiveEvent(final @Observes DataTypePageTabActiveEvent event) {
+        hide();
     }
 }

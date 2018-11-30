@@ -83,7 +83,6 @@ public class DataTypeSelectView implements DataTypeSelect.View {
     @Override
     public void init(final DataTypeSelect presenter) {
         this.presenter = presenter;
-        setupDropdown();
     }
 
     @Override

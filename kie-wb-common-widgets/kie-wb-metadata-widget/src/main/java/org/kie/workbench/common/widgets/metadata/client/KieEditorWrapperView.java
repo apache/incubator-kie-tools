@@ -40,7 +40,7 @@ public interface KieEditorWrapperView
 
     void setPresenter(KieEditorWrapperPresenter presenter);
 
-    void addMainEditorPage(BaseEditorView baseView);
+    void addMainEditorPage(IsWidget baseView);
 
     MultiPageEditor getMultiPage();
 

@@ -16,21 +16,21 @@
 
 <div data-field="view" class="list-group-item">
     <div class="list-view-pf-actions">
-        <button data-field="edit-button" class="btn btn-sm btn-default" data-i18n-key="Edit"></button>
-        <button data-field="save-button" class="btn btn-sm btn-default" data-i18n-key="Save"></button>
-        <button data-field="close-button" class="btn btn-sm btn-default close-button">✖</button>
-        <div data-field="kebab-menu" class="dropdown-kebab-container">
+        <button data-type-field="edit-button" class="btn btn-sm btn-default" data-i18n-key="Edit"></button>
+        <button data-type-field="save-button" class="btn btn-sm btn-default" data-i18n-key="Save"></button>
+        <button data-type-field="close-button" class="btn btn-sm btn-default close-button">✖</button>
+        <div data-type-field="kebab-menu" class="dropdown-kebab-container">
             <div class="dropdown pull-right dropdown-kebab-pf">
                 <button class="btn btn-link dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                     <span class="fa fa-ellipsis-v"></span>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-right">
-                    <li><a data-field="remove-button" href="#" data-i18n-key="Remove"></a></li>
+                    <li><a data-type-field="remove-button" href="#" data-i18n-key="Remove"></a></li>
                     <li role="separator" class="divider"></li>
-                    <li><a data-field="insert-field-above" href="#" data-i18n-key="InsertFieldAbove"></a></li>
-                    <li><a data-field="insert-field-below" href="#" data-i18n-key="InsertFieldBelow"></a></li>
+                    <li><a data-type-field="insert-field-above" href="#" data-i18n-key="InsertFieldAbove"></a></li>
+                    <li><a data-type-field="insert-field-below" href="#" data-i18n-key="InsertFieldBelow"></a></li>
                     <li role="separator" class="divider"></li>
-                    <li><a data-field="insert-nested-field" href="#" data-i18n-key="InsertNestedField"></a></li>
+                    <li><a data-type-field="insert-nested-field" href="#" data-i18n-key="InsertNestedField"></a></li>
                     <!-- TODO: https://issues.jboss.org/browse/DROOLS-3083 -->
                     <!--<li role="separator" class="divider"></li>-->
                     <!--<li><a href="#" data-i18n-key="MoveUp"></a></li>-->
@@ -43,16 +43,16 @@
     <div class="list-view-pf-main-info">
         <div class="list-view-pf-body">
             <span class="nesting-level"></span>
-            <span data-field="arrow-button" class="icon expand-icon fa fa-caret-down">
+            <span data-type-field="arrow-button" class="icon expand-icon fa fa-caret-down">
                 <span class="data-type-icon fa fa-object-group"></span>
             </span>
 
-            <span class="name-text" data-field="name-text"></span>
-            <input class="name-input" data-field="name-input"/>
-            <span data-field="type"></span>
-            <span class="constraint-text" data-field="name-text"></span>
-            <div class="hidden collection-component" data-field="collection-container"></div>
-            <div class="hidden collection-component" data-field="collection-yes">
+            <span class="name-text" data-type-field="name-text"></span>
+            <input class="name-input" data-type-field="name-input"/>
+            <span data-type-field="type"></span>
+            <span class="constraint-text" data-type-field="constraint-text"></span>
+            <div class="hidden collection-component" data-type-field="collection-container"></div>
+            <div class="hidden collection-component" data-type-field="collection-yes">
                 <span data-i18n-key="Collection"></span>
                 <div>
                     <i class="fa fa-check"></i>
@@ -61,8 +61,8 @@
             </div>
         </div>
     </div>
-    <div class="hidden" data-field="constraint-container">
+    <div class="hidden" data-type-field="constraint-container">
         <span class="nesting-level"></span>
-        <div data-field="constraint"></div>
+        <div data-type-field="constraint"></div>
     </div>
 </div>

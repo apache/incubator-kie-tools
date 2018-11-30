@@ -24,11 +24,11 @@ import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import org.kie.workbench.common.dmn.client.editors.types.DataTypeModal;
+import org.kie.workbench.common.dmn.client.editors.types.DataTypesPage;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 
 /**
- * Stores all Data Types loaded in the {@link DataTypeModal}.
+ * Stores all Data Types loaded in the {@link DataTypesPage}.
  * <p>
  * All entries are indexed by their own UUID.
  */

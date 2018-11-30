@@ -37,7 +37,7 @@ abstract class ErrorMessage {
     }
 
     private String getErrorElementSelector(final DataType dataType) {
-        return "[" + UUID_ATTR + "=\"" + dataType.getUUID() + "\"] [data-field=\"" + NAME_DATA_FIELD + "\"]";
+        return "[" + UUID_ATTR + "=\"" + dataType.getUUID() + "\"] [data-type-field=\"" + NAME_DATA_FIELD + "\"]";
     }
 
     abstract String getStrongMessage(final DataType dataType);

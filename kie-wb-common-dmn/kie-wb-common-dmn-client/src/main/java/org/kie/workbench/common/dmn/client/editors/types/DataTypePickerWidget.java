@@ -23,6 +23,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
@@ -89,7 +90,7 @@ public class DataTypePickerWidget extends Composite implements HasValue<QName>,
 
     private DMNGraphUtils dmnGraphUtils;
 
-    private DataTypeModal dataTypeModal;
+    private Event<DataTypePageTabActiveEvent> dataTypePageActiveEvent;
 
     private ItemDefinitionUtils itemDefinitionUtils;
 
@@ -108,7 +109,7 @@ public class DataTypePickerWidget extends Composite implements HasValue<QName>,
                                 final TranslationService translationService,
                                 final QNameConverter qNameConverter,
                                 final DMNGraphUtils dmnGraphUtils,
-                                final DataTypeModal dataTypeModal,
+                                final Event<DataTypePageTabActiveEvent> dataTypePageActiveEvent,
                                 final ItemDefinitionUtils itemDefinitionUtils) {
         this.typeButton = typeButton;
         this.manageContainer = manageContainer;
@@ -117,7 +118,7 @@ public class DataTypePickerWidget extends Composite implements HasValue<QName>,
         this.typeSelector = GWT.create(Select.class);
         this.qNameConverter = qNameConverter;
         this.dmnGraphUtils = dmnGraphUtils;
-        this.dataTypeModal = dataTypeModal;
+        this.dataTypePageActiveEvent = dataTypePageActiveEvent;
         this.itemDefinitionUtils = itemDefinitionUtils;
 
         this.typeSelector.setShowTick(true);
@@ -198,7 +199,7 @@ public class DataTypePickerWidget extends Composite implements HasValue<QName>,
     @EventHandler("typeButton")
     @SuppressWarnings("unused")
     public void onClickTypeButton(final ClickEvent clickEvent) {
-        dataTypeModal.show();
+        dataTypePageActiveEvent.fire(new DataTypePageTabActiveEvent());
     }
 
     public void showManageLabel() {

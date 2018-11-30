@@ -48,6 +48,7 @@ import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.uberfire.mocks.EventSourceMock;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
@@ -91,7 +92,7 @@ public class DataTypePickerWidgetTest {
     private DMNGraphUtils dmnGraphUtils;
 
     @Mock
-    private DataTypeModal dataTypeModal;
+    private EventSourceMock<DataTypePageTabActiveEvent> dataTypePageActiveEvent;
 
     @GwtMock
     @SuppressWarnings("unused")
@@ -152,7 +153,7 @@ public class DataTypePickerWidgetTest {
                                                    translationService,
                                                    qNameConverter,
                                                    dmnGraphUtils,
-                                                   dataTypeModal,
+                                                   dataTypePageActiveEvent,
                                                    itemDefinitionUtils));
     }
 
@@ -347,7 +348,7 @@ public class DataTypePickerWidgetTest {
 
         picker.onClickTypeButton(clickEvent);
 
-        verify(dataTypeModal).show();
+        verify(dataTypePageActiveEvent).fire(any(DataTypePageTabActiveEvent.class));
     }
 
     @Test

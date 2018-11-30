@@ -91,7 +91,7 @@ public class MenuInitializerTest {
 
         event.target = target;
         doReturn(jsonObjectProperties).when(initializer).bodyDropdownProperties(event);
-        doReturn(modalInElement).when(initializer).modalInElement();
+        doReturn(modalInElement).when(initializer).body();
         when(jsonObjectProperties.getJavaScriptObject()).thenReturn(javaScriptObjectProperties);
         when(jQueryTarget.css(javaScriptObjectProperties)).thenReturn(jQueryCSS);
         when(jQueryCSS.detach()).thenReturn(jQueryDetach);
@@ -120,7 +120,7 @@ public class MenuInitializerTest {
 
         event.target = target;
         doReturn(jsonObjectProperties).when(initializer).emptyProperties();
-        doReturn(modalInElement).when(initializer).modalInElement();
+        doReturn(modalInElement).when(initializer).body();
         when(jsonObjectProperties.getJavaScriptObject()).thenReturn(javaScriptObjectProperties);
         when(jQueryTarget.css(javaScriptObjectProperties)).thenReturn(jQueryCSS);
         when(jQueryCSS.detach()).thenReturn(jQueryDetach);
@@ -153,7 +153,6 @@ public class MenuInitializerTest {
         final JSONObject actualJSONObject = initializer.bodyDropdownProperties(event);
 
         verify(expectedJSONObject).put("position", new JSONString("absolute"));
-        verify(expectedJSONObject).put("zIndex", new JSONNumber(1051));
         verify(expectedJSONObject).put("left", new JSONNumber(left));
         verify(expectedJSONObject).put("top", new JSONNumber(top));
         assertEquals(expectedJSONObject, actualJSONObject);
@@ -170,7 +169,6 @@ public class MenuInitializerTest {
         final JSONObject actualJSONObject = initializer.emptyProperties();
 
         verify(expectedJSONObject).put("position", new JSONString(""));
-        verify(expectedJSONObject).put("zIndex", new JSONString(""));
         verify(expectedJSONObject).put("left", new JSONString(""));
         verify(expectedJSONObject).put("top", new JSONString(""));
         assertEquals(expectedJSONObject, actualJSONObject);

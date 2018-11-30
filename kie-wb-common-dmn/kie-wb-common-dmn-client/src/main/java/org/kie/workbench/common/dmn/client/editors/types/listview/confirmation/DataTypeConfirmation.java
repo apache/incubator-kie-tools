@@ -22,21 +22,21 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
-import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManager;
 import org.kie.workbench.common.dmn.client.editors.types.messages.DataTypeFlashMessage;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.DataTypeStore;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.ItemDefinitionStore;
 import org.uberfire.mvp.Command;
+
+import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeManager_Structure;
 
 /**
  * Fires warning messages to get confirmation in potentially destructive Data Type operations.
  */
 @Dependent
 public class DataTypeConfirmation {
-
-    private final DataTypeManager dataTypeManager;
 
     private final DataTypeStore dataTypeStore;
 
@@ -48,20 +48,22 @@ public class DataTypeConfirmation {
 
     private final ReferencedDataTypeWarningMessage referencedDataTypeWarningMessage;
 
+    private final TranslationService translationService;
+
     @Inject
-    public DataTypeConfirmation(final DataTypeManager dataTypeManager,
-                                final DataTypeStore dataTypeStore,
+    public DataTypeConfirmation(final DataTypeStore dataTypeStore,
                                 final ItemDefinitionStore itemDefinitionStore,
                                 final Event<DataTypeFlashMessage> flashMessageEvent,
                                 final DataTypeHasFieldsWarningMessage dataTypeHasFieldsWarningMessage,
-                                final ReferencedDataTypeWarningMessage referencedDataTypeWarningMessage) {
+                                final ReferencedDataTypeWarningMessage referencedDataTypeWarningMessage,
+                                final TranslationService translationService) {
 
-        this.dataTypeManager = dataTypeManager;
         this.dataTypeStore = dataTypeStore;
         this.itemDefinitionStore = itemDefinitionStore;
         this.flashMessageEvent = flashMessageEvent;
         this.dataTypeHasFieldsWarningMessage = dataTypeHasFieldsWarningMessage;
         this.referencedDataTypeWarningMessage = referencedDataTypeWarningMessage;
+        this.translationService = translationService;
     }
 
     public void ifDataTypeDoesNotHaveLostSubDataTypes(final DataType dataType,
@@ -99,6 +101,6 @@ public class DataTypeConfirmation {
     }
 
     private boolean isStructure(final DataType dataType) {
-        return Objects.equals(dataType.getType(), dataTypeManager.structure());
+        return Objects.equals(dataType.getType(), translationService.format(DataTypeManager_Structure));
     }
 }

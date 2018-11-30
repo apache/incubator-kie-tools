@@ -54,7 +54,7 @@ public class KieEditorWrapperViewImpl
     }
 
     @Override
-    public void addMainEditorPage(BaseEditorView baseView) {
+    public void addMainEditorPage(IsWidget baseView) {
         addPage(new PageImpl(baseView,
                              CommonConstants.INSTANCE.EditTabTitle()) {
             @Override

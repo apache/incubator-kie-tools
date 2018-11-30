@@ -258,4 +258,7 @@ public class DMNEditorConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String SmallSwitchComponentView_No = "SmallSwitchComponentView.No";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DataTypesPage_Label = "DataTypesPage.Label";
 }

@@ -103,8 +103,6 @@ public class DataTypeSelectViewTest {
         view = spy(new DataTypeSelectView(typeText, typeSelect, typeSelectOptGroup, typeSelectOption, null, translationService));
         dataTypeUtils = new DataTypeUtils(dataTypeStore, dataTypeManager);
 
-        doNothing().when(view).setupDropdown();
-
         view.init(presenter);
     }
 

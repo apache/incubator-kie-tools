@@ -18,11 +18,14 @@ package org.kie.workbench.common.dmn.project.client.editor;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import com.google.gwtmockito.WithClassesToStub;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.commands.general.NavigateToExpressionEditorCommand;
 import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorDock;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
+import org.kie.workbench.common.dmn.client.editors.types.DataTypePageTabActiveEvent;
+import org.kie.workbench.common.dmn.client.editors.types.DataTypesPage;
 import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
 import org.kie.workbench.common.dmn.client.session.DMNEditorSession;
 import org.kie.workbench.common.dmn.project.client.type.DMNDiagramResourceType;
@@ -36,6 +39,7 @@ import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectDia
 import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectEditorMenuSessionItems;
 import org.kie.workbench.common.workbench.client.PerspectiveIds;
 import org.mockito.Mock;
+import org.uberfire.client.workbench.widgets.multipage.MultiPageEditor;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
@@ -86,7 +90,18 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
     @Mock
     private LayoutHelper layoutHelper;
 
+    @Mock
+    private DataTypesPage dataTypesPage;
+
+    @Mock
+    private MultiPageEditor multiPage;
+
     private DMNDiagramEditor diagramEditor;
+
+    @Before
+    public void before() {
+        when(kieView.getMultiPage()).thenReturn(multiPage);
+    }
 
     @Override
     public void setUp() {
@@ -127,7 +142,8 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
                                                  sessionManager,
                                                  sessionCommandManager,
                                                  decisionNavigatorDock,
-                                                 layoutHelper) {
+                                                 layoutHelper,
+                                                 dataTypesPage) {
             {
                 fileMenuBuilder = DMNDiagramEditorTest.this.fileMenuBuilder;
                 workbenchContext = DMNDiagramEditorTest.this.workbenchContext;
@@ -171,6 +187,15 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
     }
 
     @Test
+    public void testInitialiseKieEditorForSession() {
+        doNothing().when(diagramEditor).superInitialiseKieEditorForSession(any());
+
+        diagramEditor.initialiseKieEditorForSession(diagram);
+
+        verify(multiPage).addPage(dataTypesPage);
+    }
+
+    @Test
     public void testOnDiagramLoadWhenCanvasHandlerIsNotNull() {
         when(sessionManager.getCurrentSession()).thenReturn(dmnEditorSession);
         when(dmnEditorSession.getCanvasHandler()).thenReturn(canvasHandler);
@@ -180,6 +205,7 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
         verify(expressionEditor).setToolbarStateHandler(any(ProjectToolbarStateHandler.class));
         verify(decisionNavigatorDock).setupContent(eq(canvasHandler));
         verify(decisionNavigatorDock).open();
+        verify(dataTypesPage).reload();
         verify(layoutHelper).applyLayout(diagram);
     }
 
@@ -191,6 +217,7 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
         verify(expressionEditor, never()).setToolbarStateHandler(any(ProjectToolbarStateHandler.class));
         verify(decisionNavigatorDock, never()).setupContent(any());
         verify(decisionNavigatorDock, never()).open();
+        verify(dataTypesPage, never()).reload();
     }
 
     @Test
@@ -201,6 +228,14 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
 
         verify(diagramEditor).superDoFocus();
         verify(diagramEditor).onDiagramLoad();
+        verify(dataTypesPage).onFocus();
+    }
+
+    @Test
+    public void testOnLostFocus() {
+        diagramEditor.onLostFocus();
+
+        verify(dataTypesPage).onLostFocus();
     }
 
     @Test
@@ -215,5 +250,13 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
 
         verify(sessionCommandManager).execute(eq(canvasHandler),
                                               any(NavigateToExpressionEditorCommand.class));
+    }
+
+    @Test
+    public void testOnDataTypePageNavTabActiveEvent() {
+
+        diagramEditor.onDataTypePageNavTabActiveEvent(mock(DataTypePageTabActiveEvent.class));
+
+        verify(multiPage).selectPage(2);
     }
 }

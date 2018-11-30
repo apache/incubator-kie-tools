@@ -702,6 +702,16 @@
     </dependency>
 
     <dependency>
+      <groupId>org.kie.workbench.widgets</groupId>
+      <artifactId>kie-wb-metadata-widget</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.workbench.widgets</groupId>
+      <artifactId>kie-wb-common-ui</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>org.kie.soup</groupId>
       <artifactId>kie-soup-project-datamodel-api</artifactId>
     </dependency>
@@ -890,10 +900,13 @@
             <compileSourcesArtifact>org.uberfire:uberfire-structure-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-social-activities-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-workingset-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-message-console-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-message-console-client</compileSourcesArtifact>
 
             <!-- Errai, Drools etc -->
             <compileSourcesArtifact>org.jboss.errai:errai-data-binding</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.services:kie-wb-common-datamodel-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.workbench.services:kie-wb-common-services-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.soup:kie-soup-project-datamodel-api</compileSourcesArtifact>
 
             <!-- UF-ext -->
@@ -954,6 +967,11 @@
             <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-widgets</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-forms-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.stunner:kie-wb-common-stunner-forms-client</compileSourcesArtifact>
+
+            <compileSourcesArtifact>org.kie.workbench.widgets:kie-wb-common-ui</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.workbench.widgets:kie-wb-metadata-widget</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.workbench.widgets:kie-wb-config-resource-widget</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.workbench.profile:kie-wb-common-profile-api</compileSourcesArtifact>
 
             <!-- DMN Editor -->
             <compileSourcesArtifact>org.kie.workbench:kie-wb-common-dmn-api</compileSourcesArtifact>

@@ -19,12 +19,12 @@ package org.kie.workbench.common.dmn.client.editors.types.listview.confirmation;
 import java.util.List;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
-import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManager;
 import org.kie.workbench.common.dmn.client.editors.types.messages.DataTypeFlashMessage;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.DataTypeStore;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.ItemDefinitionStore;
@@ -34,6 +34,7 @@ import org.uberfire.mvp.Command;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
+import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeManager_Structure;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -45,9 +46,6 @@ import static org.mockito.Mockito.when;
 public class DataTypeConfirmationTest {
 
     private static final String STRUCTURE = "Structure";
-
-    @Mock
-    private DataTypeManager dataTypeManager;
 
     @Mock
     private DataTypeStore dataTypeStore;
@@ -64,13 +62,16 @@ public class DataTypeConfirmationTest {
     @Mock
     private ReferencedDataTypeWarningMessage referencedDataTypeWarningMessage;
 
+    @Mock
+    private TranslationService translationService;
+
     private DataTypeConfirmation confirmation;
 
     @Before
     public void setup() {
-        confirmation = new DataTypeConfirmation(dataTypeManager, dataTypeStore, itemDefinitionStore, flashMessageEvent, dataTypeHasFieldsWarningMessage, referencedDataTypeWarningMessage);
+        confirmation = new DataTypeConfirmation(dataTypeStore, itemDefinitionStore, flashMessageEvent, dataTypeHasFieldsWarningMessage, referencedDataTypeWarningMessage, translationService);
 
-        when(dataTypeManager.structure()).thenReturn(STRUCTURE);
+        when(translationService.format(DataTypeManager_Structure)).thenReturn(STRUCTURE);
     }
 
     @Test

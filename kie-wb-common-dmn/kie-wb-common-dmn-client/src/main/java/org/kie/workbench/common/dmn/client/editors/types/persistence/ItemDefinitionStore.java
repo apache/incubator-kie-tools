@@ -22,10 +22,10 @@ import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
-import org.kie.workbench.common.dmn.client.editors.types.DataTypeModal;
+import org.kie.workbench.common.dmn.client.editors.types.DataTypesPage;
 
 /**
- * Stores all Item Definitions loaded in the {@link DataTypeModal}.
+ * Stores all Item Definitions loaded in the {@link DataTypesPage}.
  * <p>
  * All entries are indexed by the UUID from the correspondent Data Type.
  */
