@@ -533,6 +533,34 @@ public class DMNMarshallerTest {
                                                this::checkDecisionqa);
     }
 
+    @Test
+    public void test_fontsize_stunner() throws IOException {
+        roundTripUnmarshalThenMarshalUnmarshal(this.getClass().getResourceAsStream("/test-FontSize-stunner.dmn"),
+                                               this::checkFontsize_stunner);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void checkFontsize_stunner(Graph<?, Node<?, ?>> graph) {
+        Node<?, ?> node = graph.getNode("_A9D510E0-1942-4945-A945-0213EC6AAEC5");
+        assertNodeContentDefinitionIs(node, InputData.class);
+        InputData definition = ((View<InputData>) node.getContent()).getDefinition();
+        assertEquals(Double.valueOf(21), definition.getFontSet().getFontSize().getValue());
+    }
+
+    @Test
+    public void test_fontsize_sharedStyle() throws IOException {
+        roundTripUnmarshalThenMarshalUnmarshal(this.getClass().getResourceAsStream("/test-FontSize-sharedStyle.dmn"),
+                                               this::checkFontsize_sharedStyle);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void checkFontsize_sharedStyle(Graph<?, Node<?, ?>> graph) {
+        Node<?, ?> node = graph.getNode("_38b74e2e-32f8-42c5-ab51-8a3e927637e0");
+        assertNodeContentDefinitionIs(node, InputData.class);
+        InputData definition = ((View<InputData>) node.getContent()).getDefinition();
+        assertEquals(Double.valueOf(21), definition.getFontSet().getFontSize().getValue());
+    }
+
     @SuppressWarnings("unchecked")
     private void checkDecisionqa(Graph<?, Node<?, ?>> graph) {
         Node<?, ?> decision = graph.getNode("_7052d0f6-ccee-462b-bd89-76afc3b6f67b");

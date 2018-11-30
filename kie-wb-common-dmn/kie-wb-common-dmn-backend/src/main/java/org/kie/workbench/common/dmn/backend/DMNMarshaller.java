@@ -609,7 +609,7 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
         }
 
         FontSet fontSet = new FontSet();
-        if (dmnStyleOfDrgShape != null && dmnStyleOfDrgShape.getFontFamily() != null) {
+        if (dmnStyleOfDrgShape != null) {
             mergeFontSet(fontSet, FontSetPropertyConverter.wbFromDMN(dmnStyleOfDrgShape));
         }
         if (drgShape.getDMNLabel() != null && drgShape.getDMNLabel().getSharedStyle() instanceof DMNStyle) {
