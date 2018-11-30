@@ -88,9 +88,10 @@ public class ScenarioRunnerImpl extends Runner {
     protected List<ScenarioResult> internalRunScenario(int index, Scenario scenario, RunNotifier runNotifier) {
         ScenarioRunnerData scenarioRunnerData = new ScenarioRunnerData();
 
+        Description descriptionForScenario = getDescriptionForScenario(getFileName(), index, scenario);
+        runNotifier.fireTestStarted(descriptionForScenario);
 
         try {
-            runNotifier.fireTestStarted(getDescriptionForScenario(getFileName(), index, scenario));
             ExpressionEvaluator expressionEvaluator = createExpressionEvaluator();
             extractGivenValues(simulationDescriptor, scenario.getUnmodifiableFactMappingValues(), classLoader, expressionEvaluator)
                     .forEach(scenarioRunnerData::addInput);
@@ -106,17 +107,18 @@ public class ScenarioRunnerImpl extends Runner {
                              expressionEvaluator);
             validateAssertion(scenarioRunnerData.getResultData(),
                               scenario);
-            runNotifier.fireTestFinished(getDescriptionForScenario(getFileName(), index, scenario));
         } catch (ScenarioException e) {
             IndexedScenarioException indexedScenarioException = new IndexedScenarioException(index, e);
             indexedScenarioException.setFileName(fileName);
-            runNotifier.fireTestFailure(new Failure(getDescriptionForScenario(getFileName(), index, scenario), indexedScenarioException));
+            runNotifier.fireTestFailure(new Failure(descriptionForScenario, indexedScenarioException));
         } catch (Throwable e) {
             IndexedScenarioException indexedScenarioException = new IndexedScenarioException(index, new StringBuilder().append("Unexpected test error in scenario '")
                     .append(scenario.getDescription()).append("'").toString(), e);
             indexedScenarioException.setFileName(fileName);
-            runNotifier.fireTestFailure(new Failure(getDescriptionForScenario(getFileName(), index, scenario), indexedScenarioException));
+            runNotifier.fireTestFailure(new Failure(descriptionForScenario, indexedScenarioException));
         }
+        
+        runNotifier.fireTestFinished(descriptionForScenario);
 
         return scenarioRunnerData.getResultData();
     }

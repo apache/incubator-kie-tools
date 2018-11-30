@@ -54,7 +54,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ScenarioRunnerImplServiceImplTest {
+public class ScenarioRunnerServiceImplTest {
 
     @Mock
     private EventSourceMock<TestResultMessage> defaultTestResultMessageEventMock;
@@ -136,6 +136,7 @@ public class ScenarioRunnerImplServiceImplTest {
 
                 runNotifier.fireTestFailure(new Failure(getDescriptionForScenario(getFileName(), index, scenario),
                                                         new IndexedScenarioException(index, errorMessage)));
+                runNotifier.fireTestFinished(getDescriptionForScenario(getFileName(), index, scenario));
                 return Collections.emptyList();
             }
         });
@@ -149,6 +150,7 @@ public class ScenarioRunnerImplServiceImplTest {
         String errorMessageFormatted = String.format("#%d: %s", 1, errorMessage);
         org.guvnor.common.services.shared.test.Failure failure = failures.get(0);
         assertEquals(errorMessageFormatted, failure.getMessage());
+        assertEquals(1, value.getRunCount());
         assertTrue(failure.getDisplayName().startsWith(testDescription));
     }
 }
