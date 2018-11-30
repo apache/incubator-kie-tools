@@ -24,7 +24,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.screens.scenariosimulation.client.resources.ScenarioSimulationEditorResources;
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.drools.workbench.screens.scenariosimulation.type.ScenarioSimulationResourceTypeDefinition;
-import org.guvnor.common.services.project.categories.Model;
+import org.guvnor.common.services.project.categories.Decision;
 import org.uberfire.client.workbench.type.ClientResourceType;
 
 @ApplicationScoped
@@ -39,7 +39,7 @@ public class ScenarioSimulationResourceType
     }
 
     @Inject
-    public ScenarioSimulationResourceType(final Model category) {
+    public ScenarioSimulationResourceType(final Decision category) {
         super(category);
     }
 

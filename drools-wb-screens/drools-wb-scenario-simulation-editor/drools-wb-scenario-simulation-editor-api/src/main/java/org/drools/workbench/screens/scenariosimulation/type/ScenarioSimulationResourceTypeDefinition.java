@@ -20,7 +20,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
-import org.guvnor.common.services.project.categories.Model;
+import org.guvnor.common.services.project.categories.Decision;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.workbench.annotations.VisibleAsset;
 import org.uberfire.workbench.category.Category;
@@ -37,7 +37,7 @@ public class ScenarioSimulationResourceTypeDefinition implements ResourceTypeDef
     }
 
     @Inject
-    public ScenarioSimulationResourceTypeDefinition(final Model category) {
+    public ScenarioSimulationResourceTypeDefinition(final Decision category) {
         this.category = category;
     }
 
