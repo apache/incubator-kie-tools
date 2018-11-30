@@ -1,25 +1,22 @@
 <?xml version="1.0" ?>
-<definitions xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns:di="http://www.omg.org/spec/CMMN/20151109/DI" xmlns:dmndi="java://org.kie.workbench.common.dmn.backend.definition.v1_1.dd" xmlns:dc="http://www.omg.org/spec/CMMN/20151109/DC" id="EA1DD9CB-0517-4EBC-84E9-5917CF48AD78" name="My name" expressionLanguage="http://www.omg.org/spec/FEEL/20140401" typeLanguage="http://www.omg.org/spec/FEEL/20140401" namespace="">
-  <description>My description</description>
-  <extensionElements>
-    <dmndi:DMNDiagram>
-      <dmndi:DMNShape id="dmnshape-F713DE6B-6A54-4D7F-A0FC-2234E96A9303" dmnElementRef="F713DE6B-6A54-4D7F-A0FC-2234E96A9303">
-        <dc:Bounds x="110.0" y="182.0" width="100.0" height="50.0"></dc:Bounds>
-        <dc:BgColor red="255" green="255" blue="255"></dc:BgColor>
-        <dc:BorderColor red="0" green="0" blue="0"></dc:BorderColor>
-        <dmndi:DMNFontStyle>
-          <dc:FontColor red="0" green="0" blue="0"></dc:FontColor>
-        </dmndi:DMNFontStyle>
-      </dmndi:DMNShape>
-    </dmndi:DMNDiagram>
-  </extensionElements>
-  <decision id="F713DE6B-6A54-4D7F-A0FC-2234E96A9303" name="My name">
+<definitions xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd" 
+             xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+             id="EA1DD9CB-0517-4EBC-84E9-5917CF48AD78" 
+             name="My name" 
+             expressionLanguage="http://www.omg.org/spec/FEEL/20140401" 
+             typeLanguage="http://www.omg.org/spec/FEEL/20140401" 
+             namespace="">
+  <businessKnowledgeModel id="F713DE6B-6A54-4D7F-A0FC-2234E96A9303" name="My name">
     <description>My description</description>
     <variable id="8A7AA186-5E33-4FBE-B8EC-78CB5C3C914B" name="My name" typeRef="feel:string">
       <description>My description</description>
     </variable>
-    <functionDefinition xmlns:drools="http://www.drools.org/kie/dmn/1.1" drools:kind="J" id="07FD45CA-0A7B-4B21-8C21-E828F7D974AF" typeRef="feel:string">
+    <encapsulatedLogic xmlns:drools="http://www.drools.org/kie/dmn/1.1" drools:kind="J" id="07FD45CA-0A7B-4B21-8C21-E828F7D974AF" typeRef="feel:string">
       <description>My description</description>
+      <formalParameter id="_74cd6d4f-1c94-438d-932d-feb091c84ceb" name="p1"/>
+      <formalParameter id="_74cd6d4f-1c94-438d-932d-feb091c84ceb" name="p2"/>
       <context id="B97FF990-F1E1-48E0-AA07-1DEEF1BAEDD9" typeRef="feel:string">
         <description>My description</description>
         <contextEntry>
@@ -47,7 +44,7 @@
           </literalExpression>
         </contextEntry>
       </context>
-    </functionDefinition>
-  </decision>
+    </encapsulatedLogic>
+  </businessKnowledgeModel>
 </definitions>
 

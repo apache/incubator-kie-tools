@@ -25,6 +25,7 @@ import java.math.BigDecimal;
 import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -54,6 +55,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.api.KieServices;
+import org.kie.api.builder.Message;
+import org.kie.api.builder.Message.Level;
+import org.kie.api.builder.Results;
 import org.kie.api.runtime.KieContainer;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNDecisionResult;
@@ -62,8 +66,9 @@ import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
-import org.kie.dmn.api.core.ast.DecisionNode;
+import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
 import org.kie.dmn.backend.marshalling.v1x.DMNMarshallerFactory;
+import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.core.util.KieHelper;
 import org.kie.dmn.model.api.DecisionTable;
 import org.kie.dmn.model.api.Definitions;
@@ -1045,15 +1050,10 @@ public class DMNMarshallerTest {
             throw new RuntimeException("test utily method roundTripUnmarshalMarshalThenUnmarshalDMN failed to read XML content.", e);
         }
         LOG.debug("ORIGINAL xml:\n{}\n", xml);
-        boolean isOriginDMNXMLwithoutErrors = false;
-        try {
-            final DMNRuntime runtime = dmnRuntimeFromDMNXML(xml);
-            if (runtime.getModels().get(0).getMessages(DMNMessage.Severity.ERROR).size() == 0) {
-                isOriginDMNXMLwithoutErrors = true;
-            }
-        } catch (Throwable t) {
-            // do nothing, leave attempt to having compiled DMN failed, and thereofre original DMN XML is with errors.
-        }
+        final DMNRuntime runtime0 = dmnRuntimeFromDMNXML(xml);
+        assertEquals("The DMN XML file contains compilation error. If this was intentional use test method roundTripUnmarshalMarshalThenUnmarshalDMNexpectingErrors",
+                     0,
+                     runtime0.getModels().get(0).getMessages(DMNMessage.Severity.ERROR).size());
 
         DMNMarshaller m = new DMNMarshaller(new XMLEncoderDiagramMetadataMarshaller(),
                                             applicationFactoryManager);
@@ -1069,13 +1069,11 @@ public class DMNMarshallerTest {
         diagram.setGraph(g);
 
         String mString = m.marshall(diagram);
-        LOG.debug("MARSHALLED ROUNTRIP RESULTING xml:\n{}\n", mString);
+        LOG.debug("MARSHALLED ROUNDTRIP RESULTING xml:\n{}\n", mString);
 
         // now unmarshal once more, from the marshalled just done above, into a DMNRuntime
         final DMNRuntime runtime = dmnRuntimeFromDMNXML(mString);
-        if (isOriginDMNXMLwithoutErrors) {
-            assertTrue(runtime.getModels().get(0).getMessages(DMNMessage.Severity.ERROR).size() == 0);
-        }
+        assertTrue(runtime.getModels().get(0).getMessages(DMNMessage.Severity.ERROR).size() == 0);
         return runtime;
     }
 
@@ -1090,6 +1088,69 @@ public class DMNMarshallerTest {
         assertNotNull(runtime);
         assertFalse(runtime.getModels().isEmpty());
         return runtime;
+    }
+
+    private static class ErrorsAndDMNModelAsSerialized {
+
+        final List<Message> messages;
+        final Definitions definitions;
+
+        public ErrorsAndDMNModelAsSerialized(List<Message> messages, Definitions definitions) {
+            this.messages = Collections.unmodifiableList(messages);
+            this.definitions = definitions;
+        }
+
+        public boolean hasErrors() {
+            return messages.stream().filter(m -> m.getLevel().equals(Level.ERROR)).count() > 0;
+        }
+    }
+
+    private ErrorsAndDMNModelAsSerialized roundTripUnmarshalMarshalThenUnmarshalDMNexpectingErrors(InputStream dmnXmlInputStream) throws IOException {
+        String xml = null;
+        try (BufferedReader buffer = new BufferedReader(new InputStreamReader(dmnXmlInputStream))) {
+            xml = buffer.lines().collect(Collectors.joining("\n"));
+        } catch (Exception e) {
+            throw new RuntimeException("test utility method roundTripUnmarshalMarshalThenUnmarshalDMN failed to read XML content.", e);
+        }
+        LOG.debug("ORIGINAL xml:\n{}\n", xml);
+        final List<Message> messages0 = kieBuilderMessagesUsingDMNXML(xml);
+        assertTrue("The DMN XML content did NOT result in compilation errors and this test method expected errors to be detected. If this was intentional use test method roundTripUnmarshalMarshalThenUnmarshalDMN",
+                   messages0.stream().filter(m -> m.getLevel().equals(Message.Level.ERROR)).count() > 0);
+
+        DMNMarshaller m = new DMNMarshaller(new XMLEncoderDiagramMetadataMarshaller(),
+                                            applicationFactoryManager);
+
+        // first unmarshal from DMN XML to Stunner DMN Graph
+        @SuppressWarnings("unchecked")
+        Graph<?, Node<?, ?>> g = m.unmarshall(null,
+                                              new ReaderInputStream(new StringReader(xml)));
+
+        // round trip to Stunner DMN Graph back to DMN XML
+        DiagramImpl diagram = new DiagramImpl("",
+                                              null);
+        diagram.setGraph(g);
+
+        String mString = m.marshall(diagram);
+        LOG.debug("MARSHALLED ROUNDTRIP RESULTING xml:\n{}\n", mString);
+
+        // now unmarshal once more, from the marshalled just done above, into a DMNRuntime
+        final List<Message> result = kieBuilderMessagesUsingDMNXML(mString);
+        assertTrue("The DMN XML content did NOT result in compilation errors and this test method expected errors to be detected. If this was intentional use test method roundTripUnmarshalMarshalThenUnmarshalDMN",
+                   messages0.stream().filter(msg -> msg.getLevel().equals(Message.Level.ERROR)).count() > 0);
+
+        Definitions definitions = DMNMarshallerFactory.newDefaultMarshaller().unmarshal(mString);
+        return new ErrorsAndDMNModelAsSerialized(result, definitions);
+    }
+
+    private static List<Message> kieBuilderMessagesUsingDMNXML(String mString) {
+        final KieServices ks = KieServices.Factory.get();
+        String uuid = UUID.uuid(8);
+        final KieContainer kieContainer = DMNRuntimeUtil.getKieContainerIgnoringErrors(ks.newReleaseId("org.kie", uuid, "1.0"),
+                                                                                       ks.getResources().newByteArrayResource(mString.getBytes()).setTargetPath("src/main/resources/" + uuid + ".dmn"));
+        Results verify = kieContainer.verify();
+        List<Message> kie_messages = verify.getMessages();
+        LOG.debug("{}", kie_messages);
+        return kie_messages;
     }
 
     @Test
@@ -1172,9 +1233,8 @@ public class DMNMarshallerTest {
         final DMNRuntime runtime = roundTripUnmarshalMarshalThenUnmarshalDMN(this.getClass().getResourceAsStream("/DROOLS-2372.dmn"));
         final DMNModel dmnModel = runtime.getModels().get(0);
 
-        final DecisionNode dmnDecision = dmnModel.getDecisions().iterator().next();
-        assertTrue(dmnDecision.getDecision().getExpression() instanceof org.kie.dmn.model.api.FunctionDefinition);
-        final org.kie.dmn.model.api.FunctionDefinition dmnFunction = (org.kie.dmn.model.api.FunctionDefinition) dmnDecision.getDecision().getExpression();
+        final BusinessKnowledgeModelNode bkmNode = dmnModel.getBusinessKnowledgeModels().iterator().next();
+        final org.kie.dmn.model.api.FunctionDefinition dmnFunction = bkmNode.getBusinessKnowledModel().getEncapsulatedLogic();
         assertEquals(FunctionKind.JAVA, dmnFunction.getKind());
     }
 
@@ -1230,22 +1290,21 @@ public class DMNMarshallerTest {
     @SuppressWarnings("unchecked")
     public void test_wrong_context() throws IOException {
         // DROOLS-2217
-        final DMNRuntime runtime = roundTripUnmarshalMarshalThenUnmarshalDMN(this.getClass().getResourceAsStream("/wrong_context.dmn"));
-        DMNModel dmnModel = runtime.getModels().get(0);
+        final ErrorsAndDMNModelAsSerialized result = roundTripUnmarshalMarshalThenUnmarshalDMNexpectingErrors(this.getClass().getResourceAsStream("/wrong_context.dmn"));
 
         // although the DMN file is schema valid but is not a valid-DMN (a context-entry value is a literal expression missing text, which is null)
         // DROOLS-3152: once roundtripped through the Stunner marshaller it will receive an empty text. (empty expression, but a LiteralExpression with an empty text child xml element)
         // this will still naturally throw some error because unable to FEEL-parse/compile an empty expression.
-        assertTrue(dmnModel.hasErrors());
+        assertTrue(result.hasErrors());
 
         // identify the error message for context-entry "ciao":
-        DMNMessage m0 = dmnModel.getMessages(DMNMessage.Severity.ERROR).get(0);
+        DMNMessage m0 = (DMNMessage) result.messages.get(0);
         assertTrue("expected a message identifying the problem on a context entry for 'ciao'",
                    m0.getMessage().startsWith("Error compiling FEEL expression '' for name ")); // DROOLS-3152 please notice FEEL reporting indeed an empty expression.
 
-        DecisionNode d0 = dmnModel.getDecisionById("_653b3426-933a-4050-9568-ab2a66b43c36");
+        org.kie.dmn.model.api.Decision d0 = (org.kie.dmn.model.api.Decision) result.definitions.getDrgElement().stream().filter(d -> d.getId().equals("_653b3426-933a-4050-9568-ab2a66b43c36")).findFirst().get();
         // the identified DMN Decision is composed of a DMN Context where the first context-entry value is a literal expression missing text (text is null).
-        org.kie.dmn.model.api.Context d0c = (org.kie.dmn.model.api.Context) d0.getDecision().getExpression();
+        org.kie.dmn.model.api.Context d0c = (org.kie.dmn.model.api.Context) d0.getExpression();
         org.kie.dmn.model.api.Expression contextEntryValue = d0c.getContextEntry().get(0).getExpression();
         assertTrue(contextEntryValue instanceof org.kie.dmn.model.api.LiteralExpression);
         assertEquals("", ((org.kie.dmn.model.api.LiteralExpression) contextEntryValue).getText()); // DROOLS-3152
@@ -1270,22 +1329,21 @@ public class DMNMarshallerTest {
     @SuppressWarnings("unchecked")
     public void test_wrong_decision() throws IOException {
         // DROOLS-3116 empty Literal Expression to be preserved
-        final DMNRuntime runtime = roundTripUnmarshalMarshalThenUnmarshalDMN(this.getClass().getResourceAsStream("/wrong_decision.dmn"));
-        DMNModel dmnModel = runtime.getModels().get(0);
+        final ErrorsAndDMNModelAsSerialized result = roundTripUnmarshalMarshalThenUnmarshalDMNexpectingErrors(this.getClass().getResourceAsStream("/wrong_decision.dmn"));
 
         // although the DMN file is schema valid but is not a valid-DMN (a context-entry value is a literal expression missing text, which is null)
         // DROOLS-3152: once roundtripped through the Stunner marshaller it will receive an empty text. (empty expression, but a LiteralExpression with an empty text child xml element)
         // this will still naturally throw some error because unable to FEEL-parse/compile an empty epression.
-        assertTrue(dmnModel.hasErrors());
+        assertTrue(result.hasErrors());
 
         // identify the error message for the Decision with a Literal Expression decision logic missing the actual expression text.
-        DMNMessage m0 = dmnModel.getMessages(DMNMessage.Severity.ERROR).get(0);
+        DMNMessage m0 = (DMNMessage) result.messages.get(0);
         assertTrue("expected a message identifying the problem on the literalExpression of 'my decision'",
                    m0.getSourceId().equals("_36dd163c-4862-4308-92bf-40a998b24e39"));
 
-        DecisionNode d0 = dmnModel.getDecisionById("_cce32679-9395-444d-a4bf-96af8ee727a0");
+        org.kie.dmn.model.api.Decision d0 = (org.kie.dmn.model.api.Decision) result.definitions.getDrgElement().stream().filter(d -> d.getId().equals("_cce32679-9395-444d-a4bf-96af8ee727a0")).findFirst().get();
         // the identified DMN Decision is composed a literal expression missing text (text is null).
-        org.kie.dmn.model.api.Expression d0le = d0.getDecision().getExpression();
+        org.kie.dmn.model.api.Expression d0le = d0.getExpression();
         assertTrue(d0le instanceof org.kie.dmn.model.api.LiteralExpression);
         assertEquals("", ((org.kie.dmn.model.api.LiteralExpression) d0le).getText()); // DROOLS-3152
 
