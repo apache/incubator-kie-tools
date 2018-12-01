@@ -17,6 +17,8 @@ public interface AlignAndDistributeControl {
 
     void refresh( boolean transforms, boolean attributes );
 
+    void reset();
+
     void dragStart();
 
     void dragEnd();

@@ -946,7 +946,7 @@ public class AlignAndDistribute
     {
         void call(AlignAndDistributeMatches matches);
 
-        void dragEnd();
+        void reset();
     }
 
     static class DefaultAlignAndDistributeMatchesCallback implements AlignAndDistributeMatchesCallback
@@ -1016,7 +1016,7 @@ public class AlignAndDistribute
         }
 
         @Override
-        public void dragEnd()
+        public void reset()
         {
             final Layer layer = getOverLayer();
 

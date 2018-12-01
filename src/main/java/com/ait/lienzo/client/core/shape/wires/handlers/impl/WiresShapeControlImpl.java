@@ -322,7 +322,7 @@ public class WiresShapeControlImpl
         }
         parentPickerControl.reset();
         if (null != m_alignAndDistributeControl) {
-            m_alignAndDistributeControl.updateIndex();
+            m_alignAndDistributeControl.reset();
         }
         getShape().shapeMoved();
         forEachConnectorControl(new Consumer<WiresConnectorControl>() {
