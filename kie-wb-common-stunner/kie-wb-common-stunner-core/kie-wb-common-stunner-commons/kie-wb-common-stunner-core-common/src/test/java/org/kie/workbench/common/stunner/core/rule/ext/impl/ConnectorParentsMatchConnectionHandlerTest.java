@@ -29,7 +29,6 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 import org.kie.workbench.common.stunner.core.rule.context.GraphConnectionContext;
 import org.kie.workbench.common.stunner.core.rule.ext.RuleExtension;
-import org.kie.workbench.common.stunner.core.validation.Violation;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -100,7 +99,7 @@ public class ConnectorParentsMatchConnectionHandlerTest extends AbstractGraphDef
         when(ruleExtension.getId()).thenReturn("anyOtherId");
         when(ruleExtension.getTypeArguments()).thenReturn(new Class[]{ParentDefinition.class});
         assertFalse(tested.accepts(ruleExtension,
-                                  connectionContext));
+                                   connectionContext));
     }
 
     @Test
@@ -112,7 +111,7 @@ public class ConnectorParentsMatchConnectionHandlerTest extends AbstractGraphDef
         final RuleViolations violations = tested.evaluate(ruleExtension,
                                                           connectionContext);
         assertNotNull(violations);
-        assertTrue(violations.violations(Violation.Type.ERROR).iterator().hasNext());
+        assertViolations(violations, false);
     }
 
     @Test
@@ -151,6 +150,42 @@ public class ConnectorParentsMatchConnectionHandlerTest extends AbstractGraphDef
         final RuleViolations violations = tested.evaluate(ruleExtension,
                                                           connectionContext);
         assertNotNull(violations);
-        assertFalse(violations.violations(Violation.Type.ERROR).iterator().hasNext());
+        assertViolations(violations, true);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testEvaluateNestedParentWithDifferentTypes() {
+        //setting grandparent as parent of nodeA
+        graphHandler.removeChild(rootNode, parentNode);
+        graphHandler.setChild(grandParentNode, parentNode);
+        graphHandler.removeChild(parentNode, nodeA);
+        graphHandler.setChild(grandParentNode, nodeA);
+
+        when(connectionContext.getSource()).thenReturn(Optional.of(nodeA));
+        when(connectionContext.getTarget()).thenReturn(Optional.of(nodeB));
+        when(ruleExtension.getTypeArguments()).thenReturn(new Class[]{ParentDefinition.class});
+
+        RuleViolations violations = tested.evaluate(ruleExtension, connectionContext);
+        assertViolations(violations, false);
+
+        when(ruleExtension.getTypeArguments()).thenReturn(
+                new Class[]{ParentDefinition.class, GrandParentDefinition.class});
+        violations = tested.evaluate(ruleExtension, connectionContext);
+        assertViolations(violations, false);
+
+        //now set nodes on the same parent (grandParentNode)
+        graphHandler.removeChild(parentNode, nodeB);
+        graphHandler.setChild(grandParentNode, nodeB);
+
+        violations = tested.evaluate(ruleExtension, connectionContext);
+        assertViolations(violations, true);
+
+        //remove the accepted type GrandParentDefinition
+        when(ruleExtension.getTypeArguments()).thenReturn(
+                new Class[]{ParentDefinition.class, RootDefinition.class});
+
+        violations = tested.evaluate(ruleExtension, connectionContext);
+        assertViolations(violations, false);
     }
 }

@@ -29,7 +29,6 @@ import org.kie.workbench.common.stunner.core.TestingGraphMockHandler;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
-import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionSetRuleAdapter;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -89,7 +88,7 @@ public class CanvasLayoutUtilsTest {
     private Metadata metadata;
 
     @Mock
-    private CanvasHandler canvasHandler;
+    private AbstractCanvasHandler canvasHandler;
 
     @Mock
     private AbstractCanvasHandler abstractCanvasHandler;

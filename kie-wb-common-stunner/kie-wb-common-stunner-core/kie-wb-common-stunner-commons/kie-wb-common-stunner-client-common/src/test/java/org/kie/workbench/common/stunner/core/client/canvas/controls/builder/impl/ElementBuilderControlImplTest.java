@@ -228,7 +228,7 @@ public class ElementBuilderControlImplTest {
         verify(canvasCommandFactory).addChildNode(grandParent, node, SHAPE_SET_ID);
         ArgumentCaptor<Point2D> positionCaptor = ArgumentCaptor.forClass(Point2D.class);
         verify(canvasCommandFactory).updatePosition(eq(node), positionCaptor.capture());
-        assertEquals(positionCaptor.getValue(), new Point2D(X - 10, Y - 10));
+        assertEquals(positionCaptor.getValue(), new Point2D(X, Y));
         verify(canvasCommandFactory).addChildNode(grandParent, node, SHAPE_SET_ID);
     }
 

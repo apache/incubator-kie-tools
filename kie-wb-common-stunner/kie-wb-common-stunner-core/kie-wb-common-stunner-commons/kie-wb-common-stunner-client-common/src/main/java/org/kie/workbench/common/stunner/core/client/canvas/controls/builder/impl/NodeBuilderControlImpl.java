@@ -111,9 +111,9 @@ public class NodeBuilderControlImpl
             final ElementBuilderControlImpl ebc = getElementBuilderControl();
             final Node<View<?>, Edge> parent = ebc.getParent(x,
                                                              y);
-            final Point2D childCoordinates = ebc.getChildCoordinates(parent,
-                                                                     x,
-                                                                     y);
+            final Point2D childCoordinates = ebc.getComputedChildCoordinates(parent,
+                                                                             x,
+                                                                             y);
             final String ssid = canvasHandler.getDiagram().getMetadata().getShapeSetId();
             ebc.getElementCommands(node,
                                    parent,

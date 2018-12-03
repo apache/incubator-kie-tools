@@ -182,9 +182,9 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
 
         final Node<View<?>, Edge> parent = getParent(x,
                                                      y);
-        final Point2D childCoordinates = getChildCoordinates(parent,
-                                                             x,
-                                                             y);
+        final Point2D childCoordinates = getComputedChildCoordinates(parent,
+                                                                     x,
+                                                                     y);
         getCommands(definition,
                     parent,
                     childCoordinates.getX(),
@@ -308,8 +308,9 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
         switch (parentAssignment) {
             case DOCKING: {
                 Node<View<?>, Edge> grandParent = (Node<View<?>, Edge>) GraphUtils.getParent(parent);
+
                 commandList.add(canvasCommandFactory.addChildNode(grandParent, node, getShapeSetId()));
-                commandList.add(canvasCommandFactory.updatePosition(node, getChildCoordinates(grandParent, x, y)));
+                commandList.add(canvasCommandFactory.updatePosition(node, new Point2D(x, y)));
                 commandList.add(canvasCommandFactory.updateDockNode(parent, node, true));
                 return commandList;
             }
@@ -342,11 +343,11 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
         return null;
     }
 
-    public Point2D getChildCoordinates(final Node<View<?>, Edge> parent,
-                                       final double _x,
-                                       final double _y) {
+    public Point2D getComputedChildCoordinates(final Node<View<?>, Edge> parent,
+                                               final double _x,
+                                               final double _y) {
         if (null != parent) {
-            final Point2D parentCoords = GraphUtils.getPosition(parent.getContent());
+            final Point2D parentCoords = GraphUtils.getComputedPosition(parent);
             final double x = _x - parentCoords.getX();
             final double y = _y - parentCoords.getY();
             return new Point2D(x,

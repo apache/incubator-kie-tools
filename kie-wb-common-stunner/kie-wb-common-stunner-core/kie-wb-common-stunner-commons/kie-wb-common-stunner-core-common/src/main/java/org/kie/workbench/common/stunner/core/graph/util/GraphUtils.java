@@ -184,7 +184,10 @@ public class GraphUtils {
 
     @SuppressWarnings("unchecked")
     public static Element<?> getParent(final Node<?, ? extends Edge> element) {
-        return element.getInEdges().stream()
+        return Optional.ofNullable(element)
+                .map(Node::getInEdges)
+                .orElse(Collections.emptyList())
+                .stream()
                 .filter(e -> e.getContent() instanceof Child)
                 .findAny()
                 .map(Edge::getSourceNode)
@@ -216,6 +219,22 @@ public class GraphUtils {
         final Bounds.Bound ul = element.getBounds().getUpperLeft();
         final double x = ul.getX();
         final double y = ul.getY();
+        return new Point2D(x,
+                           y);
+    }
+
+    public static Point2D getComputedPosition(final Node<?, ? extends Edge> element) {
+        double x = 0;
+        double y = 0;
+        Element<?> parent = element;
+        while (null != parent
+                && null != parent.asNode()
+                && parent.getContent() instanceof View) {
+            final Point2D position = getPosition((View) parent.getContent());
+            x += position.getX();
+            y += position.getY();
+            parent = getParent((Node<?, ? extends Edge>) parent);
+        }
         return new Point2D(x,
                            y);
     }
@@ -418,10 +437,7 @@ public class GraphUtils {
                             final Element<?> parent) {
             if (null != candidate) {
                 Element<?> p = getParent(candidate);
-                while (p instanceof Node && !p.equals(parent)) {
-                    p = getParent((Node<?, ? extends Edge>) p);
-                }
-                return null != p;
+                return Objects.equals(p, parent);
             }
             return false;
         }

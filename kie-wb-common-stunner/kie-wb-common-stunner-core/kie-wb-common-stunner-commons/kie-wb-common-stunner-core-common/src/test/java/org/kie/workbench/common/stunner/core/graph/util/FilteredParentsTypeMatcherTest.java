@@ -63,23 +63,27 @@ public class FilteredParentsTypeMatcherTest extends AbstractGraphDefinitionTypes
         assertFalse(newPredicate(ParentDefinition.class)
                             .test(nodeA,
                                   nodeB));
-        assertTrue(newPredicate(DefinitionA.class)
+        assertFalse(newPredicate(DefinitionA.class)
+                            .test(nodeA,
+                                  nodeB));
+        assertFalse(newPredicate(DefinitionB.class)
+                            .test(nodeA,
+                                  nodeB));
+        assertFalse(newPredicate(RootDefinition.class)
+                            .test(nodeA,
+                                  nodeB));
+        assertFalse(newPredicate(DefinitionC.class)
+                            .test(nodeA,
+                                  nodeB));
+        assertFalse(newPredicate(ParentDefinition.class)
                            .test(nodeA,
-                                 nodeB));
-        assertTrue(newPredicate(DefinitionB.class)
-                           .test(nodeA,
-                                 nodeB));
+                                 nodeC));
+
         assertTrue(newPredicate(RootDefinition.class)
-                           .test(nodeA,
-                                 nodeB));
-        assertTrue(newPredicate(DefinitionC.class)
-                           .test(nodeA,
-                                 nodeB));
-        assertTrue(newPredicate(ParentDefinition.class)
                            .test(nodeA,
                                  nodeC));
         assertTrue(newPredicate(RootDefinition.class)
-                           .test(nodeA,
+                           .test(nodeB,
                                  nodeC));
     }
 
@@ -91,7 +95,14 @@ public class FilteredParentsTypeMatcherTest extends AbstractGraphDefinitionTypes
         assertFalse(newPredicate(RootDefinition.class)
                             .test(nodeA,
                                   nodeB));
-        assertTrue(newPredicate(ParentDefinition.class)
+        assertFalse(newPredicate(ParentDefinition.class)
+                            .test(nodeA,
+                                  nodeB));
+
+        //set root as parent of nodeB
+        graphHandler.setChild(rootNode,
+                              nodeB);
+        assertTrue(newPredicate(RootDefinition.class)
                            .test(nodeA,
                                  nodeB));
     }

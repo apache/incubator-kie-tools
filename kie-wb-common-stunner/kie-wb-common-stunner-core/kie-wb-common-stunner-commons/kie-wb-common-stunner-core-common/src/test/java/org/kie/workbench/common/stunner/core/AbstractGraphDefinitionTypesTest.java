@@ -19,7 +19,11 @@ package org.kie.workbench.common.stunner.core;
 import java.util.Optional;
 
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.rule.RuleViolations;
+import org.kie.workbench.common.stunner.core.validation.Violation;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
@@ -27,11 +31,13 @@ public class AbstractGraphDefinitionTypesTest {
 
     public static final String DEF_ROOT_ID = RootDefinition.class.getName();
     public static final String DEF_PARENT_ID = ParentDefinition.class.getName();
+    public static final String DEF_GRAND_PARENT_ID = GrandParentDefinition.class.getName();
     public static final String DEF_A_ID = DefinitionA.class.getName();
     public static final String DEF_B_ID = DefinitionB.class.getName();
     public static final String DEF_C_ID = DefinitionC.class.getName();
     public static final String ROOT_UUID = "root-uuid";
     public static final String PARENT_UUID = "parent-uuid";
+    public static final String GRAND_PARENT_UUID = "grand-parent-uuid";
     public static final String A_UUID = "a-uuid";
     public static final String B_UUID = "b-uuid";
     public static final String C_UUID = "c-uuid";
@@ -41,6 +47,10 @@ public class AbstractGraphDefinitionTypesTest {
     }
 
     protected class ParentDefinition {
+
+    }
+
+    protected class GrandParentDefinition {
 
     }
 
@@ -60,11 +70,13 @@ public class AbstractGraphDefinitionTypesTest {
 
     protected RootDefinition rootDefinition;
     protected ParentDefinition parentDefinition;
+    protected GrandParentDefinition gradParentDefinition;
     protected DefinitionA definitionA;
     protected DefinitionB definitionB;
     protected DefinitionC definitionC;
     protected Node rootNode;
     protected Node parentNode;
+    protected Node grandParentNode;
     protected Node nodeA;
     protected Node nodeB;
     protected Node nodeC;
@@ -73,11 +85,13 @@ public class AbstractGraphDefinitionTypesTest {
         this.graphHandler = new TestingGraphMockHandler();
         this.rootDefinition = new RootDefinition();
         this.parentDefinition = new ParentDefinition();
+        this.gradParentDefinition = new GrandParentDefinition();
         this.definitionA = new DefinitionA();
         this.definitionB = new DefinitionB();
         this.definitionC = new DefinitionC();
         when(graphHandler.definitionAdapter.getId(eq(rootDefinition))).thenReturn(DEF_ROOT_ID);
         when(graphHandler.definitionAdapter.getId(eq(parentDefinition))).thenReturn(DEF_PARENT_ID);
+        when(graphHandler.definitionAdapter.getId(eq(gradParentDefinition))).thenReturn(DEF_GRAND_PARENT_ID);
         when(graphHandler.definitionAdapter.getId(eq(definitionA))).thenReturn(DEF_A_ID);
         when(graphHandler.definitionAdapter.getId(eq(definitionB))).thenReturn(DEF_B_ID);
         when(graphHandler.definitionAdapter.getId(eq(definitionC))).thenReturn(DEF_C_ID);
@@ -93,6 +107,12 @@ public class AbstractGraphDefinitionTypesTest {
                                       0,
                                       1000,
                                       1000);
+        this.grandParentNode = newViewNode(GRAND_PARENT_UUID,
+                                           gradParentDefinition,
+                                           0,
+                                           0,
+                                           900,
+                                           900);
         this.nodeA = newViewNode(A_UUID,
                                  definitionA,
                                  0,
@@ -112,14 +132,11 @@ public class AbstractGraphDefinitionTypesTest {
                                  10,
                                  10);
         graphHandler
-                .setChild(rootNode,
-                          parentNode)
-                .setChild(rootNode,
-                          nodeC)
-                .setChild(parentNode,
-                          nodeA)
-                .setChild(parentNode,
-                          nodeB);
+                .setChild(rootNode, parentNode)
+                .setChild(rootNode, grandParentNode)
+                .setChild(rootNode, nodeC)
+                .setChild(parentNode, nodeA)
+                .setChild(parentNode, nodeB);
     }
 
     protected Node newViewNode(String uuid,
@@ -134,5 +151,14 @@ public class AbstractGraphDefinitionTypesTest {
                                         y,
                                         w,
                                         h);
+    }
+
+    protected void assertViolations(RuleViolations violations, boolean assertSuccess) {
+        final boolean condition = violations.violations(Violation.Type.ERROR).iterator().hasNext();
+        if (assertSuccess) {
+            assertFalse(condition);
+        } else {
+            assertTrue(condition);
+        }
     }
 }

@@ -109,7 +109,7 @@ public abstract class GeneralCreateNodeAction implements CreateNodeAction<Abstra
         }
     }
 
-    private CanvasCommand<AbstractCanvasHandler> updateNodeLocation(final CanvasHandler canvasHandler,
+    private CanvasCommand<AbstractCanvasHandler> updateNodeLocation(final AbstractCanvasHandler canvasHandler,
                                                                     final Node<View<?>, Edge> sourceNode,
                                                                     final Node<View<?>, Edge> targetNode) {
         // Obtain the candidate locations for the target node.

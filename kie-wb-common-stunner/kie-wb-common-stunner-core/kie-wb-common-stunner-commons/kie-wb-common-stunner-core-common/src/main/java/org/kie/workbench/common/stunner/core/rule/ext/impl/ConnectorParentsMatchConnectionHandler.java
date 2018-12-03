@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.rule.ext.impl;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,8 +26,11 @@ import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.graph.Edge;
+import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.graph.util.ParentsTypeMatcher;
 import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 import org.kie.workbench.common.stunner.core.rule.context.GraphConnectionContext;
@@ -109,15 +113,25 @@ public class ConnectorParentsMatchConnectionHandler
                    "Evaluating rule handler [" + getClass().getName() + "]...");
         final Optional<Node<? extends View<?>, ? extends Edge>> sourceNode = context.getSource();
         final Optional<Node<? extends View<?>, ? extends Edge>> targetNode = context.getTarget();
-        final Class<?>[] typeArguments = rule.getTypeArguments();
-        final Class<?> parentType = null != typeArguments ? typeArguments[0] : null;
+
         final DefaultRuleViolations result = new DefaultRuleViolations();
         boolean isValid = true;
         if (sourceNode.isPresent() && targetNode.isPresent()) {
+            final Node<? extends View<?>, ? extends Edge> source = sourceNode.get();
+            final Node<? extends View<?>, ? extends Edge> target = targetNode.get();
+
+            //source parent
+            final Optional<? extends Element<? extends Definition>> sourceParent =
+                    Optional.ofNullable((Element<? extends Definition>) GraphUtils.getParent(source));
+            final Class<?> parentTypeForSource = getParentType(rule, sourceParent.orElse(null));
+            //target parent
+            final Optional<? extends Element<? extends Definition>> targetParent =
+                    Optional.ofNullable((Element<? extends Definition>) GraphUtils.getParent(target));
+            final Class<?> parentTypeForTarget = getParentType(rule, targetParent.orElse(null));
+
             isValid = new ParentsTypeMatcher(definitionManager)
-                    .forParentType(parentType)
-                    .test(sourceNode.get(),
-                          targetNode.get());
+                    .forParentType(Objects.nonNull(parentTypeForSource) ? parentTypeForSource : parentTypeForTarget)
+                    .test(source, target);
         }
         if (!isValid) {
             addViolation(context.getConnector().getUUID(),

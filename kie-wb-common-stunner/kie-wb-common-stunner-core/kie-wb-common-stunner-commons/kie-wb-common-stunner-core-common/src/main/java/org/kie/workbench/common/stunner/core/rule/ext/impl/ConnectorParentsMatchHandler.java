@@ -105,8 +105,7 @@ public class ConnectorParentsMatchHandler
     }
 
     private void checkParentTypeExists(final RuleExtension rule) {
-        final Class<?> parentType = AbstractParentsMatchHandler.getParentType(rule);
-        if (null == parentType) {
+        if (!AbstractParentsMatchHandler.hasParentType(rule)) {
             throw new IllegalArgumentException("No parent type specified in @RuleExtension " +
                                                        "for handler [" + this.getClass().getName() + "]");
         }

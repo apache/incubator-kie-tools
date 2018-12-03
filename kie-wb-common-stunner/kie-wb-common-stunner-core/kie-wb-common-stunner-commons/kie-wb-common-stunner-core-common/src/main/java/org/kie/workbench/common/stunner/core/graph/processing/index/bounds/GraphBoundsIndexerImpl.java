@@ -59,6 +59,7 @@ public class GraphBoundsIndexerImpl implements GraphBoundsIndexer {
                              y);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Node<View<?>, Edge> getAt(final double x,
                                      final double y,
@@ -69,7 +70,7 @@ public class GraphBoundsIndexerImpl implements GraphBoundsIndexer {
         double xToCheck = 0;
         double yToCheck = 0;
         if (parentNode != null) {
-            parentNodePosition = GraphUtils.getPosition((View) parentNode.asNode().getContent());
+            parentNodePosition = GraphUtils.getComputedPosition(parentNode.asNode());
             xToCheck = x + parentNodePosition.getX();
             yToCheck = y + parentNodePosition.getY();
         }

@@ -49,7 +49,8 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 
 // Associations cannot exceed bounds when any of the nodes are in an embedded subprocess context.
 @RuleExtension(handler = ConnectorParentsMatchHandler.class,
-        typeArguments = {BaseSubprocess.class},
+        typeArguments = {EmbeddedSubprocess.class, EventSubprocess.class, MultipleInstanceSubprocess.class,
+                AdHocSubprocess.class},
         arguments = {"Association flow connectors cannot exceed the sub-process' bounds. " +
                 "Both source and target nodes must be in same parent process."})
 @FormDefinition(

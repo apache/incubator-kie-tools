@@ -29,7 +29,6 @@ import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.Tree
 import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 import org.kie.workbench.common.stunner.core.rule.context.NodeContainmentContext;
 import org.kie.workbench.common.stunner.core.rule.ext.RuleExtension;
-import org.kie.workbench.common.stunner.core.validation.Violation;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -124,7 +123,72 @@ public class ConnectorParentsMatchContainmentHandlerTest extends AbstractGraphDe
         final RuleViolations violations = tested.evaluate(ruleExtension,
                                                           containmentContext);
         assertNotNull(violations);
-        assertFalse(violations.violations(Violation.Type.ERROR).iterator().hasNext());
+        assertViolations(violations, true);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testEvaluateNestedParentsChangingParents() {
+        //set nested parent
+        graphHandler.removeChild(rootNode, parentNode);
+        graphHandler.setChild(grandParentNode, parentNode);
+
+        //set node b as child of the grandparent
+        graphHandler.removeChild(parentNode, nodeB);
+        graphHandler.setChild(grandParentNode, nodeB);
+
+        when(ruleExtension.getTypeArguments()).thenReturn(new Class[]{GrandParentDefinition.class});
+        when(containmentContext.getCandidate()).thenReturn(nodeA);
+        when(containmentContext.getParent()).thenReturn(parentNode);
+
+        graphHandler.addEdge(connector, nodeA).connectTo(connector, nodeB);
+
+        //should get get error since node b has a different parent
+        RuleViolations violations = tested.evaluate(ruleExtension, containmentContext);
+        assertNotNull(violations);
+        assertViolations(violations, false);
+
+        //changing parent to the grandparent then it should be success
+        when(containmentContext.getParent()).thenReturn(grandParentNode);
+
+        //should be success now because the parents are the same
+        violations = tested.evaluate(ruleExtension, containmentContext);
+        assertNotNull(violations);
+        assertViolations(violations, true);
+
+        //removing node b from grandparent
+        graphHandler.removeChild(grandParentNode, nodeB);
+        graphHandler.setChild(parentNode, nodeB);
+
+        //should be error now because now node b is child of parent and the target parent is the grandparent
+        violations = tested.evaluate(ruleExtension, containmentContext);
+        assertNotNull(violations);
+        assertViolations(violations, false);
+
+        //removing node b from grandparent
+        graphHandler.removeChild(grandParentNode, nodeB);
+        graphHandler.setChild(parentNode, nodeB);
+
+        //should be error now because now node b is child of parent and the target parent is the grandparent
+        violations = tested.evaluate(ruleExtension, containmentContext);
+        assertNotNull(violations);
+        assertViolations(violations, false);
+
+        //now change the accepted type but set the parent as valid
+        when(containmentContext.getParent()).thenReturn(parentNode);
+        when(ruleExtension.getTypeArguments()).thenReturn(new Class[]{RootDefinition.class});
+
+        //should be error now because now node b is child of parent and the target parent is the grandparent
+        violations = tested.evaluate(ruleExtension, containmentContext);
+        assertNotNull(violations);
+        assertViolations(violations, false);
+
+        //set accepted type (ParentDefinition) to the same as the current parent then it should be success
+        when(ruleExtension.getTypeArguments()).thenReturn(new Class[]{GrandParentDefinition.class, ParentDefinition.class});
+
+        violations = tested.evaluate(ruleExtension, containmentContext);
+        assertNotNull(violations);
+        assertViolations(violations, true);
     }
 
     @Test
@@ -139,6 +203,6 @@ public class ConnectorParentsMatchContainmentHandlerTest extends AbstractGraphDe
         final RuleViolations violations = tested.evaluate(ruleExtension,
                                                           containmentContext);
         assertNotNull(violations);
-        assertTrue(violations.violations(Violation.Type.ERROR).iterator().hasNext());
+        assertViolations(violations, false);
     }
 }

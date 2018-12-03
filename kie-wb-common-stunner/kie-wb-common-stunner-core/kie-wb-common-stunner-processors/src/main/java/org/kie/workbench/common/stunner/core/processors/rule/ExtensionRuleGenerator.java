@@ -22,6 +22,7 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
@@ -100,9 +101,11 @@ public class ExtensionRuleGenerator extends AbstractGenerator {
         String rawTypeArgs = "null";
         if (null != argumentTypeMirrors) {
             rawTypeArgs = "new Class<?>[] { ";
-            for (TypeMirror argTypeMirror : argumentTypeMirrors) {
+            for (int i = 0; i < argumentTypeMirrors.size(); i++) {
+                TypeMirror argTypeMirror = argumentTypeMirrors.get(i);
                 String morphTargetMirrorClassName = argTypeMirror.toString();
-                rawTypeArgs += morphTargetMirrorClassName + ".class";
+                rawTypeArgs += morphTargetMirrorClassName + ".class"
+                        + (!Objects.equals(i, argumentTypeMirrors.size() - 1) ? ", " : "");
             }
             rawTypeArgs += " }";
         }

@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.graph.util;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
@@ -53,7 +54,6 @@ public class ParentsTypeMatcher
                                      node2);
     }
 
-
     static class ParentByDefinitionIdProvider
             implements BiFunction<Node<? extends View<?>, ? extends Edge>, Class<?>, Optional<Element<?>>> {
 
@@ -66,11 +66,11 @@ public class ParentsTypeMatcher
         @Override
         public Optional<Element<?>> apply(final Node<? extends View<?>, ? extends Edge> node,
                                           final Class<?> parentType) {
-            return null != node ?
-                    GraphUtils.getParentByDefinitionId(definitionManager,
-                                                       node,
-                                                       getDefinitionIdByTpe(parentType)) :
-                    Optional.empty();
+            return Objects.nonNull(node) && Objects.nonNull(parentType)
+                    ? GraphUtils.getParentByDefinitionId(definitionManager,
+                                                         node,
+                                                         getDefinitionIdByTpe(parentType))
+                    : Optional.empty();
         }
 
         static String getDefinitionIdByTpe(final Class<?> type) {

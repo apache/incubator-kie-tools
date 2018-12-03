@@ -42,11 +42,6 @@ import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.core.graph.processing.index.bounds.GraphBoundsIndexer;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
-import org.kie.workbench.common.stunner.core.rule.RuleSet;
-import org.kie.workbench.common.stunner.core.rule.RuleViolations;
-import org.kie.workbench.common.stunner.core.rule.context.NodeContainmentContext;
-import org.kie.workbench.common.stunner.core.rule.context.impl.RuleContextBuilder;
-import org.kie.workbench.common.stunner.core.validation.Violation;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
@@ -69,9 +64,9 @@ public class CanvasLayoutUtils {
     public CanvasLayoutUtils() {
     }
 
-    CanvasLayoutUtils(GraphBoundsIndexer graphBoundsIndexer,
-                      RuleManager ruleManager,
-                      DefinitionManager definitionManager) {
+    CanvasLayoutUtils(final GraphBoundsIndexer graphBoundsIndexer,
+                      final RuleManager ruleManager,
+                      final DefinitionManager definitionManager) {
         this.graphBoundsIndexer = graphBoundsIndexer;
         this.ruleManager = ruleManager;
         this.definitionManager = definitionManager;
@@ -103,7 +98,7 @@ public class CanvasLayoutUtils {
     }
 
     @SuppressWarnings("unchecked")
-    public Point2D getNext(final CanvasHandler canvasHandler,
+    public Point2D getNext(final AbstractCanvasHandler canvasHandler,
                            final Node<View<?>, Edge> root,
                            final Node<View<?>, Edge> newNode) {
         final double[] rootBounds = getBoundCoordinates(root);
@@ -151,7 +146,7 @@ public class CanvasLayoutUtils {
         );
     }
 
-    public Point2D getNext(final CanvasHandler canvasHandler,
+    public Point2D getNext(final AbstractCanvasHandler canvasHandler,
                            final Node<View<?>, Edge> root,
                            final double rootNodeWidth,
                            final double rootNodeHeight,
@@ -183,18 +178,7 @@ public class CanvasLayoutUtils {
             }
         }
 
-        Node targetNodeContainer = graphBoundsIndexer.getAt(newPositionUL.getX(),
-                                                            newPositionUL.getY(),
-                                                            newNodeWidth,
-                                                            newNodeHeight,
-                                                            parentNode);
-        boolean canContain = false;
-        if (targetNodeContainer != null) {
-            canContain = canContain(canvasHandler,
-                                    targetNodeContainer,
-                                    root);
-        }
-        if ((!canContain) || isOutOfCanvas(newPositionUL,
+        if (isOutOfCanvas(newPositionUL,
                                            newNodeHeight,
                                            canvasHeight) || checkParent) {
 
@@ -210,8 +194,7 @@ public class CanvasLayoutUtils {
                                                 newPositionUL,
                                                 newNodeWidth,
                                                 newNodeHeight,
-                                                parentNode)) &&
-                    !canContain)
+                                                parentNode)))
                     &&
                     (newPositionUL.getY() < canvasHeight) && (newPositionUL.getX() < canvasWidth)
                     ||
@@ -277,12 +260,6 @@ public class CanvasLayoutUtils {
                                                               newNodeWidth);
                 }
 
-                targetNodeContainer = graphBoundsIndexer.getAt(newPositionUL.getX(),
-                                                               newPositionUL.getY(),
-                                                               newNodeWidth,
-                                                               newNodeHeight,
-                                                               parentNode);
-                canContain = targetNodeContainer == null || canContain(canvasHandler, targetNodeContainer, root);
             }
         } else {
             if (checkParent) {
@@ -321,27 +298,6 @@ public class CanvasLayoutUtils {
         }
 
         return nextPosition;
-    }
-
-    private boolean canContain(final CanvasHandler canvasHandler,
-                               final Node container,
-                               final Node candidate) {
-        boolean canContain = true;
-        NodeContainmentContext containmentContext = RuleContextBuilder.GraphContexts.containment(canvasHandler.getDiagram().getGraph(),
-                                                                                                 container,
-                                                                                                 candidate);
-        String definitionSetId = canvasHandler.getDiagram().getMetadata().getDefinitionSetId();
-        Object definitionSet = definitionManager.definitionSets().getDefinitionSetById(definitionSetId);
-        RuleSet ruleSet = definitionManager.adapters().forRules().getRuleSet(definitionSet);
-
-        RuleViolations violations = ruleManager.evaluate(ruleSet,
-                                                         containmentContext);
-
-        if (violations.violations(Violation.Type.ERROR).iterator().hasNext()) {
-            canContain = false;
-        }
-
-        return canContain;
     }
 
     private boolean isOutOfCanvas(Point2D newPositionUL,

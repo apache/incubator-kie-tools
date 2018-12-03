@@ -54,12 +54,7 @@ public class RuleExtensionMultiHandler
     @SuppressWarnings("unchecked")
     public boolean accepts(final RuleExtension rule,
                            final RuleEvaluationContext context) {
-        return handlers.stream()
-                .filter(h -> isHandlerAccepted(h,
-                                               rule,
-                                               context))
-                .findAny()
-                .isPresent();
+        return handlers.stream().anyMatch(h -> isHandlerAccepted(h, rule, context));
     }
 
     @Override
@@ -84,7 +79,6 @@ public class RuleExtensionMultiHandler
                                       final RuleExtension rule,
                                       final RuleEvaluationContext context) {
         return handler.getContextType().equals(context.getType())
-                && handler.accepts(rule,
-                                   context);
+                && handler.accepts(rule, context);
     }
 }

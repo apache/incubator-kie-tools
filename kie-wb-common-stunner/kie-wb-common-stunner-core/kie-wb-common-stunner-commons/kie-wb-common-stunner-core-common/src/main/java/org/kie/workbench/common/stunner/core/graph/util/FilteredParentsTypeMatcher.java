@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.graph.util;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
@@ -28,16 +29,18 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
+
 /**
  * A predicate that checks if two nodes are using sharing the same parent
  * for a given type of Definition. It also filters a given node and
- * used the given parent as a candidate for it, instead of
- * processing the graph structure.
+ * uses the given parent as a candidate for it, instead of processing the graph structure.
  */
 public class FilteredParentsTypeMatcher
         implements BiPredicate<Node<? extends View<?>, ? extends Edge>, Node<? extends View<?>, ? extends Edge>> {
 
     private final ParentsTypeMatchPredicate parentsTypeMatchPredicate;
+    private final NodeCompositePredicate parentsMatchPredicate;
     private final Optional<Element<? extends Definition<?>>> candidateParent;
     private final Optional<Node<? extends Definition<?>, ? extends Edge>> candidateNode;
 
@@ -46,9 +49,10 @@ public class FilteredParentsTypeMatcher
                                       final Node<? extends Definition<?>, ? extends Edge> candidateNode) {
         this.candidateParent = Optional.ofNullable(candidateParent);
         this.candidateNode = Optional.ofNullable(candidateNode);
-        this.parentsTypeMatchPredicate =
-                new ParentsTypeMatchPredicate(new FilteredParentByDefinitionIdProvider(definitionManager),
-                                              new FilteredHasParentPredicate());
+        this.parentsTypeMatchPredicate = new ParentsTypeMatchPredicate(new FilteredParentByDefinitionIdProvider(definitionManager),
+                                                                       new FilteredHasParentPredicate());
+        this.parentsMatchPredicate = new NodeCompositePredicate(parentsTypeMatchPredicate,
+                                                                new ParentsMatchForCandidatePredicate());
     }
 
     public FilteredParentsTypeMatcher forParentType(final Class<?> parentType) {
@@ -59,8 +63,15 @@ public class FilteredParentsTypeMatcher
     @Override
     public boolean test(final Node<? extends View<?>, ? extends Edge> node,
                         final Node<? extends View<?>, ? extends Edge> node2) {
-        return parentsTypeMatchPredicate.test(node,
-                                              node2);
+        checkNotNull("node", node);
+        checkNotNull("node2", node2);
+
+        //in case none nodes are candidates
+        if (!isCandidate.test(node) && !isCandidate.test(node2)) {
+            return true;
+        }
+
+        return parentsMatchPredicate.test(node, node2);
     }
 
     private class FilteredHasParentPredicate implements BiPredicate<Node<?, ? extends Edge>, Element<?>> {
@@ -83,6 +94,21 @@ public class FilteredParentsTypeMatcher
         }
     }
 
+    /**
+     * Check if a candidate parent is the same for a given candidate node and is the current parent for other node, on the test condition.
+     * This condition is necessary when changing a connection (source or target), both nodes should have the same parent.
+     */
+    private class ParentsMatchForCandidatePredicate implements BiPredicate<Node<? extends View<?>, ? extends Edge>, Node<? extends View<?>, ? extends Edge>> {
+
+        @Override
+        public boolean test(Node<? extends View<?>, ? extends Edge> node, Node<? extends View<?>, ? extends Edge> node2) {
+            //check if the parent of the target node connection is the same as the candidate parent
+            return isCandidate.test(node)
+                    ? Objects.equals(GraphUtils.getParent(node2), candidateParent.orElse(null))
+                    : Objects.equals(GraphUtils.getParent(node), candidateParent.orElse(null));
+        }
+    }
+
     private class FilteredParentByDefinitionIdProvider
             implements BiFunction<Node<? extends View<?>, ? extends Edge>, Class<?>, Optional<Element<?>>> {
 
@@ -95,7 +121,7 @@ public class FilteredParentsTypeMatcher
         @Override
         public Optional<Element<?>> apply(final Node<? extends View<?>, ? extends Edge> node,
                                           final Class<?> parentType) {
-                return getParent(node, parentType);
+            return getParent(node, parentType);
         }
 
         private Optional<Element<?>> getParent(final Node<? extends View<?>, ? extends Edge> node,
@@ -107,7 +133,7 @@ public class FilteredParentsTypeMatcher
 
         @SuppressWarnings("unchecked")
         private Optional<Element<?>> getCandidateParentInstance(final Class<?> parentType) {
-            return candidateParent.isPresent() ?
+            return candidateParent.isPresent() && Objects.nonNull(parentType) ?
                     (ParentsTypeMatcher.ParentByDefinitionIdProvider.getDefinitionIdByTpe(parentType)
                             .equals(getCandidateParentId().get()) ?
                             Optional.of(candidateParent.get()) :

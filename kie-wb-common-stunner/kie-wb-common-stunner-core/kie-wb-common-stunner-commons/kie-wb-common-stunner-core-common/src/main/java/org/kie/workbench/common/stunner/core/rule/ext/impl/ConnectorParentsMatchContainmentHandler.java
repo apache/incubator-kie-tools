@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.core.rule.ext.impl;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.logging.Logger;
 
@@ -113,13 +114,16 @@ public class ConnectorParentsMatchContainmentHandler
 
     private boolean acceptsContainment(final RuleExtension rule,
                                        final NodeContainmentContext context) {
-        final Class<?> parentType = getParentType(rule);
+        final Class<?> parentType = getParentType(rule, context.getParent());
+        if (!hasParentType(rule) || Objects.isNull(parentType)) {
+            return true;
+        }
+
         final String expectedParentId = BindableAdapterUtils.getDefinitionId(parentType);
         final Element<? extends Definition<?>> parent = context.getParent();
         final Node<? extends Definition<?>, ? extends Edge> candidate = context.getCandidate();
         final String parentId = evalUtils.getElementDefinitionId(parent);
-        return parentId.equals(expectedParentId) || hasOldParentType(candidate,
-                                                                     expectedParentId);
+        return parentId.equals(expectedParentId) || hasOldParentType(candidate, expectedParentId);
     }
 
     @SuppressWarnings("unchecked")
@@ -129,8 +133,9 @@ public class ConnectorParentsMatchContainmentHandler
         final Graph<?, ? extends Node> graph = context.getGraph();
         final Element<? extends Definition<?>> parent = context.getParent();
         final Node<? extends Definition<?>, ? extends Edge> candidate = context.getCandidate();
-        final Class<?> parentType = getParentType(rule);
+        final Class<?> parentType = getParentType(rule, context.getParent());
         final DefaultRuleViolations result = new DefaultRuleViolations();
+
         // Walk throw the graph and evaluate connector source and target nodes parent match.
         treeWalkTraverseProcessor
                 .traverse(graph,
