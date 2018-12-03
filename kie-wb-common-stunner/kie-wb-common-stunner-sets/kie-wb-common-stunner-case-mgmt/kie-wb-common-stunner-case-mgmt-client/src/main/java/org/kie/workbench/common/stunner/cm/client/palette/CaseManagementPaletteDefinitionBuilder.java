@@ -24,7 +24,6 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveGateway;
@@ -35,8 +34,6 @@ import org.kie.workbench.common.stunner.bpmn.definition.SequenceFlow;
 import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
 import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTask;
-import org.kie.workbench.common.stunner.client.widgets.components.glyph.BS3IconTypeGlyph;
-import org.kie.workbench.common.stunner.cm.client.resources.CaseManagementImageResources;
 import org.kie.workbench.common.stunner.cm.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
 import org.kie.workbench.common.stunner.cm.definition.EmbeddedSubprocess;
@@ -44,13 +41,11 @@ import org.kie.workbench.common.stunner.cm.definition.ReusableSubprocess;
 import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.components.palette.AbstractPaletteDefinitionBuilder;
+import org.kie.workbench.common.stunner.core.client.components.palette.CollapsedPaletteDefinitionBuilder;
 import org.kie.workbench.common.stunner.core.client.components.palette.DefaultPaletteDefinition;
-import org.kie.workbench.common.stunner.core.client.components.palette.ExpandedPaletteDefinitionBuilder;
 import org.kie.workbench.common.stunner.core.client.components.palette.PaletteDefinitionBuilder;
-import org.kie.workbench.common.stunner.core.client.shape.SvgDataUriGlyph;
-import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 
-import static org.kie.workbench.common.stunner.core.client.components.palette.DefaultPaletteDefinitionProviders.getId;
 import static org.kie.workbench.common.stunner.core.client.components.palette.DefaultPaletteDefinitionProviders.isType;
 
 @Dependent
@@ -74,41 +69,6 @@ public class CaseManagementPaletteDefinitionBuilder
              SUBCASES)
             .build();
 
-    private static final Map<String, Class<?>> CAT_DEFAULTS = new Maps.Builder<String, Class<?>>()
-        .put(STAGES,
-             AdHocSubprocess.class)
-        .put(TASKS,
-             UserTask.class)
-        .put(SUBPROCESSES,
-             EmbeddedSubprocess.class)
-        .put(SUBCASES,
-             ReusableSubprocess.class)
-            .build();
-
-    @SuppressWarnings("unchecked")
-    private final static Map<String, Glyph> CATEGORY_GLYPHS = new Maps.Builder<String, Glyph>()
-        .put(STAGES,
-             CaseManagementImageResources.INSTANCE != null ?
-                SvgDataUriGlyph.Builder.build(
-                        CaseManagementImageResources.INSTANCE.categoryStages().getSafeUri())
-                : BS3IconTypeGlyph.create(IconType.STAR))
-        .put(TASKS,
-             CaseManagementImageResources.INSTANCE != null ?
-                SvgDataUriGlyph.Builder.build(
-                        CaseManagementImageResources.INSTANCE.categoryTasks().getSafeUri())
-                : BS3IconTypeGlyph.create(IconType.TASKS))
-        .put(SUBPROCESSES,
-             CaseManagementImageResources.INSTANCE != null ?
-                SvgDataUriGlyph.Builder.build(
-                        CaseManagementImageResources.INSTANCE.categorySubprocesses().getSafeUri())
-                : BS3IconTypeGlyph.create(IconType.TASKS))
-        .put(SUBCASES,
-             CaseManagementImageResources.INSTANCE != null ?
-                SvgDataUriGlyph.Builder.build(
-                        CaseManagementImageResources.INSTANCE.categorySubcases().getSafeUri())
-                : BS3IconTypeGlyph.create(IconType.TASKS))
-            .build();
-
     private static final Map<String, String> DEFINITION_CATEGORY_MAPPINGS = new Maps.Builder<String, String>()
         .put(AdHocSubprocess.class.getName(),
              STAGES)
@@ -120,7 +80,7 @@ public class CaseManagementPaletteDefinitionBuilder
              SUBCASES)
             .build();
 
-    private final ExpandedPaletteDefinitionBuilder paletteDefinitionBuilder;
+    private final AbstractPaletteDefinitionBuilder paletteDefinitionBuilder;
     private final DefinitionManager definitionManager;
 
     // CDI proxy.
@@ -129,7 +89,7 @@ public class CaseManagementPaletteDefinitionBuilder
     }
 
     @Inject
-    public CaseManagementPaletteDefinitionBuilder(final ExpandedPaletteDefinitionBuilder paletteDefinitionBuilder,
+    public CaseManagementPaletteDefinitionBuilder(final CollapsedPaletteDefinitionBuilder paletteDefinitionBuilder,
                                                   final DefinitionManager definitionManager) {
         this.paletteDefinitionBuilder = paletteDefinitionBuilder;
         this.definitionManager = definitionManager;
@@ -139,22 +99,8 @@ public class CaseManagementPaletteDefinitionBuilder
     public void init() {
         paletteDefinitionBuilder
                 .itemFilter(isDefinitionAllowed())
-                .morphDefinitionProvider(def -> null)
                 .categoryFilter(isCategoryAllowed())
-                .categoryProvider(this::getCategoryFor)
-                .categoryDefinitionIdProvider(category -> getId(CAT_DEFAULTS.get(category)))
-                .categoryGlyphProvider(CATEGORY_GLYPHS::get)
-                .categoryMessages(new ExpandedPaletteDefinitionBuilder.ItemMessageProvider() {
-                    @Override
-                    public String getTitle(String id) {
-                        return CAT_TITLES.get(id);
-                    }
-
-                    @Override
-                    public String getDescription(String id) {
-                        return CAT_TITLES.get(id);
-                    }
-                });
+                .categoryProvider(this::getCategoryFor);
     }
 
     private String getCategoryFor(final Object definition) {
@@ -189,7 +135,7 @@ public class CaseManagementPaletteDefinitionBuilder
                                        paletteDefinition);
     }
 
-    ExpandedPaletteDefinitionBuilder getPaletteDefinitionBuilder() {
+    AbstractPaletteDefinitionBuilder getPaletteDefinitionBuilder() {
         return paletteDefinitionBuilder;
     }
 }

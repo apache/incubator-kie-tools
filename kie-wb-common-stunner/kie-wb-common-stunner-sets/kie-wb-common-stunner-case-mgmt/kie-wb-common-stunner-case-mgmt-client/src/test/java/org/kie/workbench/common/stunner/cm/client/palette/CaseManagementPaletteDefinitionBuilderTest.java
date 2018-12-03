@@ -34,8 +34,7 @@ import org.kie.workbench.common.stunner.cm.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.cm.definition.EmbeddedSubprocess;
 import org.kie.workbench.common.stunner.cm.definition.ReusableSubprocess;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
-import org.kie.workbench.common.stunner.core.client.components.palette.ExpandedPaletteDefinitionBuilder;
-import org.kie.workbench.common.stunner.core.definition.morph.MorphDefinition;
+import org.kie.workbench.common.stunner.core.client.components.palette.CollapsedPaletteDefinitionBuilder;
 import org.kie.workbench.common.stunner.core.i18n.StunnerTranslationService;
 import org.kie.workbench.common.stunner.core.registry.impl.DefinitionsCacheRegistry;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
@@ -43,7 +42,6 @@ import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.stunner.cm.client.palette.CaseManagementPaletteDefinitionBuilder.STAGES;
 import static org.kie.workbench.common.stunner.cm.client.palette.CaseManagementPaletteDefinitionBuilder.SUBCASES;
@@ -66,14 +64,14 @@ public class CaseManagementPaletteDefinitionBuilderTest {
     private StunnerTranslationService translationService;
 
     private CaseManagementPaletteDefinitionBuilder tested;
-    private ExpandedPaletteDefinitionBuilder paletteDefinitionBuilder;
+    private CollapsedPaletteDefinitionBuilder paletteDefinitionBuilder;
 
     @Before
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
-        paletteDefinitionBuilder = new ExpandedPaletteDefinitionBuilder(definitionUtils,
-                                                                        definitionsRegistry,
-                                                                        translationService);
+        paletteDefinitionBuilder = new CollapsedPaletteDefinitionBuilder(definitionUtils,
+                                                                         definitionsRegistry,
+                                                                         translationService);
         tested = new CaseManagementPaletteDefinitionBuilder(paletteDefinitionBuilder,
                                                             definitionManager);
     }
@@ -90,17 +88,6 @@ public class CaseManagementPaletteDefinitionBuilderTest {
         assertFalse(itemFilter.test(Lane.class.getName()));
         assertFalse(itemFilter.test(StartNoneEvent.class.getName()));
         assertFalse(itemFilter.test(EndNoneEvent.class.getName()));
-    }
-
-    @Test
-    public void testNoGroupsByMorphing() {
-        tested.init();
-        Function<Object, MorphDefinition> morphDefinitionProvider =
-                tested.getPaletteDefinitionBuilder().getMorphDefinitionProvider();
-        assertNull(morphDefinitionProvider.apply(new UserTask()));
-        assertNull(morphDefinitionProvider.apply(new BusinessRuleTask()));
-        assertNull(morphDefinitionProvider.apply(new ScriptTask()));
-        assertNull(morphDefinitionProvider.apply(new AdHocSubprocess()));
     }
 
     @Test
