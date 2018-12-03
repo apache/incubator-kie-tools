@@ -18,6 +18,7 @@ package org.uberfire.backend.vfs.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -49,7 +50,7 @@ public class ObservablePathImpl implements ObservablePath,
     private transient Path original;
 
     @Inject
-    private transient SessionInfo sessionInfo;
+    transient SessionInfo sessionInfo;
 
     private transient List<Command> onRenameCommand = new ArrayList<Command>();
     private transient List<Command> onDeleteCommand = new ArrayList<Command>();
@@ -293,10 +294,10 @@ public class ObservablePathImpl implements ObservablePath,
         }
     }
 
-    private void executeConcurrentRenameCommand(final Path path,
-                                                final Path destinationPath,
-                                                final String sessionId,
-                                                final User identity) {
+    void executeConcurrentRenameCommand(final Path path,
+                                        final Path destinationPath,
+                                        final String sessionId,
+                                        final User identity) {
         if (!onConcurrentRenameCommand.isEmpty()) {
             for (final ParameterizedCommand<OnConcurrentRenameEvent> command : onConcurrentRenameCommand) {
                 final OnConcurrentRenameEvent event = new OnConcurrentRenameEvent() {
@@ -333,10 +334,10 @@ public class ObservablePathImpl implements ObservablePath,
         }
     }
 
-    private void executeConcurrentCopyCommand(final Path path,
-                                              final Path destinationPath,
-                                              final String sessionId,
-                                              final User identity) {
+    void executeConcurrentCopyCommand(final Path path,
+                                      final Path destinationPath,
+                                      final String sessionId,
+                                      final User identity) {
         if (!onConcurrentCopyCommand.isEmpty()) {
             final OnConcurrentCopyEvent copyEvent = new OnConcurrentCopyEvent() {
                 @Override
@@ -373,9 +374,9 @@ public class ObservablePathImpl implements ObservablePath,
         }
     }
 
-    private void executeConcurrentUpdateCommand(final Path path,
-                                                final String sessionId,
-                                                final User identity) {
+    void executeConcurrentUpdateCommand(final Path path,
+                                        final String sessionId,
+                                        final User identity) {
         if (!onConcurrentUpdateCommand.isEmpty()) {
             final OnConcurrentUpdateEvent event = new OnConcurrentUpdateEvent() {
                 @Override
@@ -407,9 +408,9 @@ public class ObservablePathImpl implements ObservablePath,
         }
     }
 
-    private void executeConcurrentDeleteCommand(final Path path,
-                                                final String sessionId,
-                                                final User identity) {
+    void executeConcurrentDeleteCommand(final Path path,
+                                        final String sessionId,
+                                        final User identity) {
         if (!onConcurrentDeleteCommand.isEmpty()) {
             final OnConcurrentDelete event = new OnConcurrentDelete() {
                 @Override
