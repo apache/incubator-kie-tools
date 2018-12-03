@@ -24,6 +24,7 @@ import org.drools.workbench.screens.scenariosimulation.client.utils.ScenarioSimu
 import org.uberfire.ext.wires.core.grids.client.model.GridCellEditAction;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
+import org.uberfire.ext.wires.core.grids.client.util.RenderContextUtilities;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellEditContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.DefaultGridWidgetEditCellMouseEventHandler;
@@ -58,11 +59,11 @@ public class ScenarioSimulationGridWidgetMouseEventHandler extends DefaultGridWi
         //Get rendering information
         final Point2D gridWidgetComputedLocation = gridWidget.getComputedLocation();
         final ScenarioHeaderMetaData headerMetaData = (ScenarioHeaderMetaData) column.getHeaderMetaData().get(uiHeaderRowIndex);
-        final GridBodyCellEditContext context = ScenarioSimulationGridHeaderUtilities.makeRenderContext(gridWidget,
-                                                                                                        ri,
-                                                                                                        ci,
-                                                                                                        relativeLocation.add(gridWidgetComputedLocation),
-                                                                                                        uiHeaderRowIndex);
+        final GridBodyCellEditContext context = RenderContextUtilities.makeRenderContext(gridWidget,
+                                                                                         ri,
+                                                                                         ci,
+                                                                                         relativeLocation.add(gridWidgetComputedLocation),
+                                                                                         uiHeaderRowIndex);
 
         final GridData gridData = gridWidget.getModel();
         if (gridData.getSelectedHeaderCells().size() == 1) {

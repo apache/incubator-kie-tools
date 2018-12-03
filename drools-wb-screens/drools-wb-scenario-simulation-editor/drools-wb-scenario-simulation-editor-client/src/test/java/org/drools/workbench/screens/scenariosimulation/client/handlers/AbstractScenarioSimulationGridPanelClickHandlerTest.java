@@ -16,6 +16,7 @@
 
 package org.drools.workbench.screens.scenariosimulation.client.handlers;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -79,7 +80,6 @@ public abstract class AbstractScenarioSimulationGridPanelClickHandlerTest {
     @Mock
     protected ScenarioGridColumn scenarioGridColumnMock;
 
-    @Mock
     protected List<GridColumn<?>> columnsMock;
 
     @Mock
@@ -120,14 +120,15 @@ public abstract class AbstractScenarioSimulationGridPanelClickHandlerTest {
 
         // mock single column in grid
         when(scenarioGridModelMock.getHeaderRowCount()).thenReturn(1);
-        doReturn(scenarioGridColumnMock).when(columnsMock).get(0);
+        columnsMock = Arrays.asList(scenarioGridColumnMock, scenarioGridColumnMock);
         when(scenarioGridModelMock.getColumns()).thenReturn(columnsMock);
-        when(scenarioGridModelMock.getColumnCount()).thenReturn(1);
+        when(scenarioGridModelMock.getColumnCount()).thenReturn(2);
 
         // presence of header metadata is prerequisite to handle header click
         // to simplify test, return just one header metadata
         // it simulates just one row in column header rows
         when(scenarioGridColumnMock.getHeaderMetaData()).thenReturn(Collections.singletonList(headerMetaDataMock));
+        when(scenarioGridColumnMock.getInformationHeaderMetaData()).thenReturn(headerMetaDataMock);
         when(headerMetaDataMock.getColumnGroup()).thenReturn(FactMappingType.GIVEN.name());
 
         // mock that column to index 0

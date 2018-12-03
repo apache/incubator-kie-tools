@@ -28,6 +28,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
+import org.uberfire.ext.wires.core.grids.client.util.RenderContextUtilities;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
@@ -133,11 +134,11 @@ public class ScenarioSimulationGridHeaderUtilitiesTest {
         doReturn(0.0).when(ci).getOffsetX();
         doReturn(0).when(ci).getUiColumnIndex();
 
-        final GridBodyCellRenderContext context = ScenarioSimulationGridHeaderUtilities.makeRenderContext(gridWidget,
-                                                                                                          ri,
-                                                                                                          ci,
-                                                                                                          rp,
-                                                                                                          0);
+        final GridBodyCellRenderContext context = RenderContextUtilities.makeRenderContext(gridWidget,
+                                                                                           ri,
+                                                                                           ci,
+                                                                                           rp,
+                                                                                           0);
 
         assertNotNull(context);
         assertEquals(0.0,
@@ -163,11 +164,11 @@ public class ScenarioSimulationGridHeaderUtilitiesTest {
         doReturn(25.0).when(ci).getOffsetX();
         doReturn(1).when(ci).getUiColumnIndex();
 
-        final GridBodyCellRenderContext context = ScenarioSimulationGridHeaderUtilities.makeRenderContext(gridWidget,
-                                                                                                          ri,
-                                                                                                          ci,
-                                                                                                          rp,
-                                                                                                          0);
+        final GridBodyCellRenderContext context = RenderContextUtilities.makeRenderContext(gridWidget,
+                                                                                           ri,
+                                                                                           ci,
+                                                                                           rp,
+                                                                                           0);
 
         assertNotNull(context);
         assertEquals(25.0,
@@ -192,11 +193,11 @@ public class ScenarioSimulationGridHeaderUtilitiesTest {
         doReturn(25.0).when(ci).getOffsetX();
         doReturn(1).when(ci).getUiColumnIndex();
 
-        final GridBodyCellRenderContext context = ScenarioSimulationGridHeaderUtilities.makeRenderContext(gridWidget,
-                                                                                                          ri,
-                                                                                                          ci,
-                                                                                                          rp,
-                                                                                                          0);
+        final GridBodyCellRenderContext context = RenderContextUtilities.makeRenderContext(gridWidget,
+                                                                                           ri,
+                                                                                           ci,
+                                                                                           rp,
+                                                                                           0);
 
         assertNotNull(context);
         assertEquals(0.0,
@@ -223,11 +224,11 @@ public class ScenarioSimulationGridHeaderUtilitiesTest {
         doReturn(75.0).when(ci).getOffsetX();
         doReturn(2).when(ci).getUiColumnIndex();
 
-        final GridBodyCellRenderContext context = ScenarioSimulationGridHeaderUtilities.makeRenderContext(gridWidget,
-                                                                                                          ri,
-                                                                                                          ci,
-                                                                                                          rp,
-                                                                                                          0);
+        final GridBodyCellRenderContext context = RenderContextUtilities.makeRenderContext(gridWidget,
+                                                                                           ri,
+                                                                                           ci,
+                                                                                           rp,
+                                                                                           0);
 
         assertNotNull(context);
         assertEquals(25.0,
@@ -252,11 +253,11 @@ public class ScenarioSimulationGridHeaderUtilitiesTest {
         doReturn(0.0).when(ci).getOffsetX();
         doReturn(0).when(ci).getUiColumnIndex();
 
-        final GridBodyCellRenderContext context = ScenarioSimulationGridHeaderUtilities.makeRenderContext(gridWidget,
-                                                                                                          ri,
-                                                                                                          ci,
-                                                                                                          rp,
-                                                                                                          0);
+        final GridBodyCellRenderContext context = RenderContextUtilities.makeRenderContext(gridWidget,
+                                                                                           ri,
+                                                                                           ci,
+                                                                                           rp,
+                                                                                           0);
 
         assertNotNull(context);
         assertEquals(0.0,
@@ -283,11 +284,11 @@ public class ScenarioSimulationGridHeaderUtilitiesTest {
         doReturn(0.0).when(ci).getOffsetX();
         doReturn(0).when(ci).getUiColumnIndex();
 
-        final GridBodyCellRenderContext context = ScenarioSimulationGridHeaderUtilities.makeRenderContext(gridWidget,
-                                                                                                          ri,
-                                                                                                          ci,
-                                                                                                          rp,
-                                                                                                          0);
+        final GridBodyCellRenderContext context = RenderContextUtilities.makeRenderContext(gridWidget,
+                                                                                           ri,
+                                                                                           ci,
+                                                                                           rp,
+                                                                                           0);
 
         assertNotNull(context);
         assertEquals(0.0,
