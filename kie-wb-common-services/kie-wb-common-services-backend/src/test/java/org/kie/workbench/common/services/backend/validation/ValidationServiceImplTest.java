@@ -147,7 +147,7 @@ public class ValidationServiceImplTest {
 
         assertFalse(validationService.isBranchNameValid("/test"));
         assertFalse(validationService.isBranchNameValid("test/"));
-        assertFalse(validationService.isBranchNameValid("te/st"));
+        assertTrue(validationService.isBranchNameValid("te/st"));
 
         assertFalse(validationService.isBranchNameValid("..test"));
         assertFalse(validationService.isBranchNameValid("test.."));
@@ -218,6 +218,10 @@ public class ValidationServiceImplTest {
         assertFalse(validationService.isBranchNameValid("\\test"));
         assertFalse(validationService.isBranchNameValid("test\\"));
         assertFalse(validationService.isBranchNameValid("te\\st"));
+
+        assertFalse(validationService.isBranchNameValid("-test"));
+        assertTrue(validationService.isBranchNameValid("te-st"));
+        assertTrue(validationService.isBranchNameValid("test-"));
 
     }
 }

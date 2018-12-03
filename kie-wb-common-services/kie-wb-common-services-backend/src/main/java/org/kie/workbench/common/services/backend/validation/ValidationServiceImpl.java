@@ -47,7 +47,7 @@ import org.uberfire.ext.editor.commons.backend.validation.ValidationUtils;
 public class ValidationServiceImpl
         implements ValidationService {
 
-    private final Pattern branchNameValidator = Pattern.compile("^(?!/|\\.|.*([/.]\\.|//|@|\\\\))[^\000-\037\177 ~^:?*\\[/]+(?<!\\.lock|[\\.])$");
+    private final Pattern branchNameValidator = Pattern.compile("^(?!-|/|\\.|.*([/.]\\.|//|@|\\\\))[^\000-\037\177 ~^:?*\\[]+(?<!\\.lock|[\\./])$");
 
     private org.uberfire.ext.editor.commons.service.ValidationService validationService;
     private PackageNameValidator packageNameValidator;
