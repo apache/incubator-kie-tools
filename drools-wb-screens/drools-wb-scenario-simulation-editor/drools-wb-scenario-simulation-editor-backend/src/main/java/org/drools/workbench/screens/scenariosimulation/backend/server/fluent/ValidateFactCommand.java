@@ -19,10 +19,10 @@ package org.drools.workbench.screens.scenariosimulation.backend.server.fluent;
 import java.util.Collection;
 import java.util.List;
 
-import org.drools.core.command.impl.RegistryContext;
 import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieSession;
+import org.kie.internal.command.RegistryContext;
 
 public class ValidateFactCommand implements ExecutableCommand<Void> {
 
