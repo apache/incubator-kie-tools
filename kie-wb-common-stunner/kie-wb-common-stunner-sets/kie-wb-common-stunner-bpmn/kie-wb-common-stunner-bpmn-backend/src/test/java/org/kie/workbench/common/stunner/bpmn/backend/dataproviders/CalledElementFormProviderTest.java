@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,20 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.kie.workbench.common.stunner.bpmn.backend.dataproviders;
 
+import org.junit.Test;
 import org.kie.workbench.common.services.refactoring.service.ResourceType;
 import org.kie.workbench.common.stunner.bpmn.backend.query.FindBpmnProcessIdsQuery;
 
-public class CalledElementFormProvider extends AbstractCalledElementFormProvider {
+import static org.junit.Assert.assertEquals;
 
-    @Override
-    protected ResourceType getProcessIdResourceType() {
-        return ResourceType.BPMN2;
+public class CalledElementFormProviderTest {
+
+    private CalledElementFormProvider tested = new CalledElementFormProvider();
+
+    @Test
+    public void testGetProcessIdResourceType() throws Exception {
+        assertEquals(tested.getProcessIdResourceType(), ResourceType.BPMN2);
     }
 
-    @Override
-    protected String getQueryName() {
-        return FindBpmnProcessIdsQuery.NAME;
+    @Test
+    public void testGetQueryName() throws Exception {
+        assertEquals(tested.getQueryName(), FindBpmnProcessIdsQuery.NAME);
     }
 }

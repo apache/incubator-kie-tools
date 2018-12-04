@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.cm.backend.marshall.json.oryx;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.enterprise.context.Dependent;
@@ -25,8 +27,8 @@ import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.BaseOryx
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
 import org.kie.workbench.common.stunner.cm.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
-import org.kie.workbench.common.stunner.cm.definition.EmbeddedSubprocess;
-import org.kie.workbench.common.stunner.cm.definition.ReusableSubprocess;
+import org.kie.workbench.common.stunner.cm.definition.CaseReusableSubprocess;
+import org.kie.workbench.common.stunner.cm.definition.ProcessReusableSubprocess;
 import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 
@@ -38,9 +40,25 @@ import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 @CaseManagementEditor
 public class CaseManagementOryxIdMappings extends BaseOryxIdMappings {
 
+    private final Map<Class<?>, String> definitionIdMappings = new HashMap<>();
+    private final Map<String, Class<?>> definitionMappings = new HashMap<>();
+
     @Inject
     public CaseManagementOryxIdMappings(final DefinitionManager definitionManager) {
         super(definitionManager);
+    }
+
+    @Override
+    public void init(List<Class<?>> definitions) {
+        definitionIdMappings.put(AdHocSubprocess.class, "AdHocSubprocess");
+        definitionIdMappings.put(CaseReusableSubprocess.class, "ReusableSubprocess");
+        definitionIdMappings.put(ProcessReusableSubprocess.class, "ReusableSubprocess");
+
+        definitionMappings.put("AdHocSubprocess", AdHocSubprocess.class);
+        definitionMappings.put("CaseReusableSubprocess", CaseReusableSubprocess.class);
+        definitionMappings.put("ProcessReusableSubprocess", ProcessReusableSubprocess.class);
+
+        super.init(definitions);
     }
 
     @Override
@@ -51,27 +69,28 @@ public class CaseManagementOryxIdMappings extends BaseOryxIdMappings {
     @Override
     public Map<Class<?>, Map<Class<?>, String>> getDefinitionMappings() {
         final Map<Class<?>, Map<Class<?>, String>> definitionMappings = super.getDefinitionMappings();
-        final Map<Class<?>, String> reusableSubprocessPropertiesMap = definitionMappings.get(org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess.class);
-        definitionMappings.put(ReusableSubprocess.class,
-                               reusableSubprocessPropertiesMap);
+        final Map<Class<?>, String> caseReusableSubprocessPropertiesMap = definitionMappings.get(org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess.class);
+        definitionMappings.put(CaseReusableSubprocess.class,
+                               caseReusableSubprocessPropertiesMap);
         final Map<Class<?>, String> adHocSubprocessPropertiesMap = definitionMappings.get(org.kie.workbench.common.stunner.bpmn.definition.AdHocSubprocess.class);
         definitionMappings.put(AdHocSubprocess.class,
                                adHocSubprocessPropertiesMap);
-        final Map<Class<?>, String> embeddedSubprocessPropertiesMap = definitionMappings.get(org.kie.workbench.common.stunner.bpmn.definition.EmbeddedSubprocess.class);
-        definitionMappings.put(EmbeddedSubprocess.class,
-                               embeddedSubprocessPropertiesMap);
+        final Map<Class<?>, String> processReusableSubprocessPropertiesMap = definitionMappings.get(org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess.class);
+        definitionMappings.put(ProcessReusableSubprocess.class,
+                               processReusableSubprocessPropertiesMap);
 
         return definitionMappings;
     }
 
     @Override
-    public Map<Class<?>, String> getGlobalMappings() {
-        Map<Class<?>, String> globalMappings = super.getGlobalMappings();
+    public Class<?> getDefinition(String oryxId) {
+        final Class<?> result = definitionMappings.get(oryxId);
+        return result != null ? result : super.getDefinition(oryxId);
+    }
 
-        globalMappings.put(EmbeddedSubprocess.class, "Subprocess");
-        globalMappings.put(AdHocSubprocess.class, "AdHocSubprocess");
-        globalMappings.put(ReusableSubprocess.class, "ReusableSubprocess");
-
-        return globalMappings;
+    @Override
+    public String getOryxDefinitionId(Object def) {
+        final String result = definitionIdMappings.get(def.getClass());
+        return result != null ? result : super.getOryxDefinitionId(def);
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,26 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.kie.workbench.common.stunner.bpmn.backend.query;
-
-import javax.enterprise.context.ApplicationScoped;
+package org.kie.workbench.common.stunner.cm.backend.indexing;
 
 import org.kie.workbench.common.services.refactoring.service.ResourceType;
+import org.kie.workbench.common.stunner.bpmn.backend.indexing.AbstractBpmnProcessDataEventListener;
 
-@ApplicationScoped
-public class FindBpmnProcessIdsQuery extends AbstractFindIdsQuery {
+public class CaseManagementDataEventListener extends AbstractBpmnProcessDataEventListener {
 
-    public static final String NAME = FindBpmnProcessIdsQuery.class.getSimpleName();
+    static final String NAME = "CMProcessInfoCollector";
 
     @Override
-    public String getName() {
-        return NAME;
+    protected ResourceType getProcessNameResourceType() {
+        return ResourceType.BPMN_CM_NAME;
     }
 
     @Override
     protected ResourceType getProcessIdResourceType() {
-        return ResourceType.BPMN2;
+        return ResourceType.BPMN_CM;
+    }
+
+    @Override
+    protected String getProcessDescriptorName() {
+        return NAME;
     }
 }
-

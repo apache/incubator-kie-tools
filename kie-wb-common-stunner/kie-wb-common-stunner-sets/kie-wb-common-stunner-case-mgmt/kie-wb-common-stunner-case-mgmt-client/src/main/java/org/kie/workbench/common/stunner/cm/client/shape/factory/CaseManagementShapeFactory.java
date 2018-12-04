@@ -39,8 +39,8 @@ import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementSvgSub
 import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementSvgUserTaskShapeDef;
 import org.kie.workbench.common.stunner.cm.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
-import org.kie.workbench.common.stunner.cm.definition.EmbeddedSubprocess;
-import org.kie.workbench.common.stunner.cm.definition.ReusableSubprocess;
+import org.kie.workbench.common.stunner.cm.definition.CaseReusableSubprocess;
+import org.kie.workbench.common.stunner.cm.definition.ProcessReusableSubprocess;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.factory.DelegateShapeFactory;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
@@ -72,10 +72,10 @@ public class CaseManagementShapeFactory implements ShapeFactory<BPMNDefinition, 
                 .delegate(AdHocSubprocess.class,
                           new CaseManagementSvgSubprocessShapeDef(),
                           () -> shapeDefFactory)
-                .delegate(EmbeddedSubprocess.class,
+                .delegate(ProcessReusableSubprocess.class,
                           new CaseManagementSvgSubprocessShapeDef(),
                           () -> shapeDefFactory)
-                .delegate(ReusableSubprocess.class,
+                .delegate(CaseReusableSubprocess.class,
                           new CaseManagementSvgSubprocessShapeDef(),
                           () -> shapeDefFactory)
                 .delegate(UserTask.class,

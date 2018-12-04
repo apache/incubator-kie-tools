@@ -36,8 +36,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
 import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTask;
 import org.kie.workbench.common.stunner.cm.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
-import org.kie.workbench.common.stunner.cm.definition.EmbeddedSubprocess;
-import org.kie.workbench.common.stunner.cm.definition.ReusableSubprocess;
+import org.kie.workbench.common.stunner.cm.definition.CaseReusableSubprocess;
+import org.kie.workbench.common.stunner.cm.definition.ProcessReusableSubprocess;
 import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -74,9 +74,9 @@ public class CaseManagementPaletteDefinitionBuilder
              STAGES)
         .put(UserTask.class.getName(),
              TASKS)
-        .put(EmbeddedSubprocess.class.getName(),
+        .put(ProcessReusableSubprocess.class.getName(),
              SUBPROCESSES)
-        .put(ReusableSubprocess.class.getName(),
+        .put(CaseReusableSubprocess.class.getName(),
              SUBCASES)
             .build();
 

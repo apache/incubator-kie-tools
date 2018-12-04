@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.cm.backend.marshall.json.oryx;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
@@ -24,11 +25,12 @@ import org.junit.Test;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.OryxIdMappings;
 import org.kie.workbench.common.stunner.cm.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
-import org.kie.workbench.common.stunner.cm.definition.EmbeddedSubprocess;
-import org.kie.workbench.common.stunner.cm.definition.ReusableSubprocess;
+import org.kie.workbench.common.stunner.cm.definition.CaseReusableSubprocess;
+import org.kie.workbench.common.stunner.cm.definition.ProcessReusableSubprocess;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.mockito.Mock;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 public class CaseManagementOryxIdMappingsTest {
@@ -41,6 +43,7 @@ public class CaseManagementOryxIdMappingsTest {
     @Before
     public void setup() {
         this.oryxIdMappings = new CaseManagementOryxIdMappings(definitionManager);
+        this.oryxIdMappings.init(Collections.emptyList());
     }
 
     @Test
@@ -57,8 +60,8 @@ public class CaseManagementOryxIdMappingsTest {
 
     @Test
     public void checkGetDefinitionMappings() {
-        assertDefinitionMappings(ReusableSubprocess.class);
-        assertDefinitionMappings(EmbeddedSubprocess.class);
+        assertDefinitionMappings(CaseReusableSubprocess.class);
+        assertDefinitionMappings(ProcessReusableSubprocess.class);
         assertDefinitionMappings(AdHocSubprocess.class);
     }
 
@@ -68,16 +71,28 @@ public class CaseManagementOryxIdMappingsTest {
         assertNotNull(cmDefinitionMappings);
     }
 
+
     @Test
-    public void checkGetGlobalMappings() {
-        assertGlobalMappings(ReusableSubprocess.class);
-        assertGlobalMappings(EmbeddedSubprocess.class);
-        assertGlobalMappings(AdHocSubprocess.class);
+    public void testGetDefinition() throws Exception {
+        assertGetDefinistion("AdHocSubprocess", AdHocSubprocess.class);
+        assertGetDefinistion("CaseReusableSubprocess", CaseReusableSubprocess.class);
+        assertGetDefinistion("ProcessReusableSubprocess", ProcessReusableSubprocess.class);
     }
 
-    private void assertGlobalMappings(final Class cmClass) {
-        final Map<Class<?>, String> globalMappings = oryxIdMappings.getGlobalMappings();
-        final String cmGlobalMappings = globalMappings.get(cmClass);
-        assertNotNull(cmGlobalMappings);
+    private void assertGetDefinistion(final String oryxId, final Class<?> expectedResult) {
+        final Class<?> result = oryxIdMappings.getDefinition(oryxId);
+        assertEquals(result, expectedResult);
+    }
+
+    @Test
+    public void testGetOryxDefinitionId() throws Exception {
+        assertGetOryxDefinitionId(new AdHocSubprocess(), "AdHocSubprocess");
+        assertGetOryxDefinitionId(new CaseReusableSubprocess(), "ReusableSubprocess");
+        assertGetOryxDefinitionId(new ProcessReusableSubprocess(), "ReusableSubprocess");
+    }
+
+    private void assertGetOryxDefinitionId(final Object def, final String expectedId) {
+        final String result = oryxIdMappings.getOryxDefinitionId(def);
+        assertEquals(result, expectedId);
     }
 }

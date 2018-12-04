@@ -17,9 +17,12 @@
 package org.kie.workbench.common.stunner.cm.definition;
 
 import org.junit.Test;
+import org.kie.workbench.common.stunner.cm.definition.property.subprocess.Case;
+import org.kie.workbench.common.stunner.cm.definition.property.task.CaseReusableSubprocessTaskExecutionSet;
+import org.kie.workbench.common.stunner.cm.definition.property.task.ProcessReusableSubprocessTaskExecutionSet;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 public class HashCodeAndEqualityTest {
@@ -28,33 +31,107 @@ public class HashCodeAndEqualityTest {
     public void testCaseManagementDiagramEquals() {
         CaseManagementDiagram a = new CaseManagementDiagram();
         CaseManagementDiagram b = new CaseManagementDiagram();
-        assertEquals(a,
-                     b);
-        assertFalse(a.equals(19));
-        assertFalse(a.equals(null));
+        assertDefObjectEquals(a, b);
     }
 
     @Test
     public void testCaseManagementDiagramHashCode() {
         CaseManagementDiagram a = new CaseManagementDiagram();
         CaseManagementDiagram b = new CaseManagementDiagram();
-        assertTrue(a.hashCode() == b.hashCode());
+        assertDefObjectHashCode(a, b);
     }
 
     @Test
-    public void testReusableSubprocessEquals() {
-        ReusableSubprocess a = new ReusableSubprocess();
-        ReusableSubprocess b = new ReusableSubprocess();
-        assertFalse(a.equals(19));
-        assertFalse(a.equals(null));
-        assertEquals(a,
-                     b);
+    public void testCaseReusableSubprocessEquals() {
+        CaseReusableSubprocess a = new CaseReusableSubprocess();
+        CaseReusableSubprocess b = new CaseReusableSubprocess();
+        assertDefObjectEquals(a, b);
     }
 
     @Test
-    public void testReusableSubprocessHashCode() {
-        ReusableSubprocess a = new ReusableSubprocess();
-        ReusableSubprocess b = new ReusableSubprocess();
+    public void testCaseReusableSubprocessHashCode() {
+        CaseReusableSubprocess a = new CaseReusableSubprocess();
+        CaseReusableSubprocess b = new CaseReusableSubprocess();
+        assertDefObjectHashCode(a, b);
+    }
+
+    @Test
+    public void testProcessReusableSubprocessEquals() {
+        ProcessReusableSubprocess a = new ProcessReusableSubprocess();
+        ProcessReusableSubprocess b = new ProcessReusableSubprocess();
+        assertDefObjectEquals(a, b);
+    }
+
+    @Test
+    public void testProcessReusableSubprocessHashCode() {
+        ProcessReusableSubprocess a = new ProcessReusableSubprocess();
+        ProcessReusableSubprocess b = new ProcessReusableSubprocess();
+        assertDefObjectHashCode(a, b);
+    }
+
+    @Test
+    public void testAdHocSubprocessEquals() {
+        AdHocSubprocess a = new AdHocSubprocess();
+        AdHocSubprocess b = new AdHocSubprocess();
+        assertDefObjectEquals(a, b);
+    }
+
+    @Test
+    public void testAdhocSubprocessHashCode() {
+        AdHocSubprocess a = new AdHocSubprocess();
+        AdHocSubprocess b = new AdHocSubprocess();
+        assertDefObjectHashCode(a, b);
+    }
+
+    @Test
+    public void testCaseEquals() {
+        Case a = new Case();
+        Case b = new Case();
+        assertDefObjectEquals(a, b);
+    }
+
+    @Test
+    public void testCaseHashCode() {
+        Case a = new Case();
+        Case b = new Case();
+        assertDefObjectHashCode(a, b);
+    }
+
+    @Test
+    public void testCaseReusableSubprocessTaskExecutionSetEquals() {
+        CaseReusableSubprocessTaskExecutionSet a = new CaseReusableSubprocessTaskExecutionSet();
+        CaseReusableSubprocessTaskExecutionSet b = new CaseReusableSubprocessTaskExecutionSet();
+        assertDefObjectEquals(a, b);
+    }
+
+    @Test
+    public void testCaseReusableSubprocessTaskExecutionSetHashCode() {
+        CaseReusableSubprocessTaskExecutionSet a = new CaseReusableSubprocessTaskExecutionSet();
+        CaseReusableSubprocessTaskExecutionSet b = new CaseReusableSubprocessTaskExecutionSet();
+        assertDefObjectHashCode(a, b);
+    }
+
+    @Test
+    public void testProcessReusableSubprocessTaskExecutionSetEquals() {
+        ProcessReusableSubprocessTaskExecutionSet a = new ProcessReusableSubprocessTaskExecutionSet();
+        ProcessReusableSubprocessTaskExecutionSet b = new ProcessReusableSubprocessTaskExecutionSet();
+        assertDefObjectEquals(a, b);
+    }
+
+    @Test
+    public void testProcessReusableSubprocessTaskExecutionSetHashCode() {
+        ProcessReusableSubprocessTaskExecutionSet a = new ProcessReusableSubprocessTaskExecutionSet();
+        ProcessReusableSubprocessTaskExecutionSet b = new ProcessReusableSubprocessTaskExecutionSet();
+        assertDefObjectHashCode(a, b);
+    }
+
+    private void assertDefObjectEquals(final Object a, final Object b) {
+        assertNotEquals(a, 19);
+        assertNotEquals(a, null);
+        assertEquals(a, b);
+    }
+
+    private void assertDefObjectHashCode(final Object a, final Object b) {
         assertTrue(a.hashCode() - b.hashCode() == 0);
     }
 }

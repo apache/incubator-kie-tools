@@ -28,7 +28,8 @@ public class CaseManagementMarshaller extends Bpmn2Marshaller {
 
     private List<ItemDefinition> subprocessItemDefs = new LinkedList<>();
 
-    public CaseManagementMarshaller(DefinitionManager definitionManager, OryxManager oryxManager) {
+    public CaseManagementMarshaller(DefinitionManager definitionManager,
+                                    OryxManager oryxManager) {
         super(definitionManager, oryxManager);
     }
 

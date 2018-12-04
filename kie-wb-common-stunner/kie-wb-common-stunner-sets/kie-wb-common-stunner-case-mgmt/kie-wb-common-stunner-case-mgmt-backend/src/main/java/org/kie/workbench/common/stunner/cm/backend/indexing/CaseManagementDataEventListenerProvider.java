@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,26 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.kie.workbench.common.stunner.cm.backend.indexing;
 
-package org.kie.workbench.common.stunner.bpmn.backend.query;
+import org.jbpm.compiler.xml.ProcessDataEventListenerProvider;
 
-import javax.enterprise.context.ApplicationScoped;
-
-import org.kie.workbench.common.services.refactoring.service.ResourceType;
-
-@ApplicationScoped
-public class FindBpmnProcessIdsQuery extends AbstractFindIdsQuery {
-
-    public static final String NAME = FindBpmnProcessIdsQuery.class.getSimpleName();
+/**
+ * This is referenced in
+ * kie-wb-common-stunner-cm-backend/src/main/resources/META-INF/services/org.jbpm.compiler.xml.ProcessDataEventListenerProvider
+ */
+public class CaseManagementDataEventListenerProvider implements ProcessDataEventListenerProvider {
 
     @Override
-    public String getName() {
-        return NAME;
-    }
-
-    @Override
-    protected ResourceType getProcessIdResourceType() {
-        return ResourceType.BPMN2;
+    public CaseManagementDataEventListener newInstance() {
+        return new CaseManagementDataEventListener();
     }
 }
-

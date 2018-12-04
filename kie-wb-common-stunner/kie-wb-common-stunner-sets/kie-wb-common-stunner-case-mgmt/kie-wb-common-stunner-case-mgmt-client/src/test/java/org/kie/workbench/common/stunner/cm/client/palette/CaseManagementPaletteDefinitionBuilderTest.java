@@ -31,8 +31,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.ScriptTask;
 import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
 import org.kie.workbench.common.stunner.cm.definition.AdHocSubprocess;
-import org.kie.workbench.common.stunner.cm.definition.EmbeddedSubprocess;
-import org.kie.workbench.common.stunner.cm.definition.ReusableSubprocess;
+import org.kie.workbench.common.stunner.cm.definition.CaseReusableSubprocess;
+import org.kie.workbench.common.stunner.cm.definition.ProcessReusableSubprocess;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.components.palette.CollapsedPaletteDefinitionBuilder;
 import org.kie.workbench.common.stunner.core.i18n.StunnerTranslationService;
@@ -95,8 +95,8 @@ public class CaseManagementPaletteDefinitionBuilderTest {
         tested.init();
         Function<Object, String> categoryProvider = tested.getPaletteDefinitionBuilder().getCategoryProvider();
         assertEquals(TASKS, categoryProvider.apply(new UserTask()));
-        assertEquals(SUBPROCESSES, categoryProvider.apply(new EmbeddedSubprocess()));
-        assertEquals(SUBCASES, categoryProvider.apply(new ReusableSubprocess()));
+        assertEquals(SUBPROCESSES, categoryProvider.apply(new ProcessReusableSubprocess()));
+        assertEquals(SUBCASES, categoryProvider.apply(new CaseReusableSubprocess()));
         assertEquals(STAGES, categoryProvider.apply(new AdHocSubprocess()));
     }
 }

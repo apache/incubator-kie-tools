@@ -23,6 +23,7 @@ import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.bpmn.backend.BaseDiagramMarshaller;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.Bpmn2Marshaller;
+import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.Bpmn2UnMarshaller;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.builder.GraphObjectBuilderFactory;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.OryxManager;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
@@ -31,6 +32,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Id;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
 import org.kie.workbench.common.stunner.cm.CaseManagementDefinitionSet;
 import org.kie.workbench.common.stunner.cm.backend.marshall.json.CaseManagementMarshaller;
+import org.kie.workbench.common.stunner.cm.backend.marshall.json.CaseManagementUnMarshaller;
 import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
 import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
@@ -133,7 +135,34 @@ public class CaseManagementDiagramMarshaller extends BaseDiagramMarshaller<CaseM
     }
 
     @Override
-    protected Bpmn2Marshaller createBpmn2Marshaller(DefinitionManager definitionManager, OryxManager oryxManager) {
-        return new CaseManagementMarshaller(definitionManager, oryxManager);
+    protected Bpmn2Marshaller createBpmn2Marshaller(DefinitionManager definitionManager,
+                                                    OryxManager oryxManager) {
+        return new CaseManagementMarshaller(definitionManager,
+                                            oryxManager);
+    }
+
+    @Override
+    protected Bpmn2UnMarshaller createBpmn2UnMarshaller(GraphObjectBuilderFactory elementBuilderFactory,
+                                                        DefinitionManager definitionManager,
+                                                        FactoryManager factoryManager,
+                                                        DefinitionsCacheRegistry definitionsCacheRegistry,
+                                                        RuleManager rulesManager,
+                                                        OryxManager oryxManager,
+                                                        GraphCommandManager commandManager,
+                                                        GraphCommandFactory commandFactory,
+                                                        GraphIndexBuilder<?> indexBuilder,
+                                                        Class<?> diagramDefinitionSetClass,
+                                                        Class<? extends BPMNDiagram> diagramDefinitionClass) {
+        return new CaseManagementUnMarshaller(elementBuilderFactory,
+                                              definitionManager,
+                                              factoryManager,
+                                              definitionsCacheRegistry,
+                                              rulesManager,
+                                              oryxManager,
+                                              commandManager,
+                                              commandFactory,
+                                              indexBuilder,
+                                              diagramDefinitionSetClass,
+                                              diagramDefinitionClass);
     }
 }

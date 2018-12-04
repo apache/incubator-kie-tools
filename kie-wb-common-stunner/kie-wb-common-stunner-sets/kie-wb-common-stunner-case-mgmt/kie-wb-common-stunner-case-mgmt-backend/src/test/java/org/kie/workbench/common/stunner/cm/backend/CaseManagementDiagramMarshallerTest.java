@@ -24,6 +24,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.Bpmn2Marshaller;
+import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.Bpmn2UnMarshaller;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.builder.GraphObjectBuilderFactory;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.OryxManager;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.DiagramSet;
@@ -31,6 +32,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Id;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
 import org.kie.workbench.common.stunner.cm.CaseManagementDefinitionSet;
 import org.kie.workbench.common.stunner.cm.backend.marshall.json.CaseManagementMarshaller;
+import org.kie.workbench.common.stunner.cm.backend.marshall.json.CaseManagementUnMarshaller;
 import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
@@ -44,6 +46,7 @@ import org.kie.workbench.common.stunner.core.graph.command.GraphCommandManager;
 import org.kie.workbench.common.stunner.core.graph.command.impl.GraphCommandFactory;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.processing.index.GraphIndexBuilder;
+import org.kie.workbench.common.stunner.core.registry.impl.DefinitionsCacheRegistry;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -164,8 +167,25 @@ public class CaseManagementDiagramMarshallerTest {
 
     @Test
     public void testCreateBpmn2Marshaller() throws Exception {
-        Bpmn2Marshaller bpmn2Marshaller = this.marshaller.createBpmn2Marshaller(mock(DefinitionManager.class),
-                                                                                mock(OryxManager.class));
+        final Bpmn2Marshaller bpmn2Marshaller = this.marshaller.createBpmn2Marshaller(mock(DefinitionManager.class),
+                                                                                      mock(OryxManager.class));
         assertTrue(bpmn2Marshaller instanceof CaseManagementMarshaller);
+    }
+
+    @Test
+    public void testCreateBpmn2UnMarshaller() throws Exception {
+        final Bpmn2UnMarshaller bpmn2UnMarshaller = this.marshaller.createBpmn2UnMarshaller(mock(GraphObjectBuilderFactory.class),
+                                                                                            mock(DefinitionManager.class),
+                                                                                            mock(FactoryManager.class),
+                                                                                            mock(DefinitionsCacheRegistry.class),
+                                                                                            mock(RuleManager.class),
+                                                                                            mock(OryxManager.class),
+                                                                                            mock(GraphCommandManager.class),
+                                                                                            mock(GraphCommandFactory.class),
+                                                                                            mock(GraphIndexBuilder.class),
+                                                                                            Object.class,
+                                                                                            CaseManagementDiagram.class);
+
+        assertTrue(bpmn2UnMarshaller instanceof CaseManagementUnMarshaller);
     }
 }

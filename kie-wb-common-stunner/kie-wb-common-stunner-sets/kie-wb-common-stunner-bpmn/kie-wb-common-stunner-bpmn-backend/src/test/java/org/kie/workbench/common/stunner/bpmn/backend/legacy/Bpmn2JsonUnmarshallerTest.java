@@ -17,17 +17,24 @@ package org.kie.workbench.common.stunner.bpmn.backend.legacy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
+import org.eclipse.bpmn2.CallActivity;
 import org.eclipse.bpmn2.DataObject;
 import org.eclipse.bpmn2.Definitions;
+import org.eclipse.bpmn2.ExtensionAttributeValue;
 import org.eclipse.bpmn2.ItemDefinition;
 import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.RootElement;
+import org.jboss.drools.MetaDataType;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doAnswer;
@@ -72,6 +79,29 @@ public class Bpmn2JsonUnmarshallerTest {
 
         assertEquals("Project:BadId", processId.get());
         assertEquals("BadFlowId", flowElementId.get());
+    }
+
+    @Test
+    public void testApplyCallActivityProperties() throws Exception {
+        final CallActivity callActivity = mock(CallActivity.class);
+        when(callActivity.getExtensionValues()).thenReturn(new ArrayList<>());
+
+        final String propertyName = "case";
+        final String propertyValue = "true";
+
+        final Map<String, String> properties = new HashMap<>();
+        properties.put(propertyName, propertyValue);
+
+        tested.applyCallActivityProperties(callActivity, properties);
+
+        assertFalse(callActivity.getExtensionValues().isEmpty());
+        final ExtensionAttributeValue extenstionValue = callActivity.getExtensionValues().get(0);
+
+        final Optional<String> value = extenstionValue.getValue().stream()
+                .filter(v -> propertyName.equals(((MetaDataType) v.getValue()).getName()))
+                .map(v -> ((MetaDataType) v.getValue()).getMetaValue()).findAny();
+
+        assertTrue(value.isPresent() && propertyValue.equals(value.get()));
     }
 
     private static final class Value<T> {

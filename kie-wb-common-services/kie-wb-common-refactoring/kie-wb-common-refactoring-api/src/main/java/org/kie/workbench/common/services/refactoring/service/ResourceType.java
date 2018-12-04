@@ -53,7 +53,14 @@ public enum ResourceType {
     /**
      * Properites configuration files
      */
-    PROPERTIES_OR_CONFIG("properties");
+    PROPERTIES_OR_CONFIG("properties"),
+
+    /**
+     * Case Modeler
+     */
+    BPMN_CM("bpmncmid"),
+
+    BPMN_CM_NAME("bpmncmname");
 
 
     /**

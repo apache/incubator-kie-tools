@@ -35,8 +35,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.StartTimerEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
 import org.kie.workbench.common.stunner.cm.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
-import org.kie.workbench.common.stunner.cm.definition.EmbeddedSubprocess;
-import org.kie.workbench.common.stunner.cm.definition.ReusableSubprocess;
+import org.kie.workbench.common.stunner.cm.definition.CaseReusableSubprocess;
+import org.kie.workbench.common.stunner.cm.definition.ProcessReusableSubprocess;
 import org.kie.workbench.common.stunner.cm.factory.CaseManagementGraphFactory;
 import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
 import org.kie.workbench.common.stunner.core.definition.annotation.DefinitionSet;
@@ -66,8 +66,8 @@ import org.kie.workbench.common.stunner.core.rule.annotation.Occurrences;
                 ParallelGateway.class,
                 ExclusiveGateway.class,
                 AdHocSubprocess.class,
-                EmbeddedSubprocess.class,
-                ReusableSubprocess.class,
+                ProcessReusableSubprocess.class,
+                CaseReusableSubprocess.class,
                 SequenceFlow.class
         },
         builder = CaseManagementDefinitionSet.CaseManagementDefinitionSetBuilder.class

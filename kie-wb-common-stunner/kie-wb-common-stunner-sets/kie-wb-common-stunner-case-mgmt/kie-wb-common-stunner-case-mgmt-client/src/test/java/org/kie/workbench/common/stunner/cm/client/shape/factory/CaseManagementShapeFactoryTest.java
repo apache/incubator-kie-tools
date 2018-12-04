@@ -45,8 +45,8 @@ import org.kie.workbench.common.stunner.cm.client.shape.CaseManagementShape;
 import org.kie.workbench.common.stunner.cm.client.shape.view.CaseManagementShapeView;
 import org.kie.workbench.common.stunner.cm.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
-import org.kie.workbench.common.stunner.cm.definition.EmbeddedSubprocess;
-import org.kie.workbench.common.stunner.cm.definition.ReusableSubprocess;
+import org.kie.workbench.common.stunner.cm.definition.CaseReusableSubprocess;
+import org.kie.workbench.common.stunner.cm.definition.ProcessReusableSubprocess;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
@@ -135,7 +135,7 @@ public class CaseManagementShapeFactoryTest {
                    taskShape);
     };
 
-    private Consumer<Shape> reusableSubprocessAssertions = (shape) -> {
+    private Consumer<Shape> caseReusableSubprocessAssertions = (shape) -> {
         assertNotNull(shape.getShapeView());
         assertTrue(shape instanceof CaseManagementShape);
         assertTrue(shape.getShapeView() instanceof CaseManagementShapeView);
@@ -143,7 +143,7 @@ public class CaseManagementShapeFactoryTest {
                    subcaseShape);
     };
 
-    private Consumer<Shape> embeddedSubprocessAssertions = (shape) -> {
+    private Consumer<Shape> processReusableSubprocessAssertions = (shape) -> {
         assertNotNull(shape.getShapeView());
         assertTrue(shape instanceof CaseManagementShape);
         assertTrue(shape.getShapeView() instanceof CaseManagementShapeView);
@@ -342,17 +342,17 @@ public class CaseManagementShapeFactoryTest {
     }
 
     @Test
-    public void checkReusableSubprocess() {
-        assertShapeConstruction(new ReusableSubprocess(),
-                                reusableSubprocessAssertions);
-        assertShapeGlyph(new ReusableSubprocess());
+    public void checkCaseReusableSubprocess() {
+        assertShapeConstruction(new CaseReusableSubprocess(),
+                                caseReusableSubprocessAssertions);
+        assertShapeGlyph(new CaseReusableSubprocess());
     }
 
     @Test
-    public void checkEmbeddedSubprocess() {
-        assertShapeConstruction(new EmbeddedSubprocess(),
-                                embeddedSubprocessAssertions);
-        assertShapeGlyph(new EmbeddedSubprocess());
+    public void checkProcessReusableSubprocess() {
+        assertShapeConstruction(new ProcessReusableSubprocess(),
+                                processReusableSubprocessAssertions);
+        assertShapeGlyph(new ProcessReusableSubprocess());
     }
 
     @Test

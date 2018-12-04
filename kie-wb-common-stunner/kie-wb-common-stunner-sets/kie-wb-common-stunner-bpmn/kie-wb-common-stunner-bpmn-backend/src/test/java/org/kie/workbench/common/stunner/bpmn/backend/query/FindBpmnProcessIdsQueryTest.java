@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,23 +16,17 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.query;
 
-import javax.enterprise.context.ApplicationScoped;
-
+import org.junit.Test;
 import org.kie.workbench.common.services.refactoring.service.ResourceType;
 
-@ApplicationScoped
-public class FindBpmnProcessIdsQuery extends AbstractFindIdsQuery {
+import static org.junit.Assert.assertEquals;
 
-    public static final String NAME = FindBpmnProcessIdsQuery.class.getSimpleName();
+public class FindBpmnProcessIdsQueryTest {
 
-    @Override
-    public String getName() {
-        return NAME;
-    }
+    private FindBpmnProcessIdsQuery tested = new FindBpmnProcessIdsQuery();
 
-    @Override
-    protected ResourceType getProcessIdResourceType() {
-        return ResourceType.BPMN2;
+    @Test
+    public void testGetProcessIdResourceType() throws Exception {
+        assertEquals(tested.getProcessIdResourceType(), ResourceType.BPMN2);
     }
 }
-

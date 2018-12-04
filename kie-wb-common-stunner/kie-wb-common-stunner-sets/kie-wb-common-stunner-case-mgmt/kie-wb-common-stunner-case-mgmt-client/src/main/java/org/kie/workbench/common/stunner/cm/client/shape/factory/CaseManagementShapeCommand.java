@@ -28,8 +28,8 @@ import org.kie.workbench.common.stunner.cm.client.wires.HorizontalStackLayoutMan
 import org.kie.workbench.common.stunner.cm.client.wires.VerticalStackLayoutManager;
 import org.kie.workbench.common.stunner.cm.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
-import org.kie.workbench.common.stunner.cm.definition.EmbeddedSubprocess;
-import org.kie.workbench.common.stunner.cm.definition.ReusableSubprocess;
+import org.kie.workbench.common.stunner.cm.definition.CaseReusableSubprocess;
+import org.kie.workbench.common.stunner.cm.definition.ProcessReusableSubprocess;
 
 public class CaseManagementShapeCommand {
 
@@ -57,12 +57,12 @@ public class CaseManagementShapeCommand {
             shapeView.setLayoutHandler(new VerticalStackLayoutManager());
             return new CaseManagementShape(shapeView);
         });
-        cmShapeTypes.put(EmbeddedSubprocess.class, (CaseManagementShapeView shapeView) -> {
+        cmShapeTypes.put(ProcessReusableSubprocess.class, (CaseManagementShapeView shapeView) -> {
             shapeView.setLabel(SUBPROCESS);
             shapeView.setLayoutHandler(ILayoutHandler.NONE);
             return new CaseManagementShape(shapeView);
         });
-        cmShapeTypes.put(ReusableSubprocess.class, (CaseManagementShapeView shapeView) -> {
+        cmShapeTypes.put(CaseReusableSubprocess.class, (CaseManagementShapeView shapeView) -> {
             shapeView.setLabel(SUBCASE);
             shapeView.setLayoutHandler(ILayoutHandler.NONE);
             return new CaseManagementShape(shapeView);

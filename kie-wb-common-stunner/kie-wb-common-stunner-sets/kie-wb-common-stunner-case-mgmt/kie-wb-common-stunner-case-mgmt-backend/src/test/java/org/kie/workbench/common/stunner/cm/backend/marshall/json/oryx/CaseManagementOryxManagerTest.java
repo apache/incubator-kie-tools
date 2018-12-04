@@ -51,7 +51,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.StartTimerEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
 import org.kie.workbench.common.stunner.cm.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
-import org.kie.workbench.common.stunner.cm.definition.ReusableSubprocess;
+import org.kie.workbench.common.stunner.cm.definition.CaseReusableSubprocess;
+import org.kie.workbench.common.stunner.cm.definition.ProcessReusableSubprocess;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
@@ -111,7 +112,8 @@ public class CaseManagementOryxManagerTest {
         assertTrue(classes.contains(ParallelGateway.class));
         assertTrue(classes.contains(ExclusiveGateway.class));
         assertTrue(classes.contains(AdHocSubprocess.class));
-        assertTrue(classes.contains(ReusableSubprocess.class));
+        assertTrue(classes.contains(CaseReusableSubprocess.class));
+        assertTrue(classes.contains(ProcessReusableSubprocess.class));
         assertTrue(classes.contains(SequenceFlow.class));
     }
 }

@@ -25,8 +25,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.BaseSubprocess;
 import org.kie.workbench.common.stunner.cm.client.resources.CaseManagementSVGGlyphFactory;
 import org.kie.workbench.common.stunner.cm.client.resources.CaseManagementSVGViewFactory;
 import org.kie.workbench.common.stunner.cm.definition.AdHocSubprocess;
-import org.kie.workbench.common.stunner.cm.definition.EmbeddedSubprocess;
-import org.kie.workbench.common.stunner.cm.definition.ReusableSubprocess;
+import org.kie.workbench.common.stunner.cm.definition.CaseReusableSubprocess;
+import org.kie.workbench.common.stunner.cm.definition.ProcessReusableSubprocess;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
 import org.kie.workbench.common.stunner.core.client.shape.view.handler.FontHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.handler.SizeHandler;
@@ -40,14 +40,14 @@ public final class CaseManagementSvgSubprocessShapeDef extends BaseDimensionedSh
     public static final SVGShapeViewResources<BaseSubprocess, CaseManagementSVGViewFactory> VIEW_RESOURCES =
             new SVGShapeViewResources<BaseSubprocess, CaseManagementSVGViewFactory>()
                     .put(AdHocSubprocess.class, CaseManagementSVGViewFactory::stage)
-                    .put(EmbeddedSubprocess.class, CaseManagementSVGViewFactory::subprocess)
-                    .put(ReusableSubprocess.class, CaseManagementSVGViewFactory::subcase);
+                    .put(ProcessReusableSubprocess.class, CaseManagementSVGViewFactory::subprocess)
+                    .put(CaseReusableSubprocess.class, CaseManagementSVGViewFactory::subcase);
 
     public static final Map<Class<? extends BaseSubprocess>, Glyph> GLYPHS =
             new HashMap<Class<? extends BaseSubprocess>, Glyph>() {{
                 put(AdHocSubprocess.class, CaseManagementSVGGlyphFactory.STAGE_GLYPH);
-                put(EmbeddedSubprocess.class, CaseManagementSVGGlyphFactory.SUBPROCESS_GLYPH);
-                put(ReusableSubprocess.class, CaseManagementSVGGlyphFactory.SUBCASE_GLYPH);
+                put(ProcessReusableSubprocess.class, CaseManagementSVGGlyphFactory.SUBPROCESS_GLYPH);
+                put(CaseReusableSubprocess.class, CaseManagementSVGGlyphFactory.SUBCASE_GLYPH);
             }};
 
     private static HasTitle.Position getSubprocessTextPosition(final BaseSubprocess bean) {

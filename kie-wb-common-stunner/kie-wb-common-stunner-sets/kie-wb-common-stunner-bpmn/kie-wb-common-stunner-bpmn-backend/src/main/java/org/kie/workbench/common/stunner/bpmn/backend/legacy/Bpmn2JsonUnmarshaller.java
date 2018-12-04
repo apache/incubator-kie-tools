@@ -5539,6 +5539,13 @@ public class Bpmn2JsonUnmarshaller {
         } else {
             callActivity.setName("");
         }
+
+        if (properties.get("case") != null) {
+            Utils.setMetaDataExtensionValue(callActivity,
+                                            "case",
+                                            properties.get("case"));
+        }
+
         if (properties.get("independent") != null && properties.get("independent").length() > 0) {
             ExtendedMetaData metadata = ExtendedMetaData.INSTANCE;
             EAttributeImpl extensionAttribute = (EAttributeImpl) metadata.demandFeature(

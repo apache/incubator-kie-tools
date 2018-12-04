@@ -139,17 +139,17 @@ public abstract class BaseDiagramMarshaller<D> implements DiagramMarshaller<Grap
         LOG.debug("Starting diagram unmarshalling...");
 
         // No rule checking for marshalling/unmarshalling, current jbpm designer marshallers should do it for us.
-        final Bpmn2UnMarshaller parser = new Bpmn2UnMarshaller(bpmnGraphBuilderFactory,
-                                                               definitionManager,
-                                                               factoryManager,
-                                                               definitionsCacheRegistry,
-                                                               rulesManager,
-                                                               oryxManager,
-                                                               graphCommandManager,
-                                                               commandFactory,
-                                                               indexBuilder,
-                                                               getDiagramDefinitionSetClass(),
-                                                               getDiagramDefinitionClass());
+        final Bpmn2UnMarshaller parser = createBpmn2UnMarshaller(bpmnGraphBuilderFactory,
+                                                                 definitionManager,
+                                                                 factoryManager,
+                                                                 definitionsCacheRegistry,
+                                                                 rulesManager,
+                                                                 oryxManager,
+                                                                 graphCommandManager,
+                                                                 commandFactory,
+                                                                 indexBuilder,
+                                                                 getDiagramDefinitionSetClass(),
+                                                                 getDiagramDefinitionClass());
 
         Graph result = null;
         try {
@@ -169,6 +169,30 @@ public abstract class BaseDiagramMarshaller<D> implements DiagramMarshaller<Grap
 
         LOG.debug("Diagram unmarshalling finished successfully.");
         return result;
+    }
+
+    protected Bpmn2UnMarshaller createBpmn2UnMarshaller(GraphObjectBuilderFactory elementBuilderFactory,
+                                                        DefinitionManager definitionManager,
+                                                        FactoryManager factoryManager,
+                                                        DefinitionsCacheRegistry definitionsCacheRegistry,
+                                                        RuleManager rulesManager,
+                                                        OryxManager oryxManager,
+                                                        GraphCommandManager commandManager,
+                                                        GraphCommandFactory commandFactory,
+                                                        GraphIndexBuilder<?> indexBuilder,
+                                                        Class<?> diagramDefinitionSetClass,
+                                                        Class<? extends BPMNDiagram> diagramDefinitionClass) {
+        return new Bpmn2UnMarshaller(elementBuilderFactory,
+                                     definitionManager,
+                                     factoryManager,
+                                     definitionsCacheRegistry,
+                                     rulesManager,
+                                     oryxManager,
+                                     commandManager,
+                                     commandFactory,
+                                     indexBuilder,
+                                     diagramDefinitionSetClass,
+                                     diagramDefinitionClass);
     }
 
     public abstract Class<?> getDiagramDefinitionSetClass();

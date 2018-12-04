@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.kie.workbench.common.stunner.bpmn.backend.query;
+package org.kie.workbench.common.stunner.cm.backend.query;
 
 import javax.enterprise.context.ApplicationScoped;
 
 import org.kie.workbench.common.services.refactoring.service.ResourceType;
+import org.kie.workbench.common.stunner.bpmn.backend.query.AbstractFindIdsQuery;
+import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
 
 @ApplicationScoped
-public class FindBpmnProcessIdsQuery extends AbstractFindIdsQuery {
+@CaseManagementEditor
+public class FindCaseManagementIdsQuery extends AbstractFindIdsQuery {
 
-    public static final String NAME = FindBpmnProcessIdsQuery.class.getSimpleName();
+    public static final String NAME = FindCaseManagementIdsQuery.class.getSimpleName();
 
     @Override
     public String getName() {
@@ -32,7 +34,6 @@ public class FindBpmnProcessIdsQuery extends AbstractFindIdsQuery {
 
     @Override
     protected ResourceType getProcessIdResourceType() {
-        return ResourceType.BPMN2;
+        return ResourceType.BPMN_CM;
     }
 }
-
