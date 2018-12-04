@@ -31,9 +31,9 @@ import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.runtime.ExecutableRunner;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.RequestContext;
-import org.kie.api.runtime.builder.ExecutableBuilder;
-import org.kie.api.runtime.builder.KieSessionFluent;
 import org.kie.api.runtime.conf.ClockTypeOption;
+import org.kie.internal.builder.fluent.ExecutableBuilder;
+import org.kie.internal.builder.fluent.KieSessionFluent;
 
 public class ScenarioExecutableBuilder {
 
