@@ -30,7 +30,6 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidgetK
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -77,7 +76,6 @@ public class ScenarioSimulationViewImplTest {
         scenarioView.setContent(simulationModel);
 
         verify(scenarioGrid).setContent(simulationModel);
-        verify(scenarioGrid).selectCell(0, 0, false, false);
         verify(scenarioGridPanel).setFocus(true);
     }
 
@@ -90,7 +88,6 @@ public class ScenarioSimulationViewImplTest {
         scenarioView.setContent(simulationModel);
 
         verify(scenarioGrid).setContent(simulationModel);
-        verify(scenarioGrid, never()).selectCell(0, 0, false, false);
         verify(scenarioGridPanel).setFocus(true);
     }
 }

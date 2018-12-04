@@ -226,7 +226,7 @@ public class ScenarioSimulationGridHeaderUtilitiesTest {
 
         doReturn(headerMetaData).when(uiColumn).getHeaderMetaData();
         doReturn(width).when(uiColumn).getWidth();
-        
+
         scenarioGridModel.appendColumn(uiColumn);
 
         final ScenarioHeaderMetaData informationHeader = mock(ScenarioHeaderMetaData.class);
