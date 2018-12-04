@@ -44,11 +44,13 @@ public class ScenarioHeaderMetaDataTest {
         new ScenarioHeaderMetaData("", "", "", factoryMock, true, true);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void edit_ReadOnly() {
         ScenarioHeaderMetaData scenarioHeaderMetaData = new ScenarioHeaderMetaData("", "", "", factoryMock, true, false);
         scenarioHeaderMetaData.setReadOnly(true);
         scenarioHeaderMetaData.edit(null);
+
+        verify(factoryMock, never()).attachDomElement(any(), any(), any());
     }
 
     @Test

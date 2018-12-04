@@ -75,7 +75,7 @@ public class ScenarioHeaderMetaData extends BaseHeaderMetaData {
 
     public void edit(final GridBodyCellEditContext context) {
         if (readOnly) {
-            throw new IllegalStateException("A read only header cannot be edited");
+            return;
         }
         if (!isEditingMode) {
             factory.attachDomElement(context,

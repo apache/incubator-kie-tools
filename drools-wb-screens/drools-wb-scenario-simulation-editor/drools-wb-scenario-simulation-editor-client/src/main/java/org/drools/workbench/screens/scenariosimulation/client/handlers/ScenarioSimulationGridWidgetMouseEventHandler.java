@@ -25,7 +25,7 @@ import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGr
 import org.uberfire.ext.wires.core.grids.client.model.GridCellEditAction;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
-import org.uberfire.ext.wires.core.grids.client.util.RenderContextUtilities;
+import org.uberfire.ext.wires.core.grids.client.util.CellContextUtilities;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellEditContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.DefaultGridWidgetEditCellMouseEventHandler;
@@ -59,11 +59,11 @@ public class ScenarioSimulationGridWidgetMouseEventHandler extends DefaultGridWi
                 Objects.equals(headerMetaData.getSupportedEditAction(), GridCellEditAction.getSupportedEditAction(event)) &&
                 isHeaderEditable(rendererHelper, headerMetaData, (ScenarioGridColumn) column)) {
             final Point2D gridWidgetComputedLocation = gridWidget.getComputedLocation();
-            final GridBodyCellEditContext context = RenderContextUtilities.makeRenderContext(gridWidget,
-                                                                                             ri,
-                                                                                             ci,
-                                                                                             relativeLocation.add(gridWidgetComputedLocation),
-                                                                                             uiHeaderRowIndex);
+            final GridBodyCellEditContext context = CellContextUtilities.makeRenderContext(gridWidget,
+                                                                                           ri,
+                                                                                           ci,
+                                                                                           relativeLocation.add(gridWidgetComputedLocation),
+                                                                                           uiHeaderRowIndex);
             headerMetaData.edit(context);
         }
         return true;

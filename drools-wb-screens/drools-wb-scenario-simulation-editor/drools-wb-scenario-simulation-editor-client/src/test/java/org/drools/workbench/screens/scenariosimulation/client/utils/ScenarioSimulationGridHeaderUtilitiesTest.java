@@ -33,7 +33,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
-import org.uberfire.ext.wires.core.grids.client.util.RenderContextUtilities;
+import org.uberfire.ext.wires.core.grids.client.util.CellContextUtilities;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
@@ -119,11 +119,11 @@ public class ScenarioSimulationGridHeaderUtilitiesTest extends AbstractScenarioS
         doReturn(0.0).when(ci).getOffsetX();
         doReturn(0).when(ci).getUiColumnIndex();
 
-        final GridBodyCellRenderContext context = RenderContextUtilities.makeRenderContext(scenarioGridMock,
-                                                                                           ri,
-                                                                                           ci,
-                                                                                           rp,
-                                                                                           0);
+        final GridBodyCellRenderContext context = CellContextUtilities.makeRenderContext(scenarioGridMock,
+                                                                                         ri,
+                                                                                         ci,
+                                                                                         rp,
+                                                                                         0);
 
         assertNotNull(context);
         assertEquals(0.0,
