@@ -174,22 +174,48 @@ public class AddAssetScreenTest {
     }
     
     @Test
-    public void testProfileFilter() {
-
-        NewResourceHandler rhFull =  mock(NewResourceHandler.class);
-        NewResourceHandler rhDroolsPlanner = mock(NewResourceHandler.class);
-        NewResourceHandler rhAll = mock(NewResourceHandler.class);
+    public void testOnOpenProfileFilter() {
+        NewResourceHandler rhFull =  mockResourceHandler(Profile.FULL);
+        NewResourceHandler rhDroolsPlanner = mockResourceHandler(Profile.PLANNER_AND_RULES);
+        NewResourceHandler rhAll = mockResourceHandler(Profile.values());
         
-        when(rhFull.isProjectAsset()).thenReturn(true);
-        when(rhDroolsPlanner.isProjectAsset()).thenReturn(true);
-        when(rhAll.isProjectAsset()).thenReturn(true);
-        when(rhFull.getProfiles()).thenReturn(Arrays.asList(Profile.FULL));
-        when(rhDroolsPlanner.getProfiles()).thenReturn(Arrays.asList(Profile.PLANNER_AND_RULES));
-        when(rhAll.getProfiles()).thenReturn(Arrays.asList(Profile.values()));
+        addAssetScreen.initialize();
+        
+        doReturn(Arrays.asList(rhFull,
+                rhDroolsPlanner,
+                rhAll)).when(resourceHandlerManager).getNewResourceHandlers();
+
+        addAssetScreen.onOpen();
+        assertEquals(2,
+              addAssetScreen.newResourceHandlers.size());
+        
+        assertTrue(addAssetScreen.newResourceHandlers.contains(rhFull));
+        assertTrue(addAssetScreen.newResourceHandlers.contains(rhAll));
+        assertTrue(!addAssetScreen.newResourceHandlers.contains(rhDroolsPlanner));
+        
+        executeParametrizedCommandWith(0, new ProfilePreferences(Profile.PLANNER_AND_RULES))
+                .when(profilePreferences).load(any(ParameterizedCommand.class), 
+                                               any(ParameterizedCommand.class)); 
+
+        addAssetScreen.onOpen();
+        assertEquals(2,
+                     addAssetScreen.newResourceHandlers.size());
+        assertTrue(!addAssetScreen.newResourceHandlers.contains(rhFull));
+        assertTrue(addAssetScreen.newResourceHandlers.contains(rhAll));
+        assertTrue(addAssetScreen.newResourceHandlers.contains(rhDroolsPlanner));
+    }    
+    
+    
+    @Test
+    public void testProfileFilter() {
+        NewResourceHandler rhFull =  mockResourceHandler(Profile.FULL);
+        NewResourceHandler rhDroolsPlanner = mockResourceHandler(Profile.PLANNER_AND_RULES);
+        NewResourceHandler rhAll = mockResourceHandler(Profile.values());
+        
+        addAssetScreen.initialize();
         
         doReturn(Arrays.asList(rhFull,rhDroolsPlanner, rhAll))
-                 .when(resourceHandlerManager).getNewResourceHandlers();
-        addAssetScreen.initialize();
+                       .when(resourceHandlerManager).getNewResourceHandlers();
         List<NewResourceHandler> filteredResourceHandlers = this.addAssetScreen.filterNewResourceHandlers(
                                                                         new ProfilePreferences(Profile.FULL));
         assertEquals(2, filteredResourceHandlers.size());
@@ -199,7 +225,7 @@ public class AddAssetScreenTest {
         assertEquals(2, filteredResourceHandlers.size());
         
         doReturn(Arrays.asList(rhFull, rhDroolsPlanner))
-                 .when(resourceHandlerManager).getNewResourceHandlers();
+                       .when(resourceHandlerManager).getNewResourceHandlers();
         
         filteredResourceHandlers = this.addAssetScreen.filterNewResourceHandlers(
                                                                         new ProfilePreferences(Profile.PLANNER_AND_RULES));
@@ -210,7 +236,14 @@ public class AddAssetScreenTest {
                                                                         new ProfilePreferences(Profile.FULL));
         assertEquals(1, filteredResourceHandlers.size());
         assertEquals(Profile.FULL, filteredResourceHandlers.get(0).getProfiles().get(0));
-        
          
     }    
+    
+    private NewResourceHandler mockResourceHandler(Profile...profiles) {
+        NewResourceHandler nrh = mock(NewResourceHandler.class);
+        when(nrh.getProfiles()).thenReturn(Arrays.asList(profiles));
+        when(nrh.isProjectAsset()).thenReturn(true);
+        return nrh;
+        
+    }
 }

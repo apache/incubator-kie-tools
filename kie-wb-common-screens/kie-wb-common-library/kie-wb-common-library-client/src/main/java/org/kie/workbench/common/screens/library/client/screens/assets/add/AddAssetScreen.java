@@ -96,16 +96,13 @@ public class AddAssetScreen {
         this.view.init(this);
         this.view.setTitle(this.getTitle());
         this.view.setCategories(this.categoryUtils.createCategories());
-       
-        profilesPreferences.load(this::filterNewResourcesHandlersAndUpdate, RuntimeException::new); 
     }
 
     @OnOpen
     public void onOpen() {
         this.filter = "";
-        this.newResourceHandlers = this.resourceHandlerManager.getNewResourceHandlers(NewResourceHandler::isProjectAsset);
         this.view.setCategories(this.categoryUtils.createCategories());
-        this.update();
+        profilesPreferences.load(this::filterNewResourcesHandlersAndUpdate, RuntimeException::new);
     }
 
     private Callback<Boolean, Void> acceptContextCallback(NewResourceHandler resourceHandler) {
