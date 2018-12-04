@@ -22,11 +22,13 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import org.guvnor.common.services.shared.preferences.GuvnorPreferenceScopes;
+import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.security.shared.api.Group;
 import org.jboss.errai.security.shared.api.Role;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.soup.commons.util.Sets;
+import org.kie.workbench.common.profile.api.preferences.ProfileService;
 import org.kie.workbench.common.widgets.client.handlers.workbench.configuration.LanguageConfigurationHandler;
 import org.kie.workbench.common.widgets.client.handlers.workbench.configuration.WorkbenchConfigurationPresenter;
 import org.kie.workbench.common.workbench.client.PerspectiveIds;
@@ -89,6 +91,9 @@ public class DefaultAdminPageHelper {
 
     @Inject
     private ClientExperimentalFeaturesRegistryService experimentalFeaturesService;
+    
+    @Inject
+    Caller<ProfileService> profileService;
 
     public void setup() {
         setup(true,
@@ -118,16 +123,18 @@ public class DefaultAdminPageHelper {
     
     private void addProfilePreferences() {
         final boolean canEditProfilePreferences = authorizationManager.authorize(WorkbenchFeatures.EDIT_PROFILE_PREFERENCES,
-                                                                                sessionInfo.getIdentity());
-        if(canEditProfilePreferences) {
-            adminPage.addPreference("root",
-                                    "ProfilePreferences",
-                                    translationService.format(PreferencesConstants.ProfilePreferences_Title),
-                                    new Sets.Builder().add("fa").add("fa-list").build(),
-                                    "advanced",
-                                    scopeFactory.createScope(GuvnorPreferenceScopes.GLOBAL),
-                                    AdminPageOptions.WITH_BREADCRUMBS);
-        }
+                sessionInfo.getIdentity());
+        profileService.call((Boolean force) -> {
+            if (canEditProfilePreferences && !force) {
+                adminPage.addPreference("root",
+                        "ProfilePreferences",
+                        translationService.format(PreferencesConstants.ProfilePreferences_Title),
+                        new Sets.Builder().add("fa").add("fa-list").build(),
+                        "advanced",
+                        scopeFactory.createScope(GuvnorPreferenceScopes.GLOBAL),
+                        AdminPageOptions.WITH_BREADCRUMBS);
+            }
+        }).isForce();
     }
 
     private void addGeneralPreferences() {

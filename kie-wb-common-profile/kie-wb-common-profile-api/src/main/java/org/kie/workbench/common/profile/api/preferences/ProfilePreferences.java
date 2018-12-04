@@ -16,23 +16,25 @@
 
 package org.kie.workbench.common.profile.api.preferences;
 
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.uberfire.preferences.shared.PropertyFormType;
 import org.uberfire.preferences.shared.annotations.Property;
 import org.uberfire.preferences.shared.annotations.WorkbenchPreference;
 import org.uberfire.preferences.shared.bean.BasePreference;
 
+import static org.kie.workbench.common.profile.api.preferences.ProfileDefinitions.FORCE_PREFIX;
+
 @WorkbenchPreference(identifier = "ProfilePreferences", bundleKey = "ProfilePreferences.Label")
 public class ProfilePreferences implements BasePreference<ProfilePreferences> {
     
-    private static Logger logger = Logger.getLogger(ProfilePreferences.class.getName());
+    private static Logger logger = LoggerFactory.getLogger(ProfilePreferences.class.getName());
 
     @Property(bundleKey = "ProfilePreferences.Profiles", 
             helpBundleKey= "ProfilePreferences.Profiles.Help", 
             formType = PropertyFormType.COMBO)
     private Profile profile;
-
 
     public ProfilePreferences() {
     }
@@ -46,11 +48,13 @@ public class ProfilePreferences implements BasePreference<ProfilePreferences> {
         String profileStr = System.getProperty("org.kie.workbench.profile", Profile.FULL.name());
         Profile defaultProfile = Profile.FULL;
         try {
+            if (profileStr.startsWith(FORCE_PREFIX)) {
+                profileStr = profileStr.substring(FORCE_PREFIX.length());
+            }
             defaultProfile = Profile.valueOf(profileStr);
         } catch(IllegalArgumentException e) {
-            logger.warning(() -> "Not able to load profile " + profileStr + ". Loading FULL profile.");
+            logger.warn("Not able to load profile {}. Loading FULL profile.", profileStr);
         }
-        logger.info("Loaded Profile " + defaultProfile.getName());
         defaultValue.setProfile(defaultProfile);
         return defaultValue;
     }

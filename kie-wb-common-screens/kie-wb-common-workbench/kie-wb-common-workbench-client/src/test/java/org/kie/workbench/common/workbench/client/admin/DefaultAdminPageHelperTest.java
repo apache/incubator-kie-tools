@@ -26,6 +26,7 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.profile.api.preferences.ProfileService;
 import org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures;
 import org.kie.workbench.common.workbench.client.resources.i18n.DefaultWorkbenchConstants;
 import org.mockito.InjectMocks;
@@ -36,6 +37,7 @@ import org.uberfire.experimental.service.registry.ExperimentalFeature;
 import org.uberfire.experimental.service.registry.ExperimentalFeaturesRegistry;
 import org.uberfire.ext.preferences.client.admin.page.AdminPage;
 import org.uberfire.ext.preferences.client.admin.page.AdminPageOptions;
+import org.uberfire.mocks.CallerMock;
 import org.uberfire.mvp.Command;
 import org.uberfire.preferences.shared.PreferenceScope;
 import org.uberfire.preferences.shared.PreferenceScopeFactory;
@@ -86,10 +88,16 @@ public class DefaultAdminPageHelperTest {
 
     @Mock
     private PreferenceScope globalScope;
+    
+    @Mock
+    ProfileService profileService;
+    
+    CallerMock<ProfileService> profileServiceCaller;
 
     @Before
     public void setup() {
         mockConstants();
+        mockProfileService();
     }
 
     @Test
@@ -313,7 +321,7 @@ public class DefaultAdminPageHelperTest {
     }
     
     @Test
-    public void profilePreferencesWasAddedTest() {
+    public void profilePreferencesWasAddedWithPermissionTest() {
         doReturn(true).when(authorizationManager).authorize(eq(WorkbenchFeatures.EDIT_PROFILE_PREFERENCES),
                 any());
         defaultAdminPageHelper.setup();
@@ -325,6 +333,15 @@ public class DefaultAdminPageHelperTest {
         doReturn(false).when(authorizationManager).authorize(eq(WorkbenchFeatures.EDIT_PROFILE_PREFERENCES),
                 any());
         
+        defaultAdminPageHelper.setup();
+        verifyProfilePreferenceAdded(false);
+    }    
+    
+    @Test
+    public void profilePreferencesWasNotAddedWithPermissionWithForceTest() {
+        when(profileService.isForce()).thenReturn(true);
+        doReturn(true).when(authorizationManager).authorize(eq(WorkbenchFeatures.EDIT_PROFILE_PREFERENCES),
+                any());
         defaultAdminPageHelper.setup();
         verifyProfilePreferenceAdded(false);
     }    
@@ -488,5 +505,9 @@ public class DefaultAdminPageHelperTest {
                                                         return RETURNS_DEFAULTS.answer(invocation);
                                                     }
                                                 });
+    }
+    
+    private void mockProfileService() {
+        defaultAdminPageHelper.profileService = new CallerMock<ProfileService>(profileService);
     }
 }

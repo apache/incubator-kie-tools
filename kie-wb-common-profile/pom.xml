@@ -19,6 +19,7 @@
 
   <modules>
     <module>kie-wb-common-profile-api</module>
+    <module>kie-wb-common-profile-backend</module>
   </modules>
 
 </project>

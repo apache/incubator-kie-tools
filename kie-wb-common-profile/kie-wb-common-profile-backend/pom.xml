@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.kie.workbench.profile</groupId>
+    <artifactId>kie-wb-common-profile</artifactId>
+    <version>7.16.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>kie-wb-common-profile-backend</artifactId>
+
+  <name>Kie Workbench - Common - Profile - Backend</name>
+  <description>Kie Workbench - Profile - Backend</description>
+
+  <properties>
+    <java.module.name>org.kie.wb.common.profile.backend</java.module.name>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-bus</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.workbench.profile</groupId>
+      <artifactId>kie-wb-common-profile-api</artifactId>
+    </dependency>
+  </dependencies>
+
+</project>
