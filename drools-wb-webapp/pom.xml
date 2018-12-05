@@ -902,10 +902,6 @@
     </dependency>
     <dependency>
       <groupId>org.kie.workbench.stunner</groupId>
-      <artifactId>kie-wb-common-stunner-backend</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.workbench.stunner</groupId>
       <artifactId>kie-wb-common-stunner-client-common</artifactId>
       <scope>provided</scope>
     </dependency>
