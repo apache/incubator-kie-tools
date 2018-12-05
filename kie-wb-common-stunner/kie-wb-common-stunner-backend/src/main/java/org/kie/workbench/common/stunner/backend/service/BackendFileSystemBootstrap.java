@@ -39,7 +39,7 @@ import org.uberfire.java.nio.file.Path;
 public class BackendFileSystemBootstrap {
 
     public static final String VFS_PRO = "default";
-    public static final String VFS_ROOT = "stunner";
+    public static final String VFS_ROOT = "system/stunner";
     public static final String VFS_ROOT_PATH = VFS_PRO + "://" + VFS_ROOT;
 
     private final BackendFileSystemManager backendFileSystemManager;
