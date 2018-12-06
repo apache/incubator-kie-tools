@@ -28,6 +28,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.kie.workbench.common.stunner.backend.service.BackendFileSystemBootstrap;
 import org.kie.workbench.common.stunner.client.widgets.menu.dev.MenuDevCommandsBuilder;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorPresenter;
@@ -254,7 +255,10 @@ public class SessionDiagramEditorScreen {
         return new MetadataImpl.MetadataImplBuilder(defSetId,
                                                     definitionManager)
                 .setTitle(title)
-                .setRoot(PathFactory.newPath(".", "default://master@stunner/"))
+                .setRoot(PathFactory.newPath(".",
+                                             BackendFileSystemBootstrap.VFS_PRO
+                                                     + "://master@"
+                                                     + BackendFileSystemBootstrap.VFS_ROOT + "/"))
                 .setShapeSetId(shapeSetId)
                 .build();
     }

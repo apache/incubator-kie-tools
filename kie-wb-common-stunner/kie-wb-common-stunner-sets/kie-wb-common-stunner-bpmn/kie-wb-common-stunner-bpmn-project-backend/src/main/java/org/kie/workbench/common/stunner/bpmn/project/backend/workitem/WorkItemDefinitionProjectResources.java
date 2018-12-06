@@ -41,8 +41,6 @@ public class WorkItemDefinitionProjectResources extends WorkItemDefinitionResour
         super(ioService);
     }
 
-    // TODO: getPackageMainResourcesPath().toUri() -> default://master@myteam/rrr/src/main/resources/com/myteam/rrr
-
     @Override
     public Path resolveResourcesPath(final Metadata metadata) {
         final org.uberfire.backend.vfs.Path path = ((ProjectMetadata) metadata).getProjectPackage().getPackageMainResourcesPath();
