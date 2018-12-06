@@ -88,8 +88,9 @@ public abstract class AbstractFindIdsQuery extends FindResourcesQuery implements
         public BpmnProcessIdsResponseBuilder() {
         }
 
-        public BpmnProcessIdsResponseBuilder(IOService ioService) {
+        public BpmnProcessIdsResponseBuilder(IOService ioService, ResourceType processIdResourceType) {
             this.ioService = ioService;
+            this.processIdResourceType = processIdResourceType;
         }
 
         public void setIOService(IOService ioService) {

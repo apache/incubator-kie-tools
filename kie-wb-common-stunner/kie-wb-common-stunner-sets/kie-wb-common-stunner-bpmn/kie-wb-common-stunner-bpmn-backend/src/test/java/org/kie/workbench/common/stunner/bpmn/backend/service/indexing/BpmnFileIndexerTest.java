@@ -89,7 +89,8 @@ public class BpmnFileIndexerTest extends BaseIndexingTest<BPMNDefinitionSetResou
             add(new FindBpmnProcessIdsQuery() {
                 @Override
                 public ResponseBuilder getResponseBuilder() {
-                    return new FindBpmnProcessIdsQuery.BpmnProcessIdsResponseBuilder(ioService());
+                    return new FindBpmnProcessIdsQuery.BpmnProcessIdsResponseBuilder(ioService(),
+                                                                                     getProcessIdResourceType());
                 }
             });
         }};
