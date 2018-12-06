@@ -24,7 +24,7 @@ import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.soup.commons.util.Sets;
 import org.kie.workbench.common.dmn.api.definition.DMNViewDefinition;
 import org.kie.workbench.common.dmn.api.property.background.BackgroundSet;
-import org.kie.workbench.common.dmn.api.property.dimensions.RectangleDimensionsSet;
+import org.kie.workbench.common.dmn.api.property.dimensions.GeneralRectangleDimensionsSet;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.KnowledgeSourceType;
 import org.kie.workbench.common.dmn.api.property.dmn.LocationURI;
@@ -51,7 +51,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 @FormDefinition(policy = FieldPolicy.ONLY_MARKED,
         defaultFieldSettings = {@FieldParam(name = FIELD_CONTAINER_PARAM, value = COLLAPSIBLE_CONTAINER)},
         startElement = "id")
-public class KnowledgeSource extends DRGElement implements DMNViewDefinition {
+public class KnowledgeSource extends DRGElement implements DMNViewDefinition<GeneralRectangleDimensionsSet> {
 
     @Category
     private static final String stunnerCategory = Categories.NODES;
@@ -82,7 +82,7 @@ public class KnowledgeSource extends DRGElement implements DMNViewDefinition {
     @PropertySet
     @FormField(afterElement = "fontSet")
     @Valid
-    protected RectangleDimensionsSet dimensionsSet;
+    protected GeneralRectangleDimensionsSet dimensionsSet;
 
     public KnowledgeSource() {
         this(new Id(),
@@ -92,7 +92,7 @@ public class KnowledgeSource extends DRGElement implements DMNViewDefinition {
              new LocationURI(),
              new BackgroundSet(),
              new FontSet(),
-             new RectangleDimensionsSet());
+             new GeneralRectangleDimensionsSet());
     }
 
     public KnowledgeSource(final Id id,
@@ -102,7 +102,7 @@ public class KnowledgeSource extends DRGElement implements DMNViewDefinition {
                            final LocationURI locationURI,
                            final BackgroundSet backgroundSet,
                            final FontSet fontSet,
-                           final RectangleDimensionsSet dimensionsSet) {
+                           final GeneralRectangleDimensionsSet dimensionsSet) {
         super(id,
               description,
               name);
@@ -144,11 +144,11 @@ public class KnowledgeSource extends DRGElement implements DMNViewDefinition {
     }
 
     @Override
-    public RectangleDimensionsSet getDimensionsSet() {
+    public GeneralRectangleDimensionsSet getDimensionsSet() {
         return dimensionsSet;
     }
 
-    public void setDimensionsSet(final RectangleDimensionsSet dimensionsSet) {
+    public void setDimensionsSet(final GeneralRectangleDimensionsSet dimensionsSet) {
         this.dimensionsSet = dimensionsSet;
     }
 

@@ -49,4 +49,6 @@ public interface DMNSVGGlyphFactory {
     ImageDataUriGlyph KNOWLEDGE_SOURCE_PALETTE = ImageDataUriGlyph.create(DMNImageResources.INSTANCE.knowledgeSourcePalette().getSafeUri());
 
     ImageDataUriGlyph TEXT_ANNOTATION_PALETTE = ImageDataUriGlyph.create(DMNImageResources.INSTANCE.textAnnotationPalette().getSafeUri());
+
+    ImageDataUriGlyph DECISION_SERVICE_PALETTE = ImageDataUriGlyph.create(DMNImageResources.INSTANCE.decisionServicePalette().getSafeUri());
 }

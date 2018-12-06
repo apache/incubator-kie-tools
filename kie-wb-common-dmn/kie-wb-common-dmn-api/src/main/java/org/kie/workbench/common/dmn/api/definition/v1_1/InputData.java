@@ -26,7 +26,7 @@ import org.kie.soup.commons.util.Sets;
 import org.kie.workbench.common.dmn.api.definition.DMNViewDefinition;
 import org.kie.workbench.common.dmn.api.definition.HasVariable;
 import org.kie.workbench.common.dmn.api.property.background.BackgroundSet;
-import org.kie.workbench.common.dmn.api.property.dimensions.RectangleDimensionsSet;
+import org.kie.workbench.common.dmn.api.property.dimensions.GeneralRectangleDimensionsSet;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.font.FontSet;
@@ -50,7 +50,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 @FormDefinition(policy = FieldPolicy.ONLY_MARKED,
         defaultFieldSettings = {@FieldParam(name = FIELD_CONTAINER_PARAM, value = COLLAPSIBLE_CONTAINER)},
         startElement = "id")
-public class InputData extends DRGElement implements DMNViewDefinition,
+public class InputData extends DRGElement implements DMNViewDefinition<GeneralRectangleDimensionsSet>,
                                                      HasVariable<InformationItemPrimary> {
 
     @Category
@@ -79,7 +79,7 @@ public class InputData extends DRGElement implements DMNViewDefinition,
     @PropertySet
     @FormField(afterElement = "fontSet")
     @Valid
-    protected RectangleDimensionsSet dimensionsSet;
+    protected GeneralRectangleDimensionsSet dimensionsSet;
 
     public InputData() {
         this(new Id(),
@@ -88,7 +88,7 @@ public class InputData extends DRGElement implements DMNViewDefinition,
              new InformationItemPrimary(),
              new BackgroundSet(),
              new FontSet(),
-             new RectangleDimensionsSet());
+             new GeneralRectangleDimensionsSet());
     }
 
     public InputData(final Id id,
@@ -97,7 +97,7 @@ public class InputData extends DRGElement implements DMNViewDefinition,
                      final InformationItemPrimary variable,
                      final BackgroundSet backgroundSet,
                      final FontSet fontSet,
-                     final RectangleDimensionsSet dimensionsSet) {
+                     final GeneralRectangleDimensionsSet dimensionsSet) {
         super(id,
               description,
               name);
@@ -140,11 +140,11 @@ public class InputData extends DRGElement implements DMNViewDefinition,
     }
 
     @Override
-    public RectangleDimensionsSet getDimensionsSet() {
+    public GeneralRectangleDimensionsSet getDimensionsSet() {
         return dimensionsSet;
     }
 
-    public void setDimensionsSet(final RectangleDimensionsSet dimensionsSet) {
+    public void setDimensionsSet(final GeneralRectangleDimensionsSet dimensionsSet) {
         this.dimensionsSet = dimensionsSet;
     }
 

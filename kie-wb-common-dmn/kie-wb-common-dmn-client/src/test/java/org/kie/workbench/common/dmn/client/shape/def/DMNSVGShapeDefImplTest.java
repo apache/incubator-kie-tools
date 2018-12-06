@@ -23,6 +23,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.DMNViewDefinition;
 import org.kie.workbench.common.dmn.api.definition.v1_1.BusinessKnowledgeModel;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
+import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionService;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InputData;
 import org.kie.workbench.common.dmn.api.definition.v1_1.KnowledgeSource;
 import org.kie.workbench.common.dmn.api.definition.v1_1.TextAnnotation;
@@ -62,33 +63,56 @@ public class DMNSVGShapeDefImplTest {
         when(viewFactory.inputData()).thenReturn(viewResource);
         when(viewFactory.knowledgeSource()).thenReturn(viewResource);
         when(viewFactory.textAnnotation()).thenReturn(viewResource);
+        when(viewFactory.decisionService()).thenReturn(viewResource);
     }
 
     @Test
     public void testNewViewInstance() {
-        shapeDef.newViewInstance(viewFactory, new BusinessKnowledgeModel());
+        final BusinessKnowledgeModel businessKnowledgeModel = new BusinessKnowledgeModel();
+        shapeDef.newViewInstance(viewFactory, businessKnowledgeModel);
         verify(viewFactory).businessKnowledgeModel();
-        verify(viewResource).build(true);
+        verify(viewResource).build(businessKnowledgeModel.getDimensionsSet().getWidth().getValue(),
+                                   businessKnowledgeModel.getDimensionsSet().getHeight().getValue(),
+                                   true);
 
         reset(viewResource);
-        shapeDef.newViewInstance(viewFactory, new Decision());
+        final Decision decision = new Decision();
+        shapeDef.newViewInstance(viewFactory, decision);
         verify(viewFactory).decision();
-        verify(viewResource).build(true);
+        verify(viewResource).build(decision.getDimensionsSet().getWidth().getValue(),
+                                   decision.getDimensionsSet().getHeight().getValue(),
+                                   true);
 
         reset(viewResource);
         shapeDef.newViewInstance(viewFactory, new InputData());
         verify(viewFactory).inputData();
-        verify(viewResource).build(true);
+        verify(viewResource).build(businessKnowledgeModel.getDimensionsSet().getWidth().getValue(),
+                                   businessKnowledgeModel.getDimensionsSet().getHeight().getValue(),
+                                   true);
 
         reset(viewResource);
-        shapeDef.newViewInstance(viewFactory, new KnowledgeSource());
+        final KnowledgeSource knowledgeSource = new KnowledgeSource();
+        shapeDef.newViewInstance(viewFactory, knowledgeSource);
         verify(viewFactory).knowledgeSource();
-        verify(viewResource).build(true);
+        verify(viewResource).build(knowledgeSource.getDimensionsSet().getWidth().getValue(),
+                                   knowledgeSource.getDimensionsSet().getHeight().getValue(),
+                                   true);
 
         reset(viewResource);
-        shapeDef.newViewInstance(viewFactory, new TextAnnotation());
+        final TextAnnotation textAnnotation = new TextAnnotation();
+        shapeDef.newViewInstance(viewFactory, textAnnotation);
         verify(viewFactory).textAnnotation();
-        verify(viewResource).build(true);
+        verify(viewResource).build(textAnnotation.getDimensionsSet().getWidth().getValue(),
+                                   textAnnotation.getDimensionsSet().getHeight().getValue(),
+                                   true);
+
+        reset(viewResource);
+        final DecisionService decisionService = new DecisionService();
+        shapeDef.newViewInstance(viewFactory, decisionService);
+        verify(viewFactory).decisionService();
+        verify(viewResource).build(decisionService.getDimensionsSet().getWidth().getValue(),
+                                   decisionService.getDimensionsSet().getHeight().getValue(),
+                                   true);
     }
 
     @Test
@@ -119,6 +143,8 @@ public class DMNSVGShapeDefImplTest {
                      shapeDef.getGlyph(KnowledgeSource.class, PaletteGlyphConsumer.class, DEFINITION_ID));
         assertEquals(DMNSVGGlyphFactory.TEXT_ANNOTATION_PALETTE,
                      shapeDef.getGlyph(TextAnnotation.class, PaletteGlyphConsumer.class, DEFINITION_ID));
+        assertEquals(DMNSVGGlyphFactory.DECISION_SERVICE_PALETTE,
+                     shapeDef.getGlyph(DecisionService.class, PaletteGlyphConsumer.class, DEFINITION_ID));
 
         assertEquals(true, shapeDef.getGlyph(DMNViewDefinition.class, PaletteGlyphConsumer.class, DEFINITION_ID) instanceof ShapeGlyph);
     }

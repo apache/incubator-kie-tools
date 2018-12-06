@@ -59,9 +59,9 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.TextAnnotation;
 import org.kie.workbench.common.dmn.api.property.background.BackgroundSet;
 import org.kie.workbench.common.dmn.api.property.background.BgColour;
 import org.kie.workbench.common.dmn.api.property.background.BorderColour;
-import org.kie.workbench.common.dmn.api.property.dimensions.Height;
+import org.kie.workbench.common.dmn.api.property.dimensions.GeneralHeight;
+import org.kie.workbench.common.dmn.api.property.dimensions.GeneralWidth;
 import org.kie.workbench.common.dmn.api.property.dimensions.RectangleDimensionsSet;
-import org.kie.workbench.common.dmn.api.property.dimensions.Width;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.font.FontSet;
@@ -390,10 +390,10 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
         Optional<DMNEdge> dmnEdge = Optional.empty();
         if (dmnDiagram.isPresent()) {
             dmnEdge = dmnDiagram.get().getDMNDiagramElement().stream()
-                                .filter(DMNEdge.class::isInstance)
-                                .map(DMNEdge.class::cast)
-                                .filter(e -> e.getDmnElementRef().getLocalPart().equals(dmnEdgeElementRef))
-                                .findFirst();
+                    .filter(DMNEdge.class::isInstance)
+                    .map(DMNEdge.class::cast)
+                    .filter(e -> e.getDmnElementRef().getLocalPart().equals(dmnEdgeElementRef))
+                    .findFirst();
         }
         if (dmnEdge.isPresent()) {
             DMNEdge e = dmnEdge.get();
@@ -580,6 +580,7 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void internalAugment(Stream<DMNShape> drgShapeStream, Id id, Bound ul, RectangleDimensionsSet dimensionsSet, Bound lr, BackgroundSet bgset, Consumer<FontSet> fontSetSetter) {
         Optional<DMNShape> drgShapeOpt = drgShapeStream.filter(shape -> shape.getDmnElementRef().getLocalPart().equals(id.getValue())).findFirst();
         if (!drgShapeOpt.isPresent()) {
@@ -591,8 +592,8 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
             ((BoundImpl) ul).setX(xOfShape(drgShape));
             ((BoundImpl) ul).setY(yOfShape(drgShape));
         }
-        dimensionsSet.setWidth(new Width(widthOfShape(drgShape)));
-        dimensionsSet.setHeight(new Height(heightOfShape(drgShape)));
+        dimensionsSet.setWidth(new GeneralWidth(widthOfShape(drgShape)));
+        dimensionsSet.setHeight(new GeneralHeight(heightOfShape(drgShape)));
         if (lr != null) {
             ((BoundImpl) lr).setX(xOfShape(drgShape) + widthOfShape(drgShape));
             ((BoundImpl) lr).setY(yOfShape(drgShape) + heightOfShape(drgShape));

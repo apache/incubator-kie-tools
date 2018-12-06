@@ -19,11 +19,11 @@ import org.kie.workbench.common.dmn.api.property.background.BackgroundSet;
 import org.kie.workbench.common.dmn.api.property.dimensions.RectangleDimensionsSet;
 import org.kie.workbench.common.dmn.api.property.font.FontSet;
 
-public interface DMNViewDefinition extends DMNDefinition {
+public interface DMNViewDefinition<D extends RectangleDimensionsSet<?, ?>> extends DMNDefinition {
 
     BackgroundSet getBackgroundSet();
 
     FontSet getFontSet();
 
-    RectangleDimensionsSet getDimensionsSet();
+    D getDimensionsSet();
 }

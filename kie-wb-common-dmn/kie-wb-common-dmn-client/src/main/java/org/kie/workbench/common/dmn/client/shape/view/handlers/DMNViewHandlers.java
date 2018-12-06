@@ -18,8 +18,6 @@ package org.kie.workbench.common.dmn.client.shape.view.handlers;
 
 import org.kie.workbench.common.dmn.api.definition.DMNDefinition;
 import org.kie.workbench.common.dmn.api.definition.DMNViewDefinition;
-import org.kie.workbench.common.dmn.api.property.dimensions.Height;
-import org.kie.workbench.common.dmn.api.property.dimensions.Width;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.client.shape.view.handler.FontHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.handler.SizeHandler;
@@ -56,10 +54,10 @@ public class DMNViewHandlers {
         public SizeHandlerBuilder() {
             this.width(e -> e.getDimensionsSet().getWidth().getValue())
                     .height(e -> e.getDimensionsSet().getHeight().getValue())
-                    .minWidth(p -> Width.MIN)
-                    .maxWidth(p -> Width.MAX)
-                    .minHeight(p -> Height.MIN)
-                    .maxHeight(p -> Height.MAX);
+                    .minWidth(p -> p.getDimensionsSet().getMinimumWidth())
+                    .maxWidth(p -> p.getDimensionsSet().getMaximumWidth())
+                    .minHeight(p -> p.getDimensionsSet().getMinimumHeight())
+                    .maxHeight(p -> p.getDimensionsSet().getMaximumHeight());
         }
     }
 

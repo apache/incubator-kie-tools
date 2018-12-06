@@ -18,7 +18,7 @@ package org.kie.workbench.common.dmn.api.definition.v1_1;
 
 import org.junit.Test;
 import org.kie.workbench.common.dmn.api.property.background.BackgroundSet;
-import org.kie.workbench.common.dmn.api.property.dimensions.RectangleDimensionsSet;
+import org.kie.workbench.common.dmn.api.property.dimensions.GeneralRectangleDimensionsSet;
 import org.kie.workbench.common.dmn.api.property.dmn.AllowedAnswers;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
@@ -42,7 +42,7 @@ public class DecisionTest {
         final Expression expression = mock(Expression.class);
         final BackgroundSet backgroundSet = mock(BackgroundSet.class);
         final FontSet fontSet = mock(FontSet.class);
-        final RectangleDimensionsSet dimensionsSet = mock(RectangleDimensionsSet.class);
+        final GeneralRectangleDimensionsSet dimensionsSet = mock(GeneralRectangleDimensionsSet.class);
 
         final InformationItemPrimary variable = new InformationItemPrimary();
         final Decision expectedParent = new Decision(id,

@@ -27,7 +27,7 @@ import org.kie.workbench.common.dmn.api.definition.DMNViewDefinition;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasVariable;
 import org.kie.workbench.common.dmn.api.property.background.BackgroundSet;
-import org.kie.workbench.common.dmn.api.property.dimensions.RectangleDimensionsSet;
+import org.kie.workbench.common.dmn.api.property.dimensions.GeneralRectangleDimensionsSet;
 import org.kie.workbench.common.dmn.api.property.dmn.AllowedAnswers;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
@@ -58,7 +58,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
         startElement = "id")
 public class Decision extends DRGElement implements DomainObject,
                                                     HasExpression,
-                                                    DMNViewDefinition,
+                                                    DMNViewDefinition<GeneralRectangleDimensionsSet>,
                                                     HasVariable<InformationItemPrimary> {
 
     @Category
@@ -99,7 +99,7 @@ public class Decision extends DRGElement implements DomainObject,
     @PropertySet
     @FormField
     @Valid
-    protected RectangleDimensionsSet dimensionsSet;
+    protected GeneralRectangleDimensionsSet dimensionsSet;
 
     public Decision() {
         this(new Id(),
@@ -111,7 +111,7 @@ public class Decision extends DRGElement implements DomainObject,
              null,
              new BackgroundSet(),
              new FontSet(),
-             new RectangleDimensionsSet());
+             new GeneralRectangleDimensionsSet());
     }
 
     public Decision(final Id id,
@@ -123,7 +123,7 @@ public class Decision extends DRGElement implements DomainObject,
                     final Expression expression,
                     final BackgroundSet backgroundSet,
                     final FontSet fontSet,
-                    final RectangleDimensionsSet dimensionsSet) {
+                    final GeneralRectangleDimensionsSet dimensionsSet) {
         super(id,
               description,
               name);
@@ -169,11 +169,11 @@ public class Decision extends DRGElement implements DomainObject,
     }
 
     @Override
-    public RectangleDimensionsSet getDimensionsSet() {
+    public GeneralRectangleDimensionsSet getDimensionsSet() {
         return dimensionsSet;
     }
 
-    public void setDimensionsSet(final RectangleDimensionsSet dimensionsSet) {
+    public void setDimensionsSet(final GeneralRectangleDimensionsSet dimensionsSet) {
         this.dimensionsSet = dimensionsSet;
     }
 

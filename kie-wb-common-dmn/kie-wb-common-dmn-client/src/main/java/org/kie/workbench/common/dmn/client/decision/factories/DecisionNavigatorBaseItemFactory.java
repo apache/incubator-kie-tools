@@ -18,13 +18,14 @@ package org.kie.workbench.common.dmn.client.decision.factories;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.StreamSupport;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.jboss.errai.ui.client.local.spi.TranslationService;
+import org.kie.workbench.common.dmn.api.definition.v1_1.DMNDiagram;
 import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorItem;
 import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorPresenter;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
@@ -36,9 +37,10 @@ import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
+import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
-import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.uberfire.mvp.Command;
 
@@ -85,27 +87,25 @@ public class DecisionNavigatorBaseItemFactory {
         final String label = getLabel(node);
         final Command onClick = makeOnClickCommand(node);
         final List<DecisionNavigatorItem> nestedItems = makeNestedItems(node);
-        final String parentUUID = parentUUID(node);
+        final String diagramUUID = diagramUUID();
 
-        final DecisionNavigatorItem item = new DecisionNavigatorItem(uuid, label, type, onClick, parentUUID);
+        final DecisionNavigatorItem item = new DecisionNavigatorItem(uuid, label, type, onClick, diagramUUID);
         nestedItems.forEach(item::addChild);
 
         return item;
     }
 
-    String parentUUID(final Node<View, Edge> node) {
+    @SuppressWarnings("unchecked")
+    String diagramUUID() {
+        final CanvasHandler canvasHandler = decisionNavigatorPresenter.getHandler();
+        final Graph<?, Node> graph = canvasHandler.getDiagram().getGraph();
 
-        final Optional<? extends Element<?>> parentElement = Optional.ofNullable(getParentElement(node));
-
-        if (parentElement.isPresent()) {
-            return parentElement.get().getUUID();
-        }
-
-        return "";
-    }
-
-    Element<?> getParentElement(final Element<?> element) {
-        return GraphUtils.getParent((Node<?, ? extends Edge>) element);
+        return StreamSupport.stream(graph.nodes().spliterator(), false)
+                .filter(n -> n.getContent() instanceof Definition)
+                .filter(n -> ((Definition) n.getContent()).getDefinition() instanceof DMNDiagram)
+                .findFirst()
+                .map(Node::getUUID)
+                .orElse("");
     }
 
     Command makeOnClickCommand(final Node<View, Edge> node) {

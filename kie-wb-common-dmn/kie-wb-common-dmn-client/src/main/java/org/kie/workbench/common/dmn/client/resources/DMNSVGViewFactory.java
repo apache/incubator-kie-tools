@@ -48,6 +48,10 @@ public interface DMNSVGViewFactory {
 
     String TEXT_ANNOTATION_PALETTE = "images/shapes/text-annotation-palette.svg";
 
+    String DECISION_SERVICE = "images/shapes/decision-service.svg";
+
+    String DECISION_SERVICE_PALETTE = "images/shapes/decision-service-palette.svg";
+
     @SVGSource(DIAGRAM)
     SVGShapeViewResource diagram();
 
@@ -65,5 +69,8 @@ public interface DMNSVGViewFactory {
 
     @SVGSource(TEXT_ANNOTATION)
     SVGShapeViewResource textAnnotation();
+
+    @SVGSource(DECISION_SERVICE)
+    SVGShapeViewResource decisionService();
 }
 

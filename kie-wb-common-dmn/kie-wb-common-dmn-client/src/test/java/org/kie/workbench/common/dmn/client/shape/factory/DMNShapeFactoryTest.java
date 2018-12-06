@@ -28,6 +28,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.AuthorityRequirement;
 import org.kie.workbench.common.dmn.api.definition.v1_1.BusinessKnowledgeModel;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNDiagram;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
+import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionService;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationRequirement;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InputData;
 import org.kie.workbench.common.dmn.api.definition.v1_1.KnowledgeRequirement;
@@ -138,6 +139,11 @@ public class DMNShapeFactoryTest {
                                               any(DMNConnectorShapeDefImpl.class),
                                               shapeDefFactoryCaptor.capture());
         assertEquals(dmnConnectorShapeFactory, shapeDefFactoryCaptor.getValue().get());
+
+        verify(delegateShapeFactory).delegate(eq(DecisionService.class),
+                                              any(DMNSVGShapeDefImpl.class),
+                                              shapeDefFactoryCaptor.capture());
+        assertEquals(svgShapeFactory, shapeDefFactoryCaptor.getValue().get());
     }
 
     @Test

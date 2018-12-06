@@ -23,7 +23,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InputData;
 import org.kie.workbench.common.dmn.api.definition.v1_1.KnowledgeSource;
 import org.kie.workbench.common.dmn.api.property.background.BackgroundSet;
-import org.kie.workbench.common.dmn.api.property.dimensions.RectangleDimensionsSet;
+import org.kie.workbench.common.dmn.api.property.dimensions.GeneralRectangleDimensionsSet;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.KnowledgeSourceType;
@@ -61,7 +61,7 @@ public class KnowledgeSourceConverter implements NodeConverter<org.kie.dmn.model
                                                  locationURI,
                                                  new BackgroundSet(),
                                                  new FontSet(),
-                                                 new RectangleDimensionsSet());
+                                                 new GeneralRectangleDimensionsSet());
         node.getContent().setDefinition(ks);
         return node;
     }

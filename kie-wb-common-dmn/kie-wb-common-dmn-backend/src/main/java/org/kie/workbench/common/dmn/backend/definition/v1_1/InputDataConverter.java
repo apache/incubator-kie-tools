@@ -19,7 +19,7 @@ package org.kie.workbench.common.dmn.backend.definition.v1_1;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItemPrimary;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InputData;
 import org.kie.workbench.common.dmn.api.property.background.BackgroundSet;
-import org.kie.workbench.common.dmn.api.property.dimensions.RectangleDimensionsSet;
+import org.kie.workbench.common.dmn.api.property.dimensions.GeneralRectangleDimensionsSet;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
@@ -52,7 +52,7 @@ public class InputDataConverter implements NodeConverter<org.kie.dmn.model.api.I
                                             informationItem,
                                             new BackgroundSet(),
                                             new FontSet(),
-                                            new RectangleDimensionsSet());
+                                            new GeneralRectangleDimensionsSet());
         node.getContent().setDefinition(inputData);
 
         if (informationItem != null) {

@@ -24,7 +24,7 @@ import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.soup.commons.util.Sets;
 import org.kie.workbench.common.dmn.api.definition.DMNViewDefinition;
 import org.kie.workbench.common.dmn.api.property.background.BackgroundSet;
-import org.kie.workbench.common.dmn.api.property.dimensions.RectangleDimensionsSet;
+import org.kie.workbench.common.dmn.api.property.dimensions.GeneralRectangleDimensionsSet;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Text;
 import org.kie.workbench.common.dmn.api.property.dmn.TextFormat;
@@ -52,7 +52,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
         defaultFieldSettings = {@FieldParam(name = FIELD_CONTAINER_PARAM, value = COLLAPSIBLE_CONTAINER)},
         i18n = @I18nSettings(keyPreffix = "org.kie.workbench.common.dmn.api.definition.v1_1.TextAnnotation"),
         startElement = "id")
-public class TextAnnotation extends Artifact implements DMNViewDefinition {
+public class TextAnnotation extends Artifact implements DMNViewDefinition<GeneralRectangleDimensionsSet> {
 
     @Category
     private static final String stunnerCategory = Categories.NODES;
@@ -81,7 +81,7 @@ public class TextAnnotation extends Artifact implements DMNViewDefinition {
 
     @PropertySet
     @FormField(afterElement = "fontSet")
-    protected RectangleDimensionsSet dimensionsSet;
+    protected GeneralRectangleDimensionsSet dimensionsSet;
 
     public TextAnnotation() {
         this(new Id(),
@@ -90,7 +90,7 @@ public class TextAnnotation extends Artifact implements DMNViewDefinition {
              new TextFormat(),
              new BackgroundSet(),
              new FontSet(),
-             new RectangleDimensionsSet());
+             new GeneralRectangleDimensionsSet());
     }
 
     public TextAnnotation(final Id id,
@@ -99,7 +99,7 @@ public class TextAnnotation extends Artifact implements DMNViewDefinition {
                           final TextFormat textFormat,
                           final BackgroundSet backgroundSet,
                           final FontSet fontSet,
-                          final RectangleDimensionsSet dimensionsSet) {
+                          final GeneralRectangleDimensionsSet dimensionsSet) {
         super(id,
               description);
         this.text = text;
@@ -140,11 +140,11 @@ public class TextAnnotation extends Artifact implements DMNViewDefinition {
     }
 
     @Override
-    public RectangleDimensionsSet getDimensionsSet() {
+    public GeneralRectangleDimensionsSet getDimensionsSet() {
         return dimensionsSet;
     }
 
-    public void setDimensionsSet(final RectangleDimensionsSet dimensionsSet) {
+    public void setDimensionsSet(final GeneralRectangleDimensionsSet dimensionsSet) {
         this.dimensionsSet = dimensionsSet;
     }
 

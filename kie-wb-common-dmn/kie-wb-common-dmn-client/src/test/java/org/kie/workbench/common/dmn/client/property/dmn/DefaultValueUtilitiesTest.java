@@ -26,6 +26,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.v1_1.BusinessKnowledgeModel;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
+import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionService;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InputData;
 import org.kie.workbench.common.dmn.api.definition.v1_1.KnowledgeSource;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
@@ -204,6 +205,35 @@ public class DefaultValueUtilitiesTest {
                                 (textAnnotation) -> textAnnotation.getText().getValue(),
                                 () -> TextAnnotation.class.getSimpleName() + "-6",
                                 () -> TextAnnotation.class.getSimpleName() + "-7");
+    }
+
+    @Test
+    public void testUpdateNewNodeName_DecisionService() {
+        //Add some existing nodes to ensure naming is not affected by existing content
+        graph.addNode(makeMockNode(new BusinessKnowledgeModel()));
+        graph.addNode(makeMockNode(new Decision()));
+        graph.addNode(makeMockNode(new InputData()));
+        graph.addNode(makeMockNode(new KnowledgeSource()));
+
+        final DecisionService decisionService1 = new DecisionService();
+        final DecisionService decisionService2 = new DecisionService();
+        final DecisionService decisionService3 = new DecisionService();
+        final DecisionService decisionService4 = new DecisionService();
+
+        assertUpdateNewNodeName(decisionService1,
+                                decisionService2,
+                                (decisionService) -> decisionService.getName().getValue(),
+                                () -> DecisionService.class.getSimpleName() + "-1",
+                                () -> DecisionService.class.getSimpleName() + "-2");
+
+        //Update existing names manually and add two more
+        decisionService1.getName().setValue("decisionService");
+        decisionService2.getName().setValue(DecisionService.class.getSimpleName() + "-5");
+        assertUpdateNewNodeName(decisionService3,
+                                decisionService4,
+                                (decisionService) -> decisionService.getName().getValue(),
+                                () -> DecisionService.class.getSimpleName() + "-6",
+                                () -> DecisionService.class.getSimpleName() + "-7");
     }
 
     private <T extends DMNModelInstrumentedBase> void assertUpdateNewNodeName(final T content1,

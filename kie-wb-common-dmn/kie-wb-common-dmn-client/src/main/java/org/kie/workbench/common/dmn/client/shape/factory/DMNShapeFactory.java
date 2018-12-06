@@ -25,6 +25,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.AuthorityRequirement;
 import org.kie.workbench.common.dmn.api.definition.v1_1.BusinessKnowledgeModel;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNDiagram;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
+import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionService;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationRequirement;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InputData;
 import org.kie.workbench.common.dmn.api.definition.v1_1.KnowledgeRequirement;
@@ -86,7 +87,10 @@ public class DMNShapeFactory implements ShapeFactory<DMNDefinition, Shape> {
                           () -> dmnConnectorShapeFactory)
                 .delegate(KnowledgeRequirement.class,
                           new DMNConnectorShapeDefImpl(),
-                          () -> dmnConnectorShapeFactory);
+                          () -> dmnConnectorShapeFactory)
+                .delegate(DecisionService.class,
+                          new DMNSVGShapeDefImpl(),
+                          () -> svgShapeFactory);
     }
 
     @Override

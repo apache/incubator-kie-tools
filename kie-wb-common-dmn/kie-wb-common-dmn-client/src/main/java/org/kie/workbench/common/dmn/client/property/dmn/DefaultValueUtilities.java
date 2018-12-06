@@ -26,6 +26,7 @@ import java.util.stream.StreamSupport;
 import org.kie.workbench.common.dmn.api.definition.v1_1.BusinessKnowledgeModel;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
+import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionService;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InputData;
 import org.kie.workbench.common.dmn.api.definition.v1_1.KnowledgeSource;
 import org.kie.workbench.common.dmn.api.definition.v1_1.TextAnnotation;
@@ -47,6 +48,8 @@ public class DefaultValueUtilities {
             updateKnowledgeSourceDefaultName(graph, (KnowledgeSource) dmnModel);
         } else if (dmnModel instanceof TextAnnotation) {
             updateTextAnnotationDefaultText(graph, (TextAnnotation) dmnModel);
+        } else if (dmnModel instanceof DecisionService) {
+            updateDecisionServiceDefaultName(graph, (DecisionService) dmnModel);
         } else {
             throw new IllegalArgumentException("Default Name for '" + dmnModel.getClass().getSimpleName() + "' is not supported.");
         }
@@ -125,6 +128,15 @@ public class DefaultValueUtilities {
                                                                                           textAnnotation,
                                                                                           (n) -> n.getText().getValue()),
                                                                      prefix));
+    }
+
+    private static void updateDecisionServiceDefaultName(final Graph<?, Node> graph,
+                                                         final DecisionService decisionService) {
+        final String prefix = decisionService.getClass().getSimpleName() + "-";
+        decisionService.getName().setValue(prefix + getMaxUnusedIndex(getExistingNodeNames(graph,
+                                                                                           decisionService,
+                                                                                           (n) -> n.getName().getValue()),
+                                                                      prefix));
     }
 
     @SuppressWarnings("unchecked")

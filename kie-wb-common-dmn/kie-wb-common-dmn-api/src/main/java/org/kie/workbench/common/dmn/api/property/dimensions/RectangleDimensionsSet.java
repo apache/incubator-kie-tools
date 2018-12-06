@@ -15,101 +15,23 @@
  */
 package org.kie.workbench.common.dmn.api.property.dimensions;
 
-import javax.validation.Valid;
-
-import org.jboss.errai.common.client.api.annotations.Portable;
-import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.dmn.api.property.DMNPropertySet;
-import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
-import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
-import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.slider.type.SliderFieldType;
-import org.kie.workbench.common.stunner.core.definition.annotation.Property;
-import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
-import org.kie.workbench.common.stunner.core.util.HashUtil;
 
-@Portable
-@Bindable
-@PropertySet
-@FormDefinition(
-        startElement = "width"
-)
-public class RectangleDimensionsSet implements DMNPropertySet {
+public interface RectangleDimensionsSet<W extends Width, H extends Height> extends DMNPropertySet {
 
-    @Property
-    @FormField(
-            type = SliderFieldType.class,
-            settings = {
-                    @FieldParam(name = "min", value = "50.0"),
-                    @FieldParam(name = "max", value = "200.0"),
-                    @FieldParam(name = "step", value = "25.0"),
-                    @FieldParam(name = "precision", value = "0.0")
-            }
-    )
-    @Valid
-    protected Width width;
+    W getWidth();
 
-    @Property
-    @FormField(
-            type = SliderFieldType.class,
-            afterElement = "width",
-            settings = {
-                    @FieldParam(name = "min", value = "50.0"),
-                    @FieldParam(name = "max", value = "200.0"),
-                    @FieldParam(name = "step", value = "25.0"),
-                    @FieldParam(name = "precision", value = "0.0")
-            }
-    )
-    @Valid
-    protected Height height;
+    void setWidth(final W width);
 
-    public RectangleDimensionsSet() {
-        this(new Width(),
-             new Height());
-    }
+    H getHeight();
 
-    public RectangleDimensionsSet(final Width width,
-                                  final Height height) {
-        this.width = width;
-        this.height = height;
-    }
+    void setHeight(final H height);
 
-    public Width getWidth() {
-        return width;
-    }
+    double getMinimumWidth();
 
-    public void setWidth(final Width width) {
-        this.width = width;
-    }
+    double getMaximumWidth();
 
-    public Height getHeight() {
-        return height;
-    }
+    double getMinimumHeight();
 
-    public void setHeight(final Height height) {
-        this.height = height;
-    }
-
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof RectangleDimensionsSet)) {
-            return false;
-        }
-
-        final RectangleDimensionsSet that = (RectangleDimensionsSet) o;
-
-        if (width != null ? !width.equals(that.width) : that.width != null) {
-            return false;
-        }
-        return height != null ? height.equals(that.height) : that.height == null;
-    }
-
-    @Override
-    public int hashCode() {
-        return HashUtil.combineHashCodes(width != null ? width.hashCode() : 0,
-                                         height != null ? height.hashCode() : 0);
-    }
+    double getMaximumHeight();
 }

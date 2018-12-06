@@ -15,70 +15,11 @@
  */
 package org.kie.workbench.common.dmn.api.property.dimensions;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-
-import org.jboss.errai.common.client.api.annotations.Portable;
-import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.dmn.api.property.DMNProperty;
-import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldDefinition;
-import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldValue;
-import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.I18nMode;
-import org.kie.workbench.common.stunner.core.definition.annotation.Property;
-import org.kie.workbench.common.stunner.core.definition.annotation.property.Value;
-import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
-import org.kie.workbench.common.stunner.core.util.HashUtil;
 
-@Portable
-@Bindable
-@Property(meta = PropertyMetaTypes.HEIGHT)
-@FieldDefinition(i18nMode = I18nMode.OVERRIDE_I18N_KEY)
-public class Height implements DMNProperty {
+public interface Height extends DMNProperty {
 
-    public static final double MIN = 50.0;
+    Double getValue();
 
-    public static final double MAX = 200.0;
-
-    private static final double DEFAULT = 50.0;
-
-    @Value
-    @Min(50)
-    @Max(200)
-    @FieldValue
-    private Double value;
-
-    public Height() {
-        this(DEFAULT);
-    }
-
-    public Height(final Double value) {
-        this.value = value;
-    }
-
-    public Double getValue() {
-        return value;
-    }
-
-    public void setValue(final Double value) {
-        this.value = value;
-    }
-
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof Height)) {
-            return false;
-        }
-
-        final Height height = (Height) o;
-
-        return value != null ? value.equals(height.value) : height.value == null;
-    }
-
-    @Override
-    public int hashCode() {
-        return HashUtil.combineHashCodes(value != null ? value.hashCode() : 0);
-    }
+    void setValue(final Double value);
 }

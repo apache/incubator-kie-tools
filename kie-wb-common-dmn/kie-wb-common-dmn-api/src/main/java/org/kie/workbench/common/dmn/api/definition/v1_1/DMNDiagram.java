@@ -55,7 +55,8 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
         "association",
         "information-requirement",
         "knowledge-requirement",
-        "authority-requirement"
+        "authority-requirement",
+        "decision-service"
 })
 public class DMNDiagram extends DMNModelInstrumentedBase implements DMNDefinition {
 

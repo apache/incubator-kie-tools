@@ -24,6 +24,7 @@ import org.kie.workbench.common.dmn.api.definition.DMNViewDefinition;
 import org.kie.workbench.common.dmn.api.definition.v1_1.BusinessKnowledgeModel;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNDiagram;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
+import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionService;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InputData;
 import org.kie.workbench.common.dmn.api.definition.v1_1.KnowledgeSource;
 import org.kie.workbench.common.dmn.api.definition.v1_1.TextAnnotation;
@@ -50,7 +51,9 @@ public class DMNSVGShapeDefImpl implements DMNSVGShapeDef<DMNViewDefinition> {
                     .put(KnowledgeSource.class,
                          DMNSVGViewFactory::knowledgeSource)
                     .put(TextAnnotation.class,
-                         DMNSVGViewFactory::textAnnotation);
+                         DMNSVGViewFactory::textAnnotation)
+                    .put(DecisionService.class,
+                         DMNSVGViewFactory::decisionService);
 
     public static final Map<Class<? extends DMNDefinition>, Glyph> GLYPHS_TOOLBOX =
             new Maps.Builder<Class<? extends DMNDefinition>, Glyph>()
@@ -80,14 +83,18 @@ public class DMNSVGShapeDefImpl implements DMNSVGShapeDef<DMNViewDefinition> {
                          DMNSVGGlyphFactory.KNOWLEDGE_SOURCE_PALETTE)
                     .put(TextAnnotation.class,
                          DMNSVGGlyphFactory.TEXT_ANNOTATION_PALETTE)
+                    .put(DecisionService.class,
+                         DMNSVGGlyphFactory.DECISION_SERVICE_PALETTE)
                     .build();
 
     @Override
     public SVGShapeView<?> newViewInstance(final DMNSVGViewFactory factory,
                                            final DMNViewDefinition bean) {
+        final double width = bean.getDimensionsSet().getWidth().getValue();
+        final double height = bean.getDimensionsSet().getHeight().getValue();
         return VIEW_RESOURCES
                 .getResource(factory, bean)
-                .build(true);
+                .build(width, height, true);
     }
 
     @Override

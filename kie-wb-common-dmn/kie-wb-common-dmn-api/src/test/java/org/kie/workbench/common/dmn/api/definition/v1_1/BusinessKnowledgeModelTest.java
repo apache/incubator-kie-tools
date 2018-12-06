@@ -18,7 +18,7 @@ package org.kie.workbench.common.dmn.api.definition.v1_1;
 
 import org.junit.Test;
 import org.kie.workbench.common.dmn.api.property.background.BackgroundSet;
-import org.kie.workbench.common.dmn.api.property.dimensions.RectangleDimensionsSet;
+import org.kie.workbench.common.dmn.api.property.dimensions.GeneralRectangleDimensionsSet;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
@@ -38,7 +38,7 @@ public class BusinessKnowledgeModelTest {
         final FunctionDefinition functionDefinition = mock(FunctionDefinition.class);
         final BackgroundSet backgroundSet = mock(BackgroundSet.class);
         final FontSet fontSet = mock(FontSet.class);
-        final RectangleDimensionsSet rectangleDimensionSset = mock(RectangleDimensionsSet.class);
+        final GeneralRectangleDimensionsSet dimensionsSet = mock(GeneralRectangleDimensionsSet.class);
 
         final InformationItemPrimary variable = new InformationItemPrimary();
         final BusinessKnowledgeModel expectedParent = new BusinessKnowledgeModel(id,
@@ -48,7 +48,7 @@ public class BusinessKnowledgeModelTest {
                                                                                  functionDefinition,
                                                                                  backgroundSet,
                                                                                  fontSet,
-                                                                                 rectangleDimensionSset);
+                                                                                 dimensionsSet);
 
         final DMNModelInstrumentedBase actualParent = variable.getParent();
 

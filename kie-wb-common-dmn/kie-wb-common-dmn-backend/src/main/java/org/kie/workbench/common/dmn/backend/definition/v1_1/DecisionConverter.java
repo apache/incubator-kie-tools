@@ -26,7 +26,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItemPrimary;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InputData;
 import org.kie.workbench.common.dmn.api.definition.v1_1.KnowledgeSource;
 import org.kie.workbench.common.dmn.api.property.background.BackgroundSet;
-import org.kie.workbench.common.dmn.api.property.dimensions.RectangleDimensionsSet;
+import org.kie.workbench.common.dmn.api.property.dimensions.GeneralRectangleDimensionsSet;
 import org.kie.workbench.common.dmn.api.property.dmn.AllowedAnswers;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
@@ -66,7 +66,7 @@ public class DecisionConverter implements NodeConverter<org.kie.dmn.model.api.De
                                          expression,
                                          new BackgroundSet(),
                                          new FontSet(),
-                                         new RectangleDimensionsSet());
+                                         new GeneralRectangleDimensionsSet());
         decision.setQuestion(QuestionPropertyConverter.wbFromDMN(dmn.getQuestion()));
         decision.setAllowedAnswers(AllowedAnswersPropertyConverter.wbFromDMN(dmn.getAllowedAnswers()));
         node.getContent().setDefinition(decision);

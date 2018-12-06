@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.decision.factories;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.TreeSet;
 
@@ -24,6 +25,7 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.api.definition.v1_1.DMNDiagram;
 import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorItem;
 import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorPresenter;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
@@ -35,9 +37,12 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.selection.Canva
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
+import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
+import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.Mock;
@@ -80,6 +85,15 @@ public class DecisionNavigatorBaseItemFactoryTest {
     private TranslationService translationService;
 
     @Mock
+    private CanvasHandler canvasHandler;
+
+    @Mock
+    private Diagram diagram;
+
+    @Mock
+    private Graph graph;
+
+    @Mock
     private Node<View, Edge> node;
 
     @Mock
@@ -99,16 +113,24 @@ public class DecisionNavigatorBaseItemFactoryTest {
                                                            canvasSelectionEvent,
                                                            definitionUtils,
                                                            translationService));
+
+        when(decisionNavigatorPresenter.getHandler()).thenReturn(canvasHandler);
+        when(canvasHandler.getDiagram()).thenReturn(diagram);
+        when(diagram.getGraph()).thenReturn(graph);
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testMakeItem() {
 
         final String itemUUID = "itemUUID";
         final String childUUID = "childUUID";
-        final String parentUUID = "parentUUID";
+        final String graphUUID = "graphUUID";
         final String label = "label";
         final Command onClick = mock(Command.class);
+        final Node<Definition, Edge> diagramNode = mock(Node.class);
+        final Definition diagramDefinition = mock(Definition.class);
+        final DMNDiagram diagram = mock(DMNDiagram.class);
         final DecisionNavigatorItem child = new DecisionNavigatorItem(childUUID);
         final List<DecisionNavigatorItem> nestedItems = singletonList(child);
 
@@ -116,39 +138,19 @@ public class DecisionNavigatorBaseItemFactoryTest {
         doReturn(label).when(factory).getLabel(node);
         doReturn(onClick).when(factory).makeOnClickCommand(node);
         doReturn(nestedItems).when(factory).makeNestedItems(node);
-        doReturn(parentUUID).when(factory).parentUUID(node);
+
+        when(graph.nodes()).thenReturn(Collections.singletonList(diagramNode));
+        when(diagramNode.getContent()).thenReturn(diagramDefinition);
+        when(diagramDefinition.getDefinition()).thenReturn(diagram);
+        when(diagramNode.getUUID()).thenReturn(graphUUID);
 
         final DecisionNavigatorItem item = factory.makeItem(node, ITEM);
 
         assertEquals(itemUUID, item.getUUID());
         assertEquals(label, item.getLabel());
         assertEquals(onClick, item.getOnClick());
-        assertEquals(parentUUID, item.getParentUUID());
+        assertEquals(graphUUID, item.getParentUUID());
         assertEquals(asTreeSet(child), item.getChildren());
-    }
-
-    @Test
-    public void testParentUUIDWhenElementIsNotNull() {
-
-        final Element element = mock(Element.class);
-        final String expectedUUID = "123";
-
-        when(element.getUUID()).thenReturn(expectedUUID);
-        doReturn(element).when(factory).getParentElement(node);
-
-        final String actualUUID = factory.parentUUID(node);
-
-        assertEquals(expectedUUID, actualUUID);
-    }
-
-    @Test
-    public void testParentUUIDWhenElementIsNull() {
-
-        doReturn(null).when(factory).getParentElement(node);
-
-        final String actualUUID = factory.parentUUID(node);
-
-        assertEquals("", actualUUID);
     }
 
     @Test

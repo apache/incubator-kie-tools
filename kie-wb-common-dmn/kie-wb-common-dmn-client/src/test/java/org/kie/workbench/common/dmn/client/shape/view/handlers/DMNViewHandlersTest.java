@@ -20,9 +20,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.DMNViewDefinition;
-import org.kie.workbench.common.dmn.api.property.dimensions.Height;
+import org.kie.workbench.common.dmn.api.property.dimensions.GeneralHeight;
+import org.kie.workbench.common.dmn.api.property.dimensions.GeneralRectangleDimensionsSet;
+import org.kie.workbench.common.dmn.api.property.dimensions.GeneralWidth;
 import org.kie.workbench.common.dmn.api.property.dimensions.RectangleDimensionsSet;
-import org.kie.workbench.common.dmn.api.property.dimensions.Width;
 import org.kie.workbench.common.dmn.client.shape.def.DMNSVGShapeDefImpl;
 import org.kie.workbench.common.stunner.core.client.shape.view.handler.SizeHandler;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
@@ -51,8 +52,8 @@ public class DMNViewHandlersTest {
     private Bounds bounds = new BoundsImpl(new BoundImpl(0.0, 0.0),
                                            new BoundImpl(100.0, 100.0));
 
-    private RectangleDimensionsSet dimensions = new RectangleDimensionsSet(new Width(50.0),
-                                                                           new Height(50.0));
+    private RectangleDimensionsSet dimensions = new GeneralRectangleDimensionsSet(new GeneralWidth(50.0),
+                                                                                  new GeneralHeight(50.0));
 
     @Before
     public void setup() {
@@ -68,9 +69,9 @@ public class DMNViewHandlersTest {
         handler.handle(view,
                        shape);
 
-        verify(shape).setMinWidth(eq(Width.MIN));
-        verify(shape).setMaxWidth(eq(Width.MAX));
-        verify(shape).setMinHeight(eq(Height.MIN));
-        verify(shape).setMaxHeight(eq(Height.MAX));
+        verify(shape).setMinWidth(eq(dimensions.getMinimumWidth()));
+        verify(shape).setMaxWidth(eq(dimensions.getMaximumWidth()));
+        verify(shape).setMinHeight(eq(dimensions.getMinimumHeight()));
+        verify(shape).setMaxHeight(eq(dimensions.getMaximumHeight()));
     }
 }
