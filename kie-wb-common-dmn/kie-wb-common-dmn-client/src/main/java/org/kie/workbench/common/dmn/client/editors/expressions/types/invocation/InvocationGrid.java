@@ -203,11 +203,6 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGri
     }
 
     @Override
-    protected boolean isHeaderHidden() {
-        return false;
-    }
-
-    @Override
     @SuppressWarnings("unused")
     public List<ListSelectorItem> getItems(final int uiRowIndex,
                                            final int uiColumnIndex) {
@@ -342,11 +337,13 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGri
     @Override
     protected void doAfterHeaderSelectionChange(final int uiHeaderRowIndex,
                                                 final int uiHeaderColumnIndex) {
-        if (uiHeaderRowIndex == 0 && uiHeaderColumnIndex == InvocationUIModelMapper.BINDING_PARAMETER_COLUMN_INDEX) {
-            final DMNModelInstrumentedBase base = hasExpression.asDMNModelInstrumentedBase();
-            if (base instanceof DomainObject) {
-                fireDomainObjectSelectionEvent((DomainObject) base);
-                return;
+        if (nesting == 0 && uiHeaderRowIndex == 0) {
+            if (uiHeaderColumnIndex == InvocationUIModelMapper.BINDING_PARAMETER_COLUMN_INDEX || uiHeaderColumnIndex == InvocationUIModelMapper.BINDING_EXPRESSION_COLUMN_INDEX) {
+                final DMNModelInstrumentedBase base = hasExpression.asDMNModelInstrumentedBase();
+                if (base instanceof DomainObject) {
+                    fireDomainObjectSelectionEvent((DomainObject) base);
+                    return;
+                }
             }
         }
         super.doAfterHeaderSelectionChange(uiHeaderRowIndex, uiHeaderColumnIndex);

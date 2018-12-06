@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.literal;
 
+import java.util.List;
 import java.util.function.Consumer;
 
 import org.kie.soup.commons.validation.PortablePreconditions;
@@ -33,7 +34,7 @@ public class LiteralExpressionColumn extends DMNSimpleGridColumn<LiteralExpressi
 
     private final TextAreaSingletonDOMElementFactory factory;
 
-    public LiteralExpressionColumn(final HeaderMetaData headerMetaData,
+    public LiteralExpressionColumn(final List<HeaderMetaData> headerMetaData,
                                    final TextAreaSingletonDOMElementFactory factory,
                                    final LiteralExpressionGrid gridWidget) {
         super(headerMetaData,

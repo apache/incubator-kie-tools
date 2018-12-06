@@ -185,11 +185,6 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
     }
 
     @Override
-    protected boolean isHeaderHidden() {
-        return false;
-    }
-
-    @Override
     @SuppressWarnings("unused")
     public List<ListSelectorItem> getItems(final int uiRowIndex,
                                            final int uiColumnIndex) {
@@ -397,7 +392,7 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
     @Override
     protected void doAfterHeaderSelectionChange(final int uiHeaderRowIndex,
                                                 final int uiHeaderColumnIndex) {
-        if (uiHeaderRowIndex == 0) {
+        if (nesting == 0 && uiHeaderRowIndex == 0) {
             final DMNModelInstrumentedBase base = hasExpression.asDMNModelInstrumentedBase();
             if (base instanceof DomainObject) {
                 fireDomainObjectSelectionEvent((DomainObject) base);

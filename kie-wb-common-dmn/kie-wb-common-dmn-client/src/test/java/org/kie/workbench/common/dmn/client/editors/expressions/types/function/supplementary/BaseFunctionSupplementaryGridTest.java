@@ -30,6 +30,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ContextGridRowNumberColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.InformationItemCell;
@@ -49,7 +50,6 @@ import org.kie.workbench.common.stunner.core.client.command.SessionCommandManage
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 import org.uberfire.mocks.EventSourceMock;
 
 import static org.junit.Assert.assertEquals;
@@ -171,7 +171,7 @@ public abstract class BaseFunctionSupplementaryGridTest<D extends ExpressionEdit
 
         assertEquals(3,
                      uiModel.getColumnCount());
-        assertTrue(uiModel.getColumns().get(0) instanceof RowNumberColumn);
+        assertTrue(uiModel.getColumns().get(0) instanceof ContextGridRowNumberColumn);
         assertTrue(uiModel.getColumns().get(1) instanceof NameColumn);
         assertTrue(uiModel.getColumns().get(2) instanceof ExpressionEditorColumn);
 
@@ -189,20 +189,6 @@ public abstract class BaseFunctionSupplementaryGridTest<D extends ExpressionEdit
             assertEquals(literalExpressionEditor,
                          dcv.getValue().get());
         }
-    }
-
-    @Test
-    public void testHeaderVisibilityWhenNested() {
-        setupGrid(1);
-
-        assertTrue(grid.isHeaderHidden());
-    }
-
-    @Test
-    public void testHeaderVisibilityWhenNotNested() {
-        setupGrid(0);
-
-        assertTrue(grid.isHeaderHidden());
     }
 
     @Test

@@ -17,24 +17,25 @@
 package org.kie.workbench.common.dmn.client.editors.expressions.types.dtable;
 
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridRenderer;
+import org.uberfire.ext.wires.core.grids.client.model.GridData;
 
 public class DecisionTableGridRenderer extends BaseExpressionGridRenderer {
 
+    static final int HEADER_ROW_COUNT = 2;
+
     static final double HEADER_ROW_HEIGHT = 48;
 
-    static final double HEADER_HEIGHT = HEADER_ROW_HEIGHT * DecisionTableGridData.HEADER_ROW_COUNT;
-
-    public DecisionTableGridRenderer() {
-        super(false);
+    public DecisionTableGridRenderer(final GridData gridData) {
+        super(gridData);
     }
 
     @Override
-    protected double getRequiredHeaderHeight(final boolean isHeaderHidden) {
-        return isHeaderHidden ? 0.0 : HEADER_HEIGHT;
+    protected double getHeaderRowHeightInternal() {
+        return HEADER_ROW_HEIGHT;
     }
 
     @Override
-    protected double getRequiredHeaderRowHeight(final boolean isHeaderHidden) {
-        return isHeaderHidden ? 0.0 : HEADER_ROW_HEIGHT;
+    public double getHeaderHeight() {
+        return HEADER_ROW_HEIGHT * HEADER_ROW_COUNT;
     }
 }

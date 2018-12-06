@@ -428,11 +428,6 @@ public class ExpressionEditorColumnTest {
             }
 
             @Override
-            protected boolean isHeaderHidden() {
-                return false;
-            }
-
-            @Override
             public double getPadding() {
                 return padding;
             }

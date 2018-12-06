@@ -16,39 +16,31 @@
 
 package org.kie.workbench.common.dmn.client.widgets.grid;
 
+import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRenderer;
 
 public class BaseExpressionGridRenderer extends BaseGridRenderer {
 
-    static final double HEADER_HEIGHT = 64;
-
     static final double HEADER_ROW_HEIGHT = 64;
 
-    protected final double headerHeight;
+    private final GridData gridData;
 
-    protected final double headerRowHeight;
-
-    public BaseExpressionGridRenderer(final boolean isHeaderHidden) {
+    public BaseExpressionGridRenderer(final GridData gridData) {
         super(new BaseExpressionGridTheme());
-        this.headerHeight = getRequiredHeaderHeight(isHeaderHidden);
-        this.headerRowHeight = getRequiredHeaderRowHeight(isHeaderHidden);
+        this.gridData = gridData;
+    }
+
+    protected double getHeaderRowHeightInternal() {
+        return HEADER_ROW_HEIGHT;
     }
 
     @Override
     public double getHeaderHeight() {
-        return headerHeight;
+        return getHeaderRowHeightInternal() * gridData.getHeaderRowCount();
     }
 
     @Override
     public double getHeaderRowHeight() {
-        return headerRowHeight;
-    }
-
-    protected double getRequiredHeaderHeight(final boolean isHeaderHidden) {
-        return isHeaderHidden ? 0.0 : HEADER_HEIGHT;
-    }
-
-    protected double getRequiredHeaderRowHeight(final boolean isHeaderHidden) {
-        return isHeaderHidden ? 0.0 : HEADER_ROW_HEIGHT;
+        return getHeaderRowHeightInternal();
     }
 }

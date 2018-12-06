@@ -79,7 +79,6 @@ import org.uberfire.mvp.Command;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
@@ -314,20 +313,6 @@ public class UndefinedExpressionGridTest {
         assertThat(uiModel.getCell(0, 0)).isNotNull();
 
         assertThat(uiModel.getCell(0, 0)).isInstanceOf(UndefinedExpressionCell.class);
-    }
-
-    @Test
-    public void testHeaderVisibilityWhenNested() {
-        setupGrid(1);
-
-        assertTrue(grid.isHeaderHidden());
-    }
-
-    @Test
-    public void testHeaderVisibilityWhenNotNested() {
-        setupGrid(0);
-
-        assertTrue(grid.isHeaderHidden());
     }
 
     @Test

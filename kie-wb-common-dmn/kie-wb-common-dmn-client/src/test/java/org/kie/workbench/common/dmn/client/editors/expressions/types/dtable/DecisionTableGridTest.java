@@ -110,7 +110,6 @@ import org.uberfire.mvp.Command;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
@@ -385,20 +384,6 @@ public class DecisionTableGridTest {
                      uiModel.getCell(0, 2).getValue().getValue());
         assertEquals(DecisionTableDefaultValueUtilities.RULE_DESCRIPTION,
                      uiModel.getCell(0, 3).getValue().getValue());
-    }
-
-    @Test
-    public void testHeaderVisibilityWhenNested() {
-        setupGrid(Optional.empty(), 1);
-
-        assertFalse(grid.isHeaderHidden());
-    }
-
-    @Test
-    public void testHeaderVisibilityWhenNotNested() {
-        setupGrid(Optional.empty(), 0);
-
-        assertFalse(grid.isHeaderHidden());
     }
 
     @Test

@@ -16,27 +16,18 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.invocation;
 
-import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridTheme;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRenderer;
+import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridRenderer;
 
-public class InvocationGridRenderer extends BaseGridRenderer {
+public class InvocationGridRenderer extends BaseExpressionGridRenderer {
 
     static final double HEADER_ROW_HEIGHT = 48;
 
-    private final InvocationGridData gridData;
-
     public InvocationGridRenderer(final InvocationGridData gridData) {
-        super(new BaseExpressionGridTheme());
-        this.gridData = gridData;
+        super(gridData);
     }
 
     @Override
-    public double getHeaderHeight() {
-        return HEADER_ROW_HEIGHT * gridData.getHeaderRowCount();
-    }
-
-    @Override
-    public double getHeaderRowHeight() {
+    protected double getHeaderRowHeightInternal() {
         return HEADER_ROW_HEIGHT;
     }
 }

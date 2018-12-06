@@ -95,7 +95,6 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 import org.uberfire.ext.wires.core.grids.client.widget.dnd.GridWidgetDnDHandlersState;
 import org.uberfire.ext.wires.core.grids.client.widget.dnd.GridWidgetDnDHandlersState.GridWidgetHandlersOperation;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.impl.RowSelectionStrategy;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLayerRedrawManager;
 import org.uberfire.mocks.EventSourceMock;
@@ -103,7 +102,6 @@ import org.uberfire.mvp.Command;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -363,7 +361,7 @@ public class ContextGridTest {
 
         assertEquals(3,
                      uiModel.getColumnCount());
-        assertTrue(uiModel.getColumns().get(0) instanceof RowNumberColumn);
+        assertTrue(uiModel.getColumns().get(0) instanceof ContextGridRowNumberColumn);
         assertTrue(uiModel.getColumns().get(1) instanceof NameColumn);
         assertTrue(uiModel.getColumns().get(2) instanceof ExpressionEditorColumn);
 
@@ -389,20 +387,6 @@ public class ContextGridTest {
         final ExpressionCellValue dcv1 = (ExpressionCellValue) uiModel.getCell(1, 2).getValue();
         assertEquals(undefinedExpressionEditor,
                      dcv1.getValue().get());
-    }
-
-    @Test
-    public void testHeaderVisibilityWhenNested() {
-        setupGrid(1);
-
-        assertTrue(grid.isHeaderHidden());
-    }
-
-    @Test
-    public void testHeaderVisibilityWhenNotNested() {
-        setupGrid(0);
-
-        assertFalse(grid.isHeaderHidden());
     }
 
     @Test
@@ -1000,7 +984,7 @@ public class ContextGridTest {
 
         grid.selectHeaderCell(0, ContextUIModelMapperHelper.EXPRESSION_COLUMN_INDEX, false, false);
 
-        assertNOPDomainObjectSelection();
+        assertDomainObjectSelection(hasExpression);
     }
 
     private void assertDomainObjectSelection(final DomainObject domainObject) {

@@ -16,22 +16,43 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.dtable;
 
-import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridRenderingTest;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
 
-import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 
-public class DecisionTableGridRendererTest {
+@RunWith(MockitoJUnitRunner.class)
+public class DecisionTableGridRendererTest extends BaseExpressionGridRenderingTest<DecisionTableGridData> {
 
-    @Test
-    public void testHeaderDimensions() {
-        final GridRenderer renderer = new DecisionTableGridRenderer();
+    @Override
+    protected DecisionTableGridData getGridData() {
+        return mock(DecisionTableGridData.class);
+    }
 
-        assertEquals(DecisionTableGridRenderer.HEADER_HEIGHT,
-                     renderer.getHeaderHeight(),
-                     0.0);
-        assertEquals(DecisionTableGridRenderer.HEADER_ROW_HEIGHT,
-                     renderer.getHeaderRowHeight(),
-                     0.0);
+    @Override
+    protected GridRenderer getGridRenderer() {
+        return new DecisionTableGridRenderer(gridData);
+    }
+
+    @Override
+    protected double getExpectedHeaderRowHeight() {
+        return DecisionTableGridRenderer.HEADER_ROW_HEIGHT;
+    }
+
+    @Override
+    protected double getExpectedHeaderHeightZeroRows() {
+        return DecisionTableGridRenderer.HEADER_ROW_HEIGHT * 2;
+    }
+
+    @Override
+    protected double getExpectedHeaderHeightOneRow() {
+        return DecisionTableGridRenderer.HEADER_ROW_HEIGHT * 2;
+    }
+
+    @Override
+    protected double getExpectedHeaderHeightTwoRows() {
+        return DecisionTableGridRenderer.HEADER_ROW_HEIGHT * 2;
     }
 }

@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.context;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -31,7 +32,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellE
 
 public class NameColumn extends EditableNameAndDataTypeColumn<ContextGrid> {
 
-    public NameColumn(final HeaderMetaData headerMetaData,
+    public NameColumn(final List<HeaderMetaData> headerMetaData,
                       final ContextGrid gridWidget,
                       final Predicate<Integer> isEditable,
                       final Consumer<HasName> clearDisplayNameConsumer,

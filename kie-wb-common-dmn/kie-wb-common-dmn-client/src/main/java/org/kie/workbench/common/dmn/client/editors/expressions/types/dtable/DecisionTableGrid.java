@@ -137,7 +137,7 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
               gridPanel,
               gridLayer,
               gridData,
-              new DecisionTableGridRenderer(),
+              new DecisionTableGridRenderer(gridData),
               definitionUtils,
               sessionManager,
               sessionCommandManager,
@@ -367,11 +367,6 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
                                            columnIndex);
             });
         });
-    }
-
-    @Override
-    protected boolean isHeaderHidden() {
-        return false;
     }
 
     @Override

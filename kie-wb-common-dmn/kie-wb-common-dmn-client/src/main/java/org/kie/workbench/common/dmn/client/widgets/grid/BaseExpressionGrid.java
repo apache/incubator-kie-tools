@@ -18,17 +18,14 @@ package org.kie.workbench.common.dmn.client.widgets.grid;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Predicate;
 
 import javax.enterprise.event.Event;
 
 import com.ait.lienzo.client.core.event.INodeXYEvent;
-import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Point2D;
@@ -75,7 +72,6 @@ import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
-import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
@@ -182,8 +178,6 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
     protected abstract void initialiseUiColumns();
 
     protected abstract void initialiseUiModel();
-
-    protected abstract boolean isHeaderHidden();
 
     @SuppressWarnings("unchecked")
     public Consumer<HasName> clearDisplayNameConsumer(final boolean updateStunnerTitle) {
@@ -393,43 +387,6 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
 
     void clearSelectedDomainObject() {
         selectedDomainObject = Optional.empty();
-    }
-
-    @Override
-    protected void executeRenderQueueCommands(final boolean isSelectionLayer) {
-        final List<Pair<Group, GridRenderer.RendererCommand>> gridLineCommands = new ArrayList<>();
-        final List<Pair<Group, GridRenderer.RendererCommand>> allOtherCommands = new ArrayList<>();
-        final List<Pair<Group, GridRenderer.RendererCommand>> selectedCellsCommands = new ArrayList<>();
-        for (Map.Entry<Group, List<GridRenderer.RendererCommand>> p : renderQueue) {
-            final Group parent = p.getKey();
-            final List<GridRenderer.RendererCommand> commands = p.getValue();
-            for (GridRenderer.RendererCommand command : commands) {
-                if (command instanceof GridRenderer.RenderSelectedCellsCommand) {
-                    selectedCellsCommands.add(new Pair<>(parent, command));
-                } else if (command instanceof GridRenderer.RenderHeaderGridLinesCommand) {
-                    gridLineCommands.add(new Pair<>(parent, command));
-                } else if (command instanceof GridRenderer.RenderBodyGridLinesCommand) {
-                    gridLineCommands.add(new Pair<>(parent, command));
-                } else {
-                    allOtherCommands.add(new Pair<>(parent, command));
-                }
-            }
-        }
-
-        final Predicate<Pair<Group, GridRenderer.RendererCommand>> renderHeader = (p) -> {
-            final GridRenderer.RendererCommand command = p.getK2();
-            if (isHeaderHidden()) {
-                return !(command instanceof GridRenderer.RendererHeaderCommand);
-            }
-            return true;
-        };
-
-        renderQueue.clear();
-        allOtherCommands.stream().filter(renderHeader).forEach(p -> addCommandToRenderQueue(p.getK1(), p.getK2()));
-        gridLineCommands.stream().filter(renderHeader).forEach(p -> addCommandToRenderQueue(p.getK1(), p.getK2()));
-        selectedCellsCommands.stream().filter(renderHeader).forEach(p -> addCommandToRenderQueue(p.getK1(), p.getK2()));
-
-        super.executeRenderQueueCommands(isSelectionLayer);
     }
 
     public Optional<E> getExpression() {

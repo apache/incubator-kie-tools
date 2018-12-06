@@ -203,11 +203,6 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
             protected void initialiseUiModel() {
                 //Nothing for this test
             }
-
-            @Override
-            protected boolean isHeaderHidden() {
-                return false;
-            }
         };
     }
 

@@ -38,6 +38,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.util.SelectionUti
 import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
+import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridRenderer;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
@@ -93,7 +94,7 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
               gridPanel,
               gridLayer,
               gridData,
-              new RelationGridRenderer(),
+              new BaseExpressionGridRenderer(gridData),
               definitionUtils,
               sessionManager,
               sessionCommandManager,
@@ -164,11 +165,6 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
                 }
             });
         });
-    }
-
-    @Override
-    protected boolean isHeaderHidden() {
-        return false;
     }
 
     @Override

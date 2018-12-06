@@ -29,10 +29,11 @@ import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ContextGridRenderer;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ContextGridRowNumberColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ContextUIModelMapper;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
+import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridRenderer;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
@@ -47,8 +48,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.selection.Domai
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
-import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 
 public class FunctionSupplementaryGrid extends BaseExpressionGrid<Context, FunctionSupplementaryGridData, ContextUIModelMapper> implements HasListSelectorControl {
 
@@ -83,7 +82,7 @@ public class FunctionSupplementaryGrid extends BaseExpressionGrid<Context, Funct
               gridPanel,
               gridLayer,
               gridData,
-              new ContextGridRenderer(true),
+              new BaseExpressionGridRenderer(gridData),
               definitionUtils,
               sessionManager,
               sessionCommandManager,
@@ -121,11 +120,10 @@ public class FunctionSupplementaryGrid extends BaseExpressionGrid<Context, Funct
     public void initialiseUiColumns() {
         final NameColumn nameColumn = new NameColumn(this);
         final ExpressionEditorColumn expressionColumn = new ExpressionEditorColumn(gridLayer,
-                                                                                   new BaseHeaderMetaData("",
-                                                                                                          EXPRESSION_COLUMN_GROUP),
+                                                                                   Collections.emptyList(),
                                                                                    this);
 
-        model.appendColumn(new RowNumberColumn());
+        model.appendColumn(new ContextGridRowNumberColumn(Collections.emptyList()));
         model.appendColumn(nameColumn);
         model.appendColumn(expressionColumn);
 
@@ -145,11 +143,6 @@ public class FunctionSupplementaryGrid extends BaseExpressionGrid<Context, Funct
                                            2);
             });
         });
-    }
-
-    @Override
-    protected boolean isHeaderHidden() {
-        return true;
     }
 
     @Override

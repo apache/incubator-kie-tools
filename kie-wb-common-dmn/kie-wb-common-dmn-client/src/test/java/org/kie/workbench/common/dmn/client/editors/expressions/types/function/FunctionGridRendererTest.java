@@ -16,50 +16,39 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.function;
 
-import org.junit.Before;
-import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridRenderingTest;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
-import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.mock;
 
 @RunWith(MockitoJUnitRunner.class)
-public class FunctionGridRendererTest {
+public class FunctionGridRendererTest extends BaseExpressionGridRenderingTest<DMNGridData> {
 
-    @Mock
-    private DMNGridData gridData;
-
-    private FunctionGridRenderer renderer;
-
-    @Before
-    public void setup() {
-        this.renderer = new FunctionGridRenderer(gridData);
+    @Override
+    protected DMNGridData getGridData() {
+        return mock(DMNGridData.class);
     }
 
-    @Test
-    public void testHeaderDimensionsWhenHeaderHasOneRow() {
-        when(gridData.getHeaderRowCount()).thenReturn(1);
-
-        assertEquals(FunctionGridRenderer.HEADER_ROW_HEIGHT,
-                     renderer.getHeaderHeight(),
-                     0.0);
-        assertEquals(FunctionGridRenderer.HEADER_ROW_HEIGHT,
-                     renderer.getHeaderRowHeight(),
-                     0.0);
+    @Override
+    protected GridRenderer getGridRenderer() {
+        return new FunctionGridRenderer(gridData);
     }
 
-    @Test
-    public void testHeaderDimensionsWhenHeaderHasTwoRows() {
-        when(gridData.getHeaderRowCount()).thenReturn(2);
+    @Override
+    protected double getExpectedHeaderRowHeight() {
+        return FunctionGridRenderer.HEADER_ROW_HEIGHT;
+    }
 
-        assertEquals(FunctionGridRenderer.HEADER_ROW_HEIGHT * 2,
-                     renderer.getHeaderHeight(),
-                     0.0);
-        assertEquals(FunctionGridRenderer.HEADER_ROW_HEIGHT,
-                     renderer.getHeaderRowHeight(),
-                     0.0);
+    @Override
+    protected double getExpectedHeaderHeightOneRow() {
+        return FunctionGridRenderer.HEADER_ROW_HEIGHT;
+    }
+
+    @Override
+    protected double getExpectedHeaderHeightTwoRows() {
+        return FunctionGridRenderer.HEADER_ROW_HEIGHT * 2;
     }
 }

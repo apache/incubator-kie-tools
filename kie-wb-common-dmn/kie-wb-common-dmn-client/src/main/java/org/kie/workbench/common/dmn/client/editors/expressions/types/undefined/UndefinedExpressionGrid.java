@@ -36,6 +36,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionT
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.selector.UndefinedExpressionSelectorPopoverView;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
+import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridRenderer;
 import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCache;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.HasCellEditorControls;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
@@ -57,13 +58,10 @@ import org.kie.workbench.common.stunner.core.client.command.SessionCommandManage
 import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
-import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
 
 public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, DMNGridData, UndefinedExpressionUIModelMapper> implements HasListSelectorControl {
 
     public static final double PADDING = 0.0;
-
-    private static final String EXPRESSION_COLUMN_GROUP = "UndefinedExpressionGrid$ExpressionColumn";
 
     private final UndefinedExpressionSelectorPopoverView.Presenter undefinedExpressionSelector;
     private final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
@@ -98,7 +96,7 @@ public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, DMNG
               gridPanel,
               gridLayer,
               gridData,
-              new UndefinedExpressionGridRenderer(),
+              new BaseExpressionGridRenderer(gridData),
               definitionUtils,
               sessionManager,
               sessionCommandManager,
@@ -138,9 +136,7 @@ public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, DMNG
 
     @Override
     protected void initialiseUiColumns() {
-        final DMNGridColumn undefinedExpressionColumn = new UndefinedExpressionColumn(new BaseHeaderMetaData("",
-                                                                                                             EXPRESSION_COLUMN_GROUP),
-                                                                                      this,
+        final DMNGridColumn undefinedExpressionColumn = new UndefinedExpressionColumn(this,
                                                                                       cellEditorControls,
                                                                                       undefinedExpressionSelector,
                                                                                       translationService);
@@ -155,11 +151,6 @@ public class UndefinedExpressionGrid extends BaseExpressionGrid<Expression, DMNG
         model.appendRow(new DMNGridRow());
         uiModelMapper.fromDMNModel(0,
                                    0);
-    }
-
-    @Override
-    protected boolean isHeaderHidden() {
-        return true;
     }
 
     @Override

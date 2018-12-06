@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.literal;
 
+import java.util.Collections;
+
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.gwtbootstrap3.client.ui.TextArea;
 import org.junit.Test;
@@ -63,7 +65,7 @@ public class LiteralExpressionColumnTest extends BaseDOMElementSingletonColumnTe
 
     @Override
     protected LiteralExpressionColumn getColumn() {
-        return new LiteralExpressionColumn(headerMetaData,
+        return new LiteralExpressionColumn(Collections.singletonList(headerMetaData),
                                            factory,
                                            gridWidget);
     }

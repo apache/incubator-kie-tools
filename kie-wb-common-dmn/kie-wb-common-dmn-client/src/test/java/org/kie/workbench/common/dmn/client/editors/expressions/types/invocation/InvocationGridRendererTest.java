@@ -16,49 +16,38 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.invocation;
 
-import org.junit.Before;
-import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
+import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridRenderingTest;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.mock;
 
 @RunWith(MockitoJUnitRunner.class)
-public class InvocationGridRendererTest {
+public class InvocationGridRendererTest extends BaseExpressionGridRenderingTest<InvocationGridData> {
 
-    @Mock
-    private InvocationGridData gridData;
-
-    private InvocationGridRenderer renderer;
-
-    @Before
-    public void setup() {
-        this.renderer = new InvocationGridRenderer(gridData);
+    @Override
+    protected InvocationGridData getGridData() {
+        return mock(InvocationGridData.class);
     }
 
-    @Test
-    public void testHeaderDimensionsWhenHeaderHasOneRow() {
-        when(gridData.getHeaderRowCount()).thenReturn(1);
-
-        assertEquals(InvocationGridRenderer.HEADER_ROW_HEIGHT,
-                     renderer.getHeaderHeight(),
-                     0.0);
-        assertEquals(InvocationGridRenderer.HEADER_ROW_HEIGHT,
-                     renderer.getHeaderRowHeight(),
-                     0.0);
+    @Override
+    protected GridRenderer getGridRenderer() {
+        return new InvocationGridRenderer(gridData);
     }
 
-    @Test
-    public void testHeaderDimensionsWhenHeaderHasTwoRows() {
-        when(gridData.getHeaderRowCount()).thenReturn(2);
+    @Override
+    protected double getExpectedHeaderRowHeight() {
+        return InvocationGridRenderer.HEADER_ROW_HEIGHT;
+    }
 
-        assertEquals(InvocationGridRenderer.HEADER_ROW_HEIGHT * 2,
-                     renderer.getHeaderHeight(),
-                     0.0);
-        assertEquals(InvocationGridRenderer.HEADER_ROW_HEIGHT,
-                     renderer.getHeaderRowHeight(),
-                     0.0);
+    @Override
+    protected double getExpectedHeaderHeightOneRow() {
+        return InvocationGridRenderer.HEADER_ROW_HEIGHT;
+    }
+
+    @Override
+    protected double getExpectedHeaderHeightTwoRows() {
+        return InvocationGridRenderer.HEADER_ROW_HEIGHT * 2;
     }
 }

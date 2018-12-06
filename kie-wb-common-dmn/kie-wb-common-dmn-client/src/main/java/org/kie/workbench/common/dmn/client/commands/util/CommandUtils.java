@@ -29,7 +29,7 @@ import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
+import org.uberfire.ext.wires.core.grids.client.widget.dnd.IsRowDragHandle;
 
 public class CommandUtils {
 
@@ -38,7 +38,7 @@ public class CommandUtils {
         final Optional<GridColumn<?>> rowNumberColumn = uiModel
                 .getColumns()
                 .stream()
-                .filter(column -> column instanceof RowNumberColumn)
+                .filter(column -> column instanceof IsRowDragHandle)
                 .findFirst();
 
         rowNumberColumn.ifPresent(c -> {

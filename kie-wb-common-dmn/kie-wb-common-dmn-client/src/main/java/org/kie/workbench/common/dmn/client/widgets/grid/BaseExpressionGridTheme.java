@@ -34,7 +34,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.literal.Lit
 import org.kie.workbench.common.dmn.client.editors.expressions.types.relation.RelationColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
+import org.uberfire.ext.wires.core.grids.client.widget.dnd.IsRowDragHandle;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.themes.GridRendererTheme;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.themes.impl.KIEColours;
 
@@ -87,7 +87,7 @@ public class BaseExpressionGridTheme implements GridRendererTheme {
             background.setFillColor(KIEColours.HEADER_BACKGROUND_LIGHT_BLUE);
         } else if (column instanceof LiteralExpressionColumn) {
             background.setFillColor(KIEColours.HEADER_BACKGROUND_LIGHT_BLUE);
-        } else if (column instanceof RowNumberColumn) {
+        } else if (column instanceof IsRowDragHandle) {
             background.setFillColor(KIEColours.HEADER_BACKGROUND_WHITE);
         } else if (column instanceof InputClauseColumn) {
             background.setFillColor(KIEColours.HEADER_BACKGROUND_LIGHT_BLUE);
