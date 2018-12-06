@@ -22,8 +22,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.enterprise.context.Dependent;
 
 import com.ait.lienzo.client.core.types.Point2D;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.ContextMenuEvent;
@@ -47,7 +45,6 @@ import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGr
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
-import org.uberfire.ext.wires.core.grids.client.util.CoordinateUtilities;
 import org.uberfire.ext.wires.core.grids.client.util.RenderContextUtilities;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellEditContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
@@ -55,6 +52,11 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl
 import static org.drools.workbench.screens.scenariosimulation.client.utils.ScenarioSimulationGridHeaderUtilities.getColumnScenarioHeaderMetaData;
 import static org.drools.workbench.screens.scenariosimulation.client.utils.ScenarioSimulationGridHeaderUtilities.getEnableRightPanelEvent;
 import static org.drools.workbench.screens.scenariosimulation.client.utils.ScenarioSimulationGridHeaderUtilities.getUiHeaderRowIndex;
+import static org.uberfire.ext.wires.core.grids.client.util.CoordinateUtilities.convertDOMToGridCoordinate;
+import static org.uberfire.ext.wires.core.grids.client.util.CoordinateUtilities.getRelativeXOfEvent;
+import static org.uberfire.ext.wires.core.grids.client.util.CoordinateUtilities.getRelativeYOfEvent;
+import static org.uberfire.ext.wires.core.grids.client.util.CoordinateUtilities.getUiColumnIndex;
+import static org.uberfire.ext.wires.core.grids.client.util.CoordinateUtilities.getUiRowIndex;
 
 @Dependent
 public class ScenarioSimulationGridPanelClickHandler implements ClickHandler,
@@ -128,8 +130,8 @@ public class ScenarioSimulationGridPanelClickHandler implements ClickHandler,
     @Override
     public void onClick(ClickEvent event) {
         clickReceived.getAndIncrement();
-        final int canvasX = getRelativeX(event);
-        final int canvasY = getRelativeY(event);
+        final int canvasX = getRelativeXOfEvent(event);
+        final int canvasY = getRelativeYOfEvent(event);
         final boolean isShiftKeyDown = event.getNativeEvent().getShiftKey();
         final boolean isControlKeyDown = event.getNativeEvent().getCtrlKey();
         hideMenus();
@@ -150,15 +152,15 @@ public class ScenarioSimulationGridPanelClickHandler implements ClickHandler,
     }
 
     protected boolean manageRightClick(final ContextMenuEvent event) {
-        final int canvasX = getRelativeX(event);
-        final int canvasY = getRelativeY(event);
+        final int canvasX = getRelativeXOfEvent(event);
+        final int canvasY = getRelativeYOfEvent(event);
         final boolean isShiftKeyDown = event.getNativeEvent().getShiftKey();
         final boolean isControlKeyDown = event.getNativeEvent().getCtrlKey();
-        final Point2D ap = CoordinateUtilities.convertDOMToGridCoordinate(scenarioGrid,
-                                                                          new Point2D(canvasX,
-                                                                                      canvasY));
-        final Integer uiColumnIndex = CoordinateUtilities.getUiColumnIndex(scenarioGrid,
-                                                                           ap.getX());
+        final Point2D ap = convertDOMToGridCoordinate(scenarioGrid,
+                                                      new Point2D(canvasX,
+                                                                  canvasY));
+        final Integer uiColumnIndex = getUiColumnIndex(scenarioGrid,
+                                                       ap.getX());
         if (uiColumnIndex == null) {
             return false;
         }
@@ -167,30 +169,6 @@ public class ScenarioSimulationGridPanelClickHandler implements ClickHandler,
         } else {
             return true;
         }
-    }
-
-    protected int getRelativeX(final ContextMenuEvent event) {
-        final NativeEvent e = event.getNativeEvent();
-        final Element target = event.getRelativeElement();
-        return e.getClientX() - target.getAbsoluteLeft() + target.getScrollLeft() + target.getOwnerDocument().getScrollLeft();
-    }
-
-    protected int getRelativeY(final ContextMenuEvent event) {
-        final NativeEvent e = event.getNativeEvent();
-        final Element target = event.getRelativeElement();
-        return e.getClientY() - target.getAbsoluteTop() + target.getScrollTop() + target.getOwnerDocument().getScrollTop();
-    }
-
-    protected int getRelativeX(final ClickEvent event) {
-        final NativeEvent e = event.getNativeEvent();
-        final Element target = event.getRelativeElement();
-        return e.getClientX() - target.getAbsoluteLeft() + target.getScrollLeft() + target.getOwnerDocument().getScrollLeft();
-    }
-
-    protected int getRelativeY(final ClickEvent event) {
-        final NativeEvent e = event.getNativeEvent();
-        final Element target = event.getRelativeElement();
-        return e.getClientY() - target.getAbsoluteTop() + target.getScrollTop() + target.getOwnerDocument().getScrollTop();
     }
 
     public void hideMenus() {
@@ -262,7 +240,7 @@ public class ScenarioSimulationGridPanelClickHandler implements ClickHandler,
      */
     protected boolean manageBodyRightClick(ScenarioGrid scenarioGrid, int left, int top, double gridY, Integer uiColumnIndex, boolean isShiftKeyDown, boolean isControlKeyDown) {
         scenarioGrid.deselect();
-        final Integer uiRowIndex = CoordinateUtilities.getUiRowIndex(scenarioGrid, gridY);
+        final Integer uiRowIndex = getUiRowIndex(scenarioGrid, gridY);
         if (uiRowIndex == null) {
             return false;
         }
@@ -290,11 +268,11 @@ public class ScenarioSimulationGridPanelClickHandler implements ClickHandler,
      * @return
      */
     protected boolean manageLeftClick(final int canvasX, final int canvasY, final boolean isShiftKeyDown, final boolean isControlKeyDown) {
-        final Point2D ap = CoordinateUtilities.convertDOMToGridCoordinate(scenarioGrid,
-                                                                          new Point2D(canvasX,
-                                                                                      canvasY));
-        final Integer uiColumnIndex = CoordinateUtilities.getUiColumnIndex(scenarioGrid,
-                                                                           ap.getX());
+        final Point2D ap = convertDOMToGridCoordinate(scenarioGrid,
+                                                      new Point2D(canvasX,
+                                                                  canvasY));
+        final Integer uiColumnIndex = getUiColumnIndex(scenarioGrid,
+                                                       ap.getX());
         if (uiColumnIndex == null) {
             return false;
         }
@@ -304,7 +282,7 @@ public class ScenarioSimulationGridPanelClickHandler implements ClickHandler,
         }
 
         if (!manageHeaderLeftClick(uiColumnIndex, scenarioGridColumn, ap)) {
-            final Integer uiRowIndex = CoordinateUtilities.getUiRowIndex(scenarioGrid, ap.getY());
+            final Integer uiRowIndex = getUiRowIndex(scenarioGrid, ap.getY());
             if (uiRowIndex == null) {
                 return false;
             } else {

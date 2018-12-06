@@ -21,9 +21,6 @@ import java.util.Collections;
 import java.util.List;
 
 import com.ait.lienzo.client.core.types.Point2D;
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.ContextMenuEvent;
 import org.drools.workbench.screens.scenariosimulation.client.metadata.ScenarioHeaderMetaData;
 import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
@@ -53,14 +50,6 @@ public abstract class AbstractScenarioSimulationGridPanelClickHandlerTest {
     protected final boolean SHIFT_PRESSED = false;
     protected final boolean CTRL_PRESSED = false;
     protected final int OFFSET_X = 0;
-    protected final int NATIVE_EVENT_CLIENT_X = 100;
-    protected final int NATIVE_EVENT_CLIENT_Y = 100;
-    protected final int TARGET_ABSOLUTE_LEFT = 50;
-    protected final int TARGET_SCROLL_LEFT = 20;
-    protected final int TARGET_ABSOLUTE_TOP = 50;
-    protected final int TARGET_SCROLL_TOP = 20;
-    protected final int DOCUMENT_SCROLL_LEFT = 10;
-    protected final int DOCUMENT_SCROLL_TOP = 10;
 
     @Mock
     protected Point2D point2DMock;
@@ -97,15 +86,6 @@ public abstract class AbstractScenarioSimulationGridPanelClickHandlerTest {
     @Mock
     private BaseGridRendererHelper.RenderingInformation scenarioRenderingInformationMock;
 
-    @Mock
-    private Element targetMock;
-
-    @Mock
-    private NativeEvent nativeEventMock;
-
-    @Mock
-    private Document documentMock;
-
     @Before
     public void setUp() throws Exception {
         doReturn(scenarioGridCellMock).when(scenarioGridModelMock).getCell(UI_ROW_INDEX, UI_COLUMN_INDEX);
@@ -135,20 +115,5 @@ public abstract class AbstractScenarioSimulationGridPanelClickHandlerTest {
         BaseGridRendererHelper.ColumnInformation columnInformation =
                 new BaseGridRendererHelper.ColumnInformation(scenarioGridColumnMock, UI_COLUMN_INDEX, OFFSET_X);
         when(scenarioGridRendererHelperMock.getColumnInformation(CLICK_POINT_X)).thenReturn(columnInformation);
-
-        when(nativeEventMock.getClientX()).thenReturn(NATIVE_EVENT_CLIENT_X);
-        when(nativeEventMock.getClientY()).thenReturn(NATIVE_EVENT_CLIENT_Y);
-
-        when(targetMock.getOwnerDocument()).thenReturn(documentMock);
-        when(targetMock.getAbsoluteLeft()).thenReturn(TARGET_ABSOLUTE_LEFT);
-        when(targetMock.getScrollLeft()).thenReturn(TARGET_SCROLL_LEFT);
-        when(targetMock.getAbsoluteTop()).thenReturn(TARGET_ABSOLUTE_TOP);
-        when(targetMock.getScrollTop()).thenReturn(TARGET_SCROLL_TOP);
-
-        when(documentMock.getScrollLeft()).thenReturn(DOCUMENT_SCROLL_LEFT);
-        when(documentMock.getScrollTop()).thenReturn(DOCUMENT_SCROLL_TOP);
-
-        when(contextMenuEventMock.getNativeEvent()).thenReturn(nativeEventMock);
-        when(contextMenuEventMock.getRelativeElement()).thenReturn(targetMock);
     }
 }

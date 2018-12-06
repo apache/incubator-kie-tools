@@ -58,9 +58,6 @@ public class ScenarioSimulationGridPanelClickHandlerTest extends AbstractScenari
 
     private ScenarioSimulationGridPanelClickHandler scenarioSimulationGridPanelClickHandler;
 
-    private final int EXPECTED_RELATIVE_X = NATIVE_EVENT_CLIENT_X - TARGET_ABSOLUTE_LEFT + TARGET_SCROLL_LEFT + DOCUMENT_SCROLL_LEFT;
-    private final int EXPECTED_RELATIVE_Y = NATIVE_EVENT_CLIENT_Y - TARGET_ABSOLUTE_TOP + TARGET_SCROLL_TOP + DOCUMENT_SCROLL_TOP;
-
     @Mock
     private OtherContextMenu otherContextMenuMock;
     @Mock
@@ -174,18 +171,6 @@ public class ScenarioSimulationGridPanelClickHandlerTest extends AbstractScenari
         verify(expectContextMenuMock, times(1)).setEventBus(eq(eventBusMock));
         verify(gridContextMenuMock, times(1)).setEventBus(eq(eventBusMock));
         verify(nnmodifiableColumnGridContextMenuMock, times(1)).setEventBus(eq(eventBusMock));
-    }
-
-    @Test
-    public void getRelativeX() {
-        int retrieved = scenarioSimulationGridPanelClickHandler.getRelativeX(contextMenuEventMock);
-        assertEquals(EXPECTED_RELATIVE_X, retrieved);
-    }
-
-    @Test
-    public void getRelativeY() {
-        int retrieved = scenarioSimulationGridPanelClickHandler.getRelativeY(contextMenuEventMock);
-        assertEquals(EXPECTED_RELATIVE_Y, retrieved);
     }
 
     @Test
