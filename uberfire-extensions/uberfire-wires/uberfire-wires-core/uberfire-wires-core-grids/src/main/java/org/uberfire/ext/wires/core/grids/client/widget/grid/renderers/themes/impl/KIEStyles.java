@@ -20,5 +20,4 @@ public class KIEStyles {
     public static final String FONT_FAMILY_LABEL = "Open Sans, Helvetica, Arial, sans-serif";
     public static final String FONT_STYLE_ITALIC = "italic";
     public static final int FONT_SIZE = 10;
-
 }

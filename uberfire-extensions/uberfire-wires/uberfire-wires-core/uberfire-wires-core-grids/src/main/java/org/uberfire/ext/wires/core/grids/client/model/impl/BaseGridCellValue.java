@@ -26,7 +26,6 @@ public class BaseGridCellValue<T> implements GridCellValue<T> {
     protected T value;
     private String placeHolder = null;
 
-
     public BaseGridCellValue(final T value) {
         this.value = value;
     }

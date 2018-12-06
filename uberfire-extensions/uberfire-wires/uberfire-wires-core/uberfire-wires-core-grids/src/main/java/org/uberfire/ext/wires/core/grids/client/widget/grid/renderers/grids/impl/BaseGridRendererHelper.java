@@ -456,7 +456,7 @@ public class BaseGridRendererHelper {
         private final List<Double> visibleRowOffsets;
         private final boolean isFixedHeader;
         private final boolean isFloatingHeader;
-        private final double headerRowCount;
+        private final int headerRowCount;
         private final double headerRowHeight;
         private final double headerRowsHeight;
         private final double headerRowsYOffset;
@@ -470,7 +470,7 @@ public class BaseGridRendererHelper {
                                     final List<Double> visibleRowOffsets,
                                     final boolean isFixedHeader,
                                     final boolean isFloatingHeader,
-                                    final double headerRowCount,
+                                    final int headerRowCount,
                                     final double headerRowHeight,
                                     final double headerRowsHeight,
                                     final double headerRowsYOffset) {
@@ -525,16 +525,16 @@ public class BaseGridRendererHelper {
             return isFloatingHeader;
         }
 
+        public int getHeaderRowCount() {
+            return headerRowCount;
+        }
+
         public double getHeaderRowHeight() {
             return headerRowHeight;
         }
 
         public double getHeaderRowsHeight() {
             return headerRowsHeight;
-        }
-
-        public double getHeaderRowCount() {
-            return headerRowCount;
         }
 
         public double getHeaderRowsYOffset() {

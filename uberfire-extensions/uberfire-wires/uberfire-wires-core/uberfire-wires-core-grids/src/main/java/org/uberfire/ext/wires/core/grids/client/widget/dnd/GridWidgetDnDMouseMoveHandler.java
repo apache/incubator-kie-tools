@@ -473,7 +473,7 @@ public class GridWidgetDnDMouseMoveHandler implements NodeMouseMoveHandler {
                 rightColumn.setWidth(newWidth);
             }
             // or revert column resizing if the column itself has AUTO width
-            else if (GridColumn.ColumnWidthMode.isAuto(activeGridColumn)){
+            else if (GridColumn.ColumnWidthMode.isAuto(activeGridColumn)) {
                 columnNewWidth = originalLeftColumnWidth;
             }
         }
@@ -484,9 +484,9 @@ public class GridWidgetDnDMouseMoveHandler implements NodeMouseMoveHandler {
         List<GridColumn<?>> columns = model.getColumns();
         int targetIndex = columns.indexOf(target);
 
-        for(int i = targetIndex + 1; i < columns.size(); i += 1) {
+        for (int i = targetIndex + 1; i < columns.size(); i += 1) {
             GridColumn<?> gridColumn = columns.get(i);
-            if(GridColumn.ColumnWidthMode.isAuto(gridColumn)) {
+            if (GridColumn.ColumnWidthMode.isAuto(gridColumn)) {
                 return Optional.of(gridColumn);
             }
         }

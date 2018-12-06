@@ -59,9 +59,6 @@ public class BaseGridColumn<T> implements GridColumn<T> {
                           final GridColumnRenderer<T> columnRenderer,
                           final double width) {
         Objects.requireNonNull(headerMetaData, "headerMetaData");
-        if (!(headerMetaData.size() > 0)) {
-            throw new IllegalStateException("headerMetaData has at least one entry");
-        }
         Objects.requireNonNull(columnRenderer, "columnRenderer");
         this.headerMetaData.addAll(headerMetaData);
         this.columnRenderer = columnRenderer;

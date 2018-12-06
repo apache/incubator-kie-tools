@@ -31,7 +31,6 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.themes.imp
  */
 public interface GridRendererTheme {
 
-
     /**
      * Returns a display name for the theme.
      * @return A name for the theme

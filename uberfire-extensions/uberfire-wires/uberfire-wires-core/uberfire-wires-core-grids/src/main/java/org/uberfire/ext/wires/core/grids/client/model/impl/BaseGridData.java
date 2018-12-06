@@ -47,7 +47,7 @@ public class BaseGridData implements GridData {
     protected List<GridColumn<?>> columns = new ArrayList<>();
     protected List<SelectedCell> selectedCells = new ArrayList<>();
     protected List<SelectedCell> selectedHeaderCells = new ArrayList<>();
-    protected int headerRowCount = 1;
+    protected int headerRowCount = 0;
 
     protected BaseGridDataIndexManager indexManager = new BaseGridDataIndexManager(this);
     protected BaseGridDataSelectionsManager selectionsManager = new BaseGridDataSelectionsManager(this);
@@ -298,7 +298,7 @@ public class BaseGridData implements GridData {
 
     @Override
     public void setHeaderRowCount(final int headerRowCount) {
-        if (!(headerRowCount > 0)) {
+        if (!(headerRowCount >= 0)) {
             throw new IllegalStateException("headerRowCount");
         }
         this.headerRowCount = headerRowCount;

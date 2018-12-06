@@ -221,6 +221,11 @@ public class BaseGridRenderer implements GridRenderer {
                                               final BaseGridRendererHelper rendererHelper,
                                               final BaseGridRendererHelper.RenderingInformation renderingInformation) {
         final List<RendererCommand> commands = new ArrayList<>();
+        final int headerRowCount = renderingInformation.getHeaderRowCount();
+        if (headerRowCount == 0) {
+            return commands;
+        }
+
         final List<GridColumn<?>> allBlockColumns = context.getAllColumns();
         final List<GridColumn<?>> visibleBlockColumns = context.getBlockColumns();
         final double headerRowsHeight = renderingInformation.getHeaderRowsHeight();

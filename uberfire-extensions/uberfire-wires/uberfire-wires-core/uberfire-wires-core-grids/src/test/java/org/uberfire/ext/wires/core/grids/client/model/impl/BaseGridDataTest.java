@@ -16,6 +16,7 @@
 
 package org.uberfire.ext.wires.core.grids.client.model.impl;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.OptionalDouble;
 
@@ -64,6 +65,40 @@ public class BaseGridDataTest {
     @Before
     public void setUp() {
         baseGridData = new BaseGridData();
+    }
+
+    @Test
+    public void testDefaultHeaderRowCount() {
+        assertEquals(0, baseGridData.getHeaderRowCount());
+    }
+
+    @Test
+    public void testGetHeaderRowCountWithColumnWithHeaderMetaData() {
+        final BaseGridColumn<String> column = new BaseGridColumn<>(header, columnRenderer, 100.0);
+
+        baseGridData.appendColumn(column);
+
+        assertEquals(1, baseGridData.getHeaderRowCount());
+    }
+
+    @Test
+    public void testGetHeaderRowCountWithColumnsWithHeaderMetaData() {
+        final BaseGridColumn<String> column1 = new BaseGridColumn<>(header, columnRenderer, 100.0);
+        final BaseGridColumn<String> column2 = new BaseGridColumn<>(Collections.emptyList(), columnRenderer, 100.0);
+
+        baseGridData.appendColumn(column1);
+        baseGridData.appendColumn(column2);
+
+        assertEquals(1, baseGridData.getHeaderRowCount());
+    }
+
+    @Test
+    public void testGetHeaderRowCountWithColumnWithoutHeaderMetaData() {
+        final BaseGridColumn<String> column = new BaseGridColumn<>(Collections.emptyList(), columnRenderer, 100.0);
+
+        baseGridData.appendColumn(column);
+
+        assertEquals(0, baseGridData.getHeaderRowCount());
     }
 
     @Test

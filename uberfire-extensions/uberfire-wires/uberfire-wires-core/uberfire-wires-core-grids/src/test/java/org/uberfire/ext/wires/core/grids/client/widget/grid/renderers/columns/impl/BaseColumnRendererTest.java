@@ -200,7 +200,6 @@ public abstract class BaseColumnRendererTest<T, R extends GridColumnRenderer<T>>
         verify(placeHolderText, times(1)).setText(eq(PLACEHOLDER));
     }
 
-
     @Test
     public void testRenderHeader() {
         final List<GridRenderer.RendererCommand> commands = renderer.renderHeader(Collections.singletonList(headerMetaData),

@@ -20,6 +20,7 @@ import java.util.List;
 
 import com.ait.lienzo.client.core.shape.Group;
 import org.junit.Before;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -29,17 +30,22 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyRenderContext;
+import org.uberfire.ext.wires.core.grids.client.widget.context.GridHeaderRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.StringPopupColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.GridColumnRenderer;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer.GridRendererContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.SelectionsTransformer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.themes.GridRendererTheme;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.themes.impl.BlueTheme;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
+import static org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidgetRenderingTestUtils.makeRenderingInformation;
 
 public abstract class BaseGridRendererTest {
 
@@ -96,6 +102,21 @@ public abstract class BaseGridRendererTest {
 
         when(rc.getGroup()).thenReturn(parent);
         when(rc.isSelectionLayer()).thenReturn(isSelectionLayer());
+    }
+
+    @Test
+    public void checkRenderHeaderWhenColumnsHaveNoMetaData() {
+        column.getHeaderMetaData().clear();
+
+        final BaseGridRendererHelper.RenderingInformation ri = makeRenderingInformation(model);
+        final GridHeaderRenderContext context = mock(GridHeaderRenderContext.class);
+
+        final List<GridRenderer.RendererCommand> commands = renderer.renderHeader(model,
+                                                                                  context,
+                                                                                  rendererHelper,
+                                                                                  ri);
+        assertThat(commands).isNotNull();
+        assertThat(commands).asList().hasSize(0);
     }
 
     protected GridColumn<String> makeGridColumn(final double width) {
