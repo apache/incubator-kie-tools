@@ -52,6 +52,10 @@ public class EditorSessionCommands {
 
     @PostConstruct
     public void init() {
+        registerCommands();
+    }
+
+    protected void registerCommands() {
         commands.register(VisitGraphSessionCommand.class)
                 .register(SwitchGridSessionCommand.class)
                 .register(ClearSessionCommand.class)

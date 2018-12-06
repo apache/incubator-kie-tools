@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.dmn.project.client.session;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -49,8 +48,8 @@ public class DMNEditorSessionCommands extends EditorSessionCommands {
         super(commands);
     }
 
-    @PostConstruct
-    public void init() {
+    @Override
+    protected void registerCommands() {
         getCommands().register(VisitGraphSessionCommand.class)
                 .register(SwitchGridSessionCommand.class)
                 .register(ClearSessionCommand.class)
