@@ -16,6 +16,7 @@
 
 package org.uberfire.ssh.service.backend.test;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Paths;
@@ -42,7 +43,10 @@ public class SSHKeyStoreTestUtils {
     public static final String DEFAULT_FOLDER = ".security/pkeys";
 
     public static final String KATY = "katy";
+    public static final String KATY_META1 = KATY + "/.katy-key-one.pub.meta";
+    public static final String KATY_META2 = KATY + "/.katy-key-two.pub.meta";
     public static final String JOHN = "john";
+    public static final String JOHN_META = JOHN + "/.john-key.pub.meta";
     public static final String ADMIN = "admin";
 
     private static String userDir;
@@ -57,10 +61,16 @@ public class SSHKeyStoreTestUtils {
         System.setProperty(DefaultSSHKeyStore.USER_DIR, userDir + RESOURCES_FOLDER);
     }
 
-    public static void clearAdminKeysFolder() {
+    public static void cleanResourceKeysFolder() {
         String userDir = System.getProperty(DefaultSSHKeyStore.USER_DIR);
         FileUtils.deleteQuietly(Paths.get(userDir + CUSTOM_FOLDER).resolve(ADMIN).toFile());
         FileUtils.deleteQuietly(Paths.get(userDir + DEFAULT_FOLDER).resolve(ADMIN).toFile());
+        FileUtils.deleteQuietly(Paths.get(userDir + DEFAULT_FOLDER).resolve(KATY_META1).toFile());
+        FileUtils.deleteQuietly(Paths.get(userDir + CUSTOM_FOLDER).resolve(KATY_META1).toFile());
+        FileUtils.deleteQuietly(Paths.get(userDir + DEFAULT_FOLDER).resolve(KATY_META2).toFile());
+        FileUtils.deleteQuietly(Paths.get(userDir + CUSTOM_FOLDER).resolve(KATY_META2).toFile());
+        FileUtils.deleteQuietly(Paths.get(userDir + DEFAULT_FOLDER).resolve(JOHN_META).toFile());
+        FileUtils.deleteQuietly(Paths.get(userDir + CUSTOM_FOLDER).resolve(JOHN_META).toFile());
     }
 
     public static SSHPublicKey readSampleSSHPublicKey() throws Exception {

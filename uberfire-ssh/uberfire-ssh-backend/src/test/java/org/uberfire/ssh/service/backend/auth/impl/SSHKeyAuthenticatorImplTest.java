@@ -47,7 +47,7 @@ import static org.mockito.Mockito.when;
 import static org.uberfire.ssh.service.backend.test.SSHKeyStoreTestUtils.ADMIN;
 import static org.uberfire.ssh.service.backend.test.SSHKeyStoreTestUtils.JOHN;
 import static org.uberfire.ssh.service.backend.test.SSHKeyStoreTestUtils.KATY;
-import static org.uberfire.ssh.service.backend.test.SSHKeyStoreTestUtils.clearAdminKeysFolder;
+import static org.uberfire.ssh.service.backend.test.SSHKeyStoreTestUtils.cleanResourceKeysFolder;
 import static org.uberfire.ssh.service.backend.test.SSHKeyStoreTestUtils.readSampleSSHKey;
 import static org.uberfire.ssh.service.backend.test.SSHKeyStoreTestUtils.resetUserDir;
 import static org.uberfire.ssh.service.backend.test.SSHKeyStoreTestUtils.setupUserDir;
@@ -160,7 +160,7 @@ public class SSHKeyAuthenticatorImplTest extends AbstractSSHKeyStoreServiceImplT
 
     @AfterClass
     public static void clean() {
-        clearAdminKeysFolder();
+        cleanResourceKeysFolder();
         resetUserDir();
     }
 }

@@ -33,7 +33,7 @@ import static org.uberfire.ssh.service.backend.test.SSHKeyStoreTestUtils.CUSTOM_
 import static org.uberfire.ssh.service.backend.test.SSHKeyStoreTestUtils.JOHN;
 import static org.uberfire.ssh.service.backend.test.SSHKeyStoreTestUtils.KATY;
 import static org.uberfire.ssh.service.backend.test.SSHKeyStoreTestUtils.SAMPLE_ID;
-import static org.uberfire.ssh.service.backend.test.SSHKeyStoreTestUtils.clearAdminKeysFolder;
+import static org.uberfire.ssh.service.backend.test.SSHKeyStoreTestUtils.cleanResourceKeysFolder;
 import static org.uberfire.ssh.service.backend.test.SSHKeyStoreTestUtils.readSampleSSHPublicKey;
 import static org.uberfire.ssh.service.backend.test.SSHKeyStoreTestUtils.resetUserDir;
 import static org.uberfire.ssh.service.backend.test.SSHKeyStoreTestUtils.setupUserDir;
@@ -131,7 +131,7 @@ public class DefaultSSHKeyStoreTest {
 
     @AfterClass
     public static void clean() {
-        clearAdminKeysFolder();
+        cleanResourceKeysFolder();
         resetUserDir();
     }
 }
