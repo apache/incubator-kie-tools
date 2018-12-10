@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>dashbuilder-renderers</artifactId>
+    <groupId>org.dashbuilder</groupId>
+    <version>2.13.0-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>dashbuilder-renderer-c3</artifactId>
+  <packaging>jar</packaging>
+
+  <name>Dashbuilder Renderer C3</name>
+  <description>Dashbuilder Renderer for the C3 Chart API</description>
+
+  <properties>
+    <version.org.webjars.bower.d3js>5.5.0</version.org.webjars.bower.d3js>
+    <version.org.webjars.bower.c3>0.6.6</version.org.webjars.bower.c3>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.webjars</groupId>
+        <artifactId>d3js</artifactId>
+        <version>${version.org.webjars.bower.d3js}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.webjars</groupId>
+        <artifactId>c3</artifactId>
+        <version>${version.org.webjars.bower.c3}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.webjars</groupId>
+      <artifactId>d3js</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.webjars</groupId>
+      <artifactId>c3</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-user</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dashbuilder</groupId>
+      <artifactId>dashbuilder-common-client</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.soup</groupId>
+      <artifactId>kie-soup-dataset-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.dashbuilder</groupId>
+      <artifactId>dashbuilder-dataset-client</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dashbuilder</groupId>
+      <artifactId>dashbuilder-displayer-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dashbuilder</groupId>
+      <artifactId>dashbuilder-displayer-client</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.elemental2</groupId>
+      <artifactId>elemental2-core</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.jsinterop</groupId>
+      <artifactId>jsinterop-annotations</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.jsinterop</groupId>
+      <artifactId>base</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-ioc</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-ui</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-common</artifactId>
+    </dependency>
+
+    <!-- Test dependencies -->
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-testing-utils</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.soup</groupId>
+      <artifactId>kie-soup-dataset-api</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dashbuilder</groupId>
+      <artifactId>dashbuilder-dataset-client</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.dashbuilder</groupId>
+      <artifactId>dashbuilder-displayer-client</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+
+  </dependencies>
+
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>unpack-d3</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.webjars</groupId>
+                  <artifactId>d3js</artifactId>
+                  <version>${version.org.webjars.bower.d3js}</version>
+                  <type>jar</type>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.build.directory}/d3js</outputDirectory>
+                </artifactItem>
+              </artifactItems>
+              <overWriteReleases>false</overWriteReleases>
+              <overWriteSnapshots>true</overWriteSnapshots>
+            </configuration>
+          </execution>
+          <execution>
+            <id>unpack-c3</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.webjars</groupId>
+                  <artifactId>c3</artifactId>
+                  <version>${version.org.webjars.bower.c3}</version>
+                  <type>jar</type>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.build.directory}/c3</outputDirectory>
+                </artifactItem>
+              </artifactItems>
+              <overWriteReleases>false</overWriteReleases>
+              <overWriteSnapshots>true</overWriteSnapshots>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-d3js-resources</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.outputDirectory}/org/dashbuilder/renderer/c3/client/exports/js</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${project.build.directory}/d3js/META-INF/resources/webjars/d3js/${version.org.webjars.bower.d3js}/</directory>
+                  <includes>
+                    <include>d3.min.js</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-c3-resources-js</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.outputDirectory}/org/dashbuilder/renderer/c3/client/exports/js</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${project.build.directory}/c3/META-INF/resources/webjars/c3/${version.org.webjars.bower.c3}</directory>
+                  <includes>
+                    <include>c3.js</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-c3-resources-css</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.outputDirectory}/org/dashbuilder/renderer/c3/client/exports/css</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${project.build.directory}/c3/META-INF/resources/webjars/c3/${version.org.webjars.bower.c3}</directory>
+                  <includes>
+                    <include>c3.min.css</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

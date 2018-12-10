@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.5.1//EN" "http://google-web-toolkit.googlecode.com/svn/tags/2.5.1/distro-source/core/src/gwt-module.dtd">
+
+<module>
+  <inherits name="org.jboss.errai.common.ErraiCommon"/>
+  <inherits name="org.jboss.errai.ioc.Container"/>
+  <inherits name="org.jboss.errai.ui.UI"/>
+
+  <inherits name="org.uberfire.UberfireAPI"/>
+
+  <inherits name="org.dashbuilder.DisplayerClient"/>
+
+  <inherits name="org.gwtbootstrap3.GwtBootstrap3NoTheme"/>
+
+  <source path='c3'/>
+
+</module>
