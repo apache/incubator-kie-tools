@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.client.widgets.presenters.diagram.impl;
 
 import java.lang.annotation.Annotation;
+import java.util.Collections;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Any;
@@ -30,7 +31,11 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SingleSelection;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
+import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasElementListener;
+import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasShapeListener;
 import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistries;
+import org.kie.workbench.common.stunner.core.client.session.impl.DefaultCanvasElementListener;
+import org.kie.workbench.common.stunner.core.client.session.impl.DefaultCanvasShapeListener;
 import org.kie.workbench.common.stunner.core.client.session.impl.InstanceUtils;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Element;
@@ -54,6 +59,8 @@ public class DefaultDiagramViewer
     private final StunnerPreferencesRegistries preferencesRegistries;
 
     private AbstractCanvas canvas;
+    private CanvasShapeListener shapeListener;
+    private CanvasElementListener elementListener;
     private AbstractCanvasHandler canvasHandler;
     private ZoomControl<AbstractCanvas> zoomControl;
     private SelectionControl<AbstractCanvasHandler, Element> selectionControl;
@@ -95,6 +102,10 @@ public class DefaultDiagramViewer
         canvasHandler = InstanceUtils.lookup(canvasHandlerInstances, qualifier);
         zoomControl = InstanceUtils.lookup(zoomControlInstances, qualifier);
         selectionControl = InstanceUtils.lookup(selectionControlInstances, qualifier);
+        shapeListener = new DefaultCanvasShapeListener(Collections.singletonList(zoomControl));
+        canvas.addRegistrationListener(shapeListener);
+        elementListener = new DefaultCanvasElementListener(Collections.singletonList(selectionControl));
+        canvasHandler.addRegistrationListener(elementListener);
     }
 
     @Override
@@ -124,6 +135,8 @@ public class DefaultDiagramViewer
         canvasHandlerInstances.destroyAll();
         canvas = null;
         canvasHandler = null;
+        shapeListener = null;
+        elementListener = null;
     }
 
     @Override

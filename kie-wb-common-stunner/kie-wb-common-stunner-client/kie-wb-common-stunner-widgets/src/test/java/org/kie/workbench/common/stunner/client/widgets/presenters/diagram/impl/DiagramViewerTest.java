@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.client.widgets.presenters.diagram.impl;
 
+import java.util.Iterator;
+
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
@@ -28,19 +30,27 @@ import org.kie.workbench.common.stunner.core.client.ManagedInstanceStub;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasSettings;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
+import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasElementListener;
+import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasShapeListener;
 import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistries;
+import org.kie.workbench.common.stunner.core.client.session.impl.DefaultCanvasElementListener;
+import org.kie.workbench.common.stunner.core.client.session.impl.DefaultCanvasShapeListener;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.preferences.StunnerPreferences;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
+import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatcher;
 import org.mockito.Mock;
 import org.uberfire.mvp.ParameterizedCommand;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Matchers.eq;
@@ -116,7 +126,7 @@ public class DiagramViewerTest extends AbstractCanvasHandlerViewerTest {
                times(1)).initialize(argThat(new ArgumentMatcher<CanvasSettings>() {
             @Override
             public boolean matches(Object emp) {
-                CanvasSettings settings = (CanvasSettings)emp;
+                CanvasSettings settings = (CanvasSettings) emp;
                 return !settings.isHiDPIEnabled()
                         && settings.getHeight() == 100
                         && settings.getWidth() == 100;
@@ -135,6 +145,18 @@ public class DiagramViewerTest extends AbstractCanvasHandlerViewerTest {
                times(1)).init(eq(canvasHandler));
         verify(view,
                times(1)).setWidget(eq(canvasViewWidget));
+        ArgumentCaptor<CanvasShapeListener> shapeListenerArgumentCaptor = ArgumentCaptor.forClass(CanvasShapeListener.class);
+        ArgumentCaptor<CanvasElementListener> elementListenerArgumentCaptor = ArgumentCaptor.forClass(CanvasElementListener.class);
+        verify(canvas, times(1)).addRegistrationListener(shapeListenerArgumentCaptor.capture());
+        verify(canvasHandler, times(1)).addRegistrationListener(elementListenerArgumentCaptor.capture());
+        DefaultCanvasShapeListener shapeListener = (DefaultCanvasShapeListener) shapeListenerArgumentCaptor.getValue();
+        Iterator<CanvasControl<AbstractCanvas>> canvasControls = shapeListener.getCanvasControls().iterator();
+        assertTrue(canvasControls.next() instanceof ZoomControl);
+        assertFalse(canvasControls.hasNext());
+        DefaultCanvasElementListener elementListener = (DefaultCanvasElementListener) elementListenerArgumentCaptor.getValue();
+        Iterator<CanvasControl<AbstractCanvasHandler>> canvasHandlerControls1 = elementListener.getCanvasControls().iterator();
+        assertTrue(canvasHandlerControls1.next() instanceof SelectionControl);
+        assertFalse(canvasHandlerControls1.hasNext());
     }
 
     @Test

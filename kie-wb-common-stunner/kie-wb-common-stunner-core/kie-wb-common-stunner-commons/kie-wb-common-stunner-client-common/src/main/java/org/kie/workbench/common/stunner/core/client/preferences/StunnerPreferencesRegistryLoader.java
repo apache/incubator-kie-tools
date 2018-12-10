@@ -56,8 +56,8 @@ public class StunnerPreferencesRegistryLoader {
                                                                              qualifier);
         preferences.load(prefs -> {
                              holder.set(prefs, StunnerPreferences.class);
-                             loadCompleteCallback.execute(prefs);
                              holder.set(textPreferences, StunnerTextPreferences.class);
+                             loadCompleteCallback.execute(prefs);
                          },
                          errorCallback);
     }

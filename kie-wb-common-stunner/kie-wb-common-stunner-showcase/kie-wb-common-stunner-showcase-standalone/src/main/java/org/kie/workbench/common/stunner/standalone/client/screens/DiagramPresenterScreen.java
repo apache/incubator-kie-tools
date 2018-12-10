@@ -60,7 +60,7 @@ public class DiagramPresenterScreen {
     public static final String DIAGRAM_NAME = "evaluation2";
 
     @Inject
-    private ShowcaseDiagramService diagramLoader;
+    private ShowcaseDiagramService diagramService;
 
     @Inject
     private ManagedInstance<DiagramViewer<Diagram, AbstractCanvasHandler>> diagramViewers;
@@ -85,55 +85,55 @@ public class DiagramPresenterScreen {
 
     private Menus makeMenuBar() {
         return MenuFactory
-                .newTopLevelMenu("View " + DIAGRAM_NAME)
-                .respondsWith(this::show)
+                .newTopLevelMenu("View process: " + DIAGRAM_NAME)
+                .respondsWith(this::viewProcess)
                 .endMenu()
-                .newTopLevelMenu("Edit " + DIAGRAM_NAME)
-                .respondsWith(this::edit)
+                .newTopLevelMenu("Edit process: " + DIAGRAM_NAME)
+                .respondsWith(this::editProcess)
                 .endMenu()
                 .build();
     }
 
-    private void show() {
+    private void viewProcess() {
         Logger.getLogger("org.kie.workbench.common.stunner").setLevel(Level.FINE);
         BusyPopup.showMessage("Loading");
         destroy();
-        diagramLoader.loadByName(DIAGRAM_NAME,
-                                 new ServiceCallback<Diagram>() {
-                                     @Override
-                                     public void onSuccess(final Diagram diagram) {
-                                         diagramViewer = diagramViewers.get();
-                                         screenPanelView.setWidget(diagramViewer.getView());
-                                         diagramViewer.open(diagram,
-                                                            new ScreenViewerCallback());
-                                     }
+        diagramService.loadByName(DIAGRAM_NAME,
+                                  new ServiceCallback<Diagram>() {
+                                      @Override
+                                      public void onSuccess(final Diagram diagram) {
+                                          diagramViewer = diagramViewers.get();
+                                          screenPanelView.setWidget(diagramViewer.getView());
+                                          diagramViewer.open(diagram,
+                                                             new ScreenViewerCallback());
+                                      }
 
-                                     @Override
-                                     public void onError(final ClientRuntimeError error) {
-                                         showError(error);
-                                     }
-                                 });
+                                      @Override
+                                      public void onError(final ClientRuntimeError error) {
+                                          showError(error);
+                                      }
+                                  });
     }
 
-    private void edit() {
+    private void editProcess() {
         Logger.getLogger("org.kie.workbench.common.stunner").setLevel(Level.FINE);
         BusyPopup.showMessage("Loading");
         destroy();
-        diagramLoader.loadByName(DIAGRAM_NAME,
-                                 new ServiceCallback<Diagram>() {
-                                     @Override
-                                     public void onSuccess(final Diagram diagram) {
-                                         diagramEditor = diagramEditors.get();
-                                         screenPanelView.setWidget(diagramEditor.getView());
-                                         diagramEditor.open(diagram,
-                                                            new ScreenViewerCallback());
-                                     }
+        diagramService.loadByName(DIAGRAM_NAME,
+                                  new ServiceCallback<Diagram>() {
+                                      @Override
+                                      public void onSuccess(final Diagram diagram) {
+                                          diagramEditor = diagramEditors.get();
+                                          screenPanelView.setWidget(diagramEditor.getView());
+                                          diagramEditor.open(diagram,
+                                                             new ScreenViewerCallback());
+                                      }
 
-                                     @Override
-                                     public void onError(ClientRuntimeError error) {
-                                         showError(error);
-                                     }
-                                 });
+                                      @Override
+                                      public void onError(ClientRuntimeError error) {
+                                          showError(error);
+                                      }
+                                  });
     }
 
     @OnOpen

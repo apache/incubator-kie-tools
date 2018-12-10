@@ -45,6 +45,10 @@ public class DefaultCanvasShapeListener implements CanvasShapeListener {
         onClear();
     }
 
+    public Iterable<CanvasControl<AbstractCanvas>> getCanvasControls() {
+        return canvasControls;
+    }
+
     private void onRegisterShape(final Shape shape) {
         onShapeRegistration(shape,
                             true);

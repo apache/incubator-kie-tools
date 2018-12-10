@@ -53,6 +53,10 @@ public class DefaultCanvasElementListener implements CanvasElementListener {
         onClear();
     }
 
+    public Iterable<CanvasControl<AbstractCanvasHandler>> getCanvasControls() {
+        return canvasControls;
+    }
+
     private void onRegisterElement(final Element element) {
         onElementRegistration(element,
                               true,

@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.client.widgets.presenters.diagram.impl;
 
+import java.util.Iterator;
+
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
@@ -25,16 +27,29 @@ import org.kie.workbench.common.stunner.client.widgets.presenters.AbstractCanvas
 import org.kie.workbench.common.stunner.client.widgets.presenters.diagram.DiagramViewer;
 import org.kie.workbench.common.stunner.core.client.ManagedInstanceStub;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.EdgeBuilderControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.ElementBuilderControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.NodeBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ControlPointControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.drag.LocationControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.resize.ResizeControl;
+import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasElementListener;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
+import org.kie.workbench.common.stunner.core.client.session.impl.DefaultCanvasElementListener;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
@@ -55,6 +70,30 @@ public class DiagramEditorTest extends AbstractCanvasHandlerViewerTest {
     @Mock
     CanvasCommandManager<AbstractCanvasHandler> commandManagerInstance;
     private ManagedInstance<CanvasCommandManager<AbstractCanvasHandler>> commandManager;
+
+    @Mock
+    LocationControl<AbstractCanvasHandler, Element> locationControlInstance;
+    private ManagedInstance<LocationControl<AbstractCanvasHandler, Element>> locationControl;
+
+    @Mock
+    ResizeControl<AbstractCanvasHandler, Element> resizeControlInstance;
+    private ManagedInstance<ResizeControl<AbstractCanvasHandler, Element>> resizeControl;
+
+    @Mock
+    ElementBuilderControl<AbstractCanvasHandler> builderControlInstance;
+    private ManagedInstance<ElementBuilderControl<AbstractCanvasHandler>> builderControl;
+
+    @Mock
+    NodeBuilderControl<AbstractCanvasHandler> nodeBuilderControlInstance;
+    private ManagedInstance<NodeBuilderControl<AbstractCanvasHandler>> nodeBuilderControl;
+
+    @Mock
+    EdgeBuilderControl<AbstractCanvasHandler> edgeBuilderControlInstance;
+    private ManagedInstance<EdgeBuilderControl<AbstractCanvasHandler>> edgeBuilderControl;
+
+    @Mock
+    ControlPointControl<AbstractCanvasHandler> cpControlInstance;
+    private ManagedInstance<ControlPointControl<AbstractCanvasHandler>> cpControl;
 
     @Mock
     ConnectionAcceptorControl<AbstractCanvasHandler> connectionAcceptorControlInstance;
@@ -79,6 +118,12 @@ public class DiagramEditorTest extends AbstractCanvasHandlerViewerTest {
         super.init();
         when(metadata.getDefinitionSetId()).thenReturn("ds1");
         commandManager = spy(new ManagedInstanceStub<>(commandManagerInstance));
+        locationControl = spy(new ManagedInstanceStub<>(locationControlInstance));
+        resizeControl = spy(new ManagedInstanceStub<>(resizeControlInstance));
+        builderControl = spy(new ManagedInstanceStub<>(builderControlInstance));
+        nodeBuilderControl = spy(new ManagedInstanceStub<>(nodeBuilderControlInstance));
+        edgeBuilderControl = spy(new ManagedInstanceStub<>(edgeBuilderControlInstance));
+        cpControl = spy(new ManagedInstanceStub<>(cpControlInstance));
         connectionAcceptorControl = spy(new ManagedInstanceStub<>(connectionAcceptorControlInstance));
         containmentAcceptorControl = spy(new ManagedInstanceStub<>(containmentAcceptorControlInstance));
         dockingAcceptorControl = spy(new ManagedInstanceStub<>(dockingAcceptorControlInstance));
@@ -104,6 +149,12 @@ public class DiagramEditorTest extends AbstractCanvasHandlerViewerTest {
                 new DefaultDiagramEditor(definitionUtils,
                                          viewer,
                                          commandManager,
+                                         locationControl,
+                                         resizeControl,
+                                         builderControl,
+                                         nodeBuilderControl,
+                                         edgeBuilderControl,
+                                         cpControl,
                                          connectionAcceptorControl,
                                          containmentAcceptorControl,
                                          dockingAcceptorControl);
@@ -119,12 +170,38 @@ public class DiagramEditorTest extends AbstractCanvasHandlerViewerTest {
         verify(viewer,
                times(1)).open(eq(diagram),
                               any(DiagramViewer.DiagramViewerCallback.class));
+        verify(locationControlInstance,
+               times(1)).init(eq(canvasHandler));
+        verify(resizeControlInstance,
+               times(1)).init(eq(canvasHandler));
+        verify(builderControlInstance,
+               times(1)).init(eq(canvasHandler));
+        verify(nodeBuilderControlInstance,
+               times(1)).init(eq(canvasHandler));
+        verify(edgeBuilderControlInstance,
+               times(1)).init(eq(canvasHandler));
+        verify(cpControlInstance,
+               times(1)).init(eq(canvasHandler));
         verify(connectionAcceptorControlInstance,
                times(1)).init(eq(canvasHandler));
         verify(containmentAcceptorControlInstance,
                times(1)).init(eq(canvasHandler));
         verify(dockingAcceptorControlInstance,
                times(1)).init(eq(canvasHandler));
+        ArgumentCaptor<CanvasElementListener> elementListenerArgumentCaptor = ArgumentCaptor.forClass(CanvasElementListener.class);
+        verify(canvasHandler, times(1)).addRegistrationListener(elementListenerArgumentCaptor.capture());
+        DefaultCanvasElementListener elementListener = (DefaultCanvasElementListener) elementListenerArgumentCaptor.getValue();
+        Iterator<CanvasControl<AbstractCanvasHandler>> canvasHandlerControls1 = elementListener.getCanvasControls().iterator();
+        assertTrue(canvasHandlerControls1.next() instanceof LocationControl);
+        assertTrue(canvasHandlerControls1.next() instanceof ResizeControl);
+        assertTrue(canvasHandlerControls1.next() instanceof ElementBuilderControl);
+        assertTrue(canvasHandlerControls1.next() instanceof NodeBuilderControl);
+        assertTrue(canvasHandlerControls1.next() instanceof EdgeBuilderControl);
+        assertTrue(canvasHandlerControls1.next() instanceof ControlPointControl);
+        assertTrue(canvasHandlerControls1.next() instanceof ContainmentAcceptorControl);
+        assertTrue(canvasHandlerControls1.next() instanceof ConnectionAcceptorControl);
+        assertTrue(canvasHandlerControls1.next() instanceof DockingAcceptorControl);
+        assertFalse(canvasHandlerControls1.hasNext());
     }
 
     @Test
@@ -162,6 +239,18 @@ public class DiagramEditorTest extends AbstractCanvasHandlerViewerTest {
         verify(viewer,
                times(1)).destroy();
         verify(commandManager,
+               times(1)).destroyAll();
+        verify(locationControl,
+               times(1)).destroyAll();
+        verify(resizeControl,
+               times(1)).destroyAll();
+        verify(builderControl,
+               times(1)).destroyAll();
+        verify(nodeBuilderControl,
+               times(1)).destroyAll();
+        verify(edgeBuilderControl,
+               times(1)).destroyAll();
+        verify(cpControl,
                times(1)).destroyAll();
         verify(connectionAcceptorControl,
                times(1)).destroyAll();
