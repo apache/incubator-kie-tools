@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -59,7 +60,12 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
+import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.graph.Graph;
+import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
+import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
+import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -135,6 +141,15 @@ public class ExpressionContainerGridTest {
     private AbstractCanvasHandler canvasHandler;
 
     @Mock
+    private Diagram diagram;
+
+    @Mock
+    private Graph graph;
+
+    @Mock
+    private Node node;
+
+    @Mock
     private GraphCommandExecutionContext graphExecutionContext;
 
     @Mock
@@ -150,6 +165,9 @@ public class ExpressionContainerGridTest {
     private ParameterizedCommand<Optional<HasName>> onHasNameChanged;
 
     @Mock
+    private EventSourceMock<RefreshFormPropertiesEvent> refreshFormPropertiesEvent;
+
+    @Mock
     private EventSourceMock<DomainObjectSelectionEvent> domainObjectSelectionEvent;
 
     @Mock
@@ -163,6 +181,9 @@ public class ExpressionContainerGridTest {
 
     @Captor
     private ArgumentCaptor<DomainObjectSelectionEvent> domainObjectSelectionEventCaptor;
+
+    @Captor
+    private ArgumentCaptor<RefreshFormPropertiesEvent> refreshFormPropertiesEventCaptor;
 
     private HasName hasName = new HasName() {
 
@@ -202,6 +223,7 @@ public class ExpressionContainerGridTest {
                                                 () -> expressionGridCache,
                                                 onHasExpressionChanged,
                                                 onHasNameChanged,
+                                                refreshFormPropertiesEvent,
                                                 domainObjectSelectionEvent) {
             @Override
             protected CellSelectionManager getCellSelectionManager() {
@@ -241,6 +263,10 @@ public class ExpressionContainerGridTest {
         doReturn(canvasHandler).when(session).getCanvasHandler();
         doReturn(graphExecutionContext).when(canvasHandler).getGraphExecutionContext();
         doReturn(mock(Bounds.class)).when(gridLayer).getVisibleBounds();
+
+        when(canvasHandler.getDiagram()).thenReturn(diagram);
+        when(diagram.getGraph()).thenReturn(graph);
+        when(graph.nodes()).thenReturn(Collections.singletonList(node));
 
         doReturn(grid).when(parent).getGridWidget();
         doReturn(0).when(parent).getRowIndex();
@@ -660,6 +686,35 @@ public class ExpressionContainerGridTest {
         final DomainObjectSelectionEvent domainObjectSelectionEvent = domainObjectSelectionEventCaptor.getValue();
         assertThat(domainObjectSelectionEvent.getCanvasHandler()).isEqualTo(canvasHandler);
         assertThat(domainObjectSelectionEvent.getDomainObject()).isInstanceOf(NOPDomainObject.class);
+
+        verify(cellSelectionManager).selectCell(eq(uiRowIndex), eq(uiColumnIndex), eq(false), eq(true));
+    }
+
+    @Test
+    public void testSelectCellWithDomainObjectInStunnerGraph() {
+        final int uiRowIndex = 0;
+        final int uiColumnIndex = 1;
+        final LiteralExpression domainObject = mock(LiteralExpression.class);
+        when(hasExpression.asDMNModelInstrumentedBase()).thenReturn(domainObject);
+        when(graph.nodes()).thenReturn(Collections.singletonList(node));
+
+        final Definition definition = mock(Definition.class);
+        when(node.getUUID()).thenReturn(NODE_UUID);
+        when(node.getContent()).thenReturn(definition);
+        when(definition.getDefinition()).thenReturn(domainObject);
+
+        grid.setExpression(NODE_UUID,
+                           hasExpression,
+                           Optional.of(hasName));
+
+        grid.selectCell(uiRowIndex, uiColumnIndex, false, true);
+
+        verify(gridLayer).select(eq(grid));
+        verify(refreshFormPropertiesEvent).fire(refreshFormPropertiesEventCaptor.capture());
+
+        final RefreshFormPropertiesEvent refreshFormPropertiesEvent = refreshFormPropertiesEventCaptor.getValue();
+        assertThat(refreshFormPropertiesEvent.getUuid()).isEqualTo(NODE_UUID);
+        assertThat(refreshFormPropertiesEvent.getSession()).isEqualTo(session);
 
         verify(cellSelectionManager).selectCell(eq(uiRowIndex), eq(uiColumnIndex), eq(false), eq(true));
     }

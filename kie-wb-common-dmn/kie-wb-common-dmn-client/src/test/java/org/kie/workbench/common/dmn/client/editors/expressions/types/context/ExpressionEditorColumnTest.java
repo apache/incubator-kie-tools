@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.context;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
@@ -45,6 +47,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.selection.Domai
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
+import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
@@ -96,6 +99,9 @@ public class ExpressionEditorColumnTest {
 
     @Mock
     private EventSourceMock<ExpressionEditorChanged> editorSelectedEvent;
+
+    @Mock
+    private EventSourceMock<RefreshFormPropertiesEvent> refreshFormPropertiesEvent;
 
     @Mock
     private EventSourceMock<DomainObjectSelectionEvent> domainObjectSelectionEvent;
@@ -402,6 +408,7 @@ public class ExpressionEditorColumnTest {
                                       sessionCommandManager,
                                       canvasCommandFactory,
                                       editorSelectedEvent,
+                                      refreshFormPropertiesEvent,
                                       domainObjectSelectionEvent,
                                       cellEditorControls,
                                       listSelector,
@@ -424,6 +431,17 @@ public class ExpressionEditorColumnTest {
 
             @Override
             protected void initialiseUiModel() {
+                //Nothing for this test
+            }
+
+            @Override
+            public List<ListSelectorItem> getItems(final int uiRowIndex,
+                                                   final int uiColumnIndex) {
+                return Collections.emptyList();
+            }
+
+            @Override
+            public void onItemSelected(final ListSelectorItem item) {
                 //Nothing for this test
             }
 

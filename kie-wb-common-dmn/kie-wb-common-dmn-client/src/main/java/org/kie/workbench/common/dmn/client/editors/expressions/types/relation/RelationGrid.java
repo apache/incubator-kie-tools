@@ -58,6 +58,7 @@ import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
+import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 
@@ -80,6 +81,7 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
                         final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                         final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
                         final Event<ExpressionEditorChanged> editorSelectedEvent,
+                        final Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent,
                         final Event<DomainObjectSelectionEvent> domainObjectSelectionEvent,
                         final CellEditorControlsView.Presenter cellEditorControls,
                         final ListSelectorView.Presenter listSelector,
@@ -100,6 +102,7 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
               sessionCommandManager,
               canvasCommandFactory,
               editorSelectedEvent,
+              refreshFormPropertiesEvent,
               domainObjectSelectionEvent,
               cellEditorControls,
               listSelector,

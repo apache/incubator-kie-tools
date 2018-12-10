@@ -61,6 +61,9 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.selection.Domai
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.impl.ManagedSession;
+import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.graph.Graph;
+import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.mockito.ArgumentCaptor;
@@ -117,7 +120,16 @@ public class UndefinedExpressionGridTest {
     private DMNEditorSession session;
 
     @Mock
-    private AbstractCanvasHandler handler;
+    private AbstractCanvasHandler canvasHandler;
+
+    @Mock
+    private Diagram diagram;
+
+    @Mock
+    private Graph graph;
+
+    @Mock
+    private Node node;
 
     @Mock
     private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
@@ -168,6 +180,9 @@ public class UndefinedExpressionGridTest {
     private EventSourceMock<ExpressionEditorChanged> editorSelectedEvent;
 
     @Mock
+    private EventSourceMock<RefreshFormPropertiesEvent> refreshFormPropertiesEvent;
+
+    @Mock
     private EventSourceMock<DomainObjectSelectionEvent> domainObjectSelectionEvent;
 
     @Mock
@@ -214,6 +229,7 @@ public class UndefinedExpressionGridTest {
                                                              sessionCommandManager,
                                                              canvasCommandFactory,
                                                              editorSelectedEvent,
+                                                             refreshFormPropertiesEvent,
                                                              domainObjectSelectionEvent,
                                                              listSelector,
                                                              translationService,
@@ -245,7 +261,11 @@ public class UndefinedExpressionGridTest {
                                                                                                          any(Optional.class),
                                                                                                          anyInt());
 
-        doReturn(handler).when(session).getCanvasHandler();
+        doReturn(canvasHandler).when(session).getCanvasHandler();
+
+        when(canvasHandler.getDiagram()).thenReturn(diagram);
+        when(diagram.getGraph()).thenReturn(graph);
+        when(graph.nodes()).thenReturn(Collections.singletonList(node));
 
         when(parentGridWidget.getModel()).thenReturn(parentGridUiModel);
         setupParent();
@@ -284,7 +304,7 @@ public class UndefinedExpressionGridTest {
 
         verify(domainObjectSelectionEvent).fire(domainObjectSelectionArgumentEventCaptor.capture());
         final DomainObjectSelectionEvent domainObjectSelectionEvent = domainObjectSelectionArgumentEventCaptor.getValue();
-        assertThat(domainObjectSelectionEvent.getCanvasHandler()).isEqualTo(handler);
+        assertThat(domainObjectSelectionEvent.getCanvasHandler()).isEqualTo(canvasHandler);
         assertThat(domainObjectSelectionEvent.getDomainObject()).isEqualTo(decision);
     }
 
@@ -471,7 +491,7 @@ public class UndefinedExpressionGridTest {
 
         verify(domainObjectSelectionEvent).fire(domainObjectSelectionArgumentEventCaptor.capture());
         final DomainObjectSelectionEvent domainObjectSelectionEvent = domainObjectSelectionArgumentEventCaptor.getValue();
-        assertThat(domainObjectSelectionEvent.getCanvasHandler()).isEqualTo(handler);
+        assertThat(domainObjectSelectionEvent.getCanvasHandler()).isEqualTo(canvasHandler);
         assertThat(domainObjectSelectionEvent.getDomainObject()).isEqualTo(decision);
     }
 
@@ -501,11 +521,11 @@ public class UndefinedExpressionGridTest {
                                                             eq(hasName),
                                                             eq(nesting));
 
-        verify(sessionCommandManager).execute(eq(handler),
+        verify(sessionCommandManager).execute(eq(canvasHandler),
                                               setCellValueCommandArgumentCaptor.capture());
 
         final SetCellValueCommand setCellValueCommand = setCellValueCommandArgumentCaptor.getValue();
-        setCellValueCommand.execute(handler);
+        setCellValueCommand.execute(canvasHandler);
 
         assertResize(BaseExpressionGrid.RESIZE_EXISTING);
         verify(literalExpressionEditor).selectCell(eq(0),
@@ -517,7 +537,7 @@ public class UndefinedExpressionGridTest {
         reset(gridPanel, gridLayer, parent);
         setupParent();
 
-        setCellValueCommand.undo(handler);
+        setCellValueCommand.undo(canvasHandler);
 
         assertResize(BaseExpressionGrid.RESIZE_EXISTING_MINIMUM);
         verify(gridLayer).select(grid);

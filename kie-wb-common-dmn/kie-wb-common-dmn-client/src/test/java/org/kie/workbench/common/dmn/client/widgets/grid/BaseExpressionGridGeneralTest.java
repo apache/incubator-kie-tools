@@ -59,10 +59,14 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.selection.Domai
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.command.Command;
+import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Element;
+import org.kie.workbench.common.stunner.core.graph.Graph;
+import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.core.util.UUID;
+import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -81,7 +85,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -92,6 +98,8 @@ import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
+
+    private static final String NODE_UUID = "uuid";
 
     private static final Name NAME = new Name("name");
 
@@ -114,6 +122,15 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
 
     @Mock
     private AbstractCanvasHandler canvasHandler;
+
+    @Mock
+    private Diagram diagram;
+
+    @Mock
+    private Graph graph;
+
+    @Mock
+    private Node node;
 
     @Mock
     private Index<?, ?> index;
@@ -139,6 +156,9 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
     @Captor
     private ArgumentCaptor<DomainObjectSelectionEvent> domainObjectSelectionEventCaptor;
 
+    @Captor
+    private ArgumentCaptor<RefreshFormPropertiesEvent> refreshFormPropertiesEventCaptor;
+
     private Decision decision = new Decision();
 
     @Override
@@ -150,6 +170,10 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
 
         when(sessionManager.getCurrentSession()).thenReturn(session);
         when(session.getCanvasHandler()).thenReturn(canvasHandler);
+
+        when(canvasHandler.getDiagram()).thenReturn(diagram);
+        when(diagram.getGraph()).thenReturn(graph);
+        when(graph.nodes()).thenReturn(Collections.singletonList(node));
 
         when(canvasHandler.getGraphIndex()).thenReturn(index);
         when(element.getContent()).thenReturn(definition);
@@ -184,6 +208,7 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
                                       sessionCommandManager,
                                       canvasCommandFactory,
                                       editorSelectedEvent,
+                                      refreshFormPropertiesEvent,
                                       domainObjectSelectionEvent,
                                       cellEditorControls,
                                       listSelector,
@@ -201,6 +226,17 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
 
             @Override
             protected void initialiseUiModel() {
+                //Nothing for this test
+            }
+
+            @Override
+            public List<ListSelectorItem> getItems(final int uiRowIndex,
+                                                   final int uiColumnIndex) {
+                return Collections.emptyList();
+            }
+
+            @Override
+            public void onItemSelected(final ListSelectorItem item) {
                 //Nothing for this test
             }
         };
@@ -423,6 +459,7 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
         grid.selectHeaderCell(point, false, false);
 
         assertHeaderSelection();
+        assertDomainObjectEventFiring();
     }
 
     @Test
@@ -433,12 +470,42 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
         grid.selectHeaderCell(0, 1, false, false);
 
         assertHeaderSelection();
+        assertDomainObjectEventFiring();
+    }
+
+    @Test
+    public void testSelectHeaderCellWithDomainObjectInStunnerGraph() {
+        grid.getModel().appendColumn(new RowNumberColumn());
+        grid.getModel().appendColumn(new RowNumberColumn());
+
+        //Mock graph to contain decision
+        final Definition definition = mock(Definition.class);
+        when(node.getUUID()).thenReturn(NODE_UUID);
+        when(node.getContent()).thenReturn(definition);
+        when(definition.getDefinition()).thenReturn(decision);
+
+        //Mock grid to dispatch header selection as a DomainObject
+        doAnswer(i -> {
+            grid.fireDomainObjectSelectionEvent(decision);
+            return null;
+        }).when(grid).doAfterHeaderSelectionChange(anyInt(), anyInt());
+
+        grid.selectHeaderCell(0, 1, false, false);
+
+        assertHeaderSelection();
+
+        verify(refreshFormPropertiesEvent).fire(refreshFormPropertiesEventCaptor.capture());
+        final RefreshFormPropertiesEvent refreshFormPropertiesEvent = refreshFormPropertiesEventCaptor.getValue();
+        assertThat(refreshFormPropertiesEvent.getUuid()).isEqualTo(NODE_UUID);
+        assertThat(refreshFormPropertiesEvent.getSession()).isEqualTo(session);
     }
 
     private void assertHeaderSelection() {
         assertThat(grid.getModel().getSelectedHeaderCells()).isNotEmpty();
         assertThat(grid.getModel().getSelectedHeaderCells()).contains(new GridData.SelectedCell(0, 1));
+    }
 
+    private void assertDomainObjectEventFiring() {
         verify(domainObjectSelectionEvent).fire(domainObjectSelectionEventCaptor.capture());
         final DomainObjectSelectionEvent domainObjectSelectionEvent = domainObjectSelectionEventCaptor.getValue();
         assertThat(domainObjectSelectionEvent.getDomainObject()).isInstanceOf(NOPDomainObject.class);

@@ -53,6 +53,7 @@ import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -119,6 +120,9 @@ public class ExpressionEditorViewImplTest {
 
     @Mock
     private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
+
+    @Mock
+    private EventSourceMock<RefreshFormPropertiesEvent> refreshFormPropertiesEvent;
 
     @Mock
     private EventSourceMock<DomainObjectSelectionEvent> domainObjectSelectionEvent;
@@ -199,6 +203,7 @@ public class ExpressionEditorViewImplTest {
                                                      sessionManager,
                                                      sessionCommandManager,
                                                      expressionEditorDefinitionsSupplier,
+                                                     refreshFormPropertiesEvent,
                                                      domainObjectSelectionEvent));
         view.init(presenter);
         view.bind(session);

@@ -50,6 +50,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.Session;
+import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.TransformMediator;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.impl.RestrictedMousePanMediator;
 
@@ -75,6 +76,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
     private SessionManager sessionManager;
     private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
     private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
+    private Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent;
     private Event<DomainObjectSelectionEvent> domainObjectSelectionEvent;
 
     private DMNGridPanel gridPanel;
@@ -96,6 +98,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                                     final SessionManager sessionManager,
                                     final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                     final @DMNEditor Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
+                                    final Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent,
                                     final Event<DomainObjectSelectionEvent> domainObjectSelectionEvent) {
         this.returnToDRG = returnToDRG;
         this.expressionType = expressionType;
@@ -107,6 +110,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         this.sessionManager = sessionManager;
         this.sessionCommandManager = sessionCommandManager;
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
+        this.refreshFormPropertiesEvent = refreshFormPropertiesEvent;
         this.domainObjectSelectionEvent = domainObjectSelectionEvent;
     }
 
@@ -148,6 +152,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                                                               getExpressionGridCacheSupplier(),
                                                               this::setExpressionTypeText,
                                                               this::setReturnToDRGText,
+                                                              refreshFormPropertiesEvent,
                                                               domainObjectSelectionEvent);
         gridLayer.removeAll();
         gridLayer.add(expressionContainerGrid);

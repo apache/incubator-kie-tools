@@ -63,13 +63,12 @@ import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
+import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 
 public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGridData, InvocationUIModelMapper> implements HasListSelectorControl {
-
-    private static final String EXPRESSION_COLUMN_GROUP = "InvocationGrid$ExpressionColumn1";
 
     private final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
     private final NameAndDataTypePopoverView.Presenter headerEditor;
@@ -87,6 +86,7 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGri
                           final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                           final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
                           final Event<ExpressionEditorChanged> editorSelectedEvent,
+                          final Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent,
                           final Event<DomainObjectSelectionEvent> domainObjectSelectionEvent,
                           final CellEditorControlsView.Presenter cellEditorControls,
                           final ListSelectorView.Presenter listSelector,
@@ -108,6 +108,7 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGri
               sessionCommandManager,
               canvasCommandFactory,
               editorSelectedEvent,
+              refreshFormPropertiesEvent,
               domainObjectSelectionEvent,
               cellEditorControls,
               listSelector,
