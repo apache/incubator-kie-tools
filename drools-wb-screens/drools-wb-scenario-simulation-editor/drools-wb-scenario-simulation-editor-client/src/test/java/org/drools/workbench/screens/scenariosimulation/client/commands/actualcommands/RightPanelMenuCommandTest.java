@@ -26,14 +26,14 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.PlaceStatus;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 
+import static org.junit.Assert.assertFalse;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class RightPanelMenuCommandTest extends AbstractScenarioSimulationCommandTest {
-
-    private RightPanelMenuCommand rightPanelMenuCommand;
 
     @Mock
     private PlaceManager placeManagerMock;
@@ -48,8 +48,8 @@ public class RightPanelMenuCommandTest extends AbstractScenarioSimulationCommand
     public void setup() {
         super.setup();
         when(placeRequestMock.getPath()).thenReturn(pathMock);
-        this.rightPanelMenuCommand = new RightPanelMenuCommand() {
-        };
+        command = spy(new RightPanelMenuCommand());
+        assertFalse(command.isUndoable());
     }
 
     @Test
@@ -57,10 +57,10 @@ public class RightPanelMenuCommandTest extends AbstractScenarioSimulationCommand
         scenarioSimulationContext.setPlaceManager(placeManagerMock);
         scenarioSimulationContext.setRightPanelRequest(placeRequestMock);
         when(placeManagerMock.getStatus(placeRequestMock)).thenReturn(PlaceStatus.OPEN);
-        rightPanelMenuCommand.execute(scenarioSimulationContext);
+        command.execute(scenarioSimulationContext);
         verify(placeManagerMock, times(1)).closePlace(placeRequestMock);
         when(placeManagerMock.getStatus(placeRequestMock)).thenReturn(PlaceStatus.CLOSE);
-        rightPanelMenuCommand.execute(scenarioSimulationContext);
+        command.execute(scenarioSimulationContext);
         verify(placeManagerMock, times(1)).goTo(placeRequestMock);
     }
 }

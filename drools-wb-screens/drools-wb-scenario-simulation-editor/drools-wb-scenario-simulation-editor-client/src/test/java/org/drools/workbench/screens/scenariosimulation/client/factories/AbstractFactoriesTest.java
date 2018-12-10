@@ -17,10 +17,7 @@ package org.drools.workbench.screens.scenariosimulation.client.factories;
 
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.Element;
-import org.drools.workbench.screens.scenariosimulation.client.editor.AbstractScenarioSimulationEditorTest;
-import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
-import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGrid;
-import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridLayer;
+import org.drools.workbench.screens.scenariosimulation.client.AbstractScenarioSimulationTest;
 import org.gwtbootstrap3.client.ui.TextArea;
 import org.junit.Before;
 import org.mockito.Mock;
@@ -28,7 +25,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRende
 
 import static org.mockito.Mockito.when;
 
-public abstract class AbstractFactoriesTest extends AbstractScenarioSimulationEditorTest {
+public abstract class AbstractFactoriesTest extends AbstractScenarioSimulationTest {
 
     @Mock
     protected TextArea textAreaMock;
@@ -38,12 +35,6 @@ public abstract class AbstractFactoriesTest extends AbstractScenarioSimulationEd
     protected Element elementMock;
     @Mock
     protected Style styleMock;
-    @Mock
-    protected ScenarioGridLayer scenarioGridLayerMock;
-    @Mock
-    protected ScenarioGrid scenarioGridMock;
-    @Mock
-    protected ScenarioGridModel scenarioGridModelMock;
 
     protected final static int ROW_INDEX = 1;
     protected final static int COLUMN_INDEX = 2;
@@ -55,7 +46,5 @@ public abstract class AbstractFactoriesTest extends AbstractScenarioSimulationEd
         when(textAreaMock.getElement()).thenReturn(elementMock);
         when(contextMock.getRowIndex()).thenReturn(ROW_INDEX);
         when(contextMock.getColumnIndex()).thenReturn(COLUMN_INDEX);
-        when(scenarioGridMock.getModel()).thenReturn(scenarioGridModelMock);
-        when(scenarioGridLayerMock.getScenarioGrid()).thenReturn(scenarioGridMock);
     }
 }

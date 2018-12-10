@@ -30,18 +30,22 @@ import org.drools.workbench.screens.scenariosimulation.model.FactMappingType;
 @Dependent
 public class PrependColumnCommand extends AbstractScenarioSimulationCommand {
 
+    public PrependColumnCommand() {
+        super(true);
+    }
 
     @Override
     protected void internalExecute(ScenarioSimulationContext context) {
-        final int index = context.getModel().getFirstIndexLeftOfGroup(context.getColumnGroup());
-        FactMappingType factMappingType = FactMappingType.valueOf(context.getColumnGroup().toUpperCase());
+        final ScenarioSimulationContext.Status status = context.getStatus();
+        final int index = context.getModel().getFirstIndexLeftOfGroup(status.getColumnGroup());
+        FactMappingType factMappingType = FactMappingType.valueOf(status.getColumnGroup().toUpperCase());
         Map.Entry<String, String> validPlaceholders = context.getModel().getValidPlaceholders();
         String instanceTitle = validPlaceholders.getKey();
         String propertyTitle = validPlaceholders.getValue();
         final ScenarioGridColumn scenarioGridColumnLocal = getScenarioGridColumnLocal(instanceTitle,
                                                                                       propertyTitle,
-                                                                                      context.getColumnId(),
-                                                                                      context.getColumnGroup(),
+                                                                                      status.getColumnId(),
+                                                                                      status.getColumnGroup(),
                                                                                       factMappingType,
                                                                                       context.getScenarioGridPanel(),
                                                                                       context.getScenarioGridLayer(),

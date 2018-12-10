@@ -31,9 +31,13 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.IsWidget;
+import elemental2.dom.DomGlobal;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
+import org.drools.workbench.screens.scenariosimulation.client.events.RedoEvent;
+import org.drools.workbench.screens.scenariosimulation.client.events.UndoEvent;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioSimulationDocksHandler;
 import org.drools.workbench.screens.scenariosimulation.client.models.FactModelTree;
 import org.drools.workbench.screens.scenariosimulation.client.producers.ScenarioSimulationProducer;
@@ -43,6 +47,7 @@ import org.drools.workbench.screens.scenariosimulation.client.type.ScenarioSimul
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModelContent;
+import org.drools.workbench.screens.scenariosimulation.model.Simulation;
 import org.drools.workbench.screens.scenariosimulation.model.SimulationDescriptor;
 import org.drools.workbench.screens.scenariosimulation.service.ScenarioSimulationService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
@@ -57,6 +62,7 @@ import org.kie.workbench.common.widgets.configresource.client.widget.bound.Impor
 import org.kie.workbench.common.widgets.metadata.client.KieEditor;
 import org.kie.workbench.common.workbench.client.test.TestRunnerReportingScreen;
 import org.uberfire.backend.vfs.ObservablePath;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
@@ -116,7 +122,7 @@ public class ScenarioSimulationEditorPresenter
 
     private ScenarioSimulationView view;
 
-    private ScenarioSimulationContext context;
+    protected ScenarioSimulationContext context;
 
     private Command populateRightPanelCommand;
 
@@ -149,7 +155,6 @@ public class ScenarioSimulationEditorPresenter
         this.context = scenarioSimulationProducer.getScenarioSimulationContext();
         this.eventBus = scenarioSimulationProducer.getEventBus();
         scenarioGridPanel = view.getScenarioGridPanel();
-//        context.setScenarioGridPanel(scenarioGridPanel);
         context.setScenarioSimulationEditorPresenter(this);
         view.init(this);
         populateRightPanelCommand = getPopulateRightPanelCommand();
@@ -255,12 +260,37 @@ public class ScenarioSimulationEditorPresenter
         service.call(refreshModel()).runScenario(versionRecordManager.getCurrentPath(), model);
     }
 
-    RemoteCallback<ScenarioSimulationModel> refreshModel() {
-        return newModel -> {
-            this.model = newModel;
-            view.refreshContent(newModel.getSimulation());
-            scenarioSimulationDocksHandler.expandTestResultsDock();
-        };
+    public void onUndo() {
+        eventBus.fireEvent(new UndoEvent());
+    }
+
+    public void onRedo() {
+        eventBus.fireEvent(new RedoEvent());
+    }
+
+    public void setUndoButtonEnabledStatus(boolean enabled) {
+        view.getUndoMenuItem().setEnabled(enabled);
+    }
+
+    public void setRedoButtonEnabledStatus(boolean enabled) {
+        view.getRedoMenuItem().setEnabled(enabled);
+    }
+
+    @Override
+    public void addDownloadMenuItem(FileMenuBuilder fileMenuBuilder) {
+        fileMenuBuilder.addNewTopLevelMenu(view.getDownloadMenuItem(getPathSupplier()));
+    }
+
+    protected RemoteCallback<ScenarioSimulationModel> refreshModel() {
+        return this::refreshModelContent;
+    }
+
+    protected void refreshModelContent(ScenarioSimulationModel newModel) {
+        this.model = newModel;
+        final Simulation simulation = newModel.getSimulation();
+        view.refreshContent(simulation);
+        context.getStatus().setSimulation(simulation);
+        scenarioSimulationDocksHandler.expandTestResultsDock();
     }
 
     protected void registerRightPanelCallback() {
@@ -277,6 +307,10 @@ public class ScenarioSimulationEditorPresenter
     @Override
     protected void makeMenuBar() {
         fileMenuBuilder.addNewTopLevelMenu(view.getRunScenarioMenuItem());
+        fileMenuBuilder.addNewTopLevelMenu(view.getUndoMenuItem());
+        fileMenuBuilder.addNewTopLevelMenu(view.getRedoMenuItem());
+        view.getUndoMenuItem().setEnabled(false);
+        view.getRedoMenuItem().setEnabled(false);
         super.makeMenuBar();
     }
 
@@ -306,17 +340,25 @@ public class ScenarioSimulationEditorPresenter
                      getNoSuchFileExceptionErrorCallback()).loadContent(versionRecordManager.getCurrentPath());
     }
 
-    void populateRightPanel() {
+    protected void onDownload(final Supplier<Path> pathSupplier) {
+        final String downloadURL = getFileDownloadURL(pathSupplier);
+        open(downloadURL);
+    }
+
+    protected void open(final String downloadURL) {
+        DomGlobal.window.open(downloadURL);
+    }
+
+    protected void populateRightPanel() {
         // Execute only when RightPanelPresenter is actually available
         getRightPanelPresenter().ifPresent(presenter -> {
-            // presenter.onDisableEditorTab();
             context.setRightPanelPresenter(presenter);
             presenter.setEventBus(eventBus);
             populateRightPanel(presenter);
         });
     }
 
-    void populateRightPanel(RightPanelView.Presenter rightPanelPresenter) {
+    protected void populateRightPanel(RightPanelView.Presenter rightPanelPresenter) {
         // Instantiate a container map
         SortedMap<String, FactModelTree> factTypeFieldsMap = new TreeMap<>();
         // Execute only when oracle has been set
@@ -342,11 +384,11 @@ public class ScenarioSimulationEditorPresenter
         }
     }
 
-    void clearRightPanelStatus() {
+    protected void clearRightPanelStatus() {
         getRightPanelPresenter().ifPresent(RightPanelView.Presenter::onClearStatus);
     }
 
-    String getJsonModel(ScenarioSimulationModel model) {
+    protected String getJsonModel(ScenarioSimulationModel model) {
         return MarshallingWrapper.toJSON(model);
     }
 
@@ -385,6 +427,10 @@ public class ScenarioSimulationEditorPresenter
             factPackageName = fullFactClassName.substring(0, fullFactClassName.lastIndexOf("."));
         }
         return new FactModelTree(factName, factPackageName, simpleProperties);
+    }
+
+    private String getFileDownloadURL(final Supplier<Path> pathSupplier) {
+        return GWT.getModuleBaseURL() + "defaulteditor/download?path=" + pathSupplier.get().toURI();
     }
 
     private RemoteCallback<ScenarioSimulationModelContent> getModelSuccessCallback() {

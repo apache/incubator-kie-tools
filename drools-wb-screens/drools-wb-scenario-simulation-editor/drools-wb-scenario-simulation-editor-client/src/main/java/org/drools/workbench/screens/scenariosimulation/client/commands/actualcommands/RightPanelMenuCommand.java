@@ -23,6 +23,10 @@ import org.uberfire.client.mvp.PlaceStatus;
 @Dependent
 public class RightPanelMenuCommand extends AbstractScenarioSimulationCommand {
 
+    public RightPanelMenuCommand() {
+        super(false);
+    }
+
     @Override
     protected void internalExecute(ScenarioSimulationContext context) {
         if (PlaceStatus.OPEN.equals(context.getPlaceManager().getStatus(context.getRightPanelRequest()))) {

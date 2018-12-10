@@ -40,8 +40,6 @@ public abstract class AbstractProducerTest extends AbstractScenarioSimulationTes
     @Mock
     protected ScenarioSimulationViewProducer scenarioSimulationViewProducerMock;
     @Mock
-    protected EventBus eventBusMock;
-    @Mock
     protected DeletePopupPresenter deletePopupPresenterMock;
     @Mock
     protected PreserveDeletePopupPresenter preserveDeletePopupPresenterMock;

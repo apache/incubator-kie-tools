@@ -17,6 +17,7 @@ package org.drools.workbench.screens.scenariosimulation.client.commands.actualco
 
 import java.util.Collections;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationViolation;
@@ -29,6 +30,7 @@ import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGr
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
 import org.drools.workbench.screens.scenariosimulation.model.FactIdentifier;
 import org.drools.workbench.screens.scenariosimulation.model.FactMappingType;
+import org.drools.workbench.screens.scenariosimulation.model.Simulation;
 import org.kie.workbench.common.command.client.AbstractCommand;
 import org.kie.workbench.common.command.client.CommandResult;
 import org.kie.workbench.common.command.client.CommandResultBuilder;
@@ -42,16 +44,85 @@ import static org.drools.workbench.screens.scenariosimulation.client.utils.Scena
  */
 public abstract class AbstractScenarioSimulationCommand extends AbstractCommand<ScenarioSimulationContext, ScenarioSimulationViolation> {
 
+    private static final AtomicLong COUNTER_ID = new AtomicLong();
+
+    /**
+     * Auto-generated incremental identifier used  to uniquely identify each command
+     */
+    private final long id;
+
+    /**
+     * Flag that indicates if the command is <b>undoable</b>. Default is <code>false</code>
+     */
+    private final boolean undoable;
+
+    /**
+     * The <code>ScenarioSimulationContext.Status</code> to restore when calling <b>undo/redo</b>.
+     * Needed only for <b>undoable</b> commands.
+     */
+    protected ScenarioSimulationContext.Status restorableStatus = null;
+
+    /**
+     * Calling this constructor will set the command as <b>undoable</b>
+     * @param undoable
+     */
+    protected AbstractScenarioSimulationCommand(boolean undoable) {
+        this.id = COUNTER_ID.getAndIncrement();
+        this.undoable = undoable;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public boolean isUndoable() {
+        return undoable;
+    }
+
     @Override
-    public CommandResult<ScenarioSimulationViolation> undo(ScenarioSimulationContext context) {
-        return new CommandResultImpl<>(CommandResult.Type.ERROR, Collections.singletonList(new ScenarioSimulationViolation("NOT IMPLEMENTED, YET")));
+    public CommandResult<ScenarioSimulationViolation> undo(ScenarioSimulationContext context) throws UnsupportedOperationException {
+        if (!undoable || restorableStatus == null) {
+            String message = !undoable ? this.getClass().getSimpleName() + " is not undoable" : "restorableStatus status is null";
+            throw new UnsupportedOperationException(message);
+        }
+        return setCurrentContext(context);
+    }
+
+    public CommandResult<ScenarioSimulationViolation> redo(ScenarioSimulationContext context) throws UnsupportedOperationException {
+        if (!undoable || restorableStatus == null) {
+            String message = !undoable ? this.getClass().getSimpleName() + " is not redoable" : "restorableStatus status is null";
+            throw new UnsupportedOperationException(message);
+        }
+        return setCurrentContext(context);
     }
 
     @Override
     public CommandResult<ScenarioSimulationViolation> execute(ScenarioSimulationContext context) {
+        context.setStatusSimulationIfEmpty();
+        if (undoable) {
+            restorableStatus = context.getStatus().cloneStatus();
+        }
         try {
             internalExecute(context);
             return commonExecution(context);
+        } catch (Exception e) {
+            return new CommandResultImpl<>(CommandResult.Type.ERROR, Collections.singleton(new ScenarioSimulationViolation(e.getMessage())));
+        }
+    }
+
+    protected CommandResult<ScenarioSimulationViolation> setCurrentContext(ScenarioSimulationContext context) {
+        try {
+            final Simulation toRestore = restorableStatus.getSimulation();
+            if (toRestore != null) {
+                final ScenarioSimulationContext.Status originalStatus = context.getStatus().cloneStatus();
+                context.getScenarioSimulationEditorPresenter().getView().setContent(toRestore);
+                context.getScenarioSimulationEditorPresenter().getModel().setSimulation(toRestore);
+                context.setStatus(restorableStatus);
+                restorableStatus = originalStatus;
+                return commonExecution(context);
+            } else {
+                return new CommandResultImpl<>(CommandResult.Type.ERROR, Collections.singletonList(new ScenarioSimulationViolation("Simulation not set inside Model")));
+            }
         } catch (Exception e) {
             return new CommandResultImpl<>(CommandResult.Type.ERROR, Collections.singleton(new ScenarioSimulationViolation(e.getMessage())));
         }
@@ -101,7 +172,6 @@ public abstract class AbstractScenarioSimulationCommand extends AbstractCommand<
     }
 
     protected Optional<FactIdentifier> getFactIdentifierByColumnTitle(String columnTitle, ScenarioSimulationContext context) {
-
 
         return context.getScenarioGridLayer().getScenarioGrid().getModel().getColumns().stream()
                 .filter(column -> columnTitle.equals(((ScenarioGridColumn) column).getInformationHeaderMetaData().getTitle()))

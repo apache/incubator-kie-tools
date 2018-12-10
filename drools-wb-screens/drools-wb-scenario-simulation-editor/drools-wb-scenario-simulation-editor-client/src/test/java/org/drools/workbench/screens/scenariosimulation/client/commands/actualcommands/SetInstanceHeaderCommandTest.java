@@ -30,6 +30,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.spy;
@@ -40,8 +41,6 @@ import static org.mockito.Mockito.when;
 @RunWith(GwtMockitoTestRunner.class)
 public class SetInstanceHeaderCommandTest extends AbstractScenarioSimulationCommandTest {
 
-    private SetInstanceHeaderCommand setInstanceHeaderCommand;
-
     @Mock
     private List<GridColumn<?>> mockGridColumns;
 
@@ -50,7 +49,7 @@ public class SetInstanceHeaderCommandTest extends AbstractScenarioSimulationComm
         super.setup();
         when(mockGridColumns.indexOf(gridColumnMock)).thenReturn(COLUMN_INDEX);
         when(scenarioGridModelMock.getColumns()).thenReturn(mockGridColumns);
-        setInstanceHeaderCommand = spy(new SetInstanceHeaderCommand() {
+        command = spy(new SetInstanceHeaderCommand() {
 
             @Override
             protected ScenarioGridColumn getScenarioGridColumnLocal(ScenarioSimulationBuilders.HeaderBuilder headerBuilder, ScenarioSimulationContext context) {
@@ -62,13 +61,14 @@ public class SetInstanceHeaderCommandTest extends AbstractScenarioSimulationComm
                 return Optional.empty();
             }
         });
+        assertTrue(command.isUndoable());
     }
 
     @Test
     public void execute() {
-        scenarioSimulationContext.setFullPackage(FULL_PACKAGE);
-        scenarioSimulationContext.setClassName(VALUE_CLASS_NAME);
-        setInstanceHeaderCommand.execute(scenarioSimulationContext);
+        scenarioSimulationContext.getStatus().setFullPackage(FULL_PACKAGE);
+        scenarioSimulationContext.getStatus().setClassName(VALUE_CLASS_NAME);
+        command.execute(scenarioSimulationContext);
         verify(gridColumnMock, atLeast(1)).getInformationHeaderMetaData();
         verify(informationHeaderMetaDataMock, atLeast(1)).setTitle(eq(VALUE_CLASS_NAME));
         verify(gridColumnMock, atLeast(1)).setInstanceAssigned(eq(true));

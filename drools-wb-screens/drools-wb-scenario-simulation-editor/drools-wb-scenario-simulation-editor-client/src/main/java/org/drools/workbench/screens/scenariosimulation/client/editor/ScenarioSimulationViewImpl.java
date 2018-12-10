@@ -16,14 +16,17 @@
 
 package org.drools.workbench.screens.scenariosimulation.client.editor;
 
+import java.util.function.Supplier;
+
 import javax.enterprise.context.Dependent;
 
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridLayer;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
 import org.drools.workbench.screens.scenariosimulation.model.Simulation;
+import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.workbench.model.menu.MenuItem;
 
 /**
@@ -41,6 +44,14 @@ public class ScenarioSimulationViewImpl
     private ScenarioSimulationEditorPresenter presenter;
 
     private ScenarioGridLayer scenarioGridLayer;
+
+    private ScenarioMenuItem runMenuItem;
+
+    private ScenarioMenuItem undoMenuItem;
+
+    private ScenarioMenuItem redoMenuItem;
+
+    private ScenarioMenuItem downloadMenuItem;
 
 
     /**
@@ -74,8 +85,38 @@ public class ScenarioSimulationViewImpl
 
     @Override
     public MenuItem getRunScenarioMenuItem() {
-        return new RunScenarioMenuItem(ScenarioSimulationEditorConstants.INSTANCE.runScenarioSimulation(),
-                                       () -> presenter.onRunScenario());
+        if (runMenuItem == null) {
+            runMenuItem = new ScenarioMenuItem(IconType.PLAY,
+                                               () -> presenter.onRunScenario());
+        }
+        return runMenuItem;
+    }
+
+    @Override
+    public MenuItem getUndoMenuItem() {
+        if (undoMenuItem == null) {
+            undoMenuItem = new ScenarioMenuItem(IconType.UNDO,
+                                                () -> presenter.onUndo());
+        }
+        return undoMenuItem;
+    }
+
+    @Override
+    public MenuItem getRedoMenuItem() {
+        if (redoMenuItem == null) {
+            redoMenuItem = new ScenarioMenuItem(IconType.REPEAT,
+                                                () -> presenter.onRedo());
+        }
+        return redoMenuItem;
+    }
+
+    @Override
+    public MenuItem getDownloadMenuItem(final Supplier<Path> pathSupplier) {
+        if (downloadMenuItem == null) {
+            downloadMenuItem = new ScenarioMenuItem(IconType.DOWNLOAD,
+                                                () -> presenter.onDownload(pathSupplier));
+        }
+        return downloadMenuItem;
     }
 
     @Override

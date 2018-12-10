@@ -66,7 +66,7 @@ public class ScenarioGridPanel extends GridLienzoPanel implements NodeMouseOutHa
 
     public void setEventBus(EventBus eventBus) {
         this.eventBus = eventBus;
-        getScenarioGrid().getModel().setEventBus(eventBus);
+        getScenarioGrid().setEventBus(eventBus);
     }
 
     public void select() {

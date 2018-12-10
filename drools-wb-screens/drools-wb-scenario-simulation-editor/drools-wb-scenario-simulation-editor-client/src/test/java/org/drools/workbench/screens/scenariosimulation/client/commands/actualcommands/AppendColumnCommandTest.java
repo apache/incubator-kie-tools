@@ -26,6 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.spy;
@@ -35,25 +36,24 @@ import static org.mockito.Mockito.verify;
 @RunWith(GwtMockitoTestRunner.class)
 public class AppendColumnCommandTest extends AbstractScenarioSimulationCommandTest {
 
-    private AppendColumnCommand appendColumnCommand;
-
     @Before
     public void setup() {
         super.setup();
-        appendColumnCommand = spy(new AppendColumnCommand() {
+        command = spy(new AppendColumnCommand() {
             @Override
             protected ScenarioGridColumn getScenarioGridColumnLocal(String instanceTitle, String propertyTitle, String columnId, String columnGroup, FactMappingType factMappingType, ScenarioGridPanel scenarioGridPanel, ScenarioGridLayer gridLayer, String placeHolder) {
                 return gridColumnMock;
             }
         });
+        assertTrue(command.isUndoable());
     }
 
     @Test
     public void execute() {
-        scenarioSimulationContext.setColumnId(COLUMN_ID);
-        scenarioSimulationContext.setColumnGroup(COLUMN_GROUP);
-        appendColumnCommand.execute(scenarioSimulationContext);
-        verify(appendColumnCommand, times(1)).getScenarioGridColumnLocal(anyString(),anyString(), eq(COLUMN_ID), eq(COLUMN_GROUP), eq(factMappingType), eq(scenarioGridPanelMock), eq(scenarioGridLayerMock), eq(ScenarioSimulationEditorConstants.INSTANCE.defineValidType()));
+        scenarioSimulationContext.getStatus().setColumnId(COLUMN_ID);
+        scenarioSimulationContext.getStatus().setColumnGroup(COLUMN_GROUP);
+        command.execute(scenarioSimulationContext);
+        verify(command, times(1)).getScenarioGridColumnLocal(anyString(),anyString(), eq(COLUMN_ID), eq(COLUMN_GROUP), eq(factMappingType), eq(scenarioGridPanelMock), eq(scenarioGridLayerMock), eq(ScenarioSimulationEditorConstants.INSTANCE.defineValidType()));
         verify(scenarioGridModelMock, times(1)).getFirstIndexRightOfGroup(eq(COLUMN_GROUP));
         verify(scenarioGridModelMock, times(1)).insertColumn(eq(FIRST_INDEX_RIGHT), eq(gridColumnMock));
     }

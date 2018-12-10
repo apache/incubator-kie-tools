@@ -25,6 +25,10 @@ import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioS
 @Dependent
 public class DisableRightPanelCommand extends AbstractScenarioSimulationCommand {
 
+    public DisableRightPanelCommand() {
+        super(false);
+    }
+
     @Override
     protected void internalExecute(ScenarioSimulationContext context) {
         if (context.getRightPanelPresenter() != null) {

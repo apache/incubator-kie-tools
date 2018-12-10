@@ -46,7 +46,7 @@ public class ScenarioGridColumnRenderer extends StringColumnRenderer {
         String value;
 
         // Show placeholder only if the following conditions are met
-        if ((cell instanceof ScenarioGridCell) && cell.getValue() != null && cell.getValue().getValue() == null && cell.getValue().getPlaceHolder() != null) {
+        if ((cell instanceof ScenarioGridCell) && cell.getValue() != null && (cell.getValue().getValue() == null || cell.getValue().getValue().isEmpty() ) && cell.getValue().getPlaceHolder() != null) {
             // Render as placeholder
             text = theme.getPlaceholderText();
             value = cell.getValue().getPlaceHolder();

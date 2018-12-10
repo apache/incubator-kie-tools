@@ -25,16 +25,21 @@ import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioS
 @Dependent
 public class EnableRightPanelCommand extends AbstractScenarioSimulationCommand {
 
+    public EnableRightPanelCommand() {
+        super(false);
+    }
+
     @Override
     protected void internalExecute(ScenarioSimulationContext context) {
+        final ScenarioSimulationContext.Status status = context.getStatus();
         if (context.getScenarioSimulationEditorPresenter() != null) {
             context.getScenarioSimulationEditorPresenter().expandToolsDock();
         }
         if (context.getRightPanelPresenter() != null) {
-            if (context.getFilterTerm() == null) {
+            if (status.getFilterTerm() == null) {
                 context.getRightPanelPresenter().onEnableEditorTab();
             } else {
-                context.getRightPanelPresenter().onEnableEditorTab(context.getFilterTerm(), context.getPropertyName(), context.isNotEqualsSearch());
+                context.getRightPanelPresenter().onEnableEditorTab(status.getFilterTerm(), status.getPropertyName(), status.isNotEqualsSearch());
             }
         }
     }

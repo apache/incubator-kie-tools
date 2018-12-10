@@ -159,6 +159,11 @@
       <scope>provided</scope>
     </dependency>
 
+    <dependency>
+      <groupId>com.google.elemental2</groupId>
+      <artifactId>elemental2-dom</artifactId>
+    </dependency>
+
     <!-- Test scope dependencies -->
     <dependency>
       <groupId>com.google.gwt.gwtmockito</groupId>

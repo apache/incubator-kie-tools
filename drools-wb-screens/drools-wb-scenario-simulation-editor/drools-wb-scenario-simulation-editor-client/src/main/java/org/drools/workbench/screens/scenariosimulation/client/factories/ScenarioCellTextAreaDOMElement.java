@@ -21,9 +21,9 @@ import java.util.Objects;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.TakesValue;
 import com.google.gwt.user.client.ui.Focusable;
-import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
-import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
-import org.drools.workbench.screens.scenariosimulation.client.values.ScenarioGridCellValue;
+import org.drools.workbench.screens.scenariosimulation.client.events.SetCellValueEvent;
+import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGrid;
+import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridCell;
 import org.gwtbootstrap3.client.ui.TextArea;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.impl.BaseDOMElement;
@@ -33,7 +33,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 public class ScenarioCellTextAreaDOMElement extends BaseDOMElement<String, TextArea> implements TakesValue<String>,
                                                                                                 Focusable {
 
-    protected String originalValue;
+    protected ScenarioGridCell scenarioGridCell;
 
     public ScenarioCellTextAreaDOMElement(final TextArea widget,
                                           final GridLayer gridLayer,
@@ -71,6 +71,10 @@ public class ScenarioCellTextAreaDOMElement extends BaseDOMElement<String, TextA
         getContainer().setWidget(widget);
     }
 
+    public void setScenarioGridCell(ScenarioGridCell scenarioGridCell) {
+        this.scenarioGridCell = scenarioGridCell;
+    }
+
     @Override
     public void initialise(final GridBodyCellRenderContext context) {
         transform(context);
@@ -79,7 +83,6 @@ public class ScenarioCellTextAreaDOMElement extends BaseDOMElement<String, TextA
     @Override
     public void setValue(final String value) {
         getWidget().setValue(value);
-        this.originalValue = value;
     }
 
     @Override
@@ -110,16 +113,21 @@ public class ScenarioCellTextAreaDOMElement extends BaseDOMElement<String, TextA
     @Override
     @SuppressWarnings("unchecked")
     public void flush(final String value) {
-        if (Objects.equals(value, originalValue)) {
-            return;
+        if (scenarioGridCell != null) {
+            scenarioGridCell.setEditingMode(false);
+            String actualValue = value.isEmpty() ? null : value;
+            String cellValue = scenarioGridCell.getValue().getValue();
+            String originalValue =  (cellValue == null || cellValue.isEmpty()) ? null : cellValue;
+            if (Objects.equals(actualValue, originalValue)) {
+                return;
+            }
         }
+        internalFlush(value);
+    }
+
+    protected void internalFlush(final String value) {
         final int rowIndex = context.getRowIndex();
         final int columnIndex = context.getColumnIndex();
-        String actualValue = (value == null || value.trim().isEmpty()) ? null : value;
-        ScenarioGridModel model = (ScenarioGridModel) gridWidget.getModel();
-        model.setCellValue(rowIndex,
-                           columnIndex,
-                           new ScenarioGridCellValue(actualValue, ScenarioSimulationEditorConstants.INSTANCE.insertValue()));
-        model.resetErrors(rowIndex);
+        ((ScenarioGrid)gridWidget).getEventBus().fireEvent(new SetCellValueEvent(rowIndex, columnIndex, value, false));
     }
 }

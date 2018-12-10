@@ -109,6 +109,17 @@ public class Simulation {
         scenarios.forEach(Scenario::resetErrors);
     }
 
+    public Simulation cloneSimulation() {
+        Simulation toReturn = new Simulation();
+        this.scenarios.forEach(scenario -> toReturn.scenarios.add(scenario.cloneScenario()));
+        final List<FactMapping> originalFactMappings = this.simulationDescriptor.getUnmodifiableFactMappings();
+        for (int i = 0; i < originalFactMappings.size(); i++) {
+            final FactMapping originalFactMapping = originalFactMappings.get(i);
+            toReturn.simulationDescriptor.addFactMapping(i, originalFactMapping);
+        }
+        return toReturn;
+    }
+
     private void cleanScenarios(FactMapping toRemove) {
         scenarios.forEach(e -> e.removeFactMappingValueByIdentifiers(toRemove.getFactIdentifier(), toRemove.getExpressionIdentifier()));
     }

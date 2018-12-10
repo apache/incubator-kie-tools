@@ -13,16 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.workbench.screens.scenariosimulation.client.commands;
+package org.drools.workbench.screens.scenariosimulation.client.handlers;
 
-import javax.enterprise.context.Dependent;
-
-import org.kie.workbench.common.command.client.impl.CommandManagerImpl;
+import com.google.gwt.event.shared.EventHandler;
+import org.drools.workbench.screens.scenariosimulation.client.events.SetCellValueEvent;
 
 /**
- * This class is used to actually invoke <code>Command</code>' methods on given command (<b>allow</b>, <b>execute</b>, <b>undo</b>)
+ * <code>EventHandler</code> for {@link SetCellValueEvent}
  */
-@Dependent
-public class ScenarioCommandManager extends CommandManagerImpl<ScenarioSimulationContext, ScenarioSimulationViolation> {
-
+public interface SetCellValueEventHandler extends EventHandler {
+    void onEvent(SetCellValueEvent event);
 }

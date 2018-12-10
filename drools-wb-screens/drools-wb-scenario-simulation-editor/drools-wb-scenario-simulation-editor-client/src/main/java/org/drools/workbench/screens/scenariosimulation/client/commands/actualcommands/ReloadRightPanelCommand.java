@@ -25,13 +25,18 @@ import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioS
 @Dependent
 public class ReloadRightPanelCommand extends AbstractScenarioSimulationCommand {
 
+    public ReloadRightPanelCommand() {
+        super(false);
+    }
+
     @Override
     protected void internalExecute(ScenarioSimulationContext context) {
+        final ScenarioSimulationContext.Status status = context.getStatus();
         if (context.getScenarioSimulationEditorPresenter() != null) {
-            if (context.isOpenDock()) {
+            if (status.isOpenDock()) {
                 context.getScenarioSimulationEditorPresenter().expandToolsDock();
             }
-            context.getScenarioSimulationEditorPresenter().reloadRightPanel(context.isDisable());
+            context.getScenarioSimulationEditorPresenter().reloadRightPanel(status.isDisable());
         }
     }
 }

@@ -15,20 +15,28 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands;
 
+import javax.enterprise.context.Dependent;
+
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
-import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridRow;
+import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
+import org.drools.workbench.screens.scenariosimulation.client.values.ScenarioGridCellValue;
 
 /**
- *  <code>Command</code> to <b>append</b> (i.e. put in the last position) a row
+ * <code>Command</code> to to set the <i>value</i> of a grid' cell
  */
-public class AppendRowCommand extends AbstractScenarioSimulationCommand {
+@Dependent
+public class SetCellValueCommand extends AbstractScenarioSimulationCommand {
 
-    public AppendRowCommand() {
+    public SetCellValueCommand() {
         super(true);
     }
 
     @Override
     protected void internalExecute(ScenarioSimulationContext context) {
-        context.getModel().appendRow(new ScenarioGridRow());
+        final ScenarioSimulationContext.Status status = context.getStatus();
+        context.getModel().setCellValue(status.getRowIndex(),
+                                        status.getColumnIndex(),
+                                        new ScenarioGridCellValue(status.getCellValue(), ScenarioSimulationEditorConstants.INSTANCE.insertValue()));
+        context.getModel().resetErrors(status.getRowIndex());
     }
 }

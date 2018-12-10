@@ -13,22 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands;
+package org.drools.workbench.screens.scenariosimulation.client.events;
 
-import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
-import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridRow;
+import com.google.gwt.event.shared.GwtEvent;
+import org.drools.workbench.screens.scenariosimulation.client.handlers.UndoEventHandler;
 
 /**
- *  <code>Command</code> to <b>append</b> (i.e. put in the last position) a row
+ * <code>GwtEvent</code> to <b>undo</b> last command
  */
-public class AppendRowCommand extends AbstractScenarioSimulationCommand {
+public class UndoEvent extends GwtEvent<UndoEventHandler> {
 
-    public AppendRowCommand() {
-        super(true);
+    public static Type<UndoEventHandler> TYPE = new Type<>();
+
+
+    public UndoEvent() {
     }
 
     @Override
-    protected void internalExecute(ScenarioSimulationContext context) {
-        context.getModel().appendRow(new ScenarioGridRow());
+    public Type<UndoEventHandler> getAssociatedType() {
+        return TYPE;
     }
+
+    @Override
+    protected void dispatch(UndoEventHandler handler) {
+        handler.onEvent(this);
+    }
+
+
 }

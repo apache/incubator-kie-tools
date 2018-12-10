@@ -28,6 +28,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -40,32 +41,30 @@ import static org.mockito.Mockito.when;
 @RunWith(GwtMockitoTestRunner.class)
 public class SetPropertyHeaderCommandTest extends AbstractScenarioSimulationCommandTest {
 
-    private SetPropertyHeaderCommand setPropertyHeaderCommand;
-
     @Mock
-    private List<GridColumn<?>> mockGridColumns;
+    private List<GridColumn<?>> gridColumnsMock;
 
     @Before
     public void setup() {
         super.setup();
-        when(mockGridColumns.indexOf(gridColumnMock)).thenReturn(COLUMN_INDEX);
-        setPropertyHeaderCommand = spy(new SetPropertyHeaderCommand() {
+        when(gridColumnsMock.indexOf(gridColumnMock)).thenReturn(COLUMN_INDEX);
+        command = spy(new SetPropertyHeaderCommand() {
 
             @Override
             protected ScenarioGridColumn getScenarioGridColumnLocal(ScenarioSimulationBuilders.HeaderBuilder headerBuilder, ScenarioSimulationContext context) {
                 return gridColumnMock;
             }
         });
-
-        scenarioSimulationContext.setFullPackage(FULL_PACKAGE);
-        scenarioSimulationContext.setValue(VALUE);
-        scenarioSimulationContext.setValueClassName(VALUE_CLASS_NAME);
+        scenarioSimulationContext.getStatus().setFullPackage(FULL_PACKAGE);
+        scenarioSimulationContext.getStatus().setValue(VALUE);
+        scenarioSimulationContext.getStatus().setValueClassName(VALUE_CLASS_NAME);
+        assertTrue(command.isUndoable());
     }
 
     @Test
     public void executeFalse() {
-        scenarioSimulationContext.setKeepData(false);
-        setPropertyHeaderCommand.execute(scenarioSimulationContext);
+        scenarioSimulationContext.getStatus().setKeepData(false);
+        command.execute(scenarioSimulationContext);
         verify(propertyHeaderMetaDataMock, times(1)).setColumnGroup(anyString());
         verify(propertyHeaderMetaDataMock, times(1)).setTitle(VALUE);
         verify(propertyHeaderMetaDataMock, times(1)).setReadOnly(false);
@@ -74,8 +73,8 @@ public class SetPropertyHeaderCommandTest extends AbstractScenarioSimulationComm
 
     @Test
     public void executeTrue() {
-        scenarioSimulationContext.setKeepData(true);
-        setPropertyHeaderCommand.execute(scenarioSimulationContext);
+        scenarioSimulationContext.getStatus().setKeepData(true);
+        command.execute(scenarioSimulationContext);
         verify(propertyHeaderMetaDataMock, times(1)).setColumnGroup(anyString());
         verify(propertyHeaderMetaDataMock, times(1)).setTitle(VALUE);
         verify(propertyHeaderMetaDataMock, times(1)).setReadOnly(false);

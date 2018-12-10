@@ -92,6 +92,18 @@ public class SimulationDescriptor {
         return factMappings.stream().findFirst();
     }
 
+    /**
+     * This method clone the given <code>FactMapping</code> and insert the cloned instance at the specified index
+     * @param index
+     * @param toClone
+     * @return the <b>cloned</b> <code>FactMapping</code>
+     */
+    public FactMapping addFactMapping(int index, FactMapping toClone) {
+        FactMapping toReturn = toClone.cloneFactMapping();
+        factMappings.add(index, toReturn);
+        return toReturn;
+    }
+
     public FactMapping addFactMapping(FactIdentifier factIdentifier, ExpressionIdentifier expressionIdentifier) {
         return addFactMapping(factMappings.size(), factIdentifier, expressionIdentifier);
     }

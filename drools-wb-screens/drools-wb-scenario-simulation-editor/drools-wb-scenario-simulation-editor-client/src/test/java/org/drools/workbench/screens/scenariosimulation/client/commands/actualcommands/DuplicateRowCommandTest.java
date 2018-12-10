@@ -22,28 +22,27 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class DuplicateRowCommandTest extends AbstractScenarioSimulationCommandTest {
 
-
-
-    private DuplicateRowCommand duplicateRowCommand;
-
     @Before
     public void setup() {
         super.setup();
-        duplicateRowCommand = new DuplicateRowCommand();
+        command = spy(new DuplicateRowCommand());
+        assertTrue(command.isUndoable());
     }
 
     @Test
     public void execute() {
-        scenarioSimulationContext.setRowIndex(ROW_INDEX);
-        duplicateRowCommand.execute(scenarioSimulationContext);
+        scenarioSimulationContext.getStatus().setRowIndex(ROW_INDEX);
+        command.execute(scenarioSimulationContext);
         verify(scenarioGridModelMock, times(1)).duplicateRow(eq(ROW_INDEX), isA(ScenarioGridRow.class));
     }
 }

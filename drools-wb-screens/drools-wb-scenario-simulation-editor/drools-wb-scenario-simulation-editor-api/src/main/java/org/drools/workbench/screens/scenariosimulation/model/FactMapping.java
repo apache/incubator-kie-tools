@@ -17,6 +17,7 @@ package org.drools.workbench.screens.scenariosimulation.model;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -71,6 +72,15 @@ public class FactMapping {
         this.factIdentifier = factIdentifier;
     }
 
+    private FactMapping(FactMapping original) {
+        original.expressionElements.forEach(expressionElement -> this.addExpressionElement(expressionElement.getStep(), original.className));
+        this.expressionIdentifier = original.expressionIdentifier;
+        this.factIdentifier = original.factIdentifier;
+        this.className = original.className;
+        this.factAlias = original.factAlias;
+        this.expressionAlias = original.expressionAlias;
+    }
+
     public String getFullExpression() {
         return expressionElements.stream().map(ExpressionElement::getStep).collect(Collectors.joining("."));
     }
@@ -112,6 +122,10 @@ public class FactMapping {
         this.expressionAlias = expressionAlias;
     }
 
+    public FactMapping cloneFactMapping() {
+        return new FactMapping(this);
+    }
+
     public static String getPlaceHolder(FactMappingType factMappingType) {
         return factMappingType.name();
     }
@@ -126,5 +140,27 @@ public class FactMapping {
 
     public static String getPropertyPlaceHolder(int index) {
         return "PROPERTY " + index;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        FactMapping that = (FactMapping) o;
+        return getExpressionElements().equals(that.getExpressionElements()) &&
+                Objects.equals(getExpressionIdentifier(), that.getExpressionIdentifier()) &&
+                Objects.equals(getFactIdentifier(), that.getFactIdentifier()) &&
+                Objects.equals(getClassName(), that.getClassName()) &&
+                Objects.equals(getFactAlias(), that.getFactAlias()) &&
+                Objects.equals(getExpressionAlias(), that.getExpressionAlias());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getExpressionElements(), getExpressionIdentifier(), getFactIdentifier(), getClassName(), getFactAlias(), getExpressionAlias());
     }
 }

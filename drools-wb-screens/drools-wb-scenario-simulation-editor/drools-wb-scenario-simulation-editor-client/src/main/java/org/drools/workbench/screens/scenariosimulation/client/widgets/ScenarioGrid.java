@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 import com.ait.lienzo.shared.core.types.EventPropagationMode;
+import com.google.gwt.event.shared.EventBus;
 import org.drools.workbench.screens.scenariosimulation.client.factories.FactoryProvider;
 import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioHeaderTextBoxSingletonDOMElementFactory;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioSimulationGridWidgetMouseEventHandler;
@@ -44,6 +45,7 @@ public class ScenarioGrid extends BaseGridWidget {
 
     private final ScenarioGridLayer scenarioGridLayer;
     private final ScenarioGridPanel scenarioGridPanel;
+    private EventBus eventBus;
 
     public ScenarioGrid(ScenarioGridModel model, ScenarioGridLayer scenarioGridLayer, ScenarioGridRenderer renderer, ScenarioGridPanel scenarioGridPanel) {
         super(model, scenarioGridLayer, scenarioGridLayer, renderer);
@@ -58,6 +60,15 @@ public class ScenarioGrid extends BaseGridWidget {
         ((ScenarioGridModel) model).bindContent(simulation);
         setHeaderColumns(simulation);
         appendRows(simulation);
+    }
+
+    public EventBus getEventBus() {
+        return eventBus;
+    }
+
+    public void setEventBus(EventBus eventBus) {
+        this.eventBus = eventBus;
+        ((ScenarioGridModel) model).setEventBus(eventBus);
     }
 
     @Override
@@ -79,14 +90,6 @@ public class ScenarioGrid extends BaseGridWidget {
     public void setSelectedColumnAndHeader(int headerRowIndex, int columnIndex) {
         ((ScenarioGridModel) model).selectColumn(columnIndex);
         model.selectHeaderCell(headerRowIndex, columnIndex);
-    }
-
-    /**
-     * Select all the cells of the given row
-     * @param rowIndex
-     */
-    public void selectRow(int rowIndex) {
-        ((ScenarioGridModel) model).selectRow(rowIndex);
     }
 
     @Override

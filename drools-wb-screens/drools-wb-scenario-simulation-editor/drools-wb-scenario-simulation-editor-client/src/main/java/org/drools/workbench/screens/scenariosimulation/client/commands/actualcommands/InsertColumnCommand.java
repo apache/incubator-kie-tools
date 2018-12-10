@@ -34,22 +34,27 @@ import org.uberfire.ext.wires.core.grids.client.model.GridData;
 @Dependent
 public class InsertColumnCommand extends AbstractScenarioSimulationCommand {
 
+    public InsertColumnCommand() {
+        super(true);
+    }
+
     @Override
     protected void internalExecute(ScenarioSimulationContext context) {
+        final ScenarioSimulationContext.Status status = context.getStatus();
         final List<GridColumn<?>> columns = context.getModel().getColumns();
-        final ScenarioGridColumn selectedColumn = (ScenarioGridColumn) columns.get(context.getColumnIndex());
+        final ScenarioGridColumn selectedColumn = (ScenarioGridColumn) columns.get(status.getColumnIndex());
         final ScenarioHeaderMetaData selectedInformationHeaderMetaData = selectedColumn.getInformationHeaderMetaData();
         String columnGroup = selectedInformationHeaderMetaData.getColumnGroup();
         String originalInstanceTitle = selectedInformationHeaderMetaData.getTitle();
         FactMappingType factMappingType = FactMappingType.valueOf(columnGroup.toUpperCase());
         Map.Entry<String, String> validPlaceholders = context.getModel().getValidPlaceholders();
-        boolean cloneInstance = context.isAsProperty() && selectedColumn.isInstanceAssigned();
+        boolean cloneInstance = status.isAsProperty() && selectedColumn.isInstanceAssigned();
         String instanceTitle = cloneInstance ? originalInstanceTitle : validPlaceholders.getKey();
         String propertyTitle = validPlaceholders.getValue();
         String placeHolder = ScenarioSimulationEditorConstants.INSTANCE.defineValidType();
         final ScenarioGridColumn scenarioGridColumnLocal = getScenarioGridColumnLocal(instanceTitle,
                                                                                       propertyTitle,
-                                                                                      context.getColumnId(),
+                                                                                      status.getColumnId(),
                                                                                       columnGroup,
                                                                                       factMappingType,
                                                                                       context.getScenarioGridPanel(),
@@ -60,11 +65,11 @@ public class InsertColumnCommand extends AbstractScenarioSimulationCommand {
             scenarioGridColumnLocal.setFactIdentifier(selectedColumn.getFactIdentifier());
         }
         int columnPosition = -1;
-        if (context.isAsProperty()) {
-            columnPosition = context.isRight() ? context.getColumnIndex() + 1 : context.getColumnIndex();
+        if (status.isAsProperty()) {
+            columnPosition = status.isRight() ? status.getColumnIndex() + 1 : status.getColumnIndex();
         } else {
-            GridData.Range instanceRange = context.getModel().getInstanceLimits(context.getColumnIndex());
-            columnPosition = context.isRight() ? instanceRange.getMaxRowIndex() + 1 : instanceRange.getMinRowIndex();
+            GridData.Range instanceRange = context.getModel().getInstanceLimits(status.getColumnIndex());
+            columnPosition = status.isRight() ? instanceRange.getMaxRowIndex() + 1 : instanceRange.getMinRowIndex();
         }
         scenarioGridColumnLocal.setInstanceAssigned(cloneInstance);
         scenarioGridColumnLocal.setPropertyAssigned(false);

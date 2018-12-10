@@ -15,20 +15,25 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands;
 
+import javax.enterprise.context.Dependent;
+
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
-import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridRow;
 
 /**
- *  <code>Command</code> to <b>append</b> (i.e. put in the last position) a row
+ * <code>Command</code> to to set the <i>value</i> of a header' cell
  */
-public class AppendRowCommand extends AbstractScenarioSimulationCommand {
+@Dependent
+public class SetHeaderValueCommand extends AbstractScenarioSimulationCommand {
 
-    public AppendRowCommand() {
+    public SetHeaderValueCommand() {
         super(true);
     }
 
     @Override
     protected void internalExecute(ScenarioSimulationContext context) {
-        context.getModel().appendRow(new ScenarioGridRow());
+        final ScenarioSimulationContext.Status status = context.getStatus();
+        if (context.getModel().validateHeaderUpdate(status.getCellValue(), status.getRowIndex(), status.getColumnIndex())) {
+            context.getModel().updateHeader(status.getColumnIndex(), status.getRowIndex(), status.getCellValue());
+        }
     }
 }

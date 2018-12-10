@@ -15,6 +15,8 @@
  */
 package org.drools.workbench.screens.scenariosimulation.model;
 
+import java.util.Objects;
+
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
@@ -34,5 +36,22 @@ public class ExpressionElement {
 
     public String getStep() {
         return step;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ExpressionElement that = (ExpressionElement) o;
+        return Objects.equals(getStep(), that.getStep());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getStep());
     }
 }

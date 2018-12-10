@@ -43,8 +43,9 @@ import static org.mockito.Mockito.mock;
 @RunWith(LienzoMockitoTestRunner.class)
 public class ScenarioSimulationGridHeaderUtilitiesTest {
 
+    private static final int HEADER_ROWS = 2;
     private static final double HEADER_HEIGHT = 50.0;
-    private static final double HEADER_ROW_HEIGHT = HEADER_HEIGHT / 2;
+    private static final double HEADER_ROW_HEIGHT = HEADER_HEIGHT / HEADER_ROWS;
 
     @Mock
     private GridWidget gridWidget;
@@ -64,6 +65,8 @@ public class ScenarioSimulationGridHeaderUtilitiesTest {
     @Mock
     private BaseGridRendererHelper.RenderingBlockInformation floatingBlockInformation;
 
+    private ScenarioGridModel scenarioGridModel = new ScenarioGridModel();
+
     private Point2D rp = new Point2D(0, 0);
 
     @Before
@@ -72,15 +75,15 @@ public class ScenarioSimulationGridHeaderUtilitiesTest {
         doReturn(gridRendererHelper).when(gridWidget).getRendererHelper();
         doReturn(ri).when(gridRendererHelper).getRenderingInformation();
         doReturn(HEADER_HEIGHT).when(gridRenderer).getHeaderHeight();
-        doReturn(HEADER_HEIGHT).when(gridRenderer).getHeaderRowHeight();
+        doReturn(HEADER_ROW_HEIGHT).when(gridRenderer).getHeaderRowHeight();
 
         doReturn(floatingBlockInformation).when(ri).getFloatingBlockInformation();
         doReturn(0.0).when(floatingBlockInformation).getX();
         doReturn(0.0).when(floatingBlockInformation).getWidth();
 
         doReturn(mock(Viewport.class)).when(gridWidget).getViewport();
-
-        doReturn(new ScenarioGridModel()).when(gridWidget).getModel();
+        scenarioGridModel.setHeaderRowCount(HEADER_ROWS);
+        doReturn(scenarioGridModel).when(gridWidget).getModel();
     }
 
     @Test
@@ -98,6 +101,16 @@ public class ScenarioSimulationGridHeaderUtilitiesTest {
         final Integer uiHeaderRowIndex = ScenarioSimulationGridHeaderUtilities.getUiHeaderRowIndex(gridWidget,
                                                                                                    uiColumn,
                                                                                                    HEADER_HEIGHT + 5.0);
+        assertNull(uiHeaderRowIndex);
+    }
+
+    @Test
+    public void testGetUiHeaderRowIndexOnNoRowsHeader() {
+        doReturn(new ScenarioGridModel()).when(gridWidget).getModel();
+        final GridColumn<?> uiColumn = mockGridColumn(100.0);
+        final Integer uiHeaderRowIndex = ScenarioSimulationGridHeaderUtilities.getUiHeaderRowIndex(gridWidget,
+                                                                                                   uiColumn,
+                                                                                                   HEADER_ROW_HEIGHT - 5.0);
         assertNull(uiHeaderRowIndex);
     }
 
@@ -314,6 +327,8 @@ public class ScenarioSimulationGridHeaderUtilitiesTest {
 
         doReturn(headerMetaData).when(uiColumn).getHeaderMetaData();
         doReturn(width).when(uiColumn).getWidth();
+
+        scenarioGridModel.appendColumn(uiColumn);
 
         return uiColumn;
     }

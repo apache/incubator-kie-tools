@@ -63,6 +63,9 @@ public class ScenarioSimulationGridHeaderUtilities {
         int uiHeaderRowIndex = 0;
         double offsetY = cy - headerMinY;
         final int headerRowCount = gridWidget.getModel().getHeaderRowCount();
+        if (headerRowCount < 1) {
+            return null;
+        }
         final double headerRowHeight = renderer.getHeaderRowHeight();
         final double headerRowsHeight = headerRowHeight * headerRowCount;
         final double columnHeaderRowHeight = headerRowsHeight / column.getHeaderMetaData().size();

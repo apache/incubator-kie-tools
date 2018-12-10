@@ -18,6 +18,7 @@ package org.drools.workbench.screens.scenariosimulation.client.widgets;
 import java.util.List;
 import java.util.function.Consumer;
 
+import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioCellTextAreaDOMElement;
 import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioCellTextAreaSingletonDOMElementFactory;
 import org.drools.workbench.screens.scenariosimulation.client.metadata.ScenarioHeaderMetaData;
 import org.drools.workbench.screens.scenariosimulation.client.values.ScenarioGridCellValue;
@@ -70,7 +71,12 @@ public class ScenarioGridColumn extends BaseGridColumn<String> {
     @Override
     public void edit(GridCell<String> cell, GridBodyCellRenderContext context, Consumer<GridCellValue<String>> callback) {
         factory.attachDomElement(context,
-                                 e -> e.getWidget().setValue(assertCell(cell).getValue().getValue()),
+                                 e -> {
+                                     e.getWidget().setValue(assertCell(cell).getValue().getValue());
+                                     if (e instanceof ScenarioCellTextAreaDOMElement) {
+                                         ((ScenarioCellTextAreaDOMElement) e).setScenarioGridCell((ScenarioGridCell)cell);
+                                     }
+                                 },
                                  e -> e.getWidget().setFocus(true));
     }
 

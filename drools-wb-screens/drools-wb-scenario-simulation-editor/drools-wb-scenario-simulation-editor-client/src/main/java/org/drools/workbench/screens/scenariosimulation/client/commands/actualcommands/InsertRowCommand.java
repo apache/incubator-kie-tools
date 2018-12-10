@@ -23,8 +23,12 @@ import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGr
 @Dependent
 public class InsertRowCommand extends AbstractScenarioSimulationCommand {
 
+    public InsertRowCommand() {
+        super(true);
+    }
+
     @Override
     protected void internalExecute(ScenarioSimulationContext context) {
-        context.getModel().insertRow(context.getRowIndex(), new ScenarioGridRow());
+        context.getModel().insertRow(context.getStatus().getRowIndex(), new ScenarioGridRow());
     }
 }

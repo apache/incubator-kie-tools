@@ -13,16 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.workbench.screens.scenariosimulation.client.commands;
 
-import javax.enterprise.context.Dependent;
+package org.drools.workbench.screens.scenariosimulation.model;
 
-import org.kie.workbench.common.command.client.impl.CommandManagerImpl;
+import org.junit.Test;
 
-/**
- * This class is used to actually invoke <code>Command</code>' methods on given command (<b>allow</b>, <b>execute</b>, <b>undo</b>)
- */
-@Dependent
-public class ScenarioCommandManager extends CommandManagerImpl<ScenarioSimulationContext, ScenarioSimulationViolation> {
+import static org.junit.Assert.assertTrue;
 
+public class FactMappingTest {
+
+    @Test
+    public void cloneFactMapping() {
+        FactMapping original = new FactMapping("FACT_ALIAS", new FactIdentifier("FI_TEST", "com.test.Foo"), new ExpressionIdentifier("EI_TEST", FactMappingType.GIVEN));
+        original.addExpressionElement("FIRST_STEP", String.class.getName());
+        original.setExpressionAlias("EA_TEST");
+        FactMapping retrieved = original.cloneFactMapping();
+        assertTrue(retrieved.equals(original));
+    }
 }

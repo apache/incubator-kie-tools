@@ -22,7 +22,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -31,17 +33,16 @@ public class AppendRowCommandTest extends AbstractScenarioSimulationCommandTest 
 
 
 
-    private AppendRowCommand appendRowCommand;
-
     @Before
     public void setup() {
         super.setup();
-        appendRowCommand = new AppendRowCommand();
+        command = spy(new AppendRowCommand());
+        assertTrue(command.isUndoable());
     }
 
     @Test
     public void execute() {
-        appendRowCommand.execute(scenarioSimulationContext);
+        command.execute(scenarioSimulationContext);
         verify(scenarioGridModelMock, times(1)).appendRow(isA(ScenarioGridRow.class));
     }
 }

@@ -17,7 +17,7 @@
 package org.drools.workbench.screens.scenariosimulation.client.commands;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands.AbstractScenarioSimulationCommandTest;
+import org.drools.workbench.screens.scenariosimulation.client.AbstractScenarioSimulationTest;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,7 +25,7 @@ import org.junit.runner.RunWith;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class ScenarioSimulationContextTest extends AbstractScenarioSimulationCommandTest {
+public class ScenarioSimulationContextTest extends AbstractScenarioSimulationTest {
     
 
     @Before

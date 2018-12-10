@@ -21,26 +21,25 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import static org.junit.Assert.assertFalse;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class DisableRightPanelCommandTest extends AbstractScenarioSimulationCommandTest {
 
-
-
-    private DisableRightPanelCommand disableRightPanelCommand;
-
     @Before
     public void setup() {
         super.setup();
-        disableRightPanelCommand = new DisableRightPanelCommand();
+        command = spy(new DisableRightPanelCommand());
+        assertFalse(command.isUndoable());
     }
 
     @Test
     public void execute() {
         scenarioSimulationContext.setRightPanelPresenter(rightPanelPresenterMock);
-        disableRightPanelCommand.execute(scenarioSimulationContext);
+        command.execute(scenarioSimulationContext);
         verify(rightPanelPresenterMock, times(1)).onDisableEditorTab();
     }
 }

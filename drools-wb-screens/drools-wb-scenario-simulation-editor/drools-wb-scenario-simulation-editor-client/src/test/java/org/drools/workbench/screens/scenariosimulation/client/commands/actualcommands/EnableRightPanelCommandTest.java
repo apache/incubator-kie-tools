@@ -21,34 +21,33 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import static org.junit.Assert.assertFalse;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class EnableRightPanelCommandTest extends AbstractScenarioSimulationCommandTest {
 
-
-
-    private EnableRightPanelCommand enableRightPanelCommand;
-
     private static final String FACT_NAME = "FACT_NAME";
 
     @Before
     public void setup() {
         super.setup();
-        enableRightPanelCommand = new EnableRightPanelCommand();
+        command = spy(new EnableRightPanelCommand());
+        assertFalse(command.isUndoable());
     }
 
 
     @Test
     public void executeWithFactName() {
         scenarioSimulationContext.setRightPanelPresenter(rightPanelPresenterMock);
-        scenarioSimulationContext.setFilterTerm(FACT_NAME);
-        scenarioSimulationContext.setPropertyName(null);
-        scenarioSimulationContext.setNotEqualsSearch(true);
-        enableRightPanelCommand.execute(scenarioSimulationContext);
+        scenarioSimulationContext.getStatus().setFilterTerm(FACT_NAME);
+        scenarioSimulationContext.getStatus().setPropertyName(null);
+        scenarioSimulationContext.getStatus().setNotEqualsSearch(true);
+        command.execute(scenarioSimulationContext);
         verify(rightPanelPresenterMock, times(1)).onEnableEditorTab(eq(FACT_NAME), eq(null), eq(true));
         verify(rightPanelPresenterMock, never()).onEnableEditorTab();
     }
