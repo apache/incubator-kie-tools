@@ -24,6 +24,8 @@ import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.screens.library.client.screens.assets.AssetQueryService;
+import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -53,31 +55,37 @@ import static org.mockito.Mockito.when;
 public class NewScenarioSimulationHandlerTest {
 
     @Mock
-    private BusyIndicatorView mockBusyIndicatorView;
+    private BusyIndicatorView busyIndicatorViewMock;
 
     @Mock
-    private ScenarioSimulationService mockScenarioSimulationService;
+    private ScenarioSimulationService scenarioSimulationServiceMock;
 
     @Mock
-    private ScenarioSimulationResourceType mockResourceType;
+    private ScenarioSimulationResourceType resourceTypeMock;
 
     @Mock
-    private EventSourceMock mockNotificationEvent;
+    private EventSourceMock notificationEventMock;
 
     @Mock
-    private EventSourceMock mockNewResourceSuccessEvent;
+    private EventSourceMock newResourceSuccessEventMock;
 
     @Mock
-    private PlaceManager mockPlaceManager;
+    private PlaceManager placeManagerMock;
 
     @Mock
-    private AuthorizationManager authorizationManager;
+    private AuthorizationManager authorizationManagerMock;
 
     @Mock
-    private SessionInfo sessionInfo;
+    private SessionInfo sessionInfoMock;
 
     @Mock
-    private User user;
+    private  LibraryPlaces libraryPlacesMock;
+
+    @Mock
+    private  AssetQueryService assetQueryServiceMock;
+
+    @Mock
+    private User userMock;
 
     @Captor
     private ArgumentCaptor<ResourceRef> refArgumentCaptor;
@@ -87,32 +95,34 @@ public class NewScenarioSimulationHandlerTest {
     @Before
     public void setUp() throws Exception {
 
-        handler = new NewScenarioSimulationHandler(mockResourceType,
-                                                   mockBusyIndicatorView,
-                                                   mockNotificationEvent,
-                                                   mockNewResourceSuccessEvent,
-                                                   mockPlaceManager,
-                                                   new CallerMock<>(mockScenarioSimulationService),
-                                                   authorizationManager,
-                                                   sessionInfo);
+        handler = new NewScenarioSimulationHandler(resourceTypeMock,
+                                                   busyIndicatorViewMock,
+                                                   notificationEventMock,
+                                                   newResourceSuccessEventMock,
+                                                   placeManagerMock,
+                                                   new CallerMock<>(scenarioSimulationServiceMock),
+                                                   authorizationManagerMock,
+                                                   sessionInfoMock,
+                                                   libraryPlacesMock,
+                                                   assetQueryServiceMock);
 
-        when(sessionInfo.getIdentity()).thenReturn(user);
+        when(sessionInfoMock.getIdentity()).thenReturn(userMock);
     }
 
     @Test
     public void checkCanCreateWhenFeatureDisabled() {
-        when(authorizationManager.authorize(any(ResourceRef.class),
-                                            eq(ResourceAction.READ),
-                                            eq(user))).thenReturn(false);
+        when(authorizationManagerMock.authorize(any(ResourceRef.class),
+                                                eq(ResourceAction.READ),
+                                                eq(userMock))).thenReturn(false);
         assertFalse(handler.canCreate());
         assertResourceRef();
     }
 
     @Test
     public void checkCanCreateWhenFeatureEnabled() {
-        when(authorizationManager.authorize(any(ResourceRef.class),
-                                            eq(ResourceAction.READ),
-                                            eq(user))).thenReturn(true);
+        when(authorizationManagerMock.authorize(any(ResourceRef.class),
+                                                eq(ResourceAction.READ),
+                                                eq(userMock))).thenReturn(true);
         assertTrue(handler.canCreate());
         assertResourceRef();
     }
@@ -123,18 +133,18 @@ public class NewScenarioSimulationHandlerTest {
                        "newfile.scesim",
                        mock(NewResourcePresenter.class));
 
-        verify(mockBusyIndicatorView).showBusyIndicator("Saving");
-        verify(mockBusyIndicatorView).hideBusyIndicator();
+        verify(busyIndicatorViewMock).showBusyIndicator("Saving");
+        verify(busyIndicatorViewMock).hideBusyIndicator();
 
-        verify(mockNotificationEvent).fire(any(NotificationEvent.class));
-        verify(mockNewResourceSuccessEvent).fire(any(NewResourcePresenter.class));
-        verify(mockPlaceManager).goTo(any(Path.class));
+        verify(notificationEventMock).fire(any(NotificationEvent.class));
+        verify(newResourceSuccessEventMock).fire(any(NewResourcePresenter.class));
+        verify(placeManagerMock).goTo(any(Path.class));
     }
 
     private void assertResourceRef() {
-        verify(authorizationManager).authorize(refArgumentCaptor.capture(),
-                                               eq(ResourceAction.READ),
-                                               eq(user));
+        verify(authorizationManagerMock).authorize(refArgumentCaptor.capture(),
+                                                   eq(ResourceAction.READ),
+                                                   eq(userMock));
         assertEquals(ScenarioSimulationEditorPresenter.IDENTIFIER,
                      refArgumentCaptor.getValue().getIdentifier());
         assertEquals(ActivityResourceType.EDITOR,

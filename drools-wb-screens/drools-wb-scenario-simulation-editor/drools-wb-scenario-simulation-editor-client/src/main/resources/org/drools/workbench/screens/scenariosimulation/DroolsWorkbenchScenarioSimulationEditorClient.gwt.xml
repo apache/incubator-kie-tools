@@ -45,6 +45,8 @@
   <inherits name="org.guvnor.common.services.project.GuvnorProjectClient" />
 
   <inherits name="org.kie.workbench.common.command.CommonCommandAPI" />
+  <inherits name="org.kie.workbench.common.screens.library.LibraryClient" />
+  <inherits name="org.kie.workbench.common.screens.explorer.KieWorkbenchProjectExplorerAPI"/>
 
 
 </module>

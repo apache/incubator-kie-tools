@@ -133,4 +133,9 @@ public interface ScenarioSimulationEditorConstants
     String undo();
 
     String redo();
+
+    String sourceType();
+
+    String chooseDMN();
+
 }

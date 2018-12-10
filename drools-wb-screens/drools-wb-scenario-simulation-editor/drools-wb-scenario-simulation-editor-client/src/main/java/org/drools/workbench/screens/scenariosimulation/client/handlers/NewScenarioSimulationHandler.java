@@ -16,6 +16,7 @@
 
 package org.drools.workbench.screens.scenariosimulation.client.handlers;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -30,11 +31,14 @@ import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationM
 import org.drools.workbench.screens.scenariosimulation.service.ScenarioSimulationService;
 import org.guvnor.common.services.project.model.Package;
 import org.jboss.errai.common.client.api.Caller;
+import org.kie.workbench.common.screens.library.client.screens.assets.AssetQueryService;
+import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.widgets.client.handlers.DefaultNewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.kie.workbench.common.widgets.client.handlers.NewResourceSuccessEvent;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.rpc.SessionInfo;
@@ -58,6 +62,11 @@ public class NewScenarioSimulationHandler
 
     private final AuthorizationManager authorizationManager;
     private final SessionInfo sessionInfo;
+    private final LibraryPlaces libraryPlaces;
+    private final AssetQueryService assetQueryService;
+
+    private TitledAttachmentFileWidget uploadWidget;
+    private SourceTypeSelector sourceTypeSelector;
 
     @Inject
     public NewScenarioSimulationHandler(final ScenarioSimulationResourceType resourceType,
@@ -67,7 +76,9 @@ public class NewScenarioSimulationHandler
                                         final PlaceManager placeManager,
                                         final Caller<ScenarioSimulationService> scenarioSimulationService,
                                         final AuthorizationManager authorizationManager,
-                                        final SessionInfo sessionInfo) {
+                                        final SessionInfo sessionInfo,
+                                        final LibraryPlaces libraryPlaces,
+                                        final AssetQueryService assetQueryService) {
         this.resourceType = resourceType;
         this.authorizationManager = authorizationManager;
         this.sessionInfo = sessionInfo;
@@ -76,6 +87,8 @@ public class NewScenarioSimulationHandler
         this.scenarioSimulationService = scenarioSimulationService;
         this.placeManager = placeManager;
         this.notificationEvent = notificationEvent;
+        this.libraryPlaces = libraryPlaces;
+        this.assetQueryService = assetQueryService;
     }
 
     @Override
@@ -112,5 +125,13 @@ public class NewScenarioSimulationHandler
                                                                                                                          resourceType),
                                                                                                            new ScenarioSimulationModel(),
                                                                                                            "");
+    }
+
+    @PostConstruct
+    public void setupExtensions() {
+        uploadWidget = new TitledAttachmentFileWidget(ScenarioSimulationEditorConstants.INSTANCE.chooseDMN(), libraryPlaces, assetQueryService);
+        sourceTypeSelector = new SourceTypeSelector(uploadWidget);
+        extensions.add(Pair.newPair(ScenarioSimulationEditorConstants.INSTANCE.sourceType(), sourceTypeSelector));
+        extensions.add(Pair.newPair("", uploadWidget));
     }
 }
