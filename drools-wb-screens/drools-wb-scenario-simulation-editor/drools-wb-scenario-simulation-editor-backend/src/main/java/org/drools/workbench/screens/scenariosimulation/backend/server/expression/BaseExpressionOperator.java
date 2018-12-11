@@ -49,7 +49,8 @@ public enum BaseExpressionOperator {
     LIST_OF_VALUES(1, "[") {
         @Override
         public boolean eval(Object rawValue, Object resultValue, Class<?> resultClass, ClassLoader classLoader) {
-            List<Boolean> results = getValues(rawValue).stream().map(e -> EQUALS.eval(e, resultValue, resultClass, classLoader)).collect(Collectors.toList());
+            List<Boolean> results = getValues(rawValue).stream()
+                    .map(e -> findOperator(e).eval(e, resultValue, resultClass, classLoader)).collect(Collectors.toList());
             return results.stream().anyMatch(a -> a);
         }
 
