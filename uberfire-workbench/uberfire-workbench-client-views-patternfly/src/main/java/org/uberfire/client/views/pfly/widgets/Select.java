@@ -147,6 +147,10 @@ public class Select implements IsElement,
         select.setAttribute("data-width", width);
     }
 
+    public void init(){
+        selectpicker(select);
+    }
+
     private native void refreshElement(final HTMLElement e) /*-{
         $wnd.jQuery(e).selectpicker('refresh');
     }-*/;
@@ -166,6 +170,10 @@ public class Select implements IsElement,
 
     private native void removeAllOptions(final HTMLElement e) /*-{
         $wnd.jQuery(e).find('option').remove();
+    }-*/;
+
+    private native void selectpicker(final HTMLElement e) /*-{
+        $wnd.jQuery(e).selectpicker();
     }-*/;
 
     private native void selectpicker(final HTMLElement e, final String method) /*-{
