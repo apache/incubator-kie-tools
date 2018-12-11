@@ -25,7 +25,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.library.client.screens.assets.AssetQueryService;
-import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -52,38 +51,26 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class NewScenarioSimulationHandlerTest {
+public class NewScenarioSimulationHandlerTest extends AbstractNewScenarioTest {
 
     @Mock
     private BusyIndicatorView busyIndicatorViewMock;
-
     @Mock
     private ScenarioSimulationService scenarioSimulationServiceMock;
-
     @Mock
     private ScenarioSimulationResourceType resourceTypeMock;
-
     @Mock
     private EventSourceMock notificationEventMock;
-
     @Mock
     private EventSourceMock newResourceSuccessEventMock;
-
     @Mock
     private PlaceManager placeManagerMock;
-
     @Mock
     private AuthorizationManager authorizationManagerMock;
-
     @Mock
     private SessionInfo sessionInfoMock;
-
-    @Mock
-    private  LibraryPlaces libraryPlacesMock;
-
     @Mock
     private  AssetQueryService assetQueryServiceMock;
-
     @Mock
     private User userMock;
 
@@ -135,7 +122,6 @@ public class NewScenarioSimulationHandlerTest {
 
         verify(busyIndicatorViewMock).showBusyIndicator("Saving");
         verify(busyIndicatorViewMock).hideBusyIndicator();
-
         verify(notificationEventMock).fire(any(NotificationEvent.class));
         verify(newResourceSuccessEventMock).fire(any(NewResourcePresenter.class));
         verify(placeManagerMock).goTo(any(Path.class));
@@ -150,4 +136,6 @@ public class NewScenarioSimulationHandlerTest {
         assertEquals(ActivityResourceType.EDITOR,
                      refArgumentCaptor.getValue().getResourceType());
     }
+
+
 }

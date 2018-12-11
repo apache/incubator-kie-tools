@@ -245,15 +245,7 @@ public class ScenarioSimulationEventHandler implements AppendColumnEventHandler,
     public void onEvent(RedoEvent event) {
         final CommandResult<ScenarioSimulationViolation> status = scenarioCommandRegistry.redo(context);
         if (Objects.equals(CommandResult.Type.ERROR, status.getType())) {
-            String violations = StreamSupport.stream(status.getViolations().spliterator(), false)
-                    .map(violation -> violation.getMessage())
-                    .collect(Collectors.joining("\r\n"));
-            String message = new StringBuilder()
-                    .append("Redo: " + status.getType())
-                    .append("\r\n")
-                    .append(violations)
-                    .toString();
-            notificationEvent.fire(new NotificationEvent(message, NotificationEvent.NotificationType.ERROR));
+            commonNotifyError(status, ScenarioSimulationEditorConstants.INSTANCE.redo());
         }
     }
 
@@ -360,15 +352,7 @@ public class ScenarioSimulationEventHandler implements AppendColumnEventHandler,
     public void onEvent(UndoEvent event) {
         final CommandResult<ScenarioSimulationViolation> status = scenarioCommandRegistry.undo(context);
         if (Objects.equals(CommandResult.Type.ERROR, status.getType())) {
-            String violations = StreamSupport.stream(status.getViolations().spliterator(), false)
-                    .map(violation -> violation.getMessage())
-                    .collect(Collectors.joining("\r\n"));
-            String message = new StringBuilder()
-                    .append("Undo: " + status.getType())
-                    .append("\r\n")
-                    .append(violations)
-                    .toString();
-            notificationEvent.fire(new NotificationEvent(message, NotificationEvent.NotificationType.ERROR));
+            commonNotifyError(status, ScenarioSimulationEditorConstants.INSTANCE.undo());
         }
     }
 
@@ -382,20 +366,27 @@ public class ScenarioSimulationEventHandler implements AppendColumnEventHandler,
     protected void commonExecution(ScenarioSimulationContext context, AbstractScenarioSimulationCommand command) {
         final CommandResult<ScenarioSimulationViolation> status = scenarioCommandManager.execute(context, command);
         if (Objects.equals(CommandResult.Type.ERROR, status.getType())) {
-            String violations = StreamSupport.stream(status.getViolations().spliterator(), false)
-                    .map(violation -> violation.getMessage())
-                    .collect(Collectors.joining("\r\n"));
-            String message = new StringBuilder()
+            String operation = new StringBuilder()
                     .append("Command ")
                     .append(command.getClass().getSimpleName())
-                    .append(" failure: " + status.getType())
-                    .append("\r\n")
-                    .append(violations)
+                    .append(" failure")
                     .toString();
-            notificationEvent.fire(new NotificationEvent(message, NotificationEvent.NotificationType.ERROR));
+            commonNotifyError(status, operation);
         } else if (Objects.equals(CommandResultBuilder.SUCCESS, status) && command.isUndoable()) {
             scenarioCommandRegistry.register(context, command);
         }
+    }
+
+    protected void commonNotifyError(CommandResult<ScenarioSimulationViolation> status, String operation) {
+        String violations = StreamSupport.stream(status.getViolations().spliterator(), false)
+                .map(violation -> violation.getMessage())
+                .collect(Collectors.joining("\r\n"));
+        String message = new StringBuilder()
+                .append(operation + ": " + status.getType())
+                .append("\r\n")
+                .append(violations)
+                .toString();
+        notificationEvent.fire(new NotificationEvent(message, NotificationEvent.NotificationType.ERROR));
     }
 
     protected void registerHandlers() {
