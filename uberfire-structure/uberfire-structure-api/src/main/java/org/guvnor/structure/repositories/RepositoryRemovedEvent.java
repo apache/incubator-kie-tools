@@ -16,8 +16,10 @@
 package org.guvnor.structure.repositories;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.uberfire.commons.clusterapi.Clustered;
 
 @Portable
+@Clustered
 public class RepositoryRemovedEvent {
 
     private Repository repository;
