@@ -16,10 +16,23 @@
 package org.dashbuilder.client.editor;
 
 import org.dashbuilder.client.editor.resources.i18n.Constants;
+import org.dashbuilder.displayer.DisplayerType;
+import org.dashbuilder.displayer.client.RendererManager;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponentGroup;
 import org.uberfire.ext.plugin.client.perspective.editor.api.PerspectiveEditorComponentGroupProvider;
+
+import static org.dashbuilder.displayer.DisplayerType.AREACHART;
+import static org.dashbuilder.displayer.DisplayerType.BARCHART;
+import static org.dashbuilder.displayer.DisplayerType.BUBBLECHART;
+import static org.dashbuilder.displayer.DisplayerType.LINECHART;
+import static org.dashbuilder.displayer.DisplayerType.MAP;
+import static org.dashbuilder.displayer.DisplayerType.METERCHART;
+import static org.dashbuilder.displayer.DisplayerType.METRIC;
+import static org.dashbuilder.displayer.DisplayerType.PIECHART;
+import static org.dashbuilder.displayer.DisplayerType.SELECTOR;
+import static org.dashbuilder.displayer.DisplayerType.TABLE;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -32,10 +45,13 @@ public class PerspectiveEditorReportingGroupProvider implements PerspectiveEdito
 
     private SyncBeanManager beanManager;
     private Constants i18n = Constants.INSTANCE;
+    private RendererManager rendererManager;
 
     @Inject
-    public PerspectiveEditorReportingGroupProvider(SyncBeanManager beanManager) {
+    public PerspectiveEditorReportingGroupProvider(SyncBeanManager beanManager, 
+                                                   RendererManager rendererManager) {
         this.beanManager = beanManager;
+        this.rendererManager = rendererManager;
     }
 
     @Override
@@ -46,21 +62,28 @@ public class PerspectiveEditorReportingGroupProvider implements PerspectiveEdito
     @Override
     public LayoutDragComponentGroup getComponentGroup() {
         LayoutDragComponentGroup group = new LayoutDragComponentGroup(getName());
-        group.addLayoutDragComponent(i18n.drag_component_name_barchart(), lookupDisplayerComponent(BarChartDragComponent.class));
-        group.addLayoutDragComponent(i18n.drag_component_name_piechart(), lookupDisplayerComponent(PieChartDragComponent.class));
-        group.addLayoutDragComponent(i18n.drag_component_name_linechart(), lookupDisplayerComponent(LineChartDragComponent.class));
-        group.addLayoutDragComponent(i18n.drag_component_name_areachart(), lookupDisplayerComponent(AreaChartDragComponent.class));
-        group.addLayoutDragComponent(i18n.drag_component_name_bubblechart(), lookupDisplayerComponent(BubbleChartDragComponent.class));
-        group.addLayoutDragComponent(i18n.drag_component_name_meterchart(), lookupDisplayerComponent(MeterChartDragComponent.class));
-        group.addLayoutDragComponent(i18n.drag_component_name_mapchart(), lookupDisplayerComponent(MapChartDragComponent.class));
-        group.addLayoutDragComponent(i18n.drag_component_name_metric(), lookupDisplayerComponent(MetricDragComponent.class));
-        group.addLayoutDragComponent(i18n.drag_component_name_table(), lookupDisplayerComponent(TableDragComponent.class));
-        group.addLayoutDragComponent(i18n.drag_component_name_filter(), lookupDisplayerComponent(SelectorDragComponent.class));
+        addComponent(BARCHART, group, i18n.drag_component_name_barchart(), BarChartDragComponent.class);
+        addComponent(PIECHART, group, i18n.drag_component_name_piechart(), PieChartDragComponent.class);
+        addComponent(LINECHART, group, i18n.drag_component_name_linechart(), LineChartDragComponent.class);
+        addComponent(AREACHART, group, i18n.drag_component_name_areachart(), AreaChartDragComponent.class);
+        addComponent(BUBBLECHART, group, i18n.drag_component_name_bubblechart(), BubbleChartDragComponent.class);
+        addComponent(METERCHART, group, i18n.drag_component_name_meterchart(), MeterChartDragComponent.class);
+        addComponent(MAP, group, i18n.drag_component_name_mapchart(), MapChartDragComponent.class);
+        addComponent(METRIC, group, i18n.drag_component_name_metric(), MetricDragComponent.class);
+        addComponent(TABLE, group, i18n.drag_component_name_table(), TableDragComponent.class);
+        addComponent(SELECTOR, group, i18n.drag_component_name_filter(), SelectorDragComponent.class);
         return group;
     }
 
-    private DisplayerDragComponent lookupDisplayerComponent(Class dragClass) {
+    private void addComponent(DisplayerType type, LayoutDragComponentGroup group, String name, Class dragClass) {
+        if (rendererManager.isTypeSupported(type)) {
+            group.addLayoutDragComponent(name, lookupDisplayerComponent(dragClass));
+        }
+    }
+    
+    protected DisplayerDragComponent lookupDisplayerComponent(Class dragClass) {
         SyncBeanDef<DisplayerDragComponent> displayerBeanDef = beanManager.lookupBean(dragClass);
         return displayerBeanDef.newInstance();
     }
+    
 }

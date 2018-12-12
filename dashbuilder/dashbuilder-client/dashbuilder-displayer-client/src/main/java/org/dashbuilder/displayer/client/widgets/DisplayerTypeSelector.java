@@ -15,6 +15,8 @@
  */
 package org.dashbuilder.displayer.client.widgets;
 
+import java.util.Arrays;
+
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -23,6 +25,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.dashbuilder.displayer.DisplayerSubType;
 import org.dashbuilder.displayer.DisplayerType;
+import org.dashbuilder.displayer.client.RendererManager;
 import org.dashbuilder.displayer.client.events.DisplayerTypeSelectedEvent;
 import org.uberfire.client.mvp.UberView;
 
@@ -42,26 +45,22 @@ public class DisplayerTypeSelector implements IsWidget {
     DisplayerType selectedType = DisplayerType.BARCHART;
     DisplayerSubtypeSelector subtypeSelector;
     Event<DisplayerTypeSelectedEvent> typeSelectedEvent;
+    RendererManager rendererManager;
 
     @Inject
     public DisplayerTypeSelector(View view,
                                  DisplayerSubtypeSelector subtypeSelector,
-                                 Event<DisplayerTypeSelectedEvent> typeSelectedEvent) {
+                                 Event<DisplayerTypeSelectedEvent> typeSelectedEvent,
+                                 RendererManager rendererManager) {
         this.view = view;
         this.subtypeSelector = subtypeSelector;
         this.typeSelectedEvent = typeSelectedEvent;
+        this.rendererManager = rendererManager;
         view.init(this);
         view.clear();
-        view.show(DisplayerType.BARCHART);
-        view.show(DisplayerType.PIECHART);
-        view.show(DisplayerType.LINECHART);
-        view.show(DisplayerType.AREACHART);
-        view.show(DisplayerType.BUBBLECHART);
-        view.show(DisplayerType.METERCHART);
-        view.show(DisplayerType.METRIC);
-        view.show(DisplayerType.MAP);
-        view.show(DisplayerType.TABLE);
-        view.show(DisplayerType.SELECTOR);
+        Arrays.stream(DisplayerType.values())
+              .filter(rendererManager::isTypeSupported)
+              .forEach(view::show);
         view.select(selectedType);
     }
 
@@ -93,4 +92,5 @@ public class DisplayerTypeSelector implements IsWidget {
         subtypeSelector.init(type, null);
         typeSelectedEvent.fire(new DisplayerTypeSelectedEvent(selectedType));
     }
+    
 }

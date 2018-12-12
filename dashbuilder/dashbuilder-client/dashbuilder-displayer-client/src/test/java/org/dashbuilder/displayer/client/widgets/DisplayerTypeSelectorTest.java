@@ -14,19 +14,24 @@
  */
 package org.dashbuilder.displayer.client.widgets;
 
+import static org.dashbuilder.displayer.DisplayerSubType.SMOOTH;
+import static org.dashbuilder.displayer.DisplayerType.BARCHART;
+import static org.dashbuilder.displayer.DisplayerType.LINECHART;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
+import org.dashbuilder.displayer.DisplayerType;
+import org.dashbuilder.displayer.client.RendererManager;
 import org.dashbuilder.displayer.client.events.DisplayerTypeSelectedEvent;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.mocks.EventSourceMock;
-
-import static org.dashbuilder.displayer.DisplayerType.*;
-import static org.dashbuilder.displayer.DisplayerSubType.*;
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DisplayerTypeSelectorTest {
@@ -39,12 +44,15 @@ public class DisplayerTypeSelectorTest {
 
     @Mock
     EventSourceMock<DisplayerTypeSelectedEvent> typeSelectedEvent;
+    
+    @Mock
+    RendererManager rendererManager;
 
     DisplayerTypeSelector presenter;
 
     @Before
     public void init() {
-        presenter = new DisplayerTypeSelector(typeView, subtypeSelector, typeSelectedEvent);
+        presenter = new DisplayerTypeSelector(typeView, subtypeSelector, typeSelectedEvent, rendererManager);
     }
 
     @Test
@@ -58,5 +66,16 @@ public class DisplayerTypeSelectorTest {
         presenter.onSelect(BARCHART);
         assertEquals(presenter.getSelectedType(), BARCHART);
         verify(typeSelectedEvent).fire(any(DisplayerTypeSelectedEvent.class));
+    }
+    
+    @Test
+    public void testNotSupportedDisplayer() {
+        Mockito.when(rendererManager.isTypeSupported(DisplayerType.BARCHART)).thenReturn(true);
+        Mockito.when(rendererManager.isTypeSupported(DisplayerType.LINECHART)).thenReturn(true);
+        presenter = new DisplayerTypeSelector(typeView, subtypeSelector, typeSelectedEvent, rendererManager);
+        verify(typeView, times(2)).show(any());
+        verify(typeView, times(0)).show(DisplayerType.MAP);
+        verify(typeView).show(DisplayerType.BARCHART);
+        verify(typeView).show(DisplayerType.LINECHART);
     }
 }

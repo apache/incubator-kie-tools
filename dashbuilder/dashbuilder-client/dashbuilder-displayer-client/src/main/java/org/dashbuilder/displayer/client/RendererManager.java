@@ -30,7 +30,6 @@ import org.dashbuilder.displayer.DisplayerSettings;
 import org.dashbuilder.displayer.DisplayerSubType;
 import org.dashbuilder.displayer.DisplayerType;
 import org.dashbuilder.displayer.client.resources.i18n.CommonConstants;
-import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 
@@ -186,5 +185,9 @@ public class RendererManager {
         // If no default then return the first supported one
         if (!renderersSupported.isEmpty()) return renderersSupported.get(0);
         throw new RuntimeException("No renderer is available for: " + target.getType());
+    }
+    
+    public boolean isTypeSupported(DisplayerType type) {
+        return !getRenderersForType(type).isEmpty();
     }
 }
