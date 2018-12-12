@@ -20,8 +20,6 @@ import java.util.List;
 import java.util.Optional;
 
 import com.ait.lienzo.client.core.types.Point2D;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.ContextMenuEvent;
 import com.google.gwt.event.dom.client.ContextMenuHandler;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.HasCellEditorControls;
@@ -29,8 +27,13 @@ import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellE
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
-import org.uberfire.ext.wires.core.grids.client.util.CoordinateUtilities;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
+
+import static org.uberfire.ext.wires.core.grids.client.util.CoordinateUtilities.convertDOMToGridCoordinate;
+import static org.uberfire.ext.wires.core.grids.client.util.CoordinateUtilities.getRelativeXOfEvent;
+import static org.uberfire.ext.wires.core.grids.client.util.CoordinateUtilities.getRelativeYOfEvent;
+import static org.uberfire.ext.wires.core.grids.client.util.CoordinateUtilities.getUiColumnIndex;
+import static org.uberfire.ext.wires.core.grids.client.util.CoordinateUtilities.getUiRowIndex;
 
 public class DMNGridPanelContextMenuHandler implements ContextMenuHandler {
 
@@ -74,21 +77,21 @@ public class DMNGridPanelContextMenuHandler implements ContextMenuHandler {
     public void onContextMenu(final ContextMenuEvent event) {
         event.preventDefault();
         event.stopPropagation();
-        final int canvasX = getRelativeX(event);
-        final int canvasY = getRelativeY(event);
+        final int canvasX = getRelativeXOfEvent(event);
+        final int canvasY = getRelativeYOfEvent(event);
         final boolean isShiftKeyDown = event.getNativeEvent().getShiftKey();
         final boolean isControlKeyDown = event.getNativeEvent().getCtrlKey();
 
         final List<CandidateGridWidget> candidateGridWidgets = new ArrayList<>();
         for (GridWidget gridWidget : gridLayer.getGridWidgets()) {
             final GridData gridModel = gridWidget.getModel();
-            final Point2D ap = CoordinateUtilities.convertDOMToGridCoordinate(gridWidget,
-                                                                              new Point2D(canvasX,
-                                                                                          canvasY));
-            final Integer uiRowIndex = CoordinateUtilities.getUiRowIndex(gridWidget,
-                                                                         ap.getY());
-            final Integer uiColumnIndex = CoordinateUtilities.getUiColumnIndex(gridWidget,
-                                                                               ap.getX());
+            final Point2D ap = convertDOMToGridCoordinate(gridWidget,
+                                                          new Point2D(canvasX,
+                                                                      canvasY));
+            final Integer uiRowIndex = getUiRowIndex(gridWidget,
+                                                     ap.getY());
+            final Integer uiColumnIndex = getUiColumnIndex(gridWidget,
+                                                           ap.getX());
 
             if (uiRowIndex == null || uiColumnIndex == null) {
                 continue;
@@ -137,17 +140,5 @@ public class DMNGridPanelContextMenuHandler implements ContextMenuHandler {
                                     (int) (ap.getX() + gridWidget.getAbsoluteX()),
                                     (int) (ap.getY() + gridWidget.getAbsoluteY()));
         });
-    }
-
-    private int getRelativeX(final ContextMenuEvent event) {
-        final NativeEvent e = event.getNativeEvent();
-        final Element target = event.getRelativeElement();
-        return e.getClientX() - target.getAbsoluteLeft() + target.getScrollLeft() + target.getOwnerDocument().getScrollLeft();
-    }
-
-    private int getRelativeY(final ContextMenuEvent event) {
-        final NativeEvent e = event.getNativeEvent();
-        final Element target = event.getRelativeElement();
-        return e.getClientY() - target.getAbsoluteTop() + target.getScrollTop() + target.getOwnerDocument().getScrollTop();
     }
 }
