@@ -17,11 +17,10 @@
 package com.ait.lienzo.client.core.shape.wires.picker;
 
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.shape.Layer;
+import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.shape.wires.PickerPart;
-import com.ait.lienzo.client.core.shape.wires.WiresLayer;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.types.ImageDataPixelColor;
 import com.ait.lienzo.client.core.types.PathPartList;
@@ -48,8 +47,6 @@ public class ColorMapBackedPickerTest {
 
     private ColorMapBackedPicker tested;
 
-    @Mock
-    private WiresLayer wiresLayer;
 
     @Mock
     private ScratchPad scratchPad;
@@ -78,15 +75,6 @@ public class ColorMapBackedPickerTest {
     private Viewport viewPort;
 
     @Mock
-    private Layer layer;
-
-    @Mock
-    private Transform transform;
-
-    @Mock
-    private Transform inverseTransform;
-
-    @Mock
     private ImageDataPixelColor pixelColor;
 
     @Mock
@@ -100,18 +88,15 @@ public class ColorMapBackedPickerTest {
         location = new Point2D(X, Y);
 
         when(shape.getPath()).thenReturn(path);
+        when(shape.getGroup()).thenReturn(new Group());
         when(path.getActualPathPartListArray()).thenReturn(pathPartList);
         when(scratchPad.getContext()).thenReturn(context);
         when(path.getComputedLocation()).thenReturn(location);
-        when(wiresLayer.getLayer()).thenReturn(layer);
-        when(layer.getViewport()).thenReturn(viewPort);
-        when(viewPort.getTransform()).thenReturn(transform);
-        when(transform.getInverse()).thenReturn(inverseTransform);
         when(context.getImageDataPixelColor(X, Y)).thenReturn(pixelColor);
         when(pixelColor.toBrowserRGB()).thenReturn(Color.rgbToBrowserHexColor(0, 0, 0));
         when(pickerPart.getShape()).thenReturn(shape);
 
-        tested = new ColorMapBackedPicker(wiresLayer, shapes, scratchPad, pickerOptions);
+        tested = new ColorMapBackedPicker(shapes, scratchPad, pickerOptions);
     }
 
     @Test
@@ -120,7 +105,6 @@ public class ColorMapBackedPickerTest {
         PickerPart shapeAt = tested.findShapeAt(X, Y);
         assertEquals(pickerPart, shapeAt);
         Point2D point = new Point2D(X, Y);
-        verify(inverseTransform).transform(point, point);
         verify(context).getImageDataPixelColor(X, Y);
         verify(pixelColor).toBrowserRGB();
     }

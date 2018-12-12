@@ -53,6 +53,7 @@ import com.ait.lienzo.test.translator.StripFinalModifiersTranslatorInterceptor;
                 com.ait.lienzo.test.stub.overlays.ShadowJSO.class,
                 com.ait.lienzo.test.stub.overlays.NObjectJSO.class,
                 com.ait.lienzo.test.stub.overlays.Point2DJSO.class,
+                com.ait.lienzo.test.stub.overlays.DragBoundsJSO.class,
                 com.ait.lienzo.test.stub.overlays.JsArray.class,
                 com.ait.lienzo.test.stub.overlays.JsArrayMixed.class,
                 com.ait.lienzo.test.stub.overlays.PathPartListJSO.class,
@@ -72,7 +73,6 @@ import com.ait.lienzo.test.translator.StripFinalModifiersTranslatorInterceptor;
         jsoStubs = {
                 "com.ait.lienzo.client.core.types.FillGradient$GradientJSO",
                 "com.ait.lienzo.client.core.types.ImageData",
-                "com.ait.lienzo.client.core.types.DragBounds$DragBoundsJSO",
                 "com.ait.lienzo.client.core.types.SpriteBehaviorMap$SpriteBehaviorMapJSO",
                 "com.ait.lienzo.client.core.types.SpriteBehaviorMap$BoundingBoxArrayJSO",
                 "com.ait.lienzo.client.core.types.TextMetrics",

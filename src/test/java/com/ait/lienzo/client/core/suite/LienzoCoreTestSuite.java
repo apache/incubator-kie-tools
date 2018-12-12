@@ -20,6 +20,7 @@ import com.ait.lienzo.client.core.image.ImageElementProxyTest;
 import com.ait.lienzo.client.core.image.ImageProxyTest;
 import com.ait.lienzo.client.core.image.ImageStripsTest;
 import com.ait.lienzo.client.core.image.ImageTest;
+import com.ait.lienzo.client.core.mediator.MouseWheelZoomMediatorTest;
 import com.ait.lienzo.client.core.shape.BezierCurveTest;
 import com.ait.lienzo.client.core.shape.BoundingBoxComputationsTest;
 import com.ait.lienzo.client.core.shape.MultiPathTest;
@@ -31,6 +32,20 @@ import com.ait.lienzo.client.core.types.BoundingBoxTest;
 import com.ait.lienzo.client.core.util.GeometryTest;
 import com.ait.lienzo.client.widget.LienzoHandlerManagerTest;
 import com.ait.lienzo.client.widget.LienzoPanelTest;
+import com.ait.lienzo.client.widget.panel.LienzoBoundsPanelTest;
+import com.ait.lienzo.client.widget.panel.impl.BoundsProviderFactoryTest;
+import com.ait.lienzo.client.widget.panel.impl.PreviewLayerDecoratorTest;
+import com.ait.lienzo.client.widget.panel.impl.PreviewLayerTest;
+import com.ait.lienzo.client.widget.panel.impl.PreviewPanelTest;
+import com.ait.lienzo.client.widget.panel.impl.ScalablePanelTest;
+import com.ait.lienzo.client.widget.panel.mediators.BoundaryTransformMediatorTest;
+import com.ait.lienzo.client.widget.panel.mediators.RestrictedMousePanMediatorTest;
+import com.ait.lienzo.client.widget.panel.scrollbars.ScrollBarsTest;
+import com.ait.lienzo.client.widget.panel.scrollbars.ScrollBoundsTest;
+import com.ait.lienzo.client.widget.panel.scrollbars.ScrollPositionTest;
+import com.ait.lienzo.client.widget.panel.scrollbars.ScrollUITest;
+import com.ait.lienzo.client.widget.panel.scrollbars.ScrollablePanelHandlerTest;
+import com.ait.lienzo.client.widget.panel.scrollbars.ScrollablePanelTest;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -52,7 +67,22 @@ import org.junit.runners.Suite;
         PolyLineTest.class,
         BezierCurveTest.class,
         TextBoundsWrapTest.class,
-        TextLineBreakWrapTest.class
+        TextLineBreakWrapTest.class,
+        MouseWheelZoomMediatorTest.class,
+        BoundaryTransformMediatorTest.class,
+        RestrictedMousePanMediatorTest.class,
+        ScrollablePanelHandlerTest.class,
+        ScrollablePanelTest.class,
+        ScrollBarsTest.class,
+        ScrollBoundsTest.class,
+        ScrollPositionTest.class,
+        ScrollUITest.class,
+        LienzoBoundsPanelTest.class,
+        ScalablePanelTest.class,
+        PreviewPanelTest.class,
+        PreviewLayerTest.class,
+        PreviewLayerDecoratorTest.class,
+        BoundsProviderFactoryTest.class
 })
 public class LienzoCoreTestSuite {
 

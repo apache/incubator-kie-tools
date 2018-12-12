@@ -108,7 +108,7 @@ public class WiresConnectorHandlerImplTest {
     @Mock
     private WiresLayer wiresLayer;
 
-    private Shape<?> transientPoint;
+    private Shape transientPoint;
 
     @Captor
     private ArgumentCaptor<Consumer> createConsumer;

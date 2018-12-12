@@ -84,14 +84,17 @@ public class WiresShapeHandlerImplTest {
         when(parentPickerControl.getShape()).thenReturn(shape);
         when(parentPickerControl.getParent()).thenReturn(parent);
         when(parentPickerControl.getParentShapePart()).thenReturn(PickerPart.ShapePart.BODY);
+        when(dragContext.getStartAdjusted()).thenReturn(new Point2D(0,
+                                                                    0));
         shape.setControl(control);
         tested = spy(new WiresShapeHandlerImpl(shape, highlight, manager));
     }
 
     @Test
     public void testOnStartDrag() {
-        when(dragContext.getDragStartX()).thenReturn(10);
-        when(dragContext.getDragStartY()).thenReturn(5);
+        when(dragContext.getStartAdjusted()).thenReturn(new Point2D(10,
+                                                                    5));
+
         tested.startDrag(dragContext);
         verify(control, times(1)).onMoveStart(eq(10d),
                                               eq(5d));
@@ -148,8 +151,9 @@ public class WiresShapeHandlerImplTest {
         final NodeDragEndEvent endEvent = mock(NodeDragEndEvent.class);
 
         when(dragContext.getDistanceAdjusted()).thenReturn(distanceAdjusted);
-        when(dragContext.getDragStartX()).thenReturn(adjustedX);
-        when(dragContext.getDragStartY()).thenReturn(adjustedY);
+        when(dragContext.getStartAdjusted()).thenReturn(new Point2D(adjustedX,
+                                                                    adjustedY));
+
         when(endEvent.getDragContext()).thenReturn(dragContext);
         when(control.onMoveComplete()).thenReturn(true);
         when(control.accept()).thenReturn(true);
@@ -173,8 +177,9 @@ public class WiresShapeHandlerImplTest {
         final NodeDragEndEvent endEvent = mock(NodeDragEndEvent.class);
 
         when(dragContext.getDistanceAdjusted()).thenReturn(distanceAdjusted);
-        when(dragContext.getDragStartX()).thenReturn(adjustedX);
-        when(dragContext.getDragStartY()).thenReturn(adjustedY);
+        when(dragContext.getStartAdjusted()).thenReturn(new Point2D(adjustedX,
+                                                                    adjustedY));
+
         when(endEvent.getDragContext()).thenReturn(dragContext);
         when(control.onMoveComplete()).thenReturn(true);
         when(control.accept()).thenReturn(false);
