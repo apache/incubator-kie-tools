@@ -22,10 +22,7 @@ import com.ait.lienzo.client.core.shape.wires.SelectionManager;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasDragBounds;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
-import org.kie.workbench.common.stunner.core.graph.Graph;
-import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
-import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 
 public class DragBoundsEnforcer {
 
@@ -54,11 +51,6 @@ public class DragBoundsEnforcer {
 
     public void enforce(Bounds bounds) {
         this.bounds = parseBounds(bounds);
-        enforce();
-    }
-
-    public void enforce(Graph<DefinitionSet, ? extends Node> graph) {
-        this.bounds = parseBounds(graph.getContent().getBounds());
         enforce();
     }
 

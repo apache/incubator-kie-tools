@@ -40,9 +40,6 @@ import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferenc
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
-import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
-import org.kie.workbench.common.stunner.core.preferences.StunnerPreferences;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 public abstract class AbstractSessionPresenter<D extends Diagram, H extends AbstractCanvasHandler,
@@ -256,7 +253,6 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
 
     protected void beforeOpen(final S item) {
         getView().showLoading(true);
-        setCanvasSize(diagram);
     }
 
     @SuppressWarnings("unchecked")
@@ -378,14 +374,4 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
                 .test(Notification.Type.ERROR);
     }
 
-    // This is a temporal solution. This will change once taking the "infinite" canvas approach.
-    private void setCanvasSize(final Diagram diagram) {
-        final String definitionSetId = diagram.getMetadata().getDefinitionSetId();
-        final StunnerPreferences preferences = preferencesRegistries.get(definitionSetId, StunnerPreferences.class);
-        ((DefinitionSet) diagram.getGraph().getContent())
-                .setBounds(BoundsImpl.build(0,
-                                            0,
-                                            preferences.getDiagramEditorPreferences().getCanvasWidth(),
-                                            preferences.getDiagramEditorPreferences().getCanvasHeight()));
-    }
 }

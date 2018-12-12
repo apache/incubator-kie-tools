@@ -18,7 +18,12 @@ package org.kie.workbench.common.stunner.client.lienzo.canvas.controls;
 
 import com.ait.lienzo.client.core.mediator.IMediator;
 import com.ait.lienzo.client.core.mediator.Mediators;
+import com.ait.lienzo.client.core.shape.Layer;
+import com.ait.lienzo.client.core.shape.Viewport;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoLayer;
+import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
+import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvasView;
+import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresLayer;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanvasControl;
 
@@ -34,12 +39,17 @@ public abstract class AbstractMediatorControl<M extends IMediator, C extends Abs
         getMediators().push(getMediator());
     }
 
-    private Mediators getMediators() {
-        return getLayer().getLienzoLayer().getViewport().getMediators();
+    protected LienzoLayer getLayer() {
+        final WiresCanvas wiresCanvas = (WiresCanvas) canvas;
+        final WiresCanvasView view = wiresCanvas.getView();
+        final WiresLayer layer = view.getLayer();
+        return layer;
     }
 
-    private LienzoLayer getLayer() {
-        return (LienzoLayer) canvas.getLayer();
+    private Mediators getMediators() {
+        final Layer lienzoLayer = getLayer().getLienzoLayer();
+        final Viewport viewport = lienzoLayer.getViewport();
+        return viewport.getMediators();
     }
 
     @Override
@@ -53,5 +63,9 @@ public abstract class AbstractMediatorControl<M extends IMediator, C extends Abs
 
     public M getMediator() {
         return mediator;
+    }
+
+    void setMediator(final M mediator) {
+        this.mediator = mediator;
     }
 }

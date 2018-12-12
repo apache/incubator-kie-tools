@@ -25,7 +25,6 @@ import org.junit.runner.RunWith;
 import org.kie.soup.commons.util.Sets;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.Layer;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasShapeRemovedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
@@ -79,9 +78,6 @@ public class MapSelectionControlTest {
     private AbstractCanvas canvas;
 
     @Mock
-    private Layer layer;
-
-    @Mock
     private Diagram diagram;
 
     @Mock
@@ -133,8 +129,8 @@ public class MapSelectionControlTest {
         when(diagram.getMetadata()).thenReturn(metadata);
         when(metadata.getCanvasRootUUID()).thenReturn(ROOT_UUID);
         when(canvasHandler.getCanvas()).thenReturn(canvas);
+        when(canvasHandler.getAbstractCanvas()).thenReturn(canvas);
         when(canvasHandler.getGraphIndex()).thenReturn(index);
-        when(canvas.getLayer()).thenReturn(layer);
         when(canvas.getShape(eq(ELEMENT_UUID))).thenReturn(shape);
         when(canvas.getShapes()).thenReturn(Collections.singletonList(shape));
         when(shape.getUUID()).thenReturn(ELEMENT_UUID);
@@ -148,7 +144,7 @@ public class MapSelectionControlTest {
     @Test
     public void testEnable() {
         tested.init(canvasHandler);
-        verify(layer,
+        verify(canvas,
                times(1)).addHandler(eq(ViewEventType.MOUSE_CLICK),
                                     any(MouseClickHandler.class));
     }
@@ -158,7 +154,7 @@ public class MapSelectionControlTest {
         tested.init(canvasHandler);
         final ArgumentCaptor<MouseClickHandler> clickHandlerArgumentCaptor =
                 ArgumentCaptor.forClass(MouseClickHandler.class);
-        verify(layer,
+        verify(canvas,
                times(1)).addHandler(eq(ViewEventType.MOUSE_CLICK),
                                     clickHandlerArgumentCaptor.capture());
         final MouseClickHandler clickHandler = clickHandlerArgumentCaptor.getValue();
@@ -186,7 +182,7 @@ public class MapSelectionControlTest {
         tested.init(canvasHandler);
         final ArgumentCaptor<MouseClickHandler> clickHandlerArgumentCaptor =
                 ArgumentCaptor.forClass(MouseClickHandler.class);
-        verify(layer,
+        verify(canvas,
                times(1)).addHandler(eq(ViewEventType.MOUSE_CLICK),
                                     clickHandlerArgumentCaptor.capture());
         final MouseClickHandler clickHandler = clickHandlerArgumentCaptor.getValue();
@@ -398,9 +394,8 @@ public class MapSelectionControlTest {
     public void testDestroy() {
         tested.init(canvasHandler);
         tested.destroy();
-        verify(layer).removeHandler(any(MouseClickHandler.class));
-
         assertFalse(tested.getSelectedItemDefinition().isPresent());
+        verify(canvas).removeHandler(any(MouseClickHandler.class));
     }
 
     private boolean isRegistered(Element e) {

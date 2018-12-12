@@ -23,7 +23,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.Layer;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeViewExtStub;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasControlPoints;
@@ -46,9 +45,6 @@ public class AbstractControlTest {
 
     @Mock
     AbstractCanvas canvas;
-
-    @Mock
-    Layer layer;
 
     @Mock
     Diagram diagram;
@@ -83,7 +79,6 @@ public class AbstractControlTest {
         when(metadata.getCanvasRootUUID()).thenReturn(ROOT_UUID);
         when(canvasHandler.getCanvas()).thenReturn(canvas);
         when(canvasHandler.getAbstractCanvas()).thenReturn(canvas);
-        when(canvas.getLayer()).thenReturn(layer);
         when(canvas.getShape(eq(ELEMENT_UUID))).thenReturn(shape);
         when(canvas.getShapes()).thenReturn(Collections.singletonList(shape));
         when(shape.getUUID()).thenReturn(ELEMENT_UUID);

@@ -81,9 +81,9 @@ public class ConnectionAcceptorControlImpl
     }
 
     @Override
-    protected void onInit(final WiresCanvas.View canvasView) {
+    protected void onInit(final WiresCanvas canvas) {
         this.canvasHighlight = new CanvasHighlight(getCanvasHandler());
-        canvasView.setConnectionAcceptor(CONNECTION_ACCEPTOR);
+        canvas.getWiresManager().setConnectionAcceptor(CONNECTION_ACCEPTOR);
     }
 
     @Override
@@ -316,8 +316,8 @@ public class ConnectionAcceptorControlImpl
     }
 
     @Override
-    protected void onDestroy(final WiresCanvas.View view) {
-        view.setConnectionAcceptor(IConnectionAcceptor.NONE);
+    protected void onDestroy(final WiresCanvas canvas) {
+        canvas.getWiresManager().setConnectionAcceptor(IConnectionAcceptor.NONE);
         this.canvasHighlight.destroy();
         this.canvasHighlight = null;
     }

@@ -37,7 +37,8 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 
 @Dependent
 @Default
-public class DockingAcceptorControlImpl extends AbstractAcceptorControl
+public class DockingAcceptorControlImpl
+        extends AbstractAcceptorControl
         implements DockingAcceptorControl<AbstractCanvasHandler> {
 
     private static final int HOTSPOT = 10;
@@ -49,13 +50,13 @@ public class DockingAcceptorControlImpl extends AbstractAcceptorControl
     }
 
     @Override
-    protected void onInit(final WiresCanvas.View view) {
-        view.setDockingAcceptor(DOCKING_ACCEPTOR);
+    protected void onInit(final WiresCanvas canvas) {
+        canvas.getWiresManager().setDockingAcceptor(DOCKING_ACCEPTOR);
     }
 
     @Override
-    protected void onDestroy(final WiresCanvas.View view) {
-        view.setDockingAcceptor(IDockingAcceptor.NONE);
+    protected void onDestroy(final WiresCanvas canvas) {
+        canvas.getWiresManager().setDockingAcceptor(IDockingAcceptor.NONE);
     }
 
     @Override

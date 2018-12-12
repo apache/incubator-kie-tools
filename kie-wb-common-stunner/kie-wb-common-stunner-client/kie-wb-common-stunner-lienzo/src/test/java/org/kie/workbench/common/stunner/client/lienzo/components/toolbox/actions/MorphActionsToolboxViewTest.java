@@ -90,7 +90,7 @@ public class MorphActionsToolboxViewTest
         verify(toolboxFactory,
                times(1)).forWiresShape(eq(shape));
         verify(toolboxView,
-               times(1)).attachTo(eq(layer));
+               times(1)).attachTo(eq(topLayer));
         assertConfigureToolbox();
         assertConfigureButtonGridItem();
         assertTooltip();

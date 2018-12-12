@@ -23,13 +23,14 @@ import com.ait.lienzo.client.core.shape.wires.IContainmentAcceptor;
 import com.ait.lienzo.client.core.shape.wires.IDockingAcceptor;
 import com.ait.lienzo.client.core.shape.wires.WiresConnection;
 import com.ait.lienzo.client.core.shape.wires.WiresMagnet;
+import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
-import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
+import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvasView;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.SetConnectionSourceNodeCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.command.SetConnectionTargetNodeCommand;
@@ -78,9 +79,11 @@ public class ConnectionAcceptorControlImplTest {
     @Mock
     private AbstractCanvasHandler canvasHandler;
     @Mock
-    private AbstractCanvas canvas;
+    private WiresCanvas canvas;
     @Mock
-    private WiresCanvas.View canvasView;
+    private WiresCanvasView canvasview;
+    @Mock
+    private WiresManager wiresManager;
     @Mock
     private Diagram diagram;
     @Mock
@@ -104,10 +107,11 @@ public class ConnectionAcceptorControlImplTest {
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
+        when(canvas.getWiresManager()).thenReturn(wiresManager);
+        when(canvas.getView()).thenReturn(canvasview);
         when(canvasHandler.getDiagram()).thenReturn(diagram);
         when(canvasHandler.getCanvas()).thenReturn(canvas);
         when(canvasHandler.getAbstractCanvas()).thenReturn(canvas);
-        when(canvas.getView()).thenReturn(canvasView);
         when(edge.getContent()).thenReturn(edgeContent);
         when(edgeContent.getSourceConnection()).thenReturn(Optional.empty());
         when(edgeContent.getTargetConnection()).thenReturn(Optional.empty());
@@ -150,11 +154,11 @@ public class ConnectionAcceptorControlImplTest {
         tested.init(canvasHandler);
         assertEquals(canvasHandler,
                      tested.getCanvasHandler());
-        verify(canvasView,
+        verify(wiresManager,
                times(1)).setConnectionAcceptor(any(IConnectionAcceptor.class));
-        verify(canvasView,
+        verify(wiresManager,
                never()).setDockingAcceptor(any(IDockingAcceptor.class));
-        verify(canvasView,
+        verify(wiresManager,
                never()).setContainmentAcceptor(any(IContainmentAcceptor.class));
     }
 

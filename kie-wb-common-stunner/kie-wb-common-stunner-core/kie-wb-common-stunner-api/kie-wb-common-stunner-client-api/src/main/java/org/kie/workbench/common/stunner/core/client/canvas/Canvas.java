@@ -20,21 +20,16 @@ import java.util.Collection;
 import java.util.Optional;
 
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
+import org.uberfire.mvp.Command;
 
 /**
  * A canvas type for displaying shapes.
- * <p/>
+ * <p>
  * This default Canvas type provides methods for managing shapes using a single Layer for the diagram's representation.
  * Implementations could provide a multi-layer solution, but most of the Stunner's components and beans consider
  * a single layer approach.
- * @param <S> The supertype for the shapes that this canvas handles.
  */
 public interface Canvas<S extends Shape> {
-
-    /**
-     * Initializes a canvas with the given size.
-     */
-    Canvas initialize(CanvasSettings canvasSettings);
 
     /**
      * Get all Shapes on the Canvas
@@ -44,17 +39,17 @@ public interface Canvas<S extends Shape> {
     /**
      * Returns the shape with the given identifier.
      */
-    S getShape(final String id);
+    S getShape(String id);
 
     /**
      * Add a Shape to the Canvas
      */
-    Canvas addShape(final S shape);
+    Canvas addShape(S shape);
 
     /**
      * Delete a Shape from the Canvas. Implementations may prompt the User for confirmation.
      */
-    Canvas deleteShape(final S shape);
+    Canvas deleteShape(S shape);
 
     /**
      * Gets the Shape at the specified Canvas coordinates
@@ -62,8 +57,8 @@ public interface Canvas<S extends Shape> {
      * @param y The Y canvas coordinate
      * @return Element at the coordinate
      */
-    Optional<S> getShapeAt(final double x,
-                           final double y);
+    Optional<S> getShapeAt(double x,
+                           double y);
 
     /**
      * Clears the canvas.
@@ -71,9 +66,9 @@ public interface Canvas<S extends Shape> {
     Canvas clear();
 
     /**
-     * Returns the canvas' layer.
+     * A command fired after drawing the canvas.
      */
-    Layer getLayer();
+    void onAfterDraw(Command callback);
 
     /**
      * Returns the canvas width.
@@ -86,12 +81,17 @@ public interface Canvas<S extends Shape> {
     int getHeight();
 
     /**
-     * Destroy whatever canvas state present, it will be no longer used.
+     * Returns the canvas transform attributes.
      */
-    void destroy();
+    Transform getTransform();
 
     /**
      * Gives focus to the canvas.
      */
     void focus();
+
+    /**
+     * Destroy whatever canvas state present, it will be no longer used.
+     */
+    void destroy();
 }

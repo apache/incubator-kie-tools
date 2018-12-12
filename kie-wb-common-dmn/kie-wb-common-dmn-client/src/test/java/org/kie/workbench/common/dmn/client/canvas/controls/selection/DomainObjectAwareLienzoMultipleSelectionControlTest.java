@@ -27,7 +27,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.Layer;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
@@ -78,9 +77,6 @@ public class DomainObjectAwareLienzoMultipleSelectionControlTest {
     private OnEventHandlers lienzoOnEventHandlers;
 
     @Mock
-    private Layer stunnerLayer;
-
-    @Mock
     private Object definition;
 
     @Mock
@@ -110,12 +106,12 @@ public class DomainObjectAwareLienzoMultipleSelectionControlTest {
                                                                            clearSelectionEvent);
 
         when(canvasHandler.getCanvas()).thenReturn(canvas);
+        when(canvasHandler.getAbstractCanvas()).thenReturn(canvas);
         when(canvasHandler.getDiagram()).thenReturn(diagram);
         when(canvasHandler.getGraphIndex()).thenReturn(graphIndex);
         when(diagram.getMetadata()).thenReturn(diagramMetadata);
         when(diagramMetadata.getCanvasRootUUID()).thenReturn(DIAGRAM_UUID);
         when(graphIndex.get(ELEMENT_UUID)).thenReturn(element);
-        when(canvas.getLayer()).thenReturn(stunnerLayer);
         when(canvas.getWiresManager()).thenReturn(wiresManager);
         when(element.getUUID()).thenReturn(ELEMENT_UUID);
         when(element.getContent()).thenReturn(new ViewImpl<>(definition,

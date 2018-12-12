@@ -54,14 +54,14 @@ public class ContainmentAcceptorControlImpl extends AbstractAcceptorControl
     }
 
     @Override
-    protected void onInit(final WiresCanvas.View view) {
-        view.setContainmentAcceptor(CONTAINMENT_ACCEPTOR);
+    protected void onInit(final WiresCanvas canvas) {
+        canvas.getWiresManager().setContainmentAcceptor(CONTAINMENT_ACCEPTOR);
         this.canvasHighlight = new CanvasHighlight(getCanvasHandler());
     }
 
     @Override
-    protected void onDestroy(final WiresCanvas.View view) {
-        view.setContainmentAcceptor(IContainmentAcceptor.NONE);
+    protected void onDestroy(final WiresCanvas canvas) {
+        canvas.getWiresManager().setContainmentAcceptor(IContainmentAcceptor.NONE);
         this.canvasHighlight.destroy();
         this.canvasHighlight = null;
     }

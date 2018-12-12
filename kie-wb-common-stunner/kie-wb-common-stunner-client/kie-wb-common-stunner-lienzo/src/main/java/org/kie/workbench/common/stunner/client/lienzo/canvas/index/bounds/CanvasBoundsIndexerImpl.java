@@ -19,8 +19,8 @@ package org.kie.workbench.common.stunner.client.lienzo.canvas.index.bounds;
 import javax.enterprise.context.Dependent;
 
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoLayer;
+import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.util.LienzoLayerUtils;
-import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.index.bounds.CanvasBoundsIndexer;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
@@ -44,8 +44,8 @@ public class CanvasBoundsIndexerImpl implements CanvasBoundsIndexer<AbstractCanv
     @SuppressWarnings("unchecked")
     public Node<View<?>, Edge> getAt(final double x,
                                      final double y) {
-        final AbstractCanvas canvas = canvasHandler.getAbstractCanvas();
-        final LienzoLayer lienzoLayer = (LienzoLayer) canvas.getLayer();
+        final WiresCanvas canvas = (WiresCanvas) canvasHandler.getAbstractCanvas();
+        final LienzoLayer lienzoLayer = canvas.getView().getLayer();
         final String viewUUID = LienzoLayerUtils.getUUID_At(lienzoLayer,
                                                             x,
                                                             y);
@@ -65,8 +65,8 @@ public class CanvasBoundsIndexerImpl implements CanvasBoundsIndexer<AbstractCanv
                                      final double width,
                                      final double height,
                                      final Element parentNode) {
-        final AbstractCanvas canvas = canvasHandler.getAbstractCanvas();
-        final LienzoLayer lienzoLayer = (LienzoLayer) canvas.getLayer();
+        final WiresCanvas canvas = (WiresCanvas) canvasHandler.getAbstractCanvas();
+        final LienzoLayer lienzoLayer = canvas.getView().getLayer();
         Node node;
 
         final String viewUUID_UL = LienzoLayerUtils.getUUID_At(lienzoLayer,

@@ -136,15 +136,6 @@ public class CanvasLayoutUtilsTest {
     private DefinitionManager definitionManager;
 
     @Mock
-    private Bounds canvasBounds;
-
-    @Mock
-    private Bounds.Bound minCanvasBound;
-
-    @Mock
-    private Bounds.Bound maxCanvasBound;
-
-    @Mock
     private Node<DefinitionSet, ?> nodeRoot;
 
     private CanvasLayoutUtils canvasLayoutUtils;
@@ -163,24 +154,17 @@ public class CanvasLayoutUtilsTest {
         when(canvasHandler.getDiagram().getGraph().getNode("canvas_root")).thenReturn(nodeRoot);
 
         when(graph.getContent()).thenReturn(definitionSet);
-        when(graph.getContent().getBounds()).thenReturn(canvasBounds);
 
         when(canvasHandler.getDiagram().getGraph().getNode("canvas_root")).thenReturn(nodeRoot);
         when(parentCanvasRoot.getUUID()).thenReturn("canvas_root");
         when(parentNotCanvasRoot.getUUID()).thenReturn("canvas_not_root");
-        when(canvasBounds.getUpperLeft()).thenReturn(minCanvasBound);
-        when(canvasBounds.getLowerRight()).thenReturn(maxCanvasBound);
 
         when(canvasHandler.getCanvas()).thenReturn(canvas);
 
         Point2D canvasMin = new Point2D(0d,
                                         0d);
-        when(minCanvasBound.getX()).thenReturn(canvasMin.getX());
-        when(minCanvasBound.getY()).thenReturn(canvasMin.getY());
         Point2D canvasMax = new Point2D(1200d,
                                         1200d);
-        when(maxCanvasBound.getX()).thenReturn(canvasMax.getX());
-        when(maxCanvasBound.getY()).thenReturn(canvasMax.getY());
         when(canvasHandler.getCanvas().getHeight()).thenReturn((int) canvasMax.getY());
         when(canvasHandler.getCanvas().getWidth()).thenReturn((int) canvasMax.getX());
 

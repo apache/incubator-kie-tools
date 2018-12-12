@@ -1,6 +1,6 @@
 .session-container {
     position: absolute;
-    overflow: auto;
+    overflow: hidden;
     width: 100%;
     height: 100%;
 }
@@ -8,9 +8,7 @@
 .diagram-container {
     display: flex;
     width: 100%;
-    /* Height is 100% - toolbar-panel.height - (2 * toolbar-panel.margin) */
-    /* See https://github.com/less/less.js/issues/974 for explanation of syntax */
-    height: ~"calc( 100% - 48px - 10px)";
+    height: 100%;
 }
 
 .loading-panel {
@@ -23,7 +21,7 @@
 .toolbar-panel {
     position: relative;
     z-index: 1;
-    top: 0;
+    top: 50px;
     margin: 5px;
     text-align: center;
 }

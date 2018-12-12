@@ -22,13 +22,12 @@ import org.junit.Test;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
+import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvas;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionViewer;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.AbstractSessionPresenter;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
-import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.Layer;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
@@ -92,10 +91,7 @@ public abstract class BaseNavigationCommandTest {
     protected AbstractCanvasHandler canvasHandler;
 
     @Mock
-    protected AbstractCanvas canvas;
-
-    @Mock
-    protected Layer layer;
+    protected LienzoCanvas canvas;
 
     @Captor
     protected ArgumentCaptor<RefreshFormPropertiesEvent> refreshFormPropertiesEventCaptor;
@@ -108,7 +104,6 @@ public abstract class BaseNavigationCommandTest {
         when(sessionManager.getCurrentSession()).thenReturn(session);
         when(session.getCanvasHandler()).thenReturn(canvasHandler);
         when(canvasHandler.getCanvas()).thenReturn(canvas);
-        when(canvas.getLayer()).thenReturn(layer);
         when(sessionPresenter.getView()).thenReturn(sessionPresenterView);
         when(sessionPresenter.getDisplayer()).thenReturn(sessionView);
         when(sessionView.getView()).thenReturn(view);

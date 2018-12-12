@@ -52,7 +52,7 @@ public class CanvasHighlightTest {
     AbstractCanvas canvas;
 
     @Mock
-    AbstractCanvas.View canvasView;
+    AbstractCanvas.CanvasView canvasView;
 
     @Mock
     Node node1;

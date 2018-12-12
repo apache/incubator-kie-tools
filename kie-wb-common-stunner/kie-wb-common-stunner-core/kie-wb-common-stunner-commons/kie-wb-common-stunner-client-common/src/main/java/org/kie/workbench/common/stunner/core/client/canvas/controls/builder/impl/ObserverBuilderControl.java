@@ -26,6 +26,7 @@ import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.client.api.ClientDefinitionManager;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.ElementBuilderControl;
@@ -37,6 +38,7 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationMessages;
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
+import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.processing.index.bounds.GraphBoundsIndexer;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
 
@@ -79,8 +81,10 @@ public class ObserverBuilderControl extends AbstractElementBuilderControl
                 final Object definition = buildCanvasShapeEvent.getDefinition();
                 final double x = buildCanvasShapeEvent.getX();
                 final double y = buildCanvasShapeEvent.getY();
-                final double _x = x >= 0 ? x - canvasHandler.getAbstractCanvas().getAbsoluteX() : -1;
-                final double _y = y >= 0 ? y - canvasHandler.getAbstractCanvas().getAbsoluteY() : -1;
+                final AbstractCanvas.CanvasView canvasView = canvasHandler.getAbstractCanvas().getView();
+                final Point2D absoluteLocation = canvasView.getAbsoluteLocation();
+                final double _x = x >= 0 ? x - absoluteLocation.getX() : -1;
+                final double _y = y >= 0 ? y - absoluteLocation.getY() : -1;
                 final ElementBuildRequest<AbstractCanvasHandler> request =
                         new ElementBuildRequestImpl(_x,
                                                     _y,

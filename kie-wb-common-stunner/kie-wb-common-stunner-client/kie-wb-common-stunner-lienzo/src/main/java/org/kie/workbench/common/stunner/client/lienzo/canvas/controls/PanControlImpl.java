@@ -22,7 +22,6 @@ import javax.enterprise.inject.Default;
 import com.ait.lienzo.client.core.mediator.EventFilter;
 import com.ait.lienzo.client.core.mediator.IEventFilter;
 import com.ait.lienzo.client.core.mediator.MousePanMediator;
-import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoLayer;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.pan.PanControl;
 
@@ -40,12 +39,8 @@ public class PanControlImpl<C extends AbstractCanvas> extends AbstractMediatorCo
     @Override
     public PanControl<C> translate(double tx,
                                    double ty) {
-        getLienzoLayer().translate(tx,
-                                   ty);
+        getLayer().translate(tx,
+                             ty);
         return this;
-    }
-
-    private LienzoLayer getLienzoLayer() {
-        return (LienzoLayer) canvas.getLayer();
     }
 }

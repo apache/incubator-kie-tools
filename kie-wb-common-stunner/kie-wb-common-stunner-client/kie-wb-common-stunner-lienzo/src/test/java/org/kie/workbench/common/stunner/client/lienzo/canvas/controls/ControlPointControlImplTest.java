@@ -24,6 +24,7 @@ import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.wires.IControlHandle;
 import com.ait.lienzo.client.core.shape.wires.IControlHandleList;
 import com.ait.lienzo.client.core.shape.wires.IControlPointsAcceptor;
+import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
@@ -31,7 +32,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresConnectorView;
-import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ControlPointControl;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
@@ -46,9 +46,7 @@ import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
-import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
@@ -74,7 +72,6 @@ public class ControlPointControlImplTest {
 
     private static final String EDGE_UUID = "edge1";
     private static final ControlPoint CONTROL_POINT = ControlPoint.build(1, 3, 0);
-    private static final Bounds GRAPH_BOUNDS = new BoundsImpl(new BoundImpl(0d, 0d), new BoundImpl(100d, 100d));
 
     @Mock
     private CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
@@ -83,9 +80,9 @@ public class ControlPointControlImplTest {
     @Mock
     private AbstractCanvasHandler canvasHandler;
     @Mock
-    private AbstractCanvas canvas;
+    private WiresCanvas canvas;
     @Mock
-    private WiresCanvas.View canvasView;
+    private WiresManager wiresManager;
     @Mock
     private Diagram diagram;
     @Mock
@@ -139,13 +136,12 @@ public class ControlPointControlImplTest {
         when(canvasHandler.getDiagram()).thenReturn(diagram);
         when(canvasHandler.getCanvas()).thenReturn(canvas);
         when(canvasHandler.getAbstractCanvas()).thenReturn(canvas);
-        when(canvas.getView()).thenReturn(canvasView);
+        when(canvas.getWiresManager()).thenReturn(wiresManager);
         when(canvas.getShape(EDGE_UUID)).thenReturn(connectorShape);
         when(connectorShape.getShapeView()).thenReturn(connector);
         when(diagram.getMetadata()).thenReturn(metadata);
         when(graph.getContent()).thenReturn(graphContent);
         when(diagram.getGraph()).thenReturn(graph);
-        when(graphContent.getBounds()).thenReturn(GRAPH_BOUNDS);
         when(commandManager.allow(eq(canvasHandler), any(Command.class)))
                 .thenReturn(CanvasCommandResultBuilder.SUCCESS);
         tested = new ControlPointControlImpl(canvasCommandFactory, selectionEvent);
@@ -155,18 +151,13 @@ public class ControlPointControlImplTest {
     @Test
     public void testInit() {
         tested.init(canvasHandler);
-        verify(canvasView, times(1)).setControlPointsAcceptor(any(IControlPointsAcceptor.class));
+        verify(wiresManager, times(1)).setControlPointsAcceptor(any(IControlPointsAcceptor.class));
     }
 
     @Test
     public void testRegister() {
         tested.init(canvasHandler);
         tested.register(edge);
-
-        verify(connector).setDragBounds(GRAPH_BOUNDS.getUpperLeft().getX() + ControlPointControlImpl.DRAG_BOUNDS_MARGIN,
-                                        GRAPH_BOUNDS.getUpperLeft().getY() + ControlPointControlImpl.DRAG_BOUNDS_MARGIN,
-                                        GRAPH_BOUNDS.getLowerRight().getX() + ControlPointControlImpl.DRAG_BOUNDS_MARGIN,
-                                        GRAPH_BOUNDS.getLowerRight().getY() + ControlPointControlImpl.DRAG_BOUNDS_MARGIN);
     }
 
     @Test

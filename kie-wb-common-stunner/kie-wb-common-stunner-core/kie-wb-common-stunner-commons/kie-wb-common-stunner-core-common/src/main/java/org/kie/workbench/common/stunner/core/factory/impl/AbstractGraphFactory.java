@@ -21,17 +21,11 @@ import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSetImpl;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.impl.GraphImpl;
 import org.kie.workbench.common.stunner.core.graph.store.GraphNodeStoreImpl;
 
 public abstract class AbstractGraphFactory extends AbstractElementFactory<String, DefinitionSet, Graph<DefinitionSet, Node>>
         implements GraphFactory {
-
-    protected abstract double getWidth();
-
-    protected abstract double getHeight();
 
     @Override
     @SuppressWarnings("unchecked   ")
@@ -42,11 +36,6 @@ public abstract class AbstractGraphFactory extends AbstractElementFactory<String
         final DefinitionSet content = new DefinitionSetImpl(definitionSetId);
         graph.setContent(content);
         graph.getLabels().add(definitionSetId);
-        content.setBounds(new BoundsImpl(new BoundImpl(0d,
-                                                       0d),
-                                         new BoundImpl(getWidth(),
-                                                       getHeight())
-        ));
         return graph;
     }
 }

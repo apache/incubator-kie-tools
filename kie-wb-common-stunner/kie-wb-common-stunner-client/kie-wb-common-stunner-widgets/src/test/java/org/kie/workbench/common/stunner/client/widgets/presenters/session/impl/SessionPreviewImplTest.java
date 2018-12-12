@@ -24,6 +24,8 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
+import org.kie.workbench.common.stunner.client.widgets.canvas.PreviewLienzoPanel;
 import org.kie.workbench.common.stunner.client.widgets.presenters.AbstractCanvasHandlerViewerTest;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionViewer;
 import org.kie.workbench.common.stunner.client.widgets.views.WidgetWrapperView;
@@ -33,6 +35,7 @@ import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.BaseCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.CanvasPanel;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.TextPropertyProviderFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
@@ -90,7 +93,8 @@ public class SessionPreviewImplTest extends AbstractCanvasHandlerViewerTest {
     @Mock
     private ManagedInstance<CanvasCommandFactory> canvasCommandFactories;
 
-    private ManagedInstance<AbstractCanvas> canvases;
+    private ManagedInstance<WiresCanvas> canvases;
+    private ManagedInstance<CanvasPanel> canvasPanels;
 
     @Mock
     private ManagedInstance<BaseCanvasHandler> canvasHandlerFactories;
@@ -104,6 +108,9 @@ public class SessionPreviewImplTest extends AbstractCanvasHandlerViewerTest {
 
     @Mock
     private EditorSession session;
+
+    @Mock
+    private PreviewLienzoPanel canvasPanel;
 
     @Mock
     private SessionViewer.SessionViewerCallback<Diagram> callback;
@@ -179,6 +186,7 @@ public class SessionPreviewImplTest extends AbstractCanvasHandlerViewerTest {
         selectionControls = new ManagedInstanceStub<>(selectionControl);
         canvasCommandManagers = new ManagedInstanceStub<>(canvasCommandManager);
         canvases = new ManagedInstanceStub<>(canvas);
+        canvasPanels = new ManagedInstanceStub<>(canvasPanel);
         when(canvasHandler.getDiagram()).thenReturn(diagram);
         when(session.getCanvasHandler()).thenReturn(canvasHandler);
         when(session.getCanvas()).thenReturn(canvas);
@@ -213,6 +221,7 @@ public class SessionPreviewImplTest extends AbstractCanvasHandlerViewerTest {
                                               shapeManager,
                                               textPropertyProviderFactory,
                                               canvases,
+                                              canvasPanels,
                                               canvasHandlerFactories,
                                               zoomControls,
                                               selectionControls,
@@ -276,5 +285,10 @@ public class SessionPreviewImplTest extends AbstractCanvasHandlerViewerTest {
 
         final CanvasCommandFactory factory = preview.getCommandFactory();
         assertion.accept(factory);
+    }
+
+    @Override
+    protected CanvasPanel getCanvasPanel() {
+        return canvasPanel;
     }
 }

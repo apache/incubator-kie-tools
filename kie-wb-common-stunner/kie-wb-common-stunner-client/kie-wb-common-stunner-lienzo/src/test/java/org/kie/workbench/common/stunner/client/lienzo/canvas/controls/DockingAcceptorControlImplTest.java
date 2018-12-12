@@ -19,12 +19,12 @@ package org.kie.workbench.common.stunner.client.lienzo.canvas.controls;
 import com.ait.lienzo.client.core.shape.wires.IConnectionAcceptor;
 import com.ait.lienzo.client.core.shape.wires.IContainmentAcceptor;
 import com.ait.lienzo.client.core.shape.wires.IDockingAcceptor;
+import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
-import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.UpdateDockNodeCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
@@ -57,9 +57,9 @@ public class DockingAcceptorControlImplTest {
     @Mock
     private AbstractCanvasHandler canvasHandler;
     @Mock
-    private AbstractCanvas canvas;
+    private WiresCanvas canvas;
     @Mock
-    private WiresCanvas.View canvasView;
+    private WiresManager wiresManager;
     @Mock
     private Diagram diagram;
     @Mock
@@ -73,10 +73,10 @@ public class DockingAcceptorControlImplTest {
 
     @Before
     public void setup() {
+        when(canvas.getWiresManager()).thenReturn(wiresManager);
         when(canvasHandler.getDiagram()).thenReturn(diagram);
         when(canvasHandler.getCanvas()).thenReturn(canvas);
         when(canvasHandler.getAbstractCanvas()).thenReturn(canvas);
-        when(canvas.getView()).thenReturn(canvasView);
         doAnswer(invocationOnMock -> {
             final Node parent1 = (Node) invocationOnMock.getArguments()[0];
             final Node candidate1 = (Node) invocationOnMock.getArguments()[1];
@@ -98,11 +98,11 @@ public class DockingAcceptorControlImplTest {
         tested.init(canvasHandler);
         assertEquals(canvasHandler,
                      tested.getCanvasHandler());
-        verify(canvasView,
+        verify(wiresManager,
                times(1)).setDockingAcceptor(any(IDockingAcceptor.class));
-        verify(canvasView,
+        verify(wiresManager,
                never()).setContainmentAcceptor(any(IContainmentAcceptor.class));
-        verify(canvasView,
+        verify(wiresManager,
                never()).setConnectionAcceptor(any(IConnectionAcceptor.class));
     }
 

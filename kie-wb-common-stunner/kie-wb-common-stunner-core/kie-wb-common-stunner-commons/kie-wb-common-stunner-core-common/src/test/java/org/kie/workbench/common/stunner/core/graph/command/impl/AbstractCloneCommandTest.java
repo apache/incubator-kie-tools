@@ -93,8 +93,8 @@ public abstract class AbstractCloneCommandTest extends AbstractGraphCommandTest 
 
     protected Bounds candidateBounds = BoundsImpl.build();
 
-    public void setUp(){
-        super.init(0, 0);
+    public void setUp() {
+        super.init();
 
         //creating the mock graph for test
         TestingGraphMockHandler handler = new TestingGraphMockHandler();

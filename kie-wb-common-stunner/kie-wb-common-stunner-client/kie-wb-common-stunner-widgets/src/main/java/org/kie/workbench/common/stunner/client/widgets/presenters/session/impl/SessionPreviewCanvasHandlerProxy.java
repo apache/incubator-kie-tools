@@ -264,13 +264,13 @@ public class SessionPreviewCanvasHandlerProxy<D extends Diagram, C extends Abstr
     }
 
     @Override
-    public void draw(final ParameterizedCommand<CommandResult<?>> loadCallback) {
+    public void draw(final ParameterizedCommand<CommandResult> loadCallback) {
         wrapped.draw(loadCallback);
     }
 
     @Override
     public void draw(final D diagram,
-                     final ParameterizedCommand<CommandResult<?>> loadCallback) {
+                     final ParameterizedCommand<CommandResult> loadCallback) {
         wrapped.draw(diagram,
                      loadCallback);
     }

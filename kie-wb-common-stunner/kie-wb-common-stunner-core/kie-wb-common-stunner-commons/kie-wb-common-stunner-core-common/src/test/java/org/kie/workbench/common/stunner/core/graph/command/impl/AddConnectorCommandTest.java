@@ -67,8 +67,7 @@ public class AddConnectorCommandTest extends AbstractGraphCommandTest {
 
     @Before
     public void setup() throws Exception {
-        super.init(500,
-                   500);
+        super.init();
         node = mockNode(NODE_UUID);
         sourceMagnet = Optional.of(MagnetConnection.Builder.at(0d,
                                                                0d));

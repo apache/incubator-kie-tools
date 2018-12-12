@@ -18,13 +18,11 @@ package org.kie.workbench.common.stunner.core.graph.content.definition;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 
 @Portable
 public class DefinitionSetImpl implements DefinitionSet {
 
     private String id;
-    private Bounds bounds;
 
     public DefinitionSetImpl(final @MapsTo("id") String id) {
         this.id = id;
@@ -43,15 +41,5 @@ public class DefinitionSetImpl implements DefinitionSet {
     @Override
     public String toString() {
         return id;
-    }
-
-    @Override
-    public Bounds getBounds() {
-        return bounds;
-    }
-
-    @Override
-    public void setBounds(final Bounds bounds) {
-        this.bounds = bounds;
     }
 }

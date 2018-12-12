@@ -90,7 +90,7 @@ public abstract class BaseCanvasHandler<D extends Diagram, C extends AbstractCan
      * @param loadCallback Callback to run once draw has finished. It must provide a result for
      * the draw operation/s.
      */
-    public abstract void draw(ParameterizedCommand<CommandResult<?>> loadCallback);
+    public abstract void draw(ParameterizedCommand<CommandResult> loadCallback);
 
     /**
      * Destroys this instance' graph index.
@@ -107,7 +107,7 @@ public abstract class BaseCanvasHandler<D extends Diagram, C extends AbstractCan
     @Override
     @SuppressWarnings("unchecked")
     public void draw(final D diagram,
-                     final ParameterizedCommand<CommandResult<?>> loadCallback) {
+                     final ParameterizedCommand<CommandResult> loadCallback) {
         if (null == this.canvas) {
             throw new IllegalStateException("No handled canvas instance.");
         }
@@ -274,13 +274,13 @@ public abstract class BaseCanvasHandler<D extends Diagram, C extends AbstractCan
         final Shape childShape = getCanvas().getShape(child.getUUID());
         if (!isCanvasRoot(parent)) {
             final Shape parentShape = getCanvas().getShape(parent.getUUID());
-            getCanvas().addChildShape(parentShape,
-                                      childShape);
+            getCanvas().addChild(parentShape,
+                                 childShape);
         } else {
             // -- Special case when parent is the canvas root --
             // Ensure the shape is added into the layer, but no need to register it again and generate new
             // handlers ( f.i. using canvas#addShape() method ).
-            getCanvas().getLayer().addShape(childShape.getShapeView());
+            getCanvas().addChild(childShape);
         }
     }
 
@@ -298,21 +298,21 @@ public abstract class BaseCanvasHandler<D extends Diagram, C extends AbstractCan
         final String parentUUID = parent.getUUID();
         final String childUUID = child.getUUID();
         final Shape childShape = getCanvas().getShape(childUUID);
-        if(Objects.isNull(childShape)){
+        if (Objects.isNull(childShape)) {
             return;
         }
         if (!isCanvasRoot(parentUUID)) {
             final Shape parentShape = getCanvas().getShape(parentUUID);
-            if(Objects.isNull(parentShape)){
+            if (Objects.isNull(parentShape)) {
                 return;
             }
-            getCanvas().deleteChildShape(parentShape,
-                                         childShape);
+            getCanvas().deleteChild(parentShape,
+                                    childShape);
         } else {
             // -- Special case when parent is the canvas root --
             // Ensure the shape is removed from the layer, but no need to deregister any
             // handlers ( f.i. using canvas#removeShape() method ).
-            getCanvas().getLayer().removeShape(childShape.getShapeView());
+            getCanvas().deleteChild(childShape);
         }
     }
 

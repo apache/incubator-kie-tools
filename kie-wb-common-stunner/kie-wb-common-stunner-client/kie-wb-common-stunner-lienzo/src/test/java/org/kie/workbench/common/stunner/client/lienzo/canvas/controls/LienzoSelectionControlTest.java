@@ -24,7 +24,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.Layer;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.MapSelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
@@ -70,9 +69,6 @@ public class LienzoSelectionControlTest {
     private AbstractCanvas canvas;
 
     @Mock
-    private Layer layer;
-
-    @Mock
     private Object definition;
 
     @Mock
@@ -97,7 +93,6 @@ public class LienzoSelectionControlTest {
         when(element.getContent()).thenReturn(new ViewImpl<>(definition,
                                                              BoundsImpl.build(0, 0, 10, 10)));
         when(canvasHandler.getCanvas()).thenReturn(canvas);
-        when(canvas.getLayer()).thenReturn(layer);
         when(canvas.getShape(eq(ELEMENT_UUID))).thenReturn(shape);
         when(canvas.getShapes()).thenReturn(Collections.singletonList(shape));
         when(shape.getUUID()).thenReturn(ELEMENT_UUID);

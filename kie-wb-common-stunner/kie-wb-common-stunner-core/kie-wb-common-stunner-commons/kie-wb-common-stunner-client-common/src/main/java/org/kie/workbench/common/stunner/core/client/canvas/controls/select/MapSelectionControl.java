@@ -26,9 +26,8 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
-import org.kie.workbench.common.stunner.core.client.canvas.Layer;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanvasHandlerControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasRegistrationControl;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasShapeRemovedEvent;
@@ -73,7 +72,6 @@ public final class MapSelectionControl<H extends AbstractCanvasHandler>
 
     @Override
     protected void doInit() {
-        final Layer layer = canvasHandler.getCanvas().getLayer();
         // Click handler for the canvas area - cleans current selection, if any.
         final MouseClickHandler clickHandler = new MouseClickHandler() {
             @Override
@@ -89,8 +87,8 @@ public final class MapSelectionControl<H extends AbstractCanvasHandler>
                 }
             }
         };
-        layer.addHandler(ViewEventType.MOUSE_CLICK,
-                         clickHandler);
+        getCanvas().addHandler(ViewEventType.MOUSE_CLICK,
+                               clickHandler);
         this.layerClickHandler = clickHandler;
     }
 
@@ -241,7 +239,7 @@ public final class MapSelectionControl<H extends AbstractCanvasHandler>
     @Override
     protected void doDestroy() {
         if (null != layerClickHandler) {
-            getCanvas().getLayer().removeHandler(layerClickHandler);
+            getCanvas().removeHandler(layerClickHandler);
             this.layerClickHandler = null;
         }
         items.clear();
@@ -294,8 +292,8 @@ public final class MapSelectionControl<H extends AbstractCanvasHandler>
         return items::containsKey;
     }
 
-    public Canvas getCanvas() {
-        return canvasHandler.getCanvas();
+    public AbstractCanvas getCanvas() {
+        return canvasHandler.getAbstractCanvas();
     }
 
     protected String getRootUUID() {

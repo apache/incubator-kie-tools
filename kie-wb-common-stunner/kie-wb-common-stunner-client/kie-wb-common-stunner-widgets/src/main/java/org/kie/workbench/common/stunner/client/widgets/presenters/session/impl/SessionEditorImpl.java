@@ -21,6 +21,7 @@ import java.util.function.Supplier;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.kie.workbench.common.stunner.client.widgets.canvas.ScrollableLienzoPanel;
 import org.kie.workbench.common.stunner.client.widgets.presenters.diagram.DiagramEditor;
 import org.kie.workbench.common.stunner.client.widgets.presenters.diagram.DiagramViewer;
 import org.kie.workbench.common.stunner.client.widgets.presenters.diagram.impl.AbstractDiagramViewer;
@@ -28,6 +29,7 @@ import org.kie.workbench.common.stunner.client.widgets.presenters.session.Sessio
 import org.kie.workbench.common.stunner.client.widgets.views.WidgetWrapperView;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.CanvasPanel;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
@@ -50,15 +52,18 @@ public class SessionEditorImpl<S extends EditorSession>
         implements SessionDiagramEditor<S> {
 
     private final AbstractDiagramViewer<Diagram, AbstractCanvasHandler> diagramViewer;
+    private final ScrollableLienzoPanel canvasPanel;
     private final StunnerPreferencesRegistries preferencesRegistries;
 
     private Supplier<Diagram> diagramSupplier;
 
     @Inject
     public SessionEditorImpl(final WidgetWrapperView view,
+                             final ScrollableLienzoPanel canvasPanel,
                              final StunnerPreferencesRegistries preferencesRegistries) {
-        this.diagramViewer = new SessionDiagramEditor(view);
+        this.canvasPanel = canvasPanel;
         this.preferencesRegistries = preferencesRegistries;
+        this.diagramViewer = new SessionDiagramEditor(view);
         this.diagramSupplier = () -> null != getSessionHandler() ?
                 getSessionHandler().getDiagram() :
                 null;
@@ -83,6 +88,10 @@ public class SessionEditorImpl<S extends EditorSession>
     @Override
     protected DiagramViewer<Diagram, AbstractCanvasHandler> getDiagramViewer() {
         return diagramViewer;
+    }
+
+    public ScrollableLienzoPanel getCanvasPanel() {
+        return canvasPanel;
     }
 
     @Override
@@ -129,18 +138,6 @@ public class SessionEditorImpl<S extends EditorSession>
         }
 
         @Override
-        public void open(final Diagram item,
-                         final int width,
-                         final int height,
-                         final DiagramViewerCallback<Diagram> callback) {
-            open(item,
-                 width,
-                 height,
-                 false,
-                 callback);
-        }
-
-        @Override
         protected void scalePanel(final int width,
                                   final int height) {
             scale(width,
@@ -163,7 +160,12 @@ public class SessionEditorImpl<S extends EditorSession>
         }
 
         @Override
-        protected StunnerPreferencesRegistries getPreferencesRegistry(){
+        public CanvasPanel getCanvasPanel() {
+            return canvasPanel;
+        }
+
+        @Override
+        protected StunnerPreferencesRegistries getPreferencesRegistry() {
             return preferencesRegistries;
         }
 

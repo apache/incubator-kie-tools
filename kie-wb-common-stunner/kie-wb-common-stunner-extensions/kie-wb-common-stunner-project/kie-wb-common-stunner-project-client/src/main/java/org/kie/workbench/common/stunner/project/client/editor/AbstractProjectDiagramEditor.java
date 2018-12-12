@@ -171,10 +171,6 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         this.projectDiagramResourceServiceCaller = projectDiagramResourceServiceCaller;
     }
 
-    protected abstract int getCanvasWidth();
-
-    protected abstract int getCanvasHeight();
-
     @PostConstruct
     @SuppressWarnings("unchecked")
     public void init() {

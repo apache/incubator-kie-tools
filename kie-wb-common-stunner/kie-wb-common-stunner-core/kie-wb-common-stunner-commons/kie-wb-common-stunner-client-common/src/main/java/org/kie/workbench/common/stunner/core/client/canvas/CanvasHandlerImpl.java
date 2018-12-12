@@ -120,7 +120,7 @@ public class CanvasHandlerImpl<D extends Diagram, C extends AbstractCanvas> exte
     }
 
     @Override
-    public void draw(final ParameterizedCommand<CommandResult<?>> loadCallback) {
+    public void draw(final ParameterizedCommand<CommandResult> loadCallback) {
         loadCallback.execute(commandFactory.draw().execute(this));
     }
 

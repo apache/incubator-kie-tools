@@ -46,7 +46,7 @@ public class AbstractControlPointCommandTest extends AbstractGraphCommandTest {
     protected ViewConnector viewConnector;
 
     public void setUp() {
-        super.init(0, 0);
+        super.init();
 
         newLocation = new Point2D(0, 0);
         controlPoint1 = ControlPoint.build(new Point2D(1, 1), 1);

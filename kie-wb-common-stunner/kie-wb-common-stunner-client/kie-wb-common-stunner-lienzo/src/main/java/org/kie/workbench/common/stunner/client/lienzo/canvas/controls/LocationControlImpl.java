@@ -38,7 +38,6 @@ import com.ait.lienzo.client.core.shape.wires.SelectionManager;
 import com.ait.lienzo.client.core.shape.wires.WiresContainer;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
-import org.kie.workbench.common.stunner.client.lienzo.components.drag.DragBoundsEnforcer;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
@@ -71,10 +70,7 @@ import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
-import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.content.Bounds;
-import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
@@ -97,7 +93,6 @@ public class LocationControlImpl
     private final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
     private final Event<ShapeLocationsChangedEvent> shapeLocationsChangedEvent;
     private CommandManagerProvider<AbstractCanvasHandler> commandManagerProvider;
-    private Bounds boundsConstraint;
     private final Collection<String> selectedIDs = new LinkedList<>();
     private final Event<CanvasSelectionEvent> selectionEvent;
 
@@ -190,7 +185,7 @@ public class LocationControlImpl
     @Override
     protected void doInit() {
         super.doInit();
-        getCanvasView().setLocationAcceptor(LOCATION_ACCEPTOR);
+        getWiresManager().setLocationAcceptor(LOCATION_ACCEPTOR);
     }
 
     @Override
@@ -200,10 +195,10 @@ public class LocationControlImpl
             final Canvas<?> canvas = canvasHandler.getCanvas();
             final Shape<?> shape = canvas.getShape(element.getUUID());
 
-            // Drag & constraints.
+            // Enable drag.
             shape.getShapeView().setDragEnabled(true);
-            ensureDragConstraints(shape.getShapeView());
 
+            // Register handlers.
             if (shape.getShapeView() instanceof HasEventHandlers) {
                 final HasEventHandlers hasEventHandlers = (HasEventHandlers) shape.getShapeView();
 
@@ -302,14 +297,9 @@ public class LocationControlImpl
     @Override
     protected void doDestroy() {
         clear();
-        getCanvasView().setLocationAcceptor(ILocationAcceptor.ALL);
+        getWiresManager().setLocationAcceptor(ILocationAcceptor.ALL);
         commandManagerProvider = null;
-        boundsConstraint = null;
         super.doDestroy();
-    }
-
-    private WiresCanvas.View getCanvasView() {
-        return (WiresCanvas.View) canvasHandler.getAbstractCanvas().getView();
     }
 
     void onCanvasSelectionEvent(final @Observes CanvasSelectionEvent event) {
@@ -328,23 +318,6 @@ public class LocationControlImpl
         if (checkEventContext(event)) {
             selectedIDs.clear();
         }
-    }
-
-    @SuppressWarnings("unchecked")
-    private void ensureDragConstraints(final ShapeView shapeView) {
-        if (null == boundsConstraint) {
-            boundsConstraint = getLocationBounds();
-            // Selection multiple bounding constraints.
-            ifSelectionManager(s-> DragBoundsEnforcer.forSelectionManager(s).enforce(boundsConstraint));
-        }
-        // Shape drag bounds.
-        DragBoundsEnforcer.forShape(shapeView).enforce(boundsConstraint);
-    }
-
-    @SuppressWarnings("unchecked")
-    private Bounds getLocationBounds() {
-        final Graph<DefinitionSet, ? extends Node> graph = canvasHandler.getDiagram().getGraph();
-        return graph.getContent().getBounds();
     }
 
     @SuppressWarnings("unchecked")

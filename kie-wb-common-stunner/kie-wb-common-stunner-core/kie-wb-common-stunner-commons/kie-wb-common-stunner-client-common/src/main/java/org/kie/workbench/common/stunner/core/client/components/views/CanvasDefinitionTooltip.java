@@ -69,9 +69,9 @@ public class CanvasDefinitionTooltip implements CanvasTooltip<CanvasDefinitionTo
     }
 
     public CanvasDefinitionTooltip configure(final AbstractCanvasHandler canvasHandler) {
-        setTransform(canvasHandler.getCanvas().getLayer().getTransform());
-        setCanvasLocation(new Point2D(canvasHandler.getAbstractCanvas().getView().getAbsoluteX(),
-                                      canvasHandler.getAbstractCanvas().getView().getAbsoluteY()));
+        setTransform(canvasHandler.getCanvas().getTransform());
+        final Point2D location = canvasHandler.getAbstractCanvas().getView().getAbsoluteLocation();
+        setCanvasLocation(location);
         return this;
     }
 

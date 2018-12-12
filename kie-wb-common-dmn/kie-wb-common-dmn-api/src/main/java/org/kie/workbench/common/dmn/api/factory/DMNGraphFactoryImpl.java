@@ -65,16 +65,6 @@ public class DMNGraphFactoryImpl
              null);
     }
 
-    @Override
-    protected double getWidth() {
-        return DMNGraphFactory.GRAPH_DEFAULT_WIDTH;
-    }
-
-    @Override
-    protected double getHeight() {
-        return DMNGraphFactory.GRAPH_DEFAULT_HEIGHT;
-    }
-
     @Inject
     public DMNGraphFactoryImpl(final DefinitionManager definitionManager,
                                final FactoryManager factoryManager,

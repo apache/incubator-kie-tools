@@ -43,16 +43,6 @@ public class GraphFactoryImpl extends AbstractGraphFactory {
     }
 
     @Override
-    protected double getWidth() {
-        return DEFAULT_WIDTH;
-    }
-
-    @Override
-    protected double getHeight() {
-        return DEFAULT_HEIGHT;
-    }
-
-    @Override
     public boolean accepts(final String source) {
         return true;
     }

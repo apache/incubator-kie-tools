@@ -16,10 +16,14 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.util;
 
+import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
+import com.ait.lienzo.client.core.types.BoundingBox;
+import com.ait.lienzo.client.core.util.ScratchPad;
+import com.ait.lienzo.shared.core.types.DataURLType;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,6 +35,9 @@ import org.mockito.Mock;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
@@ -77,6 +84,33 @@ public class LienzoLayerUtilsTest {
                                                               x,
                                                               y);
         assertNull(actualUUID);
+    }
+
+    @Test
+    public void testLayerToDataURL() {
+        ScratchPad scratchPad = mock(ScratchPad.class);
+        Context2D context2D = mock(Context2D.class);
+        when(layer.getScratchPad()).thenReturn(scratchPad);
+        when(scratchPad.getContext()).thenReturn(context2D);
+        when(scratchPad.toDataURL(eq(DataURLType.JPG), eq(1d))).thenReturn("theResultData");
+        String result = LienzoLayerUtils.layerToDataURL(lienzoLayer,
+                                                        DataURLType.JPG,
+                                                        1,
+                                                        3,
+                                                        111,
+                                                        333,
+                                                        "#color1");
+        assertEquals("theResultData", result);
+        verify(scratchPad, times(1)).setPixelSize(eq(111), eq(333));
+        verify(scratchPad, times(1)).clear();
+        verify(context2D, times(1)).setFillColor(eq("#color1"));
+        verify(context2D, times(1)).fillRect(eq(0d), eq(0d), eq(111d), eq(333d));
+        verify(layer, times(1)).drawWithTransforms(eq(context2D),
+                                                   eq(1d),
+                                                   eq(new BoundingBox(1d,
+                                                                      3d,
+                                                                      111d,
+                                                                      333d)));
     }
 
     private WiresShape registerShape(final String expectedUUID) {

@@ -102,6 +102,14 @@ public class SessionPresenterView extends Composite
                                                 e.stopPropagation();
                                             },
                                             ContextMenuEvent.getType());
+
+        addAttachHandler(event -> {
+            if (event.isAttached()) {
+                getElement().getParentElement().getStyle().setHeight(100.0, Style.Unit.PCT);
+                getElement().getParentElement().getStyle().setWidth(100.0, Style.Unit.PCT);
+            }
+        });
+
         showLoading(false);
 
         //getting initial palette position

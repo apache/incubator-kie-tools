@@ -18,18 +18,15 @@ package org.kie.workbench.common.stunner.client.widgets.presenters;
 
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
-import org.kie.workbench.common.stunner.client.widgets.canvas.view.LienzoPanel;
-import org.kie.workbench.common.stunner.client.widgets.canvas.wires.WiresCanvasPresenter;
+import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvasView;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.CanvasPanel;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Graph;
-import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.mockito.Mock;
 import org.uberfire.mvp.ParameterizedCommand;
 
@@ -39,19 +36,12 @@ import static org.mockito.Mockito.when;
 
 public abstract class AbstractCanvasHandlerViewerTest {
 
-    protected final static Bounds GRAPH_BOUNDS = new BoundsImpl(new BoundImpl(0d,
-                                                                              0d),
-                                                                new BoundImpl(100d,
-                                                                              100d));
-
     @Mock
-    protected WiresCanvasPresenter canvas;
+    protected WiresCanvas canvas;
     @Mock
-    protected WiresCanvas.View canvasView;
+    protected WiresCanvasView canvasView;
     @Mock
     protected Widget canvasViewWidget;
-    @Mock
-    protected LienzoPanel lienzoPanel;
     @Mock
     protected AbstractCanvasHandler canvasHandler;
     @Mock
@@ -65,12 +55,14 @@ public abstract class AbstractCanvasHandlerViewerTest {
 
     protected Diagram canvasHandlerDiagram;
 
+    protected abstract CanvasPanel getCanvasPanel();
+
     @SuppressWarnings("unchecked")
     public void init() throws Exception {
         this.canvasHandlerDiagram = null;
         when(canvas.getView()).thenReturn(canvasView);
+        when(getCanvasPanel().asWidget()).thenReturn(canvasViewWidget);
         when(canvasView.asWidget()).thenReturn(canvasViewWidget);
-        when(canvas.getLienzoPanel()).thenReturn(lienzoPanel);
         when(canvasHandler.getCanvas()).thenReturn(canvas);
         when(canvasHandler.getAbstractCanvas()).thenReturn(canvas);
         // The different viewer/editors tested reply on the canvas handler to obtain
@@ -98,6 +90,5 @@ public abstract class AbstractCanvasHandlerViewerTest {
         when(diagram.getMetadata()).thenReturn(metadata);
         when(diagram.getGraph()).thenReturn(graph);
         when(graph.getContent()).thenReturn(graphContent);
-        when(graphContent.getBounds()).thenReturn(GRAPH_BOUNDS);
     }
 }

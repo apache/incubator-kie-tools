@@ -58,8 +58,7 @@ public class AddNodeCommandTest extends AbstractGraphCommandTest {
 
     @Before
     public void setup() throws Exception {
-        super.init(500,
-                   500);
+        super.init();
         when(node.getUUID()).thenReturn(UUID);
         when(graph.getNode(eq(UUID))).thenReturn(node);
         when(graphIndex.getNode(eq(UUID))).thenReturn(node);

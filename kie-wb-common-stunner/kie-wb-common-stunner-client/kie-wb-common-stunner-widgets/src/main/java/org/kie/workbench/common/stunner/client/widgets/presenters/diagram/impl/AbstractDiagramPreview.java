@@ -37,7 +37,6 @@ public abstract class AbstractDiagramPreview<D extends Diagram, H extends Abstra
         getViewerOrNothing(() -> getViewer().open(item,
                                                   getWidth(),
                                                   getHeight(),
-                                                  true,
                                                   callback));
     }
 
@@ -49,7 +48,6 @@ public abstract class AbstractDiagramPreview<D extends Diagram, H extends Abstra
         getViewerOrNothing(() -> getViewer().open(item,
                                                   width,
                                                   height,
-                                                  true,
                                                   callback));
     }
 

@@ -23,10 +23,12 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.client.widgets.canvas.ScrollableLienzoPanel;
 import org.kie.workbench.common.stunner.client.widgets.presenters.AbstractCanvasHandlerViewerTest;
 import org.kie.workbench.common.stunner.client.widgets.presenters.diagram.DiagramViewer;
 import org.kie.workbench.common.stunner.core.client.ManagedInstanceStub;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.CanvasPanel;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.EdgeBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.ElementBuilderControl;
@@ -66,6 +68,9 @@ public class DiagramEditorTest extends AbstractCanvasHandlerViewerTest {
 
     @Mock
     DiagramViewer viewer;
+
+    @Mock
+    ScrollableLienzoPanel canvasPanel;
 
     @Mock
     CanvasCommandManager<AbstractCanvasHandler> commandManagerInstance;
@@ -258,5 +263,10 @@ public class DiagramEditorTest extends AbstractCanvasHandlerViewerTest {
                times(1)).destroyAll();
         verify(dockingAcceptorControl,
                times(1)).destroyAll();
+    }
+
+    @Override
+    protected CanvasPanel getCanvasPanel() {
+        return canvasPanel;
     }
 }

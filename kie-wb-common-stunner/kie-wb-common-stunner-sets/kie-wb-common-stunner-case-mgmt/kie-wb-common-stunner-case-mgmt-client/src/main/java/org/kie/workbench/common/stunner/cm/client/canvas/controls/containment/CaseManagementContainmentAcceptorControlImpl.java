@@ -47,7 +47,8 @@ import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
 
 @Dependent
 @CaseManagementEditor
-public class CaseManagementContainmentAcceptorControlImpl extends AbstractAcceptorControl
+public class CaseManagementContainmentAcceptorControlImpl
+        extends AbstractAcceptorControl
         implements ContainmentAcceptorControl<AbstractCanvasHandler> {
 
     private final CaseManagementCanvasCommandFactory canvasCommandFactory;
@@ -63,13 +64,13 @@ public class CaseManagementContainmentAcceptorControlImpl extends AbstractAccept
     }
 
     @Override
-    protected void onInit(final WiresCanvas.View view) {
-        view.setContainmentAcceptor(containmentAcceptor);
+    protected void onInit(final WiresCanvas canvas) {
+        canvas.getWiresManager().setContainmentAcceptor(containmentAcceptor);
     }
 
     @Override
-    protected void onDestroy(final WiresCanvas.View view) {
-        view.setContainmentAcceptor(IContainmentAcceptor.NONE);
+    protected void onDestroy(final WiresCanvas canvas) {
+        canvas.getWiresManager().setContainmentAcceptor(IContainmentAcceptor.NONE);
     }
 
     @Override
@@ -222,7 +223,7 @@ public class CaseManagementContainmentAcceptorControlImpl extends AbstractAccept
                 final double shapeX = wiresShape.getComputedLocation().getX();
 
                 // exclude the shape and its ghost
-                final List<WiresShape> children  = container.getChildShapes().toList().stream()
+                final List<WiresShape> children = container.getChildShapes().toList().stream()
                         .filter(s -> !((WiresShapeView) s).getUUID().equals(((WiresShapeView) wiresShape).getUUID()))
                         .collect(Collectors.toList());
 

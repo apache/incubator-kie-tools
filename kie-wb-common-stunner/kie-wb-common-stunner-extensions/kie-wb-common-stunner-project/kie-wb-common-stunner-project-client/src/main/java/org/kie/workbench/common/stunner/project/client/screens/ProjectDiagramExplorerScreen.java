@@ -27,6 +27,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.kie.workbench.common.stunner.client.widgets.canvas.StunnerBoundsProviderFactory;
 import org.kie.workbench.common.stunner.client.widgets.event.SessionDiagramOpenedEvent;
 import org.kie.workbench.common.stunner.client.widgets.explorer.tree.TreeExplorer;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionDiagramPreview;
@@ -62,11 +63,13 @@ import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull
 @WorkbenchScreen(identifier = ProjectDiagramExplorerScreen.SCREEN_ID)
 public class ProjectDiagramExplorerScreen {
 
+    private static Logger LOGGER = Logger.getLogger(ProjectDiagramExplorerScreen.class.getName());
+
     public static final String SCREEN_ID = "ProjectDiagramExplorerScreen";
     public static final String TITLE = "Explore";
-    public static final int PREVIEW_WIDTH = 350;
-    public static final int PREVIEW_HEIGHT = 175;
-    private static Logger LOGGER = Logger.getLogger(ProjectDiagramExplorerScreen.class.getName());
+    public static final int PREVIEW_WIDTH = 420;
+    public static final int PREVIEW_HEIGHT = StunnerBoundsProviderFactory.computeHeight(PREVIEW_WIDTH);
+
     private final SessionManager clientSessionManager;
     private final ManagedInstance<TreeExplorer> treeExplorers;
     private final ManagedInstance<SessionDiagramPreview<AbstractSession>> sessionPreviews;

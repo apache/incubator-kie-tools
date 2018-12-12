@@ -37,11 +37,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
+import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvasView;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.ext.WiresShapeViewExt;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.Layer;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.MapSelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.event.ShapeLocationsChangedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
@@ -97,10 +97,7 @@ public class LienzoMultipleSelectionControlTest {
     private WiresCanvas canvas;
 
     @Mock
-    private WiresCanvas.View canvasView;
-
-    @Mock
-    private Layer layer;
+    private WiresCanvasView canvasView;
 
     @Mock
     private com.ait.lienzo.client.core.shape.Layer lienzoLayer;
@@ -165,7 +162,6 @@ public class LienzoMultipleSelectionControlTest {
         when(canvasHandler.getAbstractCanvas()).thenReturn(canvas);
         when(canvas.getView()).thenReturn(canvasView);
         when(canvas.getWiresManager()).thenReturn(wiresManager);
-        when(canvas.getLayer()).thenReturn(layer);
         when(canvas.getShape(eq(ELEMENT_UUID))).thenReturn(shape);
         when(canvas.getShapes()).thenReturn(Collections.singletonList(shape));
         when(shape.getUUID()).thenReturn(ELEMENT_UUID);

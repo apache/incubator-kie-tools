@@ -21,12 +21,14 @@ import java.util.function.Supplier;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.kie.workbench.common.stunner.client.widgets.canvas.ScrollableLienzoPanel;
 import org.kie.workbench.common.stunner.client.widgets.presenters.diagram.DiagramViewer;
 import org.kie.workbench.common.stunner.client.widgets.presenters.diagram.impl.AbstractDiagramViewer;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionDiagramViewer;
 import org.kie.workbench.common.stunner.client.widgets.views.WidgetWrapperView;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.CanvasPanel;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
 import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistries;
@@ -46,13 +48,16 @@ public class SessionViewerImpl<S extends ViewerSession>
 
     private final AbstractDiagramViewer<Diagram, AbstractCanvasHandler> diagramViewer;
     private final StunnerPreferencesRegistries preferencesRegistries;
+    private final ScrollableLienzoPanel canvasPanel;
     private Supplier<Diagram> diagramSupplier;
 
     @Inject
     public SessionViewerImpl(final WidgetWrapperView view,
+                             final ScrollableLienzoPanel canvasPanel,
                              final StunnerPreferencesRegistries preferencesRegistries) {
-        this.diagramViewer = new SessionDiagramViewer(view);
+        this.canvasPanel = canvasPanel;
         this.preferencesRegistries = preferencesRegistries;
+        this.diagramViewer = new SessionDiagramViewer(view);
         this.diagramSupplier = () -> null != getSessionHandler() ?
                 getSessionHandler().getDiagram() :
                 null;
@@ -106,18 +111,6 @@ public class SessionViewerImpl<S extends ViewerSession>
         }
 
         @Override
-        public void open(final Diagram item,
-                         final int width,
-                         final int height,
-                         final DiagramViewer.DiagramViewerCallback<Diagram> callback) {
-            open(item,
-                 width,
-                 height,
-                 false,
-                 callback);
-        }
-
-        @Override
         protected void scalePanel(final int width,
                                   final int height) {
             scale(width,
@@ -140,7 +133,12 @@ public class SessionViewerImpl<S extends ViewerSession>
         }
 
         @Override
-        protected StunnerPreferencesRegistries getPreferencesRegistry(){
+        public CanvasPanel getCanvasPanel() {
+            return canvasPanel;
+        }
+
+        @Override
+        protected StunnerPreferencesRegistries getPreferencesRegistry() {
             return preferencesRegistries;
         }
 

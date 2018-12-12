@@ -58,7 +58,7 @@ public class UpdateDomainObjectPropertyValueCommandTest extends AbstractGraphCom
     @Before
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
-        super.init(500, 500);
+        super.init();
         when(definitionAdapter.getProperty(domainObject, PROPERTY)).thenReturn(Optional.of(property));
         when(definitionAdapter.getProperty(property, NAME_FIELD)).thenReturn(Optional.of(nameProperty));
         when(propertyAdapter.getValue(nameProperty)).thenReturn(PROPERTY_OLD_VALUE);

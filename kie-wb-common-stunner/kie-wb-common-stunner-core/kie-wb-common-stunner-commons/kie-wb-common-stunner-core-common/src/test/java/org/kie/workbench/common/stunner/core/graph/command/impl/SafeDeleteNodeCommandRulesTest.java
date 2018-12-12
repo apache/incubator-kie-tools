@@ -68,8 +68,7 @@ public class SafeDeleteNodeCommandRulesTest extends AbstractGraphCommandTest {
 
     @Before
     public void setup() throws Exception {
-        super.init(500,
-                   500);
+        super.init();
         node = mockNode(UUID);
         node1 = mockNode(UUID1);
         edge = mockEdge(EDGE_UUID);

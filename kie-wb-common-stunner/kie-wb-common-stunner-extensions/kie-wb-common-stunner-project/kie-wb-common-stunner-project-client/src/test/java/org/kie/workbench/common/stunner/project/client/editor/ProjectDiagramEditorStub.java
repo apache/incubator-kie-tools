@@ -79,16 +79,6 @@ class ProjectDiagramEditorStub extends AbstractProjectDiagramEditor<ClientResour
     }
 
     @Override
-    protected int getCanvasWidth() {
-        return 100;
-    }
-
-    @Override
-    protected int getCanvasHeight() {
-        return 100;
-    }
-
-    @Override
     protected String getEditorIdentifier() {
         return EDITOR_ID;
     }

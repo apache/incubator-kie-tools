@@ -16,16 +16,24 @@
 
 package org.kie.workbench.common.stunner.client.widgets.views;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 
-import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+import org.uberfire.client.workbench.widgets.listbar.ResizeFlowPanel;
 
 @Dependent
 public class WidgetWrapperViewImpl implements WidgetWrapperView {
 
-    private final FlowPanel panel = new FlowPanel();
+    private final ResizeFlowPanel panel = new ResizeFlowPanel();
+
+    @PostConstruct
+    public void init() {
+        panel.getElement().getStyle().setWidth(100, Style.Unit.PCT);
+        panel.getElement().getStyle().setHeight(100, Style.Unit.PCT);
+    }
 
     @Override
     public WidgetWrapperView setWidget(final IsWidget widget) {

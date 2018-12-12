@@ -38,8 +38,7 @@ public class ClearGraphCommandTest extends AbstractGraphCommandTest {
 
     @Before
     public void setup() throws Exception {
-        super.init(500,
-                   500);
+        super.init();
         this.tested = new ClearGraphCommand("");
     }
 

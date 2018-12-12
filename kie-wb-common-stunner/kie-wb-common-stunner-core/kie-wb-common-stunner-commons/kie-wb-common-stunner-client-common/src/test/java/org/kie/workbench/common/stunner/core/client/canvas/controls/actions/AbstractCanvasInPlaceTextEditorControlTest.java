@@ -113,7 +113,7 @@ public abstract class AbstractCanvasInPlaceTextEditorControlTest<C extends Abstr
     protected AbstractCanvas abstractCanvas;
 
     @Mock
-    protected AbstractCanvas.View abstractCanvasView;
+    protected AbstractCanvas.CanvasView abstractCanvasView;
 
     @Mock
     protected Element element;

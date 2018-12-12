@@ -21,12 +21,11 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
-import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
+import org.uberfire.client.workbench.widgets.listbar.ResizeFlowPanel;
 
 @Dependent
 @Templated
@@ -35,16 +34,16 @@ public class ProjectDiagramEditorView
         implements AbstractProjectDiagramEditor.View {
 
     @DataField
-    private FlowPanel editorPanel;
+    private ResizeFlowPanel editorPanel;
 
     private AbstractProjectDiagramEditor presenter;
 
-    public ProjectDiagramEditorView() {
+    protected ProjectDiagramEditorView() {
         //CDI proxy
     }
 
     @Inject
-    public ProjectDiagramEditorView(final FlowPanel editorPanel) {
+    public ProjectDiagramEditorView(final ResizeFlowPanel editorPanel) {
         this.editorPanel = editorPanel;
     }
 
@@ -61,13 +60,7 @@ public class ProjectDiagramEditorView
             final double h = parent.getOffsetHeight();
             setPixelSize((int) w, (int) h);
         }
-
-        if (editorPanel.getWidgetCount() > 0) {
-            final IsWidget widget = editorPanel.getWidget(0);
-            if (widget instanceof RequiresResize) {
-                ((RequiresResize) widget).onResize();
-            }
-        }
+        editorPanel.onResize();
     }
 
     @Override

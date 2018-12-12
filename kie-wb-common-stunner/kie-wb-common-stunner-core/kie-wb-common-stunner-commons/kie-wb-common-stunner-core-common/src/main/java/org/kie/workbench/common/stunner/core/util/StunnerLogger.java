@@ -140,9 +140,7 @@ public class StunnerLogger {
                         error("Graph is null!");
                     } else {
                         final DefinitionSet view = graph.getContent();
-                        final Bounds bounds = view.getBounds();
                         log(indent + "Graph UUID: " + graph.getUUID());
-                        log(indent + "Graph Bounds: " + bounds);
                         log(indent + "  Graph Starting nodes");
                         log(indent + "  ====================");
                     }

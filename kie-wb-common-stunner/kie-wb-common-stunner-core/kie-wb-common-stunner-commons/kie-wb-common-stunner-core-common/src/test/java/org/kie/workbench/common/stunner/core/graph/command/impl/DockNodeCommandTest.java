@@ -56,8 +56,7 @@ public class DockNodeCommandTest extends AbstractGraphCommandTest {
 
     @Before
     public void setup() throws Exception {
-        super.init(500,
-                   500);
+        super.init();
         this.parent = mockNode(PARENT_UUID);
         this.candidate = mockNode(CANDIDATE_UUID);
         when(graphIndex.getNode(eq(PARENT_UUID))).thenReturn(parent);

@@ -41,22 +41,20 @@ public abstract class AbstractAcceptorControl
     private AbstractCanvasHandler canvasHandler;
     private CommandManagerProvider<AbstractCanvasHandler> commandManagerProvider;
 
-    protected abstract void onInit(final WiresCanvas.View view);
+    protected abstract void onInit(final WiresCanvas canvas);
 
-    protected abstract void onDestroy(final WiresCanvas.View view);
+    protected abstract void onDestroy(final WiresCanvas canvas);
 
     @Override
     public void init(final AbstractCanvasHandler canvasHandler) {
         this.canvasHandler = canvasHandler;
-        final WiresCanvas.View canvasView = (WiresCanvas.View) canvasHandler.getAbstractCanvas().getView();
-        onInit(canvasView);
+        onInit((WiresCanvas) canvasHandler.getCanvas());
     }
 
     @Override
     public void destroy() {
         if (null != canvasHandler && null != canvasHandler.getCanvas()) {
-            final WiresCanvas.View canvasView = (WiresCanvas.View) canvasHandler.getAbstractCanvas().getView();
-            onDestroy(canvasView);
+            onDestroy((WiresCanvas) canvasHandler.getCanvas());
         }
         this.canvasHandler = null;
         this.commandManagerProvider = null;

@@ -24,9 +24,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.api.ClientFactoryManager;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
-import org.kie.workbench.common.stunner.core.client.canvas.Layer;
 import org.kie.workbench.common.stunner.core.client.canvas.command.AddConnectorCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.command.AddNodeCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.command.DefaultCanvasCommandFactory;
@@ -100,10 +99,9 @@ public class GeneralCreateNodeActionTest {
         final String targetNodeId = "dest-id";
         final String connectorId = "edge-id";
 
-        final Canvas canvas = mock(Canvas.class);
+        final AbstractCanvas canvas = mock(AbstractCanvas.class);
         doReturn(canvas).when(canvasHandler).getCanvas();
-        final Layer layer = mock(Layer.class);
-        doReturn(layer).when(canvas).getLayer();
+        doReturn(canvas).when(canvasHandler).getAbstractCanvas();
         final Diagram diagram = mock(Diagram.class);
         doReturn(diagram).when(canvasHandler).getDiagram();
         final Metadata metadata = mock(Metadata.class);

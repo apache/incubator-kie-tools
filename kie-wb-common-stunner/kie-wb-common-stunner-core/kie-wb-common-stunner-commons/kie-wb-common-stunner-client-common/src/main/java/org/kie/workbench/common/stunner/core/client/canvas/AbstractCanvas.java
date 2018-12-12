@@ -21,13 +21,10 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import javax.enterprise.event.Event;
 
-import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasClearEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasDrawnEvent;
@@ -36,19 +33,16 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.registration.Ca
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasShapeRemovedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasShapeListener;
 import org.kie.workbench.common.stunner.core.client.canvas.listener.HasCanvasListeners;
-import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLoadingObserver;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasEventHandlers;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
+import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.util.UUID;
 
-/**
- * For Lienzo's based Canvas.
- */
-public abstract class AbstractCanvas<V extends AbstractCanvas.View>
+public abstract class AbstractCanvas<V extends AbstractCanvas.CanvasView>
         implements Canvas<Shape>,
+                   HasEventHandlers<AbstractCanvas<V>, Shape<?>>,
                    HasCanvasListeners<CanvasShapeListener> {
-
-    private static Logger LOGGER = Logger.getLogger(AbstractCanvas.class.getName());
 
     public enum Cursors {
         AUTO,
@@ -60,60 +54,44 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.View>
         CROSSHAIR;
     }
 
-    public interface View<P> extends IsWidget {
+    public interface CanvasView<C extends CanvasView> extends IsWidget {
 
-        View show(final P panel,
-                  final int width,
-                  final int height,
-                  final Layer layer);
+        C initialize(CanvasPanel panel,
+                     CanvasSettings canvasSettings);
 
-        View add(final IsWidget widget);
+        C add(ShapeView<?> shape);
 
-        View remove(final IsWidget widget);
+        C delete(ShapeView<?> shape);
 
-        View addShape(final ShapeView<?> shapeView);
+        C addChild(ShapeView<?> parent,
+                   ShapeView<?> child);
 
-        View removeShape(final ShapeView<?> shapeView);
+        C deleteChild(final ShapeView<?> parent,
+                      final ShapeView<?> child);
 
-        View addChildShape(final ShapeView<?> parent,
-                           final ShapeView<?> child);
+        C dock(final ShapeView<?> parent,
+               final ShapeView<?> child);
 
-        View removeChildShape(final ShapeView<?> parent,
-                              final ShapeView<?> child);
+        C undock(final ShapeView<?> childParent,
+                 final ShapeView<?> child);
 
-        View dock(final ShapeView<?> parent,
-                  final ShapeView<?> child);
+        C setGrid(final CanvasGrid grid);
 
-        View undock(final ShapeView<?> childParent,
-                    final ShapeView<?> child);
+        C setCursor(final Cursors cursor);
 
-        double getAbsoluteX();
+        C clear();
 
-        double getAbsoluteY();
+        Transform getTransform();
+
+        Point2D getAbsoluteLocation();
 
         int getWidth();
 
         int getHeight();
 
-        View setGrid(final CanvasGrid grid);
-
-        View setCursor(final Cursors cursor);
-
-        View setDecoratorStrokeWidth(final double width);
-
-        View setDecoratorStrokeAlpha(final double alpha);
-
-        View setDecoratorStrokeColor(final String color);
-
-        Layer getLayer();
-
-        View clear();
-
         void destroy();
     }
 
-    protected Layer layer;
-    protected V view;
     protected CanvasGrid grid;
     protected Event<CanvasClearEvent> canvasClearEvent;
     protected Event<CanvasShapeAddedEvent> canvasShapeAddedEvent;
@@ -121,56 +99,31 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.View>
     protected Event<CanvasDrawnEvent> canvasDrawnEvent;
     protected Event<CanvasFocusedEvent> canvasFocusedEvent;
 
+    private final String uuid;
     protected final Map<String, Shape> shapes = new HashMap<>();
     protected final List<CanvasShapeListener> listeners = new LinkedList<>();
-    private final CanvasLoadingObserver loadingObserver = new CanvasLoadingObserver();
-    private final String uuid;
 
     protected AbstractCanvas(final Event<CanvasClearEvent> canvasClearEvent,
                              final Event<CanvasShapeAddedEvent> canvasShapeAddedEvent,
                              final Event<CanvasShapeRemovedEvent> canvasShapeRemovedEvent,
                              final Event<CanvasDrawnEvent> canvasDrawnEvent,
-                             final Event<CanvasFocusedEvent> canvasFocusedEvent,
-                             final Layer layer,
-                             final V view) {
+                             final Event<CanvasFocusedEvent> canvasFocusedEvent) {
         this.canvasClearEvent = canvasClearEvent;
         this.canvasShapeAddedEvent = canvasShapeAddedEvent;
         this.canvasShapeRemovedEvent = canvasShapeRemovedEvent;
         this.canvasDrawnEvent = canvasDrawnEvent;
         this.canvasFocusedEvent = canvasFocusedEvent;
-        this.layer = layer;
-        this.view = view;
         this.uuid = UUID.uuid();
     }
 
-    @SuppressWarnings("unchecked")
-    protected <P> void show(final P panel,
-                            final int width,
-                            final int height,
-                            final Layer layer) {
-        // Show the canvas layer on using the given panel instance.
-        view.show(panel,
-                  width,
-                  height,
-                  layer);
-        // TODO: Review this.
-        //       If adding this handler, the SelectionControl for this layer never fires,
-        //       so it seems it's not registering fine more than one click event handler.
-        /*final MouseClickHandler clickHandler = new MouseClickHandler() {
+    public abstract V getView();
 
-            @Override
-            public void handle( final MouseClickEvent event ) {
-                canvasFocusedEvent.fire( new CanvasFocusedEvent( AbstractCanvas.this ) );
-
-            }
-
-        };
-        layer.addHandler( ViewEventType.MOUSE_CLICK, clickHandler );*/
+    public AbstractCanvas<V> initialize(final CanvasPanel panel,
+                                        final CanvasSettings settings) {
+        onAfterDraw(AbstractCanvas.this::afterDrawCanvas);
+        getView().initialize(panel, settings);
+        return this;
     }
-
-    public abstract void addControl(final IsWidget controlView);
-
-    public abstract void deleteControl(final IsWidget controlView);
 
     @Override
     public Collection<Shape> getShapes() {
@@ -181,23 +134,23 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.View>
         return shapes.get(uuid);
     }
 
+    protected abstract void addChild(final Shape shape);
+
     @SuppressWarnings("unchecked")
-    public Canvas addChildShape(final Shape parent,
-                                final Shape child) {
-        getView().addChildShape(parent.getShapeView(),
-                                child.getShapeView());
-        log(Level.FINE,
-            "Adding child [" + child.getUUID() + "] into parent [" + parent.getUUID() + "]");
+    public Canvas addChild(final Shape parent,
+                           final Shape child) {
+        getView().addChild(parent.getShapeView(),
+                           child.getShapeView());
         return this;
     }
 
+    protected abstract void deleteChild(final Shape shape);
+
     @SuppressWarnings("unchecked")
-    public Canvas deleteChildShape(final Shape parent,
-                                   final Shape child) {
-        getView().removeChildShape(parent.getShapeView(),
-                                   child.getShapeView());
-        log(Level.FINE,
-            "Deleting child [" + child.getUUID() + "] from parent [" + parent.getUUID() + "]");
+    public Canvas deleteChild(final Shape parent,
+                              final Shape child) {
+        getView().deleteChild(parent.getShapeView(),
+                              child.getShapeView());
         return this;
     }
 
@@ -206,8 +159,6 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.View>
                        final Shape child) {
         getView().dock(parent.getShapeView(),
                        child.getShapeView());
-        log(Level.FINE,
-            "Docking child [" + child.getUUID() + "] into parent [" + parent.getUUID() + "]");
         return this;
     }
 
@@ -216,8 +167,6 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.View>
                          final Shape child) {
         getView().undock(target.getShapeView(),
                          child.getShapeView());
-        log(Level.FINE,
-            "Undocking child [" + child.getUUID() + "] from parent [" + target.getUUID() + "]");
         return this;
     }
 
@@ -238,31 +187,8 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.View>
             shape.setUUID(UUID.uuid());
         }
         shape.getShapeView().setUUID(shape.getUUID());
-        view.addShape(shape.getShapeView());
+        getView().add(shape.getShapeView());
         return this;
-    }
-
-    public double getAbsoluteX() {
-        return view.getAbsoluteX();
-    }
-
-    public double getAbsoluteY() {
-        return view.getAbsoluteY();
-    }
-
-    public Canvas setGrid(final CanvasGrid grid) {
-        this.grid = grid;
-        view.setGrid(grid);
-        return this;
-    }
-
-    public CanvasGrid getGrid() {
-        return grid;
-    }
-
-    @Override
-    public Layer getLayer() {
-        return layer;
     }
 
     @Override
@@ -277,7 +203,7 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.View>
 
     @SuppressWarnings("unchecked")
     public Canvas deleteTransientShape(final Shape shape) {
-        view.removeShape(shape.getShapeView());
+        getView().delete(shape.getShapeView());
         shape.destroy();
         return this;
     }
@@ -293,7 +219,7 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.View>
         if (fireEvents) {
             canvasClearEvent.fire(new CanvasClearEvent(this));
         }
-        view.clear();
+        getView().clear();
         return this;
     }
 
@@ -304,14 +230,30 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.View>
         }
     }
 
+    public Canvas setGrid(final CanvasGrid grid) {
+        this.grid = grid;
+        getView().setGrid(grid);
+        return this;
+    }
+
+    public CanvasGrid getGrid() {
+        return grid;
+    }
+
+    public Point2D getAbsoluteLocation() {
+        return getView().getAbsoluteLocation();
+    }
+
+    @Override
+    public Transform getTransform() {
+        return getView().getTransform();
+    }
+
     @Override
     public void destroy() {
         clear(false);
         listeners.clear();
-        view.destroy();
-        layer.destroy();
-        layer = null;
-        view = null;
+        getView().destroy();
     }
 
     @Override
@@ -355,16 +297,12 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.View>
 
     @Override
     public int getWidth() {
-        return view.getWidth();
+        return getView().getWidth();
     }
 
     @Override
     public int getHeight() {
-        return view.getHeight();
-    }
-
-    public V getView() {
-        return view;
+        return getView().getHeight();
     }
 
     @Override
@@ -382,25 +320,5 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.View>
     @Override
     public int hashCode() {
         return uuid == null ? 0 : ~~uuid.hashCode();
-    }
-
-    public void setLoadingObserverCallback(final CanvasLoadingObserver.Callback loadingObserverCallback) {
-        this.loadingObserver.setLoadingObserverCallback(loadingObserverCallback);
-    }
-
-    public void loadingStarted() {
-        this.loadingObserver.loadingStarted();
-    }
-
-    public void loadingCompleted() {
-        this.loadingObserver.loadingCompleted();
-    }
-
-    private void log(final Level level,
-                     final String message) {
-        if (LogConfiguration.loggingIsEnabled()) {
-            LOGGER.log(level,
-                       message);
-        }
     }
 }

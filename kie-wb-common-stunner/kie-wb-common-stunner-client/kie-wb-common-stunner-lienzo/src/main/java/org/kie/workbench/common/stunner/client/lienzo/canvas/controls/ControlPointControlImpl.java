@@ -30,9 +30,9 @@ import javax.inject.Inject;
 
 import com.ait.lienzo.client.core.shape.wires.IControlPointsAcceptor;
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
+import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
-import org.kie.workbench.common.stunner.client.lienzo.components.drag.DragBoundsEnforcer;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresConnectorView;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanvasHandlerRegistrationControl;
@@ -82,20 +82,12 @@ public class ControlPointControlImpl
     @Override
     protected void doInit() {
         super.doInit();
-        getCanvasView().setControlPointsAcceptor(cpAcceptor);
+        getWiresManager().setControlPointsAcceptor(cpAcceptor);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public void register(final Element element) {
-        final Shape<?> shape = canvasHandler.getCanvas().getShape(element.getUUID());
-        if (checkNotRegistered(element) && isConnector(shape) && supportsControlPoints(shape)) {
-            //set the connector drag bounds to avoid dragging control points outside canvas
-            DragBoundsEnforcer
-                    .forShape(shape.getShapeView())
-                    .withMargin(DRAG_BOUNDS_MARGIN)
-                    .enforce(canvasHandler.getDiagram().getGraph());
-        }
     }
 
     private boolean isConnector(Shape<?> shape) {
@@ -269,14 +261,14 @@ public class ControlPointControlImpl
         return canvasHandler.getGraphIndex().getEdge(uuid);
     }
 
-    private WiresCanvas.View getCanvasView() {
-        return (WiresCanvas.View) canvasHandler.getAbstractCanvas().getView();
-    }
-
     @Override
     protected void doDestroy() {
         super.doDestroy();
-        getCanvasView().setControlPointsAcceptor(IControlPointsAcceptor.ALL);
+        getWiresManager().setControlPointsAcceptor(IControlPointsAcceptor.ALL);
         commandManagerProvider = null;
+    }
+
+    private WiresManager getWiresManager() {
+        return ((WiresCanvas) canvasHandler.getCanvas()).getWiresManager();
     }
 }

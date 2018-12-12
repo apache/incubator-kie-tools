@@ -21,11 +21,13 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.client.widgets.canvas.ScrollableLienzoPanel;
 import org.kie.workbench.common.stunner.client.widgets.presenters.AbstractCanvasHandlerViewerTest;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionViewer;
 import org.kie.workbench.common.stunner.client.widgets.views.WidgetWrapperView;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.CanvasPanel;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
 import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistries;
@@ -52,6 +54,8 @@ public class SessionViewerTest extends AbstractCanvasHandlerViewerTest {
     @Mock
     ViewerSession session;
     @Mock
+    ScrollableLienzoPanel canvasPanel;
+    @Mock
     SessionViewer.SessionViewerCallback<Diagram> callback;
     @Mock
     ZoomControl<AbstractCanvas> zoomControl;
@@ -76,7 +80,7 @@ public class SessionViewerTest extends AbstractCanvasHandlerViewerTest {
         when(session.getCanvas()).thenReturn(canvas);
         when(session.getZoomControl()).thenReturn(zoomControl);
         when(session.getSelectionControl()).thenReturn(selectionControl);
-        this.tested = new SessionViewerImpl<>(view, preferencesRegistries);
+        this.tested = new SessionViewerImpl<>(view, canvasPanel, preferencesRegistries);
     }
 
     @Test
@@ -124,5 +128,10 @@ public class SessionViewerTest extends AbstractCanvasHandlerViewerTest {
                times(1)).destroy();
         verify(view,
                times(1)).clear();
+    }
+
+    @Override
+    protected CanvasPanel getCanvasPanel() {
+        return canvasPanel;
     }
 }

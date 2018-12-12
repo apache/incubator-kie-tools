@@ -20,7 +20,6 @@ import java.util.Optional;
 
 import javax.enterprise.event.Event;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,8 +31,12 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.registration.Ca
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasShapeRemovedEvent;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEvent;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewHandler;
 import org.mockito.Mock;
 import org.uberfire.mocks.EventSourceMock;
+import org.uberfire.mvp.Command;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -50,33 +53,30 @@ public class AbstractCanvasTest {
     private static final String CHILD_UUID = "childUUID";
 
     @Mock
-    EventSourceMock<CanvasClearEvent> clearEvent;
+    private EventSourceMock<CanvasClearEvent> clearEvent;
     @Mock
-    EventSourceMock<CanvasShapeAddedEvent> shapeAddedEvent;
+    private EventSourceMock<CanvasShapeAddedEvent> shapeAddedEvent;
     @Mock
-    EventSourceMock<CanvasShapeRemovedEvent> shapeRemovedEvent;
+    private EventSourceMock<CanvasShapeRemovedEvent> shapeRemovedEvent;
     @Mock
-    EventSourceMock<CanvasDrawnEvent> canvasDrawnEvent;
+    private EventSourceMock<CanvasDrawnEvent> canvasDrawnEvent;
     @Mock
-    EventSourceMock<CanvasFocusedEvent> canvasFocusEvent;
+    private EventSourceMock<CanvasFocusedEvent> canvasFocusEvent;
     @Mock
-    Layer layer;
+    private AbstractCanvas.CanvasView canvasView;
     @Mock
-    AbstractCanvas.View canvasView;
+    private Shape parentShape;
     @Mock
-    Shape parentShape;
+    private Shape childShape;
     @Mock
-    Shape childShape;
+    private ShapeView parentShapeView;
     @Mock
-    ShapeView parentShapeView;
-    @Mock
-    ShapeView childShapeView;
+    private ShapeView childShapeView;
 
-    private AbstractCanvas<AbstractCanvas.View> tested;
+    private AbstractCanvas<AbstractCanvas.CanvasView> tested;
 
     @Before
     public void setup() throws Exception {
-        when(canvasView.getLayer()).thenReturn(layer);
         when(parentShape.getUUID()).thenReturn(PARENT_UUID);
         when(childShape.getUUID()).thenReturn(CHILD_UUID);
         when(parentShape.getShapeView()).thenReturn(parentShapeView);
@@ -85,46 +85,27 @@ public class AbstractCanvasTest {
                                              shapeAddedEvent,
                                              shapeRemovedEvent,
                                              canvasDrawnEvent,
-                                             canvasFocusEvent,
-                                             layer,
-                                             canvasView);
-        assertEquals(layer,
-                     tested.getLayer());
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void testShow() {
-        final Object panel = mock(Object.class);
-        tested.show(panel,
-                    600,
-                    400,
-                    layer);
-        verify(canvasView,
-               times(1)).show(eq(panel),
-                              eq(600),
-                              eq(400),
-                              eq(layer));
+                                             canvasFocusEvent);
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testAddChildShape() {
-        tested.addChildShape(parentShape,
-                             childShape);
+        tested.addChild(parentShape,
+                        childShape);
         verify(canvasView,
-               times(1)).addChildShape(eq(parentShapeView),
-                                       eq(childShapeView));
+               times(1)).addChild(eq(parentShapeView),
+                                  eq(childShapeView));
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testDeleteChildShape() {
-        tested.deleteChildShape(parentShape,
-                                childShape);
+        tested.deleteChild(parentShape,
+                           childShape);
         verify(canvasView,
-               times(1)).removeChildShape(eq(parentShapeView),
-                                          eq(childShapeView));
+               times(1)).deleteChild(eq(parentShapeView),
+                                     eq(childShapeView));
     }
 
     @Test
@@ -162,7 +143,7 @@ public class AbstractCanvasTest {
     public void testAddShape() {
         tested.addShape(parentShape);
         verify(canvasView,
-               times(1)).addShape(eq(parentShapeView));
+               times(1)).add(eq(parentShapeView));
         verify(parentShapeView,
                times(1)).setUUID(eq(PARENT_UUID));
         assertEquals(1,
@@ -186,7 +167,7 @@ public class AbstractCanvasTest {
         tested.shapes.put(parentShape.getUUID(), parentShape);
         tested.deleteShape(parentShape);
         verify(canvasView,
-               times(1)).removeShape(eq(parentShapeView));
+               times(1)).delete(eq(parentShapeView));
         assertTrue(tested.getShapes().isEmpty());
     }
 
@@ -197,9 +178,9 @@ public class AbstractCanvasTest {
         tested.shapes.put(childShape.getUUID(), childShape);
         tested.clear();
         verify(canvasView,
-               times(1)).removeShape(eq(parentShapeView));
+               times(1)).delete(eq(parentShapeView));
         verify(canvasView,
-               times(1)).removeShape(eq(childShapeView));
+               times(1)).delete(eq(childShapeView));
         assertTrue(tested.getShapes().isEmpty());
         verify(canvasView,
                times(1)).clear();
@@ -212,13 +193,11 @@ public class AbstractCanvasTest {
         tested.shapes.put(childShape.getUUID(), childShape);
         tested.destroy();
         verify(canvasView,
-               times(1)).removeShape(eq(parentShapeView));
+               times(1)).delete(eq(parentShapeView));
         verify(canvasView,
-               times(1)).removeShape(eq(childShapeView));
+               times(1)).delete(eq(childShapeView));
         assertTrue(tested.getShapes().isEmpty());
         verify(canvasView,
-               times(1)).destroy();
-        verify(layer,
                times(1)).destroy();
     }
 
@@ -229,43 +208,39 @@ public class AbstractCanvasTest {
         tested.shapes.put(childShape.getUUID(), childShape);
         tested.clearShapes();
         verify(canvasView,
-               times(1)).removeShape(eq(parentShapeView));
+               times(1)).delete(eq(parentShapeView));
         verify(canvasView,
-               times(1)).removeShape(eq(childShapeView));
+               times(1)).delete(eq(childShapeView));
         assertTrue(tested.getShapes().isEmpty());
     }
 
-    private class AbstractCanvasStub extends AbstractCanvas<AbstractCanvas.View> {
+    private class AbstractCanvasStub extends AbstractCanvas<AbstractCanvas.CanvasView> {
 
         public AbstractCanvasStub(final Event<CanvasClearEvent> canvasClearEvent,
                                   final Event<CanvasShapeAddedEvent> canvasShapeAddedEvent,
                                   final Event<CanvasShapeRemovedEvent> canvasShapeRemovedEvent,
                                   final Event<CanvasDrawnEvent> canvasDrawnEvent,
-                                  final Event<CanvasFocusedEvent> canvasFocusedEvent,
-                                  final Layer layer,
-                                  final View view) {
+                                  final Event<CanvasFocusedEvent> canvasFocusedEvent) {
             super(canvasClearEvent,
                   canvasShapeAddedEvent,
                   canvasShapeRemovedEvent,
                   canvasDrawnEvent,
-                  canvasFocusedEvent,
-                  layer,
-                  view);
+                  canvasFocusedEvent);
         }
 
         @Override
-        public void addControl(final IsWidget controlView) {
+        public CanvasView getView() {
+            return canvasView;
+        }
+
+        @Override
+        protected void addChild(Shape shape) {
 
         }
 
         @Override
-        public void deleteControl(final IsWidget controlView) {
+        protected void deleteChild(Shape shape) {
 
-        }
-
-        @Override
-        public Canvas initialize(CanvasSettings settings) {
-            return this;
         }
 
         @Override
@@ -275,8 +250,43 @@ public class AbstractCanvasTest {
         }
 
         @Override
+        public void onAfterDraw(Command callback) {
+
+        }
+
+        @Override
         public void focus() {
 
+        }
+
+        @Override
+        public boolean supports(ViewEventType type) {
+            return false;
+        }
+
+        @Override
+        public AbstractCanvas<CanvasView> addHandler(ViewEventType type, ViewHandler<? extends ViewEvent> eventHandler) {
+            return null;
+        }
+
+        @Override
+        public AbstractCanvas<CanvasView> removeHandler(ViewHandler<? extends ViewEvent> eventHandler) {
+            return null;
+        }
+
+        @Override
+        public AbstractCanvas<CanvasView> enableHandlers() {
+            return null;
+        }
+
+        @Override
+        public AbstractCanvas<CanvasView> disableHandlers() {
+            return null;
+        }
+
+        @Override
+        public Shape<?> getAttachableShape() {
+            return null;
         }
     }
 }

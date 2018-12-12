@@ -27,7 +27,6 @@ import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
 import org.kie.workbench.common.stunner.core.client.api.ClientDefinitionManager;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.Layer;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.TextPropertyProvider;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.TextPropertyProviderFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementAddedEvent;
@@ -61,7 +60,6 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyObject;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -119,10 +117,7 @@ public class CaseManagementCanvasHandlerTest {
     private CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
 
     @Mock
-    private CaseManagementCanvasPresenter canvas;
-
-    @Mock
-    private Layer layer;
+    private CaseManagementCanvas canvas;
 
     private CaseManagementCanvasHandler handler;
 
@@ -142,7 +137,6 @@ public class CaseManagementCanvasHandlerTest {
                                                        canvasElementsClearEvent,
                                                        canvasCommandFactory);
         this.handler.handle(canvas);
-        when(canvas.getLayer()).thenReturn(layer);
         when(textPropertyProviderFactory.getProvider(any(Element.class))).thenReturn(textPropertyProvider);
     }
 
@@ -241,10 +235,8 @@ public class CaseManagementCanvasHandlerTest {
                          childNode);
 
         verify(canvas,
-               times(1)).addChildShape(eq(parentShape),
-                                       eq(childShape));
-        verify(layer,
-               never()).addShape(eq(childShape));
+               times(1)).addChild(eq(parentShape),
+                                  eq(childShape));
     }
 
     @Test
@@ -269,11 +261,9 @@ public class CaseManagementCanvasHandlerTest {
                          0);
 
         verify(canvas,
-               times(1)).addChildShape(eq(parentShape),
-                                       eq(childShape),
-                                       eq(0));
-        verify(layer,
-               never()).addShape(eq(childShape));
+               times(1)).addChild(eq(parentShape),
+                                  eq(childShape),
+                                  eq(0));
     }
 
     @Test
@@ -309,10 +299,8 @@ public class CaseManagementCanvasHandlerTest {
                             childNode);
 
         verify(canvas,
-               times(1)).deleteChildShape(parentShape,
-                                          childShape);
-        verify(layer,
-               never()).removeShape(childShape);
+               times(1)).deleteChild(parentShape,
+                                     childShape);
     }
 
     @Test

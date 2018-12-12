@@ -69,8 +69,7 @@ public class SetConnectionTargetNodeCommandTest extends AbstractGraphCommandTest
     @Before
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
-        super.init(500,
-                   500);
+        super.init();
         node = mockNode(NODE_UUID);
         lastTargetNode = mockNode(LAST_TARGET_NODE_UUID);
         source = mockNode(SOURCET_UUID);

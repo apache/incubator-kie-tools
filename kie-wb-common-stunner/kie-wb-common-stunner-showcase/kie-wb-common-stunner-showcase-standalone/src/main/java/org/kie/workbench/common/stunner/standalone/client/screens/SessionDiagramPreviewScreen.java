@@ -31,6 +31,7 @@ import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.kie.workbench.common.stunner.client.widgets.canvas.StunnerBoundsProviderFactory;
 import org.kie.workbench.common.stunner.client.widgets.menu.MenuUtils;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionDiagramPreview;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionViewer;
@@ -68,7 +69,7 @@ public class SessionDiagramPreviewScreen extends AbstractSessionScreen {
     public static final String SCREEN_ID = "SessionDiagramPreviewScreen";
     public static final String TITLE = "Preview";
     public static final int WIDTH = 420;
-    public static final int HEIGHT = 280;
+    public static final int HEIGHT = StunnerBoundsProviderFactory.computeHeight(WIDTH);
 
     private final ManagedInstance<SessionDiagramPreview<AbstractSession>> sessionPreviews;
     private final SessionScreenView view;

@@ -130,7 +130,7 @@ public final class UpdateElementPositionCommand extends AbstractGraphCommand {
     }
 
     private boolean isDockedNode(Node<? extends View<?>, Edge> element) {
-        if(Objects.isNull(isDocked)){
+        if (Objects.isNull(isDocked)) {
             isDocked = GraphUtils.isDockedNode(element);
         }
         return isDocked;
@@ -158,7 +158,7 @@ public final class UpdateElementPositionCommand extends AbstractGraphCommand {
             final double[] size = GraphUtils.getNodeSize(parent.getContent());
             return new BoundsImpl(new BoundImpl(0d, 0d), new BoundImpl(size[0], size[1]));
         } else {
-            return GraphUtils.getBounds(graph);
+            return null;
         }
     }
 

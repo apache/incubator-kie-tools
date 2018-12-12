@@ -74,7 +74,7 @@ public class MorphNodeCommandTest extends AbstractGraphCommandTest {
     @Before
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
-        super.init(500, 500);
+        super.init();
 
         this.tested = new MorphNodeCommand(candidate, morphDefinition, CURRENT_DEFINITION_ID);
 

@@ -45,7 +45,7 @@ public final class BuildCanvasShapeEvent extends AbstractCanvasHandlerEvent<Abst
         super(abstractCanvasHandler);
         this.definition = definition;
         this.shapeFactory = shapeFactory;
-        final Point2D transformed = abstractCanvasHandler.getAbstractCanvas().getLayer().getTransform().inverse(x, y);
+        final Point2D transformed = abstractCanvasHandler.getAbstractCanvas().getTransform().inverse(x, y);
         this.x = transformed.getX();
         this.y = transformed.getY();
     }

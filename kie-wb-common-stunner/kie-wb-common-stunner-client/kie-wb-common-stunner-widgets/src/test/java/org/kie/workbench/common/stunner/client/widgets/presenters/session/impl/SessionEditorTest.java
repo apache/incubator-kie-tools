@@ -21,11 +21,13 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.client.widgets.canvas.ScrollableLienzoPanel;
 import org.kie.workbench.common.stunner.client.widgets.presenters.AbstractCanvasHandlerViewerTest;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionViewer;
 import org.kie.workbench.common.stunner.client.widgets.views.WidgetWrapperView;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.CanvasPanel;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
@@ -58,6 +60,8 @@ public class SessionEditorTest extends AbstractCanvasHandlerViewerTest {
     @Mock
     SessionViewer.SessionViewerCallback<Diagram> callback;
     @Mock
+    ScrollableLienzoPanel canvasPanel;
+    @Mock
     ZoomControl<AbstractCanvas> zoomControl;
     @Mock
     SelectionControl<AbstractCanvasHandler, Element> selectionControl;
@@ -89,7 +93,7 @@ public class SessionEditorTest extends AbstractCanvasHandlerViewerTest {
         when(session.getDockingAcceptorControl()).thenReturn(dockingAcceptorControl);
         when(metadata.getDefinitionSetId()).thenReturn(DEFINITION_SET_ID);
         when(preferencesRegistries.get(DEFINITION_SET_ID, StunnerPreferences.class)).thenReturn(stunnerPreferences);
-        this.tested = new SessionEditorImpl<>(view, preferencesRegistries);
+        this.tested = new SessionEditorImpl<>(view, canvasPanel, preferencesRegistries);
     }
 
     @Test
@@ -143,5 +147,10 @@ public class SessionEditorTest extends AbstractCanvasHandlerViewerTest {
                never()).destroy();
         verify(view,
                times(1)).clear();
+    }
+
+    @Override
+    protected CanvasPanel getCanvasPanel() {
+        return canvasPanel;
     }
 }

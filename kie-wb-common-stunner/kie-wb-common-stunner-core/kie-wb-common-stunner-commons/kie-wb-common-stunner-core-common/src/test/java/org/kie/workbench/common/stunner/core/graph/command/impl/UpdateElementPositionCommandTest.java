@@ -38,7 +38,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -69,8 +68,7 @@ public class UpdateElementPositionCommandTest extends AbstractGraphCommandTest {
     @Before
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
-        super.init(500,
-                   500);
+        super.init();
         content = mockView(PREVIOUS_LOCATION.getX(),
                            PREVIOUS_LOCATION.getY(),
                            W,
@@ -141,30 +139,6 @@ public class UpdateElementPositionCommandTest extends AbstractGraphCommandTest {
                                                        PREVIOUS_LOCATION);
         when(graphIndex.getNode(eq(UUID))).thenReturn(null);
         tested.execute(graphCommandExecutionContext);
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void testAllowBadBounds() {
-        this.tested = new UpdateElementPositionCommand(candidate,
-                                                       new Point2D(600d, 600d));
-        final CommandResult<RuleViolation> result = tested.allow(graphCommandExecutionContext);
-        verify(content,
-               never()).setBounds(any(Bounds.class));
-        assertEquals(CommandResult.Type.ERROR,
-                     result.getType());
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void testExecuteBadBounds() {
-        this.tested = new UpdateElementPositionCommand(candidate,
-                                                       new Point2D(600d, 600d));
-        final CommandResult<RuleViolation> result = tested.execute(graphCommandExecutionContext);
-        verify(content,
-               never()).setBounds(any(Bounds.class));
-        assertEquals(CommandResult.Type.ERROR,
-                     result.getType());
     }
 
     @Test

@@ -55,8 +55,7 @@ public class DeleteNodeCommandTest extends AbstractGraphCommandTest {
 
     @Before
     public void setup() throws Exception {
-        super.init(500,
-                   500);
+        super.init();
         node = mockNode(UUID);
         graphNodes.add(node);
         when(graph.getNode(eq(UUID))).thenReturn(node);

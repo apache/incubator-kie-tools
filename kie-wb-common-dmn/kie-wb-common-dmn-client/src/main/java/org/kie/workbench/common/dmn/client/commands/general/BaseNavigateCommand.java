@@ -27,12 +27,12 @@ import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
+import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvas;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.AbstractSessionPresenter;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.Layer;
 import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasGraphCommand;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
@@ -108,11 +108,11 @@ public abstract class BaseNavigateCommand extends AbstractCanvasGraphCommand {
         if (handler == null) {
             return;
         }
-        final Layer layer = handler.getCanvas().getLayer();
+        final LienzoCanvas canvas = (LienzoCanvas) handler.getCanvas();
         if (enabled) {
-            layer.enableHandlers();
+            canvas.enableHandlers();
         } else {
-            layer.disableHandlers();
+            canvas.disableHandlers();
         }
     }
 

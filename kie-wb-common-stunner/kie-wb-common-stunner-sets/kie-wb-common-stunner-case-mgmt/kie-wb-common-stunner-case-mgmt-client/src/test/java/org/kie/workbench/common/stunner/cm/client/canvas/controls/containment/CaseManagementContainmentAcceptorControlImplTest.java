@@ -24,6 +24,7 @@ import com.ait.lienzo.client.core.shape.Rectangle;
 import com.ait.lienzo.client.core.shape.wires.IContainmentAcceptor;
 import com.ait.lienzo.client.core.shape.wires.ILayoutHandler;
 import com.ait.lienzo.client.core.shape.wires.WiresContainer;
+import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
@@ -33,13 +34,11 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
 import org.kie.workbench.common.stunner.cm.client.canvas.CaseManagementCanvasHandler;
-import org.kie.workbench.common.stunner.cm.client.canvas.CaseManagementCanvasView;
 import org.kie.workbench.common.stunner.cm.client.command.CaseManagementCanvasCommandFactory;
 import org.kie.workbench.common.stunner.cm.client.command.CaseManagementRemoveChildCommand;
 import org.kie.workbench.common.stunner.cm.client.command.CaseManagementSetChildCommand;
 import org.kie.workbench.common.stunner.cm.client.shape.view.CaseManagementShapeView;
 import org.kie.workbench.common.stunner.cm.client.wires.CaseManagementContainmentStateHolder;
-import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
@@ -71,10 +70,10 @@ public class CaseManagementContainmentAcceptorControlImplTest {
     public static final String CANDIDATE_UUID = "candidate1";
 
     @Mock
-    private AbstractCanvas canvas;
+    private WiresCanvas canvas;
 
     @Mock
-    private CaseManagementCanvasView canvasView;
+    private WiresManager wiresManager;
 
     @Mock
     private CaseManagementCanvasHandler canvasHandler;
@@ -124,9 +123,10 @@ public class CaseManagementContainmentAcceptorControlImplTest {
         this.control.setCommandManagerProvider(commandManagerProvider);
 
         when(commandManagerProvider.getCommandManager()).thenReturn(commandManager);
+        when(canvasHandler.getCanvas()).thenReturn(canvas);
         when(canvasHandler.getAbstractCanvas()).thenReturn(canvas);
         when(canvasHandler.getGraphIndex()).thenReturn(graphIndex);
-        when(canvas.getView()).thenReturn(canvasView);
+        when(canvas.getWiresManager()).thenReturn(wiresManager);
         when(graphIndex.getNode(eq(PARENT_UUID))).thenReturn(parent);
         when(graphIndex.getNode(eq(CANDIDATE_UUID))).thenReturn(candidate);
         when(parent.getUUID()).thenReturn(PARENT_UUID);
@@ -152,7 +152,7 @@ public class CaseManagementContainmentAcceptorControlImplTest {
 
     @Test
     public void checkDoInit() {
-        control.onInit(canvasView);
+        control.onInit(canvas);
 
         final IContainmentAcceptor containmentAcceptor = getContainmentAcceptor();
         assertNotNull(containmentAcceptor);
@@ -160,7 +160,7 @@ public class CaseManagementContainmentAcceptorControlImplTest {
     }
 
     private IContainmentAcceptor getContainmentAcceptor() {
-        verify(canvasView,
+        verify(wiresManager,
                times(1)).setContainmentAcceptor(containmentAcceptorArgumentCaptor.capture());
         return containmentAcceptorArgumentCaptor.getValue();
     }
@@ -257,7 +257,7 @@ public class CaseManagementContainmentAcceptorControlImplTest {
         state.setGhost(Optional.of(ghost));
         final boolean isAccept =
                 control.containmentAcceptor.acceptContainment(parentShape,
-                                                               new WiresShape[]{childShape});
+                                                              new WiresShape[]{childShape});
         assertTrue(isAccept);
         verify(canvasCommandFactory,
                times(1)).setChildNode(any(Node.class),

@@ -127,16 +127,6 @@ public class BPMNGraphFactoryImpl
         return true;
     }
 
-    @Override
-    protected double getWidth() {
-        return GRAPH_DEFAULT_WIDTH;
-    }
-
-    @Override
-    protected double getHeight() {
-        return GRAPH_DEFAULT_HEIGHT;
-    }
-
     @SuppressWarnings("unchecked")
     // Add a BPMN diagram and a start event nodes by default.
     protected List<Command> buildInitialisationCommands() {

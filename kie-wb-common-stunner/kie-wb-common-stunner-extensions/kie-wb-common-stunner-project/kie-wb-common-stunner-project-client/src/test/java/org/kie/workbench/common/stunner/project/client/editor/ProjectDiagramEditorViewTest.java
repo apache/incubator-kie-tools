@@ -20,10 +20,10 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.uberfire.client.workbench.widgets.listbar.ResizeFlowPanel;
 
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -40,14 +40,14 @@ public class ProjectDiagramEditorViewTest {
 
     private SimplePanel parent;
 
-    private FlowPanel editorPanel;
+    private ResizeFlowPanel editorPanel;
 
     private ProjectDiagramEditorView tested;
 
     @Before
     public void setup() throws Exception {
         this.parent = GWT.create(SimplePanel.class);
-        this.editorPanel = GWT.create(FlowPanel.class);
+        this.editorPanel = GWT.create(ResizeFlowPanel.class);
         this.tested = spy(new ProjectDiagramEditorView(editorPanel));
         when(tested.getParent()).thenReturn(parent);
         when(parent.getOffsetWidth()).thenReturn(WIDTH);
@@ -74,7 +74,7 @@ public class ProjectDiagramEditorViewTest {
         tested.onResize();
 
         verify(tested).setPixelSize(eq(WIDTH), eq(HEIGHT));
-        verify(editor).onResize();
+        verify(editorPanel).onResize();
     }
 
     @Test

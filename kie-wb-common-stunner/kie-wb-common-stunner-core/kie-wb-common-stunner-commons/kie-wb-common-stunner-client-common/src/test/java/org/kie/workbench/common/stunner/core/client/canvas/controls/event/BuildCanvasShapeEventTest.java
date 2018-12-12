@@ -21,7 +21,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.Layer;
 import org.kie.workbench.common.stunner.core.client.canvas.Transform;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.mockito.Mock;
@@ -43,9 +42,6 @@ public class BuildCanvasShapeEventTest {
     AbstractCanvas canvas;
 
     @Mock
-    Layer layer;
-
-    @Mock
     Transform transform;
 
     BuildCanvasShapeEvent tested;
@@ -54,10 +50,8 @@ public class BuildCanvasShapeEventTest {
     public void setup() throws Exception {
         canvasHandler = mock(AbstractCanvasHandler.class);
         canvas = mock(AbstractCanvas.class);
-        layer = mock(Layer.class);
         transform = mock(Transform.class);
-        when(layer.getTransform()).thenReturn(transform);
-        when(canvas.getLayer()).thenReturn(layer);
+        when(canvas.getTransform()).thenReturn(transform);
         when(canvasHandler.getAbstractCanvas()).thenReturn(canvas);
     }
 

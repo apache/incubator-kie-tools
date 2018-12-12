@@ -18,40 +18,44 @@ package org.kie.workbench.common.stunner.client.lienzo.canvas.index.bounds;
 
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Shape;
+import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoLayer;
+import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
+import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvasView;
+import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresLayer;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
-import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(GwtMockitoTestRunner.class)
 public class CanvasBoundsIndexerImplTest {
 
     private static final String SHAPE_UUID = "test";
     @Mock
-    private AbstractCanvasHandler abstractCanvasHandler;
+    private AbstractCanvasHandler canvasHandler;
 
     @Mock
-    private LienzoLayer lienzoLayer;
+    private WiresCanvas canvas;
+
+    @Mock
+    private WiresCanvasView canvasView;
+
+    @Mock
+    private WiresLayer lienzoLayer;
 
     @Mock
     private Layer layer;
-
-    @Mock
-    private AbstractCanvas abstractCanvas;
 
     @Mock
     private Shape shape;
@@ -75,24 +79,25 @@ public class CanvasBoundsIndexerImplTest {
 
     @Before
     public void setup() {
-        when(abstractCanvasHandler.getAbstractCanvas()).thenReturn(abstractCanvas);
-        when(abstractCanvasHandler.getAbstractCanvas().getLayer()).thenReturn(lienzoLayer);
+        when(canvas.getView()).thenReturn(canvasView);
+        when(canvasView.getLayer()).thenReturn(lienzoLayer);
+        when(canvasHandler.getAbstractCanvas()).thenReturn(canvas);
         when(lienzoLayer.getLienzoLayer()).thenReturn(layer);
         when(lienzoLayer.getLienzoLayer().getLayer()).thenReturn(layer);
 
         when(shape.getUserData()).thenReturn(userdata);
 
         when(userdata.getUuid()).thenReturn(SHAPE_UUID);
-        when(abstractCanvas.getShape(SHAPE_UUID)).thenReturn(canvasShape);
+        when(canvas.getShape(SHAPE_UUID)).thenReturn(canvasShape);
 
-        when(abstractCanvasHandler.getGraphIndex()).thenReturn(graphIndex);
+        when(canvasHandler.getGraphIndex()).thenReturn(graphIndex);
 
-        when(abstractCanvasHandler.getGraphIndex().getNode(SHAPE_UUID)).thenReturn(node1);
+        when(canvasHandler.getGraphIndex().getNode(SHAPE_UUID)).thenReturn(node1);
         when(canvasShape.getUUID()).thenReturn(SHAPE_UUID);
 
         canvasBoundsIndexerImpl = new CanvasBoundsIndexerImpl();
         canvasBoundsIndexerImpl.build(
-                abstractCanvasHandler);
+                canvasHandler);
     }
 
     @Test

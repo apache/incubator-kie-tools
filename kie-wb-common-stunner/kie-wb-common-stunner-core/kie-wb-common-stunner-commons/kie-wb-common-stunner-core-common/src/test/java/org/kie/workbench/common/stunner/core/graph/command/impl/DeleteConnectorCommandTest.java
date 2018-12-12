@@ -71,8 +71,7 @@ public class DeleteConnectorCommandTest extends AbstractGraphCommandTest {
 
     @Before
     public void setup() throws Exception {
-        super.init(500,
-                   500);
+        super.init();
         source = mockNode(SOURCE_UUID);
         target = mockNode(TARGET_UUID);
         sourceMagnet = Optional.of(MagnetConnection.Builder.at(0d,

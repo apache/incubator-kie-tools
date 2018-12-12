@@ -122,16 +122,6 @@ public class CaseManagementGraphFactoryImpl extends AbstractGraphFactory impleme
     }
 
     @Override
-    protected double getWidth() {
-        return GRAPH_DEFAULT_WIDTH;
-    }
-
-    @Override
-    protected double getHeight() {
-        return GRAPH_DEFAULT_HEIGHT;
-    }
-
-    @Override
     protected DefinitionManager getDefinitionManager() {
         return definitionManager;
     }

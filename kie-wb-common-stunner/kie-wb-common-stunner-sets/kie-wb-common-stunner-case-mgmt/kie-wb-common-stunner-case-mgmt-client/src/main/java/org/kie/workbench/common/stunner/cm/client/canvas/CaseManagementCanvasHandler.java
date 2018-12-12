@@ -145,10 +145,10 @@ public class CaseManagementCanvasHandler<D extends Diagram, C extends WiresCanva
             return;
         }
 
-        final CaseManagementCanvasPresenter caseManagementCanvasPresenter = (CaseManagementCanvasPresenter) getCanvas();
-        caseManagementCanvasPresenter.addChildShape(parentShape,
-                                                    childShape,
-                                                    index);
+        final CaseManagementCanvas cmCanvas = (CaseManagementCanvas) getCanvas();
+        cmCanvas.addChild(parentShape,
+                          childShape,
+                          index);
     }
 
     @Override

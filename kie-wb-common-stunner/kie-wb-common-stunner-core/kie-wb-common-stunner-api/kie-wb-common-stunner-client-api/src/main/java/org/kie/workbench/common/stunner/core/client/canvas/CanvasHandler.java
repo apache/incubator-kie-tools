@@ -25,7 +25,7 @@ public interface CanvasHandler<D extends Diagram, C extends Canvas> {
     /**
      * Sets the handled canvas instance.
      */
-    CanvasHandler<D, C> handle(final C canvas);
+    CanvasHandler<D, C> handle(C canvas);
 
     /**
      * Loads a diagram.instance (depends on each implementation which state, such as index/es, rules etc should
@@ -35,8 +35,8 @@ public interface CanvasHandler<D extends Diagram, C extends Canvas> {
      * endpoints or using the client-server bus application bug in order to perform initializations.
      * This operation returns the errors or the violated constraint occurred during the execution, if any.
      */
-    void draw(final D diagram,
-              final ParameterizedCommand<CommandResult<?>> loadCallback);
+    void draw(D diagram,
+              ParameterizedCommand<CommandResult> loadCallback);
 
     /**
      * The managed diagram instance.

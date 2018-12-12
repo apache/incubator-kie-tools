@@ -23,7 +23,6 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.kie.workbench.common.stunner.bpmn.factory.BPMNGraphFactory;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionViewerPresenter;
 import org.kie.workbench.common.stunner.cm.project.client.type.CaseManagementDiagramResourceType;
@@ -115,16 +114,6 @@ public class CaseManagementDiagramEditor extends AbstractProjectDiagramEditor<Ca
                           final PlaceRequest place) {
         super.doStartUp(path,
                         place);
-    }
-
-    @Override
-    protected int getCanvasWidth() {
-        return (int) BPMNGraphFactory.GRAPH_DEFAULT_WIDTH;
-    }
-
-    @Override
-    protected int getCanvasHeight() {
-        return (int) BPMNGraphFactory.GRAPH_DEFAULT_HEIGHT;
     }
 
     @Override

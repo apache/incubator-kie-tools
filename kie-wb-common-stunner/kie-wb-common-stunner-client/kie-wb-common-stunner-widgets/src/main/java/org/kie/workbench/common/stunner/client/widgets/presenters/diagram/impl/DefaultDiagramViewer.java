@@ -24,10 +24,12 @@ import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.kie.workbench.common.stunner.client.widgets.canvas.wires.WiresCanvasPresenter;
+import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvas;
+import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvasView;
 import org.kie.workbench.common.stunner.client.widgets.views.WidgetWrapperView;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.CanvasPanel;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SingleSelection;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
@@ -53,6 +55,7 @@ public class DefaultDiagramViewer
 
     private final DefinitionUtils definitionUtils;
     private final ManagedInstance<AbstractCanvas> canvasInstances;
+    private final ManagedInstance<CanvasPanel> canvasPanelInstances;
     private final ManagedInstance<AbstractCanvasHandler> canvasHandlerInstances;
     private final ManagedInstance<ZoomControl<AbstractCanvas>> zoomControlInstances;
     private final ManagedInstance<SelectionControl<AbstractCanvasHandler, Element>> selectionControlInstances;
@@ -61,6 +64,7 @@ public class DefaultDiagramViewer
     private AbstractCanvas canvas;
     private CanvasShapeListener shapeListener;
     private CanvasElementListener elementListener;
+    private CanvasPanel canvasPanel;
     private AbstractCanvasHandler canvasHandler;
     private ZoomControl<AbstractCanvas> zoomControl;
     private SelectionControl<AbstractCanvasHandler, Element> selectionControl;
@@ -68,6 +72,7 @@ public class DefaultDiagramViewer
     @Inject
     public DefaultDiagramViewer(final DefinitionUtils definitionUtils,
                                 final @Any ManagedInstance<AbstractCanvas> canvasInstances,
+                                final @Any ManagedInstance<CanvasPanel> canvasPanelInstances,
                                 final @Any ManagedInstance<AbstractCanvasHandler> canvasHandlerInstances,
                                 final @Any ManagedInstance<ZoomControl<AbstractCanvas>> zoomControlInstances,
                                 final @Any @SingleSelection ManagedInstance<SelectionControl<AbstractCanvasHandler, Element>> selectionControlInstances,
@@ -76,6 +81,7 @@ public class DefaultDiagramViewer
         super(view);
         this.definitionUtils = definitionUtils;
         this.canvasInstances = canvasInstances;
+        this.canvasPanelInstances = canvasPanelInstances;
         this.canvasHandlerInstances = canvasHandlerInstances;
         this.zoomControlInstances = zoomControlInstances;
         this.selectionControlInstances = selectionControlInstances;
@@ -87,17 +93,17 @@ public class DefaultDiagramViewer
                      final int width,
                      final int height,
                      final DiagramViewerCallback<Diagram> callback) {
-        this.open(item,
-                  width,
-                  height,
-                  false,
-                  callback);
+        super.open(item,
+                   width,
+                   height,
+                   callback);
     }
 
     @Override
     protected void onOpen(final Diagram diagram) {
         final Annotation qualifier =
                 definitionUtils.getQualifier(diagram.getMetadata().getDefinitionSetId());
+        canvasPanel = InstanceUtils.lookup(canvasPanelInstances, qualifier);
         canvas = InstanceUtils.lookup(canvasInstances, qualifier);
         canvasHandler = InstanceUtils.lookup(canvasHandlerInstances, qualifier);
         zoomControl = InstanceUtils.lookup(zoomControlInstances, qualifier);
@@ -131,9 +137,11 @@ public class DefaultDiagramViewer
         super.destroyInstances();
         canvasInstances.destroy(canvas);
         canvasInstances.destroyAll();
+        canvasPanelInstances.destroyAll();
         canvasHandlerInstances.destroy(canvasHandler);
         canvasHandlerInstances.destroyAll();
         canvas = null;
+        canvasPanel = null;
         canvasHandler = null;
         shapeListener = null;
         elementListener = null;
@@ -147,16 +155,23 @@ public class DefaultDiagramViewer
     @Override
     protected void scalePanel(final int width,
                               final int height) {
-        getWiresCanvasPresenter().getLienzoPanel().setPixelSize(width,
-                                                                height);
+        getLienzoCanvas().getView().setPixelSize(width,
+                                                 height);
     }
 
-    private WiresCanvasPresenter getWiresCanvasPresenter() {
-        return (WiresCanvasPresenter) getCanvas();
+    @SuppressWarnings("unchecked")
+    private LienzoCanvas<LienzoCanvasView> getLienzoCanvas() {
+        return (LienzoCanvas) getCanvas();
     }
 
+    @Override
     public AbstractCanvas getCanvas() {
         return canvas;
+    }
+
+    @Override
+    public CanvasPanel getCanvasPanel() {
+        return canvasPanel;
     }
 
     @Override

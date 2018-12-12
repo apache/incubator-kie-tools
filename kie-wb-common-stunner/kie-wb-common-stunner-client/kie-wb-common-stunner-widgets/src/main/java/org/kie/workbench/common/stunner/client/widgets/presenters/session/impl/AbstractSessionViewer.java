@@ -21,6 +21,7 @@ import org.kie.workbench.common.stunner.client.widgets.presenters.diagram.Diagra
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionViewer;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 
@@ -100,36 +101,51 @@ public abstract class AbstractSessionViewer<S extends AbstractSession>
         return getDiagramViewer().getView();
     }
 
-    /**
-     * Implementation override this method can perform additional operations once opening the diagram viewer, by
-     * using a custom <code>DiagramViewer.DiagramViewerCallback</code> instance.
-     */
-    protected DiagramViewer.DiagramViewerCallback<Diagram> buildCallback(final SessionViewer.SessionViewerCallback<Diagram> callback) {
-        return callback;
-    }
-
     private void doOpen(final S item,
                         final Integer width,
                         final Integer height,
                         final SessionViewer.SessionViewerCallback<Diagram> callback) {
         this.session = item;
         if (null != getDiagram()) {
-            beforeOpen();
-            final DiagramViewer.DiagramViewerCallback<Diagram> diagramViewerCallback = buildCallback(callback);
+            onBeforeOpen();
+            final SessionViewer.SessionViewerCallback<Diagram> c = new SessionViewerCallback<Diagram>() {
+                @Override
+                public void afterCanvasInitialized() {
+                    onAfterCanvasInitialized();
+                    callback.afterCanvasInitialized();
+                }
+
+                @Override
+                public void onSuccess() {
+                    onOpenSuccess();
+                    callback.onSuccess();
+                }
+
+                @Override
+                public void onError(final ClientRuntimeError error) {
+                    callback.onError(error);
+                }
+            };
             if (null != width && null != height) {
                 getDiagramViewer().open(getDiagram(),
                                         width,
                                         height,
-                                        diagramViewerCallback);
+                                        c);
             } else {
                 getDiagramViewer().open(getDiagram(),
-                                        diagramViewerCallback);
+                                        c);
             }
         } else {
             clear();
         }
     }
 
-    protected void beforeOpen() {
+    protected void onBeforeOpen() {
+    }
+
+    protected void onOpenSuccess() {
+    }
+
+    protected void onAfterCanvasInitialized() {
     }
 }

@@ -59,7 +59,7 @@ public class CommonActionsToolboxViewTest
         verify(toolboxFactory,
                times(1)).forWiresShape(eq(shape));
         verify(toolboxView,
-               times(1)).attachTo(eq(layer));
+               times(1)).attachTo(eq(topLayer));
         // Verify toolbox settings.
         verify(toolboxView,
                times(1))

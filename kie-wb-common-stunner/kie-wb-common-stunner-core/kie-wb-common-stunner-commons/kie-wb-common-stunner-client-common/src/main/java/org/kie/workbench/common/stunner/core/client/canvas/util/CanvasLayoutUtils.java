@@ -26,8 +26,8 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.Timer;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -380,15 +380,16 @@ public class CanvasLayoutUtils {
     //       the layer receives a click event, so it fires a clear selection event and it results
     //       on the element just added not being selected.
     public static void fireElementSelectedEvent(final Event<CanvasSelectionEvent> selectionEvent,
-                                                final CanvasHandler canvasHandler,
+                                                final AbstractCanvasHandler canvasHandler,
                                                 final String uuid) {
-        canvasHandler.getCanvas().getLayer().disableHandlers();
+        final AbstractCanvas canvas = canvasHandler.getAbstractCanvas();
+        canvas.disableHandlers();
         selectionEvent.fire(new CanvasSelectionEvent(canvasHandler,
                                                      uuid));
         final Timer t = new Timer() {
             @Override
             public void run() {
-                canvasHandler.getCanvas().getLayer().enableHandlers();
+                canvas.enableHandlers();
             }
         };
         t.schedule(500);

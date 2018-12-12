@@ -23,7 +23,6 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.api.ClientFactoryManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.Layer;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.BuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.EdgeBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.request.EdgeBuildRequest;
@@ -108,9 +107,6 @@ public class CreateConnectorActionTest {
     private AbstractCanvas canvas;
 
     @Mock
-    private Layer layer;
-
-    @Mock
     private Diagram diagram;
 
     @Mock
@@ -148,7 +144,6 @@ public class CreateConnectorActionTest {
         when(canvasHandler.getShapeFactory(eq(SSID_UUID))).thenReturn(shapeFactory);
         when(connectorDragProxyFactory.proxyFor(any(AbstractCanvasHandler.class)))
                 .thenReturn(connectorDragProxyFactory);
-        when(canvas.getLayer()).thenReturn(layer);
         when(diagram.getGraph()).thenReturn(graph);
         when(diagram.getMetadata()).thenReturn(metadata);
         when(metadata.getShapeSetId()).thenReturn(SSID_UUID);

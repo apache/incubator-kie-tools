@@ -45,7 +45,6 @@ import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
 import org.kie.workbench.common.stunner.core.definition.exception.DefinitionNotFoundException;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Graph;
-import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.preferences.StunnerDiagramEditorPreferences;
 import org.kie.workbench.common.stunner.core.preferences.StunnerPreferences;
@@ -167,9 +166,6 @@ public class ProjectDiagramEditorTest {
     private Graph graph;
 
     @Mock
-    private Bounds bounds;
-
-    @Mock
     private DefinitionSet definitionSetContent;
 
     @Mock
@@ -270,11 +266,8 @@ public class ProjectDiagramEditorTest {
         when(placeRequest.getIdentifier()).thenReturn(ProjectDiagramEditorStub.EDITOR_ID);
         when(diagram.getGraph()).thenReturn(graph);
         when(graph.getContent()).thenReturn(definitionSetContent);
-        when(definitionSetContent.getBounds()).thenReturn(bounds);
         when(stunnerPreferencesRegistr.get(StunnerPreferences.class)).thenReturn(preferences);
         when(preferences.getDiagramEditorPreferences()).thenReturn(diagramEditorPreferences);
-        when(diagramEditorPreferences.getCanvasWidth()).thenReturn(1200);
-        when(diagramEditorPreferences.getCanvasHeight()).thenReturn(1200);
 
         this.tested = new ProjectDiagramEditorStub(view,
                                                    placeManager,

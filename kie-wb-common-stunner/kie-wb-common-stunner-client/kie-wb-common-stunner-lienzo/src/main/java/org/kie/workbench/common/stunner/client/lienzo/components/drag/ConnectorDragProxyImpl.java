@@ -21,7 +21,7 @@ import javax.inject.Inject;
 
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
-import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoLayer;
+import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresConnectorView;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresShapeView;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
@@ -160,9 +160,7 @@ public class ConnectorDragProxyImpl implements ConnectorDragProxy<AbstractCanvas
     }
 
     private WiresManager getWiresManager() {
-        final AbstractCanvas<?> canvas = canvasHandler.getAbstractCanvas();
-        final LienzoLayer layer = (LienzoLayer) canvas.getLayer();
-        return WiresManager.get(layer.getLienzoLayer());
+        return ((WiresCanvas) getCanvas()).getWiresManager();
     }
 
     private void deregisterTransientConnector() {

@@ -19,153 +19,59 @@ package org.kie.workbench.common.stunner.client.lienzo.canvas;
 import javax.enterprise.context.Dependent;
 
 import com.ait.lienzo.client.core.shape.IPrimitive;
-import com.ait.lienzo.client.core.shape.Shape;
+import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Viewport;
-import com.ait.lienzo.client.core.shape.wires.WiresConnector;
-import com.ait.lienzo.client.core.shape.wires.WiresContainer;
 import com.ait.lienzo.client.core.types.Transform;
-import com.ait.lienzo.shared.core.types.DataURLType;
-import org.kie.workbench.common.stunner.client.lienzo.Lienzo;
-import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
-import org.kie.workbench.common.stunner.client.lienzo.shape.view.ViewEventHandlerManager;
-import org.kie.workbench.common.stunner.core.client.canvas.AbstractLayer;
-import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
-import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEvent;
-import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
-import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.TransformImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.uberfire.mvp.Command;
 
-/**
- * An Stunner's Layer type implementation that wraps a Lienzo layer and provides
- * support for primitives, shapes and wires.
- */
 @Dependent
-@Lienzo
-public class LienzoLayer extends AbstractLayer<LienzoLayer, ShapeView<?>, Shape<?>> {
+public class LienzoLayer {
 
-    private static final ViewEventType[] SUPPORTED_EVENT_TYPES = new ViewEventType[]{
-            ViewEventType.MOUSE_CLICK, ViewEventType.MOUSE_DBL_CLICK, ViewEventType.MOUSE_MOVE
-    };
-
-    protected ViewEventHandlerManager eventHandlerManager;
-    protected com.ait.lienzo.client.core.shape.Layer layer;
+    private final Layer layer;
 
     public LienzoLayer() {
+        this(new Layer());
     }
 
-    @Override
-    public LienzoLayer initialize(final Object view) {
-        this.layer = (com.ait.lienzo.client.core.shape.Layer) view;
-        this.eventHandlerManager = new ViewEventHandlerManager(layer,
-                                                               SUPPORTED_EVENT_TYPES);
+    LienzoLayer(final Layer layer) {
+        this.layer = layer;
+    }
+
+    public LienzoLayer add(final IPrimitive<?> shape) {
+        layer.add(shape);
         return this;
     }
 
-    @Override
-    public LienzoLayer addShape(final ShapeView<?> shape) {
-        if (WiresUtils.isWiresContainer(shape)) {
-            layer.add(((WiresContainer) shape).getGroup());
-        } else if (WiresUtils.isWiresConnector(shape)) {
-            layer.add(((WiresConnector) shape).getLine());
-        } else {
-            layer.add((IPrimitive<?>) shape);
-        }
+    public LienzoLayer delete(final IPrimitive<?> shape) {
+        layer.remove(shape);
         return this;
     }
 
-    @Override
-    public LienzoLayer removeShape(final ShapeView<?> shape) {
-        if (WiresUtils.isWiresContainer(shape)) {
-            layer.remove(((WiresContainer) shape).getGroup());
-        } else if (WiresUtils.isWiresConnector(shape)) {
-            layer.remove(((WiresConnector) shape).getLine());
-        } else {
-            layer.remove((IPrimitive<?>) shape);
-        }
-        return this;
-    }
-
-    @Override
     public void clear() {
         layer.clear();
     }
 
-    @Override
-    public String toDataURL() {
-        return layer.toDataURL(DataURLType.PNG);
-    }
-
-    @Override
-    public String toDataURL(final URLDataType type) {
-        switch (type) {
-            case JPG:
-                return layer.toDataURL(DataURLType.JPG);
-        }
-        return layer.toDataURL(DataURLType.PNG);
-    }
-
-    @Override
     public void onAfterDraw(final Command callback) {
         layer.setOnLayerAfterDraw(layer1 -> callback.execute());
     }
 
-    @Override
+    public Layer getTopLayer() {
+        return null != layer.getScene() ?
+                layer.getScene().getTopLayer() :
+                null;
+    }
+
     public void destroy() {
-        // Clear registered event handers.
-        if (null != eventHandlerManager) {
-            eventHandlerManager.destroy();
-            eventHandlerManager = null;
-        }
-        // Remove the layer stuff.
-        if (null != layer) {
-            layer.removeAll();
-            layer.removeFromParent();
-            layer = null;
-        }
+        layer.removeAll();
+        layer.removeFromParent();
     }
 
-    @Override
-    public boolean supports(final ViewEventType type) {
-        return eventHandlerManager.supports(type);
-    }
-
-    @Override
-    public LienzoLayer addHandler(final ViewEventType type,
-                                  final ViewHandler<? extends ViewEvent> eventHandler) {
-        eventHandlerManager.addHandler(type,
-                                       eventHandler);
-        return this;
-    }
-
-    @Override
-    public LienzoLayer removeHandler(final ViewHandler<? extends ViewEvent> eventHandler) {
-        eventHandlerManager.removeHandler(eventHandler);
-        return this;
-    }
-
-    @Override
-    public LienzoLayer enableHandlers() {
-        eventHandlerManager.enable();
-        return this;
-    }
-
-    @Override
-    public LienzoLayer disableHandlers() {
-        eventHandlerManager.disable();
-        return this;
-    }
-
-    @Override
-    public Shape<?> getAttachableShape() {
-        return null;
-    }
-
-    public com.ait.lienzo.client.core.shape.Layer getLienzoLayer() {
+    public Layer getLienzoLayer() {
         return this.layer;
     }
 
-    @Override
     protected Point2D getTranslate() {
         return new Point2D(
                 layer.getAbsoluteTransform().getTranslateX(),
@@ -173,12 +79,16 @@ public class LienzoLayer extends AbstractLayer<LienzoLayer, ShapeView<?>, Shape<
         );
     }
 
-    @Override
     protected Point2D getScale() {
         return new Point2D(
                 layer.getAbsoluteTransform().getScaleX(),
                 layer.getAbsoluteTransform().getScaleY()
         );
+    }
+
+    public org.kie.workbench.common.stunner.core.client.canvas.Transform getTransform() {
+        return new TransformImpl(getTranslate(),
+                                 getScale());
     }
 
     public void translate(final double tx,

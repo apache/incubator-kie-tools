@@ -23,7 +23,6 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.api.ClientFactoryManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.Layer;
 import org.kie.workbench.common.stunner.core.client.canvas.command.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
@@ -98,9 +97,6 @@ public class CreateNodeActionTest {
     private AbstractCanvas canvas;
 
     @Mock
-    private Layer layer;
-
-    @Mock
     private Diagram diagram;
 
     @Mock
@@ -139,7 +135,6 @@ public class CreateNodeActionTest {
         when(canvasHandler.getDiagram()).thenReturn(diagram);
         when(canvasHandler.getCanvas()).thenReturn(canvas);
         when(canvasHandler.getShapeFactory(eq(SSID_UUID))).thenReturn(shapeFactory);
-        when(canvas.getLayer()).thenReturn(layer);
         when(diagram.getGraph()).thenReturn(graph);
         when(diagram.getMetadata()).thenReturn(metadata);
         when(metadata.getShapeSetId()).thenReturn(SSID_UUID);

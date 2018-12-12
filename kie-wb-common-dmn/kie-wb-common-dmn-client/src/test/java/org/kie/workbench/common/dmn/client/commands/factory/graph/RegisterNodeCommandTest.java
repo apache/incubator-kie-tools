@@ -57,7 +57,7 @@ public class RegisterNodeCommandTest extends AbstractGraphCommandTest {
 
     @Before
     public void setup() {
-        init(500, 500);
+        init();
         when(candidate.getContent()).thenReturn(candidateContent);
 
         this.command = new RegisterNodeCommand(candidate);

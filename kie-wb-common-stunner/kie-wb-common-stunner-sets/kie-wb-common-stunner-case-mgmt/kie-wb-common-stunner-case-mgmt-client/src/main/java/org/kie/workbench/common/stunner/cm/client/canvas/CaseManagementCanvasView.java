@@ -20,12 +20,11 @@ import javax.inject.Inject;
 
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
+import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvasView;
+import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresLayer;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
-import org.kie.workbench.common.stunner.client.lienzo.wires.WiresManagerFactory;
-import org.kie.workbench.common.stunner.client.widgets.canvas.wires.WiresCanvasView;
 import org.kie.workbench.common.stunner.cm.client.shape.view.CaseManagementShapeView;
 import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
-import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 
 @Dependent
@@ -33,28 +32,26 @@ import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 public class CaseManagementCanvasView extends WiresCanvasView {
 
     @Inject
-    public CaseManagementCanvasView(@CaseManagementEditor WiresManagerFactory wiresManagerFactory) {
-        super(wiresManagerFactory);
+    public CaseManagementCanvasView(final WiresLayer layer) {
+        super(layer);
     }
 
     @Override
-    public WiresCanvas.View addShape(final ShapeView<?> shapeView) {
-
+    public WiresCanvasView add(final ShapeView<?> shapeView) {
         if (WiresUtils.isWiresShape(shapeView)) {
             WiresShape wiresShape = (WiresShape) shapeView;
-            wiresManager.register(wiresShape, false);
+            getLayer().getWiresManager().register(wiresShape, false);
             WiresUtils.assertShapeGroup(wiresShape.getGroup(), WiresCanvas.WIRES_CANVAS_GROUP_ID);
         } else if (WiresUtils.isWiresConnector(shapeView)) {
             //Don't render connectors
-
         } else {
-            super.addShape(shapeView);
+            super.add(shapeView);
         }
 
         return this;
     }
 
-    public AbstractCanvas.View addChildShape(final ShapeView<?> parent, final ShapeView<?> child, final int index) {
+    public WiresCanvasView addChildShape(final ShapeView<?> parent, final ShapeView<?> child, final int index) {
 
         CaseManagementShapeView parentCMView = (CaseManagementShapeView) parent;
         CaseManagementShapeView childCMView = (CaseManagementShapeView) child;

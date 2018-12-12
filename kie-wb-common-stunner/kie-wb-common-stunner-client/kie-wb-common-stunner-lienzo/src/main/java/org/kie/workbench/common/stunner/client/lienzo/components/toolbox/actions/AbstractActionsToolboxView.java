@@ -121,7 +121,8 @@ public abstract class AbstractActionsToolboxView<V extends AbstractActionsToolbo
                      final WiresCanvas canvas,
                      final WiresShape shape) {
         this.canvas = canvas;
-        final Layer topLayer = canvas.getView().getTopLayer();
+        final Layer topLayer = canvas.getView().getLayer().getTopLayer();
+
         this.toolboxView =
                 toolboxFactory
                         .forWiresShape(shape)

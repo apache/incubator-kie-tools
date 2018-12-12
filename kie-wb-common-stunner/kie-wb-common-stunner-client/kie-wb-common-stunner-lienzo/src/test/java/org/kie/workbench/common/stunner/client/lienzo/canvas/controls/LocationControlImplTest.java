@@ -43,7 +43,6 @@ import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresShapeView;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.Layer;
 import org.kie.workbench.common.stunner.core.client.canvas.command.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.command.UpdateElementPositionCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.event.ShapeLocationsChangedEvent;
@@ -100,12 +99,6 @@ public class LocationControlImplTest {
     private static final String ROOT_UUID = "root-uuid1";
     private static final String ELEMENT_UUID = "element-uuid1";
     private static final String DEF_ID = "def-id";
-    private static final BoundsImpl GRAPH_BOUNDS = new BoundsImpl(
-            new BoundImpl(1d,
-                          2d),
-            new BoundImpl(3000d,
-                          4000d)
-    );
     private static final BoundsImpl ELEMENT_BOUNDS = new BoundsImpl(
             new BoundImpl(10d,
                           20d),
@@ -121,12 +114,6 @@ public class LocationControlImplTest {
 
     @Mock
     private WiresCanvas canvas;
-
-    @Mock
-    private WiresCanvas.View canvasView;
-
-    @Mock
-    private Layer layer;
 
     @Mock
     private WiresManager wiresManager;
@@ -197,16 +184,13 @@ public class LocationControlImplTest {
         when(elementContent.getDefinition()).thenReturn(definition);
         when(elementContent.getBounds()).thenReturn(ELEMENT_BOUNDS);
         when(graph.getContent()).thenReturn(graphContent);
-        when(graphContent.getBounds()).thenReturn(GRAPH_BOUNDS);
         when(diagram.getGraph()).thenReturn(graph);
         when(diagram.getMetadata()).thenReturn(metadata);
         when(metadata.getCanvasRootUUID()).thenReturn(ROOT_UUID);
         when(canvasHandler.getAbstractCanvas()).thenReturn(canvas);
         when(canvasHandler.getCanvas()).thenReturn(canvas);
-        when(canvas.getLayer()).thenReturn(layer);
         when(canvas.getShape(eq(ELEMENT_UUID))).thenReturn(shape);
         when(canvas.getShapes()).thenReturn(Collections.singletonList(shape));
-        when(canvas.getView()).thenReturn(canvasView);
         when(canvas.getWiresManager()).thenReturn(wiresManager);
         when(shape.getUUID()).thenReturn(ELEMENT_UUID);
         when(shape.getShapeView()).thenReturn(shapeView);
@@ -222,7 +206,7 @@ public class LocationControlImplTest {
     public void testInit() {
         tested.init(canvasHandler);
         ArgumentCaptor<ILocationAcceptor> locationAcceptorArgumentCaptor = ArgumentCaptor.forClass(ILocationAcceptor.class);
-        verify(canvasView, times(1)).setLocationAcceptor(locationAcceptorArgumentCaptor.capture());
+        verify(wiresManager, times(1)).setLocationAcceptor(locationAcceptorArgumentCaptor.capture());
         assertEquals(tested.LOCATION_ACCEPTOR, locationAcceptorArgumentCaptor.getValue());
     }
 
@@ -233,14 +217,6 @@ public class LocationControlImplTest {
         tested.register(element);
         assertTrue(tested.isRegistered(element));
         verify(shapeView, times(1)).setDragEnabled(eq(true));
-        ArgumentCaptor<BoundingBox> bbCaptor = forClass(BoundingBox.class);
-        verify(wiresCompositeControl, times(1)).setBoundsConstraint(bbCaptor.capture());
-        BoundingBox bb = bbCaptor.getValue();
-        assertEquals(1.0d, bb.getMinX(), 0d);
-        assertEquals(2.0d, bb.getMinY(), 0d);
-        assertEquals(3000.0d, bb.getMaxX(), 0d);
-        assertEquals(4000.0d, bb.getMaxY(), 0d);
-        verify(shapeView, times(1)).setDragBounds(1.0d, 2.0d, 3000d, 4000d);
         verify(shapeEventHandler,
                times(1)).supports(eq(ViewEventType.MOUSE_ENTER));
         verify(shapeEventHandler,
@@ -336,7 +312,7 @@ public class LocationControlImplTest {
         tested.init(canvasHandler);
         tested.register(element);
         ArgumentCaptor<ILocationAcceptor> locationAcceptorArgumentCaptor = ArgumentCaptor.forClass(ILocationAcceptor.class);
-        verify(canvasView, times(1)).setLocationAcceptor(locationAcceptorArgumentCaptor.capture());
+        verify(wiresManager, times(1)).setLocationAcceptor(locationAcceptorArgumentCaptor.capture());
         final ILocationAcceptor locationAcceptor = locationAcceptorArgumentCaptor.getValue();
         final WiresShapeView wiresContainer = mock(WiresShapeView.class);
         when(wiresContainer.getUUID()).thenReturn(ELEMENT_UUID);
@@ -379,7 +355,7 @@ public class LocationControlImplTest {
                atLeastOnce()).getControl();
         verify(wiresCompositeControl,
                atLeastOnce()).setBoundsConstraint(null);
-        verify(canvasView,
+        verify(wiresManager,
                atLeastOnce()).setLocationAcceptor(eq(ILocationAcceptor.ALL));
     }
 }

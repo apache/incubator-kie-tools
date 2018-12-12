@@ -19,13 +19,17 @@ package org.kie.workbench.common.stunner.client.lienzo.canvas.export;
 import javax.enterprise.context.ApplicationScoped;
 
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.types.BoundingBox;
-import com.ait.lienzo.client.core.util.ScratchPad;
+import com.ait.lienzo.client.core.shape.Viewport;
+import com.ait.lienzo.client.core.types.Transform;
+import com.ait.lienzo.client.widget.panel.Bounds;
 import com.ait.lienzo.shared.core.types.DataURLType;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoLayer;
+import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
+import org.kie.workbench.common.stunner.client.lienzo.util.LienzoLayerUtils;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.CanvasExport;
-import org.kie.workbench.common.stunner.core.client.canvas.Layer;
+import org.kie.workbench.common.stunner.core.client.canvas.export.CanvasExport;
+import org.kie.workbench.common.stunner.core.client.canvas.export.CanvasExportSettings;
+import org.kie.workbench.common.stunner.core.client.canvas.export.CanvasURLExportSettings;
 import org.uberfire.ext.editor.commons.client.file.exports.svg.Context2DFactory;
 import org.uberfire.ext.editor.commons.client.file.exports.svg.IContext2D;
 import org.uberfire.ext.editor.commons.client.file.exports.svg.SvgExportSettings;
@@ -34,82 +38,79 @@ import org.uberfire.ext.editor.commons.client.file.exports.svg.SvgExportSettings
 public class LienzoCanvasExport implements CanvasExport<AbstractCanvasHandler> {
 
     public static final String BG_COLOR = "#FFFFFF";
+    public static final int PADDING = 25;
+    private final BoundsProvider boundsProvider;
 
-    @Override
-    public String toImageData(final AbstractCanvasHandler canvasHandler,
-                              final Layer.URLDataType urlDataType) {
-        final LienzoLayer layer = getLayer(canvasHandler);
-        final com.ait.lienzo.client.core.shape.Layer lienzoLayer = layer.getLienzoLayer();
-        return layerToDataURL(lienzoLayer,
-                              getDataType(urlDataType),
-                              0,
-                              0,
-                              lienzoLayer.getWidth(),
-                              lienzoLayer.getHeight(),
-                              BG_COLOR);
+    public LienzoCanvasExport() {
+        this(new WiresLayerBoundsProvider());
+    }
+
+    LienzoCanvasExport(final BoundsProvider boundsProvider) {
+        this.boundsProvider = boundsProvider;
     }
 
     @Override
-    public String toImageData(final AbstractCanvasHandler canvasHandler,
-                              final Layer.URLDataType urlDataType,
-                              final int x,
-                              final int y,
-                              final int width,
-                              final int height) {
+    public IContext2D toContext2D(final AbstractCanvasHandler canvasHandler,
+                                  final CanvasExportSettings settings) {
         final LienzoLayer layer = getLayer(canvasHandler);
         final com.ait.lienzo.client.core.shape.Layer lienzoLayer = layer.getLienzoLayer();
-
-        return layerToDataURL(lienzoLayer,
-                              getDataType(urlDataType),
-                              x,
-                              y,
-                              width,
-                              height,
-                              BG_COLOR);
-    }
-
-    @Override
-    public IContext2D toContext2D(AbstractCanvasHandler canvasHandler) {
-        final com.ait.lienzo.client.core.shape.Layer layer = getLayer(canvasHandler).getLienzoLayer();
-        final IContext2D svgContext2D = Context2DFactory.create(new SvgExportSettings(layer.getWidth(), layer.getHeight(), layer.getContext()));
-        //draw on the context to be returned
-        layer.draw();
-
-        layer.draw(new Context2D(new DelegateNativeContext2D(svgContext2D, canvasHandler)));
-        //redraw on canvas
-        layer.draw();
-
+        final Viewport viewport = lienzoLayer.getViewport();
+        final int[] bounds = boundsProvider.compute(layer, settings);
+        final IContext2D svgContext2D = Context2DFactory.create(new SvgExportSettings(bounds[2],
+                                                                                      bounds[3],
+                                                                                      lienzoLayer.getContext()));
+        // Reset the transform before drawing to the target context.
+        final Transform transform = viewport.getTransform();
+        viewport.setTransform(new Transform());
+        // Draw into the target context.
+        lienzoLayer.draw(new Context2D(new DelegateNativeContext2D(svgContext2D,
+                                                                   canvasHandler)));
+        // Set again the previous transform.
+        viewport.setTransform(transform);
         return svgContext2D;
     }
 
-    private static String layerToDataURL(final com.ait.lienzo.client.core.shape.Layer layer,
-                                         final DataURLType dataURLType,
-                                         final int x,
-                                         final int y,
-                                         final int width,
-                                         final int height,
-                                         final String bgColor) {
-        ScratchPad scratchPad = layer.getScratchPad();
-        if (null != bgColor) {
-            scratchPad.getContext().setFillColor(bgColor);
-            scratchPad.getContext().fillRect(x,
-                                             y,
-                                             width,
-                                             height);
-        }
-        layer.drawWithTransforms(scratchPad.getContext(),
-                                 1,
-                                 new BoundingBox(x,
-                                                 y,
-                                                 width,
-                                                 height));
-        final String data = scratchPad.toDataURL(dataURLType,
-                                                 1);
-        scratchPad.clear();
-        return data;
+    @Override
+    public String toImageData(final AbstractCanvasHandler canvasHandler,
+                              final CanvasURLExportSettings settings) {
+        final LienzoLayer layer = getLayer(canvasHandler);
+        final int[] bounds = boundsProvider.compute(layer, settings);
+        return LienzoLayerUtils.layerToDataURL(layer,
+                                               getDataType(settings.getUrlDataType()),
+                                               bounds[0],
+                                               bounds[1],
+                                               bounds[2],
+                                               bounds[3],
+                                               BG_COLOR);
     }
 
-    private static DataURLType getDataType(final org.kie.workbench.common.stunner.core.client.canvas.Layer.URLDataType type) {
+    public interface BoundsProvider {
+
+        public int[] compute(LienzoLayer layer,
+                             CanvasExportSettings settings);
+    }
+
+    public static class WiresLayerBoundsProvider implements BoundsProvider {
+
+        @Override
+        public int[] compute(final LienzoLayer layer,
+                             final CanvasExportSettings settings) {
+            final int[] result = new int[4];
+            final Bounds bounds = LienzoLayerUtils.computeBounds(layer);
+            result[0] = (int) bounds.getX();
+            result[1] = (int) bounds.getY();
+            if (settings.hasSize()) {
+                result[2] = settings.getWide();
+                result[3] = settings.getHigh();
+            } else {
+                result[2] = Math.round((float) (bounds.getX() + bounds.getWidth()));
+                result[3] = Math.round((float) (bounds.getY() + bounds.getHeight()));
+            }
+            return new int[]{result[0], result[1], result[2] + PADDING, result[3] + PADDING};
+        }
+    }
+
+    private static DataURLType getDataType(final CanvasExport.URLDataType type) {
         switch (type) {
             case JPG:
                 return DataURLType.JPG;
@@ -120,6 +121,6 @@ public class LienzoCanvasExport implements CanvasExport<AbstractCanvasHandler> {
     }
 
     private static LienzoLayer getLayer(final AbstractCanvasHandler canvasHandler) {
-        return (LienzoLayer) canvasHandler.getCanvas().getLayer();
+        return ((WiresCanvas) canvasHandler.getCanvas()).getView().getLayer();
     }
 }

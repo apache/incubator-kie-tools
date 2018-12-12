@@ -120,8 +120,6 @@ import static org.mockito.Mockito.when;
 @RunWith(GwtMockitoTestRunner.class)
 public class AbstractProjectDiagramEditorTest {
 
-    private static final int CANVAS_HEIGHT = 1234;
-    private static final int CANVAS_WIDTH = 5678;
     private static final String TITLE = "title";
 
     @Mock
@@ -274,8 +272,6 @@ public class AbstractProjectDiagramEditorTest {
         when(getMenuSessionItems().setErrorConsumer(any(Consumer.class))).thenReturn(getMenuSessionItems());
         when(getMenuSessionItems().setLoadingCompleted(any(Command.class))).thenReturn(getMenuSessionItems());
         when(getMenuSessionItems().setLoadingStarts(any(Command.class))).thenReturn(getMenuSessionItems());
-        when(diagramEditorPreferences.getCanvasWidth()).thenReturn(CANVAS_WIDTH);
-        when(diagramEditorPreferences.getCanvasHeight()).thenReturn(CANVAS_HEIGHT);
         resourceType = mockResourceType();
         presenter = createDiagramEditor();
         presenter.init();
@@ -324,16 +320,6 @@ public class AbstractProjectDiagramEditorTest {
                 kieView = AbstractProjectDiagramEditorTest.this.kieView;
                 overviewWidget = AbstractProjectDiagramEditorTest.this.overviewWidget;
                 notification = AbstractProjectDiagramEditorTest.this.notification;
-            }
-
-            @Override
-            protected int getCanvasWidth() {
-                return 0;
-            }
-
-            @Override
-            protected int getCanvasHeight() {
-                return 0;
             }
 
             @Override

@@ -24,6 +24,7 @@ import org.kie.workbench.common.stunner.client.widgets.presenters.Viewer;
 import org.kie.workbench.common.stunner.client.widgets.views.WidgetWrapperView;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.CanvasPanel;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasSettings;
 
 /**
@@ -94,8 +95,9 @@ public abstract class AbstractCanvasViewer<T, H extends AbstractCanvasHandler, V
      */
     @SuppressWarnings("unchecked")
     protected void openCanvas(final AbstractCanvas canvas,
+                              final CanvasPanel panel,
                               final CanvasSettings settings) {
-        canvas.initialize(settings);
+        canvas.initialize(panel, settings);
         // Initialize the canvas handler for the canvas.
         getHandler().handle(canvas);
         enableControls();

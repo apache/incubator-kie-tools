@@ -16,7 +16,8 @@
 
 package org.kie.workbench.common.stunner.client.widgets.presenters.diagram.impl;
 
-import org.kie.workbench.common.stunner.client.widgets.canvas.wires.WiresCanvasPresenter;
+import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvas;
+import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvasView;
 import org.kie.workbench.common.stunner.client.widgets.views.WidgetWrapperView;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.BaseCanvasHandler;
@@ -42,18 +43,6 @@ public abstract class DiagramViewerProxy<D extends Diagram>
     protected abstract CanvasCommandFactory<AbstractCanvasHandler> getCanvasCommandFactory();
 
     @Override
-    public void open(final D item,
-                     final int width,
-                     final int height,
-                     final DiagramViewerCallback<D> callback) {
-        this.open(item,
-                  width,
-                  height,
-                  false,
-                  callback);
-    }
-
-    @Override
     public AbstractCanvasHandler getHandler() {
         return getCanvasHandler();
     }
@@ -61,11 +50,12 @@ public abstract class DiagramViewerProxy<D extends Diagram>
     @Override
     protected void scalePanel(final int width,
                               final int height) {
-        getWiresCanvasPresenter().getLienzoPanel().setPixelSize(width,
-                                                                height);
+        getLienzoCanvas().getView().setPixelSize(width,
+                                                 height);
     }
 
-    private WiresCanvasPresenter getWiresCanvasPresenter() {
-        return (WiresCanvasPresenter) getCanvas();
+    @SuppressWarnings("unchecked")
+    private LienzoCanvas<LienzoCanvasView> getLienzoCanvas() {
+        return (LienzoCanvas) getCanvas();
     }
 }

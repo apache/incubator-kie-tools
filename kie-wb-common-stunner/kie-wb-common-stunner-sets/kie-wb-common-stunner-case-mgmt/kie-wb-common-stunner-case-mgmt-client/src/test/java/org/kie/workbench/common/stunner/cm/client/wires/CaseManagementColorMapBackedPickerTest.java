@@ -119,8 +119,7 @@ public class CaseManagementColorMapBackedPickerTest {
         public TestCaseManagementColorMapBackedPicker(final NFastArrayList<WiresShape> shapes,
                                                       final ScratchPad scratchPad,
                                                       final NFastArrayList<WiresShape> shapesToSkip) {
-            super(layer,
-                  shapes,
+            super(shapes,
                   scratchPad,
                   new PickerOptions(false,
                                     0));

@@ -59,8 +59,6 @@ public class CaseManagementShapeControl
         @Override
         public ColorMapBackedPicker get(WiresLayer layer) {
             return new CaseManagementColorMapBackedPicker(layer,
-                                                          layer.getChildShapes(),
-                                                          layer.getLayer().getScratchPad(),
                                                           getOptions());
         }
     }

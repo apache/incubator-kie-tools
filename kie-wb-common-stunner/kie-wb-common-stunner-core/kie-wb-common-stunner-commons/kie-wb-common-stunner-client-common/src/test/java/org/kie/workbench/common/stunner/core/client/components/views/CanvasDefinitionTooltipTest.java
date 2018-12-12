@@ -21,7 +21,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.Layer;
 import org.kie.workbench.common.stunner.core.client.canvas.Transform;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.mockito.ArgumentCaptor;
@@ -73,16 +72,13 @@ public class CanvasDefinitionTooltipTest {
     public void testConfigure() {
         final AbstractCanvasHandler canvasHandler = mock(AbstractCanvasHandler.class);
         final AbstractCanvas canvas = mock(AbstractCanvas.class);
-        final AbstractCanvas.View canvasView = mock(AbstractCanvas.View.class);
-        final Layer layer = mock(Layer.class);
+        final AbstractCanvas.CanvasView canvasView = mock(AbstractCanvas.CanvasView.class);
         final Transform transform = mock(Transform.class);
         when(canvasHandler.getCanvas()).thenReturn(canvas);
         when(canvasHandler.getAbstractCanvas()).thenReturn(canvas);
-        when(canvas.getLayer()).thenReturn(layer);
-        when(layer.getTransform()).thenReturn(transform);
+        when(canvas.getTransform()).thenReturn(transform);
         when(canvas.getView()).thenReturn(canvasView);
-        when(canvasView.getAbsoluteX()).thenReturn(220d);
-        when(canvasView.getAbsoluteY()).thenReturn(50.5d);
+        when(canvasView.getAbsoluteLocation()).thenReturn(new Point2D(220d, 50.5d));
         final CanvasDefinitionTooltip t = tested.configure(canvasHandler);
         assertEquals(tested,
                      t);

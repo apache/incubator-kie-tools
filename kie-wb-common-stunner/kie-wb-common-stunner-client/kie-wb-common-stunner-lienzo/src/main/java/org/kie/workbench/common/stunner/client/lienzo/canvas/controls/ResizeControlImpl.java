@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.canvas.controls;
 
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -44,7 +43,6 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
-import org.kie.workbench.common.stunner.core.client.command.CanvasViolationImpl;
 import org.kie.workbench.common.stunner.core.client.command.RequiresCommandManager;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasControlPoints;
@@ -55,7 +53,6 @@ import org.kie.workbench.common.stunner.core.client.shape.view.event.ResizeHandl
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
-import org.kie.workbench.common.stunner.core.command.impl.CommandResultImpl;
 import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
@@ -71,7 +68,6 @@ import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
-import org.kie.workbench.common.stunner.core.rule.violations.BoundsExceededViolation;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
@@ -263,17 +259,6 @@ public class ResizeControlImpl extends AbstractCanvasHandlerRegistrationControl<
                 new BoundImpl(current.getX() + w,
                               current.getY() + h)
         );
-        // Check the new bound values that come from the user's action do not exceed graph ones.
-        if (!GraphUtils.checkBoundsExceeded(canvasHandler.getDiagram().getGraph(),
-                                            newBounds)) {
-            final CanvasViolation cv = CanvasViolationImpl.Builder.build(new BoundsExceededViolation(newBounds)
-                                                                                 .setUUID(canvasHandler.getUuid()));
-
-            return new CommandResultImpl<>(
-                    CommandResult.Type.ERROR,
-                    Collections.singleton(cv)
-            );
-        }
         // Execute the update position and update property/ies command/s on the bean instance to achieve the new bounds.
         final List<Command<AbstractCanvasHandler, CanvasViolation>> commands = getResizeCommands(element,
                                                                                                  w,

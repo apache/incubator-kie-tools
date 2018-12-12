@@ -22,8 +22,7 @@ import org.kie.workbench.common.stunner.core.factory.graph.GraphFactory;
 /**
  * Custom Case Management factory for graphs.
  */
-public interface CaseManagementGraphFactory extends BPMNGraphFactory, GraphFactory {
+public interface CaseManagementGraphFactory extends BPMNGraphFactory,
+                                                    GraphFactory {
 
-    double GRAPH_DEFAULT_WIDTH = 2800d;
-    double GRAPH_DEFAULT_HEIGHT = 1400d;
 }

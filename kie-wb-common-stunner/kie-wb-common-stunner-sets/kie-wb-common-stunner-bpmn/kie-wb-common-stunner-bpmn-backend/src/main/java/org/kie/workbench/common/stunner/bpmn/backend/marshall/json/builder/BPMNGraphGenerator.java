@@ -37,7 +37,6 @@ import com.fasterxml.jackson.core.Version;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.OryxManager;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
-import org.kie.workbench.common.stunner.bpmn.factory.BPMNGraphFactory;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.command.Command;
@@ -50,8 +49,6 @@ import org.kie.workbench.common.stunner.core.graph.command.EmptyRulesCommandExec
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.impl.GraphCommandFactory;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.index.GraphIndexBuilder;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
@@ -156,15 +153,6 @@ public class BPMNGraphGenerator extends JsonGenerator {
     public Graph<DefinitionSet, Node> createGraph() {
         Graph<DefinitionSet, Node> graph = (Graph<DefinitionSet, Node>) factoryManager.newElement(UUID.uuid(),
                                                                                                   diagramDefinitionSetClass);
-        // TODO: Where are the BPMN diagram bounds in the Oryx json structure? Exist?
-        if (null == graph.getContent().getBounds()) {
-            graph.getContent().setBounds(new BoundsImpl(
-                    new BoundImpl(0d,
-                                  0d),
-                    new BoundImpl(BPMNGraphFactory.GRAPH_DEFAULT_WIDTH,
-                                  BPMNGraphFactory.GRAPH_DEFAULT_HEIGHT)
-            ));
-        }
         builderContext
                 // Initialize the builder context.
                 .init(graph)

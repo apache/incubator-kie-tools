@@ -24,8 +24,6 @@ import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
  */
 public interface ShapeView<T> {
 
-    String UUID_PREFIX = "stunner:";
-
     /**
      * Set the unique view uuid.
      */

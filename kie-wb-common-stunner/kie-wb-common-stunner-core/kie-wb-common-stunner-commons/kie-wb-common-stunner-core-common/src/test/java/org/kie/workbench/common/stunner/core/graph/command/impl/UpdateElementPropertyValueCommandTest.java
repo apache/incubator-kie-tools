@@ -59,8 +59,7 @@ public class UpdateElementPropertyValueCommandTest extends AbstractGraphCommandT
     @Before
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
-        super.init(500,
-                   500);
+        super.init();
         content = mockView(10,
                            10,
                            50,

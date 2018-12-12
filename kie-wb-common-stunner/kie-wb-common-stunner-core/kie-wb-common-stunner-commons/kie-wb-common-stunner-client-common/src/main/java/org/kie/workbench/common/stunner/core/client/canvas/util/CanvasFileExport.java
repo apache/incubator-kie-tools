@@ -24,8 +24,9 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.CanvasExport;
-import org.kie.workbench.common.stunner.core.client.canvas.Layer;
+import org.kie.workbench.common.stunner.core.client.canvas.export.CanvasExport;
+import org.kie.workbench.common.stunner.core.client.canvas.export.CanvasExportSettings;
+import org.kie.workbench.common.stunner.core.client.canvas.export.CanvasURLExportSettings;
 import org.uberfire.ext.editor.commons.client.file.exports.FileExport;
 import org.uberfire.ext.editor.commons.client.file.exports.ImageDataUriContent;
 import org.uberfire.ext.editor.commons.client.file.exports.PdfDocument;
@@ -76,25 +77,25 @@ public class CanvasFileExport {
 
     public void exportToSvg(final AbstractCanvasHandler canvasHandler,
                             final String fileName) {
-        final String fullFileName = fileName + "." + getFileExtension(Layer.URLDataType.SVG);
-        svgFileExport.export(canvasExport.toContext2D(canvasHandler), fullFileName);
+        final String fullFileName = fileName + "." + getFileExtension(CanvasExport.URLDataType.SVG);
+        svgFileExport.export(canvasExport.toContext2D(canvasHandler, CanvasExportSettings.build()), fullFileName);
     }
 
     public String exportToSvg(final AbstractCanvasHandler canvasHandler) {
-        return canvasExport.toContext2D(canvasHandler).getSerializedSvg();
+        return canvasExport.toContext2D(canvasHandler, CanvasExportSettings.build()).getSerializedSvg();
     }
 
     public void exportToJpg(final AbstractCanvasHandler canvasHandler,
                             final String fileName) {
         exportImage(canvasHandler,
-                    Layer.URLDataType.JPG,
+                    CanvasExport.URLDataType.JPG,
                     fileName);
     }
 
     public void exportToPng(final AbstractCanvasHandler canvasHandler,
                             final String fileName) {
         exportImage(canvasHandler,
-                    Layer.URLDataType.PNG,
+                    CanvasExport.URLDataType.PNG,
                     fileName);
     }
 
@@ -109,7 +110,7 @@ public class CanvasFileExport {
                              final String fileName,
                              final PdfExportPreferences pdfPreferences) {
         final String dataUrl = toDataImageURL(canvasHandler,
-                                              Layer.URLDataType.JPG);
+                                              CanvasExport.URLDataType.JPG);
         final String title = canvasHandler.getDiagram().getMetadata().getTitle();
         final PdfDocument content = PdfDocument.create(PdfExportPreferences.create(PdfExportPreferences.Orientation.LANDSCAPE,
                                                                                    pdfPreferences.getUnit(),
@@ -128,7 +129,7 @@ public class CanvasFileExport {
     }
 
     private void exportImage(final AbstractCanvasHandler canvasHandler,
-                             final Layer.URLDataType type,
+                             final CanvasExport.URLDataType type,
                              final String fileName) {
         final String dataUrl = toDataImageURL(canvasHandler,
                                               type);
@@ -138,12 +139,12 @@ public class CanvasFileExport {
     }
 
     private String toDataImageURL(final AbstractCanvasHandler canvasHandler,
-                                  final Layer.URLDataType urlDataType) {
+                                  final CanvasExport.URLDataType urlDataType) {
         return canvasExport.toImageData(canvasHandler,
-                                        urlDataType);
+                                        CanvasURLExportSettings.build(urlDataType));
     }
 
-    private static String getFileExtension(final Layer.URLDataType type) {
+    private static String getFileExtension(final CanvasExport.URLDataType type) {
         switch (type) {
             case JPG:
                 return EXT_JPG;

@@ -36,6 +36,9 @@ import org.kie.workbench.common.stunner.client.widgets.toolbar.Toolbar;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.impl.EditorToolbar;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.event.AbstractCanvasHandlerEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandExecutedEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasUndoCommandExecutedEvent;
 import org.kie.workbench.common.stunner.core.client.event.screen.ScreenMaximizedEvent;
 import org.kie.workbench.common.stunner.core.client.event.screen.ScreenMinimizedEvent;
 import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistries;
@@ -106,6 +109,20 @@ public class SessionEditorPresenter<S extends EditorSession>
         getPalette().onScreenMinimized(event);
     }
 
+    void commandExecutedFired(@Observes final CanvasCommandExecutedEvent event) {
+        refreshOnEvent(event);
+    }
+
+    void commandUndoExecutedFired(@Observes final CanvasUndoCommandExecutedEvent event) {
+        refreshOnEvent(event);
+    }
+
+    private void refreshOnEvent(final AbstractCanvasHandlerEvent event) {
+        if (isSameContext(event)) {
+            editor.getCanvasPanel().refresh();
+        }
+    }
+
     @Override
     @SuppressWarnings("unchecked")
     protected Toolbar<S> newToolbar(final Annotation qualifier) {
@@ -127,5 +144,11 @@ public class SessionEditorPresenter<S extends EditorSession>
     @Override
     protected Class<? extends AbstractSession> getSessionType() {
         return EditorSession.class;
+    }
+
+    private boolean isSameContext(final AbstractCanvasHandlerEvent event) {
+        final AbstractCanvasHandler sessionHandlerContext = (AbstractCanvasHandler) event.getCanvasHandler();
+        return null != getHandler() &&
+                getHandler().equals(sessionHandlerContext);
     }
 }

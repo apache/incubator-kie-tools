@@ -23,7 +23,6 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.kie.workbench.common.stunner.bpmn.factory.BPMNGraphFactory;
 import org.kie.workbench.common.stunner.bpmn.project.client.resources.BPMNClientConstants;
 import org.kie.workbench.common.stunner.bpmn.project.client.type.BPMNDiagramResourceType;
 import org.kie.workbench.common.stunner.client.widgets.popups.PopupUtil;
@@ -127,16 +126,6 @@ public class BPMNDiagramEditor extends AbstractProjectDiagramEditor<BPMNDiagramR
                           final PlaceRequest place) {
         super.doStartUp(path,
                         place);
-    }
-
-    @Override
-    protected int getCanvasWidth() {
-        return (int) BPMNGraphFactory.GRAPH_DEFAULT_WIDTH;
-    }
-
-    @Override
-    protected int getCanvasHeight() {
-        return (int) BPMNGraphFactory.GRAPH_DEFAULT_HEIGHT;
     }
 
     @Override

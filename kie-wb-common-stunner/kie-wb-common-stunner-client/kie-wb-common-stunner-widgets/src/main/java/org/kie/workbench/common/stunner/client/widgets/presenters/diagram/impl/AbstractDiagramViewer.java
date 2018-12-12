@@ -21,15 +21,13 @@ import org.kie.workbench.common.stunner.client.widgets.presenters.diagram.Diagra
 import org.kie.workbench.common.stunner.client.widgets.views.WidgetWrapperView;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.CanvasPanel;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasSettings;
 import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistries;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
-import org.kie.workbench.common.stunner.core.graph.Graph;
-import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
-import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.preferences.StunnerDiagramEditorPreferences;
 import org.kie.workbench.common.stunner.core.preferences.StunnerPreferences;
 import org.uberfire.mvp.ParameterizedCommand;
@@ -48,29 +46,51 @@ public abstract class AbstractDiagramViewer<D extends Diagram, H extends Abstrac
 
     protected abstract AbstractCanvas getCanvas();
 
+    public abstract CanvasPanel getCanvasPanel();
+
     protected abstract StunnerPreferencesRegistries getPreferencesRegistry();
+
+    public StunnerDiagramEditorPreferences getPreferences(final D diagram) {
+        final String definitionSetId = diagram.getMetadata().getDefinitionSetId();
+        final StunnerPreferences preferences = getPreferencesRegistry().get(definitionSetId, StunnerPreferences.class);
+        return preferences.getDiagramEditorPreferences();
+    }
 
     @Override
     @SuppressWarnings("unchecked")
     public void open(final D diagram,
                      final DiagramViewer.DiagramViewerCallback<D> callback) {
+        final StunnerDiagramEditorPreferences editorPreferences = getPreferences(diagram);
+        final boolean isHiDPIEnabled = null != editorPreferences && editorPreferences.isHiDPIEnabled();
+        final CanvasSettings settings = new CanvasSettings(isHiDPIEnabled);
+        this.open(diagram,
+                  settings,
+                  callback);
+    }
+
+    @Override
+    public void open(final D diagram,
+                     final int width,
+                     final int height,
+                     final DiagramViewerCallback<D> callback) {
+        final StunnerDiagramEditorPreferences editorPreferences = getPreferences(diagram);
+        final boolean isHiDPIEnabled = null != editorPreferences && editorPreferences.isHiDPIEnabled();
+        final CanvasSettings settings = new CanvasSettings(width, height,
+                                                           isHiDPIEnabled);
+        this.open(diagram,
+                  settings,
+                  callback);
+    }
+
+    protected void open(final D diagram,
+                        final CanvasSettings settings,
+                        final DiagramViewerCallback<D> callback) {
         onOpen(diagram);
         callback.onOpen(diagram);
 
-        final String definitionSetId = diagram.getMetadata().getDefinitionSetId();
-        final StunnerPreferences preferences = getPreferencesRegistry().get(definitionSetId, StunnerPreferences.class);
-        final StunnerDiagramEditorPreferences editorPreferences = preferences.getDiagramEditorPreferences();
-
-        final boolean isHiDPIEnabled = editorPreferences != null && editorPreferences.isHiDPIEnabled();
-
-        final int[] ds = getDiagramSize(diagram);
-
-        final CanvasSettings settings = new CanvasSettings(ds[0],
-                                                           ds[1],
-                                                           isHiDPIEnabled);
-
         // Open and initialize the canvas and its handler.
         openCanvas(getCanvas(),
+                   getCanvasPanel(),
                    settings);
         // Notify listeners that the canvas and the handler are ready.
         callback.afterCanvasInitialized();
@@ -87,38 +107,6 @@ public abstract class AbstractDiagramViewer<D extends Diagram, H extends Abstrac
                                   }
                               }
                           });
-    }
-
-    public void open(final D item,
-                     final int width,
-                     final int height,
-                     final boolean keepAspectRatio,
-                     final DiagramViewer.DiagramViewerCallback<D> callback) {
-        this.open(item,
-                  new DiagramViewer.DiagramViewerCallback<D>() {
-                      @Override
-                      public void onOpen(final D diagram) {
-                          callback.onOpen(diagram);
-                      }
-
-                      @Override
-                      public void afterCanvasInitialized() {
-                          callback.afterCanvasInitialized();
-                      }
-
-                      @Override
-                      public void onSuccess() {
-                          scale(width,
-                                height,
-                                keepAspectRatio);
-                          callback.onSuccess();
-                      }
-
-                      @Override
-                      public void onError(final ClientRuntimeError error) {
-                          callback.onError(error);
-                      }
-                  });
     }
 
     @Override
@@ -140,19 +128,10 @@ public abstract class AbstractDiagramViewer<D extends Diagram, H extends Abstrac
                          final boolean keepAspectRatio) {
         checkNotNull("item",
                      getInstance());
-        final int[] ds = getDiagramSize(getInstance());
-        scale(ds[0],
-              ds[1],
+        scale(getCanvas().getWidth(),
+              getCanvas().getHeight(),
               toWidth,
               toHeight,
               keepAspectRatio);
-    }
-
-    private int[] getDiagramSize(final D diagram) {
-        final Graph graph = diagram.getGraph();
-        final double[] size = GraphUtils.getGraphSize((DefinitionSet) graph.getContent());
-        final double w = size[0];
-        final double h = size[1];
-        return new int[]{(int) w, (int) h};
     }
 }

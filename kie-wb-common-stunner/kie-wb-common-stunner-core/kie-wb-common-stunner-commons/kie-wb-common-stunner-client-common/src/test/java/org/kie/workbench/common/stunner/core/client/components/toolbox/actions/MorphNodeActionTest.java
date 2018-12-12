@@ -22,7 +22,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.Layer;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
@@ -85,9 +84,6 @@ public class MorphNodeActionTest {
     private AbstractCanvas canvas;
 
     @Mock
-    private Layer layer;
-
-    @Mock
     private Diagram diagram;
 
     @Mock
@@ -118,8 +114,8 @@ public class MorphNodeActionTest {
         when(canvasHandler.getGraphIndex()).thenReturn(graphIndex);
         when(canvasHandler.getDiagram()).thenReturn(diagram);
         when(canvasHandler.getCanvas()).thenReturn(canvas);
+        when(canvasHandler.getAbstractCanvas()).thenReturn(canvas);
         when(canvasHandler.getShapeFactory(eq(SSID_UUID))).thenReturn(shapeFactory);
-        when(canvas.getLayer()).thenReturn(layer);
         when(diagram.getMetadata()).thenReturn(metadata);
         when(metadata.getShapeSetId()).thenReturn(SSID_UUID);
         when(graphIndex.get(eq(E_UUID))).thenReturn(element);

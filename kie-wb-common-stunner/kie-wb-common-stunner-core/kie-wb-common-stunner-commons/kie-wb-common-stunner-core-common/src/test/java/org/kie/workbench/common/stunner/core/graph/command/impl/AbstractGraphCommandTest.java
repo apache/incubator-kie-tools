@@ -77,14 +77,8 @@ public abstract class AbstractGraphCommandTest {
     protected Collection<Node> graphNodes = new LinkedList<>();
 
     @SuppressWarnings("unchecked")
-    public void init(final double width,
-                     final double height) {
+    public void init() {
         MockitoAnnotations.initMocks(this);
-        Bounds bounds = mockBounds(0,
-                                   0,
-                                   width,
-                                   height);
-        when(graphContent.getBounds()).thenReturn(bounds);
         when(graph.getUUID()).thenReturn(GRAPH_UUID);
         when(graph.getContent()).thenReturn(graphContent);
         when(graph.nodes()).thenReturn(graphNodes);

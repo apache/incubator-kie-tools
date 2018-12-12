@@ -21,6 +21,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.BaseCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
+import org.kie.workbench.common.stunner.core.client.canvas.CanvasPanel;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
@@ -33,9 +34,12 @@ import org.kie.workbench.common.stunner.core.graph.Element;
  * to fit the given size, usually for previewing goals.
  * @param <D> The diagram type.
  */
-public abstract class DiagramPreviewProxy<D extends Diagram> extends AbstractDiagramPreview<D, AbstractCanvasHandler> {
+public abstract class DiagramPreviewProxy<D extends Diagram>
+        extends AbstractDiagramPreview<D, AbstractCanvasHandler> {
 
     private final DiagramViewerProxy<D> viewer;
+
+    protected abstract CanvasPanel getCanvasPanel();
 
     @SuppressWarnings("unchecked")
     public DiagramPreviewProxy(final WidgetWrapperView view,
@@ -60,6 +64,11 @@ public abstract class DiagramPreviewProxy<D extends Diagram> extends AbstractDia
                     @Override
                     protected AbstractCanvas getCanvas() {
                         return DiagramPreviewProxy.this.getCanvas();
+                    }
+
+                    @Override
+                    public CanvasPanel getCanvasPanel() {
+                        return DiagramPreviewProxy.this.getCanvasPanel();
                     }
 
                     @Override

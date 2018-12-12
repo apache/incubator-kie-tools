@@ -17,10 +17,50 @@
 package org.kie.workbench.common.stunner.client.lienzo.util;
 
 import com.ait.lienzo.client.core.shape.Shape;
+import com.ait.lienzo.client.core.types.BoundingBox;
+import com.ait.lienzo.client.core.util.ScratchPad;
+import com.ait.lienzo.client.widget.panel.Bounds;
+import com.ait.lienzo.client.widget.panel.impl.BoundsProviderFactory;
+import com.ait.lienzo.shared.core.types.DataURLType;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoLayer;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
 
 public class LienzoLayerUtils {
+
+    public static String layerToDataURL(final LienzoLayer lienzoLayer,
+                                        final DataURLType dataURLType,
+                                        final int x,
+                                        final int y,
+                                        final int width,
+                                        final int height,
+                                        final String bgColor) {
+        final com.ait.lienzo.client.core.shape.Layer layer = lienzoLayer.getLienzoLayer();
+        final ScratchPad scratchPad = layer.getScratchPad();
+        scratchPad.setPixelSize(width, height);
+        if (null != bgColor) {
+            scratchPad.getContext().setFillColor(bgColor);
+            scratchPad.getContext().fillRect(0,
+                                             0,
+                                             width,
+                                             height);
+        }
+        layer.drawWithTransforms(scratchPad.getContext(),
+                                 1,
+                                 new BoundingBox(x,
+                                                 y,
+                                                 width,
+                                                 height));
+        final String data = scratchPad.toDataURL(dataURLType,
+                                                 1);
+        scratchPad.clear();
+        return data;
+    }
+
+    private static final BoundsProviderFactory.WiresBoundsProvider WIRES_BOUNDS_PROVIDER = new BoundsProviderFactory.WiresBoundsProvider();
+
+    public static Bounds computeBounds(final LienzoLayer layer) {
+        return WIRES_BOUNDS_PROVIDER.get(layer.getLienzoLayer());
+    }
 
     public static String getUUID_At(final LienzoLayer lienzoLayer,
                                     final double x,

@@ -33,8 +33,10 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.client.widgets.canvas.ScrollableLienzoPanel;
 import org.kie.workbench.common.stunner.client.widgets.presenters.AbstractCanvasHandlerViewerTest;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
+import org.kie.workbench.common.stunner.core.client.canvas.CanvasPanel;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasFocusedShapeEvent;
 import org.mockito.Mock;
 
@@ -58,6 +60,9 @@ public class SessionPresenterViewTest extends AbstractCanvasHandlerViewerTest {
 
     @Mock
     private ContextMenuEvent contextMenuEvent;
+
+    @Mock
+    private ScrollableLienzoPanel canvasPanel;
 
     @Mock
     private SessionPresenterView tested;
@@ -265,5 +270,10 @@ public class SessionPresenterViewTest extends AbstractCanvasHandlerViewerTest {
 
         verify(settings).setType("success kie-session-notification");
         verify(view).showNotification(info, message, IconType.INFO_CIRCLE);
+    }
+
+    @Override
+    protected CanvasPanel getCanvasPanel() {
+        return canvasPanel;
     }
 }

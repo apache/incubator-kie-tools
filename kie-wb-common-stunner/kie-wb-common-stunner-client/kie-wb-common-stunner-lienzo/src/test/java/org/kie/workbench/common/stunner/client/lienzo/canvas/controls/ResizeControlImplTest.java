@@ -32,7 +32,6 @@ import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.ext.Wires
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.Layer;
 import org.kie.workbench.common.stunner.core.client.canvas.command.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.command.UpdateElementPositionCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.command.UpdateElementPropertyCommand;
@@ -92,12 +91,6 @@ public class ResizeControlImplTest {
     private static final String W_PROPERTY_ID = "w-property-id";
     private static final String H_PROPERTY_ID = "h-property-id";
     private static final String R_PROPERTY_ID = "r-property-id";
-    private static final BoundsImpl GRAPH_BOUNDS = new BoundsImpl(
-            new BoundImpl(1d,
-                          2d),
-            new BoundImpl(3000d,
-                          4000d)
-    );
     private static final BoundsImpl ELEMENT_BOUNDS = new BoundsImpl(
             new BoundImpl(10d,
                           20d),
@@ -123,9 +116,6 @@ public class ResizeControlImplTest {
 
     @Mock
     private AbstractCanvas canvas;
-
-    @Mock
-    private Layer layer;
 
     @Mock
     private Diagram diagram;
@@ -253,12 +243,10 @@ public class ResizeControlImplTest {
         when(elementContent.getDefinition()).thenReturn(definition);
         when(elementContent.getBounds()).thenReturn(ELEMENT_BOUNDS);
         when(graph.getContent()).thenReturn(graphContent);
-        when(graphContent.getBounds()).thenReturn(GRAPH_BOUNDS);
         when(diagram.getGraph()).thenReturn(graph);
         when(diagram.getMetadata()).thenReturn(metadata);
         when(metadata.getCanvasRootUUID()).thenReturn(ROOT_UUID);
         when(canvasHandler.getCanvas()).thenReturn(canvas);
-        when(canvas.getLayer()).thenReturn(layer);
         when(canvas.getShape(eq(ELEMENT_UUID))).thenReturn(shape);
         when(canvas.getShapes()).thenReturn(Collections.singletonList(shape));
         when(shape.getUUID()).thenReturn(ELEMENT_UUID);

@@ -19,9 +19,9 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.CanvasExport;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.Layer;
+import org.kie.workbench.common.stunner.core.client.canvas.export.CanvasExport;
+import org.kie.workbench.common.stunner.core.client.canvas.export.CanvasURLExportSettings;
 import org.kie.workbench.common.stunner.core.client.service.ClientDiagramServiceImpl;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
@@ -111,6 +111,6 @@ public class ShowcaseDiagramService {
 
     private String toImageData(final EditorSession session) {
         return canvasExport.toImageData(session.getCanvasHandler(),
-                                        Layer.URLDataType.JPG);
+                                        CanvasURLExportSettings.build(CanvasExport.URLDataType.JPG));
     }
 }

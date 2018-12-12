@@ -29,11 +29,15 @@ import org.kie.workbench.common.stunner.cm.client.shape.view.CaseManagementShape
 public class CaseManagementColorMapBackedPicker extends ColorMapBackedPicker {
 
     public CaseManagementColorMapBackedPicker(final WiresLayer layer,
-                                              final NFastArrayList<WiresShape> shapes,
-                                              final ScratchPad scratchPad,
                                               final PickerOptions options) {
         super(layer,
-              shapes,
+              options);
+    }
+
+    public CaseManagementColorMapBackedPicker(final NFastArrayList<WiresShape> shapes,
+                                              final ScratchPad scratchPad,
+                                              final PickerOptions options) {
+        super(shapes,
               scratchPad,
               options);
     }

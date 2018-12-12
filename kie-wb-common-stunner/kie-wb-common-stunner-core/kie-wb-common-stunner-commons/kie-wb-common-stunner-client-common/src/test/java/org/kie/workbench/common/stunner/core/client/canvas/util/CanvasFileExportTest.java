@@ -20,8 +20,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.CanvasExport;
-import org.kie.workbench.common.stunner.core.client.canvas.Layer;
+import org.kie.workbench.common.stunner.core.client.canvas.export.CanvasExport;
+import org.kie.workbench.common.stunner.core.client.canvas.export.CanvasExportSettings;
+import org.kie.workbench.common.stunner.core.client.canvas.export.CanvasURLExportSettings;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.mockito.ArgumentCaptor;
@@ -112,7 +113,7 @@ public class CanvasFileExportTest {
     @Test
     public void testExportToJpg() {
         when(canvasExport.toImageData(eq(canvasHandler),
-                                      eq(Layer.URLDataType.JPG))).thenReturn(JPG_DATA_URI);
+                                      any(CanvasURLExportSettings.class))).thenReturn(JPG_DATA_URI);
         tested.exportToJpg(canvasHandler,
                            "file1");
         final ArgumentCaptor<ImageDataUriContent> contentArgumentCaptor =
@@ -131,7 +132,7 @@ public class CanvasFileExportTest {
     @Test
     public void testExportToPng() {
         when(canvasExport.toImageData(eq(canvasHandler),
-                                      eq(Layer.URLDataType.PNG))).thenReturn(PNG_DATA_URI);
+                                      any(CanvasURLExportSettings.class))).thenReturn(PNG_DATA_URI);
         tested.exportToPng(canvasHandler,
                            "file1");
         final ArgumentCaptor<ImageDataUriContent> contentArgumentCaptor =
@@ -150,7 +151,7 @@ public class CanvasFileExportTest {
     @Test
     public void testExportToPdf() {
         when(canvasExport.toImageData(eq(canvasHandler),
-                                      eq(Layer.URLDataType.JPG))).thenReturn(JPG_DATA_URI);
+                                      any(CanvasURLExportSettings.class))).thenReturn(JPG_DATA_URI);
         verify(imageFileExport,
                never()).export(any(ImageDataUriContent.class),
                                anyString());
@@ -163,7 +164,7 @@ public class CanvasFileExportTest {
 
     @Test
     public void testExportToSVG() {
-        when(canvasExport.toContext2D(canvasHandler)).thenReturn(context2D);
+        when(canvasExport.toContext2D(eq(canvasHandler), any(CanvasExportSettings.class))).thenReturn(context2D);
         tested.exportToSvg(canvasHandler, "file1");
         verify(svgFileExport, times(1)).export(context2D, "file1.svg");
     }

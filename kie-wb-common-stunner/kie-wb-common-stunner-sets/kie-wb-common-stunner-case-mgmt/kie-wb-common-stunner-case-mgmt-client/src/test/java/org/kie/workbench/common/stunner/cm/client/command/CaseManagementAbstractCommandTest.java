@@ -21,8 +21,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
+import org.kie.workbench.common.stunner.cm.client.canvas.CaseManagementCanvas;
 import org.kie.workbench.common.stunner.cm.client.canvas.CaseManagementCanvasHandler;
-import org.kie.workbench.common.stunner.cm.client.canvas.CaseManagementCanvasPresenter;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
@@ -50,7 +50,7 @@ public abstract class CaseManagementAbstractCommandTest {
     protected CaseManagementCanvasHandler canvasHandler;
 
     @Mock
-    protected CaseManagementCanvasPresenter canvas;
+    protected CaseManagementCanvas canvas;
 
     @Mock
     protected Diagram diagram;

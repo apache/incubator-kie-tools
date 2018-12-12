@@ -239,10 +239,6 @@ public class GraphUtils {
                            y);
     }
 
-    public static double[] getGraphSize(final DefinitionSet element) {
-        return getSize(element.getBounds());
-    }
-
     public static double[] getNodeSize(final View element) {
         return getSize(element.getBounds());
     }
@@ -253,11 +249,6 @@ public class GraphUtils {
         final double w = lr.getX() - ul.getX();
         final double h = lr.getY() - ul.getY();
         return new double[]{Math.abs(w), Math.abs(h)};
-    }
-
-    @SuppressWarnings("unchecked")
-    public static Bounds getBounds(final Graph<DefinitionSet, ? extends Node> graph) {
-        return graph.getContent().getBounds();
     }
 
     public static boolean isRootNode(Element<? extends View<?>> element, final Graph<DefinitionSet, Node> graph) {
@@ -271,23 +262,11 @@ public class GraphUtils {
         return false;
     }
 
-    /**
-     * Checks that the given Bounds do not exceed graph limits.
-     * @return if bounds exceed graph limits it returns <code>false</code>. Otherwise returns <code>true</code>.
-     */
-    @SuppressWarnings("unchecked")
-    public static boolean checkBoundsExceeded(final Graph<DefinitionSet, ? extends Node> graph,
-                                              final Bounds bounds) {
-        final Bounds graphBounds = graph.getContent().getBounds();
-        if ((bounds.getLowerRight().getX() > graphBounds.getLowerRight().getX())
-                || (bounds.getLowerRight().getY() > graphBounds.getLowerRight().getY())) {
-            return false;
-        }
-        return true;
-    }
-
     public static boolean checkBoundsExceeded(final Bounds parentBounds,
                                               final Bounds bounds) {
+        if (null == parentBounds) {
+            return true;
+        }
         if ((bounds.getUpperLeft().getX() < parentBounds.getUpperLeft().getX())
                 || (bounds.getUpperLeft().getY() < parentBounds.getUpperLeft().getY())) {
             return false;

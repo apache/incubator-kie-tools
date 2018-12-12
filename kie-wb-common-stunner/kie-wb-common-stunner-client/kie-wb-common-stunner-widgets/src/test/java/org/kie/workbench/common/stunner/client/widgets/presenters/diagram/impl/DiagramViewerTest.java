@@ -23,12 +23,14 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.client.widgets.canvas.ScrollableLienzoPanel;
 import org.kie.workbench.common.stunner.client.widgets.presenters.AbstractCanvasHandlerViewerTest;
 import org.kie.workbench.common.stunner.client.widgets.presenters.diagram.DiagramViewer;
 import org.kie.workbench.common.stunner.client.widgets.views.WidgetWrapperView;
 import org.kie.workbench.common.stunner.core.client.ManagedInstanceStub;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.CanvasPanel;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasSettings;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
@@ -43,7 +45,6 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.preferences.StunnerPreferences;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.ArgumentCaptor;
-import org.mockito.ArgumentMatcher;
 import org.mockito.Mock;
 import org.uberfire.mvp.ParameterizedCommand;
 
@@ -52,7 +53,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.argThat;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -76,7 +76,11 @@ public class DiagramViewerTest extends AbstractCanvasHandlerViewerTest {
     private ManagedInstance<SelectionControl<AbstractCanvasHandler, Element>> selectionControl;
 
     private ManagedInstance<AbstractCanvas> canvases;
+    private ManagedInstance<CanvasPanel> canvasPanels;
     private ManagedInstance<AbstractCanvasHandler> canvasHandlers;
+
+    @Mock
+    ScrollableLienzoPanel canvasPanel;
 
     @Mock
     WidgetWrapperView view;
@@ -99,7 +103,9 @@ public class DiagramViewerTest extends AbstractCanvasHandlerViewerTest {
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
         super.init();
+        when(canvasView.getLienzoPanel()).thenReturn(canvasPanel);
         canvases = spy(new ManagedInstanceStub<>(canvas));
+        canvasPanels = spy(new ManagedInstanceStub<>(canvasPanel));
         canvasHandlers = spy(new ManagedInstanceStub<>(canvasHandler));
         zoomControl = spy(new ManagedInstanceStub<>(zoomControlInstance));
         selectionControl = spy(new ManagedInstanceStub<>(selectionControlInstance));
@@ -108,6 +114,7 @@ public class DiagramViewerTest extends AbstractCanvasHandlerViewerTest {
         this.tested =
                 new DefaultDiagramViewer(definitionUtils,
                                          canvases,
+                                         canvasPanels,
                                          canvasHandlers,
                                          zoomControl,
                                          selectionControl,
@@ -122,16 +129,6 @@ public class DiagramViewerTest extends AbstractCanvasHandlerViewerTest {
                     callback);
         assertEquals(diagram,
                      tested.getInstance());
-        verify(canvas,
-               times(1)).initialize(argThat(new ArgumentMatcher<CanvasSettings>() {
-            @Override
-            public boolean matches(Object emp) {
-                CanvasSettings settings = (CanvasSettings) emp;
-                return !settings.isHiDPIEnabled()
-                        && settings.getHeight() == 100
-                        && settings.getWidth() == 100;
-            }
-        }));
         verify(canvasHandler,
                times(1)).handle(eq(canvas));
         verify(canvasHandler,
@@ -162,6 +159,8 @@ public class DiagramViewerTest extends AbstractCanvasHandlerViewerTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testScale() {
+        when(canvas.getWidth()).thenReturn(100);
+        when(canvas.getHeight()).thenReturn(100);
         tested.open(diagram,
                     callback);
         tested.scale(50,
@@ -171,7 +170,7 @@ public class DiagramViewerTest extends AbstractCanvasHandlerViewerTest {
         verify(zoomControlInstance,
                times(1)).scale(eq(0.5d),
                                eq(0.5d));
-        verify(lienzoPanel,
+        verify(canvasView,
                times(1)).setPixelSize(50,
                                       50);
     }
@@ -206,5 +205,10 @@ public class DiagramViewerTest extends AbstractCanvasHandlerViewerTest {
                times(1)).destroyAll();
         verify(view,
                times(1)).clear();
+    }
+
+    @Override
+    protected CanvasPanel getCanvasPanel() {
+        return canvasPanel;
     }
 }

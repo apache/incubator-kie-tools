@@ -19,12 +19,13 @@ package org.kie.workbench.common.stunner.client.lienzo.canvas.controls;
 import com.ait.lienzo.client.core.shape.wires.IConnectionAcceptor;
 import com.ait.lienzo.client.core.shape.wires.IContainmentAcceptor;
 import com.ait.lienzo.client.core.shape.wires.IDockingAcceptor;
+import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
-import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
+import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvasView;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.UpdateChildNodeCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
@@ -57,9 +58,11 @@ public class ContainmentAcceptorControlImplTest {
     @Mock
     private AbstractCanvasHandler canvasHandler;
     @Mock
-    private AbstractCanvas canvas;
+    private WiresCanvas canvas;
     @Mock
-    private WiresCanvas.View canvasView;
+    private WiresCanvasView canvasView;
+    @Mock
+    private WiresManager wiresManager;
     @Mock
     private Diagram diagram;
     @Mock
@@ -75,10 +78,11 @@ public class ContainmentAcceptorControlImplTest {
 
     @Before
     public void setup() {
+        when(canvas.getWiresManager()).thenReturn(wiresManager);
+        when(canvas.getView()).thenReturn(canvasView);
         when(canvasHandler.getDiagram()).thenReturn(diagram);
         when(canvasHandler.getCanvas()).thenReturn(canvas);
         when(canvasHandler.getAbstractCanvas()).thenReturn(canvas);
-        when(canvas.getView()).thenReturn(canvasView);
         when(diagram.getMetadata()).thenReturn(metadata);
         when(metadata.getCanvasRootUUID()).thenReturn(null);
         doAnswer(invocationOnMock -> {
@@ -102,11 +106,11 @@ public class ContainmentAcceptorControlImplTest {
         tested.init(canvasHandler);
         assertEquals(canvasHandler,
                      tested.getCanvasHandler());
-        verify(canvasView,
+        verify(wiresManager,
                times(1)).setContainmentAcceptor(any(IContainmentAcceptor.class));
-        verify(canvasView,
+        verify(wiresManager,
                never()).setDockingAcceptor(any(IDockingAcceptor.class));
-        verify(canvasView,
+        verify(wiresManager,
                never()).setConnectionAcceptor(any(IConnectionAcceptor.class));
     }
 

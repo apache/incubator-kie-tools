@@ -27,6 +27,11 @@ import javax.inject.Inject;
 
 import com.ait.tooling.common.api.java.util.function.Predicate;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvasDecoratorFactory;
+import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvasView;
+import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
+import org.kie.workbench.common.stunner.client.widgets.canvas.PreviewLienzoPanel;
+import org.kie.workbench.common.stunner.client.widgets.canvas.ScrollableLienzoPanel;
 import org.kie.workbench.common.stunner.client.widgets.presenters.diagram.DiagramViewer;
 import org.kie.workbench.common.stunner.client.widgets.presenters.diagram.impl.DiagramPreviewProxy;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionDiagramPreview;
@@ -36,6 +41,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.BaseCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
+import org.kie.workbench.common.stunner.core.client.canvas.CanvasPanel;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.TextPropertyProviderFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SingleSelection;
@@ -46,7 +52,6 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistries;
-import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.InstanceUtils;
 import org.kie.workbench.common.stunner.core.command.Command;
@@ -79,14 +84,16 @@ public class SessionPreviewImpl<S extends AbstractSession>
     private final GraphUtils graphUtils;
     private final ShapeManager shapeManager;
     private final TextPropertyProviderFactory textPropertyProviderFactory;
-    private final ManagedInstance<AbstractCanvas> canvases;
+    private final ManagedInstance<WiresCanvas> canvases;
+    private final ManagedInstance<PreviewLienzoPanel> canvasPanels;
     private final ManagedInstance<BaseCanvasHandler> canvasHandlers;
     private final ManagedInstance<ZoomControl<AbstractCanvas>> zoomControls;
     private final ManagedInstance<SelectionControl<AbstractCanvasHandler, Element>> selectionControls;
     private final ManagedInstance<CanvasCommandFactory> canvasCommandFactories;
     private final ManagedInstance<CanvasCommandManager<AbstractCanvasHandler>> canvasCommandManagers;
 
-    private AbstractCanvas canvas;
+    private WiresCanvas canvas;
+    private PreviewLienzoPanel canvasPanel;
     private SessionPreviewCanvasHandlerProxy canvasHandler;
     private ZoomControl<AbstractCanvas> zoomControl;
     private SelectionControl<AbstractCanvasHandler, Element> selectionControl;
@@ -101,7 +108,8 @@ public class SessionPreviewImpl<S extends AbstractSession>
                               final GraphUtils graphUtils,
                               final ShapeManager shapeManager,
                               final TextPropertyProviderFactory textPropertyProviderFactory,
-                              final @Any ManagedInstance<AbstractCanvas> canvases,
+                              final @Any ManagedInstance<WiresCanvas> canvases,
+                              final @Any ManagedInstance<PreviewLienzoPanel> canvasPanels,
                               final @Any ManagedInstance<BaseCanvasHandler> canvasHandlers,
                               final @Any ManagedInstance<ZoomControl<AbstractCanvas>> zoomControls,
                               final @Any @SingleSelection ManagedInstance<SelectionControl<AbstractCanvasHandler, Element>> selectionControls,
@@ -114,6 +122,7 @@ public class SessionPreviewImpl<S extends AbstractSession>
         this.shapeManager = shapeManager;
         this.textPropertyProviderFactory = textPropertyProviderFactory;
         this.canvases = canvases;
+        this.canvasPanels = canvasPanels;
         this.canvasHandlers = canvasHandlers;
         this.zoomControls = zoomControls;
         this.selectionControls = selectionControls;
@@ -144,6 +153,11 @@ public class SessionPreviewImpl<S extends AbstractSession>
                     }
 
                     @Override
+                    protected CanvasPanel getCanvasPanel() {
+                        return canvasPanel;
+                    }
+
+                    @Override
                     protected void onOpen(final Diagram diagram) {
                         SessionPreviewImpl.this.onOpen(diagram);
                     }
@@ -165,14 +179,12 @@ public class SessionPreviewImpl<S extends AbstractSession>
 
                     @Override
                     protected void enableControls() {
-                        zoomControl.init(canvas);
-                        zoomControl.setMinScale(0);
-                        zoomControl.setMaxScale(1);
+                        // Do not allow manual scaling on the preview presenter, so do not init by default the zoom control.
                     }
 
                     @Override
                     protected void destroyControls() {
-                        zoomControl.destroy();
+                        // No control actually enabled.
                     }
 
                     @Override
@@ -194,6 +206,7 @@ public class SessionPreviewImpl<S extends AbstractSession>
         final Annotation qualifier = definitionUtils.getQualifier(diagram.getMetadata().getDefinitionSetId());
         final BaseCanvasHandler delegate = InstanceUtils.lookup(canvasHandlers, qualifier);
         canvas = InstanceUtils.lookup(canvases, qualifier);
+        canvasPanel = InstanceUtils.lookup(canvasPanels, qualifier);
         canvasHandler = new SessionPreviewCanvasHandlerProxy(delegate,
                                                              definitionUtils.getDefinitionManager(),
                                                              graphUtils,
@@ -205,9 +218,24 @@ public class SessionPreviewImpl<S extends AbstractSession>
         commandManager = InstanceUtils.lookup(canvasCommandManagers, qualifier);
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    protected void onAfterCanvasInitialized() {
+        super.onAfterCanvasInitialized();
+        canvas.getView().setDecoratorFactory(LienzoCanvasDecoratorFactory.PREVIEW);
+    }
+
+    @Override
+    protected void onOpenSuccess() {
+        super.onOpenSuccess();
+        final LienzoCanvasView view = (LienzoCanvasView) getSessionHandler().getAbstractCanvas().getView();
+        canvasPanel.observe((ScrollableLienzoPanel) view.getLienzoPanel());
+    }
+
     private void destroyInstances() {
         canvases.destroy(canvas);
         canvases.destroyAll();
+        canvasPanels.destroyAll();
         canvasHandlers.destroy(canvasHandler.getWrapped());
         canvasHandlers.destroyAll();
         zoomControls.destroy(zoomControl);
@@ -219,6 +247,7 @@ public class SessionPreviewImpl<S extends AbstractSession>
         canvasCommandManagers.destroy(commandManager);
         canvasCommandManagers.destroyAll();
         canvas = null;
+        canvasPanel = null;
         canvasHandler = null;
         zoomControl = null;
         selectionControl = null;
@@ -237,7 +266,7 @@ public class SessionPreviewImpl<S extends AbstractSession>
     }
 
     @Override
-    public AbstractCanvas getCanvas() {
+    public WiresCanvas getCanvas() {
         return canvas;
     }
 
@@ -317,47 +346,5 @@ public class SessionPreviewImpl<S extends AbstractSession>
     @SuppressWarnings("unchecked")
     public ZoomControl<AbstractCanvas> getZoomControl() {
         return zoomControl;
-    }
-
-    /**
-     * For preview purposes, make more visible the decorator for the canvas, so update it once
-     * the canvas has been initialized.
-     */
-    @Override
-    protected DiagramViewer.DiagramViewerCallback<Diagram> buildCallback(final SessionViewerCallback<Diagram> callback) {
-        return new DiagramViewer.DiagramViewerCallback<Diagram>() {
-            @Override
-            public void onOpen(final Diagram diagram) {
-                callback.onOpen(diagram);
-            }
-
-            @Override
-            public void afterCanvasInitialized() {
-                checkNotNull("canvas",
-                             canvas);
-                updateCanvasDecorator(canvas.getView());
-                callback.afterCanvasInitialized();
-            }
-
-            @Override
-            public void onSuccess() {
-                callback.onSuccess();
-            }
-
-            @Override
-            public void onError(final ClientRuntimeError error) {
-                callback.onError(error);
-            }
-        };
-    }
-
-    /**
-     * Updates the canvas decorator for preview purposes using
-     * a higher width and darker color for the line stroke.
-     */
-    private void updateCanvasDecorator(final AbstractCanvas.View canvasView) {
-        canvasView.setDecoratorStrokeWidth(2);
-        canvasView.setDecoratorStrokeAlpha(0.8);
-        canvasView.setDecoratorStrokeColor("#404040");
     }
 }
