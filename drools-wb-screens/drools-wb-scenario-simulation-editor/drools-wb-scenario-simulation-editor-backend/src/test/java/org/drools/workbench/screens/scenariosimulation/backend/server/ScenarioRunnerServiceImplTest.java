@@ -122,7 +122,7 @@ public class ScenarioRunnerServiceImplTest {
     public void runFailed() throws Exception {
         when(buildInfoServiceMock.getBuildInfo(any())).thenReturn(buildInfoMock);
         when(buildInfoMock.getKieContainer()).thenReturn(kieContainerMock);
-        ScenarioSimulationModel scenarioSimulationModel = new ScenarioSimulationModel();
+        ScenarioSimulationModel scenarioSimulationModel = new ScenarioSimulationModel(ScenarioSimulationModel.Type.RULE, "default");
         Scenario scenario = scenarioSimulationModel.getSimulation().getScenarioByIndex(0);
         scenario.setDescription("Test Scenario");
         String errorMessage = "Test Error";

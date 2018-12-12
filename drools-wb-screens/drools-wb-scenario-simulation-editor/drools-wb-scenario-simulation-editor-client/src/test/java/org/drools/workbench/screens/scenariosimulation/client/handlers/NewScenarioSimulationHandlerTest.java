@@ -81,7 +81,6 @@ public class NewScenarioSimulationHandlerTest extends AbstractNewScenarioTest {
 
     @Before
     public void setUp() throws Exception {
-
         handler = new NewScenarioSimulationHandler(resourceTypeMock,
                                                    busyIndicatorViewMock,
                                                    notificationEventMock,
@@ -92,7 +91,7 @@ public class NewScenarioSimulationHandlerTest extends AbstractNewScenarioTest {
                                                    sessionInfoMock,
                                                    libraryPlacesMock,
                                                    assetQueryServiceMock);
-
+        handler.setupExtensions();
         when(sessionInfoMock.getIdentity()).thenReturn(userMock);
     }
 

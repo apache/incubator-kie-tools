@@ -25,16 +25,62 @@ import org.kie.soup.project.datamodel.imports.Imports;
 public class ScenarioSimulationModel
         implements HasImports {
 
+    public enum Type {
+        RULE,
+        DMN
+    }
+
     @XStreamAsAttribute()
-    private String version = "1.1";
+    private String version = "1.2";
 
     private Simulation simulation;
 
     private Imports imports = new Imports();
 
     public ScenarioSimulationModel() {
+        createSimulation(Type.RULE, "default");
+    }
+
+
+    public ScenarioSimulationModel(ScenarioSimulationModel.Type selectedType, String value) {
+        createSimulation(selectedType, value);
+    }
+
+
+    public Simulation getSimulation() {
+        return simulation;
+    }
+
+    public void setSimulation(Simulation simulation) {
+        this.simulation = simulation;
+    }
+
+    @Override
+    public Imports getImports() {
+        return imports;
+    }
+
+    @Override
+    public void setImports(Imports imports) {
+        this.imports = imports;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    protected void createSimulation(ScenarioSimulationModel.Type selectedType, String value) {
         simulation = new Simulation();
         SimulationDescriptor simulationDescriptor = simulation.getSimulationDescriptor();
+        simulationDescriptor.setType(selectedType);
+        switch (selectedType) {
+            case DMN:
+                simulationDescriptor.setDmnFilePath(value);
+                break;
+            case RULE:
+            default:
+                simulationDescriptor.setRuleSession(value);
+        }
 
         simulationDescriptor.addFactMapping(FactIdentifier.INDEX.getName(), FactIdentifier.INDEX, ExpressionIdentifier.INDEX);
         simulationDescriptor.addFactMapping(FactIdentifier.DESCRIPTION.getName(), FactIdentifier.DESCRIPTION, ExpressionIdentifier.DESCRIPTION);
@@ -58,29 +104,4 @@ public class ScenarioSimulationModel
         scenario.addMappingValue(FactIdentifier.EMPTY, expectedExpression, null);
     }
 
-    public ScenarioSimulationModel(Simulation simulation) {
-        this.simulation = simulation;
-    }
-
-    public Simulation getSimulation() {
-        return simulation;
-    }
-
-    public void setSimulation(Simulation simulation) {
-        this.simulation = simulation;
-    }
-
-    @Override
-    public Imports getImports() {
-        return imports;
-    }
-
-    @Override
-    public void setImports(Imports imports) {
-        this.imports = imports;
-    }
-
-    public String getVersion() {
-        return version;
-    }
 }

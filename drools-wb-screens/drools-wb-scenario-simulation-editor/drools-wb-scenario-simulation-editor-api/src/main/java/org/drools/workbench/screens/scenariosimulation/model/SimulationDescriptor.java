@@ -34,6 +34,12 @@ public class SimulationDescriptor {
 
     private final List<FactMapping> factMappings = new ArrayList<>();
 
+    private String dmoSession;
+
+    private String dmnFilePath;
+
+    private ScenarioSimulationModel.Type type;
+
     /**
      * Returns an <b>unmodifiable</b> list wrapping the backed one
      * @return
@@ -44,6 +50,30 @@ public class SimulationDescriptor {
 
     public Set<FactIdentifier> getFactIdentifiers() {
         return factMappings.stream().map(FactMapping::getFactIdentifier).collect(Collectors.toSet());
+    }
+
+    public String getDmoSession() {
+        return dmoSession;
+    }
+
+    public void setRuleSession(String ruleSession) {
+        this.dmoSession = ruleSession;
+    }
+
+    public String getDmnFilePath() {
+        return dmnFilePath;
+    }
+
+    public void setDmnFilePath(String dmnFilePath) {
+        this.dmnFilePath = dmnFilePath;
+    }
+
+    public ScenarioSimulationModel.Type getType() {
+        return type;
+    }
+
+    public void setType(ScenarioSimulationModel.Type type) {
+        this.type = type;
     }
 
     public void moveFactMapping(int oldIndex, int newIndex) {

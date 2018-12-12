@@ -118,13 +118,26 @@ public class NewScenarioSimulationHandler
     public void create(final Package pkg,
                        final String baseFileName,
                        final NewResourcePresenter presenter) {
+        final ScenarioSimulationModel.Type selectedType = sourceTypeSelector.getSelectedType();
+        String value;
+        switch (selectedType) {
+            case DMN:
+                value = uploadWidget.getSelectedPath();
+                if (value == null || value.isEmpty()) {
+                    return;
+                }
+                break;
+            case RULE:
+            default:
+                value = "default";
+        }
+        ScenarioSimulationModel scenarioSimulationModel = new ScenarioSimulationModel(selectedType, value);
         busyIndicatorView.showBusyIndicator(CommonConstants.INSTANCE.Saving());
         scenarioSimulationService.call(getSuccessCallback(presenter),
                                        new HasBusyIndicatorDefaultErrorCallback(busyIndicatorView)).create(pkg.getPackageTestResourcesPath(),
                                                                                                            buildFileName(baseFileName,
                                                                                                                          resourceType),
-                                                                                                           new ScenarioSimulationModel(),
-                                                                                                           "");
+                                                                                                           scenarioSimulationModel, "");
     }
 
     @PostConstruct

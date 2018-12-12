@@ -21,10 +21,8 @@ import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioS
 import org.drools.workbench.screens.scenariosimulation.client.events.RedoEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.UndoEvent;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioSimulationDocksHandler;
-import org.drools.workbench.screens.scenariosimulation.client.models.FactModelTree;
 import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
 import org.drools.workbench.screens.scenariosimulation.client.producers.ScenarioSimulationProducer;
-import org.drools.workbench.screens.scenariosimulation.client.rightpanel.RightPanelPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.RightPanelView;
 import org.drools.workbench.screens.scenariosimulation.client.type.ScenarioSimulationResourceType;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGrid;
@@ -37,11 +35,8 @@ import org.guvnor.messageconsole.client.console.widget.button.AlertsButtonMenuIt
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.soup.project.datamodel.oracle.FieldAccessorsAndMutators;
-import org.kie.soup.project.datamodel.oracle.ModelField;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleFactory;
 import org.kie.workbench.common.widgets.configresource.client.widget.bound.ImportsWidgetPresenter;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorWrapperView;
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
@@ -65,8 +60,6 @@ import org.uberfire.workbench.model.menu.MenuItem;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.any;
@@ -82,7 +75,6 @@ import static org.mockito.Mockito.when;
 @RunWith(GwtMockitoTestRunner.class)
 public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimulationEditorTest {
 
-    private static final String SCENARIO_PACKAGE = "scenario.package";
 
     private ScenarioSimulationEditorPresenter presenter;
 
@@ -90,55 +82,34 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
 
     @Mock
     private KieEditorWrapperView kieViewMock;
-
     @Mock
     private OverviewWidgetPresenter overviewWidgetPresenterMock;
-
     @Mock
     private DefaultFileNameValidator fileNameValidatorMock;
-
     @Mock
     private AlertsButtonMenuItemBuilder alertsButtonMenuItemBuilderMock;
-
     @Mock
     private EventSourceMock<NotificationEvent> notificationMock;
-
     @Mock
     private ScenarioGrid scenarioGridMock;
-
     @Mock
     private ScenarioGridLayer scenarioGridLayerMock;
-
     @Mock
     private ScenarioGridPanel scenarioGridPanelMock;
-
+    @Mock
+    private ScenarioSimulationView scenarioSimulationViewMock;
     @Mock
     private ScenarioGridModel scenarioGridModelMock;
-
     @Mock
     private ScenarioSimulationProducer scenarioSimulationProducerMock;
-
     @Mock
     private ImportsWidgetPresenter importsWidgetPresenterMock;
-
-    @Mock
-    private AsyncPackageDataModelOracleFactory oracleFactoryMock;
-
-    @Mock
-    private AsyncPackageDataModelOracle oracleMock;
-
     @Mock
     private PlaceManager placeManagerMock;
-
     @Mock
     private AbstractWorkbenchActivity rightPanelActivityMock;
-
     @Mock
     private RightPanelView rightPanelViewMock;
-
-    @Mock
-    private RightPanelPresenter rightPanelPresenterMock;
-
     @Mock
     private ObservablePath pathMock;
     @Mock
@@ -172,12 +143,8 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
         when(scenarioSimulationProducerMock.getScenarioSimulationView()).thenReturn(scenarioSimulationViewMock);
         when(scenarioSimulationProducerMock.getScenarioSimulationContext()).thenReturn(contextMock);
         when(placeRequestMock.getIdentifier()).thenReturn(ScenarioSimulationEditorPresenter.IDENTIFIER);
-
-        when(oracleFactoryMock.makeAsyncPackageDataModelOracle(anyObject(), anyObject(), anyObject())).thenReturn(oracleMock);
-
         when(rightPanelViewMock.getPresenter()).thenReturn(rightPanelPresenterMock);
         when(rightPanelActivityMock.getWidget()).thenReturn(rightPanelViewMock);
-
         when(placeRequestMock.getPath()).thenReturn(pathMock);
         when(contextMock.getStatus()).thenReturn(statusMock);
 
@@ -200,7 +167,6 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
                 this.alertsButtonMenuItemBuilder = alertsButtonMenuItemBuilderMock;
                 this.path = pathMock;
                 this.scenarioGridPanel = scenarioGridPanelMock;
-                this.oracle = oracleMock;
                 this.packageName = SCENARIO_PACKAGE;
                 this.eventBus = eventBusMock;
                 this.context = contextMock;
@@ -259,7 +225,6 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
     public void validateButtonShouldNotBeAdded() {
         presenter.onStartup(mock(ObservablePath.class),
                             mock(PlaceRequest.class));
-
         verify(presenterSpy, never()).getValidateCommand();
     }
 
@@ -319,9 +284,7 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
         presenter.onStartup(mock(ObservablePath.class),
                             mock(PlaceRequest.class));
         reset(scenarioSimulationViewMock);
-
         presenter.save("save message");
-
         verify(scenarioSimulationViewMock).hideBusyIndicator();
         verify(notificationMock).fire(any(NotificationEvent.class));
         verify(versionRecordManagerMock).reloadVersions(any(Path.class));
@@ -364,24 +327,15 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
 
     @Test
     public void onRunTest() throws Exception {
-
-        final ScenarioSimulationModel model = new ScenarioSimulationModel();
         doReturn(new ScenarioSimulationModelContent(model,
                                                     new Overview(),
                                                     new PackageDataModelOracleBaselinePayload())).when(scenarioSimulationServiceMock).loadContent(any());
-
         when(scenarioSimulationServiceMock.runScenario(any(), any())).thenReturn(mock(ScenarioSimulationModel.class));
-
         presenter.onStartup(mock(ObservablePath.class), mock(PlaceRequest.class));
-
         presenter.onRunScenario();
-
         verify(scenarioSimulationServiceMock).runScenario(any(), eq(model));
-
         verify(scenarioGridModelMock, times(1)).resetErrors();
-
         verify(scenarioSimulationViewMock, times(1)).refreshContent(any());
-
         verify(scenarioSimulationDocksHandlerMock).expandTestResultsDock();
     }
 
@@ -392,36 +346,6 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
         assertEquals(scenarioSimulationModelMock, presenter.getModel());
         verify(scenarioSimulationViewMock, times(1)).refreshContent(eq(simulationMock));
         verify(statusMock, times(1)).setSimulation(eq(simulationMock));
-    }
-
-    @Test
-    public void getFactModelTree() {
-        String factPackage = "scenario.test";
-        String factName = "FACT_NAME";
-        String fullFactname = factPackage + "." + factName;
-        ModelField modelField1 = new ModelField("this",
-                                                fullFactname,
-                                                ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                                ModelField.FIELD_ORIGIN.SELF,
-                                                FieldAccessorsAndMutators.BOTH,
-                                                fullFactname);
-        ModelField modelField2 = new ModelField("myint",
-                                                int.class.getName(),
-                                                ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                                ModelField.FIELD_ORIGIN.SELF,
-                                                FieldAccessorsAndMutators.BOTH,
-                                                int.class.getName());
-        ModelField[] modelFields = {modelField1, modelField2};
-        when(oracleMock.getFQCNByFactName(factName)).thenReturn(fullFactname);
-        FactModelTree retrieved = presenter.getFactModelTree(factName, modelFields);
-        assertNotNull(retrieved);
-        assertEquals(factName, retrieved.getFactName());
-        assertEquals(factPackage, retrieved.getFullPackage());
-        when(oracleMock.getFQCNByFactName(factName)).thenReturn(null);
-        retrieved = presenter.getFactModelTree(factName, modelFields);
-        assertNotNull(retrieved);
-        assertEquals(factName, retrieved.getFactName());
-        assertEquals(SCENARIO_PACKAGE, retrieved.getFullPackage());
     }
 
     @Test

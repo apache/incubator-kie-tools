@@ -22,7 +22,7 @@ import org.uberfire.backend.vfs.ObservablePath;
 
 /**
  * The <b>Strategy</b> to use to manage/modify/save data inside the editor.
- * Every actual implementation should provide methods to manage a specific kind of data source (ex. DRL, DMN)
+ * Every actual implementation should provide methods to manage a specific kind of data source (ex. RULE, DMN)
  */
 public interface DataManagementStrategy {
 

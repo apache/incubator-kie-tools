@@ -22,13 +22,13 @@ import java.util.List;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
 import org.gwtbootstrap3.client.ui.CheckBox;
 import org.gwtbootstrap3.client.ui.Radio;
 
 public class SourceTypeSelector extends VerticalPanel implements ValueChangeHandler<Boolean> {
 
     protected static final String SOURCE_TYPE = "SOURCE_TYPE";
-    protected static final String[] SOURCE_TYPES = {"Rule", "DMN"};
     protected final TitledAttachmentFileWidget uploadWidget;
     protected final List<Radio> radioButtonList = new ArrayList<Radio>();
 
@@ -50,15 +50,27 @@ public class SourceTypeSelector extends VerticalPanel implements ValueChangeHand
     public boolean isDMNSelected() {
         return radioButtonList.stream()
                 .filter(CheckBox::getValue)
-                .anyMatch(radioButton -> radioButton.getText().equalsIgnoreCase("DMN"));
+                .anyMatch(radioButton -> radioButton.getText().equalsIgnoreCase(ScenarioSimulationModel.Type.DMN.name()));
+    }
+
+    /**
+     * Returns the selected Type. <b>By default, it returns <code>ScenarioSimulationModel.Type.RULE</code></b>
+     * @return
+     */
+    public ScenarioSimulationModel.Type getSelectedType() {
+        return radioButtonList.stream()
+                .filter(CheckBox::getValue)
+                .findFirst()
+                .map(selectedText -> ScenarioSimulationModel.Type.valueOf(selectedText.getText()))
+                .orElse(ScenarioSimulationModel.Type.RULE);
     }
 
     protected void addRadioButtons() {
         boolean first = true;
         radioButtonList.clear();
-        for (String sourceType : SOURCE_TYPES) {
+        for (ScenarioSimulationModel.Type sourceType : ScenarioSimulationModel.Type.values()) {
             Radio radioButton = new Radio(SOURCE_TYPE);
-            radioButton.setText(sourceType);
+            radioButton.setText(sourceType.name());
             radioButton.setValue(first);
             radioButton.addValueChangeHandler(this);
             first = false;

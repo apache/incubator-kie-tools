@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Objects;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import org.guvnor.common.services.project.model.WorkspaceProject;
@@ -36,7 +38,7 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
 import org.uberfire.util.URIUtil;
 
-public class TitledAttachmentFileWidget extends Composite {
+public class TitledAttachmentFileWidget extends Composite implements ValueChangeHandler<String> {
 
     protected VerticalPanel fields = GWT.create(VerticalPanel.class);
     protected FormLabel titleLabel = GWT.create(FormLabel.class);
@@ -44,6 +46,7 @@ public class TitledAttachmentFileWidget extends Composite {
     protected LibraryPlaces libraryPlaces;
     protected AssetQueryService assetQueryService;
     protected WorkspaceProject workspaceProject;
+    protected String selectedPath;
 
     public TitledAttachmentFileWidget() {
         this("", null, null);
@@ -58,11 +61,21 @@ public class TitledAttachmentFileWidget extends Composite {
         this.assetQueryService = assetQueryService;
         this.workspaceProject = libraryPlaces.getActiveWorkspace();
         initWidget(fields);
+        comboBox.addValueChangeHandler(this);
     }
 
     public void updateAssetList() {
         comboBox.clear();
         getAssets(this::addAssets);
+    }
+
+    public String getSelectedPath() {
+        return selectedPath;
+    }
+
+    @Override
+    public void onValueChange(ValueChangeEvent<String> event) {
+        selectedPath = event.getValue();
     }
 
     protected void getAssets(RemoteCallback<AssetQueryResult> callback) {

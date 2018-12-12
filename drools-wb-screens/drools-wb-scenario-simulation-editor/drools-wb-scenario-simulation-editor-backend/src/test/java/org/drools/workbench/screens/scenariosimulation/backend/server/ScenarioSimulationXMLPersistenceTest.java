@@ -15,19 +15,26 @@
  */
 package org.drools.workbench.screens.scenariosimulation.backend.server;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+
 import org.assertj.core.api.Assertions;
+import org.drools.workbench.screens.scenariosimulation.backend.server.util.ResourceHelper;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
 import org.junit.Test;
 import org.kie.soup.project.datamodel.imports.Import;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public class ScenarioSimulationXMLPersistenceTest {
 
     ScenarioSimulationXMLPersistence instance = ScenarioSimulationXMLPersistence.getInstance();
-    
+
     @Test
     public void noFQCNUsed() throws Exception {
         final ScenarioSimulationModel simulationModel = new ScenarioSimulationModel();
@@ -42,50 +49,27 @@ public class ScenarioSimulationXMLPersistenceTest {
     @Test
     public void versionAttributeExists() throws Exception {
         final String xml = instance.marshal(new ScenarioSimulationModel());
-        assertTrue(xml.startsWith("<ScenarioSimulationModel version=\""+ ScenarioSimulationXMLPersistence.getCurrentVersion() + "\">"));
+        assertTrue(xml.startsWith("<ScenarioSimulationModel version=\"" + ScenarioSimulationXMLPersistence.getCurrentVersion() + "\">"));
     }
 
     @Test
-    public void migrateIfNecessary_1_0_to_1_1() {
-        String migrated = instance.migrateIfNecessary("<ScenarioSimulationModel version=\"1.0\">\n" +
-                                                       "  <simulation>\n" +
-                                                       "    <simulationDescriptor>\n" +
-                                                       "      <factMappings>\n" +
-                                                       "        <FactMapping>\n" +
-                                                       "          <expressionElements>\n" +
-                                                       "            <ExpressionElement>\n" +
-                                                       "              <step>lengthYears</step>\n" +
-                                                       "            </ExpressionElement>\n" +
-                                                       "          </expressionElements>\n" +
-                                                       "          <expressionIdentifier>\n" +
-                                                       "            <name>1541680933813</name>\n" +
-                                                       "            <type>EXPECTED</type>\n" +
-                                                       "          </expressionIdentifier>\n" +
-                                                       "          <factIdentifier>\n" +
-                                                       "            <name>1541680933813</name>\n" +
-                                                       "            <className>mortgages.mortgages.LoanApplication</className>\n" +
-                                                       "          </factIdentifier>\n" +
-                                                       "          <className>java.lang.Integer</className>\n" +
-                                                       "          <factAlias>LoanApplication1</factAlias>\n" +
-                                                       "          <expressionAlias>lengthYears</expressionAlias>\n" +
-                                                       "        </FactMapping>\n" +
-                                                       "      </factMappings>\n" +
-                                                       "    </simulationDescriptor>\n" +
-                                                       "    <scenarios>\n" +
-                                                       "      <Scenario>\n" +
-                                                       "        <factMappingValues>\n" +
-                                                       "          <FactMappingValue/>\n" +
-                                                       "        </factMappingValues>\n" +
-                                                       "        <simulationDescriptor reference=\"../../../simulationDescriptor\"/>\n" +
-                                                       "      </Scenario>\n" +
-                                                       "    </scenarios>\n" +
-                                                       "  </simulation>\n" +
-                                                       "  <imports>\n" +
-                                                       "    <imports/>\n" +
-                                                       "  </imports>\n" +
-                                                       "</ScenarioSimulationModel>");
+    public void migrateIfNecessary_1_0_to_1_1() throws Exception {
+        String toMigrate = getFileContent("scesim-1-0.scesim");
+        String migrated = instance.migrateIfNecessary(toMigrate);
+        assertTrue(migrated.contains("<ScenarioSimulationModel version=\"1.1\">"));
+        assertFalse(migrated.contains("<ScenarioSimulationModel version=\"1.0\">"));
         assertTrue(migrated.contains("EXPECT"));
         assertFalse(migrated.contains("EXPECTED"));
+    }
+
+    @Test
+    public void migrateIfNecessary_1_1_to_1_2() throws Exception {
+        String toMigrate = getFileContent("scesim-1-1.scesim");
+        String migrated = instance.migrateIfNecessary(toMigrate);
+        assertTrue(migrated.contains("<ScenarioSimulationModel version=\"1.2\">"));
+        assertFalse(migrated.contains("<ScenarioSimulationModel version=\"1.1\">"));
+        assertTrue(migrated.contains("dmoSession></dmoSession>"));
+        assertTrue(migrated.contains("<type>RULE</type>"));
     }
 
     @Test
@@ -103,5 +87,35 @@ public class ScenarioSimulationXMLPersistenceTest {
     public void extractVersion() {
         String version = instance.extractVersion("<ScenarioSimulationModel version=\"1.0\" version=\"1.1\">");
         assertEquals("1.0", version);
+    }
+
+    @Test
+    public void unmarshalRULE() throws Exception {
+        String toUnmarshal = getFileContent("scesim-rule.scesim");
+        final ScenarioSimulationModel retrieved = ScenarioSimulationXMLPersistence.getInstance().unmarshal(toUnmarshal);
+        assertEquals(retrieved.getSimulation().getSimulationDescriptor().getType(), ScenarioSimulationModel.Type.RULE);
+        assertNotNull(retrieved.getSimulation().getSimulationDescriptor().getDmoSession());
+        assertNull(retrieved.getSimulation().getSimulationDescriptor().getDmnFilePath());
+    }
+
+    @Test
+    public void unmarshalDMN() throws Exception {
+        String toUnmarshal = getFileContent("scesim-dmn.scesim");
+        final ScenarioSimulationModel retrieved = ScenarioSimulationXMLPersistence.getInstance().unmarshal(toUnmarshal);
+        assertEquals(retrieved.getSimulation().getSimulationDescriptor().getType(), ScenarioSimulationModel.Type.DMN);
+        assertNotNull(retrieved.getSimulation().getSimulationDescriptor().getDmnFilePath());
+        assertNull(retrieved.getSimulation().getSimulationDescriptor().getDmoSession());
+    }
+
+    private String getFileContent(String fileName) throws IOException {
+        String extension = fileName.substring(fileName.lastIndexOf(".") + 1);
+        String filePath = ResourceHelper.getResourcesByExtension(extension)
+                .filter(path -> path.endsWith(fileName))
+                .findFirst()
+                .orElse(null);
+        assertNotNull(filePath);
+        File sourceFile = new File(filePath);
+        assertTrue(sourceFile.exists());
+        return new String(Files.readAllBytes(sourceFile.toPath()));
     }
 }
