@@ -20,6 +20,9 @@ import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Transform;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.event.dom.client.DomEvent;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
@@ -176,5 +179,17 @@ public class CoordinateUtilities {
         }
 
         return uiHeaderRowIndex;
+    }
+
+    public static int getRelativeXOfEvent(final DomEvent event) {
+        final NativeEvent e = event.getNativeEvent();
+        final Element target = event.getRelativeElement();
+        return e.getClientX() - target.getAbsoluteLeft() + target.getScrollLeft() + target.getOwnerDocument().getScrollLeft();
+    }
+
+    public static int getRelativeYOfEvent(final DomEvent event) {
+        final NativeEvent e = event.getNativeEvent();
+        final Element target = event.getRelativeElement();
+        return e.getClientY() - target.getAbsoluteTop() + target.getScrollTop() + target.getOwnerDocument().getScrollTop();
     }
 }

@@ -23,6 +23,10 @@ import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.event.dom.client.ContextMenuEvent;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
@@ -61,6 +65,18 @@ public class CoordinateUtilitiesTest {
     private static final double DEFAULT_ROW_HEIGHT = 20D;
     private static final double COLUMN_WIDTH = 50D;
 
+    protected final int NATIVE_EVENT_CLIENT_X = 100;
+    protected final int NATIVE_EVENT_CLIENT_Y = 100;
+    protected final int TARGET_ABSOLUTE_LEFT = 50;
+    protected final int TARGET_SCROLL_LEFT = 20;
+    protected final int TARGET_ABSOLUTE_TOP = 50;
+    protected final int TARGET_SCROLL_TOP = 20;
+    protected final int DOCUMENT_SCROLL_LEFT = 10;
+    protected final int DOCUMENT_SCROLL_TOP = 10;
+
+    private final int EXPECTED_RELATIVE_X = NATIVE_EVENT_CLIENT_X - TARGET_ABSOLUTE_LEFT + TARGET_SCROLL_LEFT + DOCUMENT_SCROLL_LEFT;
+    private final int EXPECTED_RELATIVE_Y = NATIVE_EVENT_CLIENT_Y - TARGET_ABSOLUTE_TOP + TARGET_SCROLL_TOP + DOCUMENT_SCROLL_TOP;
+
     @Mock
     private BaseGridRendererHelper gridRendererHelper;
 
@@ -69,6 +85,18 @@ public class CoordinateUtilitiesTest {
 
     @Mock
     private BaseGridRendererHelper.ColumnInformation ci;
+
+    @Mock
+    private Element targetMock;
+
+    @Mock
+    private NativeEvent nativeEventMock;
+
+    @Mock
+    private ContextMenuEvent contextMenuEventMock;
+
+    @Mock
+    private Document documentMock;
 
     private GridData gridData;
 
@@ -93,6 +121,21 @@ public class CoordinateUtilitiesTest {
         gridPinnedModeManager = new DefaultPinnedModeManager((DefaultGridLayer) gridSelectionManager);
         gridRenderer = new BaseGridRenderer(new GreenTheme());
         gridColumnRenderer = mock(GridColumnRenderer.class);
+
+        when(nativeEventMock.getClientX()).thenReturn(NATIVE_EVENT_CLIENT_X);
+        when(nativeEventMock.getClientY()).thenReturn(NATIVE_EVENT_CLIENT_Y);
+
+        when(targetMock.getOwnerDocument()).thenReturn(documentMock);
+        when(targetMock.getAbsoluteLeft()).thenReturn(TARGET_ABSOLUTE_LEFT);
+        when(targetMock.getScrollLeft()).thenReturn(TARGET_SCROLL_LEFT);
+        when(targetMock.getAbsoluteTop()).thenReturn(TARGET_ABSOLUTE_TOP);
+        when(targetMock.getScrollTop()).thenReturn(TARGET_SCROLL_TOP);
+
+        when(documentMock.getScrollLeft()).thenReturn(DOCUMENT_SCROLL_LEFT);
+        when(documentMock.getScrollTop()).thenReturn(DOCUMENT_SCROLL_TOP);
+
+        when(contextMenuEventMock.getNativeEvent()).thenReturn(nativeEventMock);
+        when(contextMenuEventMock.getRelativeElement()).thenReturn(targetMock);
     }
 
     @Test
@@ -295,6 +338,18 @@ public class CoordinateUtilitiesTest {
         assertNotNull(uiHeaderRowIndex);
         assertEquals(1,
                      (int) uiHeaderRowIndex);
+    }
+
+    @Test
+    public void testGetRelativeXOfEvent() {
+        int retrieved = CoordinateUtilities.getRelativeXOfEvent(contextMenuEventMock);
+        assertEquals(EXPECTED_RELATIVE_X, retrieved);
+    }
+
+    @Test
+    public void testGetRelativeYOfEvent() {
+        int retrieved = CoordinateUtilities.getRelativeYOfEvent(contextMenuEventMock);
+        assertEquals(EXPECTED_RELATIVE_Y, retrieved);
     }
 
     private void setupGridWidget() {
