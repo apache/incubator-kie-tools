@@ -259,7 +259,6 @@ public class ContainerPresenterTest {
         verify(view).enableToggleActivationButton();
 
         presenter.toggleActivationContainer();
-
         verify(view,
                 times(2)).enableToggleActivationButton();
         verify(view).updateToggleActivationButton(eq(true));
@@ -268,7 +267,9 @@ public class ContainerPresenterTest {
 
         verify(view,
                 times(3)).enableToggleActivationButton();
-        verify(view).updateToggleActivationButton(eq(false));
+        verify(view,times(2)).updateToggleActivationButton(eq(false));
+
+
     }
 
     @Test
@@ -534,5 +535,44 @@ public class ContainerPresenterTest {
         presenter.load(lookupKey); // Doesn't throw NPE when ContainerSpecData contain nulls
 
         verify(view, never()).setContainerName(anyString());
+    }
+
+    @Test //Test fix for JBPM-8028
+    public void testUpdateStatusForStopped() {
+        presenter.updateStatus(KieContainerStatus.STOPPED);
+
+        verify(view).updateToggleActivationButton(false);
+    }
+
+    @Test //Test fix for JBPM-8028
+    public void testUpdateStatusForStarted() {
+        presenter.updateStatus(KieContainerStatus.STARTED);
+
+        verify(view).disableRemoveButton();
+        verify(view).setContainerStartState(State.ENABLED);
+        verify(view).setContainerStopState(State.DISABLED);
+        verify(view).updateToggleActivationButton(false);
+        verify(view).enableToggleActivationButton();
+    }
+
+    @Test //Test fix for JBPM-8028 DEACTIVATED
+    public void testUpdateStatusForFailed() {
+        presenter.updateStatus(KieContainerStatus.FAILED);
+
+        verify(view).enableRemoveButton();
+        verify(view).setContainerStartState(State.DISABLED);
+        verify(view).setContainerStopState(State.ENABLED);
+        verify(view).disableToggleActivationButton();
+    }
+
+    @Test //Test fix for JBPM-8028 DEACTIVATED
+    public void testUpdateStatusForDeactiveated() {
+        presenter.updateStatus(KieContainerStatus.DEACTIVATED);
+
+        verify(view).disableRemoveButton();
+        verify(view).setContainerStartState(State.ENABLED);
+        verify(view).setContainerStopState(State.DISABLED);
+        verify(view).updateToggleActivationButton(true);
+        verify(view).enableToggleActivationButton();
     }
 }

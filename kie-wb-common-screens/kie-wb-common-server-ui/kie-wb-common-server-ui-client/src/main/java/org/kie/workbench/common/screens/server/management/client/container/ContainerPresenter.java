@@ -212,7 +212,7 @@ public class ContainerPresenter {
         return true;
     }
 
-    private void updateStatus(final KieContainerStatus status) {
+    protected void updateStatus(final KieContainerStatus status) {
         switch (status) {
             case CREATING:
             case STARTED:
@@ -230,6 +230,7 @@ public class ContainerPresenter {
                 view.enableToggleActivationButton();
                 break;                
             case STOPPED:
+                view.updateToggleActivationButton(false);
             case DISPOSING:
             case FAILED:
                 view.enableRemoveButton();
