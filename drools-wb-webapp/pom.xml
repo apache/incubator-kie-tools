@@ -53,6 +53,12 @@
     <dependency>
       <groupId>org.kie.workbench.screens</groupId>
       <artifactId>kie-wb-common-library-backend</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.uberfire</groupId>
+          <artifactId>uberfire-servlet-security</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
