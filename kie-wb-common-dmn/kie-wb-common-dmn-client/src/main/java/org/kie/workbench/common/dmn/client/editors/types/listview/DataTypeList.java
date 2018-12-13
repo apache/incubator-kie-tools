@@ -25,11 +25,13 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManager;
+import org.kie.workbench.common.dmn.client.editors.types.search.DataTypeSearchBar;
 import org.uberfire.client.mvp.UberElemental;
 
 @ApplicationScoped
@@ -41,15 +43,19 @@ public class DataTypeList {
 
     private final DataTypeManager dataTypeManager;
 
+    private final DataTypeSearchBar searchBar;
+
     private List<DataTypeListItem> items;
 
     @Inject
     public DataTypeList(final DataTypeList.View view,
                         final ManagedInstance<DataTypeListItem> listItems,
-                        final DataTypeManager dataTypeManager) {
+                        final DataTypeManager dataTypeManager,
+                        final DataTypeSearchBar searchBar) {
         this.view = view;
         this.listItems = listItems;
         this.dataTypeManager = dataTypeManager;
+        this.searchBar = searchBar;
     }
 
     @PostConstruct
@@ -78,15 +84,29 @@ public class DataTypeList {
 
         final DataType dataType = listItem.getDataType();
         final int level = listItem.getLevel();
-        final List<DataTypeListItem> gridItems = new ArrayList<>();
+        final List<DataTypeListItem> listItems = new ArrayList<>();
 
         for (final DataType subDataType : subDataTypes) {
-            gridItems.addAll(makeTreeListItems(subDataType, level + 1));
+            listItems.addAll(makeTreeListItems(subDataType, level + 1));
         }
 
-        refreshItemsList(subDataTypes, gridItems);
+        cleanAndUnIndex(dataType);
+        addNewSubItems(dataType, listItems);
+        listItems.forEach(this::reIndexDataTypes);
 
+        getItems().addAll(listItems);
+    }
+
+    private void reIndexDataTypes(final DataTypeListItem listItem) {
+        dataTypeManager.from(listItem.getDataType()).withIndexedItemDefinition();
+    }
+
+    private void addNewSubItems(final DataType dataType, final List<DataTypeListItem> gridItems) {
         view.addSubItems(dataType, gridItems);
+    }
+
+    private void cleanAndUnIndex(final DataType dataType) {
+        view.cleanSubTypes(dataType);
     }
 
     List<DataTypeListItem> makeTreeListItems(final DataType dataType,
@@ -112,18 +132,13 @@ public class DataTypeList {
         return listItem;
     }
 
-    void refreshItemsList(final List<DataType> subDataTypes,
-                          final List<DataTypeListItem> gridItems) {
-
-        getItems().removeIf(item -> subDataTypes.stream().anyMatch(dataType -> {
-            return Objects.equals(item.getDataType().getUUID(), dataType.getUUID());
-        }));
-
-        getItems().addAll(gridItems);
+    void removeItem(final DataType dataType) {
+        removeItem(dataType.getUUID());
+        view.removeItem(dataType);
     }
 
-    void removeItem(final DataType dataType) {
-        view.removeItem(dataType);
+    void removeItem(final String uuid) {
+        getItems().removeIf(listItem -> Objects.equals(uuid, listItem.getDataType().getUUID()));
     }
 
     void refreshItemsByUpdatedDataTypes(final List<DataType> updateDataTypes) {
@@ -133,6 +148,7 @@ public class DataTypeList {
                 refreshSubItemsFromListItem(listItem, dataType.getSubDataTypes());
             });
         }
+        searchBar.refresh();
     }
 
     Optional<DataTypeListItem> findItem(final DataType dataType) {
@@ -168,6 +184,7 @@ public class DataTypeList {
 
         dataType.create();
 
+        searchBar.reset();
         view.addSubItem(listItem);
 
         listItem.enableEditMode();
@@ -183,6 +200,18 @@ public class DataTypeList {
         view.insertAbove(makeListItem(dataType), reference);
     }
 
+    public void showNoDataTypesFound() {
+        view.showNoDataTypesFound();
+    }
+
+    public void showListItems() {
+        view.showOrHideNoCustomItemsMessage();
+    }
+
+    public HTMLElement getListItemsElement() {
+        return view.getListItems();
+    }
+
     DataTypeListItem makeListItem(final DataType dataType) {
 
         final DataTypeListItem listItem = makeListItem();
@@ -193,10 +222,28 @@ public class DataTypeList {
         return listItem;
     }
 
+    void expandAll() {
+        if (!getSearchBar().isEnabled()) {
+            getItems().forEach(DataTypeListItem::expand);
+        }
+    }
+
+    void collapseAll() {
+        if (!getSearchBar().isEnabled()) {
+            getItems().forEach(DataTypeListItem::collapse);
+        }
+    }
+
+    DataTypeSearchBar getSearchBar() {
+        return searchBar;
+    }
+
     public interface View extends UberElemental<DataTypeList>,
                                   IsElement {
 
         void setupListItems(final List<DataTypeListItem> treeGridItems);
+
+        void showOrHideNoCustomItemsMessage();
 
         void addSubItems(final DataType dataType,
                          final List<DataTypeListItem> treeGridItems);
@@ -205,10 +252,16 @@ public class DataTypeList {
 
         void removeItem(final DataType dataType);
 
+        void cleanSubTypes(DataType dataType);
+
         void insertBelow(final DataTypeListItem listItem,
                          final DataType reference);
 
         void insertAbove(final DataTypeListItem listItem,
                          final DataType reference);
+
+        void showNoDataTypesFound();
+
+        HTMLDivElement getListItems();
     }
 }

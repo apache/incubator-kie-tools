@@ -529,26 +529,67 @@ public class DataTypeListItemTest {
     }
 
     @Test
-    public void testRemoveTopLevelDataTypes() {
+    public void testRemoveTopLevelDataTypesWhenItemDataTypeIsDestroyedDataType() {
 
         final DataType dataType = mock(DataType.class);
         final DataType dataType0 = mock(DataType.class);
         final DataType dataType1 = mock(DataType.class);
-        final DataType dataType2 = mock(DataType.class);
-        final DataType dataType3 = mock(DataType.class);
+
+        doReturn(dataType).when(listItem).getDataType();
 
         when(listItem.getDataType()).thenReturn(dataType);
-        when(dataType.getName()).thenReturn("tPerson");
-        when(dataType0.getName()).thenReturn("tPerson");
-        when(dataType0.isTopLevel()).thenReturn(true);
-        when(dataType1.getType()).thenReturn("tPerson");
-        when(dataType1.isTopLevel()).thenReturn(false);
-        when(dataType2.getType()).thenReturn("tCity");
-        when(dataType2.isTopLevel()).thenReturn(true);
-        when(dataType3.getName()).thenReturn("tCity");
-        when(dataType3.isTopLevel()).thenReturn(false);
 
-        final List<DataType> actualDataTypes = listItem.removeTopLevelDataTypes(asList(dataType0, dataType1, dataType2, dataType3));
+        when(dataType.getUUID()).thenReturn("012");
+        when(dataType.getName()).thenReturn("tCity");
+        when(dataType.getType()).thenReturn("Structure");
+        when(dataType.isTopLevel()).thenReturn(true);
+
+        when(dataType0.getUUID()).thenReturn("345");
+        when(dataType0.getName()).thenReturn("tCidade");
+        when(dataType0.getType()).thenReturn("tCity");
+        when(dataType0.isTopLevel()).thenReturn(true);
+
+        when(dataType1.getUUID()).thenReturn("678");
+        when(dataType1.getName()).thenReturn("tCompany");
+        when(dataType1.getType()).thenReturn("Structure");
+        when(dataType1.isTopLevel()).thenReturn(true);
+
+        final List<DataType> actualDataTypes = listItem.removeTopLevelDataTypes(asList(dataType0, dataType1));
+        final List<DataType> expectedDataTypes = singletonList(dataType0);
+
+        verify(dataTypeList).removeItem(dataType0);
+        assertEquals(expectedDataTypes, actualDataTypes);
+    }
+
+    @Test
+    public void testRemoveTopLevelDataTypesWhenItemDataTypeIsAReferenceToDestroyedDataType() {
+
+        final String uuid = "uuid";
+        final DataType dataType = mock(DataType.class);
+        final DataType dataType0 = mock(DataType.class);
+        final DataType dataType1 = mock(DataType.class);
+
+        doReturn(dataType).when(listItem).getDataType();
+
+        when(listItem.getDataType()).thenReturn(dataType);
+        when(dataType.getUUID()).thenReturn(uuid);
+
+        when(dataType.getUUID()).thenReturn("012");
+        when(dataType.getName()).thenReturn("tCity");
+        when(dataType.getType()).thenReturn("Structure");
+        when(dataType.isTopLevel()).thenReturn(true);
+
+        when(dataType0.getUUID()).thenReturn("012");
+        when(dataType0.getName()).thenReturn("tCity");
+        when(dataType0.getType()).thenReturn("Structure");
+        when(dataType0.isTopLevel()).thenReturn(true);
+
+        when(dataType1.getUUID()).thenReturn("678");
+        when(dataType1.getName()).thenReturn("tCompany");
+        when(dataType1.getType()).thenReturn("Structure");
+        when(dataType1.isTopLevel()).thenReturn(true);
+
+        final List<DataType> actualDataTypes = listItem.removeTopLevelDataTypes(asList(dataType0, dataType1));
         final List<DataType> expectedDataTypes = singletonList(dataType0);
 
         verify(dataTypeList).removeItem(dataType0);

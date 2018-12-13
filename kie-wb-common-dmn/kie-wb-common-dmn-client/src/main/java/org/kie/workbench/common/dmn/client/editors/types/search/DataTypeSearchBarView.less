@@ -1,0 +1,66 @@
+/*
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+[data-i18n-prefix="DataTypeSearchBarView."] {
+  .kie-data-type-search {
+    width: 450px;
+    position: relative;
+  }
+
+  .kie-data-type-search .form-control {
+    padding: 4px 30px 4px 7px;
+    height: 30px;
+  }
+
+  .kie-data-type-search span,
+  .kie-data-type-search button {
+    background: transparent;
+    border: none;
+    color: #999;
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 9px;
+  }
+}
+
+[data-i18n-prefix="DataTypeListView."] {
+  [data-field="list-items"].kie-search-engine-enabled {
+
+    & > div.list-group-item {
+      display: none;
+    }
+
+    & > div.list-group-item.kie-search-engine-result {
+      /* The default Bootstrap/PatternFly  ".hidden" CSS class relies in the use of "display: none !important".
+       * Since the collapse/expand uses the ".hidden" class, the ".kie-search-engine-result" needs to override
+       * ".hidden" with a even more specific selector. */
+      display: block !important;
+    }
+
+    & > div.list-group-item.kie-search-engine-result {
+      [data-type-field="arrow-button"] {
+        pointer-events: none;
+        cursor: default;
+        text-decoration: none;
+
+        &:before {
+          opacity: .25;
+        }
+      }
+    }
+  }
+}

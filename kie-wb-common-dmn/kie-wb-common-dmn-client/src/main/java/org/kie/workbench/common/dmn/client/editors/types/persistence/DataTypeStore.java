@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -55,7 +56,10 @@ public class DataTypeStore {
     }
 
     public List<DataType> getTopLevelDataTypes() {
-        return all().stream().filter(DataType::isTopLevel).collect(Collectors.toList());
+        return all()
+                .stream()
+                .filter(DataType::isTopLevel)
+                .collect(Collectors.toList());
     }
 
     public List<DataType> all() {
@@ -64,5 +68,14 @@ public class DataTypeStore {
 
     public void unIndex(final String uuid) {
         dataTypes.remove(uuid);
+        subDataTypesUUID(uuid).forEach(this::unIndex);
+    }
+
+    private List<String> subDataTypesUUID(final String uuid) {
+        return all()
+                .stream()
+                .filter(dataType -> Objects.equals(dataType.getParentUUID(), uuid))
+                .map(DataType::getUUID)
+                .collect(Collectors.toList());
     }
 }

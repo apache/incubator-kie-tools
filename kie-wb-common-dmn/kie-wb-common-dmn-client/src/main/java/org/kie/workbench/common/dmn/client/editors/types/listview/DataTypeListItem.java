@@ -272,14 +272,18 @@ public class DataTypeListItem {
     }
 
     List<DataType> removeTopLevelDataTypes(final List<DataType> destroyedDataTypes) {
-
-        final String destroyedType = getDataType().getName();
-
-        return destroyedDataTypes
-                .stream()
-                .filter(dt -> dt.isTopLevel() && (Objects.equals(dt.getName(), destroyedType) || Objects.equals(dt.getType(), destroyedType)))
+        return destroyedDataTypes.stream()
+                .filter(dataType -> dataType.isTopLevel() && (isDestroyedDataType(dataType) || isAReferenceToDestroyedDataType(dataType)))
                 .peek(dataTypeList::removeItem)
                 .collect(Collectors.toList());
+    }
+
+    private boolean isDestroyedDataType(final DataType dataType) {
+        return Objects.equals(dataType.getUUID(), getDataType().getUUID());
+    }
+
+    private boolean isAReferenceToDestroyedDataType(final DataType dataType) {
+        return getDataType().isTopLevel() && Objects.equals(dataType.getType(), getDataType().getName());
     }
 
     DataType updateProperties(final DataType dataType) {

@@ -39,6 +39,7 @@ import org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeList;
 import org.kie.workbench.common.dmn.client.editors.types.messages.DataTypeFlashMessages;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.DataTypeStore;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.ItemDefinitionStore;
+import org.kie.workbench.common.dmn.client.editors.types.search.DataTypeSearchBar;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -82,6 +83,9 @@ public class DataTypesPageTest {
     private DataTypeFlashMessages flashMessages;
 
     @Mock
+    private DataTypeSearchBar searchBar;
+
+    @Mock
     private DMNGraphUtils dmnGraphUtils;
 
     @Mock
@@ -104,6 +108,7 @@ public class DataTypesPageTest {
                                      dataTypeManager,
                                      stackIndex,
                                      flashMessages,
+                                     searchBar,
                                      dmnGraphUtils,
                                      translationService,
                                      pageView));
@@ -241,6 +246,7 @@ public class DataTypesPageTest {
         verify(definitionStore).clear();
         verify(dataTypeStore).clear();
         verify(stackIndex).clear();
+        verify(searchBar).reset();
     }
 
     @Test

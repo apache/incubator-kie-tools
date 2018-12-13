@@ -37,6 +37,7 @@ import org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeList;
 import org.kie.workbench.common.dmn.client.editors.types.messages.DataTypeFlashMessages;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.DataTypeStore;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.ItemDefinitionStore;
+import org.kie.workbench.common.dmn.client.editors.types.search.DataTypeSearchBar;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.uberfire.client.views.pfly.multipage.PageImpl;
@@ -61,6 +62,8 @@ public class DataTypesPage extends PageImpl {
 
     private final DataTypeFlashMessages flashMessages;
 
+    private final DataTypeSearchBar searchBar;
+
     private final DMNGraphUtils dmnGraphUtils;
 
     private final HTMLDivElement pageView;
@@ -75,6 +78,7 @@ public class DataTypesPage extends PageImpl {
                          final DataTypeManager dataTypeManager,
                          final DataTypeManagerStackStore stackIndex,
                          final DataTypeFlashMessages flashMessages,
+                         final DataTypeSearchBar searchBar,
                          final DMNGraphUtils dmnGraphUtils,
                          final TranslationService translationService,
                          final HTMLDivElement pageView) {
@@ -88,6 +92,7 @@ public class DataTypesPage extends PageImpl {
         this.dataTypeManager = dataTypeManager;
         this.stackIndex = stackIndex;
         this.flashMessages = flashMessages;
+        this.searchBar = searchBar;
         this.dmnGraphUtils = dmnGraphUtils;
         this.pageView = pageView;
     }
@@ -135,6 +140,7 @@ public class DataTypesPage extends PageImpl {
         definitionStore.clear();
         dataTypeStore.clear();
         stackIndex.clear();
+        searchBar.reset();
     }
 
     void loadDataTypes() {

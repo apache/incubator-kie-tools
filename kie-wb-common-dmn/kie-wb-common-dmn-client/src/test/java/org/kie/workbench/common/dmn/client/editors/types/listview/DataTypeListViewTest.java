@@ -34,6 +34,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.ElementHelper;
+import org.kie.workbench.common.dmn.client.editors.types.search.DataTypeSearchBar;
 import org.mockito.Mock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -86,7 +87,25 @@ public class DataTypeListViewTest {
     private HTMLButtonElement addButton;
 
     @Mock
-    private HTMLDivElement listItemsNo;
+    private HTMLDivElement placeholder;
+
+    @Mock
+    private HTMLDivElement searchBarContainer;
+
+    @Mock
+    private HTMLAnchorElement expandAll;
+
+    @Mock
+    private HTMLAnchorElement collapseAll;
+
+    @Mock
+    private HTMLDivElement noDataTypesFound;
+
+    @Mock
+    private DataTypeSearchBar searchBar;
+
+    @Mock
+    private HTMLElement searchBarElement;
 
     @Mock
     private DataTypeList presenter;
@@ -95,12 +114,103 @@ public class DataTypeListViewTest {
 
     @Before
     public void setup() {
-        listItemsNo.classList = mock(DOMTokenList.class);
+
+        when(presenter.getSearchBar()).thenReturn(searchBar);
+        when(searchBar.getElement()).thenReturn(searchBarElement);
+
+        placeholder.classList = mock(DOMTokenList.class);
+        noDataTypesFound.classList = mock(DOMTokenList.class);
         listItems.classList = mock(DOMTokenList.class);
         listItems.childNodes = new NodeList<>();
-        view = spy(new DataTypeListView(listItems, collapsedDescription, expandedDescription, viewMore, viewLess, addButton, listItemsNo));
+
+        view = spy(new DataTypeListView(listItems, collapsedDescription, expandedDescription, viewMore, viewLess, addButton, placeholder, searchBarContainer, expandAll, collapseAll, noDataTypesFound));
         view.init(presenter);
+
         doReturn(element).when(view).getElement();
+    }
+
+    @Test
+    public void testInit() {
+        // "view.init(..)" called in the setup.
+        verify(searchBarContainer).appendChild(searchBarElement);
+    }
+
+    @Test
+    public void testShowOrHideNoCustomItemsMessageWhenListHasCustomDataType() {
+
+        doReturn(true).when(view).hasCustomDataType();
+
+        view.showOrHideNoCustomItemsMessage();
+
+        verify(view).showListItems();
+        verify(view, never()).showPlaceHolder();
+    }
+
+    @Test
+    public void testShowOrHideNoCustomItemsMessageWhenListDoesNotHaveCustomDataType() {
+
+        doReturn(false).when(view).hasCustomDataType();
+
+        view.showOrHideNoCustomItemsMessage();
+
+        verify(view).showPlaceHolder();
+        verify(view, never()).showListItems();
+    }
+
+    @Test
+    public void testExpandAll() {
+        view.expandAll(mock(ClickEvent.class));
+
+        verify(presenter).expandAll();
+    }
+
+    @Test
+    public void testCollapseAll() {
+        view.collapseAll(mock(ClickEvent.class));
+
+        verify(presenter).collapseAll();
+    }
+
+    @Test
+    public void testShowNoDataTypesFound() {
+
+        noDataTypesFound.classList = mock(DOMTokenList.class);
+        placeholder.classList = mock(DOMTokenList.class);
+        listItems.classList = mock(DOMTokenList.class);
+
+        view.showNoDataTypesFound();
+
+        verify(noDataTypesFound.classList).remove(HIDDEN_CSS_CLASS);
+        verify(placeholder.classList).add(HIDDEN_CSS_CLASS);
+        verify(listItems.classList).add(HIDDEN_CSS_CLASS);
+    }
+
+    @Test
+    public void testShowListItems() {
+
+        noDataTypesFound.classList = mock(DOMTokenList.class);
+        placeholder.classList = mock(DOMTokenList.class);
+        listItems.classList = mock(DOMTokenList.class);
+
+        view.showListItems();
+
+        verify(noDataTypesFound.classList).add(HIDDEN_CSS_CLASS);
+        verify(placeholder.classList).add(HIDDEN_CSS_CLASS);
+        verify(listItems.classList).remove(HIDDEN_CSS_CLASS);
+    }
+
+    @Test
+    public void testShowPlaceHolder() {
+
+        noDataTypesFound.classList = mock(DOMTokenList.class);
+        placeholder.classList = mock(DOMTokenList.class);
+        listItems.classList = mock(DOMTokenList.class);
+
+        view.showPlaceHolder();
+
+        verify(noDataTypesFound.classList).add(HIDDEN_CSS_CLASS);
+        verify(placeholder.classList).remove(HIDDEN_CSS_CLASS);
+        verify(listItems.classList).add(HIDDEN_CSS_CLASS);
     }
 
     @Test
@@ -122,28 +232,46 @@ public class DataTypeListViewTest {
     }
 
     @Test
-    public void testCleanSubTypes() {
+    public void testCleanSubTypesByDataType() {
+
+        final DataType dataType = mock(DataType.class);
+        final String uuid = "uuid";
+
+        doNothing().when(view).cleanSubTypes(anyString());
+        when(dataType.getUUID()).thenReturn(uuid);
+
+        view.cleanSubTypes(dataType);
+
+        verify(view).cleanSubTypes(uuid);
+    }
+
+    @Test
+    public void testCleanSubTypesByUUID() {
 
         final String parentUUID = "parentUUID";
+        final String child1UUID = "child1UUID";
+        final String child2UUID = "child2UUID";
         final Element parentElement = makeHTMLElement();
         final NodeList<Element> children = spy(new NodeList<>());
-        final Element child1 = makeElement("child1UUID");
-        child1.parentNode = parentElement;
-        final Element child2 = makeElement("child2UUID");
-        child2.parentNode = parentElement;
+        final Element child1 = makeElement(child1UUID);
+        final Element child2 = makeElement(child2UUID);
         final Element child3NoParent = makeElement("child3UUID");
         final Element child4Null = null;
 
+        child2.parentNode = parentElement;
+        child1.parentNode = parentElement;
+        children.length = 4;
         doReturn(child1).when(children).getAt(0);
         doReturn(child2).when(children).getAt(1);
         doReturn(child3NoParent).when(children).getAt(2);
         doReturn(child4Null).when(children).getAt(3);
-        children.length = 4;
 
         mockDOMElementsByParentUUID(parentUUID, children);
 
         view.cleanSubTypes(parentUUID);
 
+        verify(presenter).removeItem(child1UUID);
+        verify(presenter).removeItem(child2UUID);
         verify(parentElement).removeChild(child1);
         verify(parentElement).removeChild(child2);
         verify(parentElement, never()).removeChild(child3NoParent);
@@ -229,7 +357,7 @@ public class DataTypeListViewTest {
         view.setupListItems(Arrays.asList(gridItem1, gridItem2));
 
         verify(listItems.classList).remove(HIDDEN_CSS_CLASS);
-        verify(listItemsNo.classList).add(HIDDEN_CSS_CLASS);
+        verify(placeholder.classList).add(HIDDEN_CSS_CLASS);
     }
 
     @Test
@@ -237,7 +365,7 @@ public class DataTypeListViewTest {
 
         view.setupListItems(new ArrayList<>());
 
-        verify(listItemsNo.classList).remove(HIDDEN_CSS_CLASS);
+        verify(placeholder.classList).remove(HIDDEN_CSS_CLASS);
         verify(listItems.classList).add(HIDDEN_CSS_CLASS);
     }
 
@@ -400,10 +528,10 @@ public class DataTypeListViewTest {
     @Test
     public void testRemoveItem() {
 
-        final DataType dataType = mock(DataType.class);
-        final Element dataTypeElement = mock(Element.class);
-        final Node parentNode = mock(Node.class);
         final String uuid = "uuid";
+        final DataType dataType = mock(DataType.class);
+        final Node parentNode = mock(Node.class);
+        final Element dataTypeElement = makeElement(uuid);
 
         when(dataType.getUUID()).thenReturn(uuid);
         doReturn(dataTypeElement).when(view).getDataTypeRow(dataType);
@@ -412,6 +540,7 @@ public class DataTypeListViewTest {
 
         view.removeItem(dataType);
 
+        verify(presenter).removeItem(uuid);
         verify(view).cleanSubTypes(uuid);
         verify(parentNode).removeChild(dataTypeElement);
         verify(view).showOrHideNoCustomItemsMessage();
@@ -504,13 +633,13 @@ public class DataTypeListViewTest {
         final Element element = mock(Element.class);
 
         mockDOMElementsByParentUUID(uuid, new NodeList<>());
-        when(element.getAttribute("data-row-uuid")).thenReturn(uuid);
+        when(element.getAttribute(UUID_ATTR)).thenReturn(uuid);
 
         return element;
     }
 
     private void mockDOMElementsByParentUUID(final String parentUUID,
                                              final NodeList<Element> rowElements) {
-        when(listItems.querySelectorAll("[data-parent-row-uuid=\"" + parentUUID + "\"]")).thenReturn(rowElements);
+        when(listItems.querySelectorAll("[" + PARENT_UUID_ATTR + "=\"" + parentUUID + "\"]")).thenReturn(rowElements);
     }
 }

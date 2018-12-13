@@ -30,6 +30,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.kie.workbench.common.dmn.client.editors.types.common.DataType.TOP_LEVEL_PARENT_UUID;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -102,9 +103,43 @@ public class DataTypeStoreTest {
 
     @Test
     public void testUnIndex() {
-        store.unIndex(uuid);
 
-        assertNull(store.get(uuid));
+        final DataType dataType0 = mock(DataType.class);
+        final DataType dataType1 = mock(DataType.class);
+        final DataType dataType2 = mock(DataType.class);
+        final DataType dataType3 = mock(DataType.class);
+        final DataType dataType4 = mock(DataType.class);
+        final DataType dataType5 = mock(DataType.class);
+
+        when(dataType0.getUUID()).thenReturn("012");
+        when(dataType1.getUUID()).thenReturn("345");
+        when(dataType2.getUUID()).thenReturn("678");
+        when(dataType3.getUUID()).thenReturn("901");
+        when(dataType4.getUUID()).thenReturn("234");
+        when(dataType5.getUUID()).thenReturn("567");
+
+        when(dataType0.getParentUUID()).thenReturn(TOP_LEVEL_PARENT_UUID);
+        when(dataType1.getParentUUID()).thenReturn("012");
+        when(dataType2.getParentUUID()).thenReturn("012");
+        when(dataType3.getParentUUID()).thenReturn("678");
+        when(dataType4.getParentUUID()).thenReturn("678");
+        when(dataType5.getParentUUID()).thenReturn(TOP_LEVEL_PARENT_UUID);
+
+        store.index(dataType0.getUUID(), dataType0);
+        store.index(dataType1.getUUID(), dataType1);
+        store.index(dataType2.getUUID(), dataType2);
+        store.index(dataType3.getUUID(), dataType3);
+        store.index(dataType4.getUUID(), dataType4);
+        store.index(dataType5.getUUID(), dataType5);
+
+        store.unIndex("012");
+
+        assertNull(store.get("012"));
+        assertNull(store.get("345"));
+        assertNull(store.get("678"));
+        assertNull(store.get("901"));
+        assertNull(store.get("234"));
+        assertNotNull(store.get("567"));
     }
 
     @Test

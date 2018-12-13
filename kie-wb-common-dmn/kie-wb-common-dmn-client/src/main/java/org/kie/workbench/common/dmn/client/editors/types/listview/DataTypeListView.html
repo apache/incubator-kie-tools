@@ -37,18 +37,36 @@
     <div class="description-buttons">
         <a data-field="view-more" href="#"><span data-i18n-key="ViewMore"></span> »</a>
         <a data-field="view-less" href="#">« <span data-i18n-key="ViewLess"></span></a>
-        <button data-field="add-button" class="btn btn-sm btn-primary">
-            <i class="fa fa-plus-circle"></i>
-            <span data-i18n-key="Add"></span>
-        </button>
+
+        <div>
+            <div>
+                <a data-field="expand-all" href="#" data-i18n-key="ExpandAll"></a>
+                <span>/</span>
+                <a data-field="collapse-all" href="#" data-i18n-key="CollapseAll"></a>
+                <button data-field="add-button" class="btn btn-sm btn-primary">
+                    <i class="fa fa-plus-circle"></i>
+                    <span data-i18n-key="Add"></span>
+                </button>
+            </div>
+
+            <div data-field="search-bar-container"></div>
+        </div>
     </div>
-    <div data-field="list-items-no" class="hidden no-items text-center">
-        <div data-field="list-items-no-content">
-            <i class="fa fa-plus-circle fa-5x"></i>
+    <div data-field="placeholder" class="hidden kie-data-types-placeholder">
+        <div>
+            <i class="fa fa-plus-circle"></i>
             <br/>
-            <b><h1 data-i18n-key="NoCustomDataTitle"></h1></b>
+            <h1 data-i18n-key="NoCustomDataTitle"></h1>
             <p data-i18n-key="NoCustomData1"></p>
             <p data-i18n-key="NoCustomData2"></p>
+        </div>
+    </div>
+    <div data-field="no-data-types-found" class="hidden kie-data-types-placeholder">
+        <div>
+            <i class="fa fa-search-minus"></i>
+            <br/>
+            <h1 data-i18n-key="NoCustomDataTypesFound1"></h1>
+            <p data-i18n-key="NoCustomDataTypesFound2"></p>
         </div>
     </div>
     <div data-field="list-items" class="hidden pf-list-compound-expansion">

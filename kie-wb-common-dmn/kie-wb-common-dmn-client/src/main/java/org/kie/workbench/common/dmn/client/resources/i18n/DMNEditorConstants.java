@@ -261,4 +261,7 @@ public class DMNEditorConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String DataTypesPage_Label = "DataTypesPage.Label";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DataTypeSearchBarView_Search = "DataTypeSearchBarView.Search";
 }
