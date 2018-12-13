@@ -67,7 +67,7 @@ public class OpenShiftAccessInterfaceImpl implements OpenShiftAccessInterface,
 
     // package-protected for junit testing purposes (from inside the package)
     static OpenShiftConfig buildOpenShiftConfig(OpenShiftProviderConfig config) {
-        OpenShiftConfigBuilder builder = new OpenShiftConfigBuilder(OpenShiftConfig.wrap(Config.autoConfigure()));
+        OpenShiftConfigBuilder builder = new OpenShiftConfigBuilder(OpenShiftConfig.wrap(Config.autoConfigure(null)));
         /*
          * Kubernetes configuration properties; see io.fabric8.kubernetes.client.Config
          */
