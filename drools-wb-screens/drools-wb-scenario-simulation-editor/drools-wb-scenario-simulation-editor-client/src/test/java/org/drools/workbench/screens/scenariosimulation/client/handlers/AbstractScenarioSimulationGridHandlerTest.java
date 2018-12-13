@@ -31,11 +31,13 @@ import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGr
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
 import org.drools.workbench.screens.scenariosimulation.model.FactMappingType;
 import org.junit.Before;
+import org.mockito.AdditionalMatchers;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
 
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
@@ -127,7 +129,9 @@ public abstract class AbstractScenarioSimulationGridHandlerTest {
         // mock that column to index 0
         BaseGridRendererHelper.ColumnInformation columnInformation =
                 new BaseGridRendererHelper.ColumnInformation(scenarioGridColumnMock, UI_COLUMN_INDEX, OFFSET_X);
+        when(scenarioGridRendererHelperMock.getColumnInformation(AdditionalMatchers.or(eq(0.0), eq(CLICK_POINT_X))))
+                .thenReturn(columnInformation);
 
-        when(scenarioGridRendererHelperMock.getColumnInformation(CLICK_POINT_X)).thenReturn(columnInformation);
+        when(scenarioRenderingInformationMock.getFloatingBlockInformation()).thenReturn(floatingBlockInformationMock);
     }
 }
