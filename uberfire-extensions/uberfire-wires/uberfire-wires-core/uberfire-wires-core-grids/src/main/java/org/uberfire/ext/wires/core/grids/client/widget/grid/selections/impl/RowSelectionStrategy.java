@@ -39,6 +39,8 @@ public class RowSelectionStrategy extends BaseCellSelectionStrategy {
         //If the Control Key is pressed add additional cells to the selection
         if (!isControlKeyDown) {
             model.clearSelections();
+        } else {
+            model.getSelectedHeaderCells().clear();
         }
 
         if (isShiftKeyDown) {

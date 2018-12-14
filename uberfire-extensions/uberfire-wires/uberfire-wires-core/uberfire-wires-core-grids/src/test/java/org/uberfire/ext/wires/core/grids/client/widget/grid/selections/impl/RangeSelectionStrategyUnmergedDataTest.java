@@ -138,4 +138,52 @@ public class RangeSelectionStrategyUnmergedDataTest extends BaseCellSelectionStr
         assertTrue(selectedCells.contains(new SelectedCell(2,
                                                            1)));
     }
+
+    @Test
+    public void selectCellWithShiftKeyWithHeaderSelected() {
+        uiModel.selectHeaderCell(0, 0);
+
+        final List<SelectedCell> selectedHeaderCells = uiModel.getSelectedHeaderCells();
+        assertEquals(1,
+                     selectedHeaderCells.size());
+        assertTrue(selectedHeaderCells.contains(new SelectedCell(0,
+                                                                 0)));
+
+        strategy.handleSelection(uiModel,
+                                 0,
+                                 0,
+                                 true,
+                                 false);
+
+        final List<SelectedCell> selectedCells = uiModel.getSelectedCells();
+        assertEquals(1,
+                     selectedCells.size());
+        assertTrue(selectedCells.contains(new SelectedCell(0,
+                                                           0)));
+        assertTrue(uiModel.getSelectedHeaderCells().isEmpty());
+    }
+
+    @Test
+    public void selectCellWithControlKeyWithHeaderSelected() {
+        uiModel.selectHeaderCell(0, 0);
+
+        final List<SelectedCell> selectedHeaderCells = uiModel.getSelectedHeaderCells();
+        assertEquals(1,
+                     selectedHeaderCells.size());
+        assertTrue(selectedHeaderCells.contains(new SelectedCell(0,
+                                                                 0)));
+
+        strategy.handleSelection(uiModel,
+                                 0,
+                                 0,
+                                 false,
+                                 true);
+
+        final List<SelectedCell> selectedCells = uiModel.getSelectedCells();
+        assertEquals(1,
+                     selectedCells.size());
+        assertTrue(selectedCells.contains(new SelectedCell(0,
+                                                           0)));
+        assertTrue(uiModel.getSelectedHeaderCells().isEmpty());
+    }
 }

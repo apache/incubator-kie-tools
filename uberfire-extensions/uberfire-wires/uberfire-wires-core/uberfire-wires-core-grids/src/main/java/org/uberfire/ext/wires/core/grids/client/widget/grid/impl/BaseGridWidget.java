@@ -93,7 +93,7 @@ public class BaseGridWidget extends Group implements GridWidget {
 
     private Group selection = null;
     private boolean isSelected = false;
-    private final CellSelectionManager cellSelectionManager;
+    private CellSelectionManager cellSelectionManager;
 
     private final BiFunction<SelectedRange, Integer, Double> headerSelectionYOffsetStrategy;
     private final Function<SelectedRange, Double> headerSelectionHeightStrategy;
@@ -170,8 +170,12 @@ public class BaseGridWidget extends Group implements GridWidget {
         return new BaseGridRendererHelper(this);
     }
 
-    protected CellSelectionManager getCellSelectionManager() {
-        return new BaseCellSelectionManager(this);
+    @Override
+    public CellSelectionManager getCellSelectionManager() {
+        if (cellSelectionManager == null) {
+            cellSelectionManager = new BaseCellSelectionManager(this);
+        }
+        return cellSelectionManager;
     }
 
     protected NodeMouseClickHandler getGridMouseClickHandler(final GridSelectionManager selectionManager) {

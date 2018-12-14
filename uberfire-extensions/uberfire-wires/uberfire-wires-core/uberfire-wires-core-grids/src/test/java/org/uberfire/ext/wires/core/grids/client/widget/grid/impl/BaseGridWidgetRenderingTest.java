@@ -128,7 +128,7 @@ public class BaseGridWidgetRenderingTest {
                                                           pinnedModeManager,
                                                           renderer) {
             @Override
-            protected CellSelectionManager getCellSelectionManager() {
+            public CellSelectionManager getCellSelectionManager() {
                 return BaseGridWidgetRenderingTest.this.cellSelectionManager;
             }
 

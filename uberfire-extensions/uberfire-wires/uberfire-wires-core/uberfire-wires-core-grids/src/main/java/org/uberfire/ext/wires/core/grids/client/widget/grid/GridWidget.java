@@ -100,6 +100,12 @@ public interface GridWidget extends IPrimitive<Group>,
     boolean isSelected();
 
     /**
+     * Returns the {@link CellSelectionManager} associated with the {@link GridWidget}
+     * @return
+     */
+    CellSelectionManager getCellSelectionManager();
+
+    /**
      * Checks whether a cell-relative coordinate is "on" the hot-spot to toggle the collapsed/expanded state.
      * @param cellX The MouseEvent relative to the cell's x-coordinate.
      * @param cellY The MouseEvent relative to the cell's y-coordinate.
