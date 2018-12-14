@@ -26,6 +26,7 @@ import org.dashbuilder.displayer.client.AbstractDisplayerListener;
 import org.dashbuilder.displayer.client.Displayer;
 import org.dashbuilder.displayer.client.DisplayerListener;
 import org.dashbuilder.displayer.client.DisplayerLocator;
+import org.dashbuilder.displayer.client.resources.i18n.CommonConstants;
 import org.uberfire.mvp.Command;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
@@ -42,6 +43,8 @@ public class DisplayerViewer extends Composite {
     protected boolean error = true;
     protected DisplayerLocator displayerLocator;
     protected RendererSelector rendererSelector;
+    ClientRuntimeError displayerInitializationError;
+    CommonConstants i18n = CommonConstants.INSTANCE;
 
     DisplayerListener displayerListener = new AbstractDisplayerListener() {
         public void onDraw(Displayer displayer) {
@@ -61,6 +64,7 @@ public class DisplayerViewer extends Composite {
             error(error);
         }
     };
+    
 
     @Inject
     public DisplayerViewer(DisplayerLocator displayerLocator,
@@ -94,7 +98,8 @@ public class DisplayerViewer extends Composite {
             // Make the displayer visible
             show();
         } catch (Exception e) {
-            error(new ClientRuntimeError(e));
+            displayerInitializationError = new ClientRuntimeError(e);
+            error(displayerInitializationError);
         }
     }
 
@@ -126,11 +131,17 @@ public class DisplayerViewer extends Composite {
     }
 
     public Displayer draw() {
-        try {
-            // Draw the displayer
-            displayer.draw();
-        } catch (Exception e) {
-            error(new ClientRuntimeError(e));
+        if (displayerInitializationError != null ) {
+            error(displayerInitializationError, 
+                  i18n.displayerviewer_displayer_not_created(), 
+                  displayerInitializationError.getThrowable().getMessage());
+        } else {
+            try {
+                // Draw the displayer
+                displayer.draw();
+            } catch (Exception e) {
+                error(new ClientRuntimeError(e));
+            }
         }
         return displayer;
     }
@@ -151,10 +162,13 @@ public class DisplayerViewer extends Composite {
     }
 
     public void error(ClientRuntimeError e) {
+        error(e, e.getMessage(), e.getCause());
+    }
+    
+    public void error(ClientRuntimeError e, String message, String cause) {
         container.clear();
         container.add(errorWidget);
-        errorWidget.show(e.getMessage(),
-                         e.getCause());
+        errorWidget.show(message, cause);
 
         error = true;
         GWT.log(e.getMessage(),
