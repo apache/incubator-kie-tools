@@ -605,8 +605,8 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
     }
 
     @Override
-    protected void doAfterSelectionChange(final int uiRowIndex,
-                                          final int uiColumnIndex) {
+    public void doAfterSelectionChange(final int uiRowIndex,
+                                       final int uiColumnIndex) {
         if (hasAnyHeaderCellSelected() || hasMultipleCellsSelected()) {
             super.doAfterSelectionChange(uiRowIndex, uiColumnIndex);
             return;
@@ -632,8 +632,8 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
     }
 
     @Override
-    protected void doAfterHeaderSelectionChange(final int uiHeaderRowIndex,
-                                                final int uiHeaderColumnIndex) {
+    public void doAfterHeaderSelectionChange(final int uiHeaderRowIndex,
+                                             final int uiHeaderColumnIndex) {
         if (expression.isPresent()) {
             final DecisionTable dtable = expression.get();
             final DecisionTableUIModelMapperHelper.DecisionTableSection section = DecisionTableUIModelMapperHelper.getSection(dtable, uiHeaderColumnIndex);

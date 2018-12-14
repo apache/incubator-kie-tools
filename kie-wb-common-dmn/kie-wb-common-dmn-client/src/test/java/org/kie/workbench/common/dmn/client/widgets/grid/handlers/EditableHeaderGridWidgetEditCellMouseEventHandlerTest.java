@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.widgets.grid.columns;
+package org.kie.workbench.common.dmn.client.widgets.grid.handlers;
 
 import java.util.Collections;
 
@@ -29,6 +29,7 @@ import com.google.gwt.event.dom.client.MouseEvent;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableHeaderMetaData;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;

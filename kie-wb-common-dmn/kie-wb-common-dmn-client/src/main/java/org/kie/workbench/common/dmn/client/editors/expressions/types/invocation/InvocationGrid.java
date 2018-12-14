@@ -318,8 +318,8 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGri
     }
 
     @Override
-    protected void doAfterSelectionChange(final int uiRowIndex,
-                                          final int uiColumnIndex) {
+    public void doAfterSelectionChange(final int uiRowIndex,
+                                       final int uiColumnIndex) {
         if (hasAnyHeaderCellSelected() || hasMultipleCellsSelected()) {
             super.doAfterSelectionChange(uiRowIndex, uiColumnIndex);
             return;
@@ -336,8 +336,8 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGri
     }
 
     @Override
-    protected void doAfterHeaderSelectionChange(final int uiHeaderRowIndex,
-                                                final int uiHeaderColumnIndex) {
+    public void doAfterHeaderSelectionChange(final int uiHeaderRowIndex,
+                                             final int uiHeaderColumnIndex) {
         if (nesting == 0 && uiHeaderRowIndex == 0) {
             if (uiHeaderColumnIndex == InvocationUIModelMapper.BINDING_PARAMETER_COLUMN_INDEX || uiHeaderColumnIndex == InvocationUIModelMapper.BINDING_EXPRESSION_COLUMN_INDEX) {
                 final DMNModelInstrumentedBase base = hasExpression.asDMNModelInstrumentedBase();

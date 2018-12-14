@@ -886,7 +886,7 @@ public class RelationGridTest {
         verify(domainObjectSelectionEvent).fire(domainObjectSelectionEventCaptor.capture());
 
         final DomainObjectSelectionEvent event2 = domainObjectSelectionEventCaptor.getValue();
-        assertThat(event2.getDomainObject()).isInstanceOf(NOPDomainObject.class);
+        assertThat(event2.getDomainObject()).isEqualTo(expression.get().getRow().get(0).getExpression().get(0));
     }
 
     @Test

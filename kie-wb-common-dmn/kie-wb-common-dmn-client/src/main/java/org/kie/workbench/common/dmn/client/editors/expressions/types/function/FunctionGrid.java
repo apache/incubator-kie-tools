@@ -387,14 +387,14 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
     }
 
     @Override
-    protected void doAfterSelectionChange(final int uiRowIndex,
-                                          final int uiColumnIndex) {
+    public void doAfterSelectionChange(final int uiRowIndex,
+                                       final int uiColumnIndex) {
         selectExpressionEditorFirstCell(0, 0);
     }
 
     @Override
-    protected void doAfterHeaderSelectionChange(final int uiHeaderRowIndex,
-                                                final int uiHeaderColumnIndex) {
+    public void doAfterHeaderSelectionChange(final int uiHeaderRowIndex,
+                                             final int uiHeaderColumnIndex) {
         if (nesting == 0 && uiHeaderRowIndex == 0) {
             final DMNModelInstrumentedBase base = hasExpression.asDMNModelInstrumentedBase();
             if (base instanceof DomainObject) {

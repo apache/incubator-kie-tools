@@ -939,7 +939,7 @@ public class InvocationGridTest {
 
         grid.selectCell(0, InvocationUIModelMapper.BINDING_PARAMETER_COLUMN_INDEX, false, true);
 
-        assertNOPDomainObjectSelection();
+        assertDomainObjectSelection(expression.get().getBinding().get(0).getVariable());
     }
 
     @Test

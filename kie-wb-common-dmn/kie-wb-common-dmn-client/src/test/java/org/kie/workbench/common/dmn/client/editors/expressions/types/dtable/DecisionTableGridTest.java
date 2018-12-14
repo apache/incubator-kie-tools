@@ -1459,7 +1459,7 @@ public class DecisionTableGridTest {
 
         grid.selectCell(0, DEFAULT_INPUT_CLAUSE_COLUMN_INDEX, false, true);
 
-        assertNOPDomainObjectSelection();
+        assertDomainObjectSelection(expression.get().getRule().get(0).getInputEntry().get(0));
     }
 
     @Test

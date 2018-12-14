@@ -43,9 +43,9 @@ import org.kie.workbench.common.dmn.client.commands.general.SetHeaderValueComman
 import org.kie.workbench.common.dmn.client.commands.general.SetTypeRefCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.GridFactoryCommandUtils;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
-import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableHeaderGridWidgetEditCellMouseEventHandler;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableHeaderMetaData;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
+import org.kie.workbench.common.dmn.client.widgets.grid.handlers.EditableHeaderGridWidgetEditCellMouseEventHandler;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;

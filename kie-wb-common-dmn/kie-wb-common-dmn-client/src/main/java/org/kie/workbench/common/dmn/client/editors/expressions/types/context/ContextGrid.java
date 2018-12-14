@@ -323,8 +323,8 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextGridData, Co
     }
 
     @Override
-    protected void doAfterSelectionChange(final int uiRowIndex,
-                                          final int uiColumnIndex) {
+    public void doAfterSelectionChange(final int uiRowIndex,
+                                       final int uiColumnIndex) {
         if (hasAnyHeaderCellSelected() || hasMultipleRowsSelected()) {
             super.doAfterSelectionChange(uiRowIndex, uiColumnIndex);
             return;
@@ -345,8 +345,8 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextGridData, Co
     }
 
     @Override
-    protected void doAfterHeaderSelectionChange(final int uiHeaderRowIndex,
-                                                final int uiHeaderColumnIndex) {
+    public void doAfterHeaderSelectionChange(final int uiHeaderRowIndex,
+                                             final int uiHeaderColumnIndex) {
         if (uiHeaderColumnIndex == ContextUIModelMapperHelper.NAME_COLUMN_INDEX || uiHeaderColumnIndex == ContextUIModelMapperHelper.EXPRESSION_COLUMN_INDEX) {
             final DMNModelInstrumentedBase base = hasExpression.asDMNModelInstrumentedBase();
             if (base instanceof DomainObject) {

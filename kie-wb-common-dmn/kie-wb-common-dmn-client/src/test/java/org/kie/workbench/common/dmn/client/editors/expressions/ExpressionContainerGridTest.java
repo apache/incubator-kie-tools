@@ -226,7 +226,7 @@ public class ExpressionContainerGridTest {
                                                 refreshFormPropertiesEvent,
                                                 domainObjectSelectionEvent) {
             @Override
-            protected CellSelectionManager getCellSelectionManager() {
+            public CellSelectionManager getCellSelectionManager() {
                 return cellSelectionManager;
             }
         };

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.widgets.grid.columns;
+package org.kie.workbench.common.dmn.client.widgets.grid.handlers;
 
 import java.util.List;
 import java.util.Objects;
@@ -22,6 +22,8 @@ import java.util.stream.Collectors;
 
 import com.ait.lienzo.client.core.event.AbstractNodeMouseEvent;
 import com.ait.lienzo.client.core.types.Point2D;
+import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableHeaderMetaData;
+import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableHeaderUtilities;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellEditAction;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;

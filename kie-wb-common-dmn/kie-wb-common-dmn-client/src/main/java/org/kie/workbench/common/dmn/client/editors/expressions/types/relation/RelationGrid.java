@@ -283,8 +283,8 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
     }
 
     @Override
-    protected void doAfterSelectionChange(final int uiRowIndex,
-                                          final int uiColumnIndex) {
+    public void doAfterSelectionChange(final int uiRowIndex,
+                                       final int uiColumnIndex) {
         if (hasAnyHeaderCellSelected() || hasMultipleCellsSelected()) {
             super.doAfterSelectionChange(uiRowIndex, uiColumnIndex);
             return;
@@ -307,8 +307,8 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
     }
 
     @Override
-    protected void doAfterHeaderSelectionChange(final int uiHeaderRowIndex,
-                                                final int uiHeaderColumnIndex) {
+    public void doAfterHeaderSelectionChange(final int uiHeaderRowIndex,
+                                             final int uiHeaderColumnIndex) {
         if (expression.isPresent()) {
             final Relation relation = expression.get();
             final RelationUIModelMapperHelper.RelationSection section = RelationUIModelMapperHelper.getSection(relation, uiHeaderColumnIndex);

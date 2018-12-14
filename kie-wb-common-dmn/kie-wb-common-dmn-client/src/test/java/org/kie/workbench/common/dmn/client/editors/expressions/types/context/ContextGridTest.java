@@ -951,7 +951,7 @@ public class ContextGridTest {
 
         grid.selectCell(0, ContextUIModelMapperHelper.NAME_COLUMN_INDEX, false, true);
 
-        assertNOPDomainObjectSelection();
+        assertDomainObjectSelection(expression.get().getContextEntry().get(0).getVariable());
     }
 
     @Test

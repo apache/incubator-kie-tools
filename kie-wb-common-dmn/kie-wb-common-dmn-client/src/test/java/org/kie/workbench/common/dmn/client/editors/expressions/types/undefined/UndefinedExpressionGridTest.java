@@ -50,6 +50,8 @@ import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSel
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl.ListSelectorDividerItem;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl.ListSelectorTextItem;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
+import org.kie.workbench.common.dmn.client.widgets.grid.handlers.DelegatingGridWidgetCellSelectorMouseEventHandler;
+import org.kie.workbench.common.dmn.client.widgets.grid.handlers.DelegatingGridWidgetEditCellMouseEventHandler;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
@@ -75,6 +77,7 @@ import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCell;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.NodeMouseEventHandler;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridSelectionManager;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLayerRedrawManager;
 import org.uberfire.mocks.EventSourceMock;
@@ -287,7 +290,44 @@ public class UndefinedExpressionGridTest {
     }
 
     @Test
-    public void testSelectFirstCell() {
+    public void testMouseClickEventHandlers() {
+        setupGrid(0);
+
+        final List<NodeMouseEventHandler> handlers = grid.getNodeMouseClickEventHandlers(selectionManager);
+        assertThat(handlers).hasSize(2);
+        assertThat(handlers.get(0)).isInstanceOf(DelegatingGridWidgetCellSelectorMouseEventHandler.class);
+        assertThat(handlers.get(1)).isInstanceOf(DelegatingGridWidgetEditCellMouseEventHandler.class);
+    }
+
+    @Test
+    public void testMouseDoubleClickEventHandlers() {
+        setupGrid(0);
+
+        final List<NodeMouseEventHandler> handlers = grid.getNodeMouseDoubleClickEventHandlers(selectionManager, gridLayer);
+        assertThat(handlers).isEmpty();
+    }
+
+    @Test
+    public void testSelectFirstCellWhenNested() {
+        setupGrid(1);
+
+        final Decision decision = mock(Decision.class);
+        when(hasExpression.asDMNModelInstrumentedBase()).thenReturn(decision);
+
+        grid.selectFirstCell();
+
+        assertThat(grid.getModel().getSelectedCells().size()).isEqualTo(0);
+        verify(parentGridUiModel).selectCell(eq(PARENT_ROW_INDEX), eq(PARENT_COLUMN_INDEX));
+        verify(gridLayer).select(parentGridWidget);
+
+        verify(domainObjectSelectionEvent).fire(domainObjectSelectionArgumentEventCaptor.capture());
+        final DomainObjectSelectionEvent domainObjectSelectionEvent = domainObjectSelectionArgumentEventCaptor.getValue();
+        assertThat(domainObjectSelectionEvent.getCanvasHandler()).isEqualTo(canvasHandler);
+        assertThat(domainObjectSelectionEvent.getDomainObject()).isInstanceOf(NOPDomainObject.class);
+    }
+
+    @Test
+    public void testSelectFirstCellWhenNotNested() {
         setupGrid(0);
 
         final Decision decision = mock(Decision.class);
