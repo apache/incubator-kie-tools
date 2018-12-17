@@ -47,8 +47,6 @@ public abstract class AbstractScenarioSimulationGridPanelClickHandlerTest {
     protected final int UI_ROW_INDEX = 1;
     protected final int CLICK_POINT_X = 5;
     protected final int CLICK_POINT_Y = 5;
-    protected final boolean SHIFT_PRESSED = false;
-    protected final boolean CTRL_PRESSED = false;
     protected final int OFFSET_X = 0;
 
     @Mock

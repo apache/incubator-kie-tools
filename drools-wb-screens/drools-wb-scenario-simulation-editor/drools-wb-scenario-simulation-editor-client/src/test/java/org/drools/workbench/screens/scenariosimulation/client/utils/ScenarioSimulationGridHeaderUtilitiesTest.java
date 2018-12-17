@@ -36,7 +36,6 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
@@ -84,56 +83,6 @@ public class ScenarioSimulationGridHeaderUtilitiesTest {
         doReturn(mock(Viewport.class)).when(gridWidget).getViewport();
         scenarioGridModel.setHeaderRowCount(HEADER_ROWS);
         doReturn(scenarioGridModel).when(gridWidget).getModel();
-    }
-
-    @Test
-    public void testGetUiHeaderRowIndexHeaderMinY() {
-        final GridColumn<?> uiColumn = mockGridColumn(100.0);
-        final Integer uiHeaderRowIndex = ScenarioSimulationGridHeaderUtilities.getUiHeaderRowIndex(gridWidget,
-                                                                                                   uiColumn,
-                                                                                                   -5.0);
-        assertNull(uiHeaderRowIndex);
-    }
-
-    @Test
-    public void testGetUiHeaderRowIndexHeaderMaxY() {
-        final GridColumn<?> uiColumn = mockGridColumn(100.0);
-        final Integer uiHeaderRowIndex = ScenarioSimulationGridHeaderUtilities.getUiHeaderRowIndex(gridWidget,
-                                                                                                   uiColumn,
-                                                                                                   HEADER_HEIGHT + 5.0);
-        assertNull(uiHeaderRowIndex);
-    }
-
-    @Test
-    public void testGetUiHeaderRowIndexOnNoRowsHeader() {
-        doReturn(new ScenarioGridModel()).when(gridWidget).getModel();
-        final GridColumn<?> uiColumn = mockGridColumn(100.0);
-        final Integer uiHeaderRowIndex = ScenarioSimulationGridHeaderUtilities.getUiHeaderRowIndex(gridWidget,
-                                                                                                   uiColumn,
-                                                                                                   HEADER_ROW_HEIGHT - 5.0);
-        assertNull(uiHeaderRowIndex);
-    }
-
-    @Test
-    public void testGetUiHeaderRowIndexRow0() {
-        final GridColumn<?> uiColumn = mockGridColumn(100.0);
-        final Integer uiHeaderRowIndex = ScenarioSimulationGridHeaderUtilities.getUiHeaderRowIndex(gridWidget,
-                                                                                                   uiColumn,
-                                                                                                   HEADER_ROW_HEIGHT - 5.0);
-        assertNotNull(uiHeaderRowIndex);
-        assertEquals(0,
-                     (int) uiHeaderRowIndex);
-    }
-
-    @Test
-    public void testGetUiHeaderRowIndexRow1() {
-        final GridColumn<?> uiColumn = mockGridColumn(100.0);
-        final Integer uiHeaderRowIndex = ScenarioSimulationGridHeaderUtilities.getUiHeaderRowIndex(gridWidget,
-                                                                                                   uiColumn,
-                                                                                                   HEADER_ROW_HEIGHT + 5.0);
-        assertNotNull(uiHeaderRowIndex);
-        assertEquals(1,
-                     (int) uiHeaderRowIndex);
     }
 
     @Test
