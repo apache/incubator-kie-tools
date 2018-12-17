@@ -21,19 +21,12 @@ import java.util.function.Supplier;
 import javax.enterprise.context.Dependent;
 
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.workbench.screens.scenariosimulation.client.handlers.EditScenarioSimulationGridCellKeyboardOperation;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridLayer;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
 import org.drools.workbench.screens.scenariosimulation.model.Simulation;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidgetKeyboardHandler;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationMoveDown;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationMoveLeft;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationMoveRight;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationMoveUp;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationSelectTopLeftCell;
 import org.uberfire.workbench.model.menu.MenuItem;
 
 /**
@@ -75,14 +68,6 @@ public class ScenarioSimulationViewImpl
         this.presenter = presenter;
         scenarioGridLayer.enterPinnedMode(scenarioGridLayer.getScenarioGrid(), () -> {
         });  // Hack to overcome default implementation
-        final BaseGridWidgetKeyboardHandler handler = new BaseGridWidgetKeyboardHandler(scenarioGridLayer);
-        handler.addOperation(new EditScenarioSimulationGridCellKeyboardOperation(scenarioGridLayer),
-                             new KeyboardOperationSelectTopLeftCell(scenarioGridLayer),
-                             new KeyboardOperationMoveLeft(scenarioGridLayer),
-                             new KeyboardOperationMoveRight(scenarioGridLayer),
-                             new KeyboardOperationMoveUp(scenarioGridLayer),
-                             new KeyboardOperationMoveDown(scenarioGridLayer));
-        scenarioGridPanel.addKeyDownHandler(handler);
         initWidget(scenarioGridPanel);
     }
 

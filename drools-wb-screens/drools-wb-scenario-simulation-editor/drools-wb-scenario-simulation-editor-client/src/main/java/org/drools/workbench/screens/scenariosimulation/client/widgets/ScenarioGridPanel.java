@@ -26,15 +26,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ContextMenuEvent;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
-import org.drools.workbench.screens.scenariosimulation.client.events.DisableRightPanelEvent;
-import org.drools.workbench.screens.scenariosimulation.client.events.EnableRightPanelEvent;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioSimulationGridPanelClickHandler;
-import org.drools.workbench.screens.scenariosimulation.client.metadata.ScenarioHeaderMetaData;
-import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
-import org.drools.workbench.screens.scenariosimulation.client.utils.ScenarioSimulationGridHeaderUtilities;
-import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
-import org.uberfire.ext.wires.core.grids.client.model.GridData;
-import org.uberfire.ext.wires.core.grids.client.util.ColumnIndexUtilities;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPanel;
 
 /**
@@ -95,55 +87,5 @@ public class ScenarioGridPanel extends GridLienzoPanel implements NodeMouseOutHa
     public void unregister() {
         handlerRegistrations.forEach(HandlerRegistration::removeHandler);
         handlerRegistrations.clear();
-    }
-
-    public void signalRightPanelAboutSelectedHeaderCells() {
-        signalRightPanelNoHeaderCellSelected();
-
-        final ScenarioGridModel model = getScenarioGrid().getModel();
-
-        if (model.getSelectedHeaderCells().size() > 0) {
-            final GridData.SelectedCell cell = model.getSelectedHeaderCells().get(0);
-
-            final int uiColumnIndex = ColumnIndexUtilities.findUiColumnIndex(model.getColumns(),
-                                                                             cell.getColumnIndex());
-            final int uiRowIndex = cell.getRowIndex();
-
-            getScenarioGrid().setSelectedColumnAndHeader(uiRowIndex, uiColumnIndex);
-
-            final GridColumn column = model.getColumns().get(uiColumnIndex);
-            if (uiRowIndex > 0 && column instanceof ScenarioGridColumn) {
-                signalRightPanelHeaderCellSelected((ScenarioGridColumn) column,
-                                                   cell,
-                                                   uiColumnIndex);
-            }
-        }
-    }
-
-    private void signalRightPanelNoHeaderCellSelected() {
-        eventBus.fireEvent(new DisableRightPanelEvent());
-    }
-
-    private void signalRightPanelHeaderCellSelected(final ScenarioGridColumn scenarioGridColumn,
-                                                    final GridData.SelectedCell selectedHeaderCell,
-                                                    final int uiColumnIndex) {
-        final EnableRightPanelEvent enableRightPanelEvent = getEnableRightPanelEvent(scenarioGridColumn,
-                                                                                     selectedHeaderCell,
-                                                                                     uiColumnIndex);
-        eventBus.fireEvent(enableRightPanelEvent);
-    }
-
-    private EnableRightPanelEvent getEnableRightPanelEvent(final ScenarioGridColumn scenarioGridColumn,
-                                                           final GridData.SelectedCell selectedHeaderCell,
-                                                           final int uiColumnIndex) {
-        final int uiRowIndex = selectedHeaderCell.getRowIndex();
-        ScenarioHeaderMetaData scenarioHeaderMetaData =
-                ScenarioSimulationGridHeaderUtilities.getColumnScenarioHeaderMetaData(scenarioGridColumn, uiRowIndex);
-
-        return ScenarioSimulationGridHeaderUtilities.getEnableRightPanelEvent(getScenarioGrid(),
-                                                                              scenarioGridColumn,
-                                                                              scenarioHeaderMetaData,
-                                                                              uiColumnIndex,
-                                                                              scenarioHeaderMetaData.getColumnGroup());
     }
 }

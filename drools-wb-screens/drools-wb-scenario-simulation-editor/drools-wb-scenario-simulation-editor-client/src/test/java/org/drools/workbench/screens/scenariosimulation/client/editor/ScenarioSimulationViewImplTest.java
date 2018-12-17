@@ -26,9 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidgetKeyboardHandler;
 
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -58,13 +56,6 @@ public class ScenarioSimulationViewImplTest {
 
         scenarioView = new ScenarioSimulationViewImpl();
         scenarioView.setScenarioGridPanel(scenarioGridPanel);
-    }
-
-    @Test
-    public void testInitAddsKeyboardNavigationHandlers() {
-        scenarioView.init(mock(ScenarioSimulationEditorPresenter.class));
-
-        verify(scenarioGridPanel).addKeyDownHandler(any(BaseGridWidgetKeyboardHandler.class));
     }
 
     @Test

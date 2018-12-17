@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import com.google.gwt.event.shared.EventBus;
+import org.drools.workbench.screens.scenariosimulation.client.events.EnableRightPanelEvent;
 import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioHeaderTextBoxSingletonDOMElementFactory;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioSimulationGridWidgetMouseEventHandler;
 import org.drools.workbench.screens.scenariosimulation.client.metadata.ScenarioHeaderMetaData;
@@ -79,6 +81,8 @@ public class ScenarioGridTest {
     private ScenarioGridColumn scenarioGridColumnMock;
     @Mock
     private ScenarioHeaderMetaData propertyHeaderMetadataMock;
+    @Mock
+    private EventBus eventBusMock;
 
     private final String EXPRESSION_ALIAS_DESCRIPTION = "EXPRESSION_ALIAS_DESCRIPTION";
     private final String EXPRESSION_ALIAS_GIVEN = "EXPRESSION_ALIAS_GIVEN";
@@ -125,6 +129,7 @@ public class ScenarioGridTest {
                 return scenarioGridColumnMock;
             }
         });
+        scenarioGrid.setEventBus(eventBusMock);
     }
 
     @Test
@@ -250,16 +255,22 @@ public class ScenarioGridTest {
 
     @Test
     public void testAdjustSelection() {
-        final ScenarioGridColumn column = mock(ScenarioGridColumn.class);
-        when(scenarioGridModelMock.getColumns()).thenReturn(Collections.singletonList(column));
+        final int uiColumnIndex = 0;
+        final int uiRowIndex = 0;
+        final ScenarioGridColumn columnMock = mock(ScenarioGridColumn.class);
+        when(columnMock.getIndex()).thenReturn(uiColumnIndex);
+        when(scenarioGridModelMock.getColumns()).thenReturn(Collections.singletonList(columnMock));
 
         final GridData.SelectedCell selectedHeaderCell = mock(GridData.SelectedCell.class);
-        when(selectedHeaderCell.getRowIndex()).thenReturn(1);
+        when(selectedHeaderCell.getColumnIndex()).thenReturn(uiColumnIndex);
+        when(selectedHeaderCell.getRowIndex()).thenReturn(uiRowIndex);
         when(scenarioGridModelMock.getSelectedHeaderCells()).thenReturn(Collections.singletonList(selectedHeaderCell));
 
         scenarioGrid.adjustSelection(mock(SelectionExtension.class), false);
-        
-        verify(scenarioGridPanelMock).signalRightPanelAboutSelectedHeaderCells();
+
+        verify(scenarioGrid).signalRightPanelAboutSelectedHeaderCells();
+        verify(scenarioGrid).setSelectedColumnAndHeader(uiRowIndex, uiColumnIndex);
+        verify(eventBusMock).fireEvent(any(EnableRightPanelEvent.class));
     }
 
     private Simulation getSimulation() {

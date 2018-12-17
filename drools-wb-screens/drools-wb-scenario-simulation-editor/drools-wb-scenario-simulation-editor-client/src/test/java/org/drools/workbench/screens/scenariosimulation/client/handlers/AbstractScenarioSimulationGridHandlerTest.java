@@ -56,7 +56,7 @@ public abstract class AbstractScenarioSimulationGridHandlerTest {
     protected Point2D point2DMock;
 
     @Mock
-    private Viewport viewport;
+    private Viewport viewportMock;
 
     @Mock
     protected ScenarioGrid scenarioGridMock;
@@ -104,7 +104,7 @@ public abstract class AbstractScenarioSimulationGridHandlerTest {
         when(scenarioGridMock.getModel()).thenReturn(scenarioGridModelMock);
         when(scenarioGridMock.getRenderer()).thenReturn(scenarioGridRendererMock);
         when(scenarioGridMock.getRendererHelper()).thenReturn(scenarioGridRendererHelperMock);
-        when(scenarioGridMock.getViewport()).thenReturn(viewport);
+        when(scenarioGridMock.getViewport()).thenReturn(viewportMock);
         when(scenarioGridRendererMock.getHeaderHeight()).thenReturn(HEADER_HEIGHT);
         when(scenarioGridRendererMock.getHeaderRowHeight()).thenReturn(HEADER_ROW_HEIGHT);
         when(scenarioGridRendererHelperMock.getRenderingInformation()).thenReturn(scenarioRenderingInformationMock);
