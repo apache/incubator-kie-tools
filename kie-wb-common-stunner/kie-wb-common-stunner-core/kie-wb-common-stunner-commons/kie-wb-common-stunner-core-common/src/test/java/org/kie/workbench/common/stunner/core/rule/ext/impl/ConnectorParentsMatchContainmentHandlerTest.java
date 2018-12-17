@@ -165,23 +165,14 @@ public class ConnectorParentsMatchContainmentHandlerTest extends AbstractGraphDe
         assertNotNull(violations);
         assertViolations(violations, false);
 
-        //removing node b from grandparent
-        graphHandler.removeChild(grandParentNode, nodeB);
-        graphHandler.setChild(parentNode, nodeB);
-
-        //should be error now because now node b is child of parent and the target parent is the grandparent
-        violations = tested.evaluate(ruleExtension, containmentContext);
-        assertNotNull(violations);
-        assertViolations(violations, false);
-
         //now change the accepted type but set the parent as valid
         when(containmentContext.getParent()).thenReturn(parentNode);
         when(ruleExtension.getTypeArguments()).thenReturn(new Class[]{RootDefinition.class});
 
-        //should be error now because now node b is child of parent and the target parent is the grandparent
+        //should be success now because now node b and tested node are children of not checked parent
         violations = tested.evaluate(ruleExtension, containmentContext);
         assertNotNull(violations);
-        assertViolations(violations, false);
+        assertViolations(violations, true);
 
         //set accepted type (ParentDefinition) to the same as the current parent then it should be success
         when(ruleExtension.getTypeArguments()).thenReturn(new Class[]{GrandParentDefinition.class, ParentDefinition.class});

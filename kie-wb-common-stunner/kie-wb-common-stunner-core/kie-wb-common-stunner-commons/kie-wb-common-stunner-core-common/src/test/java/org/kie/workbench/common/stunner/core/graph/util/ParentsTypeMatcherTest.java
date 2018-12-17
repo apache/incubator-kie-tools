@@ -64,12 +64,10 @@ public class ParentsTypeMatcherTest extends AbstractGraphDefinitionTypesTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testWithParents() {
+    public void testWithParentSubprocess() {
         assertTrue(newPredicate(ParentDefinition.class).test(nodeA, nodeB));
-        assertFalse(newPredicate(DefinitionA.class).test(nodeA, nodeB));
-        assertFalse(newPredicate(DefinitionB.class).test(nodeA, nodeB));
+        assertTrue(newPredicate(DefinitionA.class).test(nodeA, nodeB));
         assertFalse(newPredicate(RootDefinition.class).test(nodeA, nodeB));
-        assertFalse(newPredicate(DefinitionC.class).test(nodeA, nodeB));
         assertFalse(newPredicate(ParentDefinition.class).test(nodeA, nodeC));
         assertFalse(newPredicate(RootDefinition.class).test(nodeA, nodeC));
         assertFalse(newPredicate(ParentDefinition.class).test(nodeB, nodeC));
@@ -90,12 +88,16 @@ public class ParentsTypeMatcherTest extends AbstractGraphDefinitionTypesTest {
         graphHandler
                 .removeChild(parentNode, nodeA)
                 .removeChild(parentNode, nodeB);
-        assertFalse(newPredicate(RootDefinition.class).test(nodeA, nodeB));
+        assertTrue(newPredicate(RootDefinition.class).test(nodeA, nodeB));
 
         graphHandler.setChild(rootNode, nodeA);
         assertFalse(newPredicate(RootDefinition.class).test(nodeA, nodeB));
 
+        graphHandler.removeChild(rootNode, nodeA);
         graphHandler.setChild(rootNode, nodeB);
+        assertFalse(newPredicate(RootDefinition.class).test(nodeA, nodeB));
+
+        graphHandler.setChild(rootNode, nodeA);
         assertTrue(newPredicate(RootDefinition.class).test(nodeA, nodeB));
     }
 

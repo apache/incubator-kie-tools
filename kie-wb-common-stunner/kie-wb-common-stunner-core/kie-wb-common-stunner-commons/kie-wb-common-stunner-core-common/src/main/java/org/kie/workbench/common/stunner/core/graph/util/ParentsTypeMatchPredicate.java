@@ -66,6 +66,10 @@ class ParentsTypeMatchPredicate implements BiPredicate<Node<? extends View<?>, ?
         final Optional<Element<?>> parentInstanceA = getParentInstance(nodeA, parentType);
         final Optional<Element<?>> parentInstanceB = getParentInstance(nodeB, parentType);
 
+        if (!parentInstanceA.isPresent() && !parentInstanceB.isPresent()) {
+            return true;
+        }
+
         return (parentInstanceA.isPresent() && parentInstanceB.isPresent())
                 && (Objects.equals(parentInstanceA.get(), parentInstanceB.get()))
                 && (hasParent(nodeA, parentInstanceA.get()) && hasParent(nodeB, parentInstanceB.get()));

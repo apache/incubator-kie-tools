@@ -75,7 +75,7 @@ public class FilteredParentsTypeMatcherTest extends AbstractGraphDefinitionTypes
         assertFalse(newPredicate(DefinitionC.class)
                             .test(nodeA,
                                   nodeB));
-        assertFalse(newPredicate(ParentDefinition.class)
+        assertTrue(newPredicate(ParentDefinition.class)
                            .test(nodeA,
                                  nodeC));
 

@@ -64,13 +64,12 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 @EdgeOccurrences(role = "IntermediateEventThrowing", type = EdgeOccurrences.EdgeType.INCOMING, max = 1)
 @EdgeOccurrences(role = "IntermediateEventThrowing", type = EdgeOccurrences.EdgeType.OUTGOING, min = 1)
 @EdgeOccurrences(role = "IntermediateEventThrowing", type = EdgeOccurrences.EdgeType.OUTGOING, max = 1)
-// Sequence flows cannot exceed bounds when any of the nodes are in an embedded subprocess context.
+// Sequence flows cannot exceed bounds when any of the nodes are in an subprocess context.
 @RuleExtension(handler = ConnectorParentsMatchHandler.class,
-        typeArguments = {BPMNDiagramImpl.class, EmbeddedSubprocess.class, EventSubprocess.class,
-                MultipleInstanceSubprocess.class,
-                AdHocSubprocess.class},
-        arguments = {"Sequence flow connectors cannot exceed the embbedded subprocess' bounds. " +
-                "Both source and target nodes must be in same parent process."})
+        typeArguments = {EmbeddedSubprocess.class, EventSubprocess.class,
+                MultipleInstanceSubprocess.class, AdHocSubprocess.class},
+        arguments = {"Sequence flow connectors cannot exceed the parent's subprocess bounds. " +
+                "Both source and target nodes must be in the same subprocess."})
 @FormDefinition(
         startElement = "general",
         policy = FieldPolicy.ONLY_MARKED,
