@@ -155,6 +155,10 @@ public class CoordinateUtilities {
         if (relativeY < headerMinY || relativeY > headerMaxY) {
             return null;
         }
+        final int headerRowCount = gridWidget.getModel().getHeaderRowCount();
+        if (headerRowCount < 1) {
+            return null;
+        }
 
         //Get header column index
         final BaseGridRendererHelper rendererHelper = gridWidget.getRendererHelper();
@@ -168,7 +172,7 @@ public class CoordinateUtilities {
         int uiHeaderRowIndex = 0;
         double offsetY = relativeY - headerMinY;
         final double headerRowHeight = renderer.getHeaderRowHeight();
-        final double headerRowsHeight = headerRowHeight * gridWidget.getModel().getHeaderRowCount();
+        final double headerRowsHeight = headerRowHeight * headerRowCount;
         final double columnHeaderRowHeight = headerRowsHeight / uiColumn.getHeaderMetaData().size();
         while (columnHeaderRowHeight < offsetY) {
             offsetY = offsetY - columnHeaderRowHeight;

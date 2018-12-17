@@ -352,6 +352,17 @@ public class CoordinateUtilitiesTest {
         assertEquals(EXPECTED_RELATIVE_Y, retrieved);
     }
 
+    @Test
+    public void testGetUiHeaderRowIndexOnNoRowsHeader() {
+        point = new Point2D(COLUMN_WIDTH / 2, gridRenderer.getHeaderRowHeight() - 5.0);
+        setupGridWidget();
+
+        gridData.setHeaderRowCount(0);
+        final Integer uiHeaderRowIndex = CoordinateUtilities.getUiHeaderRowIndex(view,
+                                                                                 point);
+        assertNull(uiHeaderRowIndex);
+    }
+
     private void setupGridWidget() {
         view = spy(new BaseGridWidget(gridData, gridSelectionManager, gridPinnedModeManager, gridRenderer));
         doReturn(gridRenderer).when(view).getRenderer();
