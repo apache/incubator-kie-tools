@@ -27,6 +27,7 @@ import org.kie.workbench.common.stunner.bpmn.service.ProjectType;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.DirectoryStream;
 
 @Service
 public class BPMNDiagramServiceImpl implements BPMNDiagramService {
@@ -43,12 +44,13 @@ public class BPMNDiagramServiceImpl implements BPMNDiagramService {
 
     @Override
     public ProjectType getProjectType(Path projectRootPath) {
-        org.uberfire.java.nio.file.DirectoryStream<org.uberfire.java.nio.file.Path> paths =
-                ioService.newDirectoryStream(Paths.convert(projectRootPath), f -> f.getFileName().toString().startsWith("."));
-        return ProjectType.fromFileName(StreamSupport.stream(paths.spliterator(), false)
-                                                .map(Paths::convert)
-                                                .map(Path::getFileName)
-                                                .findFirst()
-        ).orElse(null);
+        try (DirectoryStream<org.uberfire.java.nio.file.Path> paths =
+                     ioService.newDirectoryStream(Paths.convert(projectRootPath), f -> f.getFileName().toString().startsWith("."))) {
+            return ProjectType.fromFileName(StreamSupport.stream(paths.spliterator(), false)
+                                                    .map(Paths::convert)
+                                                    .map(Path::getFileName)
+                                                    .findFirst()
+            ).orElse(null);
+        }
     }
 }

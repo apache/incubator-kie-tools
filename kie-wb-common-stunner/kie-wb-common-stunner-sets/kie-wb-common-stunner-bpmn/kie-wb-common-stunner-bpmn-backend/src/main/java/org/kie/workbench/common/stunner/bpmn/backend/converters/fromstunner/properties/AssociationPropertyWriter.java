@@ -42,16 +42,18 @@ public class AssociationPropertyWriter extends BasePropertyWriter {
     }
 
     public void setConnection(ViewConnector<? extends BPMNViewDefinition> connector) {
-        Connection sourceConnection = connector.getSourceConnection().get();
-        Connection targetConnection = connector.getTargetConnection().get();
+        if (connector.getSourceConnection().isPresent() && connector.getTargetConnection().isPresent()) {
+            Connection sourceConnection = connector.getSourceConnection().get();
+            Connection targetConnection = connector.getTargetConnection().get();
 
-        List<ControlPoint> controlPoints = connector.getControlPoints();
-        bpmnEdge = PropertyWriterUtils.createBPMNEdge(source,
-                                                      target,
-                                                      sourceConnection,
-                                                      controlPoints,
-                                                      targetConnection);
-        bpmnEdge.setBpmnElement(association);
+            List<ControlPoint> controlPoints = connector.getControlPoints();
+            bpmnEdge = PropertyWriterUtils.createBPMNEdge(source,
+                                                          target,
+                                                          sourceConnection,
+                                                          controlPoints,
+                                                          targetConnection);
+            bpmnEdge.setBpmnElement(association);
+        }
     }
 
     public BPMNEdge getEdge() {

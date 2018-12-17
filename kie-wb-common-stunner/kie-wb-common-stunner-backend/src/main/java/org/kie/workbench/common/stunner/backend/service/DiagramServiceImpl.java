@@ -116,7 +116,6 @@ public class DiagramServiceImpl
                 .build();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     protected Metadata obtainMetadata(DefinitionSetService services,
                                       final org.uberfire.backend.vfs.Path diagramFilePath,
@@ -131,8 +130,7 @@ public class DiagramServiceImpl
                     metadata.setRoot(getRoot());
                 }
             } catch (java.io.IOException e) {
-                LOG.error("Cannot unmarshall metadata for diagram's path [" + diagramFilePath + "]",
-                          e);
+                LOG.error("Cannot unmarshall metadata for diagram's path [{}]", diagramFilePath, e);
             }
         }
         return metadata;
@@ -157,24 +155,23 @@ public class DiagramServiceImpl
                               final String metadata) {
         try {
             getIoService().startBatch(backendFileSystemManager.getFileSystem());
-            final Path _path = diagram.getMetadata().getPath();
-            final String name = null != _path ? _path.getFileName() : getNewFileName(diagram);
+            final Path dPath = diagram.getMetadata().getPath();
+            final String name = null != dPath ? dPath.getFileName() : getNewFileName(diagram);
             final org.uberfire.java.nio.file.Path path =
-                    null != _path ? Paths.convert(_path) : getDiagramsPath().resolve(name);
+                    null != dPath ? Paths.convert(dPath) : getDiagramsPath().resolve(name);
             // Serialize the diagram's raw data.
-            LOG.debug("Serializing raw data: " + raw);
+            LOG.debug("Serializing raw data: {}", raw);
             getIoService().write(path,
                                  raw);
             final String metadataFileName = getMetadataFileName(name);
             final org.uberfire.java.nio.file.Path metadataPath =
                     getDiagramsPath().resolve(metadataFileName);
-            LOG.debug("Serializing raw metadadata: " + metadata);
+            LOG.debug("Serializing raw metadadata: {}", metadata);
             getIoService().write(metadataPath,
                                  metadata);
             diagram.getMetadata().setPath(Paths.convert(path));
         } catch (Exception e) {
-            LOG.error("Error serializing diagram with UUID [" + diagram.getName() + "].",
-                      e);
+            LOG.error("Error serializing diagram with UUID [{}].", diagram.getName(), e);
         } finally {
             getIoService().endBatch();
         }
@@ -188,16 +185,15 @@ public class DiagramServiceImpl
     }
 
     @Override
-    protected boolean doDelete(final Path _path) {
-        final org.uberfire.java.nio.file.Path path = Paths.convert(_path);
+    protected boolean doDelete(final Path dPath) {
+        final org.uberfire.java.nio.file.Path path = Paths.convert(dPath);
         if (getIoService().exists(path)) {
             getIoService().startBatch(backendFileSystemManager.getFileSystem());
             try {
                 getIoService().deleteIfExists(path,
                                               StandardDeleteOption.NON_EMPTY_DIRECTORIES);
             } catch (Exception e) {
-                LOG.error("Error deleting diagram for path [" + path + "].",
-                          e);
+                LOG.error("Error deleting diagram for path [{}].", path, e);
                 return false;
             } finally {
                 getIoService().endBatch();
@@ -221,8 +217,7 @@ public class DiagramServiceImpl
             try {
                 return loadPath(path);
             } catch (Exception e) {
-                LOG.warn("Cannot load metadata for [" + dPath.toString() + "].",
-                         e);
+                LOG.warn("Cannot load metadata for [{}].", dPath.toString(), e);
             }
         }
         return null;

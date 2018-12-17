@@ -16,10 +16,10 @@
 
 package org.kie.workbench.common.stunner.cm.client.shape.def;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.BaseDimensionedShapeDef;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseTask;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
@@ -40,9 +40,8 @@ public final class CaseManagementSvgUserTaskShapeDef extends BaseDimensionedShap
                     .put(UserTask.class, CaseManagementSVGViewFactory::task);
 
     public static final Map<Class<? extends BaseTask>, Glyph> GLYPHS =
-            new HashMap<Class<? extends BaseTask>, Glyph>() {{
-                put(UserTask.class, CaseManagementSVGGlyphFactory.TASK_GLYPH);
-            }};
+            new Maps.Builder<Class<? extends BaseTask>, Glyph>()
+                    .put(UserTask.class, CaseManagementSVGGlyphFactory.TASK_GLYPH).build();
 
     private static HasTitle.Position getSubprocessTextPosition(final BaseTask bean) {
         return HasTitle.Position.CENTER;

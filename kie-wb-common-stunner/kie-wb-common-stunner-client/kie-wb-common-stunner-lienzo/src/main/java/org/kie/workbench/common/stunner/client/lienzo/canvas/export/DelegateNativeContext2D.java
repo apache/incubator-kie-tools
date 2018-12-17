@@ -80,13 +80,13 @@ public class DelegateNativeContext2D implements INativeContext2D {
 
     @Override
     public void saveContainer(String id) {
-        context.saveGroup(new HashMap<String, String>() {{
-            //setting the node id in case it exists on graph
-            Optional.ofNullable(canvasHandler.getGraphIndex().get(id)).ifPresent(node -> {
-                put(DEFAULT_NODE_ID, id);
-                put(svgNodeId, id);
-            });
-        }});
+        HashMap<String, String> map = new HashMap<>();
+        //setting the node id in case it exists on graph
+        if (canvasHandler.getGraphIndex().get(id) != null) {
+            map.put(DEFAULT_NODE_ID, id);
+            map.put(svgNodeId, id);
+        }
+        context.saveGroup(map);
     }
 
     @Override
@@ -100,10 +100,12 @@ public class DelegateNativeContext2D implements INativeContext2D {
 
     public void save(String id) {
         context.saveStyle();
-        context.addAttributes(new HashMap<String, String>() {{
-            //setting the node id in case it exists on graph
-            Optional.ofNullable(id).ifPresent(node -> put(DEFAULT_NODE_ID, id));
-        }});
+        HashMap<String, String> map = new HashMap<>();
+        //setting the node id in case it exists on graph
+        if (id != null) {
+            map.put(DEFAULT_NODE_ID, id);
+        }
+        context.addAttributes(map);
     }
 
     public void restore() {
@@ -372,7 +374,6 @@ public class DelegateNativeContext2D implements INativeContext2D {
             return false;
         }
         int indx = 0;
-        boolean fill = true;
         this.beginPath();
         while (indx < leng) {
             PathPartEntryJSO e = list.get(indx);
@@ -396,7 +397,6 @@ public class DelegateNativeContext2D implements INativeContext2D {
                             (1 - p.get(7)) > 0);
                     break;
                 case 6:
-                    fill = true;
                     closePath();
                     break;
                 case 7:
@@ -404,7 +404,7 @@ public class DelegateNativeContext2D implements INativeContext2D {
                     break;
             }
         }
-        return fill;
+        return true;
     }
 
     public boolean clip(PathPartList.PathPartListJSO list) {

@@ -16,13 +16,13 @@
 
 package org.kie.workbench.common.stunner.bpmn.definition;
 
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
 import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
+import org.kie.soup.commons.util.Sets;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
@@ -54,12 +54,11 @@ public abstract class BaseArtifact implements BPMNViewDefinition {
     public static final Double BORDER_SIZE = 1d;
 
     @Labels
-    protected final Set<String> labels = new HashSet<String>() {{
-        add("all");
-        add("lane_child");
-        add("ConnectingObjectsMorph");
-        add("cm_nop");
-    }};
+    protected final Set<String> labels = new Sets.Builder<String>()
+            .add("all")
+            .add("lane_child")
+            .add("ConnectingObjectsMorph")
+            .add("cm_nop").build();
 
     protected BaseArtifact() {
     }

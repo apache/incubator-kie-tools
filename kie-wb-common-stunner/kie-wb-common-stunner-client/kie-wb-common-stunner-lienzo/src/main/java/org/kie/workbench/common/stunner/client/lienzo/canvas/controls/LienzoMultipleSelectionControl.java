@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.canvas.controls;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.function.Supplier;
@@ -37,6 +36,7 @@ import com.ait.lienzo.client.core.types.Point2D;
 import com.google.gwt.event.dom.client.MouseEvent;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import org.kie.soup.commons.util.Lists;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresConnectorView;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresShapeView;
@@ -94,14 +94,12 @@ public class LienzoMultipleSelectionControl<H extends AbstractCanvasHandler>
         getSelectionManager()
                 .setSelectionListener(selectedItems -> {
                     final SelectionManager.ChangedItems changedItems = selectedItems.getChanged();
-                    getSelectionControl().deselect(new ArrayList<String>() {{
-                        addAll(shapesToIdentifiers(changedItems.getRemovedShapes().toList()));
-                        addAll(shapesToIdentifiers(changedItems.getRemovedConnectors().toList()));
-                    }});
-                    getSelectionControl().select(new ArrayList<String>() {{
-                        addAll(shapesToIdentifiers(changedItems.getAddedShapes().toList()));
-                        addAll(shapesToIdentifiers(changedItems.getAddedConnectors().toList()));
-                    }});
+                    getSelectionControl().deselect(new Lists.Builder<String>()
+                                                           .addAll(shapesToIdentifiers(changedItems.getRemovedShapes().toList()))
+                                                           .addAll(shapesToIdentifiers(changedItems.getRemovedConnectors().toList())).build());
+                    getSelectionControl().select(new Lists.Builder<String>()
+                                                         .addAll(shapesToIdentifiers(changedItems.getAddedShapes().toList()))
+                                                         .addAll(shapesToIdentifiers(changedItems.getAddedConnectors().toList())).build());
                 });
     }
 

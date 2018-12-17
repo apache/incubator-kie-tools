@@ -106,18 +106,13 @@ public class CaseManagementSet implements BPMNPropertySet {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof CaseManagementSet) {
-            CaseManagementSet other = (CaseManagementSet) o;
-            return Objects.equals(caseRoles, other.caseRoles) &&
-                    Objects.equals(caseFileVariables, other.caseFileVariables);
-
-        }
         if (!(o instanceof CaseManagementSet)) {
             return false;
         }
-        CaseManagementSet that = (CaseManagementSet) o;
-        return  Objects.equals(getCaseIdPrefix(), that.getCaseIdPrefix())
-                && Objects.equals(getCaseIdPrefix(), that.getCaseIdPrefix())
-                && Objects.equals(getCaseRoles(), that.getCaseRoles());
+
+        CaseManagementSet other = (CaseManagementSet) o;
+        return Objects.equals(caseRoles, other.caseRoles) &&
+                Objects.equals(getCaseIdPrefix(), other.caseIdPrefix) &&
+                Objects.equals(caseFileVariables, other.caseFileVariables);
     }
 }
