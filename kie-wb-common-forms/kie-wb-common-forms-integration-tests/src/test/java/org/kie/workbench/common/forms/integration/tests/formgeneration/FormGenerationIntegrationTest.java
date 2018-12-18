@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,11 +22,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.google.common.collect.Iterables;
 import org.eclipse.bpmn2.Definitions;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.commons.shared.layout.FormLayoutTemplateGenerator;
@@ -95,7 +95,6 @@ import static org.kie.workbench.common.forms.jbpm.model.authoring.document.type.
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
-@Ignore("Failing randomly, see https://issues.jboss.org/browse/JBPM-7170")
 @RunWith(MockitoJUnitRunner.class)
 public class FormGenerationIntegrationTest {
 
@@ -424,9 +423,15 @@ public class FormGenerationIntegrationTest {
         final FormDefinition rootForm = formGenerationResult.getRootForm();
 
         final List<FormDefinition> nestedForms = formGenerationResult.getNestedForms();
+        assertThat(nestedForms.size()).as("Unexpected number of nested forms").isEqualTo(2);
 
-        final FormDefinition dataObjectForm = nestedForms.get(0);
-        final FormDefinition nestedDataObjectForm = nestedForms.get(1);
+        final FormDefinition dataObjectForm = Iterables.getOnlyElement(nestedForms.stream()
+                                                                               .filter(f -> f.getName().equals("FormGenerationTest_DataObject"))
+                                                                               .collect(Collectors.toList()));
+
+        final FormDefinition nestedDataObjectForm = Iterables.getOnlyElement(nestedForms.stream()
+                                                                                     .filter(f -> f.getName().equals("FormGenerationTest_NestedObject"))
+                                                                                     .collect(Collectors.toList()));
 
         final String dataObjectFormID = dataObjectForm.getId();
 
@@ -480,7 +485,10 @@ public class FormGenerationIntegrationTest {
 
     private void testNestedFormsHaveCorrectId(FormDefinition form, String dataObjectFieldName, String expectedFormId) {
         SubFormFieldDefinition dataObjectField = (SubFormFieldDefinition) form.getFieldByName(dataObjectFieldName);
-        assertThat(dataObjectField.getNestedForm()).isEqualTo(expectedFormId);
+        String nestedForm = dataObjectField.getNestedForm();
+        assertThat(nestedForm)
+                .as("Nested form for field: " + dataObjectField.getLabel() + " has incorrect id.")
+                .isEqualTo(expectedFormId);
     }
 
     private String getFieldIdFromRow(LayoutRow row) {
