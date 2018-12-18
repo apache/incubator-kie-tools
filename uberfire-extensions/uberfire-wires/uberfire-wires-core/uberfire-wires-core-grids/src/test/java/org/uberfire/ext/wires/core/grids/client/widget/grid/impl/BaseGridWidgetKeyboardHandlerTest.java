@@ -36,6 +36,8 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridTest;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.StringDOMElementColumn;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.StringDOMElementSingletonColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.SelectionExtension;
@@ -46,6 +48,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -130,6 +133,35 @@ public class BaseGridWidgetKeyboardHandlerTest {
         final BaseGridWidgetKeyboardHandler wrapped = new BaseGridWidgetKeyboardHandler(layer);
         handler = spy(wrapped);
         setupKeyboardOperations();
+    }
+
+    @Test
+    public void testDestroyResourcesOnKeyDown() {
+        when(layer.getGridWidgets()).thenReturn(gridWidgets);
+        when(gridWidget1.isSelected()).thenReturn(true);
+        when(event.getNativeKeyCode()).thenReturn(KeyCodes.KEY_RIGHT);
+
+        final StringDOMElementColumn columnWithAdditionalDomElements = mock(StringDOMElementColumn.class);
+        gridWidget1Data.appendColumn(columnWithAdditionalDomElements);
+
+        handler.onKeyDown(event);
+
+        verify(columnWithAdditionalDomElements).destroyResources();
+    }
+
+    @Test
+    public void testDestroyResourcesAndFlushOnKeyDown() {
+        when(layer.getGridWidgets()).thenReturn(gridWidgets);
+        when(gridWidget1.isSelected()).thenReturn(true);
+        when(event.getNativeKeyCode()).thenReturn(KeyCodes.KEY_RIGHT);
+
+        final StringDOMElementSingletonColumn columnWithAdditionalDomElements = mock(StringDOMElementSingletonColumn.class);
+        gridWidget1Data.appendColumn(columnWithAdditionalDomElements);
+
+        handler.onKeyDown(event);
+
+        verify(columnWithAdditionalDomElements).flush();
+        verify(columnWithAdditionalDomElements).destroyResources();
     }
 
     @Test

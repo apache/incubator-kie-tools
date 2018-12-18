@@ -146,6 +146,15 @@ public class BaseCellSelectionManager implements CellSelectionManager {
                                    final boolean isShiftKeyDown) {
         final GridData.SelectedCell origin = gridModel.getSelectedCellsOrigin();
         if (origin == null) {
+            if (gridModel.getSelectedHeaderCells().size() > 0) {
+                final GridData.SelectedCell selectedHeaderCell = gridModel.getSelectedHeaderCells().get(0);
+                if (movingHorizontally(direction)) {
+                    return moveInHeaderHorizontally(direction, selectedHeaderCell);
+                }
+                if (movingVertically(direction)) {
+                    return moveInHeaderVerticallyOrMoveToData(direction, selectedHeaderCell);
+                }
+            }
             return false;
         }
 
@@ -155,6 +164,76 @@ public class BaseCellSelectionManager implements CellSelectionManager {
         } else {
             return moveSelection(origin,
                                  direction);
+        }
+    }
+
+    private static boolean movingHorizontally(final SelectionExtension direction) {
+        return direction == SelectionExtension.LEFT || direction == SelectionExtension.RIGHT;
+    }
+
+    private static boolean movingVertically(final SelectionExtension direction) {
+        return direction == SelectionExtension.UP || direction == SelectionExtension.DOWN;
+    }
+
+    private boolean moveInHeaderHorizontally(final SelectionExtension direction,
+                                             final GridData.SelectedCell selectedHeaderCell) {
+        final int uiColumnIndex = ColumnIndexUtilities.findUiColumnIndex(gridModel.getColumns(),
+                                                                         selectedHeaderCell.getColumnIndex());
+
+        final GridColumn.HeaderMetaData columnHeaderMetaData = gridModel.getColumns().get(uiColumnIndex)
+                .getHeaderMetaData().get(selectedHeaderCell.getRowIndex());
+
+        final int headerBlockStartIndex = ColumnIndexUtilities.getHeaderBlockStartColumnIndex(gridModel.getColumns(),
+                                                                                              columnHeaderMetaData,
+                                                                                              selectedHeaderCell.getRowIndex(),
+                                                                                              uiColumnIndex);
+        final int headerBlockEndIndex = ColumnIndexUtilities.getHeaderBlockEndColumnIndex(gridModel.getColumns(),
+                                                                                          columnHeaderMetaData,
+                                                                                          selectedHeaderCell.getRowIndex(),
+                                                                                          uiColumnIndex);
+
+        int proposedUiColumnIndex = uiColumnIndex + direction.getDeltaX();
+
+        if (direction == SelectionExtension.LEFT) {
+            proposedUiColumnIndex = Math.min(headerBlockStartIndex - 1,
+                                             proposedUiColumnIndex);
+        }
+
+        if (direction == SelectionExtension.RIGHT) {
+            proposedUiColumnIndex = Math.max(headerBlockEndIndex + 1,
+                                             proposedUiColumnIndex);
+        }
+
+        if (proposedUiColumnIndex < 0 || proposedUiColumnIndex > gridModel.getColumnCount() - 1) {
+            return false;
+        }
+
+        final int proposedUiRowIndex = // either keep the same or pick the closest one
+                Math.min(selectedHeaderCell.getRowIndex(),
+                         ColumnIndexUtilities.getMaxUiHeaderRowIndexOfColumn(gridModel, proposedUiColumnIndex));
+
+        return selectHeaderCell(proposedUiRowIndex,
+                                proposedUiColumnIndex,
+                                false,
+                                false);
+    }
+
+    private boolean moveInHeaderVerticallyOrMoveToData(final SelectionExtension direction,
+                                                       final GridData.SelectedCell selectedHeaderCell) {
+        final int uiColumnIndex = ColumnIndexUtilities.findUiColumnIndex(gridModel.getColumns(),
+                                                                         selectedHeaderCell.getColumnIndex());
+
+        final boolean selectionChanged = selectHeaderCell(selectedHeaderCell.getRowIndex() + direction.getDeltaY(),
+                                                          uiColumnIndex,
+                                                          false,
+                                                          false);
+        if (!selectionChanged && direction == SelectionExtension.DOWN) {
+            return selectCell(0,
+                              uiColumnIndex,
+                              false,
+                              false);
+        } else {
+            return selectionChanged;
         }
     }
 
@@ -243,6 +322,10 @@ public class BaseCellSelectionManager implements CellSelectionManager {
         final int proposedUiRowIndex = currentUiRowIndex + dy;
         final int proposedUiColumnIndex = currentUiColumnIndex + dx;
 
+        if (canMoveFromDataToHeader(direction, proposedUiRowIndex)) {
+            return moveFromDataToHeader(proposedUiColumnIndex);
+        }
+
         if (!isCoordinateWithinExtents(proposedUiRowIndex,
                                        proposedUiColumnIndex)) {
             return false;
@@ -252,6 +335,19 @@ public class BaseCellSelectionManager implements CellSelectionManager {
                           proposedUiColumnIndex,
                           false,
                           false);
+    }
+
+    private boolean canMoveFromDataToHeader(final SelectionExtension direction,
+                                            final int proposedUiRowIndex) {
+        return direction == SelectionExtension.UP && proposedUiRowIndex < 0 && gridModel.getHeaderRowCount() > 0;
+    }
+
+    private boolean moveFromDataToHeader(final int uiColumnIndex) {
+        final int uiHeaderRowIndex = ColumnIndexUtilities.getMaxUiHeaderRowIndexOfColumn(gridModel, uiColumnIndex);
+        return selectHeaderCell(uiHeaderRowIndex,
+                                uiColumnIndex,
+                                false,
+                                false);
     }
 
     private boolean isCoordinateWithinExtents(final int proposedUiRowIndex,

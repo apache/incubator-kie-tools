@@ -22,7 +22,9 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridTest;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
 
 import static org.junit.Assert.assertEquals;
 
@@ -99,5 +101,17 @@ public class ColumnIndexUtilitiesTest {
                                                                        columns.get(0).getHeaderMetaData().get(0),
                                                                        0,
                                                                        0));
+    }
+
+    @Test
+    public void testGetUiHeaderRowIndex() {
+        final BaseGridData model = new BaseGridData();
+        columns.forEach(col -> model.appendColumn(col));
+
+        assertEquals(0, ColumnIndexUtilities.getMaxUiHeaderRowIndexOfColumn(model, 0));
+
+        columns.get(1).getHeaderMetaData().add(new BaseHeaderMetaData("col1", "second-row"));
+
+        assertEquals(1, ColumnIndexUtilities.getMaxUiHeaderRowIndexOfColumn(model, 1));
     }
 }

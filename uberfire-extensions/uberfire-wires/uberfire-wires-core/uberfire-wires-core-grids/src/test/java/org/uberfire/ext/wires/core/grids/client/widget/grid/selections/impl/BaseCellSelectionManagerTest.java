@@ -24,6 +24,7 @@ import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,6 +39,7 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseBounds;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridTest;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellEditContext;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
@@ -542,6 +544,118 @@ public class BaseCellSelectionManagerTest {
         assertEquals(new GridData.SelectedCell(0,
                                                0),
                      gridWidgetData.getSelectedCellsOrigin());
+    }
+
+    @Test
+    public void testAdjustSelectionUpFromDataToHeader() {
+        cellSelectionManager.selectCell(0,
+                                        1,
+                                        false,
+                                        false);
+
+        cellSelectionManager.adjustSelection(SelectionExtension.UP, false);
+
+        final List<GridData.SelectedCell> selectedCells = gridWidgetData.getSelectedCells();
+        Assertions.assertThat(selectedCells).isEmpty();
+
+        final List<GridData.SelectedCell> selectedHeaderCells = gridWidgetData.getSelectedHeaderCells();
+        Assertions.assertThat(selectedHeaderCells).hasSize(1);
+
+        final GridData.SelectedCell selectedHeaderCell = selectedHeaderCells.get(0);
+        Assertions.assertThat(selectedHeaderCell.getColumnIndex()).isEqualTo(1);
+        Assertions.assertThat(selectedHeaderCell.getRowIndex()).isEqualTo(0);
+    }
+
+    @Test
+    public void testAdjustSelectionDownFromHeaderToData() {
+        cellSelectionManager.selectHeaderCell(0,
+                                              1,
+                                              false,
+                                              false);
+
+        cellSelectionManager.adjustSelection(SelectionExtension.DOWN, false);
+
+        final List<GridData.SelectedCell> selectedHeaderCells = gridWidgetData.getSelectedHeaderCells();
+        Assertions.assertThat(selectedHeaderCells).isEmpty();
+
+        final List<GridData.SelectedCell> selectedCells = gridWidgetData.getSelectedCells();
+        Assertions.assertThat(selectedCells).hasSize(1);
+
+        final GridData.SelectedCell selectedCell = selectedCells.get(0);
+        Assertions.assertThat(selectedCell.getColumnIndex()).isEqualTo(1);
+        Assertions.assertThat(selectedCell.getRowIndex()).isEqualTo(0);
+    }
+
+    @Test
+    public void testAdjustSelectionUpInHeader() {
+        col2.getHeaderMetaData().add(new BaseHeaderMetaData("col1", "second-row"));
+
+        cellSelectionManager.selectHeaderCell(1,
+                                              1,
+                                              false,
+                                              false);
+
+        cellSelectionManager.adjustSelection(SelectionExtension.UP, false);
+
+        final List<GridData.SelectedCell> selectedHeaderCells = gridWidgetData.getSelectedHeaderCells();
+        Assertions.assertThat(selectedHeaderCells).hasSize(1);
+
+        final GridData.SelectedCell selectedHeaderCell = selectedHeaderCells.get(0);
+        Assertions.assertThat(selectedHeaderCell.getColumnIndex()).isEqualTo(1);
+        Assertions.assertThat(selectedHeaderCell.getRowIndex()).isEqualTo(0);
+    }
+
+    @Test
+    public void testAdjustSelectionDownInHeader() {
+        col2.getHeaderMetaData().add(new BaseHeaderMetaData("col1", "second-row"));
+
+        cellSelectionManager.selectHeaderCell(0,
+                                              1,
+                                              false,
+                                              false);
+
+        cellSelectionManager.adjustSelection(SelectionExtension.DOWN, false);
+
+        final List<GridData.SelectedCell> selectedHeaderCells = gridWidgetData.getSelectedHeaderCells();
+        Assertions.assertThat(selectedHeaderCells).hasSize(1);
+
+        final GridData.SelectedCell selectedHeaderCell = selectedHeaderCells.get(0);
+        Assertions.assertThat(selectedHeaderCell.getColumnIndex()).isEqualTo(1);
+        Assertions.assertThat(selectedHeaderCell.getRowIndex()).isEqualTo(1);
+    }
+
+    @Test
+    public void testAdjustSelectionRightInHeader() {
+        cellSelectionManager.selectHeaderCell(0,
+                                              0,
+                                              false,
+                                              false);
+
+        cellSelectionManager.adjustSelection(SelectionExtension.RIGHT, false);
+
+        final List<GridData.SelectedCell> selectedHeaderCells = gridWidgetData.getSelectedHeaderCells();
+        Assertions.assertThat(selectedHeaderCells).hasSize(1);
+
+        final GridData.SelectedCell selectedHeaderCell = selectedHeaderCells.get(0);
+        Assertions.assertThat(selectedHeaderCell.getColumnIndex()).isEqualTo(1);
+        Assertions.assertThat(selectedHeaderCell.getRowIndex()).isEqualTo(0);
+    }
+
+    @Test
+    public void testAdjustSelectionLeftInHeader() {
+        cellSelectionManager.selectHeaderCell(0,
+                                              1,
+                                              false,
+                                              false);
+
+        cellSelectionManager.adjustSelection(SelectionExtension.LEFT, false);
+
+        final List<GridData.SelectedCell> selectedHeaderCells = gridWidgetData.getSelectedHeaderCells();
+        Assertions.assertThat(selectedHeaderCells).hasSize(1);
+
+        final GridData.SelectedCell selectedHeaderCell = selectedHeaderCells.get(0);
+        Assertions.assertThat(selectedHeaderCell.getColumnIndex()).isEqualTo(0);
+        Assertions.assertThat(selectedHeaderCell.getRowIndex()).isEqualTo(0);
     }
 
     @Test

@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Objects;
 
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
+import org.uberfire.ext.wires.core.grids.client.model.GridData;
 
 /**
  * Utilities class
@@ -93,5 +94,9 @@ public class ColumnIndexUtilities {
         }
 
         return candidateHeaderColumnIndex;
+    }
+
+    public static int getMaxUiHeaderRowIndexOfColumn(final GridData model, final int uiColumnIndex) {
+        return model.getColumns().get(uiColumnIndex).getHeaderMetaData().size() - 1;
     }
 }
