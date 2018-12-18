@@ -101,7 +101,7 @@ public class ScenarioSimulationXMLPersistence {
                 supported = true;
                 break;
         }
-        if(!supported) {
+        if (!supported) {
             throw new IllegalArgumentException(new StringBuilder().append("Version ").append(fileVersion)
                                                        .append(" of the file is not supported. Current version is ")
                                                        .append(currentVersion).toString());

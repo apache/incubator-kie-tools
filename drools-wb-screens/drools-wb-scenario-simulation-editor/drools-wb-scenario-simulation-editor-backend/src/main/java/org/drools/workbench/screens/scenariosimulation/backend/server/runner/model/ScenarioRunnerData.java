@@ -20,33 +20,36 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Class to group all runner data: given data, expected data and results
+ */
 public class ScenarioRunnerData {
 
-    private final List<ScenarioInput> inputData = new ArrayList<>();
-    private final List<ScenarioOutput> outputData = new ArrayList<>();
-    private final List<ScenarioResult> resultData = new ArrayList<>();
+    private final List<ScenarioGiven> givens = new ArrayList<>();
+    private final List<ScenarioExpect> expects = new ArrayList<>();
+    private final List<ScenarioResult> results = new ArrayList<>();
 
-    public void addInput(ScenarioInput input) {
-        inputData.add(input);
+    public void addGiven(ScenarioGiven input) {
+        givens.add(input);
     }
 
-    public void addOutput(ScenarioOutput output) {
-        outputData.add(output);
+    public void addExpect(ScenarioExpect output) {
+        expects.add(output);
     }
 
     public void addResult(ScenarioResult result) {
-        resultData.add(result);
+        results.add(result);
     }
 
-    public List<ScenarioInput> getInputData() {
-        return Collections.unmodifiableList(inputData);
+    public List<ScenarioGiven> getGivens() {
+        return Collections.unmodifiableList(givens);
     }
 
-    public List<ScenarioOutput> getOutputData() {
-        return Collections.unmodifiableList(outputData);
+    public List<ScenarioExpect> getExpects() {
+        return Collections.unmodifiableList(expects);
     }
 
-    public List<ScenarioResult> getResultData() {
-        return Collections.unmodifiableList(resultData);
+    public List<ScenarioResult> getResults() {
+        return Collections.unmodifiableList(results);
     }
 }

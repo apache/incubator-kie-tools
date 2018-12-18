@@ -30,14 +30,14 @@ public class BaseExpressionEvaluatorTest {
         BaseExpressionEvaluator baseExpressionEvaluator = new BaseExpressionEvaluator(classLoader);
 
         Object raw = new Object();
-        assertEquals(raw, baseExpressionEvaluator.getValueForGiven(Object.class.getCanonicalName(), raw, classLoader));
+        assertEquals(raw, baseExpressionEvaluator.getValueForGiven(Object.class.getCanonicalName(), raw));
 
         raw = "SimpleString";
-        assertEquals(raw, baseExpressionEvaluator.getValueForGiven(String.class.getCanonicalName(), raw, classLoader));
+        assertEquals(raw, baseExpressionEvaluator.getValueForGiven(String.class.getCanonicalName(), raw));
 
         raw = "= SimpleString";
-        assertEquals("SimpleString", baseExpressionEvaluator.getValueForGiven(String.class.getCanonicalName(), raw, classLoader));
+        assertEquals("SimpleString", baseExpressionEvaluator.getValueForGiven(String.class.getCanonicalName(), raw));
 
-        assertNull(baseExpressionEvaluator.getValueForGiven(String.class.getCanonicalName(), null, classLoader));
+        assertNull(baseExpressionEvaluator.getValueForGiven(String.class.getCanonicalName(), null));
     }
 }

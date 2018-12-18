@@ -74,6 +74,5 @@ public class ResourceHelperTest {
         assertEquals(1, filesFound.size());
 
         assertEquals(0, internalGetResources(filesFound.get(0), Pattern.compile(".*\\.txt$")).count());
-
     }
 }

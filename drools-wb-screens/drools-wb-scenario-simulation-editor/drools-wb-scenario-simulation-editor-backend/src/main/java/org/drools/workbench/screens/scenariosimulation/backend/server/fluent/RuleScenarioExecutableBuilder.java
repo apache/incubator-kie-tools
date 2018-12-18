@@ -35,7 +35,7 @@ import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.internal.builder.fluent.ExecutableBuilder;
 import org.kie.internal.builder.fluent.KieSessionFluent;
 
-public class ScenarioExecutableBuilder {
+public class RuleScenarioExecutableBuilder {
 
     public static String DEFAULT_APPLICATION = "defaultApplication";
 
@@ -49,7 +49,7 @@ public class ScenarioExecutableBuilder {
         return kc;
     };
 
-    private ScenarioExecutableBuilder(KieContainer kieContainer, String name) {
+    private RuleScenarioExecutableBuilder(KieContainer kieContainer, String name) {
         executableBuilder = ExecutableBuilder.create();
 
         kieSessionFluent = executableBuilder.newApplicationContext(name)
@@ -57,16 +57,16 @@ public class ScenarioExecutableBuilder {
                 .newSessionCustomized(null, forcePseudoClock);
     }
 
-    private ScenarioExecutableBuilder(KieContainer kieContainer) {
+    private RuleScenarioExecutableBuilder(KieContainer kieContainer) {
         this(kieContainer, DEFAULT_APPLICATION);
     }
 
-    public static ScenarioExecutableBuilder createBuilder(KieContainer kieContainer, String name) {
-        return new ScenarioExecutableBuilder(kieContainer, name);
+    public static RuleScenarioExecutableBuilder createBuilder(KieContainer kieContainer, String name) {
+        return new RuleScenarioExecutableBuilder(kieContainer, name);
     }
 
-    public static ScenarioExecutableBuilder createBuilder(KieContainer kieContainer) {
-        return new ScenarioExecutableBuilder(kieContainer);
+    public static RuleScenarioExecutableBuilder createBuilder(KieContainer kieContainer) {
+        return new RuleScenarioExecutableBuilder(kieContainer);
     }
 
     public void addInternalCondition(Class<?> clazz,

@@ -34,12 +34,11 @@ public class ValidateFactCommand implements ExecutableCommand<Void> {
 
     @Override
     public Void execute(Context context) {
-        KieSession ksession = ((RegistryContext)context).lookup(KieSession.class);
+        KieSession ksession = ((RegistryContext) context).lookup(KieSession.class);
         Collection<?> objects = ksession.getObjects(new ConditionFilter(factToCheck));
-        if(objects.size() > 0) {
+        if (objects.size() > 0) {
             factToCheck.forEach(fact -> fact.getScenarioResult().setResult(true));
-        }
-        else {
+        } else {
             factToCheck.forEach(fact -> fact.getScenarioResult().getFactMappingValue().setError(true));
         }
         return null;

@@ -67,10 +67,10 @@ public class ResourceHelper {
      * @return stream of matching resources
      */
     public static Stream<String> getResourcesFromDirectory(File directory, Pattern pattern) {
-        if(directory == null || directory.listFiles() == null) {
+        if (directory == null || directory.listFiles() == null) {
             return Stream.empty();
         }
-        return Arrays.stream(directory.listFiles()).flatMap(elem-> {
+        return Arrays.stream(directory.listFiles()).flatMap(elem -> {
             if (elem.isDirectory()) {
                 return getResourcesFromDirectory(elem, pattern);
             } else {

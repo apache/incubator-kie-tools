@@ -16,23 +16,38 @@
 
 package org.drools.workbench.screens.scenariosimulation.backend.server.runner.model;
 
-import org.drools.workbench.screens.scenariosimulation.model.FactIdentifier;
+import java.util.List;
 
-public class ScenarioInput {
+import org.drools.workbench.screens.scenariosimulation.model.FactIdentifier;
+import org.drools.workbench.screens.scenariosimulation.model.FactMappingValue;
+
+public class ScenarioExpect {
 
     private final FactIdentifier factIdentifier;
-    private final Object value;
 
-    public ScenarioInput(FactIdentifier factIdentifier, Object value) {
+    private final List<FactMappingValue> expectedResult;
+
+    private final boolean isNewFact;
+
+    public ScenarioExpect(FactIdentifier factIdentifier, List<FactMappingValue> expectedResult, boolean isNewFact) {
         this.factIdentifier = factIdentifier;
-        this.value = value;
+        this.expectedResult = expectedResult;
+        this.isNewFact = isNewFact;
+    }
+
+    public ScenarioExpect(FactIdentifier factIdentifier, List<FactMappingValue> expectedResult) {
+        this(factIdentifier, expectedResult, false);
     }
 
     public FactIdentifier getFactIdentifier() {
         return factIdentifier;
     }
 
-    public Object getValue() {
-        return value;
+    public List<FactMappingValue> getExpectedResult() {
+        return expectedResult;
+    }
+
+    public boolean isNewFact() {
+        return isNewFact;
     }
 }

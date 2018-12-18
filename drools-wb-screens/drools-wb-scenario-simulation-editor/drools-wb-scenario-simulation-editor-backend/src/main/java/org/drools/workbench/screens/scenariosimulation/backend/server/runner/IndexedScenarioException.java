@@ -48,7 +48,7 @@ public class IndexedScenarioException extends ScenarioException {
     @Override
     public String getMessage() {
         StringBuilder message = new StringBuilder().append("#").append(index).append(": ").append(super.getMessage());
-        if(getFileName() != null) {
+        if (getFileName() != null) {
             message.append("(").append(getFileName()).append(")");
         }
         return message.toString();

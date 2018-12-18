@@ -49,7 +49,7 @@ public class ScenarioJunitActivatorTest {
     private KieContainer kieContainerMock;
 
     @Mock
-    private ScenarioRunnerImpl runnerMock;
+    private AbstractScenarioRunner runnerMock;
 
     @Mock
     private Simulation simulationMock;
@@ -99,7 +99,7 @@ public class ScenarioJunitActivatorTest {
             }
 
             @Override
-            ScenarioRunnerImpl newRunner(KieContainer kieContainer, Simulation simulation) {
+            AbstractScenarioRunner newRunner(KieContainer kieContainer, Simulation simulation, String path) {
                 return runnerMock;
             }
         };

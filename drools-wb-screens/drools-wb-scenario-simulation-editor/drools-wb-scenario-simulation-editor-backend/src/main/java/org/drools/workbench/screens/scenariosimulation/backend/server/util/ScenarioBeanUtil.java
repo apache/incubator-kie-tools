@@ -20,7 +20,6 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.ScenarioException;
 
@@ -44,15 +43,8 @@ public class ScenarioBeanUtil {
 
     @SuppressWarnings("unchecked")
     public static <T> T fillBean(String className, Map<List<String>, Object> params, ClassLoader classLoader) {
+
         Class<T> clazz = loadClass(className, classLoader);
-
-        // if a direct mapping exists (no steps to reach the field) the value itself is the object
-        Optional<Object> directMapping = params.entrySet().stream()
-                .filter(e -> e.getKey().isEmpty()).map(Map.Entry::getValue).findFirst();
-        if (directMapping.isPresent()) {
-            return (T) directMapping.get();
-        }
-
         T beanToFill = newInstance(clazz);
 
         for (Map.Entry<List<String>, Object> param : params.entrySet()) {

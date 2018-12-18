@@ -68,14 +68,13 @@ public class ScenarioJunitActivator extends ParentRunner<SimulationWithFileName>
 
     @Override
     protected Description describeChild(SimulationWithFileName child) {
-        return ScenarioRunnerImpl.getDescriptionForSimulation(Optional.of(child.getFileName()), child.getSimulation());
+        return AbstractScenarioRunner.getDescriptionForSimulation(Optional.of(child.getFileName()), child.getSimulation());
     }
 
     @Override
     protected void runChild(SimulationWithFileName child, RunNotifier notifier) {
         KieContainer kieClasspathContainer = getKieContainer();
-        ScenarioRunnerImpl scenarioRunner = newRunner(kieClasspathContainer, child.getSimulation());
-        scenarioRunner.setFileName(child.getFileName());
+        AbstractScenarioRunner scenarioRunner = newRunner(kieClasspathContainer, child.getSimulation(), child.getFileName());
         scenarioRunner.run(notifier);
     }
 
@@ -92,7 +91,9 @@ public class ScenarioJunitActivator extends ParentRunner<SimulationWithFileName>
         return KieServices.get().getKieClasspathContainer();
     }
 
-    ScenarioRunnerImpl newRunner(KieContainer kieContainer, Simulation simulation) {
-        return new ScenarioRunnerImpl(kieContainer, simulation);
+    AbstractScenarioRunner newRunner(KieContainer kieContainer, Simulation simulation, String fileName) {
+        AbstractScenarioRunner runner = AbstractScenarioRunner.getSpecificRunnerProvider(simulation).apply(kieContainer, simulation);
+        runner.setFileName(fileName);
+        return runner;
     }
 }

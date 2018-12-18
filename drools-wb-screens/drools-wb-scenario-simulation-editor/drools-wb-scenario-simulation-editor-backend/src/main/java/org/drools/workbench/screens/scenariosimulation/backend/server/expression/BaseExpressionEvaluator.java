@@ -35,7 +35,7 @@ public class BaseExpressionEvaluator implements ExpressionEvaluator {
     }
 
     @Override
-    public Object getValueForGiven(String className, Object raw, ClassLoader classLoader) {
+    public Object getValueForGiven(String className, Object raw) {
         if (!(raw instanceof String)) {
             return raw;
         }

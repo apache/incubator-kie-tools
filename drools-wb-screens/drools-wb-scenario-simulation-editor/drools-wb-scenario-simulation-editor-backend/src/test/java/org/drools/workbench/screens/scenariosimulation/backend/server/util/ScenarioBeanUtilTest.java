@@ -18,7 +18,6 @@ package org.drools.workbench.screens.scenariosimulation.backend.server.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,8 +26,8 @@ import org.assertj.core.api.Assertions;
 import org.drools.workbench.screens.scenariosimulation.backend.server.model.Dispute;
 import org.drools.workbench.screens.scenariosimulation.backend.server.model.NotEmptyConstructor;
 import org.drools.workbench.screens.scenariosimulation.backend.server.model.Person;
+import org.drools.workbench.screens.scenariosimulation.backend.server.runner.RuleScenarioRunnerHelperTest;
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.ScenarioException;
-import org.drools.workbench.screens.scenariosimulation.backend.server.runner.ScenarioRunnerHelperTest;
 import org.junit.Test;
 
 import static org.drools.workbench.screens.scenariosimulation.backend.server.util.ScenarioBeanUtil.convertValue;
@@ -85,14 +84,6 @@ public class ScenarioBeanUtilTest {
         paramsToSet.put(Arrays.asList("fakeField"), null);
 
         ScenarioBeanUtil.fillBean(null, paramsToSet, classLoader);
-    }
-
-    @Test
-    public void fillBeanSimpleObjectTest() {
-        Map<List<String>, Object> paramsToSet = new HashMap<>();
-        paramsToSet.put(Collections.emptyList(), "Test");
-
-        ScenarioBeanUtil.fillBean(String.class.getCanonicalName(), paramsToSet, classLoader);
     }
 
     @Test
@@ -154,8 +145,8 @@ public class ScenarioBeanUtilTest {
         assertEquals(1.0F, convertValue(Float.class.getCanonicalName(), "1.0", classLoader));
         assertEquals('a', convertValue(char.class.getCanonicalName(), "a", classLoader));
         assertEquals('a', convertValue(Character.class.getCanonicalName(), "a", classLoader));
-        assertEquals((short)1, convertValue(short.class.getCanonicalName(), "1", classLoader));
-        assertEquals((short)1, convertValue(Short.class.getCanonicalName(), "1", classLoader));
+        assertEquals((short) 1, convertValue(short.class.getCanonicalName(), "1", classLoader));
+        assertEquals((short) 1, convertValue(Short.class.getCanonicalName(), "1", classLoader));
         assertEquals("0".getBytes()[0], convertValue(byte.class.getCanonicalName(), "0", classLoader));
         assertEquals("0".getBytes()[0], convertValue(Byte.class.getCanonicalName(), "0", classLoader));
         assertNull(convertValue(Float.class.getCanonicalName(), null, classLoader));
@@ -168,7 +159,7 @@ public class ScenarioBeanUtilTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void convertValueFailUnsupportedTest() {
-        convertValue(ScenarioRunnerHelperTest.class.getCanonicalName(), "Test", classLoader);
+        convertValue(RuleScenarioRunnerHelperTest.class.getCanonicalName(), "Test", classLoader);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -178,7 +169,7 @@ public class ScenarioBeanUtilTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void convertValueFailNotStringOrTypeTest() {
-        convertValue(ScenarioRunnerHelperTest.class.getCanonicalName(), 1, classLoader);
+        convertValue(RuleScenarioRunnerHelperTest.class.getCanonicalName(), 1, classLoader);
     }
 
     @Test
