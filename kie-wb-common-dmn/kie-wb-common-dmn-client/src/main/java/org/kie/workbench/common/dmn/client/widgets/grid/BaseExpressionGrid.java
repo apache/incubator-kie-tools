@@ -73,17 +73,23 @@ import org.kie.workbench.common.stunner.forms.client.event.RefreshFormProperties
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
+import org.uberfire.ext.wires.core.grids.client.util.ColumnIndexUtilities;
 import org.uberfire.ext.wires.core.grids.client.util.CoordinateUtilities;
+import org.uberfire.ext.wires.core.grids.client.widget.dom.HasDOMElementResources;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.NodeMouseEventHandler;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.DefaultGridWidgetCellSelectorMouseEventHandler;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.SelectionExtension;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridSelectionManager;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLayerRedrawManager;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.GridPinnedModeManager;
 
-public abstract class BaseExpressionGrid<E extends Expression, D extends GridData, M extends BaseUIModelMapper<E>> extends BaseGrid implements ExpressionGridCache.IsCacheable {
+public abstract class BaseExpressionGrid<E extends Expression, D extends GridData, M extends BaseUIModelMapper<E>>
+        extends BaseGrid
+        implements ExpressionGridCache.IsCacheable,
+                   HasDOMElementResources {
 
     public static final double DEFAULT_PADDING = 10.0;
 
@@ -523,6 +529,31 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
         }
 
         return isSelectionChanged;
+    }
+
+    @Override
+    public boolean adjustSelection(final SelectionExtension direction,
+                                   final boolean isShiftKeyDown) {
+        final boolean isSelectionChanged = super.adjustSelection(direction, isShiftKeyDown);
+        if (isSelectionChanged) {
+            if (getModel().getSelectedCells().size() > 0) {
+                final GridData.SelectedCell selectedCell = getModel().getSelectedCells().get(0);
+                doAfterSelectionChange(selectedCell.getRowIndex(),
+                                       ColumnIndexUtilities.findUiColumnIndex(getModel().getColumns(),
+                                                                              selectedCell.getColumnIndex()));
+            } else if (getModel().getSelectedHeaderCells().size() > 0) {
+                final GridData.SelectedCell selectedHeraderCell = getModel().getSelectedHeaderCells().get(0);
+                doAfterHeaderSelectionChange(selectedHeraderCell.getRowIndex(),
+                                             ColumnIndexUtilities.findUiColumnIndex(getModel().getColumns(),
+                                                                                    selectedHeraderCell.getColumnIndex()));
+            }
+        }
+        return isSelectionChanged;
+    }
+
+    @Override
+    public void destroyResources() {
+        cellEditorControls.hide();
     }
 
     protected boolean hasAnyHeaderCellSelected() {

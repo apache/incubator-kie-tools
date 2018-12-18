@@ -59,6 +59,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidgetKeyboardHandler;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.TransformMediator;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.impl.RestrictedMousePanMediator;
 import org.uberfire.mocks.EventSourceMock;
@@ -255,6 +256,7 @@ public class ExpressionEditorViewImplTest {
                      transform.getScaleY(),
                      0.0);
 
+        verify(gridPanel).addKeyDownHandler(any(BaseGridWidgetKeyboardHandler.class));
         verify(gridPanel).add(gridLayer);
         verify(gridPanelContainer).clear();
         verify(gridPanelContainer).setWidget(gridPanel);
@@ -339,5 +341,12 @@ public class ExpressionEditorViewImplTest {
                            hasName);
 
         verify(expressionType).setTextContent(eq("<" + DMNEditorConstants.ExpressionEditor_UndefinedExpressionType + ">"));
+    }
+
+    @Test
+    public void testSetFocus() {
+        view.setFocus();
+
+        verify(gridPanel).setFocus(true);
     }
 }

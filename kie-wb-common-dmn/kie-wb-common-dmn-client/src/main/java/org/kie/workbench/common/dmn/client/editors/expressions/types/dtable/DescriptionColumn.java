@@ -74,6 +74,7 @@ public class DescriptionColumn extends DMNSimpleGridColumn<DecisionTableGrid, St
 
     @Override
     public void destroyResources() {
+        super.destroyResources();
         factory.destroyResources();
     }
 

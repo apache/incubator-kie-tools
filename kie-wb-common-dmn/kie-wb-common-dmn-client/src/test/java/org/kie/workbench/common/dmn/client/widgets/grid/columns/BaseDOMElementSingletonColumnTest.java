@@ -40,6 +40,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.dom.single.HasSingletonDO
 import org.uberfire.ext.wires.core.grids.client.widget.dom.single.impl.BaseSingletonDOMElementFactory;
 
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -167,5 +168,23 @@ public abstract class BaseDOMElementSingletonColumnTest<F extends BaseSingletonD
         column.destroyResources();
 
         verify(factory).destroyResources();
+    }
+
+    @Test
+    public void testDestroyHeaderMetadataAdditionalDomElements() {
+        final EditableHeaderMetaData editableHeaderMetaData = mock(EditableHeaderMetaData.class);
+        column.getHeaderMetaData().add(editableHeaderMetaData);
+
+        column.destroyResources();
+
+        verify(editableHeaderMetaData).destroyResources();
+    }
+
+    @Test
+    public void testDestroyExpressionGridAdditionalDomElements() {
+        if (gridWidget instanceof BaseExpressionGrid) {
+            column.destroyResources();
+            verify(gridWidget).destroyResources();
+        }
     }
 }

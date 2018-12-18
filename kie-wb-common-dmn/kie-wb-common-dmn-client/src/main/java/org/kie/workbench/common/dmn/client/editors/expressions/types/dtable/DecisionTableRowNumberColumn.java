@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.dtable;
 
-import java.util.Collections;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -24,9 +23,13 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.BuiltinAggregator;
 import org.kie.workbench.common.dmn.api.definition.v1_1.HitPolicy;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.hitpolicy.HitPolicyPopoverView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
+import org.uberfire.ext.wires.core.grids.client.widget.dnd.IsRowDragHandle;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.impl.IntegerColumnRenderer;
 
-public class DecisionTableRowNumberColumn extends RowNumberColumn {
+public class DecisionTableRowNumberColumn extends DMNGridColumn<DecisionTableGrid, Integer> implements IsRowDragHandle {
+
+    private static final double DEFAULT_WIDTH = 50.0;
 
     public DecisionTableRowNumberColumn(final Supplier<HitPolicy> hitPolicySupplier,
                                         final Supplier<BuiltinAggregator> builtinAggregatorSupplier,
@@ -34,11 +37,18 @@ public class DecisionTableRowNumberColumn extends RowNumberColumn {
                                         final HitPolicyPopoverView.Presenter editor,
                                         final Optional<String> editorTitle,
                                         final DecisionTableGrid gridWidget) {
-        super(Collections.singletonList(new RowNumberColumnHeaderMetaData(hitPolicySupplier,
-                                                                          builtinAggregatorSupplier,
-                                                                          cellEditorControls,
-                                                                          editor,
-                                                                          editorTitle,
-                                                                          gridWidget)));
+        super(new RowNumberColumnHeaderMetaData(hitPolicySupplier,
+                                                builtinAggregatorSupplier,
+                                                cellEditorControls,
+                                                editor,
+                                                editorTitle,
+                                                gridWidget),
+              new IntegerColumnRenderer(),
+              gridWidget);
+        setMovable(false);
+        setResizable(false);
+        setFloatable(true);
+
+        setWidthInternal(DEFAULT_WIDTH);
     }
 }

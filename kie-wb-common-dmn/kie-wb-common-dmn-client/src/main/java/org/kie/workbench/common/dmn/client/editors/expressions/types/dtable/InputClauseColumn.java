@@ -28,7 +28,6 @@ import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
-import org.uberfire.ext.wires.core.grids.client.widget.dom.HasDOMElementResources;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.single.HasSingletonDOMElementResource;
 
 public class InputClauseColumn extends DMNSimpleGridColumn<DecisionTableGrid, String> implements HasSingletonDOMElementResource {
@@ -76,11 +75,8 @@ public class InputClauseColumn extends DMNSimpleGridColumn<DecisionTableGrid, St
 
     @Override
     public void destroyResources() {
+        super.destroyResources();
         factory.destroyResources();
-        getHeaderMetaData().stream()
-                .filter(md -> md instanceof HasDOMElementResources)
-                .map(md -> (HasDOMElementResources) md)
-                .forEach(HasDOMElementResources::destroyResources);
     }
 
     @Override

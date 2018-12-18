@@ -81,6 +81,7 @@ public class NavigateToDRGEditorCommandTest extends BaseNavigationCommandTest {
         verify(editor).setExpression(eq(NODE_UUID),
                                      eq(hasExpression),
                                      eq(Optional.of(hasName)));
+        verify(expressionEditorView).setFocus();
     }
 
     @Test

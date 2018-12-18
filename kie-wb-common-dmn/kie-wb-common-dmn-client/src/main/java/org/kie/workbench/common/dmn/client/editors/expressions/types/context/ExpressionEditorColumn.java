@@ -151,12 +151,4 @@ public class ExpressionEditorColumn extends DMNGridColumn<GridWidget, Optional<B
         final int columnIndex = model.getColumns().indexOf(this);
         return columnIndex != -1 ? model.getColumns().get(columnIndex).getIndex() : -1;
     }
-
-    @Override
-    public void destroyResources() {
-        getHeaderMetaData().stream()
-                .filter(md -> md instanceof HasDOMElementResources)
-                .map(md -> (HasDOMElementResources) md)
-                .forEach(HasDOMElementResources::destroyResources);
-    }
 }

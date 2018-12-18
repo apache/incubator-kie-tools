@@ -120,6 +120,7 @@ public abstract class BaseNavigateCommand extends AbstractCanvasGraphCommand {
         final ResizeFlowPanel container = wrapElementForErrai1090();
         presenter.getView().setCanvasWidget(container);
         presenter.getView().setContentScrollType(SessionPresenter.View.ScrollType.CUSTOM);
+        editor.getView().setFocus();
 
         Scheduler.get().scheduleDeferred(container::onResize);
     }

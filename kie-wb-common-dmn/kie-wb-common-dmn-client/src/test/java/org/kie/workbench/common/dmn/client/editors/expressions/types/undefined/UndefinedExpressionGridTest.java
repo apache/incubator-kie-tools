@@ -573,6 +573,7 @@ public class UndefinedExpressionGridTest {
                                                    eq(false),
                                                    eq(false));
         verify(literalExpressionEditor).selectFirstCell();
+        verify(gridPanel).setFocus(true);
 
         reset(gridPanel, gridLayer, parent);
         setupParent();

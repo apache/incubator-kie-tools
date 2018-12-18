@@ -94,4 +94,10 @@ public class UndefinedExpressionColumn extends DMNGridColumn<UndefinedExpression
         super.setWidth(width);
         updateWidthOfPeers();
     }
+
+    @Override
+    public void destroyResources() {
+        super.destroyResources();
+        undefinedExpressionSelector.hide();
+    }
 }

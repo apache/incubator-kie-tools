@@ -191,4 +191,11 @@ public class UndefinedExpressionColumnTest {
                                         eq((int) (ABSOLUTE_CELL_X)),
                                         eq((int) (ABSOLUTE_CELL_Y)));
     }
+
+    @Test
+    public void testDestroyResources() {
+        column.destroyResources();
+
+        verify(undefinedExpressionSelector).hide();
+    }
 }

@@ -36,6 +36,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionE
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.selector.UndefinedExpressionSelectorPopoverView;
+import org.kie.workbench.common.dmn.client.session.DMNEditorSession;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseDelegatingExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridRenderer;
@@ -226,6 +227,10 @@ public class UndefinedExpressionGrid extends BaseDelegatingExpressionGrid<Expres
                                                                   () -> {
                                                                       resize(BaseExpressionGrid.RESIZE_EXISTING);
                                                                       _editor.selectFirstCell();
+                                                                      if (sessionManager.getCurrentSession() instanceof DMNEditorSession) {
+                                                                          final DMNEditorSession dmnEditorSession = (DMNEditorSession) sessionManager.getCurrentSession();
+                                                                          dmnEditorSession.getGridPanel().setFocus(true);
+                                                                      }
                                                                   },
                                                                   () -> {
                                                                       resize(BaseExpressionGrid.RESIZE_EXISTING_MINIMUM);

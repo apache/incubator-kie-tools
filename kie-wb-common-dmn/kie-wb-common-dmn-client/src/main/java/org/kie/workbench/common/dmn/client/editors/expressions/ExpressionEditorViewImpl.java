@@ -40,6 +40,8 @@ import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.client.widgets.grid.BoundaryTransformMediator;
 import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCache;
+import org.kie.workbench.common.dmn.client.widgets.grid.columns.KeyboardOperationEditGridCell;
+import org.kie.workbench.common.dmn.client.widgets.grid.columns.KeyboardOperationEscapeGridCell;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
@@ -51,6 +53,11 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.selection.Domai
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.Session;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidgetKeyboardHandler;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationMoveDown;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationMoveLeft;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationMoveRight;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationMoveUp;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.TransformMediator;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.impl.RestrictedMousePanMediator;
 
@@ -137,6 +144,15 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         gridPanel.getViewport().setTransform(transform);
         gridPanel.add(gridLayer);
 
+        final BaseGridWidgetKeyboardHandler handler = new BaseGridWidgetKeyboardHandler(gridLayer);
+        handler.addOperation(new KeyboardOperationEditGridCell(gridLayer),
+                             new KeyboardOperationEscapeGridCell(gridLayer),
+                             new KeyboardOperationMoveLeft(gridLayer),
+                             new KeyboardOperationMoveRight(gridLayer),
+                             new KeyboardOperationMoveUp(gridLayer),
+                             new KeyboardOperationMoveDown(gridLayer));
+        gridPanel.addKeyDownHandler(handler);
+
         gridPanelContainer.clear();
         gridPanelContainer.setWidget(gridPanel);
     }
@@ -209,5 +225,10 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
     @Override
     public void onResize() {
         gridPanelContainer.onResize();
+    }
+
+    @Override
+    public void setFocus() {
+        gridPanel.setFocus(true);
     }
 }

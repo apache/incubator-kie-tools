@@ -58,4 +58,6 @@ public interface ExpressionEditorView extends org.jboss.errai.ui.client.local.ap
                        final Optional<HasName> hasName);
 
     void setReturnToDRGText(final Optional<HasName> hasName);
+
+    void setFocus();
 }

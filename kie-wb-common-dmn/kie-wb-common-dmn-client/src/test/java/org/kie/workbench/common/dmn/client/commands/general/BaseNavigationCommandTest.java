@@ -52,6 +52,9 @@ public abstract class BaseNavigationCommandTest {
     protected ExpressionEditorView.Presenter editor;
 
     @Mock
+    protected ExpressionEditorView expressionEditorView;
+
+    @Mock
     protected ResizeFlowPanel editorContainerForErrai1090;
 
     @Mock
@@ -107,6 +110,7 @@ public abstract class BaseNavigationCommandTest {
         when(sessionPresenter.getView()).thenReturn(sessionPresenterView);
         when(sessionPresenter.getDisplayer()).thenReturn(sessionView);
         when(sessionView.getView()).thenReturn(view);
+        when(editor.getView()).thenReturn(expressionEditorView);
 
         this.command = spy(getCommand());
 
