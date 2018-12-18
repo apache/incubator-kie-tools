@@ -115,6 +115,7 @@ public class DecisionNavigatorBaseItemFactoryTest {
                                                            translationService));
 
         when(decisionNavigatorPresenter.getHandler()).thenReturn(canvasHandler);
+        when(decisionNavigatorPresenter.getDiagram()).thenReturn(diagram);
         when(canvasHandler.getDiagram()).thenReturn(diagram);
         when(diagram.getGraph()).thenReturn(graph);
     }

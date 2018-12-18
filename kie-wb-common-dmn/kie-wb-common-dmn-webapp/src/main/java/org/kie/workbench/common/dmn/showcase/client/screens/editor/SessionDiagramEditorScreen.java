@@ -314,6 +314,7 @@ public class SessionDiagramEditorScreen implements KieEditorWrapperView.KieEdito
 
     void open(final Diagram diagram,
               final Command callback) {
+        setupDiagram(diagram);
         screenPanelView.setWidget(presenter.getView());
         layoutHelper.applyLayout(diagram);
         presenter
@@ -325,8 +326,9 @@ public class SessionDiagramEditorScreen implements KieEditorWrapperView.KieEdito
                           final ToolbarStateHandler toolbarStateHandler = new StandaloneToolbarStateHandler((DMNEditorToolbar) presenter.getToolbar());
                           final ExpressionEditorView.Presenter expressionEditor = ((DMNSession) sessionManager.getCurrentSession()).getExpressionEditor();
                           expressionEditor.setToolbarStateHandler(toolbarStateHandler);
-                          openDock(presenter.getInstance());
                           dataTypesPage.reload();
+                          setupCanvasHandler(presenter.getInstance());
+                          openDock();
                           callback.execute();
                       }));
     }
@@ -350,9 +352,16 @@ public class SessionDiagramEditorScreen implements KieEditorWrapperView.KieEdito
         destroySession();
     }
 
-    void openDock(final EditorSession session) {
+    void setupDiagram(final Diagram diagram) {
+        decisionNavigatorDock.setupDiagram(diagram);
+    }
+
+    void setupCanvasHandler(final EditorSession session) {
+        decisionNavigatorDock.setupCanvasHandler(session.getCanvasHandler());
+    }
+
+    void openDock() {
         decisionNavigatorDock.open();
-        decisionNavigatorDock.setupContent(session.getCanvasHandler());
     }
 
     void destroyDock() {

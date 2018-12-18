@@ -35,6 +35,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.selection.Canva
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
+import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Graph;
@@ -97,8 +98,8 @@ public class DecisionNavigatorBaseItemFactory {
 
     @SuppressWarnings("unchecked")
     String diagramUUID() {
-        final CanvasHandler canvasHandler = decisionNavigatorPresenter.getHandler();
-        final Graph<?, Node> graph = canvasHandler.getDiagram().getGraph();
+        final Diagram diagram = decisionNavigatorPresenter.getDiagram();
+        final Graph<?, Node> graph = diagram.getGraph();
 
         return StreamSupport.stream(graph.nodes().spliterator(), false)
                 .filter(n -> n.getContent() instanceof Definition)

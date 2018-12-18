@@ -148,6 +148,7 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
 
     @Override
     protected void initialiseKieEditorForSession(final ProjectDiagram diagram) {
+        decisionNavigatorDock.setupDiagram(diagram);
         superInitialiseKieEditorForSession(diagram);
 
         kieView.getMultiPage().addPage(dataTypesPage);
@@ -186,7 +187,7 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
         canvasHandler.ifPresent(c -> {
             final ExpressionEditorView.Presenter expressionEditor = ((DMNSession) sessionManager.getCurrentSession()).getExpressionEditor();
             expressionEditor.setToolbarStateHandler(new ProjectToolbarStateHandler(getMenuSessionItems()));
-            decisionNavigatorDock.setupContent(c);
+            decisionNavigatorDock.setupCanvasHandler(c);
             decisionNavigatorDock.open();
             dataTypesPage.reload();
         });

@@ -42,6 +42,7 @@ import org.kie.workbench.common.stunner.forms.client.event.RefreshFormProperties
 import org.kie.workbench.common.widgets.metadata.client.KieEditorWrapperView;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -54,6 +55,7 @@ import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -162,12 +164,18 @@ public class SessionDiagramEditorScreenTest {
         final Diagram diagram = mock(Diagram.class);
         final Command callback = mock(Command.class);
         final Metadata metadata = mock(Metadata.class);
+        final AbstractCanvasHandler canvasHandler = mock(AbstractCanvasHandler.class);
 
+        when(session.getCanvasHandler()).thenReturn(canvasHandler);
         when(diagram.getMetadata()).thenReturn(metadata);
 
         editor.open(diagram, callback);
 
-        verify(editor).openDock(session);
+        final InOrder inOrder = inOrder(decisionNavigatorDock);
+        inOrder.verify(decisionNavigatorDock).setupDiagram(diagram);
+        inOrder.verify(decisionNavigatorDock).setupCanvasHandler(canvasHandler);
+        inOrder.verify(decisionNavigatorDock).open();
+
         verify(dataTypesPage).reload();
     }
 
@@ -191,10 +199,9 @@ public class SessionDiagramEditorScreenTest {
 
         when(session.getCanvasHandler()).thenReturn(canvasHandler);
 
-        editor.openDock(session);
+        editor.openDock();
 
         verify(decisionNavigatorDock).open();
-        verify(decisionNavigatorDock).setupContent(canvasHandler);
     }
 
     @Test

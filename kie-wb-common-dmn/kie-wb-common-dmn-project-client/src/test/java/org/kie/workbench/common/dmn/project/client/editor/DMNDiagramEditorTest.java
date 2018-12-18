@@ -38,6 +38,7 @@ import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectDia
 import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectDiagramEditorTest;
 import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectEditorMenuSessionItems;
 import org.kie.workbench.common.workbench.client.PerspectiveIds;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.uberfire.client.workbench.widgets.multipage.MultiPageEditor;
 import org.uberfire.mocks.EventSourceMock;
@@ -47,6 +48,7 @@ import org.uberfire.mvp.impl.PathPlaceRequest;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -202,9 +204,12 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
 
         open();
 
+        final InOrder inOrder = inOrder(decisionNavigatorDock);
+        inOrder.verify(decisionNavigatorDock).setupDiagram(diagram);
+        inOrder.verify(decisionNavigatorDock).setupCanvasHandler(eq(canvasHandler));
+        inOrder.verify(decisionNavigatorDock).open();
+
         verify(expressionEditor).setToolbarStateHandler(any(ProjectToolbarStateHandler.class));
-        verify(decisionNavigatorDock).setupContent(eq(canvasHandler));
-        verify(decisionNavigatorDock).open();
         verify(dataTypesPage).reload();
         verify(layoutHelper).applyLayout(diagram);
     }
@@ -215,7 +220,7 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
         diagramEditor.onDiagramLoad();
 
         verify(expressionEditor, never()).setToolbarStateHandler(any(ProjectToolbarStateHandler.class));
-        verify(decisionNavigatorDock, never()).setupContent(any());
+        verify(decisionNavigatorDock, never()).setupCanvasHandler(any());
         verify(decisionNavigatorDock, never()).open();
         verify(dataTypesPage, never()).reload();
     }
