@@ -74,6 +74,8 @@
         instance.-->
     <version.org.webjars.bower.jspdf>1.2.61</version.org.webjars.bower.jspdf>
     <version.org.webjars.bowergithub.gliffy.canvas2svg>0.1</version.org.webjars.bowergithub.gliffy.canvas2svg>
+    <version.org.webjars.bower.d3js>5.5.0</version.org.webjars.bower.d3js>
+    <version.org.webjars.bower.c3>0.6.6</version.org.webjars.bower.c3>
 
     <version.org.jboss.byteman>3.0.10</version.org.jboss.byteman>
     <version.org.jboss.jboss-dmr>1.4.1.Final</version.org.jboss.jboss-dmr>

@@ -38,4 +38,7 @@ public interface PatternFlyClientBundle extends ClientBundle {
 
     @Source("org/uberfire/client/views/static/bootstrap-daterangepicker/daterangepicker.js")
     TextResource bootstrapDateRangePicker();
+
+    @Source("org/uberfire/client/views/static/d3/d3.min.js")
+    TextResource d3();
 }

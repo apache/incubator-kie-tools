@@ -82,6 +82,14 @@ public class PatternFlyBootstrapper {
         }
     }
 
+    public static void ensureD3IsAvailable() {
+        if (!isD3Loaded()) {
+            ScriptInjector.fromString(PatternFlyClientBundle.INSTANCE.d3().getText())
+                    .setWindow(ScriptInjector.TOP_WINDOW)
+                    .inject();
+        }
+    }
+
     /**
      * Checks to see if jQuery is already present.
      * @return true is jQuery is loaded, false otherwise.
@@ -128,6 +136,14 @@ public class PatternFlyBootstrapper {
      */
     private static native boolean isPatternFlyLoaded() /*-{
         return (typeof $wnd['patternfly'] !== 'undefined');
+    }-*/;
+
+    /**
+     * Checks to see if D3 is already present.
+     * @return true is D3 is loaded, false otherwise.
+     */
+    private static native boolean isD3Loaded() /*-{
+        return (typeof $wnd['d3'] !== 'undefined');
     }-*/;
 
 }
