@@ -143,7 +143,6 @@ public class ProjectImportServiceImplRepositoryNamesTest {
 
         when(ouService.getOrganizationalUnits()).thenReturn(new HashSet<OrganizationalUnit>() {{
             add(new OrganizationalUnitImpl("ou1Name",
-                                           "ou1Owner",
                                            "ou1GroupId"));
         }});
         when(moduleService.resolveModule(any(Path.class))).thenAnswer((Answer<KieModule>) invocationOnMock -> {

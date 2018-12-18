@@ -17,7 +17,6 @@
 package org.kie.workbench.common.screens.library.client.screens;
 
 import java.util.List;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -29,14 +28,15 @@ import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.structure.client.security.OrganizationalUnitController;
 import org.guvnor.structure.events.AfterEditOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
+import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.RepositoryRemovedEvent;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.client.perspective.LibraryPerspective;
-import org.kie.workbench.common.screens.library.client.screens.organizationalunit.contributors.edit.EditContributorsPopUpPresenter;
 import org.kie.workbench.common.screens.library.client.screens.organizationalunit.contributors.tab.ContributorsListPresenter;
+import org.kie.workbench.common.screens.library.client.screens.organizationalunit.contributors.tab.SpaceContributorsListServiceImpl;
 import org.kie.workbench.common.screens.library.client.screens.organizationalunit.delete.DeleteOrganizationalUnitPopUpPresenter;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
@@ -64,8 +64,6 @@ public class LibraryScreen {
     protected List<WorkspaceProject> projects;
     private View view;
 
-    private ManagedInstance<EditContributorsPopUpPresenter> editContributorsPopUpPresenters;
-
     private ManagedInstance<DeleteOrganizationalUnitPopUpPresenter> deleteOrganizationalUnitPopUpPresenters;
 
     private OrganizationalUnitController organizationalUnitController;
@@ -85,10 +83,13 @@ public class LibraryScreen {
 
     private LibraryPlaces libraryPlaces;
 
+    private Caller<OrganizationalUnitService> organizationalUnitService;
+
+    private SpaceContributorsListServiceImpl spaceContributorsListService;
+
     @Inject
     public LibraryScreen(final View view,
                          final ManagedInstance<DeleteOrganizationalUnitPopUpPresenter> deleteOrganizationalUnitPopUpPresenters,
-                         final ManagedInstance<EditContributorsPopUpPresenter> editContributorsPopUpPresenters,
                          final WorkspaceProjectContext projectContext,
                          final OrganizationalUnitController organizationalUnitController,
                          final ProjectController projectController,
@@ -97,10 +98,11 @@ public class LibraryScreen {
                          final OrgUnitsMetricsScreen orgUnitsMetricsScreen,
                          final ContributorsListPresenter contributorsListPresenter,
                          final Caller<LibraryService> libraryService,
-                         final LibraryPlaces libraryPlaces) {
+                         final LibraryPlaces libraryPlaces,
+                         final Caller<OrganizationalUnitService> organizationalUnitService,
+                         final SpaceContributorsListServiceImpl spaceContributorsListService) {
         this.view = view;
         this.deleteOrganizationalUnitPopUpPresenters = deleteOrganizationalUnitPopUpPresenters;
-        this.editContributorsPopUpPresenters = editContributorsPopUpPresenters;
         this.projectContext = projectContext;
         this.organizationalUnitController = organizationalUnitController;
         this.projectController = projectController;
@@ -110,6 +112,8 @@ public class LibraryScreen {
         this.contributorsListPresenter = contributorsListPresenter;
         this.libraryService = libraryService;
         this.libraryPlaces = libraryPlaces;
+        this.organizationalUnitService = organizationalUnitService;
+        this.spaceContributorsListService = spaceContributorsListService;
     }
 
     @PostConstruct
@@ -118,7 +122,9 @@ public class LibraryScreen {
         view.setTitle(projectContext.getActiveOrganizationalUnit()
                               .orElseThrow(() -> new IllegalStateException("Cannot initialize library screen without an active organizational unit.")).getName());
         showProjects();
-        view.setContributorsCount(contributorsListPresenter.getContributorsCount());
+
+        contributorsListPresenter.setup(spaceContributorsListService,
+                                        contributorsCount -> view.setContributorsCount(contributorsCount));
     }
 
     public void trySamples() {
@@ -136,14 +142,6 @@ public class LibraryScreen {
                                                       libraryPlaces.goToLibrary();
                                                       libraryPlaces.goToImportRepositoryPopUp();
                                                   });
-        }
-    }
-
-    public void editContributors() {
-        if (userCanUpdateOrganizationalUnit()) {
-            final EditContributorsPopUpPresenter editContributorsPopUpPresenter = editContributorsPopUpPresenters.get();
-            // Can call get here because condition passed.
-            editContributorsPopUpPresenter.show(projectContext.getActiveOrganizationalUnit().get());
         }
     }
 
@@ -206,10 +204,6 @@ public class LibraryScreen {
     public boolean userCanDeleteOrganizationalUnit() {
         return organizationalUnitController.canDeleteOrgUnit(projectContext.getActiveOrganizationalUnit()
                                                                      .orElseThrow(() -> new IllegalStateException("Cannot try to delete an organizational unit when none is active.")));
-    }
-
-    public void organizationalUnitEdited(@Observes final AfterEditOrganizationalUnitEvent afterEditOrganizationalUnitEvent) {
-        view.setContributorsCount(afterEditOrganizationalUnitEvent.getEditedOrganizationalUnit().getContributors().size());
     }
 
     public void onNewProject(@Observes NewProjectEvent e) {

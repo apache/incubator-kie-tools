@@ -26,8 +26,10 @@ import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.structure.client.security.OrganizationalUnitController;
 import org.guvnor.structure.events.AfterEditOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
+import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryRemovedEvent;
+import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
@@ -35,14 +37,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.client.screens.importrepository.ImportRepositoryPopUpPresenter;
-import org.kie.workbench.common.screens.library.client.screens.organizationalunit.contributors.edit.EditContributorsPopUpPresenter;
 import org.kie.workbench.common.screens.library.client.screens.organizationalunit.contributors.tab.ContributorsListPresenter;
+import org.kie.workbench.common.screens.library.client.screens.organizationalunit.contributors.tab.SpaceContributorsListServiceImpl;
 import org.kie.workbench.common.screens.library.client.screens.organizationalunit.delete.DeleteOrganizationalUnitPopUpPresenter;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.mockito.Mock;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.mockito.stubbing.Answer;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mvp.Command;
 import org.uberfire.spaces.Space;
@@ -54,9 +54,6 @@ public class LibraryScreenTest {
 
     @Mock
     private LibraryScreen.View view;
-
-    @Mock
-    private ManagedInstance<EditContributorsPopUpPresenter> editContributorsPopUpPresenters;
 
     @Mock
     private ManagedInstance<DeleteOrganizationalUnitPopUpPresenter> deleteOrganizationalUnitPopUpPresenters;
@@ -89,7 +86,11 @@ public class LibraryScreenTest {
     private LibraryPlaces libraryPlaces;
 
     @Mock
-    private EditContributorsPopUpPresenter editContributorsPopUpPresenter;
+    private OrganizationalUnitService organizationalUnitService;
+    private Caller<OrganizationalUnitService> organizationalUnitServiceCaller;
+
+    @Mock
+    private SpaceContributorsListServiceImpl spaceContributorsListService;
 
     @Mock
     private DeleteOrganizationalUnitPopUpPresenter deleteOrganizationalUnitPopUpPresenter;
@@ -104,7 +105,8 @@ public class LibraryScreenTest {
 
     @Before
     public void setup() {
-        doReturn(editContributorsPopUpPresenter).when(editContributorsPopUpPresenters).get();
+        organizationalUnitServiceCaller = new CallerMock<>(organizationalUnitService);
+
         doReturn(deleteOrganizationalUnitPopUpPresenter).when(deleteOrganizationalUnitPopUpPresenters).get();
         doReturn(orgUnitsMetricsView).when(orgUnitsMetricsScreen).getView();
 
@@ -129,7 +131,6 @@ public class LibraryScreenTest {
 
         libraryScreen = spy(new LibraryScreen(view,
                                               deleteOrganizationalUnitPopUpPresenters,
-                                              editContributorsPopUpPresenters,
                                               projectContext,
                                               organizationalUnitController,
                                               projectController,
@@ -138,7 +139,9 @@ public class LibraryScreenTest {
                                               orgUnitsMetricsScreen,
                                               contributorsListPresenter,
                                               new CallerMock<>(libraryService),
-                                              libraryPlaces));
+                                              libraryPlaces,
+                                              organizationalUnitServiceCaller,
+                                              spaceContributorsListService));
     }
 
     @Test
@@ -146,13 +149,12 @@ public class LibraryScreenTest {
         final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
         doReturn("name").when(organizationalUnit).getName();
         doReturn(Optional.of(organizationalUnit)).when(projectContext).getActiveOrganizationalUnit();
-        doReturn(12).when(contributorsListPresenter).getContributorsCount();
 
         libraryScreen.init();
 
         verify(view).init(libraryScreen);
         verify(view).setTitle("name");
-        verify(view).setContributorsCount(12);
+        verify(contributorsListPresenter).setup(eq(spaceContributorsListService), any());
     }
 
     @Test
@@ -187,23 +189,6 @@ public class LibraryScreenTest {
 
         verify(libraryPlaces,
                never()).goToImportRepositoryPopUp();
-    }
-
-    @Test
-    public void editContributorsWithPermissionTest() {
-        libraryScreen.editContributors();
-
-        verify(editContributorsPopUpPresenter).show(any());
-    }
-
-    @Test
-    public void editContributorsWithoutPermissionTest() {
-        doReturn(false).when(organizationalUnitController).canUpdateOrgUnit(any());
-
-        libraryScreen.editContributors();
-
-        verify(editContributorsPopUpPresenter,
-               never()).show(any());
     }
 
     @Test
@@ -296,19 +281,6 @@ public class LibraryScreenTest {
 
         verify(view).updateContent(emptyLibraryScreenElement);
         verify(view).setProjectsCount(0);
-    }
-
-    @Test
-    public void organizationalUnitEditedTest() {
-        final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
-        final List<String> contributors = new ArrayList<>();
-        contributors.add("admin");
-        doReturn(contributors).when(organizationalUnit).getContributors();
-
-        libraryScreen.organizationalUnitEdited(new AfterEditOrganizationalUnitEvent(mock(OrganizationalUnit.class),
-                                                                                    organizationalUnit));
-
-        verify(view).setContributorsCount(contributors.size());
     }
 
     @Test

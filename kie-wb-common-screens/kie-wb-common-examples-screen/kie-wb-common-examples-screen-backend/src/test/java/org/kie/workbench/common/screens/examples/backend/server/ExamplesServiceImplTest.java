@@ -145,10 +145,8 @@ public class ExamplesServiceImplTest {
 
         when(ouService.getOrganizationalUnits()).thenReturn(new HashSet<OrganizationalUnit>() {{
             add(new OrganizationalUnitImpl("ou1Name",
-                                           "ou1Owner",
                                            "ou1GroupId"));
             add(new OrganizationalUnitImpl("ou2Name",
-                                           "ou2Owner",
                                            "ou2GroupId"));
         }});
         when(moduleService.resolveModule(any(Path.class))).thenAnswer(new Answer<KieModule>() {
@@ -364,7 +362,6 @@ public class ExamplesServiceImplTest {
 
         when(ouService.getOrganizationalUnit(eq("ou"))).thenReturn(null);
         when(ouService.createOrganizationalUnit(eq("ou"),
-                                                eq(""),
                                                 eq(""))).thenReturn(ou);
         when(repositoryCopier.copy(eq(ou),
                                    anyString(),
@@ -382,7 +379,6 @@ public class ExamplesServiceImplTest {
 
         verify(ouService,
                times(1)).createOrganizationalUnit(eq("ou"),
-                                                  eq(""),
                                                   eq(""));
         verify(repositoryCopier,
                times(1)).copy(eq(ou),
@@ -447,7 +443,6 @@ public class ExamplesServiceImplTest {
 
         verify(ouService,
                never()).createOrganizationalUnit(eq("ou"),
-                                                 eq(""),
                                                  eq(""));
         verify(repositoryCopier,
                times(2)).copy(eq(ou),

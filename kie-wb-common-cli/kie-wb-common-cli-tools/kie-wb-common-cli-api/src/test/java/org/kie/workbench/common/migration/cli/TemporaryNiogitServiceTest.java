@@ -81,11 +81,10 @@ public class TemporaryNiogitServiceTest {
                                              migrationService);
         target = new File("fake/path").toPath();
 
-        when(ouService.createOrganizationalUnit(any(), any(), any())).then(inv -> {
+        when(ouService.createOrganizationalUnit(any(), any(), any(), any())).then(inv -> {
             String name = inv.getArgumentAt(0, String.class);
-            String owner = inv.getArgumentAt(1, String.class);
-            String defaultGroupId = inv.getArgumentAt(2, String.class);
-            return new OrganizationalUnitImpl(name, owner, defaultGroupId);
+            String defaultGroupId = inv.getArgumentAt(1, String.class);
+            return new OrganizationalUnitImpl(name, defaultGroupId);
         });
 
         when(repoService.createRepository(any(), any(), any(), any())).then(inv -> {

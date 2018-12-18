@@ -22,10 +22,10 @@ import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.Element;
-import org.kie.workbench.common.dmn.client.editors.types.common.JQuery;
-import org.kie.workbench.common.dmn.client.editors.types.common.JQueryEvent;
+import org.uberfire.client.views.pfly.selectpicker.JQuery;
+import org.uberfire.client.views.pfly.selectpicker.JQueryEvent;
 
-import static org.kie.workbench.common.dmn.client.editors.types.common.JQuery.$;
+import static org.uberfire.client.views.pfly.selectpicker.JQuery.$;
 
 /**
  * This class implements a workaround for menus.

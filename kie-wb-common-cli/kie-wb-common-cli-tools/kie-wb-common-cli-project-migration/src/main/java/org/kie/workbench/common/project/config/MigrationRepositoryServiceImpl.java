@@ -29,8 +29,8 @@ import org.guvnor.structure.repositories.NewRepositoryEvent;
 import org.guvnor.structure.repositories.RepositoryRemovedEvent;
 import org.guvnor.structure.server.repositories.RepositoryFactory;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.io.IOService;
-import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.spaces.SpacesAPI;
 
@@ -55,7 +55,7 @@ public class MigrationRepositoryServiceImpl extends RepositoryServiceImpl {
                                           final BackwardCompatibleUtil backward,
                                           final MigrationConfiguredRepositories configuredRepositories,
                                           final AuthorizationManager authorizationManager,
-                                          final SessionInfo sessionInfo,
+                                          final User user,
                                           final SpacesAPI spacesAPI) {
         super(ioService,
               metadataStore,
@@ -68,7 +68,7 @@ public class MigrationRepositoryServiceImpl extends RepositoryServiceImpl {
               backward,
               configuredRepositories,
               authorizationManager,
-              sessionInfo,
+              user,
               spacesAPI);
     }
 }

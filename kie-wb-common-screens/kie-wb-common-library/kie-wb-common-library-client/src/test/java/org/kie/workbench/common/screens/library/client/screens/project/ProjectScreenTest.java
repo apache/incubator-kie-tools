@@ -23,7 +23,6 @@ import elemental2.dom.HTMLElement;
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
-import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.messageconsole.client.console.widget.button.ViewHideAlertsButtonPresenter;
 import org.guvnor.structure.client.security.OrganizationalUnitController;
@@ -37,8 +36,8 @@ import org.kie.workbench.common.screens.defaulteditor.client.editor.NewFileUploa
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.client.screens.ProjectScreenTestBase;
 import org.kie.workbench.common.screens.library.client.screens.assets.AssetsScreen;
-import org.kie.workbench.common.screens.library.client.screens.organizationalunit.contributors.edit.EditContributorsPopUpPresenter;
 import org.kie.workbench.common.screens.library.client.screens.organizationalunit.contributors.tab.ContributorsListPresenter;
+import org.kie.workbench.common.screens.library.client.screens.organizationalunit.contributors.tab.ProjectContributorsListServiceImpl;
 import org.kie.workbench.common.screens.library.client.screens.project.branch.delete.DeleteBranchPopUpScreen;
 import org.kie.workbench.common.screens.library.client.screens.project.delete.DeleteProjectPopUpScreen;
 import org.kie.workbench.common.screens.library.client.screens.project.rename.RenameProjectPopUpScreen;
@@ -62,8 +61,8 @@ import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyString;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -112,12 +111,6 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
     private BuildExecutor buildExecutor;
 
     @Mock
-    private ManagedInstance<EditContributorsPopUpPresenter> editContributorsPopUpPresenterInstance;
-
-    @Mock
-    private EditContributorsPopUpPresenter editContributorsPopUpPresenter;
-
-    @Mock
     private ManagedInstance<DeleteProjectPopUpScreen> deleteProjectPopUpScreenInstance;
 
     @Mock
@@ -160,6 +153,9 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
     @Mock
     private ViewHideAlertsButtonPresenter.View viewHideAlertsButtonView;
 
+    @Mock
+    private ProjectContributorsListServiceImpl projectContributorsListService;
+
     private SyncPromises promises;
 
     @Before
@@ -170,7 +166,6 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
         when(assetsScreen.getView()).thenReturn(assetsView);
         when(viewHideAlertsButtonPresenter.getView()).thenReturn(viewHideAlertsButtonView);
 
-        when(editContributorsPopUpPresenterInstance.get()).thenReturn(editContributorsPopUpPresenter);
         when(deleteProjectPopUpScreenInstance.get()).thenReturn(deleteProjectPopUpScreen);
         when(deleteBranchPopUpScreenInstance.get()).thenReturn(deleteBranchPopUpScreen);
         when(renameProjectPopUpScreenInstance.get()).thenReturn(renameProjectPopUpScreen);
@@ -189,7 +184,6 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
                                                               this.newFileUploader,
                                                               this.newResourcePresenter,
                                                               this.buildExecutor,
-                                                              this.editContributorsPopUpPresenterInstance,
                                                               this.deleteProjectPopUpScreenInstance,
                                                               this.deleteBranchPopUpScreenInstance,
                                                               this.renameProjectPopUpScreenInstance,
@@ -199,7 +193,8 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
                                                               projectNameValidator,
                                                               promises,
                                                               notificationEvent,
-                                                              viewHideAlertsButtonPresenter);
+                                                              viewHideAlertsButtonPresenter,
+                                                              projectContributorsListService);
         this.presenter = spy(projectScreen);
 
         this.presenter.workspaceProject = spy(createProject());
@@ -224,27 +219,8 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
 
         verify(view).setAddAssetVisible(true);
         verify(view).setImportAssetVisible(true);
-        verify(view).setEditContributorsVisible(false);
         verify(view).setDuplicateVisible(false);
         verify(view).setReimportVisible(true);
-        verify(view).setDeleteProjectVisible(false);
-        verify(view).setDeleteBranchVisible(false);
-        verify(view).setBuildEnabled(false);
-        verify(view).setDeployEnabled(false);
-        verify(view).setActionsVisible(true);
-    }
-
-    @Test
-    public void testActionsVisibilityWithPermissionToUpdateSpaceOnly() {
-        doReturn(true).when(this.presenter).canEditContributors();
-
-        presenter.initialize();
-
-        verify(view).setAddAssetVisible(false);
-        verify(view).setImportAssetVisible(false);
-        verify(view).setEditContributorsVisible(true);
-        verify(view).setDuplicateVisible(false);
-        verify(view).setReimportVisible(false);
         verify(view).setDeleteProjectVisible(false);
         verify(view).setDeleteBranchVisible(false);
         verify(view).setBuildEnabled(false);
@@ -260,7 +236,6 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
 
         verify(view).setAddAssetVisible(false);
         verify(view).setImportAssetVisible(false);
-        verify(view).setEditContributorsVisible(false);
         verify(view).setDuplicateVisible(false);
         verify(view).setReimportVisible(false);
         verify(view).setDeleteProjectVisible(true);
@@ -278,7 +253,6 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
 
         verify(view).setAddAssetVisible(false);
         verify(view).setImportAssetVisible(false);
-        verify(view).setEditContributorsVisible(false);
         verify(view).setDuplicateVisible(false);
         verify(view).setReimportVisible(false);
         verify(view).setDeleteProjectVisible(false);
@@ -296,7 +270,6 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
 
         verify(view).setAddAssetVisible(false);
         verify(view).setImportAssetVisible(false);
-        verify(view).setEditContributorsVisible(false);
         verify(view).setDuplicateVisible(true);
         verify(view).setReimportVisible(false);
         verify(view).setDeleteProjectVisible(false);
@@ -312,7 +285,6 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
 
         verify(view).setAddAssetVisible(false);
         verify(view).setImportAssetVisible(false);
-        verify(view).setEditContributorsVisible(false);
         verify(view).setDuplicateVisible(false);
         verify(view).setReimportVisible(false);
         verify(view).setDeleteProjectVisible(false);
@@ -331,7 +303,6 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
 
         verify(view).setAddAssetVisible(false);
         verify(view).setImportAssetVisible(false);
-        verify(view).setEditContributorsVisible(false);
         verify(view).setDuplicateVisible(false);
         verify(view).setReimportVisible(false);
         verify(view).setDeleteProjectVisible(true);
@@ -397,22 +368,6 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
             doReturn(true).when(this.presenter).userCanUpdateProject();
             this.presenter.rename();
             verify(this.renameProjectPopUpScreen,
-                   times(1)).show(any());
-        }
-    }
-
-    @Test
-    public void testEditContributors() {
-        {
-            doReturn(false).when(this.presenter).canEditContributors();
-            this.presenter.editContributors();
-            verify(this.editContributorsPopUpPresenter,
-                   never()).show(any());
-        }
-        {
-            doReturn(true).when(this.presenter).canEditContributors();
-            this.presenter.editContributors();
-            verify(this.editContributorsPopUpPresenter,
                    times(1)).show(any());
         }
     }

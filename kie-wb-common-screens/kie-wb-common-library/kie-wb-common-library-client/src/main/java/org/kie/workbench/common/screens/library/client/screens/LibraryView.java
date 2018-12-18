@@ -55,10 +55,6 @@ public class LibraryView implements LibraryScreen.View,
     Anchor importProject;
 
     @Inject
-    @DataField("edit-contributors")
-    Anchor editContributors;
-
-    @Inject
     @DataField("delete-project")
     Anchor deleteProject;
 
@@ -103,15 +99,13 @@ public class LibraryView implements LibraryScreen.View,
         this.presenter = presenter;
 
         final boolean userCanCreateProjects = presenter.userCanCreateProjects();
-        final boolean userCanUpdateOrganizationalUnit = presenter.userCanUpdateOrganizationalUnit();
         final boolean userCanDeleteOrganizationalUnit = presenter.userCanDeleteOrganizationalUnit();
 
         trySamples.setHidden(!userCanCreateProjects);
         importProject.setHidden(!userCanCreateProjects);
-        editContributors.setHidden(!userCanUpdateOrganizationalUnit);
         deleteProject.setHidden(!userCanDeleteOrganizationalUnit);
 
-        actions.setHidden(!userCanCreateProjects && !userCanUpdateOrganizationalUnit && !userCanDeleteOrganizationalUnit);
+        actions.setHidden(!userCanCreateProjects && !userCanDeleteOrganizationalUnit);
     }
 
     @EventHandler("try-samples")
@@ -122,11 +116,6 @@ public class LibraryView implements LibraryScreen.View,
     @EventHandler("import-project")
     public void importProject(final ClickEvent event) {
         presenter.importProject();
-    }
-
-    @EventHandler("edit-contributors")
-    public void editContributors(final ClickEvent event) {
-        presenter.editContributors();
     }
 
     @EventHandler("delete-project")

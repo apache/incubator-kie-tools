@@ -149,7 +149,6 @@ public class ExamplesServiceImplRepositoryNamesTest {
 
         when(ouService.getOrganizationalUnits()).thenReturn(new HashSet<OrganizationalUnit>() {{
             add(new OrganizationalUnitImpl("ou1Name",
-                                           "ou1Owner",
                                            "ou1GroupId"));
         }});
         when(moduleService.resolveModule(any(Path.class))).thenAnswer(new Answer<KieModule>() {

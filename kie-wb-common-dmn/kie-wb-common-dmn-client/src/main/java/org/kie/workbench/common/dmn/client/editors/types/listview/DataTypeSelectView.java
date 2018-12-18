@@ -32,13 +32,13 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
-import org.kie.workbench.common.dmn.client.editors.types.listview.common.JQuerySelectPickerEvent;
+import org.uberfire.client.views.pfly.selectpicker.JQuerySelectPickerEvent;
 
 import static org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper.hide;
 import static org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper.show;
-import static org.kie.workbench.common.dmn.client.editors.types.listview.common.JQuerySelectPicker.$;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeSelectView_CustomTitle;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeSelectView_DefaultTitle;
+import static org.uberfire.client.views.pfly.selectpicker.JQuerySelectPicker.$;
 
 @Dependent
 @Templated

@@ -20,15 +20,18 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.guvnor.structure.backend.backcompat.BackwardCompatibleUtil;
 import org.guvnor.structure.backend.organizationalunit.OrganizationalUnitServiceImpl;
+import org.guvnor.structure.backend.repositories.ConfiguredRepositories;
 import org.guvnor.structure.organizationalunit.NewOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.RemoveOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.RepoAddedToOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.RepoRemovedFromOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.UpdatedOrganizationalUnitEvent;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.uberfire.io.IOService;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.spaces.SpacesAPI;
@@ -55,7 +58,9 @@ public class MigrationOrganizationalUnitServiceImpl extends OrganizationalUnitSe
                                                   final Event<UpdatedOrganizationalUnitEvent> updatedOrganizationalUnitEvent,
                                                   final AuthorizationManager authorizationManager,
                                                   final SpacesAPI spaces,
-                                                  final SessionInfo sessionInfo) {
+                                                  final SessionInfo sessionInfo,
+                                                  @Named("ioStrategy") final IOService ioService,
+                                                  final ConfiguredRepositories configuredRepositories) {
         super(configurationService,
               configurationFactory,
               organizationalUnitFactory,
@@ -68,6 +73,8 @@ public class MigrationOrganizationalUnitServiceImpl extends OrganizationalUnitSe
               updatedOrganizationalUnitEvent,
               authorizationManager,
               spaces,
-              sessionInfo);
+              sessionInfo,
+              ioService,
+              configuredRepositories);
     }
 }

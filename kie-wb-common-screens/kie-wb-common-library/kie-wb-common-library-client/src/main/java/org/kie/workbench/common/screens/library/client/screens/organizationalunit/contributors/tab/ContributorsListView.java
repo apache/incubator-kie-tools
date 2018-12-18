@@ -49,15 +49,15 @@ public class ContributorsListView implements ContributorsListPresenter.View,
     Input filterText;
 
     @Inject
-    @DataField("edit")
-    Button edit;
+    @DataField("add-contributor")
+    Button addContributor;
 
     @Override
     public void init(final ContributorsListPresenter presenter) {
         this.presenter = presenter;
         filterText.setAttribute("placeholder",
                                 ts.getTranslation(LibraryConstants.Search));
-        edit.setHidden(!presenter.userCanUpdateOrganizationalUnit());
+        addContributor.setHidden(!presenter.canEditContributors());
     }
 
     @Override
@@ -66,7 +66,12 @@ public class ContributorsListView implements ContributorsListPresenter.View,
     }
 
     @Override
-    public void addContributor(HTMLElement contributor) {
+    public void addNewContributor(final HTMLElement newContributorView) {
+        contributorsList.insertBefore(newContributorView, contributorsList.getFirstChild());
+    }
+
+    @Override
+    public void addContributor(final HTMLElement contributor) {
         contributorsList.appendChild(contributor);
     }
 
@@ -76,13 +81,13 @@ public class ContributorsListView implements ContributorsListPresenter.View,
     }
 
     @Override
-    public String getOwnerRoleLabel() {
-        return ts.format(LibraryConstants.Owner);
+    public void showAddContributor() {
+        addContributor.setHidden(!presenter.canEditContributors());
     }
 
     @Override
-    public String getContributorRoleLabel() {
-        return ts.format(LibraryConstants.Contributor);
+    public void hideAddContributor() {
+        addContributor.setHidden(true);
     }
 
     @EventHandler("filter-text")
@@ -90,8 +95,8 @@ public class ContributorsListView implements ContributorsListPresenter.View,
         presenter.filterContributors(filterText.getValue());
     }
 
-    @EventHandler("edit")
-    public void edit(final ClickEvent event) {
-        presenter.edit();
+    @EventHandler("add-contributor")
+    public void addContributor(final ClickEvent event) {
+        presenter.addContributor();
     }
 }

@@ -18,12 +18,15 @@ package org.kie.workbench.common.screens.library.client.screens.organizationalun
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.guvnor.structure.client.security.OrganizationalUnitController;
+import org.guvnor.structure.contributors.Contributor;
+import org.guvnor.structure.contributors.ContributorType;
 import org.guvnor.structure.events.AfterCreateOrganizationalUnitEvent;
 import org.guvnor.structure.events.AfterEditOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
@@ -31,8 +34,6 @@ import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.jboss.errai.common.client.dom.HTMLElement;
-import org.kie.workbench.common.screens.library.client.screens.organizationalunit.contributors.widget.ContributorsManagementPresenter;
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
@@ -64,8 +65,6 @@ public class OrganizationalUnitPopUpPresenter {
         String getSaveSuccessMessage();
 
         String getInvalidNameValidationMessage();
-
-        void append(HTMLElement child);
     }
 
     private View view;
@@ -80,8 +79,6 @@ public class OrganizationalUnitPopUpPresenter {
 
     private OrganizationalUnitController organizationalUnitController;
 
-    private ContributorsManagementPresenter contributorsManagementPresenter;
-
     private SessionInfo sessionInfo;
 
     private OrganizationalUnit organizationalUnit;
@@ -93,7 +90,6 @@ public class OrganizationalUnitPopUpPresenter {
                                             final Event<AfterEditOrganizationalUnitEvent> afterEditOrganizationalUnitEvent,
                                             final Event<NotificationEvent> notificationEvent,
                                             final OrganizationalUnitController organizationalUnitController,
-                                            final ContributorsManagementPresenter contributorsManagementPresenter,
                                             final SessionInfo sessionInfo) {
         this.view = view;
         this.organizationalUnitService = organizationalUnitService;
@@ -101,7 +97,6 @@ public class OrganizationalUnitPopUpPresenter {
         this.afterEditOrganizationalUnitEvent = afterEditOrganizationalUnitEvent;
         this.notificationEvent = notificationEvent;
         this.organizationalUnitController = organizationalUnitController;
-        this.contributorsManagementPresenter = contributorsManagementPresenter;
         this.sessionInfo = sessionInfo;
     }
 
@@ -112,8 +107,6 @@ public class OrganizationalUnitPopUpPresenter {
 
     public void show() {
         if (organizationalUnitController.canCreateOrgUnits()) {
-            contributorsManagementPresenter.setup();
-            view.append(contributorsManagementPresenter.getView().getElement());
             view.clear();
             view.show();
         }
@@ -135,7 +128,7 @@ public class OrganizationalUnitPopUpPresenter {
                       final String owner) {
         final Command saveCommand = () -> {
             final Collection<Repository> repositories = new ArrayList<>();
-            final List<String> contributors = contributorsManagementPresenter.getSelectedContributorsUserNames();
+            final List<Contributor> contributors = Collections.singletonList(new Contributor(owner, ContributorType.OWNER));
 
             final RemoteCallback<OrganizationalUnit> successCallback = (OrganizationalUnit newOrganizationalUnit) -> {
                 afterCreateOrganizationalUnitEvent.fire(new AfterCreateOrganizationalUnitEvent(newOrganizationalUnit));
@@ -149,7 +142,6 @@ public class OrganizationalUnitPopUpPresenter {
 
             organizationalUnitService.call(successCallback,
                                            errorCallback).createOrganizationalUnit(name,
-                                                                                   owner,
                                                                                    defaultGroupId,
                                                                                    repositories,
                                                                                    contributors);

@@ -33,8 +33,6 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.ext.uberfire.social.activities.model.SocialUser;
-import org.ext.uberfire.social.activities.service.SocialUserRepositoryAPI;
 import org.guvnor.common.services.project.backend.server.utils.PathUtil;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
@@ -43,6 +41,8 @@ import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.guvnor.structure.backend.repositories.ConfiguredRepositories;
+import org.guvnor.structure.contributors.Contributor;
+import org.guvnor.structure.contributors.ContributorType;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.Branch;
@@ -52,6 +52,7 @@ import org.guvnor.structure.repositories.RepositoryService;
 import org.guvnor.structure.security.OrganizationalUnitAction;
 import org.guvnor.structure.security.RepositoryAction;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.exception.UnauthorizedException;
 import org.kie.workbench.common.screens.examples.model.ExampleRepository;
 import org.kie.workbench.common.screens.examples.model.ImportProject;
@@ -80,6 +81,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.security.management.api.exception.NoImplementationAvailableException;
+import org.uberfire.ext.security.management.api.service.UserManagerService;
+import org.uberfire.ext.security.management.impl.SearchRequestImpl;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.NoSuchFileException;
 import org.uberfire.java.nio.file.attribute.FileTime;
@@ -108,7 +112,7 @@ public class LibraryServiceImpl implements LibraryService {
     private KieModuleService moduleService;
     private ExamplesService examplesService;
     private IOService ioService;
-    private SocialUserRepositoryAPI socialUserRepositoryAPI;
+    private UserManagerService userManagerService;
     private IndexStatusOracle indexOracle;
     private RepositoryService repoService;
     private PathUtil pathUtil;
@@ -130,7 +134,7 @@ public class LibraryServiceImpl implements LibraryService {
                               final ExamplesService examplesService,
                               @Named("ioStrategy") final IOService ioService,
                               final LibraryInternalPreferences internalPreferences,
-                              final SocialUserRepositoryAPI socialUserRepositoryAPI,
+                              final UserManagerService userManagerService,
                               final IndexStatusOracle indexOracle,
                               final RepositoryService repoService,
                               final PathUtil pathUtil,
@@ -147,7 +151,7 @@ public class LibraryServiceImpl implements LibraryService {
         this.examplesService = examplesService;
         this.ioService = ioService;
         this.internalPreferences = internalPreferences;
-        this.socialUserRepositoryAPI = socialUserRepositoryAPI;
+        this.userManagerService = userManagerService;
         this.indexOracle = indexOracle;
         this.repoService = repoService;
         this.pathUtil = pathUtil;
@@ -216,7 +220,20 @@ public class LibraryServiceImpl implements LibraryService {
                                           final DeploymentMode mode) {
         return projectService.newProject(activeOrganizationalUnit,
                                          pom,
-                                         mode);
+                                         mode,
+                                         getRepositoryContributors(activeOrganizationalUnit));
+    }
+
+    private List<Contributor> getRepositoryContributors(final OrganizationalUnit organizationalUnit) {
+        final Collection<Contributor> spaceContributors = ouService.getOrganizationalUnit(organizationalUnit.getName()).getContributors();
+
+        final List<Contributor> contributors = spaceContributors.stream()
+                .filter(c -> !sessionInfo.getIdentity().getIdentifier().equals(c.getUsername()))
+                .collect(Collectors.toList());
+
+        contributors.add(new Contributor(sessionInfo.getIdentity().getIdentifier(), ContributorType.OWNER));
+
+        return contributors;
     }
 
     @Override
@@ -359,10 +376,15 @@ public class LibraryServiceImpl implements LibraryService {
     }
 
     @Override
-    public List<SocialUser> getAllUsers() {
-        return socialUserRepositoryAPI.findAllUsers().stream()
-                .filter(user -> !user.getUserName().equals("system"))
-                .collect(Collectors.toList());
+    public List<String> getAllUsers() {
+        try {
+            final List<User> users = userManagerService.search(new SearchRequestImpl("",
+                                                                                     1,
+                                                                                     Integer.MAX_VALUE)).getResults();
+            return users.stream().map(User::getIdentifier).collect(Collectors.toList());
+        } catch (NoImplementationAvailableException e) {
+            return Collections.singletonList("admin");
+        }
     }
 
     @Override
@@ -496,11 +518,10 @@ public class LibraryServiceImpl implements LibraryService {
 
         final LibraryPreferences preferences = getPreferences();
 
-        final List<String> contributors = new ArrayList<>();
-        contributors.add(preferences.getOrganizationalUnitPreferences().getOwner());
+        final List<Contributor> contributors = new ArrayList<>();
+        contributors.add(new Contributor(preferences.getOrganizationalUnitPreferences().getOwner(), ContributorType.OWNER));
 
         return ouService.createOrganizationalUnit(preferences.getOrganizationalUnitPreferences().getName(),
-                                                  preferences.getOrganizationalUnitPreferences().getOwner(),
                                                   preferences.getOrganizationalUnitPreferences().getGroupId(),
                                                   Collections.emptyList(),
                                                   contributors);

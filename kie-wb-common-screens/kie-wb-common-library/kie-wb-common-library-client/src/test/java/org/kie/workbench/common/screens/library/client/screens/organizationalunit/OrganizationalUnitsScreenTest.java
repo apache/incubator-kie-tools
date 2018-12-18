@@ -101,13 +101,10 @@ public class OrganizationalUnitsScreenTest {
         libraryServiceCaller = new CallerMock<>(libraryService);
 
         organizationalUnit1 = new OrganizationalUnitImpl("ou1",
-                                                         "owner1",
                                                          "defaultGroupId1");
         organizationalUnit2 = new OrganizationalUnitImpl("ou2",
-                                                         "owner2",
                                                          "defaultGroupId2");
         organizationalUnit3 = new OrganizationalUnitImpl("ou3",
-                                                         "owner3",
                                                          "defaultGroupId3");
 
         List<OrganizationalUnit> organizationalUnits = new ArrayList<>();

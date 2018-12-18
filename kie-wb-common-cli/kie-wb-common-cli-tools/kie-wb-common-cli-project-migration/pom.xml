@@ -122,6 +122,16 @@
       <groupId>org.kie.workbench</groupId>
       <artifactId>kie-wb-common-cli-api</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-security-management-api</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.uberfire</groupId>
+          <artifactId>uberfire-servlet-security</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
     <!-- XXX maybe enable logging to a file for troubleshooting? -->
     <dependency>
       <groupId>org.slf4j</groupId>

@@ -17,22 +17,29 @@
 package org.kie.workbench.common.screens.library.client.screens.organizationalunit.contributors.tab;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.structure.client.security.OrganizationalUnitController;
+import org.guvnor.structure.contributors.Contributor;
+import org.guvnor.structure.contributors.ContributorType;
 import org.guvnor.structure.events.AfterEditOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
+import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.screens.library.client.screens.organizationalunit.contributors.edit.EditContributorsPopUpPresenter;
+import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.mocks.CallerMock;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
@@ -45,87 +52,69 @@ public class ContributorsListPresenterTest {
     private ContributorsListPresenter.View view;
 
     @Mock
-    private LibraryPlaces libraryPlaces;
-
-    @Mock
     private ManagedInstance<ContributorsListItemPresenter> contributorsListItemPresenters;
 
     @Mock
-    private ManagedInstance<EditContributorsPopUpPresenter> editContributorsPopUpPresenters;
+    private Elemental2DomUtil elemental2DomUtil;
 
     @Mock
-    private WorkspaceProjectContext projectContext;
-
-    @Mock
-    private OrganizationalUnitController organizationalUnitController;
+    private LibraryService libraryService;
+    private Caller<LibraryService> libraryServiceCaller;
 
     @Mock
     private ContributorsListItemPresenter contributorsListItemPresenter;
 
     @Mock
-    private EditContributorsPopUpPresenter editContributorsPopUpPresenter;
+    private ContributorsListService contributorsListService;
+
+    @Mock
+    private Consumer<Integer> contributorsCountChangedCallback;
 
     private ContributorsListPresenter presenter;
 
+    private List<Contributor> contributors;
+
     @Before
     public void setup() {
-        doReturn(true).when(organizationalUnitController).canReadOrgUnits();
-        doReturn(true).when(organizationalUnitController).canReadOrgUnit(any());
-        doReturn(true).when(organizationalUnitController).canUpdateOrgUnit(any());
-        doReturn(true).when(organizationalUnitController).canCreateOrgUnits();
-        doReturn(true).when(organizationalUnitController).canDeleteOrgUnit(any());
+        libraryServiceCaller = new CallerMock<>(libraryService);
 
-        doReturn(editContributorsPopUpPresenter).when(editContributorsPopUpPresenters).get();
         doReturn(contributorsListItemPresenter).when(contributorsListItemPresenters).get();
         doReturn(mock(ContributorsListItemPresenter.View.class)).when(contributorsListItemPresenter).getView();
 
-        doReturn("Owner").when(view).getOwnerRoleLabel();
-        doReturn("Contributor").when(view).getContributorRoleLabel();
-
-        when(projectContext.getActiveOrganizationalUnit()).thenReturn(Optional.empty());
-        when(projectContext.getActiveWorkspaceProject()).thenReturn(Optional.empty());
-        when(projectContext.getActiveModule()).thenReturn(Optional.empty());
-        when(projectContext.getActiveRepositoryRoot()).thenReturn(Optional.empty());
-        when(projectContext.getActivePackage()).thenReturn(Optional.empty());
-
         presenter = spy(new ContributorsListPresenter(view,
-                                                      libraryPlaces,
                                                       contributorsListItemPresenters,
-                                                      editContributorsPopUpPresenters,
-                                                      projectContext,
-                                                      organizationalUnitController));
+                                                      elemental2DomUtil,
+                                                      libraryServiceCaller));
+
+        contributors = new ArrayList<>();
+        contributors.add(new Contributor("admin", ContributorType.OWNER));
+        contributors.add(new Contributor("user", ContributorType.CONTRIBUTOR));
+        contributors.add(new Contributor("Director", ContributorType.ADMIN));
+        doAnswer(invocationOnMock -> {
+            invocationOnMock.getArgumentAt(0, Consumer.class).accept(contributors);
+            return null;
+        }).when(contributorsListService).getContributors(any());
+
+        final List<String> userNames = Arrays.asList("admin", "user", "Director");
+        doAnswer(invocationOnMock -> {
+            invocationOnMock.getArgumentAt(0, Consumer.class).accept(userNames);
+            return null;
+        }).when(contributorsListService).getValidUsernames(any());
     }
 
     @Test
     public void setupTest() {
         final InOrder order = inOrder(contributorsListItemPresenter);
 
-        final List<String> contributors = new ArrayList<>();
-        contributors.add("B");
-        contributors.add("c");
-        contributors.add("a");
-
-        final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
-        doReturn("B").when(organizationalUnit).getOwner();
-        doReturn(contributors).when(organizationalUnit).getContributors();
-        when(projectContext.getActiveOrganizationalUnit()).thenReturn(Optional.of(organizationalUnit));
-        when(projectContext.getActiveWorkspaceProject()).thenReturn(Optional.empty());
-        when(projectContext.getActiveModule()).thenReturn(Optional.empty());
-        when(projectContext.getActiveRepositoryRoot()).thenReturn(Optional.empty());
-        when(projectContext.getActivePackage()).thenReturn(Optional.empty());
-
-        presenter.setup();
+        presenter.setup(contributorsListService, contributorsCountChangedCallback);
 
         verify(view).init(presenter);
+        verify(contributorsCountChangedCallback).accept(3);
         verify(view).clearContributors();
-        order.verify(contributorsListItemPresenter).setup("a",
-                                                          "Contributor");
-        order.verify(contributorsListItemPresenter).setup("B",
-                                                          "Owner");
-        order.verify(contributorsListItemPresenter).setup("c",
-                                                          "Contributor");
-        verify(view,
-               times(3)).addContributor(any());
+        order.verify(contributorsListItemPresenter).setup(contributors.get(0), presenter, contributorsListService);
+        order.verify(contributorsListItemPresenter).setup(contributors.get(1), presenter, contributorsListService);
+        order.verify(contributorsListItemPresenter).setup(contributors.get(2), presenter, contributorsListService);
+        verify(view, times(3)).addContributor(any());
     }
 
     @Test
@@ -133,75 +122,15 @@ public class ContributorsListPresenterTest {
         final InOrder order = inOrder(contributorsListItemPresenter);
 
         presenter.contributors = new ArrayList<>();
-        presenter.contributors.add("John");
-        presenter.contributors.add("Mary");
-        presenter.contributors.add("Jonathan");
-
-        final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
-        doReturn("Mary").when(organizationalUnit).getOwner();
-        doReturn(presenter.contributors).when(organizationalUnit).getContributors();
-        doReturn(Optional.of(organizationalUnit)).when(projectContext).getActiveOrganizationalUnit();
+        presenter.contributors.add(new Contributor("John", ContributorType.OWNER));
+        presenter.contributors.add(new Contributor("Mary", ContributorType.ADMIN));
+        presenter.contributors.add(new Contributor("Jonathan", ContributorType.CONTRIBUTOR));
 
         presenter.filterContributors("h");
 
         verify(view).clearContributors();
-        order.verify(contributorsListItemPresenter).setup("John",
-                                                          "Contributor");
-        order.verify(contributorsListItemPresenter).setup("Jonathan",
-                                                          "Contributor");
-        verify(view,
-               times(2)).addContributor(any());
-    }
-
-    @Test
-    public void editWithPermissionTest() {
-        final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
-        doReturn(Optional.of(organizationalUnit)).when(projectContext).getActiveOrganizationalUnit();
-
-        presenter.edit();
-
-        verify(editContributorsPopUpPresenter).show(organizationalUnit);
-    }
-
-    @Test
-    public void editWithoutPermissionTest() {
-        final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
-        doReturn(Optional.of(organizationalUnit)).when(projectContext).getActiveOrganizationalUnit();
-
-        doReturn(false).when(organizationalUnitController).canUpdateOrgUnit(organizationalUnit);
-
-        presenter.edit();
-
-        verify(editContributorsPopUpPresenter,
-               never()).show(organizationalUnit);
-    }
-
-    @Test
-    public void organizationalUnitEditedTest() {
-        final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
-        final AfterEditOrganizationalUnitEvent afterEditOrganizationalUnitEvent = mock(AfterEditOrganizationalUnitEvent.class);
-        doReturn(organizationalUnit).when(afterEditOrganizationalUnitEvent).getEditedOrganizationalUnit();
-        when(projectContext.getActiveOrganizationalUnit()).thenReturn(Optional.of(organizationalUnit));
-
-        presenter.organizationalUnitEdited(afterEditOrganizationalUnitEvent);
-
-        verify(view).clearFilterText();
-        verify(presenter).updateContributors(organizationalUnit);
-    }
-
-    @Test
-    public void getContributorsCountTest() {
-        final List<String> contributors = new ArrayList<>();
-        contributors.add("B");
-        contributors.add("c");
-        contributors.add("a");
-
-        final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
-        doReturn("B").when(organizationalUnit).getOwner();
-        doReturn(contributors).when(organizationalUnit).getContributors();
-        doReturn(Optional.of(organizationalUnit)).when(projectContext).getActiveOrganizationalUnit();
-
-        assertEquals(3,
-                     presenter.getContributorsCount());
+        order.verify(contributorsListItemPresenter).setup(presenter.contributors.get(0), presenter, null);
+        order.verify(contributorsListItemPresenter).setup(presenter.contributors.get(2), presenter, null);
+        verify(view, times(2)).addContributor(any());
     }
 }

@@ -129,11 +129,6 @@ public class OrganizationalUnitPopUpView implements OrganizationalUnitPopUpPrese
         return ts.format(LibraryConstants.InvalidSpaceName);
     }
 
-    @Override
-    public void append(final HTMLElement child) {
-        body.appendChild(child);
-    }
-
     private void modalSetup() {
         this.modal = new CommonModalBuilder()
                 .addHeader(ts.format(LibraryConstants.CreateOrganizationalUnit,

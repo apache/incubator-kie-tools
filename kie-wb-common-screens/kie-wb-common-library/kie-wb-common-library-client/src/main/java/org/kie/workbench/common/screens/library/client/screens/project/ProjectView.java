@@ -125,10 +125,6 @@ public class ProjectView implements ProjectScreen.View,
     private HTMLAnchorElement rename;
 
     @Inject
-    @DataField("edit-contributors")
-    private HTMLAnchorElement editContributors;
-
-    @Inject
     @DataField("duplicate")
     private HTMLAnchorElement duplicate;
 
@@ -182,11 +178,6 @@ public class ProjectView implements ProjectScreen.View,
     @Override
     public void setImportAssetVisible(boolean visible) {
         this.importAsset.hidden = !visible;
-    }
-
-    @Override
-    public void setEditContributorsVisible(boolean visible) {
-        this.editContributors.hidden = !visible;
     }
 
     @Override
@@ -290,11 +281,6 @@ public class ProjectView implements ProjectScreen.View,
     @EventHandler("rename")
     public void rename(final ClickEvent event) {
         presenter.rename();
-    }
-
-    @EventHandler("edit-contributors")
-    public void editContributors(final ClickEvent event) {
-        presenter.editContributors();
     }
 
     @EventHandler("build")

@@ -26,7 +26,6 @@ import org.jboss.errai.common.client.api.Caller;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.screens.library.client.screens.organizationalunit.contributors.widget.ContributorsManagementPresenter;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.mocks.CallerMock;
@@ -61,9 +60,6 @@ public class OrganizationalUnitPopUpPresenterTest {
     @Mock
     private EventSourceMock<NotificationEvent> notificationEvent;
 
-    @Mock
-    private ContributorsManagementPresenter contributorsManagementPresenter;
-
     private SessionInfo sessionInfo = new SessionInfoMock();
 
     private OrganizationalUnitPopUpPresenter presenter;
@@ -80,15 +76,12 @@ public class OrganizationalUnitPopUpPresenterTest {
         doReturn(true).when(organizationalUnitService).isValidGroupId(anyString());
         doReturn(null).when(organizationalUnitService).getOrganizationalUnit(anyString());
         doAnswer(invocationOnMock -> new OrganizationalUnitImpl((String) invocationOnMock.getArguments()[0],
-                                                                (String) invocationOnMock.getArguments()[1],
-                                                                (String) invocationOnMock.getArguments()[2]))
+                                                                (String) invocationOnMock.getArguments()[1]))
                 .when(organizationalUnitService).createOrganizationalUnit(anyString(),
-                                                                          anyString(),
                                                                           anyString(),
                                                                           any(),
                                                                           any());
 
-        doReturn(mock(ContributorsManagementPresenter.View.class)).when(contributorsManagementPresenter).getView();
 
         presenter = spy(new OrganizationalUnitPopUpPresenter(view,
                                                              organizationalUnitServiceCaller,
@@ -96,7 +89,6 @@ public class OrganizationalUnitPopUpPresenterTest {
                                                              afterEditOrganizationalUnitEvent,
                                                              notificationEvent,
                                                              organizationalUnitController,
-                                                             contributorsManagementPresenter,
                                                              sessionInfo));
     }
 
@@ -104,8 +96,6 @@ public class OrganizationalUnitPopUpPresenterTest {
     public void showWithPermissionTest() {
         presenter.show();
 
-        verify(contributorsManagementPresenter).setup();
-        verify(view).append(any());
         verify(view).clear();
         verify(view).show();
     }
@@ -116,10 +106,6 @@ public class OrganizationalUnitPopUpPresenterTest {
 
         presenter.show();
 
-        verify(contributorsManagementPresenter,
-               never()).setup();
-        verify(view,
-               never()).append(any());
         verify(view,
                never()).clear();
         verify(view,
@@ -139,7 +125,6 @@ public class OrganizationalUnitPopUpPresenterTest {
 
         verify(organizationalUnitService,
                never()).createOrganizationalUnit(anyString(),
-                                                 anyString(),
                                                  anyString(),
                                                  any(),
                                                  any());
@@ -161,7 +146,6 @@ public class OrganizationalUnitPopUpPresenterTest {
         verify(organizationalUnitService,
                never()).createOrganizationalUnit(anyString(),
                                                  anyString(),
-                                                 anyString(),
                                                  any(),
                                                  any());
     }
@@ -182,7 +166,6 @@ public class OrganizationalUnitPopUpPresenterTest {
         verify(organizationalUnitService,
                never()).createOrganizationalUnit(anyString(),
                                                  anyString(),
-                                                 anyString(),
                                                  any(),
                                                  any());
     }
@@ -197,7 +180,6 @@ public class OrganizationalUnitPopUpPresenterTest {
         verify(view).hideBusyIndicator();
 
         verify(organizationalUnitService).createOrganizationalUnit(anyString(),
-                                                                   anyString(),
                                                                    anyString(),
                                                                    any(),
                                                                    any());

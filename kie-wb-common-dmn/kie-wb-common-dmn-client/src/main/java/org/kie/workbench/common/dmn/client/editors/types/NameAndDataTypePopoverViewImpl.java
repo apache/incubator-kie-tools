@@ -41,7 +41,7 @@ import org.uberfire.client.views.pfly.widgets.Popover;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 
-import static org.kie.workbench.common.dmn.client.editors.types.listview.common.JQuerySelectPicker.$;
+import static org.uberfire.client.views.pfly.selectpicker.JQuerySelectPicker.$;
 
 @Templated
 @ApplicationScoped

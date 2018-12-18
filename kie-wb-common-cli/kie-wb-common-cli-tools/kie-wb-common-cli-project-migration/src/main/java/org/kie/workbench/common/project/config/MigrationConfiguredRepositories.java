@@ -25,6 +25,7 @@ import javax.inject.Named;
 import org.guvnor.structure.backend.repositories.ConfiguredRepositoriesImpl;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryUpdatedEvent;
+import org.guvnor.structure.server.config.ConfigurationFactory;
 import org.guvnor.structure.server.repositories.RepositoryFactory;
 
 @Alternative
@@ -39,10 +40,12 @@ public class MigrationConfiguredRepositories extends ConfiguredRepositoriesImpl 
     public MigrationConfiguredRepositories(final MigrationConfigurationServiceImpl configurationService,
                                            final RepositoryFactory repositoryFactory,
                                            final @Named("system") Repository systemRepository,
-                                           final Event<RepositoryUpdatedEvent> repositoryUpdatedEvent) {
+                                           final Event<RepositoryUpdatedEvent> repositoryUpdatedEvent,
+                                           final ConfigurationFactory configurationFactory) {
         super(configurationService,
               repositoryFactory,
               systemRepository,
-              repositoryUpdatedEvent);
+              repositoryUpdatedEvent,
+              configurationFactory);
     }
 }

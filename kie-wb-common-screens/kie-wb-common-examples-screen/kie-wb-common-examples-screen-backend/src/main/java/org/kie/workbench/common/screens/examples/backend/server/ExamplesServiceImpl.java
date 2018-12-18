@@ -297,7 +297,6 @@ public class ExamplesServiceImpl extends BaseProjectImportService implements Exa
 
     protected OrganizationalUnit createOrganizationalUnit(final String name) {
         final OrganizationalUnit ou = ouService.createOrganizationalUnit(name,
-                                                                         "",
                                                                          "");
         return ou;
     }

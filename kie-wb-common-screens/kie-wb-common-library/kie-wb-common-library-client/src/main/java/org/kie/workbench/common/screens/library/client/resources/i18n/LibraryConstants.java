@@ -225,6 +225,9 @@ public class LibraryConstants {
     public static final String EditOrganizationalUnitContributorsSaveSuccess = "EditOrganizationalUnitContributorsSaveSuccess";
 
     @TranslationKey(defaultValue = "")
+    public static final String EditOrganizationalUnitContributorsRemoveSuccess = "EditOrganizationalUnitContributorsRemoveSuccess";
+
+    @TranslationKey(defaultValue = "")
     public static final String Add = "Add";
 
     @TranslationKey(defaultValue = "")
@@ -491,4 +494,24 @@ public class LibraryConstants {
     @TranslationKey(defaultValue = "")
     public static final String BranchDeleted = "BranchDeleted";
 
+    @TranslationKey(defaultValue = "")
+    public static final String InvalidUsername = "InvalidUsername";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ContributorTypeOwner = "ContributorTypeOwner";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ContributorTypeAdmin = "ContributorTypeAdmin";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ContributorTypeContributor = "ContributorTypeContributor";
+
+    @TranslationKey(defaultValue = "")
+    public static final String SingleOwnerIsMandatory = "SingleOwnerIsMandatory";
+
+    @TranslationKey(defaultValue = "")
+    public static final String SpaceOwnerChanged = "SpaceOwnerChanged";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DuplicatedContributor = "DuplicatedContributor";
 }

@@ -38,12 +38,12 @@ import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManager;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeUtils;
-import org.kie.workbench.common.dmn.client.editors.types.listview.common.JQuerySelectPickerEvent;
-import org.kie.workbench.common.dmn.client.editors.types.listview.common.JQuerySelectPickerTarget;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.DataTypeStore;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.uberfire.client.views.pfly.selectpicker.JQuerySelectPickerEvent;
+import org.uberfire.client.views.pfly.selectpicker.JQuerySelectPickerTarget;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

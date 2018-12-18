@@ -26,10 +26,7 @@ import java.util.Optional;
 import java.util.Set;
 import javax.enterprise.event.Event;
 
-import org.ext.uberfire.social.activities.model.SocialUser;
-import org.ext.uberfire.social.activities.service.SocialUserRepositoryAPI;
 import org.guvnor.common.services.project.backend.server.utils.PathUtil;
-import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.POM;
@@ -38,7 +35,6 @@ import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.guvnor.structure.backend.repositories.ConfiguredRepositories;
-import org.guvnor.structure.config.SystemRepositoryChangedEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.Branch;
@@ -74,6 +70,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.security.management.api.service.UserManagerService;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.NoSuchFileException;
@@ -126,7 +123,7 @@ public class LibraryServiceImplTest {
     private IOService ioService;
 
     @Mock
-    private SocialUserRepositoryAPI socialUserRepositoryAPI;
+    private UserManagerService userManagerService;
 
     @Mock
     private IndexStatusOracle indexOracle;
@@ -211,7 +208,7 @@ public class LibraryServiceImplTest {
                                                     examplesService,
                                                     ioService,
                                                     internalPreferences,
-                                                    socialUserRepositoryAPI,
+                                                    userManagerService,
                                                     indexOracle,
                                                     repositoryService,
                                                     pathUtil,
@@ -631,24 +628,6 @@ public class LibraryServiceImplTest {
                      gav.getArtifactId());
         assertEquals(preferences.getProjectPreferences().getVersion(),
                      gav.getVersion());
-    }
-
-    @Test
-    public void getAllUsersTest() {
-        List<SocialUser> allUsers = new ArrayList<>();
-        allUsers.add(new SocialUser("system"));
-        allUsers.add(new SocialUser("admin"));
-        allUsers.add(new SocialUser("user"));
-        doReturn(allUsers).when(socialUserRepositoryAPI).findAllUsers();
-
-        final List<SocialUser> users = libraryService.getAllUsers();
-
-        assertEquals(2,
-                     users.size());
-        assertEquals("admin",
-                     users.get(0).getUserName());
-        assertEquals("user",
-                     users.get(1).getUserName());
     }
 
     @Test

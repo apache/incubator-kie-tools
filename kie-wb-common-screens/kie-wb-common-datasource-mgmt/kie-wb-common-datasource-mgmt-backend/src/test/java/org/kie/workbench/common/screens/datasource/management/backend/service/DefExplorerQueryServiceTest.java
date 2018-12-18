@@ -25,6 +25,7 @@ import java.util.Optional;
 import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
+import org.guvnor.structure.contributors.Contributor;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.organizationalunit.impl.OrganizationalUnitImpl;
@@ -289,7 +290,6 @@ public class DefExplorerQueryServiceTest {
     private void createOrganizationalUnits() {
         organizationalUnits = new ArrayList<>();
         o1 = new OrganizationalUnitImpl("o1",
-                                        "owner1",
                                         "group1");
         repo_o1_1 = new RepositoryMock("repo_o1_1",
                                        "repo_o1_1");
@@ -303,7 +303,6 @@ public class DefExplorerQueryServiceTest {
         organizationalUnits.add(o1);
 
         o2 = new OrganizationalUnitImpl("o2",
-                                        "owner2",
                                         "group2");
         repo_o2_1 = new RepositoryMock("repo_o2_1",
                                        "repo_o2_1");
@@ -314,7 +313,6 @@ public class DefExplorerQueryServiceTest {
         organizationalUnits.add(o2);
 
         o3 = new OrganizationalUnitImpl("o3",
-                                        "owner3",
                                         "group3");
         repo_o3_1 = new RepositoryMock("repo_o3_1",
                                        "repo_o3_1");
@@ -428,6 +426,11 @@ public class DefExplorerQueryServiceTest {
 
         @Override
         public Collection<String> getGroups() {
+            return null;
+        }
+
+        @Override
+        public Collection<Contributor> getContributors() {
             return null;
         }
 

@@ -16,6 +16,8 @@
 package org.kie.workbench.common.migration.cli;
 
 import java.nio.file.Path;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import javax.enterprise.context.Dependent;
@@ -24,6 +26,8 @@ import javax.inject.Inject;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.project.project.WorkspaceProjectMigrationService;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
+import org.guvnor.structure.contributors.Contributor;
+import org.guvnor.structure.contributors.ContributorType;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.EnvironmentParameters;
@@ -56,7 +60,7 @@ public class TemporaryNiogitService {
     }
 
     public void importProjects(Path actualTarget) {
-        OrganizationalUnit ou = ouService.createOrganizationalUnit(OU_NAME, OU_OWNER, "org.migration");
+        OrganizationalUnit ou = ouService.createOrganizationalUnit(OU_NAME, "org.migration", Collections.emptyList(), Collections.singletonList(new Contributor(OU_OWNER, ContributorType.OWNER)));
         String repositoryURL = actualTarget.toUri().toString();
         RepositoryEnvironmentConfigurations configurations = new RepositoryEnvironmentConfigurations();
         Map<String, Object> configMap = configurations.getConfigurationMap();

@@ -336,7 +336,6 @@ public class ProjectImportServiceImplTest {
 
         verify(ouService,
                never()).createOrganizationalUnit(eq("ou"),
-                                                 eq(""),
                                                  eq(""));
         verify(service,
                times(2)).importProject(eq(ou),
@@ -490,7 +489,6 @@ public class ProjectImportServiceImplTest {
     @Test
     public void importDefaultProjectTest() {
         final OrganizationalUnit organizationalUnit = new OrganizationalUnitImpl("myteam",
-                                                                                 "admin",
                                                                                  "org.whatever");
         organizationalUnit.getRepositories();
 
@@ -539,7 +537,6 @@ public class ProjectImportServiceImplTest {
     @Test
     public void importDefaultProjectInWindowsTest() {
         final OrganizationalUnit organizationalUnit = new OrganizationalUnitImpl("myteam",
-                                                                                 "admin",
                                                                                  "org.whatever");
         organizationalUnit.getRepositories();
 
@@ -588,7 +585,6 @@ public class ProjectImportServiceImplTest {
     @Test
     public void importProjectInSubdirectory() {
         final OrganizationalUnit organizationalUnit = new OrganizationalUnitImpl("myteam",
-                                                                                 "admin",
                                                                                  "org.whatever");
         organizationalUnit.getRepositories();
 

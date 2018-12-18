@@ -14,7 +14,7 @@
   ~ limitations under the License.
   -->
 
-<div class="list-group-item">
+<div class="list-group-item" data-field="container">
     <div class="list-view-pf-main-info">
         <div class="list-view-pf-left">
             <div class="fa fa-user list-view-pf-icon-sm"></div>
@@ -23,9 +23,23 @@
             <div class="list-view-pf-description">
                 <div class="list-group-item-text bold-font">
                     <span data-field="name"></span>
+                    <select data-field="name-select" class="selectpicker" data-live-search="true">
+                        <option data-field="name-select-option"></option>
+                    </select>
                 </div>
                 <div class="list-group-item-text">
                     <span data-field="role"></span>
+                    <select data-field="role-select">
+                        <option value="CONTRIBUTOR" data-i18n-key="Contributor"></option>
+                        <option value="ADMIN" data-i18n-key="Admin"></option>
+                        <option value="OWNER" data-i18n-key="Owner"></option>
+                    </select>
+                </div>
+                <div class="list-group-item-actions">
+                    <a class="fa fa-pencil" data-field="edit"></a>
+                    <a class="fa fa-trash" data-field="remove"></a>
+                    <button class="btn btn-primary" data-field="ok" data-i18n-key="Ok"></button>
+                    <button class="btn btn-default" data-field="cancel" data-i18n-key="Cancel"></button>
                 </div>
             </div>
         </div>

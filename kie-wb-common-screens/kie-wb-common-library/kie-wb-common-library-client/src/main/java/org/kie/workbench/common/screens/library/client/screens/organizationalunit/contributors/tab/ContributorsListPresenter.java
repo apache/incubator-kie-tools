@@ -18,19 +18,16 @@ package org.kie.workbench.common.screens.library.client.screens.organizationalun
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
-import javax.annotation.PostConstruct;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
-import org.guvnor.structure.client.security.OrganizationalUnitController;
-import org.guvnor.structure.events.AfterEditOrganizationalUnitEvent;
-import org.guvnor.structure.organizationalunit.OrganizationalUnit;
+import org.guvnor.structure.contributors.Contributor;
+import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.dom.HTMLElement;
+import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.kie.workbench.common.screens.library.client.screens.organizationalunit.contributors.edit.EditContributorsPopUpPresenter;
-import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
+import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.uberfire.client.mvp.UberElement;
 
 public class ContributorsListPresenter {
@@ -41,102 +38,117 @@ public class ContributorsListPresenter {
 
         void addContributor(HTMLElement contributor);
 
+        void addNewContributor(HTMLElement newContributorView);
+
         void clearFilterText();
 
-        String getOwnerRoleLabel();
+        void showAddContributor();
 
-        String getContributorRoleLabel();
+        void hideAddContributor();
     }
 
     private View view;
 
-    private LibraryPlaces libraryPlaces;
-
     private ManagedInstance<ContributorsListItemPresenter> contributorsListItemPresenters;
 
-    private ManagedInstance<EditContributorsPopUpPresenter> editContributorsPopUpPresenters;
+    private Elemental2DomUtil elemental2DomUtil;
 
-    private WorkspaceProjectContext projectContext;
+    private Caller<LibraryService> libraryService;
 
-    private OrganizationalUnitController organizationalUnitController;
+    ContributorsListService contributorsListService;
 
-    List<String> contributors;
+    Consumer<Integer> contributorsCountChangedCallback;
+
+    List<Contributor> contributors;
+
+    List<ContributorsListItemPresenter> items = new ArrayList<>();
+
+    List<String> validUsernames;
 
     @Inject
     public ContributorsListPresenter(final View view,
-                                     final LibraryPlaces libraryPlaces,
                                      final ManagedInstance<ContributorsListItemPresenter> contributorsListItemPresenters,
-                                     final ManagedInstance<EditContributorsPopUpPresenter> editContributorsPopUpPresenters,
-                                     final WorkspaceProjectContext projectContext,
-                                     final OrganizationalUnitController organizationalUnitController) {
+                                     final Elemental2DomUtil elemental2DomUtil,
+                                     final Caller<LibraryService> libraryService) {
         this.view = view;
-        this.libraryPlaces = libraryPlaces;
         this.contributorsListItemPresenters = contributorsListItemPresenters;
-        this.editContributorsPopUpPresenters = editContributorsPopUpPresenters;
-        this.projectContext = projectContext;
-        this.organizationalUnitController = organizationalUnitController;
+        this.elemental2DomUtil = elemental2DomUtil;
+        this.libraryService = libraryService;
     }
 
-    @PostConstruct
-    public void setup() {
+    public void setup(final ContributorsListService contributorsListService,
+                      final Consumer<Integer> contributorsCountChangedCallback) {
+        this.contributorsListService = contributorsListService;
+        this.contributorsCountChangedCallback = contributorsCountChangedCallback;
+
         view.init(this);
-        updateContributors(projectContext.getActiveOrganizationalUnit()
-                                         .orElseThrow(() -> new IllegalStateException("Cannot setup contributors list without an active organizational unit.")));
+        refresh();
     }
 
-    public void updateContributors(final OrganizationalUnit organizationalUnit) {
-        contributors = new ArrayList<>(organizationalUnit.getContributors());
-        contributors.sort((c1, c2) -> c1.toUpperCase().compareTo(c2.toUpperCase()));
+    public void refresh() {
+        contributorsListService.getContributors(contributors -> {
+            this.contributors = contributors;
+            this.contributors.sort(Contributor.COMPARATOR);
+
+            contributorsListService.getValidUsernames(validUsernames -> {
+                this.validUsernames = validUsernames;
+                updateContributors();
+                contributorsCountChangedCallback.accept(contributors.size());
+            });
+        });
+    }
+
+    public void updateContributors() {
         updateView(contributors);
     }
 
     public void filterContributors(final String filter) {
-        List<String> filteredContributors = contributors.stream()
-                .filter(c -> c.toUpperCase().contains(filter.toUpperCase()))
+        List<Contributor> filteredContributors = contributors.stream()
+                .filter(c -> c.getUsername().toUpperCase().contains(filter.toUpperCase()))
                 .collect(Collectors.toList());
 
         updateView(filteredContributors);
     }
 
-    private void updateView(final List<String> contributors) {
-        final OrganizationalUnit organizationalUnit = projectContext.getActiveOrganizationalUnit()
-                                                                    .orElseThrow(() -> new IllegalStateException("Cannot update contributors list without an active organizational unit."));
-
+    private void updateView(final List<Contributor> contributors) {
         view.clearContributors();
+        items = new ArrayList<>();
 
         contributors.stream()
                 .forEach(contributor -> {
-                    final String role = contributor.equals(organizationalUnit.getOwner()) ? view.getOwnerRoleLabel() : view.getContributorRoleLabel();
                     final ContributorsListItemPresenter contributorsListItemPresenter = contributorsListItemPresenters.get();
-                    contributorsListItemPresenter.setup(contributor,
-                                                        role);
-                    view.addContributor(contributorsListItemPresenter.getView().getElement());
+                    contributorsListItemPresenter.setup(contributor, ContributorsListPresenter.this, contributorsListService);
+                    view.addContributor(elemental2DomUtil.asHTMLElement(contributorsListItemPresenter.getView().getElement()));
+                    items.add(contributorsListItemPresenter);
                 });
     }
 
-    public void edit() {
-        if (userCanUpdateOrganizationalUnit()) {
-            final EditContributorsPopUpPresenter editContributorsPopUpPresenter = editContributorsPopUpPresenters.get();
-            // There has to be an active OU if the condition passes, so just call get.
-            editContributorsPopUpPresenter.show(projectContext.getActiveOrganizationalUnit().get());
+    public void addContributor() {
+        if (contributorsListService.canEditContributors()) {
+            itemIsBeingEdited();
+            final ContributorsListItemPresenter newContributorItem = contributorsListItemPresenters.get();
+            newContributorItem.setupNew(this, contributorsListService);
+            view.addNewContributor(elemental2DomUtil.asHTMLElement(newContributorItem.getView().getElement()));
+            items.add(newContributorItem);
         }
     }
 
-    public void organizationalUnitEdited(@Observes final AfterEditOrganizationalUnitEvent afterEditOrganizationalUnitEvent) {
-        view.clearFilterText();
-        updateContributors(afterEditOrganizationalUnitEvent.getEditedOrganizationalUnit());
+    public void itemIsBeingEdited() {
+        items.stream().forEach(i -> i.hideActions());
+        view.hideAddContributor();
     }
 
-    public boolean userCanUpdateOrganizationalUnit() {
-        return organizationalUnitController.canUpdateOrgUnit(projectContext.getActiveOrganizationalUnit()
-                                                                           .orElseThrow(() -> new IllegalStateException("Cannot update organizational unit when none is active.")));
+    public void itemIsNotBeingEdited() {
+        items.stream().forEach(i -> i.showActions());
+        view.showAddContributor();
     }
 
-    public int getContributorsCount() {
-        return projectContext.getActiveOrganizationalUnit()
-                             .orElseThrow(() -> new IllegalStateException("Cannot get contributors count when no organizational unit is active."))
-                             .getContributors()
-                             .size();
+    public List<String> getValidUsernames() {
+        return validUsernames;
+    }
+
+    public boolean canEditContributors() {
+        return contributorsListService.canEditContributors();
     }
 
     public View getView() {

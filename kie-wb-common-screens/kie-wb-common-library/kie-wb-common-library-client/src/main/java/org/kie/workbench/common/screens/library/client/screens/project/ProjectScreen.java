@@ -29,8 +29,6 @@ import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeE
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.messageconsole.client.console.widget.button.ViewHideAlertsButtonPresenter;
 import org.guvnor.structure.client.security.OrganizationalUnitController;
-import org.guvnor.structure.events.AfterEditOrganizationalUnitEvent;
-import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
@@ -40,8 +38,8 @@ import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.client.perspective.LibraryPerspective;
 import org.kie.workbench.common.screens.library.client.screens.assets.AssetsScreen;
 import org.kie.workbench.common.screens.library.client.screens.assets.events.UpdatedAssetsEvent;
-import org.kie.workbench.common.screens.library.client.screens.organizationalunit.contributors.edit.EditContributorsPopUpPresenter;
 import org.kie.workbench.common.screens.library.client.screens.organizationalunit.contributors.tab.ContributorsListPresenter;
+import org.kie.workbench.common.screens.library.client.screens.organizationalunit.contributors.tab.ProjectContributorsListServiceImpl;
 import org.kie.workbench.common.screens.library.client.screens.project.branch.delete.DeleteBranchPopUpScreen;
 import org.kie.workbench.common.screens.library.client.screens.project.delete.DeleteProjectPopUpScreen;
 import org.kie.workbench.common.screens.library.client.screens.project.rename.RenameProjectPopUpScreen;
@@ -60,7 +58,6 @@ import org.uberfire.client.mvp.UberElemental;
 import org.uberfire.client.promise.Promises;
 import org.uberfire.ext.editor.commons.client.file.CommandWithFileNameAndCommitMessage;
 import org.uberfire.ext.editor.commons.client.file.popups.CopyPopUpPresenter;
-import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.workbench.events.NotificationEvent;
 
@@ -87,8 +84,6 @@ public class ProjectScreen {
         void setAddAssetVisible(boolean visible);
 
         void setImportAssetVisible(boolean visible);
-
-        void setEditContributorsVisible(boolean visible);
 
         void setDuplicateVisible(boolean visible);
 
@@ -122,7 +117,6 @@ public class ProjectScreen {
     private final NewFileUploader newFileUploader;
     private final NewResourcePresenter newResourcePresenter;
     private BuildExecutor buildExecutor;
-    private ManagedInstance<EditContributorsPopUpPresenter> editContributorsPopUpPresenter;
     private ManagedInstance<DeleteProjectPopUpScreen> deleteProjectPopUpScreen;
     private ManagedInstance<DeleteBranchPopUpScreen> deleteBranchPopUpScreen;
     private ManagedInstance<RenameProjectPopUpScreen> renameProjectPopUpScreen;
@@ -134,6 +128,7 @@ public class ProjectScreen {
     private Promises promises;
     private Event<NotificationEvent> notificationEvent;
     private ViewHideAlertsButtonPresenter viewHideAlertsButtonPresenter;
+    private ProjectContributorsListServiceImpl projectContributorsListService;
 
     @Inject
     public ProjectScreen(final View view,
@@ -147,7 +142,6 @@ public class ProjectScreen {
                          final NewFileUploader newFileUploader,
                          final NewResourcePresenter newResourcePresenter,
                          final BuildExecutor buildExecutor,
-                         final ManagedInstance<EditContributorsPopUpPresenter> editContributorsPopUpPresenter,
                          final ManagedInstance<DeleteProjectPopUpScreen> deleteProjectPopUpScreen,
                          final ManagedInstance<DeleteBranchPopUpScreen> deleteBranchPopUpScreen,
                          final ManagedInstance<RenameProjectPopUpScreen> renameProjectPopUpScreen,
@@ -157,7 +151,8 @@ public class ProjectScreen {
                          final ProjectNameValidator projectNameValidator,
                          final Promises promises,
                          final Event<NotificationEvent> notificationEvent,
-                         final ViewHideAlertsButtonPresenter viewHideAlertsButtonPresenter) {
+                         final ViewHideAlertsButtonPresenter viewHideAlertsButtonPresenter,
+                         final ProjectContributorsListServiceImpl projectContributorsListService) {
         this.view = view;
         this.libraryPlaces = libraryPlaces;
         this.assetsScreen = assetsScreen;
@@ -169,7 +164,6 @@ public class ProjectScreen {
         this.newFileUploader = newFileUploader;
         this.newResourcePresenter = newResourcePresenter;
         this.buildExecutor = buildExecutor;
-        this.editContributorsPopUpPresenter = editContributorsPopUpPresenter;
         this.deleteProjectPopUpScreen = deleteProjectPopUpScreen;
         this.deleteBranchPopUpScreen = deleteBranchPopUpScreen;
         this.renameProjectPopUpScreen = renameProjectPopUpScreen;
@@ -180,6 +174,7 @@ public class ProjectScreen {
         this.promises = promises;
         this.notificationEvent = notificationEvent;
         this.viewHideAlertsButtonPresenter = viewHideAlertsButtonPresenter;
+        this.projectContributorsListService = projectContributorsListService;
         this.elemental2DomUtil = new Elemental2DomUtil();
     }
 
@@ -190,12 +185,10 @@ public class ProjectScreen {
         this.buildExecutor.init(this.view);
         this.view.setTitle(libraryPlaces.getActiveWorkspace().getName());
         this.view.addMainAction(viewHideAlertsButtonPresenter.getView());
-        this.resolveContributorsCount();
         this.resolveAssetsCount();
         this.showAssets();
 
         final boolean userCanUpdateProject = this.userCanUpdateProject();
-        final boolean userCanEditContributors = this.canEditContributors();
         final boolean userCanDeleteProject = this.userCanDeleteProject();
         final boolean userCanDeleteBranch = this.userCanDeleteBranch();
         final boolean userCanBuildProject = this.userCanBuildProject();
@@ -203,7 +196,6 @@ public class ProjectScreen {
 
         this.view.setAddAssetVisible(userCanUpdateProject);
         this.view.setImportAssetVisible(userCanUpdateProject);
-        this.view.setEditContributorsVisible(userCanEditContributors);
         this.view.setDuplicateVisible(userCanCreateProjects);
         this.view.setReimportVisible(userCanUpdateProject);
         this.view.setDeleteProjectVisible(userCanDeleteProject);
@@ -211,7 +203,7 @@ public class ProjectScreen {
         this.view.setBuildEnabled(userCanBuildProject);
         this.view.setDeployEnabled(userCanBuildProject);
 
-        this.view.setActionsVisible(userCanUpdateProject || userCanEditContributors || userCanDeleteProject || userCanBuildProject || userCanCreateProjects);
+        this.view.setActionsVisible(userCanUpdateProject || userCanDeleteProject || userCanBuildProject || userCanCreateProjects);
 
         newFileUploader.acceptContext(new Callback<Boolean, Void>() {
             @Override
@@ -224,6 +216,9 @@ public class ProjectScreen {
                 view.setImportAssetVisible(result && userCanUpdateProject);
             }
         });
+
+        contributorsListScreen.setup(projectContributorsListService,
+                                     contributorCount -> this.view.setContributorsCount(contributorCount));
     }
 
     @OnMayClose
@@ -243,19 +238,11 @@ public class ProjectScreen {
         resolveAssetsCount();
     }
 
-    public void onContributorsUpdated(@Observes AfterEditOrganizationalUnitEvent event) {
-        resolveContributorsCount();
-    }
-
     public void changeProjectAndTitleWhenContextChange(@Observes final WorkspaceProjectContextChangeEvent current) {
         if (current.getWorkspaceProject() != null) {
             this.workspaceProject = current.getWorkspaceProject();
             this.view.setTitle(workspaceProject.getName());
         }
-    }
-
-    private void resolveContributorsCount() {
-        this.view.setContributorsCount(this.contributorsListScreen.getContributorsCount());
     }
 
     private void resolveAssetsCount() {
@@ -322,13 +309,6 @@ public class ProjectScreen {
         }
     }
 
-    public void editContributors() {
-        if (this.canEditContributors()) {
-            final EditContributorsPopUpPresenter popUp = editContributorsPopUpPresenter.get();
-            popUp.show(this.workspaceProject.getOrganizationalUnit());
-        }
-    }
-
     public void duplicate() {
         if (this.userCanCreateProjects()) {
             copyPopUpPresenter.show(
@@ -391,10 +371,6 @@ public class ProjectScreen {
         if (this.userCanBuildProject()) {
             this.buildExecutor.triggerBuildAndDeploy();
         }
-    }
-
-    public boolean canEditContributors() {
-        return this.organizationalUnitController.canUpdateOrgUnit(this.workspaceProject.getOrganizationalUnit());
     }
 
     public boolean userCanDeleteProject() {

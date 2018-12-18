@@ -19,11 +19,11 @@ package org.kie.workbench.common.screens.library.api;
 import java.util.List;
 import java.util.Set;
 
-import org.ext.uberfire.social.activities.model.SocialUser;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.project.service.DeploymentMode;
+import org.guvnor.structure.contributors.Contributor;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Branch;
 import org.jboss.errai.bus.server.annotations.Remote;
@@ -71,7 +71,7 @@ public interface LibraryService {
     GAV createGAV(final String projectName,
                   final OrganizationalUnit selectedOrganizationalUnit);
 
-    List<SocialUser> getAllUsers();
+    List<String> getAllUsers();
 
     void addBranch(final String newBranchName,
                    final String baseBranchName,

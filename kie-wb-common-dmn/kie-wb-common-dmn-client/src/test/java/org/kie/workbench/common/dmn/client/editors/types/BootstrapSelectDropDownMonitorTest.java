@@ -22,14 +22,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverViewImpl.BootstrapSelectDropDownMonitor;
-import org.kie.workbench.common.dmn.client.editors.types.listview.common.JQuerySelectPicker;
-import org.kie.workbench.common.dmn.client.editors.types.listview.common.JQuerySelectPicker.CallbackFunction;
-import org.kie.workbench.common.dmn.client.editors.types.listview.common.JQuerySelectPickerEvent;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.uberfire.client.views.pfly.selectpicker.JQuerySelectPicker;
+import org.uberfire.client.views.pfly.selectpicker.JQuerySelectPicker.CallbackFunction;
+import org.uberfire.client.views.pfly.selectpicker.JQuerySelectPickerEvent;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 

@@ -72,6 +72,14 @@
       <artifactId>uberfire-structure-backend</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-security-management-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-security-management-backend</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.kie.workbench.screens</groupId>
       <artifactId>kie-wb-common-library-api</artifactId>
     </dependency>
