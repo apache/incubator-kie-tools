@@ -108,10 +108,8 @@ public class WorkspaceProjectServiceImplTest {
 
     private void setUpOUs() {
         ou1 = new OrganizationalUnitImpl("ou1",
-                                         "owner",
                                          "defaultGroupID");
         ou2 = new OrganizationalUnitImpl("ou2",
-                                         "owner",
                                          "defaultGroupID");
         space1 = spaces.getSpace("ou1");
         space2 = spaces.getSpace("ou2");

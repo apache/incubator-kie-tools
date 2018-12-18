@@ -19,12 +19,16 @@ import java.util.List;
 import javax.inject.Inject;
 
 import org.guvnor.structure.backend.backcompat.BackwardCompatibleUtil;
+import org.guvnor.structure.contributors.Contributor;
+import org.guvnor.structure.contributors.ContributorType;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.impl.OrganizationalUnitImpl;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.guvnor.structure.server.config.ConfigGroup;
 import org.guvnor.structure.server.config.ConfigItem;
+import org.guvnor.structure.server.config.ConfigurationFactory;
+import org.guvnor.structure.server.config.ConfigurationService;
 import org.guvnor.structure.server.organizationalunit.OrganizationalUnitFactory;
 import org.uberfire.spaces.Space;
 import org.uberfire.spaces.SpacesAPI;
@@ -37,20 +41,27 @@ public class OrganizationalUnitFactoryImpl implements OrganizationalUnitFactory 
 
     private SpacesAPI spacesAPI;
 
+    private ConfigurationService configurationService;
+
+    private ConfigurationFactory configurationFactory;
+
     @Inject
     public OrganizationalUnitFactoryImpl(final RepositoryService repositoryService,
                                          final BackwardCompatibleUtil backward,
-                                         final SpacesAPI spacesAPI) {
+                                         final SpacesAPI spacesAPI,
+                                         final ConfigurationService configurationService,
+                                         final ConfigurationFactory configurationFactory) {
         this.repositoryService = repositoryService;
         this.backward = backward;
         this.spacesAPI = spacesAPI;
+        this.configurationService = configurationService;
+        this.configurationFactory = configurationFactory;
     }
 
     @Override
     public OrganizationalUnit newOrganizationalUnit(ConfigGroup groupConfig) {
 
         OrganizationalUnitImpl organizationalUnit = new OrganizationalUnitImpl(groupConfig.getName(),
-                                                                               groupConfig.getConfigItemValue("owner"),
                                                                                groupConfig.getConfigItemValue("defaultGroupId"));
 
         ConfigItem<List<String>> repositories = groupConfig.getConfigItem("repositories");
@@ -73,13 +84,41 @@ public class OrganizationalUnitFactoryImpl implements OrganizationalUnitFactory 
             }
         }
 
-        ConfigItem<List<String>> contributors = groupConfig.getConfigItem("contributors");
-        if (contributors != null) {
-            for (String userName : contributors.getValue()) {
-                organizationalUnit.getContributors().add(userName);
-            }
-        }
+        fillOrganizationalUnitContributors(groupConfig, organizationalUnit);
 
         return organizationalUnit;
+    }
+
+    private void fillOrganizationalUnitContributors(final ConfigGroup configGroup,
+                                                    final OrganizationalUnit organizationalUnit) {
+        boolean shouldUpdateConfigGroup = false;
+
+        final String oldOwner = configGroup.getConfigItemValue("owner");
+        if (oldOwner != null) {
+            shouldUpdateConfigGroup = true;
+            organizationalUnit.getContributors().add(new Contributor(oldOwner, ContributorType.OWNER));
+            configGroup.removeConfigItem("owner");
+        }
+
+        ConfigItem<List<String>> oldContributors = configGroup.getConfigItem("contributors");
+        if (oldContributors != null) {
+            shouldUpdateConfigGroup = true;
+
+            for (String userName : oldContributors.getValue()) {
+                if (!userName.equals(oldOwner)) {
+                    organizationalUnit.getContributors().add(new Contributor(userName, ContributorType.CONTRIBUTOR));
+                }
+            }
+
+            configGroup.removeConfigItem("contributors");
+        }
+
+        if (!shouldUpdateConfigGroup) {
+            ConfigItem<List<Contributor>> newContributorsConfigItem = configGroup.getConfigItem("space-contributors");
+            newContributorsConfigItem.getValue().forEach(c -> organizationalUnit.getContributors().add(c));
+        } else {
+            configGroup.setConfigItem(configurationFactory.newConfigItem("space-contributors", organizationalUnit.getContributors()));
+            configurationService.updateConfiguration(configGroup);
+        }
     }
 }

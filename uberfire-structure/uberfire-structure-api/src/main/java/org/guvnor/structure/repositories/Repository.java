@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.guvnor.structure.contributors.Contributor;
 import org.guvnor.structure.security.RepositoryResourceType;
 import org.uberfire.spaces.Space;
 import org.uberfire.spaces.SpacesAPI;
@@ -60,6 +61,8 @@ public interface Repository
     Optional<Branch> getBranch(final Path branchRoot);
 
     Collection<String> getGroups();
+
+    Collection<Contributor> getContributors();
 
     /**
      * Returns "read-only" view of all branches available in this repository.

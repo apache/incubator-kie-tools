@@ -68,13 +68,15 @@ public class WorkspaceProjectContext {
     }
 
     public void onOrganizationalUnitUpdated(@Observes final UpdatedOrganizationalUnitEvent event) {
-        WorkspaceProject updatedWorkspaceProject = new WorkspaceProject(event.getOrganizationalUnit(),
-                                                                        activeWorkspaceProject.getRepository(),
-                                                                        activeWorkspaceProject.getBranch(),
-                                                                        activeWorkspaceProject.getMainModule());
-        contextChangeEvent.fire(new WorkspaceProjectContextChangeEvent(updatedWorkspaceProject,
-                                                                       activeModule,
-                                                                       activePackage));
+        if (activeWorkspaceProject != null) {
+            WorkspaceProject updatedWorkspaceProject = new WorkspaceProject(event.getOrganizationalUnit(),
+                                                                            activeWorkspaceProject.getRepository(),
+                                                                            activeWorkspaceProject.getBranch(),
+                                                                            activeWorkspaceProject.getMainModule());
+            contextChangeEvent.fire(new WorkspaceProjectContextChangeEvent(updatedWorkspaceProject,
+                                                                           activeModule,
+                                                                           activePackage));
+        }
     }
 
     public void onModuleUpdated(@Observes final ModuleUpdatedEvent moduleUpdatedEvent) {

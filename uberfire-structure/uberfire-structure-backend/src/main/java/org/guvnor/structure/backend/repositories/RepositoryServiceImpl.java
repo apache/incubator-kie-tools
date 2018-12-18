@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -29,6 +30,8 @@ import javax.inject.Named;
 
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.structure.backend.backcompat.BackwardCompatibleUtil;
+import org.guvnor.structure.contributors.Contributor;
+import org.guvnor.structure.contributors.ContributorType;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.Branch;
@@ -48,6 +51,7 @@ import org.guvnor.structure.server.config.ConfigurationFactory;
 import org.guvnor.structure.server.config.ConfigurationService;
 import org.guvnor.structure.server.repositories.RepositoryFactory;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.TextUtil;
@@ -95,7 +99,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 
     private AuthorizationManager authorizationManager;
 
-    private SessionInfo sessionInfo;
+    private User user;
 
     private SpacesAPI spacesAPI;
 
@@ -114,7 +118,7 @@ public class RepositoryServiceImpl implements RepositoryService {
                                  final BackwardCompatibleUtil backward,
                                  final ConfiguredRepositories configuredRepositories,
                                  final AuthorizationManager authorizationManager,
-                                 final SessionInfo sessionInfo,
+                                 final User user,
                                  final SpacesAPI spacesAPI) {
         this.ioService = ioService;
         this.metadataStore = metadataStore;
@@ -127,7 +131,7 @@ public class RepositoryServiceImpl implements RepositoryService {
         this.backward = backward;
         this.configuredRepositories = configuredRepositories;
         this.authorizationManager = authorizationManager;
-        this.sessionInfo = sessionInfo;
+        this.user = user;
         this.spacesAPI = spacesAPI;
     }
 
@@ -267,8 +271,7 @@ public class RepositoryServiceImpl implements RepositoryService {
     public Collection<Repository> getRepositories(final Space space) {
         Collection<Repository> result = new ArrayList<>();
         for (Repository repository : configuredRepositories.getAllConfiguredRepositories(space)) {
-            if (authorizationManager.authorize(repository,
-                                               sessionInfo.getIdentity())) {
+            if (authorizationManager.authorize(repository, user)) {
                 result.add(repository);
             }
         }
@@ -281,6 +284,20 @@ public class RepositoryServiceImpl implements RepositoryService {
                                        final String alias,
                                        final RepositoryEnvironmentConfigurations repositoryEnvironmentConfigurations) throws RepositoryAlreadyExistsException {
 
+        return createRepository(organizationalUnit,
+                                scheme,
+                                alias,
+                                repositoryEnvironmentConfigurations,
+                                organizationalUnit.getContributors());
+    }
+
+    @Override
+    public Repository createRepository(final OrganizationalUnit organizationalUnit,
+                                       final String scheme,
+                                       final String alias,
+                                       final RepositoryEnvironmentConfigurations repositoryEnvironmentConfigurations,
+                                       final Collection<Contributor> contributors) throws RepositoryAlreadyExistsException {
+
         try {
             repositoryEnvironmentConfigurations.setSpace(organizationalUnit.getName());
 
@@ -291,7 +308,8 @@ public class RepositoryServiceImpl implements RepositoryService {
             final Repository repository = createRepository(scheme,
                                                            newAlias,
                                                            new Space(organizationalUnit.getName()),
-                                                           repositoryEnvironmentConfigurations);
+                                                           repositoryEnvironmentConfigurations,
+                                                           contributors);
             if (organizationalUnit != null && repository != null) {
                 organizationalUnitService.addRepository(organizationalUnit,
                                                         repository);
@@ -453,6 +471,25 @@ public class RepositoryServiceImpl implements RepositoryService {
     }
 
     @Override
+    public void updateContributors(final Repository repository,
+                                   final List<Contributor> contributors) {
+        final ConfigGroup thisRepositoryConfig = findRepositoryConfig(repository.getAlias(),
+                                                                      repository.getSpace().getName());
+
+        if (thisRepositoryConfig != null) {
+            final ConfigItem<List<Contributor>> contributorsConfigItem = thisRepositoryConfig.getConfigItem("contributors");
+            contributorsConfigItem.setValue(contributors);
+
+            configurationService.updateConfiguration(thisRepositoryConfig);
+
+            configuredRepositories.update(repository.getSpace(),
+                                          repositoryFactory.newRepository(thisRepositoryConfig));
+        } else {
+            throw new IllegalArgumentException("Repository " + repository.getAlias() + " not found");
+        }
+    }
+
+    @Override
     public List<VersionRecord> getRepositoryHistoryAll(final Space space,
                                                        final String alias) {
         return getRepositoryHistory(space,
@@ -464,7 +501,8 @@ public class RepositoryServiceImpl implements RepositoryService {
     private Repository createRepository(final String scheme,
                                         final String alias,
                                         final Space space,
-                                        final RepositoryEnvironmentConfigurations repositoryEnvironmentConfigurations) {
+                                        final RepositoryEnvironmentConfigurations repositoryEnvironmentConfigurations,
+                                        final Collection<Contributor> contributors) {
 
         if (configuredRepositories.containsAlias(space,
                                                  alias)) {
@@ -480,6 +518,8 @@ public class RepositoryServiceImpl implements RepositoryService {
                                                                                      "");
             repositoryConfig.addConfigItem(configurationFactory.newConfigItem("security:groups",
                                                                               new ArrayList<String>()));
+            repositoryConfig.addConfigItem(configurationFactory.newConfigItem("contributors",
+                                                                              contributors));
 
             if (!repositoryEnvironmentConfigurations.containsConfiguration(SCHEME)) {
                 repositoryConfig.addConfigItem(configurationFactory.newConfigItem(SCHEME,

@@ -18,6 +18,7 @@ package org.guvnor.structure.organizationalunit;
 import java.util.Collection;
 import java.util.List;
 
+import org.guvnor.structure.contributors.Contributor;
 import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.uberfire.spaces.Space;
@@ -40,28 +41,23 @@ public interface OrganizationalUnitService {
     Collection<OrganizationalUnit> getOrganizationalUnits();
 
     OrganizationalUnit createOrganizationalUnit(final String name,
-                                                final String owner,
                                                 final String defaultGroupId);
 
     OrganizationalUnit createOrganizationalUnit(final String name,
-                                                final String owner,
                                                 final String defaultGroupId,
                                                 final Collection<Repository> repositories);
 
     OrganizationalUnit createOrganizationalUnit(final String name,
-                                                final String owner,
                                                 final String defaultGroupId,
                                                 final Collection<Repository> repositories,
-                                                final Collection<String> contributors);
+                                                final Collection<Contributor> contributors);
 
     OrganizationalUnit updateOrganizationalUnit(final String name,
-                                                final String owner,
                                                 final String defaultGroupId);
 
     OrganizationalUnit updateOrganizationalUnit(final String name,
-                                                final String owner,
                                                 final String defaultGroupId,
-                                                final Collection<String> contributors);
+                                                final Collection<Contributor> contributors);
 
     void addRepository(final OrganizationalUnit organizationalUnit,
                        final Repository repository);

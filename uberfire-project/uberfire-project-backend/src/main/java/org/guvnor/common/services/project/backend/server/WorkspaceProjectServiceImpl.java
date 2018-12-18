@@ -34,6 +34,7 @@ import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
 import org.guvnor.common.services.project.service.ModuleRepositoryResolver;
 import org.guvnor.common.services.project.service.ModuleService;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
+import org.guvnor.structure.contributors.Contributor;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.Branch;
@@ -136,6 +137,17 @@ public class WorkspaceProjectServiceImpl
     public WorkspaceProject newProject(final OrganizationalUnit organizationalUnit,
                                        final POM pom,
                                        final DeploymentMode mode) {
+        return newProject(organizationalUnit,
+                          pom,
+                          mode,
+                          null);
+    }
+
+    @Override
+    public WorkspaceProject newProject(final OrganizationalUnit organizationalUnit,
+                                       final POM pom,
+                                       final DeploymentMode mode,
+                                       final List<Contributor> contributors) {
         String newName = this.createFreshProjectName(organizationalUnit,
                                                      pom.getName());
         pom.setName(newName);
@@ -144,11 +156,9 @@ public class WorkspaceProjectServiceImpl
             checkRepositories(pom);
         }
 
-        final Repository repository = repositoryService.createRepository(organizationalUnit,
-                                                                         "git",
-                                                                         checkNotNull("project name in pom model",
-                                                                                      pom.getName()),
-                                                                         new RepositoryEnvironmentConfigurations());
+        final Repository repository = createRepository(organizationalUnit,
+                                                       pom,
+                                                       contributors);
 
         if (!repository.getDefaultBranch().isPresent()) {
             throw new IllegalStateException("New repository should always have a branch.");
@@ -171,6 +181,25 @@ public class WorkspaceProjectServiceImpl
             this.repositoryService.removeRepository(this.spaces.getSpace(organizationalUnit.getName()),
                                                     repository.getAlias());
             throw ExceptionUtilities.handleException(e);
+        }
+    }
+
+    private Repository createRepository(final OrganizationalUnit organizationalUnit,
+                                        final POM pom,
+                                        final List<Contributor> contributors) {
+        if (contributors == null) {
+            return repositoryService.createRepository(organizationalUnit,
+                                                      "git",
+                                                      checkNotNull("project name in pom model",
+                                                                   pom.getName()),
+                                                      new RepositoryEnvironmentConfigurations());
+        } else {
+            return repositoryService.createRepository(organizationalUnit,
+                                                      "git",
+                                                      checkNotNull("project name in pom model",
+                                                                   pom.getName()),
+                                                      new RepositoryEnvironmentConfigurations(),
+                                                      contributors);
         }
     }
 

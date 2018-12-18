@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.guvnor.structure.contributors.Contributor;
 import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.PublicURI;
 import org.guvnor.structure.repositories.Repository;
@@ -47,6 +48,7 @@ public class GitRepository
     private Space space;
 
     private Collection<String> groups = new ArrayList<>();
+    private Collection<Contributor> contributors = new ArrayList<>();
     private boolean requiresRefresh = true;
 
     public GitRepository() {
@@ -166,6 +168,11 @@ public class GitRepository
 
     public void setGroups(Collection<String> groups) {
         this.groups = new ArrayList<>(groups);
+    }
+
+    @Override
+    public Collection<Contributor> getContributors() {
+        return contributors;
     }
 
     @Override

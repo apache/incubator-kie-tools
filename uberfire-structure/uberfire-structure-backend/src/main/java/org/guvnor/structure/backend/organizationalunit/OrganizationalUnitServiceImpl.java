@@ -15,9 +15,12 @@
 
 package org.guvnor.structure.backend.organizationalunit;
 
+import java.io.File;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -27,9 +30,12 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.guvnor.structure.backend.backcompat.BackwardCompatibleUtil;
+import org.guvnor.structure.backend.repositories.ConfiguredRepositories;
 import org.guvnor.structure.config.SystemRepositoryChangedEvent;
+import org.guvnor.structure.contributors.Contributor;
 import org.guvnor.structure.organizationalunit.NewOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
@@ -47,6 +53,13 @@ import org.guvnor.structure.server.config.ConfigurationFactory;
 import org.guvnor.structure.server.config.ConfigurationService;
 import org.guvnor.structure.server.organizationalunit.OrganizationalUnitFactory;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.uberfire.ext.security.management.api.event.UserDeletedEvent;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
+import org.uberfire.java.nio.file.Path;
+import org.uberfire.java.nio.fs.jgit.JGitPathImpl;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.spaces.Space;
@@ -55,6 +68,8 @@ import org.uberfire.spaces.SpacesAPI;
 @Service
 @ApplicationScoped
 public class OrganizationalUnitServiceImpl implements OrganizationalUnitService {
+
+    private static final Logger logger = LoggerFactory.getLogger(OrganizationalUnitServiceImpl.class);
 
     private ConfigurationService configurationService;
 
@@ -84,6 +99,10 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
 
     private RepositoryService repositoryService;
 
+    private IOService ioService;
+
+    private ConfiguredRepositories configuredRepositories;
+
     public OrganizationalUnitServiceImpl() {
     }
 
@@ -100,7 +119,9 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
                                          final Event<UpdatedOrganizationalUnitEvent> updatedOrganizationalUnitEvent,
                                          final AuthorizationManager authorizationManager,
                                          final SpacesAPI spaces,
-                                         final SessionInfo sessionInfo) {
+                                         final SessionInfo sessionInfo,
+                                         @Named("ioStrategy") final IOService ioService,
+                                         final ConfiguredRepositories configuredRepositories) {
         this.configurationService = configurationService;
         this.configurationFactory = configurationFactory;
         this.organizationalUnitFactory = organizationalUnitFactory;
@@ -114,6 +135,8 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
         this.authorizationManager = authorizationManager;
         this.spaces = spaces;
         this.sessionInfo = sessionInfo;
+        this.ioService = ioService;
+        this.configuredRepositories = configuredRepositories;
     }
 
     @PostConstruct
@@ -133,6 +156,29 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
                 OrganizationalUnit ou = organizationalUnitFactory.newOrganizationalUnit(groupConfig);
                 registeredOrganizationalUnits.put(ou.getName(),
                                                   ou);
+                createSpaceConfigRepositoryIfNecessary(ouName);
+            }
+        }
+        configuredRepositories.reloadRepositories();
+    }
+
+    public void userRemoved(final @Observes UserDeletedEvent event) {
+        final String removedUserIdentifier = event.getIdentifier();
+        for (OrganizationalUnit organizationalUnit : getAllOrganizationalUnits()) {
+            final boolean userRemoved = organizationalUnit.getContributors().removeIf(c -> c.getUsername().equals(removedUserIdentifier));
+            if (userRemoved) {
+                updateOrganizationalUnit(organizationalUnit.getName(),
+                                         organizationalUnit.getDefaultGroupId(),
+                                         organizationalUnit.getContributors());
+            }
+
+            for (Repository repository : organizationalUnit.getRepositories()) {
+                final List<Contributor> updatedRepositoryContributors = new ArrayList<>(repository.getContributors());
+                final boolean repositoryContributorRemoved = updatedRepositoryContributors.removeIf(c -> c.getUsername().equals(removedUserIdentifier));
+                if (repositoryContributorRemoved) {
+                    repositoryService.updateContributors(repository,
+                                                         updatedRepositoryContributors);
+                }
             }
         }
     }
@@ -170,23 +216,19 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
 
     @Override
     public OrganizationalUnit createOrganizationalUnit(final String name,
-                                                       final String owner,
                                                        final String defaultGroupId) {
 
         return createOrganizationalUnit(name,
-                                        owner,
                                         defaultGroupId,
                                         new ArrayList<>());
     }
 
     @Override
     public OrganizationalUnit createOrganizationalUnit(final String name,
-                                                       final String owner,
                                                        final String defaultGroupId,
                                                        final Collection<Repository> repositories) {
 
         return createOrganizationalUnit(name,
-                                        owner,
                                         defaultGroupId,
                                         repositories,
                                         new ArrayList<>());
@@ -194,10 +236,9 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
 
     @Override
     public OrganizationalUnit createOrganizationalUnit(final String name,
-                                                       final String owner,
                                                        final String defaultGroupId,
                                                        final Collection<Repository> repositories,
-                                                       final Collection<String> contributors) {
+                                                       final Collection<Contributor> contributors) {
         if (registeredOrganizationalUnits.containsKey(name)) {
             return null;
         }
@@ -209,8 +250,6 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
             final ConfigGroup groupConfig = configurationFactory.newConfigGroup(ConfigType.SPACE,
                                                                                 name,
                                                                                 "");
-            groupConfig.addConfigItem(configurationFactory.newConfigItem("owner",
-                                                                         owner));
             String _defaultGroupId = defaultGroupId == null || defaultGroupId.trim().isEmpty() ? getSanitizedDefaultGroupId(name) : defaultGroupId;
             groupConfig.addConfigItem(configurationFactory.newConfigItem("defaultGroupId",
                                                                          _defaultGroupId));
@@ -218,13 +257,14 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
                                                                          getRepositoryAliases(repositories)));
             groupConfig.addConfigItem(configurationFactory.newConfigItem("security:groups",
                                                                          new ArrayList<String>()));
-            groupConfig.addConfigItem(configurationFactory.newConfigItem("contributors",
+            groupConfig.addConfigItem(configurationFactory.newConfigItem("space-contributors",
                                                                          contributors));
             configurationService.addConfiguration(groupConfig);
 
             newOrganizationalUnit = organizationalUnitFactory.newOrganizationalUnit(groupConfig);
             registeredOrganizationalUnits.put(newOrganizationalUnit.getName(),
                                               newOrganizationalUnit);
+            createSpaceConfigRepositoryIfNecessary(name);
 
             return newOrganizationalUnit;
         } finally {
@@ -233,6 +273,22 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
                 newOrganizationalUnitEvent.fire(new NewOrganizationalUnitEvent(newOrganizationalUnit,
                                                                                getUserInfo(sessionInfo)));
             }
+        }
+    }
+
+    private void createSpaceConfigRepositoryIfNecessary(final String spaceName) {
+        final URI configPath = URI.create(SpacesAPI.resolveConfigFileSystemPath(SpacesAPI.Scheme.DEFAULT, spaceName));
+        final Map<String, Object> env = new HashMap<String, Object>() {{
+            put("init",
+                Boolean.TRUE);
+            put("internal",
+                Boolean.TRUE);
+        }};
+
+        try {
+            ioService.newFileSystem(configPath, env);
+        } catch (final FileSystemAlreadyExistsException ex) {
+            logger.info("Space " + spaceName + " config file system already exists.");
         }
     }
 
@@ -246,27 +302,22 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
 
     @Override
     public OrganizationalUnit updateOrganizationalUnit(final String name,
-                                                       final String owner,
                                                        final String defaultGroupId) {
         return updateOrganizationalUnit(name,
-                                        owner,
                                         defaultGroupId,
                                         null);
     }
 
     @Override
     public OrganizationalUnit updateOrganizationalUnit(String name,
-                                                       String owner,
                                                        String defaultGroupId,
-                                                       Collection<String> contributors) {
+                                                       Collection<Contributor> contributors) {
         final ConfigGroup thisGroupConfig = findGroupConfig(name);
 
         if (thisGroupConfig != null) {
             OrganizationalUnit updatedOrganizationalUnit = null;
             try {
                 configurationService.startBatch();
-                thisGroupConfig.setConfigItem(configurationFactory.newConfigItem("owner",
-                                                                                 owner));
                 // As per loadOrganizationalUnits(), all Organizational Units should have the default group id value set
                 String _defaultGroupId = defaultGroupId == null || defaultGroupId.trim().isEmpty() ?
                         thisGroupConfig.getConfigItemValue("defaultGroupId") : defaultGroupId;
@@ -274,7 +325,7 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
                                                                                  _defaultGroupId));
 
                 if (contributors != null) {
-                    thisGroupConfig.setConfigItem(configurationFactory.newConfigItem("contributors",
+                    thisGroupConfig.setConfigItem(configurationFactory.newConfigItem("space-contributors",
                                                                                      contributors));
                 }
 
@@ -283,6 +334,7 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
                 updatedOrganizationalUnit = organizationalUnitFactory.newOrganizationalUnit(thisGroupConfig);
                 registeredOrganizationalUnits.put(updatedOrganizationalUnit.getName(),
                                                   updatedOrganizationalUnit);
+                checkChildrenRepositoryContributors(updatedOrganizationalUnit);
 
                 return updatedOrganizationalUnit;
             } finally {
@@ -295,6 +347,16 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
         } else {
             throw new IllegalArgumentException("OrganizationalUnit " + name + " not found");
         }
+    }
+
+    private void checkChildrenRepositoryContributors(final OrganizationalUnit updatedOrganizationalUnit) {
+        repositoryService.getAllRepositories(updatedOrganizationalUnit.getSpace()).forEach(repository -> {
+            final List<Contributor> repositoryContributors = new ArrayList<>(repository.getContributors());
+            final boolean repositoryContributorsChanged = repositoryContributors.retainAll(updatedOrganizationalUnit.getContributors());
+            if (repositoryContributorsChanged) {
+                repositoryService.updateContributors(repository, repositoryContributors);
+            }
+        });
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
@@ -437,6 +499,7 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
                 repositoryService.removeRepositories(originalOu.getSpace(), originalOu.getRepositories().stream().map(repo -> repo.getAlias()).collect(Collectors.toSet()));
                 configurationService.removeConfiguration(thisGroupConfig);
                 removedOu = registeredOrganizationalUnits.remove(groupName);
+                removeSpaceDirectory(removedOu.getSpace());
             } finally {
                 configurationService.endBatch();
                 if (removedOu != null) {
@@ -445,6 +508,17 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
                 }
             }
         }
+    }
+
+    private void removeSpaceDirectory(final Space space) {
+        final URI configPathURI = URI.create(SpacesAPI.resolveConfigFileSystemPath(SpacesAPI.Scheme.DEFAULT, space.getName()));
+
+        final Path configPath = ioService.get(configPathURI);
+        final JGitPathImpl configGitPath = (JGitPathImpl) configPath;
+        final File spacePath = configGitPath.getFileSystem().getGit().getRepository().getDirectory().getParentFile().getParentFile();
+
+        ioService.delete(configPath.getFileSystem().getPath(""));
+        spacePath.delete();
     }
 
     @Override

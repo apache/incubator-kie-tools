@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.guvnor.structure.contributors.Contributor;
 import org.guvnor.structure.repositories.impl.git.GitRepository;
 import org.uberfire.spaces.Space;
 import org.uberfire.spaces.SpacesAPI;
@@ -77,5 +78,10 @@ public class SystemRepository extends GitRepository {
     @Override
     public Collection<String> getGroups() {
         return unmodifiableCollection(groups);
+    }
+
+    @Override
+    public Collection<Contributor> getContributors() {
+        throw new UnsupportedOperationException();
     }
 }

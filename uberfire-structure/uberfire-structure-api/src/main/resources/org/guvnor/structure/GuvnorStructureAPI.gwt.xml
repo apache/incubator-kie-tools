@@ -9,6 +9,7 @@
   <inherits name="org.uberfire.UberfireAPI"/>
 
   <source path="config"/>
+  <source path="contributors"/>
   <source path="deployment"/>
   <source path="events"/>
   <source path="navigator"/>

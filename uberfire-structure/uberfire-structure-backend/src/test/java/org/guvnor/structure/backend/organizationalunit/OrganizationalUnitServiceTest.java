@@ -16,28 +16,23 @@
 
 package org.guvnor.structure.backend.organizationalunit;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
+import java.io.File;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-
+import java.util.Map;
 import javax.enterprise.event.Event;
 
 import org.guvnor.structure.backend.backcompat.BackwardCompatibleUtil;
 import org.guvnor.structure.backend.config.ConfigurationFactoryImpl;
+import org.guvnor.structure.backend.repositories.ConfiguredRepositories;
+import org.guvnor.structure.contributors.Contributor;
+import org.guvnor.structure.contributors.ContributorType;
 import org.guvnor.structure.organizationalunit.NewOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.RemoveOrganizationalUnitEvent;
@@ -50,7 +45,6 @@ import org.guvnor.structure.security.OrganizationalUnitAction;
 import org.guvnor.structure.server.config.ConfigGroup;
 import org.guvnor.structure.server.config.ConfigType;
 import org.guvnor.structure.server.config.ConfigurationService;
-import org.guvnor.structure.server.organizationalunit.OrganizationalUnitFactory;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
 import org.junit.Test;
@@ -60,11 +54,21 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.Path;
+import org.uberfire.java.nio.fs.jgit.JGitFileSystem;
+import org.uberfire.java.nio.fs.jgit.JGitPathImpl;
+import org.uberfire.java.nio.fs.jgit.util.Git;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Resource;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.spaces.Space;
 import org.uberfire.spaces.SpacesAPI;
+
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class OrganizationalUnitServiceTest {
@@ -82,7 +86,7 @@ public class OrganizationalUnitServiceTest {
     @InjectMocks
     private ConfigurationFactoryImpl configurationFactory;
 
-    private OrganizationalUnitFactory organizationalUnitFactory;
+    private OrganizationalUnitFactoryImpl organizationalUnitFactory;
 
     private BackwardCompatibleUtil backward;
 
@@ -113,6 +117,12 @@ public class OrganizationalUnitServiceTest {
     @Mock
     private OrganizationalUnit orgUnit;
 
+    @Mock
+    private IOService ioService;
+
+    @Mock
+    private ConfiguredRepositories configuredRepositories;
+
     private OrganizationalUnitServiceImpl organizationalUnitService;
 
     @Before
@@ -120,7 +130,9 @@ public class OrganizationalUnitServiceTest {
         backward = new BackwardCompatibleUtil(configurationFactory);
         organizationalUnitFactory = spy(new OrganizationalUnitFactoryImpl(repositoryService,
                                                                           backward,
-                                                                          spacesAPI));
+                                                                          spacesAPI,
+                                                                          configurationService,
+                                                                          configurationFactory));
         organizationalUnitService = new OrganizationalUnitServiceImpl(configurationService,
                                                                       configurationFactory,
                                                                       organizationalUnitFactory,
@@ -133,7 +145,9 @@ public class OrganizationalUnitServiceTest {
                                                                       updatedOrganizationalUnitEvent,
                                                                       authorizationManager,
                                                                       spacesAPI,
-                                                                      sessionInfo);
+                                                                      sessionInfo,
+                                                                      ioService,
+                                                                      configuredRepositories);
 
         organizationalUnitService.registeredOrganizationalUnits.put("A", orgUnit);
         when(authorizationManager.authorize(any(Resource.class),
@@ -159,7 +173,6 @@ public class OrganizationalUnitServiceTest {
         setOUCreationPermission(true);
 
         final OrganizationalUnit ou = organizationalUnitService.createOrganizationalUnit("a",
-                                                                                         "owner",
                                                                                          "default.group.id");
 
         assertNull(ou);
@@ -170,13 +183,12 @@ public class OrganizationalUnitServiceTest {
 
     @Test
     public void createValidOrganizationalUnitTest() {
-        List<String> contributors = new ArrayList<>();
-        contributors.add("admin");
+        List<Contributor> contributors = new ArrayList<>();
+        contributors.add(new Contributor("admin", ContributorType.ADMIN));
 
         setOUCreationPermission(true);
 
         final OrganizationalUnit ou = organizationalUnitService.createOrganizationalUnit("name",
-                                                                                         "owner",
                                                                                          "default.group.id",
                                                                                          new ArrayList<>(),
                                                                                          contributors);
@@ -185,12 +197,17 @@ public class OrganizationalUnitServiceTest {
         verify(organizationalUnitFactory).newOrganizationalUnit(any());
         assertEquals("name",
                      ou.getName());
-        assertEquals("owner",
-                     ou.getOwner());
         assertEquals("default.group.id",
                      ou.getDefaultGroupId());
         assertEquals(contributors,
                      ou.getContributors());
+
+        final URI configFSUri = URI.create(SpacesAPI.resolveConfigFileSystemPath(SpacesAPI.Scheme.DEFAULT, "name"));
+        final Map<String, Object> env = new HashMap<String, Object>() {{
+            put("init", Boolean.TRUE);
+            put("internal", Boolean.TRUE);
+        }};
+        verify(ioService).newFileSystem(configFSUri, env);
     }
 
     @Test
@@ -209,6 +226,20 @@ public class OrganizationalUnitServiceTest {
         configGroup.setName("A");
         when(configurationService.getConfiguration(ConfigType.SPACE)).thenReturn(Collections.singletonList(configGroup));
 
+        final JGitPathImpl configPath = mock(JGitPathImpl.class);
+        final JGitFileSystem fileSystem = mock(JGitFileSystem.class);
+        final Git git = mock(Git.class);
+        final org.eclipse.jgit.lib.Repository repository = mock(org.eclipse.jgit.lib.Repository.class);
+        final File directory = mock(File.class);
+        final Path fsPath = mock(Path.class);
+        doReturn(directory).when(directory).getParentFile();
+        doReturn(directory).when(repository).getDirectory();
+        doReturn(repository).when(git).getRepository();
+        doReturn(git).when(fileSystem).getGit();
+        doReturn(fsPath).when(fileSystem).getPath("");
+        doReturn(fileSystem).when(configPath).getFileSystem();
+        doReturn(configPath).when(ioService).get(any(URI.class));
+
         organizationalUnitService.removeOrganizationalUnit("A");
 
         verify(repoService).removeRepositories(eq(space), eq(new HashSet<>(Arrays.asList("A", "B"))));
@@ -216,7 +247,8 @@ public class OrganizationalUnitServiceTest {
         verify(removeOrganizationalUnitEvent).fire(eventCaptor.capture());
         RemoveOrganizationalUnitEvent event = eventCaptor.getValue();
         assertEquals(repos, event.getOrganizationalUnit().getRepositories());
-
+        verify(ioService).delete(fsPath);
+        verify(directory).delete();
     }
 
     private void setOUCreationPermission(final boolean hasPermission) {

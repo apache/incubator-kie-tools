@@ -16,10 +16,12 @@
 package org.guvnor.common.services.project.service;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.WorkspaceProject;
+import org.guvnor.structure.contributors.Contributor;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.Repository;
@@ -47,6 +49,11 @@ public interface WorkspaceProjectService {
     WorkspaceProject newProject(final OrganizationalUnit organizationalUnit,
                                 final POM pom,
                                 final DeploymentMode mode);
+
+    WorkspaceProject newProject(final OrganizationalUnit organizationalUnit,
+                                final POM pom,
+                                final DeploymentMode mode,
+                                final List<Contributor> contributor);
 
     String createFreshProjectName(final OrganizationalUnit organizationalUnit,
                                   final String name);

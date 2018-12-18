@@ -16,7 +16,6 @@
 package org.guvnor.structure.backend.repositories;
 
 import java.util.List;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
@@ -25,6 +24,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.guvnor.structure.backend.backcompat.BackwardCompatibleUtil;
+import org.guvnor.structure.contributors.Contributor;
 import org.guvnor.structure.repositories.EnvironmentParameters;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.server.config.ConfigGroup;
@@ -72,6 +72,13 @@ public class RepositoryFactoryImpl implements RepositoryFactory {
         if (groups != null) {
             for (String group : groups.getValue()) {
                 repository.getGroups().add(group);
+            }
+        }
+
+        ConfigItem<List<Contributor>> contributors = repoConfig.getConfigItem("contributors");
+        if (contributors != null) {
+            for (Contributor contributor : contributors.getValue()) {
+                repository.getContributors().add(contributor);
             }
         }
 

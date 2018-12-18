@@ -19,6 +19,7 @@ package org.guvnor.structure.organizationalunit;
 import java.util.Collection;
 import java.util.List;
 
+import org.guvnor.structure.contributors.Contributor;
 import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
@@ -104,10 +105,8 @@ public class OrganizationalUnitServiceCallerMock
 
         @Override
         public OrganizationalUnit createOrganizationalUnit(String name,
-                                                           String owner,
                                                            String defaultGroupId) {
             OrganizationalUnit result = organizationalUnitService.createOrganizationalUnit(name,
-                                                                                           owner,
                                                                                            defaultGroupId);
             remoteCallback.callback(result);
             return result;
@@ -115,11 +114,9 @@ public class OrganizationalUnitServiceCallerMock
 
         @Override
         public OrganizationalUnit createOrganizationalUnit(String name,
-                                                           String owner,
                                                            String defaultGroupId,
                                                            Collection<Repository> repositories) {
             OrganizationalUnit result = organizationalUnitService.createOrganizationalUnit(name,
-                                                                                           owner,
                                                                                            defaultGroupId,
                                                                                            repositories);
             remoteCallback.callback(result);
@@ -128,12 +125,10 @@ public class OrganizationalUnitServiceCallerMock
 
         @Override
         public OrganizationalUnit createOrganizationalUnit(String name,
-                                                           String owner,
                                                            String defaultGroupId,
                                                            Collection<Repository> repositories,
-                                                           Collection<String> contributors) {
+                                                           Collection<Contributor> contributors) {
             OrganizationalUnit result = organizationalUnitService.createOrganizationalUnit(name,
-                                                                                           owner,
                                                                                            defaultGroupId,
                                                                                            repositories,
                                                                                            contributors);
@@ -143,10 +138,8 @@ public class OrganizationalUnitServiceCallerMock
 
         @Override
         public OrganizationalUnit updateOrganizationalUnit(String name,
-                                                           String owner,
                                                            String defaultGroupId) {
             OrganizationalUnit result = organizationalUnitService.updateOrganizationalUnit(name,
-                                                                                           owner,
                                                                                            defaultGroupId);
             remoteCallback.callback(result);
             return result;
@@ -154,11 +147,9 @@ public class OrganizationalUnitServiceCallerMock
 
         @Override
         public OrganizationalUnit updateOrganizationalUnit(String name,
-                                                           String owner,
                                                            String defaultGroupId,
-                                                           Collection<String> contributors) {
+                                                           Collection<Contributor> contributors) {
             OrganizationalUnit result = organizationalUnitService.updateOrganizationalUnit(name,
-                                                                                           owner,
                                                                                            defaultGroupId,
                                                                                            contributors);
             remoteCallback.callback(result);

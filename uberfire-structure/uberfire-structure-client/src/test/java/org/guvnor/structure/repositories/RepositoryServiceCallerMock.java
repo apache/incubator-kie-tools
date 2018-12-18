@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import org.guvnor.structure.contributors.Contributor;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
@@ -156,13 +157,28 @@ public class RepositoryServiceCallerMock
         public Repository createRepository(final OrganizationalUnit organizationalUnit,
                                            final String scheme,
                                            final String alias,
-                                           final RepositoryEnvironmentConfigurations configuration) throws RepositoryAlreadyExistsException {
+                                           final RepositoryEnvironmentConfigurations configurations) throws RepositoryAlreadyExistsException {
             Repository result = repositoryService.createRepository(organizationalUnit,
                                                                    scheme,
                                                                    alias,
-                                                                   configuration);
+                                                                   configurations);
             remoteCallback.callback(result);
             return result;
+        }
+
+        @Override
+        public Repository createRepository(OrganizationalUnit organizationalUnit,
+                                           String scheme,
+                                           String alias,
+                                           RepositoryEnvironmentConfigurations configurations,
+                                           Collection<Contributor> contributors) throws RepositoryAlreadyExistsException {
+            Repository result = repositoryService.createRepository(organizationalUnit,
+                                                                   scheme,
+                                                                   alias,
+                                                                   configurations,
+                                                                   contributors);
+            remoteCallback.callback(result);
+            return null;
         }
 
         @Override
@@ -191,6 +207,13 @@ public class RepositoryServiceCallerMock
                                 String group) {
             repositoryService.removeGroup(repository,
                                           group);
+        }
+
+        @Override
+        public void updateContributors(Repository repository,
+                                       List<Contributor> contributors) {
+            repositoryService.updateContributors(repository,
+                                                 contributors);
         }
 
         @Override

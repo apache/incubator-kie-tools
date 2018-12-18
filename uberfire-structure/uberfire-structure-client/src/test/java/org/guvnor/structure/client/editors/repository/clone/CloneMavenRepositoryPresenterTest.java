@@ -377,7 +377,6 @@ public class CloneMavenRepositoryPresenterTest {
     @Test
     public void testCreateOUEvent() {
         final OrganizationalUnit ou = new OrganizationalUnitImpl("ou1",
-                                                                 "owner1",
                                                                  "ou");
         presenter.onCreateOrganizationalUnit(new AfterCreateOrganizationalUnitEvent(ou));
 
@@ -388,7 +387,6 @@ public class CloneMavenRepositoryPresenterTest {
     @Test
     public void testDeleteOUEvent() {
         final OrganizationalUnit ou = new OrganizationalUnitImpl("ou1",
-                                                                 "owner1",
                                                                  "ou");
         presenter.onDeleteOrganizationalUnit(new AfterDeleteOrganizationalUnitEvent(ou));
 

@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import org.guvnor.structure.contributors.Contributor;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.uberfire.backend.vfs.Path;
@@ -76,6 +77,12 @@ public interface RepositoryService {
                                 final String alias,
                                 final RepositoryEnvironmentConfigurations configurations) throws RepositoryAlreadyExistsException;
 
+    Repository createRepository(final OrganizationalUnit organizationalUnit,
+                                final String scheme,
+                                final String alias,
+                                final RepositoryEnvironmentConfigurations configurations,
+                                final Collection<Contributor> contributors) throws RepositoryAlreadyExistsException;
+
     String normalizeRepositoryName(final String name);
 
     boolean validateRepositoryName(final String name);
@@ -85,6 +92,9 @@ public interface RepositoryService {
 
     void removeGroup(final Repository repository,
                      final String group);
+
+    void updateContributors(Repository repository,
+                            List<Contributor> contributors);
 
     void removeRepository(final Space space, final String alias);
 

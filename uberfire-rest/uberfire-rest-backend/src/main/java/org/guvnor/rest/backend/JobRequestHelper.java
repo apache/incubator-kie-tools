@@ -17,6 +17,7 @@ package org.guvnor.rest.backend;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -41,6 +42,8 @@ import org.guvnor.common.services.shared.test.TestRunnerService;
 import org.guvnor.rest.client.CloneProjectRequest;
 import org.guvnor.rest.client.JobResult;
 import org.guvnor.rest.client.JobStatus;
+import org.guvnor.structure.contributors.Contributor;
+import org.guvnor.structure.contributors.ContributorType;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.organizationalunit.impl.OrganizationalUnitImpl;
@@ -482,8 +485,9 @@ public class JobRequestHelper {
         }
 
         organizationalUnit = organizationalUnitService.createOrganizationalUnit(spaceName,
-                                                                                spaceOwner,
-                                                                                _defaultGroupId);
+                                                                                _defaultGroupId,
+                                                                                Collections.emptyList(),
+                                                                                Collections.singletonList(new Contributor(spaceOwner, ContributorType.OWNER)));
 
         if (organizationalUnit != null) {
             result.setResult("Space " + organizationalUnit.getName() + " is created successfully.");
@@ -514,7 +518,6 @@ public class JobRequestHelper {
         }
 
         OrganizationalUnit organizationalUnit = new OrganizationalUnitImpl(spaceName,
-                                                                           null,
                                                                            null);
 
         GitRepository repo = new GitRepository(projectName,

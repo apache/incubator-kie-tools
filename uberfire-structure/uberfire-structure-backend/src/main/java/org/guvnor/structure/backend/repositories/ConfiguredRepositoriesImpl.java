@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -29,11 +30,13 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.guvnor.structure.config.SystemRepositoryChangedEvent;
-import org.guvnor.structure.repositories.NewBranchEvent;
+import org.guvnor.structure.contributors.Contributor;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryExternalUpdateEvent;
 import org.guvnor.structure.repositories.RepositoryUpdatedEvent;
 import org.guvnor.structure.server.config.ConfigGroup;
+import org.guvnor.structure.server.config.ConfigItem;
+import org.guvnor.structure.server.config.ConfigurationFactory;
 import org.guvnor.structure.server.config.ConfigurationService;
 import org.guvnor.structure.server.repositories.RepositoryFactory;
 import org.uberfire.backend.vfs.Path;
@@ -41,6 +44,7 @@ import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.spaces.Space;
 
 import static org.guvnor.structure.server.config.ConfigType.REPOSITORY;
+import static org.guvnor.structure.server.config.ConfigType.SPACE;
 import static org.uberfire.backend.server.util.Paths.convert;
 
 /**
@@ -59,6 +63,7 @@ public class ConfiguredRepositoriesImpl implements ConfiguredRepositories {
     private RepositoryFactory repositoryFactory;
     private Repository systemRepository;
     private Event<RepositoryUpdatedEvent> repositoryUpdatedEvent;
+    private ConfigurationFactory configurationFactory;
     private Map<Space, ConfiguredRepositoriesBySpace> repositoriesBySpace = Collections.synchronizedMap(new HashMap<>());
 
     public ConfiguredRepositoriesImpl() {
@@ -68,11 +73,13 @@ public class ConfiguredRepositoriesImpl implements ConfiguredRepositories {
     public ConfiguredRepositoriesImpl(final ConfigurationService configurationService,
                                       final RepositoryFactory repositoryFactory,
                                       final @Named("system") Repository systemRepository,
-                                      final Event<RepositoryUpdatedEvent> repositoryUpdatedEvent) {
+                                      final Event<RepositoryUpdatedEvent> repositoryUpdatedEvent,
+                                      final ConfigurationFactory configurationFactory) {
         this.configurationService = configurationService;
         this.repositoryFactory = repositoryFactory;
         this.systemRepository = systemRepository;
         this.repositoryUpdatedEvent = repositoryUpdatedEvent;
+        this.configurationFactory = configurationFactory;
     }
 
     @SuppressWarnings("unchecked")
@@ -88,7 +95,22 @@ public class ConfiguredRepositoriesImpl implements ConfiguredRepositories {
 
             for (ConfigGroup repoConfig : entry.getValue()) {
                 final Repository repository = repositoryFactory.newRepository(repoConfig);
+                checkIfRepositoryContributorsIsNotSet(repoConfig, repository, space);
                 configuredRepositoriesBySpace.add(repository);
+            }
+        }
+    }
+
+    private void checkIfRepositoryContributorsIsNotSet(final ConfigGroup repoConfig,
+                                                       final Repository repository,
+                                                       final Space space) {
+        if (repoConfig.getConfigItem("contributors") == null) {
+            final Optional<ConfigGroup> spaceConfig = configurationService.getConfiguration(SPACE).stream().filter(s -> s.getName().equals(space.getName())).findFirst();
+            ConfigItem<List<Contributor>> spaceContributors = spaceConfig.get().getConfigItem("space-contributors");
+            if (spaceContributors != null) {
+                spaceContributors.getValue().forEach(c -> repository.getContributors().add(c));
+                repoConfig.addConfigItem(configurationFactory.newConfigItem("contributors", repository.getContributors()));
+                configurationService.updateConfiguration(repoConfig);
             }
         }
     }

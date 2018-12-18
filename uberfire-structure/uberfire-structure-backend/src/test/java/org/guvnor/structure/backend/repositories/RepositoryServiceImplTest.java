@@ -1,13 +1,22 @@
 package org.guvnor.structure.backend.repositories;
 
+import java.util.Collections;
 import java.util.Optional;
 
+import org.guvnor.structure.backend.config.ConfigurationFactoryImpl;
+import org.guvnor.structure.contributors.Contributor;
+import org.guvnor.structure.contributors.ContributorType;
 import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.Repository;
+import org.guvnor.structure.server.config.ConfigGroup;
+import org.guvnor.structure.server.config.ConfigType;
+import org.guvnor.structure.server.config.ConfigurationService;
+import org.guvnor.structure.server.repositories.RepositoryFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.spaces.Space;
 
@@ -24,6 +33,15 @@ public class RepositoryServiceImplTest {
 
     @Mock
     private ConfiguredRepositories configuredRepositories;
+
+    @Mock
+    private ConfigurationService configurationService;
+
+    @Mock
+    private RepositoryFactory repositoryFactory;
+
+    @Spy
+    ConfigurationFactoryImpl configurationFactory;
 
     @InjectMocks
     private RepositoryServiceImpl repositoryService;
@@ -67,5 +85,21 @@ public class RepositoryServiceImplTest {
 
         assertEquals("alias-2",
                      newAlias);
+    }
+
+    @Test
+    public void updateContributorsTest() {
+        final Space space = new Space("alias");
+        doReturn(space).when(repository).getSpace();
+        doReturn("alias").when(repository).getAlias();
+
+        final ConfigGroup configGroup = new ConfigGroup();
+        configGroup.setName("alias");
+        configGroup.addConfigItem(configurationFactory.newConfigItem("contributors", Collections.emptyList()));
+        doReturn(Collections.singletonList(configGroup)).when(configurationService).getConfiguration(ConfigType.REPOSITORY, "alias");
+
+        repositoryService.updateContributors(repository, Collections.singletonList(new Contributor("admin1", ContributorType.OWNER)));
+
+        verify(configurationService).updateConfiguration(configGroup);
     }
 }
