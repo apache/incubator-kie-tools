@@ -56,6 +56,7 @@ public class CreateRepository {
 
     public Optional<Git> execute() {
         try {
+            boolean newRepository = !repoDir.exists();
             final org.eclipse.jgit.api.Git _git = org.eclipse.jgit.api.Git.init().setBare(true).setDirectory(repoDir).call();
 
             if (leaders != null) {
@@ -78,7 +79,7 @@ public class CreateRepository {
 
             final org.eclipse.jgit.api.Git git = new org.eclipse.jgit.api.Git(repo);
 
-            if (hookDir != null) {
+            if (setupGitHooks(newRepository)) {
                 final File repoHookDir = new File(repoDir,
                                                   "hooks");
 
@@ -101,5 +102,9 @@ public class CreateRepository {
         } catch (final Exception ex) {
             throw new IOException(ex);
         }
+    }
+
+    private boolean setupGitHooks(boolean newRepository) {
+        return newRepository && hookDir != null;
     }
 }

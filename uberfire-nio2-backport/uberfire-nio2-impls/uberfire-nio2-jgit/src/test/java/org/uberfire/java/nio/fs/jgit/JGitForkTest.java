@@ -239,7 +239,28 @@ public class JGitForkTest extends AbstractTestInfra {
         provider.newFileSystem(forkUri,
                                forkEnv);
     }
-    
+
+    @Test
+    public void testForkWithoutHookDirShouldNotBeUpdatedAfterGitHookDirAdded() throws IOException, GitAPIException {
+
+        final File hooksDir = createTempDirectory();
+
+        final File parentFolder = createTempDirectory();
+
+        final File gitSource = new File(parentFolder,
+                                        SOURCE_GIT + ".git");
+
+        writeMockHook(hooksDir, PostCommitHook.NAME);
+        writeMockHook(hooksDir, PreCommitHook.NAME);
+
+        final Git repo = new CreateRepository(gitSource, null).execute().get();
+        final Git existentRepoWithHookDirDefined = new CreateRepository(gitSource, hooksDir).execute().get();
+
+        File[] hooks = new File(existentRepoWithHookDirDefined.getRepository().getDirectory(), "hooks").listFiles();
+        assertThat(hooks).isEmpty();
+    }
+
+
     @Test
     public void testForkWithHookDir() throws IOException, GitAPIException {
     	final File hooksDir = createTempDirectory();
