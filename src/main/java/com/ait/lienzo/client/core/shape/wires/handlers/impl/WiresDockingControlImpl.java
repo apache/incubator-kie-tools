@@ -89,6 +89,9 @@ public class WiresDockingControlImpl extends AbstractWiresParentPickerControl
     }
 
     private Point2D findIntersection(double dx, double dy, final Point2D initialPathLocation, final WiresShape shape,  final WiresShape parent) {
+        if (null == parent) {
+            return null;
+        }
         final Point2D parentLocation = parent.getComputedLocation();
         final BoundingBox box = shape.getPath().getBoundingBox();
         final double shapeX = initialPathLocation.getX() + dx + (box.getWidth() / 2) - parentLocation.getX();
@@ -157,6 +160,9 @@ public class WiresDockingControlImpl extends AbstractWiresParentPickerControl
     }
 
     private Point2D getCandidateLocation(WiresShape shape) {
+        if (null == m_intersection) {
+            return null;
+        }
         BoundingBox box = shape.getPath().getBoundingBox();
         double x = m_intersection.getX() - (box.getWidth() / 2);
         double y = m_intersection.getY() -  (box.getHeight() / 2);
