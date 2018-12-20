@@ -16,14 +16,6 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.ait.lienzo.client.core.event.NodeDragEndEvent;
 import com.ait.lienzo.client.core.event.NodeDragEndHandler;
 import com.ait.lienzo.client.core.event.NodeMouseClickEvent;
@@ -58,6 +50,14 @@ import com.google.gwt.event.dom.client.MouseMoveEvent;
 import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * The SelectionManager is quite an intricate class and changes should be made with care.
@@ -178,8 +178,9 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
         return m_selectionCreationInProcess;
     }
 
-    public void setSelectionShapeProvider(SelectionShapeProvider m_selectionShapeProvider) {
+    public SelectionManager setSelectionShapeProvider(SelectionShapeProvider m_selectionShapeProvider) {
         this.m_selectionShapeProvider = m_selectionShapeProvider;
+        return this;
     }
 
     public void selected(WiresShape shape, boolean isSelectionMultiple)
@@ -192,9 +193,10 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
         m_selected.selected(connector, isSelectionMultiple);
     }
 
-    public void setSelectionListener(SelectionListener selectionListener)
+    public SelectionManager setSelectionListener(SelectionListener selectionListener)
     {
         m_selectionListener = selectionListener;
+        return this;
     }
 
     public SelectedItems getSelectedItems() {
@@ -496,7 +498,6 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
         m_selectionShapeProvider
                 .setLocation(location)
                 .setSize(sw, sh);
-        getSelectionShape().moveToTop();
     }
 
     double relativeStartX()
@@ -627,7 +628,7 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
             }
             else
             {
-                if (m_shapes.contains(shape))
+                if (isShapeSelected(shape))
                 {
                     remove(shape);
                 }
@@ -638,6 +639,16 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
                 }
             }
             notifyListener(isSelectionMultiple);
+        }
+
+        public boolean isShapeSelected(final WiresShape shape)
+        {
+            return m_shapes.contains(shape);
+        }
+
+        public boolean isConnectorSelected(final WiresConnector connector)
+        {
+            return m_connectors.contains(connector);
         }
 
         private boolean hasSameParentsAsSelection(WiresShape subjectShape)
@@ -712,7 +723,7 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
             }
             else
             {
-                if (m_connectors.contains(connector))
+                if (isConnectorSelected(connector))
                 {
                     remove(connector);
                 }
@@ -764,7 +775,7 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
                         for (WiresConnection connection : magnet.getConnections())
                         {
                             WiresConnector wiresConnector = connection.getConnector();
-                            if (m_connectors.contains(wiresConnector) && m_externallyConnected.contains(wiresConnector))
+                            if (isConnectorSelected(wiresConnector) && m_externallyConnected.contains(wiresConnector))
                             {
                                 WiresConnection otherConnection =  connection.getOppositeConnection();
                                 if (otherConnection != null && otherConnection.getMagnet() != null)
@@ -814,7 +825,7 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
                         for (WiresConnection connection : magnet.getConnections())
                         {
                             WiresConnector wiresConnector = connection.getConnector();
-                            if (m_connectors.contains(wiresConnector) && !m_externallyConnected.contains(wiresConnector))
+                            if (isConnectorSelected(wiresConnector) && !m_externallyConnected.contains(wiresConnector))
                             {
                                 m_externallyConnected.add(wiresConnector);
                             }

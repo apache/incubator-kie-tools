@@ -17,9 +17,6 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 import com.ait.lienzo.client.core.event.NodeDragEndEvent;
 import com.ait.lienzo.client.core.event.NodeDragEndHandler;
 import com.ait.lienzo.client.core.shape.Layer;
@@ -45,12 +42,13 @@ import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import com.ait.tooling.nativetools.client.collection.NFastStringMap;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 public final class WiresManager
 {
 
     private static final NFastStringMap<WiresManager>        MANAGER_MAP           = new NFastStringMap<WiresManager>();
-
-    public static final int CONNECTOR_SELECTION_OFFSET =     5;
 
     private final MagnetManager                              m_magnetManager       = new MagnetManager();
 
@@ -124,12 +122,13 @@ public final class WiresManager
         m_wiresHandlerFactory = new WiresHandlerFactoryImpl();
     }
 
-    public void enableSelectionManager()
+    public SelectionManager enableSelectionManager()
     {
         if (m_selectionManager==null)
         {
             m_selectionManager = new SelectionManager(this);
         }
+        return m_selectionManager;
     }
 
     public boolean isSpliceEnabled()
@@ -259,6 +258,7 @@ public final class WiresManager
     public void deregister(final WiresShape shape)
     {
         final String uuid = shape.uuid();
+        deselect(shape);
         removeHandlers(uuid);
         removeFromIndex(shape);
         shape.destroy();
@@ -284,14 +284,19 @@ public final class WiresManager
         m_registrationManager.register(connector.getGroup().addNodeDragEndHandler(handler));
 
         m_registrationManager.register(connector.getLine().addNodeMouseClickHandler(handler));
-        m_registrationManager.register(getLayer().getLayer().addNodeMouseMoveHandler(handler));
+        m_registrationManager.register(connector.getLine().addNodeMouseDownHandler(handler));
+        m_registrationManager.register(connector.getLine().addNodeMouseMoveHandler(handler));
+        m_registrationManager.register(connector.getLine().addNodeMouseEnterHandler(handler));
+        m_registrationManager.register(connector.getLine().addNodeMouseExitHandler(handler));
 
         m_registrationManager.register(connector.getHead().addNodeMouseClickHandler(handler));
+        m_registrationManager.register(connector.getHead().addNodeMouseEnterHandler(handler));
+        m_registrationManager.register(connector.getHead().addNodeMouseMoveHandler(handler));
+        m_registrationManager.register(connector.getHead().addNodeMouseExitHandler(handler));
         m_registrationManager.register(connector.getTail().addNodeMouseClickHandler(handler));
-
-        //increase the selection area
-        connector.getLine().getAttributes().setSelectionStrokeOffset(CONNECTOR_SELECTION_OFFSET);
-        connector.getLine().getAttributes().setSelectionBoundsOffset(CONNECTOR_SELECTION_OFFSET);
+        m_registrationManager.register(connector.getTail().addNodeMouseEnterHandler(handler));
+        m_registrationManager.register(connector.getTail().addNodeMouseMoveHandler(handler));
+        m_registrationManager.register(connector.getTail().addNodeMouseExitHandler(handler));
 
         getConnectorList().add(connector);
         m_shapeHandlersMap.put(uuid, m_registrationManager);
@@ -304,7 +309,7 @@ public final class WiresManager
     public void deregister(final WiresConnector connector)
     {
         final String uuid = connector.uuid();
-        connector.removeFromLayer();
+        deselect(connector);
         removeHandlers(uuid);
         connector.destroy();
         getConnectorList().remove(connector);
@@ -540,6 +545,24 @@ public final class WiresManager
 
         protected WiresManager getWiresManager() {
             return wiresManager;
+        }
+    }
+
+    private void deselect(final WiresShape shape)
+    {
+        if (null != getSelectionManager() &&
+            getSelectionManager().getSelectedItems().isShapeSelected(shape))
+        {
+            getSelectionManager().getSelectedItems().remove(shape);
+        }
+    }
+
+    private void deselect(final WiresConnector connector)
+    {
+        if (null != getSelectionManager() &&
+            getSelectionManager().getSelectedItems().isConnectorSelected(connector))
+        {
+            getSelectionManager().getSelectedItems().remove(connector);
         }
     }
 }

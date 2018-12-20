@@ -34,8 +34,6 @@ public class ColorMapBackedPicker
 
     private final NFastStringMap<PickerPart> m_colorMap = new NFastStringMap<>();
 
-    private final BoundingBox m_box = new BoundingBox(0d, 0d, 1d, 1d);
-
     private final NFastArrayList<WiresShape> m_shapesMap = new NFastArrayList<>();
 
     private final PickerOptions                m_options;
@@ -69,13 +67,12 @@ public class ColorMapBackedPicker
         for (int j = 0; j < shapes.size(); j++)
         {
             WiresShape prim = shapes.get(j);
+
             if ( m_options.shapesToSkip.contains( prim ) )
             {
                 continue;
             }
 
-            BoundingBox shapeBB = prim.getGroup().getBoundingPoints().getBoundingBox();
-            m_box.add(shapeBB);
             m_shapesMap.add(prim);
 
             if (prim.getChildShapes() != null && !prim.getChildShapes().isEmpty())
@@ -87,13 +84,6 @@ public class ColorMapBackedPicker
 
     private void drawShapes()
     {
-        // It's necessary to resize the scratchPad to the resulting bounds calculated from all shapes in the layer
-        final double width = m_box.getWidth();
-        final double height = m_box.getHeight();
-        int w = (int) Math.round(width);
-        int h = (int) Math.round(height);
-        m_scratchPad.setPixelSize(w, h);
-
         // Draw all shapes (and children) into the scratchPad instance.
         for (int j = 0; j < m_shapesMap.size(); j++)
         {

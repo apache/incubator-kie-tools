@@ -66,6 +66,12 @@ public abstract class LienzoBoundsPanel<P extends LienzoBoundsPanel>
                   boundses.getY(),
                   boundses.getWidth(),
                   boundses.getHeight());
+        if (null != getLayer()) {
+            final int w = (int) Math.round(boundses.getWidth());
+            final int h = (int) Math.round(boundses.getHeight());
+            getLayer().getScratchPad().setPixelSize(w,
+                                                    h);
+        }
         return onRefresh();
     }
 

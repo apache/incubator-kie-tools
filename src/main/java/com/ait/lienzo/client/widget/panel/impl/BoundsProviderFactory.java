@@ -132,6 +132,7 @@ public class BoundsProviderFactory
             if (null != boxes)
             {
                 final BoundingBox result = new BoundingBox();
+                result.add(0, 0);
                 for (BoundingBox box : boxes)
                 {
                     result.add(box);
@@ -241,7 +242,6 @@ public class BoundsProviderFactory
         {
             rw = computeWidth(ratio, height);
         }
-        //GWT.log("BOUNDS-RATIO [w=" + width + ", h=" + height + ", rw=" + rw + ", rh=" + rh + "]");
         return Bounds.build(x,
                             y,
                             rw,

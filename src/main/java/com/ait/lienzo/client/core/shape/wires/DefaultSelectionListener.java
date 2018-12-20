@@ -1,7 +1,51 @@
 package com.ait.lienzo.client.core.shape.wires;
 
+import com.ait.tooling.common.api.java.util.function.Consumer;
+
 public class DefaultSelectionListener implements SelectionListener
 {
+    public static final Consumer<WiresShape>     SHAPE_NO_OP     = new Consumer<WiresShape>()
+    {
+        @Override
+        public void accept(WiresShape shape)
+        {
+        }
+    };
+
+    public static final Consumer<WiresConnector> CONNECTOR_NO_OP = new Consumer<WiresConnector>()
+    {
+        @Override
+        public void accept(WiresConnector connector)
+        {
+        }
+    };
+
+    private final Consumer<WiresShape>     onSelectShape;
+
+    private final Consumer<WiresShape>     onDeselectShape;
+
+    private final Consumer<WiresConnector> onSelectConnector;
+
+    private final Consumer<WiresConnector> onDeselectConnector;
+
+    public DefaultSelectionListener()
+    {
+        this(SHAPE_NO_OP,
+             SHAPE_NO_OP,
+             CONNECTOR_NO_OP,
+             CONNECTOR_NO_OP);
+    }
+
+    public DefaultSelectionListener(final Consumer<WiresShape> onSelectShape,
+                                    final Consumer<WiresShape> onDeselectShape,
+                                    final Consumer<WiresConnector> onSelectConnector,
+                                    final Consumer<WiresConnector> onDeselectConnector)
+    {
+        this.onSelectShape = onSelectShape;
+        this.onDeselectShape = onDeselectShape;
+        this.onSelectConnector = onSelectConnector;
+        this.onDeselectConnector = onDeselectConnector;
+    }
 
     @Override
     public void onChanged(SelectionManager.SelectedItems selectedItems)
@@ -10,12 +54,12 @@ public class DefaultSelectionListener implements SelectionListener
 
         for (WiresShape shape : changed.getRemovedShapes())
         {
-            unselect(shape);
+            deselect(shape);
         }
 
         for (WiresConnector connector : changed.getRemovedConnectors())
         {
-            unselect(connector);
+            deselect(connector);
         }
 
         if (!selectedItems.isSelectionGroup() && selectedItems.size() == 1)
@@ -25,7 +69,7 @@ public class DefaultSelectionListener implements SelectionListener
             {
                 for (WiresShape shape : selectedItems.getShapes())
                 {
-                    select(shape);
+                    select(shape, false);
                     break;
                 }
             }
@@ -33,51 +77,48 @@ public class DefaultSelectionListener implements SelectionListener
             {
                 for (WiresConnector connector : selectedItems.getConnectors())
                 {
-                    select(connector);
+                    select(connector, false);
                     break;
                 }
             }
         }
         else if (selectedItems.isSelectionGroup())
         {
-            // we don't which have selectors shown, if any. Just iterate and unselect all
-            // null check will do nothing, if it's already unselected.
             for (WiresShape shape : selectedItems.getShapes())
             {
-                unselect(shape);
+                select(shape, true);
             }
-
 
             for (WiresConnector connector : selectedItems.getConnectors())
             {
-                unselect(connector);
+                select(connector, true);
             }
         }
     }
 
-    private void select(WiresShape shape)
+    private void select(final WiresShape shape,
+                        final boolean isMultiple)
     {
-        if (shape.getControls() != null)
-        {
-            shape.getControls().show();
-        }
+        onSelectShape.accept(shape);
+        shape.listen(!isMultiple);
     }
 
-    private void unselect(WiresShape shape)
+    private void deselect(WiresShape shape)
     {
-        if (shape.getControls() != null)
-        {
-            shape.getControls().hide();
-        }
+        onDeselectShape.accept(shape);
+        shape.listen(true);
     }
 
-    private void select(WiresConnector connector)
+    private void select(final WiresConnector connector,
+                        final boolean isMultiple)
     {
-        connector.getControl().showControlPoints();
+        onSelectConnector.accept(connector);
+        connector.listen(!isMultiple);
     }
 
-    private void unselect(WiresConnector connector)
+    private void deselect(WiresConnector connector)
     {
-        connector.getControl().hideControlPoints();
+        onDeselectConnector.accept(connector);
+        connector.listen(true);
     }
 }

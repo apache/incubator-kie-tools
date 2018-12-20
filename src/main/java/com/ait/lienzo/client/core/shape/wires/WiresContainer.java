@@ -17,8 +17,6 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
-import java.util.Objects;
-
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.event.AnimationFrameAttributesChangedBatcher;
 import com.ait.lienzo.client.core.event.AttributesChangedEvent;
@@ -47,6 +45,8 @@ import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
+
+import java.util.Objects;
 
 import static com.ait.lienzo.client.core.AttributeOp.any;
 
@@ -120,6 +120,17 @@ public class WiresContainer
     public double getY()
     {
         return getGroup().getY();
+    }
+
+    public WiresContainer listen(final boolean listen)
+    {
+        getGroup().setListening(listen);
+        return this;
+    }
+
+    public boolean isListening()
+    {
+        return getGroup().isListening();
     }
 
     public WiresContainer setLocation(final Point2D p)

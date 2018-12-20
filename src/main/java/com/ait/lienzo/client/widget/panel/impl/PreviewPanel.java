@@ -144,7 +144,6 @@ public class PreviewPanel extends ScalablePanel
                     {
                         if (!decorator.isDragging())
                         {
-                            // GWT.log("SCROLL [" + event.getPctX() + ", " + event.getPctY() + "]");
                             scroll(event.getPctX(), event.getPctY());
                         }
                     }
@@ -157,7 +156,6 @@ public class PreviewPanel extends ScalablePanel
                     @Override
                     public void onResize(LienzoPanelResizeEvent event)
                     {
-                        // GWT.log("RESIZE [" + event.getWidth() + ", " + event.getHeight() + "]");
                         resize(event.getWidth(), event.getHeight());
                     }
                 })
@@ -172,7 +170,6 @@ public class PreviewPanel extends ScalablePanel
                         if (!decorator.isDragging())
                         {
                             final Point2D factor = event.getFactor();
-                            // GWT.log("SCALE [" + factor + "]");
                             visibleScaleFactor
                                     .setX(1 / factor.getX())
                                     .setY(1 / factor.getY());
@@ -289,7 +286,7 @@ public class PreviewPanel extends ScalablePanel
     {
         adjustVisibleBounds(pctX,
                             pctY);
-        refresh();
+        batch();
     }
 
     @Override

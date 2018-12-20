@@ -16,9 +16,6 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
-import java.util.Map;
-import java.util.Objects;
-
 import com.ait.lienzo.client.core.event.IAttributesChangedBatcher;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.MultiPath;
@@ -37,6 +34,9 @@ import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
+
+import java.util.Map;
+import java.util.Objects;
 
 
 public class WiresShape extends WiresContainer
@@ -82,6 +82,19 @@ public class WiresShape extends WiresContainer
     public WiresShape setLocation(final Point2D p) {
         super.setLocation(p);
         return this;
+    }
+
+    @Override
+    public WiresShape listen(final boolean listen)
+    {
+        getPath().setListening(listen);
+        return this;
+    }
+
+    @Override
+    public boolean isListening()
+    {
+        return getPath().isListening();
     }
 
     public WiresShape addChild(final IPrimitive<?> child)

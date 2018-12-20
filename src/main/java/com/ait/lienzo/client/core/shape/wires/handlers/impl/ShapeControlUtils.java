@@ -1,12 +1,26 @@
+/*
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-
+import com.ait.lienzo.client.core.event.AbstractNodeMouseEvent;
 import com.ait.lienzo.client.core.shape.IDirectionalMultiPointShape;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.OrthogonalPolyLine;
+import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.shape.wires.WiresConnection;
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.shape.wires.WiresContainer;
@@ -19,7 +33,26 @@ import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.client.core.util.Geometry;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+
 public class ShapeControlUtils {
+
+    public static Point2D getViewportRelativeLocation(final Viewport viewport,
+                                                      final AbstractNodeMouseEvent mouseEvent) {
+        return getViewportRelativeLocation(viewport,
+                                           mouseEvent.getX(),
+                                           mouseEvent.getY());
+    }
+
+    public static Point2D getViewportRelativeLocation(final Viewport viewport,
+                                                      final double x,
+                                                      final double y) {
+        final Double relativeX = ((x) - viewport.getTransform().getTranslateX()) / viewport.getTransform().getScaleX();
+        final Double relativeY = ((y) - viewport.getTransform().getTranslateY()) / viewport.getTransform().getScaleY();
+        return new Point2D(relativeX, relativeY);
+    }
 
     public static WiresConnector[] collectionSpecialConnectors(WiresShape shape) {
         if (shape.getMagnets() == null) {

@@ -17,8 +17,6 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
-import java.util.Objects;
-
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IDirectionalMultiPointShape;
@@ -45,6 +43,8 @@ import com.ait.tooling.nativetools.client.collection.NFastDoubleArrayJSO;
 import com.ait.tooling.nativetools.client.collection.NFastStringMap;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
+
+import java.util.Objects;
 
 import static com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleStandardType.POINT;
 
@@ -132,18 +132,6 @@ public class WiresConnector
 
     }
 
-    public void select()
-    {
-        m_connectorControl.showControlPoints();
-        m_group.getLayer().batch();
-    }
-
-    public void unselect()
-    {
-        m_connectorControl.hideControlPoints();
-        m_group.getLayer().batch();
-    }
-
     public void setControl( final WiresConnectorControl control)
     {
         this.m_connectorControl = control;
@@ -157,6 +145,8 @@ public class WiresConnector
     public void destroy()
     {
         destroyPointHandles();
+        m_connectorControl.destroy();
+        m_connectorControl = null;
         removeFromLayer();
     }
 
@@ -165,7 +155,7 @@ public class WiresConnector
         layer.add(m_group);
     }
 
-    public void removeFromLayer()
+    protected void removeFromLayer()
     {
         m_group.removeFromParent();
     }
@@ -187,7 +177,7 @@ public class WiresConnector
         m_group.setDraggable(isDraggable());
     }
 
-    private boolean isDraggable()
+    public boolean isDraggable()
     {
         return getHeadConnection().getMagnet() == null && getTailConnection().getMagnet() == null;
     }
@@ -210,6 +200,17 @@ public class WiresConnector
     public void setPointHandles(IControlHandleList pointHandles)
     {
         m_pointHandles = pointHandles;
+    }
+
+    public WiresConnector listen(final boolean listen)
+    {
+        getGroup().setListening(listen);
+        return this;
+    }
+
+    public boolean isListening()
+    {
+        return getGroup().isListening();
     }
 
     public IDirectionalMultiPointShape<?> getLine()
