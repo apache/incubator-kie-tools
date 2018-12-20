@@ -30,6 +30,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.Deci
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.DescriptionColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.InputClauseColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.OutputClauseColumn;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.function.FunctionKindRowColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.invocation.InvocationParameterColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.literal.LiteralExpressionColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.relation.RelationColumn;
@@ -61,6 +62,7 @@ public class BaseExpressionGridThemeTest {
         add(new Pair<>(DescriptionColumn.class, KIEColours.HEADER_BACKGROUND_WHITE));
         add(new Pair<>(ExpressionEditorColumn.class, KIEColours.HEADER_BACKGROUND_LIGHT_BLUE));
         add(new Pair<>(UndefinedExpressionColumn.class, KIEColours.HEADER_BACKGROUND_LIGHT_BLUE));
+        add(new Pair<>(FunctionKindRowColumn.class, KIEColours.HEADER_BACKGROUND_WHITE));
     }};
 
     private BaseExpressionGridTheme theme;

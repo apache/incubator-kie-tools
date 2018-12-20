@@ -32,6 +32,7 @@ import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.BaseEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.function.kindselector.KindPopoverView;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.parameters.ParametersPopoverView;
 import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
@@ -57,6 +58,7 @@ public class FunctionEditorDefinition extends BaseEditorDefinition<FunctionDefin
 
     private NameAndDataTypePopoverView.Presenter headerEditor;
     private ParametersPopoverView.Presenter parametersEditor;
+    private KindPopoverView.Presenter kindEditor;
 
     public FunctionEditorDefinition() {
         //CDI proxy
@@ -75,7 +77,8 @@ public class FunctionEditorDefinition extends BaseEditorDefinition<FunctionDefin
                                     final @DMNEditor Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
                                     final @FunctionGridSupplementaryEditor Supplier<ExpressionEditorDefinitions> supplementaryEditorDefinitionsSupplier,
                                     final NameAndDataTypePopoverView.Presenter headerEditor,
-                                    final ParametersPopoverView.Presenter parametersEditor) {
+                                    final ParametersPopoverView.Presenter parametersEditor,
+                                    final KindPopoverView.Presenter kindEditor) {
         super(definitionUtils,
               sessionManager,
               sessionCommandManager,
@@ -89,6 +92,7 @@ public class FunctionEditorDefinition extends BaseEditorDefinition<FunctionDefin
         this.supplementaryEditorDefinitionsSupplier = supplementaryEditorDefinitionsSupplier;
         this.headerEditor = headerEditor;
         this.parametersEditor = parametersEditor;
+        this.kindEditor = kindEditor;
     }
 
     @Override
@@ -148,7 +152,8 @@ public class FunctionEditorDefinition extends BaseEditorDefinition<FunctionDefin
                                             expressionEditorDefinitionsSupplier,
                                             supplementaryEditorDefinitionsSupplier,
                                             headerEditor,
-                                            parametersEditor));
+                                            parametersEditor,
+                                            kindEditor));
     }
 
     @Override

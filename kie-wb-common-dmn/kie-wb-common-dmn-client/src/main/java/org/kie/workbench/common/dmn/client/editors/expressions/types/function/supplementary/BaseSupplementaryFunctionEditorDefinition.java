@@ -30,6 +30,8 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.ContextEntry;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
+import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.BaseEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
@@ -46,6 +48,8 @@ import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 
 public abstract class BaseSupplementaryFunctionEditorDefinition extends BaseEditorDefinition<Context, FunctionSupplementaryGridData> {
+
+    private static final BuiltInType DEFAULT_VARIABLE_TYPE = BuiltInType.STRING;
 
     private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
 
@@ -84,17 +88,20 @@ public abstract class BaseSupplementaryFunctionEditorDefinition extends BaseEdit
     public void enrich(final Optional<String> nodeUUID,
                        final HasExpression hasExpression,
                        final Optional<Context> expression) {
-        expression.ifPresent(context -> {
-            getVariableNames().forEach(name -> {
-                final ContextEntry contextEntry = new ContextEntry();
-                final InformationItem variable = new InformationItem();
-                variable.setName(new Name(name));
-                contextEntry.setVariable(variable);
-                contextEntry.setExpression(new LiteralExpression());
-                context.getContextEntry().add(contextEntry);
-                contextEntry.setParent(context);
-            });
-        });
+        expression.ifPresent(context -> getVariableNames().forEach(name -> {
+            final ContextEntry contextEntry = new ContextEntry();
+            contextEntry.setVariable(createVariable(name));
+            contextEntry.setExpression(new LiteralExpression());
+            context.getContextEntry().add(contextEntry);
+            contextEntry.setParent(context);
+        }));
+    }
+
+    InformationItem createVariable(final String name) {
+        final InformationItem variable = new InformationItem();
+        variable.setName(new Name(name));
+        variable.setTypeRef(new QName(DEFAULT_VARIABLE_TYPE));
+        return variable;
     }
 
     @Override

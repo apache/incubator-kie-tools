@@ -28,15 +28,20 @@ public class QName implements DMNProperty {
 
     public static final String DEFAULT_NS_PREFIX = "";
 
-    private String namespaceURI;
+    private final String namespaceURI;
 
-    private String localPart;
+    private final String localPart;
 
-    private String prefix;
+    private final String prefix;
 
     public QName() {
         this(NULL_NS_URI,
              BuiltInType.UNDEFINED.getName());
+    }
+
+    public QName(final BuiltInType type) {
+        this(NULL_NS_URI,
+             type.getName());
     }
 
     public QName(final String namespaceURI,

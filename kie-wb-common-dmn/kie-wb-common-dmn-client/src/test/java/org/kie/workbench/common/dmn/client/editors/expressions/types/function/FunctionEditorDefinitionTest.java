@@ -32,6 +32,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.function.kindselector.KindPopoverView;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.parameters.ParametersPopoverView;
 import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
@@ -109,6 +110,9 @@ public class FunctionEditorDefinitionTest {
     private ParametersPopoverView.Presenter parametersEditor;
 
     @Mock
+    private KindPopoverView.Presenter kindEditor;
+
+    @Mock
     private GridWidget parentGridWidget;
 
     @Mock
@@ -160,7 +164,8 @@ public class FunctionEditorDefinitionTest {
                                                        expressionEditorDefinitionsSupplier,
                                                        supplementaryEditorDefinitionsSupplier,
                                                        headerEditor,
-                                                       parametersEditor);
+                                                       parametersEditor,
+                                                       kindEditor);
         final ExpressionEditorDefinitions expressionEditorDefinitions = new ExpressionEditorDefinitions();
         expressionEditorDefinitions.add((ExpressionEditorDefinition) definition);
 

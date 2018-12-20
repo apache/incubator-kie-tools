@@ -74,7 +74,7 @@ public class FunctionColumnParametersHeaderMetaDataTest {
                                                                  translationService,
                                                                  cellEditorControls,
                                                                  parametersEditor,
-                                                                 Optional.of(DMNEditorConstants.FunctionEditor_EditParameters),
+                                                                 Optional.of(DMNEditorConstants.FunctionEditor_EditParametersTitle),
                                                                  gridWidget);
 
         when(translationService.getTranslation(anyString())).thenAnswer((i) -> i.getArguments()[0]);
@@ -128,7 +128,7 @@ public class FunctionColumnParametersHeaderMetaDataTest {
 
         setupFormalParameters("p0", "p1");
 
-        assertEquals("F : (p0, p1)",
+        assertEquals("(p0, p1)",
                      header.getTitle());
     }
 

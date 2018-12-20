@@ -29,6 +29,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.context.Nam
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.DescriptionColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.InputClauseColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.OutputClauseColumn;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.function.FunctionKindRowColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.invocation.InvocationParameterColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.literal.LiteralExpressionColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.relation.RelationColumn;
@@ -99,6 +100,8 @@ public class BaseExpressionGridTheme implements GridRendererTheme {
             background.setFillColor(KIEColours.HEADER_BACKGROUND_LIGHT_BLUE);
         } else if (column instanceof UndefinedExpressionColumn) {
             background.setFillColor(KIEColours.HEADER_BACKGROUND_LIGHT_BLUE);
+        } else if (column instanceof FunctionKindRowColumn) {
+            background.setFillColor(KIEColours.HEADER_BACKGROUND_WHITE);
         }
         return background;
     }

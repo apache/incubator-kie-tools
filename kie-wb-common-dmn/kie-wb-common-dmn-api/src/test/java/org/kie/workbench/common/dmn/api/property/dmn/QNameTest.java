@@ -69,4 +69,11 @@ public class QNameTest {
 
         assertEquals(explicitQName, implicitQName);
     }
+
+    @Test
+    public void testConstructorWithBuiltInTypeParameter() {
+        final QName qname = new QName(BuiltInType.STRING);
+        assertEquals(qname.getLocalPart(), BuiltInType.STRING.getName());
+        assertEquals(qname.getNamespaceURI(), QName.NULL_NS_URI);
+    }
 }

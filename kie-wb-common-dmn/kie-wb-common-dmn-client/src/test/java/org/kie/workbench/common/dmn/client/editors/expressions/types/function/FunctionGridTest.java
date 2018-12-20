@@ -53,6 +53,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionT
 import org.kie.workbench.common.dmn.client.editors.expressions.types.GridFactoryCommandUtils;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.function.kindselector.KindPopoverView;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.parameters.ParametersPopoverView;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.supplementary.FunctionSupplementaryGrid;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.literal.LiteralExpressionEditorDefinition;
@@ -125,15 +126,7 @@ public class FunctionGridTest {
 
     private static final String NAME_NEW = "name-new";
 
-    private static final int KIND_FEEL = 0;
-
-    private static final int KIND_JAVA = 1;
-
-    private static final int KIND_PMML = 2;
-
-    private final static int DIVIDER = 3;
-
-    private final static int CLEAR_EXPRESSION_TYPE = 4;
+    private final static int CLEAR_EXPRESSION_TYPE = 0;
 
     @Mock
     private DMNGridPanel gridPanel;
@@ -194,6 +187,9 @@ public class FunctionGridTest {
 
     @Mock
     private ParametersPopoverView.Presenter parametersEditor;
+
+    @Mock
+    private KindPopoverView.Presenter kindEditor;
 
     @Mock
     private GridWidget parentGridWidget;
@@ -313,7 +309,8 @@ public class FunctionGridTest {
                                                   expressionEditorDefinitionsSupplier,
                                                   supplementaryEditorDefinitionsSupplier,
                                                   headerEditor,
-                                                  parametersEditor);
+                                                  parametersEditor,
+                                                  kindEditor);
         literalExpressionEditorDefinition = spy(new LiteralExpressionEditorDefinition(definitionUtils,
                                                                                       sessionManager,
                                                                                       sessionCommandManager,
@@ -392,15 +389,15 @@ public class FunctionGridTest {
         final GridData uiModel = grid.getModel();
         assertTrue(uiModel instanceof DMNGridData);
 
-        assertEquals(1,
+        assertEquals(2,
                      uiModel.getColumnCount());
-        assertTrue(uiModel.getColumns().get(0) instanceof ExpressionEditorColumn);
+        assertTrue(uiModel.getColumns().get(1) instanceof ExpressionEditorColumn);
 
         assertEquals(1,
                      uiModel.getRowCount());
 
-        assertTrue(uiModel.getCell(0, 0).getValue() instanceof ExpressionCellValue);
-        final ExpressionCellValue dcv = (ExpressionCellValue) uiModel.getCell(0, 0).getValue();
+        assertTrue(uiModel.getCell(0, 1).getValue() instanceof ExpressionCellValue);
+        final ExpressionCellValue dcv = (ExpressionCellValue) uiModel.getCell(0, 1).getValue();
         assertTrue(dcv.getValue().get() instanceof LiteralExpressionGrid);
     }
 
@@ -415,7 +412,7 @@ public class FunctionGridTest {
     public void testColumnMetaData() {
         setupGrid(0);
 
-        final GridColumn<?> column = grid.getModel().getColumns().get(0);
+        final GridColumn<?> column = grid.getModel().getColumns().get(1);
         final List<GridColumn.HeaderMetaData> header = column.getHeaderMetaData();
 
         assertEquals(2,
@@ -438,7 +435,7 @@ public class FunctionGridTest {
     public void testColumnMetaDataWhenNested() {
         setupGrid(1);
 
-        final GridColumn<?> column = grid.getModel().getColumns().get(0);
+        final GridColumn<?> column = grid.getModel().getColumns().get(1);
         final List<GridColumn.HeaderMetaData> header = column.getHeaderMetaData();
 
         assertEquals(1,
@@ -457,13 +454,12 @@ public class FunctionGridTest {
     public void testOnItemSelectedExpressionColumnDefinedExpressionType() {
         setupGrid(0);
 
-        //The default model from FunctionEditorDefinition has a Literal Expression at (0, 0)
-        final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
+        //The default model from FunctionEditorDefinition has a Literal Expression at (0, 1)
+        final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 1);
 
-        assertThat(items.size()).isEqualTo(5);
-        assertDefaultListItems(items.subList(0, 3));
+        //Only the "Clear" item
+        assertThat(items.size()).isEqualTo(1);
 
-        assertThat(items.get(DIVIDER)).isInstanceOf(HasListSelectorControl.ListSelectorDividerItem.class);
         assertListSelectorItem(items.get(CLEAR_EXPRESSION_TYPE),
                                DMNEditorConstants.ExpressionEditor_Clear);
 
@@ -480,17 +476,11 @@ public class FunctionGridTest {
         //Clear editor for expression at (0, 0)
         grid.getModel().setCellValue(0, 0, new ExpressionCellValue(Optional.empty()));
 
-        assertDefaultListItems(grid.getItems(0, 0));
+        assertNoListItems(grid.getItems(0, 0));
     }
 
-    private void assertDefaultListItems(final List<HasListSelectorControl.ListSelectorItem> items) {
-        assertThat(items.size()).isEqualTo(3);
-        assertListSelectorItem(items.get(KIND_FEEL),
-                               DMNEditorConstants.FunctionEditor_FEEL);
-        assertListSelectorItem(items.get(KIND_JAVA),
-                               DMNEditorConstants.FunctionEditor_JAVA);
-        assertListSelectorItem(items.get(KIND_PMML),
-                               DMNEditorConstants.FunctionEditor_PMML);
+    private void assertNoListItems(final List<HasListSelectorControl.ListSelectorItem> items) {
+        assertThat(items.size()).isEqualTo(0);
     }
 
     private void assertListSelectorItem(final HasListSelectorControl.ListSelectorItem item,
@@ -511,51 +501,6 @@ public class FunctionGridTest {
         grid.onItemSelected(listSelectorItem);
 
         verify(command).execute();
-    }
-
-    @Test
-    public void testOnItemSelectedKindFEEL() {
-        setupGrid(0);
-
-        final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
-        final HasListSelectorControl.ListSelectorTextItem ti = (HasListSelectorControl.ListSelectorTextItem) items.get(KIND_FEEL);
-
-        when(supplementaryLiteralExpressionEditorDefinition.getType()).thenReturn(ExpressionType.FUNCTION);
-
-        grid.onItemSelected(ti);
-
-        verify(cellEditorControls).hide();
-        verify(grid).setKind(eq(FunctionDefinition.Kind.FEEL));
-    }
-
-    @Test
-    public void testOnItemSelectedKindJava() {
-        setupGrid(0);
-
-        final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
-        final HasListSelectorControl.ListSelectorTextItem ti = (HasListSelectorControl.ListSelectorTextItem) items.get(KIND_JAVA);
-
-        when(supplementaryLiteralExpressionEditorDefinition.getType()).thenReturn(ExpressionType.FUNCTION_JAVA);
-
-        grid.onItemSelected(ti);
-
-        verify(cellEditorControls).hide();
-        verify(grid).setKind(eq(FunctionDefinition.Kind.JAVA));
-    }
-
-    @Test
-    public void testOnItemSelectedKindPMML() {
-        setupGrid(0);
-
-        final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
-        final HasListSelectorControl.ListSelectorTextItem ti = (HasListSelectorControl.ListSelectorTextItem) items.get(KIND_PMML);
-
-        when(supplementaryLiteralExpressionEditorDefinition.getType()).thenReturn(ExpressionType.FUNCTION_PMML);
-
-        grid.onItemSelected(ti);
-
-        verify(cellEditorControls).hide();
-        verify(grid).setKind(eq(FunctionDefinition.Kind.PMML));
     }
 
     @Test
@@ -763,7 +708,7 @@ public class FunctionGridTest {
         final GridCellTuple parent = parentCaptor.getValue();
         assertEquals(grid, parent.getGridWidget());
         assertEquals(0, parent.getRowIndex());
-        assertEquals(0, parent.getColumnIndex());
+        assertEquals(1, parent.getColumnIndex());
 
         //Check undo operation
         reset(grid, gridLayer);
@@ -810,10 +755,10 @@ public class FunctionGridTest {
         clearExpressionTypeCommand.undo(canvasHandler);
 
         //Verify Expression has been restored and UndefinedExpressionEditor resized
-        assertThat(grid.getModel().getColumns().get(0).getWidth()).isEqualTo(UndefinedExpressionColumn.DEFAULT_WIDTH);
+        assertThat(grid.getModel().getColumns().get(1).getWidth()).isEqualTo(UndefinedExpressionColumn.DEFAULT_WIDTH);
         verify(grid).resize(BaseExpressionGrid.RESIZE_EXISTING_MINIMUM);
 
-        verify(grid).selectExpressionEditorFirstCell(eq(0), eq(0));
+        verify(grid).selectExpressionEditorFirstCell(eq(0), eq(1));
         verify(gridLayer).select(literalExpressionEditor);
         verify(literalExpressionEditor, times(2)).selectFirstCell();
 
@@ -828,7 +773,8 @@ public class FunctionGridTest {
         setupGrid(0);
 
         final double literalWidth = 200.0;
-        final double columnWidth = literalWidth + 2 * grid.getPadding();
+        final double changeKindColumnWidth = 150.0;
+        final double columnWidth = changeKindColumnWidth + literalWidth + 2 * grid.getPadding();
 
         grid.getModel().getColumns().get(0).setWidth(literalWidth);
 
@@ -854,7 +800,7 @@ public class FunctionGridTest {
     }
 
     private FunctionColumnNameHeaderMetaData extractHeaderMetaData() {
-        final FunctionColumn column = (FunctionColumn) grid.getModel().getColumns().get(0);
+        final FunctionColumn column = (FunctionColumn) grid.getModel().getColumns().get(1);
         return (FunctionColumnNameHeaderMetaData) column.getHeaderMetaData().get(0);
     }
 
@@ -976,7 +922,7 @@ public class FunctionGridTest {
     public void testSelectHeaderParametersRow() {
         setupGrid(0);
 
-        grid.selectHeaderCell(1, 0, false, false);
+        grid.selectHeaderCell(1, 1, false, false);
 
         assertNOPDomainObjectSelection();
     }

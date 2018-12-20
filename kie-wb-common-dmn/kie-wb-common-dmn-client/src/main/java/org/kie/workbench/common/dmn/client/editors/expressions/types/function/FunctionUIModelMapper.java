@@ -94,8 +94,8 @@ public class FunctionUIModelMapper extends BaseUIModelMapper<FunctionDefinition>
                                   final int columnIndex,
                                   final FunctionDefinition function,
                                   final ExpressionEditorDefinition<Expression> ed) {
-        final GridCellTuple expressionParent = new GridCellTuple(0,
-                                                                 0,
+        final GridCellTuple expressionParent = new GridCellTuple(rowIndex,
+                                                                 columnIndex,
                                                                  gridWidget);
         final Optional<Expression> expression = Optional.ofNullable(function.getExpression());
         final Optional<BaseExpressionGrid> editor = ed.getEditor(expressionParent,
