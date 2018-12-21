@@ -64,6 +64,15 @@ public class DefinitionsBuildingContext
     }
 
     public DefinitionsBuildingContext(
+            Graph<DefinitionSet,
+                    Node<View<? extends BPMNViewDefinition>,
+                            Edge<ViewConnector<BPMNViewDefinition>,
+                                    Node<? extends View<? extends BPMNViewDefinition>, ?>>>> graph,
+            Class<?> nodeType) {
+        super(graph, nodeType);
+    }
+
+    public DefinitionsBuildingContext(
             Node<?, ?> firstNode,
             Map<String, Node> nodes) {
         super(firstNode, nodes);
@@ -90,8 +99,13 @@ abstract class DefinitionsContextHelper<
     private final Node firstNode;
 
     public DefinitionsContextHelper(Graph<DefinitionSet, NodeT> graph) {
+        this(graph, BPMNDiagramImpl.class);
+    }
+
+    public DefinitionsContextHelper(Graph<DefinitionSet, NodeT> graph,
+                                    Class<?> nodeType) {
         this.firstNode =
-                GraphUtils.getFirstNode((Graph) graph, BPMNDiagramImpl.class);
+                GraphUtils.getFirstNode((Graph) graph, nodeType);
 
         this.nodes =
                 StreamSupport

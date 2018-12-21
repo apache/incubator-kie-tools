@@ -42,8 +42,8 @@ import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinition;
 
 public class PropertyReaderFactory {
 
-    private final BPMNPlane plane;
-    private final DefinitionResolver definitionResolver;
+    protected final BPMNPlane plane;
+    protected final DefinitionResolver definitionResolver;
 
     public PropertyReaderFactory(DefinitionResolver definitionResolver) {
         this.plane = definitionResolver.getPlane();

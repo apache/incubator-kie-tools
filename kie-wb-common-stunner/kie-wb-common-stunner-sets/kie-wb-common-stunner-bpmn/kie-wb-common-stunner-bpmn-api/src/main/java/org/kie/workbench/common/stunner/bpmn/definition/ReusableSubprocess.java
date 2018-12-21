@@ -53,7 +53,8 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
         policy = FieldPolicy.ONLY_MARKED,
         defaultFieldSettings = {@FieldParam(name = FIELD_CONTAINER_PARAM, value = COLLAPSIBLE_CONTAINER)}
 )
-public class ReusableSubprocess extends BaseNonContainerSubprocess implements DataIOModel {
+public class ReusableSubprocess
+        extends BaseReusableSubprocess<ReusableSubprocessTaskExecutionSet> implements DataIOModel {
 
     @PropertySet
     @FormField(
@@ -115,18 +116,22 @@ public class ReusableSubprocess extends BaseNonContainerSubprocess implements Da
         return false;
     }
 
+    @Override
     public ReusableSubprocessTaskExecutionSet getExecutionSet() {
         return executionSet;
     }
 
+    @Override
     public DataIOSet getDataIOSet() {
         return dataIOSet;
     }
 
+    @Override
     public void setExecutionSet(final ReusableSubprocessTaskExecutionSet executionSet) {
         this.executionSet = executionSet;
     }
 
+    @Override
     public void setDataIOSet(final DataIOSet dataIOSet) {
         this.dataIOSet = dataIOSet;
     }

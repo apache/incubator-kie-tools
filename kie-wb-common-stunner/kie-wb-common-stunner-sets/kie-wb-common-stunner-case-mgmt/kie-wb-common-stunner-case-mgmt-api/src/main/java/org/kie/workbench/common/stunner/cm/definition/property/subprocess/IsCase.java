@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.stunner.cm.definition.property.subprocess;
 
+import javax.validation.constraints.NotNull;
+
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldDefinition;
@@ -28,17 +30,18 @@ import org.kie.workbench.common.stunner.core.definition.annotation.property.Valu
 @Bindable
 @Property
 @FieldDefinition(i18nMode = I18nMode.OVERRIDE_I18N_KEY)
-public class Case implements BPMNProperty {
+public class IsCase implements BPMNProperty {
 
     @Value
+    @NotNull
     @FieldValue
     private Boolean value;
 
-    public Case() {
+    public IsCase() {
         this(false);
     }
 
-    public Case(final Boolean value) {
+    public IsCase(final Boolean value) {
         this.value = value;
     }
 
@@ -57,8 +60,8 @@ public class Case implements BPMNProperty {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof Case) {
-            Case other = (Case) o;
+        if (o instanceof IsCase) {
+            IsCase other = (IsCase) o;
             return (null != value) ? value.equals(other.value) : null == other.value;
         }
         return false;

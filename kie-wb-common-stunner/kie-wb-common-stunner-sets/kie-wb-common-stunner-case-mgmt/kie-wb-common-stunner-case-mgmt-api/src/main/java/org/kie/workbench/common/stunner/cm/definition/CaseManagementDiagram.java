@@ -135,52 +135,62 @@ public class CaseManagementDiagram implements BPMNDiagram {
         return labels;
     }
 
+    @Override
     public DiagramSet getDiagramSet() {
         return diagramSet;
-    }
-
-    public ProcessData getProcessData() {
-        return processData;
-    }
-
-    public CaseManagementSet getCaseManagementSet() {
-        return caseManagementSet;
-    }
-
-    public BackgroundSet getBackgroundSet() {
-        return backgroundSet;
-    }
-
-    public FontSet getFontSet() {
-        return fontSet;
     }
 
     public RectangleDimensionsSet getDimensionsSet() {
         return dimensionsSet;
     }
 
-    public void setDiagramSet(final DiagramSet diagramSet) {
-        this.diagramSet = diagramSet;
+    public void setDimensionsSet(final RectangleDimensionsSet dimensionsSet) {
+        this.dimensionsSet = dimensionsSet;
     }
 
-    public void setProcessData(final ProcessData processData) {
-        this.processData = processData;
+    @Override
+    public CaseManagementSet getCaseManagementSet() {
+        return caseManagementSet;
     }
 
+    @Override
     public void setCaseManagementSet(final CaseManagementSet caseManagementSet) {
         this.caseManagementSet = caseManagementSet;
     }
 
+    @Override
+    public ProcessData getProcessData() {
+        return processData;
+    }
+
+    @Override
+    public BackgroundSet getBackgroundSet() {
+        return backgroundSet;
+    }
+
+    @Override
+    public FontSet getFontSet() {
+        return fontSet;
+    }
+
+    @Override
+    public void setDiagramSet(final DiagramSet diagramSet) {
+        this.diagramSet = diagramSet;
+    }
+
+    @Override
+    public void setProcessData(final ProcessData processData) {
+        this.processData = processData;
+    }
+
+    @Override
     public void setBackgroundSet(final BackgroundSet backgroundSet) {
         this.backgroundSet = backgroundSet;
     }
 
+    @Override
     public void setFontSet(final FontSet fontSet) {
         this.fontSet = fontSet;
-    }
-
-    public void setDimensionsSet(final RectangleDimensionsSet dimensionsSet) {
-        this.dimensionsSet = dimensionsSet;
     }
 
     @Override

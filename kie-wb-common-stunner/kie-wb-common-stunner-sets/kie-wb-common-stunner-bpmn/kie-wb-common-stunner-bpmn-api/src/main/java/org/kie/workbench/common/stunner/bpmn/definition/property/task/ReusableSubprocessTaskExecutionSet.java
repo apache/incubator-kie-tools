@@ -25,7 +25,6 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.annotations.field.selector.SelectorDataProvider;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.type.ListBoxFieldType;
-import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
@@ -36,7 +35,7 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 @FormDefinition(
         startElement = "calledElement"
 )
-public class ReusableSubprocessTaskExecutionSet implements BPMNPropertySet {
+public class ReusableSubprocessTaskExecutionSet implements BaseReusableSubprocessTaskExecutionSet {
 
     @Property
     @SelectorDataProvider(
@@ -107,50 +106,62 @@ public class ReusableSubprocessTaskExecutionSet implements BPMNPropertySet {
         this.onExitAction = onExitAction;
     }
 
+    @Override
     public CalledElement getCalledElement() {
         return calledElement;
     }
 
+    @Override
     public Independent getIndependent() {
         return independent;
     }
 
+    @Override
     public WaitForCompletion getWaitForCompletion() {
         return waitForCompletion;
     }
 
+    @Override
     public void setCalledElement(final CalledElement calledElement) {
         this.calledElement = calledElement;
     }
 
+    @Override
     public void setIndependent(final Independent independent) {
         this.independent = independent;
     }
 
+    @Override
     public void setWaitForCompletion(final WaitForCompletion waitForCompletion) {
         this.waitForCompletion = waitForCompletion;
     }
 
+    @Override
     public IsAsync getIsAsync() {
         return isAsync;
     }
 
-    public void setIsAsync(IsAsync isAsync) {
+    @Override
+    public void setIsAsync(final IsAsync isAsync) {
         this.isAsync = isAsync;
     }
 
+    @Override
     public OnEntryAction getOnEntryAction() {
         return onEntryAction;
     }
 
+    @Override
     public void setOnEntryAction(final OnEntryAction onEntryAction) {
         this.onEntryAction = onEntryAction;
     }
 
+    @Override
     public OnExitAction getOnExitAction() {
         return onExitAction;
     }
 
+    @Override
     public void setOnExitAction(final OnExitAction onExitAction) {
         this.onExitAction = onExitAction;
     }

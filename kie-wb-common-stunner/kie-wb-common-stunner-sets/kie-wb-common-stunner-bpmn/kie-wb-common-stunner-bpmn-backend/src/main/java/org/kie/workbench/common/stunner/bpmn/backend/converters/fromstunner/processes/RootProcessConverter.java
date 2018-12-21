@@ -17,11 +17,12 @@
 package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.processes;
 
 import org.eclipse.bpmn2.Process;
-import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.ConverterFactory;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.BaseConverterFactory;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.DefinitionsBuildingContext;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.ProcessPropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.PropertyWriterFactory;
-import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
+import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
+import org.kie.workbench.common.stunner.bpmn.definition.BaseAdHocSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseFileVariables;
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseIdPrefix;
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseRoles;
@@ -32,14 +33,16 @@ import org.kie.workbench.common.stunner.core.graph.content.definition.Definition
 
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpmn2;
 
-public class RootProcessConverter {
+public class RootProcessConverter<D extends BPMNDiagram, A extends BaseAdHocSubprocess> {
 
-    private final ProcessConverterDelegate delegate;
+    private final ProcessConverterDelegate<A> delegate;
     private final DefinitionsBuildingContext context;
     private final PropertyWriterFactory propertyWriterFactory;
 
-    public RootProcessConverter(DefinitionsBuildingContext context, PropertyWriterFactory propertyWriterFactory, ConverterFactory converterFactory) {
-        this.delegate = new ProcessConverterDelegate(converterFactory);
+    public RootProcessConverter(DefinitionsBuildingContext context,
+                                PropertyWriterFactory propertyWriterFactory,
+                                BaseConverterFactory<D, A, ?> converterFactory) {
+        this.delegate = new ProcessConverterDelegate<>(converterFactory);
         this.context = context;
         this.propertyWriterFactory = propertyWriterFactory;
     }
@@ -53,11 +56,11 @@ public class RootProcessConverter {
         return processRoot;
     }
 
-    private ProcessPropertyWriter convertProcessNode(Node<Definition<BPMNDiagramImpl>, ?> node) {
+    private ProcessPropertyWriter convertProcessNode(Node<Definition<D>, ?> node) {
         Process process = bpmn2.createProcess();
 
         ProcessPropertyWriter p = propertyWriterFactory.of(process);
-        BPMNDiagramImpl definition = node.getContent().getDefinition();
+        D definition = node.getContent().getDefinition();
 
         DiagramSet diagramSet = definition.getDiagramSet();
 

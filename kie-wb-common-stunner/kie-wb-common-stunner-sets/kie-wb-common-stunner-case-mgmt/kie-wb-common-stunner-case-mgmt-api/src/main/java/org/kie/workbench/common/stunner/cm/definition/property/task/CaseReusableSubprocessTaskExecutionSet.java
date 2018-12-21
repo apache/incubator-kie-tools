@@ -25,7 +25,6 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.annotations.field.selector.SelectorDataProvider;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.type.ListBoxFieldType;
-import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.CalledElement;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.Independent;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.IsAsync;
@@ -34,7 +33,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnExitActi
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeListValue;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeValue;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.WaitForCompletion;
-import org.kie.workbench.common.stunner.cm.definition.property.subprocess.Case;
+import org.kie.workbench.common.stunner.cm.definition.property.subprocess.IsCase;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
@@ -45,7 +44,8 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 @FormDefinition(
         startElement = "calledElement"
 )
-public class CaseReusableSubprocessTaskExecutionSet implements BPMNPropertySet {
+public class CaseReusableSubprocessTaskExecutionSet
+        implements BaseCaseManagementReusableSubprocessTaskExecutionSet {
 
     @Property
     @SelectorDataProvider(
@@ -63,11 +63,11 @@ public class CaseReusableSubprocessTaskExecutionSet implements BPMNPropertySet {
             afterElement = "calledElement"
     )
     @Valid
-    protected Case caze;
+    protected IsCase isCase;
 
     @Property
     @FormField(
-            afterElement = "caze"
+            afterElement = "isCase"
     )
     @Valid
     protected Independent independent;
@@ -102,7 +102,7 @@ public class CaseReusableSubprocessTaskExecutionSet implements BPMNPropertySet {
 
     public CaseReusableSubprocessTaskExecutionSet() {
         this(new CalledElement(),
-             new Case(true),
+             new IsCase(true),
              new Independent(),
              new WaitForCompletion(),
              new IsAsync(),
@@ -111,14 +111,14 @@ public class CaseReusableSubprocessTaskExecutionSet implements BPMNPropertySet {
     }
 
     public CaseReusableSubprocessTaskExecutionSet(final @MapsTo("calledElement") CalledElement calledElement,
-                                                  final @MapsTo("caze") Case caze,
+                                                  final @MapsTo("isCase") IsCase isCase,
                                                   final @MapsTo("independent") Independent independent,
                                                   final @MapsTo("waitForCompletion") WaitForCompletion waitForCompletion,
                                                   final @MapsTo("isAsync") IsAsync isAsync,
                                                   final @MapsTo("onEntryAction") OnEntryAction onEntryAction,
                                                   final @MapsTo("onExitAction") OnExitAction onExitAction) {
         this.calledElement = calledElement;
-        this.caze = caze;
+        this.isCase = isCase;
         this.independent = independent;
         this.waitForCompletion = waitForCompletion;
         this.isAsync = isAsync;
@@ -126,58 +126,72 @@ public class CaseReusableSubprocessTaskExecutionSet implements BPMNPropertySet {
         this.onExitAction = onExitAction;
     }
 
+    @Override
     public CalledElement getCalledElement() {
         return calledElement;
     }
 
+    @Override
     public void setCalledElement(final CalledElement calledElement) {
         this.calledElement = calledElement;
     }
 
-    public Case getCaze() {
-        return caze;
+    @Override
+    public IsCase getIsCase() {
+        return isCase;
     }
 
-    public void setCaze(Case caze) {
-        this.caze = caze;
+    @Override
+    public void setIsCase(final IsCase isCase) {
+        this.isCase = isCase;
     }
 
+    @Override
     public Independent getIndependent() {
         return independent;
     }
 
+    @Override
     public WaitForCompletion getWaitForCompletion() {
         return waitForCompletion;
     }
 
+    @Override
     public void setIndependent(final Independent independent) {
         this.independent = independent;
     }
 
+    @Override
     public void setWaitForCompletion(final WaitForCompletion waitForCompletion) {
         this.waitForCompletion = waitForCompletion;
     }
 
+    @Override
     public IsAsync getIsAsync() {
         return isAsync;
     }
 
+    @Override
     public void setIsAsync(IsAsync isAsync) {
         this.isAsync = isAsync;
     }
 
+    @Override
     public OnEntryAction getOnEntryAction() {
         return onEntryAction;
     }
 
+    @Override
     public void setOnEntryAction(final OnEntryAction onEntryAction) {
         this.onEntryAction = onEntryAction;
     }
 
+    @Override
     public OnExitAction getOnExitAction() {
         return onExitAction;
     }
 
+    @Override
     public void setOnExitAction(final OnExitAction onExitAction) {
         this.onExitAction = onExitAction;
     }
@@ -185,7 +199,7 @@ public class CaseReusableSubprocessTaskExecutionSet implements BPMNPropertySet {
     @Override
     public int hashCode() {
         return HashUtil.combineHashCodes(calledElement.hashCode(),
-                                         caze.hashCode(),
+                                         isCase.hashCode(),
                                          independent.hashCode(),
                                          waitForCompletion.hashCode(),
                                          isAsync.hashCode(),
@@ -198,7 +212,7 @@ public class CaseReusableSubprocessTaskExecutionSet implements BPMNPropertySet {
         if (o instanceof CaseReusableSubprocessTaskExecutionSet) {
             CaseReusableSubprocessTaskExecutionSet other = (CaseReusableSubprocessTaskExecutionSet) o;
             return calledElement.equals(other.calledElement) &&
-                    caze.equals(other.caze) &&
+                    isCase.equals(other.isCase) &&
                     independent.equals(other.independent) &&
                     waitForCompletion.equals(other.waitForCompletion) &&
                     isAsync.equals(other.isAsync) &&

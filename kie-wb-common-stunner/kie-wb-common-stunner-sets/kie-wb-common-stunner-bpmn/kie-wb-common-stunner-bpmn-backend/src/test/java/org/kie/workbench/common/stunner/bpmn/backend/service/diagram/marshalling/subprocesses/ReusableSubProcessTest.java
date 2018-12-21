@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.junit.Test;
 import org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess;
-import org.kie.workbench.common.stunner.bpmn.definition.property.task.ReusableSubprocessTaskExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.BaseReusableSubprocessTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeValue;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
@@ -445,7 +445,7 @@ public class ReusableSubProcessTest extends SubProcess<ReusableSubprocess> {
         return SUBPROCESS_LEVEL_SUBPROCESS_WITH_EDGES_JAVA_ID;
     }
 
-    private void assertReusableSubProcessExecutionSet(ReusableSubprocessTaskExecutionSet executionSet,
+    private void assertReusableSubProcessExecutionSet(BaseReusableSubprocessTaskExecutionSet executionSet,
                                                       String calledElement,
                                                       boolean independent,
                                                       boolean isAsync,

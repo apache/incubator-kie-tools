@@ -25,8 +25,8 @@ import org.eclipse.bpmn2.FlowElement;
 import org.eclipse.bpmn2.LaneSet;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.Result;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.TypedFactoryManager;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.BaseConverterFactory;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.BpmnNode;
-import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.ConverterFactory;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.PropertyReaderFactory;
 
@@ -43,13 +43,13 @@ final class ProcessConverterDelegate {
     protected final TypedFactoryManager factoryManager;
     protected final PropertyReaderFactory propertyReaderFactory;
     protected final DefinitionResolver definitionResolver;
-    private final ConverterFactory converterFactory;
+    private final BaseConverterFactory converterFactory;
 
     ProcessConverterDelegate(
             TypedFactoryManager typedFactoryManager,
             PropertyReaderFactory propertyReaderFactory,
             DefinitionResolver definitionResolver,
-            ConverterFactory factory) {
+            BaseConverterFactory factory) {
 
         this.factoryManager = typedFactoryManager;
         this.definitionResolver = definitionResolver;

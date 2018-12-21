@@ -86,8 +86,10 @@ public class Bpmn2JsonUnmarshallerTest {
         final CallActivity callActivity = mock(CallActivity.class);
         when(callActivity.getExtensionValues()).thenReturn(new ArrayList<>());
 
-        final String propertyName = "case";
+        final String propertyName = "isCase";
         final String propertyValue = "true";
+        final String resultName = "case";
+        final String resultValue = "<![CDATA[" + propertyValue + "]]>";
 
         final Map<String, String> properties = new HashMap<>();
         properties.put(propertyName, propertyValue);
@@ -98,10 +100,10 @@ public class Bpmn2JsonUnmarshallerTest {
         final ExtensionAttributeValue extenstionValue = callActivity.getExtensionValues().get(0);
 
         final Optional<String> value = extenstionValue.getValue().stream()
-                .filter(v -> propertyName.equals(((MetaDataType) v.getValue()).getName()))
+                .filter(v -> resultName.equals(((MetaDataType) v.getValue()).getName()))
                 .map(v -> ((MetaDataType) v.getValue()).getMetaValue()).findAny();
 
-        assertTrue(value.isPresent() && propertyValue.equals(value.get()));
+        assertTrue(value.isPresent() && resultValue.equals(value.get()));
     }
 
     private static final class Value<T> {

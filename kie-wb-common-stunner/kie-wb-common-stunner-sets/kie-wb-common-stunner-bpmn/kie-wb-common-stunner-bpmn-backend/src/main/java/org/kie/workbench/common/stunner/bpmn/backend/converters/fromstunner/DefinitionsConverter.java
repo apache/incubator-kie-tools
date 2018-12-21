@@ -27,11 +27,11 @@ import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunn
 
 public class DefinitionsConverter {
 
-    private final ConverterFactory converterFactory;
+    private final BaseConverterFactory converterFactory;
     private final PropertyWriterFactory propertyWriterFactory;
     private final RootProcessConverter processConverter;
 
-    public DefinitionsConverter(ConverterFactory converterFactory, PropertyWriterFactory propertyWriterFactory) {
+    public DefinitionsConverter(BaseConverterFactory converterFactory, PropertyWriterFactory propertyWriterFactory) {
         this.propertyWriterFactory = propertyWriterFactory;
         this.converterFactory = converterFactory;
         this.processConverter = converterFactory.processConverter();

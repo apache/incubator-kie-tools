@@ -27,7 +27,7 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
-import org.kie.workbench.common.stunner.bpmn.definition.BaseSubprocess;
+import org.kie.workbench.common.stunner.bpmn.definition.BaseAdHocSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.RectangleDimensionsSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
@@ -58,7 +58,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 // presumably because there are two fields called "labels" (although I've also tried with a different name field
 // and it leads to the same errors).
 public class AdHocSubprocess
-        extends BaseSubprocess {
+        extends BaseAdHocSubprocess {
 
     @PropertySet
     @FormField(afterElement = "general")
@@ -100,18 +100,22 @@ public class AdHocSubprocess
         this.processData = processData;
     }
 
+    @Override
     public AdHocSubprocessTaskExecutionSet getExecutionSet() {
         return executionSet;
     }
 
+    @Override
     public void setExecutionSet(final AdHocSubprocessTaskExecutionSet executionSet) {
         this.executionSet = executionSet;
     }
 
+    @Override
     public ProcessData getProcessData() {
         return processData;
     }
 
+    @Override
     public void setProcessData(final ProcessData processData) {
         this.processData = processData;
     }

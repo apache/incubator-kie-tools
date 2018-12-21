@@ -19,7 +19,7 @@ import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
-import org.kie.workbench.common.stunner.bpmn.definition.BaseSubprocess;
+import org.kie.workbench.common.stunner.bpmn.definition.BaseReusableSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOModel;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
@@ -27,23 +27,25 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.Rect
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationSet;
+import org.kie.workbench.common.stunner.cm.definition.property.task.BaseCaseManagementReusableSubprocessTaskExecutionSet;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 
-public abstract class AbstractReusableSubprocess extends BaseSubprocess implements DataIOModel {
+public abstract class BaseCaseManagementReusableSubprocess<E extends BaseCaseManagementReusableSubprocessTaskExecutionSet>
+        extends BaseReusableSubprocess<E> implements DataIOModel {
 
     @PropertySet
     @FormField
     @Valid
     protected DataIOSet dataIOSet;
 
-    public AbstractReusableSubprocess(final @MapsTo("general") BPMNGeneralSet general,
-                                  final @MapsTo("dataIOSet") DataIOSet dataIOSet,
-                                  final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
-                                  final @MapsTo("fontSet") FontSet fontSet,
-                                  final @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet,
-                                  final @MapsTo("simulationSet") SimulationSet simulationSet) {
+    public BaseCaseManagementReusableSubprocess(final @MapsTo("general") BPMNGeneralSet general,
+                                                final @MapsTo("dataIOSet") DataIOSet dataIOSet,
+                                                final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
+                                                final @MapsTo("fontSet") FontSet fontSet,
+                                                final @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet,
+                                                final @MapsTo("simulationSet") SimulationSet simulationSet) {
         super(general,
               backgroundSet,
               fontSet,
@@ -88,6 +90,12 @@ public abstract class AbstractReusableSubprocess extends BaseSubprocess implemen
     }
 
     @Override
+    public abstract E getExecutionSet();
+
+    @Override
+    public abstract void setExecutionSet(E executionSet);
+
+    @Override
     public int hashCode() {
         return HashUtil.combineHashCodes(super.hashCode(),
                                          dataIOSet.hashCode());
@@ -95,8 +103,8 @@ public abstract class AbstractReusableSubprocess extends BaseSubprocess implemen
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof AbstractReusableSubprocess) {
-            AbstractReusableSubprocess other = (AbstractReusableSubprocess) o;
+        if (o instanceof BaseCaseManagementReusableSubprocess) {
+            BaseCaseManagementReusableSubprocess other = (BaseCaseManagementReusableSubprocess) o;
 
             return super.equals(other) &&
                     dataIOSet.equals(other.dataIOSet);

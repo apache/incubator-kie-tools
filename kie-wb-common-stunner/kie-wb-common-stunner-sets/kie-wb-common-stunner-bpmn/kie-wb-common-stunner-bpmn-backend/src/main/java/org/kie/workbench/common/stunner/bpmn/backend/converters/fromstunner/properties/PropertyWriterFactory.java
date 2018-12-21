@@ -37,7 +37,7 @@ import org.eclipse.bpmn2.UserTask;
 
 public class PropertyWriterFactory {
 
-    private final VariableScope variableScope = new FlatVariableScope();
+    protected final VariableScope variableScope = new FlatVariableScope();
 
     public UserTaskPropertyWriter of(UserTask e) {
         return new UserTaskPropertyWriter(e, variableScope);

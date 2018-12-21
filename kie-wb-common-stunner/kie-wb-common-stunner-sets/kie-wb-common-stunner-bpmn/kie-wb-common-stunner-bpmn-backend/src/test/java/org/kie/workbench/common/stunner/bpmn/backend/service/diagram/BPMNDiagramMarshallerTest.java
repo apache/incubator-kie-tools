@@ -122,7 +122,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.event.timer.Int
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocSubprocessTaskExecutionSet;
-import org.kie.workbench.common.stunner.bpmn.definition.property.task.ReusableSubprocessTaskExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.BaseReusableSubprocessTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskTypes;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.UserTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessData;
@@ -1738,7 +1738,7 @@ public class BPMNDiagramMarshallerTest {
         assertNotNull(reusableSubprocess.getGeneral());
 
         BPMNGeneralSet generalSet = reusableSubprocess.getGeneral();
-        ReusableSubprocessTaskExecutionSet executionSet = reusableSubprocess.getExecutionSet();
+        BaseReusableSubprocessTaskExecutionSet executionSet = reusableSubprocess.getExecutionSet();
         assertNotNull(generalSet);
         assertNotNull(executionSet);
 

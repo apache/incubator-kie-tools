@@ -50,11 +50,11 @@ public abstract class ElementDefinition<T> {
 
     public abstract void setValue(BaseElement element, T value);
 
-    Optional<java.lang.String> getStringValue(BaseElement element) {
+    protected Optional<java.lang.String> getStringValue(BaseElement element) {
         return Optional.ofNullable(Utils.getMetaDataValue(element.getExtensionValues(), name));
     }
 
-    void setStringValue(BaseElement element, String value) {
+    protected void setStringValue(BaseElement element, String value) {
         FeatureMap.Entry extension = extensionOf(
                 DOCUMENT_ROOT__META_DATA, metaDataOf(value));
         getExtensionElements(element).add(extension);

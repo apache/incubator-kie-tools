@@ -23,22 +23,45 @@ import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
 import org.kie.workbench.common.stunner.cm.resource.CaseManagementDefinitionSetResourceType;
 import org.kie.workbench.common.stunner.core.backend.service.AbstractDefinitionSetService;
 import org.kie.workbench.common.stunner.core.definition.DefinitionSetResourceType;
+import org.kie.workbench.common.stunner.core.definition.service.DiagramMarshaller;
+import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
+import org.kie.workbench.common.stunner.core.graph.Graph;
+import org.slf4j.LoggerFactory;
 
 @ApplicationScoped
 public class CaseManagementBackendService extends AbstractDefinitionSetService {
 
+    private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(CaseManagementBackendService.class);
+    private static final String MARSHALLER_LEGACY_PROPERTY = "cm.marshaller.legacy";
+
     private CaseManagementDefinitionSetResourceType cmResourceType;
 
     protected CaseManagementBackendService() {
-        this(null,
-             null);
+        this(null, null, null);
     }
 
     @Inject
     public CaseManagementBackendService(final @CaseManagementEditor CaseManagementDiagramMarshaller cmDiagramMarshaller,
+                                        final @CaseManagementEditor CaseManagementDirectDiagramMarshaller cmDirectDiagramMarshaller,
                                         final CaseManagementDefinitionSetResourceType cmResourceType) {
-        super(cmDiagramMarshaller);
+        super(chooseMarshaller(cmDiagramMarshaller,
+                               cmDirectDiagramMarshaller));
         this.cmResourceType = cmResourceType;
+    }
+
+    private static DiagramMarshaller<Graph, Metadata, Diagram<Graph, Metadata>> chooseMarshaller(
+            final CaseManagementDiagramMarshaller cmDiagramMarshaller,
+            final CaseManagementDirectDiagramMarshaller cmDirectDiagramMarshaller) {
+
+        Boolean useLegacyMarshaller =
+                Boolean.parseBoolean(System.getProperty(MARSHALLER_LEGACY_PROPERTY, "false"));
+
+        LOG.info("{} = {}", MARSHALLER_LEGACY_PROPERTY, useLegacyMarshaller);
+
+        return (useLegacyMarshaller) ?
+                cmDiagramMarshaller :
+                cmDirectDiagramMarshaller;
     }
 
     @Override

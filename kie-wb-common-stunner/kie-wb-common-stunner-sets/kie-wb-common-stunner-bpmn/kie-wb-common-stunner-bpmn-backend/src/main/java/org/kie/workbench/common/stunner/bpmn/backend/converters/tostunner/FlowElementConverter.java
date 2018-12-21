@@ -32,9 +32,9 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.Result;
 
 public class FlowElementConverter {
 
-    private final ConverterFactory converterFactory;
+    private final BaseConverterFactory converterFactory;
 
-    public FlowElementConverter(ConverterFactory converterFactory) {
+    public FlowElementConverter(BaseConverterFactory converterFactory) {
         this.converterFactory = converterFactory;
     }
 
