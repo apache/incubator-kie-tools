@@ -26,6 +26,10 @@ public interface D3 {
 
     D3 select(String path);
 
+    D3 select(Object object);
+
+    D3 selectAll(String path);
+
     Zoom zoom();
 
     CallbackFunction on(String event,
@@ -36,6 +40,11 @@ public interface D3 {
 
     D3 attr(String name,
             Object value);
+
+    Object attr(String name);
+
+    D3 style(String name,
+             Object value);
 
     @JsProperty
     Transform getZoomIdentity();
@@ -52,13 +61,6 @@ public interface D3 {
         void execute();
     }
 
-    class Builder {
-
-        @JsProperty(name = "d3", namespace = JsPackage.GLOBAL)
-        public static native D3 get();
-
-    }
-
     @JsType(isNative = true)
     interface Zoom extends D3 {
 
@@ -70,7 +72,6 @@ public interface D3 {
 
         void transform(D3 selection,
                        Transform transform);
-
     }
 
     @JsType(isNative = true)
@@ -84,19 +85,19 @@ public interface D3 {
 
         @JsProperty
         double getK();
-
     }
 
     @JsType(isNative = true)
     interface Transition extends D3 {
 
         D3 duration(double milis);
-
     }
 
     @JsType(isNative = true)
     interface Event {
 
+        @JsProperty
+        Object getCurrentTarget();
     }
 
     @JsType(isNative = true)
@@ -104,6 +105,11 @@ public interface D3 {
 
         @JsProperty
         Transform getTransform();
+    }
 
+    class Builder {
+
+        @JsProperty(name = "d3", namespace = JsPackage.GLOBAL)
+        public static native D3 get();
     }
 }
