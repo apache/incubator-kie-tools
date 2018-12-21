@@ -29,10 +29,12 @@ import org.uberfire.ext.editor.commons.client.file.exports.FileExportResources;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.uberfire.ext.editor.commons.client.file.exports.jso.FileExportScriptInjector.buildNamespaceObject;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class FileExportScriptInjectorTest {
 
+    public static final String NS = "window.";
     private FileExportScriptInjector tested;
 
     @Mock
@@ -50,8 +52,8 @@ public class FileExportScriptInjectorTest {
         verify(scriptInjector,
                times(1)).accept(scriptCaptor.capture());
         final String script = scriptCaptor.getValue();
-        final String fsNsObject = FileExportScriptInjector.buildNamespaceObject(JsFileSaver.class.getName() + ".saveAs");
-        final String jsPdfNsObject = FileExportScriptInjector.buildNamespaceObject(JsPdf.class.getName());
+        final String fsNsObject = buildNamespaceObject(NS + JsFileSaver.class.getSimpleName() + ".saveAs");
+        final String jsPdfNsObject = buildNamespaceObject(NS + JsPdf.class.getSimpleName());
         final String c2sNsObject = FileExportResources.INSTANCE.canvas2svg().getText();
         assertEquals("var " +
                              fsNsObject +
@@ -61,7 +63,7 @@ public class FileExportScriptInjectorTest {
                              jsPdfNsObject +
                              " = function(settings) {\n" +
                              "jsPdf\n" +
-                             "var saveAs = org.uberfire.ext.editor.commons.client.file.exports.jso.JsFileSaver.saveAs; " +
+                             "var saveAs = " + NS + "JsFileSaver.saveAs; " +
                              "return new jsPDF(settings);};" + "\n" +
                              c2sNsObject + "\n",
                      script);
@@ -69,33 +71,10 @@ public class FileExportScriptInjectorTest {
 
     @Test
     public void testNamespaces() {
-        assertEquals(
-                "org = org || {};\n" +
-                        "org.uberfire = org.uberfire || {};\n" +
-                        "org.uberfire.ext = org.uberfire.ext || {};\n" +
-                        "org.uberfire.ext.editor = org.uberfire.ext.editor || {};\n" +
-                        "org.uberfire.ext.editor.commons = org.uberfire.ext.editor.commons || {};\n" +
-                        "org.uberfire.ext.editor.commons.client = org.uberfire.ext.editor.commons.client || {};\n" +
-                        "org.uberfire.ext.editor.commons.client.file = org.uberfire.ext.editor.commons.client.file || {};\n" +
-                        "org.uberfire.ext.editor.commons.client.file.exports = org.uberfire.ext.editor.commons.client.file.exports || {};\n" +
-                        "org.uberfire.ext.editor.commons.client.file.exports.jso = org.uberfire.ext.editor.commons.client.file.exports.jso || {};\n" +
-                        "org.uberfire.ext.editor.commons.client.file.exports.jso.JsFileSaver",
-                FileExportScriptInjector.buildNamespaceObject(JsFileSaver.class.getName())
-        );
-        assertEquals(
-                "org = org || {};\n" +
-                        "org.uberfire = org.uberfire || {};\n" +
-                        "org.uberfire.ext = org.uberfire.ext || {};\n" +
-                        "org.uberfire.ext.editor = org.uberfire.ext.editor || {};\n" +
-                        "org.uberfire.ext.editor.commons = org.uberfire.ext.editor.commons || {};\n" +
-                        "org.uberfire.ext.editor.commons.client = org.uberfire.ext.editor.commons.client || {};\n" +
-                        "org.uberfire.ext.editor.commons.client.file = org.uberfire.ext.editor.commons.client.file || {};\n" +
-                        "org.uberfire.ext.editor.commons.client.file.exports = org.uberfire.ext.editor.commons.client.file.exports || {};\n" +
-                        "org.uberfire.ext.editor.commons.client.file.exports.jso = org.uberfire.ext.editor.commons.client.file.exports.jso || {};\n" +
-                        "org.uberfire.ext.editor.commons.client.file.exports.jso.JsPdf",
-                FileExportScriptInjector.buildNamespaceObject(JsPdf.class.getName())
-        );
-        assertEquals("nonamespace",
-                     FileExportScriptInjector.buildNamespaceObject("nonamespace"));
+        assertEquals("window = window || {};\n" + NS + "JsFileSaver",
+                     buildNamespaceObject(NS + JsFileSaver.class.getSimpleName()));
+        assertEquals("window = window || {};\n" + NS + "JsPdf",
+                     buildNamespaceObject(NS + JsPdf.class.getSimpleName()));
+        assertEquals("nonamespace", buildNamespaceObject("nonamespace"));
     }
 }

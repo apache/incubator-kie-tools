@@ -35,8 +35,8 @@ import org.uberfire.ext.editor.commons.client.file.exports.FileExportResources;
 @ApplicationScoped
 public class FileExportScriptInjector {
 
-    public static final String NS = "org.uberfire.ext.editor.commons.client.file.exports.jso.";
     public static final String NS_SEPARATOR = ".";
+    public static final String NS = "window" + NS_SEPARATOR;
     public static final String JS_OBJ_SUFFIX = " || {};";
 
     private final Consumer<String> scriptInjector;

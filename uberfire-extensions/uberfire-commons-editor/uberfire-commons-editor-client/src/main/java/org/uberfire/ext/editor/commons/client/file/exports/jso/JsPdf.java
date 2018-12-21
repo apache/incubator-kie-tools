@@ -18,6 +18,7 @@ package org.uberfire.ext.editor.commons.client.file.exports.jso;
 
 import jsinterop.annotations.JsConstructor;
 import jsinterop.annotations.JsOverlay;
+import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 
 /**
@@ -25,7 +26,7 @@ import jsinterop.annotations.JsType;
  * Provided by the webjar <code>org.webjars.bower.jspdf</code>.
  * @see <a href="https://github.com/MrRio/jsPDF">jsPDF.js</a>
  */
-@JsType(isNative = true)
+@JsType(isNative = true, namespace = JsPackage.GLOBAL)
 public class JsPdf {
 
     /**

@@ -17,6 +17,7 @@
 package org.uberfire.ext.editor.commons.client.file.exports.jso;
 
 import jsinterop.annotations.JsMethod;
+import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import org.jboss.errai.common.client.dom.Blob;
 
@@ -25,7 +26,7 @@ import org.jboss.errai.common.client.dom.Blob;
  * Provided by the webjar <code>org.webjars.bower.filesaver</code>.
  * @see <a href="https://github.com/eligrey/FileSaver.js">FileSaver.js</a>
  */
-@JsType(isNative = true)
+@JsType(isNative = true, namespace = JsPackage.GLOBAL)
 public class JsFileSaver {
 
     /**
