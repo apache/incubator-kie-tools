@@ -14,6 +14,4 @@ public interface NativeLibraryResources extends ClientBundle {
     @Source("js/c3.js")
     TextResource c3js();
 
-    @Source("css/c3.min.css")
-    TextResource c3css();
 }

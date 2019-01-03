@@ -225,24 +225,6 @@
               </resources>
             </configuration>
           </execution>
-          <execution>
-            <id>copy-c3-resources-css</id>
-            <phase>process-resources</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${project.build.outputDirectory}/org/dashbuilder/renderer/c3/client/exports/css</outputDirectory>
-              <resources>
-                <resource>
-                  <directory>${project.build.directory}/c3/META-INF/resources/webjars/c3/${version.org.webjars.bower.c3}</directory>
-                  <includes>
-                    <include>c3.min.css</include>
-                  </includes>
-                </resource>
-              </resources>
-            </configuration>
-          </execution>
         </executions>
       </plugin>
     </plugins>
