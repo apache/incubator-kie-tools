@@ -20,8 +20,10 @@ import java.util.List;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.BusinessKnowledgeModel;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DRGElement;
+import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionService;
 import org.kie.workbench.common.dmn.api.definition.v1_1.FunctionDefinition;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItemPrimary;
+import org.kie.workbench.common.dmn.api.definition.v1_1.KnowledgeRequirement;
 import org.kie.workbench.common.dmn.api.definition.v1_1.KnowledgeSource;
 import org.kie.workbench.common.dmn.api.property.background.BackgroundSet;
 import org.kie.workbench.common.dmn.api.property.dimensions.GeneralRectangleDimensionsSet;
@@ -112,6 +114,17 @@ public class BusinessKnowledgeModelConverter implements NodeConverter<org.kie.dm
                         ri.setHref(new StringBuilder("#").append(drgElement.getId().getValue()).toString());
                         iReq.setRequiredAuthority(ri);
                         result.getAuthorityRequirement().add(iReq);
+                    } else if (drgElement instanceof DecisionService) {
+                        if (e.getContent() instanceof View && ((View) e.getContent()).getDefinition() instanceof KnowledgeRequirement) {
+                            org.kie.dmn.model.api.KnowledgeRequirement iReq = new org.kie.dmn.model.v1_2.TKnowledgeRequirement();
+                            iReq.setId(e.getUUID());
+                            org.kie.dmn.model.api.DMNElementReference ri = new org.kie.dmn.model.v1_2.TDMNElementReference();
+                            ri.setHref(new StringBuilder("#").append(drgElement.getId().getValue()).toString());
+                            iReq.setRequiredKnowledge(ri);
+                            result.getKnowledgeRequirement().add(iReq);
+                        } else {
+                            throw new UnsupportedOperationException("wrong model definition.");
+                        }
                     } else {
                         throw new UnsupportedOperationException("wrong model definition.");
                     }

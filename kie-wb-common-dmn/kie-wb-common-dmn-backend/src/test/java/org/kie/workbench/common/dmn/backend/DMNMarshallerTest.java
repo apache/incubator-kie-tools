@@ -93,6 +93,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.DMNElement;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase.Namespace;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
+import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionService;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.FunctionDefinition;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
@@ -134,6 +135,7 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandManager;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandManagerImpl;
 import org.kie.workbench.common.stunner.core.graph.command.impl.GraphCommandFactory;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds.Bound;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
@@ -142,6 +144,7 @@ import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewImpl;
+import org.kie.workbench.common.stunner.core.graph.impl.EdgeImpl;
 import org.kie.workbench.common.stunner.core.registry.definition.AdapterRegistry;
 import org.kie.workbench.common.stunner.core.registry.impl.DefinitionsCacheRegistry;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
@@ -531,6 +534,199 @@ public class DMNMarshallerTest {
     public void test_decisionqa() throws IOException {
         roundTripUnmarshalThenMarshalUnmarshal(this.getClass().getResourceAsStream("/decisionqa.dmn"),
                                                this::checkDecisionqa);
+    }
+
+    @Test
+    public void test_decisionservice_1outputDecision() throws IOException {
+        final DMNMarshaller m = new DMNMarshaller(new XMLEncoderDiagramMetadataMarshaller(),
+                                                  applicationFactoryManager);
+        @SuppressWarnings("unchecked")
+        final Graph<?, Node<?, ?>> g = m.unmarshall(null, this.getClass().getResourceAsStream("/DROOLS-3372.dmn"));
+        Node<?, ?> nodeDS = g.getNode("_659a06e2-ae80-496c-8783-f790a640bb49");
+        Node<?, ?> nodeDecisionPostfix = g.getNode("_3a69915a-30af-4de3-a07f-6be514f53caa");
+        moveNode(nodeDecisionPostfix, 0, -280);
+        makeNodeChildOf(nodeDecisionPostfix, nodeDS);
+        DiagramImpl diagram = new DiagramImpl("", null);
+        diagram.setGraph(g);
+        String mString = m.marshall(diagram);
+        LOG.debug("MARSHALLED ROUNDTRIP RESULTING xml:\n{}\n", mString);
+        roundTripUnmarshalThenMarshalUnmarshal(new ReaderInputStream(new StringReader(mString)),
+                                               this::check_decisionservice_1outputDecision);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void check_decisionservice_1outputDecision(Graph<?, Node<?, ?>> graph) {
+        Node<?, ?> node = graph.getNode("_659a06e2-ae80-496c-8783-f790a640bb49");
+        assertNodeContentDefinitionIs(node, DecisionService.class);
+        DecisionService definition = ((View<DecisionService>) node.getContent()).getDefinition();
+        assertEquals(0, definition.getEncapsulatedDecision().size());
+        assertEquals(0, definition.getInputData().size());
+        assertEquals(1, definition.getOutputDecision().size());
+        assertEquals("#" + "_3a69915a-30af-4de3-a07f-6be514f53caa", definition.getOutputDecision().get(0).getHref());
+        assertEquals(1, definition.getInputDecision().size());
+        assertEquals("#" + "_afce4fb3-9a7c-4791-bbfe-63d4b76bd61a", definition.getInputDecision().get(0).getHref());
+    }
+
+    @Test
+    public void test_decisionservice_1outputDecision1encapsulatedDecision() throws IOException {
+        final DMNMarshaller m = new DMNMarshaller(new XMLEncoderDiagramMetadataMarshaller(),
+                                                  applicationFactoryManager);
+        @SuppressWarnings("unchecked")
+        final Graph<?, Node<?, ?>> g = m.unmarshall(null, this.getClass().getResourceAsStream("/DROOLS-3372.dmn"));
+        Node<?, ?> nodeDS = g.getNode("_659a06e2-ae80-496c-8783-f790a640bb49");
+        Node<?, ?> nodeDecisionPostfix = g.getNode("_3a69915a-30af-4de3-a07f-6be514f53caa");
+        Node<?, ?> nodeDecisionPrefix = g.getNode("_afce4fb3-9a7c-4791-bbfe-63d4b76bd61a");
+        moveNode(nodeDecisionPostfix, 0, -280);
+        makeNodeChildOf(nodeDecisionPostfix, nodeDS);
+        moveNode(nodeDecisionPrefix, 0, -170);
+        makeNodeChildOf(nodeDecisionPrefix, nodeDS);
+        DiagramImpl diagram = new DiagramImpl("", null);
+        diagram.setGraph(g);
+        String mString = m.marshall(diagram);
+        LOG.debug("MARSHALLED ROUNDTRIP RESULTING xml:\n{}\n", mString);
+        roundTripUnmarshalThenMarshalUnmarshal(new ReaderInputStream(new StringReader(mString)),
+                                               this::check_decisionservice_1outputDecision1encapsulatedDecision);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void check_decisionservice_1outputDecision1encapsulatedDecision(Graph<?, Node<?, ?>> graph) {
+        Node<?, ?> node = graph.getNode("_659a06e2-ae80-496c-8783-f790a640bb49");
+        assertNodeContentDefinitionIs(node, DecisionService.class);
+        DecisionService definition = ((View<DecisionService>) node.getContent()).getDefinition();
+        assertEquals(1, definition.getEncapsulatedDecision().size());
+        assertEquals("#" + "_afce4fb3-9a7c-4791-bbfe-63d4b76bd61a", definition.getEncapsulatedDecision().get(0).getHref());
+        assertEquals(1, definition.getInputData().size());
+        assertEquals("#" + "_dd5b090f-6d52-4bd8-8c7f-0c469983d44e", definition.getInputData().get(0).getHref());
+        assertEquals(1, definition.getOutputDecision().size());
+        assertEquals("#" + "_3a69915a-30af-4de3-a07f-6be514f53caa", definition.getOutputDecision().get(0).getHref());
+        assertEquals(0, definition.getInputDecision().size());
+    }
+
+    @Test
+    public void test_decisionservice2_1outputDecision1encapsulatedDecision() throws IOException {
+        final DMNMarshaller m = new DMNMarshaller(new XMLEncoderDiagramMetadataMarshaller(),
+                                                  applicationFactoryManager);
+        @SuppressWarnings("unchecked")
+        final Graph<?, Node<?, ?>> g = m.unmarshall(null, this.getClass().getResourceAsStream("/DROOLS-3372bis.dmn"));
+        Node<?, ?> nodeDS = g.getNode("_659a06e2-ae80-496c-8783-f790a640bb49");
+        Node<?, ?> nodeDecisionPostfix = g.getNode("_3a69915a-30af-4de3-a07f-6be514f53caa");
+        Node<?, ?> nodeDecisionPrefix = g.getNode("_afce4fb3-9a7c-4791-bbfe-63d4b76bd61a");
+        moveNode(nodeDecisionPostfix, 0, -280);
+        makeNodeChildOf(nodeDecisionPostfix, nodeDS);
+        moveNode(nodeDecisionPrefix, 0, -170);
+        makeNodeChildOf(nodeDecisionPrefix, nodeDS);
+        DiagramImpl diagram = new DiagramImpl("", null);
+        diagram.setGraph(g);
+        String mString = m.marshall(diagram);
+        LOG.debug("MARSHALLED ROUNDTRIP RESULTING xml:\n{}\n", mString);
+        roundTripUnmarshalThenMarshalUnmarshal(new ReaderInputStream(new StringReader(mString)),
+                                               this::check_decisionservice2_1outputDecision1encapsulatedDecision);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void check_decisionservice2_1outputDecision1encapsulatedDecision(Graph<?, Node<?, ?>> graph) {
+        Node<?, ?> node = graph.getNode("_659a06e2-ae80-496c-8783-f790a640bb49");
+        assertNodeContentDefinitionIs(node, DecisionService.class);
+        DecisionService definition = ((View<DecisionService>) node.getContent()).getDefinition();
+        assertEquals(3, definition.getEncapsulatedDecision().size());
+        assertEquals("#_ca9d65e7-a5fa-4a13-98b7-8404f4601147", definition.getEncapsulatedDecision().get(0).getHref());
+        assertEquals("#_4b02cf97-5f9b-48ee-a4ae-229233238876", definition.getEncapsulatedDecision().get(1).getHref());
+        assertEquals("#" + "_afce4fb3-9a7c-4791-bbfe-63d4b76bd61a", definition.getEncapsulatedDecision().get(2).getHref());
+        assertEquals(1, definition.getInputData().size());
+        assertEquals("#" + "_dd5b090f-6d52-4bd8-8c7f-0c469983d44e", definition.getInputData().get(0).getHref());
+        assertEquals(3, definition.getOutputDecision().size());
+        assertEquals("#_a5d0e474-083f-44ef-b00e-4ddc9a9ebd34", definition.getOutputDecision().get(0).getHref());
+        assertEquals("#_8878539e-1c50-4622-b601-5878c97dc34e", definition.getOutputDecision().get(1).getHref());
+        assertEquals("#" + "_3a69915a-30af-4de3-a07f-6be514f53caa", definition.getOutputDecision().get(2).getHref());
+        assertEquals(0, definition.getInputDecision().size());
+    }
+
+    @Test
+    public void test_decisionservice2_remove_1outputDecision1encapsulatedDecision() throws IOException {
+        final DMNMarshaller m = new DMNMarshaller(new XMLEncoderDiagramMetadataMarshaller(),
+                                                  applicationFactoryManager);
+        @SuppressWarnings("unchecked")
+        final Graph<?, Node<?, ?>> g = m.unmarshall(null, this.getClass().getResourceAsStream("/DROOLS-3372bis.dmn"));
+        Node<?, ?> nodeDS = g.getNode("_659a06e2-ae80-496c-8783-f790a640bb49");
+        Node<?, ?> nodeDecisionPostfix = g.getNode("_3a69915a-30af-4de3-a07f-6be514f53caa");
+        Node<?, ?> nodeDecisionPrefix = g.getNode("_afce4fb3-9a7c-4791-bbfe-63d4b76bd61a");
+        moveNode(nodeDecisionPostfix, 0, -280);
+        makeNodeChildOf(nodeDecisionPostfix, nodeDS);
+        moveNode(nodeDecisionPrefix, 0, -170);
+        makeNodeChildOf(nodeDecisionPrefix, nodeDS);
+        DiagramImpl diagram = new DiagramImpl("", null);
+        Node<?, ?> nodeEncaps1 = g.getNode("_ca9d65e7-a5fa-4a13-98b7-8404f4601147");
+        moveNode(nodeEncaps1, 0, +400);
+        removeNodeChildOf(nodeEncaps1, nodeDS);
+        Node<?, ?> nodeEncaps2 = g.getNode("_4b02cf97-5f9b-48ee-a4ae-229233238876");
+        moveNode(nodeEncaps2, 0, +400);
+        removeNodeChildOf(nodeEncaps2, nodeDS);
+        Node<?, ?> nodeHardcoded2 = g.getNode("_8878539e-1c50-4622-b601-5878c97dc34e");
+        moveNode(nodeHardcoded2, 0, +400);
+        removeNodeChildOf(nodeHardcoded2, nodeDS);
+        diagram.setGraph(g);
+        String mString = m.marshall(diagram);
+        LOG.debug("MARSHALLED ROUNDTRIP RESULTING xml:\n{}\n", mString);
+        roundTripUnmarshalThenMarshalUnmarshal(new ReaderInputStream(new StringReader(mString)),
+                                               this::check_decisionservice2_remove_1outputDecision1encapsulatedDecision);
+    }
+
+    private void removeNodeChildOf(Node<?, ?> childNode, Node<?, ?> nodeDS) {
+        nodeDS.getOutEdges().removeIf(x -> {
+            Edge<View<?>, ?> edge = x;
+            return edge.getContent() instanceof Child && edge.getTargetNode().equals(childNode);
+        });
+        childNode.getInEdges().removeIf(x -> {
+            Edge<View<?>, ?> edge = x;
+            return edge.getContent() instanceof Child && edge.getSourceNode().equals(nodeDS);
+        });
+    }
+
+    @SuppressWarnings("unchecked")
+    private void check_decisionservice2_remove_1outputDecision1encapsulatedDecision(Graph<?, Node<?, ?>> graph) {
+        Node<?, ?> node = graph.getNode("_659a06e2-ae80-496c-8783-f790a640bb49");
+        assertNodeContentDefinitionIs(node, DecisionService.class);
+        DecisionService definition = ((View<DecisionService>) node.getContent()).getDefinition();
+        assertEquals(1, definition.getEncapsulatedDecision().size());
+        // no more "#_ca9d65e7-a5fa-4a13-98b7-8404f4601147"
+        // no more "#_4b02cf97-5f9b-48ee-a4ae-229233238876"
+        assertEquals("#" + "_afce4fb3-9a7c-4791-bbfe-63d4b76bd61a", definition.getEncapsulatedDecision().get(0).getHref());
+        assertEquals(1, definition.getInputData().size());
+        assertEquals("#" + "_dd5b090f-6d52-4bd8-8c7f-0c469983d44e", definition.getInputData().get(0).getHref());
+        assertEquals(2, definition.getOutputDecision().size());
+        assertEquals("#_a5d0e474-083f-44ef-b00e-4ddc9a9ebd34", definition.getOutputDecision().get(0).getHref());
+        // no more "#_8878539e-1c50-4622-b601-5878c97dc34e"
+        assertEquals("#" + "_3a69915a-30af-4de3-a07f-6be514f53caa", definition.getOutputDecision().get(1).getHref());
+        assertEquals(1, definition.getInputDecision().size());
+        assertEquals("#_ca9d65e7-a5fa-4a13-98b7-8404f4601147", definition.getInputDecision().get(0).getHref());
+    }
+
+    private void makeNodeChildOf(Node nodeDecisionPostfix, Node nodeDS) {
+        Edge myEdge = new EdgeImpl<>(UUID.uuid());
+        myEdge.setContent(new Child());
+        myEdge.setSourceNode(nodeDS);
+        myEdge.setTargetNode(nodeDecisionPostfix);
+        nodeDS.getOutEdges().add(myEdge);
+        nodeDecisionPostfix.getInEdges().add(myEdge);
+    }
+
+    private void moveNode(Node<?, ?> nodeDecisionPostfix, int dx, int dy) {
+        View content = (View) nodeDecisionPostfix.getContent();
+        Bound ul = content.getBounds().getUpperLeft();
+        Bound lr = content.getBounds().getLowerRight();
+        content.setBounds(BoundsImpl.build(ul.getX() + dx, ul.getY() + dy, lr.getX() + dx, lr.getY() + dy));
+    }
+
+    @Test
+    public void test_decisionservice3_evaluate() throws IOException {
+        DMNRuntime dmnRuntime = roundTripUnmarshalMarshalThenUnmarshalDMN(this.getClass().getResourceAsStream("/DROOLS-3372evaluate.dmn"));
+        assertThat(dmnRuntime.getModels()).hasSize(1);
+        final DMNModel dmnModel = dmnRuntime.getModels().get(0);
+        final DMNContext context = dmnRuntime.newContext();
+        context.set("in1", "asd");
+        final DMNResult result = dmnRuntime.evaluateAll(dmnModel, context);
+        assertThat(result.getDecisionResultByName("outInDS").getResult()).isEqualTo("outInDSasd");
+        assertThat(result.getDecisionResultByName("out1").getResult()).isEqualTo("outInDSp1 outInDSin1");
     }
 
     @Test

@@ -21,9 +21,11 @@ import java.util.List;
 import org.kie.workbench.common.dmn.api.definition.v1_1.BusinessKnowledgeModel;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DRGElement;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
+import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionService;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItemPrimary;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InputData;
+import org.kie.workbench.common.dmn.api.definition.v1_1.KnowledgeRequirement;
 import org.kie.workbench.common.dmn.api.definition.v1_1.KnowledgeSource;
 import org.kie.workbench.common.dmn.api.property.background.BackgroundSet;
 import org.kie.workbench.common.dmn.api.property.dimensions.GeneralRectangleDimensionsSet;
@@ -36,6 +38,7 @@ import org.kie.workbench.common.dmn.api.property.font.FontSet;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
 public class DecisionConverter implements NodeConverter<org.kie.dmn.model.api.Decision, org.kie.workbench.common.dmn.api.definition.v1_1.Decision> {
@@ -136,6 +139,19 @@ public class DecisionConverter implements NodeConverter<org.kie.dmn.model.api.De
                         ri.setHref(new StringBuilder("#").append(drgElement.getId().getValue()).toString());
                         iReq.setRequiredInput(ri);
                         d.getInformationRequirement().add(iReq);
+                    } else if (drgElement instanceof DecisionService) {
+                        if (e.getContent() instanceof Child) {
+                            // Stunner relationship of this Decision be encapsulated by the DecisionService, not managed here.
+                        } else if (e.getContent() instanceof View && ((View) e.getContent()).getDefinition() instanceof KnowledgeRequirement) {
+                            org.kie.dmn.model.api.KnowledgeRequirement iReq = new org.kie.dmn.model.v1_2.TKnowledgeRequirement();
+                            iReq.setId(e.getUUID());
+                            org.kie.dmn.model.api.DMNElementReference ri = new org.kie.dmn.model.v1_2.TDMNElementReference();
+                            ri.setHref(new StringBuilder("#").append(drgElement.getId().getValue()).toString());
+                            iReq.setRequiredKnowledge(ri);
+                            d.getKnowledgeRequirement().add(iReq);
+                        } else {
+                            throw new UnsupportedOperationException("wrong model definition.");
+                        }
                     } else {
                         throw new UnsupportedOperationException("wrong model definition.");
                     }
