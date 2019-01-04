@@ -24,8 +24,8 @@ import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.ResultWrapper;
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.ScenarioResult;
-import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.SingleFactValueResult;
 import org.drools.workbench.screens.scenariosimulation.model.FactIdentifier;
 import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.runtime.ExecutableRunner;
@@ -70,7 +70,7 @@ public class RuleScenarioExecutableBuilder {
     }
 
     public void addInternalCondition(Class<?> clazz,
-                                     Function<Object, SingleFactValueResult> checkFunction,
+                                     Function<Object, ResultWrapper> checkFunction,
                                      ScenarioResult scenarioResult) {
         internalConditions.computeIfAbsent(scenarioResult.getFactIdentifier(), key -> new ArrayList<>())
                 .add(new FactCheckerHandle(clazz, checkFunction, scenarioResult));

@@ -18,7 +18,7 @@ package org.drools.workbench.screens.scenariosimulation.client.rightpanel;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.LIElement;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.drools.workbench.screens.scenariosimulation.client.models.FactModelTree;
+import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
 import org.uberfire.client.mvp.HasPresenter;
 
 public interface ListGroupItemView extends IsWidget,

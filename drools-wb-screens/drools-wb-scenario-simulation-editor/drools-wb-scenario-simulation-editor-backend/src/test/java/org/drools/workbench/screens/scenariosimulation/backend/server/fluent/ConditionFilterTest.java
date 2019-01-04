@@ -18,8 +18,8 @@ package org.drools.workbench.screens.scenariosimulation.backend.server.fluent;
 
 import java.util.function.Function;
 
+import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.ResultWrapper;
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.ScenarioResult;
-import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.SingleFactValueResult;
 import org.drools.workbench.screens.scenariosimulation.model.ExpressionIdentifier;
 import org.drools.workbench.screens.scenariosimulation.model.FactIdentifier;
 import org.drools.workbench.screens.scenariosimulation.model.FactMappingValue;
@@ -32,7 +32,7 @@ public class ConditionFilterTest {
 
     @Test
     public void acceptTest() {
-        Function<Object, SingleFactValueResult> alwaysMatchFunction = SingleFactValueResult::createResult;
+        Function<Object, ResultWrapper> alwaysMatchFunction = ResultWrapper::createResult;
         FactMappingValue factMappingValue = new FactMappingValue(FactIdentifier.DESCRIPTION, ExpressionIdentifier.DESCRIPTION, "Test");
         ScenarioResult scenarioResult = new ScenarioResult(FactIdentifier.DESCRIPTION, factMappingValue);
         ConditionFilter conditionFilter = new ConditionFilter(asList(new FactCheckerHandle(String.class, alwaysMatchFunction, scenarioResult)));
@@ -40,7 +40,7 @@ public class ConditionFilterTest {
         Assert.assertFalse(conditionFilter.accept(1));
         Assert.assertTrue(conditionFilter.accept("String"));
 
-        Function<Object, SingleFactValueResult> alwaysNotMatchFunction = object -> SingleFactValueResult.createErrorResult();
+        Function<Object, ResultWrapper> alwaysNotMatchFunction = object -> ResultWrapper.createErrorResult();
         ConditionFilter conditionFilterFail = new ConditionFilter(asList(new FactCheckerHandle(String.class, alwaysNotMatchFunction, scenarioResult)));
         Assert.assertFalse(conditionFilterFail.accept("String"));
     }

@@ -79,11 +79,7 @@ public class ScenarioBeanUtil {
     }
 
     public static ScenarioBeanWrapper<?> navigateToObject(Object rootObject, List<String> steps, boolean createIfNull) {
-        if (steps.size() < 1) {
-            throw new ScenarioException(new StringBuilder().append("Invalid path to a property, no steps provided").toString());
-        }
-
-        Class<?> currentClass = rootObject.getClass();
+        Class<?> currentClass = rootObject != null ? rootObject.getClass() : null;
         Object currentObject = rootObject;
 
         for (String step : steps) {
@@ -132,15 +128,16 @@ public class ScenarioBeanUtil {
     }
 
     public static Object convertValue(String className, Object cleanValue, ClassLoader classLoader) {
+        if (!isPrimitive(className) && cleanValue == null) {
+            return null;
+        }
+
         Class<?> clazz = loadClass(className, classLoader);
 
         // if it is not a String, it has to be an instance of the desired type
         if (!(cleanValue instanceof String)) {
             if (clazz.isInstance(cleanValue)) {
                 return cleanValue;
-            }
-            if (!isPrimitive(className) && cleanValue == null) {
-                return null;
             }
             throw new IllegalArgumentException(new StringBuilder().append("Object ").append(cleanValue)
                                                        .append(" is not a String or an instance of ").append(className).toString());

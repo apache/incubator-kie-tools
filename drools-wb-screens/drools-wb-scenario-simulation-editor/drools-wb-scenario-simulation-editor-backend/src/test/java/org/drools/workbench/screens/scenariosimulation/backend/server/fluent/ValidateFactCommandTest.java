@@ -19,8 +19,8 @@ package org.drools.workbench.screens.scenariosimulation.backend.server.fluent;
 import java.util.Collections;
 import java.util.function.Function;
 
+import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.ResultWrapper;
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.ScenarioResult;
-import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.SingleFactValueResult;
 import org.drools.workbench.screens.scenariosimulation.model.FactMappingValue;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -56,7 +56,7 @@ public class ValidateFactCommandTest {
     @Test
     public void executeTest() {
         when(registryContext.lookup(KieSession.class)).thenReturn(kieSession);
-        Function<Object, SingleFactValueResult> alwaysMatchFunction = SingleFactValueResult::createResult;
+        Function<Object, ResultWrapper> alwaysMatchFunction = ResultWrapper::createResult;
 
         ValidateFactCommand validateFactCommand = new ValidateFactCommand(asList(new FactCheckerHandle(String.class, alwaysMatchFunction, scenarioResult)));
 

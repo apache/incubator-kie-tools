@@ -16,12 +16,13 @@
 
 package org.drools.workbench.screens.scenariosimulation.client.rightpanel;
 
+import java.util.Optional;
 import java.util.SortedMap;
 
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.drools.workbench.screens.scenariosimulation.client.models.FactModelTree;
+import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
 import org.uberfire.client.mvp.HasPresenter;
 
 public interface RightPanelView
@@ -38,7 +39,11 @@ public interface RightPanelView
 
     DivElement getDataObjectListContainer();
 
+    DivElement getSimpleJavaTypeListContainer();
+
     DivElement getInstanceListContainer();
+
+    DivElement getSimpleJavaInstanceListContainer();
 
     Presenter getPresenter();
 
@@ -85,21 +90,41 @@ public interface RightPanelView
 
         void clearDataObjectList();
 
+        void clearSimpleJavaTypeList();
+
         void clearInstanceList();
+
+        void clearSimpleJavaInstanceFieldList();
 
         void addDataObjectListGroupItemView(String factName, FactModelTree factModelTree);
 
+        void addSimpleJavaTypeListGroupItemView(String factName, FactModelTree factModelTree);
+
         void addInstanceListGroupItemView(String factName, FactModelTree factModelTree);
+
+        void addSimpleJavaInstanceListGroupItemView(String factName, FactModelTree factModelTree);
 
         void setDataObjectFieldsMap(SortedMap<String, FactModelTree> dataObjectFieldsMap);
 
+        void setSimpleJavaTypeFieldsMap(SortedMap<String, FactModelTree> simpleJavaTypeFieldsMap);
+
+        void setHiddenFieldsMap(SortedMap<String, FactModelTree> hiddenFieldsMap);
+
         void setInstanceFieldsMap(SortedMap<String, FactModelTree> factTypeFieldsMap);
+
+        void setSimpleJavaInstanceFieldsMap(SortedMap<String, FactModelTree> factTypeFieldsMap);
 
         void setEventBus(EventBus eventBus);
 
-        FactModelTree getFactModelTreeFromFactTypeMap(String factName);
+        Optional<FactModelTree> getFactModelTreeFromFactTypeMap(String factName);
 
-        FactModelTree getFactModelTreeFromInstanceMap(String factName);
+        Optional<FactModelTree> getFactModelTreeFromSimpleJavaTypeMap(String factName);
+
+        Optional<FactModelTree> getFactModelTreeFromInstanceMap(String factName);
+
+        Optional<FactModelTree> getFactModelTreeFromSimpleJavaInstanceMap(String factName);
+
+        FactModelTree getFactModelTreeFromHiddenMap(String factName);
 
         /**
          * By default the <b>Editor Tab</b> is disabled (no user interaction allowed).

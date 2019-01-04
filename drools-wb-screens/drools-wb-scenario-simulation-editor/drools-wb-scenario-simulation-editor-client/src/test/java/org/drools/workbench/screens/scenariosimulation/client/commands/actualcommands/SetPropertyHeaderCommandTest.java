@@ -22,6 +22,7 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
 import org.drools.workbench.screens.scenariosimulation.client.utils.ScenarioSimulationBuilders;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
+import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -59,6 +60,7 @@ public class SetPropertyHeaderCommandTest extends AbstractScenarioSimulationComm
         scenarioSimulationContext.getStatus().setValue(VALUE);
         scenarioSimulationContext.getStatus().setValueClassName(VALUE_CLASS_NAME);
         assertTrue(command.isUndoable());
+        when(simulationDescriptorMock.getType()).thenReturn(ScenarioSimulationModel.Type.RULE);
     }
 
     @Test

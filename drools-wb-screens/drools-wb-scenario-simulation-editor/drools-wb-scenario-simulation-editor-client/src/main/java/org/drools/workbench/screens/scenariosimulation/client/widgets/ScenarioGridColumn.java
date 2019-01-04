@@ -44,6 +44,10 @@ public class ScenarioGridColumn extends BaseGridColumn<String> {
      * flag to know if a <b>property</b> has been already assigned to this column; <code>false</code> on instantiation
      */
     protected boolean propertyAssigned = false;
+    /**
+     * flag to know if the <b>headers</b> are editable or not (as in the DMN-scenario case); <code>true</code> on instantiation
+     */
+    protected boolean editableHeaders = true;
 
     /**
      * The <code>FactIdentifier</code> mapped to this column; default to <code>FactIdentifier.EMPTY</code>
@@ -125,6 +129,18 @@ public class ScenarioGridColumn extends BaseGridColumn<String> {
         if (propertyAssigned) {
             instanceAssigned = true;
         }
+    }
+
+    public boolean isEditableHeaders() {
+        return editableHeaders;
+    }
+
+    /**
+     * Set to <code>false</code> to prevent/avoid header editing
+     * @param editableHeaders
+     */
+    public void setEditableHeaders(boolean editableHeaders) {
+        this.editableHeaders = editableHeaders;
     }
 
     public void setPlaceHolder(String placeHolder) {

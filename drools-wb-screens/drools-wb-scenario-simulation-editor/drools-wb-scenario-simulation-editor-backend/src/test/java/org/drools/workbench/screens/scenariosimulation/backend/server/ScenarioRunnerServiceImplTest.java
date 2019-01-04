@@ -21,6 +21,7 @@ import org.drools.workbench.screens.scenariosimulation.backend.server.runner.Abs
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.RuleScenarioRunner;
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.ScenarioException;
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.ScenarioRunnerData;
+import org.drools.workbench.screens.scenariosimulation.backend.server.util.RULESimulationCreationStrategy;
 import org.drools.workbench.screens.scenariosimulation.model.Scenario;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
 import org.guvnor.common.services.shared.test.TestResultMessage;
@@ -38,6 +39,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.mocks.EventSourceMock;
 
 import static org.junit.Assert.assertEquals;
@@ -79,6 +81,8 @@ public class ScenarioRunnerServiceImplTest {
     @InjectMocks
     private ScenarioRunnerServiceImpl scenarioRunnerService = new ScenarioRunnerServiceImpl();
 
+    private Path path = PathFactory.newPath("contextpath", "file:///contextpath");
+
     @Before
     public void setup() {
         when(classLoaderHelperMock.getModuleClassLoader(any())).thenReturn(ClassLoader.getSystemClassLoader());
@@ -95,7 +99,8 @@ public class ScenarioRunnerServiceImplTest {
     public void runTest() throws Exception {
         when(buildInfoServiceMock.getBuildInfo(any())).thenReturn(buildInfoMock);
         when(buildInfoMock.getKieContainer()).thenReturn(kieContainerMock);
-        ScenarioSimulationModel scenarioSimulationModel = new ScenarioSimulationModel(ScenarioSimulationModel.Type.RULE, "default");
+        ScenarioSimulationModel scenarioSimulationModel = new ScenarioSimulationModel();
+        scenarioSimulationModel.setSimulation(new RULESimulationCreationStrategy().createSimulation(this.path, "default"));
 
         scenarioRunnerService.runTest("test", mock(Path.class), scenarioSimulationModel);
 
@@ -118,7 +123,8 @@ public class ScenarioRunnerServiceImplTest {
     public void runFailed() throws Exception {
         when(buildInfoServiceMock.getBuildInfo(any())).thenReturn(buildInfoMock);
         when(buildInfoMock.getKieContainer()).thenReturn(kieContainerMock);
-        ScenarioSimulationModel scenarioSimulationModel = new ScenarioSimulationModel(ScenarioSimulationModel.Type.RULE, "default");
+        ScenarioSimulationModel scenarioSimulationModel = new ScenarioSimulationModel();
+        scenarioSimulationModel.setSimulation(new RULESimulationCreationStrategy().createSimulation(this.path, "default"));
         Scenario scenario = scenarioSimulationModel.getSimulation().getScenarioByIndex(0);
         scenario.setDescription("Test Scenario");
         String errorMessage = "Test Error";

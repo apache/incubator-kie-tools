@@ -15,6 +15,12 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.editor.strategies;
 
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.RightPanelView;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModelContent;
@@ -26,9 +32,15 @@ import org.uberfire.backend.vfs.ObservablePath;
  */
 public interface DataManagementStrategy {
 
+    Map<String, Class> SIMPLE_CLASSES_MAP = Collections.unmodifiableMap(Stream.of(
+            new AbstractMap.SimpleEntry<>(Boolean.class.getSimpleName(), Boolean.class),
+            new AbstractMap.SimpleEntry<>(Double.class.getSimpleName(), Double.class),
+            new AbstractMap.SimpleEntry<>(Integer.class.getSimpleName(), Integer.class),
+            new AbstractMap.SimpleEntry<>(Number.class.getSimpleName(), Number.class),
+            new AbstractMap.SimpleEntry<>(String.class.getSimpleName(), String.class)).
+            collect(Collectors.toMap((e) -> e.getKey(), (e) -> e.getValue())));
 
     void populateRightPanel(final RightPanelView.Presenter rightPanelPresenter, final ScenarioGridModel scenarioGridModel);
 
     void manageScenarioSimulationModelContent(ObservablePath currentPath, ScenarioSimulationModelContent toManage);
-
 }

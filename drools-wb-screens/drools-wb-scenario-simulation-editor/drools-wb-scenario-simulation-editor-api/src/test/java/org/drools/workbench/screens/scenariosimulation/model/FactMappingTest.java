@@ -18,6 +18,8 @@ package org.drools.workbench.screens.scenariosimulation.model;
 
 import org.junit.Test;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class FactMappingTest {
@@ -29,5 +31,18 @@ public class FactMappingTest {
         original.setExpressionAlias("EA_TEST");
         FactMapping retrieved = original.cloneFactMapping();
         assertTrue(retrieved.equals(original));
+    }
+
+    @Test
+    public void getExpressionElementsWithoutClass() {
+        FactMapping original = new FactMapping("FACT_ALIAS", new FactIdentifier("FI_TEST", "com.test.Foo"), new ExpressionIdentifier("EI_TEST", FactMappingType.GIVEN));
+        assertThatThrownBy(original::getExpressionElementsWithoutClass)
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("ExpressionElements malformed");
+        assertEquals(0, original.getExpressionElements().size());
+        original.addExpressionElement("STEP", String.class.getCanonicalName());
+
+        assertEquals(0, original.getExpressionElementsWithoutClass().size());
+        assertEquals(1, original.getExpressionElements().size());
     }
 }

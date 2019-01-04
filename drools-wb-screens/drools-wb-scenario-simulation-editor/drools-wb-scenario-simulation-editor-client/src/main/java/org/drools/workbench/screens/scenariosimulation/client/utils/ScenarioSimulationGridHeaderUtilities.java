@@ -26,6 +26,7 @@ import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGri
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGrid;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
 import org.drools.workbench.screens.scenariosimulation.model.ExpressionElement;
+import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
 import org.drools.workbench.screens.scenariosimulation.model.Simulation;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.util.CoordinateUtilities;
@@ -122,20 +123,28 @@ public class ScenarioSimulationGridHeaderUtilities {
     }
 
     public static String getExistingInstances(final String group, final ScenarioGridModel scenarioGridModel) {
+        final boolean isDMN = scenarioGridModel.getSimulation().get().getSimulationDescriptor().getType().equals(ScenarioSimulationModel.Type.DMN);
         return String.join(";", scenarioGridModel.getColumns()
                 .stream()
                 .filter(gridColumn -> {
                     GridColumn.HeaderMetaData m = ((ScenarioGridColumn) gridColumn).getInformationHeaderMetaData();
-                    return group.equals(m.getColumnGroup());
+                    return isDMN || group.equals(m.getColumnGroup());
                 })
                 .map(gridColumn -> ((ScenarioGridColumn) gridColumn).getInformationHeaderMetaData().getTitle())
                 .collect(Collectors.toSet()));
     }
 
     public static String getPropertyName(final Simulation simulation, final int columnIndex) {
-        return String.join(".", simulation.getSimulationDescriptor().getFactMappingByIndex(columnIndex).getExpressionElements()
+        return String.join(".", simulation.getSimulationDescriptor().getFactMappingByIndex(columnIndex).getExpressionElementsWithoutClass()
                 .stream()
                 .map(ExpressionElement::getStep)
                 .collect(Collectors.toSet()));
+    }
+
+    public static boolean isHeaderEditable(BaseGridRendererHelper rendererHelper, ScenarioHeaderMetaData clickedScenarioHeaderMetadata, ScenarioGridColumn scenarioGridColumn) {
+        if (rendererHelper == null || clickedScenarioHeaderMetadata.isEditingMode() || !scenarioGridColumn.isInstanceAssigned() || !scenarioGridColumn.isEditableHeaders()) {
+            return false;
+        }
+        return (clickedScenarioHeaderMetadata.isInstanceHeader() || (clickedScenarioHeaderMetadata.isPropertyHeader() && scenarioGridColumn.isPropertyAssigned()));
     }
 }

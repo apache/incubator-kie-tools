@@ -111,12 +111,15 @@ public class Simulation {
 
     public Simulation cloneSimulation() {
         Simulation toReturn = new Simulation();
-        this.scenarios.forEach(scenario -> toReturn.scenarios.add(scenario.cloneScenario()));
+        toReturn.getSimulationDescriptor().setType(simulationDescriptor.getType());
+        toReturn.getSimulationDescriptor().setDmnFilePath(simulationDescriptor.getDmnFilePath());
+        toReturn.getSimulationDescriptor().setDmoSession(simulationDescriptor.getDmoSession());
         final List<FactMapping> originalFactMappings = this.simulationDescriptor.getUnmodifiableFactMappings();
         for (int i = 0; i < originalFactMappings.size(); i++) {
             final FactMapping originalFactMapping = originalFactMappings.get(i);
             toReturn.simulationDescriptor.addFactMapping(i, originalFactMapping);
         }
+        this.scenarios.forEach(scenario -> toReturn.scenarios.add(scenario.cloneScenario()));
         return toReturn;
     }
 

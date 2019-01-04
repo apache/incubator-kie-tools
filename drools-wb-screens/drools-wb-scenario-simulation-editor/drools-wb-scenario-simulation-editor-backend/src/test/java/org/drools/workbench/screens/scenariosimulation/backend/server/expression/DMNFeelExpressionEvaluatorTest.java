@@ -42,9 +42,5 @@ public class DMNFeelExpressionEvaluatorTest {
         assertEquals(BigDecimal.valueOf(5), expressionEvaluator.getValueForGiven(BigDecimal.class.getCanonicalName(), "2 + 3"));
         Object nonStringObject = new Object();
         assertEquals(nonStringObject, expressionEvaluator.getValueForGiven("class", nonStringObject));
-
-        assertThatThrownBy(() -> expressionEvaluator.getValueForGiven(String.class.getCanonicalName(), "2 + 3"))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Wrong type for expression, expected java.lang.String found java.math.BigDecimal");
     }
 }

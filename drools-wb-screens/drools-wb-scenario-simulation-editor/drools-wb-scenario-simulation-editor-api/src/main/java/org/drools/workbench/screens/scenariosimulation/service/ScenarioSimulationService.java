@@ -39,4 +39,11 @@ public interface ScenarioSimulationService
     ScenarioSimulationModelContent loadContent(final Path path);
 
     ScenarioSimulationModel runScenario(final Path path, final ScenarioSimulationModel model);
+
+    Path create(final Path context,
+                final String fileName,
+                final ScenarioSimulationModel content,
+                final String comment,
+                final ScenarioSimulationModel.Type type,
+                final String value);
 }

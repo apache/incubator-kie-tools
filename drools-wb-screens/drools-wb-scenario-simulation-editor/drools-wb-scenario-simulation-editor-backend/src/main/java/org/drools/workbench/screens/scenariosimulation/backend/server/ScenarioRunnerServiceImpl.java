@@ -34,26 +34,17 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.junit.runner.Result;
 import org.junit.runner.Runner;
 import org.kie.api.runtime.KieContainer;
-import org.kie.workbench.common.services.backend.builder.service.BuildInfoService;
-import org.kie.workbench.common.services.shared.project.KieModule;
-import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.uberfire.backend.vfs.Path;
 
 import static org.drools.workbench.screens.scenariosimulation.backend.server.util.JunitRunnerHelper.runWithJunit;
 
 @Service
 @ApplicationScoped
-public class ScenarioRunnerServiceImpl
+public class ScenarioRunnerServiceImpl extends AbstractKieContainerService
         implements ScenarioRunnerService {
 
     @Inject
     private Event<TestResultMessage> defaultTestResultMessageEvent;
-
-    @Inject
-    private KieModuleService moduleService;
-
-    @Inject
-    private BuildInfoService buildInfoService;
 
     private BiFunction<KieContainer, Simulation, AbstractScenarioRunner> runnerSupplier = null;
 
@@ -87,8 +78,7 @@ public class ScenarioRunnerServiceImpl
                                            final Path path,
                                            final ScenarioSimulationModel model) {
 
-        KieModule kieModule = getKieModule(path);
-        KieContainer kieContainer = getKieContainer(kieModule);
+        KieContainer kieContainer = getKieContainer(path);
         Runner scenarioRunner = getOrCreateRunnerSupplier(model.getSimulation())
                 .apply(kieContainer, model.getSimulation());
 
@@ -106,14 +96,6 @@ public class ScenarioRunnerServiceImpl
                         failures));
 
         return model;
-    }
-
-    protected KieModule getKieModule(Path path) {
-        return moduleService.resolveModule(path);
-    }
-
-    protected KieContainer getKieContainer(KieModule kieModule) {
-        return buildInfoService.getBuildInfo(kieModule).getKieContainer();
     }
 
     public BiFunction<KieContainer, Simulation, AbstractScenarioRunner> getOrCreateRunnerSupplier(Simulation simulation) {

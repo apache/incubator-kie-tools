@@ -23,7 +23,9 @@ import javax.inject.Named;
 
 import org.assertj.core.api.Assertions;
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.ScenarioJunitActivator;
+import org.drools.workbench.screens.scenariosimulation.backend.server.util.ScenarioSimulationBuilder;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
+import org.drools.workbench.screens.scenariosimulation.model.Simulation;
 import org.guvnor.common.services.backend.config.SafeSessionInfo;
 import org.guvnor.common.services.backend.metadata.MetadataServerSideService;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
@@ -56,6 +58,7 @@ import org.uberfire.java.nio.file.FileAlreadyExistsException;
 import org.uberfire.java.nio.file.OpenOption;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyMap;
@@ -131,10 +134,13 @@ public class ScenarioSimulationServiceImplTest {
     @InjectMocks
     private ScenarioSimulationServiceImpl service = new ScenarioSimulationServiceImpl(mock(SafeSessionInfo.class));
 
+    @Mock
+    private ScenarioSimulationBuilder scenarioSimulationBuilderMock;
+
     private Path path = PathFactory.newPath("contextpath", "file:///contextpath");
 
     @Before
-    public void setup() {
+    public void setup() throws Exception {
         Set<Package> packages = new HashSet<>();
         packages.add(new Package(path, path, path, path, path, "Test", "", ""));
         when(kieModuleService.resolveModule(any())).thenReturn(module);
@@ -148,6 +154,8 @@ public class ScenarioSimulationServiceImplTest {
         when(projectPom.getDependencies()).thenReturn(dependencies);
         when(ioService.exists(any(org.uberfire.java.nio.file.Path.class))).thenReturn(false);
         when(mockedPackage.getPackageTestSrcPath()).thenReturn(path);
+        when(scenarioSimulationBuilderMock.createSimulation(any(), any(), any())).thenReturn(new Simulation());
+        service.scenarioSimulationBuilder = scenarioSimulationBuilderMock;
     }
 
     @Test
@@ -230,16 +238,38 @@ public class ScenarioSimulationServiceImplTest {
     }
 
     @Test
-    public void create() throws Exception {
+    public void createRULEScenario() throws Exception {
         doReturn(false).when(ioService).exists(any());
-
+        ScenarioSimulationModel model = new ScenarioSimulationModel();
+        assertNull(model.getSimulation());
         final Path returnPath = service.create(this.path,
                                                "test.scesim",
-                                               new ScenarioSimulationModel(),
-                                               "Commit comment");
+                                               model,
+                                               "Commit comment",
+                                               ScenarioSimulationModel.Type.RULE,
+                                               "default");
 
         assertNotNull(returnPath);
+        assertNotNull(model.getSimulation());
+        verify(ioService, times(2)).write(any(org.uberfire.java.nio.file.Path.class),
+                                          anyString(),
+                                          any(CommentedOption.class));
+    }
 
+    @Test
+    public void createDMNScenario() throws Exception {
+        doReturn(false).when(ioService).exists(any());
+        ScenarioSimulationModel model = new ScenarioSimulationModel();
+        assertNull(model.getSimulation());
+        final Path returnPath = service.create(this.path,
+                                               "test.scesim",
+                                               model,
+                                               "Commit comment",
+                                               ScenarioSimulationModel.Type.DMN,
+                                               "test");
+
+        assertNotNull(returnPath);
+        assertNotNull(model.getSimulation());
         verify(ioService, times(2)).write(any(org.uberfire.java.nio.file.Path.class),
                                           anyString(),
                                           any(CommentedOption.class));
@@ -248,10 +278,10 @@ public class ScenarioSimulationServiceImplTest {
     @Test(expected = FileAlreadyExistsException.class)
     public void createFileExists() throws Exception {
         doReturn(true).when(ioService).exists(any());
-
+        ScenarioSimulationModel model = new ScenarioSimulationModel();
         service.create(this.path,
                        "test.scesim",
-                       new ScenarioSimulationModel(),
+                       model,
                        "Commit comment");
     }
 

@@ -23,8 +23,8 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.dom.client.DivElement;
-import org.drools.workbench.screens.scenariosimulation.client.models.FactModelTree;
 import org.drools.workbench.screens.scenariosimulation.client.utils.ViewsProvider;
+import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
 
 @Dependent
 public class ListGroupItemPresenter implements ListGroupItemView.Presenter {
@@ -129,9 +129,16 @@ public class ListGroupItemPresenter implements ListGroupItemView.Presenter {
             listGroupItemView.closeRow();
         } else {
             if (listGroupItemView.isToExpand()) {
-                FactModelTree factModelTree = rightPanelPresenter.getFactModelTreeFromFactTypeMap(listGroupItemView.getFactType());
-                populateListGroupItemView(listGroupItemView, listGroupItemView.getParentPath(), listGroupItemView.getFactName(), factModelTree);
-                listGroupItemView.setToExpand(false);
+                FactModelTree factModelTree =
+                        rightPanelPresenter.getFactModelTreeFromFactTypeMap(listGroupItemView.getFactType())
+                                .orElse(rightPanelPresenter.getFactModelTreeFromHiddenMap(listGroupItemView.getFactType()));
+                if (factModelTree != null) {
+                    populateListGroupItemView(listGroupItemView, listGroupItemView.getParentPath(), listGroupItemView.getFactName(), factModelTree);
+                    listGroupItemView.setToExpand(false);
+                }
+//                FactModelTree factModelTree = rightPanelPresenter.getFactModelTreeFromFactTypeMap(listGroupItemView.getFactType());
+//                populateListGroupItemView(listGroupItemView, listGroupItemView.getParentPath(), listGroupItemView.getFactName(), factModelTree);
+//                listGroupItemView.setToExpand(false);
                 if (factName != null) {
                     listGroupItemView.disable();
                 } else {

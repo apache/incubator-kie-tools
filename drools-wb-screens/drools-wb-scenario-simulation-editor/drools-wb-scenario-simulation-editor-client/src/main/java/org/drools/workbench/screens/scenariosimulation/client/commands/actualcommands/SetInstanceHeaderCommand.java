@@ -22,6 +22,7 @@ import org.drools.workbench.screens.scenariosimulation.client.metadata.ScenarioH
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
 import org.drools.workbench.screens.scenariosimulation.model.FactIdentifier;
+import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
 
 import static org.drools.workbench.screens.scenariosimulation.model.FactMapping.getPropertyPlaceHolder;
 
@@ -49,7 +50,8 @@ public class SetInstanceHeaderCommand extends AbstractScenarioSimulationCommand 
         }
         String className = status.getClassName();
         String canonicalClassName = fullPackage + className;
-        FactIdentifier factIdentifier = getFactIdentifierByColumnTitle(className, context).orElse(FactIdentifier.create(selectedColumn.getInformationHeaderMetaData().getColumnId(), canonicalClassName));
+        String nameToUseForCreation = context.getModel().getSimulation().get().getSimulationDescriptor().getType().equals(ScenarioSimulationModel.Type.DMN) ? className : selectedColumn.getInformationHeaderMetaData().getColumnId();
+        FactIdentifier factIdentifier = getFactIdentifierByColumnTitle(className, context).orElse(FactIdentifier.create(nameToUseForCreation, canonicalClassName));
         final ScenarioHeaderMetaData informationHeaderMetaData = selectedColumn.getInformationHeaderMetaData();
         informationHeaderMetaData.setTitle(className);
         selectedColumn.setInstanceAssigned(true);

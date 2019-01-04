@@ -21,11 +21,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.drools.workbench.screens.scenariosimulation.backend.server.expression.ExpressionEvaluator;
+import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.ResultWrapper;
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.ScenarioExpect;
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.ScenarioGiven;
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.ScenarioResult;
@@ -86,8 +87,8 @@ public abstract class AbstractRunnerHelper {
                                                                        classLoader,
                                                                        expressionEvaluator);
 
-            Object bean = getDirectMapping(paramsForBean, entry.getKey().getClassName(), classLoader)
-                    .orElse(createObject(factIdentifier.getClassName(), paramsForBean, classLoader));
+            Object bean = getDirectMapping(paramsForBean)
+                    .orElseGet(() -> createObject(factIdentifier.getClassName(), paramsForBean, classLoader));
 
             scenarioGiven.add(new ScenarioGiven(factIdentifier, bean));
         }
@@ -95,12 +96,14 @@ public abstract class AbstractRunnerHelper {
         return scenarioGiven;
     }
 
-    public Optional<Object> getDirectMapping(Map<List<String>, Object> params, String className, ClassLoader classLoader) {
+    public ResultWrapper<Object> getDirectMapping(Map<List<String>, Object> params) {
         // if a direct mapping exists (no steps to reach the field) the value itself is the object (just converted)
-        return params.entrySet().stream()
-                .filter(e -> e.getKey().isEmpty())
-                .map(Map.Entry::getValue)
-                .findFirst();
+        for (Map.Entry<List<String>, Object> entry : params.entrySet()) {
+            if (entry.getKey().isEmpty()) {
+                return ResultWrapper.createResult(entry.getValue());
+            }
+        }
+        return ResultWrapper.createErrorResult();
     }
 
     public List<ScenarioExpect> extractExpectedValues(List<FactMappingValue> factMappingValues) {
@@ -162,7 +165,7 @@ public abstract class AbstractRunnerHelper {
             FactMapping factMapping = simulationDescriptor.getFactMapping(factIdentifier, expressionIdentifier)
                     .orElseThrow(() -> new IllegalStateException("Wrong expression, this should not happen"));
 
-            List<String> pathToField = factMapping.getExpressionElements().stream()
+            List<String> pathToField = factMapping.getExpressionElementsWithoutClass().stream()
                     .map(ExpressionElement::getStep).collect(toList());
 
             try {
@@ -188,6 +191,14 @@ public abstract class AbstractRunnerHelper {
         if (scenarioFailed) {
             throw new ScenarioException("Scenario '" + scenario.getDescription() + "' failed");
         }
+    }
+
+    protected ScenarioResult fillResult(FactMappingValue expectedResult, FactIdentifier factIdentifier, Supplier<ResultWrapper<?>> resultSupplier) {
+        ResultWrapper<?> resultValue = resultSupplier.get();
+
+        expectedResult.setError(!resultValue.isSatisfied());
+
+        return new ScenarioResult(factIdentifier, expectedResult, resultValue.getResult()).setResult(resultValue.isSatisfied());
     }
 
     public abstract RequestContext executeScenario(KieContainer kieContainer,

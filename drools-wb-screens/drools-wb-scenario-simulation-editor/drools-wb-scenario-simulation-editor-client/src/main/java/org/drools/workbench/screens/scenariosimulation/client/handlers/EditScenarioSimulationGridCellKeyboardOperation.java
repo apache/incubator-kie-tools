@@ -17,7 +17,6 @@
 package org.drools.workbench.screens.scenariosimulation.client.handlers;
 
 import org.drools.workbench.screens.scenariosimulation.client.metadata.ScenarioHeaderMetaData;
-import org.drools.workbench.screens.scenariosimulation.client.utils.ScenarioSimulationGridHeaderUtilities;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
@@ -64,10 +63,7 @@ public class EditScenarioSimulationGridCellKeyboardOperation extends KeyboardOpe
                                                                                   ci,
                                                                                   null,
                                                                                   uiHeaderRowIndex);
-
-                final ScenarioHeaderMetaData metaData =
-                        ScenarioSimulationGridHeaderUtilities.getColumnScenarioHeaderMetaData((ScenarioGridColumn) column,
-                                                                                              uiHeaderRowIndex);
+                final ScenarioHeaderMetaData metaData = (ScenarioHeaderMetaData) column.getHeaderMetaData().get(uiHeaderRowIndex);
                 if (metaData != null) {
                     metaData.edit(cellEditContext);
                 }

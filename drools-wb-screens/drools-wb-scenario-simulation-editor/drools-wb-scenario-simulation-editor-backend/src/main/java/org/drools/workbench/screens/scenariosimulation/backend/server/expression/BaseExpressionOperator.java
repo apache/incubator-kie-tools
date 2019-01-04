@@ -83,7 +83,7 @@ public enum BaseExpressionOperator {
         public boolean eval(Object rawValue, Object resultValue, Class<?> resultClass, ClassLoader classLoader) {
             Object parsedResults = rawValue;
             if (parsedResults instanceof String) {
-                parsedResults = getValueForGiven(resultClass.getCanonicalName(), (String) rawValue, classLoader);
+                parsedResults = getValueForGiven(resultClass != null ? resultClass.getCanonicalName() : null, (String) rawValue, classLoader);
             }
             if (parsedResults == null) {
                 return resultValue == null;

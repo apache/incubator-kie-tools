@@ -18,6 +18,11 @@ package org.drools.workbench.screens.scenariosimulation.backend.server.util;
 
 import java.util.function.Function;
 
+import org.drools.workbench.screens.scenariosimulation.backend.server.ScenarioSimulationXMLPersistence;
+import org.drools.workbench.screens.scenariosimulation.model.ExpressionElement;
+import org.drools.workbench.screens.scenariosimulation.model.FactMapping;
+import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
+
 public class InMemoryMigrationStrategy implements MigrationStrategy {
 
     @Override
@@ -33,6 +38,18 @@ public class InMemoryMigrationStrategy implements MigrationStrategy {
             } else {
                 return rawXml.replaceAll("</simulationDescriptor>", "<dmoSession></dmoSession>\n<type>RULE</type>\n</simulationDescriptor>").replaceAll("<ScenarioSimulationModel version=\"1.1\">", "<ScenarioSimulationModel version=\"1.2\">");
             }
+        };
+    }
+
+    @Override
+    public Function<String, String> from1_2to1_3() {
+        return rawXml -> {
+            ScenarioSimulationXMLPersistence xmlPersistence = ScenarioSimulationXMLPersistence.getInstance();
+            ScenarioSimulationModel model = xmlPersistence.unmarshal(rawXml, false);
+            for (FactMapping factMapping : model.getSimulation().getSimulationDescriptor().getUnmodifiableFactMappings()) {
+                factMapping.getExpressionElements().add(0, new ExpressionElement(factMapping.getFactIdentifier().getName()));
+            }
+            return xmlPersistence.marshal(model).replaceAll("<ScenarioSimulationModel version=\"1.2\">", "<ScenarioSimulationModel version=\"1.3\">");
         };
     }
 }

@@ -16,30 +16,44 @@
 
 package org.drools.workbench.screens.scenariosimulation.backend.server.runner.model;
 
-public class SingleFactValueResult {
+import java.util.function.Supplier;
+
+/**
+ * java.util.Optional clone to have the null result
+ * @param <T>
+ */
+public class ResultWrapper<T> {
 
     private final boolean satisfied;
 
-    private final Object result;
+    private final T result;
 
-    public SingleFactValueResult(Object result, boolean satisfied) {
+    private ResultWrapper(T result, boolean satisfied) {
         this.satisfied = satisfied;
         this.result = result;
     }
 
-    public static SingleFactValueResult createResult(Object result) {
-        return new SingleFactValueResult(result, true);
+    public static <T> ResultWrapper<T> createResult(T result) {
+        return new ResultWrapper<>(result, true);
     }
 
-    public static SingleFactValueResult createErrorResult() {
-        return new SingleFactValueResult(null, false);
+    public static <T> ResultWrapper<T> createErrorResult() {
+        return new ResultWrapper<>(null, false);
     }
 
     public boolean isSatisfied() {
         return satisfied;
     }
 
-    public Object getResult() {
+    public T getResult() {
         return result;
+    }
+
+    public T orElse(T defaultValue) {
+        return satisfied ? result : defaultValue;
+    }
+
+    public T orElseGet(Supplier<T> defaultSupplier) {
+        return satisfied ? result : defaultSupplier.get();
     }
 }

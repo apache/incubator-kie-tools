@@ -24,10 +24,9 @@ import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.assertj.core.api.Assertions;
+import org.drools.workbench.screens.scenariosimulation.client.AbstractScenarioSimulationTest;
 import org.drools.workbench.screens.scenariosimulation.client.events.EnableRightPanelEvent;
 import org.drools.workbench.screens.scenariosimulation.client.metadata.ScenarioHeaderMetaData;
-import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
-import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGrid;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,14 +45,17 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
-public class ScenarioSimulationGridHeaderUtilitiesTest {
+public class ScenarioSimulationGridHeaderUtilitiesTest extends AbstractScenarioSimulationTest {
 
     private static final int HEADER_ROWS = 2;
     private static final double HEADER_HEIGHT = 50.0;
     private static final double HEADER_ROW_HEIGHT = HEADER_HEIGHT / HEADER_ROWS;
-
-    @Mock
-    private ScenarioGrid gridWidget;
+    private static final Integer uiColumnIndex = 0;
+    private static final String columnGroup = "col-group";
+    private static final String columnOneTitle = "column one";
+    private static final String columnTwoTitle = "column two";
+    private ScenarioGridColumn scenarioGridColumnOne;
+    private ScenarioGridColumn scenarioGridColumnTwo;
 
     @Mock
     private GridRenderer gridRenderer;
@@ -69,15 +71,17 @@ public class ScenarioSimulationGridHeaderUtilitiesTest {
 
     @Mock
     private BaseGridRendererHelper.RenderingBlockInformation floatingBlockInformation;
-
-    private ScenarioGridModel scenarioGridModel = new ScenarioGridModel();
+    
+    @Mock
+    private ScenarioHeaderMetaData clickedScenarioHeaderMetadataMock;
 
     private Point2D rp = new Point2D(0, 0);
 
     @Before
     public void setup() {
-        doReturn(gridRenderer).when(gridWidget).getRenderer();
-        doReturn(gridRendererHelper).when(gridWidget).getRendererHelper();
+        super.setup();
+        doReturn(gridRenderer).when(scenarioGridMock).getRenderer();
+        doReturn(gridRendererHelper).when(scenarioGridMock).getRendererHelper();
         doReturn(ri).when(gridRendererHelper).getRenderingInformation();
         doReturn(HEADER_HEIGHT).when(gridRenderer).getHeaderHeight();
         doReturn(HEADER_ROW_HEIGHT).when(gridRenderer).getHeaderRowHeight();
@@ -86,9 +90,22 @@ public class ScenarioSimulationGridHeaderUtilitiesTest {
         doReturn(0.0).when(floatingBlockInformation).getX();
         doReturn(0.0).when(floatingBlockInformation).getWidth();
 
-        doReturn(mock(Viewport.class)).when(gridWidget).getViewport();
-        scenarioGridModel.setHeaderRowCount(HEADER_ROWS);
-        doReturn(scenarioGridModel).when(gridWidget).getModel();
+        doReturn(mock(Viewport.class)).when(scenarioGridMock).getViewport();
+        when(scenarioGridMock.getModel()).thenReturn(scenarioGridModelMock);
+
+        final ScenarioHeaderMetaData clickedScenarioHeaderMetadataMock = mock(ScenarioHeaderMetaData.class);
+        scenarioGridColumnOne =
+                mockGridColumn(100.0,
+                               Collections.singletonList(clickedScenarioHeaderMetadataMock),
+                               columnOneTitle,
+                               columnGroup);
+        scenarioGridColumnTwo =
+                mockGridColumn(100.0,
+                               Collections.singletonList(clickedScenarioHeaderMetadataMock),
+                               columnTwoTitle,
+                               columnGroup);
+        gridColumns.add(scenarioGridColumnOne);
+        gridColumns.add(scenarioGridColumnTwo);
     }
 
     @Test
@@ -102,7 +119,7 @@ public class ScenarioSimulationGridHeaderUtilitiesTest {
         doReturn(0.0).when(ci).getOffsetX();
         doReturn(0).when(ci).getUiColumnIndex();
 
-        final GridBodyCellRenderContext context = RenderContextUtilities.makeRenderContext(gridWidget,
+        final GridBodyCellRenderContext context = RenderContextUtilities.makeRenderContext(scenarioGridMock,
                                                                                            ri,
                                                                                            ci,
                                                                                            rp,
@@ -119,26 +136,9 @@ public class ScenarioSimulationGridHeaderUtilitiesTest {
 
     @Test
     public void testEnableRightPanelEventInstanceNotAssigned() {
-        final Integer uiColumnIndex = 0;
-        final String columnGroup = "col-group";
-        final String columnOneTitle = "column one";
-        final String columnTwoTitle = "column two";
-
-        final ScenarioHeaderMetaData clickedScenarioHeaderMetadata = mock(ScenarioHeaderMetaData.class);
-        final ScenarioGridColumn scenarioGridColumnOne =
-                mockGridColumn(100.0,
-                               Collections.singletonList(clickedScenarioHeaderMetadata),
-                               columnOneTitle,
-                               columnGroup);
-
-        mockGridColumn(100.0,
-                       Collections.singletonList(clickedScenarioHeaderMetadata),
-                       columnTwoTitle,
-                       columnGroup);
-
-        final EnableRightPanelEvent event = ScenarioSimulationGridHeaderUtilities.getEnableRightPanelEvent(gridWidget,
+        final EnableRightPanelEvent event = ScenarioSimulationGridHeaderUtilities.getEnableRightPanelEvent(scenarioGridMock,
                                                                                                            scenarioGridColumnOne,
-                                                                                                           clickedScenarioHeaderMetadata,
+                                                                                                           clickedScenarioHeaderMetadataMock,
                                                                                                            uiColumnIndex,
                                                                                                            columnGroup);
 
@@ -148,28 +148,11 @@ public class ScenarioSimulationGridHeaderUtilitiesTest {
 
     @Test
     public void testEnableRightPanelEventInstanceAssigned() {
-        final Integer uiColumnIndex = 0;
-        final String columnGroup = "col-group";
-        final String columnOneTitle = "column one";
-        final String columnTwoTitle = "column two";
-
-        final ScenarioHeaderMetaData clickedScenarioHeaderMetadata = mock(ScenarioHeaderMetaData.class);
-        final ScenarioGridColumn scenarioGridColumnOne =
-                mockGridColumn(100.0,
-                               Collections.singletonList(clickedScenarioHeaderMetadata),
-                               columnOneTitle,
-                               columnGroup);
-
-        mockGridColumn(100.0,
-                       Collections.singletonList(mock(ScenarioHeaderMetaData.class)),
-                       columnTwoTitle,
-                       columnGroup);
-
         when(scenarioGridColumnOne.isInstanceAssigned()).thenReturn(true);
 
-        final EnableRightPanelEvent event = ScenarioSimulationGridHeaderUtilities.getEnableRightPanelEvent(gridWidget,
+        final EnableRightPanelEvent event = ScenarioSimulationGridHeaderUtilities.getEnableRightPanelEvent(scenarioGridMock,
                                                                                                            scenarioGridColumnOne,
-                                                                                                           clickedScenarioHeaderMetadata,
+                                                                                                           clickedScenarioHeaderMetadataMock,
                                                                                                            uiColumnIndex,
                                                                                                            columnGroup);
 
@@ -179,23 +162,12 @@ public class ScenarioSimulationGridHeaderUtilitiesTest {
 
     @Test
     public void testEnableRightPanelEventPropertyHeaderPropertyNotAssigned() {
-        final Integer uiColumnIndex = 0;
-        final String columnGroup = "col-group";
-        final String columnOneTitle = "column one";
-
-        final ScenarioHeaderMetaData clickedScenarioHeaderMetadata = mock(ScenarioHeaderMetaData.class);
-        final ScenarioGridColumn scenarioGridColumnOne =
-                mockGridColumn(100.0,
-                               Collections.singletonList(clickedScenarioHeaderMetadata),
-                               columnOneTitle,
-                               columnGroup);
-
-        when(clickedScenarioHeaderMetadata.isPropertyHeader()).thenReturn(true);
+        when(clickedScenarioHeaderMetadataMock.isPropertyHeader()).thenReturn(true);
         when(scenarioGridColumnOne.isInstanceAssigned()).thenReturn(true);
 
-        final EnableRightPanelEvent event = ScenarioSimulationGridHeaderUtilities.getEnableRightPanelEvent(gridWidget,
+        final EnableRightPanelEvent event = ScenarioSimulationGridHeaderUtilities.getEnableRightPanelEvent(scenarioGridMock,
                                                                                                            scenarioGridColumnOne,
-                                                                                                           clickedScenarioHeaderMetadata,
+                                                                                                           clickedScenarioHeaderMetadataMock,
                                                                                                            uiColumnIndex,
                                                                                                            columnGroup);
 
@@ -226,8 +198,6 @@ public class ScenarioSimulationGridHeaderUtilitiesTest {
 
         doReturn(headerMetaData).when(uiColumn).getHeaderMetaData();
         doReturn(width).when(uiColumn).getWidth();
-
-        scenarioGridModel.appendColumn(uiColumn);
 
         final ScenarioHeaderMetaData informationHeader = mock(ScenarioHeaderMetaData.class);
         when(informationHeader.getColumnGroup()).thenReturn(columnGroup);

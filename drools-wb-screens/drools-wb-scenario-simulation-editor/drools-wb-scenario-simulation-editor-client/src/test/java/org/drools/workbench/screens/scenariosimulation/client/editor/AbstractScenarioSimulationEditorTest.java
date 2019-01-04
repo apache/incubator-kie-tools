@@ -24,8 +24,16 @@ import org.drools.workbench.screens.scenariosimulation.client.editor.menu.GridCo
 import org.drools.workbench.screens.scenariosimulation.client.editor.menu.HeaderGivenContextMenu;
 import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.RightPanelPresenter;
+import org.drools.workbench.screens.scenariosimulation.model.ExpressionIdentifier;
+import org.drools.workbench.screens.scenariosimulation.model.FactIdentifier;
+import org.drools.workbench.screens.scenariosimulation.model.FactMapping;
+import org.drools.workbench.screens.scenariosimulation.model.FactMappingType;
+import org.drools.workbench.screens.scenariosimulation.model.Scenario;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModelContent;
+import org.drools.workbench.screens.scenariosimulation.model.Simulation;
+import org.drools.workbench.screens.scenariosimulation.model.SimulationDescriptor;
+import org.drools.workbench.screens.scenariosimulation.service.DMNTypeService;
 import org.drools.workbench.screens.scenariosimulation.service.ScenarioSimulationService;
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.shared.metadata.model.Overview;
@@ -53,6 +61,8 @@ public abstract class AbstractScenarioSimulationEditorTest extends AbstractScena
     protected FileMenuBuilder fileMenuBuilderMock;
     @Mock
     protected ScenarioSimulationService scenarioSimulationServiceMock;
+    @Mock
+    protected DMNTypeService dmnTypeServiceMock;
     @Mock
     protected ObservablePath observablePathMock;
     @Mock
@@ -90,10 +100,47 @@ public abstract class AbstractScenarioSimulationEditorTest extends AbstractScena
         when(workbenchContextMock.getActiveWorkspaceProject()).thenReturn(Optional.empty());
         when(gridContextMenuMock.getView()).thenReturn(gridContextMenuViewMock);
         when(headerGivenContextMenuMock.getView()).thenReturn(headerContextMenuViewMock);
-        this.model = new ScenarioSimulationModel(ScenarioSimulationModel.Type.RULE, "default");
+        this.model = new ScenarioSimulationModel();
+        model.setSimulation(getSimulation(ScenarioSimulationModel.Type.RULE, "default"));
         this.content = new ScenarioSimulationModelContent(model,
                                                           overviewMock,
                                                           mock(PackageDataModelOracleBaselinePayload.class));
         when(scenarioSimulationServiceMock.loadContent(observablePathMock)).thenReturn(content);
+    }
+
+    protected Simulation getSimulation(ScenarioSimulationModel.Type selectedType, String value) {
+        Simulation toReturn = new Simulation();
+        SimulationDescriptor simulationDescriptor = toReturn.getSimulationDescriptor();
+        simulationDescriptor.setType(selectedType);
+        switch (selectedType) {
+            case DMN:
+                simulationDescriptor.setDmnFilePath(value);
+                break;
+            case RULE:
+            default:
+                simulationDescriptor.setDmoSession(value);
+        }
+
+        simulationDescriptor.addFactMapping(FactIdentifier.INDEX.getName(), FactIdentifier.INDEX, ExpressionIdentifier.INDEX);
+        simulationDescriptor.addFactMapping(FactIdentifier.DESCRIPTION.getName(), FactIdentifier.DESCRIPTION, ExpressionIdentifier.DESCRIPTION);
+
+        Scenario scenario = toReturn.addScenario();
+        int row = toReturn.getUnmodifiableScenarios().indexOf(scenario);
+        scenario.setDescription(null);
+
+        // Add GIVEN Fact
+        int id = 1;
+        ExpressionIdentifier givenExpression = ExpressionIdentifier.create(row + "|" + id, FactMappingType.GIVEN);
+        final FactMapping givenFactMapping = simulationDescriptor.addFactMapping(FactMapping.getInstancePlaceHolder(id), FactIdentifier.EMPTY, givenExpression);
+        givenFactMapping.setExpressionAlias(FactMapping.getPropertyPlaceHolder(id));
+        scenario.addMappingValue(FactIdentifier.EMPTY, givenExpression, null);
+
+        // Add EXPECT Fact
+        id = 2;
+        ExpressionIdentifier expectedExpression = ExpressionIdentifier.create(row + "|" + id, FactMappingType.EXPECT);
+        final FactMapping expectedFactMapping = simulationDescriptor.addFactMapping(FactMapping.getInstancePlaceHolder(id), FactIdentifier.EMPTY, expectedExpression);
+        expectedFactMapping.setExpressionAlias(FactMapping.getPropertyPlaceHolder(id));
+        scenario.addMappingValue(FactIdentifier.EMPTY, expectedExpression, null);
+        return toReturn;
     }
 }

@@ -37,6 +37,7 @@ import org.drools.workbench.screens.scenariosimulation.model.FactIdentifier;
 import org.drools.workbench.screens.scenariosimulation.model.FactMapping;
 import org.drools.workbench.screens.scenariosimulation.model.FactMappingType;
 import org.drools.workbench.screens.scenariosimulation.model.Scenario;
+import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
 import org.drools.workbench.screens.scenariosimulation.model.Simulation;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn.ColumnWidthMode;
@@ -48,6 +49,8 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.DefaultGridWidg
 import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.SelectionExtension;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridSelectionManager;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.GridPinnedModeManager;
+
+import static org.drools.workbench.screens.scenariosimulation.client.editor.strategies.DataManagementStrategy.SIMPLE_CLASSES_MAP;
 
 public class ScenarioGrid extends BaseGridWidget {
 
@@ -117,13 +120,14 @@ public class ScenarioGrid extends BaseGridWidget {
 
     protected void setHeaderColumns(Simulation simulation) {
         final List<FactMapping> factMappings = simulation.getSimulationDescriptor().getUnmodifiableFactMappings();
+        boolean editableHeaders = !simulation.getSimulationDescriptor().getType().equals(ScenarioSimulationModel.Type.DMN);
         IntStream.range(0, factMappings.size())
                 .forEach(columnIndex -> {
-                    setHeaderColumn(columnIndex, factMappings.get(columnIndex));
+                    setHeaderColumn(columnIndex, factMappings.get(columnIndex), editableHeaders);
                 });
     }
 
-    protected void setHeaderColumn(int columnIndex, FactMapping factMapping) {
+    protected void setHeaderColumn(int columnIndex, FactMapping factMapping, boolean editableHeaders) {
         final FactIdentifier factIdentifier = factMapping.getFactIdentifier();
         String columnId = factMapping.getExpressionIdentifier().getName();
         String instanceTitle = factMapping.getFactAlias();
@@ -136,6 +140,7 @@ public class ScenarioGrid extends BaseGridWidget {
         scenarioGridColumn.setInstanceAssigned(isInstanceAssigned);
         scenarioGridColumn.setPropertyAssigned(isPropertyAssigned);
         scenarioGridColumn.setFactIdentifier(factIdentifier);
+        scenarioGridColumn.setEditableHeaders(editableHeaders);
         // by default ScenarioGridColumnBuilders.ScenarioGridColumnBuilder.build() set ColumnWidthMode.auto to all generated columns
         if (FactMappingType.OTHER.equals(factMapping.getExpressionIdentifier().getType())) {
             scenarioGridColumn.setColumnWidthMode(ColumnWidthMode.FIXED);
@@ -185,8 +190,20 @@ public class ScenarioGrid extends BaseGridWidget {
         if (FactIdentifier.DESCRIPTION.equals(factMapping.getFactIdentifier())) {
             return true;
         } else {
-            return instanceAssigned && !factMapping.getExpressionElements().isEmpty();
+            return instanceAssigned && (isSimpleJavaType(factMapping.getClassName()) || !factMapping.getExpressionElements().isEmpty());
         }
+    }
+
+    /**
+     * Helper method to know if the given <b>className</b> refers to one of the classes mapped as Simple java type
+     * @param className
+     * @return
+     */
+    protected boolean isSimpleJavaType(String className) {
+        return SIMPLE_CLASSES_MAP.values()
+                .stream()
+                .map(Class::getCanonicalName)
+                .anyMatch(className::equals);
     }
 
     /**

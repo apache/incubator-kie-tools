@@ -21,6 +21,7 @@ import com.ait.lienzo.client.core.event.AbstractNodeMouseEvent;
 import com.ait.lienzo.client.core.types.Point2D;
 import org.drools.workbench.screens.scenariosimulation.client.metadata.ScenarioHeaderMetaData;
 import org.drools.workbench.screens.scenariosimulation.client.utils.ScenarioSimulationGridHeaderUtilities;
+import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellEditAction;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
@@ -29,6 +30,8 @@ import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellEditC
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.DefaultGridWidgetEditCellMouseEventHandler;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
+
+import static org.drools.workbench.screens.scenariosimulation.client.utils.ScenarioSimulationGridHeaderUtilities.isHeaderEditable;
 
 public class ScenarioSimulationGridWidgetMouseEventHandler extends DefaultGridWidgetEditCellMouseEventHandler {
 
@@ -47,32 +50,27 @@ public class ScenarioSimulationGridWidgetMouseEventHandler extends DefaultGridWi
         if (column == null) {
             return false;
         }
-        if (!ScenarioSimulationGridHeaderUtilities.hasEditableHeader(column)) {
-            return false;
+        if (!isEditableHeaderLocal(column, uiHeaderRowIndex)) {
+            return true;
         }
-
-        if (!ScenarioSimulationGridHeaderUtilities.isEditableHeader(column,
-                                                                    uiHeaderRowIndex)) {
-            return false;
-        }
-
-        //Get rendering information
-        final Point2D gridWidgetComputedLocation = gridWidget.getComputedLocation();
         final ScenarioHeaderMetaData headerMetaData = (ScenarioHeaderMetaData) column.getHeaderMetaData().get(uiHeaderRowIndex);
-        final GridBodyCellEditContext context = RenderContextUtilities.makeRenderContext(gridWidget,
-                                                                                         ri,
-                                                                                         ci,
-                                                                                         relativeLocation.add(gridWidgetComputedLocation),
-                                                                                         uiHeaderRowIndex);
-
         final GridData gridData = gridWidget.getModel();
-        if (gridData.getSelectedHeaderCells().size() == 1) {
-            if (Objects.equals(headerMetaData.getSupportedEditAction(), GridCellEditAction.getSupportedEditAction(event))) {
-                headerMetaData.edit(context);
-                return true;
-            }
+        if (gridData.getSelectedHeaderCells().size() == 1 &&
+                Objects.equals(headerMetaData.getSupportedEditAction(), GridCellEditAction.getSupportedEditAction(event)) &&
+                isHeaderEditable(rendererHelper, headerMetaData, (ScenarioGridColumn) column)) {
+            final Point2D gridWidgetComputedLocation = gridWidget.getComputedLocation();
+            final GridBodyCellEditContext context = RenderContextUtilities.makeRenderContext(gridWidget,
+                                                                                             ri,
+                                                                                             ci,
+                                                                                             relativeLocation.add(gridWidgetComputedLocation),
+                                                                                             uiHeaderRowIndex);
+            headerMetaData.edit(context);
         }
+        return true;
+    }
 
-        return false;
+    // Indirection add for test
+    protected boolean isEditableHeaderLocal(GridColumn<?> scenarioGridColumn, Integer uiHeaderRowIndex) {
+        return ScenarioSimulationGridHeaderUtilities.isEditableHeader(scenarioGridColumn, uiHeaderRowIndex);
     }
 }

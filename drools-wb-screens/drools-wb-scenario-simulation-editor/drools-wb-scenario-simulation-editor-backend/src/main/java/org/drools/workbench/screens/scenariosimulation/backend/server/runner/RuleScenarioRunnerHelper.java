@@ -24,11 +24,11 @@ import java.util.function.Function;
 
 import org.drools.workbench.screens.scenariosimulation.backend.server.expression.ExpressionEvaluator;
 import org.drools.workbench.screens.scenariosimulation.backend.server.fluent.RuleScenarioExecutableBuilder;
+import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.ResultWrapper;
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.ScenarioExpect;
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.ScenarioGiven;
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.ScenarioResult;
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.ScenarioRunnerData;
-import org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.SingleFactValueResult;
 import org.drools.workbench.screens.scenariosimulation.backend.server.util.ScenarioBeanUtil;
 import org.drools.workbench.screens.scenariosimulation.backend.server.util.ScenarioBeanWrapper;
 import org.drools.workbench.screens.scenariosimulation.model.ExpressionElement;
@@ -43,8 +43,8 @@ import org.kie.api.runtime.RequestContext;
 
 import static java.util.stream.Collectors.toList;
 import static org.drools.workbench.screens.scenariosimulation.backend.server.fluent.RuleScenarioExecutableBuilder.createBuilder;
-import static org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.SingleFactValueResult.createErrorResult;
-import static org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.SingleFactValueResult.createResult;
+import static org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.ResultWrapper.createErrorResult;
+import static org.drools.workbench.screens.scenariosimulation.backend.server.runner.model.ResultWrapper.createResult;
 import static org.drools.workbench.screens.scenariosimulation.backend.server.util.ScenarioBeanUtil.fillBean;
 
 public class RuleScenarioRunnerHelper extends AbstractRunnerHelper {
@@ -116,19 +116,20 @@ public class RuleScenarioRunnerHelper extends AbstractRunnerHelper {
 
             for (FactMappingValue expectedResult : scenarioExpect.getExpectedResult()) {
 
-                SingleFactValueResult resultValue = createExtractorFunction(expressionEvaluator, expectedResult, simulationDescriptor).apply(factInstance);
+                ScenarioResult scenarioResult = fillResult(expectedResult,
+                                                           factIdentifier,
+                                                           () -> createExtractorFunction(expressionEvaluator, expectedResult, simulationDescriptor)
+                                                                   .apply(factInstance));
 
-                expectedResult.setError(!resultValue.isSatisfied());
-
-                scenarioResults.add(new ScenarioResult(factIdentifier, expectedResult, resultValue.getResult()).setResult(resultValue.isSatisfied()));
+                scenarioResults.add(scenarioResult);
             }
         }
         return scenarioResults;
     }
 
-    protected Function<Object, SingleFactValueResult> createExtractorFunction(ExpressionEvaluator expressionEvaluator,
-                                                                              FactMappingValue expectedResult,
-                                                                              SimulationDescriptor simulationDescriptor) {
+    protected Function<Object, ResultWrapper> createExtractorFunction(ExpressionEvaluator expressionEvaluator,
+                                                                      FactMappingValue expectedResult,
+                                                                      SimulationDescriptor simulationDescriptor) {
         return objectToCheck -> {
 
             ExpressionIdentifier expressionIdentifier = expectedResult.getExpressionIdentifier();
@@ -136,7 +137,7 @@ public class RuleScenarioRunnerHelper extends AbstractRunnerHelper {
             FactMapping factMapping = simulationDescriptor.getFactMapping(expectedResult.getFactIdentifier(), expressionIdentifier)
                     .orElseThrow(() -> new IllegalStateException("Wrong expression, this should not happen"));
 
-            List<String> pathToValue = factMapping.getExpressionElements().stream().map(ExpressionElement::getStep).collect(toList());
+            List<String> pathToValue = factMapping.getExpressionElementsWithoutClass().stream().map(ExpressionElement::getStep).collect(toList());
             ScenarioBeanWrapper<?> scenarioBeanWrapper = ScenarioBeanUtil.navigateToObject(objectToCheck, pathToValue, false);
             Object resultValue = scenarioBeanWrapper.getBean();
 

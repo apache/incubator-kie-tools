@@ -21,6 +21,7 @@ import java.nio.file.Files;
 
 import org.assertj.core.api.Assertions;
 import org.drools.workbench.screens.scenariosimulation.backend.server.util.ResourceHelper;
+import org.drools.workbench.screens.scenariosimulation.model.FactMapping;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
 import org.junit.Test;
 import org.kie.soup.project.datamodel.imports.Import;
@@ -56,7 +57,7 @@ public class ScenarioSimulationXMLPersistenceTest {
     public void migrateIfNecessary_1_0_to_1_1() throws Exception {
         String toMigrate = getFileContent("scesim-1-0.scesim");
         String migrated = instance.migrateIfNecessary(toMigrate);
-        assertTrue(migrated.contains("<ScenarioSimulationModel version=\"1.1\">"));
+        assertTrue(toMigrate.contains("<ScenarioSimulationModel version=\"1.0\">"));
         assertFalse(migrated.contains("<ScenarioSimulationModel version=\"1.0\">"));
         assertTrue(migrated.contains("EXPECT"));
         assertFalse(migrated.contains("EXPECTED"));
@@ -66,10 +67,22 @@ public class ScenarioSimulationXMLPersistenceTest {
     public void migrateIfNecessary_1_1_to_1_2() throws Exception {
         String toMigrate = getFileContent("scesim-1-1.scesim");
         String migrated = instance.migrateIfNecessary(toMigrate);
-        assertTrue(migrated.contains("<ScenarioSimulationModel version=\"1.2\">"));
+        assertTrue(toMigrate.contains("<ScenarioSimulationModel version=\"1.1\">"));
         assertFalse(migrated.contains("<ScenarioSimulationModel version=\"1.1\">"));
         assertTrue(migrated.contains("dmoSession></dmoSession>"));
         assertTrue(migrated.contains("<type>RULE</type>"));
+    }
+
+    @Test
+    public void migrateIfNecessary_1_2_to_1_3() throws Exception {
+        String toMigrate = getFileContent("scesim-1-2.scesim");
+        String migrated = instance.migrateIfNecessary(toMigrate);
+        assertTrue(toMigrate.contains("<ScenarioSimulationModel version=\"1.2\">"));
+        assertFalse(migrated.contains("<ScenarioSimulationModel version=\"1.2\">"));
+
+        for (FactMapping factMapping : instance.unmarshal(migrated, false).getSimulation().getSimulationDescriptor().getUnmodifiableFactMappings()) {
+            assertTrue(factMapping.getExpressionElements().size() >= 1);
+        }
     }
 
     @Test

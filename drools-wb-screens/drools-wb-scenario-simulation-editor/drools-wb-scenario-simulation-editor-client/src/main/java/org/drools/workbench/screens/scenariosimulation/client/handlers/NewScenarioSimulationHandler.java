@@ -131,13 +131,15 @@ public class NewScenarioSimulationHandler
             default:
                 value = "default";
         }
-        ScenarioSimulationModel scenarioSimulationModel = new ScenarioSimulationModel(selectedType, value);
         busyIndicatorView.showBusyIndicator(CommonConstants.INSTANCE.Saving());
         scenarioSimulationService.call(getSuccessCallback(presenter),
                                        new HasBusyIndicatorDefaultErrorCallback(busyIndicatorView)).create(pkg.getPackageTestResourcesPath(),
                                                                                                            buildFileName(baseFileName,
                                                                                                                          resourceType),
-                                                                                                           scenarioSimulationModel, "");
+                                                                                                           new ScenarioSimulationModel(),
+                                                                                                           "",
+                                                                                                           selectedType,
+                                                                                                           value);
     }
 
     @PostConstruct

@@ -95,19 +95,23 @@ public class DMNScenarioRunnerHelperTest {
         personFactIdentifier = FactIdentifier.create("Fact 1", Person.class.getCanonicalName());
         firstNameGivenExpressionIdentifier = ExpressionIdentifier.create("First Name Given", FactMappingType.GIVEN);
         firstNameGivenFactMapping = simulation.getSimulationDescriptor().addFactMapping(personFactIdentifier, firstNameGivenExpressionIdentifier);
+        firstNameGivenFactMapping.addExpressionElement("Fact 1", String.class.getCanonicalName());
         firstNameGivenFactMapping.addExpressionElement("firstName", String.class.getCanonicalName());
 
         disputeFactIdentifier = FactIdentifier.create("Fact 2", Dispute.class.getCanonicalName());
         amountGivenExpressionIdentifier = ExpressionIdentifier.create("Amount Given", FactMappingType.GIVEN);
         amountNameGivenFactMapping = simulation.getSimulationDescriptor().addFactMapping(disputeFactIdentifier, amountGivenExpressionIdentifier);
+        amountNameGivenFactMapping.addExpressionElement("Fact 2", BigDecimal.class.getCanonicalName());
         amountNameGivenFactMapping.addExpressionElement("amount", BigDecimal.class.getCanonicalName());
 
         firstNameExpectedExpressionIdentifier = ExpressionIdentifier.create("First Name Expected", FactMappingType.EXPECT);
         firstNameExpectedFactMapping = simulation.getSimulationDescriptor().addFactMapping(personFactIdentifier, firstNameExpectedExpressionIdentifier);
+        firstNameExpectedFactMapping.addExpressionElement("Fact 1", String.class.getCanonicalName());
         firstNameExpectedFactMapping.addExpressionElement("firstName", String.class.getCanonicalName());
 
         amountExpectedExpressionIdentifier = ExpressionIdentifier.create("Amount Expected", FactMappingType.EXPECT);
         amountNameExpectedFactMapping = simulation.getSimulationDescriptor().addFactMapping(disputeFactIdentifier, amountExpectedExpressionIdentifier);
+        amountNameExpectedFactMapping.addExpressionElement("Fact 2", Double.class.getCanonicalName());
         amountNameExpectedFactMapping.addExpressionElement("amount", Double.class.getCanonicalName());
 
         scenario1 = simulation.addScenario();
@@ -135,10 +139,6 @@ public class DMNScenarioRunnerHelperTest {
                 .hasMessage("DMN execution has not generated a decision result with name Fact 1");
 
         when(dmnResult.getDecisionResultByName(anyString())).thenReturn(dmnDecisionResult);
-        Assertions.assertThatThrownBy(() -> runnerHelper.verifyConditions(simulation.getSimulationDescriptor(), scenarioRunnerData, expressionEvaluator, requestContext))
-                .isInstanceOf(ScenarioException.class)
-                .hasMessage("DMN decision 'Fact 1' has status null");
-
         when(dmnDecisionResult.getEvaluationStatus()).thenReturn(DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED);
 
         Assertions.assertThatThrownBy(() -> runnerHelper.verifyConditions(simulation.getSimulationDescriptor(), scenarioRunnerData, expressionEvaluator, requestContext))

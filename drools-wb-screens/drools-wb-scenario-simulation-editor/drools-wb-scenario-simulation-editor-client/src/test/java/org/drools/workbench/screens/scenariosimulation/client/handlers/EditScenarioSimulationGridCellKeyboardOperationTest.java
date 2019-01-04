@@ -49,7 +49,7 @@ public class EditScenarioSimulationGridCellKeyboardOperationTest extends Abstrac
     private EditScenarioSimulationGridCellKeyboardOperation editOperation;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         super.setUp();
 
         editOperation = new EditScenarioSimulationGridCellKeyboardOperation(gridLayer);
@@ -68,7 +68,7 @@ public class EditScenarioSimulationGridCellKeyboardOperationTest extends Abstrac
         editOperation.editCell(scenarioGridMock);
 
         verify(scenarioGridMock).startEditingCell(0, 0);
-        verify(headerMetaDataMock, never()).edit(any());
+        verify(informationHeaderMetaDataMock, never()).edit(any());
     }
 
     @Test
@@ -84,7 +84,7 @@ public class EditScenarioSimulationGridCellKeyboardOperationTest extends Abstrac
         editOperation.editCell(scenarioGridMock);
 
         verify(scenarioGridMock, never()).startEditingCell(anyInt(), anyInt());
-        verify(headerMetaDataMock).edit(editHeaderContextCaptor.capture());
+        verify(informationHeaderMetaDataMock).edit(editHeaderContextCaptor.capture());
 
         final GridBodyCellEditContext editHeaderContext = editHeaderContextCaptor.getValue();
         assertThat(editHeaderContext.getColumnIndex()).isEqualTo(0);

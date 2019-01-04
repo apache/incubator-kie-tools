@@ -56,7 +56,7 @@ public class SimulationDescriptor {
         return dmoSession;
     }
 
-    public void setRuleSession(String ruleSession) {
+    public void setDmoSession(String ruleSession) {
         this.dmoSession = ruleSession;
     }
 

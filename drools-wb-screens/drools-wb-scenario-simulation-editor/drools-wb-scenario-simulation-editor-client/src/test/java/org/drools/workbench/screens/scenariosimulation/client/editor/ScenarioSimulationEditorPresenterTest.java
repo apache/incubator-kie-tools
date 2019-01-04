@@ -155,7 +155,8 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
                                                                oracleFactoryMock,
                                                                placeManagerMock,
                                                                testRunnerReportingScreenMock,
-                                                               scenarioSimulationDocksHandlerMock) {
+                                                               scenarioSimulationDocksHandlerMock,
+                                                               new CallerMock<>(dmnTypeServiceMock)) {
             {
                 this.kieView = kieViewMock;
                 this.overviewWidget = overviewWidgetPresenterMock;
@@ -190,6 +191,13 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
             protected void clearRightPanelStatus() {
 
             }
+
+//            @Override
+//            protected void loadContent() {
+//                return new ScenarioSimulationModelContent(model,
+//                                                   new Overview(),
+//                                                   new PackageDataModelOracleBaselinePayload());
+//            }
 
             @Override
             protected String getJsonModel(ScenarioSimulationModel model) {

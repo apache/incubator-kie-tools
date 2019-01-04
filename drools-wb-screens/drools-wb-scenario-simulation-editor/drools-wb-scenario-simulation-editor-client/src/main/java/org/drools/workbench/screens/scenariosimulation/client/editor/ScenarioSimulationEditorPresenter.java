@@ -28,6 +28,7 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.IsWidget;
 import elemental2.dom.DomGlobal;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
+import org.drools.workbench.screens.scenariosimulation.client.editor.strategies.DMNDataManagementStrategy;
 import org.drools.workbench.screens.scenariosimulation.client.editor.strategies.DMODataManagementStrategy;
 import org.drools.workbench.screens.scenariosimulation.client.editor.strategies.DataManagementStrategy;
 import org.drools.workbench.screens.scenariosimulation.client.events.RedoEvent;
@@ -41,6 +42,7 @@ import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGr
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModelContent;
 import org.drools.workbench.screens.scenariosimulation.model.Simulation;
+import org.drools.workbench.screens.scenariosimulation.service.DMNTypeService;
 import org.drools.workbench.screens.scenariosimulation.service.ScenarioSimulationService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.common.client.api.Caller;
@@ -105,6 +107,8 @@ public class ScenarioSimulationEditorPresenter
 
     private Caller<ScenarioSimulationService> service;
 
+    private Caller<DMNTypeService> dmnTypeService;
+
     private ScenarioSimulationResourceType type;
 
     private ScenarioSimulationView view;
@@ -129,10 +133,12 @@ public class ScenarioSimulationEditorPresenter
                                              final AsyncPackageDataModelOracleFactory oracleFactory,
                                              final PlaceManager placeManager,
                                              final TestRunnerReportingScreen testRunnerReportingScreen,
-                                             final ScenarioSimulationDocksHandler scenarioSimulationDocksHandler) {
+                                             final ScenarioSimulationDocksHandler scenarioSimulationDocksHandler,
+                                             final Caller<DMNTypeService> dmnTypeService) {
         super(scenarioSimulationProducer.getScenarioSimulationView());
         this.testRunnerReportingScreen = testRunnerReportingScreen;
         this.scenarioSimulationDocksHandler = scenarioSimulationDocksHandler;
+        this.dmnTypeService = dmnTypeService;
         this.view = (ScenarioSimulationView) baseView;
         this.service = service;
         this.type = type;
@@ -322,6 +328,7 @@ public class ScenarioSimulationEditorPresenter
                 .addNewTopLevelMenu(alertsButtonMenuItemBuilder.build());
     }
 
+    @Override
     protected void loadContent() {
         service.call(getModelSuccessCallback(),
                      getNoSuchFileExceptionErrorCallback()).loadContent(versionRecordManager.getCurrentPath());
@@ -367,8 +374,12 @@ public class ScenarioSimulationEditorPresenter
             }
             packageName = content.getDataModel().getPackageName();
             resetEditorPages(content.getOverview());
-            dataManagementStrategy = new DMODataManagementStrategy(oracleFactory);
-
+            if(ScenarioSimulationModel.Type.RULE.equals(content.getModel().getSimulation().getSimulationDescriptor().getType())) {
+                dataManagementStrategy = new DMODataManagementStrategy(oracleFactory);
+            }
+            else {
+                dataManagementStrategy = new DMNDataManagementStrategy(dmnTypeService);
+            }
             dataManagementStrategy.manageScenarioSimulationModelContent(versionRecordManager.getCurrentPath(), content);
             populateRightPanel();
             model = content.getModel();

@@ -71,6 +71,7 @@ public class NewScenarioSimulationHandlerTest extends AbstractNewScenarioTest {
     private SessionInfo sessionInfoMock;
     @Mock
     private  AssetQueryService assetQueryServiceMock;
+
     @Mock
     private User userMock;
 

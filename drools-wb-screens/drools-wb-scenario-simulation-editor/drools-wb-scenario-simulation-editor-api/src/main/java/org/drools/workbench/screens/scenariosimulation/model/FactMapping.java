@@ -85,6 +85,13 @@ public class FactMapping {
         return expressionElements.stream().map(ExpressionElement::getStep).collect(Collectors.joining("."));
     }
 
+    public List<ExpressionElement> getExpressionElementsWithoutClass() {
+        if(expressionElements.size() == 0) {
+            throw new IllegalStateException("ExpressionElements malformed");
+        }
+        return expressionElements.subList(1, expressionElements.size());
+    }
+
     public List<ExpressionElement> getExpressionElements() {
         return expressionElements;
     }
