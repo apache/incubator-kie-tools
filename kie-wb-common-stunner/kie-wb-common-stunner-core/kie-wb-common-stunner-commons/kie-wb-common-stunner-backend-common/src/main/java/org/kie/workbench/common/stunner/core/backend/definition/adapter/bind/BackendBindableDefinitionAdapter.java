@@ -22,7 +22,6 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.AbstractBindableDefinitionAdapter;
-import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableDefinitionAdapter;
 import org.kie.workbench.common.stunner.core.graph.util.Exceptions;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
@@ -35,29 +34,14 @@ import static org.kie.workbench.common.stunner.core.backend.definition.adapter.R
 // TODO: Handle meta-properties
 // TODO: Handle i18n bundle.
 
-class BackendBindableDefinitionAdapter<T> extends AbstractBindableDefinitionAdapter<T>
+class BackendBindableDefinitionAdapter<T>
+        extends AbstractBindableDefinitionAdapter<T>
         implements BindableDefinitionAdapter<T> {
 
     private static final Logger LOG = LoggerFactory.getLogger(BackendBindableDefinitionAdapter.class);
 
     BackendBindableDefinitionAdapter(final DefinitionUtils definitionUtils) {
         super(definitionUtils);
-    }
-
-    @Override
-    public String getId(final Object pojo) {
-        final String fieldId = propertyIdFieldNames.get(pojo.getClass());
-        if (null != fieldId) {
-            try {
-                return BindableAdapterUtils.getDynamicDefinitionId(pojo.getClass(),
-                                                                   getFieldValue(pojo,
-                                                                                 fieldId));
-            } catch (IllegalAccessException e) {
-                LOG.error("Error obtaining the id for Definition " + pojo.getClass());
-            }
-            return null;
-        }
-        return getDefinitionId(pojo.getClass());
     }
 
     @Override
@@ -152,5 +136,17 @@ class BackendBindableDefinitionAdapter<T> extends AbstractBindableDefinitionAdap
                 .filter(name -> Objects.equals(name, propertyName))
                 .findFirst()
                 .map(prop -> Exceptions.swallow(() -> getFieldValue(definition, prop), null));
+    }
+
+    @Override
+    protected String getStringFieldValue(final Object pojo,
+                                         final String fieldName) {
+        try {
+            return getFieldValue(pojo,
+                                 fieldName);
+        } catch (IllegalAccessException e) {
+            LOG.error("Error obtaining the field [" + fieldName + "] value for type [" + pojo.getClass() + "]");
+        }
+        return null;
     }
 }

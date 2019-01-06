@@ -227,7 +227,7 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
                             final double x,
                             final double y,
                             final CommandsCallback commandsCallback) {
-        final String defId = clientDefinitionManager.adapters().forDefinition().getId(definition);
+        final String defId = clientDefinitionManager.adapters().forDefinition().getId(definition).value();
         final String uuid = UUID.uuid();
         clientFactoryServices.newElement(uuid,
                                          defId,

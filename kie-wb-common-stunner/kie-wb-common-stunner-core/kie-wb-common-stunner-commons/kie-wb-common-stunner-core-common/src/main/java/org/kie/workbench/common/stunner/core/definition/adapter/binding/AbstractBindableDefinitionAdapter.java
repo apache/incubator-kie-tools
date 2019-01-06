@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionId;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
@@ -71,6 +72,21 @@ public abstract class AbstractBindableDefinitionAdapter<T> implements BindableDe
         this.propertyCategoryFieldNames = propertyCategoryFieldNames;
         this.propertyDescriptionFieldNames = propertyDescriptionFieldNames;
         this.propertyNameFields = propertyNameFields;
+    }
+
+    protected abstract String getStringFieldValue(T pojo, String fieldName);
+
+    @Override
+    public DefinitionId getId(final T pojo) {
+        final String fieldId = getIdField(pojo);
+        final String definitionId = getDefinitionId(pojo.getClass());
+        if (null != fieldId) {
+            final String id = BindableAdapterUtils.getDynamicDefinitionId(definitionId,
+                                                                          getStringFieldValue(pojo,
+                                                                                              fieldId));
+            return DefinitionId.build(id, definitionId.length());
+        }
+        return DefinitionId.build(definitionId);
     }
 
     @Override
@@ -191,5 +207,9 @@ public abstract class AbstractBindableDefinitionAdapter<T> implements BindableDe
 
     protected String getDefinitionId(final Class<?> type) {
         return BindableAdapterUtils.getDefinitionId(type);
+    }
+
+    private String getIdField(final T pojo) {
+        return getPropertyIdFieldNames().get(pojo.getClass());
     }
 }

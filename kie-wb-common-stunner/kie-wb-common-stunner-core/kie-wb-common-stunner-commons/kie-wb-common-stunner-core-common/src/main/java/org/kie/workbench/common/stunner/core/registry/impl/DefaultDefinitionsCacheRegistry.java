@@ -91,7 +91,7 @@ public class DefaultDefinitionsCacheRegistry
     public boolean remove(final Object instance) {
         final Class<?> type = instance.getClass();
         final DefinitionAdapter<Object> adapter = getAdapter(type);
-        final String id = adapter.getId(instance);
+        final String id = adapter.getId(instance).value();
         definitionsByType.remove(type.getName());
         return null != definitionsById.remove(id);
     }
@@ -100,7 +100,7 @@ public class DefaultDefinitionsCacheRegistry
     public boolean contains(final Object instance) {
         final Class<?> type = instance.getClass();
         final DefinitionAdapter<Object> adapter = getAdapter(type);
-        final String id = adapter.getId(instance);
+        final String id = adapter.getId(instance).value();
         return definitionsById.containsKey(id);
     }
 
@@ -124,7 +124,7 @@ public class DefaultDefinitionsCacheRegistry
     private DefinitionHolder registerInstance(final Object instance) {
         final Class<?> type = instance.getClass();
         final DefinitionAdapter<Object> adapter = getAdapter(type);
-        final String id = adapter.getId(instance);
+        final String id = adapter.getId(instance).value();
         final Set<String> labels = adapter.getLabels(instance);
         final DefinitionHolder holder = new DefinitionHolder(instance,
                                                              labels);

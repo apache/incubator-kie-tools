@@ -30,6 +30,7 @@ import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.backend.definition.adapter.AbstractReflectAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
+import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionId;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.HasInheritance;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
@@ -49,7 +50,8 @@ import org.slf4j.LoggerFactory;
 // TODO: Handle i18n bundle.
 
 @Dependent
-public class BackendDefinitionAdapter<T> extends AbstractReflectAdapter<T>
+public class BackendDefinitionAdapter<T>
+        extends AbstractReflectAdapter<T>
         implements DefinitionAdapter<T>,
                    HasInheritance {
 
@@ -76,21 +78,21 @@ public class BackendDefinitionAdapter<T> extends AbstractReflectAdapter<T>
     }
 
     @Override
-    public String getId(final T definition) {
-        final Id id = getClassAnnotation(definition.getClass(),
-                                         Id.class);
-        if (null != id) {
+    public DefinitionId getId(final T definition) {
+        final String definitionId = getDefinitionId(definition.getClass());
+        final Id idAnn = getClassAnnotation(definition.getClass(),
+                                            Id.class);
+        if (null != idAnn) {
             try {
-
-                return BindableAdapterUtils.getDynamicDefinitionId(definition.getClass(),
-                                                                   getAnnotatedFieldValue(definition,
-                                                                                          Id.class));
+                final String value = BindableAdapterUtils.getDynamicDefinitionId(definitionId,
+                                                                                 getAnnotatedFieldValue(definition,
+                                                                                                        Id.class));
+                return DefinitionId.build(value, definitionId.length());
             } catch (Exception e) {
                 LOG.error("Error obtaining annotated id for Definition " + definition.getClass().getName());
             }
-            return null;
         }
-        return getDefinitionId(definition.getClass());
+        return DefinitionId.build(definitionId);
     }
 
     @Override

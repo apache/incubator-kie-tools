@@ -272,7 +272,7 @@ public class BPMNPaletteDefinitionBuilder
                 } else {
                     subcategoryGroup = (DefaultPaletteGroup) subcategoryGroupOp.get();
                 }
-                final String defId = adapter.getId(serviceTask);
+                final String defId = adapter.getId(serviceTask).value();
                 final String title = adapter.getTitle(serviceTask);
                 final String description = adapter.getDescription(serviceTask);
                 final DefaultPaletteItem item =

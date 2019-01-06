@@ -30,7 +30,7 @@ public interface DefinitionAdapter<T> extends PriorityAdapter {
     /**
      * Returns the definition's identifier for a given pojo.
      */
-    String getId(final T pojo);
+    DefinitionId getId(final T pojo);
 
     /**
      * Returns the definition's category for a given pojo.

@@ -55,7 +55,7 @@ public class GraphEvaluationHandlerUtils {
     }
 
     public String getDefinitionId(final Object definition) {
-        return definitionManager.adapters().forDefinition().getId(definition);
+        return definitionManager.adapters().forDefinition().getId(definition).value();
     }
 
     public Set<String> getParentIds(final Graph<? extends DefinitionSet, ? extends Node> graph,

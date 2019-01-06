@@ -29,6 +29,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.components.toolbox.Toolbox;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
+import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionId;
 import org.kie.workbench.common.stunner.core.definition.adapter.MorphAdapter;
 import org.kie.workbench.common.stunner.core.definition.morph.MorphDefinition;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
@@ -119,7 +120,7 @@ public class MorphActionsToolboxFactoryTest {
         when(element.getUUID()).thenReturn(E_UUID);
         when(element.getContent()).thenReturn(elementContent);
         when(element.asNode()).thenReturn(element);
-        when(definitionAdapter.getId(eq(definition))).thenReturn(DEF_ID);
+        when(definitionAdapter.getId(eq(definition))).thenReturn(DefinitionId.build(DEF_ID));
         when(elementContent.getDefinition()).thenReturn(definition);
         when(definitionUtils.getDefinitionManager()).thenReturn(definitionManager);
         when(definitionUtils.hasMorphTargets(eq(definition))).thenReturn(true);

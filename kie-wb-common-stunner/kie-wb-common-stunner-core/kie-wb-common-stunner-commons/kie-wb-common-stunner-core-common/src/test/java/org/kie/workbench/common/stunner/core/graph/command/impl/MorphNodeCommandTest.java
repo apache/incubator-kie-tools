@@ -23,6 +23,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
+import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionId;
 import org.kie.workbench.common.stunner.core.definition.adapter.MorphAdapter;
 import org.kie.workbench.common.stunner.core.definition.morph.MorphDefinition;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -83,11 +84,11 @@ public class MorphNodeCommandTest extends AbstractGraphCommandTest {
         when(content.getDefinition()).thenReturn(CURRENT_DEFINITION);
         when(adapterRegistry.getMorphAdapter(any(Class.class))).thenReturn(morphAdaptor);
 
-        when(definitionAdapter.getId(CURRENT_DEFINITION)).thenReturn(CURRENT_DEFINITION_ID);
+        when(definitionAdapter.getId(CURRENT_DEFINITION)).thenReturn(DefinitionId.build(CURRENT_DEFINITION_ID));
         when(definitionAdapter.getLabels(CURRENT_DEFINITION)).thenReturn(Collections.emptySet());
         when(morphAdaptor.morph(CURRENT_DEFINITION, morphDefinition, CURRENT_DEFINITION_ID)).thenReturn(NEW_DEFINITION);
 
-        when(definitionAdapter.getId(NEW_DEFINITION)).thenReturn(NEW_DEFINITION_ID);
+        when(definitionAdapter.getId(NEW_DEFINITION)).thenReturn(DefinitionId.build(NEW_DEFINITION_ID));
         when(definitionAdapter.getLabels(NEW_DEFINITION)).thenReturn(Collections.singleton(NEW_DEFINITION_LABEL));
         when(morphAdaptor.morph(NEW_DEFINITION, morphDefinition, CURRENT_DEFINITION_ID)).thenReturn(CURRENT_DEFINITION);
     }

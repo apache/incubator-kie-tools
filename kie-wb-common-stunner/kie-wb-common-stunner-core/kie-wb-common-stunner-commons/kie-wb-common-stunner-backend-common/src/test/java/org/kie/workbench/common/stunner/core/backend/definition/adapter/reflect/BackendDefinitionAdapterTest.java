@@ -52,7 +52,7 @@ public class BackendDefinitionAdapterTest extends AbstractBackendAdapterTest {
 
     @Test
     public void testGetId() {
-        final String id = tested.getId(instance);
+        final String id = tested.getId(instance).value();
         assertEquals(FooTestBean.class.getName(), id);
     }
 

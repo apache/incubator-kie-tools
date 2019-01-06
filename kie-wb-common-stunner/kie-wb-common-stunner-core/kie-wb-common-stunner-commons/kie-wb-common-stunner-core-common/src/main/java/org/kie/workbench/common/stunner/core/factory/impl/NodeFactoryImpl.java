@@ -62,8 +62,8 @@ public class NodeFactoryImpl extends AbstractElementFactory<Object, Definition<O
         View<Object> content = new ViewImpl<>(definition,
                                               bounds);
         node.setContent(content);
-        addLabels(node.getLabels(),
-                  definition);
+        appendLabels(node.getLabels(),
+                     definition);
         return node;
     }
 

@@ -142,7 +142,7 @@ public class TreeExplorer implements IsWidget {
     private Glyph getGlyph(final String shapeSetId,
                            final Element<org.kie.workbench.common.stunner.core.graph.content.view.View> element) {
         final Object definition = element.getContent().getDefinition();
-        final String defId = definitionUtils.getDefinitionManager().adapters().forDefinition().getId(definition);
+        final String defId = definitionUtils.getDefinitionManager().adapters().forDefinition().getId(definition).value();
         final ShapeFactory factory = shapeManager.getShapeSet(shapeSetId).getShapeFactory();
         return factory.getGlyph(defId);
     }

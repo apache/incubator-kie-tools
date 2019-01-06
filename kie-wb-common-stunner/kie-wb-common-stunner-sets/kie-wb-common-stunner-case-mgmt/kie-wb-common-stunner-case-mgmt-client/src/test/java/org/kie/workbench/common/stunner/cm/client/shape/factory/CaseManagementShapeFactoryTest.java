@@ -56,6 +56,7 @@ import org.kie.workbench.common.stunner.core.client.shape.impl.AbstractElementSh
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
+import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionId;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.kie.workbench.common.stunner.shapes.client.BasicConnectorShape;
@@ -164,9 +165,9 @@ public class CaseManagementShapeFactoryTest {
     @SuppressWarnings("unchecked")
     public void setup() {
         final PictureShapeView pictureShapeView = new PictureShapeView(new MultiPath().rect(0,
-                                                                                      0,
-                                                                                      10,
-                                                                                      10));
+                                                                                            0,
+                                                                                            10,
+                                                                                            10));
 
         this.stageShape = new SVGPrimitiveShape(new Rectangle(0.0d, 0.0d));
         this.taskShape = new SVGPrimitiveShape(new Rectangle(0.0d, 0.0d));
@@ -365,7 +366,7 @@ public class CaseManagementShapeFactoryTest {
     @SuppressWarnings("unchecked")
     private void assertShapeConstruction(final BPMNDefinition definition,
                                          final Consumer<Shape> o) {
-        when(definitionAdapter.getId(eq(definition))).thenReturn(definition.getClass().getName());
+        when(definitionAdapter.getId(eq(definition))).thenReturn(DefinitionId.build(definition.getClass().getName()));
 
         final Shape<? extends ShapeView> shape = factory.newShape(definition);
         assertNotNull(shape);

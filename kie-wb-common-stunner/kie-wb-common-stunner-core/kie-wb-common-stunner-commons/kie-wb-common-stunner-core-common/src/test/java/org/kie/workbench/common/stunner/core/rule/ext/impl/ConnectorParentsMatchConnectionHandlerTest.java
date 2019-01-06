@@ -22,6 +22,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.AbstractGraphDefinitionTypesTest;
+import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionId;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -63,9 +64,9 @@ public class ConnectorParentsMatchConnectionHandlerTest extends AbstractGraphDef
     public void setup() throws Exception {
         super.setup();
         this.graph = graphHandler.graph;
+        when(graphHandler.definitionAdapter.getId(eq(connectorDef))).thenReturn(DefinitionId.build(DEF_EDGE_ID));
         this.connector = graphHandler.newEdge(EDGE_UUID,
                                               Optional.of(connectorDef));
-        when(graphHandler.definitionAdapter.getId(eq(connectorDef))).thenReturn(DEF_EDGE_ID);
         when(connectionContext.getGraph()).thenReturn(graph);
         when(connectionContext.getConnector()).thenReturn(connector);
         when(ruleExtension.getId()).thenReturn(DEF_EDGE_ID);

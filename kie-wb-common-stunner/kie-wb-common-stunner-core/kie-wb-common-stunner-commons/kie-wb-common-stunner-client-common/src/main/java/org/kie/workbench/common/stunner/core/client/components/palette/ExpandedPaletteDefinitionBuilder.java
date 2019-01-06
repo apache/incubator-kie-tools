@@ -116,7 +116,7 @@ public class ExpandedPaletteDefinitionBuilder
                                             final Metadata metadata,
                                             final Function<String, DefaultPaletteItem> itemSupplier) {
         final DefinitionAdapter<Object> definitionAdapter = getDefinitionManager().adapters().forDefinition();
-        final String id = definitionAdapter.getId(definition);
+        final String id = definitionAdapter.getId(definition).value();
         DefaultPaletteCategory result = null;
         DefaultPaletteCategory category = (DefaultPaletteCategory) itemSupplier.apply(categoryId);
         if (null == category) {

@@ -24,6 +24,7 @@ import java.util.Set;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
+import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionId;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -96,7 +97,7 @@ public abstract class AbstractGraphRuleHandlerTest {
         when(element.getContent()).thenReturn(elementContent);
         when(element.getLabels()).thenReturn(DEFINITION_LABELS);
         when(elementContent.getDefinition()).thenReturn(elementDefinition);
-        when(definitionAdapter.getId(eq(elementDefinition))).thenReturn(DEFINITION_ID);
+        when(definitionAdapter.getId(eq(elementDefinition))).thenReturn(DefinitionId.build(DEFINITION_ID));
         when(definitionAdapter.getLabels(eq(elementDefinition))).thenReturn(DEFINITION_LABELS);
         when(candidate.getContent()).thenReturn(candidateContent);
         when(candidate.getLabels()).thenReturn(CANDIDATE_LABELS);
@@ -104,9 +105,9 @@ public abstract class AbstractGraphRuleHandlerTest {
         when(parent.getContent()).thenReturn(parentContent);
         when(parent.getLabels()).thenReturn(PARENT_LABELS);
         when(parentContent.getDefinition()).thenReturn(parentDefinition);
-        when(definitionAdapter.getId(eq(candidateDefinition))).thenReturn(CANDIDATE_ID);
+        when(definitionAdapter.getId(eq(candidateDefinition))).thenReturn(DefinitionId.build(CANDIDATE_ID));
         when(definitionAdapter.getLabels(eq(candidateDefinition))).thenReturn(CANDIDATE_LABELS);
-        when(definitionAdapter.getId(eq(parentDefinition))).thenReturn(PARENT_ID);
+        when(definitionAdapter.getId(eq(parentDefinition))).thenReturn(DefinitionId.build(PARENT_ID));
         when(definitionAdapter.getLabels(eq(parentDefinition))).thenReturn(PARENT_LABELS);
     }
 
@@ -118,7 +119,7 @@ public abstract class AbstractGraphRuleHandlerTest {
         Object d = mock(Object.class);
         when(e.getContent()).thenReturn(v);
         when(v.getDefinition()).thenReturn(d);
-        when(definitionAdapter.getId(eq(d))).thenReturn(id);
+        when(definitionAdapter.getId(eq(d))).thenReturn(DefinitionId.build(id));
         when(definitionAdapter.getLabels(eq(d))).thenReturn(labels);
         when(e.getLabels()).thenReturn(labels);
         return e;
@@ -132,7 +133,7 @@ public abstract class AbstractGraphRuleHandlerTest {
         Object d = mock(Object.class);
         when(e.getContent()).thenReturn(v);
         when(v.getDefinition()).thenReturn(d);
-        when(definitionAdapter.getId(eq(d))).thenReturn(id);
+        when(definitionAdapter.getId(eq(d))).thenReturn(DefinitionId.build(id));
         when(definitionAdapter.getLabels(eq(d))).thenReturn(labels);
         when(e.getLabels()).thenReturn(labels);
         return e;
@@ -146,7 +147,7 @@ public abstract class AbstractGraphRuleHandlerTest {
         Object d = mock(Object.class);
         when(e.getContent()).thenReturn(v);
         when(v.getDefinition()).thenReturn(d);
-        when(definitionAdapter.getId(eq(d))).thenReturn(id);
+        when(definitionAdapter.getId(eq(d))).thenReturn(DefinitionId.build(id));
         when(definitionAdapter.getLabels(eq(d))).thenReturn(labels);
         when(e.getLabels()).thenReturn(labels);
         return e;

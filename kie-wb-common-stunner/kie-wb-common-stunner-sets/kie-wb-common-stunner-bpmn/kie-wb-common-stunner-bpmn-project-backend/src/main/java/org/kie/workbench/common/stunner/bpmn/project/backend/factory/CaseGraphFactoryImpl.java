@@ -88,7 +88,7 @@ public class CaseGraphFactoryImpl extends BPMNGraphFactoryImpl {
                 definitionManager.adapters().registry().getDefinitionAdapter(milestone.getClass());
 
         final Node<View<ServiceTask>, Edge> firstElement =
-                (Node<View<ServiceTask>, Edge>) factoryManager.newElement(UUID.uuid(), adapter.getId(milestone));
+                (Node<View<ServiceTask>, Edge>) factoryManager.newElement(UUID.uuid(), adapter.getId(milestone).value());
 
         final AdHoc adHoc = diagramNode.getContent().getDefinition().getDiagramSet().getAdHoc();
         final String adHocPropertyId = definitionManager.adapters().forProperty().getId(adHoc);

@@ -49,6 +49,7 @@ import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.impl.AbstractCompositeCommand;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
+import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionId;
 import org.kie.workbench.common.stunner.core.definition.adapter.PropertyAdapter;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -227,7 +228,7 @@ public class ResizeControlImplTest {
         when(adapterManager.forProperty()).thenReturn(propertyAdapter);
         when(adapterRegistry.getDefinitionAdapter(any(Class.class))).thenReturn(definitionAdapter);
         when(adapterRegistry.getPropertyAdapter(anyObject())).thenReturn(propertyAdapter);
-        when(definitionAdapter.getId(eq(definition))).thenReturn(DEF_ID);
+        when(definitionAdapter.getId(eq(definition))).thenReturn(DefinitionId.build(DEF_ID));
         when(propertyAdapter.getId(eq(wProperty))).thenReturn(W_PROPERTY_ID);
         when(propertyAdapter.getId(eq(hProperty))).thenReturn(H_PROPERTY_ID);
         when(propertyAdapter.getId(eq(rProperty))).thenReturn(R_PROPERTY_ID);

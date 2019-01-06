@@ -24,6 +24,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.TestingGraphMockHandler;
+import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionId;
 import org.kie.workbench.common.stunner.core.factory.graph.EdgeFactory;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -62,7 +63,7 @@ public class EdgeFactoryImplTest {
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
         this.testingkHelper = new TestingGraphMockHandler();
-        when(testingkHelper.definitionAdapter.getId(eq(definition))).thenReturn(ID);
+        when(testingkHelper.definitionAdapter.getId(eq(definition))).thenReturn(DefinitionId.build(ID));
         when(testingkHelper.definitionAdapter.getLabels(eq(definition))).thenReturn(LABELS);
         this.tested = new EdgeFactoryImpl(testingkHelper.definitionManager);
     }

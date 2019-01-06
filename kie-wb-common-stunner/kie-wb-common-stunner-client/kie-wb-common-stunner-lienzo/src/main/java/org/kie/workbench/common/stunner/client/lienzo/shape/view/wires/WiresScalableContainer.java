@@ -114,12 +114,10 @@ public class WiresScalableContainer extends WiresLayoutContainer {
                         .setX(x)
                         .setY(y);
                 if (null == scaleRatio) {
-                    // GWT.log("CALCULATING SCALE RATIO...");
                     final BoundingBox bb = transformableContainer.getBoundingBox();
                     final double sx = width / bb.getWidth();
                     final double sy = height / bb.getHeight();
                     scaleRatio = new Point2D(sx, sy);
-                    // GWT.log("SCALE RATIO VALUES [" + scaleRatio + "]");
                     transformableContainer.setScale(scaleRatio);
                 }
             }

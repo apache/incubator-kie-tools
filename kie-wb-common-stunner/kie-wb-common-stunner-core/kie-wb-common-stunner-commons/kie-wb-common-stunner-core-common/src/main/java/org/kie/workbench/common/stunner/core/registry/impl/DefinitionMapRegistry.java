@@ -42,7 +42,7 @@ public class DefinitionMapRegistry<T> extends AbstractDynamicRegistryWrapper<T, 
                                   final Map<String, T> map) {
         super(
                 new MapRegistry<T>(
-                        item -> null != item ? adapterManager.forDefinition().getId(item) : null,
+                        item -> null != item ? adapterManager.forDefinition().getId(item).value() : null,
                         map)
         );
         this.adapterManager = adapterManager;

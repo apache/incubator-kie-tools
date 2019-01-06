@@ -73,7 +73,11 @@ public class DomainLookupFunctions {
                                                       Optional.of(CardinalityContext.Operation.ADD)));
             if (isValid(outEdgeCardinalityResult)) {
                 final String defId =
-                        context.getDefinitionManager().adapters().forDefinition().getId(sourceNode.getContent().getDefinition());
+                        context.getDefinitionManager()
+                                .adapters()
+                                .forDefinition()
+                                .getId(sourceNode.getContent().getDefinition())
+                                .value();
                 return new LookupConnectionTargetRoles(edgeId, defId)
                         .execute(context);
             }

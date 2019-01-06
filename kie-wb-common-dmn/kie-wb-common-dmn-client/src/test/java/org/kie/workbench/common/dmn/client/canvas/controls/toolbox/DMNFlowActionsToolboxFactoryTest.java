@@ -35,6 +35,7 @@ import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.C
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ToolboxDomainLookups;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
+import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionId;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
@@ -115,7 +116,7 @@ public class DMNFlowActionsToolboxFactoryTest {
     public void setup() throws Exception {
         when(definitionManager.adapters()).thenReturn(adapters);
         when(adapters.forDefinition()).thenReturn(definitionAdapter);
-        when(definitionAdapter.getId(eq(allowedNodeDefinition))).thenReturn(NODE_ID);
+        when(definitionAdapter.getId(eq(allowedNodeDefinition))).thenReturn(DefinitionId.build(NODE_ID));
         createConnectorAction = new ManagedInstanceStub<>(createConnectorActionInstance);
         when(createConnectorActionInstance.setEdgeId(anyString())).thenReturn(createConnectorActionInstance);
         createNodeAction = new ManagedInstanceStub<>(createNodeActionInstance);

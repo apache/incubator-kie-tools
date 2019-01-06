@@ -117,15 +117,6 @@ public class GraphUtils {
         return count[0];
     }
 
-    public static <T> int countDefinitions(final DefinitionManager definitionManager,
-                                           final Graph<?, ? extends Node> target,
-                                           final T definition) {
-        final String id = definitionManager.adapters().forDefinition().getId(definition);
-        return countDefinitionsById(definitionManager,
-                                    target,
-                                    id);
-    }
-
     public static int countEdges(final DefinitionManager definitionManager,
                                  final String edgeId,
                                  final List<? extends Edge> edges) {
@@ -173,7 +164,7 @@ public class GraphUtils {
             p = getParent((Node<? extends Definition<?>, ? extends Edge>) p);
             if (null != p) {
                 final Object definition = ((Definition) p.getContent()).getDefinition();
-                final String id = definitionManager.adapters().forDefinition().getId(definition);
+                final String id = definitionManager.adapters().forDefinition().getId(definition).value();
                 result.add(id);
             }
         }
@@ -397,7 +388,7 @@ public class GraphUtils {
         String targetId = null;
         if (element.getContent() instanceof Definition) {
             final Object definition = ((Definition) element.getContent()).getDefinition();
-            targetId = definitionManager.adapters().forDefinition().getId(definition);
+            targetId = definitionManager.adapters().forDefinition().getId(definition).value();
         } else if (element.getContent() instanceof DefinitionSet) {
             targetId = ((DefinitionSet) element.getContent()).getDefinition();
         }

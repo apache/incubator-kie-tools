@@ -35,7 +35,7 @@ public abstract class DefinitionAdapterWrapper<T, A extends DefinitionAdapter<T>
     }
 
     @Override
-    public String getId(final T pojo) {
+    public DefinitionId getId(final T pojo) {
         return adapter.getId(pojo);
     }
 

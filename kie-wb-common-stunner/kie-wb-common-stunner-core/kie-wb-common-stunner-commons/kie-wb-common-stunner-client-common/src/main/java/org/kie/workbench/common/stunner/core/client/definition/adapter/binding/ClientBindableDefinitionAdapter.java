@@ -24,12 +24,12 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.AbstractBindableDefinitionAdapter;
-import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableDefinitionAdapter;
 import org.kie.workbench.common.stunner.core.i18n.StunnerTranslationService;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
-class ClientBindableDefinitionAdapter extends AbstractBindableDefinitionAdapter<Object>
+class ClientBindableDefinitionAdapter
+        extends AbstractBindableDefinitionAdapter<Object>
         implements BindableDefinitionAdapter<Object> {
 
     private StunnerTranslationService translationService;
@@ -38,17 +38,6 @@ class ClientBindableDefinitionAdapter extends AbstractBindableDefinitionAdapter<
                                     StunnerTranslationService translationService) {
         super(definitionUtils);
         this.translationService = translationService;
-    }
-
-    @Override
-    public String getId(final Object pojo) {
-        final String fieldId = propertyIdFieldNames.get(pojo.getClass());
-        if (null != fieldId) {
-            return BindableAdapterUtils.getDynamicDefinitionId(pojo.getClass(),
-                                                               getProxiedValue(pojo,
-                                                                               fieldId));
-        }
-        return getDefinitionId(pojo.getClass());
     }
 
     @Override
@@ -111,6 +100,13 @@ class ClientBindableDefinitionAdapter extends AbstractBindableDefinitionAdapter<
                 .filter(name -> Objects.equals(name, propertyName))
                 .findFirst()
                 .map(prop -> getProxiedValue(pojo, prop));
+    }
+
+    @Override
+    protected String getStringFieldValue(final Object pojo,
+                                         final String fieldName) {
+        return getProxiedValue(pojo,
+                               fieldName);
     }
 
     private <T, R> R getProxiedValue(final T pojo,

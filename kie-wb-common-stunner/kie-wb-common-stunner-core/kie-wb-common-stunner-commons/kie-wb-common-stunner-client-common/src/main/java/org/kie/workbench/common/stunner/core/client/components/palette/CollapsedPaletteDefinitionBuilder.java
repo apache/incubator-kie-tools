@@ -52,7 +52,7 @@ public class CollapsedPaletteDefinitionBuilder
                                             final Metadata metadata,
                                             final Function<String, DefaultPaletteItem> itemSupplier) {
         final DefinitionAdapter<Object> definitionAdapter = getDefinitionManager().adapters().forDefinition();
-        final String id = definitionAdapter.getId(definition);
+        final String id = definitionAdapter.getId(definition).value();
         final String title = definitionAdapter.getTitle(definition);
         // Notice it creates the item by using the title as for the item's tooltip property,
         // setting this an empty item title, in order to not display text once the rendered

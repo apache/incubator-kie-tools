@@ -61,8 +61,8 @@ public class EdgeFactoryImpl extends AbstractElementFactory<Object, Definition<O
             ViewConnector<Object> content = new ViewConnectorImpl<>(definition,
                                                                     buildBounds());
             edge.setContent(content);
-            addLabels(edge.getLabels(),
-                      definition);
+            appendLabels(edge.getLabels(),
+                         definition);
         }
         return edge;
     }

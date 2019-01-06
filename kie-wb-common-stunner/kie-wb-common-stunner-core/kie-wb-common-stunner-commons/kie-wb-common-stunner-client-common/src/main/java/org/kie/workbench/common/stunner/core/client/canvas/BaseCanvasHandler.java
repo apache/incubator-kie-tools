@@ -442,7 +442,7 @@ public abstract class BaseCanvasHandler<D extends Diagram, C extends AbstractCan
     }
 
     protected String getDefinitionId(final Object definition) {
-        return getDefinitionManager().adapters().forDefinition().getId(definition);
+        return getDefinitionManager().adapters().forDefinition().getId(definition).value();
     }
 
     private void log(final Level level,

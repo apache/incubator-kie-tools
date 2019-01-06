@@ -94,7 +94,7 @@ public class MorphActionsToolboxFactory
             final Element<? extends Definition<?>> element = (Element<? extends Definition<?>>) e;
             final Object definition = element.getContent().getDefinition();
             if (definitionUtils.hasMorphTargets(definition)) {
-                final String id = getDefinitionManager().adapters().forDefinition().getId(definition);
+                final String id = getDefinitionManager().adapters().forDefinition().getId(definition).value();
                 final MorphAdapter<Object> morphAdapter = getDefinitionManager().adapters().registry().getMorphAdapter(definition.getClass());
                 final Iterable<MorphDefinition> morphDefinitions = morphAdapter.getMorphDefinitions(definition);
                 if (null != morphDefinitions && morphDefinitions.iterator().hasNext()) {

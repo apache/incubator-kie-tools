@@ -33,6 +33,7 @@ import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
+import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionId;
 import org.kie.workbench.common.stunner.core.definition.adapter.PropertyAdapter;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandManager;
@@ -129,7 +130,7 @@ public class CaseGraphFactoryImplTest {
         when(definitionManager.adapters()).thenReturn(adapters);
         when(adapters.registry()).thenReturn(registry);
         when(registry.getDefinitionAdapter(ServiceTask.class)).thenReturn(adapter);
-        when(adapter.getId(milestone)).thenReturn(MILESTONE_ID);
+        when(adapter.getId(milestone)).thenReturn(DefinitionId.build(MILESTONE_ID));
         when(factoryManager.newElement(anyString(),
                                        eq(BPMNDiagramImpl.class))).thenReturn(diagramNode);
         when(factoryManager.newElement(anyString(),

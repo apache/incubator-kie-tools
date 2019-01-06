@@ -20,6 +20,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
+import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionId;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
 import org.kie.workbench.common.stunner.core.registry.definition.AdapterRegistry;
@@ -33,7 +34,7 @@ class BootstrapDefinitionAdapter implements DefinitionAdapter<Object> {
     }
 
     @Override
-    public String getId(final Object pojo) {
+    public DefinitionId getId(final Object pojo) {
         return getWrapped(pojo).getId(pojo);
     }
 

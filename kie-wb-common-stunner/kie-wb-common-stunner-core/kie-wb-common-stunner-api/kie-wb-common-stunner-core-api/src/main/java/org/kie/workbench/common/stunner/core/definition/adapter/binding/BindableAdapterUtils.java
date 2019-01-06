@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
+import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionId;
 import org.kie.workbench.common.stunner.core.definition.adapter.exception.NotPojoTypeException;
 import org.kie.workbench.common.stunner.core.registry.definition.AdapterRegistry;
 
@@ -41,7 +42,15 @@ public class BindableAdapterUtils {
 
     public static String getDynamicDefinitionId(final Class<?> type,
                                                 final String suffix) {
-        return getDefinitionId(type) + "." + suffix;
+        return getDynamicDefinitionId(getDefinitionId(type),
+                                      suffix);
+    }
+
+    public static String getDynamicDefinitionId(final String typeId,
+                                                final String suffix) {
+        return null != suffix ?
+                DefinitionId.generateId(typeId, suffix) :
+                typeId;
     }
 
     public static String getDynamicId(final Class<?> type,

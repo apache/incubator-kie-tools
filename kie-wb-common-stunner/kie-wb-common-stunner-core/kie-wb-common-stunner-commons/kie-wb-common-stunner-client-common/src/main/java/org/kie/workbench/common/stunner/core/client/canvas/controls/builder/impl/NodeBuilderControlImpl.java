@@ -107,7 +107,7 @@ public class NodeBuilderControlImpl
         final Connection targetConnection = request.getTargetConnection();
         if (null != node) {
             final Object nodeDef = node.getContent().getDefinition();
-            final String nodeId = clientDefinitionManager.adapters().forDefinition().getId(nodeDef);
+            final String nodeId = clientDefinitionManager.adapters().forDefinition().getId(nodeDef).value();
             final ElementBuilderControlImpl ebc = getElementBuilderControl();
             final Node<View<?>, Edge> parent = ebc.getParent(x,
                                                              y);
@@ -127,7 +127,7 @@ public class NodeBuilderControlImpl
                                            final CompositeCommand.Builder commandBuilder = new CompositeCommand.Builder().addCommands(commands);
                                            if (inEdge != null) {
                                                final Object edgeDef = inEdge.getContent().getDefinition();
-                                               final String edgeId = clientDefinitionManager.adapters().forDefinition().getId(edgeDef);
+                                               final String edgeId = clientDefinitionManager.adapters().forDefinition().getId(edgeDef).value();
                                                // The commands to batch for the edge that connects both nodes.
                                                commandBuilder.addCommand(commandFactory.addConnector(inEdge.getSourceNode(),
                                                                                                      inEdge,

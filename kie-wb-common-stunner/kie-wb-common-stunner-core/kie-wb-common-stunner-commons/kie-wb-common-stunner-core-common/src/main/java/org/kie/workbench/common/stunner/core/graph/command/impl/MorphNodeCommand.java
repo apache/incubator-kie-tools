@@ -62,7 +62,7 @@ public final class MorphNodeCommand extends AbstractGraphCommand {
         if (!results.getType().equals(CommandResult.Type.ERROR)) {
             final DefinitionManager definitionManager = context.getDefinitionManager();
             final Object currentDef = candidate.getContent().getDefinition();
-            final String currentDefId = definitionManager.adapters().forDefinition().getId(currentDef);
+            final String currentDefId = definitionManager.adapters().forDefinition().getId(currentDef).value();
             this.oldMorphTarget = currentDefId;
             final MorphAdapter<Object> morphAdapter = context.getDefinitionManager().adapters().registry().getMorphAdapter(currentDef.getClass());
             if (null == morphAdapter) {
@@ -81,7 +81,7 @@ public final class MorphNodeCommand extends AbstractGraphCommand {
             candidate.getContent().setDefinition(newDef);
             // Update candidate roles.
             final Set<String> newLabels = new HashSet<>();
-            newLabels.add(definitionManager.adapters().forDefinition().getId(newDef));
+            newLabels.add(definitionManager.adapters().forDefinition().getId(newDef).value());
             newLabels.addAll(definitionManager.adapters().forDefinition().getLabels(newDef));
 
             candidate.getLabels().clear();

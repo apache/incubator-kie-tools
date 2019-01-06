@@ -26,6 +26,7 @@ import org.kie.workbench.common.stunner.core.client.components.palette.AbstractP
 import org.kie.workbench.common.stunner.core.client.components.palette.DefaultPaletteDefinitionBuilders.CategoryBuilder;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
+import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionId;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.i18n.StunnerTranslationService;
@@ -111,7 +112,7 @@ public class ExpandedPaletteDefinitionBuilderTest {
         when(definitionUtils.getDefinitionManager()).thenReturn(definitionManager);
         when(definitionManager.adapters()).thenReturn(adapterManager);
         when(adapterManager.forDefinition()).thenReturn(definitionAdapter1);
-        when(definitionAdapter1.getId(eq(definition1))).thenReturn(DEF1_ID);
+        when(definitionAdapter1.getId(eq(definition1))).thenReturn(DefinitionId.build(DEF1_ID));
         when(definitionAdapter1.getCategory(eq(definition1))).thenReturn(DEF1_CATEGORY);
         when(definitionAdapter1.getTitle(eq(definition1))).thenReturn(DEF1_TITLE);
         when(definitionAdapter1.getDescription(eq(definition1))).thenReturn(DEF1_DESC);

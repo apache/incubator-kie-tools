@@ -23,6 +23,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.exception.BadCommandArgumentsException;
+import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionId;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
@@ -70,7 +71,7 @@ public class UpdateElementPropertyValueCommandTest extends AbstractGraphCommandT
             add(property);
         }};
         when(definitionAdapter.getProperties(eq(definition))).thenReturn(properties);
-        when(definitionAdapter.getId(eq(definition))).thenReturn(DEF_ID);
+        when(definitionAdapter.getId(eq(definition))).thenReturn(DefinitionId.build(DEF_ID));
         when(propertyAdapter.getId(eq(property))).thenReturn(PROPERTY_ID);
         when(propertyAdapter.getValue(eq(property))).thenReturn(PROPERTY_OLD_VALUE);
         when(graphIndex.getNode(eq(UUID))).thenReturn(candidate);

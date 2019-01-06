@@ -24,6 +24,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.TestingGraphMockHandler;
+import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionId;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -46,7 +47,8 @@ import static org.mockito.Mockito.when;
 public class NodeFactoryImplTest {
 
     public static final String UUID = "uuid1";
-    public static final String ID = "defId";
+    public static final String DEF_TYPE_ID = "defType";
+    public static final String DEF_ID = "defId";
     public static final Set<String> LABELS = Arrays.asList("label1",
                                                            "label2").stream().collect(Collectors.toSet());
     public static final Bounds BOUNDS = new BoundsImpl(new BoundImpl(10d,
@@ -67,7 +69,6 @@ public class NodeFactoryImplTest {
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
         this.testingkHelper = new TestingGraphMockHandler();
-        when(testingkHelper.definitionAdapter.getId(eq(definition))).thenReturn(ID);
         when(testingkHelper.definitionAdapter.getLabels(eq(definition))).thenReturn(LABELS);
         when(definitionUtils.getDefinitionManager()).thenReturn(testingkHelper.definitionManager);
         when(definitionUtils.buildBounds(eq(definition),
@@ -84,6 +85,7 @@ public class NodeFactoryImplTest {
 
     @Test
     public void testBuild() {
+        when(testingkHelper.definitionAdapter.getId(eq(definition))).thenReturn(DefinitionId.build(DEF_ID));
         final Node<Definition<Object>, Edge> node = tested.build(UUID,
                                                                  definition);
         assertNotNull(node);
@@ -91,7 +93,24 @@ public class NodeFactoryImplTest {
                      node.getUUID());
         assertEquals(3,
                      node.getLabels().size());
-        assertTrue(node.getLabels().contains(ID));
+        assertTrue(node.getLabels().contains(DEF_ID));
+        assertTrue(node.getLabels().contains("label1"));
+        assertTrue(node.getLabels().contains("label2"));
+    }
+
+    @Test
+    public void testBuildDynamicDefinition() {
+        when(testingkHelper.definitionAdapter.getId(eq(definition))).thenReturn(DefinitionId.build(DEF_TYPE_ID,
+                                                                                                   DEF_ID));
+        final Node<Definition<Object>, Edge> node = tested.build(UUID,
+                                                                 definition);
+        assertNotNull(node);
+        assertEquals(UUID,
+                     node.getUUID());
+        assertEquals(4,
+                     node.getLabels().size());
+        assertTrue(node.getLabels().contains(DefinitionId.generateId(DEF_TYPE_ID, DEF_ID)));
+        assertTrue(node.getLabels().contains(DEF_TYPE_ID));
         assertTrue(node.getLabels().contains("label1"));
         assertTrue(node.getLabels().contains("label2"));
     }

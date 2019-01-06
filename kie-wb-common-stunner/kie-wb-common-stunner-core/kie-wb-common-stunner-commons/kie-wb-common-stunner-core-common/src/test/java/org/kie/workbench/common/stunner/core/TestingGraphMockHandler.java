@@ -25,6 +25,7 @@ import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
+import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionId;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionSetRuleAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.PropertyAdapter;
 import org.kie.workbench.common.stunner.core.factory.impl.EdgeFactoryImpl;
@@ -137,6 +138,21 @@ public class TestingGraphMockHandler {
         return this;
     }
 
+    public Object getDefIfPresent(final String id,
+                                  final Optional<Object> actual) {
+        Object definition = null;
+        if (actual.isPresent()) {
+            definition = actual.get();
+            if (null == definitionAdapter.getId(definition)) {
+                when(definitionAdapter.getId(eq(definition))).thenReturn(DefinitionId.build(id));
+            }
+        } else {
+            definition = newDef("def-" + id,
+                                Optional.empty());
+        }
+        return definition;
+    }
+
     public Object newDef(final String id,
                          final Optional<Set<String>> labels) {
         final Object def = mock(Object.class);
@@ -149,7 +165,7 @@ public class TestingGraphMockHandler {
     public void mockDefAttributes(final Object def,
                                   final String id,
                                   final Optional<Set<String>> labels) {
-        when(definitionAdapter.getId(def)).thenReturn(id);
+        when(definitionAdapter.getId(def)).thenReturn(DefinitionId.build(id));
         if (labels.isPresent()) {
             when(definitionAdapter.getLabels(def)).thenReturn(labels.get());
         }
@@ -183,10 +199,7 @@ public class TestingGraphMockHandler {
                             final double y,
                             final double w,
                             final double h) {
-        final Object definition = def.isPresent() ?
-                def.get() :
-                newDef("def-" + uuid,
-                       Optional.empty());
+        final Object definition = getDefIfPresent(uuid, def);
         when(definitionUtils.buildBounds(eq(definition),
                                          anyDouble(),
                                          anyDouble()))
@@ -222,12 +235,7 @@ public class TestingGraphMockHandler {
 
     public Edge newEdge(String uuid,
                         final Optional<Object> def) {
-        final Object definition = def.isPresent() ?
-                def.get() :
-                newDef("def-" + uuid,
-                       Optional.empty());
-
-
+        final Object definition = getDefIfPresent(uuid, def);
         return newEdge(uuid, definition);
     }
 

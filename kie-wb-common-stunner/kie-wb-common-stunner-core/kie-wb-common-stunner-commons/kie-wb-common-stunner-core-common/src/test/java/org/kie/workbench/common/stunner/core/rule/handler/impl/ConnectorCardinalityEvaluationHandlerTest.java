@@ -24,6 +24,7 @@ import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionId;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
@@ -99,7 +100,7 @@ public class ConnectorCardinalityEvaluationHandlerTest extends AbstractGraphRule
         when(edge.getContent()).thenReturn(edgeContent);
         when(edge.getLabels()).thenReturn(edgeLabels);
         when(edgeContent.getDefinition()).thenReturn(edgeDefinition);
-        when(definitionAdapter.getId(eq(edgeDefinition))).thenReturn(EDGE_ID);
+        when(definitionAdapter.getId(eq(edgeDefinition))).thenReturn(DefinitionId.build(EDGE_ID));
         tested = new ConnectorCardinalityEvaluationHandler(evalUtils,
                                                            new EdgeCardinalityEvaluationHandler());
     }
@@ -114,7 +115,7 @@ public class ConnectorCardinalityEvaluationHandlerTest extends AbstractGraphRule
         assertFalse(tested.accepts(RULE_IN_NO_LIMIT,
                                    context));
         when(context.getDirection()).thenReturn(EdgeCardinalityContext.Direction.INCOMING);
-        when(definitionAdapter.getId(eq(edgeDefinition))).thenReturn("anotherId");
+        when(definitionAdapter.getId(eq(edgeDefinition))).thenReturn(DefinitionId.build("anotherId"));
         assertFalse(tested.accepts(RULE_IN_NO_LIMIT,
                                    context));
     }

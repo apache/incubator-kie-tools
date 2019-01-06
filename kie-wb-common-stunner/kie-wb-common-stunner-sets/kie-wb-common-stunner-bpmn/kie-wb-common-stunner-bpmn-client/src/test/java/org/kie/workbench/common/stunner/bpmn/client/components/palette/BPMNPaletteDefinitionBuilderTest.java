@@ -43,6 +43,7 @@ import org.kie.workbench.common.stunner.core.client.components.palette.DefaultPa
 import org.kie.workbench.common.stunner.core.client.components.palette.ExpandedPaletteDefinitionBuilder;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
+import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionId;
 import org.kie.workbench.common.stunner.core.i18n.StunnerTranslationService;
 import org.kie.workbench.common.stunner.core.registry.definition.AdapterRegistry;
 import org.kie.workbench.common.stunner.core.registry.impl.DefinitionsCacheRegistry;
@@ -118,7 +119,7 @@ public class BPMNPaletteDefinitionBuilderTest {
         when(definitionManager.adapters()).thenReturn(adapterManager);
         when(adapterManager.registry()).thenReturn(adapterRegistry);
         when(adapterRegistry.getDefinitionAdapter(any(Class.class))).thenReturn(widAdapter);
-        when(widAdapter.getId(eq(serviceTask))).thenReturn(WID_NAME);
+        when(widAdapter.getId(eq(serviceTask))).thenReturn(DefinitionId.build(WID_NAME));
         when(widAdapter.getCategory(eq(serviceTask))).thenReturn(WID_CAT);
         when(widAdapter.getTitle(eq(serviceTask))).thenReturn(WID_DISPLAY_NAME);
         when(widAdapter.getDescription(eq(serviceTask))).thenReturn(WID_DESC);

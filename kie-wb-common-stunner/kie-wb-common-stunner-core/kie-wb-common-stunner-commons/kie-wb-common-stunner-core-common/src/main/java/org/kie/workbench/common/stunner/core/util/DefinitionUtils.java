@@ -211,7 +211,7 @@ public class DefinitionUtils {
     public <T> String[] getDefinitionIds(final T definition) {
         final Class<?> type = definition.getClass();
         final DefinitionAdapter<Object> definitionAdapter = definitionManager.adapters().registry().getDefinitionAdapter(type);
-        final String definitionId = definitionAdapter.getId(definition);
+        final String definitionId = definitionAdapter.getId(definition).value();
         String baseId = null;
         if (definitionAdapter instanceof HasInheritance) {
             baseId = ((HasInheritance) definitionAdapter).getBaseType(type);

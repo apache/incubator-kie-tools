@@ -63,7 +63,7 @@ public class StunnerClientLogger {
                                      final Object def) {
         final DefinitionAdapter<Object> defAdapter =
                 definitionManager.adapters().registry().getDefinitionAdapter(def.getClass());
-        final String id = defAdapter.getId(def);
+        final String id = defAdapter.getId(def).value();
         final String category = defAdapter.getCategory(def);
         final String description = defAdapter.getDescription(def);
         final String title = defAdapter.getTitle(def);

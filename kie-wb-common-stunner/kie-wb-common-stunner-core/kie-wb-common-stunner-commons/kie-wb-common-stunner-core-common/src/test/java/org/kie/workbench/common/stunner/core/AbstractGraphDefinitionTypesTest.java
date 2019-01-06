@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.core;
 
 import java.util.Optional;
 
+import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionId;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 import org.kie.workbench.common.stunner.core.validation.Violation;
@@ -89,12 +90,12 @@ public class AbstractGraphDefinitionTypesTest {
         this.definitionA = new DefinitionA();
         this.definitionB = new DefinitionB();
         this.definitionC = new DefinitionC();
-        when(graphHandler.definitionAdapter.getId(eq(rootDefinition))).thenReturn(DEF_ROOT_ID);
-        when(graphHandler.definitionAdapter.getId(eq(parentDefinition))).thenReturn(DEF_PARENT_ID);
-        when(graphHandler.definitionAdapter.getId(eq(gradParentDefinition))).thenReturn(DEF_GRAND_PARENT_ID);
-        when(graphHandler.definitionAdapter.getId(eq(definitionA))).thenReturn(DEF_A_ID);
-        when(graphHandler.definitionAdapter.getId(eq(definitionB))).thenReturn(DEF_B_ID);
-        when(graphHandler.definitionAdapter.getId(eq(definitionC))).thenReturn(DEF_C_ID);
+        when(graphHandler.definitionAdapter.getId(eq(rootDefinition))).thenReturn(DefinitionId.build(DEF_ROOT_ID));
+        when(graphHandler.definitionAdapter.getId(eq(parentDefinition))).thenReturn(DefinitionId.build(DEF_PARENT_ID));
+        when(graphHandler.definitionAdapter.getId(eq(gradParentDefinition))).thenReturn(DefinitionId.build(DEF_GRAND_PARENT_ID));
+        when(graphHandler.definitionAdapter.getId(eq(definitionA))).thenReturn(DefinitionId.build(DEF_A_ID));
+        when(graphHandler.definitionAdapter.getId(eq(definitionB))).thenReturn(DefinitionId.build(DEF_B_ID));
+        when(graphHandler.definitionAdapter.getId(eq(definitionC))).thenReturn(DefinitionId.build(DEF_C_ID));
         this.rootNode = newViewNode(ROOT_UUID,
                                     rootDefinition,
                                     0,

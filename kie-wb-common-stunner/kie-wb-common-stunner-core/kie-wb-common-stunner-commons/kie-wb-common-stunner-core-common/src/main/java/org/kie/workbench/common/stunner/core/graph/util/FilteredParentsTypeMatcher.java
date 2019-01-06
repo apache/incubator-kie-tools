@@ -146,7 +146,8 @@ public class FilteredParentsTypeMatcher
             return candidateParent.isPresent() ?
                     Optional.ofNullable(provider.definitionManager.adapters()
                                                 .forDefinition()
-                                                .getId(candidateParent.get().getContent().getDefinition())) :
+                                                .getId(candidateParent.get().getContent().getDefinition())
+                                                .value()) :
                     Optional.empty();
         }
     }

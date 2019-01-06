@@ -49,6 +49,7 @@ import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
+import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionId;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionSetRuleAdapter;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
@@ -146,11 +147,11 @@ public class ObserverBuilderControlTest {
         AdapterManager adapters = mock(AdapterManager.class);
         DefinitionAdapter definitionAdapter = mock(DefinitionAdapter.class);
         DefinitionSetRuleAdapter rulesAdapter = mock(DefinitionSetRuleAdapter.class);
-        when(definitionAdapter.getId(any())).thenReturn("Object");
+        when(definitionAdapter.getId(any())).thenReturn(DefinitionId.build("Object"));
         when(rulesAdapter.getRuleSet(any())).thenReturn(mock(RuleSet.class));
         when(adapters.forDefinition()).thenReturn(definitionAdapter);
         when(adapters.forRules()).thenReturn(rulesAdapter);
-        when(definitionAdapter.getId(DEF)).thenReturn(DEF_ID);
+        when(definitionAdapter.getId(DEF)).thenReturn(DefinitionId.build(DEF_ID));
 
         when(clientDefinitionManager.adapters()).thenReturn(adapters);
         when(clientDefinitionManager.definitionSets()).thenReturn(mock(TypeDefinitionSetRegistry.class));

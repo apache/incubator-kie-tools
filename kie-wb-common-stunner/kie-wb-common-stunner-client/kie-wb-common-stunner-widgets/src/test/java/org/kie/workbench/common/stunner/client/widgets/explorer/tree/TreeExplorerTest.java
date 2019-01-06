@@ -40,6 +40,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.selection.Canva
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
+import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionId;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
@@ -156,7 +157,7 @@ public class TreeExplorerTest {
         when(definitionUtils.getDefinitionManager()).thenReturn(definitionManager);
         when(definitionManager.adapters()).thenReturn(adapterManager);
         when(adapterManager.forDefinition()).thenReturn(definitionAdapter);
-        when(definitionAdapter.getId(anyObject())).thenReturn("defId");
+        when(definitionAdapter.getId(anyObject())).thenReturn(DefinitionId.build("defId"));
         when(shapeManager.getShapeSet(eq(SHAPE_SET_ID))).thenReturn(shapeSet);
         when(shapeSet.getShapeFactory()).thenReturn(shapeFactory);
         when(shapeFactory.getGlyph(eq("defId"))).thenReturn(glyph);

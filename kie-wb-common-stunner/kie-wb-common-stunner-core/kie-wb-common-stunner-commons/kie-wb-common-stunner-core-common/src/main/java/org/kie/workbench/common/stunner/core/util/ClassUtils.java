@@ -58,6 +58,10 @@ public class ClassUtils {
         return instance.getClass().getName().equals(type.getName());
     }
 
+    public static String getName(Class<?> type) {
+        return type.getName();
+    }
+
     public boolean isPrimitiveClass(Class<?> type) {
         return type.isPrimitive() || WRAPPER_MAP.containsKey(type);
     }

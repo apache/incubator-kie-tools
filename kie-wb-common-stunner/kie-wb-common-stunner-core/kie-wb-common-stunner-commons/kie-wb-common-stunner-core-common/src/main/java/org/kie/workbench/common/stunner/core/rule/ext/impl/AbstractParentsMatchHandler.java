@@ -70,7 +70,7 @@ public abstract class AbstractParentsMatchHandler<T extends AbstractParentsMatch
         final Object content = edge.getContent();
         if (content instanceof Definition) {
             final Definition holder = (Definition) content;
-            return Optional.of(definitionManager.adapters().forDefinition().getId(holder.getDefinition()));
+            return Optional.of(definitionManager.adapters().forDefinition().getId(holder.getDefinition()).value());
         }
         return Optional.empty();
     }
