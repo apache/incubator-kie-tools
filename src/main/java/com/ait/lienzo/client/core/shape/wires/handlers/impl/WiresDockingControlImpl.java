@@ -85,7 +85,7 @@ public class WiresDockingControlImpl extends AbstractWiresParentPickerControl
                                               getShape(),
                                               (WiresShape) getParent());
         }
-        return null != m_intersection;
+        return isIntersecting();
     }
 
     private Point2D findIntersection(double dx, double dy, final Point2D initialPathLocation, final WiresShape shape,  final WiresShape parent) {
@@ -108,8 +108,8 @@ public class WiresDockingControlImpl extends AbstractWiresParentPickerControl
 
     @Override
     public Point2D getAdjust() {
-        if (isEnabled() && m_intersection != null) {
-            Point2D candidateLocation = getCandidateLocation();
+        if (isEnabled() && isIntersecting()) {
+            final Point2D candidateLocation = getCandidateLocation();
             final Point2D absLoc = getParent().getComputedLocation();
             m_absDockPosition = new Point2D(absLoc.getX() + candidateLocation.getX(),
                                             absLoc.getY() + candidateLocation.getY());
@@ -145,7 +145,7 @@ public class WiresDockingControlImpl extends AbstractWiresParentPickerControl
     @Override
     public Point2D getCandidateLocation() {
         final WiresShape shape = getShape();
-        if (m_absInitialPathLocation == null || m_intersection == null) {
+        if (m_absInitialPathLocation == null || !isIntersecting()) {
             return computeCandidateLocation(shape);
         }
         return getCandidateLocation(shape);
@@ -160,7 +160,7 @@ public class WiresDockingControlImpl extends AbstractWiresParentPickerControl
     }
 
     private Point2D getCandidateLocation(WiresShape shape) {
-        if (null == m_intersection) {
+        if (!isIntersecting()) {
             return null;
         }
         BoundingBox box = shape.getPath().getBoundingBox();
@@ -281,6 +281,10 @@ public class WiresDockingControlImpl extends AbstractWiresParentPickerControl
             shape.setDockedTo(null);
         }
         removeHandlers();
+    }
+
+    private boolean isIntersecting() {
+        return null != m_intersection;
     }
 
     private void registerHandler(HandlerRegistration handler) {

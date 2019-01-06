@@ -267,17 +267,21 @@ public class WiresShapeControlImpl
         if (!accept) {
             throw new IllegalStateException("Execute should not be called. No containment neither docking operations have been accepted.");
         }
+
         final Point2D location = c_accept ?
                 getContainmentControl().getCandidateLocation() :
                 getDockingControl().getCandidateLocation();
+
         if (d_accept) {
             getDockingControl().execute();
         } else {
             getContainmentControl().execute();
         }
 
-        getParentPickerControl().setShapeLocation(location);
-        shapeUpdated(true);
+        if (null != location) {
+            getParentPickerControl().setShapeLocation(location);
+            shapeUpdated(true);
+        }
 
         forEachConnectorControl(new Consumer<WiresConnectorControl>() {
             @Override
