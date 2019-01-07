@@ -106,7 +106,6 @@ public class DeleteOrganizationalUnitPopUpPresenter {
                                            notificationEvent.fire(new NotificationEvent(view.getDeleteSuccessMessage(),
                                                                                         NotificationEvent.NotificationType.SUCCESS));
                                            view.hide();
-                                           libraryPlaces.goToOrganizationalUnits();
                                        },
                                        new HasBusyIndicatorDefaultErrorCallback(view)).removeOrganizationalUnit(organizationalUnit.getName());
     }
