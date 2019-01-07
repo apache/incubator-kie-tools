@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.client.editors.types.listview;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
@@ -35,6 +36,7 @@ import org.uberfire.mvp.Command;
 import static org.kie.workbench.common.dmn.client.editors.types.persistence.CreationType.ABOVE;
 import static org.kie.workbench.common.dmn.client.editors.types.persistence.CreationType.BELOW;
 import static org.kie.workbench.common.dmn.client.editors.types.persistence.CreationType.NESTED;
+import static org.kie.workbench.common.stunner.core.util.StringUtils.isEmpty;
 
 @Dependent
 public class DataTypeListItem {
@@ -321,6 +323,7 @@ public class DataTypeListItem {
         closeEditMode();
 
         final DataType newDataType = newDataType();
+        final String referenceDataTypeHash = dataTypeList.calculateParentHash(getDataType());
         final List<DataType> updatedDataTypes = newDataType.create(getDataType(), ABOVE);
 
         if (newDataType.isTopLevel()) {
@@ -328,6 +331,8 @@ public class DataTypeListItem {
         } else {
             dataTypeList.refreshItemsByUpdatedDataTypes(updatedDataTypes);
         }
+
+        dataTypeList.enableEditMode(getNewDataTypeHash(newDataType, referenceDataTypeHash));
     }
 
     void insertFieldBelow() {
@@ -335,6 +340,7 @@ public class DataTypeListItem {
         closeEditMode();
 
         final DataType newDataType = newDataType();
+        final String referenceDataTypeHash = dataTypeList.calculateParentHash(getDataType());
         final List<DataType> updatedDataTypes = newDataType.create(getDataType(), BELOW);
 
         if (newDataType.isTopLevel()) {
@@ -342,6 +348,8 @@ public class DataTypeListItem {
         } else {
             dataTypeList.refreshItemsByUpdatedDataTypes(updatedDataTypes);
         }
+
+        dataTypeList.enableEditMode(getNewDataTypeHash(newDataType, referenceDataTypeHash));
     }
 
     void insertNestedField() {
@@ -349,9 +357,20 @@ public class DataTypeListItem {
         closeEditMode();
         expand();
 
-        final List<DataType> updatedDataTypes = newDataType().create(getDataType(), NESTED);
+        final DataType newDataType = newDataType();
+        final String referenceDataTypeHash = dataTypeList.calculateHash(getDataType());
+        final List<DataType> updatedDataTypes = newDataType.create(getDataType(), NESTED);
 
         dataTypeList.refreshItemsByUpdatedDataTypes(updatedDataTypes);
+        dataTypeList.enableEditMode(getNewDataTypeHash(newDataType, referenceDataTypeHash));
+    }
+
+    String getNewDataTypeHash(final DataType newDataType,
+                              final String referenceDataTypeHash) {
+        return Stream
+                .of(referenceDataTypeHash, newDataType.getName())
+                .filter(s -> !isEmpty(s))
+                .collect(Collectors.joining("."));
     }
 
     private DataType newDataType() {

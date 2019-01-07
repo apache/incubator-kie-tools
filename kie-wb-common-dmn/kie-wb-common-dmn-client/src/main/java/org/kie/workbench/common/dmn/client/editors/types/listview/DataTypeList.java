@@ -31,6 +31,7 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManager;
+import org.kie.workbench.common.dmn.client.editors.types.listview.common.DataTypeStackHash;
 import org.kie.workbench.common.dmn.client.editors.types.search.DataTypeSearchBar;
 import org.uberfire.client.mvp.UberElemental;
 
@@ -45,17 +46,21 @@ public class DataTypeList {
 
     private final DataTypeSearchBar searchBar;
 
+    private final DataTypeStackHash dataTypeStackHash;
+
     private List<DataTypeListItem> items;
 
     @Inject
     public DataTypeList(final DataTypeList.View view,
                         final ManagedInstance<DataTypeListItem> listItems,
                         final DataTypeManager dataTypeManager,
-                        final DataTypeSearchBar searchBar) {
+                        final DataTypeSearchBar searchBar,
+                        final DataTypeStackHash dataTypeStackHash) {
         this.view = view;
         this.listItems = listItems;
         this.dataTypeManager = dataTypeManager;
         this.searchBar = searchBar;
+        this.dataTypeStackHash = dataTypeStackHash;
     }
 
     @PostConstruct
@@ -236,6 +241,25 @@ public class DataTypeList {
 
     DataTypeSearchBar getSearchBar() {
         return searchBar;
+    }
+
+    public void enableEditMode(final String dataTypeHash) {
+        findItemByDataTypeHash(dataTypeHash).ifPresent(DataTypeListItem::enableEditMode);
+    }
+
+    Optional<DataTypeListItem> findItemByDataTypeHash(final String dataTypeHash) {
+        return getItems()
+                .stream()
+                .filter(item -> Objects.equals(calculateHash(item.getDataType()), dataTypeHash))
+                .findFirst();
+    }
+
+    String calculateParentHash(final DataType dataType) {
+        return dataTypeStackHash.calculateParentHash(dataType);
+    }
+
+    String calculateHash(final DataType dataType) {
+        return dataTypeStackHash.calculateHash(dataType);
     }
 
     public interface View extends UberElemental<DataTypeList>,

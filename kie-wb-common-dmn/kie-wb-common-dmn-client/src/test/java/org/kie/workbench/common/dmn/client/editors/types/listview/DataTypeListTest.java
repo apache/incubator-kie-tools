@@ -29,6 +29,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManager;
+import org.kie.workbench.common.dmn.client.editors.types.listview.common.DataTypeStackHash;
+import org.kie.workbench.common.dmn.client.editors.types.persistence.DataTypeStore;
 import org.kie.workbench.common.dmn.client.editors.types.search.DataTypeSearchBar;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -38,8 +40,11 @@ import org.mockito.Mockito;
 
 import static freemarker.template.utility.Collections12.singletonList;
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.kie.workbench.common.dmn.client.editors.types.common.DataType.TOP_LEVEL_PARENT_UUID;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyListOf;
@@ -73,6 +78,10 @@ public class DataTypeListTest {
     @Mock
     private DataTypeSearchBar searchBar;
 
+    private DataTypeStore dataTypeStore;
+
+    private DataTypeStackHash dataTypeStackHash;
+
     @Captor
     private ArgumentCaptor<List<DataTypeListItem>> listItemsCaptor;
 
@@ -80,7 +89,9 @@ public class DataTypeListTest {
 
     @Before
     public void setup() {
-        dataTypeList = spy(new DataTypeList(view, listItems, dataTypeManager, searchBar));
+        dataTypeStore = new DataTypeStore();
+        dataTypeStackHash = new DataTypeStackHash(dataTypeStore);
+        dataTypeList = spy(new DataTypeList(view, listItems, dataTypeManager, searchBar, dataTypeStackHash));
         when(listItems.get()).thenReturn(treeGridItem);
     }
 
@@ -527,14 +538,73 @@ public class DataTypeListTest {
         verify(view).showOrHideNoCustomItemsMessage();
     }
 
+    @Test
+    public void testEnableEditMode() {
+
+        final String dataTypeHash = "tCity.name";
+        final DataTypeListItem listItem = mock(DataTypeListItem.class);
+
+        doReturn(Optional.of(listItem)).when(dataTypeList).findItemByDataTypeHash(dataTypeHash);
+
+        dataTypeList.enableEditMode(dataTypeHash);
+
+        verify(listItem).enableEditMode();
+    }
+
+    @Test
+    public void testFindItemByDataTypeHashWhenListItemIsFound() {
+
+        final DataTypeListItem tCity = listItem(makeDataType("001", "tCity", TOP_LEVEL_PARENT_UUID));
+        final DataTypeListItem tCityId = listItem(makeDataType("002", "id", "001"));
+        final DataTypeListItem tCityName = listItem(makeDataType("003", "name", "001"));
+
+        doReturn(asList(tCity, tCityId, tCityName)).when(dataTypeList).getItems();
+
+        final Optional<DataTypeListItem> item = dataTypeList.findItemByDataTypeHash("tCity.name");
+
+        assertTrue(item.isPresent());
+        assertEquals(item.get(), tCityName);
+    }
+
+    @Test
+    public void testFindItemByDataTypeHashWhenListItemIsNotFound() {
+
+        doReturn(emptyList()).when(dataTypeList).getItems();
+
+        final Optional<DataTypeListItem> item = dataTypeList.findItemByDataTypeHash("tCity.name");
+
+        assertFalse(item.isPresent());
+    }
+
+    private DataTypeListItem listItem(final DataType dataType) {
+        final DataTypeListItem listItem = mock(DataTypeListItem.class);
+        when(listItem.getDataType()).thenReturn(dataType);
+        return listItem;
+    }
+
     private DataType makeDataType(final String name,
                                   final String type,
                                   final DataType... subDataTypes) {
-        final DataType dataType = mock(DataType.class);
 
-        when(dataType.getName()).thenReturn(name);
+        final DataType dataType = makeDataType("default", name, TOP_LEVEL_PARENT_UUID);
+
         when(dataType.getType()).thenReturn(type);
         when(dataType.getSubDataTypes()).thenReturn(asList(subDataTypes));
+
+        return dataType;
+    }
+
+    private DataType makeDataType(final String uuid,
+                                  final String name,
+                                  final String parentUUID) {
+
+        final DataType dataType = mock(DataType.class);
+
+        when(dataType.getUUID()).thenReturn(uuid);
+        when(dataType.getName()).thenReturn(name);
+        when(dataType.getParentUUID()).thenReturn(parentUUID);
+
+        dataTypeStore.index(dataType.getUUID(), dataType);
 
         return dataType;
     }

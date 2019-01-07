@@ -602,9 +602,13 @@ public class DataTypeListItemTest {
         final DataType newDataType = mock(DataType.class);
         final DataType reference = mock(DataType.class);
         final List<DataType> updatedDataTypes = asList(mock(DataType.class), mock(DataType.class));
+        final String referenceDataTypeHash = "tDataType.id";
+        final String newDataTypeHash = "tDataType.name";
 
         when(newDataType.isTopLevel()).thenReturn(true);
         when(newDataType.create(reference, ABOVE)).thenReturn(updatedDataTypes);
+        when(dataTypeList.calculateParentHash(reference)).thenReturn(referenceDataTypeHash);
+        doReturn(newDataTypeHash).when(listItem).getNewDataTypeHash(newDataType, referenceDataTypeHash);
         doReturn(dataTypeManager).when(dataTypeManager).fromNew();
         doReturn(newDataType).when(dataTypeManager).get();
         doReturn(reference).when(listItem).getDataType();
@@ -613,6 +617,7 @@ public class DataTypeListItemTest {
 
         verify(listItem).closeEditMode();
         verify(dataTypeList).insertAbove(newDataType, reference);
+        verify(dataTypeList).enableEditMode(newDataTypeHash);
     }
 
     @Test
@@ -621,9 +626,13 @@ public class DataTypeListItemTest {
         final DataType newDataType = mock(DataType.class);
         final DataType reference = mock(DataType.class);
         final List<DataType> updatedDataTypes = asList(mock(DataType.class), mock(DataType.class));
+        final String referenceDataTypeHash = "tDataType.id";
+        final String newDataTypeHash = "tDataType.name";
 
         when(newDataType.isTopLevel()).thenReturn(false);
         when(newDataType.create(reference, ABOVE)).thenReturn(updatedDataTypes);
+        when(dataTypeList.calculateParentHash(reference)).thenReturn(referenceDataTypeHash);
+        doReturn(newDataTypeHash).when(listItem).getNewDataTypeHash(newDataType, referenceDataTypeHash);
         doReturn(dataTypeManager).when(dataTypeManager).fromNew();
         doReturn(newDataType).when(dataTypeManager).get();
         doReturn(reference).when(listItem).getDataType();
@@ -632,6 +641,7 @@ public class DataTypeListItemTest {
 
         verify(listItem).closeEditMode();
         verify(dataTypeList).refreshItemsByUpdatedDataTypes(updatedDataTypes);
+        verify(dataTypeList).enableEditMode(newDataTypeHash);
     }
 
     @Test
@@ -640,9 +650,13 @@ public class DataTypeListItemTest {
         final DataType newDataType = mock(DataType.class);
         final DataType reference = mock(DataType.class);
         final List<DataType> updatedDataTypes = asList(mock(DataType.class), mock(DataType.class));
+        final String referenceDataTypeHash = "tDataType.id";
+        final String newDataTypeHash = "tDataType.name";
 
         when(newDataType.isTopLevel()).thenReturn(true);
         when(newDataType.create(reference, BELOW)).thenReturn(updatedDataTypes);
+        when(dataTypeList.calculateParentHash(reference)).thenReturn(referenceDataTypeHash);
+        doReturn(newDataTypeHash).when(listItem).getNewDataTypeHash(newDataType, referenceDataTypeHash);
         doReturn(dataTypeManager).when(dataTypeManager).fromNew();
         doReturn(newDataType).when(dataTypeManager).get();
         doReturn(reference).when(listItem).getDataType();
@@ -651,6 +665,7 @@ public class DataTypeListItemTest {
 
         verify(listItem).closeEditMode();
         verify(dataTypeList).insertBelow(newDataType, reference);
+        verify(dataTypeList).enableEditMode(newDataTypeHash);
     }
 
     @Test
@@ -659,9 +674,13 @@ public class DataTypeListItemTest {
         final DataType newDataType = mock(DataType.class);
         final DataType reference = mock(DataType.class);
         final List<DataType> updatedDataTypes = asList(mock(DataType.class), mock(DataType.class));
+        final String referenceDataTypeHash = "tDataType.id";
+        final String newDataTypeHash = "tDataType.name";
 
         when(newDataType.isTopLevel()).thenReturn(false);
         when(newDataType.create(reference, BELOW)).thenReturn(updatedDataTypes);
+        when(dataTypeList.calculateParentHash(reference)).thenReturn(referenceDataTypeHash);
+        doReturn(newDataTypeHash).when(listItem).getNewDataTypeHash(newDataType, referenceDataTypeHash);
         doReturn(dataTypeManager).when(dataTypeManager).fromNew();
         doReturn(newDataType).when(dataTypeManager).get();
         doReturn(reference).when(listItem).getDataType();
@@ -670,6 +689,7 @@ public class DataTypeListItemTest {
 
         verify(listItem).closeEditMode();
         verify(dataTypeList).refreshItemsByUpdatedDataTypes(updatedDataTypes);
+        verify(dataTypeList).enableEditMode(newDataTypeHash);
     }
 
     @Test
@@ -678,8 +698,12 @@ public class DataTypeListItemTest {
         final DataType newDataType = mock(DataType.class);
         final DataType reference = mock(DataType.class);
         final List<DataType> updatedDataTypes = asList(mock(DataType.class), mock(DataType.class));
+        final String referenceDataTypeHash = "tDataType.id";
+        final String newDataTypeHash = "tDataType.id.value";
 
         when(newDataType.create(reference, NESTED)).thenReturn(updatedDataTypes);
+        when(dataTypeList.calculateHash(reference)).thenReturn(referenceDataTypeHash);
+        doReturn(newDataTypeHash).when(listItem).getNewDataTypeHash(newDataType, referenceDataTypeHash);
         doReturn(dataTypeManager).when(dataTypeManager).fromNew();
         doReturn(newDataType).when(dataTypeManager).get();
         doReturn(reference).when(listItem).getDataType();
@@ -687,6 +711,37 @@ public class DataTypeListItemTest {
         listItem.insertNestedField();
 
         verify(dataTypeList).refreshItemsByUpdatedDataTypes(updatedDataTypes);
+        verify(dataTypeList).enableEditMode(newDataTypeHash);
+    }
+
+    @Test
+    public void testGetNewDataTypeHashWhenReferenceDataTypeHashIsNotEmpty() {
+
+        final DataType newDataType = mock(DataType.class);
+        final String newDataTypeName = "value";
+        final String referenceDataTypeHash = "tDataType.id";
+
+        when(newDataType.getName()).thenReturn(newDataTypeName);
+
+        final String actualHash = listItem.getNewDataTypeHash(newDataType, referenceDataTypeHash);
+        final String expectedHash = "tDataType.id.value";
+
+        assertEquals(expectedHash, actualHash);
+    }
+
+    @Test
+    public void testGetNewDataTypeHashWhenReferenceDataTypeHashIsEmpty() {
+
+        final DataType newDataType = mock(DataType.class);
+        final String newDataTypeName = "value";
+        final String referenceDataTypeHash = "";
+
+        when(newDataType.getName()).thenReturn(newDataTypeName);
+
+        final String actualHash = listItem.getNewDataTypeHash(newDataType, referenceDataTypeHash);
+        final String expectedHash = "value";
+
+        assertEquals(expectedHash, actualHash);
     }
 
     private DataType makeDataType() {
