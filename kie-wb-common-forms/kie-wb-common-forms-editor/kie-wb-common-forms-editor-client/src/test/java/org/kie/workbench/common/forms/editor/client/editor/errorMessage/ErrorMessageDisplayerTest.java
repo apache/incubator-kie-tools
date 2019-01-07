@@ -21,14 +21,17 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.editor.client.resources.i18n.FormEditorConstants;
+import org.kie.workbench.common.forms.editor.model.FormModelerContentError;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.mvp.Command;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ErrorMessageDisplayerTest {
@@ -50,6 +53,13 @@ public class ErrorMessageDisplayerTest {
 
     @Before
     public void init() {
+        when(translationService.getTranslation(MESSAGE)).thenReturn(MESSAGE);
+        when(translationService.getTranslation(FULL_MESSAGE)).thenReturn(FULL_MESSAGE);
+        when(translationService.getTranslation(SOURCE_TYPE)).thenReturn(SOURCE_TYPE);
+
+        when(translationService.format(eq(MESSAGE), any())).thenReturn(MESSAGE);
+        when(translationService.format(eq(FULL_MESSAGE), any())).thenReturn(FULL_MESSAGE);
+
         displayer = new ErrorMessageDisplayer(translationService, view);
         displayer.init();
     }
@@ -58,13 +68,18 @@ public class ErrorMessageDisplayerTest {
     public void simpleMessageTest() {
         verify(view).init(displayer);
 
-        displayer.show(MESSAGE, SOURCE_TYPE, closeCommand);
+        FormModelerContentError error = new FormModelerContentError(MESSAGE, null, null, null, SOURCE_TYPE);
 
-        verify(view).setSourceType(SOURCE_TYPE);
+        displayer.show(error, closeCommand);
+
+        verify(translationService).getTranslation(MESSAGE);
+        verify(translationService).getTranslation(SOURCE_TYPE);
+
+        verify(view).setSourceType(eq(SOURCE_TYPE));
         verify(view).displayShowMoreAnchor(false);
         verify(view, never()).setShowMoreLabel(any());
 
-        verify(view).show(MESSAGE);
+        verify(view).show(eq(MESSAGE));
 
         displayer.notifyShowMorePressed();
         verify(view, times(1)).show(any());
@@ -81,9 +96,14 @@ public class ErrorMessageDisplayerTest {
     public void fullMessageTest() {
         verify(view).init(displayer);
 
-        displayer.show(MESSAGE, FULL_MESSAGE, SOURCE_TYPE, closeCommand);
+        FormModelerContentError error = new FormModelerContentError(MESSAGE, new String[1], FULL_MESSAGE, new String[1], SOURCE_TYPE);
+        displayer.show(error, closeCommand);
 
-        verify(view).setSourceType(SOURCE_TYPE);
+        verify(translationService).format(eq(MESSAGE), any());
+        verify(translationService).format(eq(FULL_MESSAGE), any());
+        verify(translationService).getTranslation(eq(SOURCE_TYPE));
+
+        verify(view).setSourceType(eq(SOURCE_TYPE));
         verify(view).displayShowMoreAnchor(true);
 
         verify(translationService, times(1)).getTranslation(FormEditorConstants.ShowMoreLabel);
@@ -92,18 +112,28 @@ public class ErrorMessageDisplayerTest {
         verify(view).show(MESSAGE);
 
         displayer.notifyShowMorePressed();
-        verify(view, times(1)).show(FULL_MESSAGE);
+        verify(view, times(1)).show(eq(FULL_MESSAGE));
         verify(translationService, times(1)).getTranslation(FormEditorConstants.ShowLessLabel);
         verify(view, times(2)).setShowMoreLabel(any());
 
         displayer.notifyShowMorePressed();
-        verify(view, times(2)).show(MESSAGE);
+        verify(view, times(2)).show(eq(MESSAGE));
         verify(translationService, times(2)).getTranslation(FormEditorConstants.ShowMoreLabel);
         verify(view, times(3)).setShowMoreLabel(any());
 
         displayer.notifyShowMorePressed();
-        verify(view, times(2)).show(FULL_MESSAGE);
+        verify(view, times(2)).show(eq(FULL_MESSAGE));
         verify(translationService, times(2)).getTranslation(FormEditorConstants.ShowLessLabel);
         verify(view, times(4)).setShowMoreLabel(any());
+
+        displayer.notifyClose();
+
+        verify(closeCommand, never()).execute();
+
+        when(view.isClose()).thenReturn(true);
+
+        displayer.notifyClose();
+
+        verify(closeCommand).execute();
     }
 }

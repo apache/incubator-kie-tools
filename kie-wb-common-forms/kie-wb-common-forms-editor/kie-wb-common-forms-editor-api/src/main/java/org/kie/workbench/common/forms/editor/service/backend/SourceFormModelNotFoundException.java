@@ -23,35 +23,44 @@ import org.kie.workbench.common.forms.model.FormModel;
  */
 public class SourceFormModelNotFoundException extends Exception {
 
+    private String shortKey;
+    private String[] shortKeyParams;
+    private String longKey;
+    private String[] longKeyParams;
+    private String modelSourceKey;
+
     private FormModel formModel;
 
-    private String shortMessage;
-
-    private String fullMessage;
-
-    private String modelSource;
-
-    public SourceFormModelNotFoundException(String shortMessage, String fullMessage, String modelSource, FormModel formModel) {
-        super(fullMessage);
+    public SourceFormModelNotFoundException(String shortKey, String[] shortKeyParams, String longKey, String[] longKeyParams, String modelSourceKey, FormModel formModel) {
+        this.shortKey = shortKey;
+        this.shortKeyParams = shortKeyParams;
+        this.longKey = longKey;
+        this.longKeyParams = longKeyParams;
+        this.modelSourceKey = modelSourceKey;
         this.formModel = formModel;
-        this.shortMessage = shortMessage;
-        this.fullMessage = fullMessage;
-        this.modelSource = modelSource;
+    }
+
+    public String getShortKey() {
+        return shortKey;
+    }
+
+    public String[] getShortKeyParams() {
+        return shortKeyParams;
+    }
+
+    public String getLongKey() {
+        return longKey;
+    }
+
+    public String[] getLongKeyParams() {
+        return longKeyParams;
+    }
+
+    public String getModelSourceKey() {
+        return modelSourceKey;
     }
 
     public FormModel getFormModel() {
         return formModel;
-    }
-
-    public String getShortMessage() {
-        return shortMessage;
-    }
-
-    public String getFullMessage() {
-        return fullMessage;
-    }
-
-    public String getModelSource() {
-        return modelSource;
     }
 }

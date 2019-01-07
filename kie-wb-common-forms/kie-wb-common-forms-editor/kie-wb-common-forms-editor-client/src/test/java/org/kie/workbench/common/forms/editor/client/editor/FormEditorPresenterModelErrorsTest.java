@@ -24,7 +24,6 @@ import org.kie.workbench.common.forms.editor.model.FormModelerContentError;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
@@ -52,7 +51,7 @@ public class FormEditorPresenterModelErrorsTest extends FormEditorPresenterAbstr
         verify(editorHelper).initHelper(content);
 
         verify(view).init(presenter);
-        verify(errorMessageDisplayer, never()).show(anyString(), anyString(), any());
+        verify(errorMessageDisplayer, never()).show(any(), any());
 
         verify(layoutEditorMock).clear();
         verify(layoutEditorMock).init(anyString(), anyString(), anyString(), any());
@@ -75,7 +74,7 @@ public class FormEditorPresenterModelErrorsTest extends FormEditorPresenterAbstr
         verify(editorHelper).initHelper(content);
 
         verify(view).init(presenter);
-        verify(errorMessageDisplayer).show(eq(MODEL_ERROR_MESSAGE), eq(MODEL_ERROR_MESSAGE), eq(DATA_OBJECT), any());
+        verify(errorMessageDisplayer).show(any(), any());
 
         verify(layoutEditorMock).clear();
         verify(layoutEditorMock).init(anyString(), anyString(), anyString(), any());
@@ -98,7 +97,7 @@ public class FormEditorPresenterModelErrorsTest extends FormEditorPresenterAbstr
         verify(editorHelper).initHelper(content);
 
         verify(view).init(presenter);
-        verify(errorMessageDisplayer).show(eq(UNEXPECTED_ERROR_MESSAGE), eq(UNEXPECTED_ERROR_MESSAGE), eq(null), any());
+        verify(errorMessageDisplayer).show(any(), any());
 
         verify(layoutEditorMock, never()).clear();
         verify(layoutEditorMock, never()).init(anyString(), anyString(), anyString(), any());
@@ -114,10 +113,10 @@ public class FormEditorPresenterModelErrorsTest extends FormEditorPresenterAbstr
     public FormModelerContent serviceLoad() {
         FormModelerContent content = super.serviceLoad();
         if (errorType.equals(ErrorType.MODEL)) {
-            content.setError(new FormModelerContentError(MODEL_ERROR_MESSAGE, MODEL_ERROR_MESSAGE, DATA_OBJECT));
+            content.setError(new FormModelerContentError(MODEL_ERROR_MESSAGE, new String[0], MODEL_ERROR_MESSAGE, new String[0], DATA_OBJECT));
         } else if (errorType.equals(ErrorType.UNEXPECTED)) {
             content.setDefinition(null);
-            content.setError(new FormModelerContentError(UNEXPECTED_ERROR_MESSAGE, UNEXPECTED_ERROR_MESSAGE, null));
+            content.setError(new FormModelerContentError(UNEXPECTED_ERROR_MESSAGE, new String[0], UNEXPECTED_ERROR_MESSAGE, new String[0],null));
         }
         return content;
     }

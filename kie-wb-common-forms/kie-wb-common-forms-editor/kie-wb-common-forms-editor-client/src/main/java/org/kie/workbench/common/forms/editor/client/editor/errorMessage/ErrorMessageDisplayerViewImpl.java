@@ -92,7 +92,7 @@ public class ErrorMessageDisplayerViewImpl implements ErrorMessageDisplayerView,
 
     @Override
     public void show(String message) {
-        errorMessageContainer.setTextContent(message);
+        errorMessageContainer.setInnerHTML(message);
         closeEditorRadio.setChecked(true);
         continueRadio.setChecked(false);
         modal.show();
@@ -101,7 +101,7 @@ public class ErrorMessageDisplayerViewImpl implements ErrorMessageDisplayerView,
     @Override
     public void setSourceType(String sourceType) {
         if(sourceType == null) {
-            closeLabel.setTextContent(translationService.format(FormEditorConstants.ErrorMessageDisplayerViewImplClose, sourceType));
+            closeLabel.setTextContent(translationService.getTranslation(FormEditorConstants.ErrorMessageDisplayerViewImplClose));
         } else {
             closeLabel.setTextContent(translationService.format(FormEditorConstants.ErrorMessageDisplayerViewImplCloseAndReview, sourceType));
         }

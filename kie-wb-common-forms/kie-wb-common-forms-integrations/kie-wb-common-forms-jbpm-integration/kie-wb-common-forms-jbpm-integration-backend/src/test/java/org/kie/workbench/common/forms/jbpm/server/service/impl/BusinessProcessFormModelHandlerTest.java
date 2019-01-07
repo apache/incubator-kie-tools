@@ -17,7 +17,6 @@
 package org.kie.workbench.common.forms.jbpm.server.service.impl;
 
 import java.util.ArrayList;
-import java.util.Locale;
 
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
@@ -45,12 +44,7 @@ public class BusinessProcessFormModelHandlerTest extends AbstractJBPMFormModelHa
 
         model = new BusinessProcessFormModel(PROCESS_ID, PROCESS_ID, propertyList);
 
-        handler = new BusinessProcessFormModelHandler(moduleService, moduleClassLoaderHelper, new TestFieldManager(), finderService) {
-            @Override
-            protected Locale getLocale() {
-                return Locale.ENGLISH;
-            }
-        };
+        handler = new BusinessProcessFormModelHandler(moduleService, moduleClassLoaderHelper, new TestFieldManager(), finderService);
 
         handler.init(model, path);
     }

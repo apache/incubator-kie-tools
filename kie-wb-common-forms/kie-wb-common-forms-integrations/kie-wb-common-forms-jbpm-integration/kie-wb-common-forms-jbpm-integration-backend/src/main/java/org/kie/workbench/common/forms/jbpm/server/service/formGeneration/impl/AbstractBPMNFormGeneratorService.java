@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.kie.workbench.common.forms.adf.definitions.settings.ColSpan;
@@ -87,7 +86,7 @@ public abstract class AbstractBPMNFormGeneratorService<SOURCE> implements BPMNFo
         processFormDefinition(rootForm, context);
 
         if (rootForm.getLayoutTemplate() == null) {
-            createFormLayout(rootForm, getRootFormHeader());
+            createFormLayout(rootForm);
         }
 
         context.setRootForm(rootForm);
@@ -97,17 +96,9 @@ public abstract class AbstractBPMNFormGeneratorService<SOURCE> implements BPMNFo
     }
 
     protected void createFormLayout(FormDefinition form) {
-        createFormLayout(form, null);
-    }
-
-    protected void createFormLayout(FormDefinition form, Supplier<LayoutComponent> headerSupplier) {
         LayoutGenerator layoutGenerator = new LayoutGenerator();
 
         layoutGenerator.init(new LayoutColumnDefinition[]{new LayoutColumnDefinition(ColSpan.SPAN_12)});
-
-        if(headerSupplier != null) {
-            layoutGenerator.addComponent(headerSupplier.get(), new LayoutSettings());
-        }
 
         if (form.getFields().size() > 0) {
             boolean separeateInputsAndOutputs = form.getModel() instanceof TaskFormModel;
@@ -322,8 +313,6 @@ public abstract class AbstractBPMNFormGeneratorService<SOURCE> implements BPMNFo
         }
         return form;
     }
-
-    protected abstract Supplier<LayoutComponent> getRootFormHeader();
 
     protected abstract boolean supportsEmptyNestedForms();
 

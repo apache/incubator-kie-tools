@@ -46,7 +46,6 @@ import org.uberfire.backend.vfs.Path;
 @Dependent
 public class DataObjectFormModelHandler extends AbstractFormModelHandler<DataObjectFormModel> {
 
-    private static final String BUNDLE = "org.kie.workbench.common.forms.data.modeller.service.BackendConstants";
     private static final String SHORT_KEY = "DataObjectFormModelHandler.shortMessage";
     private static final String FULL_KEY = "DataObjectFormModelHandler.fullMessage";
     private static final String DATA_OBJECT_KEY = "DataObjectFormModelHandler.dataObject";
@@ -110,7 +109,7 @@ public class DataObjectFormModelHandler extends AbstractFormModelHandler<DataObj
         if (dataObject == null) {
             String[] params = new String[]{formModel.getClassName()};
 
-            throwException(BUNDLE, SHORT_KEY, params, FULL_KEY, params, DATA_OBJECT_KEY);
+            throw new SourceFormModelNotFoundException(SHORT_KEY, params, FULL_KEY, params, DATA_OBJECT_KEY, formModel);
         }
     }
 

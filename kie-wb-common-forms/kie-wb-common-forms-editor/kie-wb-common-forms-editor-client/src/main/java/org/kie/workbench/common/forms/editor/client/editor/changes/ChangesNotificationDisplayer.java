@@ -82,12 +82,13 @@ public class ChangesNotificationDisplayer implements ChangesNotificationDisplaye
         allHandlers.add(handler);
     }
 
-    public void show(FormModelerContent content,
-                     Command onClose) {
-        PortablePreconditions.checkNotNull("content",
-                                           content);
-        PortablePreconditions.checkNotNull("onClose",
-                                           onClose);
+    public void show(FormModelerContent content, Command onClose) {
+        PortablePreconditions.checkNotNull("content", content);
+        PortablePreconditions.checkNotNull("onClose", onClose);
+
+        if(content.getError() != null) {
+            return;
+        }
 
         this.content = content;
         this.onClose = onClose;

@@ -27,7 +27,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -129,12 +128,8 @@ public class DataObjectFormModelHandlerTest extends AbstractDataObjectTest {
         handler = new DataObjectFormModelHandler(moduleService,
                                                  moduleClassLoaderHelper,
                                                  finderService,
-                                                 new TestFieldManager()) {
-            @Override
-            protected Locale getLocale() {
-                return Locale.ENGLISH;
-            }
-        };
+                                                 new TestFieldManager());
+
         when(dataModelerService.loadModel(any())).thenReturn(dataModel);
         List<DataObjectFormModel> formModels = finderService.getAvailableDataObjects(path);
         formModel = formModels.get(0);

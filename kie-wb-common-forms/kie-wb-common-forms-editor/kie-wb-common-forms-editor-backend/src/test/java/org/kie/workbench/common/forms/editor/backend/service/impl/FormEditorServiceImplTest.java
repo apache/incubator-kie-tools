@@ -62,6 +62,7 @@ import org.uberfire.java.nio.file.FileAlreadyExistsException;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -309,7 +310,7 @@ public class FormEditorServiceImplTest {
 
     @Test
     public void testConstructContentWithCheckModelFailure() throws IOException, SourceFormModelNotFoundException {
-        SourceFormModelNotFoundException exception = new SourceFormModelNotFoundException("exception", "exception", "model", null);
+        SourceFormModelNotFoundException exception = new SourceFormModelNotFoundException("exception", null, "exception", null, "model", null);
 
         doThrow(exception)
                 .when(dataObjectFormModelHandler).checkSourceModel();
@@ -330,8 +331,10 @@ public class FormEditorServiceImplTest {
 
         assertNotNull(content);
         assertNotNull(content.getError());
-        assertEquals(exception.getShortMessage(), content.getError().getShortMessage());
-        assertEquals(exception.getFullMessage(), content.getError().getFullMessage());
+        assertEquals(exception.getShortKey(), content.getError().getShortKey());
+        assertArrayEquals(exception.getShortKeyParams(), content.getError().getShortKeyParams());
+        assertEquals(exception.getLongKey(), content.getError().getLongKey());
+        assertArrayEquals(exception.getLongKeyParams(), content.getError().getLongKeyParams());
     }
 
     @Test

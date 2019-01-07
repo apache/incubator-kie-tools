@@ -37,7 +37,6 @@ import org.kie.workbench.common.forms.model.impl.ModelPropertyImpl;
 import org.kie.workbench.common.forms.model.impl.TypeInfoImpl;
 import org.kie.workbench.common.forms.model.impl.meta.entries.FieldTypeEntry;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -46,9 +45,6 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RuntimeFormGenerationWithWrongTypesTest extends BPMNRuntimeFormDefinitionGeneratorServiceTest {
-
-    private static final String HTML_PARAM = "HTML_CODE";
-    private static final String HEADER = "<div class=\"alert alert-warning\" role=\"alert\"><span class=\"pficon pficon-warning-triangle-o\">";
 
     public static final String TASK_NAME = "task";
     public static final String PROCESS_ID = "issues.Process";
@@ -124,17 +120,5 @@ public class RuntimeFormGenerationWithWrongTypesTest extends BPMNRuntimeFormDefi
                 .isNull();
         Assertions.assertThat(formDefinition.getFieldByBinding(ERROR_PROPERTY))
                 .isNull();
-
-        LayoutComponent formHeader = formDefinition.getLayoutTemplate().getRows().get(0).getLayoutColumns().get(0).getLayoutComponents().get(0);
-
-        Assertions.assertThat(formHeader)
-                .isNotNull()
-                .hasFieldOrPropertyWithValue("dragTypeName", "org.uberfire.ext.plugin.client.perspective.editor.layout.editor.HTMLLayoutDragComponent");
-
-        String headerContent = formHeader.getProperties().get(HTML_PARAM);
-
-        Assertions.assertThat(headerContent)
-                .isNotNull()
-                .contains(HEADER);
     }
 }

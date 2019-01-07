@@ -17,7 +17,6 @@
 package org.kie.workbench.common.forms.jbpm.server.service.impl;
 
 import java.util.ArrayList;
-import java.util.Locale;
 
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
@@ -48,12 +47,7 @@ public class TaskFormModelHandlerTest extends AbstractJBPMFormModelHandlerTest {
 
         model = new TaskFormModel(PROCESS_ID, TASK_NAME, propertyList);
 
-        handler = new TaskFormModelHandler(moduleService, moduleClassLoaderHelper, new TestFieldManager(), finderService) {
-            @Override
-            protected Locale getLocale() {
-                return Locale.ENGLISH;
-            }
-        };
+        handler = new TaskFormModelHandler(moduleService, moduleClassLoaderHelper, new TestFieldManager(), finderService);
 
         handler.init(model, path);
     }

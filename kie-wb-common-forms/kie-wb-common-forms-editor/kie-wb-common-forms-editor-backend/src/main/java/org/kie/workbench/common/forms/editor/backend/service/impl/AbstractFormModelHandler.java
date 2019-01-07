@@ -16,19 +16,14 @@
 
 package org.kie.workbench.common.forms.editor.backend.service.impl;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
-import java.util.ResourceBundle;
 
-import org.jboss.errai.bus.server.api.RpcContext;
 import org.kie.workbench.common.forms.editor.model.FormModelSynchronizationResult;
 import org.kie.workbench.common.forms.editor.model.impl.FormModelSynchronizationResultImpl;
 import org.kie.workbench.common.forms.editor.model.impl.TypeConflictImpl;
 import org.kie.workbench.common.forms.editor.service.backend.FormModelHandler;
-import org.kie.workbench.common.forms.editor.service.backend.SourceFormModelNotFoundException;
 import org.kie.workbench.common.forms.model.FormModel;
 import org.kie.workbench.common.forms.model.ModelProperty;
 import org.kie.workbench.common.forms.service.backend.util.ModelPropertiesGenerator;
@@ -90,9 +85,9 @@ public abstract class AbstractFormModelHandler<F extends FormModel> implements F
                 if (!oldProperty.equals(currentProperty)) {
                     // currentProperty exists on the Model oldProperties but type doesn't match -> adding it to conlfict
                     result.getConflicts().put(oldProperty.getName(),
-                                              new TypeConflictImpl(oldProperty.getName(),
-                                                                   oldProperty.getTypeInfo(),
-                                                                   currentProperty.getTypeInfo()));
+                            new TypeConflictImpl(oldProperty.getName(),
+                                    oldProperty.getTypeInfo(),
+                                    currentProperty.getTypeInfo()));
                 }
             } else {
                 // currentPproperty doesn't exist on the previous properties -> adding to new properties
@@ -118,35 +113,11 @@ public abstract class AbstractFormModelHandler<F extends FormModel> implements F
                                                           boolean isMultiple) {
 
         ModelProperty property = ModelPropertiesGenerator.createModelProperty(name,
-                                                                              className,
-                                                                              isMultiple,
-                                                                              projectClassLoader);
+                className,
+                isMultiple,
+                projectClassLoader);
 
         return Optional.ofNullable(property);
-    }
-
-    protected void throwException(String bundlePath, String shortKey, String[] shortKeyParams, String longKey, String[] longKeyParams, String modelSourceKey) throws SourceFormModelNotFoundException {
-        ResourceBundle bundle = ResourceBundle.getBundle(bundlePath, getLocale());
-
-        String shortMessage = getMessage(bundle, shortKey, shortKeyParams);
-
-        String longMessage = getMessage(bundle, longKey, longKeyParams);
-
-        String modelSource = bundle.getString(modelSourceKey);
-
-        throw new SourceFormModelNotFoundException(shortMessage, longMessage, modelSource, formModel);
-    }
-
-    protected String getMessage(ResourceBundle bundle, String key, String[] params) {
-        String message = bundle.getString(key);
-        if (params != null && params.length > 0) {
-            message = MessageFormat.format(message, params);
-        }
-        return message;
-    }
-
-    protected Locale getLocale() {
-        return RpcContext.getServletRequest().getLocale();
     }
 
     protected abstract void log(String message, Exception e);

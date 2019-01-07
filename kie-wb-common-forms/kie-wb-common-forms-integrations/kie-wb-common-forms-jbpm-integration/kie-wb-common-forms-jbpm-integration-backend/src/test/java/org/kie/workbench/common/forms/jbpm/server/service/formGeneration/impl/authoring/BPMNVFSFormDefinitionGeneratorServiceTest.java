@@ -64,8 +64,8 @@ public abstract class BPMNVFSFormDefinitionGeneratorServiceTest extends Abstract
     protected DataObjectFinderService dataObjectFinderService;
     protected FormModelHandlerManager formModelHandlerManager;
     protected FormDefinitionSerializer formSerializer = new FormDefinitionSerializerImpl(new FieldSerializer(),
-                                                                                         new FormModelSerializer(),
-                                                                                         new TestMetaDataEntryManager());
+            new FormModelSerializer(),
+            new TestMetaDataEntryManager());
     protected SimpleFileSystemProvider simpleFileSystemProvider = null;
     @Mock
     protected CommentedOptionFactory commentedOptionFactory;
@@ -93,20 +93,20 @@ public abstract class BPMNVFSFormDefinitionGeneratorServiceTest extends Abstract
         when(source.toURI()).thenReturn("default:///src/main/resources/test.frm");
 
         when(commentedOptionFactory.makeCommentedOption(anyString())).then(invocationOnMock -> new CommentedOption("1",
-                                                                                                                   invocationOnMock.getArguments()[0].toString()));
+                invocationOnMock.getArguments()[0].toString()));
 
         formModelHandlerManager = new TestFormModelHandlerManager(projectService,
-                                                                  projectClassLoaderHelper,
-                                                                  fieldManager,
-                                                                  dataObjectFinderService);
+                projectClassLoaderHelper,
+                fieldManager,
+                dataObjectFinderService);
 
         service = new BPMNVFSFormDefinitionGeneratorService(fieldManager,
-                                                            formModelHandlerManager,
-                                                            formFinderService,
-                                                            formSerializer,
-                                                            ioService,
-                                                            commentedOptionFactory,
-                                                            new FormModelSynchronizationUtilImpl(fieldManager,
-                                                                                                 templateGenerator));
+                formModelHandlerManager,
+                formFinderService,
+                formSerializer,
+                ioService,
+                commentedOptionFactory,
+                new FormModelSynchronizationUtilImpl(fieldManager,
+                        templateGenerator));
     }
 }

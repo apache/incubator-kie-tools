@@ -33,6 +33,7 @@ import org.kie.workbench.common.forms.editor.client.editor.changes.displayers.Mo
 import org.kie.workbench.common.forms.editor.client.editor.changes.displayers.conflicts.ConflictsDisplayer;
 import org.kie.workbench.common.forms.editor.client.editor.changes.displayers.newProperties.NewPropertiesDisplayer;
 import org.kie.workbench.common.forms.editor.model.FormModelerContent;
+import org.kie.workbench.common.forms.editor.model.FormModelerContentError;
 import org.kie.workbench.common.forms.editor.model.impl.FormModelSynchronizationResultImpl;
 import org.kie.workbench.common.forms.editor.model.impl.TypeConflictImpl;
 import org.kie.workbench.common.forms.editor.service.shared.FormEditorRenderingContext;
@@ -149,9 +150,15 @@ public class ChangesNotificationDisplayerTest {
     }
 
     @Test
+    public void testShowWithModelError() {
+        content.setError(mock(FormModelerContentError.class));
+
+        presenter.show(content, command);
+    }
+
+    @Test
     public void testShowEmptySynchronization() {
-        presenter.show(content,
-                       command);
+        presenter.show(content, command);
 
         verify(view, never()).show();
     }

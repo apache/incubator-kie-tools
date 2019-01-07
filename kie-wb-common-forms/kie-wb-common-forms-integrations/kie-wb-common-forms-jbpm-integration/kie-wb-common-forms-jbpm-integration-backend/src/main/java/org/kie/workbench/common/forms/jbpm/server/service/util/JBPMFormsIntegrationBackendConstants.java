@@ -18,8 +18,6 @@ package org.kie.workbench.common.forms.jbpm.server.service.util;
 
 public interface JBPMFormsIntegrationBackendConstants {
 
-    String BUNDLE = "org.kie.workbench.common.forms.jbpm.server.service.BackendConstants";
-
     String MISSING_PROCESS_SHORT_KEY = "MissingProcess.shortMessage";
 
     String MISSING_PROCESS_FULL_KEY = "MissingProcess.fullMessage";
@@ -29,10 +27,4 @@ public interface JBPMFormsIntegrationBackendConstants {
     String MISSING_TASK_SHORT_KEY = "MissingTask.shortMessage";
 
     String MISSING_TASK_FULL_KEY = "MissingTask.fullMessage";
-
-    String RUNTIME_FORM_GENERATION_WARNING_TEMPLATE = "<div class=\"alert alert-warning\" role=\"alert\"><span class=\"pficon pficon-warning-triangle-o\"></span>\n <strong>{0}</strong>{1}</div>";
-
-    String RUNTIMER_FORM_GENERATION_WARNING_KEY = "AutomaticallGeneratedForm.warning";
-
-    String RUNTIMER_FORM_GENERATION_MESSAGE_KEY = "AutomaticallGeneratedForm.message";
 }

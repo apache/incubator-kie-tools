@@ -65,6 +65,8 @@ import org.uberfire.workbench.events.ResourceOpenedEvent;
 @Service
 @ApplicationScoped
 public class FormEditorServiceImpl extends KieService<FormModelerContent> implements FormEditorService {
+    public static final String SHORT_KEY = "FormEditorService.shortKey";
+    public static final String LONG_KEY = "FormEditorService.longKey";
 
     private FieldManager fieldManager;
     private FormModelHandlerManager modelHandlerManager;
@@ -247,17 +249,14 @@ public class FormEditorServiceImpl extends KieService<FormModelerContent> implem
 
                         formModelConent.setSynchronizationResult(synchronizationResult);
                     } catch (SourceFormModelNotFoundException ex) {
-                        formModelConent.setError(new FormModelerContentError(ex.getShortMessage(), ex.getFullMessage(), ex.getModelSource()));
+                        formModelConent.setError(new FormModelerContentError(ex.getShortKey(), ex.getShortKeyParams(), ex.getLongKey(), ex.getLongKeyParams(), ex.getModelSourceKey()));
                     }
                 }
             }
         } catch (Exception e) {
-            String shortMessage = "Impossible to load the form due to an error on server. Try closing the form and reopen it again and if the problem persists check with your administrator.";
             StringWriter writer = new StringWriter();
-            writer.write(shortMessage);
-            writer.write("\nFull error message:\n");
             e.printStackTrace(new PrintWriter(writer));
-            formModelConent.setError(new FormModelerContentError(shortMessage, writer.toString(), null));
+            formModelConent.setError(new FormModelerContentError(SHORT_KEY, null, LONG_KEY, new String[] {writer.toString()}, null));
             log.warn("Error loading form " + path.toURI(), e);
         }
 

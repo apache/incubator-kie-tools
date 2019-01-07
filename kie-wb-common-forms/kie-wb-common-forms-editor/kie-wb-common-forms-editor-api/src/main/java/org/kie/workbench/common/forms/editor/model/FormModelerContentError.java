@@ -22,39 +22,37 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 public class FormModelerContentError {
 
-    private String shortMessage;
+    private String shortKey;
+    private String[] shortKeyParams;
+    private String longKey;
+    private String[] longKeyParams;
+    private String modelSourceKey;
 
-    private String fullMessage;
-
-    private String sourceType;
-
-    public FormModelerContentError(@MapsTo("shortMessage") String shortMessage, @MapsTo("fullMessage") String fullMessage, @MapsTo("sourceType") String sourceType) {
-        this.shortMessage = shortMessage;
-        this.fullMessage = fullMessage;
-        this.sourceType = sourceType;
+    public FormModelerContentError(@MapsTo("shortKey") String shortKey, @MapsTo("shortKeyParams") String[] shortKeyParams, @MapsTo("longKey") String longKey, @MapsTo("longKeyParams") String[] longKeyParams, @MapsTo("modelSourceKey") String modelSourceKey) {
+        this.shortKey = shortKey;
+        this.shortKeyParams = shortKeyParams;
+        this.longKey = longKey;
+        this.longKeyParams = longKeyParams;
+        this.modelSourceKey = modelSourceKey;
     }
 
-    public String getShortMessage() {
-        return shortMessage;
+    public String getShortKey() {
+        return shortKey;
     }
 
-    public void setShortMessage(String shortMessage) {
-        this.shortMessage = shortMessage;
+    public String[] getShortKeyParams() {
+        return shortKeyParams;
     }
 
-    public String getFullMessage() {
-        return fullMessage;
+    public String getLongKey() {
+        return longKey;
     }
 
-    public void setFullMessage(String fullMessage) {
-        this.fullMessage = fullMessage;
+    public String[] getLongKeyParams() {
+        return longKeyParams;
     }
 
-    public String getSourceType() {
-        return sourceType;
-    }
-
-    public void setSourceType(String sourceType) {
-        this.sourceType = sourceType;
+    public String getModelSourceKey() {
+        return modelSourceKey;
     }
 }

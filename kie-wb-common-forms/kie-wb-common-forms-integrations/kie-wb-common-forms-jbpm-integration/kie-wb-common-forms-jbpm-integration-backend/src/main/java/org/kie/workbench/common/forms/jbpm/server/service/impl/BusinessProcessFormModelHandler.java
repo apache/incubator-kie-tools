@@ -42,9 +42,9 @@ public class BusinessProcessFormModelHandler extends AbstractJBPMFormModelHandle
                                            FieldManager fieldManager,
                                            BPMFinderService bpmFinderService) {
         super(projectService,
-              classLoaderHelper,
-              fieldManager,
-              bpmFinderService);
+                classLoaderHelper,
+                fieldManager,
+                bpmFinderService);
     }
 
     @Override
@@ -55,9 +55,9 @@ public class BusinessProcessFormModelHandler extends AbstractJBPMFormModelHandle
     @Override
     public FormModelHandler<BusinessProcessFormModel> newInstance() {
         return new BusinessProcessFormModelHandler(moduleService,
-                                                   classLoaderHelper,
-                                                   fieldManager,
-                                                   bpmFinderService);
+                classLoaderHelper,
+                fieldManager,
+                bpmFinderService);
     }
 
     @Override
@@ -74,10 +74,9 @@ public class BusinessProcessFormModelHandler extends AbstractJBPMFormModelHandle
     public void checkSourceModel() throws SourceFormModelNotFoundException {
         if (getSourceModel() == null) {
             String[] params = new String[]{formModel.getProcessId()};
-            throwException(JBPMFormsIntegrationBackendConstants.BUNDLE,
-                           JBPMFormsIntegrationBackendConstants.MISSING_PROCESS_SHORT_KEY, params,
-                           JBPMFormsIntegrationBackendConstants.MISSING_PROCESS_FULL_KEY, params,
-                           JBPMFormsIntegrationBackendConstants.PROCESS_KEY);
+            throw new SourceFormModelNotFoundException(JBPMFormsIntegrationBackendConstants.MISSING_PROCESS_SHORT_KEY, params,
+                    JBPMFormsIntegrationBackendConstants.MISSING_PROCESS_FULL_KEY, params,
+                    JBPMFormsIntegrationBackendConstants.PROCESS_KEY, formModel);
         }
     }
 
@@ -85,6 +84,6 @@ public class BusinessProcessFormModelHandler extends AbstractJBPMFormModelHandle
     protected void log(String message,
                        Exception e) {
         logger.warn(message,
-                    e);
+                e);
     }
 }

@@ -18,7 +18,6 @@ package org.kie.workbench.common.forms.jbpm.server.service.formGeneration.impl.a
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.Dependent;
@@ -44,7 +43,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.io.IOService;
 
 @Authoring
@@ -186,11 +184,6 @@ public class BPMNVFSFormDefinitionGeneratorService extends AbstractBPMNFormGener
         Optional<FormDefinition> validForm = foundForms.stream().filter(formDefinition -> !formDefinition.getFields().isEmpty()).findFirst();
 
         return validForm.orElse(foundForms.stream().findFirst().orElse(null));
-    }
-
-    @Override
-    protected Supplier<LayoutComponent> getRootFormHeader() {
-        return null;
     }
 
     @Override

@@ -23,6 +23,7 @@ import javax.inject.Inject;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.forms.editor.client.resources.i18n.FormEditorConstants;
+import org.kie.workbench.common.forms.editor.model.FormModelerContentError;
 import org.uberfire.mvp.Command;
 
 @Dependent
@@ -35,11 +36,11 @@ public class ErrorMessageDisplayer implements ErrorMessageDisplayerView.Presente
     private boolean showMoreEnabled = false;
     private boolean showMore = false;
 
-    private String shortMessage;
-
-    private String fullMessage;
-
     private Command closeCommand;
+
+    private String shortMessage;
+    private String fullMessage;
+    private String modelType;
 
     @Inject
     public ErrorMessageDisplayer(TranslationService translationService, ErrorMessageDisplayerView view) {
@@ -52,20 +53,16 @@ public class ErrorMessageDisplayer implements ErrorMessageDisplayerView.Presente
         view.init(this);
     }
 
-    public void show(String message, String sourceType, Command closeCommand) {
-        show(message, null, sourceType, closeCommand);
-    }
-
-    public void show(String shortMessage, String fullMessage, String sourceType, Command closeCommand) {
-        PortablePreconditions.checkNotNull("shortMessage", shortMessage);
-        PortablePreconditions.checkNotNull("sourceType", sourceType);
+    public void show(FormModelerContentError error, Command closeCommand) {
+        PortablePreconditions.checkNotNull("error", error);
         PortablePreconditions.checkNotNull("closeCommand", closeCommand);
 
-        this.shortMessage = shortMessage;
-        this.fullMessage = fullMessage;
+        this.shortMessage = format(error.getShortKey(), error.getShortKeyParams());
+        this.fullMessage = format(error.getLongKey(), error.getLongKeyParams());
+        this.modelType = format(error.getModelSourceKey(), null);
         this.closeCommand = closeCommand;
 
-        view.setSourceType(sourceType);
+        view.setSourceType(modelType);
 
         showMoreEnabled = fullMessage != null;
 
@@ -77,6 +74,16 @@ public class ErrorMessageDisplayer implements ErrorMessageDisplayerView.Presente
         }
 
         view.show(shortMessage);
+    }
+
+    private String format(String key, String[] params) {
+        if(key == null) {
+            return null;
+        }
+        if(params == null || params.length == 0) {
+            return translationService.getTranslation(key);
+        }
+        return translationService.format(key, params);
     }
 
     @Override

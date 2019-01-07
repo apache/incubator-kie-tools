@@ -17,14 +17,11 @@
 package org.kie.workbench.common.forms.jbpm.server.service.formGeneration.impl.runtime;
 
 import java.io.IOException;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.ResourceBundle;
-import java.util.function.Supplier;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -38,7 +35,6 @@ import org.kie.soup.project.datamodel.oracle.ModuleDataModelOracle;
 import org.kie.soup.project.datamodel.oracle.TypeSource;
 import org.kie.workbench.common.forms.jbpm.server.service.formGeneration.impl.AbstractBPMNFormGeneratorService;
 import org.kie.workbench.common.forms.jbpm.server.service.formGeneration.impl.GenerationContext;
-import org.kie.workbench.common.forms.jbpm.server.service.util.JBPMFormsIntegrationBackendConstants;
 import org.kie.workbench.common.forms.jbpm.service.bpmn.util.BPMNVariableUtils;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
@@ -55,7 +51,6 @@ import org.kie.workbench.common.services.datamodel.backend.server.builder.projec
 import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ModuleDataModelOracleBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 
 @Runtime
 @Dependent
@@ -162,18 +157,6 @@ public class BPMNRuntimeFormGeneratorService extends AbstractBPMNFormGeneratorSe
         }
 
         return null;
-    }
-
-    @Override
-    protected Supplier<LayoutComponent> getRootFormHeader() {
-        return () -> {
-            ResourceBundle bundle = ResourceBundle.getBundle(JBPMFormsIntegrationBackendConstants.BUNDLE);
-
-            String warning = bundle.getString(JBPMFormsIntegrationBackendConstants.RUNTIMER_FORM_GENERATION_WARNING_KEY);
-            String message = bundle.getString(JBPMFormsIntegrationBackendConstants.RUNTIMER_FORM_GENERATION_MESSAGE_KEY);
-            String code = MessageFormat.format(JBPMFormsIntegrationBackendConstants.RUNTIME_FORM_GENERATION_WARNING_TEMPLATE, warning, message);
-            return generateHTMLElement(code);
-        };
     }
 
     @Override
