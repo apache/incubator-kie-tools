@@ -16,14 +16,21 @@
 package org.guvnor.structure.events;
 
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
+import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.soup.commons.validation.PortablePreconditions;
+import org.uberfire.commons.clusterapi.Clustered;
 
 /**
  * An event signalling an Organizational Unit has been deleted
  */
+@Portable
+@Clustered
 public class AfterDeleteOrganizationalUnitEvent {
 
-    private final OrganizationalUnit organizationalUnit;
+    private OrganizationalUnit organizationalUnit;
+
+    public AfterDeleteOrganizationalUnitEvent() {
+    }
 
     public AfterDeleteOrganizationalUnitEvent(final OrganizationalUnit organizationalUnit) {
         this.organizationalUnit = PortablePreconditions.checkNotNull("organizationalUnit",

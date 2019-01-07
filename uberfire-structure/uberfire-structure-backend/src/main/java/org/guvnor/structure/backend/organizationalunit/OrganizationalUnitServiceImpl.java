@@ -496,7 +496,8 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
             try {
                 configurationService.startBatch();
                 final OrganizationalUnit originalOu = getOrganizationalUnit(groupName);
-                repositoryService.removeRepositories(originalOu.getSpace(), originalOu.getRepositories().stream().map(repo -> repo.getAlias()).collect(Collectors.toSet()));
+                repositoryService.removeRepositories(originalOu.getSpace(),
+                                                     originalOu.getRepositories().stream().map(repo -> repo.getAlias()).collect(Collectors.toSet()));
                 configurationService.removeConfiguration(thisGroupConfig);
                 removedOu = registeredOrganizationalUnits.remove(groupName);
                 removeSpaceDirectory(removedOu.getSpace());
