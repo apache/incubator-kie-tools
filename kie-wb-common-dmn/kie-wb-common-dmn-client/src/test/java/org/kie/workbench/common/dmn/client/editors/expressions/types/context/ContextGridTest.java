@@ -106,6 +106,7 @@ import org.uberfire.mvp.Command;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -402,8 +403,9 @@ public class ContextGridTest {
         assertNull(uiModel.getCell(1, 0).getValue().getValue());
         assertEquals(RowSelectionStrategy.INSTANCE,
                      uiModel.getCell(1, 0).getSelectionStrategy());
+        assertFalse(((InformationItemCell.HasNameAndDataTypeCell) uiModel.getCell(1, 1).getValue().getValue()).hasData());
         assertEquals(ContextUIModelMapper.DEFAULT_ROW_CAPTION,
-                     ((InformationItemCell.HasNameCell) uiModel.getCell(1, 1).getValue().getValue()).getName().getValue());
+                     ((InformationItemCell.HasNameAndDataTypeCell) uiModel.getCell(1, 1).getValue().getValue()).getPlaceHolderText());
         assertTrue(uiModel.getCell(1, 2).getValue() instanceof ExpressionCellValue);
         final ExpressionCellValue dcv1 = (ExpressionCellValue) uiModel.getCell(1, 2).getValue();
         assertEquals(undefinedExpressionEditor,

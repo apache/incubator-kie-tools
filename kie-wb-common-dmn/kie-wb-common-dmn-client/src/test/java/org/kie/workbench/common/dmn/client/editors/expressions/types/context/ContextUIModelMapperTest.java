@@ -28,6 +28,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.impl.RowS
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.dmn.client.editors.expressions.types.context.ContextUIModelMapperHelper.EXPRESSION_COLUMN_INDEX;
 import static org.kie.workbench.common.dmn.client.editors.expressions.types.context.ContextUIModelMapperHelper.NAME_COLUMN_INDEX;
@@ -65,8 +66,9 @@ public class ContextUIModelMapperTest extends BaseContextUIModelMapperTest<Conte
 
         assertEquals("ii1",
                      ((InformationItemCell.HasNameCell) uiModel.getCell(0, NAME_COLUMN_INDEX).getValue().getValue()).getName().getValue());
+        assertFalse(((InformationItemCell.HasNameAndDataTypeCell) uiModel.getCell(1, NAME_COLUMN_INDEX).getValue().getValue()).hasData());
         assertEquals(ContextUIModelMapper.DEFAULT_ROW_CAPTION,
-                     ((InformationItemCell.HasNameCell) uiModel.getCell(1, NAME_COLUMN_INDEX).getValue().getValue()).getName().getValue());
+                     ((InformationItemCell.HasNameAndDataTypeCell) uiModel.getCell(1, NAME_COLUMN_INDEX).getValue().getValue()).getPlaceHolderText());
     }
 
     @Test

@@ -59,6 +59,8 @@ public class RendererUtilsTest {
 
     private static final String VALUE = "some text value";
 
+    private static final String PLACE_HOLDER = "place holder text";
+
     private static final double WIDTH = 200;
 
     private static final double HEIGHT = 80;
@@ -153,6 +155,16 @@ public class RendererUtilsTest {
         RendererUtils.getCenteredCellText(cellContext, cell);
 
         assertCenteredRendering(text);
+        assertNotRenderedPlaceHolder(placeHolderText);
+    }
+
+    @Test
+    public void testRenderCenteredEmptyTextWithPlaceHolder() throws Exception {
+        final BaseGridCell<String> cell = new BaseGridCell<>(new BaseGridCellValue<>(null, PLACE_HOLDER));
+
+        RendererUtils.getCenteredCellText(cellContext, cell);
+
+        assertCenteredRenderingPlaceholder(placeHolderText);
     }
 
     @Test
@@ -195,6 +207,7 @@ public class RendererUtilsTest {
 
         when(informationItemCell.getName()).thenReturn(name);
         when(informationItemCell.getTypeRef()).thenReturn(TYPE_REF);
+        when(informationItemCell.hasData()).thenReturn(true);
 
         RendererUtils.getNameAndDataTypeCellText(informationItemCell,
                                                  bodyContext);
@@ -229,8 +242,19 @@ public class RendererUtilsTest {
         verify(headerGroup, never()).add(any(IPrimitive.class));
     }
 
+    private void assertNotRenderedPlaceHolder(final Text placeHolderText) {
+        verify(placeHolderText, never()).setText(PLACE_HOLDER);
+    }
+
     private void assertCenteredRendering(final Text text) {
         verify(text).setText(VALUE);
+        verify(text).setListening(false);
+        verify(text).setX(WIDTH / 2);
+        verify(text).setY(HEIGHT / 2);
+    }
+
+    private void assertCenteredRenderingPlaceholder(final Text text) {
+        verify(text).setText(PLACE_HOLDER);
         verify(text).setListening(false);
         verify(text).setX(WIDTH / 2);
         verify(text).setY(HEIGHT / 2);

@@ -26,7 +26,10 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.context.Inf
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridTheme;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableHeaderMetaData;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.NameAndDataTypeHeaderMetaData;
+import org.kie.workbench.common.stunner.core.util.StringUtils;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCell;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridHeaderColumnRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
@@ -52,8 +55,17 @@ public class RendererUtils {
         final GridRendererTheme theme = gridRenderer.getTheme();
 
         final Group g = GWT.create(Group.class);
-        final Text t = theme.getBodyText();
-        t.setText(gridCell.getValue().getValue());
+
+        String value = gridCell.getValue().getValue();
+        final Text t;
+        if (!StringUtils.isEmpty(value)) {
+            t = theme.getBodyText();
+        } else {
+            value = gridCell.getValue().getPlaceHolder();
+            t = theme.getPlaceholderText();
+        }
+
+        t.setText(value);
         t.setListening(false);
         t.setX(context.getCellWidth() / 2);
         t.setY(context.getCellHeight() / 2);
@@ -63,6 +75,11 @@ public class RendererUtils {
 
     public static Group getNameAndDataTypeCellText(final InformationItemCell.HasNameAndDataTypeCell hasNameAndDataTypeCell,
                                                    final GridBodyCellRenderContext context) {
+        if (!hasNameAndDataTypeCell.hasData()) {
+            final BaseGridCellValue<String> cell = new BaseGridCellValue<>(null, hasNameAndDataTypeCell.getPlaceHolderText());
+            return getCenteredCellText(context, new BaseGridCell<>(cell));
+        }
+
         return getNameAndDataTypeText(context.getRenderer().getTheme(),
                                       hasNameAndDataTypeCell.getName().getValue(),
                                       hasNameAndDataTypeCell.getTypeRef(),

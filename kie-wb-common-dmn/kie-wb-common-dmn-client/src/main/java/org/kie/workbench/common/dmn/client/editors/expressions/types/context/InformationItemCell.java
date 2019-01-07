@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.context;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 
 import com.ait.lienzo.client.core.shape.Group;
@@ -66,9 +67,28 @@ public class InformationItemCell extends ContextGridCell<InformationItemCell.Has
     public interface HasNameAndDataTypeCell extends HasNameCell,
                                                     HasTypeRef {
 
+        boolean hasData();
+
+        String getPlaceHolderText();
+
         static HasNameAndDataTypeCell wrap(final InformationItem informationItem) {
+            return wrap(informationItem, null);
+        }
+
+        static HasNameAndDataTypeCell wrap(final InformationItem informationItem, final String placeholder) {
 
             return new HasNameAndDataTypeCell() {
+
+                @Override
+                public boolean hasData() {
+                    return !Objects.isNull(informationItem);
+                }
+
+                @Override
+                public String getPlaceHolderText() {
+                    return placeholder;
+                }
+
                 @Override
                 public QName getTypeRef() {
                     return informationItem.getTypeRef();

@@ -84,18 +84,11 @@ public class ContextUIModelMapper extends BaseUIModelMapper<Context> {
                                           columnIndex).setSelectionStrategy(RowSelectionStrategy.INSTANCE);
                     break;
                 case NAME:
-                    if (!isLastRow) {
-                        final InformationItem variable = context.getContextEntry().get(rowIndex).getVariable();
-                        uiModel.get().setCell(rowIndex,
-                                              columnIndex,
-                                              () -> new InformationItemCell(() -> InformationItemCell.HasNameAndDataTypeCell.wrap(variable),
-                                                                            listSelector));
-                    } else {
-                        uiModel.get().setCell(rowIndex,
-                                              columnIndex,
-                                              () -> new InformationItemCell(() -> InformationItemCell.HasNameCell.wrap(DEFAULT_ROW_CAPTION),
-                                                                            listSelector));
-                    }
+                    final InformationItem variable = context.getContextEntry().get(rowIndex).getVariable();
+                    uiModel.get().setCell(rowIndex,
+                                          columnIndex,
+                                          () -> new InformationItemCell(() -> InformationItemCell.HasNameAndDataTypeCell.wrap(variable, DEFAULT_ROW_CAPTION),
+                                                                        listSelector));
                     break;
                 case EXPRESSION:
                     final ContextEntry ce = context.getContextEntry().get(rowIndex);
