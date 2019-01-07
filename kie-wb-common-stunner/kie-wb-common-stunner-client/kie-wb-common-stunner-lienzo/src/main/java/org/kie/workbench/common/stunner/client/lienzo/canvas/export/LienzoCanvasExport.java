@@ -67,6 +67,10 @@ public class LienzoCanvasExport implements CanvasExport<AbstractCanvasHandler> {
                                                                    canvasHandler)));
         // Set again the previous transform.
         viewport.setTransform(transform);
+
+        // Draw again the native canvas context2d (this is necessary otherwise the canvas becomes empty)
+        lienzoLayer.draw();
+
         return svgContext2D;
     }
 

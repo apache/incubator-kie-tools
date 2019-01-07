@@ -233,6 +233,7 @@ public class LienzoCanvasExportTest {
         verify(layer, times(1)).draw(any(Context2D.class));
         ArgumentCaptor<Transform> transformArgumentCaptor = ArgumentCaptor.forClass(Transform.class);
         verify(viewport, times(2)).setTransform(transformArgumentCaptor.capture());
+        verify(layer).draw();
         List<Transform> transforms = transformArgumentCaptor.getAllValues();
         Transform t0 = transforms.get(0);
         Transform t1 = transforms.get(1);
