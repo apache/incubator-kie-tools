@@ -34,6 +34,14 @@ public class SignalRefTest {
 
     private static final String VALID_REF = "validSIGNALREF0123456789_";
 
+    private static final String MVEL_EXPRESSION = "#{validSIGNALREF0123456789_mvel}";
+
+    private static final String MVEL_COMPLEX_OBJECT_EXPRESSION = "#{myObj.property}";
+
+    private static final String MVEL_INVALID_EXPRESSION = "#{.expression}";
+
+    private static final String MVEL_SYSTEM_PROPERTY = "#{System.getProperty(\"search.value\", \"default.value\")}";
+
     private Validator validator;
 
     @Before
@@ -48,6 +56,42 @@ public class SignalRefTest {
         Set<ConstraintViolation<SignalRef>> validations = validator.validate(signalRef);
 
         assertTrue(validations.isEmpty());
+    }
+
+    @Test
+    public void testSignalRefWithMvelExpression() {
+        SignalRef signalRef = new SignalRef(MVEL_EXPRESSION);
+
+        Set<ConstraintViolation<SignalRef>> validations = validator.validate(signalRef);
+
+        assertTrue(validations.isEmpty());
+    }
+
+    @Test
+    public void testSignalRefWithMvelComplexObjectExpression() {
+        SignalRef signalRef = new SignalRef(MVEL_COMPLEX_OBJECT_EXPRESSION);
+
+        Set<ConstraintViolation<SignalRef>> validations = validator.validate(signalRef);
+
+        assertTrue(validations.isEmpty());
+    }
+
+    @Test
+    public void testSignalRefWithMvelSystemProperty() {
+        SignalRef signalRef = new SignalRef(MVEL_SYSTEM_PROPERTY);
+
+        Set<ConstraintViolation<SignalRef>> validations = validator.validate(signalRef);
+
+        assertTrue(validations.isEmpty());
+    }
+
+    @Test
+    public void testSignalRefWithMvelInvalidExpression() {
+        SignalRef signalRef = new SignalRef(MVEL_INVALID_EXPRESSION);
+
+        Set<ConstraintViolation<SignalRef>> validations = validator.validate(signalRef);
+
+        assertFalse(validations.isEmpty());
     }
 
     @Test

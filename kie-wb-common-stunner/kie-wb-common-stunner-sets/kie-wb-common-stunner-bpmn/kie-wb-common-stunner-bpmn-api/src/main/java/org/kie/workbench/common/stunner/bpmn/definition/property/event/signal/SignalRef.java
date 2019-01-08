@@ -37,7 +37,7 @@ public class SignalRef implements BPMNProperty {
 
     @Value
     @FieldValue
-    @Pattern(regexp = "^$|[a-zA-Z0-9_]+")
+    @Pattern(regexp = "^$|[a-zA-Z0-9_]+|[#]{1}[{]{1}[a-zA-Z0-9_]+[.]*[a-zA-Z0-9_]+[}]{1}|[#]{1}[{]{1}[a-zA-Z0-9_]+[.]*[a-zA-Z0-9_]+[(]{1}[a-zA-Z0-9._\",\\s]+[)]{1}[}]{1}")
     private String value;
 
     public SignalRef() {
