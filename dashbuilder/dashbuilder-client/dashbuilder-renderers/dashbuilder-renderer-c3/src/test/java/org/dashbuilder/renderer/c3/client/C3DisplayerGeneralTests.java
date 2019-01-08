@@ -2,6 +2,7 @@ package org.dashbuilder.renderer.c3.client;
 
 import static org.dashbuilder.dataset.ExpenseReportsData.COLUMN_AMOUNT;
 import static org.dashbuilder.dataset.ExpenseReportsData.COLUMN_DATE;
+import static org.dashbuilder.dataset.ExpenseReportsData.COLUMN_ID;
 import static org.dashbuilder.dataset.group.AggregateFunctionType.SUM;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -13,6 +14,7 @@ import java.util.List;
 
 import org.dashbuilder.dataset.DataColumn;
 import org.dashbuilder.dataset.DataSet;
+import org.dashbuilder.dataset.filter.FilterFactory;
 import org.dashbuilder.displayer.DisplayerSettings;
 import org.dashbuilder.displayer.DisplayerSettingsFactory;
 import org.dashbuilder.renderer.c3.client.charts.line.C3LineChartDisplayer;
@@ -20,6 +22,7 @@ import org.dashbuilder.renderer.c3.client.jsbinding.C3ChartConf;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -89,6 +92,21 @@ public class C3DisplayerGeneralTests extends C3BaseTest {
         assertArrayEquals(displayer.createCategories(), categories.toArray());
         assertEquals(createdSeries[0].length, seriesColumn.getValues().size() + 1);
         assertEquals(createdSeries[0][0], seriesColumn.getId());
+    }
+    
+    @Test
+    public void c3NoData() {
+        DisplayerSettings noData = DisplayerSettingsFactory.newLineChartSettings()
+                .dataset(EXPENSES)
+                .filter(COLUMN_ID, FilterFactory.isNull())
+                .group(COLUMN_DATE)
+                .column(COLUMN_DATE)
+                .column(COLUMN_AMOUNT, SUM)
+                .buildSettings();
+        displayer = c3LineChartDisplayer(noData);
+        displayer.draw();
+        C3LineChartDisplayer.View view = displayer.getView();
+        verify(view).noData();
     }
 
 }

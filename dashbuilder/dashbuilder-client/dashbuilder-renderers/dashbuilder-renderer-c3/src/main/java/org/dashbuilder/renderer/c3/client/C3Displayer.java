@@ -68,6 +68,10 @@ public abstract class C3Displayer<V extends C3Displayer.View> extends AbstractGw
         void setFilterLabelSet(FilterLabelSet filterLabelSet);
         
         void setBackgroundColor(String color);
+        
+        void noData();
+        
+        void setSize(int width, int height);
 
     }
     
@@ -114,10 +118,16 @@ public abstract class C3Displayer<V extends C3Displayer.View> extends AbstractGw
 
     @Override
     protected void updateVisualization() {
-        C3ChartConf conf = buildConfiguration();
-        getView().updateChart(conf);
-        updateFilterStatus();
-        applyPropertiesToView();
+        if(dataSet.getRowCount() == 0) {
+            getView().setSize(displayerSettings.getChartWidth(), 
+                              displayerSettings.getChartHeight());
+            getView().noData();
+        } else {
+            C3ChartConf conf = buildConfiguration();
+            getView().updateChart(conf);
+            updateFilterStatus();
+            applyPropertiesToView();
+        }
     }
 
     protected C3ChartConf buildConfiguration() {
