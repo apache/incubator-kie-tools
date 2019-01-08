@@ -24,5 +24,6 @@
   <source path='dataset'/>
   <source path='navigation'/>
   <source path='perspectives'/>
+  <source path='renderer'/>
 
 </module>

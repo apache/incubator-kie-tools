@@ -32,12 +32,16 @@ import org.dashbuilder.displayer.DisplayerSettings;
 import org.dashbuilder.displayer.DisplayerSubType;
 import org.dashbuilder.displayer.DisplayerType;
 import org.dashbuilder.displayer.client.resources.i18n.CommonConstants;
+import org.dashbuilder.renderer.service.RendererSettingsService;
+import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 
 /**
  * This class holds a registry of all the RendererLibrary implementations available.
  */
+@EntryPoint
 @ApplicationScoped
 public class RendererManager {
 
@@ -48,18 +52,34 @@ public class RendererManager {
     private Map<DisplayerSubType, List<RendererLibrary>> renderersBySubType = new EnumMap<>(DisplayerSubType.class);
     
     CommonConstants i18n = CommonConstants.INSTANCE;
+    
+    Caller<RendererSettingsService> rendererSettingsService;
 
     public RendererManager() {
     }
 
     @Inject
-    public RendererManager(SyncBeanManager beanManager) {
+    public RendererManager(SyncBeanManager beanManager, Caller<RendererSettingsService> rendererSettingsService) {
         this.beanManager = beanManager;
+        this.rendererSettingsService = rendererSettingsService;
     }
 
     @PostConstruct
     protected void init() {
+        rendererSettingsService.call((String defaultUUIDOp) -> lookupRenderers(defaultUUIDOp))
+                               .userDefaultRenderer();
+    }
+
+    protected void lookupRenderers(String defaultUUID) {
         Collection<SyncBeanDef<RendererLibrary>> beanDefs = beanManager.lookupBeans(RendererLibrary.class);
+        if (defaultUUID != null && ! defaultUUID.isEmpty()) {
+            beanDefs.stream()
+                    .map(SyncBeanDef::getInstance)
+                    .filter(render -> render.getUUID().equals(defaultUUID))
+                    .findFirst().ifPresent(rend -> 
+                        rend.getSupportedTypes().forEach(c -> renderersDefault.put(c, rend))
+            );
+        }
         for (SyncBeanDef<RendererLibrary> beanDef : beanDefs) {
 
             RendererLibrary lib = beanDef.getInstance();
@@ -67,7 +87,7 @@ public class RendererManager {
 
             for (DisplayerType displayerType : DisplayerType.values()) {
                 if (lib.isDefault(displayerType)) {
-                    renderersDefault.put(displayerType, lib);
+                    renderersDefault.putIfAbsent(displayerType, lib);
                 }
             }
             List<DisplayerType> types = lib.getSupportedTypes();
