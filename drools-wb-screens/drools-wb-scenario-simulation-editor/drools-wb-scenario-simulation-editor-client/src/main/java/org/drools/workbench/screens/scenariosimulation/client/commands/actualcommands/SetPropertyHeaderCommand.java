@@ -53,7 +53,9 @@ public class SetPropertyHeaderCommand extends AbstractScenarioSimulationCommand 
             fullPackage += ".";
         }
         String canonicalClassName = fullPackage + className;
-        String nameToUseForCreation = context.getModel().getSimulation().get().getSimulationDescriptor().getType().equals(ScenarioSimulationModel.Type.DMN) ? className : selectedColumn.getInformationHeaderMetaData().getColumnId();
+        final ScenarioSimulationModel.Type simulationModelType = context.getModel().getSimulation().get().getSimulationDescriptor().getType();
+        selectedColumn.setEditableHeaders(!simulationModelType.equals(ScenarioSimulationModel.Type.DMN));
+        String nameToUseForCreation = simulationModelType.equals(ScenarioSimulationModel.Type.DMN) ? className : selectedColumn.getInformationHeaderMetaData().getColumnId();
         FactIdentifier factIdentifier = getFactIdentifierByColumnTitle(className, context).orElse(FactIdentifier.create(nameToUseForCreation, canonicalClassName));
         final GridData.Range instanceLimits = context.getModel().getInstanceLimits(columnIndex);
         IntStream.range(instanceLimits.getMinRowIndex(), instanceLimits.getMaxRowIndex() + 1)

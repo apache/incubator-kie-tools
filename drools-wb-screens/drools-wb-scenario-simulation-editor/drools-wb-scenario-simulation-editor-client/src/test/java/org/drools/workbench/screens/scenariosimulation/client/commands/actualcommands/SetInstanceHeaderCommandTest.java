@@ -33,7 +33,7 @@ import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -67,13 +67,29 @@ public class SetInstanceHeaderCommandTest extends AbstractScenarioSimulationComm
     }
 
     @Test
-    public void execute() {
+    public void executeDMN() {
         scenarioSimulationContext.getStatus().setFullPackage(FULL_PACKAGE);
         scenarioSimulationContext.getStatus().setClassName(VALUE_CLASS_NAME);
+        when(simulationDescriptorMock.getType()).thenReturn(ScenarioSimulationModel.Type.DMN);
         command.execute(scenarioSimulationContext);
-        verify(gridColumnMock, atLeast(1)).getInformationHeaderMetaData();
-        verify(informationHeaderMetaDataMock, atLeast(1)).setTitle(eq(VALUE_CLASS_NAME));
-        verify(gridColumnMock, atLeast(1)).setInstanceAssigned(eq(true));
+        verify(gridColumnMock, times(1)).setEditableHeaders(eq(false));
+        verify(gridColumnMock, atLeastOnce()).getInformationHeaderMetaData();
+        verify(informationHeaderMetaDataMock, times(1)).setTitle(eq(VALUE_CLASS_NAME));
+        verify(gridColumnMock, times(1)).setInstanceAssigned(eq(true));
+        verify(propertyHeaderMetaDataMock, times(1)).setReadOnly(eq(false));
+        verify(scenarioGridModelMock, times(1)).updateColumnInstance(eq(COLUMN_INDEX), eq(gridColumnMock));
+    }
+
+    @Test
+    public void executeRULE() {
+        scenarioSimulationContext.getStatus().setFullPackage(FULL_PACKAGE);
+        scenarioSimulationContext.getStatus().setClassName(VALUE_CLASS_NAME);
+        when(simulationDescriptorMock.getType()).thenReturn(ScenarioSimulationModel.Type.RULE);
+        command.execute(scenarioSimulationContext);
+        verify(gridColumnMock, times(1)).setEditableHeaders(eq(true));
+        verify(gridColumnMock, atLeastOnce()).getInformationHeaderMetaData();
+        verify(informationHeaderMetaDataMock, times(1)).setTitle(eq(VALUE_CLASS_NAME));
+        verify(gridColumnMock, times(1)).setInstanceAssigned(eq(true));
         verify(propertyHeaderMetaDataMock, times(1)).setReadOnly(eq(false));
         verify(scenarioGridModelMock, times(1)).updateColumnInstance(eq(COLUMN_INDEX), eq(gridColumnMock));
     }
