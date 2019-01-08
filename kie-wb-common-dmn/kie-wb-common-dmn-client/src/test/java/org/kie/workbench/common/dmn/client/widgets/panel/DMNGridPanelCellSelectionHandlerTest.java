@@ -32,9 +32,7 @@ import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.CellSelectionStrategy;
 
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
@@ -52,22 +50,12 @@ public class DMNGridPanelCellSelectionHandlerTest {
     @Mock
     private GridCell gridCell;
 
-    @Mock
-    private CellSelectionStrategy cellSelectionStrategy;
-
     private DMNGridPanelCellSelectionHandler cellSelectionHandler;
 
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
         this.cellSelectionHandler = new DMNGridPanelCellSelectionHandlerImpl(gridLayer);
-
-        when(gridCell.getSelectionStrategy()).thenReturn(cellSelectionStrategy);
-        when(cellSelectionStrategy.handleSelection(any(GridData.class),
-                                                   anyInt(),
-                                                   anyInt(),
-                                                   anyBoolean(),
-                                                   anyBoolean())).thenReturn(true);
     }
 
     @Test
@@ -76,15 +64,40 @@ public class DMNGridPanelCellSelectionHandlerTest {
         final GridData gridData = gridWidget.getModel();
         gridData.setCell(0, 1, () -> gridCell);
 
+        when(gridWidget.selectCell(anyInt(),
+                                   anyInt(),
+                                   anyBoolean(),
+                                   anyBoolean())).thenReturn(true);
+
         cellSelectionHandler.selectCellIfRequired(0, 1, gridWidget, true, false);
 
         verify(gridLayer).select(eq(gridWidget));
-        verify(cellSelectionStrategy).handleSelection(eq(gridData),
-                                                      eq(0),
-                                                      eq(1),
-                                                      eq(true),
-                                                      eq(false));
+        verify(gridWidget).selectCell(eq(0),
+                                      eq(1),
+                                      eq(true),
+                                      eq(false));
         verify(gridLayer).batch();
+    }
+
+    @Test
+    public void testSelectCellIfRequiredButSelectionDidNotChanged() {
+        final GridWidget gridWidget = mockGridWidget(BaseExpressionGrid.class);
+        final GridData gridData = gridWidget.getModel();
+        gridData.setCell(0, 1, () -> gridCell);
+
+        when(gridWidget.selectCell(anyInt(),
+                                   anyInt(),
+                                   anyBoolean(),
+                                   anyBoolean())).thenReturn(false);
+
+        cellSelectionHandler.selectCellIfRequired(0, 1, gridWidget, true, false);
+
+        verify(gridLayer).select(eq(gridWidget));
+        verify(gridWidget).selectCell(eq(0),
+                                      eq(1),
+                                      eq(true),
+                                      eq(false));
+        verify(gridLayer, never()).batch();
     }
 
     @Test
@@ -97,11 +110,10 @@ public class DMNGridPanelCellSelectionHandlerTest {
         cellSelectionHandler.selectCellIfRequired(0, 1, gridWidget, true, false);
 
         verify(gridLayer, never()).select(eq(gridWidget));
-        verify(cellSelectionStrategy, never()).handleSelection(any(GridData.class),
-                                                               anyInt(),
-                                                               anyInt(),
-                                                               anyBoolean(),
-                                                               anyBoolean());
+        verify(gridWidget, never()).selectCell(anyInt(),
+                                               anyInt(),
+                                               anyBoolean(),
+                                               anyBoolean());
         verify(gridLayer, never()).batch();
     }
 

@@ -19,13 +19,10 @@ package org.kie.workbench.common.dmn.client.widgets.panel;
 import java.util.stream.Stream;
 
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
-import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.GridData.SelectedCell;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.CellSelectionStrategy;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.impl.RangeSelectionStrategy;
 
 public class DMNGridPanelCellSelectionHandlerImpl implements DMNGridPanelCellSelectionHandler {
 
@@ -47,43 +44,14 @@ public class DMNGridPanelCellSelectionHandlerImpl implements DMNGridPanelCellSel
         final Stream<SelectedCell> modelColumnSelectedCells = gridData.getSelectedCells().stream().filter(sc -> sc.getColumnIndex() == column.getIndex());
         final boolean isContextMenuCellSelectedCell = modelColumnSelectedCells.map(SelectedCell::getRowIndex).anyMatch(ri -> ri == uiRowIndex);
         if (!isContextMenuCellSelectedCell) {
-            selectCell(uiRowIndex,
-                       uiColumnIndex,
-                       gridWidget,
-                       isShiftKeyDown,
-                       isControlKeyDown);
-        }
-    }
-
-    private void selectCell(final int uiRowIndex,
-                            final int uiColumnIndex,
-                            final GridWidget gridWidget,
-                            final boolean isShiftKeyDown,
-                            final boolean isControlKeyDown) {
-        // Lookup CellSelectionManager for cell
-        final GridData gridModel = gridWidget.getModel();
-
-        CellSelectionStrategy selectionStrategy;
-        final GridCell<?> cell = gridModel.getCell(uiRowIndex,
-                                                   uiColumnIndex);
-        if (cell == null) {
-            selectionStrategy = RangeSelectionStrategy.INSTANCE;
-        } else {
-            selectionStrategy = cell.getSelectionStrategy();
-        }
-        if (selectionStrategy == null) {
-            return;
-        }
-
-        gridLayer.select(gridWidget);
-
-        // Handle selection
-        if (selectionStrategy.handleSelection(gridModel,
-                                              uiRowIndex,
-                                              uiColumnIndex,
-                                              isShiftKeyDown,
-                                              isControlKeyDown)) {
-            gridLayer.batch();
+            gridLayer.select(gridWidget);
+            final boolean selectionChanged = gridWidget.selectCell(uiRowIndex,
+                                                                   uiColumnIndex,
+                                                                   isShiftKeyDown,
+                                                                   isControlKeyDown);
+            if (selectionChanged) {
+                gridLayer.batch();
+            }
         }
     }
 }
