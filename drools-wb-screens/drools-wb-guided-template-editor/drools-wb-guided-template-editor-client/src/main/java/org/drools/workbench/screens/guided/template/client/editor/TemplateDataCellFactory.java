@@ -63,57 +63,55 @@ public class TemplateDataCellFactory
      */
     public DecoratedGridCellValueAdaptor<? extends Comparable<?>> getCell(TemplateDataColumn column) {
 
-        DecoratedGridCellValueAdaptor<? extends Comparable<?>> cell = null;
-
         //Check if the column has an enumeration
-        final String factType = column.getFactType();
-        final String fieldName = column.getFactField();
         final String dataType = column.getDataType();
-        if (oracle.hasEnums(factType,
-                            fieldName)) {
-            cell = makeSingleSelectionEnumCell(factType,
-                                               fieldName,
-                                               dataType);
+        if (oracle.hasEnums(column.getFactType(),
+                            column.getFactField())) {
+
+            return makeSelectionEnumCell(column.getFactType(),
+                                         column.getFactField(),
+                                         column.getOperator(),
+                                         dataType);
         } else {
             if (column.getDataType().equals(DataType.TYPE_BOOLEAN)) {
-                cell = makeBooleanCell();
+                return makeBooleanCell();
             } else if (column.getDataType().equals(DataType.TYPE_DATE)) {
-                cell = makeDateCell();
+                return makeDateCell();
             } else if (dataType.equals(DataType.TYPE_NUMERIC)) {
-                cell = makeNumericCell();
+                return makeNumericCell();
             } else if (dataType.equals(DataType.TYPE_NUMERIC_BIGDECIMAL)) {
-                cell = makeNumericBigDecimalCell();
+                return makeNumericBigDecimalCell();
             } else if (dataType.equals(DataType.TYPE_NUMERIC_BIGINTEGER)) {
-                cell = makeNumericBigIntegerCell();
+                return makeNumericBigIntegerCell();
             } else if (dataType.equals(DataType.TYPE_NUMERIC_BYTE)) {
-                cell = makeNumericByteCell();
+                return makeNumericByteCell();
             } else if (dataType.equals(DataType.TYPE_NUMERIC_DOUBLE)) {
-                cell = makeNumericDoubleCell();
+                return makeNumericDoubleCell();
             } else if (dataType.equals(DataType.TYPE_NUMERIC_FLOAT)) {
-                cell = makeNumericFloatCell();
+                return makeNumericFloatCell();
             } else if (dataType.equals(DataType.TYPE_NUMERIC_INTEGER)) {
-                cell = makeNumericIntegerCell();
+                return makeNumericIntegerCell();
             } else if (dataType.equals(DataType.TYPE_NUMERIC_LONG)) {
-                cell = makeNumericLongCell();
+                return makeNumericLongCell();
             } else if (dataType.equals(DataType.TYPE_NUMERIC_SHORT)) {
-                cell = makeNumericShortCell();
+                return makeNumericShortCell();
             } else {
-                cell = makeTextCell();
+                return makeTextCell();
             }
         }
-
-        return cell;
     }
 
     // Get a cell for a Value List
     // Package private to be testable
-    DecoratedGridCellValueAdaptor<? extends Comparable<?>> makeSingleSelectionEnumCell(String factType,
-                                                                                       String fieldName,
-                                                                                       String dataType) {
+    DecoratedGridCellValueAdaptor<? extends Comparable<?>> makeSelectionEnumCell(String factType,
+                                                                                 String fieldName,
+                                                                                 String operator,
+                                                                                 String dataType) {
         DecoratedGridCellValueAdaptor<? extends Comparable<?>> cell;
         if (dataType.equals(DataType.TYPE_NUMERIC)) {
             final AbstractProxyPopupDropDownEditCell<BigDecimal, BigDecimal> pudd = new ProxyPopupNumericBigDecimalDropDownEditCell(factType,
                                                                                                                                     fieldName,
+                                                                                                                                    operator,
                                                                                                                                     oracle,
                                                                                                                                     dropDownManager,
                                                                                                                                     isReadOnly);
@@ -122,6 +120,7 @@ public class TemplateDataCellFactory
         } else if (dataType.equals(DataType.TYPE_NUMERIC_BIGDECIMAL)) {
             final AbstractProxyPopupDropDownEditCell<BigDecimal, BigDecimal> pudd = new ProxyPopupNumericBigDecimalDropDownEditCell(factType,
                                                                                                                                     fieldName,
+                                                                                                                                    operator,
                                                                                                                                     oracle,
                                                                                                                                     dropDownManager,
                                                                                                                                     isReadOnly);
@@ -130,6 +129,7 @@ public class TemplateDataCellFactory
         } else if (dataType.equals(DataType.TYPE_NUMERIC_BIGINTEGER)) {
             final AbstractProxyPopupDropDownEditCell<BigInteger, BigInteger> pudd = new ProxyPopupNumericBigIntegerDropDownEditCell(factType,
                                                                                                                                     fieldName,
+                                                                                                                                    operator,
                                                                                                                                     oracle,
                                                                                                                                     dropDownManager,
                                                                                                                                     isReadOnly);
@@ -138,6 +138,7 @@ public class TemplateDataCellFactory
         } else if (dataType.equals(DataType.TYPE_NUMERIC_BYTE)) {
             final AbstractProxyPopupDropDownEditCell<Byte, Byte> pudd = new ProxyPopupNumericByteDropDownEditCell(factType,
                                                                                                                   fieldName,
+                                                                                                                  operator,
                                                                                                                   oracle,
                                                                                                                   dropDownManager,
                                                                                                                   isReadOnly);
@@ -146,6 +147,7 @@ public class TemplateDataCellFactory
         } else if (dataType.equals(DataType.TYPE_NUMERIC_DOUBLE)) {
             final AbstractProxyPopupDropDownEditCell<Double, Double> pudd = new ProxyPopupNumericDoubleDropDownEditCell(factType,
                                                                                                                         fieldName,
+                                                                                                                        operator,
                                                                                                                         oracle,
                                                                                                                         dropDownManager,
                                                                                                                         isReadOnly);
@@ -154,6 +156,7 @@ public class TemplateDataCellFactory
         } else if (dataType.equals(DataType.TYPE_NUMERIC_FLOAT)) {
             final AbstractProxyPopupDropDownEditCell<Float, Float> pudd = new ProxyPopupNumericFloatDropDownEditCell(factType,
                                                                                                                      fieldName,
+                                                                                                                     operator,
                                                                                                                      oracle,
                                                                                                                      dropDownManager,
                                                                                                                      isReadOnly);
@@ -162,6 +165,7 @@ public class TemplateDataCellFactory
         } else if (dataType.equals(DataType.TYPE_NUMERIC_INTEGER)) {
             final AbstractProxyPopupDropDownEditCell<Integer, Integer> pudd = new ProxyPopupNumericIntegerDropDownEditCell(factType,
                                                                                                                            fieldName,
+                                                                                                                           operator,
                                                                                                                            oracle,
                                                                                                                            dropDownManager,
                                                                                                                            isReadOnly);
@@ -170,6 +174,7 @@ public class TemplateDataCellFactory
         } else if (dataType.equals(DataType.TYPE_NUMERIC_LONG)) {
             final AbstractProxyPopupDropDownEditCell<Long, Long> pudd = new ProxyPopupNumericLongDropDownEditCell(factType,
                                                                                                                   fieldName,
+                                                                                                                  operator,
                                                                                                                   oracle,
                                                                                                                   dropDownManager,
                                                                                                                   isReadOnly);
@@ -178,6 +183,7 @@ public class TemplateDataCellFactory
         } else if (dataType.equals(DataType.TYPE_NUMERIC_SHORT)) {
             final AbstractProxyPopupDropDownEditCell<Short, Short> pudd = new ProxyPopupNumericShortDropDownEditCell(factType,
                                                                                                                      fieldName,
+                                                                                                                     operator,
                                                                                                                      oracle,
                                                                                                                      dropDownManager,
                                                                                                                      isReadOnly);
@@ -188,6 +194,7 @@ public class TemplateDataCellFactory
         } else if (dataType.equals(DataType.TYPE_DATE)) {
             final AbstractProxyPopupDropDownEditCell<Date, Date> pudd = new ProxyPopupDateDropDownEditCell(factType,
                                                                                                            fieldName,
+                                                                                                           operator,
                                                                                                            oracle,
                                                                                                            dropDownManager,
                                                                                                            isReadOnly,
@@ -197,6 +204,7 @@ public class TemplateDataCellFactory
         } else {
             final AbstractProxyPopupDropDownEditCell<String, String> pudd = new ProxyPopupTextDropDownEditCell(factType,
                                                                                                                fieldName,
+                                                                                                               operator,
                                                                                                                oracle,
                                                                                                                dropDownManager,
                                                                                                                isReadOnly);

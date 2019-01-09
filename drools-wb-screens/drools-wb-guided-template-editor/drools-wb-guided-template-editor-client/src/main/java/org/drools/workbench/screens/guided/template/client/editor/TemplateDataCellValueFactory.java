@@ -36,26 +36,14 @@ import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.Dynamic
 public class TemplateDataCellValueFactory
         extends AbstractCellValueFactory<TemplateDataColumn, String> {
 
+    // Dates are serialised to Strings with the user-defined format, or dd-MMM-yyyy by default
+    protected static DateConverter DATE_CONVERTOR = null;
     //Template model
     private TemplateModel model;
 
-    // Dates are serialised to Strings with the user-defined format, or dd-MMM-yyyy by default
-    protected static DateConverter DATE_CONVERTOR = null;
-
-    /**
-     * Override the default, GWT-centric, Date conversion utility class. Only
-     * use to hook-in a JVM Compatible implementation for tests
-     *
-     * @param dc
-     */
-    public static void injectDateConvertor(DateConverter dc) {
-        DATE_CONVERTOR = dc;
-    }
-
     /**
      * Construct a Cell Value Factory for a specific Template data editor
-     *
-     * @param model  for which cells will be created
+     * @param model for which cells will be created
      * @param oracle SuggestionCompletionEngine to assist with drop-downs
      */
     public TemplateDataCellValueFactory(final TemplateModel model,
@@ -68,8 +56,16 @@ public class TemplateDataCellValueFactory
     }
 
     /**
+     * Override the default, GWT-centric, Date conversion utility class. Only
+     * use to hook-in a JVM Compatible implementation for tests
+     * @param dc
+     */
+    public static void injectDateConvertor(DateConverter dc) {
+        DATE_CONVERTOR = dc;
+    }
+
+    /**
      * Construct a new row of data for the underlying model
-     *
      * @return
      */
     public List<String> makeRowData() {
@@ -85,7 +81,6 @@ public class TemplateDataCellValueFactory
 
     /**
      * Construct a new row of data for the MergableGridWidget
-     *
      * @return
      */
     @Override
@@ -105,7 +100,6 @@ public class TemplateDataCellValueFactory
 
     /**
      * Construct a new column of data for the underlying model
-     *
      * @return
      */
     public List<String> makeColumnData(TemplateDataColumn column) {
@@ -119,7 +113,6 @@ public class TemplateDataCellValueFactory
 
     /**
      * Convert a column of domain data to that suitable for the UI
-     *
      * @param column
      * @param columnData
      * @return
@@ -138,7 +131,6 @@ public class TemplateDataCellValueFactory
 
     /**
      * Make a Model cell for the given column
-     *
      * @param column
      * @return
      */
@@ -155,7 +147,6 @@ public class TemplateDataCellValueFactory
 
     /**
      * Convert a Model cell to one that can be used in the UI
-     *
      * @param column
      * @param dcv
      * @return
@@ -303,14 +294,14 @@ public class TemplateDataCellValueFactory
         return new TemplateDataColumn(var.getVarName(),
                                       var.getDataType(),
                                       var.getFactType(),
-                                      var.getFactField());
+                                      var.getFactField(),
+                                      var.getOperator());
     }
 
     /**
      * Convert a type-safe UI CellValue into a type-safe Model CellValue
-     *
      * @param column Model column from which data-type can be derived
-     * @param cv     UI CellValue to convert into Model CellValue
+     * @param cv UI CellValue to convert into Model CellValue
      * @return
      */
     public String convertToModelCell(TemplateDataColumn column,

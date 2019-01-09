@@ -21,15 +21,18 @@ public class TemplateDataColumn {
     private String dataType;
     private String factType;
     private String factField;
+    private String operator;
 
-    public TemplateDataColumn( String templateVar,
-                               String dataType,
-                               String factType,
-                               String factField ) {
+    public TemplateDataColumn(String templateVar,
+                              String dataType,
+                              String factType,
+                              String factField,
+                              String operator) {
         this.templateVar = templateVar;
         this.dataType = dataType;
         this.factType = factType;
         this.factField = factField;
+        this.operator = operator;
     }
 
     public String getDataType() {
@@ -40,20 +43,27 @@ public class TemplateDataColumn {
         return factField;
     }
 
+    public void setFactField(String factField) {
+        this.factField = factField;
+    }
+
     public String getFactType() {
         return factType;
+    }
+
+    public void setFactType(String factType) {
+        this.factType = factType;
     }
 
     public String getTemplateVar() {
         return templateVar;
     }
 
-    public void setFactField( String factField ) {
-        this.factField = factField;
+    public String getOperator() {
+        return operator;
     }
 
-    public void setFactType( String factType ) {
-        this.factType = factType;
+    public void setOperator(String operator) {
+        this.operator = operator;
     }
-
 }

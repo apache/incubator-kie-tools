@@ -190,7 +190,8 @@ public class BRLConditionColumnPlugin extends BaseDecisionTableColumnPlugin impl
             BRLConditionVariableColumn variable = new BRLConditionVariableColumn(iv.getVarName(),
                                                                                  iv.getDataType(),
                                                                                  iv.getFactType(),
-                                                                                 iv.getFactField());
+                                                                                 iv.getFactField(),
+                                                                                 iv.getOperator());
             variable.setHeader(editingCol.getHeader());
             variable.setHideColumn(editingCol.isHideColumn());
             variables[index] = variable;
@@ -348,6 +349,7 @@ public class BRLConditionColumnPlugin extends BaseDecisionTableColumnPlugin impl
         clone.setHeader(column.getHeader());
         clone.setHideColumn(column.isHideColumn());
         clone.setDefinition(cloneDefinition(brlConditionColumn.getDefinition()));
+        clone.setOperator(brlConditionColumn.getOperator());
 
         return clone;
     }
@@ -368,6 +370,7 @@ public class BRLConditionColumnPlugin extends BaseDecisionTableColumnPlugin impl
         clone.setHeader(variable.getHeader());
         clone.setHideColumn(variable.isHideColumn());
         clone.setWidth(variable.getWidth());
+        clone.setOperator(variable.getOperator());
 
         return clone;
     }

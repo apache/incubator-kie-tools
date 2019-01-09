@@ -1,6 +1,8 @@
 /target
 /local
 
+jacoco.exec
+
 # Eclipse, Netbeans and IntelliJ files
 /.*
 /**/.*

@@ -66,10 +66,11 @@ public class TemplateDataCellFactoryTest {
         doReturn(factType).when(column).getFactType();
         doReturn(factField).when(column).getFactField();
         doReturn(dataType).when(column).getDataType();
+        doReturn("==").when(column).getOperator();
 
         testedFactory.getCell(column);
 
-        verify(testedFactory, never()).makeSingleSelectionEnumCell(factType, factField, dataType);
+        verify(testedFactory, never()).makeSelectionEnumCell(factType, factField, "==", dataType);
     }
 
     @Test
@@ -82,9 +83,10 @@ public class TemplateDataCellFactoryTest {
         doReturn(factType).when(column).getFactType();
         doReturn(factField).when(column).getFactField();
         doReturn(dataType).when(column).getDataType();
+        doReturn("==").when(column).getOperator();
 
         testedFactory.getCell(column);
 
-        verify(testedFactory).makeSingleSelectionEnumCell(factType, factField, dataType);
+        verify(testedFactory).makeSelectionEnumCell(factType, factField, "==", dataType);
     }
 }
