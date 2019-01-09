@@ -423,14 +423,8 @@ public class PreferenceBeanStoreImpl implements PreferenceBeanServerStore {
                 final String[] parents = portablePreference.parents();
 
                 for (String parent : parents) {
-                    if (parent != null & !parent.isEmpty()) {
-                        List<BasePreferencePortable> children = childrenByParent.get(parent);
-                        if (children == null) {
-                            children = new ArrayList<>();
-                            childrenByParent.put(parent,
-                                                 children);
-                        }
-
+                    if (parent != null && !parent.isEmpty()) {
+                        List<BasePreferencePortable> children = childrenByParent.computeIfAbsent(parent, k -> new ArrayList<>());
                         children.add(portablePreference);
                     }
                 }
