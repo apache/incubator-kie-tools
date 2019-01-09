@@ -47,14 +47,12 @@ public class ListGroupItemPresenter implements ListGroupItemView.Presenter {
     public void enable() {
         this.disabled.set(false);
         factName = null;
-        listGroupItemViewMap.values().forEach(ListGroupItemView::disable);
     }
 
     @Override
     public void enable(String factName) {
         this.disabled.set(false);
         this.factName = factName;
-        listGroupItemViewMap.values().forEach(ListGroupItemView::enable);
     }
 
     @Override
@@ -135,14 +133,6 @@ public class ListGroupItemPresenter implements ListGroupItemView.Presenter {
                 if (factModelTree != null) {
                     populateListGroupItemView(listGroupItemView, listGroupItemView.getParentPath(), listGroupItemView.getFactName(), factModelTree);
                     listGroupItemView.setToExpand(false);
-                }
-//                FactModelTree factModelTree = rightPanelPresenter.getFactModelTreeFromFactTypeMap(listGroupItemView.getFactType());
-//                populateListGroupItemView(listGroupItemView, listGroupItemView.getParentPath(), listGroupItemView.getFactName(), factModelTree);
-//                listGroupItemView.setToExpand(false);
-                if (factName != null) {
-                    listGroupItemView.disable();
-                } else {
-                    listGroupItemView.enable();
                 }
             }
             listGroupItemView.expandRow();

@@ -116,36 +116,6 @@ public class ListGroupItemViewImpl implements ListGroupItemView {
     }
 
     @Override
-    public void enable() {
-//        fullClassName.addClassName("disabled");
-//        factProperties.removeClassName("disabled");
-//        IntStream.range(0, factProperties.getChildNodes().getLength())
-//                .forEach(index -> {
-//                    ((Element) factProperties.getChild(index)).removeClassName("disabled");
-//                });
-//        listGroupItemContainer.removeClassName("disabled");
-//        IntStream.range(0, listGroupItemContainer.getChildNodes().getLength())
-//                .forEach(index -> {
-//                    ((Element) listGroupItemContainer.getChild(index)).removeClassName("disabled");
-//                });
-    }
-
-    @Override
-    public void disable() {
-//        fullClassName.removeClassName("disabled");
-//        factProperties.addClassName("disabled");
-//        IntStream.range(0, factProperties.getChildNodes().getLength())
-//                .forEach(index -> {
-//                    ((Element) factProperties.getChild(index)).addClassName("disabled");
-//                });
-//        listGroupItemContainer.addClassName("disabled");
-//        IntStream.range(0, listGroupItemContainer.getChildNodes().getLength())
-//                .forEach(index -> {
-//                    ((Element) listGroupItemContainer.getChild(index)).addClassName("disabled");
-//                });
-    }
-
-    @Override
     public void setFactName(String factName) {
         this.factName = factName;
         this.factType = factName;

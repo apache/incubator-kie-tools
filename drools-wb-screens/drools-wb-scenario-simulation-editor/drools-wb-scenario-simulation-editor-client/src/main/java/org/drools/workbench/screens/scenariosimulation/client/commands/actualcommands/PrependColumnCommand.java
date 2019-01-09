@@ -15,41 +15,20 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands;
 
-import java.util.Map;
-
 import javax.enterprise.context.Dependent;
 
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
-import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
-import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
-import org.drools.workbench.screens.scenariosimulation.model.FactMappingType;
 
 /**
  * <code>Command</code> to <b>prepend</b> (i.e. put in the first position) a column to a given <i>group</i>
  */
 @Dependent
-public class PrependColumnCommand extends AbstractScenarioSimulationCommand {
-
-    public PrependColumnCommand() {
-        super(true);
-    }
+public class PrependColumnCommand extends AbstractInsertColumnCommand {
 
     @Override
     protected void internalExecute(ScenarioSimulationContext context) {
         final ScenarioSimulationContext.Status status = context.getStatus();
         final int index = context.getModel().getFirstIndexLeftOfGroup(status.getColumnGroup());
-        FactMappingType factMappingType = FactMappingType.valueOf(status.getColumnGroup().toUpperCase());
-        Map.Entry<String, String> validPlaceholders = context.getModel().getValidPlaceholders();
-        String instanceTitle = validPlaceholders.getKey();
-        String propertyTitle = validPlaceholders.getValue();
-        final ScenarioGridColumn scenarioGridColumnLocal = getScenarioGridColumnLocal(instanceTitle,
-                                                                                      propertyTitle,
-                                                                                      status.getColumnId(),
-                                                                                      status.getColumnGroup(),
-                                                                                      factMappingType,
-                                                                                      context.getScenarioGridPanel(),
-                                                                                      context.getScenarioGridLayer(),
-                                                                                      ScenarioSimulationEditorConstants.INSTANCE.defineValidType());
-        context.getModel().insertColumn(index, scenarioGridColumnLocal);
+        commonInsertColumnCommand(context, status, index);
     }
 }

@@ -54,26 +54,11 @@ public abstract class ScenarioConfirmationPopupViewTest extends AbstractDeletePo
     protected MouseEvent mouseEventMock;
 
     @Mock
-    protected HTMLElement elementMock;
-
-    @Mock
     protected TranslationService translationServiceMock;
 
     @Before
     public void setup() {
         super.commonSetup();
-//        popupView = spy(new ScenarioConfirmationPopupView() {
-//            {
-//                this.mainTitle = (HeadingElement) mainTitleMock;
-//                this.mainQuestion = mainQuestionMock;
-//                this.text1 = text1Mock;
-//                this.textQuestion = textQuestionMock;
-//                this.cancelButton = cancelButtonMock;
-//                this.okDeleteButton = okDeleteButtonMock;
-//                this.modal = modalMock;
-//                this.translationService = translationServiceMock;
-//            }
-//        });
     }
 
     @Test

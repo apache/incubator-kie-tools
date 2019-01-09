@@ -31,20 +31,6 @@ public interface ListGroupItemView extends IsWidget,
     void setFactName(String factName);
 
     /**
-     * Use this when click on grid' <i>property</i> header.
-     * Call this method to show the first-level data model <b>disabled</b> (i.e. <b>not double-clickable</b>)
-     * and its properties <b>enabled</b> (i.e. <b>double-clickable</b> to map to a <i>property</i> header/column below the belonging data model instance one)
-     */
-    void enable();
-
-    /**
-     * Use this when click on grid' <i>instance</i> header.
-     * Call this method to show the first-level data model <b>enabled</b> (i.e. <b>double-clickable</b> to map to an <i>instance</i> header/column)
-     * and its properties <b>disabled</b> (i.e. <b>not double-clickable</b>)
-     */
-    void disable();
-
-    /**
      * @param parentPath the <b>parent</b>' path
      */
     void setParentPath(String parentPath);
