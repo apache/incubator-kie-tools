@@ -24,7 +24,6 @@ import com.google.gwtmockito.WithClassesToStub;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.stunner.client.lienzo.shape.util.LienzoPictureUtils;
 import org.mockito.Mock;
 
 import static org.mockito.Mockito.verify;

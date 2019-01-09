@@ -26,7 +26,7 @@ import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.types.BoundingBox;
-import org.kie.workbench.common.stunner.client.lienzo.util.LienzoUtils;
+import org.kie.workbench.common.stunner.client.lienzo.util.LienzoShapeUtils;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
@@ -90,10 +90,10 @@ public class LienzoShapeGlyphRenderer implements LienzoGlyphRenderer<ShapeGlyph>
         // Create a copy of this view.
         group = group.copy();
         // Scale, if necessary, to the given glyph size.
-        final double[] scale = LienzoUtils.getScaleFactor(bb.getWidth(),
-                                                          bb.getHeight(),
-                                                          width,
-                                                          height);
+        final double[] scale = LienzoShapeUtils.getScaleFactor(bb.getWidth(),
+                                                               bb.getHeight(),
+                                                               width,
+                                                               height);
         group.setScale(scale[0],
                        scale[1]);
 

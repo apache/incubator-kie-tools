@@ -19,7 +19,7 @@ package org.kie.workbench.common.stunner.client.widgets.presenters.canvas;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.kie.workbench.common.stunner.client.lienzo.util.LienzoUtils;
+import org.kie.workbench.common.stunner.client.lienzo.util.LienzoShapeUtils;
 import org.kie.workbench.common.stunner.client.widgets.presenters.Viewer;
 import org.kie.workbench.common.stunner.client.widgets.views.WidgetWrapperView;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
@@ -115,10 +115,10 @@ public abstract class AbstractCanvasViewer<T, H extends AbstractCanvasHandler, V
                          final int toHeight,
                          final boolean keepAspectRatio) {
         if (null != getHandler() && null != getHandler().getDiagram()) {
-            final double[] sfactor = LienzoUtils.getScaleFactor(width,
-                                                                height,
-                                                                toWidth,
-                                                                toHeight);
+            final double[] sfactor = LienzoShapeUtils.getScaleFactor(width,
+                                                                     height,
+                                                                     toWidth,
+                                                                     toHeight);
             if (0 != Double.compare(1,
                                     sfactor[0])
                     || 0 != Double.compare(1,
