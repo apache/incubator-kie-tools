@@ -37,7 +37,6 @@ import com.ait.lienzo.client.core.types.Point2D;
  * Notice that docking capabilities are not being considered when handling multiple wires objects.
  */
 public class WiresCompositeControlImpl
-        extends AbstractWiresBoundsConstraintControl
         implements WiresCompositeControl {
 
     private Context selectionContext;

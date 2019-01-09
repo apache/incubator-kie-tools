@@ -248,13 +248,13 @@ public class ScrollablePanel extends LienzoBoundsPanel
     }
 
     @Override
-    public int getWidth()
+    public int getWidthPx()
     {
         return wide;
     }
 
     @Override
-    public int getHeight()
+    public int getHeightPx()
     {
         return high;
     }

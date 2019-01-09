@@ -1,6 +1,6 @@
 package com.ait.lienzo.client.core.shape.wires.handlers;
 
-import com.ait.lienzo.client.core.types.BoundingBox;
+import com.ait.lienzo.client.core.shape.wires.OptionalBounds;
 
 /**
  * A control that has some kind of bounds location constraint.
@@ -9,8 +9,11 @@ import com.ait.lienzo.client.core.types.BoundingBox;
  */
 public interface WiresBoundsConstraintControl extends WiresMoveControl {
 
-    void setBoundsConstraint(BoundingBox boundingBox);
-
     boolean isOutOfBounds(double dx, double dy);
+
+    interface SupportsOptionalBounds<T> {
+
+        T setLocationBounds(OptionalBounds bounds);
+    }
 
 }

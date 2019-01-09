@@ -155,15 +155,15 @@ public abstract class LienzoBoundsPanel<P extends LienzoBoundsPanel>
     }
 
     @Override
-    public int getHeight()
+    public int getHeightPx()
     {
-        return lienzoPanel.getHeight();
+        return lienzoPanel.getHeightPx();
     }
 
     @Override
-    public int getWidth()
+    public int getWidthPx()
     {
-        return lienzoPanel.getWidth();
+        return lienzoPanel.getWidthPx();
     }
 
     public BoundsProvider getBoundsProvider()

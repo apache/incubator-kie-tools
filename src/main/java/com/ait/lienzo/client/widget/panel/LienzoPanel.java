@@ -30,9 +30,9 @@ public abstract class LienzoPanel<P extends LienzoPanel>
 
     public abstract P setBackgroundLayer(Layer layer);
 
-    public abstract int getWidth();
+    public abstract int getWidthPx();
 
-    public abstract int getHeight();
+    public abstract int getHeightPx();
 
     public abstract void destroy();
 }

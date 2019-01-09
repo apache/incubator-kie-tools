@@ -428,7 +428,7 @@ public class LienzoPanelImpl extends LienzoPanel<LienzoPanelImpl>
      * @return
      */
     @Override
-    public int getWidth()
+    public int getWidthPx()
     {
         return m_wide;
     }
@@ -439,7 +439,7 @@ public class LienzoPanelImpl extends LienzoPanel<LienzoPanelImpl>
      * @return
      */
     @Override
-    public int getHeight()
+    public int getHeightPx()
     {
         return m_high;
     }

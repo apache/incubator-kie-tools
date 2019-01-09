@@ -19,12 +19,14 @@ package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 import java.util.Collection;
 import java.util.Collections;
 
+import com.ait.lienzo.client.core.shape.wires.OptionalBounds;
 import com.ait.lienzo.client.core.shape.wires.PickerPart;
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.shape.wires.handlers.AlignAndDistributeControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.MouseEvent;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresBoundsConstraintControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresContainmentControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresDockingControl;
@@ -36,6 +38,7 @@ import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.tooling.common.api.java.util.function.Consumer;
+import com.ait.tooling.common.api.java.util.function.Supplier;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 
 /**
@@ -43,15 +46,16 @@ import com.ait.tooling.nativetools.client.collection.NFastArrayList;
  * It orchestrates different controls for handling interactions with a single wires shape.
  */
 public class WiresShapeControlImpl
-        extends AbstractWiresBoundsConstraintControl
-        implements WiresShapeControl {
+        implements WiresShapeControl,
+                   WiresBoundsConstraintControl.SupportsOptionalBounds<WiresShapeControlImpl> {
 
     private final WiresParentPickerCachedControl parentPickerControl;
     private WiresMagnetsControl m_magnetsControl;
     private WiresDockingControl m_dockingAndControl;
     private WiresContainmentControl m_containmentControl;
     private AlignAndDistributeControl m_alignAndDistributeControl;
-    private BoundingBox shapeBounds;
+    private BoundingBox absoluteShapeBounds;
+    private WiresShapeLocationBounds locationBounds;
     private Point2D m_adjust;
     private boolean c_accept;
     private boolean d_accept;
@@ -83,7 +87,7 @@ public class WiresShapeControlImpl
     @Override
     public void onMoveStart(final double x,
                             final double y) {
-        shapeBounds = getShape().getGroup().getComputedBoundingPoints().getBoundingBox();
+        absoluteShapeBounds = getShape().getGroup().getComputedBoundingPoints().getBoundingBox();
         m_adjust = new Point2D(0, 0);
         d_accept = false;
         c_accept = false;
@@ -134,25 +138,29 @@ public class WiresShapeControlImpl
     }
 
     @Override
-    public boolean isOutOfBounds(double dx, double dy) {
-        // Check the location bounds, if any.
-        if (null != getConstrainedBounds()) {
-            final double shapeMinX = shapeBounds.getMinX() + dx;
-            final double shapeMinY = shapeBounds.getMinY() + dy;
-            final double shapeMaxX = shapeMinX + (shapeBounds.getMaxX() - shapeBounds.getMinX());
-            final double shapeMaxY = shapeMinY + (shapeBounds.getMaxY() - shapeBounds.getMinY());
-            if (shapeMinX <= getConstrainedBounds().getMinX() ||
-                    shapeMaxX >= getConstrainedBounds().getMaxX() ||
-                    shapeMinY <= getConstrainedBounds().getMinY() ||
-                    shapeMaxY >= getConstrainedBounds().getMaxY()) {
-                // Bounds are exceeded as from last adjusted location, so
-                // just accept adjust and keep current location value.
-                return true;
-            }
+    public WiresShapeControlImpl setLocationBounds(final OptionalBounds bounds) {
+        if (null == locationBounds) {
+            locationBounds = new WiresShapeLocationBounds(new Supplier<BoundingBox>() {
+                @Override
+                public BoundingBox get() {
+                    return absoluteShapeBounds;
+                }
+            });
         }
-        return false;
+        locationBounds.setBounds(bounds);
+        return this;
     }
 
+    public OptionalBounds getLocationBounds() {
+        return null != locationBounds ? locationBounds.getBounds() : null;
+    }
+
+    @Override
+    public boolean isOutOfBounds(final double dx,
+                                 final double dy) {
+        return null != locationBounds &&
+                locationBounds.isOutOfBounds(dx, dy);
+    }
 
     @Override
     public boolean onMove(final double dx,
@@ -201,8 +209,8 @@ public class WiresShapeControlImpl
 
             PickerPart part = parentPickerControl
                     .getIndex()
-                    .findShapeAt((int) (shapeBounds.getMinX() + dxy.getX() + (box.getWidth() / 2)),
-                                 (int) (shapeBounds.getMinY() + dxy.getY() + (box.getHeight() / 2)));
+                    .findShapeAt((int) (absoluteShapeBounds.getMinX() + dxy.getX() + (box.getWidth() / 2)),
+                                 (int) (absoluteShapeBounds.getMinY() + dxy.getY() + (box.getHeight() / 2)));
 
             if (part == null || part.getShapePart() != PickerPart.ShapePart.BORDER) {
                 dxy.setX(dx);
@@ -368,6 +376,10 @@ public class WiresShapeControlImpl
         if (null != m_alignAndDistributeControl) {
             m_alignAndDistributeControl.dragEnd();
         }
+        if (null != locationBounds) {
+            locationBounds.clear();
+            locationBounds = null;
+        }
     }
 
     @Override
@@ -427,7 +439,7 @@ public class WiresShapeControlImpl
     }
 
     private void clearState() {
-        shapeBounds = null;
+        absoluteShapeBounds = null;
         m_adjust = new Point2D(0, 0);
         m_connectorsWithSpecialConnections = null;
     }

@@ -199,8 +199,8 @@ public class PreviewPanel extends ScalablePanel
                 }));
 
         // Use actual panel's size.
-        resize(panel.getWidth(),
-               panel.getHeight());
+        resize(panel.getWidthPx(),
+               panel.getHeightPx());
 
         // Use actual panel's scroll position.
         final ScrollBars scrollBars = panel.getScrollHandler().scrollBars();
