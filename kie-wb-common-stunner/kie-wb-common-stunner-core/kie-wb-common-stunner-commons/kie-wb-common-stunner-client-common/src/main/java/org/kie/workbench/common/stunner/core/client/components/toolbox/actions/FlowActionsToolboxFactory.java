@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.core.client.components.toolbox.actions;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import javax.annotation.PreDestroy;
@@ -29,11 +30,13 @@ import javax.inject.Inject;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.lookup.domain.CommonDomainLookups;
+import org.kie.workbench.common.stunner.core.profile.DomainProfileManager;
 import org.uberfire.mvp.Command;
 
 /**
@@ -55,6 +58,7 @@ public class FlowActionsToolboxFactory
         extends AbstractActionsToolboxFactory {
 
     private final ToolboxDomainLookups toolboxDomainLookups;
+    private final DomainProfileManager profileManager;
     private final Supplier<CreateConnectorAction> createConnectorActions;
     private final Command createConnectorActionsDestroyer;
     private final Supplier<CreateNodeAction> createNodeActions;
@@ -64,10 +68,12 @@ public class FlowActionsToolboxFactory
 
     @Inject
     public FlowActionsToolboxFactory(final ToolboxDomainLookups toolboxDomainLookups,
+                                     final DomainProfileManager profileManager,
                                      final @Any ManagedInstance<CreateConnectorAction> createConnectorActions,
                                      final @Any @FlowActionsToolbox ManagedInstance<CreateNodeAction> createNodeActions,
                                      final @Any @FlowActionsToolbox ManagedInstance<ActionsToolboxView> views) {
         this(toolboxDomainLookups,
+             profileManager,
              createConnectorActions::get,
              createConnectorActions::destroyAll,
              createNodeActions::get,
@@ -77,6 +83,7 @@ public class FlowActionsToolboxFactory
     }
 
     FlowActionsToolboxFactory(final ToolboxDomainLookups toolboxDomainLookups,
+                              final DomainProfileManager profileManager,
                               final Supplier<CreateConnectorAction> createConnectorActions,
                               final Command createConnectorActionsDestroyer,
                               final Supplier<CreateNodeAction> createNodeActions,
@@ -84,6 +91,7 @@ public class FlowActionsToolboxFactory
                               final Supplier<ActionsToolboxView> views,
                               final Command viewsDestroyer) {
         this.toolboxDomainLookups = toolboxDomainLookups;
+        this.profileManager = profileManager;
         this.createConnectorActions = createConnectorActions;
         this.createConnectorActionsDestroyer = createConnectorActionsDestroyer;
         this.createNodeActions = createNodeActions;
@@ -102,7 +110,8 @@ public class FlowActionsToolboxFactory
     public Collection<ToolboxAction<AbstractCanvasHandler>> getActions(final AbstractCanvasHandler canvasHandler,
                                                                        final Element<?> element) {
         final Diagram diagram = canvasHandler.getDiagram();
-        final String defSetId = diagram.getMetadata().getDefinitionSetId();
+        final Metadata metadata = diagram.getMetadata();
+        final String defSetId = metadata.getDefinitionSetId();
         final Set<ToolboxAction<AbstractCanvasHandler>> actions = new LinkedHashSet<>();
         final Node<Definition<Object>, Edge> node = (Node<Definition<Object>, Edge>) element;
         // Look for the default connector type and create a button for it.
@@ -115,11 +124,13 @@ public class FlowActionsToolboxFactory
         // to check the resulting nodes that can be created.
         // It also groups the resuling nodes to be created by it's morph base type, and just
         // create an action for each morph target.
-        final String defaultConnectorId = !targetConnectors.isEmpty() ?  targetConnectors.iterator().next() : null;
+        final String defaultConnectorId = !targetConnectors.isEmpty() ? targetConnectors.iterator().next() : null;
         if (null != defaultConnectorId) {
+            final Predicate<String> definitionsAllowedFilter = profileManager.isDefinitionIdAllowed(metadata);
             final Set<String> targets = lookup.lookupTargetNodes(diagram.getGraph(),
                                                                  node,
-                                                                 defaultConnectorId);
+                                                                 defaultConnectorId,
+                                                                 definitionsAllowedFilter);
             final Set<String> morphTargets = lookup.lookupMorphBaseDefinitions(targets);
             morphTargets.forEach(defId -> actions.add(createNodeActions.get()
                                                               .setEdgeId(defaultConnectorId)

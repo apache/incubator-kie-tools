@@ -23,6 +23,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.ManagedInstanceStub;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
+import org.kie.workbench.common.stunner.core.diagram.MetadataImpl;
 import org.kie.workbench.common.stunner.core.preferences.StunnerPreferences;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.Mock;
@@ -60,6 +62,7 @@ public class StunnerPreferencesRegistryLoaderTest {
     private Annotation qualifier;
 
     private StunnerPreferencesRegistryLoader tested;
+    private Metadata metadata;
 
     @Mock
     private StunnerTextPreferences textPreferences;
@@ -67,6 +70,7 @@ public class StunnerPreferencesRegistryLoaderTest {
     @Before
     @SuppressWarnings("unchecked")
     public void setUp() throws Exception {
+        metadata = new MetadataImpl.MetadataImplBuilder(DEF_SET_ID).build();
         when(definitionUtils.getQualifier(eq(DEF_SET_ID))).thenReturn(qualifier);
         preferencesHolders = spy(new ManagedInstanceStub<>(preferencesHolder));
         tested = new StunnerPreferencesRegistryLoader(definitionUtils,
@@ -86,7 +90,7 @@ public class StunnerPreferencesRegistryLoaderTest {
             return null;
         }).when(preferences).load(any(ParameterizedCommand.class),
                                   any(ParameterizedCommand.class));
-        tested.load(DEF_SET_ID,
+        tested.load(metadata,
                     loadCompleteCallback,
                     errorCallback);
         verify(preferencesHolders, times(1)).select(eq(qualifier));
@@ -110,7 +114,7 @@ public class StunnerPreferencesRegistryLoaderTest {
             }
         }).when(preferences).load(any(ParameterizedCommand.class),
                                   any(ParameterizedCommand.class));
-        tested.load(DEF_SET_ID,
+        tested.load(metadata,
                     loadCompleteCallback,
                     errorCallback);
         verify(preferencesHolders, times(1)).select(eq(qualifier));

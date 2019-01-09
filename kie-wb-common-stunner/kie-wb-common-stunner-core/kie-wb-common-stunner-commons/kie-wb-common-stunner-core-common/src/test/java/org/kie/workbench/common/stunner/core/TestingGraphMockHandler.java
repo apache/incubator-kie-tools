@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.core;
 
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Set;
 
@@ -47,6 +48,7 @@ import org.kie.workbench.common.stunner.core.registry.definition.TypeDefinitionS
 import org.kie.workbench.common.stunner.core.rule.RuleEvaluationContext;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.kie.workbench.common.stunner.core.rule.RuleSet;
+import org.kie.workbench.common.stunner.core.rule.RuleSetImpl;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 import org.kie.workbench.common.stunner.core.rule.violations.DefaultRuleViolations;
@@ -59,6 +61,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.anyDouble;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 /**
@@ -95,8 +98,6 @@ public class TestingGraphMockHandler {
     @Mock
     public RuleManager ruleManager;
     @Mock
-    public RuleSet ruleSet;
-    @Mock
     public MutableIndex graphIndex;
 
     public GraphFactoryImpl graphFactory;
@@ -104,6 +105,7 @@ public class TestingGraphMockHandler {
     public EdgeFactoryImpl edgeFactory;
     public GraphCommandFactory commandFactory;
     public Graph<DefinitionSet, Node> graph;
+    public RuleSet ruleSet;
 
     public TestingGraphMockHandler() {
         init();
@@ -111,6 +113,7 @@ public class TestingGraphMockHandler {
 
     @SuppressWarnings("unchecked")
     private TestingGraphMockHandler init() {
+        ruleSet = spy(new RuleSetImpl("TestingRuleSet", new ArrayList<>()));
         MockitoAnnotations.initMocks(this);
         this.graphFactory = new GraphFactoryImpl(definitionManager);
         this.nodeFactory = new NodeFactoryImpl(definitionUtils);
@@ -235,7 +238,10 @@ public class TestingGraphMockHandler {
 
     public Edge newEdge(String uuid,
                         final Optional<Object> def) {
-        final Object definition = getDefIfPresent(uuid, def);
+        final Object definition = def.isPresent() ?
+                def.get() :
+                newDef("def-" + uuid,
+                       Optional.empty());
         return newEdge(uuid, definition);
     }
 

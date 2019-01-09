@@ -26,6 +26,7 @@ import org.kie.workbench.common.stunner.core.client.components.palette.DefaultPa
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.i18n.StunnerTranslationService;
+import org.kie.workbench.common.stunner.core.profile.DomainProfileManager;
 import org.kie.workbench.common.stunner.core.registry.impl.DefinitionsCacheRegistry;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
@@ -39,9 +40,11 @@ public class CollapsedPaletteDefinitionBuilder
 
     @Inject
     public CollapsedPaletteDefinitionBuilder(final DefinitionUtils definitionUtils,
+                                             final DomainProfileManager profileManager,
                                              final DefinitionsCacheRegistry definitionsRegistry,
                                              final StunnerTranslationService translationService) {
         super(definitionUtils,
+              profileManager,
               definitionsRegistry,
               translationService);
     }

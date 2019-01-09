@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.core.client.components.palette;
 
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -30,6 +31,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.components.palette.DefaultPaletteDefinitionProviders.DefaultItemMessageProvider;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.i18n.StunnerTranslationService;
+import org.kie.workbench.common.stunner.core.profile.DomainProfileManager;
 import org.kie.workbench.common.stunner.core.registry.impl.DefinitionsCacheRegistry;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.uberfire.mvp.Command;
@@ -45,6 +47,7 @@ public abstract class AbstractPaletteDefinitionBuilder<T extends AbstractPalette
     }
 
     protected final DefinitionUtils definitionUtils;
+    protected final DomainProfileManager profileManager;
     protected final DefinitionsCacheRegistry definitionsRegistry;
     protected final StunnerTranslationService translationService;
 
@@ -54,9 +57,11 @@ public abstract class AbstractPaletteDefinitionBuilder<T extends AbstractPalette
     protected ItemMessageProvider itemMessageProvider;
 
     protected AbstractPaletteDefinitionBuilder(final DefinitionUtils definitionUtils,
+                                               final DomainProfileManager profileManager,
                                                final DefinitionsCacheRegistry definitionsRegistry,
                                                final StunnerTranslationService translationService) {
         this.definitionUtils = definitionUtils;
+        this.profileManager = profileManager;
         this.definitionsRegistry = definitionsRegistry;
         this.translationService = translationService;
         initDefaults();
@@ -113,8 +118,7 @@ public abstract class AbstractPaletteDefinitionBuilder<T extends AbstractPalette
     private void build(final Metadata metadata,
                        final Consumer<DefaultPaletteDefinition> paletteDefinitionConsumer) {
         final String definitionSetId = metadata.getDefinitionSetId();
-        final Object definitionSet = getDefinitionManager().definitionSets().getDefinitionSetById(definitionSetId);
-        final Set<String> definitions = getDefinitionManager().adapters().forDefinitionSet().getDefinitions(definitionSet);
+        final List<String> definitions = profileManager.getAllDefinitions(metadata);
         if (null != definitions) {
             final Map<String, DefaultPaletteItem> items = new LinkedHashMap<>();
             final Set<String> consumed = new HashSet<>(definitions);

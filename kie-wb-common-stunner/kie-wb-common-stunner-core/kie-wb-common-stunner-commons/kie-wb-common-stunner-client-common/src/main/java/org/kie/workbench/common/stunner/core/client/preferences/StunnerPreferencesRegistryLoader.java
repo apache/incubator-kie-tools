@@ -25,6 +25,7 @@ import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.session.impl.InstanceUtils;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.preferences.StunnerPreferences;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.uberfire.mvp.ParameterizedCommand;
@@ -48,9 +49,10 @@ public class StunnerPreferencesRegistryLoader {
         this.textPreferences = textPreferences;
     }
 
-    public void load(final String definitionSetId,
+    public void load(final Metadata metadata,
                      final ParameterizedCommand<StunnerPreferences> loadCompleteCallback,
                      final ParameterizedCommand<Throwable> errorCallback) {
+        final String definitionSetId = metadata.getDefinitionSetId();
         final Annotation qualifier = definitionUtils.getQualifier(definitionSetId);
         final StunnerPreferencesRegistryHolder holder = InstanceUtils.lookup(preferencesHolders,
                                                                              qualifier);

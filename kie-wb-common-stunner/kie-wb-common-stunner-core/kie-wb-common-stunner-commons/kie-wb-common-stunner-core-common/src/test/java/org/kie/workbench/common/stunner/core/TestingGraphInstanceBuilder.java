@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.core;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -25,6 +26,11 @@ import java.util.stream.Stream;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.rule.RuleSet;
+import org.kie.workbench.common.stunner.core.rule.context.EdgeCardinalityContext;
+import org.kie.workbench.common.stunner.core.rule.impl.CanConnect;
+import org.kie.workbench.common.stunner.core.rule.impl.EdgeOccurrences;
+import org.kie.workbench.common.stunner.core.rule.impl.Occurrences;
 
 /**
  * An utility class for testing scope that provides some "real" (not mocked) graph's initial
@@ -155,10 +161,10 @@ public class TestingGraphInstanceBuilder {
      * --------------------------------------------
      * |                     |                     |
      * startNode --(edge1)--> intermNode --(edge2)--> endNode
-     *                           |
-     *                        (edge3)
-     *                           |
-     *                       dockedNode
+     * |
+     * (edge3)
+     * |
+     * dockedNode
      */
     public static class TestGraph4 extends TestGraph2 {
 
@@ -253,6 +259,31 @@ public class TestingGraphInstanceBuilder {
                            result.endNode);
         result.evaluationsCount = 18;
         return result;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static void createDefaultRulesForGraph1(RuleSet ruleSet) {
+        List rules = (List) ruleSet.getRules();
+        String def1Label = DEF1_LABELS.iterator().next();
+        String def2Label = DEF2_LABELS.iterator().next();
+        rules.add(new CanConnect("connectionFromStartToIntermediateForEdge1",
+                                 EDGE1_ID,
+                                 Collections.singletonList(new CanConnect.PermittedConnection(def1Label,
+                                                                                              def2Label))));
+        rules.add(new EdgeOccurrences("Edge1Cardinality",
+                                      EDGE1_ID,
+                                      def1Label,
+                                      EdgeCardinalityContext.Direction.OUTGOING,
+                                      -1,
+                                      -1));
+        rules.add(new Occurrences("graphCardinalityForDef1",
+                                  def1Label,
+                                  -1,
+                                  -1));
+        rules.add(new Occurrences("graphCardinalityForDef2",
+                                  def2Label,
+                                  -1,
+                                  -1));
     }
 
     private static TestGraph2 buildTestGraph2(final TestingGraphMockHandler graphTestHandler) {

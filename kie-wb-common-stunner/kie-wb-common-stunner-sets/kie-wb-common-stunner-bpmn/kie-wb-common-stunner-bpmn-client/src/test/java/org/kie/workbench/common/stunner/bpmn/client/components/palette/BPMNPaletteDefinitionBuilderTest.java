@@ -45,6 +45,7 @@ import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionId;
 import org.kie.workbench.common.stunner.core.i18n.StunnerTranslationService;
+import org.kie.workbench.common.stunner.core.profile.DomainProfileManager;
 import org.kie.workbench.common.stunner.core.registry.definition.AdapterRegistry;
 import org.kie.workbench.common.stunner.core.registry.impl.DefinitionsCacheRegistry;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
@@ -82,6 +83,9 @@ public class BPMNPaletteDefinitionBuilderTest {
 
     @Mock
     private DefinitionManager definitionManager;
+
+    @Mock
+    private DomainProfileManager profileManager;
 
     @Mock
     private AdapterManager adapterManager;
@@ -124,6 +128,7 @@ public class BPMNPaletteDefinitionBuilderTest {
         when(widAdapter.getTitle(eq(serviceTask))).thenReturn(WID_DISPLAY_NAME);
         when(widAdapter.getDescription(eq(serviceTask))).thenReturn(WID_DESC);
         ExpandedPaletteDefinitionBuilder paletteDefinitionBuilder = spy(new ExpandedPaletteDefinitionBuilder(definitionUtils,
+                                                                                                             profileManager,
                                                                                                              definitionsRegistry,
                                                                                                              translationService));
         doAnswer(invocationOnMock -> {

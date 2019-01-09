@@ -36,6 +36,7 @@ import org.kie.workbench.common.stunner.cm.definition.ProcessReusableSubprocess;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.components.palette.CollapsedPaletteDefinitionBuilder;
 import org.kie.workbench.common.stunner.core.i18n.StunnerTranslationService;
+import org.kie.workbench.common.stunner.core.profile.DomainProfileManager;
 import org.kie.workbench.common.stunner.core.registry.impl.DefinitionsCacheRegistry;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.Mock;
@@ -55,6 +56,9 @@ public class CaseManagementPaletteDefinitionBuilderTest {
     private DefinitionManager definitionManager;
 
     @Mock
+    private DomainProfileManager profileManager;
+
+    @Mock
     private DefinitionUtils definitionUtils;
 
     @Mock
@@ -70,6 +74,7 @@ public class CaseManagementPaletteDefinitionBuilderTest {
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
         paletteDefinitionBuilder = new CollapsedPaletteDefinitionBuilder(definitionUtils,
+                                                                         profileManager,
                                                                          definitionsRegistry,
                                                                          translationService);
         tested = new CaseManagementPaletteDefinitionBuilder(paletteDefinitionBuilder,

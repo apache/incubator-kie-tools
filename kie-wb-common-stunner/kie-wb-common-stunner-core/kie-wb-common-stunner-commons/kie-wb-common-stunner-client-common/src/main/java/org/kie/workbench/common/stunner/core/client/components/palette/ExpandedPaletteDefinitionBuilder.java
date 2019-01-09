@@ -34,6 +34,7 @@ import org.kie.workbench.common.stunner.core.definition.morph.MorphDefinition;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.i18n.StunnerTranslationService;
+import org.kie.workbench.common.stunner.core.profile.DomainProfileManager;
 import org.kie.workbench.common.stunner.core.registry.impl.DefinitionsCacheRegistry;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
@@ -104,9 +105,10 @@ public class ExpandedPaletteDefinitionBuilder
 
     @Inject
     public ExpandedPaletteDefinitionBuilder(final DefinitionUtils definitionUtils,
+                                            final DomainProfileManager profileManager,
                                             final DefinitionsCacheRegistry definitionsRegistry,
                                             final StunnerTranslationService translationService) {
-        super(definitionUtils, definitionsRegistry, translationService);
+        super(definitionUtils, profileManager, definitionsRegistry, translationService);
         initDefaults();
     }
 

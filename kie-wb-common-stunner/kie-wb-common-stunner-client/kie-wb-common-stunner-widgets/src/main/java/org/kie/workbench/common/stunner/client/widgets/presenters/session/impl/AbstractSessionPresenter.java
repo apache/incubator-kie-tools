@@ -224,7 +224,7 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
         return getDisplayer().getInstance();
     }
 
-    private Optional<S> getSession() {
+    public Optional<S> getSession() {
         return Optional.ofNullable(getInstance());
     }
 
@@ -259,18 +259,38 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
     protected void onSessionOpened(final S session) {
         destroyToolbar();
         destroyPalette();
+        initToolbar(session);
+        initPalette(session);
+        getView().setCanvasWidget(getDisplayer().getView());
+        getView().showLoading(false);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void initToolbar(final S session) {
         if (hasToolbar) {
-            initToolbar(session);
+            final Annotation qualifier =
+                    definitionUtils.getQualifier(session.getCanvasHandler().getDiagram().getMetadata().getDefinitionSetId());
+            toolbar = newToolbar(qualifier);
+            if (null != toolbar) {
+                toolbar.load(session);
+            }
             getView().setToolbarWidget(toolbar.getView());
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void initPalette(final S session) {
         if (hasPalette) {
-            palette = (PaletteWidget<PaletteDefinition>) initPalette(session);
+            palette = (PaletteWidget<PaletteDefinition>) buildPalette(session);
             if (null != palette) {
                 getView().setPaletteWidget(palette);
             }
         }
-        getView().setCanvasWidget(getDisplayer().getView());
-        getView().showLoading(false);
+    }
+
+    public void refresh() {
+        destroyPalette();
+        getSession().ifPresent(this::initPalette);
     }
 
     private void showMessage(final String message) {
@@ -298,17 +318,8 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
         }
     }
 
-    private void initToolbar(final S session) {
-        final Annotation qualifier =
-                definitionUtils.getQualifier(session.getCanvasHandler().getDiagram().getMetadata().getDefinitionSetId());
-        toolbar = newToolbar(qualifier);
-        if (null != toolbar) {
-            toolbar.load(session);
-        }
-    }
-
     @SuppressWarnings("unchecked")
-    private PaletteWidget<? extends PaletteDefinition> initPalette(final S session) {
+    private PaletteWidget<? extends PaletteDefinition> buildPalette(final S session) {
         if (null != paletteFactory) {
             return paletteFactory.newPalette((H) session.getCanvasHandler());
         }

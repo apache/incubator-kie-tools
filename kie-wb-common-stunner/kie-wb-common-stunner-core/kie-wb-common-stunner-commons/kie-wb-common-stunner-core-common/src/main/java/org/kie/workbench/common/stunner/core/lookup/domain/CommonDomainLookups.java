@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.core.lookup.domain;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
@@ -92,6 +93,16 @@ public class CommonDomainLookups {
     public Set<String> lookupTargetNodes(final Graph<?, ? extends Node> graph,
                                          final Node<? extends Definition<Object>, ? extends Edge> sourceNode,
                                          final String edgeId) {
+        return lookupTargetNodes(graph,
+                                 sourceNode,
+                                 edgeId,
+                                 def -> true);
+    }
+
+    public Set<String> lookupTargetNodes(final Graph<?, ? extends Node> graph,
+                                         final Node<? extends Definition<Object>, ? extends Edge> sourceNode,
+                                         final String edgeId,
+                                         final Predicate<String> definitionIdsAllowedFilter) {
         final DomainLookupContext context = newContext();
         final Set<String> targetRoles =
                 new LookupTargetRoles(sourceNode,
@@ -100,7 +111,8 @@ public class CommonDomainLookups {
 
         final Set<String> allowedTargetDefinitions =
                 new LookupAllowedDefinitionsByLabels(graph,
-                                                     targetRoles)
+                                                     targetRoles,
+                                                     definitionIdsAllowedFilter)
                         .execute(context);
 
         return new FilterConnectionTargetDefinitions(edgeId, allowedTargetDefinitions).execute(context);

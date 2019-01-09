@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
@@ -35,6 +36,7 @@ import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.lookup.domain.CommonDomainLookups;
+import org.kie.workbench.common.stunner.core.profile.DomainProfileManager;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.Mock;
 import org.uberfire.mvp.Command;
@@ -45,6 +47,7 @@ import static org.mockito.Matchers.anySet;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -59,6 +62,9 @@ public class FlowActionsToolboxFactoryTest {
 
     @Mock
     private DefinitionUtils definitionUtils;
+
+    @Mock
+    private DomainProfileManager profileManager;
 
     @Mock
     private ToolboxDomainLookups toolboxLookups;
@@ -118,11 +124,13 @@ public class FlowActionsToolboxFactoryTest {
                 .thenReturn(Collections.singleton(EDGE_ID));
         when(domainLookups.lookupTargetNodes(eq(graph),
                                              eq(element),
-                                             eq(EDGE_ID)))
+                                             eq(EDGE_ID),
+                                             any(Predicate.class)))
                 .thenReturn(Collections.singleton(NODE_ID));
         when(domainLookups.lookupMorphBaseDefinitions(anySet()))
                 .thenReturn(Collections.singleton(NODE_ID));
         this.tested = new FlowActionsToolboxFactory(toolboxLookups,
+                                                    profileManager,
                                                     () -> createConnectorAction,
                                                     createConnectorActionDestroyer,
                                                     () -> createNodeAction,
@@ -134,9 +142,16 @@ public class FlowActionsToolboxFactoryTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testBuildToolbox() {
+        Predicate<String> profileFilter = mock(Predicate.class);
+        when(profileManager.isDefinitionIdAllowed(eq(metadata))).thenReturn(profileFilter);
         final Optional<Toolbox<?>> toolbox =
                 tested.build(canvasHandler,
                              element);
+        verify(profileManager, times(1)).isDefinitionIdAllowed(eq(metadata));
+        verify(domainLookups, times(1)).lookupTargetNodes(eq(graph),
+                                                          eq(element),
+                                                          eq(EDGE_ID),
+                                                          eq(profileFilter));
         assertTrue(toolbox.isPresent());
         assertTrue(toolbox.get() instanceof ActionsToolbox);
         final ActionsToolbox actionsToolbox = (ActionsToolbox) toolbox.get();

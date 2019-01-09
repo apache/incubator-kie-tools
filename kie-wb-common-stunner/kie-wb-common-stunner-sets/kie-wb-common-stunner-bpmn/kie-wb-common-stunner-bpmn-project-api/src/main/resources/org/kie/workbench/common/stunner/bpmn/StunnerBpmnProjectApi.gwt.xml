@@ -25,6 +25,7 @@
   <inherits name="org.kie.workbench.common.stunner.project.StunnerProjectAPI"/>
 
   <source path="project/factory"/>
+  <source path="project/profile"/>
   <source path="project/service"/>
 
 </module>

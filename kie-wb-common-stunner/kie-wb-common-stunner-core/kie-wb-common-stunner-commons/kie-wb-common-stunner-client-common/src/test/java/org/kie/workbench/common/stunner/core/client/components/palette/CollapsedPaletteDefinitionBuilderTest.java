@@ -27,6 +27,7 @@ import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapte
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionId;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.i18n.StunnerTranslationService;
+import org.kie.workbench.common.stunner.core.profile.DomainProfileManager;
 import org.kie.workbench.common.stunner.core.registry.impl.DefinitionsCacheRegistry;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.Mock;
@@ -47,6 +48,9 @@ public class CollapsedPaletteDefinitionBuilderTest {
 
     @Mock
     private DefinitionUtils definitionUtils;
+
+    @Mock
+    private DomainProfileManager profileManager;
 
     @Mock
     private DefinitionManager definitionManager;
@@ -84,6 +88,7 @@ public class CollapsedPaletteDefinitionBuilderTest {
         when(definitionAdapter1.getTitle(eq(definition1))).thenReturn(DEF1_TITLE);
         when(definitionAdapter1.getDescription(eq(definition1))).thenReturn(DEF1_DESC);
         tested = new CollapsedPaletteDefinitionBuilder(definitionUtils,
+                                                       profileManager,
                                                        definitionsRegistry,
                                                        translationService);
     }

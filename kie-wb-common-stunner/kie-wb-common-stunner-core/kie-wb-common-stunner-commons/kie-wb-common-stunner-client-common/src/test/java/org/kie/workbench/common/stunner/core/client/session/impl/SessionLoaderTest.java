@@ -80,7 +80,7 @@ public class SessionLoaderTest {
             ParameterizedCommand<StunnerPreferences> callback = (ParameterizedCommand<StunnerPreferences>) invocation.getArguments()[1];
             callback.execute(preferences);
             return null;
-        }).when(preferencesRegistryLoader).load(eq(DEF_SET_ID),
+        }).when(preferencesRegistryLoader).load(eq(metadata),
                                                 any(ParameterizedCommand.class),
                                                 any(ParameterizedCommand.class));
         sessionLoader = new SessionLoader(definitionUtils,

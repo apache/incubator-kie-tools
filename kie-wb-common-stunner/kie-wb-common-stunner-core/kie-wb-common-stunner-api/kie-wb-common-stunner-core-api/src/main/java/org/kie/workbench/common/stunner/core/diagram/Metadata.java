@@ -24,29 +24,33 @@ public interface Metadata extends Serializable {
 
     String getDefinitionSetId();
 
+    String getProfileId();
+
+    void setProfileId(String profileId);
+
     String getTitle();
 
-    void setTitle(final String title);
+    void setTitle(String title);
 
     String getShapeSetId();
 
-    void setShapeSetId(final String id);
+    void setShapeSetId(String id);
 
     String getCanvasRootUUID();
 
-    void setCanvasRootUUID(final String uuid);
+    void setCanvasRootUUID(String uuid);
 
     String getThumbData();
 
-    void setThumbData(final String data);
+    void setThumbData(String data);
 
     Path getPath();
 
-    void setPath(final Path path);
+    void setPath(Path path);
 
     Path getRoot();
 
-    void setRoot(final Path path);
+    void setRoot(Path path);
 
     Class<? extends Metadata> getMetadataType();
 }

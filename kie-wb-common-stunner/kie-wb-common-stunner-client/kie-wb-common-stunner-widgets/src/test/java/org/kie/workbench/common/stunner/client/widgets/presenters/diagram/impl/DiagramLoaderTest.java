@@ -75,7 +75,7 @@ public class DiagramLoaderTest {
                     = (ParameterizedCommand<StunnerPreferences>) invocation.getArguments()[1];
             callback.execute(preferences);
             return null;
-        }).when(preferencesRegistryLoader).load(eq(DS_ID),
+        }).when(preferencesRegistryLoader).load(eq(metadata),
                                                 any(ParameterizedCommand.class),
                                                 any(ParameterizedCommand.class));
         doAnswer(invocation -> {
@@ -93,7 +93,7 @@ public class DiagramLoaderTest {
         ServiceCallback<Diagram> callback = mock(ServiceCallback.class);
         tested.loadByPath(path, callback);
         verify(callback, times(1)).onSuccess(eq(diagram));
-        verify(preferencesRegistryLoader, times(1)).load(eq(DS_ID),
+        verify(preferencesRegistryLoader, times(1)).load(eq(metadata),
                                                          any(ParameterizedCommand.class),
                                                          any(ParameterizedCommand.class));
         verify(callback, never()).onError(any(ClientRuntimeError.class));

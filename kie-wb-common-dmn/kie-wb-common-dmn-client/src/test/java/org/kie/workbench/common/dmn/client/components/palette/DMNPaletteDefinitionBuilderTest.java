@@ -27,6 +27,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.components.palette.CollapsedPaletteDefinitionBuilder;
 import org.kie.workbench.common.stunner.core.client.components.palette.DefaultPaletteDefinition;
 import org.kie.workbench.common.stunner.core.i18n.StunnerTranslationService;
+import org.kie.workbench.common.stunner.core.profile.DomainProfileManager;
 import org.kie.workbench.common.stunner.core.registry.impl.DefinitionsCacheRegistry;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.Mock;
@@ -50,6 +51,9 @@ public class DMNPaletteDefinitionBuilderTest {
     private DefinitionUtils definitionUtils;
 
     @Mock
+    private DomainProfileManager profileFunctions;
+
+    @Mock
     private DefinitionsCacheRegistry definitionsRegistry;
 
     @Mock
@@ -68,6 +72,7 @@ public class DMNPaletteDefinitionBuilderTest {
     @SuppressWarnings("unchecked")
     public void setup() {
         collapsedPaletteBuilder = spy(new CollapsedPaletteDefinitionBuilder(definitionUtils,
+                                                                            profileFunctions,
                                                                             definitionsRegistry,
                                                                             translationService));
         doAnswer(new Answer() {

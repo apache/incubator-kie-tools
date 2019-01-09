@@ -23,6 +23,7 @@ import org.uberfire.backend.vfs.Path;
 public abstract class AbstractMetadata implements Metadata {
 
     private String definitionSetId;
+    private String profileId;
     private String title;
     private String shapeSetId;
     private String canvasRootUUID;
@@ -50,6 +51,16 @@ public abstract class AbstractMetadata implements Metadata {
     @Override
     public String getDefinitionSetId() {
         return definitionSetId;
+    }
+
+    @Override
+    public String getProfileId() {
+        return profileId;
+    }
+
+    @Override
+    public void setProfileId(final String profileId) {
+        this.profileId = profileId;
     }
 
     @Override

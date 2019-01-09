@@ -219,26 +219,6 @@ public class DefinitionUtils {
         return new String[]{definitionId, baseId};
     }
 
-    public String getDefaultConnectorId(final String definitionSetId) {
-        final Object defSet = getDefinitionManager().definitionSets().getDefinitionSetById(definitionSetId);
-        if (null != defSet) {
-            final Set<String> definitions = definitionManager.adapters().forDefinitionSet().getDefinitions(defSet);
-            if (null != definitions && !definitions.isEmpty()) {
-                for (final String defId : definitions) {
-                    final Object def = definitionsRegistry.getDefinitionById(defId);
-                    if (null != def) {
-                        final Class<? extends ElementFactory> graphElement = definitionManager.adapters().forDefinition().getGraphFactoryType(def);
-                        if (isEdgeFactory(graphElement,
-                                          factoryManager.registry())) {
-                            return defId;
-                        }
-                    }
-                }
-            }
-        }
-        return null;
-    }
-
     public boolean isAllPolicy(final MorphDefinition definition) {
         return ClonePolicy.ALL.equals(definition.getPolicy());
     }
@@ -255,6 +235,10 @@ public class DefinitionUtils {
         checkNotNull("defSetId",
                      defSetId);
         final Object ds = definitionManager.definitionSets().getDefinitionSetById(defSetId);
+        return getQualifier(ds);
+    }
+
+    private Annotation getQualifier(final Object ds) {
         return definitionManager.adapters().forDefinitionSet().getQualifier(ds);
     }
 

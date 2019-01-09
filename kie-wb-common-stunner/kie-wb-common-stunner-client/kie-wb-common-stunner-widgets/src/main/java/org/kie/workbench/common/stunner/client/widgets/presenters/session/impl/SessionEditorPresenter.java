@@ -30,6 +30,7 @@ import org.kie.workbench.common.stunner.client.widgets.event.SessionDiagramOpene
 import org.kie.workbench.common.stunner.client.widgets.event.SessionFocusedEvent;
 import org.kie.workbench.common.stunner.client.widgets.notification.NotificationsObserver;
 import org.kie.workbench.common.stunner.client.widgets.palette.DefaultPaletteFactory;
+import org.kie.workbench.common.stunner.client.widgets.presenters.session.RequestSessionRefreshEvent;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionDiagramEditor;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionDiagramPresenter;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.Toolbar;
@@ -123,6 +124,20 @@ public class SessionEditorPresenter<S extends EditorSession>
         }
     }
 
+    void onRequestSessionRefreshEvent(final @Observes RequestSessionRefreshEvent event) {
+        getSession().ifPresent(session -> {
+            if (session.getSessionUUID().equals(event.getSessionUUID())) {
+                refresh();
+            }
+        });
+    }
+
+    @Override
+    public void refresh() {
+        super.refresh();
+        getSession().ifPresent(SessionEditorPresenter::clearSelection);
+    }
+
     @Override
     @SuppressWarnings("unchecked")
     protected Toolbar<S> newToolbar(final Annotation qualifier) {
@@ -150,5 +165,11 @@ public class SessionEditorPresenter<S extends EditorSession>
         final AbstractCanvasHandler sessionHandlerContext = (AbstractCanvasHandler) event.getCanvasHandler();
         return null != getHandler() &&
                 getHandler().equals(sessionHandlerContext);
+    }
+
+    private static void clearSelection(final EditorSession session) {
+        if (null != session.getSelectionControl()) {
+            session.getSelectionControl().clearSelection();
+        }
     }
 }

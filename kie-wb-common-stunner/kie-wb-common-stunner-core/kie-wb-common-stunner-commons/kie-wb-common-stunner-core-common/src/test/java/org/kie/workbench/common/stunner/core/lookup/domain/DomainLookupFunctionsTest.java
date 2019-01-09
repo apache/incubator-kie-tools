@@ -137,8 +137,23 @@ public class DomainLookupFunctionsTest {
         when(cache.getDefinitions(eq(ROLE2))).thenReturn(expected);
         LookupDefinitionsByLabels function = new LookupDefinitionsByLabels(new HashSet<String>(1) {{
             add(ROLE2);
-        }});
+        }},
+                                                                           id -> true);
         assertTrue(function.execute(context).contains(DEF_ID1));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testLookupDefinitionsByLabelsWithFiltering() {
+        Set<String> expected = new HashSet<String>(1) {{
+            add(DEF_ID1);
+        }};
+        when(cache.getDefinitions(eq(ROLE2))).thenReturn(expected);
+        LookupDefinitionsByLabels function = new LookupDefinitionsByLabels(new HashSet<String>(1) {{
+            add(ROLE2);
+        }},
+                                                                           DEF_ID2::equals);
+        assertFalse(function.execute(context).contains(DEF_ID1));
     }
 
     @Test
@@ -150,7 +165,8 @@ public class DomainLookupFunctionsTest {
         LookupAllowedDefinitionsByLabels function = new LookupAllowedDefinitionsByLabels(graph1Instance.graph,
                                                                                          new HashSet<String>(1) {{
                                                                                              add("label1");
-                                                                                         }});
+                                                                                         }},
+                                                                                         id -> true);
         Set<String> result = function.execute(context);
         assertTrue(result.contains(TestingGraphInstanceBuilder.DEF1_ID));
         ArgumentCaptor<RuleEvaluationContext> ruleEvaluationContextCaptor = ArgumentCaptor.forClass(RuleEvaluationContext.class);
@@ -161,6 +177,21 @@ public class DomainLookupFunctionsTest {
         CardinalityContext cardinalityContext = (CardinalityContext) evaluationContext;
         assertEquals(1, cardinalityContext.getCandidateCount());
         assertEquals(CardinalityContext.Operation.ADD, cardinalityContext.getOperation().get());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testLookupAllowedDefinitionsByLabelsWithFiltering() {
+        when(cache.getDefinitions(eq("label1"))).thenReturn(Collections.singleton(TestingGraphInstanceBuilder.DEF1_ID));
+        when(definitionsCache.getLabels(eq(TestingGraphInstanceBuilder.DEF1_ID)))
+                .thenReturn(TestingGraphInstanceBuilder.DEF1_LABELS);
+        LookupAllowedDefinitionsByLabels function = new LookupAllowedDefinitionsByLabels(graph1Instance.graph,
+                                                                                         new HashSet<String>(1) {{
+                                                                                             add("label1");
+                                                                                         }},
+                                                                                         DEF_ID2::equals);
+        Set<String> result = function.execute(context);
+        assertTrue(result.isEmpty());
     }
 
     @Test

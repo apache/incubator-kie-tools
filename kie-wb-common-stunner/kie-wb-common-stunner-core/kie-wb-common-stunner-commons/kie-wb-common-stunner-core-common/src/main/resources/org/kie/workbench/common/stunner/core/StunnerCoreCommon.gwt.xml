@@ -32,6 +32,7 @@
   <source path="factory"/>
   <source path="graph"/>
   <source path="lookup"/>
+  <source path="profile"/>
   <source path="registry"/>
   <source path="resources"/>
   <source path="rule"/>

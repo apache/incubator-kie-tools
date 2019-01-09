@@ -158,6 +158,7 @@ public class StunnerClientLogger {
                     final Metadata metadata = diagram.getMetadata();
                     if (null != metadata) {
                         log("Metadata defSetId = " + metadata.getDefinitionSetId());
+                        log("Metadata profileId = " + metadata.getProfileId());
                         log("Metadata shapeSetId = " + metadata.getShapeSetId());
                         log("Metadata canvas root = " + metadata.getCanvasRootUUID());
                         log("Metadata title = " + metadata.getTitle());

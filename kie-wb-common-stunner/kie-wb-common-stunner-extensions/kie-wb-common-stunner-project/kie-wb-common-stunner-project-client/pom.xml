@@ -195,6 +195,11 @@
     </dependency>
 
     <dependency>
+      <groupId>org.kie.workbench.profile</groupId>
+      <artifactId>kie-wb-common-profile-api</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-message-console-client</artifactId>
     </dependency>

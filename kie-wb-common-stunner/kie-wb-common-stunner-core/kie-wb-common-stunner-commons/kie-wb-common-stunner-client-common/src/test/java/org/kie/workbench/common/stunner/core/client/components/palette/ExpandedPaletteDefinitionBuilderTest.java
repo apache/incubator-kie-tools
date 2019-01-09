@@ -30,6 +30,7 @@ import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionId;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.i18n.StunnerTranslationService;
+import org.kie.workbench.common.stunner.core.profile.DomainProfileManager;
 import org.kie.workbench.common.stunner.core.registry.impl.DefinitionsCacheRegistry;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.Mock;
@@ -82,6 +83,9 @@ public class ExpandedPaletteDefinitionBuilderTest {
     private DefinitionUtils definitionUtils;
 
     @Mock
+    private DomainProfileManager profileManager;
+
+    @Mock
     private DefinitionManager definitionManager;
 
     @Mock
@@ -117,6 +121,7 @@ public class ExpandedPaletteDefinitionBuilderTest {
         when(definitionAdapter1.getTitle(eq(definition1))).thenReturn(DEF1_TITLE);
         when(definitionAdapter1.getDescription(eq(definition1))).thenReturn(DEF1_DESC);
         tested = new ExpandedPaletteDefinitionBuilder(definitionUtils,
+                                                      profileManager,
                                                       definitionsRegistry,
                                                       translationService);
     }

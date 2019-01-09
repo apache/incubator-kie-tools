@@ -21,6 +21,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import javax.annotation.PreDestroy;
@@ -33,8 +34,10 @@ import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.definition.adapter.MorphAdapter;
 import org.kie.workbench.common.stunner.core.definition.morph.MorphDefinition;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
+import org.kie.workbench.common.stunner.core.profile.DomainProfileManager;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.uberfire.mvp.Command;
 
@@ -48,6 +51,7 @@ public class MorphActionsToolboxFactory
         extends AbstractActionsToolboxFactory {
 
     private final DefinitionUtils definitionUtils;
+    private final DomainProfileManager profileManager;
     private final Supplier<MorphNodeAction> morphNodeActions;
     private final Command morphNodeActionsDestroyer;
     private final Supplier<ActionsToolboxView> views;
@@ -55,9 +59,11 @@ public class MorphActionsToolboxFactory
 
     @Inject
     public MorphActionsToolboxFactory(final DefinitionUtils definitionUtils,
+                                      final DomainProfileManager profileManager,
                                       final @Any ManagedInstance<MorphNodeAction> morphNodeActions,
                                       final @Any @MorphActionsToolbox ManagedInstance<ActionsToolboxView> views) {
         this(definitionUtils,
+             profileManager,
              morphNodeActions::get,
              morphNodeActions::destroyAll,
              views::get,
@@ -65,11 +71,13 @@ public class MorphActionsToolboxFactory
     }
 
     MorphActionsToolboxFactory(final DefinitionUtils definitionUtils,
+                               final DomainProfileManager profileManager,
                                final Supplier<MorphNodeAction> morphNodeActions,
                                final Command morphNodeActionsDestroyer,
                                final Supplier<ActionsToolboxView> views,
                                final Command viewsDestroyer) {
         this.definitionUtils = definitionUtils;
+        this.profileManager = profileManager;
         this.morphNodeActions = morphNodeActions;
         this.morphNodeActionsDestroyer = morphNodeActionsDestroyer;
         this.views = views;
@@ -98,13 +106,17 @@ public class MorphActionsToolboxFactory
                 final MorphAdapter<Object> morphAdapter = getDefinitionManager().adapters().registry().getMorphAdapter(definition.getClass());
                 final Iterable<MorphDefinition> morphDefinitions = morphAdapter.getMorphDefinitions(definition);
                 if (null != morphDefinitions && morphDefinitions.iterator().hasNext()) {
+                    final Metadata metadata = canvasHandler.getDiagram().getMetadata();
+                    final Predicate<String> definitionsAllowedFilter = profileManager.isDefinitionIdAllowed(metadata);
                     final Map<String, MorphDefinition> definitionMap = new LinkedHashMap<>();
                     for (final MorphDefinition morphDefinition : morphDefinitions) {
+
                         final Iterable<String> morphTargets = morphAdapter.getTargets(definition,
                                                                                       morphDefinition);
                         if (null != morphTargets && morphTargets.iterator().hasNext()) {
                             for (final String morphTarget : morphTargets) {
-                                if (!id.equals(morphTarget)) {
+                                if (!id.equals(morphTarget)
+                                        && definitionsAllowedFilter.test(morphTarget)) {
                                     definitionMap.put(morphTarget,
                                                       morphDefinition);
                                 }

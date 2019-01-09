@@ -66,7 +66,7 @@ public class DiagramLoader {
                                  final ParameterizedCommand<StunnerPreferences> callback,
                                  final ParameterizedCommand<Throwable> errorCallback) {
         final Metadata metadata = diagram.getMetadata();
-        preferencesRegistryLoader.load(metadata.getDefinitionSetId(),
+        preferencesRegistryLoader.load(metadata,
                                        callback,
                                        errorCallback);
     }

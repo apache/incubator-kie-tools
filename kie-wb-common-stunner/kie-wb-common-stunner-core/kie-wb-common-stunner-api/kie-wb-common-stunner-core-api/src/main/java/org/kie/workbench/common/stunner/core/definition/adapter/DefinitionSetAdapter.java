@@ -30,37 +30,37 @@ public interface DefinitionSetAdapter<T> extends PriorityAdapter {
     /**
      * Returns the definition set's identifier for a given pojo.
      */
-    String getId(final T pojo);
+    String getId(T pojo);
 
     /**
      * Returns the definition set's domain for a given pojo.
      */
-    String getDomain(final T pojo);
+    String getDomain(T pojo);
 
     /**
      * Returns the definition set's description for a given pojo.
      */
-    String getDescription(final T pojo);
+    String getDescription(T pojo);
 
     /**
      * Returns the definition set's definitions for a given pojo.
      */
-    Set<String> getDefinitions(final T pojo);
+    Set<String> getDefinitions(T pojo);
 
     /**
      * Returns the definition set's graph class for a given pojo.
      */
-    Class<? extends ElementFactory> getGraphFactoryType(final T pojo);
+    Class<? extends ElementFactory> getGraphFactoryType(T pojo);
 
     /**
      * Returns the qualifier used for this Definition Set component's implementations, if any.
      * It must return at least <code>javax.enterprise.inject.Default</code>
      * or <code>javax.enterprise.inject.Any</code>.
      */
-    Annotation getQualifier(final T pojo);
+    Annotation getQualifier(T pojo);
 
     /**
      * Returns the definition set's node id for SVG generation.
      */
-    Optional<String> getSvgNodeId(final T pojo);
+    Optional<String> getSvgNodeId(T pojo);
 }
