@@ -51,6 +51,7 @@
 \*\/$
 ]]>
     </checkstyle.header.template>
+    <needs-errai-1101-workaround>true</needs-errai-1101-workaround>
   </properties>
 
   <dependencyManagement>
