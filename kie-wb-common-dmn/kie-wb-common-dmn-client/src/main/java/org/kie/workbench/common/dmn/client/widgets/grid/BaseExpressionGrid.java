@@ -75,10 +75,10 @@ import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.util.ColumnIndexUtilities;
 import org.uberfire.ext.wires.core.grids.client.util.CoordinateUtilities;
+import org.uberfire.ext.wires.core.grids.client.widget.dnd.IsRowDragHandle;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.HasDOMElementResources;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.NodeMouseEventHandler;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.DefaultGridWidgetCellSelectorMouseEventHandler;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.SelectionExtension;
@@ -442,7 +442,7 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
         uiModel.clearSelections();
         uiModel.getColumns()
                 .stream()
-                .filter(c -> !(c instanceof RowNumberColumn))
+                .filter(c -> !(c instanceof IsRowDragHandle))
                 .map(c -> uiModel.getColumns().indexOf(c))
                 .findFirst()
                 .ifPresent(index -> selectCell(0, index, false, false));

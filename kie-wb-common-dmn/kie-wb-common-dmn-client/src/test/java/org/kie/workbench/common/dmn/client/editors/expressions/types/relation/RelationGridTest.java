@@ -921,4 +921,13 @@ public class RelationGridTest {
 
         assertThat(actual).isInstanceOf(InformationItem.class);
     }
+
+    @Test
+    public void testSelectFirstCell() {
+        setupGrid(0);
+
+        grid.selectFirstCell();
+
+        assertThat(grid.getModel().getSelectedCells()).containsOnly(new GridData.SelectedCell(0, 1));
+    }
 }

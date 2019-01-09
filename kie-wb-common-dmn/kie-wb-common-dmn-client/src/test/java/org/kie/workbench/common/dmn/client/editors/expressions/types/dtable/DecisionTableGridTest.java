@@ -1558,4 +1558,13 @@ public class DecisionTableGridTest {
         final DomainObjectSelectionEvent domainObjectSelectionEvent = domainObjectSelectionEventCaptor.getValue();
         assertThat(domainObjectSelectionEvent.getDomainObject()).isInstanceOf(NOPDomainObject.class);
     }
+
+    @Test
+    public void testSelectFirstCell() {
+        setupGrid(makeHasNameForDecision(), 0);
+
+        grid.selectFirstCell();
+
+        assertThat(grid.getModel().getSelectedCells()).containsOnly(new GridData.SelectedCell(0, 1));
+    }
 }

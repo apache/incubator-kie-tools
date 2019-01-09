@@ -1030,4 +1030,13 @@ public class ContextGridTest {
 
         assertThat(extractHeaderMetaData().asDMNModelInstrumentedBase()).isInstanceOf(hasExpression.getVariable().getClass());
     }
+
+    @Test
+    public void testSelectFirstCell() {
+        setupGrid(0);
+
+        grid.selectFirstCell();
+
+        assertThat(grid.getModel().getSelectedCells()).containsOnly(new GridData.SelectedCell(0, 1));
+    }
 }
