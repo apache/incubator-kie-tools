@@ -23,6 +23,7 @@ import static org.dashbuilder.displayer.DisplayerSubType.COLUMN_STACKED;
 import static org.dashbuilder.displayer.DisplayerSubType.DONUT;
 import static org.dashbuilder.displayer.DisplayerSubType.LINE;
 import static org.dashbuilder.displayer.DisplayerSubType.PIE;
+import static org.dashbuilder.displayer.DisplayerSubType.PIE_3D;
 import static org.dashbuilder.displayer.DisplayerSubType.SMOOTH;
 import static org.dashbuilder.displayer.DisplayerType.AREACHART;
 import static org.dashbuilder.displayer.DisplayerType.BARCHART;
@@ -65,6 +66,12 @@ public class C3Renderer extends AbstractRendererLibrary {
     @Inject
     protected SyncBeanManager beanManager;
 
+    private static List<DisplayerType> SUPPORTED_TYPES = Arrays.asList(LINECHART, 
+                                                                       BARCHART, 
+                                                                       PIECHART, 
+                                                                       AREACHART, 
+                                                                       BUBBLECHART);
+    
     @Override
     public String getUUID() {
         return UUID;
@@ -83,7 +90,7 @@ public class C3Renderer extends AbstractRendererLibrary {
             case BARCHART:
                 return Arrays.asList(BAR, BAR_STACKED, COLUMN, COLUMN_STACKED);    
             case PIECHART:
-                return Arrays.asList(PIE, DONUT);
+                return Arrays.asList(PIE, DONUT, PIE_3D);
             case AREACHART:
                 return Arrays.asList(AREA);            
             default:
@@ -174,11 +181,11 @@ public class C3Renderer extends AbstractRendererLibrary {
 
     @Override
     public List<DisplayerType> getSupportedTypes() {
-        return Arrays.asList(LINECHART, BARCHART, PIECHART, AREACHART, BUBBLECHART);
+        return SUPPORTED_TYPES;
     }
     
     @Override
     public boolean isDefault(DisplayerType type) {
-        return false;
+        return SUPPORTED_TYPES.contains(type);
     }
 }

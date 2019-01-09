@@ -83,11 +83,6 @@ public class GoogleRenderer extends AbstractRendererLibrary {
     @Override
     public boolean isDefault(DisplayerType type) {
         return 
-                BARCHART.equals(type) ||
-                PIECHART.equals(type) ||
-                AREACHART.equals(type) ||
-                LINECHART.equals(type) ||
-                BUBBLECHART.equals(type) ||
                 METERCHART.equals(type) ||
                 MAP.equals(type);
     }
