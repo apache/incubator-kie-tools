@@ -22,6 +22,7 @@ import javax.inject.Inject;
 import com.google.gwt.core.client.Callback;
 import org.guvnor.common.services.project.client.security.ProjectController;
 import org.kie.workbench.common.screens.defaulteditor.client.editor.NewFileUploader;
+import org.kie.workbench.common.screens.library.client.util.LibraryPermissions;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.uberfire.client.mvp.UberElemental;
@@ -38,19 +39,19 @@ public class EmptyAssetsScreen {
     private final EmptyAssetsScreen.View view;
     private final NewFileUploader newFileUploader;
     private final NewResourcePresenter newResourcePresenter;
-    private final ProjectController projectController;
+    private final LibraryPermissions libraryPermissions;
     private final LibraryPlaces libraryPlaces;
 
     @Inject
     public EmptyAssetsScreen(final EmptyAssetsScreen.View view,
                              final NewFileUploader newFileUploader,
                              final NewResourcePresenter newResourcePresenter,
-                             final ProjectController projectController,
+                             final LibraryPermissions libraryPermissions,
                              final LibraryPlaces libraryPlaces) {
         this.view = view;
         this.newFileUploader = newFileUploader;
         this.newResourcePresenter = newResourcePresenter;
-        this.projectController = projectController;
+        this.libraryPermissions = libraryPermissions;
         this.libraryPlaces = libraryPlaces;
     }
 
@@ -87,7 +88,7 @@ public class EmptyAssetsScreen {
     }
 
     protected boolean canUpdateProject() {
-        return this.projectController.canUpdateProject(this.libraryPlaces.getActiveWorkspace());
+        return this.libraryPermissions.userCanUpdateProject(this.libraryPlaces.getActiveWorkspace());
     }
 
     public void addAsset() {

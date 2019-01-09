@@ -38,6 +38,7 @@ import org.kie.workbench.common.screens.library.client.perspective.LibraryPerspe
 import org.kie.workbench.common.screens.library.client.screens.organizationalunit.contributors.tab.ContributorsListPresenter;
 import org.kie.workbench.common.screens.library.client.screens.organizationalunit.contributors.tab.SpaceContributorsListServiceImpl;
 import org.kie.workbench.common.screens.library.client.screens.organizationalunit.delete.DeleteOrganizationalUnitPopUpPresenter;
+import org.kie.workbench.common.screens.library.client.util.LibraryPermissions;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
@@ -66,10 +67,9 @@ public class LibraryScreen {
 
     private ManagedInstance<DeleteOrganizationalUnitPopUpPresenter> deleteOrganizationalUnitPopUpPresenters;
 
-    private OrganizationalUnitController organizationalUnitController;
+    private LibraryPermissions libraryPermissions;
 
     private WorkspaceProjectContext projectContext;
-    private ProjectController projectController;
 
     private EmptyLibraryScreen emptyLibraryScreen;
 
@@ -91,8 +91,7 @@ public class LibraryScreen {
     public LibraryScreen(final View view,
                          final ManagedInstance<DeleteOrganizationalUnitPopUpPresenter> deleteOrganizationalUnitPopUpPresenters,
                          final WorkspaceProjectContext projectContext,
-                         final OrganizationalUnitController organizationalUnitController,
-                         final ProjectController projectController,
+                         final LibraryPermissions libraryPermissions,
                          final EmptyLibraryScreen emptyLibraryScreen,
                          final PopulatedLibraryScreen populatedLibraryScreen,
                          final OrgUnitsMetricsScreen orgUnitsMetricsScreen,
@@ -104,8 +103,7 @@ public class LibraryScreen {
         this.view = view;
         this.deleteOrganizationalUnitPopUpPresenters = deleteOrganizationalUnitPopUpPresenters;
         this.projectContext = projectContext;
-        this.organizationalUnitController = organizationalUnitController;
-        this.projectController = projectController;
+        this.libraryPermissions = libraryPermissions;
         this.emptyLibraryScreen = emptyLibraryScreen;
         this.populatedLibraryScreen = populatedLibraryScreen;
         this.orgUnitsMetricsScreen = orgUnitsMetricsScreen;
@@ -193,17 +191,15 @@ public class LibraryScreen {
     }
 
     public boolean userCanCreateProjects() {
-        return projectController.canCreateProjects();
+        return libraryPermissions.userCanCreateProject(libraryPlaces.getActiveSpace());
     }
 
     public boolean userCanUpdateOrganizationalUnit() {
-        return organizationalUnitController.canUpdateOrgUnit(projectContext.getActiveOrganizationalUnit()
-                                                                     .orElseThrow(() -> new IllegalStateException("Cannot try to update an organizational unit when none is active.")));
+        return libraryPermissions.userCanUpdateOrganizationalUnit(projectContext.getActiveOrganizationalUnit().orElseThrow(() -> new IllegalStateException("Cannot try to update an organizational unit when none is active.")));
     }
 
     public boolean userCanDeleteOrganizationalUnit() {
-        return organizationalUnitController.canDeleteOrgUnit(projectContext.getActiveOrganizationalUnit()
-                                                                     .orElseThrow(() -> new IllegalStateException("Cannot try to delete an organizational unit when none is active.")));
+        return libraryPermissions.userCanDeleteOrganizationalUnit(projectContext.getActiveOrganizationalUnit().orElseThrow(() -> new IllegalStateException("Cannot try to delete an organizational unit when none is active.")));
     }
 
     public void onNewProject(@Observes NewProjectEvent e) {

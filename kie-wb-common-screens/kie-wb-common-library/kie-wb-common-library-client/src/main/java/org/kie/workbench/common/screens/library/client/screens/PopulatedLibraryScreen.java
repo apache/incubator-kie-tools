@@ -40,6 +40,7 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.screens.library.api.LibraryInfo;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.client.events.ProjectDetailEvent;
+import org.kie.workbench.common.screens.library.client.util.LibraryPermissions;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.screens.library.client.widgets.common.TileWidget;
 import org.kie.workbench.common.screens.library.client.widgets.library.AddProjectButtonPresenter;
@@ -71,7 +72,7 @@ public class PopulatedLibraryScreen {
 
     private Caller<LibraryService> libraryService;
 
-    private ProjectController projectController;
+    private LibraryPermissions libraryPermissions;
     private WorkspaceProjectContext projectContext;
 
     private ManagedInstance<TileWidget> tileWidgets;
@@ -84,14 +85,14 @@ public class PopulatedLibraryScreen {
     public PopulatedLibraryScreen(final View view,
                                   final LibraryPlaces libraryPlaces,
                                   final Caller<LibraryService> libraryService,
-                                  final ProjectController projectController,
+                                  final LibraryPermissions libraryPermissions,
                                   final WorkspaceProjectContext projectContext,
                                   final ManagedInstance<TileWidget> tileWidgets,
                                   final AddProjectButtonPresenter addProjectButtonPresenter) {
         this.view = view;
         this.libraryPlaces = libraryPlaces;
         this.libraryService = libraryService;
-        this.projectController = projectController;
+        this.libraryPermissions = libraryPermissions;
         this.projectContext = projectContext;
         this.projects = Collections.emptyList();
         this.tileWidgets = tileWidgets;
@@ -165,7 +166,7 @@ public class PopulatedLibraryScreen {
     }
 
     public boolean userCanCreateProjects() {
-        return projectController.canCreateProjects();
+        return libraryPermissions.userCanCreateProject(libraryPlaces.getActiveSpace());
     }
 
     public int getProjectsCount() {

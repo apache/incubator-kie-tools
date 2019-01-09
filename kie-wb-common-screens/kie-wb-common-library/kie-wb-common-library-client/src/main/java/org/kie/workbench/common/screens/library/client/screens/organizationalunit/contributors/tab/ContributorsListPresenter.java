@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 
 import org.guvnor.structure.contributors.Contributor;
+import org.guvnor.structure.contributors.ContributorType;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
@@ -81,7 +82,6 @@ public class ContributorsListPresenter {
         this.contributorsListService = contributorsListService;
         this.contributorsCountChangedCallback = contributorsCountChangedCallback;
 
-        view.init(this);
         refresh();
     }
 
@@ -89,6 +89,7 @@ public class ContributorsListPresenter {
         contributorsListService.getContributors(contributors -> {
             this.contributors = contributors;
             this.contributors.sort(Contributor.COMPARATOR);
+            view.init(this);
 
             contributorsListService.getValidUsernames(validUsernames -> {
                 this.validUsernames = validUsernames;
@@ -124,7 +125,7 @@ public class ContributorsListPresenter {
     }
 
     public void addContributor() {
-        if (contributorsListService.canEditContributors()) {
+        if (contributorsListService.canEditContributors(contributors, ContributorType.CONTRIBUTOR)) {
             itemIsBeingEdited();
             final ContributorsListItemPresenter newContributorItem = contributorsListItemPresenters.get();
             newContributorItem.setupNew(this, contributorsListService);
@@ -147,8 +148,8 @@ public class ContributorsListPresenter {
         return validUsernames;
     }
 
-    public boolean canEditContributors() {
-        return contributorsListService.canEditContributors();
+    public boolean canEditContributors(final ContributorType type) {
+        return contributorsListService.canEditContributors(contributors, type);
     }
 
     public View getView() {

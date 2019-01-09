@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.screens.library.client.screens.organizationalunit.delete;
 
-import org.guvnor.structure.client.security.OrganizationalUnitController;
 import org.guvnor.structure.events.AfterDeleteOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
@@ -24,6 +23,7 @@ import org.jboss.errai.common.client.api.Caller;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.screens.library.client.util.LibraryPermissions;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -47,7 +47,7 @@ public class DeleteOrganizationalUnitPopUpPresenterTest {
     private Caller<OrganizationalUnitService> organizationalUnitServiceCaller;
 
     @Mock
-    private OrganizationalUnitController organizationalUnitController;
+    private LibraryPermissions libraryPermissions;
 
     @Mock
     private EventSourceMock<AfterDeleteOrganizationalUnitEvent> afterDeleteOrganizationalUnitEvent;
@@ -62,18 +62,18 @@ public class DeleteOrganizationalUnitPopUpPresenterTest {
 
     @Before
     public void setup() {
-        doReturn(true).when(organizationalUnitController).canReadOrgUnits();
-        doReturn(true).when(organizationalUnitController).canReadOrgUnit(any());
-        doReturn(true).when(organizationalUnitController).canUpdateOrgUnit(any());
-        doReturn(true).when(organizationalUnitController).canCreateOrgUnits();
-        doReturn(true).when(organizationalUnitController).canDeleteOrgUnit(any());
+        doReturn(true).when(libraryPermissions).userCanReadOrganizationalUnits();
+        doReturn(true).when(libraryPermissions).userCanReadOrganizationalUnit(any());
+        doReturn(true).when(libraryPermissions).userCanUpdateOrganizationalUnit(any());
+        doReturn(true).when(libraryPermissions).userCanCreateOrganizationalUnit();
+        doReturn(true).when(libraryPermissions).userCanDeleteOrganizationalUnit(any());
 
         organizationalUnitServiceCaller = new CallerMock<>(organizationalUnitService);
         doReturn(null).when(organizationalUnitService).getOrganizationalUnit(anyString());
 
         presenter = spy(new DeleteOrganizationalUnitPopUpPresenter(view,
                                                                    organizationalUnitServiceCaller,
-                                                                   organizationalUnitController,
+                                                                   libraryPermissions,
                                                                    afterDeleteOrganizationalUnitEvent,
                                                                    notificationEvent,
                                                                    libraryPlaces));
@@ -95,7 +95,7 @@ public class DeleteOrganizationalUnitPopUpPresenterTest {
     public void showWithoutPermissionTest() {
         final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
         doReturn("ou-name").when(organizationalUnit).getName();
-        doReturn(false).when(organizationalUnitController).canDeleteOrgUnit(organizationalUnit);
+        doReturn(false).when(libraryPermissions).userCanDeleteOrganizationalUnit(organizationalUnit);
 
         presenter.show(organizationalUnit);
 

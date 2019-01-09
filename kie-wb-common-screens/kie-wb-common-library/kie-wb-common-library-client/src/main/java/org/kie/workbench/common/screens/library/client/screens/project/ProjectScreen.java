@@ -44,6 +44,7 @@ import org.kie.workbench.common.screens.library.client.screens.project.branch.de
 import org.kie.workbench.common.screens.library.client.screens.project.delete.DeleteProjectPopUpScreen;
 import org.kie.workbench.common.screens.library.client.screens.project.rename.RenameProjectPopUpScreen;
 import org.kie.workbench.common.screens.library.client.settings.SettingsPresenter;
+import org.kie.workbench.common.screens.library.client.util.LibraryPermissions;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.screens.projecteditor.client.build.BuildExecutor;
 import org.kie.workbench.common.screens.projecteditor.client.validation.ProjectNameValidator;
@@ -111,9 +112,8 @@ public class ProjectScreen {
     private AssetsScreen assetsScreen;
     private ContributorsListPresenter contributorsListScreen;
     private ProjectMetricsScreen projectMetricsScreen;
-    private ProjectController projectController;
+    private LibraryPermissions libraryPermissions;
     private SettingsPresenter settingsPresenter;
-    private OrganizationalUnitController organizationalUnitController;
     private final NewFileUploader newFileUploader;
     private final NewResourcePresenter newResourcePresenter;
     private BuildExecutor buildExecutor;
@@ -136,9 +136,8 @@ public class ProjectScreen {
                          final AssetsScreen assetsScreen,
                          final ContributorsListPresenter contributorsListScreen,
                          final ProjectMetricsScreen projectMetricsScreen,
-                         final ProjectController projectController,
+                         final LibraryPermissions libraryPermissions,
                          final SettingsPresenter settingsPresenter,
-                         final OrganizationalUnitController organizationalUnitController,
                          final NewFileUploader newFileUploader,
                          final NewResourcePresenter newResourcePresenter,
                          final BuildExecutor buildExecutor,
@@ -158,9 +157,8 @@ public class ProjectScreen {
         this.assetsScreen = assetsScreen;
         this.contributorsListScreen = contributorsListScreen;
         this.projectMetricsScreen = projectMetricsScreen;
-        this.projectController = projectController;
+        this.libraryPermissions = libraryPermissions;
         this.settingsPresenter = settingsPresenter;
-        this.organizationalUnitController = organizationalUnitController;
         this.newFileUploader = newFileUploader;
         this.newResourcePresenter = newResourcePresenter;
         this.buildExecutor = buildExecutor;
@@ -192,6 +190,7 @@ public class ProjectScreen {
         final boolean userCanDeleteProject = this.userCanDeleteProject();
         final boolean userCanDeleteBranch = this.userCanDeleteBranch();
         final boolean userCanBuildProject = this.userCanBuildProject();
+        final boolean userCanDeployProject = this.userCanDeployProject();
         final boolean userCanCreateProjects = this.userCanCreateProjects();
 
         this.view.setAddAssetVisible(userCanUpdateProject);
@@ -201,9 +200,9 @@ public class ProjectScreen {
         this.view.setDeleteProjectVisible(userCanDeleteProject);
         this.view.setDeleteBranchVisible(userCanDeleteBranch);
         this.view.setBuildEnabled(userCanBuildProject);
-        this.view.setDeployEnabled(userCanBuildProject);
+        this.view.setDeployEnabled(userCanDeployProject);
 
-        this.view.setActionsVisible(userCanUpdateProject || userCanDeleteProject || userCanBuildProject || userCanCreateProjects);
+        this.view.setActionsVisible(userCanUpdateProject || userCanDeleteProject || userCanBuildProject || userCanDeployProject || userCanCreateProjects);
 
         newFileUploader.acceptContext(new Callback<Boolean, Void>() {
             @Override
@@ -368,13 +367,13 @@ public class ProjectScreen {
     }
 
     public void deploy() {
-        if (this.userCanBuildProject()) {
+        if (this.userCanDeployProject()) {
             this.buildExecutor.triggerBuildAndDeploy();
         }
     }
 
     public boolean userCanDeleteProject() {
-        return projectController.canDeleteProject(this.workspaceProject);
+        return libraryPermissions.userCanDeleteProject(this.workspaceProject);
     }
 
     public boolean userCanDeleteBranch() {
@@ -382,15 +381,19 @@ public class ProjectScreen {
     }
 
     public boolean userCanBuildProject() {
-        return workspaceProject.getMainModule() != null && projectController.canBuildProject(this.workspaceProject);
+        return libraryPermissions.userCanBuildProject(this.workspaceProject);
+    }
+
+    public boolean userCanDeployProject() {
+        return libraryPermissions.userCanDeployProject(this.workspaceProject);
     }
 
     public boolean userCanUpdateProject() {
-        return workspaceProject.getMainModule() != null && projectController.canUpdateProject(this.workspaceProject);
+        return libraryPermissions.userCanUpdateProject(this.workspaceProject);
     }
 
     public boolean userCanCreateProjects() {
-        return projectController.canCreateProjects();
+        return libraryPermissions.userCanCreateProject(libraryPlaces.getActiveSpace());
     }
 
     @WorkbenchPartView

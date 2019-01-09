@@ -37,6 +37,7 @@ import org.kie.workbench.common.screens.library.api.LibraryInfo;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.client.events.ProjectDetailEvent;
 import org.kie.workbench.common.screens.library.client.screens.project.AddProjectPopUpPresenter;
+import org.kie.workbench.common.screens.library.client.util.LibraryPermissions;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.screens.library.client.widgets.common.TileWidget;
 import org.kie.workbench.common.screens.library.client.widgets.library.AddProjectButtonPresenter;
@@ -62,7 +63,7 @@ public class PopulatedLibraryScreenTest {
     private Caller<LibraryService> libraryServiceCaller;
 
     @Mock
-    private ProjectController projectController;
+    private LibraryPermissions libraryPermissions;
 
     @Mock
     private ManagedInstance<TileWidget> tileWidgets;
@@ -95,12 +96,12 @@ public class PopulatedLibraryScreenTest {
         libraryScreen = spy(new PopulatedLibraryScreen(view,
                                                        libraryPlaces,
                                                        libraryServiceCaller,
-                                                       projectController,
+                                                       libraryPermissions,
                                                        projectContext,
                                                        tileWidgets,
                                                        addProjectButtonPresenter));
 
-        doReturn(true).when(projectController).canCreateProjects();
+        doReturn(true).when(libraryPermissions).userCanCreateProject(any());
 
         project1 = mockProject("project1Name");
         project2 = mockProject("project2Name");

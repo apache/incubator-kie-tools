@@ -42,6 +42,7 @@ import org.kie.workbench.common.screens.library.client.screens.project.branch.de
 import org.kie.workbench.common.screens.library.client.screens.project.delete.DeleteProjectPopUpScreen;
 import org.kie.workbench.common.screens.library.client.screens.project.rename.RenameProjectPopUpScreen;
 import org.kie.workbench.common.screens.library.client.settings.SettingsPresenter;
+import org.kie.workbench.common.screens.library.client.util.LibraryPermissions;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.screens.projecteditor.client.build.BuildExecutor;
 import org.kie.workbench.common.screens.projecteditor.client.validation.ProjectNameValidator;
@@ -96,10 +97,7 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
     private ProjectMetricsScreen projectMetrictsScreen;
 
     @Mock
-    private ProjectController projectController;
-
-    @Mock
-    private OrganizationalUnitController organizationalUnitController;
+    private LibraryPermissions libraryPermissions;
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private NewFileUploader newFileUploader;
@@ -178,9 +176,8 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
                                                               this.assetsScreen,
                                                               this.contributorsListScreen,
                                                               this.projectMetrictsScreen,
-                                                              this.projectController,
+                                                              this.libraryPermissions,
                                                               this.settingsPresenter,
-                                                              this.organizationalUnitController,
                                                               this.newFileUploader,
                                                               this.newResourcePresenter,
                                                               this.buildExecutor,
@@ -258,6 +255,23 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
         verify(view).setDeleteProjectVisible(false);
         verify(view).setDeleteBranchVisible(false);
         verify(view).setBuildEnabled(true);
+        verify(view).setDeployEnabled(false);
+        verify(view).setActionsVisible(true);
+    }
+
+    @Test
+    public void testActionsVisibilityWithPermissionToDeployProjectOnly() {
+        doReturn(true).when(this.presenter).userCanDeployProject();
+
+        presenter.initialize();
+
+        verify(view).setAddAssetVisible(false);
+        verify(view).setImportAssetVisible(false);
+        verify(view).setDuplicateVisible(false);
+        verify(view).setReimportVisible(false);
+        verify(view).setDeleteProjectVisible(false);
+        verify(view).setDeleteBranchVisible(false);
+        verify(view).setBuildEnabled(false);
         verify(view).setDeployEnabled(true);
         verify(view).setActionsVisible(true);
     }
@@ -375,13 +389,13 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
     @Test
     public void testDeploy() {
         {
-            doReturn(false).when(this.presenter).userCanBuildProject();
+            doReturn(false).when(this.presenter).userCanDeployProject();
             this.presenter.deploy();
             verify(this.buildExecutor,
                    never()).triggerBuildAndDeploy();
         }
         {
-            doReturn(true).when(this.presenter).userCanBuildProject();
+            doReturn(true).when(this.presenter).userCanDeployProject();
             this.presenter.deploy();
             verify(this.buildExecutor,
                    times(1)).triggerBuildAndDeploy();
@@ -470,22 +484,13 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
 
     @Test
     public void canBuild() {
-        doReturn(true).when(projectController).canBuildProject(any(WorkspaceProject.class));
+        doReturn(true).when(libraryPermissions).userCanBuildProject(any(WorkspaceProject.class));
         assertTrue(presenter.userCanBuildProject());
     }
 
     @Test
     public void notAllowedToBuild() {
-        doReturn(false).when(projectController).canBuildProject(any(WorkspaceProject.class));
-        assertFalse(presenter.userCanBuildProject());
-    }
-
-    @Test
-    public void allowedToBuildButNoModule() {
-        doReturn(null).when(presenter.workspaceProject).getMainModule();
-        presenter.initialize();
-        doReturn(true).when(projectController).canBuildProject(presenter.workspaceProject);
-
+        doReturn(false).when(libraryPermissions).userCanBuildProject(any(WorkspaceProject.class));
         assertFalse(presenter.userCanBuildProject());
     }
 

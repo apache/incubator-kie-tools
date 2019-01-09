@@ -25,6 +25,7 @@ import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
+import org.kie.workbench.common.screens.library.client.util.LibraryPermissions;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.UberElemental;
@@ -35,7 +36,7 @@ public class RenameProjectPopUpScreen {
 
     private final Caller<KieModuleService> projectService;
     private View view;
-    private ProjectController projectController;
+    private LibraryPermissions libraryPermissions;
     private TranslationService ts;
     private Event<NotificationEvent> notificationEvent;
     private WorkspaceProject workspaceProject;
@@ -51,12 +52,12 @@ public class RenameProjectPopUpScreen {
     @Inject
     public RenameProjectPopUpScreen(final RenameProjectPopUpScreen.View view,
                                     final Caller<KieModuleService> projectService,
-                                    final ProjectController projectController,
+                                    final LibraryPermissions libraryPermissions,
                                     final TranslationService ts,
                                     final Event<NotificationEvent> notificationEvent) {
         this.view = view;
         this.projectService = projectService;
-        this.projectController = projectController;
+        this.libraryPermissions = libraryPermissions;
         this.ts = ts;
         this.notificationEvent = notificationEvent;
     }
@@ -67,7 +68,7 @@ public class RenameProjectPopUpScreen {
     }
 
     public void show(final WorkspaceProject projectInfo) {
-        if (projectController.canUpdateProject(projectInfo)) {
+        if (libraryPermissions.userCanUpdateProject(projectInfo)) {
             this.workspaceProject = projectInfo;
             view.show();
         }
@@ -78,7 +79,7 @@ public class RenameProjectPopUpScreen {
     }
 
     public void rename(String newName) {
-        if (projectController.canUpdateProject(workspaceProject)) {
+        if (libraryPermissions.userCanUpdateProject(workspaceProject)) {
             this.view.showBusyIndicator(ts.getTranslation(LibraryConstants.Renaming));
             this.projectService.call((Path path) -> {
                 this.view.hideBusyIndicator();

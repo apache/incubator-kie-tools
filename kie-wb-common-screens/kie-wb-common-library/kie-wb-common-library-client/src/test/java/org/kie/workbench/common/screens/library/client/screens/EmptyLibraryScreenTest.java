@@ -21,6 +21,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.library.client.screens.importrepository.ImportRepositoryPopUpPresenter;
+import org.kie.workbench.common.screens.library.client.util.LibraryPermissions;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.screens.library.client.widgets.library.AddProjectButtonPresenter;
 import org.mockito.Mock;
@@ -38,7 +39,7 @@ public class EmptyLibraryScreenTest {
     private AddProjectButtonPresenter addProjectButtonPresenter;
 
     @Mock
-    private ProjectController projectController;
+    private LibraryPermissions libraryPermissions;
 
     @Mock
     private LibraryPlaces libraryPlaces;
@@ -51,11 +52,11 @@ public class EmptyLibraryScreenTest {
     @Before
     public void setup() {
         doReturn(mock(AddProjectButtonPresenter.View.class)).when(addProjectButtonPresenter).getView();
-        doReturn(true).when(projectController).canCreateProjects();
+        doReturn(true).when(libraryPermissions).userCanCreateProject(any());
 
         emptyLibraryScreen = new EmptyLibraryScreen(view,
                                                     addProjectButtonPresenter,
-                                                    projectController,
+                                                    libraryPermissions,
                                                     libraryPlaces);
     }
 
@@ -70,7 +71,7 @@ public class EmptyLibraryScreenTest {
 
     @Test
     public void setupWithoutProjectCreationPermissionTest() {
-        doReturn(false).when(projectController).canCreateProjects();
+        doReturn(false).when(libraryPermissions).userCanCreateProject(any());
 
         emptyLibraryScreen.setup();
 
@@ -90,7 +91,7 @@ public class EmptyLibraryScreenTest {
 
     @Test
     public void trySamplesWithoutPermissionTest() {
-        doReturn(false).when(projectController).canCreateProjects();
+        doReturn(false).when(libraryPermissions).userCanCreateProject(any());
 
         emptyLibraryScreen.trySamples();
 
@@ -107,7 +108,7 @@ public class EmptyLibraryScreenTest {
 
     @Test
     public void importProjectWithoutPermissionTest() {
-        doReturn(false).when(projectController).canCreateProjects();
+        doReturn(false).when(libraryPermissions).userCanCreateProject(any());
 
         emptyLibraryScreen.importProject();
 

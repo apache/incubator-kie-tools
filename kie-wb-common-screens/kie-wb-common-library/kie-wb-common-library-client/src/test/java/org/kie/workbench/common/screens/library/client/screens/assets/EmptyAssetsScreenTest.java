@@ -23,6 +23,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.defaulteditor.client.editor.NewFileUploader;
+import org.kie.workbench.common.screens.library.client.util.LibraryPermissions;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.mockito.Answers;
@@ -48,7 +49,7 @@ public class EmptyAssetsScreenTest {
     private NewResourcePresenter newResourcePresenter;
 
     @Mock
-    private ProjectController projectController;
+    private LibraryPermissions libraryPermissions;
 
     @Mock
     private LibraryPlaces libraryPlaces;
@@ -59,7 +60,7 @@ public class EmptyAssetsScreenTest {
         this.emptyAssetsScreen = spy(new EmptyAssetsScreen(this.view,
                                                            this.newFileUploader,
                                                            this.newResourcePresenter,
-                                                           this.projectController,
+                                                           this.libraryPermissions,
                                                            this.libraryPlaces));
 
         Command command = mock(Command.class);

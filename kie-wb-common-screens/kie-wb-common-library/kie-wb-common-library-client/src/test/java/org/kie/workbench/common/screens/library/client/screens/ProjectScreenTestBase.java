@@ -35,6 +35,7 @@ import org.kie.workbench.common.screens.library.api.AssetQueryResult;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.api.ProjectAssetsQuery;
 import org.kie.workbench.common.screens.library.client.events.AssetDetailEvent;
+import org.kie.workbench.common.screens.library.client.util.LibraryPermissions;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -68,7 +69,7 @@ public class ProjectScreenTestBase {
     protected BusyIndicatorView busyIndicatorView;
 
     @Mock
-    protected ProjectController projectController;
+    protected LibraryPermissions libraryPermissions;
 
     @Captor
     protected ArgumentCaptor<ProjectAssetsQuery> queryArgumentCaptor;

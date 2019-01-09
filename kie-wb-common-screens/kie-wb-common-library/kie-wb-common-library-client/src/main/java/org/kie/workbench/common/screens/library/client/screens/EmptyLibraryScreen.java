@@ -21,6 +21,7 @@ import javax.inject.Inject;
 
 import org.guvnor.common.services.project.client.security.ProjectController;
 import org.jboss.errai.common.client.dom.HTMLElement;
+import org.kie.workbench.common.screens.library.client.util.LibraryPermissions;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.screens.library.client.widgets.library.AddProjectButtonPresenter;
 import org.uberfire.client.mvp.UberElement;
@@ -36,18 +37,18 @@ public class EmptyLibraryScreen {
 
     private AddProjectButtonPresenter addProjectButtonPresenter;
 
-    private ProjectController projectController;
+    private LibraryPermissions libraryPermissions;
 
     private LibraryPlaces libraryPlaces;
 
     @Inject
     public EmptyLibraryScreen(final View view,
                               final AddProjectButtonPresenter addProjectButtonPresenter,
-                              final ProjectController projectController,
+                              final LibraryPermissions libraryPermissions,
                               final LibraryPlaces libraryPlaces) {
         this.view = view;
         this.addProjectButtonPresenter = addProjectButtonPresenter;
-        this.projectController = projectController;
+        this.libraryPermissions = libraryPermissions;
         this.libraryPlaces = libraryPlaces;
     }
 
@@ -73,7 +74,7 @@ public class EmptyLibraryScreen {
     }
 
     boolean userCanCreateProjects() {
-        return projectController.canCreateProjects();
+        return libraryPermissions.userCanCreateProject(libraryPlaces.getActiveSpace());
     }
 
     public View getView() {

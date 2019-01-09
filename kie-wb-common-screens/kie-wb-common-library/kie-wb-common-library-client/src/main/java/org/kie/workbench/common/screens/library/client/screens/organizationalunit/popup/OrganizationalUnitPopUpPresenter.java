@@ -24,7 +24,6 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import org.guvnor.structure.client.security.OrganizationalUnitController;
 import org.guvnor.structure.contributors.Contributor;
 import org.guvnor.structure.contributors.ContributorType;
 import org.guvnor.structure.events.AfterCreateOrganizationalUnitEvent;
@@ -34,6 +33,7 @@ import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.kie.workbench.common.screens.library.client.util.LibraryPermissions;
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
@@ -77,7 +77,7 @@ public class OrganizationalUnitPopUpPresenter {
 
     private Event<NotificationEvent> notificationEvent;
 
-    private OrganizationalUnitController organizationalUnitController;
+    private LibraryPermissions libraryPermissions;
 
     private SessionInfo sessionInfo;
 
@@ -89,14 +89,14 @@ public class OrganizationalUnitPopUpPresenter {
                                             final Event<AfterCreateOrganizationalUnitEvent> afterCreateOrganizationalUnitEvent,
                                             final Event<AfterEditOrganizationalUnitEvent> afterEditOrganizationalUnitEvent,
                                             final Event<NotificationEvent> notificationEvent,
-                                            final OrganizationalUnitController organizationalUnitController,
+                                            final LibraryPermissions libraryPermissions,
                                             final SessionInfo sessionInfo) {
         this.view = view;
         this.organizationalUnitService = organizationalUnitService;
         this.afterCreateOrganizationalUnitEvent = afterCreateOrganizationalUnitEvent;
         this.afterEditOrganizationalUnitEvent = afterEditOrganizationalUnitEvent;
         this.notificationEvent = notificationEvent;
-        this.organizationalUnitController = organizationalUnitController;
+        this.libraryPermissions = libraryPermissions;
         this.sessionInfo = sessionInfo;
     }
 
@@ -106,7 +106,7 @@ public class OrganizationalUnitPopUpPresenter {
     }
 
     public void show() {
-        if (organizationalUnitController.canCreateOrgUnits()) {
+        if (libraryPermissions.userCanCreateOrganizationalUnit()) {
             view.clear();
             view.show();
         }

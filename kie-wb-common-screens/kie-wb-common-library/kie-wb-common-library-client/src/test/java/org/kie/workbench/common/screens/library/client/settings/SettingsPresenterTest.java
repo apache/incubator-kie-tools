@@ -23,6 +23,7 @@ import org.kie.workbench.common.screens.library.client.settings.sections.Setting
 import org.kie.workbench.common.screens.library.client.settings.util.sections.MenuItem;
 import org.kie.workbench.common.screens.library.client.settings.util.sections.Section;
 import org.kie.workbench.common.screens.library.client.settings.util.sections.SectionManager;
+import org.kie.workbench.common.screens.library.client.util.LibraryPermissions;
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
 import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenService;
 import org.mockito.Mock;
@@ -81,7 +82,7 @@ public class SettingsPresenterTest {
     private SectionManager<ProjectScreenModel> sectionManager;
 
     @Mock
-    private ProjectController projectController;
+    private LibraryPermissions libraryPermissions;
 
     private static final SyncPromises promises = new SyncPromises();
 
@@ -114,7 +115,7 @@ public class SettingsPresenterTest {
                 observablePaths,
                 conflictingRepositoriesPopup,
                 sectionManager,
-                projectController));
+                libraryPermissions));
     }
 
     @Test
@@ -150,7 +151,7 @@ public class SettingsPresenterTest {
         doReturn(true).when(sectionManager).manages(any());
         doReturn(promises.resolve()).when(sectionManager).goToCurrentSection();
         doReturn(promises.resolve()).when(presenter).setupSections(any());
-        doReturn(true).when(projectController).canUpdateProject(any());
+        doReturn(true).when(libraryPermissions).userCanUpdateProject(any());
 
         presenter.setupUsingCurrentSection();
 
@@ -175,7 +176,7 @@ public class SettingsPresenterTest {
         doReturn(true).when(sectionManager).manages(any());
         doReturn(promises.resolve()).when(sectionManager).goToCurrentSection();
         doReturn(promises.resolve()).when(presenter).setupSections(any());
-        doReturn(false).when(projectController).canUpdateProject(any());
+        doReturn(false).when(libraryPermissions).userCanUpdateProject(any());
 
         presenter.setupUsingCurrentSection();
 
@@ -300,7 +301,7 @@ public class SettingsPresenterTest {
 
     @Test
     public void testShowSaveModal() {
-        doReturn(true).when(projectController).canUpdateProject(any());
+        doReturn(true).when(libraryPermissions).userCanUpdateProject(any());
         doReturn(promises.resolve()).when(sectionManager).validateAll();
 
         presenter.showSaveModal();
@@ -311,7 +312,7 @@ public class SettingsPresenterTest {
 
     @Test
     public void testShowSaveModalWithoutPermission() {
-        doReturn(false).when(projectController).canUpdateProject(any());
+        doReturn(false).when(libraryPermissions).userCanUpdateProject(any());
         doReturn(promises.resolve()).when(sectionManager).validateAll();
 
         presenter.showSaveModal();
@@ -322,7 +323,7 @@ public class SettingsPresenterTest {
 
     @Test
     public void testShowSaveModalWithValidationError() {
-        doReturn(true).when(projectController).canUpdateProject(any());
+        doReturn(true).when(libraryPermissions).userCanUpdateProject(any());
         Section<ProjectScreenModel> section = newMockedSection();
         doReturn(promises.reject(section)).when(sectionManager).validateAll();
 
@@ -528,7 +529,7 @@ public class SettingsPresenterTest {
 
     @Test
     public void testResetWithPermission() {
-        doReturn(true).when(projectController).canUpdateProject(any());
+        doReturn(true).when(libraryPermissions).userCanUpdateProject(any());
         doReturn(promises.resolve()).when(presenter).setupUsingCurrentSection();
 
         presenter.reset();
@@ -538,7 +539,7 @@ public class SettingsPresenterTest {
 
     @Test
     public void testResetWithoutPermission() {
-        doReturn(false).when(projectController).canUpdateProject(any());
+        doReturn(false).when(libraryPermissions).userCanUpdateProject(any());
         doReturn(promises.resolve()).when(presenter).setupUsingCurrentSection();
 
         presenter.reset();

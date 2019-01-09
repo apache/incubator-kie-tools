@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import org.guvnor.structure.contributors.Contributor;
+import org.guvnor.structure.contributors.ContributorType;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.ErrorCallback;
 
@@ -31,7 +32,8 @@ public interface ContributorsListService {
                           Runnable successCallback,
                           ErrorCallback<Message> errorCallback);
 
-    boolean canEditContributors();
+    boolean canEditContributors(List<Contributor> contributors,
+                                ContributorType type);
 
     void getValidUsernames(Consumer<List<String>> validUsernamesConsumer);
 }

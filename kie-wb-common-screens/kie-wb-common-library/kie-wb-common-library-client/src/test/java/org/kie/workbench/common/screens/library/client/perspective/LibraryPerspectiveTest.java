@@ -16,6 +16,7 @@
 package org.kie.workbench.common.screens.library.client.perspective;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,6 +25,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.uberfire.client.workbench.events.PerspectiveChange;
+import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.PanelDefinition;
@@ -36,6 +38,9 @@ public class LibraryPerspectiveTest {
     @Mock
     private LibraryPlaces libraryPlaces;
 
+    @Mock
+    private EventSourceMock<WorkspaceProjectContextChangeEvent> projectContextChangeEvent;
+
     @Captor
     private ArgumentCaptor<Command> commandCaptor;
 
@@ -46,7 +51,8 @@ public class LibraryPerspectiveTest {
 
     @Before
     public void setup() {
-        perspective = spy(new LibraryPerspective(libraryPlaces));
+        perspective = spy(new LibraryPerspective(libraryPlaces,
+                                                 projectContextChangeEvent));
         when(perspectiveChangeEvent.getIdentifier()).thenReturn(LibraryPlaces.LIBRARY_PERSPECTIVE);
     }
 
@@ -98,5 +104,6 @@ public class LibraryPerspectiveTest {
         perspective.onClose();
 
         verify(libraryPlaces).hideDocks();
+        verify(projectContextChangeEvent).fire(new WorkspaceProjectContextChangeEvent());
     }
 }

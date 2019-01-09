@@ -16,9 +16,11 @@
 package org.kie.workbench.common.screens.library.client.perspective;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchPerspective;
@@ -37,6 +39,8 @@ public class LibraryPerspective {
 
     private LibraryPlaces libraryPlaces;
 
+    private Event<WorkspaceProjectContextChangeEvent> projectContextChangeEvent;
+
     private PerspectiveDefinition perspectiveDefinition;
     private boolean refresh = true;
 
@@ -44,8 +48,10 @@ public class LibraryPerspective {
     }
 
     @Inject
-    public LibraryPerspective(final LibraryPlaces libraryPlaces) {
+    public LibraryPerspective(final LibraryPlaces libraryPlaces,
+                              final Event<WorkspaceProjectContextChangeEvent> projectContextChangeEvent) {
         this.libraryPlaces = libraryPlaces;
+        this.projectContextChangeEvent = projectContextChangeEvent;
     }
 
     @Perspective
@@ -82,6 +88,7 @@ public class LibraryPerspective {
     @OnClose
     public void onClose() {
         libraryPlaces.hideDocks();
+        projectContextChangeEvent.fire(new WorkspaceProjectContextChangeEvent());
     }
 
     public PanelDefinition getRootPanel() {

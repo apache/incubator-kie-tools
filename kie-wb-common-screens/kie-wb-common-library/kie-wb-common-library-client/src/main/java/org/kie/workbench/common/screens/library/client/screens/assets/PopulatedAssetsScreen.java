@@ -44,6 +44,7 @@ import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryCon
 import org.kie.workbench.common.screens.library.client.screens.EmptyState;
 import org.kie.workbench.common.screens.library.client.screens.assets.events.UpdatedAssetsEvent;
 import org.kie.workbench.common.screens.library.client.util.CategoryUtils;
+import org.kie.workbench.common.screens.library.client.util.LibraryPermissions;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.screens.library.client.widgets.project.AssetItemWidget;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
@@ -74,7 +75,7 @@ public class PopulatedAssetsScreen {
     private ManagedInstance<AssetItemWidget> assetItemWidget;
     private NewFileUploader newFileUploader;
     private NewResourcePresenter newResourcePresenter;
-    private ProjectController projectController;
+    private LibraryPermissions libraryPermissions;
     private Event<UpdatedAssetsEvent> updatedAssetsEventEvent;
     private EmptyState emptyState;
     private CategoryUtils categoryUtils;
@@ -127,7 +128,7 @@ public class PopulatedAssetsScreen {
                                  final ManagedInstance<AssetItemWidget> assetItemWidget,
                                  final NewFileUploader newFileUploader,
                                  final NewResourcePresenter newResourcePresenter,
-                                 final ProjectController projectController,
+                                 final LibraryPermissions libraryPermissions,
                                  final Event<UpdatedAssetsEvent> updatedAssetsEventEvent,
                                  final EmptyState emptyState,
                                  final CategoryUtils categoryUtils,
@@ -143,7 +144,7 @@ public class PopulatedAssetsScreen {
         this.assetItemWidget = assetItemWidget;
         this.newFileUploader = newFileUploader;
         this.newResourcePresenter = newResourcePresenter;
-        this.projectController = projectController;
+        this.libraryPermissions = libraryPermissions;
         this.updatedAssetsEventEvent = updatedAssetsEventEvent;
         this.emptyState = emptyState;
         this.categoryUtils = categoryUtils;
@@ -223,7 +224,7 @@ public class PopulatedAssetsScreen {
     }
 
     protected boolean canUpdateProject() {
-        return this.projectController.canUpdateProject(this.workspaceProject);
+        return this.libraryPermissions.userCanUpdateProject(this.workspaceProject);
     }
 
     protected void showIndexingNotFinished() {

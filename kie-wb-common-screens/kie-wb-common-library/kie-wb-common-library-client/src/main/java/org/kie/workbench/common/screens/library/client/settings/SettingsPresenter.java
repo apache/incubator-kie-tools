@@ -39,6 +39,7 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.screens.library.client.settings.sections.SettingsSections;
 import org.kie.workbench.common.screens.library.client.settings.util.sections.Section;
 import org.kie.workbench.common.screens.library.client.settings.util.sections.SectionManager;
+import org.kie.workbench.common.screens.library.client.util.LibraryPermissions;
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
 import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenService;
 import org.uberfire.annotations.Customizable;
@@ -91,7 +92,7 @@ public class SettingsPresenter {
     private final ManagedInstance<ObservablePath> observablePaths;
     private final ConflictingRepositoriesPopup conflictingRepositoriesPopup;
     private final SectionManager<ProjectScreenModel> sectionManager;
-    private final ProjectController projectController;
+    private final LibraryPermissions libraryPermissions;
 
     private ObservablePath pathToPom;
 
@@ -109,7 +110,7 @@ public class SettingsPresenter {
                              final ManagedInstance<ObservablePath> observablePaths,
                              final ConflictingRepositoriesPopup conflictingRepositoriesPopup,
                              final SectionManager<ProjectScreenModel> sectionManager,
-                             final ProjectController projectController) {
+                             final LibraryPermissions libraryPermissions) {
         this.view = view;
         this.promises = promises;
         this.notificationEvent = notificationEvent;
@@ -121,7 +122,7 @@ public class SettingsPresenter {
         this.observablePaths = observablePaths;
         this.conflictingRepositoriesPopup = conflictingRepositoriesPopup;
         this.sectionManager = sectionManager;
-        this.projectController = projectController;
+        this.libraryPermissions = libraryPermissions;
     }
 
     @PostConstruct
@@ -328,7 +329,7 @@ public class SettingsPresenter {
     }
 
     public boolean userCanUpdateProject() {
-        return projectContext.getActiveWorkspaceProject().isPresent() && projectController.canUpdateProject(projectContext.getActiveWorkspaceProject().get());
+        return projectContext.getActiveWorkspaceProject().isPresent() && libraryPermissions.userCanUpdateProject(projectContext.getActiveWorkspaceProject().get());
     }
 
     public boolean mayClose() {

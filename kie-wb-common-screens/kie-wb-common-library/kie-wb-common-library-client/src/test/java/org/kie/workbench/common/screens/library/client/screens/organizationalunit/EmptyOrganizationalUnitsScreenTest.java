@@ -15,12 +15,12 @@
  */
 package org.kie.workbench.common.screens.library.client.screens.organizationalunit;
 
-import org.guvnor.structure.client.security.OrganizationalUnitController;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.library.client.screens.organizationalunit.popup.OrganizationalUnitPopUpPresenter;
+import org.kie.workbench.common.screens.library.client.util.LibraryPermissions;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -36,7 +36,7 @@ public class EmptyOrganizationalUnitsScreenTest {
     private ManagedInstance<OrganizationalUnitPopUpPresenter> organizationalUnitPopUpPresenters;
 
     @Mock
-    private OrganizationalUnitController organizationalUnitController;
+    private LibraryPermissions libraryPermissions;
 
     @Mock
     private OrganizationalUnitPopUpPresenter organizationalUnitPopUpPresenter;
@@ -47,11 +47,11 @@ public class EmptyOrganizationalUnitsScreenTest {
     public void setup() {
         doReturn(organizationalUnitPopUpPresenter).when(organizationalUnitPopUpPresenters).get();
 
-        doReturn(true).when(organizationalUnitController).canCreateOrgUnits();
+        doReturn(true).when(libraryPermissions).userCanCreateOrganizationalUnit();
 
         emptyOrganizationalUnitsScreen = new EmptyOrganizationalUnitsScreen(view,
                                                                             organizationalUnitPopUpPresenters,
-                                                                            organizationalUnitController);
+                                                                            libraryPermissions);
     }
 
     @Test
@@ -70,7 +70,7 @@ public class EmptyOrganizationalUnitsScreenTest {
 
     @Test
     public void addProjectWithoutPermissionTest() {
-        doReturn(false).when(organizationalUnitController).canCreateOrgUnits();
+        doReturn(false).when(libraryPermissions).userCanCreateOrganizationalUnit();
 
         emptyOrganizationalUnitsScreen.createOrganizationalUnit();
 

@@ -23,7 +23,6 @@ import javax.enterprise.event.Event;
 
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
-import org.guvnor.structure.client.security.OrganizationalUnitController;
 import org.guvnor.structure.organizationalunit.NewOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.RemoveOrganizationalUnitEvent;
@@ -38,6 +37,7 @@ import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.api.preferences.LibraryInternalPreferences;
 import org.kie.workbench.common.screens.library.api.sync.ClusterLibraryEvent;
 import org.kie.workbench.common.screens.library.client.screens.organizationalunit.popup.OrganizationalUnitPopUpPresenter;
+import org.kie.workbench.common.screens.library.client.util.LibraryPermissions;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.screens.library.client.util.TranslationUtils;
 import org.kie.workbench.common.screens.library.client.widgets.common.TileWidget;
@@ -65,7 +65,7 @@ public class OrganizationalUnitsScreenTest {
     private OrganizationalUnitPopUpPresenter organizationalUnitPopUpPresenter;
 
     @Mock
-    private OrganizationalUnitController organizationalUnitController;
+    private LibraryPermissions libraryPermissions;
 
     @Mock
     private ManagedInstance<TileWidget> organizationalUnitTileWidgets;
@@ -117,16 +117,16 @@ public class OrganizationalUnitsScreenTest {
                                                       libraryPlaces,
                                                       libraryServiceCaller,
                                                       organizationalUnitPopUpPresenter,
-                                                      organizationalUnitController,
+                                                      libraryPermissions,
                                                       organizationalUnitTileWidgets,
                                                       projectContextChangeEvent,
                                                       mock(WorkspaceProjectContext.class),
                                                       libraryInternalPreferences,
                                                       emptyOrganizationalUnitsScreen));
 
-        doReturn(true).when(organizationalUnitController).canCreateOrgUnits();
-        doReturn(true).when(organizationalUnitController).canReadOrgUnits();
-        doReturn(true).when(organizationalUnitController).canReadOrgUnit(any());
+        doReturn(true).when(libraryPermissions).userCanCreateOrganizationalUnit();
+        doReturn(true).when(libraryPermissions).userCanReadOrganizationalUnits();
+        doReturn(true).when(libraryPermissions).userCanReadOrganizationalUnit(any());
 
         doReturn(tileWidget).when(organizationalUnitTileWidgets).get();
 
@@ -135,7 +135,7 @@ public class OrganizationalUnitsScreenTest {
 
     @Test
     public void initWithoutReadAllOrgUnitsPermissionTest() {
-        doReturn(false).when(organizationalUnitController).canReadOrgUnits();
+        doReturn(false).when(libraryPermissions).userCanReadOrganizationalUnits();
 
         presenter.init();
 

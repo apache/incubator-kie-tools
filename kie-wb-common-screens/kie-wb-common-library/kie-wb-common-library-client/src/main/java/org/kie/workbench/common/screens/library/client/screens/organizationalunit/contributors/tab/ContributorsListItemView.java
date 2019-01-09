@@ -177,6 +177,11 @@ public class ContributorsListItemView implements ContributorsListItemPresenter.V
     }
 
     @Override
+    public String getContributorTypeNotAllowedMessage() {
+        return ts.format(LibraryConstants.ContributorTypeNotAllowed);
+    }
+
+    @Override
     public void showActions() {
         edit.hidden = !presenter.canEditContributors();
         remove.hidden = !presenter.canRemoveContributor();

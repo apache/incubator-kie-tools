@@ -74,6 +74,8 @@ public class ContributorsListItemPresenter {
         String getSingleOwnerIsMandatoryMessage();
 
         String getDuplicatedContributorMessage();
+
+        String getContributorTypeNotAllowedMessage();
     }
 
     private View view;
@@ -182,10 +184,20 @@ public class ContributorsListItemPresenter {
             return false;
         }
 
+        if (!contributorsListService.canEditContributors(currentContributors, contributor.getType())) {
+            notificationEvent.fire(new NotificationEvent(view.getContributorTypeNotAllowedMessage(),
+                                                         NotificationEvent.NotificationType.ERROR));
+            return false;
+        }
+
         return true;
     }
 
     public void remove() {
+        if (!canRemoveContributor()) {
+            return;
+        }
+
         contributorsListService.getContributors(contributors -> {
             if (isLastOwner(persistedContributor, contributors)) {
                 notificationEvent.fire(new NotificationEvent(view.getSingleOwnerIsMandatoryMessage(),
@@ -243,7 +255,7 @@ public class ContributorsListItemPresenter {
     }
 
     public boolean canEditContributors() {
-        return parentPresenter.canEditContributors();
+        return persistedContributor != null && parentPresenter.canEditContributors(persistedContributor.getType());
     }
 
     public View getView() {

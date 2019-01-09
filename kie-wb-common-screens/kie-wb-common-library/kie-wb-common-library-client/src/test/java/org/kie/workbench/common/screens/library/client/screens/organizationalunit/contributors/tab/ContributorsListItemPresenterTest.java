@@ -105,6 +105,7 @@ public class ContributorsListItemPresenterTest {
         doReturn(Arrays.asList("admin", "newContributor")).when(parentPresenter).getValidUsernames();
 
         final ContributorsListService contributorsListService = mock(ContributorsListService.class);
+        doReturn(true).when(contributorsListService).canEditContributors(any(), any());
         final Contributor contributor1 = new Contributor("admin", ContributorType.OWNER);
         doAnswer(invocationOnMock -> {
             final List<Contributor> contributors = new ArrayList<>();
@@ -137,6 +138,7 @@ public class ContributorsListItemPresenterTest {
         doReturn(Arrays.asList("admin", "newName")).when(parentPresenter).getValidUsernames();
 
         final ContributorsListService contributorsListService = mock(ContributorsListService.class);
+        doReturn(true).when(contributorsListService).canEditContributors(any(), any());
         final Contributor persistedContributor = new Contributor("admin", ContributorType.OWNER);
         doAnswer(invocationOnMock -> {
             final List<Contributor> contributors = new ArrayList<>();
@@ -198,8 +200,11 @@ public class ContributorsListItemPresenterTest {
             return null;
         }).when(contributorsListService).getContributors(any());
 
+        final ContributorsListPresenter parentPresenter = mock(ContributorsListPresenter.class);
+        doReturn(true).when(parentPresenter).canEditContributors(any());
+
         presenter.setup(contributor2,
-                        mock(ContributorsListPresenter.class),
+                        parentPresenter,
                         contributorsListService);
         presenter.remove();
 
@@ -217,8 +222,11 @@ public class ContributorsListItemPresenterTest {
             return null;
         }).when(contributorsListService).getContributors(any());
 
+        final ContributorsListPresenter parentPresenter = mock(ContributorsListPresenter.class);
+        doReturn(true).when(parentPresenter).canEditContributors(any());
+
         presenter.setup(contributor,
-                        mock(ContributorsListPresenter.class),
+                        parentPresenter,
                         contributorsListService);
         presenter.remove();
 

@@ -24,7 +24,6 @@ import javax.inject.Inject;
 
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
-import org.guvnor.structure.client.security.OrganizationalUnitController;
 import org.guvnor.structure.organizationalunit.NewOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.RemoveOrganizationalUnitEvent;
@@ -37,6 +36,7 @@ import org.kie.workbench.common.screens.library.api.preferences.LibraryInternalP
 import org.kie.workbench.common.screens.library.api.sync.ClusterLibraryEvent;
 import org.kie.workbench.common.screens.library.client.perspective.LibraryPerspective;
 import org.kie.workbench.common.screens.library.client.screens.organizationalunit.popup.OrganizationalUnitPopUpPresenter;
+import org.kie.workbench.common.screens.library.client.util.LibraryPermissions;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.screens.library.client.widgets.common.TileWidget;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
@@ -76,7 +76,7 @@ public class OrganizationalUnitsScreen {
 
     private OrganizationalUnitPopUpPresenter organizationalUnitPopUpPresenter;
 
-    private OrganizationalUnitController organizationalUnitController;
+    private LibraryPermissions libraryPermissions;
 
     private ManagedInstance<TileWidget> organizationalUnitTileWidgets;
 
@@ -94,7 +94,7 @@ public class OrganizationalUnitsScreen {
                                      final LibraryPlaces libraryPlaces,
                                      final Caller<LibraryService> libraryService,
                                      final OrganizationalUnitPopUpPresenter organizationalUnitPopUpPresenter,
-                                     final OrganizationalUnitController organizationalUnitController,
+                                     final LibraryPermissions libraryPermissions,
                                      final ManagedInstance<TileWidget> organizationalUnitTileWidgets,
                                      final Event<WorkspaceProjectContextChangeEvent> projectContextChangeEvent,
                                      final WorkspaceProjectContext projectContext,
@@ -104,7 +104,7 @@ public class OrganizationalUnitsScreen {
         this.libraryPlaces = libraryPlaces;
         this.libraryService = libraryService;
         this.organizationalUnitPopUpPresenter = organizationalUnitPopUpPresenter;
-        this.organizationalUnitController = organizationalUnitController;
+        this.libraryPermissions = libraryPermissions;
         this.organizationalUnitTileWidgets = organizationalUnitTileWidgets;
         this.projectContextChangeEvent = projectContextChangeEvent;
         this.projectContext = projectContext;
@@ -187,7 +187,7 @@ public class OrganizationalUnitsScreen {
     }
 
     public boolean canCreateOrganizationalUnit() {
-        return organizationalUnitController.canCreateOrgUnits();
+        return libraryPermissions.userCanCreateOrganizationalUnit();
     }
 
     @WorkbenchPartTitle

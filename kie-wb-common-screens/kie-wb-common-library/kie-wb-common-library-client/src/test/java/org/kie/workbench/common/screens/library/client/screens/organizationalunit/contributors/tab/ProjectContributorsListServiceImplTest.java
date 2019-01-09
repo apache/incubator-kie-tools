@@ -17,6 +17,7 @@
 package org.kie.workbench.common.screens.library.client.screens.organizationalunit.contributors.tab;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.guvnor.common.services.project.client.security.ProjectController;
@@ -32,15 +33,16 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.mocks.CallerMock;
+import org.uberfire.mocks.SessionInfoMock;
+import org.uberfire.rpc.SessionInfo;
 import org.uberfire.spaces.Space;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ProjectContributorsListServiceImplTest {
@@ -53,15 +55,22 @@ public class ProjectContributorsListServiceImplTest {
     private Caller<RepositoryService> repositoryServiceCaller;
 
     @Mock
-    private ProjectController projectController;
+    private SpaceContributorsListServiceImpl spaceContributorsListService;
 
     @Mock
-    private SpaceContributorsListServiceImpl spaceContributorsListService;
+    private SessionInfo sessionInfo;
+
+    @Mock
+    private ProjectController projectController;
+
+    @Spy
+    private ContributorsSecurityUtils contributorsSecurityUtils;
 
     private ProjectContributorsListServiceImpl service;
 
     @Before
     public void setup() {
+        sessionInfo = new SessionInfoMock("owner");
         repositoryServiceCaller = new CallerMock<>(repositoryService);
 
         final OrganizationalUnit activeSpace = mock(OrganizationalUnit.class);
@@ -76,16 +85,18 @@ public class ProjectContributorsListServiceImplTest {
 
         service = new ProjectContributorsListServiceImpl(libraryPlaces,
                                                          repositoryServiceCaller,
+                                                         spaceContributorsListService,
+                                                         sessionInfo,
                                                          projectController,
-                                                         spaceContributorsListService);
+                                                         contributorsSecurityUtils);
     }
 
     @Test
     public void getContributorsTest() {
         final List<Contributor> contributors = new ArrayList<>();
-        contributors.add(new Contributor("admin", ContributorType.OWNER));
-        contributors.add(new Contributor("user", ContributorType.CONTRIBUTOR));
-        contributors.add(new Contributor("Director", ContributorType.ADMIN));
+        contributors.add(new Contributor("owner", ContributorType.OWNER));
+        contributors.add(new Contributor("contributor", ContributorType.CONTRIBUTOR));
+        contributors.add(new Contributor("admin", ContributorType.ADMIN));
 
         final Repository repository = mock(Repository.class);
         doReturn(contributors).when(repository).getContributors();
@@ -103,12 +114,54 @@ public class ProjectContributorsListServiceImplTest {
         doReturn(repository).when(repositoryService).getRepositoryFromSpace(any(), any());
 
         final List<Contributor> contributors = new ArrayList<>();
-        contributors.add(new Contributor("admin", ContributorType.OWNER));
-        contributors.add(new Contributor("user", ContributorType.CONTRIBUTOR));
-        contributors.add(new Contributor("Director", ContributorType.ADMIN));
+        contributors.add(new Contributor("owner", ContributorType.OWNER));
+        contributors.add(new Contributor("contributor", ContributorType.CONTRIBUTOR));
+        contributors.add(new Contributor("admin", ContributorType.ADMIN));
 
         service.saveContributors(contributors, () -> {}, null);
 
         verify(repositoryService).updateContributors(repository, contributors);
+    }
+
+    @Test
+    public void userCanEditContributors() {
+        doReturn(true).when(projectController).canUpdateProject(any());
+        assertTrue(service.canEditContributors(Collections.emptyList(), ContributorType.CONTRIBUTOR));
+    }
+
+    @Test
+    public void userCanNotEditContributors() {
+        doReturn(false).when(projectController).canUpdateProject(any());
+        assertFalse(service.canEditContributors(Collections.emptyList(), ContributorType.CONTRIBUTOR));
+    }
+
+    @Test
+    public void ownerCanEditContributors() {
+        final List<Contributor> contributors = new ArrayList<>();
+        contributors.add(new Contributor("owner", ContributorType.OWNER));
+
+        assertTrue(service.canEditContributors(contributors, ContributorType.OWNER));
+        assertTrue(service.canEditContributors(contributors, ContributorType.ADMIN));
+        assertTrue(service.canEditContributors(contributors, ContributorType.CONTRIBUTOR));
+    }
+
+    @Test
+    public void adminCanEditSomeContributors() {
+        final List<Contributor> contributors = new ArrayList<>();
+        contributors.add(new Contributor("owner", ContributorType.ADMIN));
+
+        assertFalse(service.canEditContributors(contributors, ContributorType.OWNER));
+        assertTrue(service.canEditContributors(contributors, ContributorType.ADMIN));
+        assertTrue(service.canEditContributors(contributors, ContributorType.CONTRIBUTOR));
+    }
+
+    @Test
+    public void contributorCanNotEditContributors() {
+        final List<Contributor> contributors = new ArrayList<>();
+        contributors.add(new Contributor("owner", ContributorType.CONTRIBUTOR));
+
+        assertFalse(service.canEditContributors(contributors, ContributorType.OWNER));
+        assertFalse(service.canEditContributors(contributors, ContributorType.ADMIN));
+        assertFalse(service.canEditContributors(contributors, ContributorType.CONTRIBUTOR));
     }
 }

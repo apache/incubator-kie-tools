@@ -514,4 +514,7 @@ public class LibraryConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String DuplicatedContributor = "DuplicatedContributor";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ContributorTypeNotAllowed = "ContributorTypeNotAllowed";
 }

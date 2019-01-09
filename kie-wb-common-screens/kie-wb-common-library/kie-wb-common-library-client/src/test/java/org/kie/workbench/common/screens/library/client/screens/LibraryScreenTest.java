@@ -40,6 +40,7 @@ import org.kie.workbench.common.screens.library.client.screens.importrepository.
 import org.kie.workbench.common.screens.library.client.screens.organizationalunit.contributors.tab.ContributorsListPresenter;
 import org.kie.workbench.common.screens.library.client.screens.organizationalunit.contributors.tab.SpaceContributorsListServiceImpl;
 import org.kie.workbench.common.screens.library.client.screens.organizationalunit.delete.DeleteOrganizationalUnitPopUpPresenter;
+import org.kie.workbench.common.screens.library.client.util.LibraryPermissions;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -59,10 +60,7 @@ public class LibraryScreenTest {
     private ManagedInstance<DeleteOrganizationalUnitPopUpPresenter> deleteOrganizationalUnitPopUpPresenters;
 
     @Mock
-    private OrganizationalUnitController organizationalUnitController;
-
-    @Mock
-    private ProjectController projectController;
+    private LibraryPermissions libraryPermissions;
 
     @Mock
     private EmptyLibraryScreen emptyLibraryScreen;
@@ -110,9 +108,9 @@ public class LibraryScreenTest {
         doReturn(deleteOrganizationalUnitPopUpPresenter).when(deleteOrganizationalUnitPopUpPresenters).get();
         doReturn(orgUnitsMetricsView).when(orgUnitsMetricsScreen).getView();
 
-        doReturn(true).when(projectController).canCreateProjects();
-        doReturn(true).when(organizationalUnitController).canUpdateOrgUnit(any());
-        doReturn(true).when(organizationalUnitController).canDeleteOrgUnit(any());
+        doReturn(true).when(libraryPermissions).userCanCreateProject(any());
+        doReturn(true).when(libraryPermissions).userCanUpdateOrganizationalUnit(any());
+        doReturn(true).when(libraryPermissions).userCanDeleteOrganizationalUnit(any());
 
         doReturn(mock(PopulatedLibraryScreen.View.class)).when(populatedLibraryScreen).getView();
         doReturn(mock(EmptyLibraryScreen.View.class)).when(emptyLibraryScreen).getView();
@@ -132,8 +130,7 @@ public class LibraryScreenTest {
         libraryScreen = spy(new LibraryScreen(view,
                                               deleteOrganizationalUnitPopUpPresenters,
                                               projectContext,
-                                              organizationalUnitController,
-                                              projectController,
+                                              libraryPermissions,
                                               emptyLibraryScreen,
                                               populatedLibraryScreen,
                                               orgUnitsMetricsScreen,
@@ -166,7 +163,7 @@ public class LibraryScreenTest {
 
     @Test
     public void trySamplesWithoutPermissionTest() {
-        doReturn(false).when(projectController).canCreateProjects();
+        doReturn(false).when(libraryPermissions).userCanCreateProject(any());
 
         libraryScreen.trySamples();
 
@@ -183,7 +180,7 @@ public class LibraryScreenTest {
 
     @Test
     public void importProjectWithoutPermissionTest() {
-        doReturn(false).when(projectController).canCreateProjects();
+        doReturn(false).when(libraryPermissions).userCanCreateProject(any());
 
         libraryScreen.importProject();
 
@@ -200,7 +197,7 @@ public class LibraryScreenTest {
 
     @Test
     public void deleteWithoutPermissionTest() {
-        doReturn(false).when(organizationalUnitController).canDeleteOrgUnit(any());
+        doReturn(false).when(libraryPermissions).userCanDeleteOrganizationalUnit(any());
 
         libraryScreen.delete();
 

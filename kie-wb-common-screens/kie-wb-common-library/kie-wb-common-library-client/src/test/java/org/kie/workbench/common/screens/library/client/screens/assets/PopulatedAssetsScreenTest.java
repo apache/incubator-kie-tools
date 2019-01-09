@@ -38,6 +38,7 @@ import org.kie.workbench.common.screens.library.client.screens.EmptyState;
 import org.kie.workbench.common.screens.library.client.screens.ProjectScreenTestBase;
 import org.kie.workbench.common.screens.library.client.screens.assets.events.UpdatedAssetsEvent;
 import org.kie.workbench.common.screens.library.client.util.CategoryUtils;
+import org.kie.workbench.common.screens.library.client.util.LibraryPermissions;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.screens.library.client.widgets.project.AssetItemWidget;
 import org.kie.workbench.common.services.shared.project.KieModule;
@@ -101,7 +102,7 @@ public class PopulatedAssetsScreenTest extends ProjectScreenTestBase {
     private LibraryService libraryService;
 
     @Mock
-    private ProjectController projectController;
+    private LibraryPermissions libraryPermissions;
 
     @Mock
     private CategoriesManagerCache categoriesManagerCache;
@@ -134,7 +135,7 @@ public class PopulatedAssetsScreenTest extends ProjectScreenTestBase {
                                                               assetItemWidget,
                                                               newFileUploader,
                                                               newResourcePresenter,
-                                                              projectController,
+                                                              libraryPermissions,
                                                               new EventSourceMock<>(),
                                                               emptyState,
                                                               categoryUtils,

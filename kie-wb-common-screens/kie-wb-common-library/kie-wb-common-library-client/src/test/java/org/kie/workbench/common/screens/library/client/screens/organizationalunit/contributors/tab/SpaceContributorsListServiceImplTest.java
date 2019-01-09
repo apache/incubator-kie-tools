@@ -17,6 +17,7 @@
 package org.kie.workbench.common.screens.library.client.screens.organizationalunit.contributors.tab;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.guvnor.structure.client.security.OrganizationalUnitController;
@@ -32,9 +33,12 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
+import org.uberfire.mocks.SessionInfoMock;
+import org.uberfire.rpc.SessionInfo;
 import org.uberfire.spaces.Space;
 
 import static org.junit.Assert.*;
@@ -55,16 +59,22 @@ public class SpaceContributorsListServiceImplTest {
     private EventSourceMock<AfterEditOrganizationalUnitEvent> afterEditOrganizationalUnitEvent;
 
     @Mock
-    private OrganizationalUnitController organizationalUnitController;
-
-    @Mock
     private LibraryService libraryService;
     private Caller<LibraryService> libraryServiceCaller;
+
+    private SessionInfo sessionInfo;
+
+    @Mock
+    private OrganizationalUnitController organizationalUnitController;
+
+    @Spy
+    private ContributorsSecurityUtils contributorsSecurityUtils;
 
     private SpaceContributorsListServiceImpl service;
 
     @Before
     public void setup() {
+        sessionInfo = new SessionInfoMock("owner");
         organizationalUnitServiceCaller = new CallerMock<>(organizationalUnitService);
         libraryServiceCaller = new CallerMock<>(libraryService);
 
@@ -75,16 +85,18 @@ public class SpaceContributorsListServiceImplTest {
         service = new SpaceContributorsListServiceImpl(libraryPlaces,
                                                        organizationalUnitServiceCaller,
                                                        afterEditOrganizationalUnitEvent,
+                                                       libraryServiceCaller,
+                                                       sessionInfo,
                                                        organizationalUnitController,
-                                                       libraryServiceCaller);
+                                                       contributorsSecurityUtils);
     }
 
     @Test
     public void getContributorsTest() {
         final List<Contributor> contributors = new ArrayList<>();
-        contributors.add(new Contributor("admin", ContributorType.OWNER));
-        contributors.add(new Contributor("user", ContributorType.CONTRIBUTOR));
-        contributors.add(new Contributor("Director", ContributorType.ADMIN));
+        contributors.add(new Contributor("owner", ContributorType.OWNER));
+        contributors.add(new Contributor("contributor", ContributorType.CONTRIBUTOR));
+        contributors.add(new Contributor("admin", ContributorType.ADMIN));
 
         final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
         doReturn(contributors).when(organizationalUnit).getContributors();
@@ -104,13 +116,55 @@ public class SpaceContributorsListServiceImplTest {
         doReturn(organizationalUnit).when(organizationalUnitService).updateOrganizationalUnit(any(), any(), any());
 
         final List<Contributor> contributors = new ArrayList<>();
-        contributors.add(new Contributor("admin", ContributorType.OWNER));
-        contributors.add(new Contributor("user", ContributorType.CONTRIBUTOR));
-        contributors.add(new Contributor("Director", ContributorType.ADMIN));
+        contributors.add(new Contributor("owner", ContributorType.OWNER));
+        contributors.add(new Contributor("contributor", ContributorType.CONTRIBUTOR));
+        contributors.add(new Contributor("admin", ContributorType.ADMIN));
 
         service.saveContributors(contributors, () -> {}, null);
 
         verify(organizationalUnitService).updateOrganizationalUnit("ou", null, contributors);
         verify(afterEditOrganizationalUnitEvent).fire(any());
+    }
+
+    @Test
+    public void userCanEditContributors() {
+        doReturn(true).when(organizationalUnitController).canUpdateOrgUnit(any());
+        assertTrue(service.canEditContributors(Collections.emptyList(), ContributorType.CONTRIBUTOR));
+    }
+
+    @Test
+    public void userCanNotEditContributors() {
+        doReturn(false).when(organizationalUnitController).canUpdateOrgUnit(any());
+        assertFalse(service.canEditContributors(Collections.emptyList(), ContributorType.CONTRIBUTOR));
+    }
+
+    @Test
+    public void ownerCanEditContributors() {
+        final List<Contributor> contributors = new ArrayList<>();
+        contributors.add(new Contributor("owner", ContributorType.OWNER));
+
+        assertTrue(service.canEditContributors(contributors, ContributorType.OWNER));
+        assertTrue(service.canEditContributors(contributors, ContributorType.ADMIN));
+        assertTrue(service.canEditContributors(contributors, ContributorType.CONTRIBUTOR));
+    }
+
+    @Test
+    public void adminCanEditSomeContributors() {
+        final List<Contributor> contributors = new ArrayList<>();
+        contributors.add(new Contributor("owner", ContributorType.ADMIN));
+
+        assertFalse(service.canEditContributors(contributors, ContributorType.OWNER));
+        assertTrue(service.canEditContributors(contributors, ContributorType.ADMIN));
+        assertTrue(service.canEditContributors(contributors, ContributorType.CONTRIBUTOR));
+    }
+
+    @Test
+    public void contributorCanNotEditContributors() {
+        final List<Contributor> contributors = new ArrayList<>();
+        contributors.add(new Contributor("owner", ContributorType.CONTRIBUTOR));
+
+        assertFalse(service.canEditContributors(contributors, ContributorType.OWNER));
+        assertFalse(service.canEditContributors(contributors, ContributorType.ADMIN));
+        assertFalse(service.canEditContributors(contributors, ContributorType.CONTRIBUTOR));
     }
 }

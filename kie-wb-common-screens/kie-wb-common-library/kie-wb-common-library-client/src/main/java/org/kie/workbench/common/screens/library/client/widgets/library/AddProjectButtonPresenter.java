@@ -22,6 +22,7 @@ import javax.inject.Inject;
 import org.guvnor.common.services.project.client.security.ProjectController;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.screens.library.client.screens.project.AddProjectPopUpPresenter;
+import org.kie.workbench.common.screens.library.client.util.LibraryPermissions;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.screens.library.client.util.ResourceUtils;
 import org.kie.workbench.common.screens.library.client.widgets.common.MenuResourceHandlerWidget;
@@ -48,7 +49,7 @@ public class AddProjectButtonPresenter {
 
     private NewResourcePresenter newResourcePresenter;
 
-    private ProjectController projectController;
+    private LibraryPermissions libraryPermissions;
 
     private LibraryPlaces libraryPlaces;
 
@@ -58,14 +59,14 @@ public class AddProjectButtonPresenter {
                                      final ManagedInstance<MenuResourceHandlerWidget> menuResourceHandlerWidgets,
                                      final ManagedInstance<NewWorkspaceProjectHandler> newProjectHandlers,
                                      final NewResourcePresenter newResourcePresenter,
-                                     final ProjectController projectController,
+                                     final LibraryPermissions libraryPermissions,
                                      final LibraryPlaces libraryPlaces) {
         this.view = view;
         this.addProjectPopUpPresenters = addProjectPopUpPresenters;
         this.menuResourceHandlerWidgets = menuResourceHandlerWidgets;
         this.newProjectHandlers = newProjectHandlers;
         this.newResourcePresenter = newResourcePresenter;
-        this.projectController = projectController;
+        this.libraryPermissions = libraryPermissions;
         this.libraryPlaces = libraryPlaces;
     }
 
@@ -119,7 +120,7 @@ public class AddProjectButtonPresenter {
     }
 
     public boolean userCanCreateProjects() {
-        return projectController.canCreateProjects();
+        return libraryPermissions.userCanCreateProject(libraryPlaces.getActiveSpace());
     }
 
     public View getView() {

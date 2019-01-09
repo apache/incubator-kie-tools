@@ -183,9 +183,7 @@ public class LibraryServiceImpl implements LibraryService {
     @Override
     public LibraryInfo getLibraryInfo(final OrganizationalUnit organizationalUnit) {
         final Collection<WorkspaceProject> projects = projectService.getAllWorkspaceProjects(organizationalUnit).stream()
-                .filter(p -> authorizationManager.authorize(p.getRepository(),
-                                                            RepositoryAction.READ,
-                                                            sessionInfo.getIdentity()))
+                .filter(p -> userCanReadProject(p))
                 .collect(Collectors.toList());
 
         projects.stream().forEach(p -> {
@@ -195,6 +193,11 @@ public class LibraryServiceImpl implements LibraryService {
         });
 
         return new LibraryInfo(projects);
+    }
+
+    private boolean userCanReadProject(final WorkspaceProject project) {
+        return authorizationManager.authorize(project.getRepository(), RepositoryAction.READ, sessionInfo.getIdentity())
+                || project.getRepository().getContributors().stream().anyMatch(c -> c.getUsername().equals(sessionInfo.getIdentity().getIdentifier()));
     }
 
     @Override

@@ -20,6 +20,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
+import org.guvnor.structure.contributors.ContributorType;
 import org.jboss.errai.common.client.dom.Button;
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.HTMLElement;
@@ -57,7 +58,7 @@ public class ContributorsListView implements ContributorsListPresenter.View,
         this.presenter = presenter;
         filterText.setAttribute("placeholder",
                                 ts.getTranslation(LibraryConstants.Search));
-        addContributor.setHidden(!presenter.canEditContributors());
+        addContributor.setHidden(!presenter.canEditContributors(ContributorType.CONTRIBUTOR));
     }
 
     @Override
@@ -82,7 +83,7 @@ public class ContributorsListView implements ContributorsListPresenter.View,
 
     @Override
     public void showAddContributor() {
-        addContributor.setHidden(!presenter.canEditContributors());
+        addContributor.setHidden(!presenter.canEditContributors(ContributorType.CONTRIBUTOR));
     }
 
     @Override

@@ -18,18 +18,21 @@ package org.kie.workbench.common.screens.library.client.screens.organizationalun
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
 
 import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.structure.contributors.Contributor;
+import org.guvnor.structure.contributors.ContributorType;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
+import org.uberfire.rpc.SessionInfo;
 
 public class ProjectContributorsListServiceImpl implements ContributorsListService {
 
@@ -37,19 +40,27 @@ public class ProjectContributorsListServiceImpl implements ContributorsListServi
 
     private Caller<RepositoryService> repositoryService;
 
+    private SpaceContributorsListServiceImpl spaceContributorsListService;
+
+    private SessionInfo sessionInfo;
+
     private ProjectController projectController;
 
-    private SpaceContributorsListServiceImpl spaceContributorsListService;
+    private ContributorsSecurityUtils contributorsSecurityUtils;
 
     @Inject
     public ProjectContributorsListServiceImpl(final LibraryPlaces libraryPlaces,
                                               final Caller<RepositoryService> repositoryService,
+                                              final SpaceContributorsListServiceImpl spaceContributorsListService,
+                                              final SessionInfo sessionInfo,
                                               final ProjectController projectController,
-                                              final SpaceContributorsListServiceImpl spaceContributorsListService) {
+                                              final ContributorsSecurityUtils contributorsSecurityUtils) {
         this.libraryPlaces = libraryPlaces;
         this.repositoryService = repositoryService;
-        this.projectController = projectController;
         this.spaceContributorsListService = spaceContributorsListService;
+        this.sessionInfo = sessionInfo;
+        this.projectController = projectController;
+        this.contributorsSecurityUtils = contributorsSecurityUtils;
     }
 
     @Override
@@ -69,9 +80,22 @@ public class ProjectContributorsListServiceImpl implements ContributorsListServi
     }
 
     @Override
-    public boolean canEditContributors() {
-        return projectController.canUpdateProject(libraryPlaces.getActiveWorkspace());
+    public boolean canEditContributors(final List<Contributor> contributors,
+                                       final ContributorType type) {
+        boolean canEdit = false;
+
+        final Optional<Contributor> contributor = contributors.stream().filter(c -> c.getUsername().equals(sessionInfo.getIdentity().getIdentifier())).findFirst();
+        if (contributor.isPresent()) {
+            final ContributorType userContributorType = contributor.get().getType();
+            canEdit = contributorsSecurityUtils.canUserEditContributorOfType(userContributorType, type);
+        }
+
+        canEdit = canEdit || projectController.canUpdateProject(libraryPlaces.getActiveWorkspace());
+
+        return canEdit;
     }
+
+
 
     @Override
     public void getValidUsernames(Consumer<List<String>> validUsernamesConsumer) {
