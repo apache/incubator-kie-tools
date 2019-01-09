@@ -59,6 +59,7 @@ import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystem;
 import org.uberfire.java.nio.fs.jgit.JGitPathImpl;
 import org.uberfire.java.nio.fs.jgit.util.Git;
+import org.uberfire.mocks.SessionInfoMock;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Resource;
 import org.uberfire.security.authz.AuthorizationManager;
@@ -108,7 +109,6 @@ public class OrganizationalUnitServiceTest {
     @Mock
     private AuthorizationManager authorizationManager;
 
-    @Mock
     private SessionInfo sessionInfo;
 
     @Mock
@@ -127,6 +127,7 @@ public class OrganizationalUnitServiceTest {
 
     @Before
     public void setUp() throws Exception {
+        sessionInfo = new SessionInfoMock();
         backward = new BackwardCompatibleUtil(configurationFactory);
         organizationalUnitFactory = spy(new OrganizationalUnitFactoryImpl(repositoryService,
                                                                           backward,
@@ -158,15 +159,28 @@ public class OrganizationalUnitServiceTest {
     @Test
     public void testAllOrgUnits() throws Exception {
         Collection<OrganizationalUnit> orgUnits = organizationalUnitService.getAllOrganizationalUnits();
-        assertEquals(orgUnits.size(),
-                     1);
+        assertEquals(1, orgUnits.size());
     }
 
     @Test
     public void testSecuredOrgUnits() throws Exception {
         Collection<OrganizationalUnit> orgUnits = organizationalUnitService.getOrganizationalUnits();
-        assertEquals(orgUnits.size(),
-                     0);
+        assertEquals(0, orgUnits.size());
+    }
+
+    @Test
+    public void testSecuredOrgUnitsWithPermission() throws Exception {
+        when(authorizationManager.authorize(any(Resource.class),
+                                            any(User.class))).thenReturn(true);
+        Collection<OrganizationalUnit> orgUnits = organizationalUnitService.getOrganizationalUnits();
+        assertEquals(1, orgUnits.size());
+    }
+
+    @Test
+    public void testSecuredOrgUnitsToCollaborators() throws Exception {
+        when(orgUnit.getContributors()).thenReturn(Collections.singletonList(new Contributor("admin", ContributorType.OWNER)));
+        Collection<OrganizationalUnit> orgUnits = organizationalUnitService.getOrganizationalUnits();
+        assertEquals(1, orgUnits.size());
     }
 
     @Test
