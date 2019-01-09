@@ -31,11 +31,13 @@ public class ProxyPopupNumericShortDropDownEditCell extends
 
     public ProxyPopupNumericShortDropDownEditCell(final String factType,
                                                   final String factField,
+                                                  final String operator,
                                                   final AsyncPackageDataModelOracle dmo,
                                                   final CellTableDropDownDataValueMapProvider dropDownManager,
                                                   final boolean isReadOnly) {
         super(factType,
               factField,
+              operator,
               dmo,
               dropDownManager,
               isReadOnly);
@@ -58,8 +60,8 @@ public class ProxyPopupNumericShortDropDownEditCell extends
     }
 
     @Override
-    protected ProxyPopupDropDown<Short> getMultipleValueEditor() {
-        return new AbstractProxyPopupDropDownListBox<Short>(this) {
+    protected ProxyPopupDropDown<Short> getMultipleValueEditor(final String operator) {
+        return new AbstractProxyPopupDropDownListBox<Short>(this, operator) {
             @Override
             public String convertToString(final Short value) {
                 return ProxyPopupNumericShortDropDownEditCell.this.convertToString(value);

@@ -45,6 +45,7 @@ public abstract class AbstractProxyPopupDropDownEditCell<C, V> extends
 
     public AbstractProxyPopupDropDownEditCell(final String factType,
                                               final String factField,
+                                              final String operator,
                                               final AsyncPackageDataModelOracle dmo,
                                               final CellTableDropDownDataValueMapProvider dropDownManager,
                                               final boolean isReadOnly) {
@@ -53,7 +54,7 @@ public abstract class AbstractProxyPopupDropDownEditCell<C, V> extends
         this.factField = factField;
         this.dropDownManager = dropDownManager;
         this.singleValueEditor = getSingleValueEditor();
-        this.multipleValueEditor = getMultipleValueEditor();
+        this.multipleValueEditor = getMultipleValueEditor(operator);
         this.dmo = dmo;
     }
 
@@ -156,5 +157,5 @@ public abstract class AbstractProxyPopupDropDownEditCell<C, V> extends
 
     protected abstract ProxyPopupDropDown<C> getSingleValueEditor();
 
-    protected abstract ProxyPopupDropDown<C> getMultipleValueEditor();
+    protected abstract ProxyPopupDropDown<C> getMultipleValueEditor(final String operator);
 }

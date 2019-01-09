@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.google.gwt.cell.client.Cell;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
@@ -28,16 +29,13 @@ import com.google.gwt.text.shared.SafeHtmlRenderer;
 import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.ListBox;
 import org.kie.soup.project.datamodel.oracle.DropDownData;
+import org.kie.soup.project.datamodel.oracle.OperatorsOracle;
 import org.kie.workbench.common.widgets.client.widget.EnumDropDownUtilities;
 
 /**
  * A Popup drop-down Editor for use within AbstractProxyPopupDropDownEditCell
  */
 public abstract class AbstractProxyPopupDropDownListBox<C> implements ProxyPopupDropDown<C> {
-
-    private String[][] items;
-    private final ListBox listBox;
-    private final AbstractProxyPopupDropDownEditCell proxy;
 
     final EnumDropDownUtilities utilities = new EnumDropDownUtilities() {
         @Override
@@ -50,10 +48,16 @@ public abstract class AbstractProxyPopupDropDownListBox<C> implements ProxyPopup
             //Nothing needed by default
         }
     };
+    private final ListBox listBox;
+    private final AbstractProxyPopupDropDownEditCell proxy;
+    private String[][] items;
 
-    public AbstractProxyPopupDropDownListBox(final AbstractProxyPopupDropDownEditCell proxy) {
+    public AbstractProxyPopupDropDownListBox(final AbstractProxyPopupDropDownEditCell proxy,
+                                             final String operator) {
 
-        this.listBox = new ListBox();
+        this.listBox = GWT.create(ListBox.class);// new ListBox();
+        this.listBox.setMultipleSelect(OperatorsOracle.operatorRequiresList(operator));
+
         this.proxy = proxy;
 
         // Tabbing out of the ListBox commits changes
@@ -79,12 +83,6 @@ public abstract class AbstractProxyPopupDropDownListBox<C> implements ProxyPopup
             String label = getLabel(convertToString(value));
             sb.append(renderer.render(label));
         }
-    }
-
-    @Override
-    public void setValue(final C value) {
-        final String[] convertedValues = new String[]{convertToString(value)};
-        setDropDownData(DropDownData.create(convertedValues));
     }
 
     @Override
@@ -140,6 +138,12 @@ public abstract class AbstractProxyPopupDropDownListBox<C> implements ProxyPopup
         }
 
         return convertFromString(value);
+    }
+
+    @Override
+    public void setValue(final C value) {
+        final String[] convertedValues = new String[]{convertToString(value)};
+        setDropDownData(DropDownData.create(convertedValues));
     }
 
     // Start editing the cell

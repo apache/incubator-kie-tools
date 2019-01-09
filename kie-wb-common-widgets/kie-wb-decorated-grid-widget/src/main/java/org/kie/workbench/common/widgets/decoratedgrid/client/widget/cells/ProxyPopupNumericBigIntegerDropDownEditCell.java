@@ -33,11 +33,13 @@ public class ProxyPopupNumericBigIntegerDropDownEditCell extends
 
     public ProxyPopupNumericBigIntegerDropDownEditCell(final String factType,
                                                        final String factField,
+                                                       final String operator,
                                                        final AsyncPackageDataModelOracle dmo,
                                                        final CellTableDropDownDataValueMapProvider dropDownManager,
                                                        final boolean isReadOnly) {
         super(factType,
               factField,
+              operator,
               dmo,
               dropDownManager,
               isReadOnly);
@@ -60,8 +62,8 @@ public class ProxyPopupNumericBigIntegerDropDownEditCell extends
     }
 
     @Override
-    protected ProxyPopupDropDown<BigInteger> getMultipleValueEditor() {
-        return new AbstractProxyPopupDropDownListBox<BigInteger>(this) {
+    protected ProxyPopupDropDown<BigInteger> getMultipleValueEditor(final String operator) {
+        return new AbstractProxyPopupDropDownListBox<BigInteger>(this, operator) {
             @Override
             public String convertToString(final BigInteger value) {
                 return ProxyPopupNumericBigIntegerDropDownEditCell.this.convertToString(value);

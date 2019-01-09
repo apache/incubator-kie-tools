@@ -33,11 +33,13 @@ public class ProxyPopupNumericBigDecimalDropDownEditCell extends
 
     public ProxyPopupNumericBigDecimalDropDownEditCell(final String factType,
                                                        final String factField,
+                                                       final String operator,
                                                        final AsyncPackageDataModelOracle dmo,
                                                        final CellTableDropDownDataValueMapProvider dropDownManager,
                                                        final boolean isReadOnly) {
         super(factType,
               factField,
+              operator,
               dmo,
               dropDownManager,
               isReadOnly);
@@ -60,8 +62,8 @@ public class ProxyPopupNumericBigDecimalDropDownEditCell extends
     }
 
     @Override
-    protected ProxyPopupDropDown<BigDecimal> getMultipleValueEditor() {
-        return new AbstractProxyPopupDropDownListBox<BigDecimal>(this) {
+    protected ProxyPopupDropDown<BigDecimal> getMultipleValueEditor(final String operator) {
+        return new AbstractProxyPopupDropDownListBox<BigDecimal>(this, operator) {
             @Override
             public String convertToString(final BigDecimal value) {
                 return ProxyPopupNumericBigDecimalDropDownEditCell.this.convertToString(value);

@@ -31,11 +31,13 @@ public class ProxyPopupTextDropDownEditCell extends
 
     public ProxyPopupTextDropDownEditCell(final String factType,
                                           final String factField,
+                                          final String operator,
                                           final AsyncPackageDataModelOracle dmo,
                                           final CellTableDropDownDataValueMapProvider dropDownManager,
                                           final boolean isReadOnly) {
         super(factType,
               factField,
+              operator,
               dmo,
               dropDownManager,
               isReadOnly);
@@ -58,8 +60,8 @@ public class ProxyPopupTextDropDownEditCell extends
     }
 
     @Override
-    protected ProxyPopupDropDown<String> getMultipleValueEditor() {
-        return new AbstractProxyPopupDropDownListBox<String>(this) {
+    protected ProxyPopupDropDown<String> getMultipleValueEditor(final String operator) {
+        return new AbstractProxyPopupDropDownListBox<String>(this, operator) {
             @Override
             public String convertToString(final String value) {
                 return value;

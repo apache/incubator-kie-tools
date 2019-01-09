@@ -31,11 +31,13 @@ public class ProxyPopupNumericByteDropDownEditCell extends
 
     public ProxyPopupNumericByteDropDownEditCell(final String factType,
                                                  final String factField,
+                                                 final String operator,
                                                  final AsyncPackageDataModelOracle dmo,
                                                  final CellTableDropDownDataValueMapProvider dropDownManager,
                                                  final boolean isReadOnly) {
         super(factType,
               factField,
+              operator,
               dmo,
               dropDownManager,
               isReadOnly);
@@ -58,8 +60,8 @@ public class ProxyPopupNumericByteDropDownEditCell extends
     }
 
     @Override
-    protected ProxyPopupDropDown<Byte> getMultipleValueEditor() {
-        return new AbstractProxyPopupDropDownListBox<Byte>(this) {
+    protected ProxyPopupDropDown<Byte> getMultipleValueEditor(final String operator) {
+        return new AbstractProxyPopupDropDownListBox<Byte>(this, operator) {
             @Override
             public String convertToString(final Byte value) {
                 return ProxyPopupNumericByteDropDownEditCell.this.convertToString(value);

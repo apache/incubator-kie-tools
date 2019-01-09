@@ -32,64 +32,65 @@ public class ProxyPopupDateDropDownEditCell extends
 
     private DateTimeFormat format;
 
-    public ProxyPopupDateDropDownEditCell( final String factType,
-                                           final String factField,
-                                           final AsyncPackageDataModelOracle dmo,
-                                           final CellTableDropDownDataValueMapProvider dropDownManager,
-                                           final boolean isReadOnly,
-                                           final DateTimeFormat format ) {
-        super( factType,
-               factField,
-               dmo,
-               dropDownManager,
-               isReadOnly );
+    public ProxyPopupDateDropDownEditCell(final String factType,
+                                          final String factField,
+                                          final String operator,
+                                          final AsyncPackageDataModelOracle dmo,
+                                          final CellTableDropDownDataValueMapProvider dropDownManager,
+                                          final boolean isReadOnly,
+                                          final DateTimeFormat format) {
+        super(factType,
+              factField,
+              operator,
+              dmo,
+              dropDownManager,
+              isReadOnly);
         this.format = format;
     }
 
     @Override
     protected ProxyPopupDropDown<Date> getSingleValueEditor() {
-        return new AbstractProxyPopupDropDownDatePicker( this ) {
+        return new AbstractProxyPopupDropDownDatePicker(this) {
             @Override
-            public String convertToString( final Date value ) {
-                return ProxyPopupDateDropDownEditCell.this.convertToString( value );
+            public String convertToString(final Date value) {
+                return ProxyPopupDateDropDownEditCell.this.convertToString(value);
             }
 
             @Override
-            public Date convertFromString( final String value ) {
-                return ProxyPopupDateDropDownEditCell.this.convertFromString( value );
+            public Date convertFromString(final String value) {
+                return ProxyPopupDateDropDownEditCell.this.convertFromString(value);
             }
         };
     }
 
     @Override
-    protected ProxyPopupDropDown<Date> getMultipleValueEditor() {
-        return new AbstractProxyPopupDropDownListBox<Date>( this ) {
+    protected ProxyPopupDropDown<Date> getMultipleValueEditor(final String operator) {
+        return new AbstractProxyPopupDropDownListBox<Date>(this, operator) {
             @Override
-            public String convertToString( final Date value ) {
-                return ProxyPopupDateDropDownEditCell.this.convertToString( value );
+            public String convertToString(final Date value) {
+                return ProxyPopupDateDropDownEditCell.this.convertToString(value);
             }
 
             @Override
-            public Date convertFromString( final String value ) {
-                return ProxyPopupDateDropDownEditCell.this.convertFromString( value );
+            public Date convertFromString(final String value) {
+                return ProxyPopupDateDropDownEditCell.this.convertFromString(value);
             }
         };
     }
 
-    private String convertToString( final Date value ) {
-        return ( value == null ? null : format.format( value ) );
+    private String convertToString(final Date value) {
+        return (value == null ? null : format.format(value));
     }
 
-    private Date convertFromString( final String value ) {
+    private Date convertFromString(final String value) {
         Date date = null;
-        if ( value.length() > 0 ) {
+        if (value.length() > 0) {
             try {
-                date = format.parse( value );
-            } catch ( IllegalArgumentException e ) {
+                date = format.parse(value);
+            } catch (IllegalArgumentException e) {
                 date = new Date();
             }
         }
         return date;
     }
-
 }

@@ -31,11 +31,13 @@ public class ProxyPopupNumericFloatDropDownEditCell extends
 
     public ProxyPopupNumericFloatDropDownEditCell(final String factType,
                                                   final String factField,
+                                                  final String operator,
                                                   final AsyncPackageDataModelOracle dmo,
                                                   final CellTableDropDownDataValueMapProvider dropDownManager,
                                                   final boolean isReadOnly) {
         super(factType,
               factField,
+              operator,
               dmo,
               dropDownManager,
               isReadOnly);
@@ -58,8 +60,8 @@ public class ProxyPopupNumericFloatDropDownEditCell extends
     }
 
     @Override
-    protected ProxyPopupDropDown<Float> getMultipleValueEditor() {
-        return new AbstractProxyPopupDropDownListBox<Float>(this) {
+    protected ProxyPopupDropDown<Float> getMultipleValueEditor(final String operator) {
+        return new AbstractProxyPopupDropDownListBox<Float>(this, operator) {
             @Override
             public String convertToString(final Float value) {
                 return ProxyPopupNumericFloatDropDownEditCell.this.convertToString(value);
