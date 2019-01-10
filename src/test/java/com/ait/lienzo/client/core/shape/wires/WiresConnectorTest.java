@@ -16,9 +16,11 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
+import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.MultiPathDecorator;
 import com.ait.lienzo.client.core.shape.PolyLine;
+import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresConnectorControlImpl;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
@@ -27,10 +29,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class WiresConnectorTest {
@@ -47,6 +47,9 @@ public class WiresConnectorTest {
     @Mock
     private MultiPathDecorator tailDecorator;
 
+    @Mock
+    private WiresConnectorControlImpl connectorControl;
+
     private PolyLine line;
     private WiresConnector tested;
 
@@ -58,6 +61,7 @@ public class WiresConnectorTest {
         tested = new WiresConnector(line,
                                     headDecorator,
                                     tailDecorator);
+        tested.setControl(connectorControl);
     }
 
     // Asset than it handles no magnets set as well, it must not
@@ -72,7 +76,25 @@ public class WiresConnectorTest {
     }
 
     @Test
-    public void testAddControlpoint() {
+    public void testListen() {
+        tested.listen(true);
+        assertTrue(tested.isListening());
+        tested.listen(false);
+        assertFalse(tested.isListening());
+    }
+
+    @Test
+    public void testDestroy()
+    {
+        tested.addToLayer(new Layer());
+        assertNotNull(tested.getGroup().getLayer());
+        tested.destroy();
+        assertNull(tested.getGroup().getLayer());
+        verify(connectorControl, times(1)).destroy();
+    }
+
+    @Test
+    public void testAddControlPoint() {
         final Point2D point = new Point2D(25, 50);
         tested.addControlPoint(point.getX(), point.getY(), 1);
         final Point2DArray points = line.getPoints();
@@ -84,7 +106,7 @@ public class WiresConnectorTest {
     }
 
     @Test
-    public void testMoveControlpoint() {
+    public void testMoveControlPoint() {
         final Point2D point = new Point2D(25, 50);
         tested.moveControlPoint(0, point);
         final Point2DArray points = line.getPoints();
@@ -95,7 +117,7 @@ public class WiresConnectorTest {
     }
 
     @Test
-    public void testDestroyControlpoint() {
+    public void testDestroyControlPoint() {
         tested.destroyControlPoints(new int[]{0, 2});
         final Point2DArray points = line.getPoints();
         assertEquals(1, points.size());

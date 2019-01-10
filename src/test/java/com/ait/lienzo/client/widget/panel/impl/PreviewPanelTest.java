@@ -19,6 +19,7 @@ import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Transform;
+import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.lienzo.client.widget.panel.Bounds;
 import com.ait.lienzo.client.widget.panel.LienzoPanel;
 import com.ait.lienzo.client.widget.panel.event.LienzoPanelBoundsChangedEventHandler;
@@ -61,6 +62,9 @@ public class PreviewPanelTest
     private Layer                      layer;
 
     @Mock
+    private ScratchPad                 scratchPad;
+
+    @Mock
     private Viewport                   viewport;
 
     @Mock
@@ -78,6 +82,7 @@ public class PreviewPanelTest
     public void setUp()
     {
         when(layer.getViewport()).thenReturn(viewport);
+        when(layer.getScratchPad()).thenReturn(scratchPad);
         when(lienzoPanel.getWidth()).thenReturn(300);
         when(lienzoPanel.getHeight()).thenReturn(150);
         when(observedPanel.getWidth()).thenReturn(330);
@@ -103,6 +108,7 @@ public class PreviewPanelTest
         tested.observe(observedPanel);
         assertEquals(observedPanel,
                      tested.getPreviewBoundsProvider().delegate);
+        verify(scratchPad, times(1)).setPixelSize(eq(800), eq(1200));
         verify(observedPanel, times(1)).addLienzoPanelScrollEventHandler(any(LienzoPanelScrollEventHandler.class));
         verify(observedPanel, times(1)).addLienzoPanelResizeEventHandler(any(LienzoPanelResizeEventHandler.class));
         verify(observedPanel, times(1)).addLienzoPanelScaleChangedEventHandler(any(LienzoPanelScaleChangedEventHandler.class));

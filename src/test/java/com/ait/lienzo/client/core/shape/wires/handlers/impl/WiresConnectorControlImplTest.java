@@ -62,20 +62,10 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyDouble;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class WiresConnectorControlImplTest {
@@ -130,6 +120,9 @@ public class WiresConnectorControlImplTest {
 
     @Mock
     private WiresShape shape;
+
+    @Mock
+    private WiresConnectorControlPointBuilder controlPointBuilder;
 
     @Mock
     private IControlHandleList pointHandles;
@@ -261,7 +254,7 @@ public class WiresConnectorControlImplTest {
         when(tailConnection.getConnector()).thenReturn(connector);
         wiresManager = WiresManager.get(layer);
         wiresManager.setControlPointsAcceptor(IControlPointsAcceptor.ALL);
-        tested = new WiresConnectorControlImpl(connector, wiresManager);
+        tested = new WiresConnectorControlImpl(connector, wiresManager, controlPointBuilder);
     }
 
     @Test
@@ -403,6 +396,14 @@ public class WiresConnectorControlImplTest {
         assertEquals(50, pointHandles.getHandle(1).getControl().getY(), 0);
         assertEquals(100, pointHandles.getHandle(2).getControl().getX(), 0);
         assertEquals(50, pointHandles.getHandle(2).getControl().getY(), 0);
+    }
+
+    @Test
+    public void testDestroy()
+    {
+        tested.onMoveStart(50, 50);
+        tested.destroy();
+        verify(controlPointBuilder, times(1)).destroy();
     }
 
     @Test

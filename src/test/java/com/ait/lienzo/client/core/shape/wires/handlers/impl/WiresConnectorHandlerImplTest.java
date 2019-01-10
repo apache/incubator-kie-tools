@@ -15,30 +15,28 @@
  */
 package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-
 import com.ait.lienzo.client.core.event.NodeDragEndEvent;
 import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
 import com.ait.lienzo.client.core.event.NodeDragStartEvent;
 import com.ait.lienzo.client.core.event.NodeMouseClickEvent;
+import com.ait.lienzo.client.core.event.NodeMouseDownEvent;
+import com.ait.lienzo.client.core.event.NodeMouseEnterEvent;
+import com.ait.lienzo.client.core.event.NodeMouseExitEvent;
 import com.ait.lienzo.client.core.event.NodeMouseMoveEvent;
-import com.ait.lienzo.client.core.shape.Circle;
 import com.ait.lienzo.client.core.shape.IDirectionalMultiPointShape;
 import com.ait.lienzo.client.core.shape.Layer;
-import com.ait.lienzo.client.core.shape.Shape;
+import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.shape.wires.SelectionManager;
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.shape.wires.WiresLayer;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.decorator.PointHandleDecorator;
-import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresConnectorHandlerImpl.Event;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.BoundingPoints;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
+import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.client.widget.DragContext;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.ait.tooling.common.api.java.util.function.Consumer;
@@ -49,81 +47,81 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.internal.util.reflection.Whitebox;
 
+import java.util.HashSet;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyDouble;
 import static org.mockito.Matchers.anyInt;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
 
 @RunWith(LienzoMockitoTestRunner.class)
-public class WiresConnectorHandlerImplTest {
-
+public class WiresConnectorHandlerImplTest
+{
     private static final String LAYER_ID = "LAYER_ID";
-    @Mock
-    private WiresManager wiresManager;
 
     @Mock
-    private WiresConnector connector;
+    private WiresManager                      wiresManager;
 
     @Mock
-    private WiresConnectorControl control;
+    private WiresConnector                    connector;
 
     @Mock
-    private Consumer<Event> clickEventConsumer;
+    private WiresConnectorControlImpl             control;
 
     @Mock
-    private Timer clickTimer;
+    private Consumer<Event>                   clickEventConsumer;
 
     @Mock
-    private Consumer<Event> mouseDownConsumer;
-
-    private WiresConnectorHandlerImpl tested;
+    private Consumer<Event>                   mouseDownConsumer;
 
     @Mock
-    private PointHandleDecorator pointHandleDecorator;
+    private WiresConnectorControlPointBuilder controlPointBuilder;
 
     @Mock
-    private IDirectionalMultiPointShape line;
+    private PointHandleDecorator              pointHandleDecorator;
 
     @Mock
-    private Layer layer;
-
-    private Point2DArray linePoints;
+    private IDirectionalMultiPointShape       line;
 
     @Mock
-    private SelectionManager selectionManager;
+    private Layer                             layer;
 
     @Mock
-    private SelectionManager.SelectedItems selectedItems;
-
-    private BoundingBox boundingBox;
+    private Viewport                          viewPort;
 
     @Mock
-    private WiresLayer wiresLayer;
-
-    private Shape transientPoint;
-
-    @Captor
-    private ArgumentCaptor<Consumer> createConsumer;
+    private SelectionManager                  selectionManager;
 
     @Mock
-    private NodeMouseMoveEvent moveEvent;
+    private SelectionManager.SelectedItems    selectedItems;
+
+    @Mock
+    private WiresLayer                        wiresLayer;
+
+    @Mock
+    private NodeMouseMoveEvent                moveEvent;
+
+    private WiresConnectorHandlerImpl         tested;
+
+    private Transform                         transform;
 
     @Before
-    public void setup() {
-        linePoints = new Point2DArray(new Point2D(0, 0), new Point2D(100, 100));
-        boundingBox = new BoundingBox(0, 0, 100, 100);
-        transientPoint = spy(new Circle(1));
+    public void setup()
+    {
+        when(layer.uuid()).thenReturn(LAYER_ID);
+        when(layer.getViewport()).thenReturn(viewPort);
+        transform = new Transform();
+        when(viewPort.getTransform()).thenReturn(transform);
+        Point2DArray linePoints = new Point2DArray(new Point2D(0, 0), new Point2D(100, 100));
+        BoundingBox boundingBox = new BoundingBox(0, 0, 100, 100);
         when(connector.getControl()).thenReturn(control);
+        when(control.getControlPointBuilder()).thenReturn(controlPointBuilder);
         when(control.areControlPointsVisible()).thenReturn(true);
-        when(control.createTransientControlHandle(any(Consumer.class))).thenReturn(transientPoint);
+        when(control.getPointHandleDecorator()).thenReturn(pointHandleDecorator);
         when(connector.getLine()).thenReturn(line);
         when(line.getLayer()).thenReturn(layer);
         when(line.getPoint2DArray()).thenReturn(linePoints);
@@ -134,33 +132,31 @@ public class WiresConnectorHandlerImplTest {
         when(selectedItems.getConnectors()).thenReturn(new HashSet<WiresConnector>());
         when(wiresManager.getLayer()).thenReturn(wiresLayer);
         when(wiresLayer.getLayer()).thenReturn(layer);
-        when(layer.uuid()).thenReturn(LAYER_ID);
         tested = new WiresConnectorHandlerImpl(connector,
                                                wiresManager,
                                                clickEventConsumer,
-                                               mouseDownConsumer,
-                                               clickTimer);
-
-        //clear token that controls concurrency
-        Map<String, Boolean> transientControlHandleTokenMap = (HashMap<String, Boolean>) Whitebox.getInternalState(tested, "transientControlHandleTokenMap");
-        transientControlHandleTokenMap.clear();
+                                               mouseDownConsumer);
     }
 
     @Test
-    public void testOnDragStart() {
-        DragContext context = mockDragContext();
-        NodeDragStartEvent event = mock(NodeDragStartEvent.class);
+    public void testOnDragStart()
+    {
+        DragContext        context = mockDragContext();
+        NodeDragStartEvent event   = mock(NodeDragStartEvent.class);
         when(event.getDragContext()).thenReturn(context);
         tested.onNodeDragStart(event);
+        verify(control, times(1)).hideControlPoints();
+        verify(control, never()).showControlPoints();
         verify(control, times(1)).onMoveStart(1d, 2d);
         verify(control, never()).onMove(anyDouble(), anyDouble());
         verify(control, never()).onMoveComplete();
     }
 
     @Test
-    public void testOnDragMove() {
-        DragContext context = mockDragContext();
-        NodeDragMoveEvent event = mock(NodeDragMoveEvent.class);
+    public void testOnDragMove()
+    {
+        DragContext       context = mockDragContext();
+        NodeDragMoveEvent event   = mock(NodeDragMoveEvent.class);
         when(event.getDragContext()).thenReturn(context);
         tested.onNodeDragMove(event);
         verify(control, times(1)).onMove(1d, 2d);
@@ -169,9 +165,10 @@ public class WiresConnectorHandlerImplTest {
     }
 
     @Test
-    public void testOnDragEndAccept() {
-        DragContext context = mockDragContext();
-        NodeDragEndEvent event = mock(NodeDragEndEvent.class);
+    public void testOnDragEndAccept()
+    {
+        DragContext      context = mockDragContext();
+        NodeDragEndEvent event   = mock(NodeDragEndEvent.class);
         when(event.getDragContext()).thenReturn(context);
         when(control.onMoveComplete()).thenReturn(true);
         tested.onNodeDragEnd(event);
@@ -183,9 +180,10 @@ public class WiresConnectorHandlerImplTest {
     }
 
     @Test
-    public void testOnDragEndReset() {
-        DragContext context = mockDragContext();
-        NodeDragEndEvent event = mock(NodeDragEndEvent.class);
+    public void testOnDragEndReset()
+    {
+        DragContext      context = mockDragContext();
+        NodeDragEndEvent event   = mock(NodeDragEndEvent.class);
         when(event.getDragContext()).thenReturn(context);
         when(control.onMoveComplete()).thenReturn(false);
         tested.onNodeDragEnd(event);
@@ -197,13 +195,26 @@ public class WiresConnectorHandlerImplTest {
     }
 
     @Test
-    public void testOnNodeMouseClick() {
-        when(clickTimer.isRunning()).thenReturn(true);
+    public void testOnNodeMouseClick()
+    {
+        Timer mouseDownTimer = mock(Timer.class);
+        when(mouseDownTimer.isRunning()).thenReturn(true);
+        tested.mouseDownTimer = mouseDownTimer;
         NodeMouseClickEvent event = mock(NodeMouseClickEvent.class);
+        when(event.getX()).thenReturn(120);
+        when(event.getY()).thenReturn(454);
+        transform.scale(2, 4);
         tested.onNodeMouseClick(event);
-        verify(clickTimer, times(1)).cancel();
-        verify(clickTimer, times(1)).schedule(anyInt());
+        verify(mouseDownTimer, times(1)).cancel();
+        verify(mouseDownTimer, never()).run();
+        verify(mouseDownTimer, never()).schedule(anyInt());
         verify(mouseDownConsumer, never()).accept(any(Event.class));
+        ArgumentCaptor<Event> clickEventCaptor = ArgumentCaptor.forClass(Event.class);
+        verify(clickEventConsumer, times(1)).accept(clickEventCaptor.capture());
+        Event clickEvent = clickEventCaptor.getValue();
+        assertEquals(60d, clickEvent.getX(), 0d);
+        assertEquals(113.5d, clickEvent.getY(), 0d);
+        assertFalse(clickEvent.isShiftKeyDown);
     }
 
     @Test
@@ -215,106 +226,57 @@ public class WiresConnectorHandlerImplTest {
     }
 
     @Test
-    public void testMoveAndCreateControlPoint() {
-        when(moveEvent.getX()).thenReturn(20);
-        when(moveEvent.getY()).thenReturn(20);
-
-        tested.onNodeMouseMove(moveEvent);
-        verify(control).showControlPoints();
-        verify(control).createTransientControlHandle(createConsumer.capture());
-        verify(transientPoint).setX(20);
-        verify(transientPoint).setY(20);
-        verify(control, never()).destroyTransientControlHandle();
+    public void testOnNodeMouseEnter()
+    {
+        NodeMouseEnterEvent enterEvent = mock(NodeMouseEnterEvent.class);
+        tested.onNodeMouseEnter(enterEvent);
+        verify(controlPointBuilder, times(1)).enable();
     }
 
     @Test
-    public void testMoveOutsideConnectorBoundary() {
-        when(moveEvent.getX()).thenReturn(101);
-        when(moveEvent.getY()).thenReturn(20);
-
-        tested.onNodeMouseMove(moveEvent);
-        verify(control, never()).showControlPoints();
-        verify(control, never()).createTransientControlHandle(createConsumer.capture());
-        verify(transientPoint, never()).setX(anyDouble());
-        verify(transientPoint, never()).setY(anyDouble());
-        verify(control).destroyTransientControlHandle();
+    public void testOnNodeMouseExit()
+    {
+        NodeMouseExitEvent event = mock(NodeMouseExitEvent.class);
+        tested.onNodeMouseExit(event);
+        verify(controlPointBuilder, times(1)).disable();
     }
 
     @Test
-    public void testMoveClosestPointIsFarFromConnector() {
-        when(moveEvent.getX()).thenReturn(50);
-        when(moveEvent.getY()).thenReturn(1);
-
-        tested.onNodeMouseMove(moveEvent);
-        verify(control).showControlPoints();
-        verify(control, never()).createTransientControlHandle(createConsumer.capture());
-        verify(transientPoint, never()).setX(anyDouble());
-        verify(transientPoint, never()).setY(anyDouble());
-        verify(control).destroyTransientControlHandle();
+    public void testOnNodeMouseDown()
+    {
+        NodeMouseDownEvent event = mock(NodeMouseDownEvent.class);
+        when(event.getX()).thenReturn(55);
+        when(event.getY()).thenReturn(234);
+        transform.scale(2);
+        tested.onNodeMouseDown(event);
+        verify(controlPointBuilder, times(1)).scheduleControlPointBuildAnimation(eq(WiresConnectorHandlerImpl.MOUSE_DOWN_TIMER_DELAY));
+        tested.mouseDownTimer.run();
+        verify(controlPointBuilder, times(1)).createControlPointAt(eq(55), eq(234));
+        ArgumentCaptor<Event> eventCaptor = ArgumentCaptor.forClass(Event.class);
+        verify(mouseDownConsumer, times(1)).accept(eventCaptor.capture());
+        Event downEvent = eventCaptor.getValue();
+        assertEquals(27.5d, downEvent.getX(), 0d);
+        assertEquals(117d, downEvent.getY(), 0d);
+        assertFalse(downEvent.isShiftKeyDown);
     }
 
     @Test
-    public void testMoveTransientPointOverlapping() {
-        Point2D overlapPoint = linePoints.get(0);
-        when(moveEvent.getX()).thenReturn((int) overlapPoint.getX());
-        when(moveEvent.getY()).thenReturn((int) overlapPoint.getY());
-
+    public void testMoveAndCreateControlPoint()
+    {
+        Timer mouseDownTimer = mock(Timer.class);
+        when(mouseDownTimer.isRunning()).thenReturn(true);
+        tested.mouseDownTimer = mouseDownTimer;
+        when(moveEvent.getX()).thenReturn(321);
+        when(moveEvent.getY()).thenReturn(435);
         tested.onNodeMouseMove(moveEvent);
-        verify(control).showControlPoints();
-        verify(control, never()).createTransientControlHandle(createConsumer.capture());
-        verify(transientPoint, never()).setX(anyDouble());
-        verify(transientPoint, never()).setY(anyDouble());
-        verify(control).destroyTransientControlHandle();
+        verify(mouseDownTimer, times(1)).run();
+        verify(mouseDownTimer, never()).cancel();
+        verify(mouseDownTimer, never()).schedule(anyInt());
+        verify(controlPointBuilder, times(1)).moveControlPointTo(eq(321), eq(435));
     }
 
-    @Test
-    public void testMoveNonControlPointShape() {
-        when(line.isControlPointShape()).thenReturn(false);
-        when(moveEvent.getX()).thenReturn(20);
-        when(moveEvent.getY()).thenReturn(20);
-
-        tested.onNodeMouseMove(moveEvent);
-        verify(control, never()).showControlPoints();
-        verify(control, never()).createTransientControlHandle(createConsumer.capture());
-        verify(transientPoint, never()).setX(anyDouble());
-        verify(transientPoint, never()).setY(anyDouble());
-        verify(control, never()).destroyTransientControlHandle();
-    }
-
-    @Test
-    public void testMoveWithConcurrency() {
-
-        WiresConnectorHandlerImpl tested2 = new WiresConnectorHandlerImpl(connector,
-                                                                          wiresManager,
-                                                                          clickEventConsumer,
-                                                                          mouseDownConsumer,
-                                                                          clickTimer);
-
-        when(moveEvent.getX()).thenReturn(20);
-        when(moveEvent.getY()).thenReturn(20);
-
-        //tested2 get token
-        tested2.onNodeMouseMove(moveEvent);
-        verify(control).showControlPoints();
-        verify(control).createTransientControlHandle(createConsumer.capture());
-        verify(transientPoint).setX(20);
-        verify(transientPoint).setY(20);
-        verify(control, never()).destroyTransientControlHandle();
-
-        //reseting the mocks to clean verify
-        reset(control);
-        reset(transientPoint);
-
-        //tested is not able to get token
-        tested.onNodeMouseMove(moveEvent);
-        verify(control, never()).showControlPoints();
-        verify(control, never()).createTransientControlHandle(createConsumer.capture());
-        verify(transientPoint, never()).setX(anyDouble());
-        verify(transientPoint, never()).setY(anyDouble());
-        verify(control).destroyTransientControlHandle();
-    }
-
-    private static DragContext mockDragContext() {
+    private static DragContext mockDragContext()
+    {
         DragContext context = mock(DragContext.class);
         when(context.getDragStartX()).thenReturn(1);
         when(context.getDragStartY()).thenReturn(2);

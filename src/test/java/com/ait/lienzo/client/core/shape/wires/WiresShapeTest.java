@@ -50,27 +50,13 @@ import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import static com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleStandardType.CONNECTOR;
-import static com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleStandardType.POINT;
-import static com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleStandardType.RESIZE;
+import static com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleStandardType.*;
 import static com.ait.lienzo.shared.core.types.EventPropagationMode.FIRST_ANCESTOR;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyDouble;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class WiresShapeTest
@@ -242,6 +228,15 @@ public class WiresShapeTest
             }
         }).when(handlerManager).addHandler(any(GwtEvent.Type.class), any(EventHandler.class));
 
+    }
+
+    @Test
+    public void testListen()
+    {
+        tested.listen(true);
+        assertTrue(tested.isListening());
+        tested.listen(false);
+        assertFalse(tested.isListening());
     }
 
     @Test

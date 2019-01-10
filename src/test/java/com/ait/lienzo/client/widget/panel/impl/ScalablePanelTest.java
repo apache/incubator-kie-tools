@@ -18,6 +18,7 @@ package com.ait.lienzo.client.widget.panel.impl;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Transform;
+import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.lienzo.client.widget.panel.Bounds;
 import com.ait.lienzo.client.widget.panel.BoundsProvider;
 import com.ait.lienzo.client.widget.panel.LienzoPanel;
@@ -43,6 +44,9 @@ public class ScalablePanelTest
     private Layer         layer;
 
     @Mock
+    private ScratchPad    scratchPad;
+
+    @Mock
     private Viewport      viewport;
 
     private ScalablePanel tested;
@@ -51,6 +55,7 @@ public class ScalablePanelTest
     public void setUp()
     {
         when(layer.getViewport()).thenReturn(viewport);
+        when(layer.getScratchPad()).thenReturn(scratchPad);
         when(lienzoPanel.getWidth()).thenReturn(300);
         when(lienzoPanel.getHeight()).thenReturn(150);
         this.tested = spy(new ScalablePanel(lienzoPanel,
@@ -76,6 +81,7 @@ public class ScalablePanelTest
     public void testRefresh()
     {
         tested.refresh();
+        verify(scratchPad, times(1)).setPixelSize(eq(800), eq(1200));
         ArgumentCaptor<Transform> transformArgumentCaptor = ArgumentCaptor.forClass(Transform.class);
         verify(viewport, times(1)).setTransform(transformArgumentCaptor.capture());
         Transform transform = transformArgumentCaptor.getValue();

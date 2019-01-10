@@ -39,35 +39,29 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class WiresManagerTest
 {
     private static final String LAYER_ID = "theLayer";
 
-    private WiresManager        tested;
+    private WiresManager tested;
 
-    private Layer               layer;
+    private Layer        layer;
+
+    private Viewport     viewport;
 
     @Before
     public void setup()
     {
         layer = spy(new Layer());
+        viewport = new Viewport();
         layer.setID(LAYER_ID);
+        viewport.getScene().add(layer);
         tested = WiresManager.get(layer);
     }
 
@@ -161,9 +155,12 @@ public class WiresManagerTest
         final String gUUID = group.uuid();
         final WiresShape s = new WiresShape(new MultiPath().rect(0, 0, 10, 10));
         final WiresShape shape = spy(s);
+        spied.enableSelectionManager();
+        spied.getSelectionManager().getSelectedItems().add(shape);
         spied.register(shape);
         spied.deregister(shape);
         assertNull(tested.getShape(gUUID));
+        assertTrue(spied.getSelectionManager().getSelectedItems().isEmpty());
         verify(handlerRegistrationManager, times(1)).removeHandler();
         verify(shape, times(1)).destroy();
         verify(layer, atLeastOnce()).remove(eq(s.getGroup()));
@@ -225,9 +222,12 @@ public class WiresManagerTest
         doReturn(tail).when(connector).getTail();
         doReturn(group.uuid()).when(connector).uuid();
         when(line.getAttributes()).thenReturn(attributes);
+        spied.enableSelectionManager();
+        spied.getSelectionManager().getSelectedItems().add(connector);
         spied.register(connector);
         spied.deregister(connector);
         assertTrue(spied.getConnectorList().isEmpty());
+        assertTrue(spied.getSelectionManager().getSelectedItems().isEmpty());
         verify(handlerRegistrationManager, times(1)).removeHandler();
         verify(connector, times(1)).destroy();
     }

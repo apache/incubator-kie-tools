@@ -17,28 +17,11 @@
 package com.ait.lienzo.client.core.suite;
 
 import com.ait.lienzo.client.core.shape.AbstractOffsetMultiPointShapeTest;
-import com.ait.lienzo.client.core.shape.wires.BackingColorMapUtilsTest;
-import com.ait.lienzo.client.core.shape.wires.MagnetManagerTest;
-import com.ait.lienzo.client.core.shape.wires.SelectionManagerTest;
-import com.ait.lienzo.client.core.shape.wires.WiresConnectorTest;
-import com.ait.lienzo.client.core.shape.wires.WiresContainerTest;
-import com.ait.lienzo.client.core.shape.wires.WiresManagerTest;
-import com.ait.lienzo.client.core.shape.wires.WiresShapeControlHandleListTest;
-import com.ait.lienzo.client.core.shape.wires.WiresShapeTest;
+import com.ait.lienzo.client.core.shape.wires.*;
 import com.ait.lienzo.client.core.shape.wires.decorator.MagnetDecoratorTest;
 import com.ait.lienzo.client.core.shape.wires.decorator.PointHandleDecoratorTest;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeHandlerImplTest;
-import com.ait.lienzo.client.core.shape.wires.handlers.impl.AlignAndDistributeControlImplTest;
-import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresCompositeControlImplTest;
-import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresCompositeShapeHandlerTest;
-import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresConnectorControlImplTest;
-import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresConnectorHandlerImplTest;
-import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresContainmentControlImplTest;
-import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresControlPointHandlerImplTest;
-import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresDockingControlImplTest;
-import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresParentPickerControlImplTest;
-import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresShapeControlImplTest;
-import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresShapeLocationControlImplTest;
+import com.ait.lienzo.client.core.shape.wires.handlers.impl.*;
 import com.ait.lienzo.client.core.shape.wires.picker.ColorMapBackedPickerTest;
 import com.ait.lienzo.client.core.shape.wires.util.WiresConnectorLabelFactoryTest;
 import com.ait.lienzo.client.core.shape.wires.util.WiresConnectorLabelTest;
@@ -57,9 +40,13 @@ import org.junit.runners.Suite;
         AbstractOffsetMultiPointShapeTest.class,
         MagnetManagerTest.class,
         SelectionManagerTest.class,
+        DefaultSelectionListenerTest.class,
         WiresCompositeShapeHandlerTest.class,
         WiresConnectorControlImplTest.class,
         WiresConnectorHandlerImplTest.class,
+        WiresConnectorControlPointBuilderTest.class,
+        WiresConnectorEventFunctionsTest.class,
+        ShapeControlUtilsTest.class,
         WiresConnectorLabelFactoryTest.class,
         WiresConnectorLabelTest.class,
         WiresConnectorTest.class,
