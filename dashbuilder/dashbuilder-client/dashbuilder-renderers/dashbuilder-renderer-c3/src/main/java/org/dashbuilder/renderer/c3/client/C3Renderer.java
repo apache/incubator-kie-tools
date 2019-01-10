@@ -15,21 +15,8 @@
  */
 package org.dashbuilder.renderer.c3.client;
 
-import static org.dashbuilder.displayer.DisplayerSubType.AREA;
-import static org.dashbuilder.displayer.DisplayerSubType.BAR;
-import static org.dashbuilder.displayer.DisplayerSubType.BAR_STACKED;
-import static org.dashbuilder.displayer.DisplayerSubType.COLUMN;
-import static org.dashbuilder.displayer.DisplayerSubType.COLUMN_STACKED;
-import static org.dashbuilder.displayer.DisplayerSubType.DONUT;
-import static org.dashbuilder.displayer.DisplayerSubType.LINE;
-import static org.dashbuilder.displayer.DisplayerSubType.PIE;
-import static org.dashbuilder.displayer.DisplayerSubType.PIE_3D;
-import static org.dashbuilder.displayer.DisplayerSubType.SMOOTH;
-import static org.dashbuilder.displayer.DisplayerType.AREACHART;
-import static org.dashbuilder.displayer.DisplayerType.BARCHART;
-import static org.dashbuilder.displayer.DisplayerType.BUBBLECHART;
-import static org.dashbuilder.displayer.DisplayerType.LINECHART;
-import static org.dashbuilder.displayer.DisplayerType.PIECHART;
+import static org.dashbuilder.displayer.DisplayerSubType.*;
+import static org.dashbuilder.displayer.DisplayerType.*;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -92,7 +79,7 @@ public class C3Renderer extends AbstractRendererLibrary {
             case PIECHART:
                 return Arrays.asList(PIE, DONUT, PIE_3D);
             case AREACHART:
-                return Arrays.asList(AREA);            
+                return Arrays.asList(AREA, AREA_STACKED);            
             default:
                 return Collections.emptyList();
         }
@@ -175,8 +162,12 @@ public class C3Renderer extends AbstractRendererLibrary {
     }
     
     private C3Displayer getAreaChartForSubType(DisplayerSubType subtype) {
-        return beanManager.lookupBean(C3AreaChartDisplayer.class)
+        C3AreaChartDisplayer areaChartDisplayer = beanManager.lookupBean(C3AreaChartDisplayer.class)
                 .newInstance();
+        if (subtype == AREA_STACKED) {
+            areaChartDisplayer = areaChartDisplayer.stacked();
+        }
+        return areaChartDisplayer;
     }
 
     @Override

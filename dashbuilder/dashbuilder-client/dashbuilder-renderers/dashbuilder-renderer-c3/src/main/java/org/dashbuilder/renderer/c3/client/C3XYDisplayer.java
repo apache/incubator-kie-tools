@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.dashbuilder.common.client.widgets.FilterLabelSet;
 import org.dashbuilder.dataset.DataColumn;
+import org.dashbuilder.displayer.ColumnSettings;
 import org.dashbuilder.renderer.c3.client.jsbinding.C3AxisInfo;
 import org.dashbuilder.renderer.c3.client.jsbinding.C3AxisLabel;
 import org.dashbuilder.renderer.c3.client.jsbinding.C3ChartConf;
@@ -13,6 +14,8 @@ import org.dashbuilder.renderer.c3.client.jsbinding.C3Tick;
 public abstract class C3XYDisplayer<V extends C3Displayer.View> extends C3Displayer {
     
     private static final String DEFAULT_LABEL_POS = "outer-center";
+    
+    private boolean stacked;
 
     public C3XYDisplayer(FilterLabelSet filterLabelSet, C3JsTypesFactory builder) {
         super(filterLabelSet, builder);
@@ -49,5 +52,34 @@ public abstract class C3XYDisplayer<V extends C3Displayer.View> extends C3Displa
             axis.getY().setLabel(yLabel);
         }
     }
+    
+    protected String[][] stackedGroups() {
+        String[][] groups;
+        groups = new String[1][];
+        groups[0] = dataSet.getColumns()
+                            .stream().skip(1)
+                            .map(displayerSettings::getColumnSettings)
+                            .map(ColumnSettings::getColumnName)
+                            .toArray(String[]::new);
+        return groups;
+    }
+    
+    @Override
+    protected String[][] createGroups() {
+        String[][] groups = new String[0][0];
+        if (isStacked()) {
+            groups = stackedGroups();
+            
+        }
+        return groups;
+    }
+
+    public boolean isStacked() {
+        return stacked;
+    }
+    
+    public void setStacked(boolean stacked) {
+        this.stacked = stacked;
+    }    
 
 }

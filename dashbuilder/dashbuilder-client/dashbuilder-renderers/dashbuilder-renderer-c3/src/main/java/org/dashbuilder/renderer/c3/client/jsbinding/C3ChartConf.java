@@ -2,6 +2,7 @@ package org.dashbuilder.renderer.c3.client.jsbinding;
 
 import com.google.gwt.user.client.Element;
 
+import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
@@ -62,6 +63,18 @@ public class C3ChartConf {
     public native void setPadding(C3Padding padding);
 
     @JsProperty
-    public native void setLegend(C3Legend legend);    
+    public native void setLegend(C3Legend legend);
+    
+    @JsProperty
+    public native void setOnrendered(RenderedCallback callback);
+    
+    
+    @JsFunction
+    @FunctionalInterface
+    public interface RenderedCallback {
+        
+        void callback();
+    
+    }
     
 }

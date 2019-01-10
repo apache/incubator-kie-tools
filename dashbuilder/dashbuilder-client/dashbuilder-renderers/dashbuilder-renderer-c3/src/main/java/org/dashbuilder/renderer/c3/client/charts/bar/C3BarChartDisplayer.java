@@ -5,9 +5,7 @@ import javax.inject.Inject;
 
 import org.dashbuilder.common.client.widgets.FilterLabelSet;
 import org.dashbuilder.dataset.ColumnType;
-import org.dashbuilder.dataset.DataColumn;
 import org.dashbuilder.dataset.DataSetLookupConstraints;
-import org.dashbuilder.displayer.ColumnSettings;
 import org.dashbuilder.displayer.DisplayerAttributeDef;
 import org.dashbuilder.displayer.DisplayerAttributeGroupDef;
 import org.dashbuilder.displayer.DisplayerConstraints;
@@ -25,7 +23,6 @@ public class C3BarChartDisplayer extends C3XYDisplayer<C3AreaChartDisplayer.View
     }
     
     private boolean rotated;
-    private boolean stacked;
     private View view;
     
     
@@ -93,21 +90,6 @@ public class C3BarChartDisplayer extends C3XYDisplayer<C3AreaChartDisplayer.View
     
     
     @Override
-    protected String[][] createGroups() {
-        String[][] groups = new String[0][0];
-        if (isStacked()) {
-            groups = new String[1][];
-            groups[0] = dataSet.getColumns()
-                                .stream().skip(1)
-                                .map(displayerSettings::getColumnSettings)
-                                .map(ColumnSettings::getColumnName)
-                                .toArray(String[]::new);
-            
-        }
-        return groups;
-    }
-    
-    @Override
     protected C3AxisInfo createAxis() {
         C3AxisInfo axis = super.createAxis();
         axis.setRotated(isRotated());
@@ -118,16 +100,8 @@ public class C3BarChartDisplayer extends C3XYDisplayer<C3AreaChartDisplayer.View
         return rotated;
     }
     
-    public boolean isStacked() {
-        return stacked;
-    }
-
     public void setRotated(boolean rotated) {
         this.rotated = rotated;
-    }
-
-    public void setStacked(boolean stacked) {
-        this.stacked = stacked;
     }
 
     @Override

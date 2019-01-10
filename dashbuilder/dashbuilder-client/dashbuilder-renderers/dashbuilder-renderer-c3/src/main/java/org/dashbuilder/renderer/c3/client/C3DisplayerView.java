@@ -24,9 +24,9 @@ public abstract class C3DisplayerView<P extends C3Displayer>
     private Panel displayerPanel = new FlowPanel();
     
     private HTML titleHtml = new HTML();
-    private C3Chart chart;
     private int width;
     private int height;
+    protected C3Chart chart;
     
     @Override
     public void init(P presenter) {
