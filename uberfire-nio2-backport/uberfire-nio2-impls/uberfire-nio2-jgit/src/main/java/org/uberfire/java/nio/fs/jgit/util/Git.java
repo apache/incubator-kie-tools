@@ -37,6 +37,7 @@ import org.eclipse.jgit.transport.CredentialsProvider;
 import org.eclipse.jgit.transport.RefSpec;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.java.nio.base.FileDiff;
+import org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration;
 import org.uberfire.java.nio.fs.jgit.JGitPathImpl;
 import org.uberfire.java.nio.fs.jgit.util.commands.Clone;
 import org.uberfire.java.nio.fs.jgit.util.commands.CreateRepository;
@@ -51,14 +52,32 @@ public interface Git {
 
     static Git createRepository(final File repoDir) {
         return createRepository(repoDir,
-                                null);
+                                null,
+                                JGitFileSystemProviderConfiguration.DEFAULT_GIT_HTTP_SSL_VERIFY);
+    }
+
+    static Git createRepository(final File repoDir,
+                                final boolean sslVerify) {
+        return createRepository(repoDir,
+                                null,
+                                sslVerify);
     }
 
     static Git createRepository(final File repoDir,
                                 final File hookDir) {
         return createRepository(repoDir,
                                 hookDir,
-                                null);
+                                null,
+                                JGitFileSystemProviderConfiguration.DEFAULT_GIT_HTTP_SSL_VERIFY);
+    }
+
+    static Git createRepository(final File repoDir,
+                                final File hookDir,
+                                final boolean sslVerify) {
+        return createRepository(repoDir,
+                                hookDir,
+                                null,
+                                sslVerify);
     }
 
     static Git createRepository(final File repoDir,
@@ -66,7 +85,18 @@ public interface Git {
                                 final KetchLeaderCache leaders) {
         return new CreateRepository(repoDir,
                                     hookDir,
-                                    leaders).execute().get();
+                                    leaders,
+                                    JGitFileSystemProviderConfiguration.DEFAULT_GIT_HTTP_SSL_VERIFY).execute().get();
+    }
+
+    static Git createRepository(final File repoDir,
+                                final File hookDir,
+                                final KetchLeaderCache leaders,
+                                final boolean sslVerify) {
+        return new CreateRepository(repoDir,
+                                    hookDir,
+                                    leaders,
+                                    sslVerify).execute().get();
     }
 
     static Git fork(final File gitRepoContainerDir,
@@ -80,7 +110,24 @@ public interface Git {
                         name,
                         credential,
                         leaders,
-                        hookDir).execute();
+                        hookDir,
+                        JGitFileSystemProviderConfiguration.DEFAULT_GIT_HTTP_SSL_VERIFY).execute();
+    }
+
+    static Git fork(final File gitRepoContainerDir,
+                    final String origin,
+                    final String name,
+                    final CredentialsProvider credential,
+                    final KetchLeaderCache leaders,
+                    final File hookDir,
+                    final boolean sslVerify) {
+        return new Fork(gitRepoContainerDir,
+                        origin,
+                        name,
+                        credential,
+                        leaders,
+                        hookDir,
+                        sslVerify).execute();
     }
 
     static Git clone(final File repoDest,
@@ -94,17 +141,59 @@ public interface Git {
                          isMirror,
                          credential,
                          leaders,
-                         hookDir).execute().get();
+                         hookDir,
+                         JGitFileSystemProviderConfiguration.DEFAULT_GIT_HTTP_SSL_VERIFY).execute().get();
     }
 
-    static Git cloneSubdirectory(File repoDest, String origin, String subdirectory, List<String> branches, CredentialsProvider credential, KetchLeaderCache leaders, File hookDir) {
+    static Git clone(final File repoDest,
+                     final String origin,
+                     final boolean isMirror,
+                     final CredentialsProvider credential,
+                     final KetchLeaderCache leaders,
+                     final File hookDir,
+                     final boolean sslVerify) {
+        return new Clone(repoDest,
+                         origin,
+                         isMirror,
+                         credential,
+                         leaders,
+                         hookDir,
+                         sslVerify).execute().get();
+    }
+
+    static Git cloneSubdirectory(final File repoDest,
+                                 final String origin,
+                                 final String subdirectory,
+                                 final List<String> branches,
+                                 final CredentialsProvider credential,
+                                 final KetchLeaderCache leaders,
+                                 final File hookDir) {
         return new SubdirectoryClone(repoDest,
                                      origin,
                                      subdirectory,
                                      branches,
                                      credential,
                                      leaders,
-                                     hookDir).execute();
+                                     hookDir,
+                                     JGitFileSystemProviderConfiguration.DEFAULT_GIT_HTTP_SSL_VERIFY).execute();
+    }
+
+    static Git cloneSubdirectory(final File repoDest,
+                                 final String origin,
+                                 final String subdirectory,
+                                 final List<String> branches,
+                                 final CredentialsProvider credential,
+                                 final KetchLeaderCache leaders,
+                                 final File hookDir,
+                                 final boolean sslVerify) {
+        return new SubdirectoryClone(repoDest,
+                                     origin,
+                                     subdirectory,
+                                     branches,
+                                     credential,
+                                     leaders,
+                                     hookDir,
+                                     sslVerify).execute();
     }
 
     void convertRefTree();

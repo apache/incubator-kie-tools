@@ -63,6 +63,7 @@ import org.eclipse.jgit.treewalk.filter.TreeFilter;
 import org.eclipse.jgit.util.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration;
 import org.uberfire.java.nio.fs.jgit.util.Git;
 
 import static java.lang.String.format;
@@ -80,6 +81,7 @@ public class SubdirectoryClone {
     private final CredentialsProvider credentialsProvider;
     private final KetchLeaderCache leaders;
     private final File hookDir;
+    private final boolean sslVerify;
 
     private Logger logger = LoggerFactory.getLogger(SubdirectoryClone.class);
     private List<String> branches;
@@ -101,6 +103,33 @@ public class SubdirectoryClone {
                              final CredentialsProvider credentialsProvider,
                              final KetchLeaderCache leaders,
                              final File hookDir) {
+        this(directory,
+             origin,
+             subdirectory,
+             branches,
+             credentialsProvider,
+             leaders,
+             hookDir,
+             JGitFileSystemProviderConfiguration.DEFAULT_GIT_HTTP_SSL_VERIFY);
+    }
+    /**
+     * @param directory Directory for the local target repository (created by this command). Must not be null.
+     * @param origin URI for the repository being cloned. Must not be null.
+     * @param subdirectory The subdirectory within the origin being copied. Must not be null.
+     * @param branches The branches that should be copied. Must not be null.
+     * @param credentialsProvider Provides credentials for the initial cloning of the origin. May be null.
+     * @param leaders Used for initial cloning. May be null.
+     * @param hookDir Used to specify the directory containing the Git Hooks to add to the repository. May be null.
+     * @param sslVerify Used to disable http ssl verify on the repository
+     */
+    public SubdirectoryClone(final File directory,
+                             final String origin,
+                             final String subdirectory,
+                             final List<String> branches,
+                             final CredentialsProvider credentialsProvider,
+                             final KetchLeaderCache leaders,
+                             final File hookDir,
+                             final boolean sslVerify) {
         this.subdirectory = ensureTrailingSlash(subdirectory);
         this.branches = branches;
         this.repoDir = checkNotNull("directory",
@@ -110,6 +139,7 @@ public class SubdirectoryClone {
         this.credentialsProvider = credentialsProvider;
         this.leaders = leaders;
         this.hookDir = hookDir;
+        this.sslVerify = sslVerify;
     }
 
     private static String ensureTrailingSlash(String subdirectory) {
@@ -121,7 +151,7 @@ public class SubdirectoryClone {
     }
 
     public Git execute() {
-        final Git git = new Clone(repoDir, origin, false, credentialsProvider, leaders, hookDir).execute().get();
+        final Git git = new Clone(repoDir, origin, false, credentialsProvider, leaders, hookDir, sslVerify).execute().get();
         final Repository repository = git.getRepository();
 
         try (final ObjectReader reader = repository.newObjectReader();

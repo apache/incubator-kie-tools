@@ -25,6 +25,7 @@ import org.eclipse.jgit.internal.ketch.KetchLeaderCache;
 import org.eclipse.jgit.transport.CredentialsProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.uberfire.java.nio.fs.jgit.JGitFileSystemProviderConfiguration;
 import org.uberfire.java.nio.fs.jgit.util.Git;
 import org.uberfire.java.nio.fs.jgit.util.exceptions.GitException;
 
@@ -39,6 +40,7 @@ public class Fork {
     private final String target;
     private CredentialsProvider credentialsProvider;
     private final File hookDir;
+    private final boolean sslVerify;
 
     public Fork(final File parentFolder,
                 final String source,
@@ -46,6 +48,23 @@ public class Fork {
                 final CredentialsProvider credentialsProvider,
                 final KetchLeaderCache leaders,
                 final File hookDir) {
+
+        this(parentFolder,
+             source,
+             target,
+             credentialsProvider,
+             leaders,
+             hookDir,
+             JGitFileSystemProviderConfiguration.DEFAULT_GIT_HTTP_SSL_VERIFY);
+    }
+
+    public Fork(final File parentFolder,
+                final String source,
+                final String target,
+                final CredentialsProvider credentialsProvider,
+                final KetchLeaderCache leaders,
+                final File hookDir,
+                final boolean sslVerify) {
         this.parentFolder = checkNotNull("parentFolder",
                                          parentFolder);
         this.source = checkNotEmpty("source",
@@ -57,6 +76,8 @@ public class Fork {
         this.leaders = leaders;
         
         this.hookDir = hookDir;
+
+        this.sslVerify = sslVerify;
     }
 
     public Git execute()  {
@@ -84,6 +105,7 @@ public class Fork {
                          false,
                          credentialsProvider,
                          leaders,
-                         hookDir);
+                         hookDir,
+                         sslVerify);
     }
 }

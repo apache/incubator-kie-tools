@@ -51,6 +51,7 @@ public class JGitFileSystemProviderConfiguration {
     public static final String GIT_SSH_ALGORITHM = "org.uberfire.nio.git.ssh.algorithm";
     public static final String GIT_SSH_PASSPHRASE = "org.uberfire.nio.git.ssh.passphrase";
     public static final String GIT_GC_LIMIT = "org.uberfire.nio.git.gc.limit";
+    public static final String GIT_HTTP_SSL_VERIFY ="org.uberfire.nio.git.http.sslVerify";
     public static final String SSH_OVER_HTTP = "org.uberfire.nio.git.proxy.ssh.over.http";
     public static final String HTTP_PROXY_HOST = "http.proxyHost";
     public static final String HTTP_PROXY_PORT = "http.proxyPort";
@@ -90,6 +91,7 @@ public class JGitFileSystemProviderConfiguration {
     public static final String DEFAULT_SSH_ALGORITHM = "RSA";
     public static final String DEFAULT_SSH_CERT_PASSPHRASE = "";
     public static final String DEFAULT_COMMIT_LIMIT_TO_GC = "20";
+    public static final Boolean DEFAULT_GIT_HTTP_SSL_VERIFY = Boolean.TRUE;
     public static final String DEFAULT_GIT_ENV_KEY_MIGRATE_FROM = "migrate-from";
     public static final String DEFAULT_ENABLE_GIT_KETCH = "false";
     public static final String DEFAULT_JGIT_FILE_SYSTEM_INSTANCES_CACHE = "10000";
@@ -99,6 +101,7 @@ public class JGitFileSystemProviderConfiguration {
     public static final TimeUnit DEFAULT_JGIT_CACHE_EVICT_THRESHOLD_TIME_UNIT = TimeUnit.MINUTES;
 
     private int commitLimit;
+    private boolean sslVerify;
     private boolean daemonEnabled;
     private int daemonPort;
     private String daemonHostAddr;
@@ -178,7 +181,8 @@ public class JGitFileSystemProviderConfiguration {
                                                                                    DEFAULT_SSH_CERT_PASSPHRASE);
         final ConfigProperties.ConfigProperty commitLimitProp = systemConfig.get(GIT_GC_LIMIT,
                                                                                  DEFAULT_COMMIT_LIMIT_TO_GC);
-
+        final ConfigProperties.ConfigProperty sslVerifyProp = systemConfig.get(GIT_HTTP_SSL_VERIFY,
+                                                                               DEFAULT_GIT_HTTP_SSL_VERIFY.toString());
         final ConfigProperties.ConfigProperty sshOverHttpProxyProp = systemConfig.get(SSH_OVER_HTTP,
                                                                                       DEFAULT_SSH_OVER_HTTP);
         final ConfigProperties.ConfigProperty httpProxyHostProp = systemConfig.get(HTTP_PROXY_HOST,
@@ -248,6 +252,7 @@ public class JGitFileSystemProviderConfiguration {
         gitReposParentDir = new File(bareReposDirProp.getValue(),
                                      reposDirNameProp.getValue());
         commitLimit = commitLimitProp.getIntValue();
+        sslVerify = sslVerifyProp.getBooleanValue();
 
         jgitFileSystemsInstancesCache = jgitFileSystemsInstancesCacheProp.getIntValue();
 
@@ -318,6 +323,10 @@ public class JGitFileSystemProviderConfiguration {
 
     public int getCommitLimit() {
         return commitLimit;
+    }
+
+    public boolean isSslVerify() {
+        return sslVerify;
     }
 
     public boolean isDaemonEnabled() {
@@ -439,4 +448,5 @@ public class JGitFileSystemProviderConfiguration {
     public long getJgitCacheEvictThresholdDuration() {
         return jgitCacheEvictThresholdDuration;
     }
+
 }
