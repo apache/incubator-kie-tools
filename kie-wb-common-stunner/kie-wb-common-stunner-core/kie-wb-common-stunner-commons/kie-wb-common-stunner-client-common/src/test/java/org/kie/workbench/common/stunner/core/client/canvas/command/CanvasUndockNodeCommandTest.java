@@ -29,6 +29,7 @@ import static org.junit.Assert.assertNotEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -51,6 +52,8 @@ public class CanvasUndockNodeCommandTest extends AbstractCanvasCommandTest {
         super.setUp();
         when(parent.getUUID()).thenReturn(P_ID);
         when(candidate.getUUID()).thenReturn(C_ID);
+        when(graphIndex.getNode(eq(P_ID))).thenReturn(parent);
+        when(graphIndex.getNode(eq(C_ID))).thenReturn(candidate);
         this.tested = new CanvasUndockNodeCommand(parent,
                                                   candidate);
     }
@@ -73,6 +76,30 @@ public class CanvasUndockNodeCommandTest extends AbstractCanvasCommandTest {
         verify(canvasHandler,
                times(1)).applyElementMutation(eq(candidate),
                                               any(MutationContext.class));
+        verify(canvasHandler,
+               times(1)).applyElementMutation(eq(parent),
+                                              any(MutationContext.class));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testExecuteButCandidateHasBeenRemoved() {
+        when(graphIndex.getNode(eq(C_ID))).thenReturn(null);
+        final CommandResult<CanvasViolation> result = tested.execute(canvasHandler);
+        assertNotEquals(CommandResult.Type.ERROR,
+                        result.getType());
+        verify(canvasHandler,
+               times(0)).register(anyString(),
+                                  eq(candidate));
+        verify(canvasHandler,
+               times(0)).addChild(any(Node.class),
+                                  any(Node.class));
+        verify(canvasHandler,
+               times(1)).undock(eq(parent),
+                                eq(candidate));
+        verify(canvasHandler,
+               never()).applyElementMutation(eq(candidate),
+                                             any(MutationContext.class));
         verify(canvasHandler,
                times(1)).applyElementMutation(eq(parent),
                                               any(MutationContext.class));

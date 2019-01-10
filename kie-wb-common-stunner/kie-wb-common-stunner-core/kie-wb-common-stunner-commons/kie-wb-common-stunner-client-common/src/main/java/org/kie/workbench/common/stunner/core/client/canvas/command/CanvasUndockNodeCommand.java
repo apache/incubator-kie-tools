@@ -52,8 +52,14 @@ public class CanvasUndockNodeCommand extends AbstractCanvasCommand {
                 .findAny()
                 .ifPresent(e -> context.addChild(e.getSourceNode(), child));
 
-        context.applyElementMutation(parent, MutationContext.STATIC);
-        context.applyElementMutation(child, MutationContext.STATIC);
+        // Check parent node is not being removed from the graph.
+        if (existNode(parent, context)) {
+            context.applyElementMutation(parent, MutationContext.STATIC);
+        }
+        // Check child node is not being removed from the graph.
+        if (existNode(child, context)) {
+            context.applyElementMutation(child, MutationContext.STATIC);
+        }
 
         return buildResult();
     }
@@ -70,6 +76,11 @@ public class CanvasUndockNodeCommand extends AbstractCanvasCommand {
 
     public Node<?, Edge> getChild() {
         return child;
+    }
+
+    private boolean existNode(final Node node,
+                              final AbstractCanvasHandler context) {
+        return null != context.getGraphIndex().getNode(node.getUUID());
     }
 
     @Override

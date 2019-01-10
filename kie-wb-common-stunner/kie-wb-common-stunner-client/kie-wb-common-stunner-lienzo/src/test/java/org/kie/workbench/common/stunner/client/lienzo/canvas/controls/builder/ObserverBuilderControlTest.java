@@ -18,8 +18,9 @@ package org.kie.workbench.common.stunner.client.lienzo.canvas.controls.builder;
 
 import java.util.Collections;
 
-import javax.enterprise.event.Event;
-
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.user.client.ui.Widget;
+import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,6 +30,8 @@ import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandlerImpl;
+import org.kie.workbench.common.stunner.core.client.canvas.Transform;
+import org.kie.workbench.common.stunner.core.client.canvas.TransformImpl;
 import org.kie.workbench.common.stunner.core.client.canvas.command.AddCanvasNodeCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.command.UpdateElementPositionCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.TextPropertyProviderFactory;
@@ -73,58 +76,67 @@ import org.kie.workbench.common.stunner.core.rule.RuleSet;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
-import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
+import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.ParameterizedCommand;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+import static org.mockito.Matchers.anyDouble;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(GwtMockitoTestRunner.class)
 public class ObserverBuilderControlTest {
-
-    @Mock
-    ClientDefinitionManager clientDefinitionManager;
-
-    @Mock
-    ClientFactoryService clientFactoryServices;
-
-    @Mock
-    GraphUtils graphUtils;
-
-    @Mock
-    RuleManager ruleManager;
-
-    @Mock
-    CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
-
-    @Mock
-    GraphBoundsIndexer graphBoundsIndexer;
-
-    @Mock
-    GraphIndexBuilder graphIndexBuilder;
-
-    @Mock
-    ShapeManager shapeManager;
-
-    @Mock
-    RequiresCommandManager.CommandManagerProvider<AbstractCanvasHandler> commandManagerProvider;
-
-    private View<Object> view;
-    private ObserverBuilderControl tested;
 
     private static final String DEF = "def";
     private static final String DEF_ID = "def_id";
+
+    @Mock
+    private ClientDefinitionManager clientDefinitionManager;
+
+    @Mock
+    private ClientFactoryService clientFactoryServices;
+
+    @Mock
+    private GraphUtils graphUtils;
+
+    @Mock
+    private RuleManager ruleManager;
+
+    @Mock
+    private CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
+
+    @Mock
+    private GraphBoundsIndexer graphBoundsIndexer;
+
+    @Mock
+    private GraphIndexBuilder graphIndexBuilder;
+
+    @Mock
+    private ShapeManager shapeManager;
+
+    @Mock
+    private RequiresCommandManager.CommandManagerProvider<AbstractCanvasHandler> commandManagerProvider;
+
+    private ObserverBuilderControl tested;
+    private AbstractCanvasHandler canvasHandler;
+    private AbstractCanvas canvas;
+    private Transform canvasTransform;
+    private AbstractCanvas.CanvasView canvasView;
+    private Widget canvasWidget;
+    private com.google.gwt.user.client.Element canvasElement;
+    private Document document;
+    private View<Object> view;
 
     @Before
     @SuppressWarnings("unchecked")
@@ -192,7 +204,7 @@ public class ObserverBuilderControlTest {
                                             canvasCommandFactory,
                                             mock(ClientTranslationMessages.class),
                                             graphBoundsIndexer,
-                                            mock(Event.class));
+                                            mock(EventSourceMock.class));
 
         Diagram diagram = mock(Diagram.class);
         Metadata metadata = mock(Metadata.class);
@@ -206,35 +218,42 @@ public class ObserverBuilderControlTest {
         when(index.getGraph()).thenReturn(graph);
 
         when(graphIndexBuilder.build(any(Graph.class))).thenReturn(index);
-        AbstractCanvasHandler canvasHandler = new CanvasHandlerImpl(clientDefinitionManager,
-                                                                    canvasCommandFactory,
-                                                                    clientFactoryServices,
-                                                                    ruleManager,
-                                                                    graphUtils,
-                                                                    graphIndexBuilder,
-                                                                    shapeManager,
-                                                                    mock(TextPropertyProviderFactory.class),
-                                                                    mock(Event.class),
-                                                                    null,
-                                                                    null,
-                                                                    null);
-        canvasHandler.handle(mock(AbstractCanvas.class));
-        canvasHandler.draw(diagram, mock(ParameterizedCommand.class));
         when(diagram.getGraph()).thenReturn(graph);
         when(graph.nodes()).thenReturn(Collections.emptyList());
 
         CanvasCommandManager commandManager = mock(CanvasCommandManager.class);
-
-        doAnswer(new Answer() {
-
-            @Override
-            public Object answer(InvocationOnMock invocationOnMock) {
-                Command command = (Command) invocationOnMock.getArguments()[1];
-                command.execute(invocationOnMock.getArguments()[0]);
-                return null;
-            }
+        doAnswer(invocationOnMock -> {
+            Command command = (Command) invocationOnMock.getArguments()[1];
+            command.execute(invocationOnMock.getArguments()[0]);
+            return null;
         }).when(commandManager).execute(any(), any(Command.class));
         when(commandManagerProvider.getCommandManager()).thenReturn(commandManager);
+
+        canvas = mock(AbstractCanvas.class);
+        canvasTransform = spy(new TransformImpl(new Point2D(0, 0), new Point2D(1, 1)));
+        canvasView = mock(AbstractCanvas.CanvasView.class);
+        canvasWidget = mock(Widget.class);
+        canvasElement = mock(com.google.gwt.user.client.Element.class);
+        document = mock(Document.class);
+        when(canvas.getView()).thenReturn(canvasView);
+        when(canvas.getTransform()).thenReturn(canvasTransform);
+        when(canvasView.asWidget()).thenReturn(canvasWidget);
+        when(canvasWidget.getElement()).thenReturn(canvasElement);
+        when(canvasElement.getOwnerDocument()).thenReturn(document);
+        canvasHandler = new CanvasHandlerImpl(clientDefinitionManager,
+                                              canvasCommandFactory,
+                                              clientFactoryServices,
+                                              ruleManager,
+                                              graphUtils,
+                                              graphIndexBuilder,
+                                              shapeManager,
+                                              mock(TextPropertyProviderFactory.class),
+                                              mock(EventSourceMock.class),
+                                              null,
+                                              null,
+                                              null);
+        canvasHandler.handle(canvas);
+        canvasHandler.draw(diagram, mock(ParameterizedCommand.class));
 
         tested.init(canvasHandler);
         tested.setCommandManagerProvider(commandManagerProvider);
@@ -276,6 +295,64 @@ public class ObserverBuilderControlTest {
         tested.build(request, buildCallback);
         verify(buildCallback, never()).onError(errorArgumentCaptor.capture());
         verify(buildCallback, times(1)).onSuccess(anyString());
+    }
+
+    @Test
+    public void testTransformedLocation() {
+        Point2D location1 = tested.getTransformedLocation(33.45d, 554.6d);
+        assertEquals(33.45d, location1.getX(), 0d);
+        assertEquals(554.6d, location1.getY(), 0d);
+    }
+
+    @Test
+    public void testTransformedLocationLeftScrolled() {
+        when(canvasElement.getScrollLeft()).thenReturn(43);
+        when(document.getScrollLeft()).thenReturn(11);
+        Point2D location1 = tested.getTransformedLocation(33.45d, 554.6d);
+        assertEquals(87.45d, location1.getX(), 0d);
+        assertEquals(554.6d, location1.getY(), 0d);
+    }
+
+    @Test
+    public void testTransformedLocationTopScrolled() {
+        when(canvasElement.getScrollTop()).thenReturn(4);
+        when(document.getScrollTop()).thenReturn(11);
+        Point2D location1 = tested.getTransformedLocation(33.45d, 554.6d);
+        assertEquals(33.45d, location1.getX(), 0d);
+        assertEquals(569.6d, location1.getY(), 0d);
+    }
+
+    @Test
+    public void testTransformedLocationWithPan() {
+        when(canvasTransform.inverse(anyDouble(), anyDouble())).thenAnswer((invocation -> new Point2D(invocation.getArgumentAt(0, Double.class) + 5, invocation.getArgumentAt(1, Double.class) - 10)));
+        Point2D location1 = tested.getTransformedLocation(0d, 0d);
+        assertEquals(5d, location1.getX(), 0d);
+        assertEquals(-10d, location1.getY(), 0d);
+        Point2D location2 = tested.getTransformedLocation(5d, 15d);
+        assertEquals(10d, location2.getX(), 0d);
+        assertEquals(5d, location2.getY(), 0d);
+    }
+
+    @Test
+    public void testTransformedLocationWithZoom() {
+        when(canvasTransform.inverse(anyDouble(), anyDouble())).thenAnswer((invocation -> new Point2D(invocation.getArgumentAt(0, Double.class) * 0.5, invocation.getArgumentAt(1, Double.class) * 2)));
+        Point2D location1 = tested.getTransformedLocation(0d, 0d);
+        assertEquals(0d, location1.getX(), 0d);
+        assertEquals(0d, location1.getY(), 0d);
+        Point2D location2 = tested.getTransformedLocation(5d, 15d);
+        assertEquals(2.5d, location2.getX(), 0d);
+        assertEquals(30d, location2.getY(), 0d);
+    }
+
+    @Test
+    public void testTransformedLocationWithPanAndZoom() {
+        when(canvasTransform.inverse(anyDouble(), anyDouble())).thenAnswer((invocation -> new Point2D((invocation.getArgumentAt(0, Double.class) + 5) * 0.5, (invocation.getArgumentAt(1, Double.class) - 5) * 2)));
+        Point2D location1 = tested.getTransformedLocation(0d, 0d);
+        assertEquals(2.5d, location1.getX(), 0d);
+        assertEquals(-10d, location1.getY(), 0d);
+        Point2D location2 = tested.getTransformedLocation(5d, 15d);
+        assertEquals(5d, location2.getX(), 0d);
+        assertEquals(20d, location2.getY(), 0d);
     }
 
     public void executeOutOfBoundsTest(double x, double y) {

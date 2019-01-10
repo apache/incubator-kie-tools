@@ -24,6 +24,7 @@ import com.ait.lienzo.client.core.shape.wires.WiresContainer;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresDockingControl;
+import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.shared.core.types.Direction;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoLayer;
 
@@ -81,7 +82,10 @@ public class WiresLayer extends LienzoLayer {
                            final WiresShape child) {
         final WiresDockingControl dockingControl = child.getControl().getDockingControl();
         dockingControl.dock(parent);
-        child.setLocation(dockingControl.getCandidateLocation());
+        final Point2D candidateLocation = dockingControl.getCandidateLocation();
+        if (null != candidateLocation) {
+            child.setLocation(candidateLocation);
+        }
         return this;
     }
 

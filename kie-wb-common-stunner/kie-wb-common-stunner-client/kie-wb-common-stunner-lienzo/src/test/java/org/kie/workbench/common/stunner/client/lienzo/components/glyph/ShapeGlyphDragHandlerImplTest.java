@@ -16,33 +16,49 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.components.glyph;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.ait.lienzo.client.core.shape.Group;
+import com.ait.lienzo.client.core.shape.Layer;
+import com.ait.lienzo.client.widget.panel.impl.LienzoPanelImpl;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.event.dom.client.MouseMoveEvent;
+import com.google.gwt.event.dom.client.MouseMoveHandler;
+import com.google.gwt.event.dom.client.MouseUpEvent;
+import com.google.gwt.event.dom.client.MouseUpHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.ui.AbsolutePanel;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
-import org.kie.workbench.common.stunner.core.client.components.drag.DragProxy;
 import org.kie.workbench.common.stunner.core.client.components.drag.DragProxyCallback;
 import org.kie.workbench.common.stunner.core.client.components.glyph.ShapeGlyphDragHandler;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyDouble;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class ShapeGlyphDragHandlerImplTest {
 
-    private ShapeGlyphDragHandlerImpl shapeGlyphDragHandler;
+    private static final int DRAG_PROXY_WIDTH = 150;
+    private static final int DRAG_PROXY_HEIGHT = 300;
 
     @Mock
     private LienzoGlyphRenderers glyphLienzoGlyphRenderer;
@@ -54,58 +70,142 @@ public class ShapeGlyphDragHandlerImplTest {
     private Glyph glyph;
 
     @Mock
-    private ShapeGlyphDragHandler.Item item;
+    private ShapeGlyphDragHandler.Item glyphDragItem;
+
+    @Mock
+    private AbsolutePanel rootPanel;
+
+    @Mock
+    private com.google.gwt.user.client.Element proxyElement;
+
+    @Mock
+    private Style proxyStyle;
+
+    @Mock
+    private HandlerRegistration moveHandlerReg;
+
+    @Mock
+    private HandlerRegistration upHandlerReg;
+
+    @Mock
+    private HandlerRegistration keyHandlerReg;
+
+    private ShapeGlyphDragHandlerImpl tested;
+    private List<HandlerRegistration> handlerRegistrations;
+    private LienzoPanelImpl proxyPanel;
+    private Group glyphGroup;
 
     @Before
     public void setUp() throws Exception {
-        shapeGlyphDragHandler = new ShapeGlyphDragHandlerImpl(glyphLienzoGlyphRenderer);
-        when(item.getHeight()).thenReturn(0);
-        when(item.getWidth()).thenReturn(0);
-        when(item.getShape()).thenReturn(glyph);
-        when(glyphLienzoGlyphRenderer.render(glyph, 0, 0)).thenReturn
-                (new Group());
+        proxyPanel = spy(new LienzoPanelImpl(DRAG_PROXY_WIDTH, DRAG_PROXY_HEIGHT));
+        when(proxyPanel.getElement()).thenReturn(proxyElement);
+        when(proxyElement.getStyle()).thenReturn(proxyStyle);
+        handlerRegistrations = new ArrayList<>();
+        glyphGroup = new Group();
+        when(glyphLienzoGlyphRenderer.render(eq(glyph), anyDouble(), anyDouble())).thenReturn(glyphGroup);
+        when(glyphDragItem.getHeight()).thenReturn(DRAG_PROXY_WIDTH);
+        when(glyphDragItem.getWidth()).thenReturn(DRAG_PROXY_HEIGHT);
+        when(glyphDragItem.getShape()).thenReturn(glyph);
+        when(rootPanel.addDomHandler(any(MouseMoveHandler.class), eq(MouseMoveEvent.getType())))
+                .thenReturn(moveHandlerReg);
+        when(rootPanel.addDomHandler(any(MouseUpHandler.class), eq(MouseUpEvent.getType())))
+                .thenReturn(upHandlerReg);
+        when(rootPanel.addDomHandler(any(KeyDownHandler.class), eq(KeyDownEvent.getType())))
+                .thenReturn(keyHandlerReg);
+        tested = new ShapeGlyphDragHandlerImpl(glyphLienzoGlyphRenderer,
+                                               handlerRegistrations,
+                                               () -> rootPanel,
+                                               item -> proxyPanel,
+                                               (task, timeout) -> task.execute());
     }
 
     @Test
-    public void testProxyFor() throws Exception {
-        DragProxy<AbstractCanvas, ShapeGlyphDragHandler.Item, DragProxyCallback> instance  = shapeGlyphDragHandler
-                .proxyFor(canvas);
-        assertTrue(instance == shapeGlyphDragHandler);
+    public void testShowProxy() throws Exception {
+        tested.show(glyphDragItem, 11, 33, mock(DragProxyCallback.class));
+        ArgumentCaptor<Layer> layerArgumentCaptor = ArgumentCaptor.forClass(Layer.class);
+        verify(proxyPanel, times(1)).add(layerArgumentCaptor.capture());
+        Layer layer = layerArgumentCaptor.getValue();
+        assertEquals(glyphGroup, layer.getChildNodes().get(0));
+        verify(proxyStyle, times(1)).setCursor(eq(Style.Cursor.AUTO));
+        verify(proxyStyle, times(1)).setPosition(eq(Style.Position.ABSOLUTE));
+        verify(proxyStyle, times(1)).setLeft(eq(11d), eq(Style.Unit.PX));
+        verify(proxyStyle, times(1)).setTop(eq(33d), eq(Style.Unit.PX));
+        verify(rootPanel, times(1)).add(eq(proxyPanel));
     }
 
     @Test
-    public void testShow() throws Exception {
-        CountDownLatch latch = new CountDownLatch(1);
-
+    public void testProxyhHandlers() throws Exception {
         DragProxyCallback callback = mock(DragProxyCallback.class);
-        shapeGlyphDragHandler.show(item, 0, 0, callback);
+        tested.show(glyphDragItem, 11, 33, callback);
 
-        //asserting handlers registrations
-        assertEquals(shapeGlyphDragHandler.handlerRegistrations.size(), 2);
-        //delay timeout to add MouseUp handler
-        latch.await(201, TimeUnit.MILLISECONDS);
-        assertEquals(shapeGlyphDragHandler.handlerRegistrations.size(), 2);
+        // Check keyboard event handling.
+        assertEquals(keyHandlerReg, handlerRegistrations.get(2));
 
-        assertNotNull(shapeGlyphDragHandler.dragProxyPanel);
+        // Check mouse move event handling.
+        assertEquals(moveHandlerReg, handlerRegistrations.get(0));
+        MouseMoveEvent moveEvent = mock(MouseMoveEvent.class);
+        when(moveEvent.getX()).thenReturn(7);
+        when(moveEvent.getY()).thenReturn(9);
+        when(moveEvent.getClientX()).thenReturn(3);
+        when(moveEvent.getClientY()).thenReturn(5);
+        tested.onMouseMove(moveEvent,
+                           callback);
+        verify(proxyStyle, times(1)).setLeft(eq(7d), eq(Style.Unit.PX));
+        verify(proxyStyle, times(1)).setTop(eq(9d), eq(Style.Unit.PX));
+        verify(callback, times(1)).onMove(eq(3), eq(5));
 
-        verify(glyphLienzoGlyphRenderer).render(item.getShape(),
-                                        item.getWidth(),
-                                        item.getHeight());
+        // Check mouse up event handling.
+        assertEquals(upHandlerReg, handlerRegistrations.get(1));
+        MouseUpEvent upEvent = mock(MouseUpEvent.class);
+        when(upEvent.getX()).thenReturn(7);
+        when(upEvent.getY()).thenReturn(9);
+        when(upEvent.getClientX()).thenReturn(3);
+        when(upEvent.getClientY()).thenReturn(5);
+        tested.onMouseUp(upEvent,
+                         callback);
+        verify(moveHandlerReg, times(1)).removeHandler();
+        verify(upHandlerReg, times(1)).removeHandler();
+        verify(rootPanel, times(1)).remove(eq(proxyPanel));
+        verify(callback, times(1)).onComplete(eq(3), eq(5));
+        assertTrue(handlerRegistrations.isEmpty());
+    }
+
+    @Test
+    public void testKeyboardHandling() throws Exception {
+        DragProxyCallback callback = mock(DragProxyCallback.class);
+        tested.show(glyphDragItem, 11, 33, callback);
+        assertEquals(keyHandlerReg, handlerRegistrations.get(2));
+        KeyDownEvent event = mock(KeyDownEvent.class);
+        tested.onKeyDown(event);
+        verify(moveHandlerReg, times(1)).removeHandler();
+        verify(upHandlerReg, times(1)).removeHandler();
+        verify(rootPanel, times(1)).remove(eq(proxyPanel));
+        assertTrue(handlerRegistrations.isEmpty());
     }
 
     @Test
     public void testClear() throws Exception {
-        testShow();
-        shapeGlyphDragHandler.clear();
-        assertTrue(shapeGlyphDragHandler.handlerRegistrations.isEmpty());
-        assertNull(shapeGlyphDragHandler.dragProxyPanel);
+        DragProxyCallback callback = mock(DragProxyCallback.class);
+        tested.show(glyphDragItem, 11, 33, callback);
+        tested.clear();
+        verify(proxyPanel, times(1)).clear();
+        verify(proxyPanel, never()).destroy();
+        verify(moveHandlerReg, times(1)).removeHandler();
+        verify(upHandlerReg, times(1)).removeHandler();
+        verify(rootPanel, times(1)).remove(eq(proxyPanel));
+        assertTrue(handlerRegistrations.isEmpty());
     }
 
     @Test
     public void testDestroy() throws Exception {
-        testShow();
-        shapeGlyphDragHandler.destroy();
-        assertTrue(shapeGlyphDragHandler.handlerRegistrations.isEmpty());
-        assertNull(shapeGlyphDragHandler.dragProxyPanel);
+        DragProxyCallback callback = mock(DragProxyCallback.class);
+        tested.show(glyphDragItem, 11, 33, callback);
+        tested.destroy();
+        verify(proxyPanel, times(1)).destroy();
+        verify(proxyPanel, never()).clear();
+        verify(moveHandlerReg, times(1)).removeHandler();
+        verify(upHandlerReg, times(1)).removeHandler();
+        verify(rootPanel, times(1)).remove(eq(proxyPanel));
+        assertTrue(handlerRegistrations.isEmpty());
     }
 }

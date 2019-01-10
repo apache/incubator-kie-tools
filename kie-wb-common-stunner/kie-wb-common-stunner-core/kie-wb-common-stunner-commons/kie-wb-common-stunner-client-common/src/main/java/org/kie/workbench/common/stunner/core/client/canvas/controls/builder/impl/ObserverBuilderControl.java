@@ -26,7 +26,6 @@ import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.client.api.ClientDefinitionManager;
-import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.ElementBuilderControl;
@@ -71,39 +70,78 @@ public class ObserverBuilderControl extends AbstractElementBuilderControl
         this.canvasSelectionEvent = canvasSelectionEvent;
     }
 
-    @SuppressWarnings("unchecked")
-    void onBuildCanvasShape(final @Observes BuildCanvasShapeEvent buildCanvasShapeEvent) {
-        checkNotNull("buildCanvasShapeEvent",
-                     buildCanvasShapeEvent);
-        if (null != canvasHandler) {
-            final CanvasHandler context = buildCanvasShapeEvent.getCanvasHandler();
-            if (null != context && context.equals(canvasHandler)) {
-                final Object definition = buildCanvasShapeEvent.getDefinition();
-                final double x = buildCanvasShapeEvent.getX();
-                final double y = buildCanvasShapeEvent.getY();
-                final AbstractCanvas.CanvasView canvasView = canvasHandler.getAbstractCanvas().getView();
-                final Point2D absoluteLocation = canvasView.getAbsoluteLocation();
-                final double _x = x >= 0 ? x - absoluteLocation.getX() : -1;
-                final double _y = y >= 0 ? y - absoluteLocation.getY() : -1;
-                final ElementBuildRequest<AbstractCanvasHandler> request =
-                        new ElementBuildRequestImpl(_x,
-                                                    _y,
-                                                    definition);
-                ObserverBuilderControl.this.build(request,
-                                                  new BuildCallback() {
-                                                      @Override
-                                                      public void onSuccess(final String uuid) {
-                                                          canvasSelectionEvent.fire(new CanvasSelectionEvent(canvasHandler,
-                                                                                                             uuid));
-                                                      }
+    public void buildShapeAt(final Object definition,
+                             final double x,
+                             final double y) {
+        final ElementBuildRequest<AbstractCanvasHandler> request =
+                new ElementBuildRequestImpl(x,
+                                            y,
+                                            definition);
+        ObserverBuilderControl.this.build(request,
+                                          new BuildCallback() {
+                                              @Override
+                                              public void onSuccess(final String uuid) {
+                                                  canvasSelectionEvent.fire(new CanvasSelectionEvent(canvasHandler,
+                                                                                                     uuid));
+                                              }
 
-                                                      @Override
-                                                      public void onError(final ClientRuntimeError error) {
-                                                          LOGGER.log(Level.WARNING,
-                                                                     error.toString());
-                                                      }
-                                                  });
+                                              @Override
+                                              public void onError(final ClientRuntimeError error) {
+                                                  LOGGER.log(Level.WARNING,
+                                                             error.toString());
+                                              }
+                                          });
+    }
+
+    @SuppressWarnings("unchecked")
+    void onBuildCanvasShape(final @Observes BuildCanvasShapeEvent event) {
+        checkNotNull("event",
+                     event);
+        if (null != canvasHandler) {
+            final CanvasHandler context = event.getCanvasHandler();
+            if (null != context && context.equals(canvasHandler)) {
+                final Point2D transformed = getTransformedLocation(event.getClientX(), event.getClientY());
+                buildShapeAt(event.getDefinition(),
+                             transformed.getX(),
+                             transformed.getY());
             }
         }
+    }
+
+    /**
+     * Gets canvas transformed location.
+     * @param clientX The clientX coordinate value.
+     * @param clientY The clientY coordinate value.
+     * @return the transformed location into the canvas.
+     */
+    public Point2D getTransformedLocation(final double clientX,
+                                          final double clientY) {
+        final double x = getRelativeX(clientX);
+        final double y = getRelativeY(clientY);
+        return canvasHandler.getAbstractCanvas().getTransform().inverse(x, y);
+    }
+
+    /**
+     * Gets the mouse x-position relative to the canvas element.
+     * @param clientX The event's clientX value.
+     * @return the relative x-position
+     */
+    private double getRelativeX(final double clientX) {
+        return clientX - getCanvasElement().getAbsoluteLeft() + getCanvasElement().getScrollLeft() +
+                getCanvasElement().getOwnerDocument().getScrollLeft();
+    }
+
+    /**
+     * Gets the mouse y-position relative to the canvas element.
+     * @param clientY The event's clienty value.
+     * @return the relative y-position
+     */
+    private double getRelativeY(final double clientY) {
+        return clientY - getCanvasElement().getAbsoluteTop() + getCanvasElement().getScrollTop() +
+                getCanvasElement().getOwnerDocument().getScrollTop();
+    }
+
+    private com.google.gwt.user.client.Element getCanvasElement() {
+        return canvasHandler.getAbstractCanvas().getView().asWidget().getElement();
     }
 }

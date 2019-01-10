@@ -19,138 +19,176 @@ package org.kie.workbench.common.stunner.client.lienzo.components.glyph;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Layer;
-import com.ait.lienzo.client.widget.LienzoPanel;
+import com.ait.lienzo.client.widget.panel.LienzoPanel;
+import com.ait.lienzo.client.widget.panel.impl.LienzoPanelImpl;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.MouseMoveEvent;
 import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.components.drag.DragProxy;
 import org.kie.workbench.common.stunner.core.client.components.drag.DragProxyCallback;
 import org.kie.workbench.common.stunner.core.client.components.glyph.ShapeGlyphDragHandler;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
+import org.uberfire.mvp.Command;
 
 @Dependent
 public class ShapeGlyphDragHandlerImpl implements ShapeGlyphDragHandler<AbstractCanvas> {
 
-    private static final int ZINDEX = Integer.MAX_VALUE;
-
     private final LienzoGlyphRenderer<Glyph> glyphLienzoGlyphRenderer;
-    final List<HandlerRegistration> handlerRegistrations = new ArrayList<>();
-    LienzoPanel dragProxyPanel;
+    private final List<HandlerRegistration> handlerRegistrations;
+    private final Supplier<AbsolutePanel> rootPanelSupplier;
+    private final Function<Item, LienzoPanel> lienzoPanelBuilder;
+    private final BiConsumer<Command, Integer> timer;
+    private LienzoPanel dragProxyPanel;
 
     @Inject
     public ShapeGlyphDragHandlerImpl(final LienzoGlyphRenderers glyphLienzoGlyphRenderer) {
+        this(glyphLienzoGlyphRenderer,
+             new ArrayList<>(),
+             RootPanel::get,
+             item -> new LienzoPanelImpl(item.getWidth() * 2,
+                                         item.getHeight() * 2),
+             (task, millis) -> new Timer() {
+                 @Override
+                 public void run() {
+                     task.execute();
+                 }
+             }.schedule(millis));
+    }
+
+    ShapeGlyphDragHandlerImpl(final LienzoGlyphRenderer<Glyph> glyphLienzoGlyphRenderer,
+                              final List<HandlerRegistration> handlerRegistrations,
+                              final Supplier<AbsolutePanel> rootPanelSupplier,
+                              final Function<Item, LienzoPanel> lienzoPanelBuilder,
+                              final BiConsumer<Command, Integer> timer) {
         this.glyphLienzoGlyphRenderer = glyphLienzoGlyphRenderer;
+        this.handlerRegistrations = handlerRegistrations;
+        this.rootPanelSupplier = rootPanelSupplier;
+        this.lienzoPanelBuilder = lienzoPanelBuilder;
+        this.timer = timer;
     }
 
     @Override
-    public DragProxy<AbstractCanvas, Item, DragProxyCallback> proxyFor(AbstractCanvas context) {
+    public DragProxy<AbstractCanvas, Item, DragProxyCallback> proxyFor(final AbstractCanvas context) {
         return this;
     }
 
     @Override
-    public DragProxy<AbstractCanvas, Item, DragProxyCallback> show(Item item, int x, int y, DragProxyCallback dragProxyCallback) {
-
-        int width = item.getWidth();
-        int height = item.getHeight();
-
-        final Group dragShape = glyphLienzoGlyphRenderer.render(item.getShape(), width, height);
-        dragShape.setX(0);
-        dragShape.setY(0);
-        this.dragProxyPanel = new LienzoPanel((width * 2), (height * 2));
-        dragProxyPanel.getElement().getStyle().setCursor(Style.Cursor.AUTO);
+    public DragProxy<AbstractCanvas, Item, DragProxyCallback> show(final Item item,
+                                                                   final int x,
+                                                                   final int y,
+                                                                   final DragProxyCallback dragProxyCallback) {
+        // Create the lienzo "proxy" panel instance.
         final Layer dragProxyLayer = new Layer();
-        dragProxyLayer.add(dragShape);
+        this.dragProxyPanel = lienzoPanelBuilder.apply(item);
         dragProxyPanel.add(dragProxyLayer);
-        setDragProxyPosition(dragProxyPanel, width, height, x, y);
-        attachDragProxyHandlers(dragProxyPanel, dragProxyCallback);
+        attachHandlers(dragProxyCallback);
 
-        addKeyboardEscHandler();
-        RootPanel.get().add(dragProxyPanel);
+        // Add the glyph instance into the layer.
+        dragProxyLayer.add(glyphLienzoGlyphRenderer
+                                   .render(item.getShape(),
+                                           item.getWidth(),
+                                           item.getHeight())
+                                   .setX(0)
+                                   .setY(0));
+
+        // Handle the proxy panel instance.
+        moveProxyTo(x, y);
+        rootPanelSupplier.get().add(dragProxyPanel);
+
         return this;
     }
 
     @Override
     public void clear() {
-        if (Objects.nonNull(dragProxyPanel)) {
-            clearHandlers();
-            dragProxyPanel.clear();
-            RootPanel.get().remove(dragProxyPanel);
-            dragProxyPanel = null;
-        }
+        clearState(() -> dragProxyPanel.clear());
     }
 
     @Override
     public void destroy() {
-        clearHandlers();
-        if (Objects.nonNull(dragProxyPanel)) {
-            RootPanel.get().remove(dragProxyPanel);
-            dragProxyPanel.destroy();
-            dragProxyPanel = null;
-        }
+        clearState(() -> dragProxyPanel.destroy());
     }
 
-    private void setDragProxyPosition(final LienzoPanel dragProxyPanel, final double proxyWidth, final double proxyHeight, final double x, final double y) {
+    private void moveProxyTo(final double x,
+                             final double y) {
         Style style = dragProxyPanel.getElement().getStyle();
+        style.setCursor(Style.Cursor.AUTO);
         style.setPosition(Style.Position.ABSOLUTE);
         style.setLeft(x, Style.Unit.PX);
         style.setTop(y, Style.Unit.PX);
-        style.setZIndex(ZINDEX);
+        style.setZIndex(Integer.MAX_VALUE);
     }
 
-    private void attachDragProxyHandlers(final LienzoPanel floatingPanel, final DragProxyCallback callback) {
-        final Style style = floatingPanel.getElement().getStyle();
+    private void attachHandlers(final DragProxyCallback callback) {
+        final AbsolutePanel root = rootPanelSupplier.get();
+        // Mouse move event registration & handling..
+        register(
+                root.addDomHandler(event -> onMouseMove(event, callback),
+                                   MouseMoveEvent.getType())
+        );
 
-        //MouseMoveEvents
-        addMouseMoveEvents(floatingPanel, callback, style);
-
-        //MouseUpEvent
+        // Mouse up event registration & handling..
         //delay to attach the MouseUpEvent handler, to avoid "clicking" to drop item.
-        new Timer() {
-            @Override
-            public void run() {
-                addMouseUpEvent(floatingPanel, callback);
-                this.cancel();
-            }
-        }.schedule(200);
+        timer.accept(() -> {
+            register(
+                    root.addDomHandler(event -> onMouseUp(event, callback),
+                                       MouseUpEvent.getType())
+            );
+        }, 200);
+
+        // Keyboard event registration & handling..
+        register(root.addDomHandler(this::onKeyDown,
+                                    KeyDownEvent.getType()));
     }
 
-    private void addMouseMoveEvents(LienzoPanel floatingPanel, DragProxyCallback callback, Style style) {
-        handlerRegistrations.add(RootPanel.get().addDomHandler(mouseMoveEvent -> {
-            style.setLeft(mouseMoveEvent.getX(), Style.Unit.PX);
-            style.setTop(mouseMoveEvent.getY(), Style.Unit.PX);
-            final int x = mouseMoveEvent.getX();
-            final int y = mouseMoveEvent.getY();
-            callback.onMove(x, y);
-        }, MouseMoveEvent.getType()));
+    void onMouseMove(final MouseMoveEvent event,
+                     final DragProxyCallback callback) {
+        final Style proxyPanelStyle = dragProxyPanel.getElement().getStyle();
+        proxyPanelStyle.setLeft(event.getX(), Style.Unit.PX);
+        proxyPanelStyle.setTop(event.getY(), Style.Unit.PX);
+        callback.onMove(event.getClientX(), event.getClientY());
     }
 
-    private void addMouseUpEvent(LienzoPanel floatingPanel, DragProxyCallback callback) {
-        handlerRegistrations.add(RootPanel.get().addDomHandler(mouseUpEvent -> {
-            clearHandlers();
-            RootPanel.get().remove(floatingPanel);
-            final int x = mouseUpEvent.getX();
-            final int y = mouseUpEvent.getY();
-            callback.onComplete(x, y);
-        }, MouseUpEvent.getType()));
+    void onMouseUp(final MouseUpEvent event,
+                   final DragProxyCallback callback) {
+        clearHandlers();
+        rootPanelSupplier.get().remove(dragProxyPanel);
+        callback.onComplete(event.getClientX(),
+                            event.getClientY());
     }
 
-    private void addKeyboardEscHandler() {
-        handlerRegistrations.add(RootPanel.get().addDomHandler(k -> clear(), KeyDownEvent.getType()));
+    void onKeyDown(final KeyDownEvent event) {
+        clear();
+    }
+
+    private void register(final HandlerRegistration registration) {
+        handlerRegistrations.add(registration);
     }
 
     private void clearHandlers() {
         handlerRegistrations.stream().forEach(HandlerRegistration::removeHandler);
         handlerRegistrations.clear();
+    }
+
+    private void clearState(final Command proxyDestroyCommand) {
+        clearHandlers();
+        if (Objects.nonNull(dragProxyPanel)) {
+            rootPanelSupplier.get().remove(dragProxyPanel);
+            proxyDestroyCommand.execute();
+            dragProxyPanel = null;
+        }
     }
 }

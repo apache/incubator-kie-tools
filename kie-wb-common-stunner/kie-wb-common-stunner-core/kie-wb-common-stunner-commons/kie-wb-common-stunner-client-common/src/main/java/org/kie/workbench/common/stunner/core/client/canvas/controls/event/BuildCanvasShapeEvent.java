@@ -20,7 +20,6 @@ import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
-import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 
 /**
  * Event for requesting the canvas builder control to add a new shape.
@@ -30,24 +29,19 @@ public final class BuildCanvasShapeEvent extends AbstractCanvasHandlerEvent<Abst
 
     private Object definition;
     private ShapeFactory<?, ? extends Shape> shapeFactory;
-    private double x;
-    private double y;
+    private double clientX;
+    private double clientY;
 
-    public BuildCanvasShapeEvent(final AbstractCanvasHandler abstractCanvasHandler, final Object definition, final ShapeFactory<?, ? extends Shape> shapeFactory) {
+    public BuildCanvasShapeEvent(final AbstractCanvasHandler abstractCanvasHandler,
+                                 final Object definition,
+                                 final ShapeFactory<?, ? extends Shape> shapeFactory,
+                                 final double clientX,
+                                 final double clientY) {
         super(abstractCanvasHandler);
         this.definition = definition;
         this.shapeFactory = shapeFactory;
-        this.x = -1;
-        this.y = -1;
-    }
-
-    public BuildCanvasShapeEvent(final AbstractCanvasHandler abstractCanvasHandler, final Object definition, final ShapeFactory<?, ? extends Shape> shapeFactory, final double x, final double y) {
-        super(abstractCanvasHandler);
-        this.definition = definition;
-        this.shapeFactory = shapeFactory;
-        final Point2D transformed = abstractCanvasHandler.getAbstractCanvas().getTransform().inverse(x, y);
-        this.x = transformed.getX();
-        this.y = transformed.getY();
+        this.clientX = clientX;
+        this.clientY = clientY;
     }
 
     public Object getDefinition() {
@@ -58,16 +52,20 @@ public final class BuildCanvasShapeEvent extends AbstractCanvasHandlerEvent<Abst
         return shapeFactory;
     }
 
-    public double getX() {
-        return x;
+    public double getClientX() {
+        return clientX;
     }
 
-    public double getY() {
-        return y;
+    public double getClientY() {
+        return clientY;
     }
 
     @Override
     public String toString() {
-        return "BuildCanvasShapeEvent [definition=" + definition + ", factory=" + shapeFactory.toString() + ", x=" + x + ", y=" + y + "]";
+        return "BuildCanvasShapeEvent " +
+                "[definition=" + definition + ", " +
+                "factory=" + shapeFactory.toString() +
+                ", clientX=" + clientX +
+                ", clientY=" + clientY + "]";
     }
 }

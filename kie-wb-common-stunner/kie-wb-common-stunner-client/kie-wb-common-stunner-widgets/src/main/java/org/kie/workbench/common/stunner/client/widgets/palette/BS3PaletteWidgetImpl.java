@@ -23,7 +23,6 @@ import java.util.function.Consumer;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.jboss.errai.common.client.api.IsElement;
@@ -34,7 +33,6 @@ import org.kie.workbench.common.stunner.client.widgets.palette.categories.Defini
 import org.kie.workbench.common.stunner.client.widgets.palette.categories.items.DefinitionPaletteItemWidget;
 import org.kie.workbench.common.stunner.client.widgets.palette.collapsed.CollapsedDefinitionPaletteItemWidget;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
-import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasFocusedEvent;
 import org.kie.workbench.common.stunner.core.client.components.glyph.ShapeGlyphDragHandler;
 import org.kie.workbench.common.stunner.core.client.components.palette.AbstractPalette;
 import org.kie.workbench.common.stunner.core.client.components.palette.CollapsedDefaultPaletteItem;
@@ -51,8 +49,6 @@ import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.kie.workbench.common.stunner.core.preferences.StunnerPreferences;
-
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @Dependent
 public class BS3PaletteWidgetImpl
@@ -300,11 +296,6 @@ public class BS3PaletteWidgetImpl
     private void onCloseCategory(String categoryId) {
         DefinitionPaletteCategoryWidget widget = categoryWidgets.get(categoryId);
         widget.setVisible(false);
-    }
-
-    void onCanvasFocusedEvent(final @Observes CanvasFocusedEvent canvasFocusedEvent) {
-        checkNotNull("canvasFocusedEvent",
-                     canvasFocusedEvent);
     }
 
     @Override
