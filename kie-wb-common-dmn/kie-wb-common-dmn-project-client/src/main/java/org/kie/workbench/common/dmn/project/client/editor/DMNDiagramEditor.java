@@ -178,6 +178,7 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
         superOnClose();
         decisionNavigatorDock.close();
         decisionNavigatorDock.resetContent();
+        dataTypesPage.disableShortcuts();
     }
 
     @Override
@@ -198,6 +199,7 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
         superDoFocus();
         onDiagramLoad();
         dataTypesPage.onFocus();
+        dataTypesPage.enableShortcuts();
     }
 
     @OnLostFocus

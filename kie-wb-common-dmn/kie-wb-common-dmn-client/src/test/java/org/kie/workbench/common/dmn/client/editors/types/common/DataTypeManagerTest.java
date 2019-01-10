@@ -18,7 +18,6 @@ package org.kie.workbench.common.dmn.client.editors.types.common;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -175,9 +174,9 @@ public class DataTypeManagerTest {
         final String subLevelDataTypeUuid = "subUuid";
         when(subLevelDataType.getUUID()).thenReturn(subLevelDataTypeUuid);
 
-        final List<DataType> newSubDataTypes = Collections.singletonList(mock(DataType.class));
+        final List<DataType> newSubDataTypes = singletonList(mock(DataType.class));
 
-        when(topLevelDataType.getSubDataTypes()).thenReturn(Arrays.asList(subLevelDataType));
+        when(topLevelDataType.getSubDataTypes()).thenReturn(singletonList(subLevelDataType));
 
         manager.withDataType(topLevelDataType);
         manager.withSubDataTypes(newSubDataTypes);
@@ -247,7 +246,7 @@ public class DataTypeManagerTest {
         assertSame(tPerson.getUUID(), name.getParentUUID());
         assertEquals(0, name.getSubDataTypes().size());
         assertFalse(name.hasSubDataTypes());
-        assertTrue(name.isCollection());
+        assertTrue(name.isList());
 
         assertEquals("uuid", address.getUUID());
         assertEquals("address", address.getName());
@@ -256,7 +255,7 @@ public class DataTypeManagerTest {
         assertSame(tPerson.getUUID(), address.getParentUUID());
         assertEquals(1, address.getSubDataTypes().size());
         assertTrue(address.hasSubDataTypes());
-        assertFalse(address.isCollection());
+        assertFalse(address.isList());
 
         assertEquals("uuid", street.getUUID());
         assertEquals("street", street.getName());
@@ -265,7 +264,7 @@ public class DataTypeManagerTest {
         assertSame(address.getUUID(), street.getParentUUID());
         assertEquals(0, street.getSubDataTypes().size());
         assertFalse(street.hasSubDataTypes());
-        assertFalse(street.isCollection());
+        assertFalse(street.isList());
 
         assertEquals("uuid", employee.getUUID());
         assertEquals("employee", employee.getName());
@@ -274,7 +273,7 @@ public class DataTypeManagerTest {
         assertSame(tPerson.getUUID(), address.getParentUUID());
         assertEquals(1, employee.getSubDataTypes().size());
         assertTrue(employee.hasSubDataTypes());
-        assertFalse(employee.isCollection());
+        assertFalse(employee.isList());
 
         assertEquals("uuid", company.getUUID());
         assertEquals("company", company.getName());
@@ -283,7 +282,7 @@ public class DataTypeManagerTest {
         assertSame(employee.getUUID(), company.getParentUUID());
         assertEquals(0, company.getSubDataTypes().size());
         assertFalse(company.hasSubDataTypes());
-        assertFalse(company.isCollection());
+        assertFalse(company.isList());
     }
 
     @Test

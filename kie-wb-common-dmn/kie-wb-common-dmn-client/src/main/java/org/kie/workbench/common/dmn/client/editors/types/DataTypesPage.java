@@ -20,6 +20,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -38,6 +39,7 @@ import org.kie.workbench.common.dmn.client.editors.types.messages.DataTypeFlashM
 import org.kie.workbench.common.dmn.client.editors.types.persistence.DataTypeStore;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.ItemDefinitionStore;
 import org.kie.workbench.common.dmn.client.editors.types.search.DataTypeSearchBar;
+import org.kie.workbench.common.dmn.client.editors.types.shortcuts.DataTypeShortcuts;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.uberfire.client.views.pfly.multipage.PageImpl;
@@ -68,6 +70,8 @@ public class DataTypesPage extends PageImpl {
 
     private final HTMLDivElement pageView;
 
+    private final DataTypeShortcuts dataTypeShortcuts;
+
     private String loadedDMNModelNamespace;
 
     @Inject
@@ -81,6 +85,7 @@ public class DataTypesPage extends PageImpl {
                          final DataTypeSearchBar searchBar,
                          final DMNGraphUtils dmnGraphUtils,
                          final TranslationService translationService,
+                         final DataTypeShortcuts dataTypeShortcuts,
                          final HTMLDivElement pageView) {
 
         super(getWidget(pageView), getPageTitle(translationService));
@@ -94,11 +99,17 @@ public class DataTypesPage extends PageImpl {
         this.flashMessages = flashMessages;
         this.searchBar = searchBar;
         this.dmnGraphUtils = dmnGraphUtils;
+        this.dataTypeShortcuts = dataTypeShortcuts;
         this.pageView = pageView;
     }
 
     private static String getPageTitle(final TranslationService translationService) {
         return translationService.format(DMNEditorConstants.DataTypesPage_Label);
+    }
+
+    @PostConstruct
+    public void init() {
+        dataTypeShortcuts.init(treeList);
     }
 
     @Override
@@ -169,5 +180,13 @@ public class DataTypesPage extends PageImpl {
 
     private Optional<Definitions> getDefinitions() {
         return ofNullable(dmnGraphUtils.getDefinitions());
+    }
+
+    public void enableShortcuts() {
+        dataTypeShortcuts.setup();
+    }
+
+    public void disableShortcuts() {
+        dataTypeShortcuts.teardown();
     }
 }

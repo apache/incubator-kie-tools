@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.dmn.client.editors.types.messages;
 
+import java.util.Optional;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -125,21 +127,23 @@ public class DataTypeFlashMessagesView implements DataTypeFlashMessages.View {
     @Override
     public void showErrorHighlight(final String errorElementSelector) {
 
-        final Element element = getElement().parentNode.querySelector(errorElementSelector);
+        querySelector(errorElementSelector).ifPresent(element -> {
 
-        enableErrorHighlight(element);
-        setupDisableErrorHighlightCallbacks(element);
+            enableErrorHighlight(element);
+            setupDisableErrorHighlightCallbacks(element);
 
-        element.focus();
+            element.focus();
+        });
     }
 
     @Override
     public void showWarningHighlight(final String warningElementSelector) {
         disableWarningHighlight();
+        querySelector(warningElementSelector).ifPresent(this::enableWarningHighlight);
+    }
 
-        final Element element = getElement().parentNode.querySelector(warningElementSelector);
-
-        enableWarningHighlight(element);
+    private Optional<Element> querySelector(final String selector) {
+        return Optional.ofNullable(getElement().parentNode.querySelector(selector));
     }
 
     @Override

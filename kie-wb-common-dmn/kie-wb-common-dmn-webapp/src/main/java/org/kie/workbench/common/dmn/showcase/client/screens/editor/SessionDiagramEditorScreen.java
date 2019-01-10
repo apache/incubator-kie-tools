@@ -327,6 +327,7 @@ public class SessionDiagramEditorScreen implements KieEditorWrapperView.KieEdito
                           final ExpressionEditorView.Presenter expressionEditor = ((DMNSession) sessionManager.getCurrentSession()).getExpressionEditor();
                           expressionEditor.setToolbarStateHandler(toolbarStateHandler);
                           dataTypesPage.reload();
+                          dataTypesPage.enableShortcuts();
                           setupCanvasHandler(presenter.getInstance());
                           openDock();
                           callback.execute();
@@ -350,6 +351,7 @@ public class SessionDiagramEditorScreen implements KieEditorWrapperView.KieEdito
     public void onClose() {
         destroyDock();
         destroySession();
+        dataTypesPage.disableShortcuts();
     }
 
     void setupDiagram(final Diagram diagram) {

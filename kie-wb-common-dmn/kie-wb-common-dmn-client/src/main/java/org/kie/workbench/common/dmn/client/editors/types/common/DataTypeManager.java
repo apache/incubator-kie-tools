@@ -99,7 +99,7 @@ public class DataTypeManager {
                 .withParentUUID(TOP_LEVEL_PARENT_UUID)
                 .withNoName()
                 .withNoConstraint()
-                .asCollection(false)
+                .asList(false)
                 .withDefaultType();
     }
 
@@ -151,8 +151,8 @@ public class DataTypeManager {
         return this;
     }
 
-    public DataTypeManager asCollection(final boolean isCollection) {
-        dataType.setCollection(isCollection);
+    public DataTypeManager asList(final boolean isCollection) {
+        dataType.setAsList(isCollection);
         return this;
     }
 
@@ -230,7 +230,7 @@ public class DataTypeManager {
     }
 
     DataTypeManager withItemDefinitionCollection() {
-        return asCollection(itemDefinition.isIsCollection());
+        return asList(itemDefinition.isIsCollection());
     }
 
     DataTypeManager withItemDefinitionType() {

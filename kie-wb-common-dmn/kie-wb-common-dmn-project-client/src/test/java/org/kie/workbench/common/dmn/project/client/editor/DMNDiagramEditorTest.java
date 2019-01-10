@@ -186,6 +186,7 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
         verify(diagramEditor).superOnClose();
         verify(decisionNavigatorDock).close();
         verify(decisionNavigatorDock).resetContent();
+        verify(dataTypesPage).disableShortcuts();
     }
 
     @Test
@@ -234,6 +235,7 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
         verify(diagramEditor).superDoFocus();
         verify(diagramEditor).onDiagramLoad();
         verify(dataTypesPage).onFocus();
+        verify(dataTypesPage).enableShortcuts();
     }
 
     @Test

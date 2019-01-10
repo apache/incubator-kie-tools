@@ -193,6 +193,7 @@ public class DataTypeSelectView implements DataTypeSelect.View {
     }
 
     void hideSelectPicker() {
+        triggerPickerAction(getSelectPicker(), "destroy");
         triggerPickerAction(getSelectPicker(), "hide");
     }
 

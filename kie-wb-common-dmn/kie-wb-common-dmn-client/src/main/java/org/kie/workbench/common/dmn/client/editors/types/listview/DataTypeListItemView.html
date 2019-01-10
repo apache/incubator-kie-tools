@@ -46,14 +46,19 @@
             <span data-type-field="arrow-button" class="icon expand-icon fa fa-caret-down">
                 <span class="data-type-icon fa fa-object-group"></span>
             </span>
-
-            <span class="name-text" data-type-field="name-text"></span>
-            <input class="name-input" data-type-field="name-input"/>
-            <span data-type-field="type"></span>
+            <div>
+                <span class="data-type-label hidden" data-i18n-key="Name"></span>
+                <input class="name-input" data-type-field="name-input"/>
+                <span class="name-text" data-type-field="name-text"></span>
+            </div>
+            <div>
+                <span class="data-type-label hidden" data-i18n-key="Type"></span>
+                <span data-type-field="type"></span>
+            </div>
             <span class="constraint-text" data-type-field="constraint-text"></span>
-            <div class="hidden collection-component" data-type-field="collection-container"></div>
-            <div class="hidden collection-component" data-type-field="collection-yes">
-                <span data-i18n-key="Collection"></span>
+            <div class="hidden collection-component" data-type-field="list-container"></div>
+            <div class="hidden collection-component" data-type-field="list-yes">
+                <span data-i18n-key="List"></span>
                 <div>
                     <i class="fa fa-check"></i>
                     <span data-i18n-key="Yes"></span>

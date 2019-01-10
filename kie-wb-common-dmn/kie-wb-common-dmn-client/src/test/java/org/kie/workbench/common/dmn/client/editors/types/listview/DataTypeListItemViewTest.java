@@ -83,10 +83,10 @@ public class DataTypeListItemViewTest {
     private HTMLDivElement constraint;
 
     @Mock
-    private HTMLDivElement collectionContainer;
+    private HTMLDivElement listContainer;
 
     @Mock
-    private HTMLDivElement collectionYes;
+    private HTMLDivElement listYes;
 
     @Mock
     private HTMLDivElement constraintContainer;
@@ -524,18 +524,18 @@ public class DataTypeListItemViewTest {
 
         final SmallSwitchComponent switchComponent = mock(SmallSwitchComponent.class);
         final HTMLElement htmlElement = mock(HTMLElement.class);
-        final Text collectionTextNode = mock(Text.class);
+        final Text listTextNode = mock(Text.class);
 
         when(switchComponent.getElement()).thenReturn(htmlElement);
-        doReturn(collectionTextNode).when(view).collectionTextNode();
-        doReturn(collectionContainer).when(view).getCollectionContainer();
-        collectionContainer.innerHTML = "previous content";
+        doReturn(listTextNode).when(view).listTextNode();
+        doReturn(listContainer).when(view).getListContainer();
+        listContainer.innerHTML = "previous content";
 
-        view.setupCollectionComponent(switchComponent);
+        view.setupListComponent(switchComponent);
 
-        assertFalse(collectionContainer.innerHTML.contains("previous content"));
-        verify(collectionContainer).appendChild(collectionTextNode);
-        verify(collectionContainer).appendChild(htmlElement);
+        assertFalse(listContainer.innerHTML.contains("previous content"));
+        verify(listContainer).appendChild(listTextNode);
+        verify(listContainer).appendChild(htmlElement);
     }
 
     @Test
@@ -563,45 +563,45 @@ public class DataTypeListItemViewTest {
     @Test
     public void testShowCollectionContainer() {
 
-        doReturn(collectionContainer).when(view).getCollectionContainer();
-        collectionContainer.classList = mock(DOMTokenList.class);
+        doReturn(listContainer).when(view).getListContainer();
+        listContainer.classList = mock(DOMTokenList.class);
 
-        view.showCollectionContainer();
+        view.showListContainer();
 
-        verify(collectionContainer.classList).remove(HIDDEN_CSS_CLASS);
+        verify(listContainer.classList).remove(HIDDEN_CSS_CLASS);
     }
 
     @Test
     public void testHideCollectionContainer() {
 
-        doReturn(collectionContainer).when(view).getCollectionContainer();
-        collectionContainer.classList = mock(DOMTokenList.class);
+        doReturn(listContainer).when(view).getListContainer();
+        listContainer.classList = mock(DOMTokenList.class);
 
-        view.hideCollectionContainer();
+        view.hideListContainer();
 
-        verify(collectionContainer.classList).add(HIDDEN_CSS_CLASS);
+        verify(listContainer.classList).add(HIDDEN_CSS_CLASS);
     }
 
     @Test
     public void testShowCollectionYesLabel() {
 
-        doReturn(collectionYes).when(view).getCollectionYes();
-        collectionYes.classList = mock(DOMTokenList.class);
+        doReturn(listYes).when(view).getListYes();
+        listYes.classList = mock(DOMTokenList.class);
 
-        view.showCollectionYesLabel();
+        view.showListYesLabel();
 
-        verify(collectionYes.classList).remove(HIDDEN_CSS_CLASS);
+        verify(listYes.classList).remove(HIDDEN_CSS_CLASS);
     }
 
     @Test
     public void testHideCollectionYesLabel() {
 
-        doReturn(collectionYes).when(view).getCollectionYes();
-        collectionYes.classList = mock(DOMTokenList.class);
+        doReturn(listYes).when(view).getListYes();
+        listYes.classList = mock(DOMTokenList.class);
 
-        view.hideCollectionYesLabel();
+        view.hideListYesLabel();
 
-        verify(collectionYes.classList).add(HIDDEN_CSS_CLASS);
+        verify(listYes.classList).add(HIDDEN_CSS_CLASS);
     }
 
     @Test
@@ -893,6 +893,38 @@ public class DataTypeListItemViewTest {
     }
 
     @Test
+    public void testIsOnFocusModeWhenItReturnsTrue() {
+
+        final DataType dataType = mock(DataType.class);
+        final Element dataTypeRow = mock(Element.class);
+
+        dataTypeRow.classList = mock(DOMTokenList.class);
+
+        doReturn(dataType).when(view).getDataType();
+        doReturn(dataTypeRow).when(view).getRowElement(dataType);
+
+        when(dataTypeRow.classList.contains(FOCUSED_CSS_CLASS)).thenReturn(true);
+
+        assertTrue(view.isOnFocusMode());
+    }
+
+    @Test
+    public void testIsOnFocusModeWhenItReturnsFalse() {
+
+        final DataType dataType = mock(DataType.class);
+        final Element dataTypeRow = mock(Element.class);
+
+        dataTypeRow.classList = mock(DOMTokenList.class);
+
+        doReturn(dataType).when(view).getDataType();
+        doReturn(dataTypeRow).when(view).getRowElement(dataType);
+
+        when(dataTypeRow.classList.contains(FOCUSED_CSS_CLASS)).thenReturn(false);
+
+        assertFalse(view.isOnFocusMode());
+    }
+
+    @Test
     public void testShowDataTypeNameInput() {
 
         nameText.classList = mock(DOMTokenList.class);
@@ -900,11 +932,13 @@ public class DataTypeListItemViewTest {
 
         doReturn(nameText).when(view).getNameText();
         doReturn(nameInput).when(view).getNameInput();
+        doNothing().when(view).showLabels();
 
         view.showDataTypeNameInput();
 
         verify(nameText.classList).add(HIDDEN_CSS_CLASS);
         verify(nameInput.classList).remove(HIDDEN_CSS_CLASS);
+        verify(view).showLabels();
     }
 
     @Test
@@ -918,12 +952,14 @@ public class DataTypeListItemViewTest {
         nameInput.classList = mock(DOMTokenList.class);
         doReturn(nameText).when(view).getNameText();
         doReturn(nameInput).when(view).getNameInput();
+        doNothing().when(view).hideLabels();
 
         view.hideDataTypeNameInput();
 
         assertEquals(expectedName, nameText.textContent);
         verify(nameText.classList).remove(HIDDEN_CSS_CLASS);
         verify(nameInput.classList).add(HIDDEN_CSS_CLASS);
+        verify(view).hideLabels();
     }
 
     @Test
@@ -937,12 +973,56 @@ public class DataTypeListItemViewTest {
 
         doReturn(nameText).when(view).getNameText();
         doReturn(nameInput).when(view).getNameInput();
+        doNothing().when(view).hideLabels();
 
         view.hideDataTypeNameInput();
 
         assertEquals(expectedName, nameText.textContent);
         verify(nameText.classList).remove(HIDDEN_CSS_CLASS);
         verify(nameInput.classList).add(HIDDEN_CSS_CLASS);
+        verify(view).hideLabels();
+    }
+
+    @Test
+    public void testShowLabels() {
+
+        final Element element1 = mock(Element.class);
+        final Element element2 = mock(Element.class);
+        final NodeList<Element> labels = spy(new NodeList<>());
+
+        element1.classList = mock(DOMTokenList.class);
+        element2.classList = mock(DOMTokenList.class);
+
+        labels.length = 2;
+        doReturn(element1).when(labels).getAt(0);
+        doReturn(element2).when(labels).getAt(1);
+        doReturn(labels).when(view).getLabels();
+
+        view.showLabels();
+
+        verify(element1.classList).remove(HIDDEN_CSS_CLASS);
+        verify(element2.classList).remove(HIDDEN_CSS_CLASS);
+    }
+
+    @Test
+    public void testHideLabels() {
+
+        final Element element1 = mock(Element.class);
+        final Element element2 = mock(Element.class);
+        final NodeList<Element> labels = spy(new NodeList<>());
+
+        element1.classList = mock(DOMTokenList.class);
+        element2.classList = mock(DOMTokenList.class);
+
+        labels.length = 2;
+        doReturn(element1).when(labels).getAt(0);
+        doReturn(element2).when(labels).getAt(1);
+        doReturn(labels).when(view).getLabels();
+
+        view.hideLabels();
+
+        verify(element1.classList).add(HIDDEN_CSS_CLASS);
+        verify(element2.classList).add(HIDDEN_CSS_CLASS);
     }
 
     @Test
@@ -955,15 +1035,15 @@ public class DataTypeListItemViewTest {
     @Test
     public void testGetCollectionContainer() {
         final Element element = mock(Element.class);
-        doReturn(element).when(view).querySelector("collection-container");
-        assertEquals(element, view.getCollectionContainer());
+        doReturn(element).when(view).querySelector("list-container");
+        assertEquals(element, view.getListContainer());
     }
 
     @Test
     public void testGetCollectionYes() {
         final Element element = mock(Element.class);
-        doReturn(element).when(view).querySelector("collection-yes");
-        assertEquals(element, view.getCollectionYes());
+        doReturn(element).when(view).querySelector("list-yes");
+        assertEquals(element, view.getListYes());
     }
 
     @Test
@@ -1020,6 +1100,26 @@ public class DataTypeListItemViewTest {
         final Element element = mock(Element.class);
         doReturn(element).when(view).querySelector("kebab-menu");
         assertEquals(element, view.getKebabMenu());
+    }
+
+    @Test
+    public void testGetLabels() {
+
+        final Element element1 = mock(Element.class);
+        final Element element2 = mock(Element.class);
+        final HTMLElement viewElement = mock(HTMLElement.class);
+        final NodeList<Element> labels = spy(new NodeList<>());
+
+        element1.classList = mock(DOMTokenList.class);
+        element2.classList = mock(DOMTokenList.class);
+
+        labels.length = 2;
+        doReturn(element1).when(labels).getAt(0);
+        doReturn(element2).when(labels).getAt(0);
+        doReturn(viewElement).when(view).getElement();
+        when(viewElement.querySelectorAll(".data-type-label")).thenReturn(labels);
+
+        assertEquals(labels, view.getLabels());
     }
 
     @Test

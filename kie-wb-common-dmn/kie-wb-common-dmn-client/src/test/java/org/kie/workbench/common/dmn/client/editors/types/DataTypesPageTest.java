@@ -40,6 +40,7 @@ import org.kie.workbench.common.dmn.client.editors.types.messages.DataTypeFlashM
 import org.kie.workbench.common.dmn.client.editors.types.persistence.DataTypeStore;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.ItemDefinitionStore;
 import org.kie.workbench.common.dmn.client.editors.types.search.DataTypeSearchBar;
+import org.kie.workbench.common.dmn.client.editors.types.shortcuts.DataTypeShortcuts;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -94,6 +95,9 @@ public class DataTypesPageTest {
     @Mock
     private HTMLDivElement pageView;
 
+    @Mock
+    private DataTypeShortcuts dataTypeShortcuts;
+
     @Captor
     private ArgumentCaptor<List<DataType>> dataTypesCaptor;
 
@@ -111,7 +115,15 @@ public class DataTypesPageTest {
                                      searchBar,
                                      dmnGraphUtils,
                                      translationService,
+                                     dataTypeShortcuts,
                                      pageView));
+    }
+
+    @Test
+    public void testInit() {
+        page.init();
+
+        verify(dataTypeShortcuts).init(treeList);
     }
 
     @Test
@@ -295,6 +307,22 @@ public class DataTypesPageTest {
         page.onDataTypePageNavTabActiveEvent(mock(DataTypePageTabActiveEvent.class));
 
         verify(page).onFocus();
+    }
+
+    @Test
+    public void testEnableShortcuts() {
+
+        page.enableShortcuts();
+
+        verify(dataTypeShortcuts).setup();
+    }
+
+    @Test
+    public void testDisableShortcuts() {
+
+        page.disableShortcuts();
+
+        verify(dataTypeShortcuts).teardown();
     }
 
     private ItemDefinition makeItem(final String itemName) {

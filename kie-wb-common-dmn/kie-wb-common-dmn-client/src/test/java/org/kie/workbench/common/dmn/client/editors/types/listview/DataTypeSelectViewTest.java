@@ -319,6 +319,7 @@ public class DataTypeSelectViewTest {
 
         view.hideSelectPicker();
 
+        verify(view).triggerPickerAction(element, "destroy");
         verify(view).triggerPickerAction(element, "hide");
     }
 

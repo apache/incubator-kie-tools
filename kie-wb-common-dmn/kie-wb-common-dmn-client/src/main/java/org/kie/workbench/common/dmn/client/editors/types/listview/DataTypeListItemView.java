@@ -46,9 +46,10 @@ import static org.kie.workbench.common.dmn.client.editors.types.listview.common.
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper.asFocusedDataType;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper.asNonFocusedDataType;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper.asRightArrow;
+import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper.isFocusedDataType;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper.isRightArrow;
-import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeListItemView_Collection;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeListItemView_Constraints;
+import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeListItemView_List;
 import static org.kie.workbench.common.stunner.core.util.StringUtils.isEmpty;
 
 @Dependent
@@ -209,6 +210,11 @@ public class DataTypeListItemView implements DataTypeListItem.View {
     }
 
     @Override
+    public boolean isOnFocusMode() {
+        return isFocusedDataType(getRowElement(getDataType()));
+    }
+
+    @Override
     public String getName() {
         return getNameInput().value;
     }
@@ -223,6 +229,7 @@ public class DataTypeListItemView implements DataTypeListItem.View {
     public void showDataTypeNameInput() {
         hide(getNameText());
         show(getNameInput());
+        showLabels();
     }
 
     @Override
@@ -232,6 +239,21 @@ public class DataTypeListItemView implements DataTypeListItem.View {
 
         hide(getNameInput());
         show(getNameText());
+        hideLabels();
+    }
+
+    void showLabels() {
+        final NodeList<Element> labels = getLabels();
+        for (int i = 0; i < labels.length; i++) {
+            show(labels.getAt(i));
+        }
+    }
+
+    void hideLabels() {
+        final NodeList<Element> labels = getLabels();
+        for (int i = 0; i < labels.length; i++) {
+            hide(labels.getAt(i));
+        }
     }
 
     @Override
@@ -250,14 +272,14 @@ public class DataTypeListItemView implements DataTypeListItem.View {
     }
 
     @Override
-    public void setupCollectionComponent(final SmallSwitchComponent dataTypeCollectionComponent) {
-        getCollectionContainer().innerHTML = "";
-        getCollectionContainer().appendChild(collectionTextNode());
-        getCollectionContainer().appendChild(dataTypeCollectionComponent.getElement());
+    public void setupListComponent(final SmallSwitchComponent dataTypeListComponent) {
+        getListContainer().innerHTML = "";
+        getListContainer().appendChild(listTextNode());
+        getListContainer().appendChild(dataTypeListComponent.getElement());
     }
 
-    Text collectionTextNode() {
-        return DomGlobal.document.createTextNode(collection());
+    Text listTextNode() {
+        return DomGlobal.document.createTextNode(list());
     }
 
     @Override
@@ -271,23 +293,33 @@ public class DataTypeListItemView implements DataTypeListItem.View {
     }
 
     @Override
-    public void showCollectionContainer() {
-        show(getCollectionContainer());
+    public void showListContainer() {
+        show(getListContainer());
     }
 
     @Override
-    public void hideCollectionContainer() {
-        hide(getCollectionContainer());
+    public void hideKebabMenu() {
+        hide(getKebabMenu());
     }
 
     @Override
-    public void showCollectionYesLabel() {
-        show(getCollectionYes());
+    public void showKebabMenu() {
+        show(getKebabMenu());
     }
 
     @Override
-    public void hideCollectionYesLabel() {
-        hide(getCollectionYes());
+    public void hideListContainer() {
+        hide(getListContainer());
+    }
+
+    @Override
+    public void showListYesLabel() {
+        show(getListYes());
+    }
+
+    @Override
+    public void hideListYesLabel() {
+        hide(getListYes());
     }
 
     @Override
@@ -430,8 +462,8 @@ public class DataTypeListItemView implements DataTypeListItem.View {
         };
     }
 
-    private String collection() {
-        return translationService.format(DataTypeListItemView_Collection);
+    private String list() {
+        return translationService.format(DataTypeListItemView_List);
     }
 
     Element getArrow() {
@@ -473,12 +505,12 @@ public class DataTypeListItemView implements DataTypeListItem.View {
         return querySelector("constraint-container");
     }
 
-    Element getCollectionContainer() {
-        return querySelector("collection-container");
+    Element getListContainer() {
+        return querySelector("list-container");
     }
 
-    Element getCollectionYes() {
-        return querySelector("collection-yes");
+    Element getListYes() {
+        return querySelector("list-yes");
     }
 
     Element getEditButton() {
@@ -511,6 +543,10 @@ public class DataTypeListItemView implements DataTypeListItem.View {
 
     Element getKebabMenu() {
         return querySelector("kebab-menu");
+    }
+
+    NodeList<Element> getLabels() {
+        return getElement().querySelectorAll(".data-type-label");
     }
 
     Element querySelector(final String fieldName) {

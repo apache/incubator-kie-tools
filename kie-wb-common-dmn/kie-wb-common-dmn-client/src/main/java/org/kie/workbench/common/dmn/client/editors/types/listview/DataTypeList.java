@@ -167,7 +167,7 @@ public class DataTypeList {
         view.setupListItems(getItems());
     }
 
-    List<DataTypeListItem> getItems() {
+    public List<DataTypeListItem> getItems() {
         return items;
     }
 

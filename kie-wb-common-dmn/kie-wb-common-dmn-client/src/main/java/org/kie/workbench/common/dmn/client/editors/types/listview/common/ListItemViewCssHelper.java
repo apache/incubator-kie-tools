@@ -47,4 +47,8 @@ public class ListItemViewCssHelper {
     public static void asNonFocusedDataType(final Element element) {
         element.classList.remove(FOCUSED_CSS_CLASS);
     }
+
+    public static boolean isFocusedDataType(final Element element) {
+        return element.classList.contains(FOCUSED_CSS_CLASS);
+    }
 }

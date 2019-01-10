@@ -108,4 +108,28 @@ public class ListItemViewCssHelperTest {
 
         verify(classList).remove(FOCUSED_CSS_CLASS);
     }
+
+    @Test
+    public void testIsFocusedDataTypeWhenItIsFocused() {
+
+        final Element element = mock(Element.class);
+        final DOMTokenList classList = mock(DOMTokenList.class);
+
+        element.classList = classList;
+        when(classList.contains(FOCUSED_CSS_CLASS)).thenReturn(true);
+
+        assertTrue(ListItemViewCssHelper.isFocusedDataType(element));
+    }
+
+    @Test
+    public void testIsFocusedDataTypeWhenItIsNotFocused() {
+
+        final Element element = mock(Element.class);
+        final DOMTokenList classList = mock(DOMTokenList.class);
+
+        element.classList = classList;
+        when(classList.contains(FOCUSED_CSS_CLASS)).thenReturn(false);
+
+        assertFalse(ListItemViewCssHelper.isFocusedDataType(element));
+    }
 }

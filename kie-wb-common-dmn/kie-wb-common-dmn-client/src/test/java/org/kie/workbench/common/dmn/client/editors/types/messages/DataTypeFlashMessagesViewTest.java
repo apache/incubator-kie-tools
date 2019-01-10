@@ -43,6 +43,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -172,6 +173,25 @@ public class DataTypeFlashMessagesViewTest {
     }
 
     @Test
+    public void testShowErrorHighlightWhenElementDoesNotExist() {
+
+        final String errorElementSelector = "#error-element-selector";
+        final HTMLElement element = mock(HTMLElement.class);
+        final HTMLElement parentElement = mock(HTMLElement.class);
+
+        doNothing().when(view).enableErrorHighlight(any());
+        doNothing().when(view).setupDisableErrorHighlightCallbacks(any());
+        doReturn(element).when(view).getElement();
+        element.parentNode = parentElement;
+        when(parentElement.querySelector(errorElementSelector)).thenReturn(null);
+
+        view.showErrorHighlight(errorElementSelector);
+
+        verify(view, never()).enableErrorHighlight(any());
+        verify(view, never()).setupDisableErrorHighlightCallbacks(any());
+    }
+
+    @Test
     public void testShowWarningHighlight() {
 
         final String warningElementSelector = "#warning-element-selector";
@@ -188,6 +208,24 @@ public class DataTypeFlashMessagesViewTest {
         view.showWarningHighlight(warningElementSelector);
 
         verify(view).enableWarningHighlight(warningElement);
+    }
+
+    @Test
+    public void testShowWarningHighlightWhenElementDoesNotExist() {
+
+        final String warningElementSelector = "#warning-element-selector";
+        final HTMLElement element = mock(HTMLElement.class);
+        final HTMLElement parentElement = mock(HTMLElement.class);
+
+        doNothing().when(view).disableWarningHighlight();
+        doNothing().when(view).enableWarningHighlight(any());
+        doReturn(element).when(view).getElement();
+        element.parentNode = parentElement;
+        when(parentElement.querySelector(warningElementSelector)).thenReturn(null);
+
+        view.showWarningHighlight(warningElementSelector);
+
+        verify(view, never()).enableWarningHighlight(any());
     }
 
     @Test

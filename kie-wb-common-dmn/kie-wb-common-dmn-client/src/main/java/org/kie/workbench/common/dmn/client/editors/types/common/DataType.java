@@ -37,7 +37,7 @@ public class DataType extends DataTypeActiveRecord {
 
     private String constraint;
 
-    private boolean isCollection;
+    private boolean isList;
 
     private List<DataType> subDataTypes = new ArrayList<>();
 
@@ -91,12 +91,12 @@ public class DataType extends DataTypeActiveRecord {
         this.subDataTypes.addAll(subDataTypes);
     }
 
-    public boolean isCollection() {
-        return isCollection;
+    public boolean isList() {
+        return isList;
     }
 
-    void setCollection(final boolean collection) {
-        isCollection = collection;
+    void setAsList(final boolean isList) {
+        this.isList = isList;
     }
 
     public boolean hasSubDataTypes() {

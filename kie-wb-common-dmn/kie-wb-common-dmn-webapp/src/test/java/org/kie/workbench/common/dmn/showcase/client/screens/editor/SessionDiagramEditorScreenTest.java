@@ -177,6 +177,7 @@ public class SessionDiagramEditorScreenTest {
         inOrder.verify(decisionNavigatorDock).open();
 
         verify(dataTypesPage).reload();
+        verify(dataTypesPage).enableShortcuts();
     }
 
     @Test
@@ -189,6 +190,7 @@ public class SessionDiagramEditorScreenTest {
 
         verify(editor).destroyDock();
         verify(editor).destroySession();
+        verify(dataTypesPage).disableShortcuts();
     }
 
     @Test

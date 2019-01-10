@@ -59,7 +59,7 @@ public class ItemDefinitionUpdateHandler {
             itemDefinition.getItemComponent().clear();
         }
 
-        itemDefinition.setIsCollection(dataType.isCollection());
+        itemDefinition.setIsCollection(dataType.isList());
         itemDefinition.setName(makeName(dataType));
         itemDefinition.setAllowedValues(makeAllowedValues(dataType, itemDefinition));
     }
