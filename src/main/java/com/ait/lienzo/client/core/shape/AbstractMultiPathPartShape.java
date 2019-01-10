@@ -17,7 +17,6 @@
 
 package com.ait.lienzo.client.core.shape;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -48,7 +47,6 @@ import com.ait.lienzo.client.core.shape.wires.IControlHandle;
 import com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleType;
 import com.ait.lienzo.client.core.shape.wires.IControlHandleFactory;
 import com.ait.lienzo.client.core.shape.wires.IControlHandleList;
-import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.shape.wires.WiresShapeControlHandleList;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.PathPartEntryJSO;
@@ -69,6 +67,9 @@ import com.google.gwt.json.client.JSONObject;
 
 public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPartShape<T>> extends Shape<T>
 {
+    public static final ColorName CONTROL_POINT_ACTIVE_FILL = ColorName.DARKRED;
+    public static final ColorName CONTROL_POINT_DRAG_FILL   = ColorName.GREEN;
+
     private final NFastArrayList<PathPartList> m_points = new NFastArrayList<PathPartList>();
     private NFastArrayList<PathPartList> m_cornerPoints = new NFastArrayList<PathPartList>();
 
@@ -497,13 +498,13 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
             return chlist;
         }
 
-        private static final double R0                 = 5;
+        public static final double R0                 = 5;
 
-        private static final double R1                 = 10;
+        public static final double R1                 = 10;
 
-        private static final double ANIMATION_DURATION = 150d;
+        public static final double ANIMATION_DURATION = 150d;
 
-        private static void animate(final AbstractControlHandle handle, final AnimationProperty initialProperty, final AnimationProperty endProperty)
+        public static void animate(final AbstractControlHandle handle, final AnimationProperty initialProperty, final AnimationProperty endProperty)
         {
             final Node<?> node = (Node<?>) handle.getControl();
 
@@ -525,7 +526,7 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
             }));
         }
 
-        private static void animate(final Node<?> node, final AnimationProperty property)
+        public static void animate(final Node<?> node, final AnimationProperty property)
         {
             node.animate(AnimationTweener.LINEAR, AnimationProperties.toPropertyList(property), ANIMATION_DURATION);
         }
@@ -576,9 +577,9 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
             return handle;
         }
 
-        private static Circle getControlPrimitive(final double size, final double x, final double y, final AbstractMultiPathPartShape shape, final DragMode dragMode)
+        public static Circle getControlPrimitive(final double size, final double x, final double y, final Shape<?> shape, final DragMode dragMode)
         {
-            return new Circle(size).setX(x + shape.getX()).setY(y + shape.getY()).setFillColor(ColorName.DARKRED).setFillAlpha(0.8).setStrokeColor(ColorName.BLACK).setStrokeWidth(0.5).setDraggable(true).setDragMode(dragMode);
+            return new Circle(size).setX(x + shape.getX()).setY(y + shape.getY()).setFillColor(CONTROL_POINT_ACTIVE_FILL).setFillAlpha(0.8).setStrokeColor(ColorName.BLACK).setStrokeWidth(0.5).setDraggable(true).setDragMode(dragMode);
         }
     }
 
@@ -687,7 +688,7 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
 
             if ((m_handle.isActive()) && (m_chlist.isActive()))
             {
-                m_prim.setFillColor(ColorName.GREEN);
+                m_prim.setFillColor(CONTROL_POINT_DRAG_FILL);
 
                 m_prim.getLayer().draw();
             }
@@ -744,7 +745,7 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
                     list.resetBoundingBox();
                 }
                 m_shape.resetBoundingBox();
-                m_prim.setFillColor(ColorName.DARKRED);
+                m_prim.setFillColor(CONTROL_POINT_ACTIVE_FILL);
 
                 m_prim.getLayer().draw();
             }
@@ -1030,7 +1031,7 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
 
             if ((m_handle.isActive()) && (m_chlist.isActive()))
             {
-                m_prim.setFillColor(ColorName.GREEN);
+                m_prim.setFillColor(CONTROL_POINT_DRAG_FILL);
 
                 m_prim.getLayer().draw();
             }
@@ -1244,7 +1245,7 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
 
                 }
                 m_shape.resetBoundingBox();
-                m_prim.setFillColor(ColorName.DARKRED);
+                m_prim.setFillColor(CONTROL_POINT_ACTIVE_FILL);
 
                 m_prim.getLayer().draw();
             }
