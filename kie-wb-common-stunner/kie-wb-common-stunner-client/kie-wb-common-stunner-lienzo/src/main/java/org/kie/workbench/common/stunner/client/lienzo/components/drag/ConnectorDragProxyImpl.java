@@ -20,6 +20,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.ait.lienzo.client.core.shape.MultiPath;
+import com.ait.lienzo.client.core.shape.wires.MagnetManager;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresConnectorView;
@@ -47,6 +48,7 @@ public class ConnectorDragProxyImpl implements ConnectorDragProxy<AbstractCanvas
     private final GraphBoundsIndexer graphBoundsIndexer;
     private AbstractCanvasHandler canvasHandler;
     private WiresConnectorView<?> connectorShapeView;
+    private MagnetManager.Magnets transientShapeMagnets;
 
     @Inject
     public ConnectorDragProxyImpl(final ShapeViewDragProxy<AbstractCanvas> shapeViewDragProxyFactory,
@@ -82,7 +84,9 @@ public class ConnectorDragProxyImpl implements ConnectorDragProxy<AbstractCanvas
                                                           1)
                                              .setFillAlpha(0)
                                              .setStrokeAlpha(0));
-        getWiresManager().getMagnetManager().createMagnets(transientShapeView);
+        final WiresManager wiresManager = getWiresManager();
+        final MagnetManager magnetManager = wiresManager.getMagnetManager();
+        this.transientShapeMagnets = magnetManager.createMagnets(transientShapeView);
 
         // Create the transient connector's shape and view.
         final Edge<View<?>, Node> edge = item.getEdge();
@@ -163,10 +167,15 @@ public class ConnectorDragProxyImpl implements ConnectorDragProxy<AbstractCanvas
         return ((WiresCanvas) getCanvas()).getWiresManager();
     }
 
-    private void deregisterTransientConnector() {
+    void deregisterTransientConnector() {
         if (null != this.connectorShapeView) {
             getWiresManager().deregister(connectorShapeView);
             this.connectorShapeView = null;
+        }
+
+        if (null != this.transientShapeMagnets) {
+            transientShapeMagnets.destroy();
+            this.transientShapeMagnets = null;
         }
     }
 
