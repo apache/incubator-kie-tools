@@ -40,6 +40,7 @@ public class ShapeImpl<V extends ShapeView>
 
     public void setUUID(final String uuid) {
         this.uuid = uuid;
+        view.setUUID(uuid);
     }
 
     @Override
@@ -71,11 +72,6 @@ public class ShapeImpl<V extends ShapeView>
     @Override
     public V getShapeView() {
         return view;
-    }
-
-    @Override
-    public void destroy() {
-        view.destroy();
     }
 
     @Override

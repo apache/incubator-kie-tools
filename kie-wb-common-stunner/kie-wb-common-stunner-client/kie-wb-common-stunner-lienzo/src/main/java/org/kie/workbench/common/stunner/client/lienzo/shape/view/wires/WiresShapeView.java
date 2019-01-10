@@ -233,7 +233,7 @@ public class WiresShapeView<T>
 
     public T setListening(final boolean listening) {
         getPath().setFillBoundsForSelection(listening);
-        getPath().setListening(listening);
+        listen(listening);
         return cast();
     }
 

@@ -43,9 +43,4 @@ public interface Shape<V extends ShapeView> extends HasShapeState {
      * Returns the view representation on the canvas for the shape.
      */
     V getShapeView();
-
-    /**
-     * Destroy the shape and any related components and assets and de-register it from the canvas.
-     */
-    void destroy();
 }

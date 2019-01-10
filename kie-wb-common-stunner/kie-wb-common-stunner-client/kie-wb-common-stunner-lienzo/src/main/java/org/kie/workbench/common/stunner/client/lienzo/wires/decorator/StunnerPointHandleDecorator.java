@@ -24,7 +24,9 @@ import com.ait.lienzo.shared.core.types.ColorName;
 public class StunnerPointHandleDecorator extends PointHandleDecorator {
 
     public static final String MAIN_COLOR = "#0088CE";
-    protected static final Shadow SHADOW_SELECTED = new Shadow(MAIN_COLOR, 10, 0, 0);
+    public static final String STROKE_COLOR = "#FFFFFF";
+    protected static final Shadow SHADOW_SELECTED =
+            new Shadow(MAIN_COLOR, 10, 0, 0);
 
     @Override
     public Shape decorate(Shape shape, ShapeState state) {
@@ -36,8 +38,7 @@ public class StunnerPointHandleDecorator extends PointHandleDecorator {
                         .setStrokeAlpha(1)
                         .setShadow(SHADOW_SELECTED)
                         .setStrokeWidth(2)
-                        .setStrokeColor(ColorName.WHITE)
-                        .moveToTop();
+                        .setStrokeColor(STROKE_COLOR);
                 break;
             case INVALID:
                 shape.setFillColor(ColorName.WHITE)
@@ -45,8 +46,7 @@ public class StunnerPointHandleDecorator extends PointHandleDecorator {
                         .setShadow(SHADOW_SELECTED)
                         .setStrokeAlpha(1)
                         .setStrokeWidth(2)
-                        .setStrokeColor(MAIN_COLOR)
-                        .moveToTop();
+                        .setStrokeColor(MAIN_COLOR);
                 break;
         }
         return shape;

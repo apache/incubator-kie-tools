@@ -70,7 +70,7 @@ public class NodeDragProxyImpl implements NodeDragProxy<AbstractCanvasHandler> {
                                                        MutationContext.STATIC);
         }
         this.transientEdgeShape = (EdgeShape) edgeShapeFactory.newShape(inEdge.getContent().getDefinition());
-        canvas.addTransientShape(this.transientEdgeShape);
+        canvas.addShapeIntoView(this.transientEdgeShape);
         this.transientEdgeShape.applyProperties(inEdge,
                                                 MutationContext.STATIC);
         final Shape<?> edgeSourceNodeShape = canvasHandler.getCanvas().getShape(inEdgeSourceNode.getUUID());
@@ -150,7 +150,7 @@ public class NodeDragProxyImpl implements NodeDragProxy<AbstractCanvasHandler> {
 
     private void deleteTransientEdgeShape() {
         if (null != this.transientEdgeShape) {
-            getCanvas().deleteTransientShape(this.transientEdgeShape);
+            getCanvas().deleteShapeFromView(this.transientEdgeShape);
             this.transientEdgeShape = null;
         }
     }

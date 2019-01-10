@@ -45,9 +45,4 @@ public abstract class AbstractShape<V extends ShapeView>
         getShapeStateHandler()
                 .applyState(shapeState);
     }
-
-    @Override
-    public void destroy() {
-        getShapeView().destroy();
-    }
 }

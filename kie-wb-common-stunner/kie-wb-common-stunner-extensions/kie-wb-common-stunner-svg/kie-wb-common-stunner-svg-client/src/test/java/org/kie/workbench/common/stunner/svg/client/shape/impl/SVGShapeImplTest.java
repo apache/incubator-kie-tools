@@ -80,8 +80,6 @@ public class SVGShapeImplTest {
                times(0)).afterDraw();
         verify(lienzoShape,
                times(0)).applyState(any(ShapeState.class));
-        verify(lienzoShape,
-               times(0)).destroy();
     }
 
     @Test
@@ -93,8 +91,6 @@ public class SVGShapeImplTest {
                times(0)).beforeDraw();
         verify(lienzoShape,
                times(0)).applyState(any(ShapeState.class));
-        verify(lienzoShape,
-               times(0)).destroy();
     }
 
     @Test
@@ -107,20 +103,5 @@ public class SVGShapeImplTest {
                times(0)).beforeDraw();
         verify(lienzoShape,
                times(0)).afterDraw();
-        verify(lienzoShape,
-               times(0)).destroy();
-    }
-
-    @Test
-    public void testDestroy() {
-        mocked.destroy();
-        verify(lienzoShape,
-               times(1)).destroy();
-        verify(lienzoShape,
-               times(0)).applyState(any(ShapeState.class));
-        verify(lienzoShape,
-               times(0)).afterDraw();
-        verify(lienzoShape,
-               times(0)).beforeDraw();
     }
 }

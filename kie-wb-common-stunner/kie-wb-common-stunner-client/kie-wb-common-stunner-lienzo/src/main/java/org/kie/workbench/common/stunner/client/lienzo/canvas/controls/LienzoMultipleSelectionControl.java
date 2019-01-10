@@ -28,6 +28,8 @@ import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
 import com.ait.lienzo.client.core.shape.Shape;
+import com.ait.lienzo.client.core.shape.wires.DefaultSelectionListener;
+import com.ait.lienzo.client.core.shape.wires.SelectionListener;
 import com.ait.lienzo.client.core.shape.wires.SelectionManager;
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
@@ -88,20 +90,28 @@ public class LienzoMultipleSelectionControl<H extends AbstractCanvasHandler>
     @Override
     protected void onEnable(final H canvasHandler) {
         super.onEnable(canvasHandler);
-        getWiresManager().enableSelectionManager();
-        getSelectionManager()
-                .setSelectionShapeProvider(selectionShapeProvider);
-        getSelectionManager()
-                .setSelectionListener(selectedItems -> {
-                    final SelectionManager.ChangedItems changedItems = selectedItems.getChanged();
-                    getSelectionControl().deselect(new Lists.Builder<String>()
-                                                           .addAll(shapesToIdentifiers(changedItems.getRemovedShapes().toList()))
-                                                           .addAll(shapesToIdentifiers(changedItems.getRemovedConnectors().toList())).build());
-                    getSelectionControl().select(new Lists.Builder<String>()
-                                                         .addAll(shapesToIdentifiers(changedItems.getAddedShapes().toList()))
-                                                         .addAll(shapesToIdentifiers(changedItems.getAddedConnectors().toList())).build());
-                });
+        getWiresManager()
+                .enableSelectionManager()
+                .setSelectionShapeProvider(selectionShapeProvider)
+                .setSelectionListener(selectionListener);
     }
+
+    private final SelectionListener selectionListener = new SelectionListener() {
+
+        private final DefaultSelectionListener defaultSelectionListener = new DefaultSelectionListener();
+
+        @Override
+        public void onChanged(final SelectionManager.SelectedItems selectedItems) {
+            final SelectionManager.ChangedItems changedItems = selectedItems.getChanged();
+            getSelectionControl().deselect(new Lists.Builder<String>()
+                                                   .addAll(shapesToIdentifiers(changedItems.getRemovedShapes().toList()))
+                                                   .addAll(shapesToIdentifiers(changedItems.getRemovedConnectors().toList())).build());
+            getSelectionControl().select(new Lists.Builder<String>()
+                                                 .addAll(shapesToIdentifiers(changedItems.getAddedShapes().toList()))
+                                                 .addAll(shapesToIdentifiers(changedItems.getAddedConnectors().toList())).build());
+            defaultSelectionListener.onChanged(selectedItems);
+        }
+    };
 
     private void rebuildSelectionArea() {
         if (null != selectionShapeProvider.getShape()) {

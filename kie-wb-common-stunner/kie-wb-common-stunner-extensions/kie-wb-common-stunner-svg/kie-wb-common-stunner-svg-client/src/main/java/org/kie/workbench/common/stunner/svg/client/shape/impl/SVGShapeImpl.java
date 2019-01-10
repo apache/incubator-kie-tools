@@ -68,11 +68,6 @@ public class SVGShapeImpl
     }
 
     @Override
-    public void destroy() {
-        shape.destroy();
-    }
-
-    @Override
     public SVGShapeViewImpl getShapeView() {
         return view;
     }

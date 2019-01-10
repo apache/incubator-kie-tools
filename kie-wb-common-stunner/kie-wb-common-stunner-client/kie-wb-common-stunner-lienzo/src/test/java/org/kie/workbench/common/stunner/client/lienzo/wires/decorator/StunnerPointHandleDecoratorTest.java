@@ -33,8 +33,7 @@ import static org.mockito.Mockito.verify;
 @RunWith(LienzoMockitoTestRunner.class)
 public class StunnerPointHandleDecoratorTest {
 
-    public static final String MAIN_COLOR = "#0088CE";
-    protected static final Shadow SHADOW_SELECTED = new Shadow(MAIN_COLOR, 10, 0, 0);
+    protected static final Shadow SHADOW_SELECTED = new Shadow(StunnerPointHandleDecorator.MAIN_COLOR, 10, 0, 0);
     private StunnerPointHandleDecorator tested;
     private Shape shape;
 
@@ -48,13 +47,12 @@ public class StunnerPointHandleDecoratorTest {
     public void decorateValidNone() {
         tested.decorate(shape, IShapeDecorator.ShapeState.VALID);
         tested.decorate(shape, IShapeDecorator.ShapeState.NONE);
-        verify(shape, times(2)).setFillColor(MAIN_COLOR);
+        verify(shape, times(2)).setFillColor(StunnerPointHandleDecorator.MAIN_COLOR);
         verify(shape, times(2)).setFillAlpha(0.8);
         verify(shape, times(2)).setStrokeAlpha(1);
         verify(shape, times(2)).setShadow(SHADOW_SELECTED);
         verify(shape, times(2)).setStrokeWidth(2);
-        verify(shape, times(2)).setStrokeColor(ColorName.WHITE);
-        verify(shape, times(2)).moveToTop();
+        verify(shape, times(2)).setStrokeColor(StunnerPointHandleDecorator.STROKE_COLOR);
     }
 
     @Test
@@ -65,7 +63,6 @@ public class StunnerPointHandleDecoratorTest {
         verify(shape).setFillAlpha(1);
         verify(shape).setStrokeAlpha(1);
         verify(shape).setStrokeWidth(2);
-        verify(shape).setStrokeColor(MAIN_COLOR);
-        verify(shape).moveToTop();
+        verify(shape).setStrokeColor(StunnerPointHandleDecorator.MAIN_COLOR);
     }
 }

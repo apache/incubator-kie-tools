@@ -104,6 +104,11 @@ public class WiresConnectorView<T> extends WiresConnector
         return uuid;
     }
 
+    public T setListening(final boolean listening) {
+        listen(listening);
+        return cast();
+    }
+
     @Override
     public List<ControlPoint> addControlPoints(final ControlPoint... controlPoint) {
         if (validateControlPointShape()) {
@@ -413,7 +418,7 @@ public class WiresConnectorView<T> extends WiresConnector
     @Override
     public void removeFromParent() {
         // Remove the main line.
-        super.removeFromLayer();
+        removeFromLayer();
     }
 
     private WiresConnector applyHeadLocation(final Point2D location) {

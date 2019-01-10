@@ -58,9 +58,4 @@ public abstract class ShapeWrapper<V extends ShapeView, S extends AbstractShape<
     public V getShapeView() {
         return getWrappedShape().getShapeView();
     }
-
-    @Override
-    public void destroy() {
-        getWrappedShape().destroy();
-    }
 }

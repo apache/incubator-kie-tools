@@ -21,7 +21,7 @@ import static com.ait.lienzo.client.widget.panel.impl.BoundsProviderFactory.comp
 
 public class StunnerBoundsProviderFactory {
 
-    public static final double ASPECT_RATIO = 300 / 150;
+    public static final float ASPECT_RATIO = 300 / 150;
     public static final double PADDING = 50d;
 
     public static WiresBoundsProvider newProvider() {

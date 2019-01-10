@@ -20,7 +20,6 @@ import org.kie.workbench.common.stunner.client.lienzo.shape.impl.ShapeStateDefau
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.ext.WiresConnectorViewExt;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
 import org.kie.workbench.common.stunner.core.client.shape.impl.ConnectorShape;
-import org.kie.workbench.common.stunner.core.client.shape.view.HasControlPoints;
 import org.kie.workbench.common.stunner.core.definition.shape.ShapeViewDef;
 
 public class BasicConnectorShape<W, D extends ShapeViewDef<W, V>, V extends WiresConnectorViewExt>
@@ -40,9 +39,7 @@ public class BasicConnectorShape<W, D extends ShapeViewDef<W, V>, V extends Wire
     @Override
     public void applyState(final ShapeState shapeState) {
         super.applyState(shapeState);
-        if (isSelected()) {
-            getShapeView().showControlPoints(HasControlPoints.ControlPointType.POINTS);
-        } else {
+        if (!isSelected()) {
             getShapeView().hideControlPoints();
         }
     }

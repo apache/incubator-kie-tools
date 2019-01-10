@@ -40,8 +40,10 @@ import org.uberfire.mvp.Command;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -145,7 +147,7 @@ public class AbstractCanvasTest {
         verify(canvasView,
                times(1)).add(eq(parentShapeView));
         verify(parentShapeView,
-               times(1)).setUUID(eq(PARENT_UUID));
+               never()).setUUID(anyString());
         assertEquals(1,
                      tested.getShapes().size());
     }

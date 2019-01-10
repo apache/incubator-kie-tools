@@ -41,6 +41,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -150,6 +151,16 @@ public class WiresShapeViewTest {
     public void testUnSetDragBounds() {
         tested.unsetDragBounds();
         verify(control, times(1)).setBoundsConstraint(eq(null));
+    }
+
+    @Test
+    public void testListening() {
+        tested.setListening(true);
+        assertTrue(tested.getPath().isListening());
+        assertTrue(tested.getPath().isFillBoundsForSelection());
+        tested.setListening(false);
+        assertFalse(tested.getPath().isListening());
+        assertFalse(tested.getPath().isFillBoundsForSelection());
     }
 
     @Test

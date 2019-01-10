@@ -99,11 +99,6 @@ public abstract class AbstractElementShape<W, C extends View<W>, E extends Eleme
         return getShape().getShapeView();
     }
 
-    @Override
-    public void destroy() {
-        getShape().destroy();
-    }
-
     public ShapeViewHandlersDef<W, V, D> getShapeHandlersDef() {
         return shapeHandlersDef;
     }

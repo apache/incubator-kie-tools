@@ -21,6 +21,7 @@ import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.MultiPathDecorator;
 import com.ait.lienzo.client.core.shape.PolyLine;
 import com.ait.lienzo.client.core.shape.Text;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
 import com.ait.lienzo.client.core.shape.wires.util.WiresConnectorLabel;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
@@ -56,6 +57,9 @@ public class WiresConnectorViewExtTest {
     @Mock
     private Text labelText;
 
+    @Mock
+    private WiresConnectorControl connectorControl;
+
     private WiresConnectorViewExt tested;
 
     @Before
@@ -79,6 +83,7 @@ public class WiresConnectorViewExtTest {
                 return WiresConnectorViewExtTest.this.label;
             }
         };
+        tested.setControl(connectorControl);
         layer.add(tested.getGroup());
     }
 
@@ -104,6 +109,6 @@ public class WiresConnectorViewExtTest {
         tested.destroy();
         verify(label, times(1)).destroy();
         assertFalse(tested.label.isPresent());
-
+        verify(connectorControl, times(1)).destroy();
     }
 }

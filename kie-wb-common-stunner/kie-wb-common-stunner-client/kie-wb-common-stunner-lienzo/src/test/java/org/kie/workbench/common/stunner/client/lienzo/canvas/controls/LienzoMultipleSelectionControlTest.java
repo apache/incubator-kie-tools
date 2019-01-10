@@ -145,6 +145,9 @@ public class LienzoMultipleSelectionControlTest {
     public void setup() {
 
         when(wiresManager.getLayer()).thenReturn(wiresLayer);
+        when(wiresManager.enableSelectionManager()).thenReturn(selectionManager);
+        when(selectionManager.setSelectionListener(any(SelectionListener.class))).thenReturn(selectionManager);
+        when(selectionManager.setSelectionShapeProvider(any(SelectionManager.SelectionShapeProvider.class))).thenReturn(selectionManager);
         when(wiresLayer.getLayer()).thenReturn(lienzoLayer);
         when(lienzoLayer.getOverLayer()).thenReturn(overLayer);
         when(wiresManager.getSelectionManager()).thenReturn(selectionManager);

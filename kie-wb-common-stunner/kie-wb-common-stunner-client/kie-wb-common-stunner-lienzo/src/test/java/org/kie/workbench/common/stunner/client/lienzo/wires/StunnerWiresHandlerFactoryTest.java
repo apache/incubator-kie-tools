@@ -20,22 +20,16 @@ import com.ait.lienzo.client.core.shape.wires.PickerPart;
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
-import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorHandler;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresHandlerFactory;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeHighlight;
-import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresConnectorHandlerImpl;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.ait.tooling.common.api.java.util.function.Consumer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.internal.util.reflection.Whitebox;
 
-import static org.mockito.Matchers.anyDouble;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class StunnerWiresHandlerFactoryTest {
@@ -49,12 +43,6 @@ public class StunnerWiresHandlerFactoryTest {
     private WiresConnector connector;
 
     @Mock
-    private WiresConnectorHandlerImpl.Event event;
-
-    @Mock
-    private WiresConnectorControl connectorControl;
-
-    @Mock
     private WiresShapeHighlight<PickerPart.ShapePart> highlight;
 
     @Mock
@@ -65,16 +53,13 @@ public class StunnerWiresHandlerFactoryTest {
 
     @Before
     public void setUp() throws Exception {
-        when(connector.getControl()).thenReturn(connectorControl);
         tested = new StunnerWiresHandlerFactory(delegate);
     }
 
     @Test
     public void newConnectorHandler() {
         WiresConnectorHandler wiresConnectorHandler = tested.newConnectorHandler(connector, wiresManager);
-        Consumer<WiresConnectorHandlerImpl.Event> mouseDownEventConsumer = (Consumer<WiresConnectorHandlerImpl.Event>) Whitebox.getInternalState(wiresConnectorHandler, "mouseDownEventConsumer");
-        mouseDownEventConsumer.accept(event);
-        verify(connectorControl).addControlPoint(anyDouble(), anyDouble());
+        verify(delegate).newConnectorHandler(connector, wiresManager);
     }
 
     @Test

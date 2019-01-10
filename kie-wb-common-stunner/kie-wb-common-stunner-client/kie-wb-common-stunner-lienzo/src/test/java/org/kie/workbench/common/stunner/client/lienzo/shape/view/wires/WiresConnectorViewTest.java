@@ -477,4 +477,12 @@ public class WiresConnectorViewTest {
         tested.setDashArray(dashArray);
         verify(line).setDashArray(dash, dashes);
     }
+
+    @Test
+    public void testListening() {
+        tested.setListening(true);
+        assertTrue(tested.getGroup().isListening());
+        tested.setListening(false);
+        assertFalse(tested.getGroup().isListening());
+    }
 }

@@ -61,6 +61,7 @@ public class ShapeImplTest {
         tested.setUUID("uuid1");
         assertEquals("uuid1",
                      tested.getUUID());
+        verify(view, times(1)).setUUID(eq("uuid1"));
     }
 
     @Test
@@ -78,12 +79,5 @@ public class ShapeImplTest {
         tested.afterDraw();
         verify(view,
                times(1)).moveTitleToTop();
-    }
-
-    @Test
-    public void testDestroy() {
-        tested.destroy();
-        verify(view,
-               times(1)).destroy();
     }
 }

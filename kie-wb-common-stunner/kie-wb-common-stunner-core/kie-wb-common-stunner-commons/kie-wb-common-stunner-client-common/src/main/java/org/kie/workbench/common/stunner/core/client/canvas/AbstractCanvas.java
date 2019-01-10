@@ -173,7 +173,7 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.CanvasView>
     @Override
     public Canvas addShape(final Shape shape) {
         shapes.computeIfAbsent(shape.getUUID(), (v) -> {
-            addTransientShape(shape);
+            addShapeIntoView(shape);
             fireCanvasShapeAdded(shape);
             canvasShapeAddedEvent.fire(new CanvasShapeAddedEvent(this, shape));
             return shape;
@@ -181,19 +181,9 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.CanvasView>
         return this;
     }
 
-    @SuppressWarnings("unchecked")
-    public Canvas addTransientShape(final Shape shape) {
-        if (shape.getUUID() == null) {
-            shape.setUUID(UUID.uuid());
-        }
-        shape.getShapeView().setUUID(shape.getUUID());
-        getView().add(shape.getShapeView());
-        return this;
-    }
-
     @Override
     public Canvas deleteShape(final Shape shape) {
-        deleteTransientShape(shape);
+        deleteShapeFromView(shape);
         fireCanvasShapeRemoved(shape);
         shapes.remove(shape.getUUID());
         canvasShapeRemovedEvent.fire(new CanvasShapeRemovedEvent(this,
@@ -202,9 +192,17 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.CanvasView>
     }
 
     @SuppressWarnings("unchecked")
-    public Canvas deleteTransientShape(final Shape shape) {
+    public Canvas addShapeIntoView(final Shape shape) {
+        if (shape.getUUID() == null) {
+            shape.setUUID(UUID.uuid());
+        }
+        getView().add(shape.getShapeView());
+        return this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public Canvas deleteShapeFromView(final Shape shape) {
         getView().delete(shape.getShapeView());
-        shape.destroy();
         return this;
     }
 

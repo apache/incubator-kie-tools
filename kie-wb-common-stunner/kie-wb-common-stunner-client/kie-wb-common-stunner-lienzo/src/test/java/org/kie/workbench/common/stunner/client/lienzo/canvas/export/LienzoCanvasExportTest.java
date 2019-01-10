@@ -208,8 +208,8 @@ public class LienzoCanvasExportTest {
         wiresLayer.add(new WiresShape(new MultiPath().rect(0, 0, 100, 150)).setLocation(new Point2D(1, 3)));
         LienzoCanvasExport.WiresLayerBoundsProvider provider = new LienzoCanvasExport.WiresLayerBoundsProvider();
         int[] size0 = provider.compute(lienzoLayer, CanvasExportSettings.build());
-        assertEquals(1, size0[0]);
-        assertEquals(3, size0[1]);
+        assertEquals(0, size0[0]);
+        assertEquals(0, size0[1]);
         assertEquals(151, size0[2]);
         assertEquals(203, size0[3]);
     }
