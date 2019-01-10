@@ -119,7 +119,6 @@ public abstract class BaseNavigateCommand extends AbstractCanvasGraphCommand {
     protected void addExpressionEditorToCanvasWidget() {
         final ResizeFlowPanel container = wrapElementForErrai1090();
         presenter.getView().setCanvasWidget(container);
-        presenter.getView().setContentScrollType(SessionPresenter.View.ScrollType.CUSTOM);
         editor.getView().setFocus();
 
         Scheduler.get().scheduleDeferred(container::onResize);
@@ -150,7 +149,6 @@ public abstract class BaseNavigateCommand extends AbstractCanvasGraphCommand {
 
     protected void addDRGEditorToCanvasWidget() {
         presenter.getView().setCanvasWidget(((AbstractSessionPresenter) presenter).getDisplayer().getView());
-        presenter.getView().setContentScrollType(SessionPresenter.View.ScrollType.AUTO);
     }
 
     protected void hidePaletteWidget(final boolean hidden) {

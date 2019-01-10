@@ -22,7 +22,6 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.commands.VetoExecutionCommand;
-import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
 
 import static org.junit.Assert.assertEquals;
@@ -58,7 +57,6 @@ public class NavigateToExpressionEditorCommandTest extends BaseNavigationCommand
         verify(command).hidePaletteWidget(eq(true));
         verify(command).addExpressionEditorToCanvasWidget();
         verify(sessionPresenterView).setCanvasWidget(editorContainerForErrai1090);
-        verify(sessionPresenterView).setContentScrollType(eq(SessionPresenter.View.ScrollType.CUSTOM));
         verify(editor).setExpression(eq(NODE_UUID),
                                      eq(hasExpression),
                                      eq(Optional.of(hasName)));
@@ -75,7 +73,6 @@ public class NavigateToExpressionEditorCommandTest extends BaseNavigationCommand
         verify(command).hidePaletteWidget(eq(false));
         verify(command).addDRGEditorToCanvasWidget();
         verify(sessionPresenterView).setCanvasWidget(view);
-        verify(sessionPresenterView).setContentScrollType(eq(SessionPresenter.View.ScrollType.AUTO));
 
         verify(canvasHandler).notifyCanvasClear();
     }
