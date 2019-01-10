@@ -1,0 +1,9 @@
+package org.kiegroup.function;
+
+rule 'using a static function'
+
+when
+    eval(true)
+then
+    System.out.println(hello("Peter"));
+end

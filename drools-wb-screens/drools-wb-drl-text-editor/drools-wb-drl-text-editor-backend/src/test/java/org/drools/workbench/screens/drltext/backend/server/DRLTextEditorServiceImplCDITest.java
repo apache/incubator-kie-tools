@@ -49,6 +49,7 @@ public class DRLTextEditorServiceImplCDITest extends CDITestSetup {
     private static final String CAR_DRIVING_LICENSE_IMPORT_BROKEN = RULES_ROOT + "addAdditionalStorageBroken.drl";
 
     private static final String NUMERICAL_TYPES_RULE = RULES_ROOT + "numericalTypesRule.drl";
+    private static final String FUNCTION_IN_DRL = RULES_ROOT + "function/functionInDRL.drl";
     private static final String INVALID_CONTENT_DRL = RULES_ROOT + "invalidContentDRL.drl";
 
     private List<ValidationMessage> validationMessages;
@@ -172,6 +173,13 @@ public class DRLTextEditorServiceImplCDITest extends CDITestSetup {
     @Test
     public void testNumericalTypes() throws Exception {
         validateResource(NUMERICAL_TYPES_RULE);
+
+        Assertions.assertThat(validationMessages).isEmpty();
+    }
+
+    @Test
+    public void testFunctionInDRL() throws Exception {
+        validateResource(FUNCTION_IN_DRL);
 
         Assertions.assertThat(validationMessages).isEmpty();
     }
