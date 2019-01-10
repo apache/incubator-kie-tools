@@ -17,6 +17,7 @@
 package org.uberfire.client.views.pfly.selectpicker;
 
 import com.google.gwt.core.client.JavaScriptObject;
+import elemental2.dom.Element;
 import elemental2.dom.Node;
 import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsMethod;
@@ -30,6 +31,9 @@ public abstract class JQuery {
     @JsMethod(namespace = GLOBAL, name = "jQuery")
     public native static JQuery $(final Node selector);
 
+    @JsMethod(namespace = GLOBAL, name = "jQuery")
+    public native static JQuery $(final String selector);
+
     public native JQuery animate(final JavaScriptObject properties,
                                  final int duration);
 
@@ -41,6 +45,8 @@ public abstract class JQuery {
     public native JQuery css(final JavaScriptObject properties);
 
     public native JQuery detach();
+
+    public native JQueryList<Element> filter(final String selector);
 
     @JsFunction
     public interface CallbackFunction {
