@@ -175,6 +175,7 @@ public class NameAndDataTypePopoverViewImplTest {
         view.show(Optional.empty());
         view.hide();
 
+        verify(nameEditor).blur();
         verify(popover).hide();
         verify(popover).destroy();
     }

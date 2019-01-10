@@ -184,6 +184,7 @@ public class NameAndDataTypePopoverViewImpl extends AbstractPopoverViewImpl impl
 
     @Override
     public void hide() {
+        nameEditor.blur();
         monitor.hide();
     }
 
