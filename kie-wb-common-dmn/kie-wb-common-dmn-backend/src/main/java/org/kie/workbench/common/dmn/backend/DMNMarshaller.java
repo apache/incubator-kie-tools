@@ -63,12 +63,10 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.TextAnnotation;
 import org.kie.workbench.common.dmn.api.property.background.BackgroundSet;
 import org.kie.workbench.common.dmn.api.property.background.BgColour;
 import org.kie.workbench.common.dmn.api.property.background.BorderColour;
-import org.kie.workbench.common.dmn.api.property.dimensions.DecisionServiceHeight;
-import org.kie.workbench.common.dmn.api.property.dimensions.DecisionServiceRectangleDimensionsSet;
-import org.kie.workbench.common.dmn.api.property.dimensions.DecisionServiceWidth;
-import org.kie.workbench.common.dmn.api.property.dimensions.GeneralHeight;
-import org.kie.workbench.common.dmn.api.property.dimensions.GeneralWidth;
+import org.kie.workbench.common.dmn.api.property.dimensions.Height;
 import org.kie.workbench.common.dmn.api.property.dimensions.RectangleDimensionsSet;
+import org.kie.workbench.common.dmn.api.property.dimensions.Width;
+import org.kie.workbench.common.dmn.api.property.dmn.DecisionServiceDividerLineY;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.font.FontSet;
@@ -104,6 +102,15 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.graph.impl.EdgeImpl;
 import org.kie.workbench.common.stunner.core.util.UUID;
+
+import static org.kie.workbench.common.dmn.backend.definition.v1_1.dd.PointUtils.heightOfShape;
+import static org.kie.workbench.common.dmn.backend.definition.v1_1.dd.PointUtils.lowerRightBound;
+import static org.kie.workbench.common.dmn.backend.definition.v1_1.dd.PointUtils.upperLeftBound;
+import static org.kie.workbench.common.dmn.backend.definition.v1_1.dd.PointUtils.widthOfShape;
+import static org.kie.workbench.common.dmn.backend.definition.v1_1.dd.PointUtils.xOfBound;
+import static org.kie.workbench.common.dmn.backend.definition.v1_1.dd.PointUtils.xOfShape;
+import static org.kie.workbench.common.dmn.backend.definition.v1_1.dd.PointUtils.yOfBound;
+import static org.kie.workbench.common.dmn.backend.definition.v1_1.dd.PointUtils.yOfShape;
 
 @ApplicationScoped
 public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram<Graph, Metadata>> {
@@ -178,14 +185,12 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
         Set<org.kie.dmn.model.api.DecisionService> dmnDecisionServices = new HashSet<>();
         Optional<org.kie.dmn.model.api.dmndi.DMNDiagram> dmnDDDiagram = findDMNDiagram(dmnXml);
 
+        // Stunner rely on relative positioning for Edge connections, so need to cycle on DMNShape first.
         for (Entry<org.kie.dmn.model.api.DRGElement, Node> kv : elems.values()) {
-            org.kie.dmn.model.api.DRGElement elem = kv.getKey();
-            Node currentNode = kv.getValue();
-
-            // Stunner rely on relative positioning for Edge connections, so need to cycle on DMNShape first.
-            ddExtAugmentStunner(dmnDDDiagram, currentNode);
+            ddExtAugmentStunner(dmnDDDiagram, kv.getValue());
         }
 
+        // Setup Node Relationships and Connections all based on absolute positioning
         for (Entry<org.kie.dmn.model.api.DRGElement, Node> kv : elems.values()) {
             org.kie.dmn.model.api.DRGElement elem = kv.getKey();
             Node currentNode = kv.getValue();
@@ -307,13 +312,17 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
             }
         }
 
-        Map<String, Node<View<TextAnnotation>, ?>> textAnnotations = dmnXml.getArtifact().stream().filter(org.kie.dmn.model.api.TextAnnotation.class::isInstance).map(org.kie.dmn.model.api.TextAnnotation.class::cast)
+        Map<String, Node<View<TextAnnotation>, ?>> textAnnotations = dmnXml.getArtifact().stream()
+                .filter(org.kie.dmn.model.api.TextAnnotation.class::isInstance)
+                .map(org.kie.dmn.model.api.TextAnnotation.class::cast)
                 .collect(Collectors.toMap(org.kie.dmn.model.api.TextAnnotation::getId,
                                           textAnnotationConverter::nodeFromDMN));
         textAnnotations.values().forEach(n -> ddExtAugmentStunner(dmnDDDiagram, n));
 
-        List<org.kie.dmn.model.api.Association> associations = dmnXml.getArtifact().stream().filter(org.kie.dmn.model.api.Association.class::isInstance).map(org.kie.dmn.model.api.Association.class::cast).collect(
-                Collectors.toList());
+        List<org.kie.dmn.model.api.Association> associations = dmnXml.getArtifact().stream()
+                .filter(org.kie.dmn.model.api.Association.class::isInstance)
+                .map(org.kie.dmn.model.api.Association.class::cast)
+                .collect(Collectors.toList());
         for (org.kie.dmn.model.api.Association a : associations) {
             String sourceId = getId(a.getSourceRef());
             Node sourceNode = Optional.ofNullable(elems.get(sourceId)).map(Entry::getValue).orElse(textAnnotations.get(sourceId));
@@ -335,6 +344,11 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
                         sourceNode,
                         targetNode);
             setConnectionMagnets(myEdge, a.getId(), dmnXml);
+        }
+
+        //Ensure all locations are updated to relative for Stunner
+        for (Entry<org.kie.dmn.model.api.DRGElement, Node> kv : elems.values()) {
+            PointUtils.convertToRelativeBounds(kv.getValue());
         }
 
         Graph graph = factoryManager.newDiagram("prova",
@@ -374,7 +388,9 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
         final String uuid = dsNode.getUUID() + "er" + requiredNode.getUUID();
         final Edge<Child, Node> myEdge = new EdgeImpl<>(uuid);
         myEdge.setContent(new Child());
-        connectEdge(myEdge, dsNode, requiredNode);
+        connectEdge(myEdge,
+                    dsNode,
+                    requiredNode);
     }
 
     private static String idOfDMNorWBUUID(org.kie.dmn.model.api.DMNElement dmn) {
@@ -432,7 +448,9 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
     }
 
     @SuppressWarnings("unchecked")
-    private void setConnectionMagnets(final Edge edge, String dmnEdgeElementRef, org.kie.dmn.model.api.Definitions dmnXml) {
+    private void setConnectionMagnets(final Edge edge,
+                                      final String dmnEdgeElementRef,
+                                      final org.kie.dmn.model.api.Definitions dmnXml) {
         final ViewConnector connectionContent = (ViewConnector) edge.getContent();
 
         Optional<org.kie.dmn.model.api.dmndi.DMNDiagram> dmnDiagram = findDMNDiagram(dmnXml);
@@ -447,19 +465,19 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
         if (dmnEdge.isPresent()) {
             DMNEdge e = dmnEdge.get();
             Point source = e.getWaypoint().get(0);
-            final Node sourceNode = edge.getSourceNode();
+            final Node<?, ?> sourceNode = edge.getSourceNode();
             if (null != sourceNode) {
-                View<?> sourceView = (View<?>) sourceNode.getContent();
-                double xSource = xOfBound(upperLeftBound(sourceView));
-                double ySource = yOfBound(upperLeftBound(sourceView));
+                final View<?> sourceView = (View<?>) sourceNode.getContent();
+                final double xSource = xOfBound(upperLeftBound(sourceView));
+                final double ySource = yOfBound(upperLeftBound(sourceView));
                 connectionContent.setSourceConnection(MagnetConnection.Builder.at(source.getX() - xSource, source.getY() - ySource)); // Stunner connection x,y is relative to shape
             }
             Point target = e.getWaypoint().get(e.getWaypoint().size() - 1);
             final Node targetNode = edge.getTargetNode();
             if (null != targetNode) {
-                View<?> targetView = (View<?>) targetNode.getContent();
-                double xTarget = xOfBound(upperLeftBound(targetView));
-                double yTarget = yOfBound(upperLeftBound(targetView));
+                final View<?> targetView = (View<?>) targetNode.getContent();
+                final double xTarget = xOfBound(upperLeftBound(targetView));
+                final double yTarget = yOfBound(upperLeftBound(targetView));
                 connectionContent.setTargetConnection(MagnetConnection.Builder.at(target.getX() - xTarget, target.getY() - yTarget)); // Stunner connection x,y is relative to shape
             }
             if (e.getWaypoint().size() > 2) {
@@ -510,6 +528,11 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
         definitions.getDMNDI().getDMNDiagram().add(dmnDDDMNDiagram);
         List<DMNEdge> dmnEdges = new ArrayList<>();
 
+        //Convert relative positioning to absolute
+        for (Node<?, ?> node : g.nodes()) {
+            PointUtils.convertToAbsoluteBounds(node);
+        }
+
         for (Node<?, ?> node : g.nodes()) {
             if (node.getContent() instanceof View<?>) {
                 View<?> view = (View<?>) node.getContent();
@@ -536,7 +559,8 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
                             Point2D sourcePoint = ((Connection) connectionContent.getSourceConnection().get()).getLocation();
                             Point2D targetPoint = ((Connection) connectionContent.getTargetConnection().get()).getLocation();
                             if (sourcePoint == null) { // If the "connection source/target location is null" assume it's the centre of the shape.
-                                View<?> sourceView = (View<?>) e.getSourceNode().getContent();
+                                final Node<?, ?> sourceNode = e.getSourceNode();
+                                final View<?> sourceView = (View<?>) sourceNode.getContent();
                                 double xSource = xOfBound(upperLeftBound(sourceView));
                                 double ySource = yOfBound(upperLeftBound(sourceView));
                                 if (sourceView.getDefinition() instanceof DMNViewDefinition) {
@@ -546,7 +570,8 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
                                 }
                                 sourcePoint = Point2D.create(xSource, ySource);
                             } else { // If it is non-null it is relative to the source/target shape location.
-                                View<?> sourceView = (View<?>) e.getSourceNode().getContent();
+                                final Node<?, ?> sourceNode = e.getSourceNode();
+                                final View<?> sourceView = (View<?>) sourceNode.getContent();
                                 double xSource = xOfBound(upperLeftBound(sourceView));
                                 double ySource = yOfBound(upperLeftBound(sourceView));
                                 sourcePoint = Point2D.create(xSource + sourcePoint.getX(), ySource + sourcePoint.getY());
@@ -561,8 +586,8 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
                                 }
                                 targetPoint = Point2D.create(xTarget, yTarget);
                             } else { // If it is non-null it is relative to the source/target shape location.
-                                double xTarget = xOfBound(upperLeftBound(view));
-                                double yTarget = yOfBound(upperLeftBound(view));
+                                final double xTarget = xOfBound(upperLeftBound(view));
+                                final double yTarget = yOfBound(upperLeftBound(view));
                                 targetPoint = Point2D.create(xTarget + targetPoint.getX(), yTarget + targetPoint.getY());
                             }
 
@@ -608,52 +633,109 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
             return;
         }
 
-        Stream<DMNShape> drgShapeStream = dmnDDDiagram.get().getDMNDiagramElement().stream().filter(DMNShape.class::isInstance).map(DMNShape.class::cast);
-
-        View content = (View) currentNode.getContent();
+        final Stream<DMNShape> drgShapeStream = dmnDDDiagram.get().getDMNDiagramElement().stream().filter(DMNShape.class::isInstance).map(DMNShape.class::cast);
+        final View content = (View) currentNode.getContent();
+        final Bound ulBound = upperLeftBound(content);
+        final Bound lrBound = lowerRightBound(content);
         if (content.getDefinition() instanceof Decision) {
             Decision d = (Decision) content.getDefinition();
-            internalAugment(drgShapeStream, d.getId(), upperLeftBound(content), d.getDimensionsSet(), lowerRightBound(content), d.getBackgroundSet(), d::setFontSet);
+            internalAugment(drgShapeStream, d.getId(),
+                            ulBound,
+                            d.getDimensionsSet(),
+                            lrBound,
+                            d.getBackgroundSet(),
+                            d::setFontSet);
         } else if (content.getDefinition() instanceof InputData) {
             InputData d = (InputData) content.getDefinition();
-            internalAugment(drgShapeStream, d.getId(), upperLeftBound(content), d.getDimensionsSet(), lowerRightBound(content), d.getBackgroundSet(), d::setFontSet);
+            internalAugment(drgShapeStream,
+                            d.getId(),
+                            ulBound,
+                            d.getDimensionsSet(),
+                            lrBound,
+                            d.getBackgroundSet(),
+                            d::setFontSet);
         } else if (content.getDefinition() instanceof BusinessKnowledgeModel) {
             BusinessKnowledgeModel d = (BusinessKnowledgeModel) content.getDefinition();
-            internalAugment(drgShapeStream, d.getId(), upperLeftBound(content), d.getDimensionsSet(), lowerRightBound(content), d.getBackgroundSet(), d::setFontSet);
+            internalAugment(drgShapeStream,
+                            d.getId(),
+                            ulBound,
+                            d.getDimensionsSet(),
+                            lrBound,
+                            d.getBackgroundSet(),
+                            d::setFontSet);
         } else if (content.getDefinition() instanceof KnowledgeSource) {
             KnowledgeSource d = (KnowledgeSource) content.getDefinition();
-            internalAugment(drgShapeStream, d.getId(), upperLeftBound(content), d.getDimensionsSet(), lowerRightBound(content), d.getBackgroundSet(), d::setFontSet);
+            internalAugment(drgShapeStream,
+                            d.getId(),
+                            ulBound,
+                            d.getDimensionsSet(),
+                            lrBound,
+                            d.getBackgroundSet(),
+                            d::setFontSet);
         } else if (content.getDefinition() instanceof TextAnnotation) {
             TextAnnotation d = (TextAnnotation) content.getDefinition();
-            internalAugment(drgShapeStream, d.getId(), upperLeftBound(content), d.getDimensionsSet(), lowerRightBound(content), d.getBackgroundSet(), d::setFontSet);
+            internalAugment(drgShapeStream,
+                            d.getId(),
+                            ulBound,
+                            d.getDimensionsSet(),
+                            lrBound,
+                            d.getBackgroundSet(),
+                            d::setFontSet);
         } else if (content.getDefinition() instanceof DecisionService) {
             DecisionService d = (DecisionService) content.getDefinition();
-            internalAugment(drgShapeStream, d.getId(), upperLeftBound(content), d.getDimensionsSet(), lowerRightBound(content), d.getBackgroundSet(), d::setFontSet);
+            internalAugment(drgShapeStream,
+                            d.getId(),
+                            ulBound,
+                            d.getDimensionsSet(),
+                            lrBound,
+                            d.getBackgroundSet(),
+                            d::setFontSet,
+                            (dividerLineY) -> d.setDividerLineY(new DecisionServiceDividerLineY(dividerLineY - ulBound.getY())));
         }
     }
 
     @SuppressWarnings("unchecked")
-    private void internalAugment(Stream<DMNShape> drgShapeStream, Id id, Bound ul, RectangleDimensionsSet dimensionsSet, Bound lr, BackgroundSet bgset, Consumer<FontSet> fontSetSetter) {
+    private void internalAugment(final Stream<DMNShape> drgShapeStream,
+                                 final Id id,
+                                 final Bound ulBound,
+                                 final RectangleDimensionsSet dimensionsSet,
+                                 final Bound lrBound,
+                                 final BackgroundSet bgset,
+                                 final Consumer<FontSet> fontSetSetter) {
+        internalAugment(drgShapeStream,
+                        id,
+                        ulBound,
+                        dimensionsSet,
+                        lrBound,
+                        bgset,
+                        fontSetSetter,
+                        (line) -> {/*NOP*/});
+    }
+
+    @SuppressWarnings("unchecked")
+    private void internalAugment(final Stream<DMNShape> drgShapeStream,
+                                 final Id id,
+                                 final Bound ulBound,
+                                 final RectangleDimensionsSet dimensionsSet,
+                                 final Bound lrBound,
+                                 final BackgroundSet bgset,
+                                 final Consumer<FontSet> fontSetSetter,
+                                 final Consumer<Double> decisionServiceDividerLineYSetter) {
         Optional<DMNShape> drgShapeOpt = drgShapeStream.filter(shape -> shape.getDmnElementRef().getLocalPart().equals(id.getValue())).findFirst();
         if (!drgShapeOpt.isPresent()) {
             return;
         }
         DMNShape drgShape = drgShapeOpt.get();
 
-        if (ul != null) {
-            ((BoundImpl) ul).setX(xOfShape(drgShape));
-            ((BoundImpl) ul).setY(yOfShape(drgShape));
+        if (ulBound != null) {
+            ((BoundImpl) ulBound).setX(xOfShape(drgShape));
+            ((BoundImpl) ulBound).setY(yOfShape(drgShape));
         }
-        if (dimensionsSet instanceof DecisionServiceRectangleDimensionsSet) {
-            dimensionsSet.setWidth(new DecisionServiceWidth(widthOfShape(drgShape)));
-            dimensionsSet.setHeight(new DecisionServiceHeight(heightOfShape(drgShape)));
-        } else {
-            dimensionsSet.setWidth(new GeneralWidth(widthOfShape(drgShape)));
-            dimensionsSet.setHeight(new GeneralHeight(heightOfShape(drgShape)));
-        }
-        if (lr != null) {
-            ((BoundImpl) lr).setX(xOfShape(drgShape) + widthOfShape(drgShape));
-            ((BoundImpl) lr).setY(yOfShape(drgShape) + heightOfShape(drgShape));
+        dimensionsSet.setWidth(new Width(widthOfShape(drgShape)));
+        dimensionsSet.setHeight(new Height(heightOfShape(drgShape)));
+        if (lrBound != null) {
+            ((BoundImpl) lrBound).setX(xOfShape(drgShape) + widthOfShape(drgShape));
+            ((BoundImpl) lrBound).setY(yOfShape(drgShape) + heightOfShape(drgShape));
         }
 
         DMNStyle dmnStyleOfDrgShape = drgShape.getStyle() instanceof DMNStyle ? (DMNStyle) drgShape.getStyle() : null;
@@ -677,6 +759,10 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
             mergeFontSet(fontSet, FontSetPropertyConverter.wbFromDMN((DMNStyle) drgShape.getDMNLabel().getStyle()));
         }
         fontSetSetter.accept(fontSet);
+
+        if (drgShape.getDMNDecisionServiceDividerLine() != null) {
+            decisionServiceDividerLineYSetter.accept(drgShape.getDMNDecisionServiceDividerLine().getWaypoint().get(0).getY());
+        }
     }
 
     private static void mergeFontSet(FontSet fontSet, FontSet additional) {
@@ -691,7 +777,8 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
         }
     }
 
-    private static DMNShape stunnerToDDExt(View<? extends DMNElement> v) {
+    @SuppressWarnings("unchecked")
+    private static DMNShape stunnerToDDExt(final View<? extends DMNElement> v) {
         DMNShape result = new org.kie.dmn.model.v1_2.dmndi.DMNShape();
         result.setId("dmnshape-" + v.getDefinition().getId().getValue());
         result.setDmnElementRef(new QName(v.getDefinition().getId().getValue()));
@@ -734,7 +821,7 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
             DMNDecisionServiceDividerLine dl = new org.kie.dmn.model.v1_2.dmndi.DMNDecisionServiceDividerLine();
             org.kie.dmn.model.api.dmndi.Point leftPoint = new org.kie.dmn.model.v1_2.dmndi.Point();
             leftPoint.setX(v.getBounds().getUpperLeft().getX());
-            double dlY = v.getBounds().getUpperLeft().getY() + (d.getDimensionsSet().getHeight().getValue() / 2);
+            double dlY = v.getBounds().getUpperLeft().getY() + d.getDividerLineY().getValue();
             leftPoint.setY(dlY);
             dl.getWaypoint().add(leftPoint);
             org.kie.dmn.model.api.dmndi.Point rightPoint = new org.kie.dmn.model.v1_2.dmndi.Point();
@@ -808,73 +895,5 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
     @Override
     public DiagramMetadataMarshaller<Metadata> getMetadataMarshaller() {
         return diagramMetadataMarshaller;
-    }
-
-    private static Bound upperLeftBound(final View view) {
-        if (view != null) {
-            if (view.getBounds() != null) {
-                return view.getBounds().getUpperLeft();
-            }
-        }
-        return null;
-    }
-
-    private static Bound lowerRightBound(final View view) {
-        if (view != null) {
-            if (view.getBounds() != null) {
-                return view.getBounds().getLowerRight();
-            }
-        }
-        return null;
-    }
-
-    private static double xOfBound(final Bound bound) {
-        if (bound != null) {
-            return bound.getX();
-        }
-        return 0.0;
-    }
-
-    private static double yOfBound(final Bound bound) {
-        if (bound != null) {
-            return bound.getY();
-        }
-        return 0.0;
-    }
-
-    private static double xOfShape(final DMNShape shape) {
-        if (shape != null) {
-            if (shape.getBounds() != null) {
-                return shape.getBounds().getX();
-            }
-        }
-        return 0.0;
-    }
-
-    private static double yOfShape(final DMNShape shape) {
-        if (shape != null) {
-            if (shape.getBounds() != null) {
-                return shape.getBounds().getY();
-            }
-        }
-        return 0.0;
-    }
-
-    private static double widthOfShape(final DMNShape shape) {
-        if (shape != null) {
-            if (shape.getBounds() != null) {
-                return shape.getBounds().getWidth();
-            }
-        }
-        return 0.0;
-    }
-
-    private static double heightOfShape(final DMNShape shape) {
-        if (shape != null) {
-            if (shape.getBounds() != null) {
-                return shape.getBounds().getHeight();
-            }
-        }
-        return 0.0;
     }
 }

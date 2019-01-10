@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2018 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.core.client.shape.view.event;
+package org.kie.workbench.common.dmn.client.shape.view.decisionservice;
 
-public interface ViewHandler<E extends ViewEvent> {
+import com.ait.lienzo.client.core.shape.wires.event.WiresEventHandler;
 
-    ViewEventType getType();
+public interface MoveDividerStartHandler extends WiresEventHandler {
 
-    default void handle(final E event) {
-        //NOP default implementation
-    }
+    void onMoveDividerStart(final MoveDividerStartEvent event);
 }

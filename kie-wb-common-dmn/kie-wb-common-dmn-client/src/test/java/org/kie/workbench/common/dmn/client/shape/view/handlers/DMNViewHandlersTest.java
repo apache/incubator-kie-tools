@@ -20,10 +20,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.DMNViewDefinition;
-import org.kie.workbench.common.dmn.api.property.dimensions.GeneralHeight;
 import org.kie.workbench.common.dmn.api.property.dimensions.GeneralRectangleDimensionsSet;
-import org.kie.workbench.common.dmn.api.property.dimensions.GeneralWidth;
+import org.kie.workbench.common.dmn.api.property.dimensions.Height;
 import org.kie.workbench.common.dmn.api.property.dimensions.RectangleDimensionsSet;
+import org.kie.workbench.common.dmn.api.property.dimensions.Width;
 import org.kie.workbench.common.dmn.client.shape.def.DMNSVGShapeDefImpl;
 import org.kie.workbench.common.stunner.core.client.shape.view.handler.SizeHandler;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
@@ -52,8 +52,8 @@ public class DMNViewHandlersTest {
     private Bounds bounds = new BoundsImpl(new BoundImpl(0.0, 0.0),
                                            new BoundImpl(100.0, 100.0));
 
-    private RectangleDimensionsSet dimensions = new GeneralRectangleDimensionsSet(new GeneralWidth(50.0),
-                                                                                  new GeneralHeight(50.0));
+    private RectangleDimensionsSet dimensions = new GeneralRectangleDimensionsSet(new Width(50.0),
+                                                                                  new Height(50.0));
 
     @Before
     public void setup() {

@@ -20,6 +20,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
+import org.kie.workbench.common.dmn.client.canvas.controls.resize.DecisionServiceMoveDividerControl;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorControl;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCache;
@@ -94,6 +95,7 @@ public class DMNEditorSession extends DefaultEditorSession implements DMNSession
                            .registerCanvasHandlerControl(SelectionControl.class,
                                                          MultipleSelection.class)
                            .registerCanvasHandlerControl(ResizeControl.class)
+                           .registerCanvasHandlerControl(DecisionServiceMoveDividerControl.class)
                            .registerCanvasHandlerControl(ConnectionAcceptorControl.class)
                            .registerCanvasHandlerControl(ContainmentAcceptorControl.class)
                            .registerCanvasHandlerControl(DockingAcceptorControl.class)

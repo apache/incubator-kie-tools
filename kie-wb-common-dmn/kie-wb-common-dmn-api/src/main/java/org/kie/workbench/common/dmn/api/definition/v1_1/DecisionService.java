@@ -29,6 +29,7 @@ import org.kie.workbench.common.dmn.api.definition.DMNViewDefinition;
 import org.kie.workbench.common.dmn.api.definition.HasVariable;
 import org.kie.workbench.common.dmn.api.property.background.BackgroundSet;
 import org.kie.workbench.common.dmn.api.property.dimensions.DecisionServiceRectangleDimensionsSet;
+import org.kie.workbench.common.dmn.api.property.dmn.DecisionServiceDividerLineY;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
@@ -39,6 +40,7 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
+import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
@@ -91,6 +93,9 @@ public class DecisionService extends DRGElement implements HasVariable<Informati
     @Valid
     protected DecisionServiceRectangleDimensionsSet dimensionsSet;
 
+    @Property
+    protected DecisionServiceDividerLineY dividerLineY;
+
     private List<DMNElementReference> outputDecision;
     private List<DMNElementReference> encapsulatedDecision;
     private List<DMNElementReference> inputDecision;
@@ -107,7 +112,8 @@ public class DecisionService extends DRGElement implements HasVariable<Informati
              null,
              new BackgroundSet(),
              new FontSet(),
-             new DecisionServiceRectangleDimensionsSet());
+             new DecisionServiceRectangleDimensionsSet(),
+             new DecisionServiceDividerLineY());
     }
 
     public DecisionService(final Id id,
@@ -120,7 +126,8 @@ public class DecisionService extends DRGElement implements HasVariable<Informati
                            final List<DMNElementReference> inputData,
                            final BackgroundSet backgroundSet,
                            final FontSet fontSet,
-                           final DecisionServiceRectangleDimensionsSet dimensionsSet) {
+                           final DecisionServiceRectangleDimensionsSet dimensionsSet,
+                           final DecisionServiceDividerLineY dividerLineY) {
         super(id,
               description,
               name);
@@ -132,6 +139,7 @@ public class DecisionService extends DRGElement implements HasVariable<Informati
         this.backgroundSet = backgroundSet;
         this.fontSet = fontSet;
         this.dimensionsSet = dimensionsSet;
+        this.dividerLineY = dividerLineY;
 
         setVariableParent();
     }
@@ -172,6 +180,14 @@ public class DecisionService extends DRGElement implements HasVariable<Informati
 
     public void setDimensionsSet(final DecisionServiceRectangleDimensionsSet dimensionsSet) {
         this.dimensionsSet = dimensionsSet;
+    }
+
+    public DecisionServiceDividerLineY getDividerLineY() {
+        return dividerLineY;
+    }
+
+    public void setDividerLineY(final DecisionServiceDividerLineY dividerY) {
+        this.dividerLineY = dividerY;
     }
 
     // -----------------------

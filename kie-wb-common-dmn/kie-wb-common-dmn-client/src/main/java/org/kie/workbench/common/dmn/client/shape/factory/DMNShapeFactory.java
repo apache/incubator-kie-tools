@@ -32,6 +32,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.KnowledgeRequirement;
 import org.kie.workbench.common.dmn.api.definition.v1_1.KnowledgeSource;
 import org.kie.workbench.common.dmn.api.definition.v1_1.TextAnnotation;
 import org.kie.workbench.common.dmn.client.shape.def.DMNConnectorShapeDefImpl;
+import org.kie.workbench.common.dmn.client.shape.def.DMNDecisionServiceSVGShapeDefImpl;
 import org.kie.workbench.common.dmn.client.shape.def.DMNSVGShapeDefImpl;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.factory.DelegateShapeFactory;
@@ -44,14 +45,17 @@ public class DMNShapeFactory implements ShapeFactory<DMNDefinition, Shape> {
 
     private final SVGShapeFactory svgShapeFactory;
     private final DMNConnectorShapeFactory dmnConnectorShapeFactory;
+    private final DMNDecisionServiceShapeFactory dmnDecisionServiceShapeFactory;
     private final DelegateShapeFactory<DMNDefinition, Shape> delegateShapeFactory;
 
     @Inject
     public DMNShapeFactory(final SVGShapeFactory svgShapeFactory,
                            final DMNConnectorShapeFactory dmnConnectorShapeFactory,
+                           final DMNDecisionServiceShapeFactory dmnDecisionServiceShapeFactory,
                            final DelegateShapeFactory<DMNDefinition, Shape> delegateShapeFactory) {
         this.svgShapeFactory = svgShapeFactory;
         this.dmnConnectorShapeFactory = dmnConnectorShapeFactory;
+        this.dmnDecisionServiceShapeFactory = dmnDecisionServiceShapeFactory;
         this.delegateShapeFactory = delegateShapeFactory;
     }
 
@@ -89,8 +93,8 @@ public class DMNShapeFactory implements ShapeFactory<DMNDefinition, Shape> {
                           new DMNConnectorShapeDefImpl(),
                           () -> dmnConnectorShapeFactory)
                 .delegate(DecisionService.class,
-                          new DMNSVGShapeDefImpl(),
-                          () -> svgShapeFactory);
+                          new DMNDecisionServiceSVGShapeDefImpl(),
+                          () -> dmnDecisionServiceShapeFactory);
     }
 
     @Override

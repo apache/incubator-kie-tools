@@ -33,7 +33,11 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 @FormDefinition(
         startElement = "width"
 )
-public class GeneralRectangleDimensionsSet implements RectangleDimensionsSet<GeneralWidth, GeneralHeight> {
+public class GeneralRectangleDimensionsSet implements RectangleDimensionsSet {
+
+    public static final double DEFAULT_WIDTH = 100.0;
+
+    public static final double DEFAULT_HEIGHT = 50.0;
 
     private static final String MIN_WIDTH = "50.0";
 
@@ -56,7 +60,7 @@ public class GeneralRectangleDimensionsSet implements RectangleDimensionsSet<Gen
             }
     )
     @Valid
-    protected GeneralWidth width;
+    protected Width width;
 
     @Property
     @FormField(
@@ -70,36 +74,36 @@ public class GeneralRectangleDimensionsSet implements RectangleDimensionsSet<Gen
             }
     )
     @Valid
-    protected GeneralHeight height;
+    protected Height height;
 
     public GeneralRectangleDimensionsSet() {
-        this(new GeneralWidth(),
-             new GeneralHeight());
+        this(new Width(DEFAULT_WIDTH),
+             new Height(DEFAULT_HEIGHT));
     }
 
-    public GeneralRectangleDimensionsSet(final GeneralWidth width,
-                                         final GeneralHeight height) {
+    public GeneralRectangleDimensionsSet(final Width width,
+                                         final Height height) {
         this.width = width;
         this.height = height;
     }
 
     @Override
-    public GeneralWidth getWidth() {
+    public Width getWidth() {
         return width;
     }
 
     @Override
-    public void setWidth(final GeneralWidth width) {
+    public void setWidth(final Width width) {
         this.width = width;
     }
 
     @Override
-    public GeneralHeight getHeight() {
+    public Height getHeight() {
         return height;
     }
 
     @Override
-    public void setHeight(final GeneralHeight height) {
+    public void setHeight(final Height height) {
         this.height = height;
     }
 

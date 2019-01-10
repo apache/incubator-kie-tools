@@ -30,6 +30,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.InputData;
 import org.kie.workbench.common.dmn.api.definition.v1_1.KnowledgeRequirement;
 import org.kie.workbench.common.dmn.api.property.background.BackgroundSet;
 import org.kie.workbench.common.dmn.api.property.dimensions.DecisionServiceRectangleDimensionsSet;
+import org.kie.workbench.common.dmn.api.property.dmn.DecisionServiceDividerLineY;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
@@ -72,7 +73,8 @@ public class DecisionServiceConverter implements NodeConverter<org.kie.dmn.model
                                                               inputData,
                                                               new BackgroundSet(),
                                                               new FontSet(),
-                                                              new DecisionServiceRectangleDimensionsSet());
+                                                              new DecisionServiceRectangleDimensionsSet(),
+                                                              new DecisionServiceDividerLineY());
         node.getContent().setDefinition(decisionService);
 
         if (informationItem != null) {
@@ -83,6 +85,7 @@ public class DecisionServiceConverter implements NodeConverter<org.kie.dmn.model
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public org.kie.dmn.model.api.DecisionService dmnFromNode(Node<View<DecisionService>, ?> node) {
         DecisionService source = node.getContent().getDefinition();
         org.kie.dmn.model.api.DecisionService ds = new org.kie.dmn.model.v1_2.TDecisionService();
@@ -94,7 +97,7 @@ public class DecisionServiceConverter implements NodeConverter<org.kie.dmn.model
             variable.setParent(ds);
         }
         ds.setVariable(variable);
-        
+
         List<org.kie.dmn.model.api.DMNElementReference> existing_outputDecision = source.getOutputDecision().stream().map(DMNElementReferenceConverter::dmnFromWB).collect(Collectors.toList());
         List<org.kie.dmn.model.api.DMNElementReference> existing_encapsulatedDecision = source.getEncapsulatedDecision().stream().map(DMNElementReferenceConverter::dmnFromWB).collect(Collectors.toList());
         List<org.kie.dmn.model.api.DMNElementReference> existing_inputDecision = source.getInputDecision().stream().map(DMNElementReferenceConverter::dmnFromWB).collect(Collectors.toList());
@@ -103,7 +106,7 @@ public class DecisionServiceConverter implements NodeConverter<org.kie.dmn.model
         List<org.kie.dmn.model.api.DMNElementReference> candidate_encapsulatedDecision = new ArrayList<>();
         List<org.kie.dmn.model.api.DMNElementReference> candidate_inputDecision = new ArrayList<>();
         List<org.kie.dmn.model.api.DMNElementReference> candidate_inputData = new ArrayList<>();
-        
+
         List<InputData> reqInputs = new ArrayList<>();
         List<Decision> reqDecisions = new ArrayList<>();
         // DMN spec table 2: Requirements connection rules
@@ -112,23 +115,21 @@ public class DecisionServiceConverter implements NodeConverter<org.kie.dmn.model
             if (e.getContent() instanceof Child) {
                 @SuppressWarnings("unchecked")
                 Node<View<?>, ?> targetNode = e.getTargetNode();
-                if (targetNode.getContent() instanceof View<?>) {
-                    View<?> view = (View<?>) targetNode.getContent();
-                    if (view.getDefinition() instanceof DRGElement) {
-                        DRGElement drgElement = (DRGElement) view.getDefinition();
-                        if (drgElement instanceof Decision) {
-                            Decision decision = (Decision) drgElement;
-                            org.kie.dmn.model.api.DMNElementReference ri = new org.kie.dmn.model.v1_2.TDMNElementReference();
-                            ri.setHref(new StringBuilder("#").append(decision.getId().getValue()).toString());
-                            if (isNodeUpperHalfOfDS(targetNode, node)) {
-                                candidate_outputDecision.add(ri);
-                            } else {
-                                candidate_encapsulatedDecision.add(ri);
-                            }
-                            inspectDecisionForDSReqs(targetNode, reqInputs, reqDecisions);
+                View<?> targetNodeView = targetNode.getContent();
+                if (targetNodeView.getDefinition() instanceof DRGElement) {
+                    DRGElement drgElement = (DRGElement) targetNodeView.getDefinition();
+                    if (drgElement instanceof Decision) {
+                        Decision decision = (Decision) drgElement;
+                        org.kie.dmn.model.api.DMNElementReference ri = new org.kie.dmn.model.v1_2.TDMNElementReference();
+                        ri.setHref(new StringBuilder("#").append(decision.getId().getValue()).toString());
+                        if (isOutputDecision(targetNode.getContent(), node.getContent())) {
+                            candidate_outputDecision.add(ri);
                         } else {
-                            throw new UnsupportedOperationException("wrong model definition: a DecisionService is expected to encapsulate only Decision");
+                            candidate_encapsulatedDecision.add(ri);
                         }
+                        inspectDecisionForDSReqs(targetNode, reqInputs, reqDecisions);
+                    } else {
+                        throw new UnsupportedOperationException("wrong model definition: a DecisionService is expected to encapsulate only Decision");
                     }
                 }
             } else if (e.getContent() instanceof View && ((View) e.getContent()).getDefinition() instanceof KnowledgeRequirement) {
@@ -138,21 +139,21 @@ public class DecisionServiceConverter implements NodeConverter<org.kie.dmn.model
             }
         }
         reqInputs.stream()
-                 .sorted(Comparator.comparing(x -> x.getName().getValue()))
-                 .map(x -> {
-                     org.kie.dmn.model.api.DMNElementReference ri = new org.kie.dmn.model.v1_2.TDMNElementReference();
-                     ri.setHref(new StringBuilder("#").append(x.getId().getValue()).toString());
-                     return ri;
-                 })
-                 .forEach(candidate_inputData::add);
+                .sorted(Comparator.comparing(x -> x.getName().getValue()))
+                .map(x -> {
+                    org.kie.dmn.model.api.DMNElementReference ri = new org.kie.dmn.model.v1_2.TDMNElementReference();
+                    ri.setHref(new StringBuilder("#").append(x.getId().getValue()).toString());
+                    return ri;
+                })
+                .forEach(candidate_inputData::add);
         reqDecisions.stream()
-                    .sorted(Comparator.comparing(x -> x.getName().getValue()))
-                    .map(x -> {
-                        org.kie.dmn.model.api.DMNElementReference ri = new org.kie.dmn.model.v1_2.TDMNElementReference();
-                        ri.setHref(new StringBuilder("#").append(x.getId().getValue()).toString());
-                        return ri;
-                    })
-                    .forEach(candidate_inputDecision::add);
+                .sorted(Comparator.comparing(x -> x.getName().getValue()))
+                .map(x -> {
+                    org.kie.dmn.model.api.DMNElementReference ri = new org.kie.dmn.model.v1_2.TDMNElementReference();
+                    ri.setHref(new StringBuilder("#").append(x.getId().getValue()).toString());
+                    return ri;
+                })
+                .forEach(candidate_inputDecision::add);
         for (org.kie.dmn.model.api.DMNElementReference er : candidate_outputDecision) {
             candidate_inputDecision.removeIf(x -> x.getHref().equals(er.getHref()));
         }
@@ -184,6 +185,7 @@ public class DecisionServiceConverter implements NodeConverter<org.kie.dmn.model
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void inspectDecisionForDSReqs(Node<View<?>, ?> targetNode, List<InputData> reqInputs, List<Decision> reqDecisions) {
         List<Edge<?, ?>> inEdges = (List<Edge<?, ?>>) targetNode.getInEdges();
         for (Edge<?, ?> e : inEdges) {
@@ -202,9 +204,14 @@ public class DecisionServiceConverter implements NodeConverter<org.kie.dmn.model
         }
     }
 
-    private static boolean isNodeUpperHalfOfDS(Node<View<?>, ?> node, Node<View<DecisionService>, ?> dsNode) {
-        double dsHeight = dsNode.getContent().getBounds().getLowerRight().getY() - dsNode.getContent().getBounds().getUpperLeft().getY();
-        double yUpperHalf = dsNode.getContent().getBounds().getUpperLeft().getY() + (dsHeight / 2);
-        return node.getContent().getBounds().getUpperLeft().getY() < yUpperHalf;
+    private static boolean isOutputDecision(final View<?> childView,
+                                            final View<DecisionService> decisionServiceView) {
+        //ChildViewY is absolute
+        //DecisionServiceViewY is absolute
+        //DecisionServiceViewLineY is relative to the DecisionService
+        final double childViewY = childView.getBounds().getUpperLeft().getY();
+        final double decisionServiceViewY = decisionServiceView.getBounds().getUpperLeft().getY();
+        final double decisionServiceViewLineY = decisionServiceView.getDefinition().getDividerLineY().getValue();
+        return childViewY < decisionServiceViewY + decisionServiceViewLineY;
     }
 }

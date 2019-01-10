@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.svg.gen.apt;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
@@ -52,7 +53,7 @@ public class SVGShapeProcessor extends AbstractErrorAbsorbingProcessor {
     public final static String ANNOTATION_SVGSHAPE_VIEW_FACTORY = "org.kie.workbench.common.stunner.svg.annotation.SVGViewFactory";
     private final static String GENERATED_TYPE_SUFFIX = "Impl";
 
-    private final SVGShapeProcessorContext context = new SVGShapeProcessorContext();
+    private final List<SVGShapeProcessorContext> contexts = new ArrayList<>();
     private SVGGenerator generator;
 
     @Override
@@ -101,6 +102,8 @@ public class SVGShapeProcessor extends AbstractErrorAbsorbingProcessor {
                                                                         absPkgPath + "/" + svgViewFactoryAnn.cssPath(),
                                                                         viewBuilderTypeName,
                                                                         processingEnv.getMessager());
+
+            final SVGShapeProcessorContext context = new SVGShapeProcessorContext();
             context.setGeneratorRequest(request);
             // Find and process method annotation as @SVGSource.
             List<ExecutableElement> methodElements = ElementFilter.methodsIn(classElement.getEnclosedElements());
@@ -115,6 +118,8 @@ public class SVGShapeProcessor extends AbstractErrorAbsorbingProcessor {
                                                                        absPath);
                 }
             });
+
+            contexts.add(context);
         }
         return true;
     }
@@ -122,19 +127,21 @@ public class SVGShapeProcessor extends AbstractErrorAbsorbingProcessor {
     private boolean processLastRound(final Set<? extends TypeElement> set,
                                      final RoundEnvironment roundEnv) throws Exception {
         final Messager messager = processingEnv.getMessager();
-        try {
-            final SVGGeneratorRequest request = context.getGeneratorRequest();
-            final String classFQName = request.getPkg() + "." + request.getName();
-            messager.printMessage(Diagnostic.Kind.NOTE,
-                                  "Starting generation for SVGShapeViewFactory named [" + classFQName + "]");
-            final StringBuffer result = generator.generate(request);
-            writeCode(request.getPkg(),
-                      request.getName(),
-                      result);
-        } catch (org.kie.workbench.common.stunner.svg.gen.exception.GeneratorException ge) {
-            final String msg = ge.getMessage();
-            processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
-                                                     msg);
+        for (SVGShapeProcessorContext context : contexts) {
+            try {
+                final SVGGeneratorRequest request = context.getGeneratorRequest();
+                final String classFQName = request.getPkg() + "." + request.getName();
+                messager.printMessage(Diagnostic.Kind.NOTE,
+                                      "Starting generation for SVGShapeViewFactory named [" + classFQName + "]");
+                final StringBuffer result = generator.generate(request);
+                writeCode(request.getPkg(),
+                          request.getName(),
+                          result);
+            } catch (org.kie.workbench.common.stunner.svg.gen.exception.GeneratorException ge) {
+                final String msg = ge.getMessage();
+                processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
+                                                         msg);
+            }
         }
         return true;
     }

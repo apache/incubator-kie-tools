@@ -19,7 +19,6 @@ import java.util.Optional;
 import java.util.function.BiConsumer;
 
 import org.kie.workbench.common.dmn.api.definition.DMNViewDefinition;
-import org.kie.workbench.common.dmn.client.resources.DMNSVGViewFactory;
 import org.kie.workbench.common.dmn.client.shape.view.handlers.DMNViewHandlers;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.client.shape.view.handler.FontHandler;
@@ -30,9 +29,9 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.svg.client.shape.def.SVGShapeViewDef;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
 
-public interface DMNSVGShapeDef<W extends DMNViewDefinition>
+public interface DMNSVGShapeDef<W extends DMNViewDefinition, F>
         extends DMNShapeDef<W, SVGShapeView>,
-                SVGShapeViewDef<W, DMNSVGViewFactory> {
+                SVGShapeViewDef<W, F> {
 
     @Override
     default Optional<BiConsumer<String, SVGShapeView>> titleHandler() {
@@ -77,10 +76,5 @@ public interface DMNSVGShapeDef<W extends DMNViewDefinition>
 
     default ViewAttributesHandler<W, SVGShapeView> newViewAttributesHandler() {
         return newViewAttributesHandlerBuilder().build();
-    }
-
-    @Override
-    default Class<DMNSVGViewFactory> getViewFactoryType() {
-        return DMNSVGViewFactory.class;
     }
 }

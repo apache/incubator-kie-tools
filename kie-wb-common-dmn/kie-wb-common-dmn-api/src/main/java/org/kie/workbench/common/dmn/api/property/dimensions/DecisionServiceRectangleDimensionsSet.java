@@ -33,7 +33,11 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 @FormDefinition(
         startElement = "width"
 )
-public class DecisionServiceRectangleDimensionsSet implements RectangleDimensionsSet<DecisionServiceWidth, DecisionServiceHeight> {
+public class DecisionServiceRectangleDimensionsSet implements RectangleDimensionsSet {
+
+    public static final double DEFAULT_WIDTH = 200.0;
+
+    public static final double DEFAULT_HEIGHT = 200.0;
 
     private static final String MIN_WIDTH = "100.0";
 
@@ -56,7 +60,7 @@ public class DecisionServiceRectangleDimensionsSet implements RectangleDimension
             }
     )
     @Valid
-    protected DecisionServiceWidth width;
+    protected Width width;
 
     @Property
     @FormField(
@@ -70,36 +74,36 @@ public class DecisionServiceRectangleDimensionsSet implements RectangleDimension
             }
     )
     @Valid
-    protected DecisionServiceHeight height;
+    protected Height height;
 
     public DecisionServiceRectangleDimensionsSet() {
-        this(new DecisionServiceWidth(),
-             new DecisionServiceHeight());
+        this(new Width(DEFAULT_WIDTH),
+             new Height(DEFAULT_HEIGHT));
     }
 
-    public DecisionServiceRectangleDimensionsSet(final DecisionServiceWidth width,
-                                                 final DecisionServiceHeight height) {
+    public DecisionServiceRectangleDimensionsSet(final Width width,
+                                                 final Height height) {
         this.width = width;
         this.height = height;
     }
 
     @Override
-    public DecisionServiceWidth getWidth() {
+    public Width getWidth() {
         return width;
     }
 
     @Override
-    public void setWidth(final DecisionServiceWidth width) {
+    public void setWidth(final Width width) {
         this.width = width;
     }
 
     @Override
-    public DecisionServiceHeight getHeight() {
+    public Height getHeight() {
         return height;
     }
 
     @Override
-    public void setHeight(final DecisionServiceHeight height) {
+    public void setHeight(final Height height) {
         this.height = height;
     }
 

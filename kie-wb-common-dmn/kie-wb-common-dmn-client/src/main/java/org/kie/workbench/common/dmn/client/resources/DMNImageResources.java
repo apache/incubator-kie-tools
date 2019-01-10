@@ -98,7 +98,7 @@ public interface DMNImageResources extends ClientBundleWithLookup {
     @DataResource.MimeType(SVG_MIME_TYPE)
     DataResource textAnnotationPalette();
 
-    @ClientBundle.Source(DMNSVGViewFactory.DECISION_SERVICE_PALETTE)
+    @ClientBundle.Source(DMNDecisionServiceSVGViewFactory.DECISION_SERVICE_PALETTE)
     @DataResource.MimeType(SVG_MIME_TYPE)
     DataResource decisionServicePalette();
 }

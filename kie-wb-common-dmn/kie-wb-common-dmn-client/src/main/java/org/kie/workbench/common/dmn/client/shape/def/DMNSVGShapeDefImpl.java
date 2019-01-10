@@ -24,7 +24,6 @@ import org.kie.workbench.common.dmn.api.definition.DMNViewDefinition;
 import org.kie.workbench.common.dmn.api.definition.v1_1.BusinessKnowledgeModel;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNDiagram;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
-import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionService;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InputData;
 import org.kie.workbench.common.dmn.api.definition.v1_1.KnowledgeSource;
 import org.kie.workbench.common.dmn.api.definition.v1_1.TextAnnotation;
@@ -36,7 +35,7 @@ import org.kie.workbench.common.stunner.core.definition.shape.ShapeGlyph;
 import org.kie.workbench.common.stunner.svg.client.shape.factory.SVGShapeViewResources;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
 
-public class DMNSVGShapeDefImpl implements DMNSVGShapeDef<DMNViewDefinition> {
+public class DMNSVGShapeDefImpl implements DMNSVGShapeDef<DMNViewDefinition, DMNSVGViewFactory> {
 
     public static final SVGShapeViewResources<DMNDefinition, DMNSVGViewFactory> VIEW_RESOURCES =
             new SVGShapeViewResources<DMNDefinition, DMNSVGViewFactory>()
@@ -51,9 +50,7 @@ public class DMNSVGShapeDefImpl implements DMNSVGShapeDef<DMNViewDefinition> {
                     .put(KnowledgeSource.class,
                          DMNSVGViewFactory::knowledgeSource)
                     .put(TextAnnotation.class,
-                         DMNSVGViewFactory::textAnnotation)
-                    .put(DecisionService.class,
-                         DMNSVGViewFactory::decisionService);
+                         DMNSVGViewFactory::textAnnotation);
 
     public static final Map<Class<? extends DMNDefinition>, Glyph> GLYPHS_TOOLBOX =
             new Maps.Builder<Class<? extends DMNDefinition>, Glyph>()
@@ -83,9 +80,12 @@ public class DMNSVGShapeDefImpl implements DMNSVGShapeDef<DMNViewDefinition> {
                          DMNSVGGlyphFactory.KNOWLEDGE_SOURCE_PALETTE)
                     .put(TextAnnotation.class,
                          DMNSVGGlyphFactory.TEXT_ANNOTATION_PALETTE)
-                    .put(DecisionService.class,
-                         DMNSVGGlyphFactory.DECISION_SERVICE_PALETTE)
                     .build();
+
+    @Override
+    public Class<DMNSVGViewFactory> getViewFactoryType() {
+        return DMNSVGViewFactory.class;
+    }
 
     @Override
     public SVGShapeView<?> newViewInstance(final DMNSVGViewFactory factory,

@@ -63,6 +63,9 @@ public class DMNShapeFactoryTest {
     private DMNConnectorShapeFactory dmnConnectorShapeFactory;
 
     @Mock
+    private DMNDecisionServiceShapeFactory dmnDecisionServiceShapeFactory;
+
+    @Mock
     private DelegateShapeFactory<DMNDefinition, Shape> delegateShapeFactory;
 
     @Mock
@@ -78,6 +81,7 @@ public class DMNShapeFactoryTest {
     public void setup() {
         this.factory = new DMNShapeFactory(svgShapeFactory,
                                            dmnConnectorShapeFactory,
+                                           dmnDecisionServiceShapeFactory,
                                            delegateShapeFactory);
 
         when(delegateShapeFactory.delegate(any(Class.class),
@@ -143,7 +147,7 @@ public class DMNShapeFactoryTest {
         verify(delegateShapeFactory).delegate(eq(DecisionService.class),
                                               any(DMNSVGShapeDefImpl.class),
                                               shapeDefFactoryCaptor.capture());
-        assertEquals(svgShapeFactory, shapeDefFactoryCaptor.getValue().get());
+        assertEquals(dmnDecisionServiceShapeFactory, shapeDefFactoryCaptor.getValue().get());
     }
 
     @Test

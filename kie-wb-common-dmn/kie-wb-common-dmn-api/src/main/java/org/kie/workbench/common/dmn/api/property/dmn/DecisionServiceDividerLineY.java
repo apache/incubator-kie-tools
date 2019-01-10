@@ -13,49 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.workbench.common.dmn.api.property.dimensions;
-
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
+package org.kie.workbench.common.dmn.api.property.dmn;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
-import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldDefinition;
-import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldValue;
-import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.I18nMode;
-import org.kie.workbench.common.stunner.core.definition.annotation.Property;
+import org.kie.workbench.common.dmn.api.property.DMNProperty;
+import org.kie.workbench.common.dmn.api.property.dimensions.DecisionServiceRectangleDimensionsSet;
 import org.kie.workbench.common.stunner.core.definition.annotation.property.Value;
-import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 @Bindable
-@Property(meta = PropertyMetaTypes.HEIGHT)
-@FieldDefinition(i18nMode = I18nMode.OVERRIDE_I18N_KEY)
-public class DecisionServiceHeight implements Height {
+public class DecisionServiceDividerLineY implements DMNProperty {
 
-    private static final double DEFAULT = 200.0;
+    private static final double DEFAULT = DecisionServiceRectangleDimensionsSet.DEFAULT_HEIGHT / 2;
 
     @Value
-    @Min(100)
-    @Max(500)
-    @FieldValue
     private Double value;
 
-    public DecisionServiceHeight() {
+    public DecisionServiceDividerLineY() {
         this(DEFAULT);
     }
 
-    public DecisionServiceHeight(final Double value) {
+    public DecisionServiceDividerLineY(final Double value) {
         this.value = value;
     }
 
-    @Override
     public Double getValue() {
         return value;
     }
 
-    @Override
     public void setValue(final Double value) {
         this.value = value;
     }
@@ -65,11 +52,11 @@ public class DecisionServiceHeight implements Height {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof DecisionServiceHeight)) {
+        if (!(o instanceof DecisionServiceDividerLineY)) {
             return false;
         }
 
-        final DecisionServiceHeight height = (DecisionServiceHeight) o;
+        final DecisionServiceDividerLineY height = (DecisionServiceDividerLineY) o;
 
         return value != null ? value.equals(height.value) : height.value == null;
     }

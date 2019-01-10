@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.kie.workbench.common.dmn.client.shape.def;
 
-package org.kie.workbench.common.stunner.core.client.shape.view.event;
+import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionService;
+import org.kie.workbench.common.dmn.client.resources.DMNDecisionServiceSVGViewFactory;
 
-public interface ViewHandler<E extends ViewEvent> {
+public interface DMNDecisionServiceSVGShapeDef
+        extends DMNSVGShapeDef<DecisionService, DMNDecisionServiceSVGViewFactory> {
 
-    ViewEventType getType();
-
-    default void handle(final E event) {
-        //NOP default implementation
-    }
 }

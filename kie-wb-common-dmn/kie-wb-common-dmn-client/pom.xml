@@ -260,12 +260,16 @@
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>lienzo-core</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>com.ahome-it</groupId>
       <artifactId>ahome-tooling-common</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.ahome-it</groupId>
+      <artifactId>ahome-tooling-nativetools</artifactId>
     </dependency>
 
     <!-- Test -->

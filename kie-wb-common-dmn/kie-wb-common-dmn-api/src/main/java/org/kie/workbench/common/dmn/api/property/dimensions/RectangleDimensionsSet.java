@@ -17,15 +17,15 @@ package org.kie.workbench.common.dmn.api.property.dimensions;
 
 import org.kie.workbench.common.dmn.api.property.DMNPropertySet;
 
-public interface RectangleDimensionsSet<W extends Width, H extends Height> extends DMNPropertySet {
+public interface RectangleDimensionsSet extends DMNPropertySet {
 
-    W getWidth();
+    Width getWidth();
 
-    void setWidth(final W width);
+    void setWidth(final Width width);
 
-    H getHeight();
+    Height getHeight();
 
-    void setHeight(final H height);
+    void setHeight(final Height height);
 
     double getMinimumWidth();
 

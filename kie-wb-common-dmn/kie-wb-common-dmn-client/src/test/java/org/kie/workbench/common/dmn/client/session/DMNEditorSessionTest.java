@@ -23,6 +23,7 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
+import org.kie.workbench.common.dmn.client.canvas.controls.resize.DecisionServiceMoveDividerControl;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasInPlaceTextEditorControl;
@@ -70,6 +71,9 @@ public class DMNEditorSessionTest extends BaseDMNSessionTest<DMNEditorSession> {
 
     @Mock
     private ResizeControl resizeControl;
+
+    @Mock
+    private DecisionServiceMoveDividerControl decisionServiceMoveDividerControl;
 
     @Mock
     private ConnectionAcceptorControl connectionAcceptorControl;
@@ -140,6 +144,7 @@ public class DMNEditorSessionTest extends BaseDMNSessionTest<DMNEditorSession> {
     protected Map<CanvasControl, Class> getCanvasHandlerControlRegistrations() {
         final HashMap<CanvasControl, Class> canvasHandlerControls = new HashMap<>();
         canvasHandlerControls.put(resizeControl, ResizeControl.class);
+        canvasHandlerControls.put(decisionServiceMoveDividerControl, DecisionServiceMoveDividerControl.class);
         canvasHandlerControls.put(connectionAcceptorControl, ConnectionAcceptorControl.class);
         canvasHandlerControls.put(containmentAcceptorControl, ContainmentAcceptorControl.class);
         canvasHandlerControls.put(dockingAcceptorControl, DockingAcceptorControl.class);

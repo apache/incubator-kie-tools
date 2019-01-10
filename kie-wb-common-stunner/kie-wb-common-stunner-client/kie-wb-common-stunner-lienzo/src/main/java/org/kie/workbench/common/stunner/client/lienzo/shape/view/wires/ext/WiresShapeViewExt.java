@@ -83,6 +83,10 @@ public class WiresShapeViewExt<T extends WiresShapeViewExt>
         addTextAsChild();
     }
 
+    protected ViewEventHandlerManager getEventHandlerManager() {
+        return this.eventHandlerManager;
+    }
+
     void setTextViewDecorator(final WiresTextDecorator textViewDecorator) {
         this.textViewDecorator = textViewDecorator;
     }
@@ -389,7 +393,7 @@ public class WiresShapeViewExt<T extends WiresShapeViewExt>
         return new HandlerRegistration[]{r0, r1, r2};
     }
 
-    private DragEvent buildDragEvent(final AbstractWiresDragEvent sourceDragEvent) {
+    protected DragEvent buildDragEvent(final AbstractWiresDragEvent sourceDragEvent) {
         final double x = sourceDragEvent.getX();
         final double y = sourceDragEvent.getY();
         final double cx = sourceDragEvent.getNodeDragEvent().getX();
@@ -406,7 +410,7 @@ public class WiresShapeViewExt<T extends WiresShapeViewExt>
                              dragContext);
     }
 
-    private ResizeEvent buildResizeEvent(final AbstractWiresResizeEvent sourceResizeEvent) {
+    protected ResizeEvent buildResizeEvent(final AbstractWiresResizeEvent sourceResizeEvent) {
         final double x = sourceResizeEvent.getX();
         final double y = sourceResizeEvent.getY();
         final double cx = sourceResizeEvent.getNodeDragEvent().getX();
