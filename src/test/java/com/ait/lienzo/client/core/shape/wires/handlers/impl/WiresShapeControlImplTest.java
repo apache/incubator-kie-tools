@@ -276,6 +276,21 @@ public class WiresShapeControlImplTest extends AbstractWiresControlTest {
     }
 
     @Test
+    public void testExecuteContainmentButNoLocation() {
+        when(m_containmentControl.accept()).thenReturn(true);
+        when(m_containmentControl.getCandidateLocation()).thenReturn(null);
+        when(locationAcceptor.accept(any(WiresContainer[].class),
+                                     any(Point2D[].class)))
+                .thenReturn(true);
+        tested.onMoveStart(1, 2);
+        tested.accept();
+        tested.execute();
+        verify(parentPicker, never()).setShapeLocation(any(Point2D.class));
+        verify(m_containmentControl, times(1)).execute();
+        verify(connectorControl, times(1)).execute();
+    }
+
+    @Test
     public void testExecuteDocking() {
         Point2D somePoint = new Point2D(1, 2);
         when(m_dockingAndControl.accept()).thenReturn(true);
@@ -288,6 +303,21 @@ public class WiresShapeControlImplTest extends AbstractWiresControlTest {
         tested.execute();
         verify(m_dockingAndControl, times(1)).execute();
         verify(parentPicker, times(1)).setShapeLocation(eq(somePoint));
+        verify(connectorControl, times(1)).execute();
+    }
+
+    @Test
+    public void testExecuteDockingButNoLocation() {
+        when(m_dockingAndControl.accept()).thenReturn(true);
+        when(m_dockingAndControl.getCandidateLocation()).thenReturn(null);
+        when(locationAcceptor.accept(any(WiresContainer[].class),
+                                     any(Point2D[].class)))
+                .thenReturn(true);
+        tested.onMoveStart(2, 3);
+        tested.accept();
+        tested.execute();
+        verify(parentPicker, never()).setShapeLocation(any(Point2D.class));
+        verify(m_dockingAndControl, times(1)).execute();
         verify(connectorControl, times(1)).execute();
     }
 
