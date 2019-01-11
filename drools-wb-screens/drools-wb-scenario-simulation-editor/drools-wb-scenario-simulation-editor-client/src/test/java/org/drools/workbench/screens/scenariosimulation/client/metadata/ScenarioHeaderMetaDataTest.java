@@ -17,13 +17,13 @@
 package org.drools.workbench.screens.scenariosimulation.client.metadata;
 
 import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioHeaderTextBoxSingletonDOMElementFactory;
-import org.drools.workbench.screens.scenariosimulation.model.FactMapping;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellEditAction;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.never;
@@ -36,9 +36,6 @@ public class ScenarioHeaderMetaDataTest {
     @Mock
     private ScenarioHeaderTextBoxSingletonDOMElementFactory factoryMock;
 
-    @Mock
-    private FactMapping factMapping;
-
     @Test(expected = IllegalStateException.class)
     public void constructorFail() {
         new ScenarioHeaderMetaData("", "", "", factoryMock, true, true);
@@ -48,9 +45,10 @@ public class ScenarioHeaderMetaDataTest {
     public void edit_ReadOnly() {
         ScenarioHeaderMetaData scenarioHeaderMetaData = new ScenarioHeaderMetaData("", "", "", factoryMock, true, false);
         scenarioHeaderMetaData.setReadOnly(true);
-        scenarioHeaderMetaData.edit(null);
 
-        verify(factoryMock, never()).attachDomElement(any(), any(), any());
+        assertThatThrownBy(() -> scenarioHeaderMetaData.edit(null))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("A read only header cannot be edited");
     }
 
     @Test
