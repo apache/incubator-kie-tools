@@ -368,7 +368,9 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider, Dispos
                             config.getSshAlgorithm(),
                             receivePackFactory,
                             new RepositoryResolverImpl<>(),
-                            executorService);
+                            executorService,
+                            config.getGitSshCiphers(),
+                            config.getGitSshMACs());
 
         gitSSHService.start();
     }

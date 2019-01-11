@@ -75,6 +75,8 @@ public class JGitFileSystemProviderConfiguration {
     public static final String GIT_ENV_KEY_INIT = "init";
     public static final String GIT_ENV_KEY_MIRROR = "mirror";
     public static final String SCHEME = "git";
+    public static final String GIT_SSH_CIPHERS = "org.uberfire.nio.git.ssh.ciphers";
+    public static final String GIT_SSH_MACS = "org.uberfire.nio.git.ssh.macs";
     public static final int SCHEME_SIZE = (SCHEME + "://").length();
     public static final int DEFAULT_SCHEME_SIZE = ("default://").length();
     public static final String DEFAULT_HOST_NAME = "localhost";
@@ -115,6 +117,8 @@ public class JGitFileSystemProviderConfiguration {
     private String sshAlgorithm;
     private String sshPassphrase;
     private String sshIdleTimeout;
+    private String gitSshCiphers;
+    private String gitSshMACs;
 
     private File gitReposParentDir;
 
@@ -218,6 +222,12 @@ public class JGitFileSystemProviderConfiguration {
 
         final ConfigProperties.ConfigProperty jgitCacheEvictThresoldTimeUnitProp = systemConfig.get(JGIT_CACHE_EVICT_THRESHOLD_TIME_UNIT,
                                                                                                     DEFAULT_JGIT_CACHE_EVICT_THRESHOLD_TIME_UNIT.name());
+
+        final ConfigProperties.ConfigProperty jgitSshCiphers = systemConfig.get(GIT_SSH_CIPHERS, null);
+        final ConfigProperties.ConfigProperty jgitSshMacs = systemConfig.get(GIT_SSH_MACS, null);
+
+        gitSshCiphers = jgitSshCiphers.getValue();
+        gitSshMACs = jgitSshMacs.getValue();
 
         sshOverHttpProxy = sshOverHttpProxyProp.getBooleanValue();
         if (sshOverHttpProxy) {
@@ -448,5 +458,9 @@ public class JGitFileSystemProviderConfiguration {
     public long getJgitCacheEvictThresholdDuration() {
         return jgitCacheEvictThresholdDuration;
     }
+
+    public String getGitSshCiphers() { return gitSshCiphers; }
+
+    public String getGitSshMACs() { return gitSshMACs; }
 
 }
