@@ -17,10 +17,7 @@
 package org.guvnor.m2repo.backend.server;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -28,20 +25,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-import javax.enterprise.inject.Instance;
 
 import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileItemHeaders;
 import org.eclipse.aether.artifact.Artifact;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.m2repo.backend.server.helpers.FormData;
 import org.guvnor.m2repo.backend.server.helpers.HttpPostHelper;
-import org.guvnor.m2repo.backend.server.repositories.ArtifactRepository;
-import org.guvnor.m2repo.backend.server.repositories.ArtifactRepositoryProducer;
 import org.guvnor.m2repo.backend.server.repositories.ArtifactRepositoryService;
 import org.guvnor.m2repo.model.JarListPageRequest;
 import org.guvnor.m2repo.model.JarListPageRow;
-import org.guvnor.m2repo.preferences.ArtifactRepositoryPreference;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
@@ -53,13 +45,18 @@ import org.mockito.Matchers;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.uberfire.backend.server.cdi.workspace.WorkspaceNameResolver;
-import org.uberfire.mocks.MockInstanceImpl;
 import org.uberfire.paging.PageResponse;
 
+import static org.guvnor.m2repo.backend.server.M2RepoServiceCreator.deleteDir;
 import static org.guvnor.m2repo.model.HTMLFileManagerFields.UPLOAD_OK;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class M2MavenRepositoryServiceImplTest {
 
@@ -104,66 +101,13 @@ public class M2MavenRepositoryServiceImplTest {
         log.info("TEST repo was deleted.");
     }
 
-    public static boolean deleteDir(File dir) {
-        if (dir.isDirectory()) {
-            String[] children = dir.list();
-            for (int i = 0; i < children.length; i++) {
-                if (!deleteDir(new File(dir,
-                                        children[i]))) {
-                    return false;
-                }
-            }
-        }
-
-        // The directory is now empty so delete it
-        return dir.delete();
-    }
-
     @Before
     public void setup() throws Exception {
-        log.info("Deleting existing Repositories instance..");
-
-        File dir = new File("repositories");
-        log.info("DELETING test repo: " + dir.getAbsolutePath());
-        deleteDir(dir);
-        log.info("TEST repo was deleted.");
-
-        ArtifactRepositoryPreference pref = mock(ArtifactRepositoryPreference.class);
-        when(pref.getGlobalM2RepoDir()).thenReturn("repositories/kie");
-        when(pref.isGlobalM2RepoDirEnabled()).thenReturn(true);
-        when(pref.isDistributionManagementM2RepoDirEnabled()).thenReturn(true);
-        when(pref.isWorkspaceM2RepoDirEnabled()).thenReturn(false);
-        WorkspaceNameResolver resolver = mock(WorkspaceNameResolver.class);
-        when(resolver.getWorkspaceName()).thenReturn("global");
-        ArtifactRepositoryProducer producer = new ArtifactRepositoryProducer(pref,
-                                                                             resolver);
-        producer.initialize();
-        Instance<ArtifactRepository> repositories = new MockInstanceImpl<>(producer.produceLocalRepository(),
-                                                                           producer.produceGlobalRepository(),
-                                                                           producer.produceDistributionManagementRepository());
-        ArtifactRepositoryService factory = new ArtifactRepositoryService(repositories);
-        repo = new GuvnorM2Repository(factory);
-        repo.init();
-
-        //Create a shell M2RepoService and set the M2Repository
-        service = new M2RepoServiceImpl(mock(Logger.class),
-                                        this.repo);
-        java.lang.reflect.Field repositoryField = M2RepoServiceImpl.class.getDeclaredField("repository");
-        repositoryField.setAccessible(true);
-        repositoryField.set(service,
-                            repo);
-
-        //Make private method accessible for testing
-        helper = new HttpPostHelper();
-        helperMethod = HttpPostHelper.class.getDeclaredMethod("upload",
-                                                              FormData.class);
-        helperMethod.setAccessible(true);
-
-        //Set the repository service created above in the HttpPostHelper
-        java.lang.reflect.Field m2RepoServiceField = HttpPostHelper.class.getDeclaredField("m2RepoService");
-        m2RepoServiceField.setAccessible(true);
-        m2RepoServiceField.set(helper,
-                               service);
+        M2RepoServiceCreator m2RepoServiceCreator = new M2RepoServiceCreator();
+        this.repo = m2RepoServiceCreator.getRepo();
+        this.service = m2RepoServiceCreator.getService();
+        this.helper = m2RepoServiceCreator.getHelper();
+        this.helperMethod = m2RepoServiceCreator.getHelperMethod();
     }
 
     @Test
@@ -687,100 +631,5 @@ public class M2MavenRepositoryServiceImplTest {
         repo.deployArtifact(is,
                             gav,
                             false);
-    }
-
-    //Create a mock FileItem setting an InputStream to test with
-    @SuppressWarnings("serial")
-    class MockFileItem implements FileItem {
-
-        private final String fileName;
-        private final InputStream fileStream;
-
-        MockFileItem(final String fileName,
-                     final InputStream fileStream) {
-            this.fileName = fileName;
-            this.fileStream = fileStream;
-        }
-
-        @Override
-        public InputStream getInputStream() throws IOException {
-            return fileStream;
-            //return this.getClass().getResourceAsStream( "guvnor-m2repo-editor-backend-test-without-pom.jar" );
-        }
-
-        @Override
-        public String getContentType() {
-            return null;
-        }
-
-        @Override
-        public String getName() {
-            return fileName;
-        }
-
-        @Override
-        public boolean isInMemory() {
-            return false;
-        }
-
-        @Override
-        public long getSize() {
-            return 0;
-        }
-
-        @Override
-        public byte[] get() {
-            return null;
-        }
-
-        @Override
-        public String getString(String encoding) throws UnsupportedEncodingException {
-            return null;
-        }
-
-        @Override
-        public String getString() {
-            return null;
-        }
-
-        @Override
-        public void write(File file) throws Exception {
-        }
-
-        @Override
-        public void delete() {
-        }
-
-        @Override
-        public String getFieldName() {
-            return null;
-        }
-
-        @Override
-        public void setFieldName(String name) {
-        }
-
-        @Override
-        public boolean isFormField() {
-            return false;
-        }
-
-        @Override
-        public void setFormField(boolean state) {
-        }
-
-        @Override
-        public OutputStream getOutputStream() throws IOException {
-            return null;
-        }
-
-        @Override
-        public FileItemHeaders getHeaders() {
-            return null;
-        }
-
-        @Override
-        public void setHeaders(FileItemHeaders fileItemHeaders) {
-        }
     }
 }
