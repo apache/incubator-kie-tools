@@ -178,4 +178,5 @@ public interface DefaultWorkbenchConstants
 
     String EditProfilePreferencesHelp();
 
+    String ServiceTasksAdministration();
 }

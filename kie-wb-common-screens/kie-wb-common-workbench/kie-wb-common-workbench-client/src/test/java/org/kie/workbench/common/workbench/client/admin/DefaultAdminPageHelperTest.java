@@ -64,6 +64,7 @@ public class DefaultAdminPageHelperTest {
     private static String STUNNER_PREFERENCES = "StunnerPreferences";
     private static String EXPERIMENTAL_SETTINGS = "ExperimentalSettings";
     private static String MANAGE_PREFERENCES = "ManagePreferences";
+    private static String SERTIVCE_TASKS_ADMIN = "ServiceTasksAdministration";
 
     @Mock
     private AdminPage adminPage;
@@ -251,6 +252,7 @@ public class DefaultAdminPageHelperTest {
         verifyLibraryPreferencesWasAddedInGlobalScope();
         verifyArtifactRepositoryPreferencesWasAddedInGlobalScope();
         verifyManagePreferencesWasAddedInGlobalScope();
+        verifyServiceTasksAdminWasAdded();
     }
 
     @Test
@@ -266,6 +268,7 @@ public class DefaultAdminPageHelperTest {
         verifyLibraryPreferencesWasAddedInGlobalScope();
         verifyArtifactRepositoryPreferencesWasAddedInGlobalScope();
         verifyManagePreferencesWasAddedInGlobalScope();
+        verifyServiceTasksAdminWasAdded();
     }
 
     @Test
@@ -280,6 +283,7 @@ public class DefaultAdminPageHelperTest {
         verifyLibraryPreferencesWasNotAdded();
         verifyArtifactRepositoryPreferencesWasNotAdded();
         verifyManagePreferencesWasAddedInGlobalScope();
+        verifyServiceTasksAdminWasAdded();
     }
 
     @Test
@@ -291,6 +295,7 @@ public class DefaultAdminPageHelperTest {
         verifyLibraryPreferencesWasNotAdded();
         verifyArtifactRepositoryPreferencesWasNotAdded();
         verifyManagePreferencesWasNotAdded();
+        verifyServiceTasksAdminWasNotAdded();
     }
 
     @Test
@@ -305,6 +310,7 @@ public class DefaultAdminPageHelperTest {
         verifyLibraryPreferencesWasNotAdded();
         verifyArtifactRepositoryPreferencesWasNotAdded();
         verifyManagePreferencesWasNotAdded();
+        verifyServiceTasksAdminWasNotAdded();
     }
 
     @Test
@@ -355,7 +361,7 @@ public class DefaultAdminPageHelperTest {
         defaultAdminPageHelper.setup(true,
                                      true,
                                      true);
-        verifyStunnerPreferencesWasAdded(2);
+        verifyStunnerPreferencesWasAdded(2);        
     }
 
     @Test
@@ -494,6 +500,25 @@ public class DefaultAdminPageHelperTest {
                                                 any(),
                                                 any(PreferenceScope.class),
                                                 eq(AdminPageOptions.WITH_BREADCRUMBS));
+    }
+
+    
+    private void verifyServiceTasksAdminWasAdded() {
+        verify(adminPage,
+               times(1)).addTool(eq("root"),
+                                                eq(SERTIVCE_TASKS_ADMIN),
+                                                any(),
+                                                eq("services"),
+                                                any());
+    }
+    
+    private void verifyServiceTasksAdminWasNotAdded() {
+        verify(adminPage,
+               never()).addTool(eq("root"),
+                                                eq(SERTIVCE_TASKS_ADMIN),
+                                                any(),
+                                                eq("services"),
+                                                any());
     }
 
     private void mockConstants() {

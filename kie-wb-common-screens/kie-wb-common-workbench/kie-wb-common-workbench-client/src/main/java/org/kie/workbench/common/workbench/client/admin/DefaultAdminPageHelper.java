@@ -357,6 +357,18 @@ public class DefaultAdminPageHelper {
                                 "general",
                                 scopeFactory.createScope(GuvnorPreferenceScopes.GLOBAL),
                                 AdminPageOptions.WITH_BREADCRUMBS);
+        
+        adminPage.addTool("root",
+                                constants.ServiceTasksAdministration(),
+                                new Sets.Builder().add("fa").add("fa-cogs").build(),
+                                "services",
+                                () -> {
+                                    final Command accessServiceTasks = () -> placeManager.goTo(PerspectiveIds.SERVICE_TASK_ADMIN);
+                                    accessServiceTasks.execute();
+                                    addAdminBreadcrumbs(PerspectiveIds.SERVICE_TASK_ADMIN,
+                                                        constants.ServiceTasksAdministration(),
+                                                        accessServiceTasks);
+                                });
     }
 
     private void addAdminBreadcrumbs(final String perspective,
