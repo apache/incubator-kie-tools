@@ -16,9 +16,11 @@
 package org.guvnor.structure.repositories;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.uberfire.commons.clusterapi.Clustered;
 import org.uberfire.spaces.Space;
 
 @Portable
+@Clustered
 public class RepositoryExternalUpdateEvent {
 
     private Repository repository;
