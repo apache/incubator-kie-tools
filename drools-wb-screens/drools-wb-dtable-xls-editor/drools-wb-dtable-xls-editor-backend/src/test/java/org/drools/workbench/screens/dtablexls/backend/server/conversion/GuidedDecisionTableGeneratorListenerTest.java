@@ -93,7 +93,7 @@ public class GuidedDecisionTableGeneratorListenerTest {
     private static void setupPreferences() {
         final Map<String, String> preferences = new HashMap<String, String>() {{
             put(ApplicationPreferences.DATE_FORMAT,
-                "dd/mm/yyyy");
+                "dd-MM-yyyy");
         }};
         ApplicationPreferences.setUp(preferences);
     }

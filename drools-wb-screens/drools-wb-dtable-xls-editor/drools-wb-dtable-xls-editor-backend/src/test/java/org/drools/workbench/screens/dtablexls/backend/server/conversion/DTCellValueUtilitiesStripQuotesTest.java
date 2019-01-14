@@ -27,7 +27,7 @@ import static org.junit.Assert.assertEquals;
 
 public class DTCellValueUtilitiesStripQuotesTest {
 
-    private static final String DATE_FORMAT = "dd/mm/yyyy";
+    private static final String DATE_FORMAT = "dd-MM-yyyy";
 
     @BeforeClass
     public static void setup() {

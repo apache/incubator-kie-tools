@@ -39,7 +39,7 @@ import static org.junit.Assert.assertTrue;
 @RunWith(Parameterized.class)
 public class DTCellValueUtilitiesTest {
 
-    private static final String DATE_FORMAT = "dd/mm/yyyy";
+    private static final String DATE_FORMAT = "dd-MM-yyyy";
 
     private static final SimpleDateFormat FORMATTER = new SimpleDateFormat(DATE_FORMAT);
 
@@ -87,7 +87,7 @@ public class DTCellValueUtilitiesTest {
                 {DataType.TYPE_NUMERIC_LONG, new DTCellValue52("100"), DataType.DataTypes.NUMERIC_LONG, 100l, false},
                 {DataType.TYPE_NUMERIC_SHORT, new DTCellValue52("100"), DataType.DataTypes.NUMERIC_SHORT, new Short("100"), false},
                 {DataType.TYPE_BOOLEAN, new DTCellValue52("true"), DataType.DataTypes.BOOLEAN, true, false},
-                {DataType.TYPE_DATE, new DTCellValue52("31/12/2016"), DataType.DataTypes.DATE, FORMATTER.parse("31/12/2016"), false},
+                {DataType.TYPE_DATE, new DTCellValue52("31-12-2016"), DataType.DataTypes.DATE, FORMATTER.parse("31-12-2016"), false},
                 {DataType.TYPE_STRING, new DTCellValue52("String"), DataType.DataTypes.STRING, "String", false},
 
                 {DataType.TYPE_NUMERIC, new DTCellValue52("\"100\""), DataType.DataTypes.NUMERIC_BIGDECIMAL, new BigDecimal(100), false},
@@ -99,7 +99,7 @@ public class DTCellValueUtilitiesTest {
                 {DataType.TYPE_NUMERIC_INTEGER, new DTCellValue52("\"100\""), DataType.DataTypes.NUMERIC_INTEGER, 100, false},
                 {DataType.TYPE_NUMERIC_LONG, new DTCellValue52("\"100\""), DataType.DataTypes.NUMERIC_LONG, 100l, false},
                 {DataType.TYPE_NUMERIC_SHORT, new DTCellValue52("\"100\""), DataType.DataTypes.NUMERIC_SHORT, new Short("100"), false},
-                {DataType.TYPE_DATE, new DTCellValue52("\"31/12/2016\""), DataType.DataTypes.DATE, FORMATTER.parse("31/12/2016"), false},
+                {DataType.TYPE_DATE, new DTCellValue52("\"31-12-2016\""), DataType.DataTypes.DATE, FORMATTER.parse("31-12-2016"), false},
 
                 {DataType.TYPE_NUMERIC, new DTCellValue52("a"), DataType.DataTypes.NUMERIC_BIGDECIMAL, null, true},
                 {DataType.TYPE_NUMERIC_BIGDECIMAL, new DTCellValue52("a"), DataType.DataTypes.NUMERIC_BIGDECIMAL, null, true},
@@ -120,7 +120,9 @@ public class DTCellValueUtilitiesTest {
         DTCellValueUtilities.assertDTCellValue(type,
                                                provided,
                                                (final String value,
-                                                final DataType.DataTypes dataType) -> assertTrue(hasConversionError));
+                                                final DataType.DataTypes dataType) ->
+                                                       assertTrue("Conversion error callback was called unexpectedly",
+                                                                  hasConversionError));
         assertEquals(expectedDataType,
                      provided.getDataType());
         assertEquals(expectedValue,

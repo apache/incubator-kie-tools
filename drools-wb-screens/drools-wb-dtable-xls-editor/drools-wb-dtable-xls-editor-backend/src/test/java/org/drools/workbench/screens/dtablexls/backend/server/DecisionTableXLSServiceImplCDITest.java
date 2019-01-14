@@ -44,8 +44,7 @@ public class DecisionTableXLSServiceImplCDITest extends CDITestSetup {
 
     @BeforeClass
     public static void setUpDateTimeFormat() {
-        droolsDateFormat = System.getProperty(ApplicationPreferences.DATE_FORMAT);
-        System.setProperty(ApplicationPreferences.DATE_FORMAT, "dd-MM-yyyy");
+        droolsDateFormat = System.setProperty(ApplicationPreferences.DATE_FORMAT, "dd-MM-yyyy");
     }
 
     @AfterClass
