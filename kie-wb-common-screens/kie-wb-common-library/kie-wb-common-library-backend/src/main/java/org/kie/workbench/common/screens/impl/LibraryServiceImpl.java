@@ -48,6 +48,7 @@ import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.NewBranchEvent;
 import org.guvnor.structure.repositories.Repository;
+import org.guvnor.structure.repositories.RepositoryExternalUpdateEvent;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.guvnor.structure.security.OrganizationalUnitAction;
 import org.guvnor.structure.security.RepositoryAction;
@@ -118,6 +119,7 @@ public class LibraryServiceImpl implements LibraryService {
     private PathUtil pathUtil;
     private Event<NewBranchEvent> newBranchEvent;
     private ConfiguredRepositories configuredRepositories;
+    private Event<RepositoryExternalUpdateEvent> repositoryExternalUpdate;
 
     public LibraryServiceImpl() {
     }
@@ -139,7 +141,8 @@ public class LibraryServiceImpl implements LibraryService {
                               final RepositoryService repoService,
                               final PathUtil pathUtil,
                               final Event<NewBranchEvent> newBranchEvent,
-                              final ConfiguredRepositories configuredRepositories) {
+                              final ConfiguredRepositories configuredRepositories,
+                              final Event<RepositoryExternalUpdateEvent> repositoryExternalUpdate) {
         this.ouService = ouService;
         this.refactoringQueryService = refactoringQueryService;
         this.preferences = preferences;
@@ -157,6 +160,7 @@ public class LibraryServiceImpl implements LibraryService {
         this.pathUtil = pathUtil;
         this.newBranchEvent = newBranchEvent;
         this.configuredRepositories = configuredRepositories;
+        this.repositoryExternalUpdate = repositoryExternalUpdate;
     }
 
     @Override
@@ -403,7 +407,7 @@ public class LibraryServiceImpl implements LibraryService {
         try {
             final org.uberfire.java.nio.file.Path newBranchPath = ioService.get(new URI(newBranchPathURI));
             baseBranchPath.getFileSystem().provider().copy(baseBranchPath, newBranchPath);
-            configuredRepositories.refreshRepository(project.getRepository());
+            repositoryExternalUpdate.fire(new RepositoryExternalUpdateEvent(project.getRepository()));
             fireNewBranchEvent(pathUtil.convert(newBranchPath),
                                newBranchPath);
         } catch (URISyntaxException e) {

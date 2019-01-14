@@ -40,6 +40,7 @@ import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.Branch;
 import org.guvnor.structure.repositories.NewBranchEvent;
 import org.guvnor.structure.repositories.Repository;
+import org.guvnor.structure.repositories.RepositoryExternalUpdateEvent;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.guvnor.structure.security.RepositoryAction;
 import org.jboss.errai.security.shared.api.identity.User;
@@ -75,6 +76,7 @@ import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.NoSuchFileException;
 import org.uberfire.java.nio.file.spi.FileSystemProvider;
+import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.paging.PageResponse;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.authz.AuthorizationManager;
@@ -138,6 +140,9 @@ public class LibraryServiceImplTest {
 
     @Mock
     private ConfiguredRepositories configuredRepositories;
+
+    @Mock
+    private EventSourceMock<RepositoryExternalUpdateEvent> repositoryExternalUpdateEvent;
 
     @Mock
     private Event<NewBranchEvent> newBranchEvent;
@@ -213,7 +218,8 @@ public class LibraryServiceImplTest {
                                                     repositoryService,
                                                     pathUtil,
                                                     newBranchEvent,
-                                                    configuredRepositories
+                                                    configuredRepositories,
+                                                    repositoryExternalUpdateEvent
         ));
     }
 
@@ -672,7 +678,7 @@ public class LibraryServiceImplTest {
         libraryService.addBranch("new-branch", "repo1-branch1", project);
 
         verify(fileSystemProvider).copy(baseBranchPath, newBranchPath);
-        verify(configuredRepositories).refreshRepository(repo1);
+        verify(repositoryExternalUpdateEvent).fire(any());
         verify(newBranchEvent).fire(newBranchEventArgumentCaptor.capture());
 
         final NewBranchEvent newBranchEvent = newBranchEventArgumentCaptor.getValue();
