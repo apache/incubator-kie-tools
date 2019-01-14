@@ -227,6 +227,52 @@ public class GuvnorM2RepositoryTest {
                                     }
                                 }));
     }
+    
+    @Test
+    public void testDeployArtifactFilteredOutAllRepositories() throws Exception {
+        final GAV gav = new GAV("org.kie.guvnor",
+                                "guvnor-m2repo-editor-backend",
+                                "0.0.1-SNAPSHOT");
+
+        final InputStream is = this.getClass().getResourceAsStream("guvnor-m2repo-editor-backend-test-with-distribution-management.jar");
+        repo.deployArtifact(is,
+                            gav,
+                            true,
+                            (repo) -> false);
+
+        verify(repositorySystem,
+               never()).deploy(any(RepositorySystemSession.class),
+                                any());
+    }
+    
+    @Test
+    public void testContainArtifact() throws Exception {
+        final GAV gav = new GAV("org.kie.guvnor",
+                                "guvnor-m2repo-editor-backend",
+                                "0.0.1-SNAPSHOT");
+
+        
+        repo.containsArtifact(gav);
+
+        verify(repositorySystem,
+               times(1)).resolveArtifact(any(),
+                                        any());
+    }
+    
+    @Test
+    public void testContainArtifactFilteredOutAllRepositories() throws Exception {
+        final GAV gav = new GAV("org.kie.guvnor",
+                                "guvnor-m2repo-editor-backend",
+                                "0.0.1-SNAPSHOT");
+
+        
+        repo.containsArtifact(gav,
+                              (repo) -> false);
+
+        verify(repositorySystem,
+               never()).resolveArtifact(any(),
+                                        any());
+    }
 
     @Test
     public void testListFilesWithoutParameters() {

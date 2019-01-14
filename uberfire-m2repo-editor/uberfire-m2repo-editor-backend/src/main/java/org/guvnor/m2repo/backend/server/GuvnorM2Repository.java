@@ -30,6 +30,7 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
@@ -125,10 +126,17 @@ public class GuvnorM2Repository {
         File file = new File(getM2RepositoryRootDir(repositoryName));
         return "file://" + file.getAbsolutePath();
     }
-
+    
     public void deployArtifact(final InputStream jarStream,
                                final GAV gav,
                                final boolean includeAdditionalRepositories) {
+        deployArtifact(jarStream, gav, includeAdditionalRepositories, (repo) -> true);
+    }
+
+    public void deployArtifact(final InputStream jarStream,
+                               final GAV gav,
+                               final boolean includeAdditionalRepositories,
+                               final Predicate<ArtifactRepository> filter) {
         //Write JAR to temporary file for deployment
         File jarFile = new File(System.getProperty("java.io.tmpdir"),
                                 toFileName(gav,
@@ -160,7 +168,8 @@ public class GuvnorM2Repository {
             deployArtifact(gav,
                            pomXML,
                            jarFile,
-                           includeAdditionalRepositories);
+                           includeAdditionalRepositories,
+                           filter);
         } finally {
             try {
                 jarFile.delete();
@@ -261,7 +270,8 @@ public class GuvnorM2Repository {
     private void deployArtifact(final GAV gav,
                                 final String pomXML,
                                 final File jarFile,
-                                final boolean includeAdditionalRepositories) {
+                                final boolean includeAdditionalRepositories,
+                                final Predicate<ArtifactRepository> filter) {
         //Write pom.xml to temporary file for deployment
         final File pomXMLFile = new File(System.getProperty("java.io.tmpdir"),
                                          toFileName(gav,
@@ -287,7 +297,7 @@ public class GuvnorM2Repository {
 
             final Artifact finalJarArtifact = jarArtifact;
             final Artifact finalPomXMLArtifact = pomXMLArtifact;
-            this.repositories.forEach((repository) -> repository.deploy(pomXML,
+            this.repositories.stream().filter(filter).forEach((repository) -> repository.deploy(pomXML,
                                                                         finalJarArtifact,
                                                                         finalPomXMLArtifact));
 
@@ -691,7 +701,13 @@ public class GuvnorM2Repository {
     }
 
     public boolean containsArtifact(final GAV gav) {
+        return containsArtifact(gav, (repo) -> true);
+    }
+    
+    public boolean containsArtifact(final GAV gav,
+                                    final Predicate<ArtifactRepository> filter) {
         return this.repositories.stream()
+                .filter(filter)
                 .anyMatch(artifactRepository -> artifactRepository.containsArtifact(gav));
     }
 
