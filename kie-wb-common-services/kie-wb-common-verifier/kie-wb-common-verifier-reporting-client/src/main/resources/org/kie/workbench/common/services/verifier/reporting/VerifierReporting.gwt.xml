@@ -9,8 +9,13 @@
 	<inherits name="com.google.gwt.user.User" />
 
 	<inherits name="org.uberfire.commons.UberfireCommons"/>
+  <inherits name="com.google.gwt.webworker.WebWorker"/>
+  <inherits name="org.jboss.errai.enterprise.Jaxrs"/>
+	<inherits name="org.drools.verifier.VerifierAPI"/>
+  <inherits name="org.kie.workbench.common.widgets.decoratedgrid.KieWorkbenchDecoratedGridWidget"/>
+	<inherits name="org.kie.workbench.common.services.verifier.api.VerifierApi"/>
 
 
-  <source path='client'/>
+	<source path='client'/>
 
 </module>
