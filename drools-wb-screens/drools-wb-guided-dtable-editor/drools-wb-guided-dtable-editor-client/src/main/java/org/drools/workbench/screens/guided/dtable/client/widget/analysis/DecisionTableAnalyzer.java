@@ -27,6 +27,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.BRLVariableColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.kie.soup.commons.validation.PortablePreconditions;
+import org.kie.workbench.common.services.verifier.reporting.client.analysis.VerifierWebWorkerConnection;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.Coordinate;
 
 public class DecisionTableAnalyzer

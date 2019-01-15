@@ -27,14 +27,14 @@ import org.drools.verifier.core.index.Index;
 import org.drools.verifier.core.main.Analyzer;
 import org.drools.verifier.core.main.Reporter;
 import org.drools.workbench.services.verifier.plugin.client.api.DeleteColumns;
-import org.drools.workbench.services.verifier.plugin.client.api.Initialize;
+import org.drools.workbench.services.verifier.plugin.client.api.DrlInitialize;
 import org.drools.workbench.services.verifier.plugin.client.api.MakeRule;
 import org.drools.workbench.services.verifier.plugin.client.api.NewColumn;
 import org.drools.workbench.services.verifier.plugin.client.api.RemoveRule;
-import org.drools.workbench.services.verifier.plugin.client.api.RequestStatus;
 import org.drools.workbench.services.verifier.plugin.client.api.Update;
 import org.drools.workbench.services.verifier.plugin.client.builders.BuildException;
 import org.kie.soup.commons.validation.PortablePreconditions;
+import org.kie.workbench.common.services.verifier.api.client.api.RequestStatus;
 import org.kie.workbench.common.services.verifier.api.client.api.WebWorkerException;
 
 public class Receiver {
@@ -55,8 +55,8 @@ public class Receiver {
     }
 
     public void received(final Object o) {
-        if (o instanceof Initialize) {
-            init((Initialize) o);
+        if (o instanceof DrlInitialize) {
+            init((DrlInitialize) o);
         } else if (o instanceof RequestStatus) {
             requestStatus();
         } else if (o instanceof RemoveRule) {
@@ -137,7 +137,7 @@ public class Receiver {
                                        configuration);
     }
 
-    private void init(final Initialize initialize) {
+    private void init(final DrlInitialize initialize) {
         try {
             final AnalyzerBuilder analyzerBuilder = new AnalyzerBuilder()
                     .with(initialize)

@@ -41,6 +41,11 @@
         </dependency>
 
         <dependency>
+            <groupId>org.kie.workbench.services</groupId>
+            <artifactId>kie-wb-common-verifier-api</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.jboss.errai</groupId>
             <artifactId>errai-common</artifactId>
         </dependency>
@@ -53,11 +58,6 @@
         <dependency>
             <groupId>org.kie.soup</groupId>
             <artifactId>kie-soup-commons</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.kie.workbench.services</groupId>
-            <artifactId>kie-wb-common-verifier-api</artifactId>
         </dependency>
 
         <dependency>

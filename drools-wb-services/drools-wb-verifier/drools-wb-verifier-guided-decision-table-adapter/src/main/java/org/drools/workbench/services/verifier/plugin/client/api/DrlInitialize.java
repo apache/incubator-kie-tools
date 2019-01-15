@@ -19,9 +19,11 @@ package org.drools.workbench.services.verifier.plugin.client.api;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.workbench.common.services.verifier.api.client.api.Initialize;
 
 @Portable
-public class Initialize {
+public class DrlInitialize
+        implements Initialize {
 
     private final String uuid;
     private final GuidedDecisionTable52 model;
@@ -29,11 +31,11 @@ public class Initialize {
     private final HeaderMetaData headerMetaData;
     private final FactTypes factTypes;
 
-    public Initialize( @MapsTo("uuid") final String uuid,
-                       @MapsTo("model") final GuidedDecisionTable52 model,
-                       @MapsTo( "headerMetaData" ) HeaderMetaData headerMetaData,
-                       @MapsTo("factTypes") final FactTypes factTypes,
-                       @MapsTo("dateFormat") final String dateFormat ) {
+    public DrlInitialize(@MapsTo("uuid") final String uuid,
+                         @MapsTo("model") final GuidedDecisionTable52 model,
+                         @MapsTo( "headerMetaData" ) HeaderMetaData headerMetaData,
+                         @MapsTo("factTypes") final FactTypes factTypes,
+                         @MapsTo("dateFormat") final String dateFormat ) {
         this.uuid = uuid;
         this.model = model;
         this.headerMetaData = headerMetaData;

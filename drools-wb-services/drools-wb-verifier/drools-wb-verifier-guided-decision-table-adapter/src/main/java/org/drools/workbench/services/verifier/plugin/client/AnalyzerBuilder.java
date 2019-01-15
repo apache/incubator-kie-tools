@@ -26,7 +26,7 @@ import org.drools.verifier.core.index.Index;
 import org.drools.verifier.core.index.keys.UUIDKeyProvider;
 import org.drools.verifier.core.main.Analyzer;
 import org.drools.verifier.core.main.Reporter;
-import org.drools.workbench.services.verifier.plugin.client.api.Initialize;
+import org.drools.workbench.services.verifier.plugin.client.api.DrlInitialize;
 import org.drools.workbench.services.verifier.plugin.client.builders.BuildException;
 import org.drools.workbench.services.verifier.plugin.client.builders.IndexBuilder;
 import org.drools.workbench.services.verifier.plugin.client.builders.VerifierColumnUtilities;
@@ -35,7 +35,7 @@ import org.uberfire.commons.uuid.UUID;
 public class AnalyzerBuilder {
 
     private Reporter reporter;
-    private Initialize initialize;
+    private DrlInitialize initialize;
     private VerifierColumnUtilities columnUtilities;
     private Index index;
     private AnalyzerConfiguration configuration;
@@ -102,7 +102,7 @@ public class AnalyzerBuilder {
         return this;
     }
 
-    public AnalyzerBuilder with(final Initialize initialize) {
+    public AnalyzerBuilder with(final DrlInitialize initialize) {
         this.initialize = initialize;
         return this;
     }

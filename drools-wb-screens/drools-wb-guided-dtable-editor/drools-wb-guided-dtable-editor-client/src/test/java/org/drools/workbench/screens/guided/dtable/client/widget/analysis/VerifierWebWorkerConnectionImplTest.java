@@ -16,11 +16,15 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.drools.workbench.services.verifier.plugin.client.api.Initialize;
-import org.drools.workbench.services.verifier.plugin.client.api.RequestStatus;
+import org.drools.workbench.services.verifier.plugin.client.api.DrlInitialize;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.services.verifier.api.client.api.Initialize;
+import org.kie.workbench.common.services.verifier.api.client.api.RequestStatus;
+import org.kie.workbench.common.services.verifier.reporting.client.analysis.Receiver;
+import org.kie.workbench.common.services.verifier.reporting.client.analysis.VerifierWebWorkerConnection;
+import org.kie.workbench.common.services.verifier.reporting.client.analysis.VerifierWebWorkerConnectionImpl;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertTrue;
@@ -29,15 +33,13 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 
-
 @RunWith(GwtMockitoTestRunner.class)
 public class VerifierWebWorkerConnectionImplTest {
-
 
     private VerifierWebWorkerConnection verifierWebWorkerConnection;
 
     @Mock
-    private Initialize initialize;
+    private DrlInitialize initialize;
 
     @Mock
     private Poster poster;
@@ -47,50 +49,51 @@ public class VerifierWebWorkerConnectionImplTest {
 
     @Before
     public void setUp() throws
-                        Exception {
-        verifierWebWorkerConnection = new VerifierWebWorkerConnectionImpl( initialize,
-                                                                           poster,
-                                                                           receiver );
+            Exception {
+        verifierWebWorkerConnection = new VerifierWebWorkerConnectionImpl(initialize,
+                                                                          "verifier/dtableVerifier/dtableVerifier.nocache.js",
+                                                                          poster,
+                                                                          receiver);
     }
 
     @Test
     public void firstActivationStartWebWorker() throws
-                                                Exception {
+            Exception {
         verifierWebWorkerConnection.activate();
 
-        verify( receiver ).activate();
-        verify( receiver ).setUp( any() );
+        verify(receiver).activate();
+        verify(receiver).setUp(any());
 
-        verify( poster ).setUp( any() );
-        verify( poster ).post( initialize );
+        verify(poster).setUp(any());
+        verify(poster).post(any(Initialize.class));
     }
 
     @Test
     public void secondActivationDoesNotStartWebWorker() throws
-                                                        Exception {
+            Exception {
         verifierWebWorkerConnection.activate();
 
-        reset( receiver,
-               poster );
+        reset(receiver,
+              poster);
 
         verifierWebWorkerConnection.activate();
 
-        verify( receiver ).activate();
-        verify( receiver,
-                never() ).setUp( any() );
+        verify(receiver).activate();
+        verify(receiver,
+               never()).setUp(any());
 
-        verify( poster,
-                never() ).setUp( any() );
-        verify( poster ).post( any( RequestStatus.class ) );
+        verify(poster,
+               never()).setUp(any());
+        verify(poster).post(any(RequestStatus.class));
     }
 
     @Test
     public void terminateCanBeCalledEvenIfWorkerHasNotBeenActivated() throws
-                                                                      Exception {
+            Exception {
 
         verifierWebWorkerConnection.terminate();
 
-        assertTrue( "You shall pass!",
-                    true );
+        assertTrue("You shall pass!",
+                   true);
     }
 }

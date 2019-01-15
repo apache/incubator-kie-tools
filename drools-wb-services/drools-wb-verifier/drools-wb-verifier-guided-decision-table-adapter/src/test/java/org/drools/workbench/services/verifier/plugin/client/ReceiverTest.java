@@ -21,7 +21,7 @@ import org.drools.verifier.api.Status;
 import org.drools.verifier.api.reporting.Issues;
 import org.drools.verifier.core.checks.base.JavaCheckRunner;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.drools.workbench.services.verifier.plugin.client.api.Initialize;
+import org.drools.workbench.services.verifier.plugin.client.api.DrlInitialize;
 import org.drools.workbench.services.verifier.plugin.client.builders.ModelMetaDataEnhancer;
 import org.drools.workbench.services.verifier.plugin.client.testutil.AnalyzerProvider;
 import org.junit.Before;
@@ -72,11 +72,11 @@ public class ReceiverTest {
                                   .end())
                 .buildTable();
 
-        receiver.received(new Initialize("testUUID",
-                                         table1,
-                                         new ModelMetaDataEnhancer(table1).getHeaderMetaData(),
-                                         analyzerProvider.getFactTypes(),
-                                         "dd-MMM-yyyy"));
+        receiver.received(new DrlInitialize("testUUID",
+                                            table1,
+                                            new ModelMetaDataEnhancer(table1).getHeaderMetaData(),
+                                            analyzerProvider.getFactTypes(),
+                                            "dd-MMM-yyyy"));
 
         verify(poster).post(issuesArgumentCaptor.capture());
     }

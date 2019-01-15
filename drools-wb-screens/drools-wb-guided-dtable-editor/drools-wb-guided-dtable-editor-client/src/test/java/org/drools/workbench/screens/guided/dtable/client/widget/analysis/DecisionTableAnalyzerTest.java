@@ -33,6 +33,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.services.verifier.reporting.client.analysis.VerifierWebWorkerConnection;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.Coordinate;
 import org.mockito.ArgumentCaptor;
 

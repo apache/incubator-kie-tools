@@ -15,43 +15,17 @@
  */
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis;
 
-import java.util.logging.Logger;
-
-import com.google.gwt.webworker.client.Worker;
 import org.drools.workbench.services.verifier.plugin.client.api.DeleteColumns;
-import org.drools.workbench.services.verifier.plugin.client.api.Initialize;
+import org.drools.workbench.services.verifier.plugin.client.api.DrlInitialize;
 import org.drools.workbench.services.verifier.plugin.client.api.MakeRule;
 import org.drools.workbench.services.verifier.plugin.client.api.NewColumn;
 import org.drools.workbench.services.verifier.plugin.client.api.RemoveRule;
-import org.drools.workbench.services.verifier.plugin.client.api.RequestStatus;
 import org.drools.workbench.services.verifier.plugin.client.api.Update;
-import org.jboss.errai.enterprise.client.jaxrs.MarshallingWrapper;
-import org.kie.soup.commons.validation.PortablePreconditions;
+import org.kie.workbench.common.services.verifier.api.client.api.RequestStatus;
 
-public class Poster {
+public class Poster
+        extends org.kie.workbench.common.services.verifier.reporting.client.analysis.Poster {
 
-    private static final Logger LOGGER = Logger.getLogger("DTable Analyzer");
-
-    private Worker worker;
-
-    public void setUp(final Worker worker) {
-        this.worker = PortablePreconditions.checkNotNull("worker",
-                                                         worker);
-    }
-
-    private void postObject(final Object object) {
-
-        PortablePreconditions.checkNotNull("worker",
-                                           worker);
-        PortablePreconditions.checkNotNull("object",
-                                           object);
-
-        final String json = MarshallingWrapper.toJSON(object);
-
-        LOGGER.finest("Sending: " + json);
-
-        worker.postMessage(json);
-    }
 
     public void post(final MakeRule makeRule) {
         postObject(makeRule);
@@ -69,7 +43,7 @@ public class Poster {
         postObject(update);
     }
 
-    public void post(final Initialize initialize) {
+    public void post(final DrlInitialize initialize) {
         postObject(initialize);
     }
 
