@@ -25,6 +25,7 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import elemental2.dom.Element;
 import elemental2.dom.HTMLDivElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Definitions;
@@ -49,6 +50,8 @@ import static org.jboss.errai.common.client.ui.ElementWrapperWidget.getWidget;
 
 @Dependent
 public class DataTypesPage extends PageImpl {
+
+    static final String DATA_TYPES_PAGE_CSS_CLASS = "data-types-page";
 
     private final DataTypeList treeList;
 
@@ -110,6 +113,12 @@ public class DataTypesPage extends PageImpl {
     @PostConstruct
     public void init() {
         dataTypeShortcuts.init(treeList);
+        setupPage();
+    }
+
+    void setupPage() {
+        final Element dataTypesPage = (Element) pageView.parentNode.parentNode;
+        dataTypesPage.classList.add(DATA_TYPES_PAGE_CSS_CLASS);
     }
 
     @Override

@@ -113,17 +113,17 @@
 }
 
 .tab-content {
-  & > div > div > div {
-    height: 100%;
-
-    & > div {
-      height: ~"calc(100% - 30px)";
-    }
-  }
-
-  & > div > div {
+  .data-types-page {
     /* "overflow: auto" is set inline by UberFire/AppFormer since since most of editors have scroll bars.
      * However the DMN Data Types has a fixed header with internal scrollbars. */
     overflow: hidden !important;
+
+    & > div {
+      height: 100%;
+
+      & > div {
+        height: ~"calc(100% - 30px)";
+      }
+    }
   }
 }

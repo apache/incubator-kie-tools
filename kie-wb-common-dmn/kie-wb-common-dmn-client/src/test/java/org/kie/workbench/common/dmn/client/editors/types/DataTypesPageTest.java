@@ -21,6 +21,8 @@ import java.util.List;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import com.google.gwtmockito.WithClassesToStub;
+import elemental2.dom.DOMTokenList;
+import elemental2.dom.Element;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
@@ -51,6 +53,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.kie.workbench.common.dmn.client.editors.types.DataTypesPage.DATA_TYPES_PAGE_CSS_CLASS;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -121,9 +125,28 @@ public class DataTypesPageTest {
 
     @Test
     public void testInit() {
+
+        doNothing().when(page).setupPage();
+
         page.init();
 
         verify(dataTypeShortcuts).init(treeList);
+        verify(page).setupPage();
+    }
+
+    @Test
+    public void testSetupPage() {
+
+        final Element targetElement = mock(Element.class);
+
+        pageView.parentNode = mock(Element.class);
+        pageView.parentNode.parentNode = targetElement;
+
+        targetElement.classList = mock(DOMTokenList.class);
+
+        page.setupPage();
+
+        verify(targetElement.classList).add(DATA_TYPES_PAGE_CSS_CLASS);
     }
 
     @Test
