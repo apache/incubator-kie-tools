@@ -82,6 +82,7 @@ import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
+import org.uberfire.ext.wires.core.grids.client.util.CellContextUtilities;
 import org.uberfire.mvp.Command;
 
 public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, DecisionTableGridData, DecisionTableUIModelMapper> implements HasListSelectorControl,
@@ -490,7 +491,7 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
 
             if (!CommandUtils.isError(result)) {
                 selectHeaderCell(0, index, false, false);
-                inputClauseColumn.startEditingHeaderCell(0);
+                CellContextUtilities.editSelectedCell(this);
             }
         });
     }
@@ -524,7 +525,7 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
 
             if (!CommandUtils.isError(result)) {
                 selectHeaderCell(1, index, false, false);
-                outputClauseColumn.startEditingHeaderCell(1);
+                CellContextUtilities.editSelectedCell(this);
             }
         });
     }

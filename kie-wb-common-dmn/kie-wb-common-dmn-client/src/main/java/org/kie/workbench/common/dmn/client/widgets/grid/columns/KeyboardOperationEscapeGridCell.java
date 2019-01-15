@@ -37,19 +37,22 @@ public class KeyboardOperationEscapeGridCell extends BaseKeyboardOperation {
     }
 
     @Override
+    public boolean isExecutable(final GridWidget gridWidget) {
+        return gridWidget instanceof BaseExpressionGrid;
+    }
+
+    @Override
     public boolean perform(final GridWidget gridWidget,
                            final boolean isShiftKeyDown,
                            final boolean isControlKeyDown) {
 
         final AtomicBoolean needToRedraw = new AtomicBoolean(false);
-        if (gridWidget instanceof BaseExpressionGrid) {
-            final Optional<BaseExpressionGrid> oParent = ((BaseExpressionGrid) gridWidget).findParentGrid();
-            oParent.ifPresent(parentWidget -> {
-                gridLayer.select(parentWidget);
-                parentWidget.selectFirstCell();
-                needToRedraw.set(true);
-            });
-        }
+        final Optional<BaseExpressionGrid> oParent = ((BaseExpressionGrid) gridWidget).findParentGrid();
+        oParent.ifPresent(parentWidget -> {
+            gridLayer.select(parentWidget);
+            parentWidget.selectFirstCell();
+            needToRedraw.set(true);
+        });
 
         return needToRedraw.get();
     }

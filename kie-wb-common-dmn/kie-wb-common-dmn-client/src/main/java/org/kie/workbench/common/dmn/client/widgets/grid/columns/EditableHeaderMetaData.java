@@ -23,18 +23,11 @@ import org.kie.workbench.common.dmn.client.editors.expressions.util.RendererUtil
 import org.kie.workbench.common.stunner.core.util.StringUtils;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellEditAction;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn.HeaderMetaData;
-import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellEditContext;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridHeaderColumnRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.HasDOMElementResources;
 
 public interface EditableHeaderMetaData extends HeaderMetaData,
                                                 HasDOMElementResources {
-
-    /**
-     * Puts the {@link HeaderMetaData} into 'edit' mode.
-     * @param context The context of a Grid's cell header during the rendering phase.
-     */
-    void edit(final GridBodyCellEditContext context);
 
     /**
      * Delegates rendering to the {@link HeaderMetaData}.

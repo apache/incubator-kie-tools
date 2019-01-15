@@ -39,10 +39,8 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.GridSelectionManage
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.GridPinnedModeManager;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -86,7 +84,14 @@ public class KeyboardOperationEditGridCellTest {
     }
 
     @Test
-    public void testMultipleDataCells() {
+    public void testNoData() {
+        assertThat(operation.isExecutable(gridWidget))
+                .as("No rows and columns")
+                .isFalse();
+    }
+
+    @Test
+    public void testMultipleSelectedDataCells() {
         final DMNGridColumn testingDmnColumn = testingDmnColumn();
 
         model.appendColumn(new RowNumberColumn());
@@ -96,27 +101,24 @@ public class KeyboardOperationEditGridCellTest {
         model.selectCell(0, 0);
         model.selectCell(0, 1);
 
-        operation.editCell(gridWidget);
-
-        verify(gridWidget, never()).startEditingCell(anyInt(), anyInt());
-        verify(testingDmnColumn, never()).startEditingHeaderCell(anyInt());
+        assertThat(operation.isExecutable(gridWidget))
+                .as("Multiple cells can't be selected")
+                .isFalse();
     }
 
     @Test
-    public void testMultipleHeaderCells() {
+    public void testValidState() {
         final DMNGridColumn testingDmnColumn = testingDmnColumn();
 
         model.appendColumn(new RowNumberColumn());
         model.appendColumn(testingDmnColumn);
         model.appendRow(new BaseGridRow());
 
-        model.selectHeaderCell(0, 0);
-        model.selectHeaderCell(0, 1);
+        model.selectCell(0, 1);
 
-        operation.editCell(gridWidget);
-
-        verify(gridWidget, never()).startEditingCell(anyInt(), anyInt());
-        verify(testingDmnColumn, never()).startEditingHeaderCell(anyInt());
+        assertThat(operation.isExecutable(gridWidget))
+                .as("Possible to edit if one cell is selected")
+                .isTrue();
     }
 
     @Test
@@ -136,28 +138,11 @@ public class KeyboardOperationEditGridCellTest {
 
         doReturn(false).when(gridWidget).startEditingCell(0, 1);
 
-        operation.editCell(gridWidget);
+        operation.perform(gridWidget, false, false);
 
-        verify(testingDmnColumn, never()).startEditingHeaderCell(anyInt());
         verify(gridWidget).startEditingCell(0, 1);
         verify(gridLayer).select(innerGrid);
         verify(innerGrid).selectFirstCell();
-    }
-
-    @Test
-    public void testEditDmnColumnHeaderRow() {
-        final DMNGridColumn testingDmnColumn = testingDmnColumn();
-
-        model.appendColumn(new RowNumberColumn());
-        model.appendColumn(testingDmnColumn);
-
-        model.selectHeaderCell(0, 1);
-
-        operation.editCell(gridWidget);
-
-        final int expectedHeaderRowIndex = 0;
-        verify(testingDmnColumn).startEditingHeaderCell(expectedHeaderRowIndex);
-        verify(gridWidget, never()).startEditingCell(anyInt(), anyInt());
     }
 
     private DMNGridColumn<BaseGridWidget, String> testingDmnColumn() {

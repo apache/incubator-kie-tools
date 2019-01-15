@@ -20,9 +20,7 @@ import java.util.Optional;
 
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
-import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.util.ColumnIndexUtilities;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
@@ -36,39 +34,28 @@ public class KeyboardOperationEditGridCell extends KeyboardOperationEditCell {
     }
 
     @Override
-    protected void editCell(final GridWidget gridWidget) {
+    public boolean isExecutable(final GridWidget gridWidget) {
+        return gridWidget.getModel().getSelectedCells().size() == 1;
+    }
+
+    @Override
+    public boolean perform(final GridWidget gridWidget, final boolean isShiftKeyDown, final boolean isControlKeyDown) {
+        final boolean changesToBeRendered = super.perform(gridWidget, isShiftKeyDown, isControlKeyDown);
+
         final GridData model = gridWidget.getModel();
-        if (model.getSelectedCells().size() > 1) {
-            // just one data cell can be selected before edit operation is invoked
-            return;
+        final GridData.SelectedCell selectedCell = model.getSelectedCells().get(0);
+        final GridCellValue<?> value =
+                model.getCell(selectedCell.getRowIndex(),
+                              ColumnIndexUtilities.findUiColumnIndex(model.getColumns(),
+                                                                     selectedCell.getColumnIndex())).getValue();
+        if (value instanceof ExpressionCellValue) {
+            final Optional<BaseExpressionGrid> grid = ((ExpressionCellValue) value).getValue();
+            grid.ifPresent(baseExpressionGrid -> {
+                gridLayer.select(baseExpressionGrid);
+                baseExpressionGrid.selectFirstCell();
+            });
         }
 
-        super.editCell(gridWidget);
-
-        if (model.getSelectedCells().size() == 1) {
-            final GridData.SelectedCell selectedCell = model.getSelectedCells().get(0);
-            final GridCellValue<?> value =
-                    model.getCell(selectedCell.getRowIndex(),
-                                  ColumnIndexUtilities.findUiColumnIndex(model.getColumns(),
-                                                                         selectedCell.getColumnIndex())).getValue();
-            if (value instanceof ExpressionCellValue) {
-                final Optional<BaseExpressionGrid> grid = ((ExpressionCellValue) value).getValue();
-                grid.ifPresent(baseExpressionGrid -> {
-                    gridLayer.select(baseExpressionGrid);
-                    baseExpressionGrid.selectFirstCell();
-                });
-            }
-        } else if (model.getSelectedHeaderCells().size() > 0) {
-            final GridData.SelectedCell selectedCell = model.getSelectedHeaderCells().get(0);
-            final int uiHeaderRowIndex = selectedCell.getRowIndex();
-            final int uiColumnIndex = ColumnIndexUtilities.findUiColumnIndex(model.getColumns(),
-                                                                             selectedCell.getColumnIndex());
-
-            final GridColumn<?> column = model.getColumns().get(uiColumnIndex);
-
-            if (column instanceof DMNGridColumn) {
-                ((DMNGridColumn) column).startEditingHeaderCell(uiHeaderRowIndex);
-            }
-        }
+        return changesToBeRendered;
     }
 }

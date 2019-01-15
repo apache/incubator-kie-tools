@@ -27,8 +27,8 @@ import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableHeaderUt
 import org.uberfire.ext.wires.core.grids.client.model.GridCellEditAction;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
+import org.uberfire.ext.wires.core.grids.client.util.CellContextUtilities;
 import org.uberfire.ext.wires.core.grids.client.util.ColumnIndexUtilities;
-import org.uberfire.ext.wires.core.grids.client.util.RenderContextUtilities;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellEditContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.DefaultGridWidgetEditCellMouseEventHandler;
@@ -63,11 +63,11 @@ public class EditableHeaderGridWidgetEditCellMouseEventHandler extends DefaultGr
         final Point2D gridWidgetComputedLocation = gridWidget.getComputedLocation();
         final BaseGridRendererHelper.RenderingInformation ri = rendererHelper.getRenderingInformation();
         final EditableHeaderMetaData headerMetaData = (EditableHeaderMetaData) column.getHeaderMetaData().get(uiHeaderRowIndex);
-        final GridBodyCellEditContext context = RenderContextUtilities.makeRenderContext(gridWidget,
-                                                                                         ri,
-                                                                                         ci,
-                                                                                         relativeLocation.add(gridWidgetComputedLocation),
-                                                                                         uiHeaderRowIndex);
+        final GridBodyCellEditContext context = CellContextUtilities.makeRenderContext(gridWidget,
+                                                                                       ri,
+                                                                                       ci,
+                                                                                       relativeLocation.add(gridWidgetComputedLocation),
+                                                                                       uiHeaderRowIndex);
 
         if (isHeaderSelectionValid(gridWidget)) {
             if (Objects.equals(headerMetaData.getSupportedEditAction(), GridCellEditAction.getSupportedEditAction(event))) {

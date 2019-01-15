@@ -25,6 +25,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.mockito.Mock;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -48,6 +49,20 @@ public class KeyboardOperationEscapeGridCellTest {
     @Test
     public void testReactsOnKey() {
         assertThat(operation.getKeyCode()).isEqualTo(KeyCodes.KEY_ESCAPE);
+    }
+
+    @Test
+    public void testNonBaseExpressionGrid() {
+        assertThat(operation.isExecutable(mock(GridWidget.class)))
+                .as("Widget have to be BaseExpressionWidget instance")
+                .isFalse();
+    }
+
+    @Test
+    public void testBaseExpressionGrid() {
+        assertThat(operation.isExecutable(mock(BaseExpressionGrid.class)))
+                .as("Widget can be BaseExpressionWidget instance")
+                .isTrue();
     }
 
     @Test

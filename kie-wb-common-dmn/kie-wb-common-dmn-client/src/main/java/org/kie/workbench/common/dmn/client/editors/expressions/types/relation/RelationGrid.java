@@ -60,6 +60,7 @@ import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
+import org.uberfire.ext.wires.core.grids.client.util.CellContextUtilities;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 
 public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData, RelationUIModelMapper> implements HasListSelectorControl {
@@ -242,7 +243,7 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
 
             if (!CommandUtils.isError(result)) {
                 selectHeaderCell(0, index, false, false);
-                relationColumn.startEditingHeaderCell(0);
+                CellContextUtilities.editSelectedCell(this);
             }
         });
     }
