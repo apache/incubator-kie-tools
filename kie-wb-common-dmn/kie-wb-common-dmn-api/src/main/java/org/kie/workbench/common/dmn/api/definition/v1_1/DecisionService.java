@@ -272,6 +272,9 @@ public class DecisionService extends DRGElement implements HasVariable<Informati
         if (variable != null ? !variable.equals(that.variable) : that.variable != null) {
             return false;
         }
+        if (dividerLineY != null ? !dividerLineY.equals(that.dividerLineY) : that.dividerLineY != null) {
+            return false;
+        }
         if (outputDecision != null ? !outputDecision.equals(that.outputDecision) : that.outputDecision != null) {
             return false;
         }
@@ -290,6 +293,7 @@ public class DecisionService extends DRGElement implements HasVariable<Informati
                                          description != null ? description.hashCode() : 0,
                                          name != null ? name.hashCode() : 0,
                                          variable != null ? variable.hashCode() : 0,
+                                         dividerLineY != null ? dividerLineY.hashCode() : 0,
                                          outputDecision != null ? outputDecision.hashCode() : 0,
                                          encapsulatedDecision != null ? encapsulatedDecision.hashCode() : 0,
                                          inputDecision != null ? inputDecision.hashCode() : 0,
