@@ -18,7 +18,7 @@ package org.uberfire.ext.wires.core.grids.client.widget.grid.impl;
 
 import com.google.gwt.event.dom.client.KeyCodes;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
-import org.uberfire.ext.wires.core.grids.client.util.ColumnIndexUtilities;
+import org.uberfire.ext.wires.core.grids.client.util.CellContextUtilities;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 
@@ -34,22 +34,17 @@ public class KeyboardOperationEditCell extends BaseKeyboardOperation {
     }
 
     @Override
+    public boolean isExecutable(final GridWidget gridWidget) {
+        final GridData model = gridWidget.getModel();
+        return model.getSelectedHeaderCells().size() > 0 || model.getSelectedCells().size() > 0;
+    }
+
+    @Override
     @SuppressWarnings("unused")
     public boolean perform(final GridWidget gridWidget,
                            final boolean isShiftKeyDown,
                            final boolean isControlKeyDown) {
-        editCell(gridWidget);
+        CellContextUtilities.editSelectedCell(gridWidget);
         return false;
-    }
-
-    protected void editCell(final GridWidget gridWidget) {
-        final GridData gridModel = gridWidget.getModel();
-        final GridData.SelectedCell origin = gridModel.getSelectedCellsOrigin();
-        if (origin == null) {
-            return;
-        }
-        gridWidget.startEditingCell(origin.getRowIndex(),
-                                    ColumnIndexUtilities.findUiColumnIndex(gridModel.getColumns(),
-                                                                           origin.getColumnIndex()));
     }
 }

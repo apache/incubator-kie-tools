@@ -48,6 +48,18 @@ public abstract class BaseKeyboardOperation implements KeyboardOperation {
         return TriStateBoolean.DONT_CARE;
     }
 
+    @Override
+    public boolean isExecutable(final GridWidget gridWidget) {
+        final GridData gridModel = gridWidget.getModel();
+        final int rowCount = gridModel.getRowCount();
+        final int columnCount = gridModel.getColumnCount();
+        if (rowCount == 0 || columnCount == 0) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     protected boolean scrollSelectedCellIntoView(final GridWidget gridWidget) {
         if (!isSelectionOriginSet(gridWidget)) {
             return false;

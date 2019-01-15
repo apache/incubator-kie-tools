@@ -43,12 +43,6 @@ public class KeyboardOperationSelectTopLeftCell extends BaseKeyboardOperation {
     }
 
     protected boolean selectTopLeftCell(final GridWidget gridWidget) {
-        final GridData gridModel = gridWidget.getModel();
-        final int rowCount = gridModel.getRowCount();
-        final int columnCount = gridModel.getColumnCount();
-        if (rowCount == 0 || columnCount == 0) {
-            return false;
-        }
         return gridWidget.selectCell(0,
                                      0,
                                      false,

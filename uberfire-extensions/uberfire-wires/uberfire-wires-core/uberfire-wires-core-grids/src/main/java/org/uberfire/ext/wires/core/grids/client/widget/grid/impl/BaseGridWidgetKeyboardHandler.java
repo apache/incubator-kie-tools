@@ -69,6 +69,10 @@ public class BaseGridWidgetKeyboardHandler implements KeyDownHandler {
             return;
         }
 
+        if (!operation.isExecutable(selectedGridWidget)) {
+            return;
+        }
+
         final boolean redraw = operation.perform(selectedGridWidget,
                                                  event.isShiftKeyDown(),
                                                  event.isControlKeyDown());

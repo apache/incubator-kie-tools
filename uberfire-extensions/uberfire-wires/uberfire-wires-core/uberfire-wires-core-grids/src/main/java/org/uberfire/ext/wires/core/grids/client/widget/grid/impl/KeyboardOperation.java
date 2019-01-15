@@ -42,6 +42,15 @@ public interface KeyboardOperation {
     TriStateBoolean isControlKeyDown();
 
     /**
+     * Decides about @link{GridWidget} state for execution of the operation.
+     * By implementing this @link(BaseGridWidgetKeyboardHandler}
+     * will know which registered operations can be executed.
+     * @param gridWidget The GridWidget on which to perform the operation.
+     * @return true if the gridWidget is in an appropriate state, false otherwise
+     */
+    boolean isExecutable(final GridWidget gridWidget);
+
+    /**
      * Performs the operation on the given @{link GridWidget}
      * @param gridWidget The GridWidget on which to perform the operation.
      * @param isShiftKeyDown True if the shift-key is down.

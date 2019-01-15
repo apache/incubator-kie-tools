@@ -22,12 +22,13 @@ import java.util.Optional;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.types.Point2D;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
+import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellEditContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl.BaseGridRendererHelper;
 
-public class RenderContextUtilities {
+public class CellContextUtilities {
 
     public static GridBodyCellEditContext makeRenderContext(final GridWidget gridWidget,
                                                             final BaseGridRendererHelper.RenderingInformation ri,
@@ -38,7 +39,6 @@ public class RenderContextUtilities {
                                  ci,
                                  null,
                                  uiHeaderRowIndex);
-
     }
 
     public static GridBodyCellEditContext makeRenderContext(final GridWidget gridWidget,
@@ -111,6 +111,42 @@ public class RenderContextUtilities {
                                            gridWidget.getViewport().getTransform(),
                                            renderer,
                                            Optional.ofNullable(rp));
+    }
+
+    public static void editSelectedCell(final GridWidget gridWidget) {
+        final GridData gridModel = gridWidget.getModel();
+
+        if (gridModel.getSelectedHeaderCells().size() > 0) {
+            final GridData.SelectedCell selectedCell = gridModel.getSelectedHeaderCells().get(0);
+            final int uiHeaderRowIndex = selectedCell.getRowIndex();
+            final int uiColumnIndex = ColumnIndexUtilities.findUiColumnIndex(gridModel.getColumns(),
+                                                                             selectedCell.getColumnIndex());
+
+            final GridColumn<?> column = gridModel.getColumns().get(uiColumnIndex);
+            final GridColumn.HeaderMetaData headerMetaData = column.getHeaderMetaData().get(uiHeaderRowIndex);
+
+            final BaseGridRendererHelper rendererHelper = gridWidget.getRendererHelper();
+            final BaseGridRendererHelper.RenderingInformation ri = rendererHelper.getRenderingInformation();
+            final double columnXCoordinate = rendererHelper.getColumnOffset(column) + column.getWidth() / 2;
+            final BaseGridRendererHelper.ColumnInformation ci = rendererHelper.getColumnInformation(columnXCoordinate);
+
+            final GridBodyCellEditContext context = CellContextUtilities.makeRenderContext(gridWidget,
+                                                                                           ri,
+                                                                                           ci,
+                                                                                           null,
+                                                                                           uiHeaderRowIndex);
+
+            headerMetaData.edit(context);
+        } else if (gridModel.getSelectedCells().size() > 0) {
+
+            final GridData.SelectedCell origin = gridModel.getSelectedCellsOrigin();
+            if (origin == null) {
+                return;
+            }
+            gridWidget.startEditingCell(origin.getRowIndex(),
+                                        ColumnIndexUtilities.findUiColumnIndex(gridModel.getColumns(),
+                                                                               origin.getColumnIndex()));
+        }
     }
 
     private static boolean isSameHeaderMetaData(final GridColumn.HeaderMetaData clickedHeaderMetaData,

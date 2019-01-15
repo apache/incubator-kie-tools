@@ -46,9 +46,6 @@ public class KeyboardOperationSelectBottomRightCell extends BaseKeyboardOperatio
         final GridData gridModel = gridWidget.getModel();
         final int rowCount = gridModel.getRowCount();
         final int columnCount = gridModel.getColumnCount();
-        if (rowCount == 0 || columnCount == 0) {
-            return false;
-        }
         return gridWidget.selectCell(rowCount - 1,
                                      columnCount - 1,
                                      false,

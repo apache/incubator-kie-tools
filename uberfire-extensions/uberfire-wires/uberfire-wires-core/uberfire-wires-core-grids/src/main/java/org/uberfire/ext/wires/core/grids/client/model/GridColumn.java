@@ -219,6 +219,14 @@ public interface GridColumn<T> {
         default CellSelectionStrategy getSelectionStrategy() {
             return HeaderSingleCellSelectionStrategy.INSTANCE;
         }
+
+        /**
+         * Puts the {@link HeaderMetaData} into 'edit' mode.
+         * @param context The context of a Grid's cell header during the rendering phase.
+         */
+        default void edit(final GridBodyCellEditContext context) {
+          // do nothing by default
+        }
     }
 
     /**
