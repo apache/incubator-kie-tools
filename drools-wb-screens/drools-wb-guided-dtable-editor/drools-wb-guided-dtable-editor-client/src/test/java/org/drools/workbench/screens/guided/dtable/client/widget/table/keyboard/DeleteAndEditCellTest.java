@@ -20,9 +20,8 @@ import org.junit.Test;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperation.TriStateBoolean;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.anyInt;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -65,15 +64,9 @@ public class DeleteAndEditCellTest extends BaseKeyboardOperationTest<DeleteAndEd
     }
 
     @Test
-    public void checkPerformanceWithoutSelectedCell() {
-        handler.perform(gridWidget,
-                        true,
-                        true);
-
-        verify(dtPresenter,
-               never()).onDeleteSelectedCells();
-        verify(gridWidget,
-               never()).startEditingCell(anyInt(),
-                                         anyInt());
+    public void checkIsExecutableWithoutSelectedCell() {
+        assertThat(handler.isExecutable(gridWidget))
+                .as("Cell have to be selected")
+                .isFalse();
     }
 }

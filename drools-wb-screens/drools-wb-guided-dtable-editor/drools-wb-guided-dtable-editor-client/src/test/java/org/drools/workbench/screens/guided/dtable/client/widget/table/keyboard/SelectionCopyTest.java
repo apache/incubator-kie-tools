@@ -20,7 +20,7 @@ import org.junit.Test;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperation.TriStateBoolean;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 
-import static org.mockito.Mockito.never;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -60,12 +60,9 @@ public class SelectionCopyTest extends BaseKeyboardOperationTest<SelectionCopy> 
     }
 
     @Test
-    public void checkPerformanceWithoutSelectedCell() {
-        handler.perform(gridWidget,
-                        true,
-                        true);
-
-        verify(dtPresenter,
-               never()).onCopy();
+    public void checkIsExecutableWithoutSelectedCell() {
+        assertThat(handler.isExecutable(gridWidget))
+                .as("Cell have to be selected")
+                .isFalse();
     }
 }

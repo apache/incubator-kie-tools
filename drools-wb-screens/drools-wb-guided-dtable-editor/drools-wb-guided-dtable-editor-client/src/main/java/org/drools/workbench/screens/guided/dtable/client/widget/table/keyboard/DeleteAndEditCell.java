@@ -44,9 +44,7 @@ public class DeleteAndEditCell extends KeyboardOperationEditCell {
     }
 
     @Override
-    public boolean perform(final GridWidget gridWidget,
-                           final boolean isShiftKeyDown,
-                           final boolean isControlKeyDown) {
+    public boolean isExecutable(GridWidget gridWidget) {
         final GridData gridModel = gridWidget.getModel();
         final GridData.SelectedCell origin = gridModel.getSelectedCellsOrigin();
         if (origin == null) {
@@ -56,6 +54,15 @@ public class DeleteAndEditCell extends KeyboardOperationEditCell {
         if (!(gridWidget instanceof GuidedDecisionTableView)) {
             return false;
         }
+
+        return super.isExecutable(gridWidget);
+    }
+
+    @Override
+    public boolean perform(final GridWidget gridWidget,
+                           final boolean isShiftKeyDown,
+                           final boolean isControlKeyDown) {
+
         final GuidedDecisionTableView view = (GuidedDecisionTableView) gridWidget;
         final GuidedDecisionTableView.Presenter dtPresenter = view.getPresenter();
         dtPresenter.onDeleteSelectedCells();

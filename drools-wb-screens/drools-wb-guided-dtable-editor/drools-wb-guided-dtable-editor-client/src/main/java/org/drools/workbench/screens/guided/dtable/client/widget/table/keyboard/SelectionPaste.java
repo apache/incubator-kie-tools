@@ -39,9 +39,7 @@ public class SelectionPaste extends BaseKeyboardOperation {
     }
 
     @Override
-    public boolean perform(final GridWidget gridWidget,
-                           final boolean isShiftKeyDown,
-                           final boolean isControlKeyDown) {
+    public boolean isExecutable(final GridWidget gridWidget) {
         final GridData gridModel = gridWidget.getModel();
         final GridData.SelectedCell origin = gridModel.getSelectedCellsOrigin();
         if (origin == null) {
@@ -51,6 +49,14 @@ public class SelectionPaste extends BaseKeyboardOperation {
         if (!(gridWidget instanceof GuidedDecisionTableView)) {
             return false;
         }
+
+        return super.isExecutable(gridWidget);
+    }
+
+    @Override
+    public boolean perform(final GridWidget gridWidget,
+                           final boolean isShiftKeyDown,
+                           final boolean isControlKeyDown) {
         final GuidedDecisionTableView view = (GuidedDecisionTableView) gridWidget;
         final GuidedDecisionTableView.Presenter dtPresenter = view.getPresenter();
         dtPresenter.onPaste();

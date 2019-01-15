@@ -43,6 +43,18 @@ public class GotoBeginningOfRow extends BaseKeyboardOperation {
     }
 
     @Override
+    public boolean isExecutable(GridWidget gridWidget) {
+        final GridData gridModel = gridWidget.getModel();
+
+        final GridData.SelectedCell origin = gridModel.getSelectedCellsOrigin();
+        if (origin == null) {
+            return false;
+        }
+
+        return super.isExecutable(gridWidget);
+    }
+
+    @Override
     public boolean perform(final GridWidget gridWidget,
                            final boolean isShiftKeyDown,
                            final boolean isControlKeyDown) {
@@ -52,17 +64,7 @@ public class GotoBeginningOfRow extends BaseKeyboardOperation {
     }
 
     protected boolean selectLeftMostCell(final GridWidget gridWidget) {
-        final GridData gridModel = gridWidget.getModel();
-        final int rowCount = gridModel.getRowCount();
-        final int columnCount = gridModel.getColumnCount();
-        if (rowCount == 0 || columnCount == 0) {
-            return false;
-        }
-
-        final GridData.SelectedCell origin = gridModel.getSelectedCellsOrigin();
-        if (origin == null) {
-            return false;
-        }
+        final GridData.SelectedCell origin = gridWidget.getModel().getSelectedCellsOrigin();
         return gridWidget.selectCell(origin.getRowIndex(),
                                      0,
                                      false,

@@ -38,16 +38,22 @@ public class DeleteCell extends KeyboardOperationClearCell {
     }
 
     @Override
-    protected void clearCells(final GridWidget gridWidget) {
+    public boolean isExecutable(final GridWidget gridWidget) {
         final GridData gridModel = gridWidget.getModel();
         final GridData.SelectedCell origin = gridModel.getSelectedCellsOrigin();
         if (origin == null) {
-            return;
+            return false;
         }
 
         if (!(gridWidget instanceof GuidedDecisionTableView)) {
-            return;
+            return false;
         }
+
+        return super.isExecutable(gridWidget);
+    }
+
+    @Override
+    protected void clearCells(final GridWidget gridWidget) {
         final GuidedDecisionTableView view = (GuidedDecisionTableView) gridWidget;
         final GuidedDecisionTableView.Presenter dtPresenter = view.getPresenter();
         dtPresenter.onDeleteSelectedCells();
