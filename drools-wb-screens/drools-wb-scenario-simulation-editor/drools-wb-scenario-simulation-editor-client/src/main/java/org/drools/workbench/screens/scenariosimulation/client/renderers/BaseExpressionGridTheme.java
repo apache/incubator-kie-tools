@@ -42,8 +42,6 @@ public class BaseExpressionGridTheme implements ScenarioGridRendererTheme {
 
     public static final String FONT_FAMILY_HEADER = "Open Sans, Helvetica, Arial, sans-serif";
 
-    public static final String FONT_STYLE_BOLD = "bold";
-
     public static final double SELECTOR_STROKE_WIDTH = 2.0;
 
     public static final double STROKE_WIDTH = 1.0;
@@ -175,7 +173,6 @@ public class BaseExpressionGridTheme implements ScenarioGridRendererTheme {
                 .setFillColor(CELL_ERROR_FOCUS)
                 .setFontSize(KIEStyles.FONT_SIZE)
                 .setFontFamily(KIEStyles.FONT_FAMILY_LABEL)
-                .setFontStyle(FONT_STYLE_BOLD)
                 .setTextUnit(TextUnit.PT)
                 .setListening(false)
                 .setTextBaseLine(TextBaseLine.MIDDLE)
