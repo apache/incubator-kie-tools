@@ -28,7 +28,6 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.Relation;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.relation.RelationColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.relation.RelationUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
@@ -41,6 +40,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 
 import static org.junit.Assert.assertEquals;
@@ -251,7 +251,7 @@ public class DeleteRelationColumnCommandTest {
     public void testCanvasCommandExecuteWithRows() {
         relation.getRow().add(new List());
         relation.getRow().get(0).getExpression().add(new LiteralExpression());
-        uiModel.appendRow(new DMNGridRow());
+        uiModel.appendRow(new BaseGridRow());
         uiModelMapper.fromDMNModel(0, 0);
         uiModelMapper.fromDMNModel(0, 1);
 
@@ -303,7 +303,7 @@ public class DeleteRelationColumnCommandTest {
         final LiteralExpression literalExpression = new LiteralExpression();
         literalExpression.getText().setValue(VALUE);
         relation.getRow().get(0).getExpression().add(literalExpression);
-        uiModel.appendRow(new DMNGridRow());
+        uiModel.appendRow(new BaseGridRow());
         uiModelMapper.fromDMNModel(0, 1);
 
         makeCommand();

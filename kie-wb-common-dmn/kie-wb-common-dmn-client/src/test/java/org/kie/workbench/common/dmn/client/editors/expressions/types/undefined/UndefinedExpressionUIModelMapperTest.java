@@ -29,12 +29,12 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.literal.LiteralExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Matchers.eq;
@@ -77,7 +77,7 @@ public class UndefinedExpressionUIModelMapperTest {
     public void setup() {
         this.uiModel = new BaseGridData();
         this.uiModel.appendColumn(uiColumn);
-        this.uiModel.appendRow(new DMNGridRow());
+        this.uiModel.appendRow(new BaseGridRow());
         this.mapper = new UndefinedExpressionUIModelMapper(() -> uiModel,
                                                            () -> Optional.ofNullable(expression),
                                                            listSelector,

@@ -29,7 +29,6 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.relation.Re
 import org.kie.workbench.common.dmn.client.editors.expressions.types.relation.RelationDefaultValueUtilities;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.relation.RelationUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
@@ -42,6 +41,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 
 import static org.junit.Assert.assertEquals;
@@ -300,7 +300,7 @@ public class AddRelationColumnCommandTest {
     @Test
     public void testCanvasCommandExecuteWithRows() {
         relation.getRow().add(new List());
-        uiModel.appendRow(new DMNGridRow());
+        uiModel.appendRow(new BaseGridRow());
         uiModelMapper.fromDMNModel(0, 0);
 
         //Add Graph column first as RelationUIModelMapper relies on the model being first updated
@@ -341,7 +341,7 @@ public class AddRelationColumnCommandTest {
 
         uiModel.appendColumn(mock(RelationColumn.class));
         uiModel.appendColumn(mock(RelationColumn.class));
-        uiModel.appendRow(new DMNGridRow());
+        uiModel.appendRow(new BaseGridRow());
 
         //Add Graph column first as RelationUIModelMapper relies on the model being first updated
         command.newGraphCommand(handler).execute(gce);
@@ -382,7 +382,7 @@ public class AddRelationColumnCommandTest {
     @Test
     public void testCanvasCommandUndoWithRows() {
         relation.getRow().add(new List());
-        uiModel.appendRow(new DMNGridRow());
+        uiModel.appendRow(new BaseGridRow());
         uiModelMapper.fromDMNModel(0, 0);
 
         //Add Graph column first as RelationUIModelMapper relies on the model being first updated

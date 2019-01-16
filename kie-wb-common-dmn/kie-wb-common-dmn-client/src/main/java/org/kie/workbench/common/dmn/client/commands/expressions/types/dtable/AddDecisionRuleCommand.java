@@ -28,7 +28,6 @@ import org.kie.workbench.common.dmn.client.commands.VetoUndoCommand;
 import org.kie.workbench.common.dmn.client.commands.util.CommandUtils;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.DecisionTableDefaultValueUtilities;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.DecisionTableUIModelMapper;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasGraphCommand;
@@ -41,6 +40,7 @@ import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBui
 import org.kie.workbench.common.stunner.core.graph.command.impl.AbstractGraphCommand;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
+import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 
 public class AddDecisionRuleCommand extends AbstractCanvasGraphCommand implements VetoExecutionCommand,
                                                                                   VetoUndoCommand {
@@ -48,7 +48,7 @@ public class AddDecisionRuleCommand extends AbstractCanvasGraphCommand implement
     private final DecisionTable dtable;
     private final DecisionRule rule;
     private final GridData uiModel;
-    private final DMNGridRow uiModelRow;
+    private final GridRow uiModelRow;
     private final int uiRowIndex;
     private final DecisionTableUIModelMapper uiModelMapper;
     private final org.uberfire.mvp.Command canvasOperation;
@@ -56,7 +56,7 @@ public class AddDecisionRuleCommand extends AbstractCanvasGraphCommand implement
     public AddDecisionRuleCommand(final DecisionTable dtable,
                                   final DecisionRule rule,
                                   final GridData uiModel,
-                                  final DMNGridRow uiModelRow,
+                                  final GridRow uiModelRow,
                                   final int uiRowIndex,
                                   final DecisionTableUIModelMapper uiModelMapper,
                                   final org.uberfire.mvp.Command canvasOperation) {

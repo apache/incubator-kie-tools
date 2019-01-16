@@ -36,7 +36,6 @@ import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelect
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
@@ -51,6 +50,7 @@ import org.kie.workbench.common.stunner.forms.client.event.RefreshFormProperties
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidget;
@@ -142,9 +142,9 @@ public class ExpressionEditorColumnTest {
     @Test
     public void testMinimalWidthOneCellInEachRow() throws Exception {
         gridData.appendColumn(column);
-        gridData.appendRow(new DMNGridRow());
-        gridData.appendRow(new DMNGridRow());
-        gridData.appendRow(new DMNGridRow());
+        gridData.appendRow(new BaseGridRow());
+        gridData.appendRow(new BaseGridRow());
+        gridData.appendRow(new BaseGridRow());
         mockCells(0, 0, 100d);
         mockCells(1, 0, 150);
         mockCells(2, 0, 125);
@@ -159,9 +159,9 @@ public class ExpressionEditorColumnTest {
     @Test
     public void testMinimalWidthTwoCellsSum() throws Exception {
         gridData.appendColumn(column);
-        gridData.appendRow(new DMNGridRow());
-        gridData.appendRow(new DMNGridRow());
-        gridData.appendRow(new DMNGridRow());
+        gridData.appendRow(new BaseGridRow());
+        gridData.appendRow(new BaseGridRow());
+        gridData.appendRow(new BaseGridRow());
         mockCells(0, 0, 100);
         mockCells(1, 0, 50, 60);
         mockCells(2, 0, 105);
@@ -176,9 +176,9 @@ public class ExpressionEditorColumnTest {
     @Test
     public void testMinimalWidthThreeCellsSum() throws Exception {
         gridData.appendColumn(column);
-        gridData.appendRow(new DMNGridRow());
-        gridData.appendRow(new DMNGridRow());
-        gridData.appendRow(new DMNGridRow());
+        gridData.appendRow(new BaseGridRow());
+        gridData.appendRow(new BaseGridRow());
+        gridData.appendRow(new BaseGridRow());
         mockCells(0, 0, 100);
         mockCells(1, 0, 50, 60);
         mockCells(2, 0, 50, 60, 10);
@@ -193,9 +193,9 @@ public class ExpressionEditorColumnTest {
     @Test
     public void testMinimalWidthDefaultWidth() throws Exception {
         gridData.appendColumn(column);
-        gridData.appendRow(new DMNGridRow());
-        gridData.appendRow(new DMNGridRow());
-        gridData.appendRow(new DMNGridRow());
+        gridData.appendRow(new BaseGridRow());
+        gridData.appendRow(new BaseGridRow());
+        gridData.appendRow(new BaseGridRow());
         mockCells(0, 0, 99);
         mockCells(1, 0, 30, 30, 30);
         mockCells(2, 0, 49, 50);
@@ -210,9 +210,9 @@ public class ExpressionEditorColumnTest {
     @Test
     public void testMinimalWidthNoCellsInMiddle() throws Exception {
         gridData.appendColumn(column);
-        gridData.appendRow(new DMNGridRow());
-        gridData.appendRow(new DMNGridRow());
-        gridData.appendRow(new DMNGridRow());
+        gridData.appendRow(new BaseGridRow());
+        gridData.appendRow(new BaseGridRow());
+        gridData.appendRow(new BaseGridRow());
         mockCells(0, 0, 100);
         mockCells(1, 0);
         mockCells(2, 0, 50, 60);
@@ -227,9 +227,9 @@ public class ExpressionEditorColumnTest {
     @Test
     public void testMinimalWidthOneCellInEachRowWithPadding() throws Exception {
         gridData.appendColumn(column);
-        gridData.appendRow(new DMNGridRow());
-        gridData.appendRow(new DMNGridRow());
-        gridData.appendRow(new DMNGridRow());
+        gridData.appendRow(new BaseGridRow());
+        gridData.appendRow(new BaseGridRow());
+        gridData.appendRow(new BaseGridRow());
         mockCellsWithPadding(0, 0, PADDING, 100);
         mockCellsWithPadding(1, 0, PADDING, 150);
         mockCellsWithPadding(2, 0, PADDING, 125);
@@ -244,9 +244,9 @@ public class ExpressionEditorColumnTest {
     @Test
     public void testMinimalWidthTwoCellsSumWithPadding() throws Exception {
         gridData.appendColumn(column);
-        gridData.appendRow(new DMNGridRow());
-        gridData.appendRow(new DMNGridRow());
-        gridData.appendRow(new DMNGridRow());
+        gridData.appendRow(new BaseGridRow());
+        gridData.appendRow(new BaseGridRow());
+        gridData.appendRow(new BaseGridRow());
         mockCellsWithPadding(0, 0, PADDING, 100);
         mockCellsWithPadding(1, 0, PADDING, 50, 60);
         mockCellsWithPadding(2, 0, PADDING, 105);
@@ -261,9 +261,9 @@ public class ExpressionEditorColumnTest {
     @Test
     public void testMinimalWidthThreeCellsSumWithPadding() throws Exception {
         gridData.appendColumn(column);
-        gridData.appendRow(new DMNGridRow());
-        gridData.appendRow(new DMNGridRow());
-        gridData.appendRow(new DMNGridRow());
+        gridData.appendRow(new BaseGridRow());
+        gridData.appendRow(new BaseGridRow());
+        gridData.appendRow(new BaseGridRow());
         mockCellsWithPadding(0, 0, PADDING, 100);
         mockCellsWithPadding(1, 0, PADDING, 50, 60);
         mockCellsWithPadding(2, 0, PADDING, 50, 60, 10);
@@ -278,9 +278,9 @@ public class ExpressionEditorColumnTest {
     @Test
     public void testMinimalWidthDefaultWidthWithPadding() throws Exception {
         gridData.appendColumn(column);
-        gridData.appendRow(new DMNGridRow());
-        gridData.appendRow(new DMNGridRow());
-        gridData.appendRow(new DMNGridRow());
+        gridData.appendRow(new BaseGridRow());
+        gridData.appendRow(new BaseGridRow());
+        gridData.appendRow(new BaseGridRow());
         mockCellsWithPadding(0, 0, PADDING, 99);
         mockCellsWithPadding(1, 0, PADDING, 30, 30, 30);
         mockCellsWithPadding(2, 0, PADDING, 49, 50);
@@ -295,9 +295,9 @@ public class ExpressionEditorColumnTest {
     @Test
     public void testMinimalWidthNoCellsInMiddleWithPadding() throws Exception {
         gridData.appendColumn(column);
-        gridData.appendRow(new DMNGridRow());
-        gridData.appendRow(new DMNGridRow());
-        gridData.appendRow(new DMNGridRow());
+        gridData.appendRow(new BaseGridRow());
+        gridData.appendRow(new BaseGridRow());
+        gridData.appendRow(new BaseGridRow());
         mockCellsWithPadding(0, 0, PADDING, 100);
         mockCellsWithPadding(1, 0, PADDING);
         mockCellsWithPadding(2, 0, PADDING, 50, 60);
@@ -307,9 +307,9 @@ public class ExpressionEditorColumnTest {
     @Test
     public void testUpdateInternalWidth() throws Exception {
         gridData.appendColumn(column);
-        gridData.appendRow(new DMNGridRow());
-        gridData.appendRow(new DMNGridRow());
-        gridData.appendRow(new DMNGridRow());
+        gridData.appendRow(new BaseGridRow());
+        gridData.appendRow(new BaseGridRow());
+        gridData.appendRow(new BaseGridRow());
         mockCells(0, 0, 100);
         mockCells(1, 0, 110);
         mockCells(2, 0, 50, 60);
@@ -323,9 +323,9 @@ public class ExpressionEditorColumnTest {
     @Test
     public void testUpdateInternalWidthNoCellsInMiddle() throws Exception {
         gridData.appendColumn(column);
-        gridData.appendRow(new DMNGridRow());
-        gridData.appendRow(new DMNGridRow());
-        gridData.appendRow(new DMNGridRow());
+        gridData.appendRow(new BaseGridRow());
+        gridData.appendRow(new BaseGridRow());
+        gridData.appendRow(new BaseGridRow());
         mockCells(0, 0, 100);
         mockCells(1, 0);
         mockCells(2, 0, 50, 60);
@@ -338,9 +338,9 @@ public class ExpressionEditorColumnTest {
     @Test
     public void testUpdateInternalWidthResizedToSmaller() throws Exception {
         gridData.appendColumn(column);
-        gridData.appendRow(new DMNGridRow());
-        gridData.appendRow(new DMNGridRow());
-        gridData.appendRow(new DMNGridRow());
+        gridData.appendRow(new BaseGridRow());
+        gridData.appendRow(new BaseGridRow());
+        gridData.appendRow(new BaseGridRow());
         mockCells(0, 0, 100);
         mockCells(1, 0, 30, 30, 30);
         mockCells(2, 0, 50, 60);

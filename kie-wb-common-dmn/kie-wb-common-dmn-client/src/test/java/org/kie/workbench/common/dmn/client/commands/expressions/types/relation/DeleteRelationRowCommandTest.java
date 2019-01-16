@@ -28,7 +28,6 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.Relation;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.relation.RelationColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.relation.RelationUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
@@ -40,7 +39,9 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
+import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 
 import static org.junit.Assert.assertEquals;
@@ -88,7 +89,7 @@ public class DeleteRelationRowCommandTest {
         this.relation = new Relation();
         this.relation.getRow().add(new List());
         this.uiModel = new BaseGridData();
-        this.uiModel.appendRow(new DMNGridRow());
+        this.uiModel.appendRow(new BaseGridRow());
         this.uiModel.appendColumn(uiRowNumberColumn);
 
         this.uiModelMapper = new RelationUIModelMapper(() -> uiModel,
@@ -133,8 +134,8 @@ public class DeleteRelationRowCommandTest {
 
     @Test
     public void testGraphCommandExecuteRemoveMiddleWithColumns() {
-        uiModel.appendRow(new DMNGridRow());
-        uiModel.appendRow(new DMNGridRow());
+        uiModel.appendRow(new BaseGridRow());
+        uiModel.appendRow(new BaseGridRow());
         final List firstRow = new List();
         final List lastRow = new List();
         relation.getRow().add(0, firstRow);
@@ -242,8 +243,8 @@ public class DeleteRelationRowCommandTest {
     @Test
     public void testCanvasCommandExecuteRemoveMiddleWithColumns() {
         uiModel.appendColumn(uiModelColumn);
-        final DMNGridRow firstRow = new DMNGridRow();
-        final DMNGridRow lastRow = new DMNGridRow();
+        final GridRow firstRow = new BaseGridRow();
+        final GridRow lastRow = new BaseGridRow();
         uiModel.insertRow(0, firstRow);
         uiModel.appendRow(lastRow);
         relation.getRow().add(0, new List());

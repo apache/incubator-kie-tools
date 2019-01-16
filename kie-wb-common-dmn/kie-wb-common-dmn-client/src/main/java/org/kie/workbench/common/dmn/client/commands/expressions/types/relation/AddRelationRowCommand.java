@@ -25,7 +25,6 @@ import org.kie.workbench.common.dmn.client.commands.VetoExecutionCommand;
 import org.kie.workbench.common.dmn.client.commands.VetoUndoCommand;
 import org.kie.workbench.common.dmn.client.commands.util.CommandUtils;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.relation.RelationUIModelMapper;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasGraphCommand;
@@ -38,6 +37,7 @@ import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBui
 import org.kie.workbench.common.stunner.core.graph.command.impl.AbstractGraphCommand;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
+import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 
 public class AddRelationRowCommand extends AbstractCanvasGraphCommand implements VetoExecutionCommand,
                                                                                  VetoUndoCommand {
@@ -45,7 +45,7 @@ public class AddRelationRowCommand extends AbstractCanvasGraphCommand implements
     private final Relation relation;
     private final List row;
     private final GridData uiModel;
-    private final DMNGridRow uiModelRow;
+    private final GridRow uiModelRow;
     private final int uiRowIndex;
     private final RelationUIModelMapper uiModelMapper;
     private final org.uberfire.mvp.Command canvasOperation;
@@ -53,7 +53,7 @@ public class AddRelationRowCommand extends AbstractCanvasGraphCommand implements
     public AddRelationRowCommand(final Relation relation,
                                  final List row,
                                  final GridData uiModel,
-                                 final DMNGridRow uiModelRow,
+                                 final GridRow uiModelRow,
                                  final int uiRowIndex,
                                  final RelationUIModelMapper uiModelMapper,
                                  final org.uberfire.mvp.Command canvasOperation) {

@@ -22,11 +22,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -55,7 +55,7 @@ public class LiteralExpressionUIModelMapperTest {
     @SuppressWarnings("unchecked")
     public void setup() {
         uiModel = new BaseGridData();
-        uiModel.appendRow(new DMNGridRow());
+        uiModel.appendRow(new BaseGridRow());
         uiModel.appendColumn(uiLiteralExpressionColumn);
         doReturn(0).when(uiLiteralExpressionColumn).getIndex();
 

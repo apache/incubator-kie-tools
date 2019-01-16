@@ -26,7 +26,6 @@ import org.kie.workbench.common.dmn.client.commands.VetoUndoCommand;
 import org.kie.workbench.common.dmn.client.commands.util.CommandUtils;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ContextEntryDefaultValueUtilities;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ContextUIModelMapper;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasGraphCommand;
@@ -39,6 +38,7 @@ import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBui
 import org.kie.workbench.common.stunner.core.graph.command.impl.AbstractGraphCommand;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
+import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 
 public class AddContextEntryCommand extends AbstractCanvasGraphCommand implements VetoExecutionCommand,
                                                                                   VetoUndoCommand {
@@ -46,7 +46,7 @@ public class AddContextEntryCommand extends AbstractCanvasGraphCommand implement
     private final Context context;
     private final ContextEntry contextEntry;
     private final GridData uiModel;
-    private final DMNGridRow uiModelRow;
+    private final GridRow uiModelRow;
     private final int uiRowIndex;
     private final ContextUIModelMapper uiModelMapper;
     private final org.uberfire.mvp.Command canvasOperation;
@@ -55,7 +55,7 @@ public class AddContextEntryCommand extends AbstractCanvasGraphCommand implement
     public AddContextEntryCommand(final Context context,
                                   final ContextEntry contextEntry,
                                   final GridData uiModel,
-                                  final DMNGridRow uiModelRow,
+                                  final GridRow uiModelRow,
                                   final int uiRowIndex,
                                   final ContextUIModelMapper uiModelMapper,
                                   final org.uberfire.mvp.Command canvasOperation) {

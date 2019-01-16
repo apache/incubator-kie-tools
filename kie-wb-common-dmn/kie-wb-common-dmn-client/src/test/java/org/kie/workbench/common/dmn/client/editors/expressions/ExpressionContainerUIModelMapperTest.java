@@ -37,7 +37,6 @@ import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCache;
 import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCacheImpl;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -46,6 +45,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
@@ -112,7 +112,7 @@ public class ExpressionContainerUIModelMapperTest {
     @SuppressWarnings("unchecked")
     public void setup() {
         uiModel = new BaseGridData();
-        uiModel.appendRow(new DMNGridRow());
+        uiModel.appendRow(new BaseGridRow());
         uiModel.appendColumn(uiExpressionColumn);
         doReturn(0).when(uiExpressionColumn).getIndex();
         doReturn(MINIMUM_COLUMN_WIDTH).when(uiExpressionColumn).getMinimumWidth();

@@ -37,6 +37,8 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.themes.Gri
 
 public class RendererUtils {
 
+    public static final double EXPRESSION_TEXT_PADDING = 5.0;
+
     public static final String FONT_STYLE_TYPE_REF = "italic";
 
     public static final double SPACING = 8.0;
@@ -151,17 +153,27 @@ public class RendererUtils {
                                            final String text) {
         final Group g = GWT.create(Group.class);
 
-        final Text t = theme.getBodyText();
+        final Text t = makeExpressionText(theme);
         t.setText(text);
         t.setListening(false);
-        t.setX(5);
-        t.setY(5);
-        t.setFontFamily(BaseExpressionGridTheme.FONT_FAMILY_EXPRESSION);
+        t.setX(EXPRESSION_TEXT_PADDING);
+        t.setY(EXPRESSION_TEXT_PADDING);
         t.setTextAlign(TextAlign.LEFT);
         t.setWrapper(new TextLineBreakWrap(t));
         g.add(t);
 
         return g;
+    }
+
+    private static Text makeExpressionText(final GridRendererTheme theme) {
+        final Text t = theme.getBodyText();
+        t.setFontFamily(BaseExpressionGridTheme.FONT_FAMILY_EXPRESSION);
+        return t;
+    }
+
+    public static double getExpressionTextLineHeight(final GridRendererTheme theme) {
+        //The parameter to Text.getLineHeight(..) is not used so passing null is safe (for now).
+        return makeExpressionText(theme).getLineHeight(null);
     }
 
     private static Group getNameAndDataTypeText(final GridRendererTheme theme,

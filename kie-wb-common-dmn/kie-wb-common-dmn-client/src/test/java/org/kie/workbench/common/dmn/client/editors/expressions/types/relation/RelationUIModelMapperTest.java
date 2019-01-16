@@ -28,12 +28,12 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.List;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Relation;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.impl.RowSelectionStrategy;
 
@@ -68,8 +68,8 @@ public class RelationUIModelMapperTest {
     @Before
     public void setup() {
         this.uiModel = new BaseGridData();
-        this.uiModel.appendRow(new DMNGridRow());
-        this.uiModel.appendRow(new DMNGridRow());
+        this.uiModel.appendRow(new BaseGridRow());
+        this.uiModel.appendRow(new BaseGridRow());
         this.uiModel.appendColumn(uiRowNumberColumn);
         this.uiModel.appendColumn(uiRelationColumn1);
         this.uiModel.appendColumn(uiRelationColumn2);

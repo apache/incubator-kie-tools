@@ -43,9 +43,9 @@ import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextArea
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.LiteralExpressionGridRow;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
@@ -60,8 +60,11 @@ import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
+import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 import org.uberfire.ext.wires.core.grids.client.util.CellContextUtilities;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
+
+import static org.kie.workbench.common.dmn.client.editors.expressions.util.RendererUtils.getExpressionTextLineHeight;
 
 public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData, RelationUIModelMapper> implements HasListSelectorControl {
 
@@ -155,12 +158,16 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
         return relationColumn;
     }
 
+    private GridRow makeRelationRow() {
+        return new LiteralExpressionGridRow(getExpressionTextLineHeight(getRenderer().getTheme()));
+    }
+
     @Override
     public void initialiseUiModel() {
         expression.ifPresent(e -> {
             e.getRow().forEach(r -> {
                 int columnIndex = 0;
-                model.appendRow(new DMNGridRow());
+                model.appendRow(makeRelationRow());
                 uiModelMapper.fromDMNModel(model.getRowCount() - 1,
                                            columnIndex++);
                 for (int ii = 0; ii < e.getColumn().size(); ii++) {
@@ -262,11 +269,12 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
 
     void addRow(final int index) {
         expression.ifPresent(relation -> {
+            final GridRow relationRow = makeRelationRow();
             sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
                                           new AddRelationRowCommand(relation,
                                                                     new List(),
                                                                     model,
-                                                                    new DMNGridRow(),
+                                                                    relationRow,
                                                                     index,
                                                                     uiModelMapper,
                                                                     () -> resize(BaseExpressionGrid.RESIZE_EXISTING)));

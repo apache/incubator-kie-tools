@@ -21,7 +21,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl
 
 public class BaseExpressionGridRenderer extends BaseGridRenderer {
 
-    static final double HEADER_ROW_HEIGHT = 64;
+    public static final double HEADER_ROW_HEIGHT = 64;
 
     private final GridData gridData;
 

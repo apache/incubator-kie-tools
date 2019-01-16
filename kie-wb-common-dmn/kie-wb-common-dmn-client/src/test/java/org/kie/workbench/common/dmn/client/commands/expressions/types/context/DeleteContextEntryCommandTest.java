@@ -23,7 +23,6 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ContextEntry;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
@@ -80,7 +79,7 @@ public class DeleteContextEntryCommandTest {
         this.context = new Context();
         this.context.getContextEntry().add(new ContextEntry());
         this.uiModel = new BaseGridData(false);
-        this.uiModel.appendRow(new DMNGridRow());
+        this.uiModel.appendRow(new BaseGridRow());
         this.uiModel.appendColumn(uiRowNumberColumn);
 
         doReturn(ruleManager).when(handler).getRuleManager();
@@ -382,7 +381,7 @@ public class DeleteContextEntryCommandTest {
 
         for (int i = 0; i < entriesCount; i++) {
             context.getContextEntry().add(new ContextEntry());
-            uiModel.appendRow(new DMNGridRow());
+            uiModel.appendRow(new BaseGridRow());
         }
     }
 

@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.ait.lienzo.client.core.event.NodeMouseClickEvent;
+import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
@@ -194,6 +195,9 @@ public class LiteralExpressionGridTest {
 
     @Mock
     private NameAndDataTypePopoverView.Presenter headerEditor;
+
+    @Mock
+    private Text expressionText;
 
     @Captor
     private ArgumentCaptor<CompositeCommand> compositeCommandCaptor;

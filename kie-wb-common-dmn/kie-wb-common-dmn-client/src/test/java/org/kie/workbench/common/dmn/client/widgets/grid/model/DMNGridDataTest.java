@@ -27,6 +27,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.context.Exp
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -46,7 +47,7 @@ public class DMNGridDataTest {
     @Before
     public void setup() {
         this.uiModel = new DMNGridData();
-        IntStream.range(0, 3).forEach(i -> uiModel.appendRow(new DMNGridRow()));
+        IntStream.range(0, 3).forEach(i -> uiModel.appendRow(new BaseGridRow()));
         IntStream.range(0, 2).forEach(i -> {
             final DMNGridColumn uiColumn = mock(DMNGridColumn.class);
             when(uiColumn.getIndex()).thenReturn(i);

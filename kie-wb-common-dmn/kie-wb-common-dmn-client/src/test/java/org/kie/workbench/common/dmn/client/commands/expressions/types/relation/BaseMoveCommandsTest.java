@@ -23,14 +23,15 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.Relation;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.relation.RelationColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasGraphCommand;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
+import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 
 public abstract class BaseMoveCommandsTest<C extends AbstractCanvasGraphCommand> {
@@ -92,7 +93,7 @@ public abstract class BaseMoveCommandsTest<C extends AbstractCanvasGraphCommand>
     }
 
     protected void addUiModelRow(final int rowIndex) {
-        final DMNGridRow uiRow = new DMNGridRow();
+        final GridRow uiRow = new BaseGridRow();
         uiModel.appendRow(uiRow);
         uiModel.setCellValue(rowIndex, 0, new BaseGridCellValue<>(rowIndex + 1));
     }

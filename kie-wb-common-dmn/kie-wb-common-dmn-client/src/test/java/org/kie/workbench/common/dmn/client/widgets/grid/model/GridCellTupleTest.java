@@ -28,6 +28,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
 import static org.mockito.Mockito.verify;
@@ -54,7 +55,7 @@ public class GridCellTupleTest {
         tuple = new GridCellTuple(0, 0, gridWidget);
         gridData = new BaseGridData(false);
         gridData.appendColumn(gridColumn);
-        gridData.appendRow(new DMNGridRow());
+        gridData.appendRow(new BaseGridRow());
 
         when(gridWidget.getModel()).thenReturn(gridData);
     }

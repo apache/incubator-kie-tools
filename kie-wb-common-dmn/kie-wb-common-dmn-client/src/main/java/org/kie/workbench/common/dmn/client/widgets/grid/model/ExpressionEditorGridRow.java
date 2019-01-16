@@ -20,17 +20,17 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.context.Exp
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 
-public class DMNGridRow extends BaseGridRow {
+public class ExpressionEditorGridRow extends BaseGridRow {
 
-    static final double DEFAULT_HEIGHT = 48.0;
+    public static final double DEFAULT_HEIGHT = 48.0;
 
     private final double defaultHeight;
 
-    public DMNGridRow() {
+    public ExpressionEditorGridRow() {
         this(DEFAULT_HEIGHT);
     }
 
-    public DMNGridRow(final double height) {
+    public ExpressionEditorGridRow(final double height) {
         super(height);
         this.defaultHeight = height;
     }

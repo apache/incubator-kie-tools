@@ -49,7 +49,6 @@ import org.kie.workbench.common.dmn.client.widgets.grid.handlers.EditableHeaderG
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellValueTuple;
@@ -73,6 +72,7 @@ import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.NodeMouseEventHandler;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
@@ -341,7 +341,7 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
 
     @Test
     public void testDeselect() {
-        grid.getModel().appendRow(new DMNGridRow());
+        grid.getModel().appendRow(new BaseGridRow());
         appendColumns(GridColumn.class);
 
         //Select a cell so we can check deselection clears selections
@@ -364,7 +364,7 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
 
     @Test
     public void testSelectFirstCellWithRowAndNonRowNumberColumn() {
-        grid.getModel().appendRow(new DMNGridRow());
+        grid.getModel().appendRow(new BaseGridRow());
         appendColumns(GridColumn.class);
 
         grid.selectFirstCell();
@@ -379,7 +379,7 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
 
     @Test
     public void testSelectFirstCellWithRowAndRowNumberColumn() {
-        grid.getModel().appendRow(new DMNGridRow());
+        grid.getModel().appendRow(new BaseGridRow());
         appendColumns(RowNumberColumn.class);
 
         grid.selectFirstCell();
@@ -389,7 +389,7 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
 
     @Test
     public void testSelectFirstCellWithRowAndRowNumberColumnAndAnotherColumn() {
-        grid.getModel().appendRow(new DMNGridRow());
+        grid.getModel().appendRow(new BaseGridRow());
         appendColumns(RowNumberColumn.class, GridColumn.class);
 
         grid.selectFirstCell();
@@ -404,7 +404,7 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
 
     @Test
     public void testSelectCellWithPoint() {
-        grid.getModel().appendRow(new DMNGridRow());
+        grid.getModel().appendRow(new BaseGridRow());
         appendColumns(RowNumberColumn.class, GridColumn.class);
 
         final Point2D point = mock(Point2D.class);
@@ -426,7 +426,7 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
 
     @Test
     public void testSelectExpressionEditorFirstCell() {
-        grid.getModel().appendRow(new DMNGridRow());
+        grid.getModel().appendRow(new BaseGridRow());
         appendColumns(GridColumn.class);
 
         final ExpressionCellValue cellValue = mock(ExpressionCellValue.class);
@@ -504,7 +504,7 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
     @Test
     public void testAdjustSelectionHandling_DataCells() {
         grid.getModel().appendColumn(new RowNumberColumn());
-        grid.getModel().appendRow(new DMNGridRow());
+        grid.getModel().appendRow(new BaseGridRow());
 
         grid.selectHeaderCell(0, 0, false, false);
         reset(grid);
@@ -516,7 +516,7 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
     @Test
     public void testAdjustSelectionHandling_HeaderCells() {
         grid.getModel().appendColumn(new RowNumberColumn());
-        grid.getModel().appendRow(new DMNGridRow());
+        grid.getModel().appendRow(new BaseGridRow());
 
         grid.selectCell(0, 0, false, false);
         reset(grid);
@@ -528,7 +528,7 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
     @Test
     public void testAdjustSelectionHandling_MoveUpWhenOnTopAlready() {
         grid.getModel().appendColumn(new RowNumberColumn());
-        grid.getModel().appendRow(new DMNGridRow());
+        grid.getModel().appendRow(new BaseGridRow());
 
         grid.selectHeaderCell(0, 0, false, false);
         reset(grid);
@@ -540,7 +540,7 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
     @Test
     public void testAdjustSelectionHandling_MoveDownWhenAtBottomAlready() {
         grid.getModel().appendColumn(new RowNumberColumn());
-        grid.getModel().appendRow(new DMNGridRow());
+        grid.getModel().appendRow(new BaseGridRow());
 
         grid.selectCell(0, 0, false, false);
         reset(grid);
@@ -867,7 +867,7 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
         final List<DMNGridColumn> columns = Arrays.stream(widthsOfNestedColumns)
                 .mapToObj(width -> mockColumn(width, grid))
                 .collect(Collectors.toList());
-        grid.getModel().appendRow(new DMNGridRow());
+        grid.getModel().appendRow(new BaseGridRow());
         columns.stream().forEach(column -> grid.getModel().appendColumn(column));
 
         // force the peers width update

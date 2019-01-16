@@ -30,7 +30,6 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.context.Exp
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.supplementary.NameColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.relation.RelationColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
@@ -44,6 +43,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 
 import static org.junit.Assert.assertEquals;
@@ -129,7 +129,7 @@ public class MoveRowsCommandTest {
     }
 
     protected void addUiModelRow(final int rowIndex) {
-        final DMNGridRow uiRow = new DMNGridRow();
+        final GridRow uiRow = new BaseGridRow();
         uiModel.appendRow(uiRow);
         uiModel.setCellValue(rowIndex, 0, new BaseGridCellValue<>(rowIndex + 1));
         uiModel.setCellValue(rowIndex, 1, new BaseGridCellValue<>("name" + rowIndex));

@@ -29,25 +29,26 @@ import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
+import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCell;
 
-import static org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow.DEFAULT_HEIGHT;
+import static org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorGridRow.DEFAULT_HEIGHT;
 
 @RunWith(LienzoMockitoTestRunner.class)
-public class DMNGridRowTest {
+public class ExpressionEditorGridRowTest {
 
     @Mock
     private BaseExpressionGrid view;
 
     @Test
     public void testEmptyRow() throws Exception {
-        final DMNGridRow row = new DMNGridRow();
+        final GridRow row = new ExpressionEditorGridRow();
         Assertions.assertThat(row.getHeight()).isEqualTo(DEFAULT_HEIGHT);
     }
 
     @Test
     public void testRowNoHigherThanDefault() throws Exception {
-        final DMNGridRow row = Mockito.spy(DMNGridRow.class);
+        final GridRow row = Mockito.spy(ExpressionEditorGridRow.class);
         final Map<Integer, GridCell> cells = new HashMap<Integer, GridCell>() {{
             Mockito.doReturn(DEFAULT_HEIGHT - 1).when(view).getHeight();
             put(0, new BaseGridCell<>(new ExpressionCellValue(Optional.of(view))));
@@ -59,7 +60,7 @@ public class DMNGridRowTest {
 
     @Test
     public void testRowHigherThanDefault() throws Exception {
-        final DMNGridRow row = Mockito.spy(DMNGridRow.class);
+        final GridRow row = Mockito.spy(ExpressionEditorGridRow.class);
         final Map<Integer, GridCell> cells = new HashMap<Integer, GridCell>() {{
             Mockito.doReturn(DEFAULT_HEIGHT + 1).when(view).getHeight();
             put(0, new BaseGridCell<>(new ExpressionCellValue(Optional.of(view))));

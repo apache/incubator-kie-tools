@@ -48,8 +48,8 @@ import org.kie.workbench.common.dmn.client.widgets.grid.handlers.DelegatingGridW
 import org.kie.workbench.common.dmn.client.widgets.grid.handlers.DelegatingGridWidgetEditCellMouseEventHandler;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorGridRow;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellValueTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
@@ -172,7 +172,7 @@ public class UndefinedExpressionGrid extends BaseDelegatingExpressionGrid<Expres
 
     @Override
     protected void initialiseUiModel() {
-        model.appendRow(new DMNGridRow());
+        model.appendRow(new ExpressionEditorGridRow());
         uiModelMapper.fromDMNModel(0,
                                    0);
     }

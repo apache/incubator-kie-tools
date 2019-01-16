@@ -35,7 +35,6 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.context.Exp
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.InformationItemCell;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.literal.LiteralExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -44,6 +43,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.impl.RowSelectionStrategy;
@@ -101,8 +101,8 @@ public class InvocationUIModelMapperTest {
     @SuppressWarnings("unchecked")
     public void setup() {
         this.uiModel = new BaseGridData();
-        this.uiModel.appendRow(new DMNGridRow());
-        this.uiModel.appendRow(new DMNGridRow());
+        this.uiModel.appendRow(new BaseGridRow());
+        this.uiModel.appendRow(new BaseGridRow());
         this.uiModel.appendColumn(uiRowNumberColumn);
         this.uiModel.appendColumn(uiNameColumn);
         this.uiModel.appendColumn(uiExpressionEditorColumn);

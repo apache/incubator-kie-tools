@@ -45,8 +45,8 @@ import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridRender
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorGridRow;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.HasRowDragRestrictions;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
@@ -182,7 +182,7 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextGridData, Co
     public void initialiseUiModel() {
         expression.ifPresent(c -> {
             c.getContextEntry().stream().forEach(ce -> {
-                model.appendRow(new DMNGridRow());
+                model.appendRow(new ExpressionEditorGridRow());
                 uiModelMapper.fromDMNModel(model.getRowCount() - 1,
                                            0);
                 uiModelMapper.fromDMNModel(model.getRowCount() - 1,
@@ -279,7 +279,7 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextGridData, Co
                                                                                         new AddContextEntryCommand(c,
                                                                                                                    ce,
                                                                                                                    model,
-                                                                                                                   new DMNGridRow(),
+                                                                                                                   new ExpressionEditorGridRow(),
                                                                                                                    index,
                                                                                                                    uiModelMapper,
                                                                                                                    () -> resize(BaseExpressionGrid.RESIZE_EXISTING)));

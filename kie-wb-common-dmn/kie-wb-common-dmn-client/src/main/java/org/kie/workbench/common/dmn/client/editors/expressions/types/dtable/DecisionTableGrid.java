@@ -63,9 +63,9 @@ import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextBoxS
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.LiteralExpressionGridRow;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
@@ -81,9 +81,12 @@ import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
+import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
 import org.uberfire.ext.wires.core.grids.client.util.CellContextUtilities;
 import org.uberfire.mvp.Command;
+
+import static org.kie.workbench.common.dmn.client.editors.expressions.util.RendererUtils.getExpressionTextLineHeight;
 
 public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, DecisionTableGridData, DecisionTableUIModelMapper> implements HasListSelectorControl,
                                                                                                                                        HasHitPolicyControl {
@@ -229,6 +232,10 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
         return column;
     }
 
+    private GridRow makeDecisionTableRow() {
+        return new LiteralExpressionGridRow(getExpressionTextLineHeight(getRenderer().getTheme()));
+    }
+
     private Supplier<List<GridColumn.HeaderMetaData>> outputClauseHeaderMetaData(final OutputClause oc) {
         return () -> {
             final List<GridColumn.HeaderMetaData> metaData = new ArrayList<>();
@@ -356,7 +363,7 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
         expression.ifPresent(e -> {
             e.getRule().forEach(r -> {
                 int columnIndex = 0;
-                model.appendRow(new DMNGridRow());
+                model.appendRow(makeDecisionTableRow());
                 uiModelMapper.fromDMNModel(model.getRowCount() - 1,
                                            columnIndex++);
                 for (int ici = 0; ici < e.getInput().size(); ici++) {
@@ -544,11 +551,12 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
 
     void addDecisionRule(final int index) {
         expression.ifPresent(dtable -> {
+            final GridRow decisionTableRow = makeDecisionTableRow();
             sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
                                           new AddDecisionRuleCommand(dtable,
                                                                      new DecisionRule(),
                                                                      model,
-                                                                     new DMNGridRow(),
+                                                                     decisionTableRow,
                                                                      index,
                                                                      uiModelMapper,
                                                                      () -> resize(BaseExpressionGrid.RESIZE_EXISTING)));

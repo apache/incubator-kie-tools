@@ -46,7 +46,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellE
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorGridRow;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
@@ -117,7 +117,7 @@ public class ExpressionContainerGrid extends BaseGrid {
         expressionColumn.setResizable(true);
 
         model.appendColumn(expressionColumn);
-        model.appendRow(new DMNGridRow());
+        model.appendRow(new ExpressionEditorGridRow());
 
         getRenderer().setColumnRenderConstraint((isSelectionLayer, gridColumn) -> !isSelectionLayer || gridColumn.equals(expressionColumn));
     }

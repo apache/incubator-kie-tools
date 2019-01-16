@@ -28,7 +28,6 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.Relation;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.relation.RelationColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.relation.RelationUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
@@ -40,7 +39,9 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
+import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 
 import static org.junit.Assert.assertEquals;
@@ -80,7 +81,7 @@ public class AddRelationRowCommandTest {
 
     private GridData uiModel;
 
-    private DMNGridRow uiModelRow;
+    private GridRow uiModelRow;
 
     private RelationUIModelMapper uiModelMapper;
 
@@ -90,7 +91,7 @@ public class AddRelationRowCommandTest {
     public void setup() {
         this.relation = new Relation();
         this.row = new List();
-        this.uiModelRow = new DMNGridRow();
+        this.uiModelRow = new BaseGridRow();
         this.uiModel = new BaseGridData();
         this.uiModel.appendColumn(uiRowNumberColumn);
         this.uiModelMapper = new RelationUIModelMapper(() -> uiModel,
@@ -237,8 +238,8 @@ public class AddRelationRowCommandTest {
         relation.getColumn().add(new InformationItem());
         uiModel.appendColumn(uiModelColumn);
 
-        uiModel.appendRow(new DMNGridRow());
-        uiModel.appendRow(new DMNGridRow());
+        uiModel.appendRow(new BaseGridRow());
+        uiModel.appendRow(new BaseGridRow());
 
         makeCommand(1);
 
@@ -306,7 +307,7 @@ public class AddRelationRowCommandTest {
         relation.getColumn().add(new InformationItem());
         relation.getRow().add(new org.kie.workbench.common.dmn.api.definition.v1_1.List());
         uiModel.appendColumn(uiModelColumn);
-        uiModel.appendRow(new DMNGridRow());
+        uiModel.appendRow(new BaseGridRow());
         uiModelMapper.fromDMNModel(0, 0);
 
         //Add Graph column first as RelationUIModelMapper relies on the model being first updated

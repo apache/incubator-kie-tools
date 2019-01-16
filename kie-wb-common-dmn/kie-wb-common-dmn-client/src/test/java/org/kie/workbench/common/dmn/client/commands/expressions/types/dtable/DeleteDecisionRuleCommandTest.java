@@ -22,7 +22,6 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionRule;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
@@ -33,6 +32,8 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
+import org.uberfire.ext.wires.core.grids.client.model.GridRow;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -58,7 +59,7 @@ public class DeleteDecisionRuleCommandTest {
 
     private GridData uiModel;
 
-    private DMNGridRow uiModelRow;
+    private GridRow uiModelRow;
 
     private DeleteDecisionRuleCommand command;
 
@@ -69,7 +70,7 @@ public class DeleteDecisionRuleCommandTest {
         this.dtable.getRule().add(rule);
 
         this.uiModel = new DMNGridData();
-        this.uiModelRow = new DMNGridRow();
+        this.uiModelRow = new BaseGridRow();
         this.uiModel.appendRow(uiModelRow);
     }
 
@@ -120,8 +121,8 @@ public class DeleteDecisionRuleCommandTest {
         dtable.getRule().add(0, firstRule);
         dtable.getRule().add(lastRule);
 
-        uiModel.appendRow(new DMNGridRow());
-        uiModel.appendRow(new DMNGridRow());
+        uiModel.appendRow(new BaseGridRow());
+        uiModel.appendRow(new BaseGridRow());
 
         makeCommand(1);
 

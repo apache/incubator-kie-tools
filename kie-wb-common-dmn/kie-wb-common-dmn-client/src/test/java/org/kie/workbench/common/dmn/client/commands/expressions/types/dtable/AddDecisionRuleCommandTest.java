@@ -32,7 +32,6 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.Inpu
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.OutputClauseColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
@@ -44,6 +43,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 
 import static org.junit.Assert.assertEquals;
@@ -62,7 +62,7 @@ public class AddDecisionRuleCommandTest {
 
     private GridData uiModel;
 
-    private DMNGridRow uiModelRow;
+    private GridRow uiModelRow;
 
     private DecisionTableUIModelMapper uiModelMapper;
 
@@ -98,7 +98,7 @@ public class AddDecisionRuleCommandTest {
         this.rule = new DecisionRule();
         this.uiModel = new DMNGridData();
         this.uiModel.appendColumn(uiRowNumberColumn);
-        this.uiModelRow = new DMNGridRow();
+        this.uiModelRow = new BaseGridRow();
         this.uiModelMapper = new DecisionTableUIModelMapper(() -> uiModel,
                                                             () -> Optional.of(dtable),
                                                             listSelector);
@@ -316,7 +316,7 @@ public class AddDecisionRuleCommandTest {
     public void testCanvasCommandExecuteInsertBelow() {
         //The default behaviour of tests in this class is to "insert above"
         final DecisionRule existingRule = new DecisionRule();
-        final DMNGridRow existingUiRow = new DMNGridRow();
+        final GridRow existingUiRow = new BaseGridRow();
         dtable.getRule().add(existingRule);
         uiModel.appendRow(existingUiRow);
 
@@ -350,7 +350,7 @@ public class AddDecisionRuleCommandTest {
     public void testCanvasCommandExecuteInsertBelowThenUndo() {
         //The default behaviour of tests in this class is to "insert above"
         final DecisionRule existingRule = new DecisionRule();
-        final DMNGridRow existingUiRow = new DMNGridRow();
+        final GridRow existingUiRow = new BaseGridRow();
         dtable.getRule().add(existingRule);
         uiModel.appendRow(existingUiRow);
         makeCommand(1);

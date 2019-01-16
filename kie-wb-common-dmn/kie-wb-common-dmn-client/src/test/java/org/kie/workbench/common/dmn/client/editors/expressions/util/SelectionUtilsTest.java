@@ -19,11 +19,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -44,8 +44,8 @@ public class SelectionUtilsTest {
         this.uiModel = new DMNGridData();
         this.uiModel.appendColumn(uiColumn0);
         this.uiModel.appendColumn(uiColumn1);
-        this.uiModel.appendRow(new DMNGridRow());
-        this.uiModel.appendRow(new DMNGridRow());
+        this.uiModel.appendRow(new BaseGridRow());
+        this.uiModel.appendRow(new BaseGridRow());
 
         when(uiColumn0.getIndex()).thenReturn(0);
         when(uiColumn1.getIndex()).thenReturn(1);

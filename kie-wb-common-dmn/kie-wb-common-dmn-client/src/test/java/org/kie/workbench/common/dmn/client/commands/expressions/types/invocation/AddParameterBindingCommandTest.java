@@ -33,7 +33,6 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.context.Nam
 import org.kie.workbench.common.dmn.client.editors.expressions.types.invocation.InvocationDefaultValueUtilities;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.invocation.InvocationUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
@@ -45,7 +44,9 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
+import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 
@@ -99,7 +100,7 @@ public class AddParameterBindingCommandTest {
 
     private GridData uiModel;
 
-    private DMNGridRow uiModelRow;
+    private GridRow uiModelRow;
 
     private InvocationUIModelMapper uiModelMapper;
 
@@ -115,7 +116,7 @@ public class AddParameterBindingCommandTest {
         this.binding.setParameter(parameter);
 
         this.uiModel = new BaseGridData(false);
-        this.uiModelRow = new DMNGridRow();
+        this.uiModelRow = new BaseGridRow();
         this.uiModel.appendColumn(uiRowNumberColumn);
         this.uiModel.appendColumn(uiNameColumn);
         this.uiModel.appendColumn(uiExpressionEditorColumn);
@@ -136,7 +137,9 @@ public class AddParameterBindingCommandTest {
         doReturn(Optional.empty()).when(expressionEditorDefinitions).getExpressionEditorDefinition(any(Optional.class));
     }
 
-    private void makeCommand(final int uiRowIndex, final Binding rowBindingEntry, final DMNGridRow uiGridRow) {
+    private void makeCommand(final int uiRowIndex,
+                             final Binding rowBindingEntry,
+                             final GridRow uiGridRow) {
         this.command = new AddParameterBindingCommand(invocation,
                                                       rowBindingEntry,
                                                       uiModel,
@@ -154,7 +157,8 @@ public class AddParameterBindingCommandTest {
         makeCommand(uiRowIndex, binding, uiModelRow);
     }
 
-    private void makeCommand(final int uiRowIndex, final DMNGridRow uiGridRow) {
+    private void makeCommand(final int uiRowIndex,
+                             final GridRow uiGridRow) {
         final Binding rowEntry = new Binding();
         final InformationItem parameter = new InformationItem();
         parameter.setName(new Name());
@@ -398,7 +402,7 @@ public class AddParameterBindingCommandTest {
                      firstEntryCanvasCommand.execute(handler));
 
         // second row
-        final DMNGridRow uiSecondModelRow = new DMNGridRow();
+        final GridRow uiSecondModelRow = new BaseGridRow();
         makeCommand(1, uiSecondModelRow);
         command.newGraphCommand(handler).execute(gce);
         final Command<AbstractCanvasHandler, CanvasViolation> secondEntryCanvasCommand = command.newCanvasCommand(handler);
@@ -406,7 +410,7 @@ public class AddParameterBindingCommandTest {
                      secondEntryCanvasCommand.execute(handler));
 
         // third row
-        final DMNGridRow uiThirdModelRow = new DMNGridRow();
+        final GridRow uiThirdModelRow = new BaseGridRow();
         makeCommand(0, uiThirdModelRow);
         command.newGraphCommand(handler).execute(gce);
         final Command<AbstractCanvasHandler, CanvasViolation> thirdEntryCanvasCommand = command.newCanvasCommand(handler);

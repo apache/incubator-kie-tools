@@ -36,7 +36,6 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.context.Nam
 import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridRow;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
@@ -49,7 +48,9 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
+import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
+import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 
@@ -111,9 +112,9 @@ public class AddContextEntryCommandTest {
 
     private GridData uiModel;
 
-    private DMNGridRow uiModelRow;
+    private GridRow uiModelRow;
 
-    private DMNGridRow uiDefaultResultModelRow;
+    private GridRow uiDefaultResultModelRow;
 
     private ContextUIModelMapper uiModelMapper;
 
@@ -134,8 +135,8 @@ public class AddContextEntryCommandTest {
         this.defaultResultContextEntry = new ContextEntry();
         this.context.getContextEntry().add(defaultResultContextEntry);
         this.uiModel = new BaseGridData();
-        this.uiModelRow = new DMNGridRow();
-        this.uiDefaultResultModelRow = new DMNGridRow();
+        this.uiModelRow = new BaseGridRow();
+        this.uiDefaultResultModelRow = new BaseGridRow();
         this.uiModel.appendRow(uiDefaultResultModelRow);
 
         this.uiModel.appendColumn(uiRowNumberColumn);
@@ -364,7 +365,7 @@ public class AddContextEntryCommandTest {
         final ContextEntry secondRowEntry = new ContextEntry() {{
             setVariable(new InformationItem());
         }};
-        final DMNGridRow uiSecondModelRow = new DMNGridRow();
+        final GridRow uiSecondModelRow = new BaseGridRow();
         command = spy(new AddContextEntryCommand(context,
                                                  secondRowEntry,
                                                  uiModel,
