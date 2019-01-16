@@ -16,6 +16,7 @@
 
 package org.uberfire.java.nio.fs.jgit.util.commands;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -43,18 +44,9 @@ public class SyncRemote {
     public Optional execute() throws InvalidRemoteException {
         try {
             final List<Ref> branches = git._branchList().setListMode(ListBranchCommand.ListMode.ALL).call();
-
             final Set<String> remoteBranches = new HashSet<>();
             final Set<String> localBranches = new HashSet<>();
-
-            for (final Ref branch : branches) {
-                final String branchName = branch.getName().substring(branch.getName().lastIndexOf("/") + 1);
-                if (branch.getName().startsWith("refs/remotes/" + remote.getK1())) {
-                    remoteBranches.add(branchName);
-                } else {
-                    localBranches.add(branchName);
-                }
-            }
+            fillBranches(branches, remoteBranches, localBranches);
 
             /*
              * We filter out HEAD below because otherwise it appears
@@ -106,6 +98,24 @@ public class SyncRemote {
             throw re;
         } catch (final Exception ex) {
             throw new RuntimeException(ex);
+        }
+    }
+
+    void fillBranches(final List<Ref> branches,
+                      final Collection<String> remoteBranches,
+                      final Collection<String> localBranches) {
+        for (final Ref branch : branches) {
+            final String branchFullName = branch.getName();
+            final String remotePrefix = "refs/remotes/" + remote.getK1() + "/";
+            final String localPrefix = "refs/heads/";
+
+            if (branchFullName.startsWith(remotePrefix)) {
+                remoteBranches.add(branchFullName.replaceFirst(remotePrefix, ""));
+            } else if (branchFullName.startsWith(localPrefix)) {
+                localBranches.add(branchFullName.replaceFirst(localPrefix, ""));
+            } else {
+                localBranches.add(branchFullName.substring(branchFullName.lastIndexOf("/") + 1));
+            }
         }
     }
 }
