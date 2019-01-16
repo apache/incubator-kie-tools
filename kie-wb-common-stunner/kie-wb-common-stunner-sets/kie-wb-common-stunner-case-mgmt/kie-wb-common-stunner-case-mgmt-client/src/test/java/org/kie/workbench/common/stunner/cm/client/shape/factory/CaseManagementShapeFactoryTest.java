@@ -42,7 +42,9 @@ import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
 import org.kie.workbench.common.stunner.cm.client.canvas.CaseManagementCanvasHandler;
 import org.kie.workbench.common.stunner.cm.client.resources.CaseManagementSVGViewFactory;
 import org.kie.workbench.common.stunner.cm.client.shape.CaseManagementShape;
+import org.kie.workbench.common.stunner.cm.client.shape.view.CaseManagementDiagramShapeView;
 import org.kie.workbench.common.stunner.cm.client.shape.view.CaseManagementShapeView;
+import org.kie.workbench.common.stunner.cm.client.shape.view.CaseManagementStageShapeView;
 import org.kie.workbench.common.stunner.cm.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
 import org.kie.workbench.common.stunner.cm.definition.CaseReusableSubprocess;
@@ -123,7 +125,7 @@ public class CaseManagementShapeFactoryTest {
     private Consumer<Shape> stageAssertions = (shape) -> {
         assertNotNull(shape.getShapeView());
         assertTrue(shape instanceof CaseManagementShape);
-        assertTrue(shape.getShapeView() instanceof CaseManagementShapeView);
+        assertTrue(shape.getShapeView() instanceof CaseManagementStageShapeView);
         assertSame(((CaseManagementShapeView) shape.getShapeView()).getPrimitive(),
                    stageShape);
     };
@@ -181,11 +183,11 @@ public class CaseManagementShapeFactoryTest {
             @Override
             public SVGShapeViewResource stage() {
                 return new SVGShapeViewResource(arg ->
-                                                        new CaseManagementShapeView("stage",
-                                                                                    stageShape,
-                                                                                    0.0d,
-                                                                                    0.0d,
-                                                                                    false));
+                                                        new CaseManagementStageShapeView("stage",
+                                                                                         stageShape,
+                                                                                         0.0d,
+                                                                                         0.0d,
+                                                                                         false));
             }
 
             @Override
@@ -221,11 +223,11 @@ public class CaseManagementShapeFactoryTest {
             @Override
             public SVGShapeViewResource rectangle() {
                 return new SVGShapeViewResource(arg ->
-                                                        new CaseManagementShapeView("rectangle",
-                                                                                    rectangleShape,
-                                                                                    0.0d,
-                                                                                    0.0d,
-                                                                                    false));
+                                                        new CaseManagementDiagramShapeView("rectangle",
+                                                                                           rectangleShape,
+                                                                                           0.0d,
+                                                                                           0.0d,
+                                                                                           false));
             }
         });
 
@@ -265,7 +267,7 @@ public class CaseManagementShapeFactoryTest {
                                 (shape) -> {
                                     assertNotNull(shape.getShapeView());
                                     assertTrue(shape instanceof CaseManagementShape);
-                                    assertTrue(shape.getShapeView() instanceof CaseManagementShapeView);
+                                    assertTrue(shape.getShapeView() instanceof CaseManagementDiagramShapeView);
                                     assertSame(((CaseManagementShapeView) shape.getShapeView()).getPrimitive(),
                                                rectangleShape);
                                 });

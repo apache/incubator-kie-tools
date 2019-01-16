@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.cm.client.canvas;
 
 import java.util.List;
+import java.util.OptionalDouble;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.Dependent;
@@ -85,5 +86,9 @@ public class CaseManagementCanvas extends WiresCanvas {
 
         deleteShape(shape);
         childShapes.forEach(this::clearShape);
+    }
+
+    public OptionalDouble getPanelBoundsHeight() {
+        return ((CaseManagementCanvasView) getView()).getPanelBoundsHeight();
     }
 }

@@ -16,6 +16,7 @@
 package org.kie.workbench.common.stunner.cm.client.wires;
 
 import java.util.Optional;
+import java.util.OptionalInt;
 
 import javax.enterprise.context.ApplicationScoped;
 
@@ -25,15 +26,15 @@ import org.kie.workbench.common.stunner.cm.client.shape.view.CaseManagementShape
 @ApplicationScoped
 public class CaseManagementContainmentStateHolder {
 
-    private Optional<Integer> originalIndex = Optional.empty();
+    private OptionalInt originalIndex = OptionalInt.empty();
     private Optional<WiresContainer> originalParent = Optional.empty();
     private Optional<CaseManagementShapeView> ghost = Optional.empty();
 
-    public Optional<Integer> getOriginalIndex() {
+    public OptionalInt getOriginalIndex() {
         return originalIndex;
     }
 
-    public void setOriginalIndex(final Optional<Integer> originalIndex) {
+    public void setOriginalIndex(final OptionalInt originalIndex) {
         this.originalIndex = originalIndex;
     }
 

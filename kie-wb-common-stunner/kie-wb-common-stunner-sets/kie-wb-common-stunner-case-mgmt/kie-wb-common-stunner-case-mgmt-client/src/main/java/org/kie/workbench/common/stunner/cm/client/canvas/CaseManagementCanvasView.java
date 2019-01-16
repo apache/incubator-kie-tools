@@ -15,25 +15,40 @@
  */
 package org.kie.workbench.common.stunner.cm.client.canvas;
 
+import java.util.Optional;
+import java.util.OptionalDouble;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
+import com.ait.lienzo.client.widget.panel.LienzoBoundsPanel;
+import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvasView;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvasView;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresLayer;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
 import org.kie.workbench.common.stunner.cm.client.shape.view.CaseManagementShapeView;
 import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
+import org.kie.workbench.common.stunner.core.client.canvas.CanvasSettings;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 
 @Dependent
 @CaseManagementEditor
 public class CaseManagementCanvasView extends WiresCanvasView {
 
+    private Optional<LienzoBoundsPanel> boundsPanel;
+
     @Inject
     public CaseManagementCanvasView(final WiresLayer layer) {
         super(layer);
+    }
+
+    @Override
+    protected LienzoCanvasView<WiresLayer> doInitialize(CanvasSettings canvasSettings) {
+        final LienzoCanvasView<WiresLayer> canvasView = super.doInitialize(canvasSettings);
+        boundsPanel = Optional.ofNullable(canvasView.getLienzoPanel().getView());
+        return canvasView;
     }
 
     @Override
@@ -59,5 +74,11 @@ public class CaseManagementCanvasView extends WiresCanvasView {
         parentCMView.addShape(childCMView, index);
 
         return this;
+    }
+
+    OptionalDouble getPanelBoundsHeight() {
+        return boundsPanel
+                .map(bp -> OptionalDouble.of(bp.getBounds().getHeight()))
+                .orElse(OptionalDouble.empty());
     }
 }

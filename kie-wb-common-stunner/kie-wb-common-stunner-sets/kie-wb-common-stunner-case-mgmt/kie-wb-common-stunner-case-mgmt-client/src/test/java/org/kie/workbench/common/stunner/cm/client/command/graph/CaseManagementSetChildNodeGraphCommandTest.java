@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.cm.client.command.graph;
 
 import java.util.Optional;
+import java.util.OptionalInt;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -34,16 +35,16 @@ import static org.junit.Assert.assertTrue;
 @RunWith(MockitoJUnitRunner.class)
 public class CaseManagementSetChildNodeGraphCommandTest extends CaseManagementAbstractGraphCommandTest {
 
-    private Optional<Integer> index;
+    private OptionalInt index;
     private Optional<Node> originalParent;
-    private Optional<Integer> originalIndex;
+    private OptionalInt originalIndex;
 
     @Before
     public void setup() {
         super.setup();
-        this.index = Optional.empty();
+        this.index = OptionalInt.empty();
         this.originalParent = Optional.empty();
-        this.originalIndex = Optional.empty();
+        this.originalIndex = OptionalInt.empty();
     }
 
     @Test
@@ -71,9 +72,9 @@ public class CaseManagementSetChildNodeGraphCommandTest extends CaseManagementAb
 
     private CaseManagementSetChildNodeGraphCommand setChildNode(final Node parent,
                                                                 final Node candidate,
-                                                                final Optional<Integer> index,
+                                                                final OptionalInt index,
                                                                 final Optional<Node> originalParent,
-                                                                final Optional<Integer> originalIndex) {
+                                                                final OptionalInt originalIndex) {
         final CaseManagementSetChildNodeGraphCommand command = new CaseManagementSetChildNodeGraphCommand(parent,
                                                                                                           candidate,
                                                                                                           index,
@@ -121,7 +122,7 @@ public class CaseManagementSetChildNodeGraphCommandTest extends CaseManagementAb
                      candidate,
                      index,
                      Optional.of(parent),
-                     Optional.of(0));
+                     OptionalInt.of(0));
 
         assertEquals(0,
                      parent.getOutEdges().size());
@@ -159,7 +160,7 @@ public class CaseManagementSetChildNodeGraphCommandTest extends CaseManagementAb
                                                                                           candidate,
                                                                                           index,
                                                                                           Optional.of(parent),
-                                                                                          Optional.of(0));
+                                                                                          OptionalInt.of(0));
 
         //Perform test
         addToNewParentCommand.undo(context);

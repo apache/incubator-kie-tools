@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.cm.client.command.graph;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.OptionalInt;
 
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -34,17 +35,17 @@ import org.kie.workbench.common.stunner.core.util.UUID;
 
 public class CaseManagementSetChildNodeGraphCommand extends AbstractGraphCommand {
 
-    protected final Optional<Integer> index;
+    protected final OptionalInt index;
     protected final Optional<Node> originalParent;
-    protected final Optional<Integer> originalIndex;
+    protected final OptionalInt originalIndex;
     private final Node parent;
     private final Node child;
 
     public CaseManagementSetChildNodeGraphCommand(final Node parent,
                                                   final Node child,
-                                                  final Optional<Integer> index,
+                                                  final OptionalInt index,
                                                   final Optional<Node> originalParent,
-                                                  final Optional<Integer> originalIndex) {
+                                                  final OptionalInt originalIndex) {
         this.parent = parent;
         this.child = child;
         this.index = index;
@@ -112,19 +113,14 @@ public class CaseManagementSetChildNodeGraphCommand extends AbstractGraphCommand
     @SuppressWarnings("unchecked")
     private void addRelationship(final Node parent,
                                  final Node child,
-                                 final Optional<Integer> index,
+                                 final OptionalInt index,
                                  final GraphCommandExecutionContext context) {
         final String uuid = UUID.uuid();
         final Edge<Child, Node> edge = new EdgeImpl<>(uuid);
         edge.setContent(new Child());
         edge.setSourceNode(parent);
         edge.setTargetNode(child);
-        if (index.isPresent()) {
-            parent.getOutEdges().add(index.get(),
-                                     edge);
-        } else {
-            parent.getOutEdges().add(edge);
-        }
+        parent.getOutEdges().add(index.orElseGet(() -> parent.getOutEdges().size()), edge);
         child.getInEdges().add(edge);
         getMutableIndex(context).addEdge(edge);
     }

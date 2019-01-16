@@ -99,6 +99,9 @@ public class CaseManagementCanvasHandler<D extends Diagram, C extends WiresCanva
         super.register(shape,
                        candidate,
                        fireEvents);
+
+        ((CaseManagementShapeView) shape.getShapeView())
+                .setCanvas((CaseManagementCanvas) this.getCanvas());
     }
 
     @Override

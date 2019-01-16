@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.cm.client.command.canvas;
 
 import java.util.Optional;
+import java.util.OptionalInt;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.RemoveCanvasChildCommand;
@@ -27,15 +28,15 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 
 public class CaseManagementSetChildNodeCanvasCommand extends org.kie.workbench.common.stunner.core.client.canvas.command.SetCanvasChildNodeCommand {
 
-    protected final Optional<Integer> index;
+    protected final OptionalInt index;
     protected final Optional<Node> originalParent;
-    protected final Optional<Integer> originalIndex;
+    protected final OptionalInt originalIndex;
 
     public CaseManagementSetChildNodeCanvasCommand(final Node parent,
                                                    final Node child,
-                                                   final Optional<Integer> index,
+                                                   final OptionalInt index,
                                                    final Optional<Node> originalParent,
-                                                   final Optional<Integer> originalIndex) {
+                                                   final OptionalInt originalIndex) {
         super(parent,
               child);
         this.index = index;
@@ -47,7 +48,7 @@ public class CaseManagementSetChildNodeCanvasCommand extends org.kie.workbench.c
     public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
         context.addChild(getParent(),
                          getCandidate(),
-                         index.get());
+                         index.getAsInt());
         context.updateElementProperties(getCandidate(),
                                         MutationContext.STATIC);
         return buildResult();
@@ -61,7 +62,7 @@ public class CaseManagementSetChildNodeCanvasCommand extends org.kie.workbench.c
         } else {
             context.addChild(originalParent.get(),
                              getCandidate(),
-                             originalIndex.get());
+                             originalIndex.getAsInt());
             context.updateElementProperties(getCandidate(),
                                             MutationContext.STATIC);
         }

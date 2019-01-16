@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.client.lienzo.canvas;
 
 import com.ait.lienzo.client.core.shape.Layer;
+import com.ait.lienzo.client.widget.panel.LienzoBoundsPanel;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasPanel;
 
 public interface LienzoPanel extends CanvasPanel {
@@ -33,4 +34,6 @@ public interface LienzoPanel extends CanvasPanel {
     LienzoPanel focus();
 
     void setBackgroundLayer(Layer layer);
+
+    LienzoBoundsPanel getView();
 }

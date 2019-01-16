@@ -35,6 +35,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
 import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementSvgDiagramShapeDef;
 import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementSvgNullShapeDef;
+import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementSvgStageShapeDef;
 import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementSvgSubprocessShapeDef;
 import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementSvgUserTaskShapeDef;
 import org.kie.workbench.common.stunner.cm.definition.AdHocSubprocess;
@@ -70,7 +71,7 @@ public class CaseManagementShapeFactory implements ShapeFactory<BPMNDefinition, 
                           new CaseManagementSvgDiagramShapeDef(),
                           () -> shapeDefFactory)
                 .delegate(AdHocSubprocess.class,
-                          new CaseManagementSvgSubprocessShapeDef(),
+                          new CaseManagementSvgStageShapeDef(),
                           () -> shapeDefFactory)
                 .delegate(ProcessReusableSubprocess.class,
                           new CaseManagementSvgSubprocessShapeDef(),

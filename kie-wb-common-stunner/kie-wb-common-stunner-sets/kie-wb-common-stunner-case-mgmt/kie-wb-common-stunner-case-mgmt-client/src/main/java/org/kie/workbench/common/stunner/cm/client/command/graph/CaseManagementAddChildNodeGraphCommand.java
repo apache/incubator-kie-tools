@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.cm.client.command.graph;
 
 import java.util.Optional;
+import java.util.OptionalInt;
 
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -45,9 +46,9 @@ public class CaseManagementAddChildNodeGraphCommand extends org.kie.workbench.co
         this.addCommand(new RegisterNodeCommand(child));
         this.addCommand(new CaseManagementSetChildNodeGraphCommand(parent,
                                                                    child,
-                                                                   Optional.of(index),
+                                                                   OptionalInt.of(index),
                                                                    Optional.empty(),
-                                                                   Optional.empty()));
+                                                                   OptionalInt.empty()));
         return this;
     }
 

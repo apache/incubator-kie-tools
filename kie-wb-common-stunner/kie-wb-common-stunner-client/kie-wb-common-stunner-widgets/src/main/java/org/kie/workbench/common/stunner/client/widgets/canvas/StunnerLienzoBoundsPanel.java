@@ -185,6 +185,7 @@ public class StunnerLienzoBoundsPanel
         view = null;
     }
 
+    @Override
     public LienzoBoundsPanel getView() {
         return view;
     }

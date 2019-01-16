@@ -43,10 +43,15 @@ public class VerticalStackLayoutManager extends AbstractNestedLayoutHandler {
 
         int targetIndex = children.size();
 
-        /**
-         * TODO: It is not yet supported that drag/drop a child element to reorder it under a stage
-         * @see <a href="https://issues.jboss.org/browse/JBPM-7888">JBPM-7888</a>
-         */
+        final double my = mouseRelativeLoc.getY();
+
+        for (int idx = 0; idx < children.size(); idx++) {
+            final WiresShape child = children.get(idx);
+            if (my < child.getY()) {
+                targetIndex = idx;
+                break;
+            }
+        }
 
         if (container instanceof CaseManagementShapeView) {
             final int currentIndex = ((CaseManagementShapeView) container).getIndex(shape);

@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.cm.client.wires;
 
 import java.util.Optional;
+import java.util.OptionalInt;
 
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Layer;
@@ -36,6 +37,7 @@ import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.cm.client.shape.view.CaseManagementDiagramShapeView;
 import org.kie.workbench.common.stunner.cm.client.shape.view.CaseManagementShapeView;
 import org.mockito.Mock;
 
@@ -122,7 +124,7 @@ public class CaseManagementContainmentControlTest {
         when(parent.getGroup()).thenReturn(new Group());
         when(state.getGhost()).thenReturn(Optional.of(ghost));
         when(state.getOriginalParent()).thenReturn(Optional.of(parent));
-        when(state.getOriginalIndex()).thenReturn(Optional.of(0));
+        when(state.getOriginalIndex()).thenReturn(OptionalInt.of(0));
         control = new CaseManagementContainmentControl(containmentControl,
                                                        state);
     }
@@ -145,7 +147,7 @@ public class CaseManagementContainmentControlTest {
         verify(containmentControl, times(1)).onMoveStart(eq(x),
                                                          eq(y));
         verify(state, times(1)).setGhost(eq(Optional.empty()));
-        verify(state, times(1)).setOriginalIndex(eq(Optional.empty()));
+        verify(state, times(1)).setOriginalIndex(eq(OptionalInt.empty()));
         verify(state, times(1)).setOriginalParent(eq(Optional.empty()));
         verify(parent, never()).logicallyReplace(any(CaseManagementShapeView.class),
                                                  any(CaseManagementShapeView.class));
@@ -159,7 +161,7 @@ public class CaseManagementContainmentControlTest {
         verify(containmentControl, times(1)).onMoveStart(eq(x),
                                                          eq(y));
         verify(state, times(1)).setGhost(eq(Optional.of(ghost)));
-        verify(state, times(1)).setOriginalIndex(eq(Optional.of(0)));
+        verify(state, times(1)).setOriginalIndex(eq(OptionalInt.of(0)));
         verify(state, times(1)).setOriginalParent(eq(Optional.of(parent)));
         verify(parent, times(1)).logicallyReplace(eq(shape),
                                                   eq(ghost));
@@ -193,7 +195,7 @@ public class CaseManagementContainmentControlTest {
         control.onMove(x, y);
         verify(containmentControl, times(1)).onMove(eq(x),
                                                     eq(y));
-        verify(parentLayoutHandler, never()).add(eq(ghost),
+        verify(parentLayoutHandler, times(1)).add(eq(ghost),
                                                   eq(parent),
                                                   eq(new Point2D(x, y)));
         verify(parentPickerControl, times(1)).rebuildPicker();
@@ -242,11 +244,11 @@ public class CaseManagementContainmentControlTest {
     public void testExecuteAndRestoreGhost() {
         control.execute();
         verify(parent, never()).logicallyReplace(eq(ghost),
-                                                  eq(shape));
+                                                 eq(shape));
         verify(ghost, times(1)).destroy();
         verify(state, times(1)).setGhost(Optional.empty());
         verify(state, times(1)).setOriginalParent(Optional.empty());
-        verify(state, times(1)).setOriginalIndex(Optional.empty());
+        verify(state, times(1)).setOriginalIndex(OptionalInt.empty());
         verify(layer, times(1)).batch();
     }
 
@@ -256,18 +258,18 @@ public class CaseManagementContainmentControlTest {
         verify(ghost, times(1)).destroy();
         verify(state, times(1)).setGhost(Optional.empty());
         verify(state, times(1)).setOriginalParent(Optional.empty());
-        verify(state, times(1)).setOriginalIndex(Optional.empty());
+        verify(state, times(1)).setOriginalIndex(OptionalInt.empty());
     }
 
     @Test
     public void testReset() {
         control.reset();
-        verify(ghost, times(2)).removeFromParent();
+        verify(ghost, times(1)).removeFromParent();
         verify(parent, times(1)).addShape(eq(shape),
                                           eq(0));
         verify(state, times(1)).setGhost(Optional.empty());
         verify(state, times(1)).setOriginalParent(Optional.empty());
-        verify(state, times(1)).setOriginalIndex(Optional.empty());
+        verify(state, times(1)).setOriginalIndex(OptionalInt.empty());
     }
 
     @Test
@@ -282,5 +284,26 @@ public class CaseManagementContainmentControlTest {
         verify(containmentControl, times(1)).execute();
         verify(ghost, atLeast(1)).removeFromParent();
         verify(ghostParent, times(1)).addShape(eq(shape), eq(1));
+    }
+
+    @Test
+    public void testGetShapeIndex_diagram() throws Exception {
+        when(containmentControl.getShape()).thenReturn(mock(CaseManagementDiagramShapeView.class));
+        OptionalInt result = control.getShapeIndex();
+        assertEquals(0, result.getAsInt());
+    }
+
+    @Test
+    public void testGetShapeIndex_noShape() throws Exception {
+        when(containmentControl.getShape()).thenReturn(null);
+        OptionalInt result = control.getShapeIndex();
+        assertFalse(result.isPresent());
+    }
+
+    @Test
+    public void testGetShapeIndex_noParent() throws Exception {
+        when(containmentControl.getParent()).thenReturn(null);
+        OptionalInt result = control.getShapeIndex();
+        assertFalse(result.isPresent());
     }
 }

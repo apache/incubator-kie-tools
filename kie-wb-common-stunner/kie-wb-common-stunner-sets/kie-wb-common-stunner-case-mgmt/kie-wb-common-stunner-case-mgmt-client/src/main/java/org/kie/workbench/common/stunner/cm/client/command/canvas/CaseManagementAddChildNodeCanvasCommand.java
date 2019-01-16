@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.cm.client.command.canvas;
 
 import java.util.Optional;
+import java.util.OptionalInt;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasCommand;
@@ -50,9 +51,9 @@ public class CaseManagementAddChildNodeCanvasCommand extends AbstractCanvasComma
                                                      shapeSetId))
                 .addCommand(new CaseManagementSetChildNodeCanvasCommand(parent,
                                                                         child,
-                                                                        Optional.of(index),
+                                                                        OptionalInt.of(index),
                                                                         Optional.empty(),
-                                                                        Optional.empty()))
+                                                                        OptionalInt.empty()))
                 .build()
                 .execute(context);
     }

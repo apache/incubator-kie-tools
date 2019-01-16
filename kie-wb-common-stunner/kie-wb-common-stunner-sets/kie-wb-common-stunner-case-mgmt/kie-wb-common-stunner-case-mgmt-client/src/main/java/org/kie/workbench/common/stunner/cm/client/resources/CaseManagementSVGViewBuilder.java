@@ -16,7 +16,9 @@
 
 package org.kie.workbench.common.stunner.cm.client.resources;
 
+import org.kie.workbench.common.stunner.cm.client.shape.view.CaseManagementDiagramShapeView;
 import org.kie.workbench.common.stunner.cm.client.shape.view.CaseManagementShapeView;
+import org.kie.workbench.common.stunner.cm.client.shape.view.CaseManagementStageShapeView;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGPrimitiveShape;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
 import org.kie.workbench.common.stunner.svg.client.shape.view.factory.SVGShapeViewBuilder;
@@ -29,6 +31,15 @@ public class CaseManagementSVGViewBuilder implements SVGShapeViewBuilder {
                               final double width,
                               final double height,
                               final boolean resizable) {
-        return new CaseManagementShapeView(name, primitiveShape, width, height, false);
+        switch (name) {
+            case "stage":
+                return new CaseManagementStageShapeView(name, primitiveShape, width, height, false);
+
+            case "rectangle":
+                return new CaseManagementDiagramShapeView(name, primitiveShape, width, height, false);
+
+            default:
+                return new CaseManagementShapeView(name, primitiveShape, width, height, false);
+        }
     }
 }

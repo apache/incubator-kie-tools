@@ -27,7 +27,6 @@ import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.stunner.cm.client.wires.VerticalStackLayoutManager;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGPrimitiveShape;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
@@ -207,7 +206,7 @@ public class CaseManagementShapeViewTest {
 
         final CaseManagementShapeView ghost = shape.getGhost();
 
-        assertTrue(ghost.getLayoutHandler() instanceof VerticalStackLayoutManager);
+        assertTrue(ILayoutHandler.NONE.equals(ghost.getLayoutHandler()));
         assertEquals(ghost.getUUID(),
                      shape.getUUID());
 

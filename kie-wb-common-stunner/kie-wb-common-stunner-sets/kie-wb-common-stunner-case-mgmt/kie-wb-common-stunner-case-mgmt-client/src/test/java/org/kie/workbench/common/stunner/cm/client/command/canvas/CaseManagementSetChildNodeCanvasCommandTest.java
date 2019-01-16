@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.cm.client.command.canvas;
 
 import java.util.Optional;
+import java.util.OptionalInt;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -30,16 +31,16 @@ import static org.mockito.Mockito.verify;
 @RunWith(MockitoJUnitRunner.class)
 public class CaseManagementSetChildNodeCanvasCommandTest extends CaseManagementAbstractCanvasCommandTest {
 
-    private Optional<Integer> index;
+    private OptionalInt index;
     private Optional<Node> originalParent;
-    private Optional<Integer> originalIndex;
+    private OptionalInt originalIndex;
 
     @Before
     public void setup() {
         super.setup();
-        this.index = Optional.of(0);
+        this.index = OptionalInt.of(0);
         this.originalParent = Optional.empty();
-        this.originalIndex = Optional.empty();
+        this.originalIndex = OptionalInt.empty();
     }
 
     @Test
@@ -58,9 +59,9 @@ public class CaseManagementSetChildNodeCanvasCommandTest extends CaseManagementA
 
     private CaseManagementSetChildNodeCanvasCommand setChildNode(final Node parent,
                                                                  final Node candidate,
-                                                                 final Optional<Integer> index,
+                                                                 final OptionalInt index,
                                                                  final Optional<Node> originalParent,
-                                                                 final Optional<Integer> originalIndex) {
+                                                                 final OptionalInt originalIndex) {
         final CaseManagementSetChildNodeCanvasCommand command = new CaseManagementSetChildNodeCanvasCommand(parent,
                                                                                                             candidate,
                                                                                                             index,

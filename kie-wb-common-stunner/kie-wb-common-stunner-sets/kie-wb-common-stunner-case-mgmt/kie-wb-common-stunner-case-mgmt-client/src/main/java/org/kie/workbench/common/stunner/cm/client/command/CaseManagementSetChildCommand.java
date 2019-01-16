@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.cm.client.command;
 
 import java.util.Optional;
+import java.util.OptionalInt;
 
 import org.kie.workbench.common.stunner.cm.client.command.canvas.CaseManagementSetChildNodeCanvasCommand;
 import org.kie.workbench.common.stunner.cm.client.command.graph.CaseManagementSetChildNodeGraphCommand;
@@ -29,24 +30,24 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
 public class CaseManagementSetChildCommand extends org.kie.workbench.common.stunner.core.client.canvas.command.SetChildNodeCommand {
 
-    protected final Optional<Integer> index;
+    protected final OptionalInt index;
     protected final Optional<Node> originalParent;
-    protected final Optional<Integer> originalIndex;
+    protected final OptionalInt originalIndex;
 
     public CaseManagementSetChildCommand(final Node parent,
                                          final Node child) {
         this(parent,
              child,
-             Optional.of(parent.getOutEdges().size()),
+             OptionalInt.of(parent.getOutEdges().size()),
              Optional.empty(),
-             Optional.empty());
+             OptionalInt.empty());
     }
 
     public CaseManagementSetChildCommand(final Node parent,
                                          final Node child,
-                                         final Optional<Integer> index,
+                                         final OptionalInt index,
                                          final Optional<Node> originalParent,
-                                         final Optional<Integer> originalIndex) {
+                                         final OptionalInt originalIndex) {
         super(parent,
               child);
         this.index = index;

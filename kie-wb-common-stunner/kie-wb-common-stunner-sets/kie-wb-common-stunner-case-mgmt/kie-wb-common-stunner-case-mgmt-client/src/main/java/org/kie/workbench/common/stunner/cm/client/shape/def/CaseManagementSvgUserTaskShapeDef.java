@@ -16,10 +16,8 @@
 
 package org.kie.workbench.common.stunner.cm.client.shape.def;
 
-import java.util.Map;
 import java.util.Optional;
 
-import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.BaseDimensionedShapeDef;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseTask;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
@@ -29,51 +27,42 @@ import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
 import org.kie.workbench.common.stunner.core.client.shape.view.handler.FontHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.handler.SizeHandler;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
-import org.kie.workbench.common.stunner.svg.client.shape.factory.SVGShapeViewResources;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
 
 public final class CaseManagementSvgUserTaskShapeDef extends BaseDimensionedShapeDef
-        implements CaseManagementSvgShapeDef<BaseTask> {
-
-    public static final SVGShapeViewResources<BaseTask, CaseManagementSVGViewFactory> VIEW_RESOURCES =
-            new SVGShapeViewResources<BaseTask, CaseManagementSVGViewFactory>()
-                    .put(UserTask.class, CaseManagementSVGViewFactory::task);
-
-    public static final Map<Class<? extends BaseTask>, Glyph> GLYPHS =
-            new Maps.Builder<Class<? extends BaseTask>, Glyph>()
-                    .put(UserTask.class, CaseManagementSVGGlyphFactory.TASK_GLYPH).build();
+        implements CaseManagementSvgShapeDef<UserTask> {
 
     private static HasTitle.Position getSubprocessTextPosition(final BaseTask bean) {
         return HasTitle.Position.CENTER;
     }
 
     @Override
-    public FontHandler<BaseTask, SVGShapeView> newFontHandler() {
+    public FontHandler<UserTask, SVGShapeView> newFontHandler() {
         return newFontHandlerBuilder()
                 .position(CaseManagementSvgUserTaskShapeDef::getSubprocessTextPosition)
                 .build();
     }
 
     @Override
-    public SizeHandler<BaseTask, SVGShapeView> newSizeHandler() {
+    public SizeHandler<UserTask, SVGShapeView> newSizeHandler() {
         return newSizeHandlerBuilder()
-                .width(task -> task.getDimensionsSet().getWidth().getValue())
-                .height(task -> task.getDimensionsSet().getHeight().getValue())
-                .minWidth(task -> 50d)
-                .minHeight(task -> 50d)
+                .width(e -> e.getDimensionsSet().getWidth().getValue())
+                .height(e -> e.getDimensionsSet().getHeight().getValue())
+                .minWidth(e -> 50d)
+                .minHeight(e -> 50d)
                 .build();
     }
 
     @Override
-    public SVGShapeView<?> newViewInstance(final CaseManagementSVGViewFactory factory, final BaseTask obj) {
+    public SVGShapeView<?> newViewInstance(final CaseManagementSVGViewFactory factory, final UserTask obj) {
         return newViewInstance(Optional.ofNullable(obj.getDimensionsSet().getWidth()),
                                Optional.ofNullable(obj.getDimensionsSet().getHeight()),
-                               VIEW_RESOURCES.getResource(factory, obj));
+                               factory.task());
     }
 
     @Override
-    public Glyph getGlyph(final Class<? extends BaseTask> type,
+    public Glyph getGlyph(final Class<? extends UserTask> type,
                           final String defId) {
-        return GLYPHS.get(type);
+        return CaseManagementSVGGlyphFactory.TASK_GLYPH;
     }
 }

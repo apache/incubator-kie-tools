@@ -16,6 +16,7 @@
 package org.kie.workbench.common.stunner.cm.client.command.graph;
 
 import java.util.Optional;
+import java.util.OptionalInt;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -53,9 +54,9 @@ public class CaseManagementRemoveChildCommand extends RemoveChildCommand {
         final CaseManagementSetChildNodeGraphCommand undoCommand =
                 new CaseManagementSetChildNodeGraphCommand(parent,
                                                            candidate,
-                                                           Optional.of(index),
+                                                           OptionalInt.of(index),
                                                            Optional.empty(),
-                                                           Optional.empty());
+                                                           OptionalInt.empty());
         return undoCommand.execute(context);
     }
 }

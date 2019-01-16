@@ -24,6 +24,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
 import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementSvgDiagramShapeDef;
 import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementSvgNullShapeDef;
 import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementSvgShapeDef;
+import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementSvgStageShapeDef;
 import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementSvgSubprocessShapeDef;
 import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementSvgUserTaskShapeDef;
 import org.kie.workbench.common.stunner.cm.client.shape.view.CaseManagementShapeView;
@@ -57,6 +58,8 @@ public class CaseManagementShapeDefFactory implements ShapeDefFactory<BPMNDefini
     public void init() {
         functionalFactory
                 .set(CaseManagementSvgDiagramShapeDef.class,
+                     this::newCaseManagementShape)
+                .set(CaseManagementSvgStageShapeDef.class,
                      this::newCaseManagementShape)
                 .set(CaseManagementSvgSubprocessShapeDef.class,
                      this::newCaseManagementShape)
