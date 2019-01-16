@@ -30,6 +30,7 @@ import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManager;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.SmallSwitchComponent;
 import org.kie.workbench.common.dmn.client.editors.types.listview.confirmation.DataTypeConfirmation;
+import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.DataTypeConstraint;
 import org.uberfire.client.mvp.UberElemental;
 import org.uberfire.mvp.Command;
 
@@ -113,7 +114,7 @@ public class DataTypeListItem {
     }
 
     void setupConstraintComponent() {
-        dataTypeConstraintComponent.init(getDataType());
+        dataTypeConstraintComponent.init(this);
     }
 
     void setupSelectComponent() {
@@ -130,8 +131,8 @@ public class DataTypeListItem {
     void refresh() {
         dataTypeSelectComponent.refresh();
         dataTypeSelectComponent.init(this, getDataType());
+        dataTypeConstraintComponent.refreshView();
         view.setName(getDataType().getName());
-        view.setConstraint(getDataType().getConstraint());
         setupListComponent();
         setupConstraintComponent();
     }
@@ -181,15 +182,13 @@ public class DataTypeListItem {
 
         view.showSaveButton();
         view.showDataTypeNameInput();
-        view.showConstraintContainer();
         view.showListContainer();
         view.hideKebabMenu();
-        view.hideConstraintText();
         view.hideListYesLabel();
         view.enableFocusMode();
 
         dataTypeSelectComponent.enableEditMode();
-        dataTypeConstraintComponent.refreshView();
+        dataTypeConstraintComponent.enableEditMode();
     }
 
     public void disableEditMode() {
@@ -254,16 +253,15 @@ public class DataTypeListItem {
     void closeEditMode() {
 
         view.hideDataTypeNameInput();
-        view.hideConstraintContainer();
         view.hideListContainer();
         view.showEditButton();
-        view.showConstraintText();
         view.showKebabMenu();
         view.disableFocusMode();
 
         refreshListYesLabel();
 
         dataTypeSelectComponent.disableEditMode();
+        dataTypeConstraintComponent.disableEditMode();
     }
 
     void refreshListYesLabel() {
@@ -308,11 +306,27 @@ public class DataTypeListItem {
     DataType updateProperties(final DataType dataType) {
         return dataTypeManager
                 .from(dataType)
-                .withName(view.getName())
-                .withType(dataTypeSelectComponent.getValue())
-                .withConstraint(dataTypeConstraintComponent.getValue())
-                .asList(dataTypeListComponent.getValue())
+                .withName(getName())
+                .withType(getType())
+                .withConstraint(getConstraint())
+                .asList(isList())
                 .get();
+    }
+
+    private String getName() {
+        return view.getName();
+    }
+
+    public String getType() {
+        return dataTypeSelectComponent.getValue();
+    }
+
+    private String getConstraint() {
+        return dataTypeConstraintComponent.getValue();
+    }
+
+    private boolean isList() {
+        return dataTypeListComponent.getValue();
     }
 
     String getOldName() {
@@ -422,15 +436,9 @@ public class DataTypeListItem {
 
         void hideListYesLabel();
 
-        void showConstraintText();
-
-        void hideConstraintText();
-
         boolean isCollapsed();
 
         void hideDataTypeNameInput();
-
-        void setConstraint(final String constraint);
 
         void showDataTypeNameInput();
 
@@ -443,10 +451,6 @@ public class DataTypeListItem {
         String getName();
 
         void setName(final String name);
-
-        void showConstraintContainer();
-
-        void hideConstraintContainer();
 
         void hideKebabMenu();
 

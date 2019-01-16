@@ -34,6 +34,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.SmallSwitchComponent;
+import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.DataTypeConstraint;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
@@ -46,14 +47,11 @@ import static org.kie.workbench.common.dmn.client.editors.types.listview.DataTyp
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper.DOWN_ARROW_CSS_CLASS;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper.FOCUSED_CSS_CLASS;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper.RIGHT_ARROW_CSS_CLASS;
-import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeListItemView_Constraints;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -285,7 +283,6 @@ public class DataTypeListItemViewTest {
         final String constraint = "constraint";
 
         doNothing().when(view).setName(name);
-        doNothing().when(view).setConstraint(constraint);
         doReturn(nameInput).when(view).getNameInput();
         when(dataType.getName()).thenReturn(name);
         when(dataType.getConstraint()).thenReturn(constraint);
@@ -295,7 +292,6 @@ public class DataTypeListItemViewTest {
 
         verify(classList).add(HIDDEN_CSS_CLASS);
         verify(view).setName(name);
-        verify(view).setConstraint(constraint);
     }
 
     @Test
@@ -310,49 +306,6 @@ public class DataTypeListItemViewTest {
 
         assertEquals(name, nameText.textContent);
         assertEquals(name, nameInput.value);
-    }
-
-    @Test
-    public void testSetConstraintWhenConstraintIsNull() {
-
-        final String constraint = null;
-        constraintText.classList = mock(DOMTokenList.class);
-
-        doReturn(constraintText).when(view).getConstraintText();
-
-        view.setConstraint(constraint);
-
-        assertEquals("", constraintText.textContent);
-        verify(constraintText.classList).add(HIDDEN_CSS_CLASS);
-    }
-
-    @Test
-    public void testSetConstraintWhenConstraintIsBlank() {
-
-        final String constraint = "";
-        constraintText.classList = mock(DOMTokenList.class);
-
-        doReturn(constraintText).when(view).getConstraintText();
-
-        view.setConstraint(constraint);
-
-        assertEquals("", constraintText.textContent);
-        verify(constraintText.classList).add(HIDDEN_CSS_CLASS);
-    }
-
-    @Test
-    public void testSetConstraintWhenConstraintIsPresent() {
-
-        final String constraint = "(1..20)";
-        constraintText.classList = mock(DOMTokenList.class);
-
-        doReturn(constraintText).when(view).getConstraintText();
-        when(translationService.format(DataTypeListItemView_Constraints, constraint)).thenReturn("Constraints: " + constraint);
-
-        view.setConstraint(constraint);
-
-        assertEquals("Constraints: (1..20)", constraintText.textContent);
-        verify(constraintText.classList).remove(HIDDEN_CSS_CLASS);
     }
 
     @Test
@@ -509,7 +462,7 @@ public class DataTypeListItemViewTest {
         final DataTypeConstraint constraintComponent = mock(DataTypeConstraint.class);
         final HTMLElement htmlElement = mock(HTMLElement.class);
 
-        doReturn(constraint).when(view).getConstraint();
+        doReturn(constraint).when(view).getConstraintContainer();
         when(constraintComponent.getElement()).thenReturn(htmlElement);
         constraint.innerHTML = "previous content";
 
@@ -536,28 +489,6 @@ public class DataTypeListItemViewTest {
         assertFalse(listContainer.innerHTML.contains("previous content"));
         verify(listContainer).appendChild(listTextNode);
         verify(listContainer).appendChild(htmlElement);
-    }
-
-    @Test
-    public void testShowConstraintContainer() {
-
-        doReturn(constraintContainer).when(view).getConstraintContainer();
-        constraintContainer.classList = mock(DOMTokenList.class);
-
-        view.showConstraintContainer();
-
-        verify(constraintContainer.classList).remove(HIDDEN_CSS_CLASS);
-    }
-
-    @Test
-    public void testHideConstraintContainer() {
-
-        doReturn(constraintContainer).when(view).getConstraintContainer();
-        constraintContainer.classList = mock(DOMTokenList.class);
-
-        view.hideConstraintContainer();
-
-        verify(constraintContainer.classList).add(HIDDEN_CSS_CLASS);
     }
 
     @Test
@@ -602,53 +533,6 @@ public class DataTypeListItemViewTest {
         view.hideListYesLabel();
 
         verify(listYes.classList).add(HIDDEN_CSS_CLASS);
-    }
-
-    @Test
-    public void testShowConstraintTextWhenConstraintTextIsNull() {
-
-        doReturn(constraintText).when(view).getConstraintText();
-        constraintText.classList = mock(DOMTokenList.class);
-        constraintText.textContent = null;
-
-        view.showConstraintText();
-
-        verify(constraintText.classList, never()).remove(anyString());
-    }
-
-    @Test
-    public void testShowConstraintTextWhenConstraintTextIsBlank() {
-
-        doReturn(constraintText).when(view).getConstraintText();
-        constraintText.classList = mock(DOMTokenList.class);
-        constraintText.textContent = "";
-
-        view.showConstraintText();
-
-        verify(constraintText.classList, never()).remove(anyString());
-    }
-
-    @Test
-    public void testShowConstraintTextWhenConstraintTextIsPresent() {
-
-        doReturn(constraintText).when(view).getConstraintText();
-        constraintText.classList = mock(DOMTokenList.class);
-        constraintText.textContent = "Constraint: (1..30)";
-
-        view.showConstraintText();
-
-        verify(constraintText.classList).remove(HIDDEN_CSS_CLASS);
-    }
-
-    @Test
-    public void testHideConstraintText() {
-
-        doReturn(constraintText).when(view).getConstraintText();
-        constraintText.classList = mock(DOMTokenList.class);
-
-        view.hideConstraintText();
-
-        verify(constraintText.classList).add(HIDDEN_CSS_CLASS);
     }
 
     @Test
@@ -1137,13 +1021,6 @@ public class DataTypeListItemViewTest {
     }
 
     @Test
-    public void testGetConstraintText() {
-        final Element element = mock(Element.class);
-        doReturn(element).when(view).querySelector("constraint-text");
-        assertEquals(element, view.getConstraintText());
-    }
-
-    @Test
     public void testGetNameInput() {
         final HTMLInputElement element = mock(HTMLInputElement.class);
         doReturn(element).when(view).querySelector(NAME_DATA_FIELD);
@@ -1155,13 +1032,6 @@ public class DataTypeListItemViewTest {
         final Element element = mock(Element.class);
         doReturn(element).when(view).querySelector("type");
         assertEquals(element, view.getType());
-    }
-
-    @Test
-    public void testGetConstraint() {
-        final Element element = mock(Element.class);
-        doReturn(element).when(view).querySelector("constraint");
-        assertEquals(element, view.getConstraint());
     }
 
     public Element makeChildElement(final String uuid) {

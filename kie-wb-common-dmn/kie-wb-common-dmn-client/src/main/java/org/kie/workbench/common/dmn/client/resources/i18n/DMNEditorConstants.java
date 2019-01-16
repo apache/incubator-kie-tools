@@ -254,9 +254,6 @@ public class DMNEditorConstants {
     public static final String DataTypeConstraintView_ConstraintsTooltip = "DataTypeConstraintView.ConstraintsTooltip";
 
     @TranslationKey(defaultValue = "")
-    public static final String DataTypeListItemView_Constraints = "DataTypeListItemView.Constraints";
-
-    @TranslationKey(defaultValue = "")
     public static final String DataTypeListItemView_List = "DataTypeListItemView.List";
 
     @TranslationKey(defaultValue = "")
@@ -270,4 +267,7 @@ public class DMNEditorConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String DataTypeSearchBarView_Search = "DataTypeSearchBarView.Search";
+
+    @TranslationKey(defaultValue = "")
+    public static final String DataTypeConstraintExpressionView_Placeholder = "DataTypeConstraintExpressionView.Placeholder";
 }

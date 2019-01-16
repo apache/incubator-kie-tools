@@ -30,6 +30,7 @@ import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManager;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.SmallSwitchComponent;
 import org.kie.workbench.common.dmn.client.editors.types.listview.confirmation.DataTypeConfirmation;
+import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.DataTypeConstraint;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.ItemDefinitionStore;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -141,7 +142,7 @@ public class DataTypeListItemTest {
 
         listItem.setupConstraintComponent();
 
-        verify(dataTypeConstraintComponent).init(dataType);
+        verify(dataTypeConstraintComponent).init(listItem);
     }
 
     @Test
@@ -274,13 +275,11 @@ public class DataTypeListItemTest {
         verify(view).showSaveButton();
         verify(view).showDataTypeNameInput();
         verify(view).enableFocusMode();
-        verify(view).showConstraintContainer();
-        verify(view).hideConstraintText();
         verify(view).hideListYesLabel();
         verify(view).showListContainer();
         verify(view).hideKebabMenu();
         verify(dataTypeSelectComponent).enableEditMode();
-        verify(dataTypeConstraintComponent).refreshView();
+        verify(dataTypeConstraintComponent).enableEditMode();
     }
 
     @Test
@@ -293,13 +292,11 @@ public class DataTypeListItemTest {
         verify(view, never()).showSaveButton();
         verify(view, never()).showDataTypeNameInput();
         verify(view, never()).enableFocusMode();
-        verify(view, never()).showConstraintContainer();
-        verify(view, never()).hideConstraintText();
         verify(view, never()).hideListYesLabel();
         verify(view, never()).showListContainer();
         verify(view, never()).hideKebabMenu();
         verify(dataTypeSelectComponent, never()).enableEditMode();
-        verify(dataTypeConstraintComponent, never()).refreshView();
+        verify(dataTypeConstraintComponent, never()).enableEditMode();
     }
 
     @Test
@@ -462,12 +459,11 @@ public class DataTypeListItemTest {
         verify(view).showEditButton();
         verify(view).hideDataTypeNameInput();
         verify(view).disableFocusMode();
-        verify(view).hideConstraintContainer();
-        verify(view).showConstraintText();
         verify(view).hideListContainer();
         verify(view).showKebabMenu();
         verify(listItem).refreshListYesLabel();
         verify(dataTypeSelectComponent).disableEditMode();
+        verify(dataTypeConstraintComponent).disableEditMode();
     }
 
     @Test
@@ -534,8 +530,8 @@ public class DataTypeListItemTest {
 
         verify(dataTypeSelectComponent).refresh();
         verify(dataTypeSelectComponent).init(listItem, dataType);
+        verify(dataTypeConstraintComponent).refreshView();
         verify(view).setName(expectedName);
-        verify(view).setConstraint(expectedConstraint);
         verify(listItem).setupListComponent();
         verify(listItem).setupConstraintComponent();
     }

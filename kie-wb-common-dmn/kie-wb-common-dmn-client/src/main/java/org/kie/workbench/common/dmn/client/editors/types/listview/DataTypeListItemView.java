@@ -39,6 +39,7 @@ import org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.MenuInitializer;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.SmallSwitchComponent;
+import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.DataTypeConstraint;
 
 import static org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper.hide;
 import static org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper.show;
@@ -48,9 +49,7 @@ import static org.kie.workbench.common.dmn.client.editors.types.listview.common.
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper.asRightArrow;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper.isFocusedDataType;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper.isRightArrow;
-import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeListItemView_Constraints;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeListItemView_List;
-import static org.kie.workbench.common.stunner.core.util.StringUtils.isEmpty;
 
 @Dependent
 @Templated
@@ -138,7 +137,6 @@ public class DataTypeListItemView implements DataTypeListItem.View {
     void setupReadOnly(final DataType dataType) {
         hide(getNameInput());
         setName(dataType.getName());
-        setConstraint(dataType.getConstraint());
     }
 
     void setupActionButtons() {
@@ -267,8 +265,8 @@ public class DataTypeListItemView implements DataTypeListItem.View {
 
     @Override
     public void setupConstraintComponent(final DataTypeConstraint dataTypeConstraintComponent) {
-        getConstraint().innerHTML = "";
-        getConstraint().appendChild(dataTypeConstraintComponent.getElement());
+        getConstraintContainer().innerHTML = "";
+        getConstraintContainer().appendChild(dataTypeConstraintComponent.getElement());
     }
 
     @Override
@@ -280,16 +278,6 @@ public class DataTypeListItemView implements DataTypeListItem.View {
 
     Text listTextNode() {
         return DomGlobal.document.createTextNode(list());
-    }
-
-    @Override
-    public void showConstraintContainer() {
-        show(getConstraintContainer());
-    }
-
-    @Override
-    public void hideConstraintContainer() {
-        hide(getConstraintContainer());
     }
 
     @Override
@@ -320,18 +308,6 @@ public class DataTypeListItemView implements DataTypeListItem.View {
     @Override
     public void hideListYesLabel() {
         hide(getListYes());
-    }
-
-    @Override
-    public void showConstraintText() {
-        if (!isEmpty(getConstraintText().textContent)) {
-            show(getConstraintText());
-        }
-    }
-
-    @Override
-    public void hideConstraintText() {
-        hide(getConstraintText());
     }
 
     @Override
@@ -474,31 +450,12 @@ public class DataTypeListItemView implements DataTypeListItem.View {
         return querySelector("name-text");
     }
 
-    Element getConstraintText() {
-        return querySelector("constraint-text");
-    }
-
     HTMLInputElement getNameInput() {
         return (HTMLInputElement) querySelector(NAME_DATA_FIELD);
     }
 
     Element getType() {
         return querySelector("type");
-    }
-
-    Element getConstraint() {
-        return querySelector("constraint");
-    }
-
-    @Override
-    public void setConstraint(final String constraint) {
-        if (isEmpty(constraint)) {
-            getConstraintText().textContent = "";
-            hide(getConstraintText());
-        } else {
-            getConstraintText().textContent = translationService.format(DataTypeListItemView_Constraints, constraint);
-            show(getConstraintText());
-        }
     }
 
     Element getConstraintContainer() {

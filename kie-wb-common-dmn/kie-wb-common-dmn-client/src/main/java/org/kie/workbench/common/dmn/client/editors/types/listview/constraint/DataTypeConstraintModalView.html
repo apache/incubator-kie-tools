@@ -1,0 +1,55 @@
+<!--
+  ~ Copyright 2019 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<div>
+    <div data-field="view">
+
+        <div data-field="header" data-i18n-key="Header"></div>
+
+        <div data-field="body">
+            <div class="constraint-modal-body">
+                <p>
+                    <span data-i18n-key="BodyParagraph1"></span>
+                    <span data-field="type"></span>
+                    <span data-i18n-key="BodyParagraph2"></span>
+                </p>
+                <p data-i18n-key="BodyParagraph3"></p>
+                <select class="selectpicker">
+                    <option value="" data-i18n-key="Select" selected disabled hidden></option>
+                    <option value="ENUMERATION" data-i18n-key="Enumeration"></option>
+                    <option value="EXPRESSION" data-i18n-key="Expression"></option>
+                    <option value="RANGE" data-i18n-key="Range"></option>
+                </select>
+
+                <div data-field="constraint-component-container">
+                </div>
+            </div>
+        </div>
+
+        <div data-field="footer">
+            <div class="constraint-modal-footer">
+                <a data-field="clear-all-anchor" href="#" data-i18n-key="ClearAll"></a>
+                <button data-field="ok-button" class="btn btn-primary" data-i18n-key="Ok"></button>
+                <button data-field="cancel-button" class="btn btn-default" data-i18n-key="Cancel"></button>
+            </div>
+        </div>
+    </div>
+
+    <div data-field="select-constraint" class="select-constraint">
+        <i class="fa fa-info-circle"></i>
+        <span data-i18n-key="SelectConstraintType"></span>
+    </div>
+</div>

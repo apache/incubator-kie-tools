@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.editors.types.listview;
+package org.kie.workbench.common.dmn.client.editors.types.listview.constraint;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
@@ -22,11 +22,12 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
+import elemental2.dom.HTMLAnchorElement;
+import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
-import elemental2.dom.HTMLInputElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
@@ -36,37 +37,43 @@ import static org.kie.workbench.common.dmn.client.editors.types.common.HiddenHel
 import static org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper.show;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.JQueryTooltip.$;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeConstraintView_ConstraintsTooltip;
+import static org.kie.workbench.common.stunner.core.util.StringUtils.isEmpty;
 
-@Dependent
 @Templated
+@Dependent
 public class DataTypeConstraintView implements DataTypeConstraint.View {
 
-    @DataField("constraint-toggle")
-    private final HTMLInputElement constraintToggle;
-
-    @DataField("constraint-value")
-    private final HTMLInputElement constraintValue;
+    @DataField("constraints-anchor")
+    private final HTMLAnchorElement constraintsAnchor;
 
     @DataField("constraints-tooltip")
     private final HTMLElement constraintsTooltip;
 
+    @DataField("constraints-label")
+    private final HTMLElement constraintsLabel;
+
+    @DataField("constraints-text")
+    private final HTMLDivElement constraintsText;
+
     private final TranslationService translationService;
 
-    private DataTypeSelect presenter;
+    private DataTypeConstraint presenter;
 
     @Inject
-    public DataTypeConstraintView(final TranslationService translationService,
-                                  final HTMLInputElement constraintToggle,
-                                  final HTMLInputElement constraintValue,
-                                  final @Named("span") HTMLElement constraintsTooltip) {
-        this.translationService = translationService;
-        this.constraintToggle = constraintToggle;
-        this.constraintValue = constraintValue;
+    public DataTypeConstraintView(final HTMLAnchorElement constraintsAnchor,
+                                  final @Named("span") HTMLElement constraintsTooltip,
+                                  final @Named("span") HTMLElement constraintsLabel,
+                                  final HTMLDivElement constraintsText,
+                                  final TranslationService translationService) {
+        this.constraintsAnchor = constraintsAnchor;
         this.constraintsTooltip = constraintsTooltip;
+        this.constraintsLabel = constraintsLabel;
+        this.constraintsText = constraintsText;
+        this.translationService = translationService;
     }
 
     @Override
-    public void init(final DataTypeSelect presenter) {
+    public void init(final DataTypeConstraint presenter) {
         this.presenter = presenter;
     }
 
@@ -76,37 +83,56 @@ public class DataTypeConstraintView implements DataTypeConstraint.View {
         setupTooltip(properties().getJavaScriptObject());
     }
 
-    @EventHandler("constraint-toggle")
-    public void onConstraintToggleChange(final ChangeEvent e) {
-        if (constraintToggle.checked) {
-            enableConstraint();
-            constraintValue.select();
+    @EventHandler("constraints-anchor")
+    public void onConstraintsClick(final ClickEvent e) {
+        presenter.openModal();
+    }
+
+    @Override
+    public void showAnchor() {
+        show(constraintsAnchor);
+        show(constraintsTooltip);
+    }
+
+    @Override
+    public void showTextLabel() {
+        show(constraintsLabel);
+    }
+
+    @Override
+    public void hideAnchor() {
+        hide(constraintsAnchor);
+        hide(constraintsTooltip);
+    }
+
+    @Override
+    public void hideTextLabel() {
+        hide(constraintsLabel);
+    }
+
+    @Override
+    public void showText() {
+        show(constraintsText);
+    }
+
+    @Override
+    public void hideText() {
+        hide(constraintsText);
+    }
+
+    @Override
+    public void setText(final String text) {
+
+        final boolean isValueBlank = isEmpty(text);
+        final String noneCSSClass = "none";
+
+        if (isValueBlank) {
+            constraintsText.textContent = "NONE";
+            constraintsText.classList.add(noneCSSClass);
         } else {
-            disableConstraint();
-            constraintValue.value = "";
+            constraintsText.classList.remove(noneCSSClass);
+            constraintsText.textContent = text;
         }
-    }
-
-    @Override
-    public void enableConstraint() {
-        constraintToggle.checked = true;
-        show(constraintValue);
-    }
-
-    @Override
-    public void disableConstraint() {
-        constraintToggle.checked = false;
-        hide(constraintValue);
-    }
-
-    @Override
-    public String getConstraintValue() {
-        return constraintValue.value;
-    }
-
-    @Override
-    public void setConstraintValue(final String value) {
-        constraintValue.value = value;
     }
 
     void setupTooltip(final JavaScriptObject javaScriptObject) {
