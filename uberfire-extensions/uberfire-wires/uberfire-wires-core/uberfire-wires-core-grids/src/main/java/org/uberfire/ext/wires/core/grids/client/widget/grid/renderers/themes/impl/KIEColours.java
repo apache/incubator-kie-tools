@@ -37,7 +37,7 @@ public class KIEColours {
 
     public static final String CELL_FOCUS = "#0088CE";
 
-    public static final String CELL_ERROR_FOCUS = "#CC0000";
+    public static final String CELL_ERROR_FOCUS = "#8B0000";
 
     public static final String CELL_ERROR_BACKGROUND = "#FFE6E6";
 
