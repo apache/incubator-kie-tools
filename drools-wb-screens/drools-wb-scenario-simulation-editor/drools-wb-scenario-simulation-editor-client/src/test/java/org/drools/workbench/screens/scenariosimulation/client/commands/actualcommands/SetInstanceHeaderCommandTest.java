@@ -34,6 +34,7 @@ import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -64,6 +65,13 @@ public class SetInstanceHeaderCommandTest extends AbstractScenarioSimulationComm
         });
         assertTrue(command.isUndoable());
         when(simulationDescriptorMock.getType()).thenReturn(ScenarioSimulationModel.Type.RULE);
+    }
+
+    @Test
+    public void executeNoColumn() {
+        gridColumnMock = null;
+        command.execute(scenarioSimulationContext);
+        verify((SetInstanceHeaderCommand) command, never()).executeIfSelectedColumn(scenarioSimulationContext, gridColumnMock);
     }
 
     @Test

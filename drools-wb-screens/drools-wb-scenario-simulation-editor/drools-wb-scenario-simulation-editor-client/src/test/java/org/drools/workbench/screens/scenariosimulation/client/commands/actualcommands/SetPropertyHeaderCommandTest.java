@@ -34,6 +34,7 @@ import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -61,6 +62,13 @@ public class SetPropertyHeaderCommandTest extends AbstractScenarioSimulationComm
         scenarioSimulationContext.getStatus().setValueClassName(VALUE_CLASS_NAME);
         assertTrue(command.isUndoable());
         when(simulationDescriptorMock.getType()).thenReturn(ScenarioSimulationModel.Type.RULE);
+    }
+
+    @Test
+    public void executeNoColumn() {
+        gridColumnMock = null;
+        command.execute(scenarioSimulationContext);
+        verify((SetPropertyHeaderCommand) command, never()).executeIfSelectedColumn(scenarioSimulationContext, gridColumnMock);
     }
 
     @Test
