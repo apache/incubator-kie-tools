@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.bpmn.client.dataproviders;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -37,10 +36,6 @@ import org.kie.workbench.common.stunner.bpmn.definition.IntermediateCompensation
 import org.kie.workbench.common.stunner.bpmn.definition.Lane;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.compensation.ActivityRef;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
-import org.kie.workbench.common.stunner.core.client.session.ClientSession;
-import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
-import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -49,6 +44,7 @@ import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.util.SafeComparator;
 import org.uberfire.commons.data.Pair;
 
+import static org.kie.workbench.common.stunner.core.client.util.ClientUtils.getSelectedNode;
 import static org.kie.workbench.common.stunner.core.util.StringUtils.isEmpty;
 
 public class ProcessCompensationRefProvider implements SelectorDataProvider {
@@ -70,7 +66,7 @@ public class ProcessCompensationRefProvider implements SelectorDataProvider {
     public SelectorData getSelectorData(FormRenderingContext context) {
         final Diagram diagram = sessionManager.getCurrentSession().getCanvasHandler().getDiagram();
         final String rootUUID = diagram.getMetadata().getCanvasRootUUID();
-        final Node<?, ? extends Edge> selectedNode = getSelectedElement(diagram, sessionManager.getCurrentSession());
+        final Node<?, ? extends Edge> selectedNode = getSelectedNode(diagram, sessionManager.getCurrentSession());
         final Map<Object, String> values = new TreeMap<>(SafeComparator.TO_STRING_COMPARATOR);
         if (selectedNode != null) {
             Node<?, ? extends Edge> currentNode = selectedNode;
@@ -97,14 +93,14 @@ public class ProcessCompensationRefProvider implements SelectorDataProvider {
 
             ActivityRef currentActivityRef = null;
             if (isEndCompensationEvent(selectedNode)) {
-                currentActivityRef = ((EndCompensationEvent) ((View)selectedNode.getContent()).getDefinition()).getExecutionSet().getActivityRef();
+                currentActivityRef = ((EndCompensationEvent) ((View) selectedNode.getContent()).getDefinition()).getExecutionSet().getActivityRef();
             } else if (isIntermediateCompensationEventThrowing(selectedNode)) {
-                currentActivityRef = ((IntermediateCompensationEventThrowing) ((View)selectedNode.getContent()).getDefinition()).getExecutionSet().getActivityRef();
+                currentActivityRef = ((IntermediateCompensationEventThrowing) ((View) selectedNode.getContent()).getDefinition()).getExecutionSet().getActivityRef();
             }
             if (currentActivityRef != null && !isEmpty(currentActivityRef.getValue()) && !values.containsKey(currentActivityRef.getValue())) {
                 Node configured = diagram.getGraph().getNode(currentActivityRef.getValue());
                 if (configured != null) {
-                    Pair<Object, String> pair = buildPair(configured.getUUID(), (BPMNDefinition)((View)configured.getContent()).getDefinition());
+                    Pair<Object, String> pair = buildPair(configured.getUUID(), (BPMNDefinition) ((View) configured.getContent()).getDefinition());
                     values.put(pair.getK1(), pair.getK2());
                 }
             }
@@ -124,25 +120,6 @@ public class ProcessCompensationRefProvider implements SelectorDataProvider {
                 .filter(ProcessCompensationRefProvider::isLane)
                 .forEach(lane -> result.addAll(getCompensableNodes(lane)));
         return result;
-    }
-
-    @SuppressWarnings("unchecked")
-    private Node getSelectedElement(Diagram diagram, ClientSession clientSession) {
-        SelectionControl selectionControl = null;
-        if (clientSession instanceof EditorSession) {
-            selectionControl = ((EditorSession) clientSession).getSelectionControl();
-        } else if (clientSession instanceof ViewerSession) {
-            selectionControl = ((ViewerSession) clientSession).getSelectionControl();
-        }
-
-        if (selectionControl != null) {
-            final Collection<String> selectedItems = selectionControl.getSelectedItems();
-            if (selectedItems != null && !selectedItems.isEmpty()) {
-                String selectedElement = selectedItems.iterator().next();
-                return diagram.getGraph().getNode(selectedElement);
-            }
-        }
-        return null;
     }
 
     @SuppressWarnings("unchecked")

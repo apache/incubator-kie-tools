@@ -16,10 +16,6 @@
 
 package org.kie.workbench.common.stunner.bpmn.definition;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import org.junit.Test;
 import org.kie.workbench.common.stunner.bpmn.definition.property.assignee.Actors;
 import org.kie.workbench.common.stunner.bpmn.definition.property.assignee.Groupid;
@@ -97,6 +93,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
+import static org.kie.workbench.common.stunner.core.util.EqualsAndHashCodeTestUtils.TestCaseBuilder;
+
 public class HashCodeAndEqualityTest {
 
     @Test
@@ -112,7 +110,7 @@ public class HashCodeAndEqualityTest {
     @Test
     public void testAdHocSubprocessHashCode() {
         AdHocSubprocess a = new AdHocSubprocess();
-        AdHocSubprocess b = new AdHocSubprocess();;
+        AdHocSubprocess b = new AdHocSubprocess();
         assertTrue(a.hashCode() == b.hashCode());
         assertTrue(new AdHocSubprocess().hashCode() == new AdHocSubprocess().hashCode());
     }
@@ -699,19 +697,19 @@ public class HashCodeAndEqualityTest {
                                                 new SimulationAttributeSet(),
                                                 new IsInterrupting()))
                 .addTrueCase(new StartNoneEvent(),
-                              new StartNoneEvent(new BPMNGeneralSet(),
-                                                 new BackgroundSet(),
-                                                 new FontSet(),
-                                                 new CircleDimensionSet(),
-                                                 new SimulationAttributeSet(),
-                                                 new IsInterrupting()))
+                             new StartNoneEvent(new BPMNGeneralSet(),
+                                                new BackgroundSet(),
+                                                new FontSet(),
+                                                new CircleDimensionSet(),
+                                                new SimulationAttributeSet(),
+                                                new IsInterrupting()))
                 .addTrueCase(new StartNoneEvent(new BPMNGeneralSet(),
-                                                 new BackgroundSet(),
-                                                 new FontSet(),
-                                                 new CircleDimensionSet(),
-                                                 new SimulationAttributeSet(),
-                                                 new IsInterrupting()),
-                              new StartNoneEvent())
+                                                new BackgroundSet(),
+                                                new FontSet(),
+                                                new CircleDimensionSet(),
+                                                new SimulationAttributeSet(),
+                                                new IsInterrupting()),
+                             new StartNoneEvent())
                 .test();
     }
 
@@ -1528,10 +1526,10 @@ public class HashCodeAndEqualityTest {
                              new CancellingConditionalEventExecutionSet(new CancelActivity(false), new ConditionExpression(new ScriptTypeValue("drools", "script"))))
 
                 .addFalseCase(new CancellingConditionalEventExecutionSet(),
-                             null)
+                              null)
 
                 .addFalseCase(new CancellingConditionalEventExecutionSet(new CancelActivity(false), new ConditionExpression(new ScriptTypeValue("drools", "script"))),
-                             new CancellingConditionalEventExecutionSet(new CancelActivity(true), new ConditionExpression(new ScriptTypeValue("drools", "script"))))
+                              new CancellingConditionalEventExecutionSet(new CancelActivity(true), new ConditionExpression(new ScriptTypeValue("drools", "script"))))
 
                 .addFalseCase(new CancellingConditionalEventExecutionSet(new CancelActivity(false), new ConditionExpression(new ScriptTypeValue("drools", "script"))),
                               new CancellingConditionalEventExecutionSet(new CancelActivity(false), new ConditionExpression(new ScriptTypeValue("drools1", "script"))))
@@ -1591,10 +1589,10 @@ public class HashCodeAndEqualityTest {
                              new StartConditionalEvent(new BPMNGeneralSet(), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new SimulationAttributeSet(), new InterruptingConditionalEventExecutionSet()))
 
                 .addFalseCase(new StartConditionalEvent(),
-                             null)
+                              null)
 
                 .addFalseCase(new StartConditionalEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new SimulationAttributeSet(), new InterruptingConditionalEventExecutionSet()),
-                             new StartConditionalEvent(new BPMNGeneralSet("name1", "doc1"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new SimulationAttributeSet(), new InterruptingConditionalEventExecutionSet()))
+                              new StartConditionalEvent(new BPMNGeneralSet("name1", "doc1"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new SimulationAttributeSet(), new InterruptingConditionalEventExecutionSet()))
 
                 .addFalseCase(new StartConditionalEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new SimulationAttributeSet(), new InterruptingConditionalEventExecutionSet(new IsInterrupting(false), new ConditionExpression(new ScriptTypeValue("drools", "script")))),
                               new StartConditionalEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new SimulationAttributeSet(), new InterruptingConditionalEventExecutionSet()))
@@ -1981,10 +1979,8 @@ public class HashCodeAndEqualityTest {
                 .addFalseCase(new EndCompensationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new CompensationEventExecutionSet(new ActivityRef(ACTIVITY_REF))),
                               new EndCompensationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new CompensationEventExecutionSet(new ActivityRef(ACTIVITY_REF_1))))
 
-
                 .addFalseCase(new EndCompensationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new CompensationEventExecutionSet(new ActivityRef(ACTIVITY_REF))),
                               new EndCompensationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new CompensationEventExecutionSet(null)))
-
 
                 .addFalseCase(new EndCompensationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), new CompensationEventExecutionSet(new ActivityRef(ACTIVITY_REF))),
                               new EndCompensationEvent(new BPMNGeneralSet("name", "doc"), new BackgroundSet(), new FontSet(), new CircleDimensionSet(), null))
@@ -2048,91 +2044,6 @@ public class HashCodeAndEqualityTest {
                 .addFalseCase(new Association(),
                               new Association(null, null, null))
                 .test();
-    }
-
-    public static class HashCodeAndEqualityTestCase {
-
-        private Object a;
-        private Object b;
-        private boolean expectedResult = true;
-
-        public HashCodeAndEqualityTestCase(Object a,
-                                           Object b,
-                                           boolean expectedResult) {
-            this.a = a;
-            this.b = b;
-            this.expectedResult = expectedResult;
-        }
-
-        public Object getA() {
-            return a;
-        }
-
-        public Object getB() {
-            return b;
-        }
-
-        public boolean isExpectedResult() {
-            return expectedResult;
-        }
-    }
-
-    public static class TestCaseBuilder {
-
-        private List<HashCodeAndEqualityTestCase> testCases = new ArrayList<>();
-
-        private TestCaseBuilder() {
-        }
-
-        public static TestCaseBuilder newTestCase() {
-            return new TestCaseBuilder();
-        }
-
-        public TestCaseBuilder addTrueCase(Object a,
-                                           Object b) {
-            testCases.add(new HashCodeAndEqualityTestCase(a,
-                                                          b,
-                                                          true));
-            return this;
-        }
-
-        public TestCaseBuilder addFalseCase(Object a,
-                                            Object b) {
-            testCases.add(new HashCodeAndEqualityTestCase(a,
-                                                          b,
-                                                          false));
-            return this;
-        }
-
-        public void test() {
-            testHashCodeAndEquality(testCases);
-        }
-    }
-
-    public static void testHashCodeAndEquality(Collection<HashCodeAndEqualityTestCase> testCases) {
-        int index = 0;
-        for (HashCodeAndEqualityTestCase testCase : testCases) {
-            if (testCase.isExpectedResult()) {
-                assertEquals("Equality check failed for test case element: " + index + " expected result is: " + testCase.isExpectedResult(),
-                             testCase.getA(),
-                             testCase.getB());
-                assertEquals("HashCode check failed for test case element: " + index + " expected result is: " + testCase.isExpectedResult(),
-                             hashCode(testCase.getA()),
-                             hashCode(testCase.getB()));
-            } else {
-                assertNotEquals("Equality check failed for test case element: " + index + " expected result is: " + testCase.isExpectedResult(),
-                                testCase.getA(),
-                                testCase.getB());
-                assertNotEquals("HashCode check failed for test case element: " + index + " expected result is: " + testCase.isExpectedResult(),
-                                hashCode(testCase.getA()),
-                                hashCode(testCase.getB()));
-            }
-            index++;
-        }
-    }
-
-    private static Integer hashCode(Object value) {
-        return value != null ? value.hashCode() : null;
     }
 
     private class BaseStartEventStub extends BaseStartEvent {

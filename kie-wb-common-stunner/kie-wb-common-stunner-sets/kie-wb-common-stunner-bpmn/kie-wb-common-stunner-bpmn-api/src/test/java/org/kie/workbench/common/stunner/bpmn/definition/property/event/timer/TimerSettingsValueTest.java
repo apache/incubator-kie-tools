@@ -18,7 +18,7 @@ package org.kie.workbench.common.stunner.bpmn.definition.property.event.timer;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.workbench.common.stunner.bpmn.definition.HashCodeAndEqualityTest;
+import org.kie.workbench.common.stunner.core.util.EqualsAndHashCodeTestUtils;
 
 public class TimerSettingsValueTest {
 
@@ -44,7 +44,7 @@ public class TimerSettingsValueTest {
                                                                TIME_DURATION,
                                                                TIME_CYCLE,
                                                                TIME_CYCLE_LANGUAGE);
-        HashCodeAndEqualityTest.TestCaseBuilder.newTestCase()
+        EqualsAndHashCodeTestUtils.TestCaseBuilder.newTestCase()
                 .addTrueCase(new TimerSettingsValue(),
                              new TimerSettingsValue())
                 .addTrueCase(value,

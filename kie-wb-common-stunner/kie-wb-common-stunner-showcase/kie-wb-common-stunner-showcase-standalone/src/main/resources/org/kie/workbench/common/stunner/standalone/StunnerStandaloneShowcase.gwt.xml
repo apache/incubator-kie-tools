@@ -29,6 +29,7 @@
   <inherits name="org.uberfire.ext.plugin.RuntimePluginClient"/>
   <inherits name="org.uberfire.ext.apps.UberfireAppsClient"/>
   <inherits name="org.kie.workbench.common.services.datamodel.KieWorkbenchCommonDataModelAPI"/>
+  <inherits name="org.kie.workbench.common.services.datamodeller.DataModellerCore" />
   <inherits name="org.uberfire.ext.security.management.UberfireSecurityManagementWorkbench"/>
   <inherits name="org.uberfire.ext.widgets.core.UberfireWidgetsCore"/>
   <inherits name="org.uberfire.ssh.UberfireSSHClient"/>

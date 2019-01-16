@@ -19,7 +19,7 @@ package org.kie.workbench.common.stunner.bpmn.definition.property.task;
 import java.util.ArrayList;
 
 import org.junit.Test;
-import org.kie.workbench.common.stunner.bpmn.definition.HashCodeAndEqualityTest;
+import org.kie.workbench.common.stunner.core.util.EqualsAndHashCodeTestUtils;
 
 public class ScriptTypeListValueTest {
 
@@ -28,7 +28,7 @@ public class ScriptTypeListValueTest {
 
     @Test
     public void testScriptTypeListValueEqualsAndHashCode() {
-        HashCodeAndEqualityTest.TestCaseBuilder.newTestCase()
+        EqualsAndHashCodeTestUtils.TestCaseBuilder.newTestCase()
                 .addTrueCase(new ScriptTypeListValue(),
                              new ScriptTypeListValue())
 

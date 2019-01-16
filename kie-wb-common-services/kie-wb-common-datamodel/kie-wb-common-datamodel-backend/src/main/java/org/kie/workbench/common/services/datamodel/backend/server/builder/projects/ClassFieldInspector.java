@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import org.kie.soup.project.datamodel.oracle.Annotation;
@@ -32,21 +33,17 @@ import org.kie.soup.project.datamodel.oracle.FieldAccessorsAndMutators;
 import org.kie.soup.project.datamodel.oracle.ModelField;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.util.AnnotationUtils;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.util.BlackLists;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Find information for all "fields" on a class. A "field" is either a public property or a non-public property for which there is a "getter" and/or a "setter"
  */
 public class ClassFieldInspector {
 
-    private static final Logger log = LoggerFactory.getLogger(ClassFieldInspector.class);
-
-    private final Map<String, FieldInfo> fieldTypesFieldInfo = new HashMap<String, FieldInfo>();
+    private final Map<String, FieldInfo> fieldTypesFieldInfo = new HashMap<>();
 
     public ClassFieldInspector(final Class<?> clazz) {
         //Handle fields
-        final List<Field> fields = new ArrayList<Field>(getAllFields(clazz).values());
+        final List<Field> fields = new ArrayList<>(getAllFields(clazz).values());
         final List<Field> declaredFields = Arrays.asList(clazz.getDeclaredFields());
         final Map<String, Field> inaccessibleFields = new HashMap<>();
 
@@ -68,16 +65,14 @@ public class ClassFieldInspector {
                                                            field.getGenericType(),
                                                            field.getType(),
                                                            origin,
-                                                           AnnotationUtils.getFieldAnnotations(field,
-                                                                                               origin.equals(
-                                                                                                       ModelField.FIELD_ORIGIN.INHERITED))));
+                                                           AnnotationUtils.getFieldAnnotations(field)));
             } else {
                 inaccessibleFields.put(field.getName(), field);
             }
         }
 
         //Handle methods
-        final List<Method> methods = new ArrayList<Method>(getAllMethods(clazz).values());
+        final List<Method> methods = new ArrayList<>(getAllMethods(clazz).values());
         for (Method method : methods) {
             final int modifiers = method.getModifiers();
             if (Modifier.isPublic(modifiers) && !Modifier.isStatic(method.getModifiers())) {
@@ -142,9 +137,7 @@ public class ClassFieldInspector {
                                                                    genericType,
                                                                    type,
                                                                    origin,
-                                                                   AnnotationUtils.getFieldAnnotations(
-                                                                           inaccessibleField,
-                                                                           origin.equals(ModelField.FIELD_ORIGIN.INHERITED))));
+                                                                   AnnotationUtils.getFieldAnnotations(inaccessibleField)));
                     }
                 }
             }
@@ -179,7 +172,7 @@ public class ClassFieldInspector {
     }
 
     private List<String> getNames(final List<Field> fields) {
-        final List<String> names = new ArrayList<String>();
+        final List<String> names = new ArrayList<>();
         for (Field field : fields) {
             names.add(field.getName());
         }
@@ -208,7 +201,7 @@ public class ClassFieldInspector {
 
     //class.getDeclaredField(String) doesn't walk the inheritance tree; this does
     private Map<String, Field> getAllFields(Class<?> type) {
-        Map<String, Field> fields = new HashMap<String, Field>();
+        Map<String, Field> fields = new HashMap<>();
         for (Class<?> c = type; c != null; c = c.getSuperclass()) {
             for (Field f : c.getDeclaredFields()) {
                 fields.put(f.getName(), f);
@@ -219,7 +212,7 @@ public class ClassFieldInspector {
 
     //class.getDeclaredMethods() doesn't walk the inheritance tree; this does
     private Map<String, Method> getAllMethods(Class<?> type) {
-        Map<String, Method> methods = new HashMap<String, Method>();
+        Map<String, Method> methods = new HashMap<>();
         for (Class<?> c = type; c != null; c = c.getSuperclass()) {
             for (Method m : c.getDeclaredMethods()) {
                 methods.put(m.getName(), m);
@@ -236,7 +229,7 @@ public class ClassFieldInspector {
         private ModelField.FIELD_ORIGIN origin;
         private Set<Annotation> annotations;
 
-        private FieldInfo(final FieldAccessorsAndMutators accessorAndMutator,
+        public FieldInfo(final FieldAccessorsAndMutators accessorAndMutator,
                           final Type genericType,
                           final Class<?> returnType,
                           final ModelField.FIELD_ORIGIN origin,
@@ -266,6 +259,27 @@ public class ClassFieldInspector {
 
         public Set<Annotation> getAnnotations() {
             return annotations;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            FieldInfo fieldInfo = (FieldInfo) o;
+            return accessorAndMutator == fieldInfo.accessorAndMutator &&
+                    Objects.equals(genericType, fieldInfo.genericType) &&
+                    Objects.equals(returnType, fieldInfo.returnType) &&
+                    origin == fieldInfo.origin &&
+                    Objects.equals(annotations, fieldInfo.annotations);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(accessorAndMutator, genericType, returnType, origin, annotations);
         }
     }
 }

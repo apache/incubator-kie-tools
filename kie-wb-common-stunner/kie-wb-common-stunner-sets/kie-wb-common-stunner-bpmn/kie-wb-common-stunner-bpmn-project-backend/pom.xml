@@ -91,6 +91,11 @@
       <artifactId>kie-wb-common-services-api</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.kie.workbench.services</groupId>
+      <artifactId>kie-wb-common-services-backend</artifactId>
+    </dependency>
+
     <!-- Stunner. -->
 
     <dependency>
@@ -137,6 +142,14 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
+    </dependency>
+
+    <!-- Test scope. -->
+
+    <dependency>
+      <groupId>org.kie.workbench.stunner</groupId>
+      <artifactId>kie-wb-common-stunner-bpmn-backend</artifactId>
+      <type>test-jar</type>
     </dependency>
 
   </dependencies>

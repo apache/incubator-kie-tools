@@ -939,6 +939,8 @@
             <compileSourcesArtifact>org.uberfire:uberfire-workingset-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.jboss.errai:errai-data-binding</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.services:kie-wb-common-datamodel-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.workbench.services:kie-wb-common-data-modeller-core</compileSourcesArtifact>
+
             <compileSourcesArtifact>org.uberfire:uberfire-ssh-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-ssh-client</compileSourcesArtifact>
 

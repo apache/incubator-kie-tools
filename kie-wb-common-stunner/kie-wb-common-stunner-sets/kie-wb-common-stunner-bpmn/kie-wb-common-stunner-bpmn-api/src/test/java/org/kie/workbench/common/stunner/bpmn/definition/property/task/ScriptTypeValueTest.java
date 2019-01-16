@@ -17,13 +17,13 @@
 package org.kie.workbench.common.stunner.bpmn.definition.property.task;
 
 import org.junit.Test;
-import org.kie.workbench.common.stunner.bpmn.definition.HashCodeAndEqualityTest;
+import org.kie.workbench.common.stunner.core.util.EqualsAndHashCodeTestUtils;
 
 public class ScriptTypeValueTest {
 
     @Test
     public void testEqualsAndHashCode() {
-        HashCodeAndEqualityTest.TestCaseBuilder.newTestCase()
+        EqualsAndHashCodeTestUtils.TestCaseBuilder.newTestCase()
                 .addTrueCase(new ScriptTypeValue(),
                              new ScriptTypeValue())
 
