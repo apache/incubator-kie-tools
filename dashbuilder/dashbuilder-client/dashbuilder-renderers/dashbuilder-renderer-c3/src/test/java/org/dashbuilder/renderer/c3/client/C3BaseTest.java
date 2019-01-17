@@ -8,6 +8,7 @@ import org.dashbuilder.displayer.DisplayerSettings;
 import org.dashbuilder.displayer.client.AbstractDisplayerTest;
 import org.dashbuilder.renderer.c3.client.charts.area.C3AreaChartDisplayer;
 import org.dashbuilder.renderer.c3.client.charts.line.C3LineChartDisplayer;
+import org.dashbuilder.renderer.c3.client.charts.meter.C3MeterChartDisplayer;
 import org.dashbuilder.renderer.c3.client.jsbinding.C3AxisInfo;
 import org.dashbuilder.renderer.c3.client.jsbinding.C3AxisX;
 import org.dashbuilder.renderer.c3.client.jsbinding.C3AxisY;
@@ -40,6 +41,9 @@ public class C3BaseTest extends AbstractDisplayerTest {
     C3LineChartDisplayer.View c3LineChartview;
     @Mock
     C3AreaChartDisplayer.View c3AreaChartview;
+    @Mock
+    C3MeterChartDisplayer.View c3Meterview;
+
 
     public C3LineChartDisplayer c3LineChartDisplayer(DisplayerSettings settings) {
         c3Factory = mockC3JsTypesFactory();
@@ -51,13 +55,18 @@ public class C3BaseTest extends AbstractDisplayerTest {
         return initDisplayer(new C3AreaChartDisplayer(c3AreaChartview, filterLabelSet, c3Factory), settings);
     }
     
+    public C3MeterChartDisplayer c3MeterChartDisplayer(DisplayerSettings settings) {
+        c3Factory = mockC3JsTypesFactory();
+        return initDisplayer(new C3MeterChartDisplayer(c3Meterview, filterLabelSet, c3Factory), settings);
+    }
+    
     private C3JsTypesFactory mockC3JsTypesFactory() {
         when(c3AxisInfo.getX()).thenReturn(c3AxisX);
         when(c3AxisInfo.getY()).thenReturn(c3AxisY);
         when(c3AxisX.getTick()).thenReturn(c3Tick);
         when(c3Conf.getAxis()).thenReturn(c3AxisInfo);
         when(c3Factory.c3ChartData(any(), any(), any(), any(), any())).thenReturn(c3ChartData);
-        when(c3Factory.c3ChartConf(any(), any(), any(), any(), any(), any(), any(), any())).thenReturn(c3Conf);
+        when(c3Factory.c3ChartConf(any(), any(), any(), any(), any(), any(), any(), any(), any())).thenReturn(c3Conf);
         return c3Factory;
     }
 

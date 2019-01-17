@@ -73,8 +73,9 @@ public class C3JsTypesFactory {
                                    C3Transition transition, 
                                    C3Point point, 
                                    C3Padding padding, 
-                                   C3Legend legend) {
-        return C3ChartConf.create(size, data, axis, grid, transition, point, padding, legend);
+                                   C3Legend legend,
+                                   C3Color color) {
+        return C3ChartConf.create(size, data, axis, grid, transition, point, padding, legend, color);
     }
 
     public C3Transition c3Transition(int duration) {
@@ -83,6 +84,22 @@ public class C3JsTypesFactory {
 
     public C3AxisLabel createC3Label(String text, String position) {
         return C3AxisLabel.create(text, position);
+    }
+    
+    public C3Color c3Color(String[] pattern) {
+        return C3Color.create(pattern, c3Threshold(new int[0]));
+    }
+    
+    public C3Color c3Color(String[] pattern, C3Threshold threshold) {
+        return C3Color.create(pattern, threshold);
+    }
+    
+    public C3Threshold c3Threshold(int[] values) {
+        return C3Threshold.create(values);
+    }
+    
+    public C3Gauge c3Gauge(int min, int max) {
+        return C3Gauge.create(min, max);
     }
 
 }

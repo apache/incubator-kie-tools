@@ -1,7 +1,6 @@
 package org.dashbuilder.renderer.c3.client.jsbinding;
 
 import elemental2.core.JsObject;
-import elemental2.dom.Element;
 import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;

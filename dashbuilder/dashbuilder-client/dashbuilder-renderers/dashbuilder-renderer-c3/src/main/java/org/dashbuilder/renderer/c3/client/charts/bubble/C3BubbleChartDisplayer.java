@@ -20,7 +20,6 @@ import org.dashbuilder.displayer.DisplayerAttributeGroupDef;
 import org.dashbuilder.displayer.DisplayerConstraints;
 import org.dashbuilder.renderer.c3.client.C3Displayer;
 import org.dashbuilder.renderer.c3.client.C3XYDisplayer;
-import org.dashbuilder.renderer.c3.client.charts.area.C3AreaChartDisplayer;
 import org.dashbuilder.renderer.c3.client.jsbinding.C3DataInfo;
 import org.dashbuilder.renderer.c3.client.jsbinding.C3JsTypesFactory;
 import org.dashbuilder.renderer.c3.client.jsbinding.C3Point;
@@ -32,7 +31,7 @@ import jsinterop.base.Any;
 import jsinterop.base.Js;
 
 @Dependent
-public class C3BubbleChartDisplayer extends C3XYDisplayer<C3AreaChartDisplayer.View> {
+public class C3BubbleChartDisplayer extends C3XYDisplayer<C3BubbleChartDisplayer.View> {
     
     public interface View extends C3Displayer.View<C3BubbleChartDisplayer> {
     }

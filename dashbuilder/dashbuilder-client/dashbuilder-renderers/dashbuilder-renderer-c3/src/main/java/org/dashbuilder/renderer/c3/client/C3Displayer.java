@@ -35,6 +35,7 @@ import org.dashbuilder.renderer.c3.client.jsbinding.C3AxisX;
 import org.dashbuilder.renderer.c3.client.jsbinding.C3AxisY;
 import org.dashbuilder.renderer.c3.client.jsbinding.C3ChartConf;
 import org.dashbuilder.renderer.c3.client.jsbinding.C3ChartData;
+import org.dashbuilder.renderer.c3.client.jsbinding.C3Color;
 import org.dashbuilder.renderer.c3.client.jsbinding.C3DataInfo;
 import org.dashbuilder.renderer.c3.client.jsbinding.C3JsTypesFactory;
 import org.dashbuilder.renderer.c3.client.jsbinding.C3Legend;
@@ -139,6 +140,7 @@ public abstract class C3Displayer<V extends C3Displayer.View> extends AbstractGw
         C3Padding padding = createPadding();
         C3Legend legend = factory.c3Legend(displayerSettings.isChartShowLegend(), 
                                            getLegendPosition());
+        C3Color color = createColor();
         return factory.c3ChartConf(
                     factory.c3ChartSize(width, height),
                     data,
@@ -147,8 +149,13 @@ public abstract class C3Displayer<V extends C3Displayer.View> extends AbstractGw
                     factory.c3Transition(0),
                     point,
                     padding, 
-                    legend
+                    legend,
+                    color
                 );
+    }
+
+    protected C3Color createColor() {
+        return factory.c3Color(new String[0]);
     }
 
     protected C3Padding createPadding() {
@@ -340,6 +347,10 @@ public abstract class C3Displayer<V extends C3Displayer.View> extends AbstractGw
         Position legendPosition = displayerSettings.getChartLegendPosition();
         String c3LegendPosition = C3Legend.convertPosition(legendPosition);
         return c3LegendPosition;
+    }
+    
+    protected String columnValueToString(Object mightBeNull) {
+        return mightBeNull == null ? "" : mightBeNull.toString();
     }
     
 }

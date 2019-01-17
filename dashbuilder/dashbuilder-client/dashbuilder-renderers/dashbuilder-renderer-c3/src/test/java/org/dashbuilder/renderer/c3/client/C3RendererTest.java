@@ -1,7 +1,6 @@
 package org.dashbuilder.renderer.c3.client;
 
 import static org.mockito.Mockito.when;
-import static org.dashbuilder.displayer.DisplayerSubType.AREA;
 import static org.dashbuilder.displayer.DisplayerSubType.AREA_STACKED;
 import static org.dashbuilder.displayer.DisplayerSubType.BAR;
 import static org.dashbuilder.displayer.DisplayerSubType.BAR_STACKED;
@@ -15,17 +14,18 @@ import static org.dashbuilder.displayer.DisplayerType.AREACHART;
 import static org.dashbuilder.displayer.DisplayerType.BARCHART;
 import static org.dashbuilder.displayer.DisplayerType.BUBBLECHART;
 import static org.dashbuilder.displayer.DisplayerType.LINECHART;
+import static org.dashbuilder.displayer.DisplayerType.METERCHART;
 import static org.dashbuilder.displayer.DisplayerType.PIECHART;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import org.dashbuilder.displayer.DisplayerSettings;
-import org.dashbuilder.displayer.client.RendererManager;
 import org.dashbuilder.renderer.c3.client.charts.area.C3AreaChartDisplayer;
 import org.dashbuilder.renderer.c3.client.charts.bar.C3BarChartDisplayer;
 import org.dashbuilder.renderer.c3.client.charts.bubble.C3BubbleChartDisplayer;
 import org.dashbuilder.renderer.c3.client.charts.line.C3LineChartDisplayer;
+import org.dashbuilder.renderer.c3.client.charts.meter.C3MeterChartDisplayer;
 import org.dashbuilder.renderer.c3.client.charts.pie.C3PieChartDisplayer;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
@@ -55,6 +55,8 @@ public class C3RendererTest {
     @Mock
     private SyncBeanDef<C3BubbleChartDisplayer> bubbleChartDisplayerBeanDef;
     @Mock
+    private SyncBeanDef<C3MeterChartDisplayer> meterChartDisplayerBeanDef;
+    @Mock
     private C3AreaChartDisplayer c3AreaChartDisplayer;
     @Mock
     private C3BarChartDisplayer c3BarChartDisplayer;
@@ -64,8 +66,11 @@ public class C3RendererTest {
     private C3PieChartDisplayer c3PieChartDisplayer;
     @Mock
     private C3BubbleChartDisplayer c3BubbleChartDisplayer;
+    @Mock
+    private C3MeterChartDisplayer c3MeterChartDisplayer;
     
     private DisplayerSettings settings;
+    
     
     
     @Before
@@ -83,7 +88,10 @@ public class C3RendererTest {
         when(pieChartDisplayerBeanDef.newInstance()).thenReturn(c3PieChartDisplayer);     
         
         when(beanManager.lookupBean(C3BubbleChartDisplayer.class)).thenReturn(bubbleChartDisplayerBeanDef);
-        when(bubbleChartDisplayerBeanDef.newInstance()).thenReturn(c3BubbleChartDisplayer);          
+        when(bubbleChartDisplayerBeanDef.newInstance()).thenReturn(c3BubbleChartDisplayer);   
+        
+        when(beanManager.lookupBean(C3MeterChartDisplayer.class)).thenReturn(meterChartDisplayerBeanDef);
+        when(meterChartDisplayerBeanDef.newInstance()).thenReturn(c3MeterChartDisplayer);        
         
         settings = mock(DisplayerSettings.class);
     }
@@ -166,5 +174,12 @@ public class C3RendererTest {
         renderer.lookupDisplayer(settings);
         verify(bubbleChartDisplayerBeanDef).newInstance();
     }
+    
+    @Test
+    public void lookupMeterChart() {
+        when(settings.getType()).thenReturn(METERCHART);
+        renderer.lookupDisplayer(settings);
+        verify(meterChartDisplayerBeanDef).newInstance();
+    }    
 
 }
