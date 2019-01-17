@@ -113,42 +113,46 @@
         <!-- content for cheatsheet tab -->
         <div id="kieScenarioCheatsheetTabContent"
              class="tab-pane fade"
-             aria-labelledby="Scenario Cheatsheet" style="padding: 1em">
-            <p style="margin-bottom: 1em">Use contextual menu to add/remove columns and rows.</p>
+             aria-labelledby="Scenario Cheatsheet"
+             style="padding: 1em">
 
-            <p style="margin-bottom: 1em">Left click on column header & then edit the mapping with a field using the Test Editor tab.</p>
+            <p>To start off, right-click a cell in the table and use the contextual menus to insert new columns and rows.</p>
+            <p>Before defining the individual test scenarios, set the instance and field mappings for each column. Select a header cell and in the <b>Test Editor</b> tab, choose the required field. Click <b>Add</b> to set the mapping.</p>
+            <p>Now, define the test scenarios. Each cell of the table must contain a valid expression.</p>
 
-            <p style="margin-bottom: 1em">Double click on the field to set the mapping.</p>
-
-            <p style="margin-bottom: 0px">Each cell can contain an expression which use following syntax:</p>
-
-            <ul style="margin-bottom: 1em">
-                <li>
-                    <i>= value (or no symbol)</i>: specifies equals to a value. This is the default and only operator supported under GIVEN section
-                </li>
-                <li>
-                    <i>! or != or <> value</i>: specifies not equals to a value. It can be used with other operators.
-                </li>
-                <li><i>< or > or <= or >= value</i>: specifies a comparison</li>
-                <li>
-                    <i>[ value1, value2, value3 ]</i>: provides a list of values. This operator works like the logical OR operator
-                </li>
-                <li>
-                    <i>expression1 ; expression2 ; expression3</i>: specifies a list of expressions. This operator works like the logical AND operator
-                </li>
-            </ul>
-
-            <p style="margin-bottom: 0px">Example of expressions:</p>
+            <h4>Rule-based scenarios</h4>
+            <p>In rule-based scenarios, the following expressions are supported:</p>
 
             <ul>
-                <li><i>< 3</i></li>
-                <li><i>< 3 ; ! [0,-1]</i></li>
-                <li><i>[MyString, My second string]</i></li>
-                <li><i>= 3; > 2</i></li>
+                <li><tt>=</tt> (or no symbol) specifies equality of a value. This is the default operator of each column and the only operator that is supported in the GIVEN section of the table.</li>
+                <li><tt>!</tt>, <tt>!=</tt>, <tt>&lt;&gt;</tt> specify inequality of a value. This operator can be combined with other operators.</li>
+                <li><tt>&lt;</tt>, <tt>&gt;</tt>, <tt>&lt;=</tt>, <tt>&gt;=</tt> specify a comparison: less than, greater than, less or equals than, and greater or equals than.</li>
+                <li><tt>[value1, value2, value3]</tt> specifies a list of values. If <b>one or more</b> values are valid, the scenario definition is evaluated as true.</li>
+                <li><tt>expression1; expression2; expression3</tt> specifies a list of expressions. If <b>all</b> expressions are valid, the scenario definition is evaluated as true.</li>
+                <li>An empty cell equals to <tt>null</tt>. To define an empty string, use <tt>=</tt>.</li>
             </ul>
 
-            <p>Empty cell is equal to
-                <i>null</i> and use the equals symbol (=) without any value to specify an empty string.</p>
+            <p>Example expressions:</p>
+
+            <ul>
+                <li><tt>&lt; 1</tt></li>
+                <li><tt>&lt; 1; ! [-1, 0]</tt></li>
+                <li><tt>[Jane, Doe]</tt></li>
+                <li><tt>&lt;&gt; [1, -1]; = 0</tt></li>
+            </ul>
+
+            <h4>DMN-based scenarios</h4>
+            <p>DMN-based scenarios use the FEEL expression language. Supported data types are:</p>
+
+            <ul>
+                <li><i>numbers</i> and <i>strings</i> (strings must be delimited by quotation marks), for example <tt>"John Doe"</tt></li>
+                <li><i>boolean values</i> (<tt>true</tt>, <tt>false</tt>, and <tt>null</tt>)</li>
+                <li><i>dates</i> and <i>time</i>, for example <tt>date("2019-05-13")</tt> or <tt>time("14:10:00+02:00")</tt></li>
+                <li><i>functions</i></li>
+                <li><i>contexts</i>, for example <tt>{x : 5, y : 3}</tt></li>
+                <li><i>ranges</i> and <i>lists</i>, for example <tt>[1 .. 10]</tt> or <tt>[2, 3, 4, 5]</tt></li>
+            </ul>
+
         </div>
     </div>
 </div>
