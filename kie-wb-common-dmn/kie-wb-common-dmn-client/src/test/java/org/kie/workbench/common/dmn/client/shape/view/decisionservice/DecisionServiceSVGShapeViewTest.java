@@ -32,12 +32,6 @@ import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStepEvent;
 import com.ait.lienzo.client.core.types.DragBounds;
 import com.ait.lienzo.client.widget.DragContext;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.ait.lienzo.test.annotation.Settings;
-import com.ait.lienzo.test.translator.GWTTranslatorInterceptor;
-import com.ait.lienzo.test.translator.LienzoJSOStubTranslatorInterceptor;
-import com.ait.lienzo.test.translator.LienzoNodeTranslatorInterceptor;
-import com.ait.lienzo.test.translator.LienzoStubTranslatorInterceptor;
-import com.ait.lienzo.test.translator.StripFinalModifiersTranslatorInterceptor;
 import com.google.gwt.event.shared.HandlerManager;
 import org.assertj.core.api.Condition;
 import org.junit.Before;
@@ -58,40 +52,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
-//This clones DefaultSettingsHolder but overrides JSOStub for DragBounds$DragBoundsJSO
-@Settings(
-        stubs = {
-                com.ait.lienzo.test.stub.overlays.BoundingBoxJSO.class,
-                com.ait.lienzo.test.stub.overlays.TransformJSO.class,
-                com.ait.lienzo.test.stub.overlays.ShadowJSO.class,
-                com.ait.lienzo.test.stub.overlays.NObjectJSO.class,
-                com.ait.lienzo.test.stub.overlays.Point2DJSO.class,
-                com.ait.lienzo.test.stub.overlays.JsArray.class,
-                com.ait.lienzo.test.stub.overlays.JsArrayMixed.class,
-                com.ait.lienzo.test.stub.overlays.PathPartListJSO.class,
-                com.ait.lienzo.test.stub.overlays.PathPartEntryJSO.class,
-                com.ait.lienzo.test.stub.overlays.Point2DArrayJSO.class,
-                com.ait.lienzo.test.stub.overlays.NArrayBaseJSO.class,
-                com.ait.lienzo.test.stub.overlays.NFastDoubleArrayJSO.class,
-                com.ait.lienzo.test.stub.overlays.OptionalNodeFields.class,
-                com.ait.lienzo.test.stub.overlays.OptionalShapeFields.class,
-                com.ait.lienzo.test.stub.overlays.OptionalGroupOfFields.class,
-                com.ait.lienzo.test.stub.Attributes.class,
-                com.ait.lienzo.test.stub.NFastArrayList.class,
-                com.ait.lienzo.test.stub.NFastStringMap.class,
-                org.kie.workbench.common.dmn.client.shape.view.decisionservice.DragBoundsJSO.class
-        },
-        jsoStubs = {
-                "com.ait.tooling.nativetools.client.collection.NFastStringHistogram$NFastStringHistogramJSO",
-                "com.ait.tooling.nativetools.client.collection.NFastStringSet$NFastStringSetJSO",
-        },
-        translators = {
-                LienzoStubTranslatorInterceptor.class,
-                LienzoJSOStubTranslatorInterceptor.class,
-                StripFinalModifiersTranslatorInterceptor.class,
-                LienzoNodeTranslatorInterceptor.class,
-                GWTTranslatorInterceptor.class
-        })
 public class DecisionServiceSVGShapeViewTest {
 
     private static final double WIDTH = 100.0;
