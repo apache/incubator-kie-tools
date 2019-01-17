@@ -42,12 +42,10 @@ public class WiresShapeLocationBounds {
             final double shapeMinY = shapeBB.getMinY() + dy;
             final double shapeMaxX = shapeMinX + (shapeBB.getMaxX() - shapeBB.getMinX());
             final double shapeMaxY = shapeMinY + (shapeBB.getMaxY() - shapeBB.getMinY());
-            if ((constraints.hasMinX() && shapeMinX <= constraints.getMinX()) ||
-                    (constraints.hasMaxX() && shapeMaxX >= constraints.getMaxX()) ||
-                    (constraints.hasMinY() && shapeMinY <= constraints.getMinY()) ||
-                    (constraints.hasMaxY() && shapeMaxY >= constraints.getMaxY())) {
-                return true;
-            }
+            return constraints.lessOrEqualThanMinX(shapeMinX) ||
+                    constraints.biggerOrEqualThanMaxX(shapeMaxX) ||
+                    constraints.lessOrEqualThanMinY(shapeMinY) ||
+                    constraints.biggerOrEqualThanMaxY(shapeMaxY);
         }
         return false;
     }
