@@ -19,6 +19,7 @@ import static org.dashbuilder.displayer.DisplayerType.PIECHART;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import org.dashbuilder.displayer.DisplayerSettings;
 import org.dashbuilder.renderer.c3.client.charts.area.C3AreaChartDisplayer;

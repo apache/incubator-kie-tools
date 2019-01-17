@@ -20,6 +20,8 @@ import org.dashbuilder.displayer.DisplayerAttributeGroupDef;
 import org.dashbuilder.displayer.DisplayerConstraints;
 import org.dashbuilder.renderer.c3.client.C3Displayer;
 import org.dashbuilder.renderer.c3.client.C3XYDisplayer;
+import org.dashbuilder.renderer.c3.client.charts.CommonC3DisplayerConstants;
+import org.dashbuilder.renderer.c3.client.charts.area.C3AreaChartDisplayer;
 import org.dashbuilder.renderer.c3.client.jsbinding.C3DataInfo;
 import org.dashbuilder.renderer.c3.client.jsbinding.C3JsTypesFactory;
 import org.dashbuilder.renderer.c3.client.jsbinding.C3Point;
@@ -78,18 +80,7 @@ public class C3BubbleChartDisplayer extends C3XYDisplayer<C3BubbleChartDisplayer
                         ColumnType.LABEL,
                         ColumnType.NUMBER});
 
-        return new DisplayerConstraints(lookupConstraints)
-                   .supportsAttribute(DisplayerAttributeDef.TYPE)
-                   .supportsAttribute(DisplayerAttributeDef.RENDERER)
-                   .supportsAttribute(DisplayerAttributeGroupDef.COLUMNS_GROUP)
-                   .supportsAttribute(DisplayerAttributeGroupDef.FILTER_GROUP)
-                   .supportsAttribute(DisplayerAttributeGroupDef.REFRESH_GROUP)
-                   .supportsAttribute(DisplayerAttributeGroupDef.GENERAL_GROUP)
-                   .supportsAttribute(DisplayerAttributeDef.CHART_WIDTH)
-                   .supportsAttribute(DisplayerAttributeDef.CHART_HEIGHT)
-                   .supportsAttribute(DisplayerAttributeDef.CHART_BGCOLOR)
-                   .supportsAttribute(DisplayerAttributeGroupDef.CHART_MARGIN_GROUP)
-                   .supportsAttribute(DisplayerAttributeGroupDef.CHART_LEGEND_GROUP)
+        return new CommonC3DisplayerConstants(lookupConstraints).create()
                    .supportsAttribute(DisplayerAttributeGroupDef.AXIS_GROUP);
     }
     

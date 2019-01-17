@@ -87,7 +87,7 @@ public class C3JsTypesFactory {
     }
     
     public C3Color c3Color(String[] pattern) {
-        return C3Color.create(pattern, c3Threshold(new int[0]));
+        return C3Color.create(pattern);
     }
     
     public C3Color c3Color(String[] pattern, C3Threshold threshold) {

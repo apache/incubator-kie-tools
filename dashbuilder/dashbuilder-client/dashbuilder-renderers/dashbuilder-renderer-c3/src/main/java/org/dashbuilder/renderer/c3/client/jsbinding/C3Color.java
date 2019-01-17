@@ -16,6 +16,13 @@ public class C3Color {
         return color;
     }
     
+    @JsOverlay
+    static C3Color create(String[] pattern) {
+        C3Color color = new C3Color();
+        color.setPattern(pattern);
+        return color;
+    }
+    
     @JsProperty
     public native void setPattern(String[] pattern); 
     

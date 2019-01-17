@@ -126,4 +126,5 @@ public abstract class AbstractGwtDisplayerView<P extends AbstractGwtDisplayer>
         panel.add(label);
         label.setText(msg);
     }
+
 }

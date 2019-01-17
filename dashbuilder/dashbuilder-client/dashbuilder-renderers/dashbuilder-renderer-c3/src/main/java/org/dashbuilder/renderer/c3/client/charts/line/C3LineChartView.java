@@ -9,6 +9,11 @@ public class C3LineChartView
     boolean smooth = false;
     
     @Override
+    public void init(C3LineChartDisplayer presenter) {
+        super.init(presenter);
+    }
+    
+    @Override
     public String getType() {
         return smooth ? "spline" : "line";
     }

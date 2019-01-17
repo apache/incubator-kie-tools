@@ -268,4 +268,6 @@ public interface CommonConstants extends Messages {
     String renderermanager_renderer_not_available(String type);
 
     String displayerviewer_displayer_not_created();
+
+    String chart_resizable();
 }

@@ -80,6 +80,7 @@ public abstract class AbstractDisplayer<V extends AbstractDisplayer.View> implem
         void enableRefreshTimer(int seconds);
 
         void cancelRefreshTimer();
+
     }
 
     public interface Formatter {

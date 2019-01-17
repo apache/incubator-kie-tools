@@ -207,6 +207,9 @@ public class DisplayerSettingsEditor implements IsWidget {
         if (isSupported(CHART_GROUP)) {
             view.addCategory(CHART_GROUP);
 
+            if (isSupported(CHART_RESIZABLE)) {
+                view.addBooleanProperty(CHART_RESIZABLE, displayerSettings.isResizable());
+            }            
             if (isSupported(CHART_WIDTH)) {
                 view.addTextProperty(CHART_WIDTH, String.valueOf(displayerSettings.getChartWidth()), createLongValidator());
             }

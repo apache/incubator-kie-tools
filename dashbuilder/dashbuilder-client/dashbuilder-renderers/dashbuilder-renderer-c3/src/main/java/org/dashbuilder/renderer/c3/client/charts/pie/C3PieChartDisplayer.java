@@ -13,6 +13,7 @@ import org.dashbuilder.displayer.DisplayerAttributeDef;
 import org.dashbuilder.displayer.DisplayerAttributeGroupDef;
 import org.dashbuilder.displayer.DisplayerConstraints;
 import org.dashbuilder.renderer.c3.client.C3Displayer;
+import org.dashbuilder.renderer.c3.client.charts.CommonC3DisplayerConstants;
 import org.dashbuilder.renderer.c3.client.jsbinding.C3AxisX;
 import org.dashbuilder.renderer.c3.client.jsbinding.C3JsTypesFactory;
 
@@ -90,22 +91,8 @@ public class C3PieChartDisplayer extends C3Displayer<C3PieChartDisplayer.View> {
                         ColumnType.LABEL,
                         ColumnType.NUMBER});
 
-        return new DisplayerConstraints(lookupConstraints)
-                .supportsAttribute(DisplayerAttributeDef.TYPE)
-                .supportsAttribute(DisplayerAttributeDef.SUBTYPE)
-                .supportsAttribute(DisplayerAttributeDef.RENDERER)
-                .supportsAttribute(DisplayerAttributeGroupDef.COLUMNS_GROUP)
-                .supportsAttribute(DisplayerAttributeGroupDef.FILTER_GROUP)
-                .supportsAttribute(DisplayerAttributeGroupDef.REFRESH_GROUP)
-                .supportsAttribute(DisplayerAttributeGroupDef.GENERAL_GROUP)
-                .supportsAttribute(DisplayerAttributeGroupDef.CHART_WIDTH)
-                .supportsAttribute(DisplayerAttributeGroupDef.CHART_HEIGHT)
-                .supportsAttribute(DisplayerAttributeGroupDef.CHART_RESIZABLE)
-                .supportsAttribute(DisplayerAttributeGroupDef.CHART_MAX_WIDTH)
-                .supportsAttribute(DisplayerAttributeGroupDef.CHART_MAX_HEIGHT)
-                .supportsAttribute(DisplayerAttributeGroupDef.CHART_BGCOLOR)
-                .supportsAttribute(DisplayerAttributeGroupDef.CHART_MARGIN_GROUP)
-                .supportsAttribute(DisplayerAttributeGroupDef.CHART_LEGEND_GROUP);
+        return new CommonC3DisplayerConstants(lookupConstraints).create()
+                .supportsAttribute(DisplayerAttributeDef.SUBTYPE);
     }
 
 }
