@@ -49,6 +49,7 @@ import com.ait.lienzo.test.translator.StripFinalModifiersTranslatorInterceptor;
 
         stubs = {
                 com.ait.lienzo.test.stub.overlays.BoundingBoxJSO.class,
+                com.ait.lienzo.test.stub.overlays.DragBoundsJSO.class,
                 com.ait.lienzo.test.stub.overlays.TransformJSO.class,
                 com.ait.lienzo.test.stub.overlays.ShadowJSO.class,
                 com.ait.lienzo.test.stub.overlays.NObjectJSO.class,
