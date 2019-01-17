@@ -19,6 +19,7 @@ a:hover {
 }
 
 .kie-dl-horizontal dt {
+  margin-bottom: 0.75rem;
   text-align: left;
   font-weight: normal;
   width: auto;
