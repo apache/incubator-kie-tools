@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.graph.util;
 
+import java.util.Optional;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -75,10 +77,9 @@ public class FilteredParentsTypeMatcherTest extends AbstractGraphDefinitionTypes
         assertFalse(newPredicate(DefinitionC.class)
                             .test(nodeA,
                                   nodeB));
-        assertTrue(newPredicate(ParentDefinition.class)
-                           .test(nodeA,
-                                 nodeC));
-
+        assertFalse(newPredicate(ParentDefinition.class)
+                            .test(nodeA,
+                                  nodeC));
         assertTrue(newPredicate(RootDefinition.class)
                            .test(nodeA,
                                  nodeC));
@@ -95,6 +96,7 @@ public class FilteredParentsTypeMatcherTest extends AbstractGraphDefinitionTypes
         assertFalse(newPredicate(RootDefinition.class)
                             .test(nodeA,
                                   nodeB));
+
         assertFalse(newPredicate(ParentDefinition.class)
                             .test(nodeA,
                                   nodeB));
@@ -103,6 +105,33 @@ public class FilteredParentsTypeMatcherTest extends AbstractGraphDefinitionTypes
         graphHandler.setChild(rootNode,
                               nodeB);
         assertTrue(newPredicate(RootDefinition.class)
+                           .test(nodeA,
+                                 nodeB));
+        assertFalse(newPredicate(ParentDefinition.class)
+                            .test(nodeA,
+                                  nodeB));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testWithParentAndNoParentType() {
+
+        assertTrue(newPredicate(RootDefinition.class).test(nodeA,
+                                                           nodeC));
+
+        assertFalse(newPredicate(DefinitionB.class)
+                            .test(nodeA,
+                                  nodeC));
+
+        assertTrue(newPredicate(null)
+                           .test(nodeA,
+                                 nodeC));
+
+        assertFalse(newPredicate(RootDefinition.class)
+                            .test(nodeA,
+                                  nodeB));
+
+        assertTrue(newPredicate(null)
                            .test(nodeA,
                                  nodeB));
     }
@@ -124,7 +153,7 @@ public class FilteredParentsTypeMatcherTest extends AbstractGraphDefinitionTypes
     private FilteredParentsTypeMatcher newPredicate(final Class<?> parentType) {
         return new FilteredParentsTypeMatcher(graphHandler.definitionManager,
                                               rootNode,
-                                              nodeA)
-                .forParentType(parentType);
+                                              nodeA,
+                                              Optional.ofNullable(parentType));
     }
 }

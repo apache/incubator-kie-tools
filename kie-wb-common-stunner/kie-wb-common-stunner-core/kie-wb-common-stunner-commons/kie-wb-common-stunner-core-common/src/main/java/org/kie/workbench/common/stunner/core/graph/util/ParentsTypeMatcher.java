@@ -37,14 +37,10 @@ public class ParentsTypeMatcher
 
     private final ParentsTypeMatchPredicate parentsTypeMatch;
 
-    public ParentsTypeMatcher(final DefinitionManager definitionManager) {
+    public ParentsTypeMatcher(final DefinitionManager definitionManager, final Class<?> parentType) {
         this.parentsTypeMatch = new ParentsTypeMatchPredicate(new ParentByDefinitionIdProvider(definitionManager),
-                                                              new GraphUtils.HasParentPredicate());
-    }
-
-    public ParentsTypeMatcher forParentType(final Class<?> parentType) {
-        this.parentsTypeMatch.forParentType(parentType);
-        return this;
+                                                              new GraphUtils.HasParentPredicate(),
+                                                              parentType);
     }
 
     @Override

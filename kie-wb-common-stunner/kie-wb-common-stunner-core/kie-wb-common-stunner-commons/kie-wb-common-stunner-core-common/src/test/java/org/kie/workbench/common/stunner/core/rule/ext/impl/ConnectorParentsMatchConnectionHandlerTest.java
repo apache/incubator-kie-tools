@@ -117,6 +117,17 @@ public class ConnectorParentsMatchConnectionHandlerTest extends AbstractGraphDef
 
     @Test
     @SuppressWarnings("unchecked")
+    public void testNoParentDefinition() {
+        when(connectionContext.getSource()).thenReturn(Optional.of(nodeA));
+        when(connectionContext.getTarget()).thenReturn(Optional.of(nodeC));
+        when(ruleExtension.getTypeArguments()).thenReturn(new Class[]{});
+        final RuleViolations violations = tested.evaluate(ruleExtension, connectionContext);
+        assertNotNull(violations);
+        assertViolations(violations, true);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
     public void testEvaluateParentDefinition() {
         assertEvalSuccess(Optional.of(nodeA),
                           Optional.of(nodeB));

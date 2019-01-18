@@ -34,8 +34,7 @@ public class ParentsTypeMatcherTest extends AbstractGraphDefinitionTypesTest {
     }
 
     private ParentsTypeMatcher newPredicate(final Class<?> parentType) {
-        return new ParentsTypeMatcher(graphHandler.definitionManager)
-                .forParentType(parentType);
+        return new ParentsTypeMatcher(graphHandler.definitionManager, parentType);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -66,7 +65,7 @@ public class ParentsTypeMatcherTest extends AbstractGraphDefinitionTypesTest {
     @SuppressWarnings("unchecked")
     public void testWithParentSubprocess() {
         assertTrue(newPredicate(ParentDefinition.class).test(nodeA, nodeB));
-        assertTrue(newPredicate(DefinitionA.class).test(nodeA, nodeB));
+        assertFalse(newPredicate(DefinitionA.class).test(nodeA, nodeB));
         assertFalse(newPredicate(RootDefinition.class).test(nodeA, nodeB));
         assertFalse(newPredicate(ParentDefinition.class).test(nodeA, nodeC));
         assertFalse(newPredicate(RootDefinition.class).test(nodeA, nodeC));
@@ -88,7 +87,7 @@ public class ParentsTypeMatcherTest extends AbstractGraphDefinitionTypesTest {
         graphHandler
                 .removeChild(parentNode, nodeA)
                 .removeChild(parentNode, nodeB);
-        assertTrue(newPredicate(RootDefinition.class).test(nodeA, nodeB));
+        assertFalse(newPredicate(RootDefinition.class).test(nodeA, nodeB));
 
         graphHandler.setChild(rootNode, nodeA);
         assertFalse(newPredicate(RootDefinition.class).test(nodeA, nodeB));
@@ -109,5 +108,14 @@ public class ParentsTypeMatcherTest extends AbstractGraphDefinitionTypesTest {
 
         graphHandler.setChild(rootNode, nodeA);
         assertTrue(newPredicate(RootDefinition.class).test(nodeA, nodeC));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testWithParentAndNoParentType() {
+        assertTrue(newPredicate(null).test(nodeA, nodeC));
+        assertFalse(newPredicate(DefinitionB.class).test(nodeA, nodeC));
+        assertTrue(newPredicate(null).test(nodeA, nodeB));
+        assertFalse(newPredicate(RootDefinition.class).test(nodeA, nodeB));
     }
 }

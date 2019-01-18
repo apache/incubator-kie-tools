@@ -33,16 +33,22 @@ import org.kie.workbench.common.stunner.core.rule.violations.RuleViolationImpl;
 public abstract class AbstractParentsMatchHandler<T extends AbstractParentsMatchHandler, C extends RuleEvaluationContext>
         extends RuleExtensionHandler<T, C> {
 
-    public static Class<?> getParentType(final RuleExtension rule, Element<? extends Definition> parent) {
+    /**
+     * Returns the match parent type that matches the {@link RuleExtension#getTypeArguments()} considering the given parents.
+     * @param rule
+     * @param parent
+     * @return
+     */
+    public static Optional<Class<?>> getParentType(final RuleExtension rule, Element<? extends Definition>... parent) {
         final Class<?>[] typeArguments = rule.getTypeArguments();
-        final Class parentDefinitionClass = Objects.nonNull(parent)
-                && Objects.nonNull(parent.getContent())
-                && Objects.nonNull(parent.getContent().getDefinition()) ? parent.getContent().getDefinition().getClass() :
-                null;
-        return Stream.of(typeArguments)
-                .filter(clazz -> Objects.equals(clazz, parentDefinitionClass))
+        return Stream.of(parent)
+                .filter(Objects::nonNull)
+                .map(Element::getContent)
+                .map(Definition::getDefinition)
+                .map(Object::getClass)
+                .filter(parentClass -> Stream.of(typeArguments).anyMatch(type -> Objects.equals(type, parentClass)))
                 .findFirst()
-                .orElse(null);
+                .map(c -> (Class<?>) c);
     }
 
     public static boolean hasParentType(final RuleExtension rule) {

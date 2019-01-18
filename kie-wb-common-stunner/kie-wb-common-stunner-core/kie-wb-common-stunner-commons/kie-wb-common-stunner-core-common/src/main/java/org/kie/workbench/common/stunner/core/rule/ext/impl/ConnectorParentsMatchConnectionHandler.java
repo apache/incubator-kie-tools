@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.stunner.core.rule.ext.impl;
 
-import java.util.Objects;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -119,18 +118,11 @@ public class ConnectorParentsMatchConnectionHandler
         if (sourceNode.isPresent() && targetNode.isPresent()) {
             final Node<? extends View<?>, ? extends Edge> source = sourceNode.get();
             final Node<? extends View<?>, ? extends Edge> target = targetNode.get();
+            final Element<? extends Definition> parentTarget = (Element<? extends Definition>) GraphUtils.getParent(target);
+            final Element<? extends Definition> parentSource = (Element<? extends Definition>) GraphUtils.getParent(source);
+            final Optional<Class<?>> parentType = getParentType(rule, parentTarget, parentSource);
 
-            //source parent
-            final Optional<? extends Element<? extends Definition>> sourceParent =
-                    Optional.ofNullable((Element<? extends Definition>) GraphUtils.getParent(source));
-            final Class<?> parentTypeForSource = getParentType(rule, sourceParent.orElse(null));
-            //target parent
-            final Optional<? extends Element<? extends Definition>> targetParent =
-                    Optional.ofNullable((Element<? extends Definition>) GraphUtils.getParent(target));
-            final Class<?> parentTypeForTarget = getParentType(rule, targetParent.orElse(null));
-
-            isValid = new ParentsTypeMatcher(definitionManager)
-                    .forParentType(Objects.nonNull(parentTypeForSource) ? parentTypeForSource : parentTypeForTarget)
+            isValid = new ParentsTypeMatcher(definitionManager, parentType.orElse(null))
                     .test(source, target);
         }
         if (!isValid) {

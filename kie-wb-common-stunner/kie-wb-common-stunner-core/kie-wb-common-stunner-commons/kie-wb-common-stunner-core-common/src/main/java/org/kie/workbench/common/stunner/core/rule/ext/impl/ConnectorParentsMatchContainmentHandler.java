@@ -114,12 +114,12 @@ public class ConnectorParentsMatchContainmentHandler
 
     private boolean acceptsContainment(final RuleExtension rule,
                                        final NodeContainmentContext context) {
-        final Class<?> parentType = getParentType(rule, context.getParent());
-        if (!hasParentType(rule) || Objects.isNull(parentType)) {
+        final Optional<Class<?>> parentType = getParentType(rule, context.getParent());
+        if (!hasParentType(rule) || !parentType.isPresent()) {
             return true;
         }
 
-        final String expectedParentId = BindableAdapterUtils.getDefinitionId(parentType);
+        final String expectedParentId = parentType.map(BindableAdapterUtils::getDefinitionId).orElse(null);
         final Element<? extends Definition<?>> parent = context.getParent();
         final Node<? extends Definition<?>, ? extends Edge> candidate = context.getCandidate();
         final String parentId = evalUtils.getElementDefinitionId(parent);
@@ -133,7 +133,7 @@ public class ConnectorParentsMatchContainmentHandler
         final Graph<?, ? extends Node> graph = context.getGraph();
         final Element<? extends Definition<?>> parent = context.getParent();
         final Node<? extends Definition<?>, ? extends Edge> candidate = context.getCandidate();
-        final Class<?> parentType = getParentType(rule, context.getParent());
+
         final DefaultRuleViolations result = new DefaultRuleViolations();
 
         // Walk throw the graph and evaluate connector source and target nodes parent match.
@@ -141,12 +141,6 @@ public class ConnectorParentsMatchContainmentHandler
                 .traverse(graph,
                           candidate,
                           new AbstractTreeTraverseCallback<Graph, Node, Edge>() {
-
-                              private final FilteredParentsTypeMatcher matcher =
-                                      new FilteredParentsTypeMatcher(definitionManager,
-                                                                     parent,
-                                                                     candidate)
-                                              .forParentType(parentType);
 
                               @Override
                               public boolean startNodeTraversal(final Node node) {
@@ -164,6 +158,7 @@ public class ConnectorParentsMatchContainmentHandler
                               }
 
                               private boolean process(final Edge edge) {
+
                                   final Optional<String> eId = getId(definitionManager,
                                                                      edge);
                                   if (eId.isPresent() && connectorId.equals(eId.get())) {
@@ -171,9 +166,14 @@ public class ConnectorParentsMatchContainmentHandler
                                       final Node targetNode = edge.getTargetNode();
                                       boolean valid = true;
                                       if (null != sourceNode && null != targetNode) {
-                                          valid = matcher
-                                                  .test(sourceNode,
-                                                        targetNode);
+                                          //get parent from the connected node to the candidate
+                                          final Element connectedParent = Objects.equals(candidate, sourceNode)
+                                                  ? GraphUtils.getParent(targetNode)
+                                                  : GraphUtils.getParent(sourceNode);
+
+                                          final Optional<Class<?>> parentType = getParentType(rule, context.getParent(), connectedParent);
+                                          valid = new FilteredParentsTypeMatcher(definitionManager, parent, candidate, parentType)
+                                                  .test(sourceNode, targetNode);
                                       }
                                       if (!valid) {
                                           addViolation(edge.getUUID(),

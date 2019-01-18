@@ -43,21 +43,20 @@ public class FilteredParentsTypeMatcher
     private final NodeCompositePredicate parentsMatchPredicate;
     private final Optional<Element<? extends Definition<?>>> candidateParent;
     private final Optional<Node<? extends Definition<?>, ? extends Edge>> candidateNode;
+    private final Optional<Class<?>> parentType;
 
     public FilteredParentsTypeMatcher(final DefinitionManager definitionManager,
                                       final Element<? extends Definition<?>> candidateParent,
-                                      final Node<? extends Definition<?>, ? extends Edge> candidateNode) {
+                                      final Node<? extends Definition<?>, ? extends Edge> candidateNode,
+                                      final Optional<Class<?>> parentType) {
         this.candidateParent = Optional.ofNullable(candidateParent);
         this.candidateNode = Optional.ofNullable(candidateNode);
         this.parentsTypeMatchPredicate = new ParentsTypeMatchPredicate(new FilteredParentByDefinitionIdProvider(definitionManager),
-                                                                       new FilteredHasParentPredicate());
+                                                                       new FilteredHasParentPredicate(),
+                                                                       parentType.orElse(null));
         this.parentsMatchPredicate = new NodeCompositePredicate(parentsTypeMatchPredicate,
                                                                 new ParentsMatchForCandidatePredicate());
-    }
-
-    public FilteredParentsTypeMatcher forParentType(final Class<?> parentType) {
-        this.parentsTypeMatchPredicate.forParentType(parentType);
-        return this;
+        this.parentType = parentType;
     }
 
     @Override
@@ -65,6 +64,11 @@ public class FilteredParentsTypeMatcher
                         final Node<? extends View<?>, ? extends Edge> node2) {
         checkNotNull("node", node);
         checkNotNull("node2", node2);
+
+        //in case there are no parent type to be tested
+        if (!parentType.isPresent()) {
+            return true;
+        }
 
         //in case none nodes are candidates
         if (!isCandidate.test(node) && !isCandidate.test(node2)) {
@@ -87,7 +91,7 @@ public class FilteredParentsTypeMatcher
                             final Element<?> parent) {
             return isCandidate.test(node) ?
                     candidateParent
-                            .filter(parent::equals)
+                            .filter(p -> Objects.equals(p, parent))
                             .isPresent() :
                     hasParentPredicate.test(node,
                                             parent);
