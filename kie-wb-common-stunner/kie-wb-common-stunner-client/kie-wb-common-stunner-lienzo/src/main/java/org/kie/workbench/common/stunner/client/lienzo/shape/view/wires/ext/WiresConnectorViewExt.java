@@ -137,6 +137,18 @@ public class WiresConnectorViewExt<T>
     }
 
     @Override
+    public T setTitleXOffsetPosition(final Double xOffset) {
+        // Do not apply here...
+        return cast();
+    }
+
+    @Override
+    public T setTitleYOffsetPosition(final Double yOffset) {
+        // Do not apply here...
+        return cast();
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
     public T setTitleRotation(double degrees) {
         this.textRotationDegrees = degrees;

@@ -30,11 +30,14 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FontHandlerTest {
+
+    private static final double X_OFFSET = 10.0;
+
+    private static final double Y_OFFSET = 20.0;
 
     private FontHandler<Object, ShapeViewExtStub> tested;
 
@@ -56,17 +59,21 @@ public class FontHandlerTest {
                 .alpha(o -> 0.7d)
                 .rotation(o -> 180d)
                 .position(o -> HasTitle.Position.TOP)
+                .positionXOffset(o -> X_OFFSET)
+                .positionYOffset(o -> Y_OFFSET)
                 .build();
         final Object bean = mock(Object.class);
         tested.handle(bean, view);
-        verify(view, times(1)).setTitleStrokeColor(eq("strokeColor"));
-        verify(view, times(1)).setTitleStrokeWidth(eq(5d));
-        verify(view, times(1)).setTitleFontColor(eq("fontColor"));
-        verify(view, times(1)).setTitleFontFamily(eq("fontFamily"));
-        verify(view, times(1)).setTitleFontSize(eq(10.5d));
-        verify(view, times(1)).setTitleAlpha(eq(0.7d));
-        verify(view, times(1)).setTitleRotation(eq(180d));
-        verify(view, times(1)).setTitlePosition(eq(HasTitle.Position.TOP));
+        verify(view).setTitleStrokeColor(eq("strokeColor"));
+        verify(view).setTitleStrokeWidth(eq(5d));
+        verify(view).setTitleFontColor(eq("fontColor"));
+        verify(view).setTitleFontFamily(eq("fontFamily"));
+        verify(view).setTitleFontSize(eq(10.5d));
+        verify(view).setTitleAlpha(eq(0.7d));
+        verify(view).setTitleRotation(eq(180d));
+        verify(view).setTitlePosition(eq(HasTitle.Position.TOP));
+        verify(view).setTitleXOffsetPosition(eq(X_OFFSET));
+        verify(view).setTitleYOffsetPosition(eq(Y_OFFSET));
     }
 
     @Test
@@ -80,6 +87,8 @@ public class FontHandlerTest {
                 .alpha(o -> null)
                 .rotation(o -> null)
                 .position(o -> null)
+                .positionXOffset(o -> null)
+                .positionYOffset(o -> null)
                 .build();
         final Object bean = mock(Object.class);
         tested.handle(bean, view);
@@ -91,5 +100,7 @@ public class FontHandlerTest {
         verify(view, never()).setTitleAlpha(anyDouble());
         verify(view, never()).setTitleRotation(anyDouble());
         verify(view, never()).setTitlePosition(any(HasTitle.Position.class));
+        verify(view, never()).setTitleXOffsetPosition(anyDouble());
+        verify(view, never()).setTitleYOffsetPosition(anyDouble());
     }
 }

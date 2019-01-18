@@ -78,6 +78,16 @@ public class ShapeViewExtStub
     }
 
     @Override
+    public Object setTitleXOffsetPosition(final Double xOffset) {
+        return this;
+    }
+
+    @Override
+    public Object setTitleYOffsetPosition(final Double yOffset) {
+        return this;
+    }
+
+    @Override
     public Object setTitleRotation(final double degrees) {
         return this;
     }

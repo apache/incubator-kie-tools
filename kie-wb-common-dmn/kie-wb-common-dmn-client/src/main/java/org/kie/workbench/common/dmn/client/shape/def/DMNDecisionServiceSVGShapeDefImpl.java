@@ -35,6 +35,8 @@ import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
 
 public class DMNDecisionServiceSVGShapeDefImpl implements DMNDecisionServiceSVGShapeDef {
 
+    static final double Y_OFFSET = 20.0;
+
     public static final SVGShapeViewResources<DMNDefinition, DMNDecisionServiceSVGViewFactory> VIEW_RESOURCES =
             new SVGShapeViewResources<DMNDefinition, DMNDecisionServiceSVGViewFactory>()
                     .put(DecisionService.class,
@@ -70,6 +72,7 @@ public class DMNDecisionServiceSVGShapeDefImpl implements DMNDecisionServiceSVGS
                 .fontSize(bean -> bean.getFontSet().getFontSize().getValue())
                 .strokeSize(bean -> bean.getFontSet().getFontBorderSize().getValue())
                 .position(bean -> HasTitle.Position.TOP)
+                .positionYOffset(bean -> Y_OFFSET)
                 .build();
     }
 

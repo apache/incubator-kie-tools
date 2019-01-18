@@ -119,6 +119,18 @@ public class WiresShapeViewExt<T extends WiresShapeViewExt>
     }
 
     @Override
+    public T setTitleXOffsetPosition(final Double xOffset) {
+        textViewDecorator.setTitleXOffsetPosition(xOffset);
+        return cast();
+    }
+
+    @Override
+    public T setTitleYOffsetPosition(final Double yOffset) {
+        textViewDecorator.setTitleYOffsetPosition(yOffset);
+        return cast();
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
     public T setTitleRotation(final double degrees) {
         textViewDecorator.setTitleRotation(degrees);

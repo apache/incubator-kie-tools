@@ -103,6 +103,7 @@ public class DMNDecisionServiceSVGShapeDefImplTest {
         handler.handle(decisionService, shapeView);
 
         verify(shapeView).setTitlePosition(HasTitle.Position.TOP);
+        verify(shapeView).setTitleYOffsetPosition(DMNDecisionServiceSVGShapeDefImpl.Y_OFFSET);
     }
 
     @Test

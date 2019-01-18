@@ -55,4 +55,18 @@ public class WiresShapeViewExtTest {
         tested.refresh();
         verify(textDecorator).update();
     }
+
+    @Test
+    public void testSetTitleXOffsetPosition() {
+        tested.setTitleXOffsetPosition(10.0);
+
+        verify(textDecorator).setTitleXOffsetPosition(10.0);
+    }
+
+    @Test
+    public void testSetTitleYOffsetPosition() {
+        tested.setTitleYOffsetPosition(10.0);
+
+        verify(textDecorator).setTitleYOffsetPosition(10.0);
+    }
 }

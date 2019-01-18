@@ -30,6 +30,10 @@ public interface HasTitle<T> {
 
     T setTitlePosition(final Position position);
 
+    T setTitleXOffsetPosition(final Double xOffset);
+
+    T setTitleYOffsetPosition(final Double yOffset);
+
     T setTitleRotation(final double degrees);
 
     T setTitleAlpha(final double alpha);
