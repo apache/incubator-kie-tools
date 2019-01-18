@@ -16,10 +16,8 @@
 
 package org.kie.workbench.common.stunner.client.widgets.views.session;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 
-import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.workbench.widgets.listbar.ResizeFlowPanel;
@@ -27,12 +25,32 @@ import org.uberfire.client.workbench.widgets.listbar.ResizeFlowPanel;
 @Dependent
 public class ScreenPanelViewImpl implements ScreenPanelView {
 
-    private final ResizeFlowPanel panel = new ResizeFlowPanel();
+    static class SizedResizeFlowPanel extends ResizeFlowPanel {
 
-    @PostConstruct
-    public void init() {
-        panel.getElement().getStyle().setWidth(100, Style.Unit.PCT);
-        panel.getElement().getStyle().setHeight(100, Style.Unit.PCT);
+        @Override
+        public void onResize() {
+            final Widget parent = getParent();
+            if (parent != null) {
+                final int w = parent.getOffsetWidth();
+                final int h = parent.getOffsetHeight();
+                setPixelSize(w, h);
+            }
+            doSuperOnResize();
+        }
+
+        void doSuperOnResize() {
+            super.onResize();
+        }
+    }
+
+    private final ResizeFlowPanel panel;
+
+    public ScreenPanelViewImpl() {
+        this(new SizedResizeFlowPanel());
+    }
+
+    ScreenPanelViewImpl(final ResizeFlowPanel panel) {
+        this.panel = panel;
     }
 
     @Override

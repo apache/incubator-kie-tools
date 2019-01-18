@@ -23,11 +23,5 @@ public interface SessionScreenView extends IsWidget {
 
     void showScreenView(final IsWidget view);
 
-    void setScreenViewBgColor(final String color);
-
-    void setMarginTop(final int px);
-
-    void setPaddingTop(final int px);
-
     void clear();
 }
