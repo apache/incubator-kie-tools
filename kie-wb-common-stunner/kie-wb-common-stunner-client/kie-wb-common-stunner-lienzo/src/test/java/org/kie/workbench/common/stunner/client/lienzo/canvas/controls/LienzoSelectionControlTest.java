@@ -36,7 +36,7 @@ import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseClickH
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewHandler;
 import org.kie.workbench.common.stunner.core.graph.Element;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewImpl;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
@@ -91,7 +91,7 @@ public class LienzoSelectionControlTest {
     public void setup() {
         when(element.getUUID()).thenReturn(ELEMENT_UUID);
         when(element.getContent()).thenReturn(new ViewImpl<>(definition,
-                                                             BoundsImpl.build(0, 0, 10, 10)));
+                                                             Bounds.create(0, 0, 10, 10)));
         when(canvasHandler.getCanvas()).thenReturn(canvas);
         when(canvas.getShape(eq(ELEMENT_UUID))).thenReturn(shape);
         when(canvas.getShapes()).thenReturn(Collections.singletonList(shape));

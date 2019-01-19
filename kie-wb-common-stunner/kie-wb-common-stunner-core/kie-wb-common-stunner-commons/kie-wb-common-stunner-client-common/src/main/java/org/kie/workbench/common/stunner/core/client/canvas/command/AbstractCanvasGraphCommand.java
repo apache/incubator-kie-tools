@@ -98,14 +98,34 @@ public abstract class AbstractCanvasGraphCommand
 
     @Override
     public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
-        final CommandResult<CanvasViolation> result = canvasCommandFirst ?
+        CommandResult<CanvasViolation> result = canvasCommandFirst ?
                 performOperationOnCanvas(context, CommandOperation.EXECUTE) :
                 performOperationOnGraph(context, CommandOperation.EXECUTE);
 
+        boolean revertGraphCommand = false;
+        boolean revertCanvasCommand = false;
+
         if (canDoNexOperation(result)) {
-            return canvasCommandFirst ? performOperationOnGraph(context, CommandOperation.EXECUTE) :
+            final CommandResult<CanvasViolation> lastResult = canvasCommandFirst ?
+                    performOperationOnGraph(context, CommandOperation.EXECUTE) :
                     performOperationOnCanvas(context, CommandOperation.EXECUTE);
+            if (!canDoNexOperation(lastResult)) {
+                revertGraphCommand = true;
+                revertCanvasCommand = true;
+                result = lastResult;
+            }
+        } else {
+            revertGraphCommand = true;
         }
+
+        if (revertGraphCommand) {
+            performOperationOnGraph(context, CommandOperation.UNDO);
+        }
+
+        if (revertCanvasCommand) {
+            performOperationOnCanvas(context, CommandOperation.UNDO);
+        }
+
         return result;
     }
 
@@ -193,13 +213,5 @@ public abstract class AbstractCanvasGraphCommand
                 " [graphCommand=" +
                 (null != graphCommand ? graphCommand.toString() : null) +
                 "]";
-    }
-
-    protected boolean isCanvasCommandFirst() {
-        return canvasCommandFirst;
-    }
-
-    protected void setCanvasCommandFirst(boolean canvasCommandFirst) {
-        this.canvasCommandFirst = canvasCommandFirst;
     }
 }

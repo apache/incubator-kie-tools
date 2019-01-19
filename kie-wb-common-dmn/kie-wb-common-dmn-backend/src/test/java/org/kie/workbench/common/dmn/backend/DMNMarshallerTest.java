@@ -135,10 +135,9 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandManager;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandManagerImpl;
 import org.kie.workbench.common.stunner.core.graph.command.impl.GraphCommandFactory;
-import org.kie.workbench.common.stunner.core.graph.content.Bounds.Bound;
+import org.kie.workbench.common.stunner.core.graph.content.Bound;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
@@ -714,7 +713,7 @@ public class DMNMarshallerTest {
         View content = (View) nodeDecisionPostfix.getContent();
         Bound ul = content.getBounds().getUpperLeft();
         Bound lr = content.getBounds().getLowerRight();
-        content.setBounds(BoundsImpl.build(ul.getX() + dx, ul.getY() + dy, lr.getX() + dx, lr.getY() + dy));
+        content.setBounds(org.kie.workbench.common.stunner.core.graph.content.Bounds.create(ul.getX() + dx, ul.getY() + dy, lr.getX() + dx, lr.getY() + dy));
     }
 
     @Test
@@ -1722,7 +1721,7 @@ public class DMNMarshallerTest {
         g.addNode(inputDataNode);
         g.addNode(decisionNode);
         View content = (View) decisionNode.getContent();
-        content.setBounds(BoundsImpl.build(200, 200, 300, 250));
+        content.setBounds(org.kie.workbench.common.stunner.core.graph.content.Bounds.create(200, 200, 300, 250));
         final String irID = "irID";
         Edge myEdge = applicationFactoryManager.newElement(irID, org.kie.workbench.common.dmn.api.definition.v1_1.InformationRequirement.class).asEdge();
         myEdge.setSourceNode(inputDataNode);
@@ -1778,7 +1777,7 @@ public class DMNMarshallerTest {
         g.addNode(inputDataNode);
         g.addNode(textAnnotationNode);
         View content = (View) textAnnotationNode.getContent();
-        content.setBounds(BoundsImpl.build(200, 200, 300, 250));
+        content.setBounds(org.kie.workbench.common.stunner.core.graph.content.Bounds.create(200, 200, 300, 250));
         final String edgeID = "edgeID";
         final String associationID = "associationID";
         Edge myEdge = applicationFactoryManager.newElement(edgeID, org.kie.workbench.common.dmn.api.definition.v1_1.Association.class).asEdge();

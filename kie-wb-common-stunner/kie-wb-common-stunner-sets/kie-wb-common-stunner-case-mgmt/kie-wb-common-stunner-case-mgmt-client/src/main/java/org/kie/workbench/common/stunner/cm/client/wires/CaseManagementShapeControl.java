@@ -18,7 +18,6 @@ package org.kie.workbench.common.stunner.cm.client.wires;
 
 import com.ait.lienzo.client.core.shape.wires.WiresLayer;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
-import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresMagnetsControlImpl;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresParentPickerCachedControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresParentPickerControlImpl;
@@ -46,7 +45,7 @@ public class CaseManagementShapeControl
     }
 
     @Override
-    protected WiresShapeControl getDelegate() {
+    public WiresShapeControlImpl getDelegate() {
         return shapeControl;
     }
 

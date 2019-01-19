@@ -73,12 +73,12 @@ public interface Canvas<S extends Shape> {
     /**
      * Returns the canvas width.
      */
-    int getWidth();
+    int getWidthPx();
 
     /**
      * Returns the canvas height.
      */
-    int getHeight();
+    int getHeightPx();
 
     /**
      * Returns the canvas transform attributes.

@@ -34,7 +34,7 @@ import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.graph.Element;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewImpl;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.mockito.Mock;
@@ -115,7 +115,7 @@ public class DomainObjectAwareLienzoMultipleSelectionControlTest {
         when(canvas.getWiresManager()).thenReturn(wiresManager);
         when(element.getUUID()).thenReturn(ELEMENT_UUID);
         when(element.getContent()).thenReturn(new ViewImpl<>(definition,
-                                                             BoundsImpl.build(0, 0, 10, 10)));
+                                                             Bounds.create(0, 0, 10, 10)));
 
         control.init(canvasHandler);
         control.register(element);

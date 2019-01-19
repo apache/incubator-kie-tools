@@ -26,6 +26,7 @@ import org.eclipse.bpmn2.RootElement;
 import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Ids;
+import org.kie.workbench.common.stunner.core.graph.content.Bound;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpmn2;
@@ -58,8 +59,8 @@ public abstract class BasePropertyWriter {
 
         org.eclipse.dd.dc.Bounds bounds = dc.createBounds();
 
-        Bounds.Bound upperLeft = rect.getUpperLeft();
-        Bounds.Bound lowerRight = rect.getLowerRight();
+        Bound upperLeft = rect.getUpperLeft();
+        Bound lowerRight = rect.getLowerRight();
 
         bounds.setX(upperLeft.getX().floatValue());
         bounds.setY(upperLeft.getY().floatValue());

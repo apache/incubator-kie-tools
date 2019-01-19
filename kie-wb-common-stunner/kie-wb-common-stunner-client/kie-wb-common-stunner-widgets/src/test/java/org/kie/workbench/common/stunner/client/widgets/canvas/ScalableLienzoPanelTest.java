@@ -55,7 +55,7 @@ public class ScalableLienzoPanelTest {
         BiFunction<OptionalInt, OptionalInt, LienzoBoundsPanel> builder = builderCaptor.getValue();
         LienzoBoundsPanel result = builder.apply(OptionalInt.of(300), OptionalInt.of(450));
         assertTrue(result instanceof ScalablePanel);
-        assertEquals(300, result.getWidth());
-        assertEquals(450, result.getHeight());
+        assertEquals(300, result.getWidthPx());
+        assertEquals(450, result.getHeightPx());
     }
 }

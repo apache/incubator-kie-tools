@@ -43,9 +43,8 @@ import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.index.bounds.GraphBoundsIndexer;
@@ -161,7 +160,7 @@ public class ElementBuilderControlImplTest {
         when(grandParentEdge.getContent()).thenReturn(new Child());
         when(grandParentEdge.getSourceNode()).thenReturn(grandParent);
         when(grandParent.getContent()).thenReturn(grandParentView);
-        when(grandParentView.getBounds()).thenReturn(new BoundsImpl(new BoundImpl(10d, 10d), new BoundImpl(100d, 100d)));
+        when(grandParentView.getBounds()).thenReturn(Bounds.create(10d, 10d, 100d, 100d));
 
         when(canvasHandler.getDiagram()).thenReturn(diagram);
         when(diagram.getMetadata()).thenReturn(metadata);

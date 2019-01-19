@@ -29,8 +29,10 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.shape.EdgeShape;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
+import org.kie.workbench.common.stunner.core.client.shape.ShapeViewExtStub;
 import org.kie.workbench.common.stunner.core.client.shape.impl.ConnectorShape;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.mockito.Mock;
@@ -39,6 +41,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -147,5 +150,14 @@ public class ShapeUtilsTest {
         List<ControlPoint> controlPoints = ShapeUtils.getControlPoints(instance2.edge1, canvasHandler);
         verify(edge1Shape).getControlPoints();
         assertEquals(controlPoints, controlPointList);
+    }
+
+    @Test
+    public void testEnforceLocationConstraints() {
+        ShapeViewExtStub shape = spy(new ShapeViewExtStub());
+        Bounds bounds = mock(Bounds.class);
+        ShapeUtils.enforceLocationConstraints(shape,
+                                              bounds);
+        verify(shape, times(1)).setDragBounds(eq(bounds));
     }
 }

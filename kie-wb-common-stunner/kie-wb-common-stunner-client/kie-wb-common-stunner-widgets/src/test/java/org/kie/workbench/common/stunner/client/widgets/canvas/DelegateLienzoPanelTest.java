@@ -88,10 +88,10 @@ public class DelegateLienzoPanelTest {
 
     @Test
     public void testSizeGetters() {
-        when(delegate.getWidth()).thenReturn(100);
-        when(delegate.getHeight()).thenReturn(200);
-        assertEquals(100, tested.getWidth());
-        assertEquals(200, tested.getHeight());
+        when(delegate.getWidthPx()).thenReturn(100);
+        when(delegate.getHeightPx()).thenReturn(200);
+        assertEquals(100, tested.getWidthPx());
+        assertEquals(200, tested.getHeightPx());
     }
 
     @Test

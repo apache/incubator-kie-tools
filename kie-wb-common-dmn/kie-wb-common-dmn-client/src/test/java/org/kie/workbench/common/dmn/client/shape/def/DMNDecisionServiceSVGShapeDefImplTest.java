@@ -29,7 +29,7 @@ import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
 import org.kie.workbench.common.stunner.core.client.shape.view.handler.FontHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.handler.SizeHandler;
 import org.kie.workbench.common.stunner.core.definition.shape.ShapeGlyph;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewImpl;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
@@ -78,10 +78,10 @@ public class DMNDecisionServiceSVGShapeDefImplTest {
     @SuppressWarnings("unchecked")
     public void testNewSizeHandler() {
         final DecisionService decisionService = new DecisionService();
-        final View<DecisionService> view = new ViewImpl<>(decisionService, BoundsImpl.build(0,
-                                                                                            0,
-                                                                                            DEFAULT_WIDTH,
-                                                                                            DEFAULT_HEIGHT));
+        final View<DecisionService> view = new ViewImpl<>(decisionService, Bounds.create(0,
+                                                                                         0,
+                                                                                         DEFAULT_WIDTH,
+                                                                                         DEFAULT_HEIGHT));
         final SVGShapeView<?> shapeView = mock(SVGShapeView.class);
 
         final SizeHandler<DecisionService, SVGShapeView> handler = shapeDef.newSizeHandler();

@@ -35,12 +35,16 @@ import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyPressEvent
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyUpEvent;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.HandlerRegistrationImpl;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.uberfire.mocks.EventSourceMock;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -119,10 +123,10 @@ public class StunnerLienzoBoundsPanelTest {
     @Test
     public void testSizeGetters() {
         tested.setView(view);
-        when(lienzoPanel.getWidth()).thenReturn(100);
-        when(lienzoPanel.getHeight()).thenReturn(450);
-        assertEquals(100, tested.getWidth());
-        assertEquals(450, tested.getHeight());
+        when(lienzoPanel.getWidthPx()).thenReturn(100);
+        when(lienzoPanel.getHeightPx()).thenReturn(450);
+        assertEquals(100, tested.getWidthPx());
+        assertEquals(450, tested.getHeightPx());
     }
 
     @Test
@@ -189,6 +193,16 @@ public class StunnerLienzoBoundsPanelTest {
         verify(keyUpEvent, times(1)).fire(eventArgumentCaptor.capture());
         KeyUpEvent keyEvent = eventArgumentCaptor.getValue();
         assertEquals(unicharCode, keyEvent.getKey().getUnicharCode());
+    }
+
+    @Test
+    public void testLocationConstraints() {
+        Bounds bounds = tested.getLocationConstraints();
+        assertNotNull(bounds);
+        assertTrue(bounds.hasUpperLeft());
+        assertEquals(0d, bounds.getUpperLeft().getX(), 0d);
+        assertEquals(0d, bounds.getUpperLeft().getY(), 0d);
+        assertFalse(bounds.hasLowerRight());
     }
 
     private static class TestBoundsLienzoPanelView extends LienzoBoundsPanel implements StunnerLienzoBoundsPanelView {

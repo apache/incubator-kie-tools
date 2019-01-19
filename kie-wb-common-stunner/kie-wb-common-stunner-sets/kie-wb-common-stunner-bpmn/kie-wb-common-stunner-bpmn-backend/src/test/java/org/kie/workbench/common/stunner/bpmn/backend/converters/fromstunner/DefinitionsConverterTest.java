@@ -29,7 +29,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Process
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Version;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Documentation;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewImpl;
 import org.kie.workbench.common.stunner.core.graph.impl.GraphImpl;
 import org.kie.workbench.common.stunner.core.graph.impl.NodeImpl;
@@ -54,7 +54,7 @@ public class DefinitionsConverterTest {
                 new ProcessInstanceDescription("descr"),
                 new Executable(true)
         ));
-        x.setContent(new ViewImpl<>(diag, BoundsImpl.build()));
+        x.setContent(new ViewImpl<>(diag, Bounds.create()));
         nodeStore.add(x);
         ConverterFactory f = new ConverterFactory(new DefinitionsBuildingContext(
                 new GraphImpl("x", nodeStore)),

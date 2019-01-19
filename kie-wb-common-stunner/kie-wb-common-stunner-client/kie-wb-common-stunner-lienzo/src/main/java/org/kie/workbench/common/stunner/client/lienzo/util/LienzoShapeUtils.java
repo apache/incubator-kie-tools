@@ -17,10 +17,13 @@
 package org.kie.workbench.common.stunner.client.lienzo.util;
 
 import com.ait.lienzo.client.core.shape.Shape;
+import com.ait.lienzo.client.core.shape.wires.OptionalBounds;
 import com.ait.lienzo.client.core.shape.wires.WiresLayoutContainer;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.LinearGradient;
 import org.kie.workbench.common.stunner.core.client.shape.HasChildren;
+import org.kie.workbench.common.stunner.core.graph.content.Bound;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 
 public class LienzoShapeUtils {
 
@@ -74,5 +77,28 @@ public class LienzoShapeUtils {
         linearGradient.addColorStop(0,
                                     startColor);
         return linearGradient;
+    }
+
+    public static OptionalBounds translateBounds(final Bounds bounds) {
+        final OptionalBounds result = OptionalBounds.createEmptyBounds();
+        if (bounds.hasUpperLeft()) {
+            final Bound upperLeft = bounds.getUpperLeft();
+            if (upperLeft.hasX()) {
+                result.setMinX(upperLeft.getX());
+            }
+            if (upperLeft.hasY()) {
+                result.setMinY(upperLeft.getY());
+            }
+        }
+        if (bounds.hasLowerRight()) {
+            final Bound lowerRight = bounds.getLowerRight();
+            if (lowerRight.hasX()) {
+                result.setMaxX(lowerRight.getX());
+            }
+            if (lowerRight.hasY()) {
+                result.setMaxY(lowerRight.getY());
+            }
+        }
+        return result;
     }
 }

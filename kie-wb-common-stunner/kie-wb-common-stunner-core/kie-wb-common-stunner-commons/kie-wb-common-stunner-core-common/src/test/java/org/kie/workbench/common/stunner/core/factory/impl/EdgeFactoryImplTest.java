@@ -30,8 +30,6 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -48,10 +46,7 @@ public class EdgeFactoryImplTest {
     public static final String ID = "defId";
     public static final Set<String> LABELS = Arrays.asList("label1",
                                                            "label2").stream().collect(Collectors.toSet());
-    public static final Bounds BOUNDS = new BoundsImpl(new BoundImpl(10d,
-                                                                     10.6d),
-                                                       new BoundImpl(1034.42d,
-                                                                     1032.26d));
+    public static final Bounds BOUNDS = Bounds.create(10d, 10.6d, 1034.42d, 1032.26d);
 
     @Mock
     Object definition;

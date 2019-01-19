@@ -19,8 +19,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.mockito.Mock;
@@ -46,13 +45,7 @@ public class UpdateElementPositionCommandTest extends AbstractCanvasCommandTest 
         super.setUp();
         when(candidate.getUUID()).thenReturn("uuid1");
         when(candidate.getContent()).thenReturn(content);
-        when(content.getBounds()).thenReturn(new BoundsImpl(
-                new BoundImpl(3d,
-                              27d),
-                new BoundImpl(50d,
-                              50d)
-        ));
-
+        when(content.getBounds()).thenReturn(Bounds.create(3d, 27d, 50d, 50d));
         this.tested = new UpdateElementPositionCommand(candidate,
                                                        new Point2D(100d, 200d));
     }

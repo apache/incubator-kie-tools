@@ -39,8 +39,6 @@ import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
@@ -165,8 +163,8 @@ public class CanvasLayoutUtilsTest {
                                         0d);
         Point2D canvasMax = new Point2D(1200d,
                                         1200d);
-        when(canvasHandler.getCanvas().getHeight()).thenReturn((int) canvasMax.getY());
-        when(canvasHandler.getCanvas().getWidth()).thenReturn((int) canvasMax.getX());
+        when(canvasHandler.getCanvas().getHeightPx()).thenReturn((int) canvasMax.getY());
+        when(canvasHandler.getCanvas().getWidthPx()).thenReturn((int) canvasMax.getX());
 
         canvasLayoutUtils = new CanvasLayoutUtils(graphBoundsIndexer,
                                                   ruleManager,
@@ -220,28 +218,19 @@ public class CanvasLayoutUtilsTest {
     @SuppressWarnings("unchecked")
     public void getNextFromRoot() {
         Node node1 = mock(Node.class);
-        Bounds boundsNode1 = new BoundsImpl(new BoundImpl(100d,
-                                                          100d),
-                                            new BoundImpl(300d,
-                                                          200d));
+        Bounds boundsNode1 = Bounds.create(100d, 100d, 300d, 200d);
         View viewNode1 = mock(View.class);
         when(node1.getContent()).thenReturn(viewNode1);
         when(viewNode1.getBounds()).thenReturn(boundsNode1);
         Node node2 = mock(Node.class);
-        Bounds boundsNode2 = new BoundsImpl(new BoundImpl(100d,
-                                                          100d),
-                                            new BoundImpl(300d,
-                                                          200d));
+        Bounds boundsNode2 = Bounds.create(100d, 100d, 300d, 200d);
         View viewNode2 = mock(View.class);
         when(node2.getContent()).thenReturn(viewNode2);
         when(viewNode2.getBounds()).thenReturn(boundsNode2);
         Node nodeRoot = mock(Node.class);
         double rootWidth = 40d;
         double rootHeight = 40d;
-        Bounds rootBounds = new BoundsImpl(new BoundImpl(0d,
-                                                         0d),
-                                           new BoundImpl(rootWidth,
-                                                         rootHeight));
+        Bounds rootBounds = Bounds.create(0d, 0d, rootWidth, rootHeight);
 
         View rootView = mock(View.class);
         when(nodeRoot.getContent()).thenReturn(rootView);
@@ -273,10 +262,7 @@ public class CanvasLayoutUtilsTest {
         this.graphTestHandlerParent = new TestingGraphMockHandler();
         graphInstanceParent = TestingGraphInstanceBuilder.newGraph2(graphTestHandlerParent);
         Node node = mock(Node.class);
-        Bounds boundsNode = new BoundsImpl(new BoundImpl(100d,
-                                                         100d),
-                                           new BoundImpl(300d,
-                                                         200d));
+        Bounds boundsNode = Bounds.create(100d, 100d, 300d, 200d);
         View viewNode = mock(View.class);
         when(node.getContent()).thenReturn(viewNode);
         when(viewNode.getBounds()).thenReturn(boundsNode);
@@ -309,20 +295,14 @@ public class CanvasLayoutUtilsTest {
 
         Node node = mock(Node.class);
 
-        Bounds boundsNode = new BoundsImpl(new BoundImpl(100d,
-                                                         0d),
-                                           new BoundImpl(300d,
-                                                         1400d));
+        Bounds boundsNode = Bounds.create(100d, 0d, 300d, 1400d);
         View viewNode = mock(View.class);
         when(node.getContent()).thenReturn(viewNode);
         when(viewNode.getBounds()).thenReturn(boundsNode);
 
         Node newNode = mock(Node.class);
 
-        Bounds boundsNewNode = new BoundsImpl(new BoundImpl(100d,
-                                                            200d),
-                                              new BoundImpl(300d,
-                                                            300d));
+        Bounds boundsNewNode = Bounds.create(100d, 200d, 300d, 300d);
         View viewNewNode = mock(View.class);
 
         when(newNode.getContent()).thenReturn(viewNewNode);
@@ -364,10 +344,7 @@ public class CanvasLayoutUtilsTest {
 
         Node newNode = mock(Node.class);
 
-        Bounds boundsNewNode = new BoundsImpl(new BoundImpl(100d,
-                                                            200d),
-                                              new BoundImpl(300d,
-                                                            300d));
+        Bounds boundsNewNode = Bounds.create(100d, 200d, 300d, 300d);
         View viewNewNode = mock(View.class);
 
         when(newNode.getContent()).thenReturn(viewNewNode);
@@ -408,10 +385,7 @@ public class CanvasLayoutUtilsTest {
 
         Node newNode = mock(Node.class);
 
-        Bounds boundsNewNode = new BoundsImpl(new BoundImpl(200d,
-                                                            300d),
-                                              new BoundImpl(300d,
-                                                            400d));
+        Bounds boundsNewNode = Bounds.create(200d, 300d, 300d, 400d);
         View viewNewNode = mock(View.class);
 
         when(newNode.getContent()).thenReturn(viewNewNode);

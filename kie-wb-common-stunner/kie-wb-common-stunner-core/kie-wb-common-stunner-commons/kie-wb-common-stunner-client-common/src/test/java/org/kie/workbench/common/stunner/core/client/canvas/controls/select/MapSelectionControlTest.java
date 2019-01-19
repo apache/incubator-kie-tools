@@ -40,7 +40,7 @@ import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventTy
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Element;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewImpl;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.mockito.ArgumentCaptor;
@@ -121,10 +121,10 @@ public class MapSelectionControlTest {
                                                           hasControlPoints);
         when(rootElement.getUUID()).thenReturn(ROOT_UUID);
         when(rootElement.getContent()).thenReturn(new ViewImpl<>(rootDefinition,
-                                                                 BoundsImpl.build(0, 0, 10, 10)));
+                                                                 Bounds.create(0, 0, 10, 10)));
         when(element.getUUID()).thenReturn(ELEMENT_UUID);
         when(element.getContent()).thenReturn(new ViewImpl<>(definition,
-                                                             BoundsImpl.build(0, 0, 10, 10)));
+                                                             Bounds.create(0, 0, 10, 10)));
         when(canvasHandler.getDiagram()).thenReturn(diagram);
         when(diagram.getMetadata()).thenReturn(metadata);
         when(metadata.getCanvasRootUUID()).thenReturn(ROOT_UUID);

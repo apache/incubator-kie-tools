@@ -35,8 +35,6 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -125,36 +123,36 @@ public class GraphUtilsTest {
 
     @Test
     public void checkBoundsExceededTest() {
-        Bounds parentBounds = new BoundsImpl(new BoundImpl(50d, 50d), new BoundImpl(200d, 200d));
+        Bounds parentBounds = Bounds.create(50d, 50d, 200d, 200d);
 
-        Bounds childBounds = new BoundsImpl(new BoundImpl(51d, 51d), new BoundImpl(199d, 199d));
+        Bounds childBounds = Bounds.create(51d, 51d, 199d, 199d);
         assertTrue(GraphUtils.checkBoundsExceeded(parentBounds, childBounds));
 
-        childBounds = new BoundsImpl(new BoundImpl(51d, 51d), new BoundImpl(200d, 200d));
+        childBounds = Bounds.create(51d, 51d, 200d, 200d);
         assertTrue(GraphUtils.checkBoundsExceeded(parentBounds, childBounds));
 
-        childBounds = new BoundsImpl(new BoundImpl(50d, 50d), new BoundImpl(199d, 199d));
+        childBounds = Bounds.create(50d, 50d, 199d, 199d);
         assertTrue(GraphUtils.checkBoundsExceeded(parentBounds, childBounds));
 
-        childBounds = new BoundsImpl(new BoundImpl(50d, 50d), new BoundImpl(200d, 200d));
+        childBounds = Bounds.create(50d, 50d, 200d, 200d);
         assertTrue(GraphUtils.checkBoundsExceeded(parentBounds, childBounds));
 
-        childBounds = new BoundsImpl(new BoundImpl(49d, 49d), new BoundImpl(201d, 201d));
+        childBounds = Bounds.create(49d, 49d, 201d, 201d);
         assertFalse(GraphUtils.checkBoundsExceeded(parentBounds, childBounds));
 
-        childBounds = new BoundsImpl(new BoundImpl(49d, 49d), new BoundImpl(200d, 200d));
+        childBounds = Bounds.create(49d, 49d, 200d, 200d);
         assertFalse(GraphUtils.checkBoundsExceeded(parentBounds, childBounds));
 
-        childBounds = new BoundsImpl(new BoundImpl(49d, 49d), new BoundImpl(199d, 199d));
+        childBounds = Bounds.create(49d, 49d, 199d, 199d);
         assertFalse(GraphUtils.checkBoundsExceeded(parentBounds, childBounds));
 
-        childBounds = new BoundsImpl(new BoundImpl(49d, 49d), new BoundImpl(201d, 201d));
+        childBounds = Bounds.create(49d, 49d, 201d, 201d);
         assertFalse(GraphUtils.checkBoundsExceeded(parentBounds, childBounds));
 
-        childBounds = new BoundsImpl(new BoundImpl(50d, 49d), new BoundImpl(201d, 201d));
+        childBounds = Bounds.create(50d, 49d, 201d, 201d);
         assertFalse(GraphUtils.checkBoundsExceeded(parentBounds, childBounds));
 
-        childBounds = new BoundsImpl(new BoundImpl(51d, 49d), new BoundImpl(201d, 201d));
+        childBounds = Bounds.create(50d, 49d, 201d, 201d);
         assertFalse(GraphUtils.checkBoundsExceeded(parentBounds, childBounds));
     }
 

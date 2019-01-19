@@ -34,8 +34,6 @@ import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseClickE
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewImpl;
 import org.kie.workbench.common.stunner.core.graph.impl.NodeImpl;
@@ -86,10 +84,7 @@ public class DMNEditBusinessKnowledgeModelToolboxActionTest {
     public void setup() throws Exception {
         bkmNode = new NodeImpl<>(E_UUID);
         bkm = new BusinessKnowledgeModel();
-        final Bounds bounds = new BoundsImpl(new BoundImpl(0d,
-                                                           0d),
-                                             new BoundImpl(100d,
-                                                           150d));
+        final Bounds bounds = Bounds.create(0d, 0d,100d, 150d);
         final View<BusinessKnowledgeModel> nodeContent = new ViewImpl<>(bkm,
                                                                         bounds);
         bkmNode.setContent(nodeContent);

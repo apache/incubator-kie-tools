@@ -50,8 +50,7 @@ import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
@@ -172,7 +171,7 @@ public class PasteSelectionSessionCommandTest extends BaseSessionCommandKeyboard
         node2.setContent(view);
         when(session.getCanvasHandler()).thenReturn(canvasHandler);
         when(canvasHandler.getGraphIndex()).thenReturn(graphMockHandler.graphIndex);
-        when(view.getBounds()).thenReturn(new BoundsImpl(new BoundImpl(X, Y), new BoundImpl(X + NODE_SIZE, Y + NODE_SIZE)));
+        when(view.getBounds()).thenReturn(Bounds.create(X, Y, X + NODE_SIZE, Y + NODE_SIZE));
         when(canvasHandler.getDiagram()).thenReturn(diagram);
         when(diagram.getMetadata()).thenReturn(metadata);
         when(metadata.getCanvasRootUUID()).thenReturn(CANVAS_UUID);

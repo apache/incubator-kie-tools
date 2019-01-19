@@ -27,7 +27,7 @@ import org.kie.workbench.common.stunner.cm.backend.converters.fromstunner.proper
 import org.kie.workbench.common.stunner.cm.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewImpl;
 import org.kie.workbench.common.stunner.core.graph.impl.GraphImpl;
@@ -57,7 +57,7 @@ public class CaseManagementSubProcessConverterTest {
         final Node<View<? extends BPMNViewDefinition>, ?> node = new NodeImpl<>("n");
         final AdHocSubprocess subProcessNode = new AdHocSubprocess();
         subProcessNode.getExecutionSet().setAdHocOrdering(new AdHocOrdering("Sequential"));
-        node.setContent(new ViewImpl<>(subProcessNode, BoundsImpl.build()));
+        node.setContent(new ViewImpl<>(subProcessNode, Bounds.create()));
 
         final Activity activity = tested.convertSubProcess(node).value().getFlowElement();
         assertEquals("<![CDATA[Stage]]>", CustomElement.name.of(activity).get());

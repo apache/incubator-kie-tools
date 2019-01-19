@@ -46,7 +46,6 @@ import org.kie.workbench.common.stunner.core.client.shape.view.event.TextExitHan
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -130,7 +129,7 @@ public abstract class AbstractCanvasInPlaceTextEditorControlTest<C extends Abstr
     @Mock
     protected RequiresCommandManager.CommandManagerProvider<AbstractCanvasHandler> commandManagerProvider;
 
-    protected Bounds shapeViewBounds = BoundsImpl.build();
+    protected Bounds shapeViewBounds = Bounds.create();
 
     @Captor
     protected ArgumentCaptor<KeyboardControl.KeyShortcutCallback> keyShortcutCallbackCaptor;

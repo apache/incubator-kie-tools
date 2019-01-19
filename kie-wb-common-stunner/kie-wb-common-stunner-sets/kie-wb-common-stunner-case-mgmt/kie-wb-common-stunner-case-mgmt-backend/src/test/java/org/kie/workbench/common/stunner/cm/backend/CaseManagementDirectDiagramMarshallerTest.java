@@ -102,10 +102,10 @@ import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandManagerImpl;
 import org.kie.workbench.common.stunner.core.graph.command.impl.GraphCommandFactory;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSetImpl;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewImpl;
 import org.kie.workbench.common.stunner.core.graph.impl.EdgeImpl;
@@ -242,14 +242,14 @@ public class CaseManagementDirectDiagramMarshallerTest {
         root.getDiagramSet().setId(new Id("New Case Management diagram"));
         root.getDimensionsSet().setWidth(new Width(2800.0));
         root.getDimensionsSet().setHeight(new Height(1400.0));
-        View<CaseManagementDiagram> rootContent = new ViewImpl<>(root, BoundsImpl.build(0.0, 0.0, 2800.0, 1400.0));
+        View<CaseManagementDiagram> rootContent = new ViewImpl<>(root, Bounds.create(0.0, 0.0, 2800.0, 1400.0));
         Node<View<CaseManagementDiagram>, Edge> rootNode = new NodeImpl<>("_0E761372-8B3C-4BE1-88BC-808D647D9EFF");
         rootNode.getLabels().addAll(root.getLabels());
         rootNode.getLabels().add("org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram");
         rootNode.setContent(rootContent);
 
         AdHocSubprocess stage1 = new AdHocSubprocess();
-        View<AdHocSubprocess> stage1Content = new ViewImpl<>(stage1, BoundsImpl.build(0.0, 0.0, 175.0, 50.0));
+        View<AdHocSubprocess> stage1Content = new ViewImpl<>(stage1, Bounds.create(0.0, 0.0, 175.0, 50.0));
         Node<View<AdHocSubprocess>, Edge> stage1Node = new NodeImpl<>("_F0A19BD0-3F42-493A-9A2D-2F4C24ED75D9");
         stage1Node.getLabels().addAll(stage1.getLabels());
         stage1Node.getLabels().add("org.kie.workbench.common.stunner.cm.definition.AdHocSubprocess");
@@ -263,7 +263,7 @@ public class CaseManagementDirectDiagramMarshallerTest {
         stage1Node.getInEdges().add(stage1InEdge);
 
         UserTask task1 = new UserTask();
-        View<UserTask> task1Content = new ViewImpl<>(task1, BoundsImpl.build(0.0, 0.0, 153.0, 103.0));
+        View<UserTask> task1Content = new ViewImpl<>(task1, Bounds.create(0.0, 0.0, 153.0, 103.0));
         Node<View<UserTask>, Edge> task1Node = new NodeImpl<>("_E95AD08A-4595-4FA4-8948-3318D8BE7941");
         task1Node.getLabels().addAll(task1.getLabels());
         task1Node.getLabels().add("org.kie.workbench.common.stunner.bpmn.definition.UserTask");
@@ -277,7 +277,7 @@ public class CaseManagementDirectDiagramMarshallerTest {
         task1Node.getInEdges().add(task1InEdge);
 
         CaseReusableSubprocess case1 = new CaseReusableSubprocess();
-        View<CaseReusableSubprocess> case1Content = new ViewImpl<>(case1, BoundsImpl.build(0.0, 0.0, 153.0, 103.0));
+        View<CaseReusableSubprocess> case1Content = new ViewImpl<>(case1, Bounds.create(0.0, 0.0, 153.0, 103.0));
         Node<View<CaseReusableSubprocess>, Edge> case1Node = new NodeImpl<>("_C468418F-A1EE-470A-BC30-D85888DF3DF7");
         case1Node.getLabels().addAll(case1.getLabels());
         case1Node.getLabels().add("org.kie.workbench.common.stunner.cm.definition.CaseReusableSubprocess");
@@ -291,7 +291,7 @@ public class CaseManagementDirectDiagramMarshallerTest {
         case1Node.getInEdges().add(case1InEdge);
 
         AdHocSubprocess stage2 = new AdHocSubprocess();
-        View<AdHocSubprocess> stage2Content = new ViewImpl<>(stage2, BoundsImpl.build(0.0, 0.0, 175.0, 50.0));
+        View<AdHocSubprocess> stage2Content = new ViewImpl<>(stage2, Bounds.create(0.0, 0.0, 175.0, 50.0));
         Node<View<AdHocSubprocess>, Edge> stage2Node = new NodeImpl<>("_BCD8C7E1-9833-407D-9833-E12763A9A63D");
         stage2Node.getLabels().addAll(stage2.getLabels());
         stage2Node.getLabels().add("org.kie.workbench.common.stunner.cm.definition.AdHocSubprocess");
@@ -305,7 +305,7 @@ public class CaseManagementDirectDiagramMarshallerTest {
         stage2Node.getInEdges().add(stage2InEdge);
 
         CaseReusableSubprocess case2 = new CaseReusableSubprocess();
-        View<CaseReusableSubprocess> case2Content = new ViewImpl<>(case2, BoundsImpl.build(0.0, 0.0, 153.0, 103.0));
+        View<CaseReusableSubprocess> case2Content = new ViewImpl<>(case2, Bounds.create(0.0, 0.0, 153.0, 103.0));
         Node<View<CaseReusableSubprocess>, Edge> case2Node = new NodeImpl<>("_4DF08597-2D2D-4CEE-B0EF-1AF0ED4ADAC2");
         case2Node.getLabels().addAll(case2.getLabels());
         case2Node.getLabels().add("org.kie.workbench.common.stunner.cm.definition.CaseReusableSubprocess");
@@ -319,7 +319,7 @@ public class CaseManagementDirectDiagramMarshallerTest {
         case2Node.getInEdges().add(case2InEdge);
 
         ProcessReusableSubprocess process2 = new ProcessReusableSubprocess();
-        View<ProcessReusableSubprocess> process2Content = new ViewImpl<>(process2, BoundsImpl.build(0.0, 0.0, 153.0, 103.0));
+        View<ProcessReusableSubprocess> process2Content = new ViewImpl<>(process2, Bounds.create(0.0, 0.0, 153.0, 103.0));
         Node<View<ProcessReusableSubprocess>, Edge> process2Node = new NodeImpl<>("_438D1DB6-4161-43C5-86F5-FC6B0F97BA7B");
         process2Node.getLabels().addAll(process2.getLabels());
         process2Node.getLabels().add("org.kie.workbench.common.stunner.cm.definition.CaseReusableSubprocess");
@@ -331,7 +331,6 @@ public class CaseManagementDirectDiagramMarshallerTest {
         process2InEdge.setContent(new Child());
         stage2Node.getOutEdges().add(process2InEdge);
         process2Node.getInEdges().add(process2InEdge);
-
 
         DefinitionSet definitionSet = new DefinitionSetImpl("org.kie.workbench.common.stunner.cm.CaseManagementDefinitionSet");
 
@@ -357,7 +356,6 @@ public class CaseManagementDirectDiagramMarshallerTest {
 
         return diagram;
     }
-
 
     @Test
     public void testMarshall() throws Exception {
@@ -390,11 +388,11 @@ public class CaseManagementDirectDiagramMarshallerTest {
 
         // sequence flow created between stages
         hasElement(result,
-                   "<bpmn2:sequenceFlow id=\"(" + UUID_REGEX +  ")\" sourceRef=\"(" + UUID_REGEX +  ")\" targetRef=\"_F0A19BD0-3F42-493A-9A2D-2F4C24ED75D9\"/>");
+                   "<bpmn2:sequenceFlow id=\"(" + UUID_REGEX + ")\" sourceRef=\"(" + UUID_REGEX + ")\" targetRef=\"_F0A19BD0-3F42-493A-9A2D-2F4C24ED75D9\"/>");
         hasElement(result,
-                   "<bpmn2:sequenceFlow id=\"(" + UUID_REGEX +  ")\" sourceRef=\"_F0A19BD0-3F42-493A-9A2D-2F4C24ED75D9\" targetRef=\"_BCD8C7E1-9833-407D-9833-E12763A9A63D\"/>");
+                   "<bpmn2:sequenceFlow id=\"(" + UUID_REGEX + ")\" sourceRef=\"_F0A19BD0-3F42-493A-9A2D-2F4C24ED75D9\" targetRef=\"_BCD8C7E1-9833-407D-9833-E12763A9A63D\"/>");
         hasElement(result,
-                   "<bpmn2:sequenceFlow id=\"(" + UUID_REGEX +  ")\" sourceRef=\"_BCD8C7E1-9833-407D-9833-E12763A9A63D\" targetRef=\"(" + UUID_REGEX +  ")\"/>");
+                   "<bpmn2:sequenceFlow id=\"(" + UUID_REGEX + ")\" sourceRef=\"_BCD8C7E1-9833-407D-9833-E12763A9A63D\" targetRef=\"(" + UUID_REGEX + ")\"/>");
 
         // sequence flow created inside stages
         hasElement(result,
@@ -423,12 +421,11 @@ public class CaseManagementDirectDiagramMarshallerTest {
         root.getDimensionsSet().setWidth(new Width(2800.0));
         root.getDimensionsSet().setHeight(new Height(1400.0));
 
-        View<CaseManagementDiagram> rootContent = new ViewImpl<>(root, BoundsImpl.build(0.0, 0.0, 2800.0, 1400.0));
+        View<CaseManagementDiagram> rootContent = new ViewImpl<>(root, Bounds.create(0.0, 0.0, 2800.0, 1400.0));
         Node<View<CaseManagementDiagram>, Edge> rootNode = new NodeImpl<>("_0E761372-8B3C-4BE1-88BC-808D647D9EFF");
         rootNode.getLabels().addAll(root.getLabels());
         rootNode.getLabels().add("org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram");
         rootNode.setContent(rootContent);
-
 
         DefinitionSet definitionSet = new DefinitionSetImpl("org.kie.workbench.common.stunner.cm.CaseManagementDefinitionSet");
 
@@ -492,7 +489,7 @@ public class CaseManagementDirectDiagramMarshallerTest {
         root.getDimensionsSet().setWidth(new Width(2800.0));
         root.getDimensionsSet().setHeight(new Height(1400.0));
 
-        View<CaseManagementDiagram> rootContent = new ViewImpl<>(root, BoundsImpl.build(0.0, 0.0, 2800.0, 1400.0));
+        View<CaseManagementDiagram> rootContent = new ViewImpl<>(root, Bounds.create(0.0, 0.0, 2800.0, 1400.0));
         Node<View<CaseManagementDiagram>, Edge> rootNode = new NodeImpl<>("_0E761372-8B3C-4BE1-88BC-808D647D9EFF");
         rootNode.getLabels().addAll(root.getLabels());
         rootNode.getLabels().add("org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram");
@@ -522,7 +519,7 @@ public class CaseManagementDirectDiagramMarshallerTest {
         exitAction.setLanguage("java");
         stage.getExecutionSet().setOnExitAction(new OnExitAction(new ScriptTypeListValue(Collections.singletonList(exitAction))));
 
-        View<AdHocSubprocess> stageContent = new ViewImpl<>(stage, BoundsImpl.build(0.0, 0.0, 175.0, 50.0));
+        View<AdHocSubprocess> stageContent = new ViewImpl<>(stage, Bounds.create(0.0, 0.0, 175.0, 50.0));
         Node<View<AdHocSubprocess>, Edge> stageNode = new NodeImpl<>("_F0A19BD0-3F42-493A-9A2D-2F4C24ED75D9");
         stageNode.getLabels().addAll(stage.getLabels());
         stageNode.getLabels().add("org.kie.workbench.common.stunner.cm.definition.AdHocSubprocess");
@@ -534,7 +531,6 @@ public class CaseManagementDirectDiagramMarshallerTest {
         stageInEdge.setContent(new Child());
         rootNode.getOutEdges().add(stageInEdge);
         stageNode.getInEdges().add(stageInEdge);
-
 
         DefinitionSet definitionSet = new DefinitionSetImpl("org.kie.workbench.common.stunner.cm.CaseManagementDefinitionSet");
 
@@ -591,10 +587,8 @@ public class CaseManagementDirectDiagramMarshallerTest {
                            + "\" language=\"http://www.jboss.org/drools/rule\">"
                            + Pattern.quote("<![CDATA[autocomplete]]>") + "</bpmn2:completionCondition>");
 
-
         hasElement(result,
                    "<bpmn2:property id=\"StageTest\" itemSubjectRef=\"_StageTestItem\" name=\"StageTest\"/>");
-
     }
 
     private DiagramImpl createSubcase() {
@@ -604,7 +598,7 @@ public class CaseManagementDirectDiagramMarshallerTest {
         root.getDimensionsSet().setWidth(new Width(2800.0));
         root.getDimensionsSet().setHeight(new Height(1400.0));
 
-        View<CaseManagementDiagram> rootContent = new ViewImpl<>(root, BoundsImpl.build(0.0, 0.0, 2800.0, 1400.0));
+        View<CaseManagementDiagram> rootContent = new ViewImpl<>(root, Bounds.create(0.0, 0.0, 2800.0, 1400.0));
         Node<View<CaseManagementDiagram>, Edge> rootNode = new NodeImpl<>("_0E761372-8B3C-4BE1-88BC-808D647D9EFF");
         rootNode.getLabels().addAll(root.getLabels());
         rootNode.getLabels().add("org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram");
@@ -613,7 +607,7 @@ public class CaseManagementDirectDiagramMarshallerTest {
         AdHocSubprocess stage = new AdHocSubprocess();
         stage.getGeneral().setName(new Name("StageSubcaseTest"));
 
-        View<AdHocSubprocess> stageContent = new ViewImpl<>(stage, BoundsImpl.build(0.0, 0.0, 175.0, 50.0));
+        View<AdHocSubprocess> stageContent = new ViewImpl<>(stage, Bounds.create(0.0, 0.0, 175.0, 50.0));
         Node<View<AdHocSubprocess>, Edge> stageNode = new NodeImpl<>("_F0A19BD0-3F42-493A-9A2D-2F4C24ED75D9");
         stageNode.getLabels().addAll(stage.getLabels());
         stageNode.getLabels().add("org.kie.workbench.common.stunner.cm.definition.AdHocSubprocess");
@@ -649,7 +643,7 @@ public class CaseManagementDirectDiagramMarshallerTest {
         dataIOSet.setAssignmentsinfo(new AssignmentsInfo("|SubcaseTest:Boolean||SubcaseTest:Boolean|[din]SubcaseTest=true"));
         subcase.setDataIOSet(dataIOSet);
 
-        View<CaseReusableSubprocess> subcaseContent = new ViewImpl<>(subcase, BoundsImpl.build(0.0, 0.0, 153.0, 103.0));
+        View<CaseReusableSubprocess> subcaseContent = new ViewImpl<>(subcase, Bounds.create(0.0, 0.0, 153.0, 103.0));
         Node<View<CaseReusableSubprocess>, Edge> subcaseNode = new NodeImpl<>("_C468418F-A1EE-470A-BC30-D85888DF3DF7");
         subcaseNode.getLabels().addAll(subcase.getLabels());
         subcaseNode.getLabels().add("org.kie.workbench.common.stunner.cm.definition.CaseReusableSubprocess");
@@ -661,7 +655,6 @@ public class CaseManagementDirectDiagramMarshallerTest {
         subcaseInEdge.setContent(new Child());
         stageNode.getOutEdges().add(subcaseInEdge);
         subcaseNode.getInEdges().add(subcaseInEdge);
-
 
         DefinitionSet definitionSet = new DefinitionSetImpl("org.kie.workbench.common.stunner.cm.CaseManagementDefinitionSet");
 
@@ -772,7 +765,7 @@ public class CaseManagementDirectDiagramMarshallerTest {
         root.getDimensionsSet().setWidth(new Width(2800.0));
         root.getDimensionsSet().setHeight(new Height(1400.0));
 
-        View<CaseManagementDiagram> rootContent = new ViewImpl<>(root, BoundsImpl.build(0.0, 0.0, 2800.0, 1400.0));
+        View<CaseManagementDiagram> rootContent = new ViewImpl<>(root, Bounds.create(0.0, 0.0, 2800.0, 1400.0));
         Node<View<CaseManagementDiagram>, Edge> rootNode = new NodeImpl<>("_0E761372-8B3C-4BE1-88BC-808D647D9EFF");
         rootNode.getLabels().addAll(root.getLabels());
         rootNode.getLabels().add("org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram");
@@ -781,7 +774,7 @@ public class CaseManagementDirectDiagramMarshallerTest {
         AdHocSubprocess stage = new AdHocSubprocess();
         stage.getGeneral().setName(new Name("StageSubprocessTest"));
 
-        View<AdHocSubprocess> stageContent = new ViewImpl<>(stage, BoundsImpl.build(0.0, 0.0, 175.0, 50.0));
+        View<AdHocSubprocess> stageContent = new ViewImpl<>(stage, Bounds.create(0.0, 0.0, 175.0, 50.0));
         Node<View<AdHocSubprocess>, Edge> stageNode = new NodeImpl<>("_F0A19BD0-3F42-493A-9A2D-2F4C24ED75D9");
         stageNode.getLabels().addAll(stage.getLabels());
         stageNode.getLabels().add("org.kie.workbench.common.stunner.cm.definition.AdHocSubprocess");
@@ -817,7 +810,7 @@ public class CaseManagementDirectDiagramMarshallerTest {
         dataIOSet.setAssignmentsinfo(new AssignmentsInfo("|SubprocessTest:Boolean||SubprocessTest:Boolean|[din]SubprocessTest=true"));
         subprocess.setDataIOSet(dataIOSet);
 
-        View<ProcessReusableSubprocess> subprocessContent = new ViewImpl<>(subprocess, BoundsImpl.build(0.0, 0.0, 153.0, 103.0));
+        View<ProcessReusableSubprocess> subprocessContent = new ViewImpl<>(subprocess, Bounds.create(0.0, 0.0, 153.0, 103.0));
         Node<View<ProcessReusableSubprocess>, Edge> subprocessNode = new NodeImpl<>("_C468418F-A1EE-470A-BC30-D85888DF3DF7");
         subprocessNode.getLabels().addAll(subprocess.getLabels());
         subprocessNode.getLabels().add("org.kie.workbench.common.stunner.cm.definition.ProcessReusableSubprocess");
@@ -829,7 +822,6 @@ public class CaseManagementDirectDiagramMarshallerTest {
         subprocessInEdge.setContent(new Child());
         stageNode.getOutEdges().add(subprocessInEdge);
         subprocessNode.getInEdges().add(subprocessInEdge);
-
 
         DefinitionSet definitionSet = new DefinitionSetImpl("org.kie.workbench.common.stunner.cm.CaseManagementDefinitionSet");
 
@@ -936,7 +928,7 @@ public class CaseManagementDirectDiagramMarshallerTest {
         root.getDimensionsSet().setWidth(new Width(2800.0));
         root.getDimensionsSet().setHeight(new Height(1400.0));
 
-        View<CaseManagementDiagram> rootContent = new ViewImpl<>(root, BoundsImpl.build(0.0, 0.0, 2800.0, 1400.0));
+        View<CaseManagementDiagram> rootContent = new ViewImpl<>(root, Bounds.create(0.0, 0.0, 2800.0, 1400.0));
         Node<View<CaseManagementDiagram>, Edge> rootNode = new NodeImpl<>("_0E761372-8B3C-4BE1-88BC-808D647D9EFF");
         rootNode.getLabels().addAll(root.getLabels());
         rootNode.getLabels().add("org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram");
@@ -945,7 +937,7 @@ public class CaseManagementDirectDiagramMarshallerTest {
         AdHocSubprocess stage = new AdHocSubprocess();
         stage.getGeneral().setName(new Name("StageTaskTest"));
 
-        View<AdHocSubprocess> stageContent = new ViewImpl<>(stage, BoundsImpl.build(0.0, 0.0, 175.0, 50.0));
+        View<AdHocSubprocess> stageContent = new ViewImpl<>(stage, Bounds.create(0.0, 0.0, 175.0, 50.0));
         Node<View<AdHocSubprocess>, Edge> stageNode = new NodeImpl<>("_F0A19BD0-3F42-493A-9A2D-2F4C24ED75D9");
         stageNode.getLabels().addAll(stage.getLabels());
         stageNode.getLabels().add("org.kie.workbench.common.stunner.cm.definition.AdHocSubprocess");
@@ -990,7 +982,7 @@ public class CaseManagementDirectDiagramMarshallerTest {
 
         task.setExecutionSet(executionSet);
 
-        View<UserTask> taskContent = new ViewImpl<>(task, BoundsImpl.build(0.0, 0.0, 153.0, 103.0));
+        View<UserTask> taskContent = new ViewImpl<>(task, Bounds.create(0.0, 0.0, 153.0, 103.0));
         Node<View<UserTask>, Edge> taskNode = new NodeImpl<>("_E95AD08A-4595-4FA4-8948-3318D8BE7941");
         taskNode.getLabels().addAll(task.getLabels());
         taskNode.getLabels().add("org.kie.workbench.common.stunner.bpmn.definition.UserTask");
@@ -1002,7 +994,6 @@ public class CaseManagementDirectDiagramMarshallerTest {
         taskInEdge.setContent(new Child());
         stageNode.getOutEdges().add(taskInEdge);
         taskNode.getInEdges().add(taskInEdge);
-
 
         DefinitionSet definitionSet = new DefinitionSetImpl("org.kie.workbench.common.stunner.cm.CaseManagementDefinitionSet");
 
@@ -1182,7 +1173,6 @@ public class CaseManagementDirectDiagramMarshallerTest {
 
         hasElement(result,
                    "<bpmn2:targetRef>" + UUID_REGEX + "_CreatedByInputX</bpmn2:targetRef>");
-
     }
 
     @Test
@@ -1307,15 +1297,15 @@ public class CaseManagementDirectDiagramMarshallerTest {
             AdHocSubprocessTaskExecutionSet executionSet = stage.getExecutionSet();
             assertEquals("Sequential", executionSet.getAdHocOrdering().getValue());
 
-            ScriptTypeValue completionCondition =  executionSet.getAdHocCompletionCondition().getValue();
+            ScriptTypeValue completionCondition = executionSet.getAdHocCompletionCondition().getValue();
             assertEquals("autocomplete", completionCondition.getScript());
             assertEquals("drools", completionCondition.getLanguage());
 
-            ScriptTypeValue entryAction =  executionSet.getOnEntryAction().getValue().getValues().get(0);
+            ScriptTypeValue entryAction = executionSet.getOnEntryAction().getValue().getValues().get(0);
             assertEquals("StageTest", entryAction.getScript());
             assertEquals("java", entryAction.getLanguage());
 
-            ScriptTypeValue exitAction =  executionSet.getOnExitAction().getValue().getValues().get(0);
+            ScriptTypeValue exitAction = executionSet.getOnExitAction().getValue().getValues().get(0);
             assertEquals("StageTest", exitAction.getScript());
             assertEquals("java", exitAction.getLanguage());
         }

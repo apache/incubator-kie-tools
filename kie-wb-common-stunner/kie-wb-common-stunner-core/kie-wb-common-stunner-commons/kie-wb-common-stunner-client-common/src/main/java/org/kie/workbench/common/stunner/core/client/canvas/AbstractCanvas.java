@@ -85,9 +85,7 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.CanvasView>
 
         Point2D getAbsoluteLocation();
 
-        int getWidth();
-
-        int getHeight();
+        CanvasPanel getPanel();
 
         void destroy();
     }
@@ -294,13 +292,13 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.CanvasView>
     }
 
     @Override
-    public int getWidth() {
-        return getView().getWidth();
+    public int getWidthPx() {
+        return getView().getPanel().getWidthPx();
     }
 
     @Override
-    public int getHeight() {
-        return getView().getHeight();
+    public int getHeightPx() {
+        return getView().getPanel().getHeightPx();
     }
 
     @Override

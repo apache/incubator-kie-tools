@@ -26,7 +26,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.ScriptTask;
 import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewImpl;
 import org.kie.workbench.common.stunner.core.graph.impl.NodeImpl;
 
@@ -46,7 +46,7 @@ public class ContextUtilsTest {
     private static Node createNode(final Object def) {
         NodeImpl<Object> node = new NodeImpl<>("id1");
         node.setContent(new ViewImpl<>(def,
-                                       BoundsImpl.build()));
+                                       Bounds.create()));
         return node;
     }
 }

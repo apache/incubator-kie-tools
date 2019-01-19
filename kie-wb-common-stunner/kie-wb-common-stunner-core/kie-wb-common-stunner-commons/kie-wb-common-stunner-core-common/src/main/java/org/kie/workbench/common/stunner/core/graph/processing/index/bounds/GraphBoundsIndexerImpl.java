@@ -26,6 +26,7 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.Bound;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
@@ -178,8 +179,8 @@ public class GraphBoundsIndexerImpl implements GraphBoundsIndexer {
                                                 final double parentY) {
         final View content = (View) node.getContent();
         final Bounds bounds = content.getBounds();
-        final Bounds.Bound ulBound = bounds.getUpperLeft();
-        final Bounds.Bound lrBound = bounds.getLowerRight();
+        final Bound ulBound = bounds.getUpperLeft();
+        final Bound lrBound = bounds.getLowerRight();
         final double ulX = ulBound.getX() + parentX;
         final double ulY = ulBound.getY() + parentY;
         final double lrX = lrBound.getX() + parentX;

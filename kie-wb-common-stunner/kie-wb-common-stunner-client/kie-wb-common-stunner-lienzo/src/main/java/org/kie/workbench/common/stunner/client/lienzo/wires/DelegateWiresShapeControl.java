@@ -16,24 +16,22 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.wires;
 
+import com.ait.lienzo.client.core.shape.wires.OptionalBounds;
 import com.ait.lienzo.client.core.shape.wires.handlers.AlignAndDistributeControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.MouseEvent;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresBoundsConstraintControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresContainmentControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresDockingControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresMagnetsControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresParentPickerControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
-import com.ait.lienzo.client.core.types.BoundingBox;
+import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresShapeControlImpl;
 import com.ait.lienzo.client.core.types.Point2D;
 
-public abstract class DelegateWiresShapeControl implements WiresShapeControl {
+public abstract class DelegateWiresShapeControl implements WiresShapeControl,
+                                                           WiresBoundsConstraintControl.SupportsOptionalBounds<DelegateWiresShapeControl> {
 
-    protected abstract WiresShapeControl getDelegate();
-
-    @Override
-    public void setBoundsConstraint(BoundingBox boundingBox) {
-        getDelegate().setBoundsConstraint(boundingBox);
-    }
+    public abstract WiresShapeControlImpl getDelegate();
 
     @Override
     public void setAlignAndDistributeControl(AlignAndDistributeControl control) {
@@ -78,6 +76,12 @@ public abstract class DelegateWiresShapeControl implements WiresShapeControl {
     @Override
     public boolean isOutOfBounds(double dx, double dy) {
         return getDelegate().isOutOfBounds(dx, dy);
+    }
+
+    @Override
+    public DelegateWiresShapeControl setLocationBounds(final OptionalBounds bounds) {
+        getDelegate().setLocationBounds(bounds);
+        return this;
     }
 
     @Override

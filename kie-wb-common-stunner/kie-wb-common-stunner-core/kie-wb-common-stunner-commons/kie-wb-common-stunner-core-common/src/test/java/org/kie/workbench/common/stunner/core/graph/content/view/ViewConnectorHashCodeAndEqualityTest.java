@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.core.graph.content.view;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
@@ -29,15 +30,15 @@ public class ViewConnectorHashCodeAndEqualityTest {
     @Test
     public void testViewConnectorEquals() {
         ViewConnectorImpl<String> a = new ViewConnectorImpl<>("a",
-                                                              new BoundsImpl(new BoundImpl(0.0,
-                                                                                           0.0),
-                                                                             new BoundImpl(1.0,
-                                                                                           1.0)));
+                                                              Bounds.create(0.0,
+                                                                            0.0,
+                                                                            1.0,
+                                                                            1.0));
         ViewConnectorImpl<String> b = new ViewConnectorImpl<>("a",
-                                                              new BoundsImpl(new BoundImpl(0.0,
-                                                                                           0.0),
-                                                                             new BoundImpl(1.0,
-                                                                                           1.0)));
+                                                              Bounds.create(0.0,
+                                                                            0.0,
+                                                                            1.0,
+                                                                            1.0));
         assertEquals(a,
                      b);
 
@@ -46,16 +47,16 @@ public class ViewConnectorHashCodeAndEqualityTest {
                         b);
 
         b.setDefinition("a");
-        b.setBounds(new BoundsImpl(new BoundImpl(0.0,
-                                                 0.0),
-                                   new BoundImpl(5.0,
-                                                 5.0)));
+        b.setBounds(Bounds.create(0.0,
+                                  0.0,
+                                  5.0,
+                                  5.0));
         assertNotEquals(a,
                         b);
-        b.setBounds(new BoundsImpl(new BoundImpl(0.0,
-                                                 0.0),
-                                   new BoundImpl(1.0,
-                                                 1.0)));
+        b.setBounds(Bounds.create(0.0,
+                                  0.0,
+                                  1.0,
+                                  1.0));
 
         b.setSourceConnection(MagnetConnection.Builder.at(0.0,
                                                           0.0));
@@ -90,15 +91,15 @@ public class ViewConnectorHashCodeAndEqualityTest {
     @Test
     public void testGraphHashCode() {
         ViewConnectorImpl<String> a = new ViewConnectorImpl<>("a",
-                                                              new BoundsImpl(new BoundImpl(0.0,
-                                                                                           0.0),
-                                                                             new BoundImpl(1.0,
-                                                                                           1.0)));
+                                                              Bounds.create(0.0,
+                                                                            0.0,
+                                                                            1.0,
+                                                                            1.0));
         ViewConnectorImpl<String> b = new ViewConnectorImpl<>("a",
-                                                              new BoundsImpl(new BoundImpl(0.0,
-                                                                                           0.0),
-                                                                             new BoundImpl(1.0,
-                                                                                           1.0)));
+                                                              Bounds.create(0.0,
+                                                                            0.0,
+                                                                            1.0,
+                                                                            1.0));
         assertEquals(a.hashCode(),
                      b.hashCode());
 
@@ -107,16 +108,16 @@ public class ViewConnectorHashCodeAndEqualityTest {
                         b.hashCode());
 
         b.setDefinition("a");
-        b.setBounds(new BoundsImpl(new BoundImpl(0.0,
-                                                 0.0),
-                                   new BoundImpl(5.0,
-                                                 5.0)));
+        b.setBounds(Bounds.create(0.0,
+                                  0.0,
+                                  5.0,
+                                  5.0));
         assertNotEquals(a.hashCode(),
                         b.hashCode());
-        b.setBounds(new BoundsImpl(new BoundImpl(0.0,
-                                                 0.0),
-                                   new BoundImpl(1.0,
-                                                 1.0)));
+        b.setBounds(Bounds.create(0.0,
+                                  0.0,
+                                  1.0,
+                                  1.0));
 
         b.setSourceConnection(MagnetConnection.Builder.at(0.0,
                                                           0.0));

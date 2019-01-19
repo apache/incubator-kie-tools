@@ -23,11 +23,9 @@ import java.util.function.Function;
 import org.kie.dmn.model.api.dmndi.DMNShape;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.Bound;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
-import org.kie.workbench.common.stunner.core.graph.content.Bounds.Bound;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
 public class PointUtils {
@@ -81,8 +79,7 @@ public class PointUtils {
                     final double dy = sourceViewULBound.getY();
                     boundsX = convertor.apply(boundsX, dx);
                     boundsY = convertor.apply(boundsY, dy);
-                    targetNodeView.setBounds(new BoundsImpl(new BoundImpl(boundsX, boundsY),
-                                                            new BoundImpl(boundsX + boundsWidth, boundsY + boundsHeight)));
+                    targetNodeView.setBounds(Bounds.create(boundsX, boundsY, boundsX + boundsWidth, boundsY + boundsHeight));
                     break;
                 }
             }

@@ -25,7 +25,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.prop
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNViewDefinition;
 import org.kie.workbench.common.stunner.bpmn.definition.EventSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.IsAsync;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewImpl;
 import org.kie.workbench.common.stunner.core.graph.impl.GraphImpl;
@@ -46,7 +46,7 @@ public class SubProcessConverterTest {
         NodeImpl<View<? extends BPMNViewDefinition>> n = new NodeImpl<>("n");
         EventSubprocess subProcessNode = new EventSubprocess();
         subProcessNode.getExecutionSet().setIsAsync(new IsAsync(true));
-        n.setContent(new ViewImpl<>(subProcessNode, BoundsImpl.build()));
+        n.setContent(new ViewImpl<>(subProcessNode, Bounds.create()));
 
         Activity activity = c.convertSubProcess(n).value().getFlowElement();
         Boolean value = CustomElement.async.of(activity).get();

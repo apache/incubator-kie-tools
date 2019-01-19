@@ -37,10 +37,9 @@ import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.impl.GraphCommandFactory;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
 import org.kie.workbench.common.stunner.core.graph.processing.index.MutableIndex;
 import org.kie.workbench.common.stunner.core.registry.definition.AdapterRegistry;
@@ -206,12 +205,7 @@ public class TestingGraphMockHandler {
         when(definitionUtils.buildBounds(eq(definition),
                                          anyDouble(),
                                          anyDouble()))
-                .thenReturn(new BoundsImpl(
-                        new BoundImpl(x,
-                                      y),
-                        new BoundImpl(x + w,
-                                      y + h)
-                ));
+                .thenReturn(Bounds.create(x, y, x + w, y + h));
         final Node<Definition<Object>, Edge> result = nodeFactory.build(uuid,
                                                                         definition);
         execute(commandFactory.addNode(result));

@@ -21,7 +21,6 @@ import org.eclipse.bpmn2.di.BPMNPlane;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomAttribute;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 
 public class BoundaryEventPropertyReader extends CatchEventPropertyReader {
@@ -42,7 +41,7 @@ public class BoundaryEventPropertyReader extends CatchEventPropertyReader {
     public Bounds getBounds() {
         org.eclipse.dd.dc.Bounds bounds = shape.getBounds();
         Point2D docker = getDockerInfo();
-        return BoundsImpl.build(
+        return Bounds.create(
                 docker.getX(),
                 docker.getY(),
                 docker.getX() + bounds.getWidth(),

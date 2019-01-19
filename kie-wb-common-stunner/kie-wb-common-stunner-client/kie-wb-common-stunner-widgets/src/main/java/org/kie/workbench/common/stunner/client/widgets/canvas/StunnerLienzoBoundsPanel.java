@@ -41,6 +41,7 @@ import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyPressEvent
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyUpEvent;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.HandlerRegistrationImpl;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 
 @Dependent
 @Typed(StunnerLienzoBoundsPanel.class)
@@ -156,13 +157,18 @@ public class StunnerLienzoBoundsPanel
     }
 
     @Override
-    public int getWidth() {
-        return getLienzoPanel().getWidth();
+    public int getWidthPx() {
+        return getLienzoPanel().getWidthPx();
     }
 
     @Override
-    public int getHeight() {
-        return getLienzoPanel().getHeight();
+    public int getHeightPx() {
+        return getLienzoPanel().getHeightPx();
+    }
+
+    @Override
+    public Bounds getLocationConstraints() {
+        return Bounds.createMinBounds(0d, 0d);
     }
 
     @Override

@@ -32,7 +32,7 @@ import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.A
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ActionsToolboxView;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ToolboxAction;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewImpl;
 import org.kie.workbench.common.stunner.core.graph.impl.NodeImpl;
 import org.kie.workbench.common.stunner.forms.client.components.toolbox.FormGenerationToolboxAction;
@@ -93,7 +93,7 @@ public class BPMNCommonActionsToolboxFactoryTest {
     @SuppressWarnings("unchecked")
     public void testGetActionsForSupportedNode() {
         element.setContent(new ViewImpl<>(new UserTask(),
-                                          BoundsImpl.build()));
+                                          Bounds.create()));
         final Collection<ToolboxAction<AbstractCanvasHandler>> actions = tested.getActions(canvasHandler,
                                                                                            element);
         assertEquals(2, actions.size());
@@ -105,7 +105,7 @@ public class BPMNCommonActionsToolboxFactoryTest {
     @SuppressWarnings("unchecked")
     public void testGetActionsForNotSupportedNode() {
         element.setContent(new ViewImpl<>(new ScriptTask(),
-                                          BoundsImpl.build()));
+                                          Bounds.create()));
         final Collection<ToolboxAction<AbstractCanvasHandler>> actions = tested.getActions(canvasHandler,
                                                                                            element);
         assertEquals(1, actions.size());

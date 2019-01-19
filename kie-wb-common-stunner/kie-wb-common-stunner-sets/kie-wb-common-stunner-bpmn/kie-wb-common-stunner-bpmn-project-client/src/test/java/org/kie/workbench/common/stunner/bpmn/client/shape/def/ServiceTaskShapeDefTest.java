@@ -32,7 +32,7 @@ import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinition;
 import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinitionRegistry;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGPrimitive;
 import org.kie.workbench.common.stunner.svg.client.shape.view.impl.SVGShapeViewImpl;
@@ -58,7 +58,7 @@ public class ServiceTaskShapeDefTest {
 
     private static final double WIDTH = 111d;
     private static final double HEIGHT = 121d;
-    private static final BoundsImpl BOUNDS = BoundsImpl.build(0, 0, WIDTH, HEIGHT);
+    private static final Bounds BOUNDS = Bounds.create(0, 0, WIDTH, HEIGHT);
 
     @Mock
     private WorkItemDefinitionRegistry registry;

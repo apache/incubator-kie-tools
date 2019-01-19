@@ -26,10 +26,11 @@ import com.ait.lienzo.client.core.shape.MultiPathDecorator;
 import com.ait.lienzo.client.core.shape.OrthogonalPolyLine;
 import com.ait.lienzo.client.core.shape.wires.LayoutContainer;
 import com.ait.lienzo.client.core.shape.wires.MagnetManager;
+import com.ait.lienzo.client.core.shape.wires.OptionalBounds;
 import com.ait.lienzo.client.core.shape.wires.WiresConnection;
 import com.ait.lienzo.client.core.shape.wires.WiresMagnet;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
-import com.ait.lienzo.client.core.types.BoundingBox;
+import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresShapeControlImpl;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
@@ -37,6 +38,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 
@@ -61,7 +63,7 @@ public class WiresShapeViewTest {
     private WiresShapeView tested;
 
     @Mock
-    private WiresShapeControl control;
+    private WiresShapeControlImpl control;
 
     @Before
     public void setup() throws Exception {
@@ -134,23 +136,17 @@ public class WiresShapeViewTest {
 
     @Test
     public void testSetDragBounds() {
-        tested.setDragBounds(1.5d,
-                             6.4d,
-                             564.78d,
-                             543.84d);
-        ArgumentCaptor<BoundingBox> bbCaptor = ArgumentCaptor.forClass(BoundingBox.class);
-        verify(control, times(1)).setBoundsConstraint(bbCaptor.capture());
-        final BoundingBox bb = bbCaptor.getValue();
+        tested.setDragBounds(Bounds.create(1.5d,
+                                           6.4d,
+                                           564.78d,
+                                           543.84d));
+        ArgumentCaptor<OptionalBounds> bbCaptor = ArgumentCaptor.forClass(OptionalBounds.class);
+        verify(control, times(1)).setLocationBounds(bbCaptor.capture());
+        final OptionalBounds bb = bbCaptor.getValue();
         assertEquals(1.5d, bb.getMinX(), 0d);
         assertEquals(6.4d, bb.getMinY(), 0d);
         assertEquals(564.78d, bb.getMaxX(), 0d);
         assertEquals(543.84d, bb.getMaxY(), 0d);
-    }
-
-    @Test
-    public void testUnSetDragBounds() {
-        tested.unsetDragBounds();
-        verify(control, times(1)).setBoundsConstraint(eq(null));
     }
 
     @Test

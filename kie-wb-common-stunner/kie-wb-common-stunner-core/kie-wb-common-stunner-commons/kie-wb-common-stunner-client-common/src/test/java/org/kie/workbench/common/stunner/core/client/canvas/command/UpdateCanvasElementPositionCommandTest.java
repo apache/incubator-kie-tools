@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.stunner.core.client.canvas.command;
 
+import java.util.Iterator;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,17 +24,28 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Element;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
+import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
+import org.kie.workbench.common.stunner.core.graph.content.view.ViewImpl;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UpdateCanvasElementPositionCommandTest extends AbstractCanvasCommandTest {
+
+    private static Bounds PANEL_BOUNDS = Bounds.create(0d, 0d, 600d, 600d);
+    private static Bounds ELEMENT_BOUNDS = Bounds.create(0d, 0d, 100d, 100d);
 
     @Mock
     private Element candidate;
@@ -40,19 +53,36 @@ public class UpdateCanvasElementPositionCommandTest extends AbstractCanvasComman
     private UpdateCanvasElementPositionCommand tested;
 
     @Before
+    @SuppressWarnings("unchecked")
     public void setUp() throws Exception {
         super.setUp();
-        this.tested = new UpdateCanvasElementPositionCommand(candidate);
+        when(canvasPanel.getLocationConstraints()).thenReturn(PANEL_BOUNDS);
+        when(candidate.getContent()).thenReturn(new ViewImpl<>(mock(Object.class), ELEMENT_BOUNDS));
     }
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testExecute() {
-        final CommandResult<CanvasViolation> result = tested.execute(canvasHandler);
+    public void testExecuteSuccess() {
+        tested = new UpdateCanvasElementPositionCommand(candidate, Point2D.create(0d, 0d));
+        CommandResult<CanvasViolation> result = tested.execute(canvasHandler);
         assertNotEquals(CommandResult.Type.ERROR,
                         result.getType());
         verify(canvasHandler,
                times(1)).updateElementPosition(eq(candidate),
                                                any(MutationContext.class));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testOutOfBoundsError() {
+        tested = new UpdateCanvasElementPositionCommand(candidate, Point2D.create(550d, 550d));
+        CommandResult<CanvasViolation> result = tested.execute(canvasHandler);
+        assertEquals(CommandResult.Type.ERROR,
+                     result.getType());
+        Iterator<CanvasViolation> violationsIt = result.getViolations().iterator();
+        assertTrue(violationsIt.hasNext());
+        verify(canvasHandler,
+               never()).updateElementPosition(eq(candidate),
+                                              any(MutationContext.class));
     }
 }

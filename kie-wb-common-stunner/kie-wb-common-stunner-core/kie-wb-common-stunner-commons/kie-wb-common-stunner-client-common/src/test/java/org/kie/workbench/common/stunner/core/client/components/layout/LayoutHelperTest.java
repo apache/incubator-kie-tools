@@ -23,9 +23,9 @@ import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.Bound;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.HasBounds;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.processing.layout.LayoutExecutor;
 import org.kie.workbench.common.stunner.core.graph.processing.layout.LayoutService;
 import org.kie.workbench.common.stunner.core.graph.store.GraphNodeStoreImpl;
@@ -81,15 +81,15 @@ public class LayoutHelperTest {
 
     @Before
     public void setup() {
-        final BoundsImpl graphNode1Bounds = BoundsImpl.build(1, 2, 3, 4);
+        final Bounds graphNode1Bounds = Bounds.create(1, 2, 3, 4);
         when(graphNode1.getContent()).thenReturn(graphNode1Content);
         when(graphNode1Content.getBounds()).thenReturn(graphNode1Bounds);
 
-        final BoundsImpl graphNode2Bounds = BoundsImpl.build(1, 2, 3, 4);
+        final Bounds graphNode2Bounds = Bounds.create(1, 2, 3, 4);
         when(graphNode2.getContent()).thenReturn(graphNode2Content);
         when(graphNode2Content.getBounds()).thenReturn(graphNode2Bounds);
 
-        final BoundsImpl rootNodeBounds = BoundsImpl.build(1, 2, 3, 4);
+        final Bounds rootNodeBounds = Bounds.create(1, 2, 3, 4);
         when(rootNode.getContent()).thenReturn(rootNodeContent);
         when(rootNodeContent.getBounds()).thenReturn(rootNodeBounds);
 
@@ -123,7 +123,7 @@ public class LayoutHelperTest {
         isCloseToZero(bounds.getUpperLeft());
     }
 
-    private static void isCloseToZero(final Bounds.Bound bound) {
+    private static void isCloseToZero(final Bound bound) {
         assertEquals(0.0, bound.getX(), 0.01);
         assertEquals(0.0, bound.getY(), 0.01);
     }

@@ -25,7 +25,7 @@ import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnectorImpl;
@@ -64,7 +64,7 @@ public class UpdateControlPointPositionCommandTest {
         controlPoint = ControlPoint.build(1, 4, 0);
         when(commandExecutionContext.getRuleManager()).thenReturn(ruleManager);
         content = new ViewConnectorImpl<>(mock(Object.class),
-                                          BoundsImpl.build(0, 0, 10, 10));
+                                          Bounds.create(0, 0, 10, 10));
         edge = new EdgeImpl<>("edge1");
         edge.setContent(content);
         content.setControlPoints(Collections.singletonList(controlPoint));

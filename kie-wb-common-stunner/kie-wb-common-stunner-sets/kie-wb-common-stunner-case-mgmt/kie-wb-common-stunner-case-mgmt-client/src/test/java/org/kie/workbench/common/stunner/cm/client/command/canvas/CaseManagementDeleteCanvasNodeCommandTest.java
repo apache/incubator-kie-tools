@@ -22,8 +22,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasCommandTest;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -61,7 +60,7 @@ public class CaseManagementDeleteCanvasNodeCommandTest extends AbstractCanvasCom
         when(candidate.getUUID()).thenReturn(C_ID);
         when(parent.getUUID()).thenReturn(P_ID);
         when(candidate.getContent()).thenReturn(view);
-        when(view.getBounds()).thenReturn(new BoundsImpl(new BoundImpl(0d, 0d), new BoundImpl(10d, 10d)));
+        when(view.getBounds()).thenReturn(Bounds.create(0d, 0d, 10d, 10d));
         this.tested = new CaseManagementDeleteCanvasNodeCommand(candidate,
                                                                 parent,
                                                                 index);

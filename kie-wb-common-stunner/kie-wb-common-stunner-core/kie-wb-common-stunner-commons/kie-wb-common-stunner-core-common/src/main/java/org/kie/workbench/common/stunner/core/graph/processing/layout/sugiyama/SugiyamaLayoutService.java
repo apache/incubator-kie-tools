@@ -25,6 +25,7 @@ import javax.inject.Inject;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.Bound;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.HasBounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
@@ -140,7 +141,7 @@ public final class SugiyamaLayoutService extends AbstractLayoutService {
                 final int y = v.getY();
 
                 final Bounds currentBounds = ((HasBounds) n.getContent()).getBounds();
-                final Bounds.Bound lowerRight = currentBounds.getLowerRight();
+                final Bound lowerRight = currentBounds.getLowerRight();
                 final int x2;
                 if (isCloseToZero(lowerRight.getX())) {
                     x2 = x + VertexPositioning.DEFAULT_VERTEX_WIDTH;

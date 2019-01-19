@@ -128,8 +128,8 @@ public abstract class AbstractDiagramViewer<D extends Diagram, H extends Abstrac
                          final boolean keepAspectRatio) {
         checkNotNull("item",
                      getInstance());
-        scale(getCanvas().getWidth(),
-              getCanvas().getHeight(),
+        scale(getCanvas().getWidthPx(),
+              getCanvas().getHeightPx(),
               toWidth,
               toHeight,
               keepAspectRatio);

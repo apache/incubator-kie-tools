@@ -19,9 +19,9 @@ import org.junit.Test;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.Bound;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewImpl;
 import org.kie.workbench.common.stunner.core.graph.impl.EdgeImpl;
@@ -35,11 +35,11 @@ public class PointUtilsTest {
     @Test
     public void testConvertToAbsoluteBoundsWhenChild() {
         final Node<View, Edge> parent = new NodeImpl<>(UUID.uuid());
-        final View parentView = new ViewImpl<>(new Decision(), BoundsImpl.build(100, 200, 1000, 2000));
+        final View parentView = new ViewImpl<>(new Decision(), Bounds.create(100, 200, 1000, 2000));
         parent.setContent(parentView);
 
         final Node<View, Edge> child = new NodeImpl<>(UUID.uuid());
-        final View childView = new ViewImpl<>(new Decision(), BoundsImpl.build(10, 20, 50, 60));
+        final View childView = new ViewImpl<>(new Decision(), Bounds.create(10, 20, 50, 60));
         child.setContent(childView);
 
         final Edge<Child, Node> edge = new EdgeImpl<>(UUID.uuid());
@@ -51,8 +51,8 @@ public class PointUtilsTest {
 
         PointUtils.convertToAbsoluteBounds(child);
 
-        final Bounds.Bound ulBound = child.getContent().getBounds().getUpperLeft();
-        final Bounds.Bound lrBound = child.getContent().getBounds().getLowerRight();
+        final Bound ulBound = child.getContent().getBounds().getUpperLeft();
+        final Bound lrBound = child.getContent().getBounds().getLowerRight();
         assertThat(ulBound.getX()).isEqualTo(110);
         assertThat(ulBound.getY()).isEqualTo(220);
         assertThat(lrBound.getX()).isEqualTo(150);
@@ -62,13 +62,13 @@ public class PointUtilsTest {
     @Test
     public void testConvertToAbsoluteBoundsWhenNotChild() {
         final Node<View, ?> node = new NodeImpl<>(UUID.uuid());
-        final View nodeView = new ViewImpl<>(new Decision(), BoundsImpl.build(10, 20, 50, 60));
+        final View nodeView = new ViewImpl<>(new Decision(), Bounds.create(10, 20, 50, 60));
         node.setContent(nodeView);
 
         PointUtils.convertToAbsoluteBounds(node);
 
-        final Bounds.Bound ulBound = node.getContent().getBounds().getUpperLeft();
-        final Bounds.Bound lrBound = node.getContent().getBounds().getLowerRight();
+        final Bound ulBound = node.getContent().getBounds().getUpperLeft();
+        final Bound lrBound = node.getContent().getBounds().getLowerRight();
         assertThat(ulBound.getX()).isEqualTo(10);
         assertThat(ulBound.getY()).isEqualTo(20);
         assertThat(lrBound.getX()).isEqualTo(50);
@@ -78,11 +78,11 @@ public class PointUtilsTest {
     @Test
     public void testConvertToRelativeBoundsWhenChild() {
         final Node<View, Edge> parent = new NodeImpl<>(UUID.uuid());
-        final View parentView = new ViewImpl<>(new Decision(), BoundsImpl.build(100, 200, 1000, 2000));
+        final View parentView = new ViewImpl<>(new Decision(), Bounds.create(100, 200, 1000, 2000));
         parent.setContent(parentView);
 
         final Node<View, Edge> child = new NodeImpl<>(UUID.uuid());
-        final View childView = new ViewImpl<>(new Decision(), BoundsImpl.build(110, 220, 150, 260));
+        final View childView = new ViewImpl<>(new Decision(), Bounds.create(110, 220, 150, 260));
         child.setContent(childView);
 
         final Edge<Child, Node> edge = new EdgeImpl<>(UUID.uuid());
@@ -94,8 +94,8 @@ public class PointUtilsTest {
 
         PointUtils.convertToRelativeBounds(child);
 
-        final Bounds.Bound ulBound = child.getContent().getBounds().getUpperLeft();
-        final Bounds.Bound lrBound = child.getContent().getBounds().getLowerRight();
+        final Bound ulBound = child.getContent().getBounds().getUpperLeft();
+        final Bound lrBound = child.getContent().getBounds().getLowerRight();
         assertThat(ulBound.getX()).isEqualTo(10);
         assertThat(ulBound.getY()).isEqualTo(20);
         assertThat(lrBound.getX()).isEqualTo(50);
@@ -105,13 +105,13 @@ public class PointUtilsTest {
     @Test
     public void testConvertToRelativeBoundsWhenNotChild() {
         final Node<View, ?> node = new NodeImpl<>(UUID.uuid());
-        final View nodeView = new ViewImpl<>(new Decision(), BoundsImpl.build(10, 20, 50, 60));
+        final View nodeView = new ViewImpl<>(new Decision(), Bounds.create(10, 20, 50, 60));
         node.setContent(nodeView);
 
         PointUtils.convertToRelativeBounds(node);
 
-        final Bounds.Bound ulBound = node.getContent().getBounds().getUpperLeft();
-        final Bounds.Bound lrBound = node.getContent().getBounds().getLowerRight();
+        final Bound ulBound = node.getContent().getBounds().getUpperLeft();
+        final Bound lrBound = node.getContent().getBounds().getLowerRight();
         assertThat(ulBound.getX()).isEqualTo(10);
         assertThat(ulBound.getY()).isEqualTo(20);
         assertThat(lrBound.getX()).isEqualTo(50);

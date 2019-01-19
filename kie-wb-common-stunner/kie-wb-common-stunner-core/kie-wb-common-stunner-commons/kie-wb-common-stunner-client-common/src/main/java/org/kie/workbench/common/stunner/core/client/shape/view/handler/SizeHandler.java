@@ -22,14 +22,13 @@ import org.kie.workbench.common.stunner.core.client.shape.view.HasRadius;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasSize;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeViewHandler;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+
 /**
  * The default view size related attributes handler to generic shape views.
- *
+ * <p>
  * It allows specifying functions which provide the different attributes for
  * handling the resulting canvas shape's size.
- *
  * @param <W> The domain's object type.
  * @param <V> The shape view type.
  */
@@ -69,8 +68,8 @@ public class SizeHandler<W, V extends ShapeView> implements ShapeViewHandler<Vie
     public void handle(final View<W> content,
                        final V view) {
         final W bean = content.getDefinition();
-        final double boundsWidth = ((BoundsImpl) content.getBounds()).getWidth();
-        final double boundsHeight = ((BoundsImpl) content.getBounds()).getHeight();
+        final double boundsWidth = content.getBounds().getWidth();
+        final double boundsHeight = content.getBounds().getHeight();
         if (view instanceof HasSize) {
             final Double beanWidth = widthProvider.apply(bean);
             final Double beanHeight = heightProvider.apply(bean);
@@ -81,7 +80,7 @@ public class SizeHandler<W, V extends ShapeView> implements ShapeViewHandler<Vie
             final Double minHeight = minHeightProvider.apply(bean);
             final Double maxHeight = maxHeightProvider.apply(bean);
 
-            HasSize hasSizeView = (HasSize)view;
+            HasSize hasSizeView = (HasSize) view;
 
             if (width > 0 && height > 0) {
                 hasSizeView.setSize(width, height);
@@ -107,8 +106,8 @@ public class SizeHandler<W, V extends ShapeView> implements ShapeViewHandler<Vie
             final Double beanRadius = radiusProvider.apply(bean);
             final double radius = null != beanRadius ? beanRadius :
                     (boundsWidth > boundsHeight ?
-                        boundsWidth / 2 :
-                        boundsHeight / 2);
+                            boundsWidth / 2 :
+                            boundsHeight / 2);
             final Double minRadius = minRadiusProvider.apply(bean);
             final Double maxRadius = maxRadiusProvider.apply(bean);
             if (radius > 0) {

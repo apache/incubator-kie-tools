@@ -45,8 +45,7 @@ import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
 import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
@@ -363,10 +362,7 @@ public class ConnectionAcceptorControlImplTest {
         // New default connection for a graph element.
         Element element = mock(Element.class);
         View<?> content = mock(View.class);
-        BoundsImpl bounds = new BoundsImpl(new BoundImpl(0d,
-                                                         0d),
-                                           new BoundImpl(10d,
-                                                         20d));
+        Bounds bounds = Bounds.create(0d, 0d, 10d, 20d);
         when(element.getContent()).thenReturn(content);
         when(content.getBounds()).thenReturn(bounds);
         MagnetConnection c1 =

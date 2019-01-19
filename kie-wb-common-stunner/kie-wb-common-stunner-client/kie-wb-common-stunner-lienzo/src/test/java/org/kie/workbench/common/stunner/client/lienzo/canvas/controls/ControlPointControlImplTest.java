@@ -46,8 +46,8 @@ import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnectorImpl;
@@ -118,7 +118,7 @@ public class ControlPointControlImplTest {
     public void setup() {
         edge = new EdgeImpl<>(EDGE_UUID);
         content = new ViewConnectorImpl(mock(Object.class),
-                                        BoundsImpl.build());
+                                        Bounds.create());
         edge.setContent(content);
         controlPointList = Collections.singletonList(CONTROL_POINT);
         content.setControlPoints(controlPointList);

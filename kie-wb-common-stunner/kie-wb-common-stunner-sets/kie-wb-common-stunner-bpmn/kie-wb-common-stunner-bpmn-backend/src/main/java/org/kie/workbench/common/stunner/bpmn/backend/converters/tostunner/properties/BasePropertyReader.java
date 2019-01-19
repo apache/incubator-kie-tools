@@ -38,7 +38,6 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontFamily
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSize;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 
 public abstract class BasePropertyReader {
 
@@ -106,10 +105,10 @@ public abstract class BasePropertyReader {
 
     public Bounds getBounds() {
         if (shape == null) {
-            return BoundsImpl.build();
+            return Bounds.create();
         }
         org.eclipse.dd.dc.Bounds bounds = shape.getBounds();
-        return BoundsImpl.build(
+        return Bounds.create(
                 bounds.getX(),
                 bounds.getY(),
                 bounds.getX() + bounds.getWidth(),

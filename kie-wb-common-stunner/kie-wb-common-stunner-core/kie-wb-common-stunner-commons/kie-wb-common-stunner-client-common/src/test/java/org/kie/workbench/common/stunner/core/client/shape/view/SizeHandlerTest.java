@@ -21,7 +21,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeViewExtStub;
 import org.kie.workbench.common.stunner.core.client.shape.view.handler.SizeHandler;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewImpl;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -54,7 +54,7 @@ public class SizeHandlerTest {
                 .radius(o -> 30d)
                 .build();
         final Object bean = mock(Object.class);
-        tested.handle(new ViewImpl<>(bean, BoundsImpl.build()), view);
+        tested.handle(new ViewImpl<>(bean, Bounds.create()), view);
         verify(view, times(1)).setSize(eq(10d),
                                        eq(20d));
         verify(view, times(1)).setRadius(eq(30d));
@@ -68,7 +68,7 @@ public class SizeHandlerTest {
                 .radius(o -> null)
                 .build();
         final Object bean = mock(Object.class);
-        tested.handle(new ViewImpl<>(bean, BoundsImpl.build(0d, 0d, 12.5d, 55.2d)), view);
+        tested.handle(new ViewImpl<>(bean, Bounds.create(0d, 0d, 12.5d, 55.2d)), view);
         verify(view, times(1)).setSize(eq(12.5d),
                                        eq(55.2d));
         verify(view, times(1)).setRadius(eq(27.6d));
@@ -82,7 +82,7 @@ public class SizeHandlerTest {
                 .radius(o -> null)
                 .build();
         final Object bean = mock(Object.class);
-        tested.handle(new ViewImpl<>(bean, BoundsImpl.build()), view);
+        tested.handle(new ViewImpl<>(bean, Bounds.create()), view);
         verify(view, never()).setSize(anyDouble(), anyDouble());
         verify(view, never()).setRadius(anyDouble());
     }
@@ -96,7 +96,7 @@ public class SizeHandlerTest {
                 .maxHeight(o -> 0d)
                 .build();
         final Object bean = mock(Object.class);
-        tested.handle(new ViewImpl<>(bean, BoundsImpl.build()), view);
+        tested.handle(new ViewImpl<>(bean, Bounds.create()), view);
 
         verify(view, never()).setMinWidth(anyDouble());
         verify(view, never()).setMaxWidth(anyDouble());
@@ -109,7 +109,7 @@ public class SizeHandlerTest {
                 .minHeight(o -> -100d)
                 .maxHeight(o -> -100d)
                 .build();
-        tested.handle(new ViewImpl<>(bean, BoundsImpl.build()), view);
+        tested.handle(new ViewImpl<>(bean, Bounds.create()), view);
 
         verify(view, never()).setMinWidth(anyDouble());
         verify(view, never()).setMaxWidth(anyDouble());
@@ -126,7 +126,7 @@ public class SizeHandlerTest {
                 .maxHeight(o -> null)
                 .build();
         final Object bean = mock(Object.class);
-        tested.handle(new ViewImpl<>(bean, BoundsImpl.build()), view);
+        tested.handle(new ViewImpl<>(bean, Bounds.create()), view);
 
         verify(view, times(1)).setMinWidth(isNull(Double.class));
         verify(view, times(1)).setMaxWidth(isNull(Double.class));
@@ -139,7 +139,7 @@ public class SizeHandlerTest {
                 .minHeight(o -> 10d)
                 .maxHeight(o -> 100d)
                 .build();
-        tested.handle(new ViewImpl<>(bean, BoundsImpl.build()), view);
+        tested.handle(new ViewImpl<>(bean, Bounds.create()), view);
 
         verify(view, times(1)).setMinWidth(10d);
         verify(view, times(1)).setMaxWidth(100d);
@@ -154,7 +154,7 @@ public class SizeHandlerTest {
                 .maxRadius(o -> 0d)
                 .build();
         final Object bean = mock(Object.class);
-        tested.handle(new ViewImpl<>(bean, BoundsImpl.build()), view);
+        tested.handle(new ViewImpl<>(bean, Bounds.create()), view);
 
         verify(view, never()).setMinRadius(anyDouble());
         verify(view, never()).setMaxRadius(anyDouble());
@@ -163,7 +163,7 @@ public class SizeHandlerTest {
                 .minRadius(o -> -10d)
                 .maxRadius(o -> -100d)
                 .build();
-        tested.handle(new ViewImpl<>(bean, BoundsImpl.build()), view);
+        tested.handle(new ViewImpl<>(bean, Bounds.create()), view);
 
         verify(view, never()).setMinRadius(anyDouble());
         verify(view, never()).setMaxRadius(anyDouble());
@@ -176,7 +176,7 @@ public class SizeHandlerTest {
                 .maxRadius(o -> null)
                 .build();
         final Object bean = mock(Object.class);
-        tested.handle(new ViewImpl<>(bean, BoundsImpl.build()), view);
+        tested.handle(new ViewImpl<>(bean, Bounds.create()), view);
 
         verify(view, times(1)).setMinRadius(isNull(Double.class));
         verify(view, times(1)).setMaxRadius(isNull(Double.class));
@@ -185,7 +185,7 @@ public class SizeHandlerTest {
                 .minRadius(o -> 10d)
                 .maxRadius(o -> 100d)
                 .build();
-        tested.handle(new ViewImpl<>(bean, BoundsImpl.build()), view);
+        tested.handle(new ViewImpl<>(bean, Bounds.create()), view);
 
         verify(view, times(1)).setMinRadius(10d);
         verify(view, times(1)).setMaxRadius(100d);

@@ -20,6 +20,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.graph.Element;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -45,10 +46,7 @@ public class MagnetConnectionTest {
 
     @Before
     public void setUp() {
-        BoundsImpl bounds = new BoundsImpl(new BoundImpl(10d,
-                                                         20d),
-                                           new BoundImpl(100d,
-                                                         200d));
+        Bounds bounds = Bounds.create(10d, 20d, 100d, 200d);
         when(element.getContent()).thenReturn(content);
         when(content.getBounds()).thenReturn(bounds);
     }
@@ -84,10 +82,7 @@ public class MagnetConnectionTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testForElementWithReferenceRight() {
-        BoundsImpl bounds2 = new BoundsImpl(new BoundImpl(20d,
-                                                          30d),
-                                            new BoundImpl(200d,
-                                                          300d));
+        Bounds bounds2 = Bounds.create(20d, 30d, 200d, 300d);
         when(element2.getContent()).thenReturn(content2);
         when(content2.getBounds()).thenReturn(bounds2);
 
@@ -101,10 +96,7 @@ public class MagnetConnectionTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testForElementWithReferenceLeft() {
-        BoundsImpl bounds2 = new BoundsImpl(new BoundImpl(5d,
-                                                          10d),
-                                            new BoundImpl(200d,
-                                                          300d));
+        Bounds bounds2 = Bounds.create(5d, 10d, 200d, 300d);
         when(element2.getContent()).thenReturn(content2);
         when(content2.getBounds()).thenReturn(bounds2);
 

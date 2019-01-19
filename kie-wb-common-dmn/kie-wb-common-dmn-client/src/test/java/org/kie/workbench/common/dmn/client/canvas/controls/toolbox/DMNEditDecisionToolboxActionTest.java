@@ -31,8 +31,6 @@ import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseClickE
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewImpl;
 import org.kie.workbench.common.stunner.core.graph.impl.NodeImpl;
@@ -80,10 +78,7 @@ public class DMNEditDecisionToolboxActionTest {
     public void setup() throws Exception {
         decisionNode = new NodeImpl<>(E_UUID);
         decision = new Decision();
-        final Bounds bounds = new BoundsImpl(new BoundImpl(0d,
-                                                           0d),
-                                             new BoundImpl(100d,
-                                                           150d));
+        final Bounds bounds = Bounds.create(0d, 0d,100d,150d);
         final View<Decision> nodeContent = new ViewImpl<>(decision,
                                                           bounds);
         decisionNode.setContent(nodeContent);

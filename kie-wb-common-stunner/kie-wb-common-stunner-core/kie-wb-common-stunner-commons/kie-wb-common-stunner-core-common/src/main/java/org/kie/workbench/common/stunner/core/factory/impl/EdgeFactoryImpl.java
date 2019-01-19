@@ -26,8 +26,6 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnectorImpl;
 import org.kie.workbench.common.stunner.core.graph.impl.EdgeImpl;
@@ -79,9 +77,6 @@ public class EdgeFactoryImpl extends AbstractElementFactory<Object, Definition<O
 
     // TODO: Review.
     private Bounds buildBounds() {
-        return new BoundsImpl(new BoundImpl(0d,
-                                            0d),
-                              new BoundImpl(30d,
-                                            30d));
+        return Bounds.create(0d, 0d, 30d, 30d);
     }
 }

@@ -20,8 +20,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.HasBounds;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.store.GraphNodeStoreImpl;
 import org.kie.workbench.common.stunner.core.util.UUID;
 import org.mockito.Mock;
@@ -87,8 +87,8 @@ public class AbstractLayoutServiceTest {
         when(graph.nodes()).thenReturn(store);
         assertFalse(layoutService.hasLayoutInformation(graph));
 
-        final BoundsImpl bounds = BoundsImpl.build(10, 10, 10, 10);
-        final BoundsImpl noBounds = BoundsImpl.build(0, 0, 0, 0);
+        final Bounds bounds = Bounds.create(10, 10, 10, 10);
+        final Bounds noBounds = Bounds.create(0, 0, 0, 0);
 
         when(n1.getContent()).thenReturn(hasBounds1);
         when(hasBounds1.getBounds()).thenReturn(noBounds);

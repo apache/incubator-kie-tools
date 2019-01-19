@@ -18,7 +18,6 @@ package org.kie.workbench.common.stunner.client.lienzo.wires;
 
 import com.ait.lienzo.client.core.shape.wires.handlers.MouseEvent;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresCompositeControl;
-import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
@@ -54,13 +53,6 @@ public class DelegateWiresCompositeControlTest {
         WiresCompositeControl.Context context = mock(WiresCompositeControl.Context.class);
         tested.setContext(context);
         verify(delegate, times(1)).setContext(eq(context));
-    }
-
-    @Test
-    public void testBoundConstraints() {
-        BoundingBox boundingBox = mock(BoundingBox.class);
-        tested.setBoundsConstraint(boundingBox);
-        verify(delegate, times(1)).setBoundsConstraint(eq(boundingBox));
     }
 
     @Test

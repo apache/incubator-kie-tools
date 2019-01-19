@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.Bound;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.HasBounds;
 
@@ -67,7 +68,7 @@ public abstract class AbstractLayoutService implements LayoutService {
             return true;
         }
 
-        final Bounds.Bound upperLeft = bounds.getUpperLeft();
+        final Bound upperLeft = bounds.getUpperLeft();
 
         /* We're ignoring bottomRight because it used to define the size of the elements,
          * not the position on the diagram.*/

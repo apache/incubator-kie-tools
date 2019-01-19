@@ -19,8 +19,6 @@ package org.kie.workbench.common.stunner.cm.client.command;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewImpl;
 import org.kie.workbench.common.stunner.core.graph.impl.NodeImpl;
@@ -33,10 +31,7 @@ public class CommandTestUtils {
                                                final double y,
                                                final double w,
                                                final double h) {
-        final Bounds bounds = new BoundsImpl(new BoundImpl(x,
-                                                           y),
-                                             new BoundImpl(x + w,
-                                                           y + h));
+        final Bounds bounds = Bounds.create(x, y, x + w, y + h);
         final Node<View<?>, Edge> node = new NodeImpl<>(uuid);
         node.setContent(new ViewImpl<>(content,
                                        bounds));

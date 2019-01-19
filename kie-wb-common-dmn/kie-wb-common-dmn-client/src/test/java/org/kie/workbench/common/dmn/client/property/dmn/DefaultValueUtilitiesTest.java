@@ -34,7 +34,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.TextAnnotation;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewImpl;
 import org.kie.workbench.common.stunner.core.graph.impl.GraphImpl;
@@ -264,7 +264,7 @@ public class DefaultValueUtilitiesTest {
     }
 
     private Node makeMockNode(final DMNModelInstrumentedBase dmnModel) {
-        final View view = new ViewImpl<>(dmnModel, BoundsImpl.build(0, 0, 0, 0));
+        final View view = new ViewImpl<>(dmnModel, Bounds.create(0, 0, 0, 0));
         final Node<View, Edge> node = new NodeImpl<>(UUID.randomUUID().toString());
         node.setContent(view);
         return node;

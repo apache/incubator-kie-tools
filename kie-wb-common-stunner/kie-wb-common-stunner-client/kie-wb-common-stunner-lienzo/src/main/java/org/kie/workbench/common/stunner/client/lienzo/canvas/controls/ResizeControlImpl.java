@@ -39,6 +39,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.resize.Resiz
 import org.kie.workbench.common.stunner.core.client.canvas.event.AbstractCanvasHandlerEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasUtils;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
@@ -60,9 +61,8 @@ import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTyp
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
 import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
@@ -253,12 +253,15 @@ public class ResizeControlImpl extends AbstractCanvasHandlerRegistrationControl<
         // Calculate the new graph element's bounds.
         final Point2D current = (null != x && null != y) ? new Point2D(x,
                                                                        y) : GraphUtils.getPosition(element.getContent());
-        final BoundsImpl newBounds = new BoundsImpl(
-                new BoundImpl(current.getX(),
-                              current.getY()),
-                new BoundImpl(current.getX() + w,
-                              current.getY() + h)
-        );
+        final Bounds newBounds = Bounds.create(current.getX(),
+                                               current.getY(),
+                                               current.getX() + w,
+                                               current.getY() + h);
+
+        if (CanvasUtils.areBoundsExceeded(canvasHandler, newBounds)) {
+            return CanvasUtils.createBoundsExceededCommandResult(canvasHandler, newBounds);
+        }
+
         // Execute the update position and update property/ies command/s on the bean instance to achieve the new bounds.
         final List<Command<AbstractCanvasHandler, CanvasViolation>> commands = getResizeCommands(element,
                                                                                                  w,

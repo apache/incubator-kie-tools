@@ -25,9 +25,8 @@ import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.parser.common
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.parser.common.StringFieldParser;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.content.Bounds;
+import org.kie.workbench.common.stunner.core.graph.content.Bound;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Dock;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 
@@ -82,7 +81,7 @@ public class NodeParser extends ElementParser<Node<View, Edge>> {
         }
         // Dockers - Only use if this node is docked.
         if (isDocked(element)) {
-            Bounds.Bound ul = element.getContent().getBounds().getUpperLeft();
+            Bound ul = element.getContent().getBounds().getUpperLeft();
             ObjectParser docker1ObjParser = new ObjectParser("")
                     .addParser(new IntegerFieldParser("x",
                                                       ul.getX().intValue()))
@@ -95,25 +94,25 @@ public class NodeParser extends ElementParser<Node<View, Edge>> {
     }
 
     @Override
-    protected void parseBounds(final Bounds.Bound ul,
-                               final Bounds.Bound lr) {
+    protected void parseBounds(final Bound ul,
+                               final Bound lr) {
         Node<View, Edge> dockSource = getDockSourceNode(element);
         if (null == dockSource) {
             super.parseBounds(ul,
                               lr);
         } else {
-            Bounds.Bound parentUl = dockSource.getContent().getBounds().getUpperLeft();
-            Bounds.Bound parentLr = dockSource.getContent().getBounds().getLowerRight();
+            Bound parentUl = dockSource.getContent().getBounds().getUpperLeft();
+            Bound parentLr = dockSource.getContent().getBounds().getLowerRight();
             double bbW = lr.getX() - ul.getX();
             double bbH = lr.getY() - ul.getY();
             double ulx = parentUl.getX() + ul.getX() - (bbW / 2);
             double uly = parentUl.getY() + ul.getY() - (bbH / 2);
             double lrx = ulx + bbW;
             double lry = uly + bbH;
-            Bounds.Bound newUl = new BoundImpl(ulx,
-                                               uly);
-            Bounds.Bound newLr = new BoundImpl(lrx,
-                                               lry);
+            Bound newUl = Bound.create(ulx,
+                                       uly);
+            Bound newLr = Bound.create(lrx,
+                                       lry);
             super.parseBounds(newUl,
                               newLr);
         }

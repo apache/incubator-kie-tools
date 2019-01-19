@@ -27,6 +27,7 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
+import org.kie.workbench.common.stunner.core.graph.content.Bound;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
@@ -132,8 +133,8 @@ public abstract class AbstractGraphCommandTest {
                                     final double w,
                                     final double h) {
         Bounds bounds = mock(Bounds.class);
-        Bounds.Bound boundUL = mock(Bounds.Bound.class);
-        Bounds.Bound boundLR = mock(Bounds.Bound.class);
+        Bound boundUL = mock(Bound.class);
+        Bound boundLR = mock(Bound.class);
         when(boundUL.getX()).thenReturn(x);
         when(boundUL.getY()).thenReturn(y);
         when(boundLR.getX()).thenReturn(x + w);

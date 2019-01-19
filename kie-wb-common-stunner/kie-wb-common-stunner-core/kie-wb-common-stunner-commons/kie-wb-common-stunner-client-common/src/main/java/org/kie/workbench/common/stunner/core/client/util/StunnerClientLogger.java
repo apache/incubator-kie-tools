@@ -40,6 +40,7 @@ import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Element;
+import org.kie.workbench.common.stunner.core.graph.content.Bound;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
@@ -129,8 +130,8 @@ public class StunnerClientLogger {
 
     public static void logBounds(final Element<? extends View<?>> item) {
         final Bounds bounds = item.getContent().getBounds();
-        final Bounds.Bound ul = bounds.getUpperLeft();
-        final Bounds.Bound lr = bounds.getLowerRight();
+        final Bound ul = bounds.getUpperLeft();
+        final Bound lr = bounds.getLowerRight();
         LOGGER.log(Level.FINE,
                    "Bounds for [" + item.getUUID() + "] ARE " +
                            "{ UL=[" + ul.getX() + ", " + ul.getY() + "] " +

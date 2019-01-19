@@ -106,18 +106,8 @@ public abstract class LienzoCanvasView<L extends LienzoLayer>
         return getLayer().getTransform();
     }
 
-    @Override
-    public int getWidth() {
-        return getLienzoPanel().getWidth();
-    }
-
-    @Override
-    public int getHeight() {
-        return getLienzoPanel().getHeight();
-    }
-
     public LienzoPanel getLienzoPanel() {
-        return (LienzoPanel) getCanvasPanel();
+        return (LienzoPanel) getPanel();
     }
 
     @Override

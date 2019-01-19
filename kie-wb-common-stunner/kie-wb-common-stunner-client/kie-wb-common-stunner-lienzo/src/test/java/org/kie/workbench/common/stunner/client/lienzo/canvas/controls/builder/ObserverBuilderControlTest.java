@@ -30,6 +30,7 @@ import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandlerImpl;
+import org.kie.workbench.common.stunner.core.client.canvas.CanvasPanel;
 import org.kie.workbench.common.stunner.core.client.canvas.Transform;
 import org.kie.workbench.common.stunner.core.client.canvas.TransformImpl;
 import org.kie.workbench.common.stunner.core.client.canvas.command.AddCanvasNodeCommand;
@@ -59,9 +60,8 @@ import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewImpl;
@@ -133,6 +133,7 @@ public class ObserverBuilderControlTest {
     private AbstractCanvas canvas;
     private Transform canvasTransform;
     private AbstractCanvas.CanvasView canvasView;
+    private CanvasPanel canvasPanel;
     private Widget canvasWidget;
     private com.google.gwt.user.client.Element canvasElement;
     private Document document;
@@ -146,7 +147,7 @@ public class ObserverBuilderControlTest {
             @Override
             public Object answer(InvocationOnMock invocationOnMock) {
                 ServiceCallback<Node<View<Object>, Edge>> callback = (ServiceCallback<Node<View<Object>, Edge>>) (invocationOnMock.getArguments()[2]);
-                view = new ViewImpl<>(new Object(), new BoundsImpl(new BoundImpl(0.0, 0.0), new BoundImpl(10.0, 20.0)));
+                view = new ViewImpl<>(new Object(), Bounds.create(0.0, 0.0, 10.0, 20.0));
                 Node<View<Object>, Edge> item = new NodeImpl<>("UUID");
                 item.setContent(view);
                 callback.onSuccess(item);
@@ -240,6 +241,8 @@ public class ObserverBuilderControlTest {
         when(canvasView.asWidget()).thenReturn(canvasWidget);
         when(canvasWidget.getElement()).thenReturn(canvasElement);
         when(canvasElement.getOwnerDocument()).thenReturn(document);
+        canvasPanel = mock(CanvasPanel.class);
+        when(canvasView.getPanel()).thenReturn(canvasPanel);
         canvasHandler = new CanvasHandlerImpl(clientDefinitionManager,
                                               canvasCommandFactory,
                                               clientFactoryServices,

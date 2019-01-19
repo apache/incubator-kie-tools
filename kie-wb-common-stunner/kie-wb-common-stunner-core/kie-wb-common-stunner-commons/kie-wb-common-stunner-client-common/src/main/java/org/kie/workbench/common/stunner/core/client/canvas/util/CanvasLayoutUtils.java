@@ -33,6 +33,7 @@ import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.Bound;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
@@ -146,6 +147,7 @@ public class CanvasLayoutUtils {
         );
     }
 
+    @SuppressWarnings("unchecked")
     public Point2D getNext(final AbstractCanvasHandler canvasHandler,
                            final Node<View<?>, Edge> root,
                            final double rootNodeWidth,
@@ -160,8 +162,8 @@ public class CanvasLayoutUtils {
         checkNotNull("root",
                      root);
 
-        final int canvasHeight = canvasHandler.getCanvas().getHeight();
-        final int canvasWidth = canvasHandler.getCanvas().getWidth();
+        final int canvasHeight = canvasHandler.getCanvas().getHeightPx();
+        final int canvasWidth = canvasHandler.getCanvas().getWidthPx();
 
         Point2D newPositionUL = getNextPositionWithOffset(rootNodeCoordinates,
                                                           offset);
@@ -179,8 +181,8 @@ public class CanvasLayoutUtils {
         }
 
         if (isOutOfCanvas(newPositionUL,
-                                           newNodeHeight,
-                                           canvasHeight) || checkParent) {
+                          newNodeHeight,
+                          canvasHeight) || checkParent) {
 
             if (checkParent) {
                 newPositionUL = getNextPositionFromParent(rootNodeCoordinates,
@@ -259,7 +261,6 @@ public class CanvasLayoutUtils {
                                                               rootNodeWidth,
                                                               newNodeWidth);
                 }
-
             }
         } else {
             if (checkParent) {
@@ -356,8 +357,8 @@ public class CanvasLayoutUtils {
     private double[] getBoundCoordinates(final View view, final Optional<Point2D> parentPosition) {
         final Point2D relativePositionTo = parentPosition.orElse(new Point2D(0, 0));
         final Bounds bounds = view.getBounds();
-        final Bounds.Bound ulBound = bounds.getUpperLeft();
-        final Bounds.Bound lrBound = bounds.getLowerRight();
+        final Bound ulBound = bounds.getUpperLeft();
+        final Bound lrBound = bounds.getLowerRight();
         final double lrX = lrBound.getX();
         final double lrY = ulBound.getY();
         return new double[]{lrX + relativePositionTo.getX(), lrY + relativePositionTo.getY()};

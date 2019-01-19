@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.wires;
 
-import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresShapeControlImpl;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 
@@ -36,7 +35,7 @@ public class StunnerWiresShapeControl extends DelegateWiresShapeControl {
     }
 
     @Override
-    protected WiresShapeControl getDelegate() {
+    public WiresShapeControlImpl getDelegate() {
         return delegate;
     }
 

@@ -46,8 +46,6 @@ import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.registry.factory.FactoryRegistry;
 import org.kie.workbench.common.stunner.core.registry.impl.DefinitionsCacheRegistry;
@@ -152,10 +150,7 @@ public class DefinitionUtils {
 
         final double _width = null != width ? width : 0d;
         final double _height = null != height ? height : 0d;
-        return new BoundsImpl(new BoundImpl(x,
-                                            y),
-                              new BoundImpl(x + _width,
-                                            y + _height));
+        return Bounds.create(x, y, x + _width, y + _height);
     }
 
     public <T> String getNameIdentifier(final T definition) {

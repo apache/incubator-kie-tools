@@ -30,7 +30,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.general.Documen
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
 import org.kie.workbench.common.stunner.cm.backend.converters.fromstunner.properties.CaseManagementPropertyWriterFactory;
 import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewImpl;
 import org.kie.workbench.common.stunner.core.graph.impl.GraphImpl;
 import org.kie.workbench.common.stunner.core.graph.impl.NodeImpl;
@@ -54,7 +54,7 @@ public class DefinitionsConverterTest {
                                           new ProcessInstanceDescription("descr"),
                                           new Executable(true)
         ));
-        x.setContent(new ViewImpl<>(diag, BoundsImpl.build()));
+        x.setContent(new ViewImpl<>(diag, Bounds.create()));
         nodeStore.add(x);
 
         CaseManagementPropertyWriterFactory factory = new CaseManagementPropertyWriterFactory();
@@ -69,5 +69,4 @@ public class DefinitionsConverterTest {
         assertTrue(definitions.getExporter() != null && !definitions.getExporter().isEmpty());
         assertTrue(definitions.getExporterVersion() != null && !definitions.getExporterVersion().isEmpty());
     }
-
 }

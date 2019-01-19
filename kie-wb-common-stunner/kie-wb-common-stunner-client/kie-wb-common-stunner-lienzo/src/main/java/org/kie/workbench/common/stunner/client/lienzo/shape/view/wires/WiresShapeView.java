@@ -19,22 +19,27 @@ package org.kie.workbench.common.stunner.client.lienzo.shape.view.wires;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import com.ait.lienzo.client.core.shape.IDrawable;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.client.core.shape.wires.LayoutContainer;
+import com.ait.lienzo.client.core.shape.wires.OptionalBounds;
 import com.ait.lienzo.client.core.shape.wires.WiresConnection;
 import com.ait.lienzo.client.core.shape.wires.WiresLayoutContainer;
 import com.ait.lienzo.client.core.shape.wires.WiresMagnet;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresBoundsConstraintControl;
 import com.ait.lienzo.client.core.types.Shadow;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.LienzoShapeView;
+import org.kie.workbench.common.stunner.client.lienzo.util.LienzoShapeUtils;
 import org.kie.workbench.common.stunner.client.lienzo.util.ShapeViewUserDataEncoder;
 import org.kie.workbench.common.stunner.core.client.shape.view.BoundingBox;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasDragBounds;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 
 public class WiresShapeView<T>
@@ -171,25 +176,20 @@ public class WiresShapeView<T>
     }
 
     @Override
-    public T setDragBounds(final double x1,
-                           final double y1,
-                           final double x2,
-                           final double y2) {
-        if (null != getControl()) {
-            getControl().setBoundsConstraint(new com.ait.lienzo.client.core.types.BoundingBox(x1,
-                                                                                              y1,
-                                                                                              x2,
-                                                                                              y2));
-        }
+    public T setDragBounds(final Bounds bounds) {
+        ifLocationBoundsConstraintsSupported(() -> LienzoShapeUtils.translateBounds(bounds));
         return cast();
     }
 
-    @Override
-    public T unsetDragBounds() {
-        if (null != getControl()) {
-            getControl().setBoundsConstraint(null);
+    private void ifLocationBoundsConstraintsSupported(final Supplier<OptionalBounds> wiresBounds) {
+        if (null != getControl()
+                && getControl() instanceof WiresBoundsConstraintControl.SupportsOptionalBounds) {
+            ((WiresBoundsConstraintControl.SupportsOptionalBounds) getControl()).setLocationBounds(wiresBounds.get());
         }
-        return cast();
+    }
+
+    private void unsetDragBounds() {
+        ifLocationBoundsConstraintsSupported(OptionalBounds::createEmptyBounds);
     }
 
     @Override

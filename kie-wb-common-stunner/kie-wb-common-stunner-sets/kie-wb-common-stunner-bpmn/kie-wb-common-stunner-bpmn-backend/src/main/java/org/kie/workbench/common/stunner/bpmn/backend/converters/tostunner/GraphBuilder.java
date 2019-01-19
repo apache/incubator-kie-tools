@@ -43,9 +43,9 @@ import org.kie.workbench.common.stunner.core.graph.command.impl.GraphCommandFact
 import org.kie.workbench.common.stunner.core.graph.command.impl.SetConnectionSourceNodeCommand;
 import org.kie.workbench.common.stunner.core.graph.command.impl.SetConnectionTargetNodeCommand;
 import org.kie.workbench.common.stunner.core.graph.command.impl.UpdateElementPositionCommand;
+import org.kie.workbench.common.stunner.core.graph.content.Bound;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
 import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
@@ -185,7 +185,7 @@ public class GraphBuilder {
      * If we move node into a new coordinate system where the origin is in (3, 4)
      * then the new coordinates for node are: (10-3, 11-4) = (7,7)
      */
-    private void translate(Node<? extends View, ?> node, Bounds.Bound newOrigin) {
+    private void translate(Node<? extends View, ?> node, Bound newOrigin) {
 
         logger.debug("Translating {} from {} into constraints {}",
                      node.getUUID(), node.getContent().getBounds(), newOrigin);
@@ -235,7 +235,7 @@ public class GraphBuilder {
 
     private void setBounds(String elementId, int x1, int y1, int x2, int y2) {
         Element<? extends View<?>> element = executionContext.getGraphIndex().get(elementId);
-        element.getContent().setBounds(BoundsImpl.build(x1, y1, x2, y2));
+        element.getContent().setBounds(Bounds.create(x1, y1, x2, y2));
     }
 
     private CommandResult<RuleViolation> execute(Command<GraphCommandExecutionContext, RuleViolation> command) {

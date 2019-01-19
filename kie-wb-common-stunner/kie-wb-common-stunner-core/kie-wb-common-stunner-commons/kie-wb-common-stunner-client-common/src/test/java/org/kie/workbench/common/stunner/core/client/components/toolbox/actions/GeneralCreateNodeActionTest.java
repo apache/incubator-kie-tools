@@ -43,8 +43,7 @@ import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
@@ -117,10 +116,7 @@ public class GeneralCreateNodeActionTest {
         final Node sourceNode = mock(Node.class);
         final View sourceElementContent = mock(View.class);
         doReturn(sourceElementContent).when(sourceNode).getContent();
-        doReturn(new BoundsImpl(new BoundImpl(10d,
-                                              0d),
-                                new BoundImpl(200d,
-                                              100d))).when(sourceElementContent).getBounds();
+        doReturn(Bounds.create(10d, 0d, 200d, 100d)).when(sourceElementContent).getBounds();
         doReturn(sourceNode).when(sourceElement).asNode();
         doReturn(Collections.emptyList()).when(sourceNode).getInEdges();
 
@@ -129,10 +125,7 @@ public class GeneralCreateNodeActionTest {
         final Node targetNode = mock(Node.class);
         final View targetElementContent = mock(View.class);
         doReturn(targetElementContent).when(targetNode).getContent();
-        doReturn(new BoundsImpl(new BoundImpl(0d,
-                                              0d),
-                                new BoundImpl(100d,
-                                              100d))).when(targetElementContent).getBounds();
+        doReturn(Bounds.create(0d, 0d, 100d, 100d)).when(targetElementContent).getBounds();
         doReturn(targetNode).when(targetNodeElement).asNode();
         final String targetNodeUuid = "target-uuid";
         doReturn(targetNodeUuid).when(targetNode).getUUID();

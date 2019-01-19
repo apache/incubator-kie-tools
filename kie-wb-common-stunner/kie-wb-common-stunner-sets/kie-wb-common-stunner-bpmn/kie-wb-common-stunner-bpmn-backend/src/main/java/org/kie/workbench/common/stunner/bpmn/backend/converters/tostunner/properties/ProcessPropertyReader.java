@@ -27,8 +27,6 @@ import org.eclipse.bpmn2.di.BPMNShape;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomAttribute;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 
 public class ProcessPropertyReader extends BasePropertyReader {
 
@@ -57,9 +55,7 @@ public class ProcessPropertyReader extends BasePropertyReader {
 
     @Override
     public Bounds getBounds() {
-        return new BoundsImpl(
-                new BoundImpl(0d, 0d),
-                new BoundImpl(950d, 950d));
+        return Bounds.create(0d, 0d, 950d, 950d);
     }
 
     public String getProcessVariables() {

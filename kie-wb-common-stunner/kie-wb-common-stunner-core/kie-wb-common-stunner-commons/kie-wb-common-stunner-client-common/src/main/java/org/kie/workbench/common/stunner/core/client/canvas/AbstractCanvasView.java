@@ -96,7 +96,8 @@ public abstract class AbstractCanvasView<V extends AbstractCanvasView>
         return new Point2D(getAbsoluteLeft(), getAbsoluteTop());
     }
 
-    protected CanvasPanel getCanvasPanel() {
+    @Override
+    public CanvasPanel getPanel() {
         return canvasPanel;
     }
 

@@ -41,11 +41,11 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
+import org.kie.workbench.common.stunner.core.graph.content.Bound;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Dock;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
@@ -133,9 +133,9 @@ public class CloneNodeCommand extends AbstractGraphCompositeCommand {
     }
 
     Bounds cloneBounds(final Bounds bounds) {
-        final Bounds.Bound ul = bounds.getUpperLeft();
-        final Bounds.Bound lr = bounds.getLowerRight();
-        return BoundsImpl.build(ul.getX(), ul.getY(), lr.getX(), lr.getY());
+        final Bound ul = bounds.getUpperLeft();
+        final Bound lr = bounds.getLowerRight();
+        return Bounds.create(ul.getX(), ul.getY(), lr.getX(), lr.getY());
     }
 
     @Override

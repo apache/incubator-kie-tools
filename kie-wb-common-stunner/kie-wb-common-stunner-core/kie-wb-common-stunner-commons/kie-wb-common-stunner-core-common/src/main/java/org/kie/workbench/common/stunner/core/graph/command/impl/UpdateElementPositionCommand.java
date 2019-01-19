@@ -16,7 +16,7 @@
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
 import java.util.Objects;
-import java.util.logging.Level;
+import java.util.function.Consumer;
 import java.util.logging.Logger;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
@@ -31,8 +31,6 @@ import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecution
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
@@ -94,39 +92,40 @@ public final class UpdateElementPositionCommand extends AbstractGraphCommand {
     @Override
     @SuppressWarnings("unchecked")
     protected CommandResult<RuleViolation> check(final GraphCommandExecutionContext context) {
-        return checkBounds(context);
+        return execute(context,
+                       bounds -> {
+                       });
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext context) {
-        final BoundsImpl newBounds = getTargetBounds(getNodeNotNull(context));
-        LOGGER.log(Level.FINE,
-                   "Moving element bounds to " +
-                           "[" + newBounds.getX() + "," + newBounds.getY() + "] " +
-                           "[" + newBounds.getWidth() + "," + newBounds.getHeight() + "]");
-        return checkBounds(context);
+        return execute(context,
+                       bounds -> node.getContent().setBounds(bounds));
     }
 
     @SuppressWarnings("unchecked")
-    private CommandResult<RuleViolation> checkBounds(final GraphCommandExecutionContext context) {
-        final Node<? extends View<?>, Edge> element = getNodeNotNull(context);
+    private CommandResult<RuleViolation> execute(final GraphCommandExecutionContext context,
+                                                 final Consumer<Bounds> boundsConsumer) {
         final Graph<DefinitionSet, Node> graph = (Graph<DefinitionSet, Node>) getGraph(context);
-
-        final BoundsImpl newBounds = getTargetBounds(element);
-
-        final GraphCommandResultBuilder result = new GraphCommandResultBuilder();
-
-        final Bounds parentBounds = getParentBounds(element, graph);
-
-        if (GraphUtils.checkBoundsExceeded(parentBounds, newBounds) || isDockedNode(element)) {
-            //in case of docked node the location should not be considered, because it is relative to the dock parent
-            element.getContent().setBounds(newBounds);
-        } else {
-            result.addViolation(new BoundsExceededViolation(parentBounds).setUUID(element.getUUID()));
+        final Node<? extends View<?>, Edge> element = getNodeNotNull(context);
+        final Bounds targetBounds = getTargetBounds(element);
+        final Bounds parentBounds = getParentBounds(getNodeNotNull(context), graph);
+        if (areBoundsExceeded(element, targetBounds, parentBounds)) {
+            return new GraphCommandResultBuilder()
+                    .addViolation(new BoundsExceededViolation(parentBounds)
+                                          .setUUID(node.getUUID()))
+                    .build();
         }
+        boundsConsumer.accept(targetBounds);
+        return GraphCommandResultBuilder.SUCCESS;
+    }
 
-        return result.build();
+    @SuppressWarnings("unchecked")
+    private boolean areBoundsExceeded(final Node<? extends View<?>, Edge> element,
+                                      final Bounds bounds,
+                                      final Bounds parentBounds) {
+        return !(GraphUtils.checkBoundsExceeded(parentBounds, bounds) || isDockedNode(element));
     }
 
     private boolean isDockedNode(Node<? extends View<?>, Edge> element) {
@@ -137,14 +136,8 @@ public final class UpdateElementPositionCommand extends AbstractGraphCommand {
     }
 
     @SuppressWarnings("unchecked")
-    private BoundsImpl getTargetBounds(final Element<? extends View<?>> element) {
-        final double[] oldSize = GraphUtils.getNodeSize(element.getContent());
-        final double w = oldSize[0];
-        final double h = oldSize[1];
-        return new BoundsImpl(new BoundImpl(location.getX(),
-                                            location.getY()),
-                              new BoundImpl(location.getX() + w,
-                                            location.getY() + h));
+    private Bounds getTargetBounds(final Element<? extends View<?>> element) {
+        return computeCandidateBounds(element, location);
     }
 
     @SuppressWarnings("unchecked")
@@ -156,7 +149,7 @@ public final class UpdateElementPositionCommand extends AbstractGraphCommand {
 
         if (parent != null && !GraphUtils.isRootNode(parent, graph)) {
             final double[] size = GraphUtils.getNodeSize(parent.getContent());
-            return new BoundsImpl(new BoundImpl(0d, 0d), new BoundImpl(size[0], size[1]));
+            return Bounds.create(0d, 0d, size[0], size[1]);
         } else {
             return null;
         }
@@ -175,6 +168,17 @@ public final class UpdateElementPositionCommand extends AbstractGraphCommand {
                                         uuid);
         }
         return node;
+    }
+
+    public static Bounds computeCandidateBounds(final Element<? extends View<?>> element,
+                                                final Point2D location) {
+        final double[] oldSize = GraphUtils.getNodeSize(element.getContent());
+        final double w = oldSize[0];
+        final double h = oldSize[1];
+        return Bounds.create(location.getX(),
+                             location.getY(),
+                             location.getX() + w,
+                             location.getY() + h);
     }
 
     @Override

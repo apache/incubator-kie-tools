@@ -50,10 +50,10 @@ import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandManager;
 import org.kie.workbench.common.stunner.core.graph.command.impl.GraphCommandFactory;
+import org.kie.workbench.common.stunner.core.graph.content.Bound;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
@@ -100,9 +100,9 @@ public class CaseManagementDirectDiagramMarshaller extends BaseDirectDiagramMars
                 .forEach(node -> {
                     View content = (View) ((Node) node).getContent();
                     Bounds bounds = content.getBounds();
-                    Bounds.Bound ul = bounds.getUpperLeft();
-                    Bounds.Bound lr = bounds.getLowerRight();
-                    content.setBounds(BoundsImpl.build(ul.getX() + 10d, ul.getY() + 10d, lr.getX() + 10d, lr.getY() + 10d));
+                    Bound ul = bounds.getUpperLeft();
+                    Bound lr = bounds.getLowerRight();
+                    content.setBounds(Bounds.create(ul.getX() + 10d, ul.getY() + 10d, lr.getX() + 10d, lr.getY() + 10d));
                 });
 
         StreamSupport.stream(nodes.spliterator(), false)
@@ -116,12 +116,12 @@ public class CaseManagementDirectDiagramMarshaller extends BaseDirectDiagramMars
 
             // create start event and end event
             final Node startNoneEvent = typedFactoryManager.newNode(UUID.uuid(), StartNoneEvent.class);
-            ((View) startNoneEvent.getContent()).setBounds(BoundsImpl.build(20, 20, 75, 75));
+            ((View) startNoneEvent.getContent()).setBounds(Bounds.create(20, 20, 75, 75));
             diagram.getGraph().addNode(startNoneEvent);
             createChild(UUID.uuid(), rootNode, startNoneEvent, 0);
 
             final Node endNoneEvent = typedFactoryManager.newNode(UUID.uuid(), EndNoneEvent.class);
-            ((View) endNoneEvent.getContent()).setBounds(BoundsImpl.build(20, 20, 75, 75));
+            ((View) endNoneEvent.getContent()).setBounds(Bounds.create(20, 20, 75, 75));
             diagram.getGraph().addNode(endNoneEvent);
             createChild(UUID.uuid(), rootNode, endNoneEvent, -1);
 
@@ -215,9 +215,9 @@ public class CaseManagementDirectDiagramMarshaller extends BaseDirectDiagramMars
                 .forEach(node -> {
                     View content = (View) node.getContent();
                     Bounds bounds = content.getBounds();
-                    Bounds.Bound ul = bounds.getUpperLeft();
-                    Bounds.Bound lr = bounds.getLowerRight();
-                    content.setBounds(BoundsImpl.build(ul.getX() - 10d, ul.getY() - 10d, lr.getX() - 10d, lr.getY() - 10d));
+                    Bound ul = bounds.getUpperLeft();
+                    Bound lr = bounds.getLowerRight();
+                    content.setBounds(Bounds.create(ul.getX() - 10d, ul.getY() - 10d, lr.getX() - 10d, lr.getY() - 10d));
                 });
     }
 

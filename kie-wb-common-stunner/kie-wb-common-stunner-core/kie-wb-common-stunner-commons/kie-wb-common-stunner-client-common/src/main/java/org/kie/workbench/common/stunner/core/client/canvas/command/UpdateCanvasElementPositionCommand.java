@@ -23,22 +23,47 @@ import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
+import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
+import org.kie.workbench.common.stunner.core.graph.content.view.View;
+
+import static org.kie.workbench.common.stunner.core.client.canvas.util.CanvasUtils.areBoundsExceeded;
+import static org.kie.workbench.common.stunner.core.client.canvas.util.CanvasUtils.createBoundsExceededCommandResult;
+import static org.kie.workbench.common.stunner.core.command.util.CommandUtils.isError;
+import static org.kie.workbench.common.stunner.core.graph.command.impl.UpdateElementPositionCommand.computeCandidateBounds;
 
 public class UpdateCanvasElementPositionCommand extends AbstractCanvasCommand {
 
-    private final Element<?> element;
+    private final Element<? extends View<?>> element;
+    private final Point2D location;
 
-    public UpdateCanvasElementPositionCommand(final Element<?> element) {
+    public UpdateCanvasElementPositionCommand(final Element<? extends View<?>> element,
+                                              final Point2D location) {
         this.element = element;
+        this.location = location;
+    }
+
+    @Override
+    public CommandResult<CanvasViolation> allow(final AbstractCanvasHandler context) {
+        final Bounds targetBounds = computeCandidateBounds(element, location);
+        if (areBoundsExceeded(context, targetBounds)) {
+            return createBoundsExceededCommandResult(context, targetBounds);
+        }
+        return super.allow(context);
     }
 
     @Override
     public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
+        final CommandResult<CanvasViolation> allowResult = allow(context);
+        if (isError(allowResult)) {
+            return allowResult;
+        }
         context.updateElementPosition(element, MutationContext.STATIC);
         moveConnectorsToTop(context);
         return buildResult();
     }
 
+    @SuppressWarnings("unchecked")
     private void moveConnectorsToTop(AbstractCanvasHandler context) {
         if (getElement() instanceof Node) {
             ShapeUtils.moveViewConnectorsToTop(context,
@@ -51,8 +76,12 @@ public class UpdateCanvasElementPositionCommand extends AbstractCanvasCommand {
         return execute(context);
     }
 
-    public Element<?> getElement() {
+    public Element<? extends View<?>> getElement() {
         return element;
+    }
+
+    public Point2D getLocation() {
+        return location;
     }
 
     @Override

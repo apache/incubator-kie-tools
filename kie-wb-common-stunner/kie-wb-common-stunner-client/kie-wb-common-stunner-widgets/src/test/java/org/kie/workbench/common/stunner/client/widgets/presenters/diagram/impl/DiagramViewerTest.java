@@ -159,8 +159,8 @@ public class DiagramViewerTest extends AbstractCanvasHandlerViewerTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testScale() {
-        when(canvas.getWidth()).thenReturn(100);
-        when(canvas.getHeight()).thenReturn(100);
+        when(canvas.getWidthPx()).thenReturn(100);
+        when(canvas.getHeightPx()).thenReturn(100);
         tested.open(diagram,
                     callback);
         tested.scale(50,

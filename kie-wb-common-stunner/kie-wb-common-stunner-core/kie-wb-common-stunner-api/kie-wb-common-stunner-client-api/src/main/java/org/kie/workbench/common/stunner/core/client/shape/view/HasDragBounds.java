@@ -16,12 +16,9 @@
 
 package org.kie.workbench.common.stunner.core.client.shape.view;
 
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
+
 public interface HasDragBounds<T> {
 
-    public T setDragBounds(double x0,
-                           double y0,
-                           double x1,
-                           double y1);
-
-    public T unsetDragBounds();
+    T setDragBounds(Bounds bounds);
 }

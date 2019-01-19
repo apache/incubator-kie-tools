@@ -24,7 +24,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.parser.common
 import org.kie.workbench.common.stunner.core.definition.adapter.PropertyAdapter;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
 import org.kie.workbench.common.stunner.core.graph.Element;
-import org.kie.workbench.common.stunner.core.graph.content.Bounds;
+import org.kie.workbench.common.stunner.core.graph.content.Bound;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
 public abstract class ElementParser<T extends Element<View>> extends ObjectParser implements ContextualParser {
@@ -74,8 +74,8 @@ public abstract class ElementParser<T extends Element<View>> extends ObjectParse
         super.addParser(new ObjectParser("stencil").addParser(new StringFieldParser("id",
                                                                                     defId)));
         // Bounds.
-        Bounds.Bound ul = element.getContent().getBounds().getUpperLeft();
-        Bounds.Bound lr = element.getContent().getBounds().getLowerRight();
+        Bound ul = element.getContent().getBounds().getUpperLeft();
+        Bound lr = element.getContent().getBounds().getLowerRight();
         parseBounds(ul,
                     lr);
     }
@@ -84,8 +84,8 @@ public abstract class ElementParser<T extends Element<View>> extends ObjectParse
 
     }
 
-    protected void parseBounds(final Bounds.Bound ul,
-                               final Bounds.Bound lr) {
+    protected void parseBounds(final Bound ul,
+                               final Bound lr) {
         // Bounds.
         ObjectParser ulBoundParser = new ObjectParser("upperLeft")
                 .addParser(new IntegerFieldParser("x",

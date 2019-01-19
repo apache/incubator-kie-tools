@@ -32,9 +32,11 @@ import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
 import org.kie.workbench.common.stunner.core.client.shape.impl.ConnectorShape;
 import org.kie.workbench.common.stunner.core.client.shape.view.BoundingBox;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasDragBounds;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
 import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
@@ -132,6 +134,13 @@ public class ShapeUtils {
                 magnetConnection.setLocation(new Point2D(boundingBox.getWidth() / 2,
                                                          boundingBox.getHeight() / 2));
             }
+        }
+    }
+
+    public static void enforceLocationConstraints(final ShapeView shape,
+                                                  final Bounds bounds) {
+        if (shape instanceof HasDragBounds) {
+            ((HasDragBounds) shape).setDragBounds(bounds);
         }
     }
 

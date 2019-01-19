@@ -29,6 +29,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasGrid;
+import org.kie.workbench.common.stunner.core.client.canvas.CanvasPanel;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasSettings;
 import org.kie.workbench.common.stunner.core.client.canvas.Transform;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
@@ -122,16 +123,6 @@ public class LienzoCanvasViewTest {
         verify(lienzoLayer, times(1)).destroy();
     }
 
-    @Test
-    public void testGetPanelSize() {
-        tested.initialize(panel,
-                          settings);
-        when(panel.getWidth()).thenReturn(110);
-        when(panel.getHeight()).thenReturn(33);
-        assertEquals(110, tested.getWidth());
-        assertEquals(33, tested.getHeight());
-    }
-
     public class LienzoCanvasViewStub extends LienzoCanvasView<LienzoLayer> {
 
         public LienzoCanvasViewStub(final BiFunction<Integer, Integer, IPrimitive<?>> decoratorFactory) {
@@ -161,6 +152,11 @@ public class LienzoCanvasViewTest {
         @Override
         public LienzoCanvasView undock(ShapeView<?> childParent, ShapeView<?> child) {
             return null;
+        }
+
+        @Override
+        public CanvasPanel getPanel() {
+            return panel;
         }
     }
 }

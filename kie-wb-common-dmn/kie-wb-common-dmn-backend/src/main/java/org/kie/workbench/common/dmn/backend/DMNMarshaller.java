@@ -91,9 +91,8 @@ import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.content.Bounds.Bound;
+import org.kie.workbench.common.stunner.core.graph.content.Bound;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
 import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
 import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
@@ -728,14 +727,14 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
         DMNShape drgShape = drgShapeOpt.get();
 
         if (ulBound != null) {
-            ((BoundImpl) ulBound).setX(xOfShape(drgShape));
-            ((BoundImpl) ulBound).setY(yOfShape(drgShape));
+            ulBound.setX(xOfShape(drgShape));
+            ulBound.setY(yOfShape(drgShape));
         }
         dimensionsSet.setWidth(new Width(widthOfShape(drgShape)));
         dimensionsSet.setHeight(new Height(heightOfShape(drgShape)));
         if (lrBound != null) {
-            ((BoundImpl) lrBound).setX(xOfShape(drgShape) + widthOfShape(drgShape));
-            ((BoundImpl) lrBound).setY(yOfShape(drgShape) + heightOfShape(drgShape));
+            lrBound.setX(xOfShape(drgShape) + widthOfShape(drgShape));
+            lrBound.setY(yOfShape(drgShape) + heightOfShape(drgShape));
         }
 
         DMNStyle dmnStyleOfDrgShape = drgShape.getStyle() instanceof DMNStyle ? (DMNStyle) drgShape.getStyle() : null;

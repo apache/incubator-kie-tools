@@ -42,8 +42,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
 import org.kie.workbench.common.stunner.core.TestingGraphInstanceBuilder2;
 import org.kie.workbench.common.stunner.core.TestingGraphMockHandler;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Dock;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewImpl;
 import org.kie.workbench.common.stunner.core.graph.impl.EdgeImpl;
@@ -68,7 +68,6 @@ import static org.kie.workbench.common.stunner.core.TestingGraphInstanceBuilder2
 import static org.kie.workbench.common.stunner.core.TestingGraphInstanceBuilder2.NODES.LEVEL2_NODE1;
 import static org.kie.workbench.common.stunner.core.TestingGraphInstanceBuilder2.NODES.LEVEL2_NODE2;
 import static org.kie.workbench.common.stunner.core.TestingGraphInstanceBuilder2.NODES.LEVEL2_SUB_PROCESS1;
-
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -89,17 +88,17 @@ public class ProcessConverterDelegateTest {
 
         NodeImpl<Object> root = new NodeImpl<>("root");
         BPMNDiagramImpl bpmnDiagram = new BPMNDiagramImpl();
-        root.setContent(new ViewImpl<>(bpmnDiagram, BoundsImpl.build()));
+        root.setContent(new ViewImpl<>(bpmnDiagram, Bounds.create()));
         g.addNode(root);
 
         NodeImpl<Object> n = new NodeImpl<>("n");
         EmbeddedSubprocess subProcessNode = new EmbeddedSubprocess();
-        n.setContent(new ViewImpl<>(subProcessNode, BoundsImpl.build()));
+        n.setContent(new ViewImpl<>(subProcessNode, Bounds.create()));
         g.addNode(n);
 
         NodeImpl<Object> e = new NodeImpl<>("e");
         IntermediateErrorEventCatching intermediateErrorEventCatching = new IntermediateErrorEventCatching();
-        e.setContent(new ViewImpl<>(intermediateErrorEventCatching, BoundsImpl.build()));
+        e.setContent(new ViewImpl<>(intermediateErrorEventCatching, Bounds.create()));
         g.addNode(e);
 
         EdgeImpl<Object> edge = new EdgeImpl<>("edge");
@@ -180,10 +179,10 @@ public class ProcessConverterDelegateTest {
 
         nodes.entrySet().forEach(entry -> {
             Optional<Node<View<? extends BPMNViewDefinition>, ?>> processed =
-            nodeCaptor.getAllValues()
-                    .stream()
-                    .filter(captured -> entry.getKey().equals(captured.getUUID()))
-                    .findFirst();
+                    nodeCaptor.getAllValues()
+                            .stream()
+                            .filter(captured -> entry.getKey().equals(captured.getUUID()))
+                            .findFirst();
             assertTrue("Node: " + entry.getKey() + " was not present in result", processed.isPresent());
             assertEquals(entry.getValue(), processed.get().getContent().getDefinition());
         });

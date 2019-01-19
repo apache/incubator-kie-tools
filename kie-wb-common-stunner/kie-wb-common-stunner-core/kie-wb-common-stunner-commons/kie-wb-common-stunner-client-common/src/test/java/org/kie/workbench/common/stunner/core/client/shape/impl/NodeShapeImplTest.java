@@ -29,8 +29,8 @@ import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.definition.shape.ShapeViewDef;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.Bound;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.mockito.Mock;
@@ -88,10 +88,10 @@ public class NodeShapeImplTest {
         when(element.getContent()).thenReturn(content);
         when(content.getDefinition()).thenReturn(definition);
         when(content.getBounds()).thenReturn(bounds);
-        when(bounds.getUpperLeft()).thenReturn(new BoundImpl(10d,
-                                                             20d));
-        when(bounds.getLowerRight()).thenReturn(new BoundImpl(50d,
-                                                              60d));
+        when(bounds.getUpperLeft()).thenReturn(Bound.create(10d,
+                                                            20d));
+        when(bounds.getLowerRight()).thenReturn(Bound.create(50d,
+                                                             60d));
 
         this.view = spy(new ShapeViewExtStub());
 

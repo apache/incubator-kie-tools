@@ -33,8 +33,6 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.impl.AddNodeCommand;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
 import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
@@ -115,11 +113,10 @@ public abstract class AbstractNodeBuilder<W, T extends Node<View<W>, Edge>>
     protected void setBounds(BuilderContext context,
                              T node) {
         if (null != boundUL && null != boundLR) {
-            Bounds bounds = new BoundsImpl(
-                    new BoundImpl(boundUL[0],
-                                  boundUL[1]),
-                    new BoundImpl(boundLR[0],
-                                  boundLR[1]));
+            Bounds bounds = Bounds.create(boundUL[0],
+                                          boundUL[1],
+                                          boundLR[0],
+                                          boundLR[1]);
             node.getContent().setBounds(bounds);
             setSize(context,
                     node);

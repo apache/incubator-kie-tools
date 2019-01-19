@@ -28,7 +28,6 @@ import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
@@ -76,7 +75,7 @@ public class AddCanvasNodeCommandTest extends AbstractCanvasCommandTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testExecute() {
-        when(content.getBounds()).thenReturn(BoundsImpl.build(0d, 0d, 10d, 10d));
+        when(content.getBounds()).thenReturn(Bounds.create(0d, 0d, 10d, 10d));
         final CommandResult<CanvasViolation> result = tested.execute(canvasHandler);
         assertNotEquals(CommandResult.Type.ERROR,
                         result.getType());
@@ -91,7 +90,7 @@ public class AddCanvasNodeCommandTest extends AbstractCanvasCommandTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testExecuteAndSetViewBounds() {
-        when(content.getBounds()).thenReturn(BoundsImpl.build(0d, 0d, 0d, 0d));
+        when(content.getBounds()).thenReturn(Bounds.create(0d, 0d, 0d, 0d));
         final CommandResult<CanvasViolation> result = tested.execute(canvasHandler);
         assertNotEquals(CommandResult.Type.ERROR,
                         result.getType());
@@ -104,7 +103,7 @@ public class AddCanvasNodeCommandTest extends AbstractCanvasCommandTest {
         final ArgumentCaptor<Bounds> boundsArgumentCaptor = ArgumentCaptor.forClass(Bounds.class);
         verify(content,
                times(1)).setBounds(boundsArgumentCaptor.capture());
-        final BoundsImpl bounds = (BoundsImpl) boundsArgumentCaptor.getValue();
+        final Bounds bounds = boundsArgumentCaptor.getValue();
         assertEquals(0d, bounds.getX(), 0d);
         assertEquals(0d, bounds.getY(), 0d);
         assertEquals(50d, bounds.getWidth(), 0d);

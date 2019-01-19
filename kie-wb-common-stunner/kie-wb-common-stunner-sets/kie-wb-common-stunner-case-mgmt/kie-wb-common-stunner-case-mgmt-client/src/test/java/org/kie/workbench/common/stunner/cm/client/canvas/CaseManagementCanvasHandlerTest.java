@@ -43,8 +43,7 @@ import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTyp
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewImpl;
 import org.kie.workbench.common.stunner.core.graph.impl.NodeImpl;
@@ -176,10 +175,7 @@ public class CaseManagementCanvasHandlerTest {
                                                           final CaseManagementShape shape) {
         final Node<View<BPMNViewDefinition>, Edge> node = new NodeImpl<>(uuid);
         node.setContent(new ViewImpl(new CaseManagementDiagram(),
-                                     new BoundsImpl(new BoundImpl(0.0,
-                                                                  0.0),
-                                                    new BoundImpl(10.0,
-                                                                  20.0))));
+                                     Bounds.create(0d, 0d, 10d, 20d)));
         when(canvas.getShape(eq(uuid))).thenReturn(shape);
         when(clientDefinitionManager.adapters()).thenReturn(adapterManager);
         when(adapterManager.forDefinition()).thenReturn(definitionAdapter);

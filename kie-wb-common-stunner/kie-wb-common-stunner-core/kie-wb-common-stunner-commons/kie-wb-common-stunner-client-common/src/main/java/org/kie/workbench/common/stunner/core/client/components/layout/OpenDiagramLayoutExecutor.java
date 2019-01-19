@@ -25,8 +25,8 @@ import javax.inject.Inject;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.HasBounds;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.processing.layout.Layout;
 import org.kie.workbench.common.stunner.core.graph.processing.layout.LayoutExecutor;
 import org.kie.workbench.common.stunner.core.graph.processing.layout.VertexPosition;
@@ -65,7 +65,7 @@ public final class OpenDiagramLayoutExecutor implements LayoutExecutor {
 
             final Node indexed = indexByUuid.get(position.getId());
             if (indexed.getContent() instanceof HasBounds) {
-                ((HasBounds) indexed.getContent()).setBounds(BoundsImpl.build(
+                ((HasBounds) indexed.getContent()).setBounds(Bounds.create(
                         position.getUpperLeft().getX(),
                         position.getUpperLeft().getY(),
                         position.getBottomRight().getX(),

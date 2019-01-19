@@ -19,7 +19,6 @@ package org.kie.workbench.common.stunner.client.lienzo.wires;
 import com.ait.lienzo.client.core.shape.wires.WiresContainer;
 import com.ait.lienzo.client.core.shape.wires.handlers.MouseEvent;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresCompositeControl;
-import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
 
 public abstract class DelegateWiresCompositeControl implements WiresCompositeControl {
@@ -39,11 +38,6 @@ public abstract class DelegateWiresCompositeControl implements WiresCompositeCon
     @Override
     public WiresContainer getSharedParent() {
         return getDelegate().getSharedParent();
-    }
-
-    @Override
-    public void setBoundsConstraint(BoundingBox boundingBox) {
-        getDelegate().setBoundsConstraint(boundingBox);
     }
 
     @Override

@@ -23,7 +23,7 @@ import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -58,8 +58,8 @@ public class AddCanvasChildNodeCommandTest extends AbstractCanvasCommandTest {
         super.setUp();
         when(candidate.getContent()).thenReturn(candidateContent);
         when(parent.getContent()).thenReturn(parentContent);
-        when(candidateContent.getBounds()).thenReturn(BoundsImpl.build(0d, 0d, 10d, 10d));
-        when(parentContent.getBounds()).thenReturn(BoundsImpl.build(0d, 0d, 10d, 10d));
+        when(candidateContent.getBounds()).thenReturn(Bounds.create(0d, 0d, 10d, 10d));
+        when(parentContent.getBounds()).thenReturn(Bounds.create(0d, 0d, 10d, 10d));
         this.tested = new AddCanvasChildNodeCommand(parent,
                                                     candidate,
                                                     SHAPE_SET_ID);

@@ -24,7 +24,7 @@ import org.junit.Test;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomAttribute;
 import org.kie.workbench.common.stunner.bpmn.definition.SequenceFlow;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeValue;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
 import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
@@ -176,7 +176,7 @@ public class SequenceFlowPropertyWriterTest {
     }
 
     private static ViewConnectorImpl<SequenceFlow> makeConnector() {
-        return new ViewConnectorImpl<>(new SequenceFlow(), BoundsImpl.build(0, 0, 1000, 1000));
+        return new ViewConnectorImpl<>(new SequenceFlow(), Bounds.create(0, 0, 1000, 1000));
     }
 
     private static void assertPointsEqual(List<Point> expected, List<Point> given, String message) {

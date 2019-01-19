@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.core.graph.content.view;
+package org.kie.workbench.common.stunner.core.graph.content;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(MockitoJUnitRunner.class)
-public class BoundsImplTest {
+public class BoundsTest {
 
     public static final double ULX = 50;
     public static final double ULY = 65;
@@ -33,18 +33,15 @@ public class BoundsImplTest {
     public static final double WIDTH = BRX - ULX;
     public static final double HEIGHT = BRY - ULY;
 
-    private BoundsImpl tested;
-
-    @Before
-    public void setup() throws Exception {
-        this.tested = new BoundsImpl(new BoundImpl(ULX,
-                                                   ULY),
-                                     new BoundImpl(BRX,
-                                                   BRY));
-    }
-
     @Test
-    public void test() {
+    public void testAllValues() {
+        Bounds tested = Bounds.create(ULX, ULY, BRX, BRY);
+        assertTrue(tested.hasUpperLeft());
+        assertTrue(tested.hasLowerRight());
+        assertTrue(tested.getUpperLeft().hasX());
+        assertTrue(tested.getUpperLeft().hasY());
+        assertTrue(tested.getLowerRight().hasX());
+        assertTrue(tested.getLowerRight().hasY());
         assertEquals(ULX,
                      tested.getUpperLeft().getX(),
                      0d);

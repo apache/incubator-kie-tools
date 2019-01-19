@@ -21,9 +21,8 @@ import com.ait.lienzo.client.core.shape.wires.handlers.MouseEvent;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresContainmentControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresDockingControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresMagnetsControl;
-import com.ait.lienzo.client.core.shape.wires.handlers.WiresParentPickerControl;
-import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
-import com.ait.lienzo.client.core.types.BoundingBox;
+import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresParentPickerCachedControl;
+import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresShapeControlImpl;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
@@ -44,7 +43,7 @@ public class DelegateWiresShapeControlTest {
     private static Point2D ADJUST = new Point2D(5.5d, 6.6d);
 
     @Mock
-    private WiresShapeControl delegate;
+    private WiresShapeControlImpl delegate;
 
     @Mock
     private WiresMagnetsControl magnetsControl;
@@ -59,7 +58,7 @@ public class DelegateWiresShapeControlTest {
     private WiresContainmentControl containmentControl;
 
     @Mock
-    private WiresParentPickerControl parentPickerControl;
+    private WiresParentPickerCachedControl parentPickerControl;
 
     private DelegateWiresShapeControl tested;
 
@@ -73,17 +72,10 @@ public class DelegateWiresShapeControlTest {
         when(delegate.getAdjust()).thenReturn(ADJUST);
         tested = new DelegateWiresShapeControl() {
             @Override
-            protected WiresShapeControl getDelegate() {
+            public WiresShapeControlImpl getDelegate() {
                 return delegate;
             }
         };
-    }
-
-    @Test
-    public void testBoundConstraints() {
-        BoundingBox boundingBox = mock(BoundingBox.class);
-        tested.setBoundsConstraint(boundingBox);
-        verify(delegate, times(1)).setBoundsConstraint(eq(boundingBox));
     }
 
     @Test

@@ -40,9 +40,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
+import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvasView;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresShapeView;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.CanvasPanel;
 import org.kie.workbench.common.stunner.core.client.canvas.command.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.command.UpdateElementPositionCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.event.ShapeLocationsChangedEvent;
@@ -67,9 +69,8 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
@@ -99,12 +100,7 @@ public class LocationControlImplTest {
     private static final String ROOT_UUID = "root-uuid1";
     private static final String ELEMENT_UUID = "element-uuid1";
     private static final String DEF_ID = "def-id";
-    private static final BoundsImpl ELEMENT_BOUNDS = new BoundsImpl(
-            new BoundImpl(10d,
-                          20d),
-            new BoundImpl(30d,
-                          40d)
-    );
+    private static final Bounds ELEMENT_BOUNDS = Bounds.create(10d, 20d, 30d, 40d);
 
     @Mock
     private CanvasCommandManager<AbstractCanvasHandler> commandManager;
@@ -114,6 +110,12 @@ public class LocationControlImplTest {
 
     @Mock
     private WiresCanvas canvas;
+
+    @Mock
+    private WiresCanvasView canvasView;
+
+    @Mock
+    private CanvasPanel canvasPanel;
 
     @Mock
     private WiresManager wiresManager;
@@ -189,9 +191,11 @@ public class LocationControlImplTest {
         when(metadata.getCanvasRootUUID()).thenReturn(ROOT_UUID);
         when(canvasHandler.getAbstractCanvas()).thenReturn(canvas);
         when(canvasHandler.getCanvas()).thenReturn(canvas);
+        when(canvas.getView()).thenReturn(canvasView);
         when(canvas.getShape(eq(ELEMENT_UUID))).thenReturn(shape);
         when(canvas.getShapes()).thenReturn(Collections.singletonList(shape));
         when(canvas.getWiresManager()).thenReturn(wiresManager);
+        when(canvasView.getPanel()).thenReturn(canvasPanel);
         when(shape.getUUID()).thenReturn(ELEMENT_UUID);
         when(shape.getShapeView()).thenReturn(shapeView);
         when(shapeEventHandler.supports(any(ViewEventType.class))).thenReturn(true);
@@ -330,6 +334,15 @@ public class LocationControlImplTest {
     }
 
     @Test
+    public void testEnsureDragConstraints() throws Exception {
+        tested.init(canvasHandler);
+        Bounds bounds = Bounds.create(0d, 0d, 600d, 600d);
+        when(canvasPanel.getLocationConstraints()).thenReturn(bounds);
+        tested.register(element);
+        verify(shapeView, times(1)).setDragBounds(eq(bounds));
+    }
+
+    @Test
     @SuppressWarnings("unchecked")
     public void testDeregister() {
         tested.init(canvasHandler);
@@ -340,21 +353,9 @@ public class LocationControlImplTest {
     }
 
     @Test
-    public void testClear() {
-        tested.init(canvasHandler);
-        tested.clear();
-        verify(selectionManager, atLeastOnce()).getControl();
-        verify(wiresCompositeControl).setBoundsConstraint(null);
-    }
-
-    @Test
     public void testDestroy() {
         tested.init(canvasHandler);
         tested.destroy();
-        verify(selectionManager,
-               atLeastOnce()).getControl();
-        verify(wiresCompositeControl,
-               atLeastOnce()).setBoundsConstraint(null);
         verify(wiresManager,
                atLeastOnce()).setLocationAcceptor(eq(ILocationAcceptor.ALL));
     }

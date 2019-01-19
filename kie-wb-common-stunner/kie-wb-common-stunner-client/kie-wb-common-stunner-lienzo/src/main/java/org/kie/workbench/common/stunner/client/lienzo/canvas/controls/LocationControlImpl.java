@@ -22,7 +22,6 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -34,13 +33,11 @@ import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
 import com.ait.lienzo.client.core.shape.wires.ILocationAcceptor;
-import com.ait.lienzo.client.core.shape.wires.SelectionManager;
 import com.ait.lienzo.client.core.shape.wires.WiresContainer;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanvasHandlerRegistrationControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.drag.LocationControl;
@@ -64,6 +61,7 @@ import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseEnterH
 import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseExitEvent;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseExitHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
+import org.kie.workbench.common.stunner.core.client.util.ShapeUtils;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
@@ -71,6 +69,7 @@ import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
@@ -192,15 +191,17 @@ public class LocationControlImpl
     @SuppressWarnings("unchecked")
     public void register(final Element element) {
         if (null != element.asNode() && checkNotRegistered(element)) {
-            final Canvas<?> canvas = canvasHandler.getCanvas();
+            final AbstractCanvas<?> canvas = canvasHandler.getAbstractCanvas();
             final Shape<?> shape = canvas.getShape(element.getUUID());
+            final ShapeView shapeView = shape.getShapeView();
 
-            // Enable drag.
-            shape.getShapeView().setDragEnabled(true);
+            // Enable drag & ensure location constraints are set, if any.
+            shapeView.setDragEnabled(true);
+            ensureDragConstraints(canvas, shapeView);
 
             // Register handlers.
             if (shape.getShapeView() instanceof HasEventHandlers) {
-                final HasEventHandlers hasEventHandlers = (HasEventHandlers) shape.getShapeView();
+                final HasEventHandlers hasEventHandlers = (HasEventHandlers) shapeView;
 
                 // Change mouse cursor, if shape supports it.
                 if (supportsMouseEnter(hasEventHandlers) &&
@@ -289,7 +290,6 @@ public class LocationControlImpl
 
     @Override
     protected void doClear() {
-        ifSelectionManager(s -> s.getControl().setBoundsConstraint(null));
         selectedIDs.clear();
         super.doClear();
     }
@@ -379,15 +379,16 @@ public class LocationControlImpl
         }
     };
 
+    @SuppressWarnings("unchecked")
+    private static void ensureDragConstraints(final AbstractCanvas<?> canvas,
+                                              final ShapeView shapeView) {
+        final Bounds bounds = canvas.getView().getPanel().getLocationConstraints();
+        ShapeUtils.enforceLocationConstraints(shapeView,
+                                              bounds);
+    }
+
     private WiresManager getWiresManager() {
         final WiresCanvas canvas = (WiresCanvas) canvasHandler.getCanvas();
         return canvas.getWiresManager();
-    }
-
-    private void ifSelectionManager(Consumer<SelectionManager> selectionManagerConsumer) {
-        final SelectionManager selectionManager = getWiresManager().getSelectionManager();
-        if (null != selectionManager && null != selectionManager.getControl()) {
-            selectionManagerConsumer.accept(selectionManager);
-        }
     }
 }

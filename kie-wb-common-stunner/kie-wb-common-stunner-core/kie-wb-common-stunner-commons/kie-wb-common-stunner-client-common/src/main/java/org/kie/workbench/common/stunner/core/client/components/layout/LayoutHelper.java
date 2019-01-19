@@ -22,8 +22,8 @@ import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtil
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.HasBounds;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.processing.layout.Layout;
 import org.kie.workbench.common.stunner.core.graph.processing.layout.LayoutExecutor;
 import org.kie.workbench.common.stunner.core.graph.processing.layout.LayoutService;
@@ -49,7 +49,7 @@ public final class LayoutHelper {
             for (final Node node : graph.nodes()) {
                 if (CanvasLayoutUtils.isCanvasRoot(diagram, node)) {
                     if (node.getContent() instanceof HasBounds) {
-                        ((HasBounds) node.getContent()).setBounds(BoundsImpl.build(0, 0, 0, 0));
+                        ((HasBounds) node.getContent()).setBounds(Bounds.create(0, 0, 0, 0));
                     }
                 }
             }

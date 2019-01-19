@@ -24,10 +24,9 @@ import org.kie.workbench.common.stunner.core.definition.clone.ClonePolicy;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.Bound;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
@@ -76,7 +75,7 @@ public abstract class AbstractCloneCommandTest extends AbstractGraphCommandTest 
     protected Bounds bounds;
 
     @Mock
-    protected Bounds.Bound bound;
+    protected Bound bound;
 
     @Mock
     protected ManagedInstance<ChildrenTraverseProcessor> childrenTraverseProcessorManagedInstance;
@@ -91,7 +90,7 @@ public abstract class AbstractCloneCommandTest extends AbstractGraphCommandTest 
 
     protected static final String CLONE_EDGE_UUID = UUID.uuid();
 
-    protected Bounds candidateBounds = BoundsImpl.build();
+    protected Bounds candidateBounds = Bounds.create();
 
     public void setUp() {
         super.init();
@@ -112,7 +111,7 @@ public abstract class AbstractCloneCommandTest extends AbstractGraphCommandTest 
                 });
 
         //edge mock
-        connectorContent = new ViewConnectorImpl(connectorDefinition, new BoundsImpl(new BoundImpl(1d, 1d), new BoundImpl(1d, 1d)));
+        connectorContent = new ViewConnectorImpl(connectorDefinition, Bounds.create(1d, 1d, 1d, 1d));
         sourceConnection = MagnetConnection.Builder.forElement(graphInstance.startNode);
         connectorContent.setSourceConnection(sourceConnection);
         targetConnection = MagnetConnection.Builder.forElement(graphInstance.intermNode);

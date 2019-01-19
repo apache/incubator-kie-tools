@@ -27,8 +27,6 @@ import org.kie.workbench.common.dmn.api.property.dimensions.Width;
 import org.kie.workbench.common.dmn.client.shape.def.DMNSVGShapeDefImpl;
 import org.kie.workbench.common.stunner.core.client.shape.view.handler.SizeHandler;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
 import org.mockito.Mock;
@@ -49,8 +47,7 @@ public class DMNViewHandlersTest {
     @Mock
     private SVGShapeView shape;
 
-    private Bounds bounds = new BoundsImpl(new BoundImpl(0.0, 0.0),
-                                           new BoundImpl(100.0, 100.0));
+    private Bounds bounds = Bounds.create(0.0, 0.0, 100.0, 100.0);
 
     private RectangleDimensionsSet dimensions = new GeneralRectangleDimensionsSet(new Width(50.0),
                                                                                   new Height(50.0));

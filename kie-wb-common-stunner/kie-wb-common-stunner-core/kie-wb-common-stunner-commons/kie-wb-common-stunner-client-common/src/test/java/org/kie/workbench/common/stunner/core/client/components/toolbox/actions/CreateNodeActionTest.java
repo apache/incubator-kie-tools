@@ -39,8 +39,7 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
@@ -156,15 +155,9 @@ public class CreateNodeActionTest {
         when(sessionCommandManager.execute(eq(canvasHandler), any(Command.class)))
                 .thenReturn(CanvasCommandResultBuilder.SUCCESS);
         when(elementContent.getBounds())
-                .thenReturn(new BoundsImpl(new BoundImpl(0d,
-                                                         0d),
-                                           new BoundImpl(100d,
-                                                         100d)));
+                .thenReturn(Bounds.create(0d, 0d, 100d, 100d));
         when(targetNodeContent.getBounds())
-                .thenReturn(new BoundsImpl(new BoundImpl(10d,
-                                                         0d),
-                                           new BoundImpl(200d,
-                                                         100d)));
+                .thenReturn(Bounds.create(10d, 0d, 200d, 100d));
         when(clientFactoryManager.newElement(anyString(),
                                              eq(EDGE_ID)))
                 .thenReturn((Element) edge);

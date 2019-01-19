@@ -16,22 +16,109 @@
 
 package org.kie.workbench.common.stunner.core.graph.content;
 
-/**
- * The element bounds for a graphical model.
- */
-public interface Bounds {
+import java.util.Objects;
 
-    Bound getLowerRight();
+import org.jboss.errai.common.client.api.annotations.MapsTo;
+import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.workbench.common.stunner.core.util.HashUtil;
 
-    Bound getUpperLeft();
+@Portable
+public class Bounds {
 
-    /**
-     * A bound definition.
-     */
-    interface Bound {
+    public static Bounds create() {
+        return create(0d, 0d, 0d, 0d);
+    }
 
-        Double getX();
+    public static Bounds createEmpty() {
+        return create(null, null);
+    }
 
-        Double getY();
+    public static Bounds createMinBounds(final double x1,
+                                         final double y1) {
+        return create(Bound.create(x1, y1),
+                      null);
+    }
+
+    public static Bounds create(final double x1,
+                                final double y1,
+                                final double x2,
+                                final double y2) {
+        return create(Bound.create(x1, y1),
+                      Bound.create(x2, y2));
+    }
+
+    public static Bounds create(final Bound xy0,
+                                final Bound xy1) {
+        return new Bounds(xy0,
+                          xy1);
+    }
+
+    private Bound lr;
+    private Bound ul;
+
+    public Bounds(final @MapsTo("ul") Bound ul,
+                  final @MapsTo("lr") Bound lr) {
+        this.ul = ul;
+        this.lr = lr;
+    }
+
+    public Bound getLowerRight() {
+        return lr;
+    }
+
+    public boolean hasLowerRight() {
+        return null != lr;
+    }
+
+    public Bound getUpperLeft() {
+        return ul;
+    }
+
+    public boolean hasUpperLeft() {
+        return null != ul;
+    }
+
+    public void setLowerRight(final Bound lr) {
+        this.lr = lr;
+    }
+
+    public void setUpperLeft(final Bound ul) {
+        this.ul = ul;
+    }
+
+    public double getX() {
+        return getUpperLeft().getX();
+    }
+
+    public double getY() {
+        return getUpperLeft().getY();
+    }
+
+    public double getWidth() {
+        return getLowerRight().getX() - getUpperLeft().getX();
+    }
+
+    public double getHeight() {
+        return getLowerRight().getY() - getUpperLeft().getY();
+    }
+
+    @Override
+    public String toString() {
+        return "UL=" + ul + " | LR=" + lr;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof Bounds) {
+            Bounds other = (Bounds) o;
+            return Objects.equals(ul, other.ul) && Objects.equals(lr, other.lr);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return HashUtil.combineHashCodes(Objects.hashCode(ul),
+                                         Objects.hashCode(lr));
     }
 }

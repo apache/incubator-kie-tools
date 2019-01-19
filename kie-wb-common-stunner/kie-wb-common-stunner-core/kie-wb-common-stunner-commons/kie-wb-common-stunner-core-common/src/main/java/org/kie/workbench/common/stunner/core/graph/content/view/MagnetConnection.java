@@ -22,6 +22,7 @@ import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.graph.Element;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
@@ -148,7 +149,7 @@ public class MagnetConnection extends DiscreteConnection {
         }
 
         public static MagnetConnection forElement(final Element<? extends View<?>> element) {
-            final BoundsImpl bounds = (BoundsImpl) element.getContent().getBounds();
+            final Bounds bounds = element.getContent().getBounds();
             final double width = bounds.getWidth();
             final double height = bounds.getHeight();
             final Point2D at = width > 0 && height > 0 ?

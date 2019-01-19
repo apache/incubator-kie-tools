@@ -25,8 +25,7 @@ import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
@@ -54,12 +53,10 @@ public abstract class AbstractRegistrationCanvasNodeCommand extends AbstractCanv
             final Point2D location = GraphUtils.getPosition(candidate.getContent());
             final BoundingBox boundingBox = shapeView.getBoundingBox();
             candidate.getContent()
-                    .setBounds(new BoundsImpl(
-                            new BoundImpl(location.getX(),
-                                          location.getY()),
-                            new BoundImpl(location.getX() + boundingBox.getWidth(),
-                                          location.getY() + boundingBox.getHeight()
-                            )));
+                    .setBounds(Bounds.create(location.getX(),
+                                             location.getY(),
+                                             location.getX() + boundingBox.getWidth(),
+                                             location.getY() + boundingBox.getHeight()));
         }
     }
 

@@ -131,6 +131,7 @@ import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandManagerImpl;
 import org.kie.workbench.common.stunner.core.graph.command.impl.GraphCommandFactory;
+import org.kie.workbench.common.stunner.core.graph.content.Bound;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Dock;
@@ -345,8 +346,8 @@ public class BPMNDirectDiagramMarshallerTest {
         assertTrue(task3.getContent().getDefinition() instanceof UserTask);
         // Assert bounds.
         Bounds task1Bounds = task1.getContent().getBounds();
-        Bounds.Bound task1ULBound = task1Bounds.getUpperLeft();
-        Bounds.Bound task1LRBound = task1Bounds.getLowerRight();
+        Bound task1ULBound = task1Bounds.getUpperLeft();
+        Bound task1LRBound = task1Bounds.getLowerRight();
         assertEquals(648d,
                      task1ULBound.getX(),
                      0);
@@ -1313,8 +1314,8 @@ public class BPMNDirectDiagramMarshallerTest {
         assertTrue(foundViewConnector);
         // Assert absolute position as the node is not docked.
         Bounds bounds = ((View) event.getContent()).getBounds();
-        Bounds.Bound ul = bounds.getUpperLeft();
-        Bounds.Bound lr = bounds.getLowerRight();
+        Bound ul = bounds.getUpperLeft();
+        Bound lr = bounds.getLowerRight();
         assertEquals(305,
                      ul.getX(),
                      0);
@@ -1351,8 +1352,8 @@ public class BPMNDirectDiagramMarshallerTest {
         assertTrue(foundDockConector);
         // Assert relative position for the docked node.
         Bounds bounds = ((View) event.getContent()).getBounds();
-        Bounds.Bound ul = bounds.getUpperLeft();
-        Bounds.Bound lr = bounds.getLowerRight();
+        Bound ul = bounds.getUpperLeft();
+        Bound lr = bounds.getLowerRight();
         assertEquals(57,
                      ul.getX(),
                      0);
