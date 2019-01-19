@@ -117,10 +117,10 @@ public class LienzoBoundsPanelTest
     @Test
     public void testSizeGetters()
     {
-        when(lienzoPanel.getWidth()).thenReturn(300);
-        when(lienzoPanel.getHeight()).thenReturn(100);
-        assertEquals(300, tested.getWidth());
-        assertEquals(100, tested.getHeight());
+        when(lienzoPanel.getWidthPx()).thenReturn(300);
+        when(lienzoPanel.getHeightPx()).thenReturn(100);
+        assertEquals(300, tested.getWidthPx());
+        assertEquals(100, tested.getHeightPx());
     }
 
     @Test

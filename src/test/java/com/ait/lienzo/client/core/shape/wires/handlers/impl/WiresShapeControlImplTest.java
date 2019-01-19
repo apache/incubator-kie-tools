@@ -22,6 +22,7 @@ import com.ait.lienzo.client.core.shape.MultiPathDecorator;
 import com.ait.lienzo.client.core.shape.PolyLine;
 import com.ait.lienzo.client.core.shape.wires.ILocationAcceptor;
 import com.ait.lienzo.client.core.shape.wires.MagnetManager;
+import com.ait.lienzo.client.core.shape.wires.OptionalBounds;
 import com.ait.lienzo.client.core.shape.wires.WiresConnection;
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.shape.wires.WiresContainer;
@@ -362,6 +363,17 @@ public class WiresShapeControlImplTest extends AbstractWiresControlTest {
 
         tested.onMove(10, 10);
         verify(connectorControl, never()).onMove(anyDouble(), anyDouble());
+    }
+
+    @Test
+    public void testBounds() {
+        OptionalBounds bounds = OptionalBounds.create(0d, 0d, 1200d, 1200d);
+        tested.setLocationBounds(bounds);
+        tested.onMoveStart(0d, 0d);
+        assertFalse(tested.isOutOfBounds(0.1d, 0.1d));
+        assertTrue(tested.isOutOfBounds(-3d, -3d));
+        assertFalse(tested.isOutOfBounds(800d, 800d));
+        assertTrue(tested.isOutOfBounds(1191d, 1191d));
     }
 
 }

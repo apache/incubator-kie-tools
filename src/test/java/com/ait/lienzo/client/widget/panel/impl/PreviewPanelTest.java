@@ -83,10 +83,10 @@ public class PreviewPanelTest
     {
         when(layer.getViewport()).thenReturn(viewport);
         when(layer.getScratchPad()).thenReturn(scratchPad);
-        when(lienzoPanel.getWidth()).thenReturn(300);
-        when(lienzoPanel.getHeight()).thenReturn(150);
-        when(observedPanel.getWidth()).thenReturn(330);
-        when(observedPanel.getHeight()).thenReturn(133);
+        when(lienzoPanel.getWidthPx()).thenReturn(300);
+        when(lienzoPanel.getHeightPx()).thenReturn(150);
+        when(observedPanel.getWidthPx()).thenReturn(330);
+        when(observedPanel.getHeightPx()).thenReturn(133);
         when(observedPanel.getLayerBounds()).thenReturn(BOUNDS);
         this.tested = spy(new PreviewPanel(lienzoPanel,
                                            previewLayer,

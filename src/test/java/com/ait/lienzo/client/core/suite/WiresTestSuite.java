@@ -47,6 +47,8 @@ import org.junit.runners.Suite;
         WiresConnectorControlPointBuilderTest.class,
         WiresConnectorEventFunctionsTest.class,
         ShapeControlUtilsTest.class,
+        OptionalBoundsTest.class,
+        WiresShapeLocationBoundsTest.class,
         WiresConnectorLabelFactoryTest.class,
         WiresConnectorLabelTest.class,
         WiresConnectorTest.class,

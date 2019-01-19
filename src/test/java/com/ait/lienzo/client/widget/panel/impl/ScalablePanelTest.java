@@ -56,8 +56,8 @@ public class ScalablePanelTest
     {
         when(layer.getViewport()).thenReturn(viewport);
         when(layer.getScratchPad()).thenReturn(scratchPad);
-        when(lienzoPanel.getWidth()).thenReturn(300);
-        when(lienzoPanel.getHeight()).thenReturn(150);
+        when(lienzoPanel.getWidthPx()).thenReturn(300);
+        when(lienzoPanel.getHeightPx()).thenReturn(150);
         this.tested = spy(new ScalablePanel(lienzoPanel,
                                             new BoundsProvider()
                                             {
