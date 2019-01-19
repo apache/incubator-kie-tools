@@ -44,6 +44,7 @@ import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
 import org.kie.workbench.common.stunner.core.definition.exception.DefinitionNotFoundException;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.documentation.DocumentationView;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.preferences.StunnerDiagramEditorPreferences;
@@ -224,6 +225,9 @@ public class ProjectDiagramEditorTest {
 
     private ProjectDiagramEditorStub tested;
 
+    @Mock
+    private DocumentationView documentationView;
+
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
@@ -270,6 +274,7 @@ public class ProjectDiagramEditorTest {
         when(preferences.getDiagramEditorPreferences()).thenReturn(diagramEditorPreferences);
 
         this.tested = new ProjectDiagramEditorStub(view,
+                                                   documentationView,
                                                    placeManager,
                                                    errorPopupPresenter,
                                                    changeTitleNotificationEvent,

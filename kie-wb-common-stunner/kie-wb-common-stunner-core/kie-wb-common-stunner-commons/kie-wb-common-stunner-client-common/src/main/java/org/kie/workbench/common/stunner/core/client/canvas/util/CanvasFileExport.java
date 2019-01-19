@@ -21,9 +21,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.export.CanvasExport;
 import org.kie.workbench.common.stunner.core.client.canvas.export.CanvasExportSettings;
 import org.kie.workbench.common.stunner.core.client.canvas.export.CanvasURLExportSettings;
@@ -53,9 +55,11 @@ public class CanvasFileExport {
     private final FileExport<PdfDocument> pdfFileExport;
     private final FileExportsPreferences preferences;
     private final SvgFileExport svgFileExport;
+    private final Event<CanvasClearSelectionEvent> clearSelectionEvent;
 
     protected CanvasFileExport() {
         this(null,
+             null,
              null,
              null,
              null,
@@ -67,26 +71,35 @@ public class CanvasFileExport {
                             final FileExport<ImageDataUriContent> imageFileExport,
                             final FileExport<PdfDocument> pdfFileExport,
                             final FileExportsPreferences preferences,
-                            final SvgFileExport svgFileExport) {
+                            final SvgFileExport svgFileExport,
+                            final Event<CanvasClearSelectionEvent> clearSelectionEvent) {
         this.canvasExport = canvasExport;
         this.imageFileExport = imageFileExport;
         this.pdfFileExport = pdfFileExport;
         this.preferences = preferences;
         this.svgFileExport = svgFileExport;
+        this.clearSelectionEvent = clearSelectionEvent;
     }
 
     public void exportToSvg(final AbstractCanvasHandler canvasHandler,
                             final String fileName) {
+        clearSelection(canvasHandler);
         final String fullFileName = fileName + "." + getFileExtension(CanvasExport.URLDataType.SVG);
         svgFileExport.export(canvasExport.toContext2D(canvasHandler, CanvasExportSettings.build()), fullFileName);
     }
 
+    private void clearSelection(AbstractCanvasHandler canvasHandler) {
+        clearSelectionEvent.fire(new CanvasClearSelectionEvent(canvasHandler));
+    }
+
     public String exportToSvg(final AbstractCanvasHandler canvasHandler) {
+        clearSelection(canvasHandler);
         return canvasExport.toContext2D(canvasHandler, CanvasExportSettings.build()).getSerializedSvg();
     }
 
     public void exportToJpg(final AbstractCanvasHandler canvasHandler,
                             final String fileName) {
+        clearSelection(canvasHandler);
         exportImage(canvasHandler,
                     CanvasExport.URLDataType.JPG,
                     fileName);
@@ -94,6 +107,7 @@ public class CanvasFileExport {
 
     public void exportToPng(final AbstractCanvasHandler canvasHandler,
                             final String fileName) {
+        clearSelection(canvasHandler);
         exportImage(canvasHandler,
                     CanvasExport.URLDataType.PNG,
                     fileName);
@@ -101,6 +115,7 @@ public class CanvasFileExport {
 
     public void exportToPdf(final AbstractCanvasHandler canvasHandler,
                             final String fileName) {
+        clearSelection(canvasHandler);
         loadFileExportPreferences(prefs -> exportToPdf(canvasHandler,
                                                        fileName,
                                                        prefs.getPdfPreferences()));

@@ -31,6 +31,7 @@ import org.kie.workbench.common.stunner.core.client.error.DiagramClientErrorHand
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
+import org.kie.workbench.common.stunner.core.documentation.DocumentationView;
 import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectDiagramEditor;
 import org.kie.workbench.common.stunner.project.client.editor.event.OnDiagramFocusEvent;
 import org.kie.workbench.common.stunner.project.client.editor.event.OnDiagramLoseFocusEvent;
@@ -74,6 +75,7 @@ public class CaseManagementDiagramEditor extends AbstractProjectDiagramEditor<Ca
 
     @Inject
     public CaseManagementDiagramEditor(final AbstractProjectDiagramEditor.View view,
+                                       final DocumentationView documentationView,
                                        final PlaceManager placeManager,
                                        final ErrorPopupPresenter errorPopupPresenter,
                                        final Event<ChangeTitleWidgetEvent> changeTitleNotificationEvent,
@@ -91,6 +93,7 @@ public class CaseManagementDiagramEditor extends AbstractProjectDiagramEditor<Ca
                                        final TextEditorView xmlEditorView,
                                        final Caller<ProjectDiagramResourceService> projectDiagramResourceServiceCaller) {
         super(view,
+              documentationView,
               placeManager,
               errorPopupPresenter,
               changeTitleNotificationEvent,

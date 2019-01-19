@@ -94,7 +94,6 @@ public class SaveDiagramSessionCommandTest {
     @Test
     public void onSaveDiagram() {
         command.onSaveDiagram(saveDiagramSessionCommandExecutedEvent);
-        verify(selectionControl).clearSelection();
         verify(clientDiagramService).saveOrUpdateSvg(eq(path), eq(RAW_DIAGRAM), any(ServiceCallback.class));
     }
 

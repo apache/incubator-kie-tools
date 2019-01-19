@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.bpmn.definition.property.event.timer;
 
 import java.util.Objects;
+import java.util.StringJoiner;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -97,5 +98,16 @@ public class TimerSettingsValue {
                                          Objects.hashCode(timeDuration),
                                          Objects.hashCode(timeCycle),
                                          Objects.hashCode(timeCycleLanguage));
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(" ")
+                .add(Objects.nonNull(timeDate) ? timeDate : "")
+                .add(Objects.nonNull(timeDuration) ? timeDuration : "")
+                .add(Objects.nonNull(timeCycle) ? timeCycle : "")
+                .add(Objects.nonNull(timeCycleLanguage) ? timeCycleLanguage : "")
+                .toString()
+                .trim();
     }
 }

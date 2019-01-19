@@ -50,6 +50,7 @@ import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.DiagramParsingException;
+import org.kie.workbench.common.stunner.core.documentation.DocumentationView;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.preferences.StunnerDiagramEditorPreferences;
@@ -229,6 +230,9 @@ public class AbstractProjectDiagramEditorTest {
     @Captor
     private ArgumentCaptor<SessionPresenter.SessionPresenterCallback> clientSessionPresenterCallbackCaptor;
 
+    @Mock
+    private DocumentationView viewDocumentation;
+
     abstract class ClientResourceTypeMock implements ClientResourceType {
 
     }
@@ -295,6 +299,7 @@ public class AbstractProjectDiagramEditorTest {
     @SuppressWarnings("unchecked")
     protected AbstractProjectDiagramEditor createDiagramEditor() {
         return spy(new AbstractProjectDiagramEditor<ClientResourceTypeMock>(view,
+                                                                            viewDocumentation,
                                                                             placeManager,
                                                                             errorPopupPresenter,
                                                                             changeTitleNotificationEvent,

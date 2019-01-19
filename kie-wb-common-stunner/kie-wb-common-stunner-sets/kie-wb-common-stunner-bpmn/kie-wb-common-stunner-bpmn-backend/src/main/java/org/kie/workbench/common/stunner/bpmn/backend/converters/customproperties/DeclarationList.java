@@ -45,7 +45,7 @@ public class DeclarationList {
 
     public VariableDeclaration lookup(String identifier) {
         return declarations.stream().filter(d -> identifier.equals(d.getIdentifier()))
-                .findFirst().orElseThrow(() -> new NoSuchElementException("Cannot find binding for identifier: "+identifier));
+                .findFirst().orElseThrow(() -> new NoSuchElementException("Cannot find binding for identifier: " + identifier));
     }
 
     public Collection<VariableDeclaration> getDeclarations() {

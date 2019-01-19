@@ -54,6 +54,8 @@ import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.DiagramParsingException;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
+import org.kie.workbench.common.stunner.core.documentation.DocumentationPage;
+import org.kie.workbench.common.stunner.core.documentation.DocumentationView;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 import org.kie.workbench.common.stunner.core.validation.DiagramElementViolation;
@@ -133,9 +135,11 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
 
     protected ProjectDiagramEditorProxy editorProxy = ProjectDiagramEditorProxy.NULL_EDITOR;
     private boolean menuBarInitialzed = false;
+    private DocumentationView documentationView;
 
     @Inject
     public AbstractProjectDiagramEditor(final View view,
+                                        final DocumentationView documentationView,
                                         final PlaceManager placeManager,
                                         final ErrorPopupPresenter errorPopupPresenter,
                                         final Event<ChangeTitleWidgetEvent> changeTitleNotificationEvent,
@@ -153,6 +157,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
                                         final TextEditorView xmlEditorView,
                                         final Caller<ProjectDiagramResourceService> projectDiagramResourceServiceCaller) {
         super(view);
+        this.documentationView = documentationView;
         this.placeManager = placeManager;
         this.errorPopupPresenter = errorPopupPresenter;
         this.changeTitleNotificationEvent = changeTitleNotificationEvent;
@@ -387,9 +392,24 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     protected void initialiseKieEditorForSession(final ProjectDiagram diagram) {
         resetEditorPages(diagram.getMetadata().getOverview());
         updateTitle(diagram.getMetadata().getTitle());
+        addDocumentationPage(diagram);
         setOriginalHash(getCurrentDiagramHash());
         hideLoadingViews();
         onDiagramLoad();
+    }
+
+    private void addDocumentationPage(ProjectDiagram diagram) {
+        Optional.ofNullable(documentationView.isEnabled())
+                .filter(Boolean.TRUE::equals)
+                .ifPresent(enabled -> {
+                    final String label = translationService.getValue(StunnerProjectClientConstants.DOCUMENTATION);
+                    addPage(new DocumentationPage(documentationView.initialize(diagram),
+                                                  label,
+                                                  //firing the OnDiagramFocusEvent will force the docks to be minimized
+                                                  () -> onDiagramFocusEvent.fire(new OnDiagramFocusEvent()),
+                                                  //check the DocumentationPage is active, the index is 2
+                                                  () -> Objects.equals(2, kieView.getSelectedTabIndex())));
+                });
     }
 
     protected void onDiagramLoad() {

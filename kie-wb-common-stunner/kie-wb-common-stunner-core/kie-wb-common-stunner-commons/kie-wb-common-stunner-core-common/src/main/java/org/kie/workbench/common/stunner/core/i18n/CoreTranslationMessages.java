@@ -38,6 +38,7 @@ public class CoreTranslationMessages {
     public static final String REASON = CORE_PREF + "reason";
     public static final String DELETE = CORE_PREF + "delete";
     public static final String EDIT = CORE_PREF + "edit";
+    public static final String PRINT = CORE_PREF + "print";
     public static final String ARE_YOU_SURE = CORE_PREF + "areYouSure";
     public static final String ELEMENT_UUID = CORE_PREF + "element_uuid";
     public static final String COMMAND_SUCCESS = COMMAND_PREF + "success";

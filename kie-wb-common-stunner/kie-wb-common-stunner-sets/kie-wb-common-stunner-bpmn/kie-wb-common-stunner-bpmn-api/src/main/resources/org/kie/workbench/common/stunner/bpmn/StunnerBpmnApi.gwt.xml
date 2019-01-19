@@ -28,6 +28,7 @@
 
   <source path="validation"/>
   <source path="definition"/>
+  <source path="documentation"/>
   <source path="factory"/>
   <source path="profile"/>
   <source path="forms"/>

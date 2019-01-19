@@ -144,7 +144,8 @@ public class BPMNPaletteDefinitionBuilderTest {
                                                   translationService,
                                                   () -> workItemDefinitionRegistry,
                                                   serviceTaskBuilder,
-                                                  definitionUtils);
+                                                  definitionUtils,
+                                                  new BPMNCategoryDefinitionProvider());
         tested.init();
     }
 

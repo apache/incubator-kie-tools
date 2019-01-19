@@ -21,7 +21,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractSession;
-import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.uberfire.backend.vfs.Path;
 
 public abstract class AbstractExportSessionCommand extends AbstractClientSessionCommand<AbstractSession<AbstractCanvas, AbstractCanvasHandler>> {
@@ -39,11 +38,6 @@ public abstract class AbstractExportSessionCommand extends AbstractClientSession
 
     @Override
     public <T> void execute(final Callback<T> callback) {
-        //prevents to render selection on canvas
-        if (getSession() instanceof EditorSession) {
-            ((EditorSession) getSession()).getSelectionControl().clearSelection();
-        }
-
         final String fileName = getFileName();
         export(fileName);
         callback.onSuccess();

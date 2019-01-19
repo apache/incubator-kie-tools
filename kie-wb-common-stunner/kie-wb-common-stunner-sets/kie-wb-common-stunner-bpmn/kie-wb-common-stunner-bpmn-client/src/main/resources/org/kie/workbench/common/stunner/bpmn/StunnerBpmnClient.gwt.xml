@@ -22,6 +22,7 @@
   <inherits name='com.google.gwt.user.User'/>
   <inherits name="org.gwtbootstrap3.extras.datetimepicker.DateTimePicker" />
   <inherits name="org.uberfire.UberfireClientAPI"/>
+  <inherits name="org.uberfire.ext.editor.commons.UberfireCommonsEditorClient"/>
   <inherits name="org.uberfire.client.views.PatternFly"/>
   <inherits name="org.kie.workbench.common.stunner.bpmn.StunnerBpmnApi"/>
   <inherits name="org.kie.workbench.common.stunner.shapes.StunnerShapesClient"/>

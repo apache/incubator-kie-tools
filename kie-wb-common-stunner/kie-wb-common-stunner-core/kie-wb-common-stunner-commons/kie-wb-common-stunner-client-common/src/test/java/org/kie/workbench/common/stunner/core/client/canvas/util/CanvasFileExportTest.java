@@ -20,6 +20,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.export.CanvasExport;
 import org.kie.workbench.common.stunner.core.client.canvas.export.CanvasExportSettings;
 import org.kie.workbench.common.stunner.core.client.canvas.export.CanvasURLExportSettings;
@@ -35,6 +36,7 @@ import org.uberfire.ext.editor.commons.client.file.exports.svg.IContext2D;
 import org.uberfire.ext.editor.commons.client.file.exports.svg.SvgFileExport;
 import org.uberfire.ext.editor.commons.file.exports.FileExportsPreferences;
 import org.uberfire.ext.editor.commons.file.exports.PdfExportPreferences;
+import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.ParameterizedCommand;
 
 import static org.junit.Assert.assertEquals;
@@ -83,6 +85,9 @@ public class CanvasFileExportTest {
     @Mock
     private IContext2D context2D;
 
+    @Mock
+    private EventSourceMock<CanvasClearSelectionEvent> clearSelectionEvent;
+
     @Before
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
@@ -107,7 +112,8 @@ public class CanvasFileExportTest {
                                            imageFileExport,
                                            pdfFileExport,
                                            preferences,
-                                           svgFileExport);
+                                           svgFileExport,
+                                           clearSelectionEvent);
     }
 
     @Test
@@ -127,6 +133,7 @@ public class CanvasFileExportTest {
         final ImageDataUriContent imageDataUriContent = contentArgumentCaptor.getValue();
         assertEquals(JPG_DATA_URI,
                      imageDataUriContent.getUri());
+        verify(clearSelectionEvent).fire(any(CanvasClearSelectionEvent.class));
     }
 
     @Test
@@ -146,6 +153,7 @@ public class CanvasFileExportTest {
         final ImageDataUriContent imageDataUriContent = contentArgumentCaptor.getValue();
         assertEquals(PNG_DATA_URI,
                      imageDataUriContent.getUri());
+        verify(clearSelectionEvent).fire(any(CanvasClearSelectionEvent.class));
     }
 
     @Test
@@ -160,6 +168,7 @@ public class CanvasFileExportTest {
         verify(pdfFileExport,
                times(1)).export(any(PdfDocument.class),
                                 eq("file1.pdf"));
+        verify(clearSelectionEvent).fire(any(CanvasClearSelectionEvent.class));
     }
 
     @Test
@@ -167,5 +176,6 @@ public class CanvasFileExportTest {
         when(canvasExport.toContext2D(eq(canvasHandler), any(CanvasExportSettings.class))).thenReturn(context2D);
         tested.exportToSvg(canvasHandler, "file1");
         verify(svgFileExport, times(1)).export(context2D, "file1.svg");
+        verify(clearSelectionEvent).fire(any(CanvasClearSelectionEvent.class));
     }
 }

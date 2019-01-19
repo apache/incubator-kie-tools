@@ -68,7 +68,16 @@
       <scope>provided</scope>
     </dependency>
 
+    <dependency>
+      <groupId>com.google.jsinterop</groupId>
+      <artifactId>jsinterop-annotations</artifactId>
+    </dependency>
+
     <!-- Uberfire & Errai. -->
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-workbench-client-views-patternfly</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>org.jboss.errai</groupId>

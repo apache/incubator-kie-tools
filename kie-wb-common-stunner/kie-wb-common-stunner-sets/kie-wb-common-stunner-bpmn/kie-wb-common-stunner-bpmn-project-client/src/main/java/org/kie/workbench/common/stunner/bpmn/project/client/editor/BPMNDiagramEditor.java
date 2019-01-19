@@ -34,6 +34,7 @@ import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationServic
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
+import org.kie.workbench.common.stunner.core.documentation.DocumentationView;
 import org.kie.workbench.common.stunner.project.client.editor.AbstractProjectDiagramEditor;
 import org.kie.workbench.common.stunner.project.client.editor.event.OnDiagramFocusEvent;
 import org.kie.workbench.common.stunner.project.client.editor.event.OnDiagramLoseFocusEvent;
@@ -76,6 +77,7 @@ public class BPMNDiagramEditor extends AbstractProjectDiagramEditor<BPMNDiagramR
 
     @Inject
     public BPMNDiagramEditor(final View view,
+                             final DocumentationView documentationView,
                              final PlaceManager placeManager,
                              final ErrorPopupPresenter errorPopupPresenter,
                              final Event<ChangeTitleWidgetEvent> changeTitleNotificationEvent,
@@ -95,6 +97,7 @@ public class BPMNDiagramEditor extends AbstractProjectDiagramEditor<BPMNDiagramR
                              final PopupUtil popupUtil,
                              final TextEditorView xmlEditorView) {
         super(view,
+              documentationView,
               placeManager,
               errorPopupPresenter,
               changeTitleNotificationEvent,

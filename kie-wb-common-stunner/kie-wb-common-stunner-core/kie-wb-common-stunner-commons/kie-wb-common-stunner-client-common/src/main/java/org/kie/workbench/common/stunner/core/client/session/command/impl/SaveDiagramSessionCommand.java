@@ -82,11 +82,6 @@ public class SaveDiagramSessionCommand extends AbstractClientSessionCommand<Edit
 
         final Metadata diagramMetadata = getCanvasHandler().getDiagram().getMetadata();
         if (Objects.equals(diagramMetadata.getCanvasRootUUID(), event.getDiagramUUID())) {
-
-            //prevents to render selection on canvas
-            getSession().getSelectionControl().clearSelection();
-
-            //This is a workaround to overcome the animations executed on canvas when clear selection
             final String rawSvg = canvasExport.exportToSvg(getCanvasHandler());
             diagramService.saveOrUpdateSvg(diagramMetadata.getPath(), rawSvg, new ServiceCallback<Path>() {
                 @Override

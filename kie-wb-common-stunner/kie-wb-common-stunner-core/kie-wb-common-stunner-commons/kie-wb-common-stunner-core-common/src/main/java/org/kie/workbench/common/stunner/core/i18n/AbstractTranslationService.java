@@ -29,6 +29,7 @@ public abstract class AbstractTranslationService implements StunnerTranslationSe
     public static final String DESCRIPTION_SUFFIX = "description";
     public static final String SVG_NODE_ID_SUFFIX = "svgNodeId";
     public static final String CAPTION_SUFFIX = "caption";
+    public static final String LABEL_SUFFIX = "label";
 
     @Override
     public String getDefinitionSetDescription(String defSetId) {
@@ -65,7 +66,9 @@ public abstract class AbstractTranslationService implements StunnerTranslationSe
     public String getPropertyCaption(String propId) {
         PortablePreconditions.checkNotNull("propId",
                                            propId);
-        return getValue(propId + I18N_SEPARATOR + CAPTION_SUFFIX);
+        return Optional
+                .ofNullable(getValue(propId + I18N_SEPARATOR + CAPTION_SUFFIX))
+                .orElse(getValue(propId + I18N_SEPARATOR + LABEL_SUFFIX));
     }
 
     @Override

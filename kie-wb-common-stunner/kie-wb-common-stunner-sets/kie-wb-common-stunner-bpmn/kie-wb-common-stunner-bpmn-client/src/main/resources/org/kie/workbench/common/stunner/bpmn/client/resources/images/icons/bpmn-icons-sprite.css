@@ -14,4 +14,10 @@
  * limitations under the License.
  */
 @url bpmnImageUrl bpmnIconsSprite;
-.iconsSprite { background: bpmnImageUrl; width: 16px; height: 16px;  }
+.iconsSprite {
+    background-image: bpmnImageUrl !important;
+    -webkit-print-color-adjust: exact !important;
+    color-adjust: exact !important;
+    width: 16px;
+    height: 16px;
+}

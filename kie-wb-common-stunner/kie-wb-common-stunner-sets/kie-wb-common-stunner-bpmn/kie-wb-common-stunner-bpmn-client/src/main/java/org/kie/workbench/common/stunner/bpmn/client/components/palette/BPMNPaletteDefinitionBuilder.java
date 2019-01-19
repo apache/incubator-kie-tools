@@ -35,19 +35,13 @@ import javax.inject.Inject;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.soup.commons.util.Lists;
 import org.kie.soup.commons.util.Maps;
-import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNImageResources;
 import org.kie.workbench.common.stunner.bpmn.definition.Association;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNCategories;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseSubprocess;
-import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
-import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.Lane;
 import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
-import org.kie.workbench.common.stunner.bpmn.definition.ParallelGateway;
-import org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.SequenceFlow;
-import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.qualifiers.BPMN;
 import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTask;
 import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTaskFactory;
@@ -66,7 +60,6 @@ import org.kie.workbench.common.stunner.core.client.components.palette.DefaultPa
 import org.kie.workbench.common.stunner.core.client.components.palette.DefaultPaletteItem;
 import org.kie.workbench.common.stunner.core.client.components.palette.ExpandedPaletteDefinitionBuilder;
 import org.kie.workbench.common.stunner.core.client.components.palette.PaletteDefinitionBuilder;
-import org.kie.workbench.common.stunner.core.client.shape.SvgDataUriGlyph.Builder;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.MorphAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
@@ -81,44 +74,6 @@ import static org.kie.workbench.common.stunner.core.client.components.palette.De
 @BPMN
 public class BPMNPaletteDefinitionBuilder
         implements PaletteDefinitionBuilder<AbstractCanvasHandler, DefaultPaletteDefinition> {
-
-    private static final CategoryDefinitionProvider CATEGORY_DEFINITION =
-            new CategoryDefinitionProvider(BPMNCategories.class)
-                    .put(BPMNCategories.START_EVENTS,
-                         category -> category
-                                 .bindToDefinition(StartNoneEvent.class)
-                                 .useGlyph(Builder.build(BPMNImageResources.INSTANCE.categoryStartEvents().getSafeUri())))
-                    .put(BPMNCategories.INTERMEDIATE_EVENTS,
-                         category -> category
-                                 .bindToDefinition(IntermediateTimerEvent.class)
-                                 .useGlyph(Builder.build(BPMNImageResources.INSTANCE.categoryIntermediateEvents().getSafeUri())))
-                    .put(BPMNCategories.END_EVENTS,
-                         category -> category
-                                 .bindToDefinition(EndNoneEvent.class)
-                                 .useGlyph(Builder.build(BPMNImageResources.INSTANCE.categoryEndEvents().getSafeUri())))
-                    .put(BPMNCategories.ACTIVITIES,
-                         category -> category
-                                 .bindToDefinition(NoneTask.class)
-                                 .useGlyph(Builder.build(BPMNImageResources.INSTANCE.categoryActivity().getSafeUri())))
-                    .put(BPMNCategories.SUB_PROCESSES,
-                         category -> category
-                                 .bindToDefinition(ReusableSubprocess.class)
-                                 .useGlyph(Builder.build(BPMNImageResources.INSTANCE.categorySubProcess().getSafeUri())))
-                    .put(BPMNCategories.GATEWAYS,
-                         category -> category
-                                 .bindToDefinition(ParallelGateway.class)
-                                 .useGlyph(Builder.build(BPMNImageResources.INSTANCE.categoryGateway().getSafeUri())))
-                    .put(BPMNCategories.CONTAINERS,
-                         category -> category
-                                 .bindToDefinition(Lane.class)
-                                 .useGlyph(Builder.build(BPMNImageResources.INSTANCE.categoryContainer().getSafeUri())))
-                    .put(BPMNCategories.CONNECTING_OBJECTS,
-                         category -> category
-                                 .bindToDefinition(SequenceFlow.class)
-                                 .useGlyph(Builder.build(BPMNImageResources.INSTANCE.categorySequence().getSafeUri())))
-                    .put(BPMNCategories.SERVICE_TASKS,
-                         category -> category
-                                 .useGlyph(Builder.build(BPMNImageResources.INSTANCE.categoryServiceTasks().getSafeUri())));
 
     //palette categories order customization.
     private static final List<String> CATEGORIES_ORDER = new Lists.Builder<String>()
@@ -142,10 +97,12 @@ public class BPMNPaletteDefinitionBuilder
     private final Supplier<WorkItemDefinitionRegistry> workItemDefinitionRegistry;
     private final Function<WorkItemDefinition, ServiceTask> serviceTaskBuilder;
     private final DefinitionUtils definitionUtils;
+    private final CategoryDefinitionProvider categoryDefinitionProvider;
 
     // CDI proxy.
     protected BPMNPaletteDefinitionBuilder() {
         this(null,
+             null,
              null,
              null,
              null,
@@ -157,13 +114,15 @@ public class BPMNPaletteDefinitionBuilder
                                         final ExpandedPaletteDefinitionBuilder paletteDefinitionBuilder,
                                         final StunnerTranslationService translationService,
                                         final ManagedInstance<WorkItemDefinitionRegistry> workItemDefinitionRegistry,
-                                        final DefinitionUtils definitionUtils) {
+                                        final DefinitionUtils definitionUtils,
+                                        final BPMNCategoryDefinitionProvider categoryDefinitionProvider) {
         this(definitionManager,
              paletteDefinitionBuilder,
              translationService,
              workItemDefinitionRegistry::get,
              wid -> new ServiceTaskFactory.ServiceTaskBuilder(wid).build(),
-             definitionUtils);
+             definitionUtils,
+             categoryDefinitionProvider);
     }
 
     BPMNPaletteDefinitionBuilder(final DefinitionManager definitionManager,
@@ -171,13 +130,15 @@ public class BPMNPaletteDefinitionBuilder
                                  final StunnerTranslationService translationService,
                                  final Supplier<WorkItemDefinitionRegistry> workItemDefinitionRegistry,
                                  final Function<WorkItemDefinition, ServiceTask> serviceTaskBuilder,
-                                 final DefinitionUtils definitionUtils) {
+                                 final DefinitionUtils definitionUtils,
+                                 final BPMNCategoryDefinitionProvider categoryDefinitionProvider) {
         this.definitionManager = definitionManager;
         this.paletteDefinitionBuilder = paletteDefinitionBuilder;
         this.translationService = translationService;
         this.workItemDefinitionRegistry = workItemDefinitionRegistry;
         this.serviceTaskBuilder = serviceTaskBuilder;
         this.definitionUtils = definitionUtils;
+        this.categoryDefinitionProvider = categoryDefinitionProvider;
     }
 
     @PostConstruct
@@ -185,9 +146,9 @@ public class BPMNPaletteDefinitionBuilder
         paletteDefinitionBuilder
                 .itemFilter(isDefinitionAllowed())
                 .categoryFilter(category -> !BPMNCategories.CONNECTING_OBJECTS.equals(category))
-                .categoryDefinitionIdProvider(CATEGORY_DEFINITION.definitionIdProvider())
-                .categoryGlyphProvider(CATEGORY_DEFINITION.glyphProvider())
-                .categoryMessages(CATEGORY_DEFINITION.categoryMessageProvider(translationService))
+                .categoryDefinitionIdProvider(categoryDefinitionProvider.definitionIdProvider())
+                .categoryGlyphProvider(categoryDefinitionProvider.glyphProvider())
+                .categoryMessages(categoryDefinitionProvider.categoryMessageProvider(translationService))
                 .customGroupIdProvider(CUSTOM_GROUPS::get)
                 .customGroupMessages(new DefaultPaletteDefinitionProviders.DefaultCustomGroupMessageProvider(translationService))
                 .morphDefinitionProvider(this::getMorphDefinition);
