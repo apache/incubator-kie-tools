@@ -137,10 +137,12 @@
 
   <build>
     <plugins>
+      <!-- WebJars Dependencies -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
         <executions>
+          <!-- File Saver -->
           <execution>
             <id>unpack-filesaver</id>
             <phase>process-resources</phase>
@@ -162,6 +164,7 @@
               <overWriteSnapshots>true</overWriteSnapshots>
             </configuration>
           </execution>
+          <!-- JsPDF -->
           <execution>
             <id>unpack-jspdf</id>
             <phase>process-resources</phase>
@@ -183,7 +186,7 @@
               <overWriteSnapshots>true</overWriteSnapshots>
             </configuration>
           </execution>
-
+          <!-- Canvas2svg -->
           <execution>
             <id>unpack-canvas2svg</id>
             <phase>process-resources</phase>
@@ -205,13 +208,37 @@
               <overWriteSnapshots>true</overWriteSnapshots>
             </configuration>
           </execution>
-
+          <!-- MustacheJS -->
+          <execution>
+            <id>unpack-mustachejs</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.webjars.bower</groupId>
+                  <artifactId>mustache.js</artifactId>
+                  <version>${version.org.webjars.bower.mustachejs}</version>
+                  <type>jar</type>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.build.directory}/mustachejs</outputDirectory>
+                </artifactItem>
+              </artifactItems>
+              <overWriteReleases>false</overWriteReleases>
+              <overWriteSnapshots>true</overWriteSnapshots>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
+
+      <!-- Copy JS from WebJars to resources Path, where it should be injected on the application with JsInterop -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
         <executions>
+          <!-- File Saver -->
           <execution>
             <id>copy-filesaver-resources</id>
             <phase>process-resources</phase>
@@ -230,6 +257,7 @@
               </resources>
             </configuration>
           </execution>
+          <!-- JsPDF -->
           <execution>
             <id>copy-jspdf-resources</id>
             <phase>process-resources</phase>
@@ -248,7 +276,7 @@
               </resources>
             </configuration>
           </execution>
-
+          <!-- Canvas2svg -->
           <execution>
             <id>copy-canvas2svg-resources</id>
             <phase>process-resources</phase>
@@ -262,6 +290,29 @@
                   <directory>${project.build.directory}/canvas2svg/META-INF/resources/webjars/canvas2svg/</directory>
                   <includes>
                     <include>canvas2svg.js</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+          <!-- MustacheJS -->
+          <execution>
+            <id>copy-mustachejs-resources</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>
+                ${project.build.outputDirectory}/org/uberfire/ext/editor/commons/client/template/mustache/
+              </outputDirectory>
+              <resources>
+                <resource>
+                  <directory>
+                    ${project.build.directory}/mustachejs/META-INF/resources/webjars/mustache.js/${version.org.webjars.bower.mustachejs}/
+                  </directory>
+                  <includes>
+                    <include>mustache.js</include>
                   </includes>
                 </resource>
               </resources>

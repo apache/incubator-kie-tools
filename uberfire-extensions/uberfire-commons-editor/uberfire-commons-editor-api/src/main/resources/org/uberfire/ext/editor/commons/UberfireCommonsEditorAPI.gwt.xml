@@ -26,5 +26,6 @@
   <source path='readonly'/>
   <source path='version'/>
   <source path='service'/>
+  <source path='template'/>
 
 </module>

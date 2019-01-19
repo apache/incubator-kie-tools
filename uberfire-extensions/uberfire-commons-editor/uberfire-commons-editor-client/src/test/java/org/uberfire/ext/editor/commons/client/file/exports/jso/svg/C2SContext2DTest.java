@@ -18,7 +18,6 @@ package org.uberfire.ext.editor.commons.client.file.exports.jso.svg;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import com.google.gwtmockito.WithClassesToStub;
@@ -32,7 +31,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -58,6 +56,9 @@ public class C2SContext2DTest {
 
     private C2S c2S;
 
+    @Mock
+    private Element root;
+
     @Before
     public void setUp() throws Exception {
         c2S = spy(C2S.create(100, 100, nativeContext));
@@ -65,6 +66,15 @@ public class C2SContext2DTest {
         c2S.__groupStack = groupStack;
         when(groupStack.pop()).thenReturn(element);
         c2S.__stack = stack;
+        c2S.__root = root;
+    }
+
+    @Test
+    public void testSetViewBox() {
+        final double width = 100;
+        final double height = 100;
+        c2S.setViewBox(width, height);
+        verify(root).setAttribute("viewBox", "0 0 " + width + " " + height);
     }
 
     @Test
@@ -173,7 +183,7 @@ public class C2SContext2DTest {
     public void saveGroup() {
         final String key = "id";
         final String value = "value";
-        final Map<String, String> id = new HashMap<String, String>(){{
+        final Map<String, String> id = new HashMap<String, String>() {{
             put(key, value);
         }};
         c2SContext2D.saveGroup(id);
