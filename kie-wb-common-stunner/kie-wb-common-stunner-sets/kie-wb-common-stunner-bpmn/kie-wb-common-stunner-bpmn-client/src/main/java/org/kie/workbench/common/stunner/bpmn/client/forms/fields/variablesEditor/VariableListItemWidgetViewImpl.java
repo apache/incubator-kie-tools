@@ -22,11 +22,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import com.google.gwt.event.dom.client.BlurEvent;
-import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.text.shared.Renderer;
 import org.gwtbootstrap3.client.ui.Button;
@@ -40,6 +36,7 @@ import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.stunner.bpmn.client.StunnerSpecific;
+import org.kie.workbench.common.stunner.bpmn.client.forms.fields.i18n.StunnerFormsClientFieldsConstants;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Variable.VariableType;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.VariableRow;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.ListBoxValues;
@@ -47,6 +44,7 @@ import org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils;
 import org.kie.workbench.common.stunner.bpmn.client.forms.widgets.ComboBox;
 import org.kie.workbench.common.stunner.bpmn.client.forms.widgets.ComboBoxView;
 import org.kie.workbench.common.stunner.bpmn.client.forms.widgets.VariableNameTextBox;
+import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.workbench.events.NotificationEvent;
 
 /**
@@ -78,13 +76,14 @@ public class VariableListItemWidgetViewImpl implements VariableListItemWidgetVie
     @StunnerSpecific
     protected VariableNameTextBox name;
 
-    private boolean allowDuplicateNames = false;
-    private String duplicateNameErrorMessage = "A Variable with this name already exists";
+    @Inject
+    protected ErrorPopupPresenter errorPopupPresenter;
 
     private String currentValue;
+    private String currentName;
 
     @DataField
-    protected ValueListBox<String> dataType = new ValueListBox<String>(new Renderer<String>() {
+    protected ValueListBox<String> dataType = new ValueListBox<>(new Renderer<String>() {
         public String render(final String object) {
             String s = "";
             if (object != null) {
@@ -156,32 +155,27 @@ public class VariableListItemWidgetViewImpl implements VariableListItemWidgetVie
                               CUSTOM_PROMPT,
                               ENTER_TYPE_PROMPT);
         name.setRegExp(StringUtils.ALPHA_NUM_REGEXP,
-                       "Removed invalid characters from name",
-                       "Invalid character in name");
-        customDataType.addKeyDownHandler(new KeyDownHandler() {
-            @Override
-            public void onKeyDown(final KeyDownEvent event) {
-                int iChar = event.getNativeKeyCode();
-                if (iChar == ' ') {
-                    event.preventDefault();
-                }
+                       StunnerFormsClientFieldsConstants.INSTANCE.Removed_invalid_characters_from_name(),
+                       StunnerFormsClientFieldsConstants.INSTANCE.Invalid_character_in_name());
+        customDataType.addKeyDownHandler(event -> {
+            int iChar = event.getNativeKeyCode();
+            if (iChar == ' ') {
+                event.preventDefault();
             }
         });
-        name.addBlurHandler(new BlurHandler() {
-            @Override
-            public void onBlur(final BlurEvent event) {
-                if (!allowDuplicateNames) {
-                    String value = name.getText();
-                    if (isDuplicateName(value)) {
-                        notification.fire(new NotificationEvent(duplicateNameErrorMessage,
-                                                                NotificationEvent.NotificationType.ERROR));
-                        name.setValue("");
-                        ValueChangeEvent.fire(name,
-                                              "");
-                    }
-                }
-                notifyModelChanged();
+        name.addChangeHandler(event -> {
+            String value = name.getText();
+            if (isDuplicateName(value)) {
+                notification.fire(new NotificationEvent(StunnerFormsClientFieldsConstants.INSTANCE.DuplicatedVariableNameError(value),
+                                                        NotificationEvent.NotificationType.ERROR));
+                name.setValue(currentName);
+                ValueChangeEvent.fire(name, currentName);
+            } else if (isBoundToNodes(currentName)) {
+                errorPopupPresenter.showMessage(StunnerFormsClientFieldsConstants.INSTANCE.RenameDiagramVariableError());
+                name.setValue(currentName);
+                ValueChangeEvent.fire(name, currentName);
             }
+            notifyModelChanged();
         });
     }
 
@@ -195,6 +189,7 @@ public class VariableListItemWidgetViewImpl implements VariableListItemWidgetVie
         variableRow.setModel(model);
         initVariableControls();
         currentValue = getModel().toString();
+        currentName = getModel().getName();
     }
 
     @Override
@@ -241,9 +236,12 @@ public class VariableListItemWidgetViewImpl implements VariableListItemWidgetVie
         name.setEnabled(!readOnly);
     }
 
-    @Override
-    public boolean isDuplicateName(final String name) {
+    private boolean isDuplicateName(final String name) {
         return parentWidget.isDuplicateName(name);
+    }
+
+    private boolean isBoundToNodes(final String name) {
+        return parentWidget.isBoundToNodes(name);
     }
 
     @EventHandler("deleteButton")
@@ -270,6 +268,7 @@ public class VariableListItemWidgetViewImpl implements VariableListItemWidgetVie
     public void notifyModelChanged() {
         String oldValue = currentValue;
         currentValue = getModel().toString();
+        currentName = getModel().getName();
         if (oldValue == null) {
             if (currentValue != null && currentValue.length() > 0) {
                 parentWidget.notifyModelChanged();

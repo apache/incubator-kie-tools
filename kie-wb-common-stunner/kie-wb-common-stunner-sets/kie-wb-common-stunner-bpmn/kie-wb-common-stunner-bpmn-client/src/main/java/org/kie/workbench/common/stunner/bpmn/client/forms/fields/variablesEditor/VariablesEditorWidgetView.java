@@ -42,6 +42,8 @@ public interface VariablesEditorWidgetView extends IsWidget {
 
         boolean isDuplicateName(final String name);
 
+        boolean isBoundToNodes(final String name);
+
         void removeVariable(final VariableRow variableRow);
 
         ListBoxValues.ValueTester dataTypesTester();

@@ -22,32 +22,44 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.def.DefaultFormGroup;
+import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
+import org.kie.workbench.common.stunner.bpmn.client.forms.fields.i18n.StunnerFormsClientFieldsConstants;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Variable;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.VariableRow;
+import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
+import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.AssignmentsInfo;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.TaskGeneralSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.UserTaskExecutionSet;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.impl.NodeImpl;
-import org.mockito.InjectMocks;
+import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.mockito.Mock;
-import org.mockito.Spy;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.anyInt;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(GwtMockitoTestRunner.class)
 public class VariablesEditorFieldRendererTest {
 
     @Mock
@@ -58,9 +70,6 @@ public class VariablesEditorFieldRendererTest {
 
     @Mock
     private SessionManager abstractClientSessionManager;
-
-    @Mock
-    private VariableDeleteHandler deleteHandler;
 
     @Mock
     private Graph graph;
@@ -75,24 +84,38 @@ public class VariablesEditorFieldRendererTest {
     private Diagram diagram;
 
     @Mock
+    private Metadata metadata;
+
+    @Mock
+    private Path path;
+
+    @Mock
     private EditorSession clientFullSession;
 
     @Mock
     private Iterable nodes;
 
-    @Spy
-    @InjectMocks
-    private VariablesEditorFieldRenderer variablesEditor = new VariablesEditorFieldRenderer(variablesEditorWidgetView,
-                                                                                            abstractClientSessionManager,
-                                                                                            deleteHandler);
+    @Mock
+    private ErrorPopupPresenter errorPopupPresenter;
 
-    private VariablesEditorFieldRenderer variablesEditorRemove;
+    @Mock
+    private ManagedInstance<DefaultFormGroup> formGroupsInstanceMock;
+
+    @Mock
+    private DefaultFormGroup formGroup;
+
+    private VariablesEditorFieldRenderer variablesEditor;
 
     @Before
     public void setup() {
-        variablesEditorRemove = new VariablesEditorFieldRenderer(variablesEditorWidgetView,
-                                                                 abstractClientSessionManager,
-                                                                 deleteHandler);
+        when(formGroupsInstanceMock.get()).thenReturn(formGroup);
+        variablesEditor = new VariablesEditorFieldRenderer(variablesEditorWidgetView,
+                                                           abstractClientSessionManager,
+                                                           errorPopupPresenter) {
+            {
+                formGroupsInstance = formGroupsInstanceMock;
+            }
+        };
     }
 
     @Test
@@ -115,31 +138,61 @@ public class VariablesEditorFieldRendererTest {
     }
 
     @Test
-    public void testRemoveVariable() {
+    public void testRemoveVariableWhenBoundToNodes() {
+        prepareRemoveVariableTest(true);
+        variablesEditor.removeVariable(variableRow);
+        verify(errorPopupPresenter).showMessage(StunnerFormsClientFieldsConstants.INSTANCE.DeleteDiagramVariableError());
+        verify(variablesEditorWidgetView).getVariableRows();
+        verify(variablesEditorWidgetView, never()).doSave();
+    }
+
+    @Test
+    public void testRemoveVariableWhenNotBoundToNodes() {
+        prepareRemoveVariableTest(false);
+        variablesEditor.removeVariable(variableRow);
+        verify(errorPopupPresenter, never()).showMessage(StunnerFormsClientFieldsConstants.INSTANCE.DeleteDiagramVariableError());
+        verify(variablesEditorWidgetView, times(2)).getVariableRows();
+        verify(variablesEditorWidgetView).doSave();
+    }
+
+    private void prepareRemoveVariableTest(boolean makeVariableBounded) {
         when(variablesEditorWidgetView.getVariableWidget(anyInt())).thenReturn(variableListItemWidgetView);
         when(variablesEditorWidgetView.getVariableRowsCount()).thenReturn(1);
         when(variableRow.getName()).thenReturn("variableName");
         when(abstractClientSessionManager.getCurrentSession()).thenReturn(clientFullSession);
-        when(abstractClientSessionManager.getCurrentSession().getCanvasHandler()).thenReturn(canvasHandler);
-        when(abstractClientSessionManager.getCurrentSession().getCanvasHandler().getDiagram()).thenReturn(diagram);
-        when(abstractClientSessionManager.getCurrentSession().getCanvasHandler().getDiagram().getGraph()).thenReturn(graph);
+        when(clientFullSession.getCanvasHandler()).thenReturn(canvasHandler);
+        when(canvasHandler.getDiagram()).thenReturn(diagram);
+        when(diagram.getGraph()).thenReturn(graph);
+        when(diagram.getMetadata()).thenReturn(metadata);
+        when(metadata.getPath()).thenReturn(path);
+
         final List nodes = new ArrayList<>();
-        final Node node = new NodeImpl<>("node1");
-        nodes.add(node);
+        if (makeVariableBounded) {
+            final Node node = mockArbitraryNodeWithVariableBound("variableName");
+            nodes.add(node);
+        }
         when(graph.nodes()).thenReturn(nodes);
-        when(deleteHandler.isVariableBoundToNodes(graph, variableRow.getName())).thenReturn(true);
-        variablesEditorRemove.addVariable();
-        variablesEditorRemove.addVariable();
-        variablesEditorRemove.removeVariable(variableRow);
-        verify(variablesEditorWidgetView,
-               times(3)).getVariableRows();
-        verify(variablesEditorWidgetView,
-               times(1)).doSave();
-        variablesEditorRemove.removeVariable(variableRow);
-        verify(variablesEditorWidgetView,
-               times(4)).getVariableRows();
-        verify(variablesEditorWidgetView,
-               times(2)).doSave();
+        variablesEditor.getFormGroup(RenderMode.EDIT_MODE);
+        variablesEditor.addVariable();
+    }
+
+    private Node mockArbitraryNodeWithVariableBound(String variableName) {
+        String assignmentsInfoValue = "|input1:String|||[din]" + variableName + "->input1";
+        View view = mock(View.class);
+        Node node = mock(Node.class);
+        when(node.getContent()).thenReturn(view);
+        UserTask content = mock(UserTask.class);
+        TaskGeneralSet generalSet = mock(TaskGeneralSet.class);
+        Name nameProperty = mock(Name.class);
+        when(generalSet.getName()).thenReturn(nameProperty);
+        when(content.getGeneral()).thenReturn(generalSet);
+        UserTaskExecutionSet executionSet = mock(UserTaskExecutionSet.class);
+        when(content.getExecutionSet()).thenReturn(executionSet);
+        AssignmentsInfo assignmentsInfo = mock(AssignmentsInfo.class);
+        when(assignmentsInfo.getValue()).thenReturn(assignmentsInfoValue);
+        when(executionSet.getAssignmentsinfo()).thenReturn(assignmentsInfo);
+        when(view.getDefinition()).thenReturn(content);
+        return node;
     }
 
     @Test

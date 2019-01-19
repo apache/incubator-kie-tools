@@ -33,6 +33,7 @@ import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Variable;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.VariableRow;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.ListBoxValues;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils;
+import org.kie.workbench.common.stunner.bpmn.client.util.VariableUtils;
 import org.kie.workbench.common.stunner.bpmn.forms.model.VariablesEditorFieldDefinition;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -45,27 +46,24 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
         implements VariablesEditorWidgetView.Presenter {
 
     private final SessionManager sessionManager;
-    private final VariableDeleteHandler deleteHandler;
     Map<String, String> mapDataTypeNamesToDisplayNames = null;
     Map<String, String> mapDataTypeDisplayNamesToNames = null;
     ListBoxValues dataTypeListBoxValues;
     private VariablesEditorWidgetView view;
     private Variable.VariableType variableType = Variable.VariableType.PROCESS;
-    private List<String> dataTypes = new ArrayList<String>();
-    private List<String> dataTypeDisplayNames = new ArrayList<String>();
+    private List<String> dataTypes = new ArrayList<>();
     private Graph graph;
     private Path path;
 
-    @Inject
-    private ErrorPopupPresenter errorPopupPresenter;
+    private final ErrorPopupPresenter errorPopupPresenter;
 
     @Inject
     public VariablesEditorFieldRenderer(final VariablesEditorWidgetView variablesEditor,
                                         final SessionManager sessionManager,
-                                        final VariableDeleteHandler deleteHandler) {
+                                        final ErrorPopupPresenter errorPopupPresenter) {
         this.view = variablesEditor;
         this.sessionManager = sessionManager;
-        this.deleteHandler = deleteHandler;
+        this.errorPopupPresenter = errorPopupPresenter;
     }
 
     @Override
@@ -88,6 +86,7 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
         return formGroup;
     }
 
+    @Override
     protected void setReadOnly(final boolean readOnly) {
         view.setReadOnly(readOnly);
     }
@@ -120,7 +119,6 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
     public void setDataTypes(final List<String> dataTypes,
                              final List<String> dataTypeDisplayNames) {
         this.dataTypes = dataTypes;
-        this.dataTypeDisplayNames = dataTypeDisplayNames;
         this.mapDataTypeNamesToDisplayNames = createMapDataTypeNamesToDisplayNames(dataTypes,
                                                                                    dataTypeDisplayNames);
         this.mapDataTypeDisplayNamesToNames = createMapDataTypeDisplayNamesToNames(dataTypes,
@@ -134,7 +132,7 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
 
     private Map<String, String> createMapDataTypeNamesToDisplayNames(final List<String> dataTypes,
                                                                      final List<String> dataTypeDisplayNames) {
-        Map<String, String> mapDataTypeNamesToDisplayNames = new HashMap<String, String>();
+        Map<String, String> mapDataTypeNamesToDisplayNames = new HashMap<>();
         for (int i = 0; i < dataTypeDisplayNames.size(); i++) {
             mapDataTypeNamesToDisplayNames.put(dataTypes.get(i),
                                                dataTypeDisplayNames.get(i));
@@ -144,7 +142,7 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
 
     private Map<String, String> createMapDataTypeDisplayNamesToNames(final List<String> dataTypes,
                                                                      final List<String> dataTypeDisplayNames) {
-        Map<String, String> mapDataTypeDisplayNamesToNames = new HashMap<String, String>();
+        Map<String, String> mapDataTypeDisplayNamesToNames = new HashMap<>();
         for (int i = 0; i < dataTypes.size(); i++) {
             mapDataTypeDisplayNamesToNames.put(dataTypeDisplayNames.get(i),
                                                dataTypes.get(i));
@@ -159,7 +157,7 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
 
     @Override
     public List<VariableRow> deserializeVariables(final String s) {
-        List<VariableRow> variableRows = new ArrayList<VariableRow>();
+        List<VariableRow> variableRows = new ArrayList<>();
         if (s != null && !s.isEmpty()) {
             String[] vs = s.split(",");
             for (String v : vs) {
@@ -179,7 +177,7 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
 
     @Override
     public String serializeVariables(final List<VariableRow> variableRows) {
-        List<Variable> variables = new ArrayList<Variable>();
+        List<Variable> variables = new ArrayList<>();
         for (VariableRow row : variableRows) {
             if (row.getName() != null && row.getName().length() > 0) {
                 variables.add(new Variable(row,
@@ -194,6 +192,7 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
      * @param name
      * @return
      */
+    @Override
     public boolean isDuplicateName(final String name) {
         if (name == null || name.trim().isEmpty()) {
             return false;
@@ -215,10 +214,15 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
         return false;
     }
 
+    @Override
+    public boolean isBoundToNodes(String name) {
+        return VariableUtils.findVariableUsages(graph, name).size() > 0;
+    }
+
+    @Override
     public void removeVariable(final VariableRow variableRow) {
 
-        if (deleteHandler.isVariableBoundToNodes(graph,
-                                                 variableRow.getName())) {
+        if (isBoundToNodes(variableRow.getName())) {
             errorPopupPresenter.showMessage(StunnerFormsClientFieldsConstants.INSTANCE.DeleteDiagramVariableError());
         } else {
             view.getVariableRows().remove(variableRow);
@@ -228,13 +232,11 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
 
     @Override
     public ListBoxValues.ValueTester dataTypesTester() {
-        return new ListBoxValues.ValueTester() {
-            public String getNonCustomValueForUserString(String dataTypeDisplayName) {
-                if (mapDataTypeNamesToDisplayNames != null && mapDataTypeNamesToDisplayNames.containsKey(dataTypeDisplayName)) {
-                    return mapDataTypeNamesToDisplayNames.get(dataTypeDisplayName);
-                } else {
-                    return null;
-                }
+        return dataTypeDisplayName -> {
+            if (mapDataTypeNamesToDisplayNames != null && mapDataTypeNamesToDisplayNames.containsKey(dataTypeDisplayName)) {
+                return mapDataTypeNamesToDisplayNames.get(dataTypeDisplayName);
+            } else {
+                return null;
             }
         };
     }

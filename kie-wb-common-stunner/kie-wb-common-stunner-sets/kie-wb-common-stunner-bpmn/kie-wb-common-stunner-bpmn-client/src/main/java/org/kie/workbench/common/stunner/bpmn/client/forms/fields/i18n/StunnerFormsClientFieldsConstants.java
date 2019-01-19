@@ -90,4 +90,8 @@ public interface StunnerFormsClientFieldsConstants extends Messages {
     String ConfirmCloseBusinessProcessEditor();
 
     String DeleteDiagramVariableError();
+
+    String RenameDiagramVariableError();
+
+    String DuplicatedVariableNameError(String variableName);
 }

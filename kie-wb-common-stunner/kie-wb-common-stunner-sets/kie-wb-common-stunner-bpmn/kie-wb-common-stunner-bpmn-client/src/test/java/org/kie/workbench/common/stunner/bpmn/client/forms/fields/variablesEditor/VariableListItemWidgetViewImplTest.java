@@ -18,8 +18,8 @@ package org.kie.workbench.common.stunner.bpmn.client.forms.fields.variablesEdito
 
 import javax.enterprise.event.Event;
 
-import com.google.gwt.event.dom.client.BlurEvent;
-import com.google.gwt.event.dom.client.BlurHandler;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
@@ -33,13 +33,16 @@ import org.jboss.errai.databinding.client.api.DataBinder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.bpmn.client.forms.fields.i18n.StunnerFormsClientFieldsConstants;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Variable;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.VariableRow;
 import org.kie.workbench.common.stunner.bpmn.client.forms.widgets.ComboBox;
 import org.kie.workbench.common.stunner.bpmn.client.forms.widgets.VariableNameTextBox;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.workbench.events.NotificationEvent;
 
@@ -60,8 +63,11 @@ import static org.mockito.Mockito.when;
 public class VariableListItemWidgetViewImplTest {
 
     private static final String VARIABLE_NAME = "variableName";
+    private static final String MODEL_TO_STRING = "modelToString";
     private static final String CUST_DATA_TYPE_NAME = "custDataTypeName";
     private static final String DATA_TYPE_NAME = "dataTypeName";
+    private static final String VARIABLE_NEW_NAME = "variableNewName";
+    private static final String MODEL_NEW_TO_STRING = "modelNewToString";
 
     @GwtMock
     private DataBinder<VariableRow> variableRow;
@@ -89,9 +95,15 @@ public class VariableListItemWidgetViewImplTest {
     private ArgumentCaptor<KeyDownHandler> keyDownHandlerCaptor;
 
     @Captor
-    private ArgumentCaptor<BlurHandler> blurHandlerCaptor;
+    private ArgumentCaptor<ChangeHandler> changeHandlerCaptor;
 
     private VariableListItemWidgetViewImpl view;
+
+    @Mock
+    private VariablesEditorWidgetView.Presenter parent;
+
+    @Mock
+    private ErrorPopupPresenter errorPopupPresenter;
 
     @Before
     public void setUp() throws Exception {
@@ -108,6 +120,7 @@ public class VariableListItemWidgetViewImplTest {
         view.dataType = dataType;
         view.dataTypeComboBox = dataTypeComboBox;
         view.notification = notification;
+        view.errorPopupPresenter = errorPopupPresenter;
         doCallRealMethod().when(view).init();
         doCallRealMethod().when(view).getCustomDataType();
         doCallRealMethod().when(view).setCustomDataType(anyString());
@@ -122,9 +135,9 @@ public class VariableListItemWidgetViewImplTest {
         doCallRealMethod().when(view).setDataTypeDisplayName(anyString());
         doCallRealMethod().when(view).getVariableType();
         doCallRealMethod().when(view).setParentWidget(any(VariablesEditorWidgetView.Presenter.class));
-        doCallRealMethod().when(view).isDuplicateName(anyString());
         doCallRealMethod().when(view).handleDeleteButton(any(ClickEvent.class));
         doCallRealMethod().when(view).setReadOnly(anyBoolean());
+        doCallRealMethod().when(view).notifyModelChanged();
         VariableRow row = new VariableRow();
         doReturn(row).when(variableRow).getModel();
     }
@@ -215,33 +228,58 @@ public class VariableListItemWidgetViewImplTest {
     }
 
     @Test
-    public void testNameBlurHandler() {
-        VariablesEditorWidgetView.Presenter parent = mock(VariablesEditorWidgetView.Presenter.class);
-        when(parent.isDuplicateName(anyString())).thenReturn(true);
-        doReturn("anyName").when(name).getText();
+    public void testNameChangeHandlerWhenDuplicate() {
+        when(parent.isDuplicateName(VARIABLE_NEW_NAME)).thenReturn(true);
+        prepareNameChange(VARIABLE_NEW_NAME, MODEL_NEW_TO_STRING);
+        verify(parent).isDuplicateName(VARIABLE_NEW_NAME);
+        verify(notification).fire(new NotificationEvent(StunnerFormsClientFieldsConstants.INSTANCE.DuplicatedVariableNameError(VARIABLE_NEW_NAME),
+                                                        NotificationEvent.NotificationType.ERROR));
+        verify(name).setValue(VARIABLE_NAME);
+    }
+
+    @Test
+    public void testNameChangeHandlerWhenNotDuplicateAndNotBoundToNodes() {
+        when(parent.isDuplicateName(VARIABLE_NEW_NAME)).thenReturn(false);
+        when(parent.isBoundToNodes(VARIABLE_NAME)).thenReturn(false);
+        prepareNameChange(VARIABLE_NEW_NAME, MODEL_NEW_TO_STRING);
+        verify(parent).isDuplicateName(VARIABLE_NEW_NAME);
+        verify(parent).isBoundToNodes(VARIABLE_NAME);
+        verify(parent).notifyModelChanged();
+    }
+
+    @Test
+    public void testNameChangeHandlerWhenNotDuplicateAndBoundToNodes() {
+        when(parent.isDuplicateName(VARIABLE_NEW_NAME)).thenReturn(false);
+        when(parent.isBoundToNodes(VARIABLE_NAME)).thenReturn(true);
+        prepareNameChange(VARIABLE_NEW_NAME, MODEL_NEW_TO_STRING);
+        verify(parent).isDuplicateName(VARIABLE_NEW_NAME);
+        verify(parent).isBoundToNodes(VARIABLE_NAME);
+        verify(name).setValue(VARIABLE_NAME);
+        verify(errorPopupPresenter).showMessage(StunnerFormsClientFieldsConstants.INSTANCE.RenameDiagramVariableError());
+    }
+
+    private void prepareNameChange(String newName, String newToString) {
+        doReturn(newName).when(name).getText();
+        VariableRow model = mock(VariableRow.class);
+        when(model.getName()).thenReturn(VARIABLE_NAME);
+        when(model.toString()).thenReturn(MODEL_TO_STRING);
+        doReturn(model).when(variableRow).getModel();
         view.setParentWidget(parent);
         view.init();
-        verify(name,
-               times(1)).addBlurHandler(blurHandlerCaptor.capture());
-        BlurHandler handler = blurHandlerCaptor.getValue();
-        handler.onBlur(mock(BlurEvent.class));
-        verify(parent,
-               times(1)).isDuplicateName("anyName");
-        verify(notification,
-               times(1)).fire(new NotificationEvent(null,
-                                                    NotificationEvent.NotificationType.ERROR));
-        verify(name,
-               times(1)).setValue("");
+        view.setModel(model);
+        when(model.toString()).thenReturn(newToString);
+        verify(name).addChangeHandler(changeHandlerCaptor.capture());
+        ChangeHandler handler = changeHandlerCaptor.getValue();
+        handler.onChange(mock(ChangeEvent.class));
     }
 
     @Test
     public void testHandleDeleteButton() {
-        VariablesEditorWidgetView.Presenter widget = mock(VariablesEditorWidgetView.Presenter.class);
         VariableRow model = mock(VariableRow.class);
         when(view.getModel()).thenReturn(model);
-        view.setParentWidget(widget);
+        view.setParentWidget(parent);
         view.handleDeleteButton(null);
-        verify(widget).removeVariable(model);
+        verify(parent).removeVariable(model);
     }
 
     @Test

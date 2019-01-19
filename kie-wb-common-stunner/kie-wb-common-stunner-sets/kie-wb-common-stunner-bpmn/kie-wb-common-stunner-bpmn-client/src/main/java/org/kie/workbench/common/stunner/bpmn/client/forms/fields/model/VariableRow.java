@@ -38,6 +38,7 @@ public class VariableRow {
     private static long lastId = 0;
 
     public VariableRow() {
+        this(Variable.VariableType.PROCESS, null, null, null);
         this.id = lastId++;
     }
 

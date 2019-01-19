@@ -34,8 +34,6 @@ public interface VariableListItemWidgetView extends HasModel<VariableRow> {
 
     void setDataTypes(final ListBoxValues dataTypeListBoxValues);
 
-    boolean isDuplicateName(final String name);
-
     VariableType getVariableType();
 
     String getDataTypeDisplayName();
