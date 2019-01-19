@@ -34,17 +34,18 @@ public class XMLEncoderDiagramMetadataMarshaller implements DiagramMetadataMarsh
 
     @Override
     public Metadata unmarshall(final InputStream input) throws IOException {
-        XMLDecoder decoder = new XMLDecoder(input);
-        return (Metadata) decoder.readObject();
+        try (final XMLDecoder decoder = new XMLDecoder(input)) {
+            return (Metadata) decoder.readObject();
+        }
     }
 
     @Override
     public String marshall(final Metadata metadata) throws IOException {
-        ByteArrayOutputStream os = new ByteArrayOutputStream();
-        XMLEncoder encoder = new XMLEncoder(os);
-        encoder.writeObject(metadata);
-        encoder.close();
-        String raw = os.toString(CHARSET);
-        return raw;
+        try (final ByteArrayOutputStream os = new ByteArrayOutputStream();
+             final XMLEncoder encoder = new XMLEncoder(os)) {
+            encoder.writeObject(metadata);
+            String raw = os.toString(CHARSET);
+            return raw;
+        }
     }
 }
