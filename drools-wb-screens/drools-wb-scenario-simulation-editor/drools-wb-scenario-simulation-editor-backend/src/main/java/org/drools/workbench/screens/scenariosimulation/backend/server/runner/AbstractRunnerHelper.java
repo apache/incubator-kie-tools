@@ -133,7 +133,8 @@ public abstract class AbstractRunnerHelper {
         for (FactMappingValue factMappingValue : factMappingValues) {
             FactIdentifier factIdentifier = factMappingValue.getFactIdentifier();
 
-            if (FactIdentifier.EMPTY.equals(factIdentifier)) {
+            // null means skip
+            if (factMappingValue.getRawValue() == null) {
                 continue;
             }
 

@@ -43,7 +43,9 @@ public class BaseExpressionOperatorTest {
 
         Assert.assertEquals("Test", BaseExpressionOperator.EQUALS.getValueForGiven(String.class.getCanonicalName(), "= Test", classLoader));
         Assert.assertEquals("", BaseExpressionOperator.EQUALS.getValueForGiven(String.class.getCanonicalName(), "= ", classLoader));
-        Assert.assertEquals(null, BaseExpressionOperator.EQUALS.getValueForGiven(String.class.getCanonicalName(), "", classLoader));
+        Assert.assertEquals(null, BaseExpressionOperator.EQUALS.getValueForGiven(String.class.getCanonicalName(), "null", classLoader));
+        Assert.assertEquals(null, BaseExpressionOperator.EQUALS.getValueForGiven(String.class.getCanonicalName(), "= null", classLoader));
+        Assert.assertEquals(null, BaseExpressionOperator.EQUALS.getValueForGiven(String.class.getCanonicalName(), null, classLoader));
     }
 
     @Test

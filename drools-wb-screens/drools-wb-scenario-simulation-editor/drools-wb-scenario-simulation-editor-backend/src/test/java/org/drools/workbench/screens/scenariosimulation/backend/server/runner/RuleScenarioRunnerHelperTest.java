@@ -265,7 +265,9 @@ public class RuleScenarioRunnerHelperTest {
     @Test(expected = IllegalArgumentException.class)
     public void groupByFactIdentifierAndFilterFailTest() {
         List<FactMappingValue> fail = new ArrayList<>();
-        fail.add(new FactMappingValue());
+        FactMappingValue factMappingValue = new FactMappingValue();
+        factMappingValue.setRawValue("TEST");
+        fail.add(factMappingValue);
         runnerHelper.groupByFactIdentifierAndFilter(fail, FactMappingType.GIVEN);
     }
 

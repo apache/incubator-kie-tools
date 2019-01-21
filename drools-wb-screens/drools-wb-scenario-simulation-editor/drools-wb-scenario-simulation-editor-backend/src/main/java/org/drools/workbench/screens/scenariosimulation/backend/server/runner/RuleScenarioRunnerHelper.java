@@ -65,7 +65,7 @@ public class RuleScenarioRunnerHelper extends AbstractRunnerHelper {
         }
         RuleScenarioExecutableBuilder ruleScenarioExecutableBuilder = createBuilder(kieContainer);
         scenarioRunnerData.getGivens().stream().map(ScenarioGiven::getValue).forEach(ruleScenarioExecutableBuilder::insert);
-        // all new facts should be verified internally to the working memory because
+        // all new facts should be verified internally to the working memory
         scenarioRunnerData.getExpects().stream()
                 .filter(ScenarioExpect::isNewFact)
                 .flatMap(output -> output.getExpectedResult().stream()

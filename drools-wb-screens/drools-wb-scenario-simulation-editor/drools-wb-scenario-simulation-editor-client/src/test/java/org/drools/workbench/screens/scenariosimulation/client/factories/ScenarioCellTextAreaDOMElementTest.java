@@ -74,6 +74,23 @@ public class ScenarioCellTextAreaDOMElementTest extends AbstractFactoriesTest {
     }
 
     @Test
+    public void flushNullString() {
+        when(gridCellValueMock.getValue()).thenReturn("");
+        scenarioCellTextAreaDOMElement.flush(null);
+        verify(scenarioGridCellMock, times(1)).setEditingMode(eq(false));
+        verify(scenarioCellTextAreaDOMElement, times(1)).internalFlush(eq(null));
+    }
+
+    @Test
+    public void flushEmptyStringToNullConversion() {
+        when(gridCellValueMock.getValue()).thenReturn("");
+        scenarioCellTextAreaDOMElement.flush("");
+        verify(scenarioGridCellMock, times(1)).setEditingMode(eq(false));
+        // empty strings are converted to null during flush
+        verify(scenarioCellTextAreaDOMElement, times(1)).internalFlush(eq(null));
+    }
+
+    @Test
     public void internalFlush() {
         scenarioCellTextAreaDOMElement.internalFlush(VALUE);
         verify(eventBusMock, times(1)).fireEvent(isA(SetCellValueEvent.class));

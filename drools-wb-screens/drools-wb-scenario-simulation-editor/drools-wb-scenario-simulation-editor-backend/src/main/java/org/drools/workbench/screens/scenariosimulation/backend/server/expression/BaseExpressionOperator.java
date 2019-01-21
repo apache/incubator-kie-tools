@@ -72,8 +72,8 @@ public enum BaseExpressionOperator {
         protected Object getValueForGiven(String className, String value, ClassLoader classLoader) {
             String returnValue = removeOperator(value);
 
-            // empty string is equivalent to null only if there is no operator symbol
-            returnValue = "".equals(returnValue) && !match(value).isPresent() ? null : returnValue;
+            // "null" string is converted to null
+            returnValue = "null".equals(returnValue) ? null : returnValue;
 
             return convertValue(className, returnValue, classLoader);
         }
@@ -172,6 +172,9 @@ public enum BaseExpressionOperator {
     }
 
     protected Optional<String> match(String value) {
+        if(value == null) {
+            return Optional.empty();
+        }
         value = value.trim();
         return symbols.stream().filter(value::startsWith).findFirst();
     }
@@ -184,7 +187,7 @@ public enum BaseExpressionOperator {
             int index = value.indexOf(symbolToRemove);
             value = value.substring(index + symbolToRemove.length()).trim();
         }
-        return value.trim();
+        return value == null ? null : value.trim();
     }
 
     private static boolean areComparable(Object a, Object b) {

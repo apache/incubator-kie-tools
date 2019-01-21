@@ -113,21 +113,20 @@ public class ScenarioCellTextAreaDOMElement extends BaseDOMElement<String, TextA
     @Override
     @SuppressWarnings("unchecked")
     public void flush(final String value) {
+        String actualValue = value != null && value.isEmpty() ? null : value;
         if (scenarioGridCell != null) {
             scenarioGridCell.setEditingMode(false);
-            String actualValue = value.isEmpty() ? null : value;
             String cellValue = scenarioGridCell.getValue().getValue();
-            String originalValue =  (cellValue == null || cellValue.isEmpty()) ? null : cellValue;
-            if (Objects.equals(actualValue, originalValue)) {
+            if (Objects.equals(actualValue, cellValue)) {
                 return;
             }
         }
-        internalFlush(value);
+        internalFlush(actualValue);
     }
 
     protected void internalFlush(final String value) {
         final int rowIndex = context.getRowIndex();
         final int columnIndex = context.getColumnIndex();
-        ((ScenarioGrid)gridWidget).getEventBus().fireEvent(new SetCellValueEvent(rowIndex, columnIndex, value, false));
+        ((ScenarioGrid) gridWidget).getEventBus().fireEvent(new SetCellValueEvent(rowIndex, columnIndex, value, false));
     }
 }
