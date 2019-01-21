@@ -25,6 +25,7 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.bpmn.project.client.resources.BPMNClientConstants;
 import org.kie.workbench.common.stunner.bpmn.project.client.type.BPMNDiagramResourceType;
+import org.kie.workbench.common.stunner.bpmn.qualifiers.BPMN;
 import org.kie.workbench.common.stunner.client.widgets.popups.PopupUtil;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionViewerPresenter;
@@ -77,7 +78,7 @@ public class BPMNDiagramEditor extends AbstractProjectDiagramEditor<BPMNDiagramR
 
     @Inject
     public BPMNDiagramEditor(final View view,
-                             final DocumentationView documentationView,
+                             final @BPMN DocumentationView documentationView,
                              final PlaceManager placeManager,
                              final ErrorPopupPresenter errorPopupPresenter,
                              final Event<ChangeTitleWidgetEvent> changeTitleNotificationEvent,

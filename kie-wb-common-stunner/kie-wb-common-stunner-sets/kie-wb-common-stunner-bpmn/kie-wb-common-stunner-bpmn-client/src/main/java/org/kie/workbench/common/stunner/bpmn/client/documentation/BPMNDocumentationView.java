@@ -21,7 +21,6 @@ import java.util.function.Supplier;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Specializes;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -29,6 +28,7 @@ import elemental2.dom.HTMLElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.stunner.bpmn.documentation.BPMNDocumentationService;
+import org.kie.workbench.common.stunner.bpmn.qualifiers.BPMN;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.documentation.DefaultDiagramDocumentationView;
@@ -38,8 +38,8 @@ import org.kie.workbench.common.stunner.forms.client.event.FormFieldChanged;
 import org.uberfire.client.views.pfly.icon.PatternFlyIconType;
 import org.uberfire.client.views.pfly.widgets.Button;
 
+@BPMN
 @Dependent
-@Specializes
 @Templated
 public class BPMNDocumentationView extends DefaultDiagramDocumentationView {
 

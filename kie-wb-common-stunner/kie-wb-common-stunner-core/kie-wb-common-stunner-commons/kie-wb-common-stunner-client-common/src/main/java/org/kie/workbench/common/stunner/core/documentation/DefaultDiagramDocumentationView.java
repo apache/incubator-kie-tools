@@ -20,7 +20,6 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Specializes;
 
 import com.google.gwt.user.client.ui.Composite;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
@@ -28,7 +27,8 @@ import org.kie.workbench.common.stunner.core.diagram.Diagram;
 
 /**
  * Default dummy implementation of {@link DocumentationView}. To implement a {@link DocumentationView} for the domain,
- * this should be extended and annotated with {@link Specializes}. *
+ * this should be extended and annotated with the applicable discriminator qualifier for the domain. For example
+ * {@link @BPMN} or {@link @DMNEditor} etc.
  */
 @Dependent
 @Templated
