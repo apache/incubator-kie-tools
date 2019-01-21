@@ -117,6 +117,8 @@ public class TaskConverter {
         p.setAdHocAutostart(executionSet.getAdHocAutostart().getValue());
         p.setOnEntryAction(executionSet.getOnEntryAction());
         p.setOnExitAction(executionSet.getOnExitAction());
+        p.setContent(executionSet.getContent().getValue());
+        p.setSLADueDate(executionSet.getSlaDueDate().getValue());
 
         p.setBounds(n.getContent().getBounds());
 

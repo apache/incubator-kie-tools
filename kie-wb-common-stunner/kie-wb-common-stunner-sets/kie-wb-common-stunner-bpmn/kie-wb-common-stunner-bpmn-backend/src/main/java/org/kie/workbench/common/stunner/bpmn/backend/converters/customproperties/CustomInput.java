@@ -40,6 +40,7 @@ public class CustomInput<T> {
     public static final CustomInputDefinition<String> createdBy = new StringInput("CreatedBy", "");
     public static final CustomInputDefinition<String> groupId = new StringInput("GroupId", "");
     public static final CustomInputDefinition<Boolean> skippable = new BooleanInput("Skippable", false);
+    public static final CustomInputDefinition<String> content = new StringInput("Content", "");
 
     private final CustomInputDefinition<T> inputDefinition;
     private final Task element;

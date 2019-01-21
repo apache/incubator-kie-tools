@@ -44,6 +44,7 @@ public class UserTaskPropertyWriter extends ActivityPropertyWriter {
     private final CustomInput<Boolean> skippable;
     private final CustomInput<String> priority;
     private final CustomInput<String> subject;
+    private final CustomInput<String> content;
 
     public UserTaskPropertyWriter(UserTask task, VariableScope variableScope) {
         super(task, variableScope);
@@ -69,6 +70,9 @@ public class UserTaskPropertyWriter extends ActivityPropertyWriter {
 
         this.groupId = CustomInput.groupId.of(task);
         this.addItemDefinition(this.groupId.typeDef());
+
+        this.content = CustomInput.content.of(task);
+        this.addItemDefinition(this.content.typeDef());
     }
 
     public void setAsync(boolean async) {
@@ -140,5 +144,13 @@ public class UserTaskPropertyWriter extends ActivityPropertyWriter {
 
     public void setOnExitAction(OnExitAction onExitAction) {
         Scripts.setOnExitAction(task, onExitAction);
+    }
+
+    public void setContent(String content) {
+        this.content.set(content);
+    }
+
+    public void setSLADueDate(String slaDueDate) {
+        CustomElement.slaDueDate.of(task).set(slaDueDate);
     }
 }

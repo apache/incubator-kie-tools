@@ -131,6 +131,19 @@ public class UserTaskExecutionSet implements BPMNPropertySet {
     @Valid
     private OnExitAction onExitAction;
 
+    @Property
+    @FormField(
+            type = TextAreaFieldType.class,
+            afterElement = "onExitAction"
+    )
+    @Valid
+    private Content content;
+
+    @Property
+    @FormField(afterElement = "content")
+    @Valid
+    private SLADueDate slaDueDate;
+
     public UserTaskExecutionSet() {
         this(new TaskName("Task"),
              new Actors(),
@@ -146,7 +159,9 @@ public class UserTaskExecutionSet implements BPMNPropertySet {
              new OnEntryAction(new ScriptTypeListValue().addValue(new ScriptTypeValue("java",
                                                                                       ""))),
              new OnExitAction(new ScriptTypeListValue().addValue(new ScriptTypeValue("java",
-                                                                                     ""))));
+                                                                                     ""))),
+             new Content(""),
+             new SLADueDate(""));
     }
 
     public UserTaskExecutionSet(final @MapsTo("taskName") TaskName taskName,
@@ -161,7 +176,9 @@ public class UserTaskExecutionSet implements BPMNPropertySet {
                                 final @MapsTo("createdBy") CreatedBy createdBy,
                                 final @MapsTo("adHocAutostart") AdHocAutostart adHocAutostart,
                                 final @MapsTo("onEntryAction") OnEntryAction onEntryAction,
-                                final @MapsTo("onExitAction") OnExitAction onExitAction) {
+                                final @MapsTo("onExitAction") OnExitAction onExitAction,
+                                final @MapsTo("content") Content content,
+                                final @MapsTo("slaDueDate") SLADueDate slaDueDate) {
         this.taskName = taskName;
         this.actors = actors;
         this.groupid = groupid;
@@ -175,6 +192,8 @@ public class UserTaskExecutionSet implements BPMNPropertySet {
         this.adHocAutostart = adHocAutostart;
         this.onEntryAction = onEntryAction;
         this.onExitAction = onExitAction;
+        this.content = content;
+        this.slaDueDate = slaDueDate;
     }
 
     public TaskName getTaskName() {
@@ -281,6 +300,22 @@ public class UserTaskExecutionSet implements BPMNPropertySet {
         this.onExitAction = onExitAction;
     }
 
+    public Content getContent() {
+        return content;
+    }
+
+    public void setContent(Content content) {
+        this.content = content;
+    }
+
+    public SLADueDate getSlaDueDate() {
+        return slaDueDate;
+    }
+
+    public void setSlaDueDate(SLADueDate slaDueDate) {
+        this.slaDueDate = slaDueDate;
+    }
+
     @Override
     public int hashCode() {
         return HashUtil.combineHashCodes(Objects.hashCode(taskName),
@@ -295,7 +330,9 @@ public class UserTaskExecutionSet implements BPMNPropertySet {
                                          Objects.hashCode(createdBy),
                                          Objects.hashCode(adHocAutostart),
                                          Objects.hashCode(onEntryAction),
-                                         Objects.hashCode(onExitAction));
+                                         Objects.hashCode(onExitAction),
+                                         Objects.hashCode(content),
+                                         Objects.hashCode(slaDueDate));
     }
 
     @Override
@@ -327,7 +364,11 @@ public class UserTaskExecutionSet implements BPMNPropertySet {
                     Objects.equals(onEntryAction,
                                    other.onEntryAction) &&
                     Objects.equals(onExitAction,
-                                   other.onExitAction);
+                                   other.onExitAction) &&
+                    Objects.equals(content,
+                                   other.content) &&
+                    Objects.equals(slaDueDate,
+                                   other.slaDueDate);
         }
         return false;
     }

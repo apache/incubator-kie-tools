@@ -85,15 +85,18 @@ public class UserTaskTest extends Task<UserTask> {
     private static final boolean AD_HOC_AUTOSTART = true;
     private static final boolean NOT_AD_HOC_AUTOSTART = false;
 
+    private final Marshaller _marshallerType;
+
     public UserTaskTest(Marshaller marshallerType) {
         super(marshallerType);
+        this._marshallerType = marshallerType;
     }
 
     @Test
     public void RHBA607() throws Exception {
         final String BPMN_USER_TASK_PROPERTIES_FILE_PATH =
                 "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/userTaskProperties.bpmn";
-        final String DIAGRAM_ID = "_xcvw0O7kEeapSKZp6WZaPg";
+        final String DIAGRAM_ID = "_pfJ-8O50EeiVSc03Fghuww";
 
         Diagram<Graph, Metadata> d = unmarshall(newMarshaller, BPMN_USER_TASK_PROPERTIES_FILE_PATH);
         Node<View<BPMNDiagramImpl>, ?> node = d.getGraph().getNode(DIAGRAM_ID);
@@ -101,6 +104,123 @@ public class UserTaskTest extends Task<UserTask> {
         ProcessVariables processVariables = processData.getProcessVariables();
         DeclarationList declarationList = DeclarationList.fromString(processVariables.getValue());
         assertTrue(declarationList.getDeclarations().isEmpty());
+    }
+
+    @Ignore("Test is ignored, because new and old marshaler User Task nodes will differ anyway. Because different " +
+            "properties supported by them")
+    @Test
+    public void testMigration() throws Exception {
+    }
+
+    @Test
+    @Override
+    public void testUnmarshallTopLevelEmptyTaskProperties() throws Exception {
+        // cannot be empty
+        final String TASK_NAME = "Task_1";
+        // cannot be empty
+        final String TASK_TASK_NAME = "Task";
+
+        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_TASK_FILE_PATH);
+        assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
+
+        UserTask emptyTopLevelTask = getTaskNodeById(diagram,
+                                                     EMPTY_TOP_LEVEL_TASK_ID,
+                                                     ZERO_INCOME_EDGES,
+                                                     HAS_NO_OUTCOME_EDGE);
+        assertGeneralSet(emptyTopLevelTask.getGeneral(), TASK_NAME, EMPTY_VALUE);
+        assertUserTaskExecutionSet(emptyTopLevelTask.getExecutionSet(),
+                                   TASK_TASK_NAME,
+                                   EMPTY_VALUE,
+                                   EMPTY_VALUE,
+                                   EMPTY_VALUE,
+                                   IS_NOT_ASYNC,
+                                   IS_NOT_SKIPPABLE,
+                                   EMPTY_VALUE,
+                                   EMPTY_VALUE,
+                                   EMPTY_VALUE,
+                                   NOT_AD_HOC_AUTOSTART,
+                                   EMPTY_TASK_DATA_INPUT_OUTPUT,
+                                   EMPTY_VALUE,
+                                   TASK_SCRIPT_JAVA_LANGUAGE,
+                                   EMPTY_VALUE,
+                                   TASK_SCRIPT_JAVA_LANGUAGE,
+                                   EMPTY_VALUE,
+                                   EMPTY_VALUE
+        );
+    }
+
+    @Test
+    @Override
+    public void testUnmarshallTopLevelTaskOneIncomeEmptyProperties() throws Exception {
+        // cannot be empty
+        final String TASK_NAME = "Task_2";
+        // cannot be empty
+        final String TASK_TASK_NAME = "Task";
+
+        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_TASK_FILE_PATH);
+        assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
+
+        UserTask emptyTopLevelTask = getTaskNodeById(diagram,
+                                                     EMPTY_ONE_INCOME_TOP_LEVEL_TASK_ID,
+                                                     ONE_INCOME_EDGE,
+                                                     HAS_OUTCOME_EDGE);
+        assertGeneralSet(emptyTopLevelTask.getGeneral(), TASK_NAME, EMPTY_VALUE);
+        assertUserTaskExecutionSet(emptyTopLevelTask.getExecutionSet(),
+                                   TASK_TASK_NAME,
+                                   EMPTY_VALUE,
+                                   EMPTY_VALUE,
+                                   EMPTY_VALUE,
+                                   IS_NOT_ASYNC,
+                                   IS_NOT_SKIPPABLE,
+                                   EMPTY_VALUE,
+                                   EMPTY_VALUE,
+                                   EMPTY_VALUE,
+                                   NOT_AD_HOC_AUTOSTART,
+                                   EMPTY_TASK_DATA_INPUT_OUTPUT,
+                                   EMPTY_VALUE,
+                                   TASK_SCRIPT_JAVA_LANGUAGE,
+                                   EMPTY_VALUE,
+                                   TASK_SCRIPT_JAVA_LANGUAGE,
+                                   EMPTY_VALUE,
+                                   EMPTY_VALUE
+        );
+    }
+
+    @Test
+    @Override
+    public void testUnmarshallTopLevelTaskTwoIncomesEmptyProperties() throws Exception {
+        // cannot be empty
+        final String TASK_NAME = "Task_3";
+        // cannot be empty
+        final String TASK_TASK_NAME = "Task";
+
+        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_TASK_FILE_PATH);
+        assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
+
+        UserTask emptyTopLevelTask = getTaskNodeById(diagram,
+                                                     EMPTY_TWO_INCOMES_TOP_LEVEL_TASK_ID,
+                                                     TWO_INCOME_EDGES,
+                                                     HAS_OUTCOME_EDGE);
+        assertGeneralSet(emptyTopLevelTask.getGeneral(), TASK_NAME, EMPTY_VALUE);
+        assertUserTaskExecutionSet(emptyTopLevelTask.getExecutionSet(),
+                                   TASK_TASK_NAME,
+                                   EMPTY_VALUE,
+                                   EMPTY_VALUE,
+                                   EMPTY_VALUE,
+                                   IS_NOT_ASYNC,
+                                   IS_NOT_SKIPPABLE,
+                                   EMPTY_VALUE,
+                                   EMPTY_VALUE,
+                                   EMPTY_VALUE,
+                                   NOT_AD_HOC_AUTOSTART,
+                                   EMPTY_TASK_DATA_INPUT_OUTPUT,
+                                   EMPTY_VALUE,
+                                   TASK_SCRIPT_JAVA_LANGUAGE,
+                                   EMPTY_VALUE,
+                                   TASK_SCRIPT_JAVA_LANGUAGE,
+                                   EMPTY_VALUE,
+                                   EMPTY_VALUE
+        );
     }
 
     @Test
@@ -142,9 +262,14 @@ public class UserTaskTest extends Task<UserTask> {
         final String TASK_ON_ENTRY_ACTION_MVEL = "System.out.println(\"On Entry Action\");";
         final String TASK_ON_EXIT_ACTION_MVEL = "System.out.println(\"On Exit Action\");";
 
-        final String TASK_DATA_INPUT_OUTPUT_JAVA = "|input:String,GroupId:Object,Skippable:Object,Comment:Object,Description:Object,Priority:Object,CreatedBy:Object||output:String|[din]processGlobalVar->input,[dout]output->processGlobalVar";
-        final String TASK_DATA_INPUT_OUTPUT_JAVASCRIPT = "|input:String,Skippable:Object,GroupId:Object,Comment:Object,Description:Object,Priority:Object,CreatedBy:Object||output:String|[din]processGlobalVar->input,[dout]output->processGlobalVar";
-        final String TASK_DATA_INPUT_OUTPUT_MVEL = "|input:String,Skippable:Object,GroupId:Object,Comment:Object,Description:Object,Priority:Object,CreatedBy:Object||output:String|[din]processGlobalVar->input,[dout]output->processGlobalVar";
+        final String TASK_DATA_INPUT_OUTPUT_JAVA = "|input:String,Skippable:Object,GroupId:Object,Comment:Object,Description:Object,Priority:Object,CreatedBy:Object,Content:Object||output:String|[din]processGlobalVar->input,[dout]output->processGlobalVar";
+        final String TASK_DATA_INPUT_OUTPUT_JAVASCRIPT = "|input:String,Skippable:Object,GroupId:Object,Comment:Object,Description:Object,Priority:Object,CreatedBy:Object,Content:Object||output:String|[din]processGlobalVar->input,[dout]output->processGlobalVar";
+        final String TASK_DATA_INPUT_OUTPUT_MVEL = "|input:String,Skippable:Object,GroupId:Object,Comment:Object,Description:Object,Priority:Object,CreatedBy:Object,Content:Object||output:String|[din]processGlobalVar->input,[dout]output->processGlobalVar";
+
+        final String TASK_CONTENT_JAVA = "Content example. Top level. Java.";
+        final String TASK_CONTENT_JAVASCRIPT = "Content example. Top level. Javascript.";
+        final String TASK_CONTENT_MVEL = "Content example. Top level. MVEL.";
+        final String SLA_DUE_DATE = "25/12/1983";
 
         Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_TASK_FILE_PATH);
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
@@ -169,8 +294,9 @@ public class UserTaskTest extends Task<UserTask> {
                                    TASK_ON_ENTRY_ACTION_JAVA,
                                    TASK_SCRIPT_JAVA_LANGUAGE,
                                    TASK_ON_EXIT_ACTION_JAVA,
-                                   TASK_SCRIPT_JAVA_LANGUAGE
-        );
+                                   TASK_SCRIPT_JAVA_LANGUAGE,
+                                   TASK_CONTENT_JAVA,
+                                   SLA_DUE_DATE);
 
         UserTask filledTopLevelTaskJavascript = getTaskNodeById(diagram,
                                                                 FILLED_TOP_LEVEL_TASK_JAVASCRIPT_ID,
@@ -192,7 +318,9 @@ public class UserTaskTest extends Task<UserTask> {
                                    TASK_ON_ENTRY_ACTION_JAVASCRIPT,
                                    TASK_SCRIPT_JAVASCRIPT_LANGUAGE,
                                    TASK_ON_EXIT_ACTION_JAVASCRIPT,
-                                   TASK_SCRIPT_JAVASCRIPT_LANGUAGE);
+                                   TASK_SCRIPT_JAVASCRIPT_LANGUAGE,
+                                   TASK_CONTENT_JAVASCRIPT,
+                                   SLA_DUE_DATE);
 
         UserTask filledTopLevelTaskMvel = getTaskNodeById(diagram,
                                                           FILLED_TOP_LEVEL_TASK_MVEL_ID,
@@ -214,26 +342,276 @@ public class UserTaskTest extends Task<UserTask> {
                                    TASK_ON_ENTRY_ACTION_MVEL,
                                    TASK_SCRIPT_MVEL_LANGUAGE,
                                    TASK_ON_EXIT_ACTION_MVEL,
-                                   TASK_SCRIPT_MVEL_LANGUAGE);
+                                   TASK_SCRIPT_MVEL_LANGUAGE,
+                                   TASK_CONTENT_MVEL,
+                                   SLA_DUE_DATE);
     }
 
     @Test
     @Override
-    public void testUnmarshallTopLevelEmptyTaskProperties() throws Exception {
+    public void testUnmarshallTopLevelTaskOneIncomeFilledProperties() throws Exception {
+        final String TASK_NAME_JAVA = "Task02 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
+        final String TASK_DOCUMENTATION_JAVA = "Task02 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
+        final String TASK_TASK_NAME_JAVA = "Task02ImplExecName";
+        final String TASK_SUBJECT_JAVA = "subject02 ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
+        final String TASK_ACTORS_JAVA = "customUser";
+        final String TASK_GROUPS_JAVA = "customGroup";
+        final String TASK_PRIORITY_JAVA = "10";
+        final String TASK_DESCRIPTION_JAVA = "Task02 description\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
+        final String TASK_CREATED_BY_JAVA = "customUser";
+        final String TASK_ON_ENTRY_ACTION_JAVA = "System.out.println(\"On Entry Action\");";
+        final String TASK_ON_EXIT_ACTION_JAVA = "System.out.println(\"On Exit Action\");";
+
+        final String TASK_NAME_JAVASCRIPT = "Task05 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
+        final String TASK_DOCUMENTATION_JAVASCRIPT = "Task05 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
+        final String TASK_TASK_NAME_JAVASCRIPT = "Task05ImplExecName";
+        final String TASK_SUBJECT_JAVASCRIPT = "subject05 ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
+        final String TASK_ACTORS_JAVASCRIPT = "customUser";
+        final String TASK_GROUPS_JAVASCRIPT = "customGroup";
+        final String TASK_PRIORITY_JAVASCRIPT = "10";
+        final String TASK_DESCRIPTION_JAVASCRIPT = "Task05 description\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
+        final String TASK_CREATED_BY_JAVASCRIPT = "customUser";
+        final String TASK_ON_ENTRY_ACTION_JAVASCRIPT = "console.log(\"On Entry Action\");";
+        final String TASK_ON_EXIT_ACTION_JAVASCRIPT = "console.log(\"On Exit Action\");";
+
+        final String TASK_NAME_MVEL = "Task08 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
+        final String TASK_DOCUMENTATION_MVEL = "Task08 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
+        final String TASK_TASK_NAME_MVEL = "Task08ImplExecName";
+        final String TASK_SUBJECT_MVEL = "subject08 ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
+        final String TASK_ACTORS_MVEL = "customUser";
+        final String TASK_GROUPS_MVEL = "customGroup";
+        final String TASK_PRIORITY_MVEL = "10";
+        final String TASK_DESCRIPTION_MVEL = "Task08 description\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
+        final String TASK_CREATED_BY_MVEL = "customUser";
+        final String TASK_ON_ENTRY_ACTION_MVEL = "System.out.println(\"On Entry Action\");";
+        final String TASK_ON_EXIT_ACTION_MVEL = "System.out.println(\"On Exit Action\");";
+
+        final String TASK_DATA_INPUT_OUTPUT_JAVA = "|input:String,Skippable:Object,GroupId:Object,Comment:Object,Description:Object,Priority:Object,CreatedBy:Object,Content:Object||output:String|[din]processGlobalVar->input,[dout]output->processGlobalVar";
+        final String TASK_DATA_INPUT_OUTPUT_JAVASCRIPT = "|input:String,Skippable:Object,GroupId:Object,Comment:Object,Description:Object,Priority:Object,CreatedBy:Object,Content:Object||output:String|[din]processGlobalVar->input,[dout]output->processGlobalVar";
+        final String TASK_DATA_INPUT_OUTPUT_MVEL = "|input:String,Skippable:Object,GroupId:Object,Comment:Object,Description:Object,Priority:Object,CreatedBy:Object,Content:Object||output:String|[din]processGlobalVar->input,[dout]output->processGlobalVar";
+
+        final String TASK_CONTENT_JAVA = "Content example. Top level. One income. Java.";
+        final String TASK_CONTENT_JAVASCRIPT = "Content example. Top level. One income. Javascript.";
+        final String TASK_CONTENT_MVEL = "Content example. Top level. One income. MVEL.";
+        final String SLA_DUE_DATE = "25/12/1983";
+
+        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_TASK_FILE_PATH);
+        assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
+
+        UserTask filledTopLevelTaskJava = getTaskNodeById(diagram,
+                                                          FILLED_ONE_INCOME_TOP_LEVEL_TASK_JAVA_ID,
+                                                          ONE_INCOME_EDGE,
+                                                          HAS_OUTCOME_EDGE);
+        assertGeneralSet(filledTopLevelTaskJava.getGeneral(), TASK_NAME_JAVA, TASK_DOCUMENTATION_JAVA);
+        assertUserTaskExecutionSet(filledTopLevelTaskJava.getExecutionSet(),
+                                   TASK_TASK_NAME_JAVA,
+                                   TASK_SUBJECT_JAVA,
+                                   TASK_ACTORS_JAVA,
+                                   TASK_GROUPS_JAVA,
+                                   IS_ASYNC,
+                                   IS_SKIPPABLE,
+                                   TASK_PRIORITY_JAVA,
+                                   TASK_DESCRIPTION_JAVA,
+                                   TASK_CREATED_BY_JAVA,
+                                   AD_HOC_AUTOSTART,
+                                   TASK_DATA_INPUT_OUTPUT_JAVA,
+                                   TASK_ON_ENTRY_ACTION_JAVA,
+                                   TASK_SCRIPT_JAVA_LANGUAGE,
+                                   TASK_ON_EXIT_ACTION_JAVA,
+                                   TASK_SCRIPT_JAVA_LANGUAGE,
+                                   TASK_CONTENT_JAVA,
+                                   SLA_DUE_DATE);
+
+        UserTask filledTopLevelTaskJavascript = getTaskNodeById(diagram,
+                                                                FILLED_ONE_INCOME_TOP_LEVEL_TASK_JAVASCRIPT_ID,
+                                                                ONE_INCOME_EDGE,
+                                                                HAS_OUTCOME_EDGE);
+        assertGeneralSet(filledTopLevelTaskJavascript.getGeneral(), TASK_NAME_JAVASCRIPT, TASK_DOCUMENTATION_JAVASCRIPT);
+        assertUserTaskExecutionSet(filledTopLevelTaskJavascript.getExecutionSet(),
+                                   TASK_TASK_NAME_JAVASCRIPT,
+                                   TASK_SUBJECT_JAVASCRIPT,
+                                   TASK_ACTORS_JAVASCRIPT,
+                                   TASK_GROUPS_JAVASCRIPT,
+                                   IS_ASYNC,
+                                   IS_SKIPPABLE,
+                                   TASK_PRIORITY_JAVASCRIPT,
+                                   TASK_DESCRIPTION_JAVASCRIPT,
+                                   TASK_CREATED_BY_JAVASCRIPT,
+                                   AD_HOC_AUTOSTART,
+                                   TASK_DATA_INPUT_OUTPUT_JAVASCRIPT,
+                                   TASK_ON_ENTRY_ACTION_JAVASCRIPT,
+                                   TASK_SCRIPT_JAVASCRIPT_LANGUAGE,
+                                   TASK_ON_EXIT_ACTION_JAVASCRIPT,
+                                   TASK_SCRIPT_JAVASCRIPT_LANGUAGE,
+                                   TASK_CONTENT_JAVASCRIPT,
+                                   SLA_DUE_DATE);
+
+        UserTask filledTopLevelTaskMvel = getTaskNodeById(diagram,
+                                                          FILLED_ONE_INCOME_TOP_LEVEL_TASK_MVEL_ID,
+                                                          ONE_INCOME_EDGE,
+                                                          HAS_OUTCOME_EDGE);
+        assertGeneralSet(filledTopLevelTaskMvel.getGeneral(), TASK_NAME_MVEL, TASK_DOCUMENTATION_MVEL);
+        assertUserTaskExecutionSet(filledTopLevelTaskMvel.getExecutionSet(),
+                                   TASK_TASK_NAME_MVEL,
+                                   TASK_SUBJECT_MVEL,
+                                   TASK_ACTORS_MVEL,
+                                   TASK_GROUPS_MVEL,
+                                   IS_ASYNC,
+                                   IS_SKIPPABLE,
+                                   TASK_PRIORITY_MVEL,
+                                   TASK_DESCRIPTION_MVEL,
+                                   TASK_CREATED_BY_MVEL,
+                                   AD_HOC_AUTOSTART,
+                                   TASK_DATA_INPUT_OUTPUT_MVEL,
+                                   TASK_ON_ENTRY_ACTION_MVEL,
+                                   TASK_SCRIPT_MVEL_LANGUAGE,
+                                   TASK_ON_EXIT_ACTION_MVEL,
+                                   TASK_SCRIPT_MVEL_LANGUAGE,
+                                   TASK_CONTENT_MVEL,
+                                   SLA_DUE_DATE);
+    }
+
+    @Test
+    @Override
+    public void testUnmarshallTopLevelTaskTwoIncomesFilledProperties() throws Exception {
+        final String TASK_NAME_JAVA = "Task03 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
+        final String TASK_DOCUMENTATION_JAVA = "Task03 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
+        final String TASK_TASK_NAME_JAVA = "Task03ImplExecName";
+        final String TASK_SUBJECT_JAVA = "subject03 ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
+        final String TASK_ACTORS_JAVA = "customUser";
+        final String TASK_GROUPS_JAVA = "customGroup";
+        final String TASK_PRIORITY_JAVA = "10";
+        final String TASK_DESCRIPTION_JAVA = "Task03 description\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
+        final String TASK_CREATED_BY_JAVA = "customUser";
+        final String TASK_ON_ENTRY_ACTION_JAVA = "System.out.println(\"On Entry Action\");";
+        final String TASK_ON_EXIT_ACTION_JAVA = "System.out.println(\"On Exit Action\");";
+
+        final String TASK_NAME_JAVASCRIPT = "Task06 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
+        final String TASK_DOCUMENTATION_JAVASCRIPT = "Task06 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
+        final String TASK_TASK_NAME_JAVASCRIPT = "Task06ImplExecName";
+        final String TASK_SUBJECT_JAVASCRIPT = "subject06 ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
+        final String TASK_ACTORS_JAVASCRIPT = "customUser";
+        final String TASK_GROUPS_JAVASCRIPT = "customGroup";
+        final String TASK_PRIORITY_JAVASCRIPT = "10";
+        final String TASK_DESCRIPTION_JAVASCRIPT = "Task06 description\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
+        final String TASK_CREATED_BY_JAVASCRIPT = "customUser";
+        final String TASK_ON_ENTRY_ACTION_JAVASCRIPT = "console.log(\"On Entry Action\");";
+        final String TASK_ON_EXIT_ACTION_JAVASCRIPT = "console.log(\"On Exit Action\");";
+
+        final String TASK_NAME_MVEL = "Task09 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
+        final String TASK_DOCUMENTATION_MVEL = "Task09 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
+        final String TASK_TASK_NAME_MVEL = "Task09ImplExecName";
+        final String TASK_SUBJECT_MVEL = "subject09 ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
+        final String TASK_ACTORS_MVEL = "customUser";
+        final String TASK_GROUPS_MVEL = "customGroup";
+        final String TASK_PRIORITY_MVEL = "10";
+        final String TASK_DESCRIPTION_MVEL = "Task09 description\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
+        final String TASK_CREATED_BY_MVEL = "customUser";
+        final String TASK_ON_ENTRY_ACTION_MVEL = "System.out.println(\"On Entry Action\");";
+        final String TASK_ON_EXIT_ACTION_MVEL = "System.out.println(\"On Exit Action\");";
+
+        final String TASK_DATA_INPUT_OUTPUT_JAVA = "|input:String,Skippable:Object,GroupId:Object,Comment:Object,Description:Object,Priority:Object,CreatedBy:Object,Content:Object||output:String|[din]processGlobalVar->input,[dout]output->processGlobalVar";
+        final String TASK_DATA_INPUT_OUTPUT_JAVASCRIPT = "|input:String,Skippable:Object,GroupId:Object,Comment:Object,Description:Object,Priority:Object,CreatedBy:Object,Content:Object||output:String|[din]processGlobalVar->input,[dout]output->processGlobalVar";
+        final String TASK_DATA_INPUT_OUTPUT_MVEL = "|input:String,Skippable:Object,GroupId:Object,Comment:Object,Description:Object,Priority:Object,CreatedBy:Object,Content:Object||output:String|[din]processGlobalVar->input,[dout]output->processGlobalVar";
+
+        final String TASK_CONTENT_JAVA = "Content example. Top level. Two incomes. Java.";
+        final String TASK_CONTENT_JAVASCRIPT = "Content example. Top level. Two incomes. Javascript.";
+        final String TASK_CONTENT_MVEL = "Content example. Top level. Two incomes. MVEL.";
+        final String SLA_DUE_DATE = "25/12/1983";
+
+        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_TASK_FILE_PATH);
+        assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
+
+        UserTask filledTopLevelTaskJava = getTaskNodeById(diagram,
+                                                          FILLED_TWO_INCOMES_TOP_LEVEL_TASK_JAVA_ID,
+                                                          TWO_INCOME_EDGES,
+                                                          HAS_OUTCOME_EDGE);
+        assertGeneralSet(filledTopLevelTaskJava.getGeneral(), TASK_NAME_JAVA, TASK_DOCUMENTATION_JAVA);
+        assertUserTaskExecutionSet(filledTopLevelTaskJava.getExecutionSet(),
+                                   TASK_TASK_NAME_JAVA,
+                                   TASK_SUBJECT_JAVA,
+                                   TASK_ACTORS_JAVA,
+                                   TASK_GROUPS_JAVA,
+                                   IS_ASYNC,
+                                   IS_SKIPPABLE,
+                                   TASK_PRIORITY_JAVA,
+                                   TASK_DESCRIPTION_JAVA,
+                                   TASK_CREATED_BY_JAVA,
+                                   AD_HOC_AUTOSTART,
+                                   TASK_DATA_INPUT_OUTPUT_JAVA,
+                                   TASK_ON_ENTRY_ACTION_JAVA,
+                                   TASK_SCRIPT_JAVA_LANGUAGE,
+                                   TASK_ON_EXIT_ACTION_JAVA,
+                                   TASK_SCRIPT_JAVA_LANGUAGE,
+                                   TASK_CONTENT_JAVA,
+                                   SLA_DUE_DATE);
+
+        UserTask filledTopLevelTaskJavascript = getTaskNodeById(diagram,
+                                                                FILLED_TWO_INCOMES_TOP_LEVEL_TASK_JAVASCRIPT_ID,
+                                                                TWO_INCOME_EDGES,
+                                                                HAS_OUTCOME_EDGE);
+        assertGeneralSet(filledTopLevelTaskJavascript.getGeneral(), TASK_NAME_JAVASCRIPT, TASK_DOCUMENTATION_JAVASCRIPT);
+        assertUserTaskExecutionSet(filledTopLevelTaskJavascript.getExecutionSet(),
+                                   TASK_TASK_NAME_JAVASCRIPT,
+                                   TASK_SUBJECT_JAVASCRIPT,
+                                   TASK_ACTORS_JAVASCRIPT,
+                                   TASK_GROUPS_JAVASCRIPT,
+                                   IS_ASYNC,
+                                   IS_SKIPPABLE,
+                                   TASK_PRIORITY_JAVASCRIPT,
+                                   TASK_DESCRIPTION_JAVASCRIPT,
+                                   TASK_CREATED_BY_JAVASCRIPT,
+                                   AD_HOC_AUTOSTART,
+                                   TASK_DATA_INPUT_OUTPUT_JAVASCRIPT,
+                                   TASK_ON_ENTRY_ACTION_JAVASCRIPT,
+                                   TASK_SCRIPT_JAVASCRIPT_LANGUAGE,
+                                   TASK_ON_EXIT_ACTION_JAVASCRIPT,
+                                   TASK_SCRIPT_JAVASCRIPT_LANGUAGE,
+                                   TASK_CONTENT_JAVASCRIPT,
+                                   SLA_DUE_DATE);
+
+        UserTask filledTopLevelTaskMvel = getTaskNodeById(diagram,
+                                                          FILLED_TWO_INCOMES_TOP_LEVEL_TASK_MVEL_ID,
+                                                          TWO_INCOME_EDGES,
+                                                          HAS_OUTCOME_EDGE);
+        assertGeneralSet(filledTopLevelTaskMvel.getGeneral(), TASK_NAME_MVEL, TASK_DOCUMENTATION_MVEL);
+        assertUserTaskExecutionSet(filledTopLevelTaskMvel.getExecutionSet(),
+                                   TASK_TASK_NAME_MVEL,
+                                   TASK_SUBJECT_MVEL,
+                                   TASK_ACTORS_MVEL,
+                                   TASK_GROUPS_MVEL,
+                                   IS_ASYNC,
+                                   IS_SKIPPABLE,
+                                   TASK_PRIORITY_MVEL,
+                                   TASK_DESCRIPTION_MVEL,
+                                   TASK_CREATED_BY_MVEL,
+                                   AD_HOC_AUTOSTART,
+                                   TASK_DATA_INPUT_OUTPUT_MVEL,
+                                   TASK_ON_ENTRY_ACTION_MVEL,
+                                   TASK_SCRIPT_MVEL_LANGUAGE,
+                                   TASK_ON_EXIT_ACTION_MVEL,
+                                   TASK_SCRIPT_MVEL_LANGUAGE,
+                                   TASK_CONTENT_MVEL,
+                                   SLA_DUE_DATE);
+    }
+
+    @Test
+    @Override
+    public void testUnmarshallSubprocessLevelTaskEmptyProperties() throws Exception {
         // cannot be empty
-        final String TASK_NAME = "Task_1";
+        final String TASK_NAME = "Task_4";
         // cannot be empty
         final String TASK_TASK_NAME = "Task";
 
         Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_TASK_FILE_PATH);
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        UserTask emptyTopLevelTask = getTaskNodeById(diagram,
-                                                     EMPTY_TOP_LEVEL_TASK_ID,
-                                                     ZERO_INCOME_EDGES,
-                                                     HAS_NO_OUTCOME_EDGE);
-        assertGeneralSet(emptyTopLevelTask.getGeneral(), TASK_NAME, EMPTY_VALUE);
-        assertUserTaskExecutionSet(emptyTopLevelTask.getExecutionSet(),
+        UserTask emptySubprocessLevelTask = getTaskNodeById(diagram,
+                                                            EMPTY_SUBPROCESS_LEVEL_TASK_ID,
+                                                            ZERO_INCOME_EDGES,
+                                                            HAS_NO_OUTCOME_EDGE);
+        assertGeneralSet(emptySubprocessLevelTask.getGeneral(), TASK_NAME, EMPTY_VALUE);
+        assertUserTaskExecutionSet(emptySubprocessLevelTask.getExecutionSet(),
                                    TASK_TASK_NAME,
                                    EMPTY_VALUE,
                                    EMPTY_VALUE,
@@ -248,7 +626,83 @@ public class UserTaskTest extends Task<UserTask> {
                                    EMPTY_VALUE,
                                    TASK_SCRIPT_JAVA_LANGUAGE,
                                    EMPTY_VALUE,
-                                   TASK_SCRIPT_JAVA_LANGUAGE
+                                   TASK_SCRIPT_JAVA_LANGUAGE,
+                                   EMPTY_VALUE,
+                                   EMPTY_VALUE
+        );
+    }
+
+    @Test
+    @Override
+    public void testUnmarshallSubprocessLevelTaskOneIncomeEmptyProperties() throws Exception {
+        // cannot be empty
+        final String TASK_NAME = "Task_5";
+        // cannot be empty
+        final String TASK_TASK_NAME = "Task";
+
+        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_TASK_FILE_PATH);
+        assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
+
+        UserTask emptySubprocessLevelTask = getTaskNodeById(diagram,
+                                                            EMPTY_ONE_INCOME_SUBPROCESS_LEVEL_TASK_ID,
+                                                            ONE_INCOME_EDGE,
+                                                            HAS_OUTCOME_EDGE);
+        assertGeneralSet(emptySubprocessLevelTask.getGeneral(), TASK_NAME, EMPTY_VALUE);
+        assertUserTaskExecutionSet(emptySubprocessLevelTask.getExecutionSet(),
+                                   TASK_TASK_NAME,
+                                   EMPTY_VALUE,
+                                   EMPTY_VALUE,
+                                   EMPTY_VALUE,
+                                   IS_NOT_ASYNC,
+                                   IS_NOT_SKIPPABLE,
+                                   EMPTY_VALUE,
+                                   EMPTY_VALUE,
+                                   EMPTY_VALUE,
+                                   NOT_AD_HOC_AUTOSTART,
+                                   EMPTY_TASK_DATA_INPUT_OUTPUT,
+                                   EMPTY_VALUE,
+                                   TASK_SCRIPT_JAVA_LANGUAGE,
+                                   EMPTY_VALUE,
+                                   TASK_SCRIPT_JAVA_LANGUAGE,
+                                   EMPTY_VALUE,
+                                   EMPTY_VALUE
+        );
+    }
+
+    @Test
+    @Override
+    public void testUnmarshallSubprocessLevelTaskTwoIncomesEmptyProperties() throws Exception {
+        // cannot be empty
+        final String TASK_NAME = "Task_6";
+        // cannot be empty
+        final String TASK_TASK_NAME = "Task";
+
+        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_TASK_FILE_PATH);
+        assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
+
+        UserTask emptySubprocessLevelTask = getTaskNodeById(diagram,
+                                                            EMPTY_TWO_INCOMES_SUBPROCESS_LEVEL_TASK_ID,
+                                                            TWO_INCOME_EDGES,
+                                                            HAS_OUTCOME_EDGE);
+        assertGeneralSet(emptySubprocessLevelTask.getGeneral(), TASK_NAME, EMPTY_VALUE);
+        assertUserTaskExecutionSet(emptySubprocessLevelTask.getExecutionSet(),
+                                   TASK_TASK_NAME,
+                                   EMPTY_VALUE,
+                                   EMPTY_VALUE,
+                                   EMPTY_VALUE,
+                                   IS_NOT_ASYNC,
+                                   IS_NOT_SKIPPABLE,
+                                   EMPTY_VALUE,
+                                   EMPTY_VALUE,
+                                   EMPTY_VALUE,
+                                   NOT_AD_HOC_AUTOSTART,
+                                   EMPTY_TASK_DATA_INPUT_OUTPUT,
+                                   EMPTY_VALUE,
+                                   TASK_SCRIPT_JAVA_LANGUAGE,
+                                   EMPTY_VALUE,
+                                   TASK_SCRIPT_JAVA_LANGUAGE,
+                                   EMPTY_VALUE,
+                                   EMPTY_VALUE
         );
     }
 
@@ -291,9 +745,14 @@ public class UserTaskTest extends Task<UserTask> {
         final String TASK_ON_ENTRY_ACTION_MVEL = "System.out.println(\"On Entry Action\");";
         final String TASK_ON_EXIT_ACTION_MVEL = "System.out.println(\"On Exit Action\");";
 
-        final String TASK_DATA_INPUT_OUTPUT_JAVA = "|input:String,Skippable:Object,GroupId:Object,Comment:Object,Description:Object,Priority:Object,CreatedBy:Object||output:String|[din]processGlobalVar->input,[dout]output->processGlobalVar";
-        final String TASK_DATA_INPUT_OUTPUT_JAVASCRIPT = "|input:String,Skippable:Object,GroupId:Object,Comment:Object,Description:Object,Priority:Object,CreatedBy:Object||output:String|[din]processGlobalVar->input,[dout]output->processGlobalVar";
-        final String TASK_DATA_INPUT_OUTPUT_MVEL = "|input:String,Skippable:Object,GroupId:Object,Comment:Object,Description:Object,Priority:Object,CreatedBy:Object||output:String|[din]processGlobalVar->input,[dout]output->processGlobalVar";
+        final String TASK_DATA_INPUT_OUTPUT_JAVA = "|input:String,Skippable:Object,GroupId:Object,Comment:Object,Description:Object,Priority:Object,CreatedBy:Object,Content:Object||output:String|[din]processGlobalVar->input,[dout]output->processGlobalVar";
+        final String TASK_DATA_INPUT_OUTPUT_JAVASCRIPT = "|input:String,Skippable:Object,GroupId:Object,Comment:Object,Description:Object,Priority:Object,CreatedBy:Object,Content:Object||output:String|[din]processGlobalVar->input,[dout]output->processGlobalVar";
+        final String TASK_DATA_INPUT_OUTPUT_MVEL = "|input:String,Skippable:Object,GroupId:Object,Comment:Object,Description:Object,Priority:Object,CreatedBy:Object,Content:Object||output:String|[din]processGlobalVar->input,[dout]output->processGlobalVar";
+
+        final String TASK_CONTENT_JAVA = "Content example. Sub-Process level. Java.";
+        final String TASK_CONTENT_JAVASCRIPT = "Content example. Sub-Process level. Javascript.";
+        final String TASK_CONTENT_MVEL = "Content example. Sub-Process level. MVEL.";
+        final String SLA_DUE_DATE = "25/12/1983";
 
         Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_TASK_FILE_PATH);
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
@@ -318,8 +777,9 @@ public class UserTaskTest extends Task<UserTask> {
                                    TASK_ON_ENTRY_ACTION_JAVA,
                                    TASK_SCRIPT_JAVA_LANGUAGE,
                                    TASK_ON_EXIT_ACTION_JAVA,
-                                   TASK_SCRIPT_JAVA_LANGUAGE
-        );
+                                   TASK_SCRIPT_JAVA_LANGUAGE,
+                                   TASK_CONTENT_JAVA,
+                                   SLA_DUE_DATE);
 
         UserTask filledSubprocessLevelTaskJavascript = getTaskNodeById(diagram,
                                                                        FILLED_SUBPROCESS_LEVEL_TASK_JAVASCRIPT_ID,
@@ -341,7 +801,9 @@ public class UserTaskTest extends Task<UserTask> {
                                    TASK_ON_ENTRY_ACTION_JAVASCRIPT,
                                    TASK_SCRIPT_JAVASCRIPT_LANGUAGE,
                                    TASK_ON_EXIT_ACTION_JAVASCRIPT,
-                                   TASK_SCRIPT_JAVASCRIPT_LANGUAGE);
+                                   TASK_SCRIPT_JAVASCRIPT_LANGUAGE,
+                                   TASK_CONTENT_JAVASCRIPT,
+                                   SLA_DUE_DATE);
 
         UserTask filledSubprocessLevelTaskMvel = getTaskNodeById(diagram,
                                                                  FILLED_SUBPROCESS_LEVEL_TASK_MVEL_ID,
@@ -363,226 +825,9 @@ public class UserTaskTest extends Task<UserTask> {
                                    TASK_ON_ENTRY_ACTION_MVEL,
                                    TASK_SCRIPT_MVEL_LANGUAGE,
                                    TASK_ON_EXIT_ACTION_MVEL,
-                                   TASK_SCRIPT_MVEL_LANGUAGE);
-    }
-
-    @Test
-    @Override
-    public void testUnmarshallSubprocessLevelTaskEmptyProperties() throws Exception {
-        // cannot be empty
-        final String TASK_NAME = "Task_4";
-        // cannot be empty
-        final String TASK_TASK_NAME = "Task";
-
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_TASK_FILE_PATH);
-        assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
-
-        UserTask emptySubprocessLevelTask = getTaskNodeById(diagram,
-                                                            EMPTY_SUBPROCESS_LEVEL_TASK_ID,
-                                                            ZERO_INCOME_EDGES,
-                                                            HAS_NO_OUTCOME_EDGE);
-        assertGeneralSet(emptySubprocessLevelTask.getGeneral(), TASK_NAME, EMPTY_VALUE);
-        assertUserTaskExecutionSet(emptySubprocessLevelTask.getExecutionSet(),
-                                   TASK_TASK_NAME,
-                                   EMPTY_VALUE,
-                                   EMPTY_VALUE,
-                                   EMPTY_VALUE,
-                                   IS_NOT_ASYNC,
-                                   IS_NOT_SKIPPABLE,
-                                   EMPTY_VALUE,
-                                   EMPTY_VALUE,
-                                   EMPTY_VALUE,
-                                   NOT_AD_HOC_AUTOSTART,
-                                   EMPTY_TASK_DATA_INPUT_OUTPUT,
-                                   EMPTY_VALUE,
-                                   TASK_SCRIPT_JAVA_LANGUAGE,
-                                   EMPTY_VALUE,
-                                   TASK_SCRIPT_JAVA_LANGUAGE
-        );
-    }
-
-    @Test
-    @Override
-    public void testUnmarshallTopLevelTaskOneIncomeFilledProperties() throws Exception {
-        final String TASK_NAME_JAVA = "Task02 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
-        final String TASK_DOCUMENTATION_JAVA = "Task02 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
-        final String TASK_TASK_NAME_JAVA = "Task02ImplExecName";
-        final String TASK_SUBJECT_JAVA = "subject02 ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
-        final String TASK_ACTORS_JAVA = "customUser";
-        final String TASK_GROUPS_JAVA = "customGroup";
-        final String TASK_PRIORITY_JAVA = "10";
-        final String TASK_DESCRIPTION_JAVA = "Task02 description\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
-        final String TASK_CREATED_BY_JAVA = "customUser";
-        final String TASK_ON_ENTRY_ACTION_JAVA = "System.out.println(\"On Entry Action\");";
-        final String TASK_ON_EXIT_ACTION_JAVA = "System.out.println(\"On Exit Action\");";
-
-        final String TASK_NAME_JAVASCRIPT = "Task05 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
-        final String TASK_DOCUMENTATION_JAVASCRIPT = "Task05 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
-        final String TASK_TASK_NAME_JAVASCRIPT = "Task05ImplExecName";
-        final String TASK_SUBJECT_JAVASCRIPT = "subject05 ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
-        final String TASK_ACTORS_JAVASCRIPT = "customUser";
-        final String TASK_GROUPS_JAVASCRIPT = "customGroup";
-        final String TASK_PRIORITY_JAVASCRIPT = "10";
-        final String TASK_DESCRIPTION_JAVASCRIPT = "Task05 description\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
-        final String TASK_CREATED_BY_JAVASCRIPT = "customUser";
-        final String TASK_ON_ENTRY_ACTION_JAVASCRIPT = "console.log(\"On Entry Action\");";
-        final String TASK_ON_EXIT_ACTION_JAVASCRIPT = "console.log(\"On Exit Action\");";
-
-        final String TASK_NAME_MVEL = "Task08 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
-        final String TASK_DOCUMENTATION_MVEL = "Task08 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
-        final String TASK_TASK_NAME_MVEL = "Task08ImplExecName";
-        final String TASK_SUBJECT_MVEL = "subject08 ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
-        final String TASK_ACTORS_MVEL = "customUser";
-        final String TASK_GROUPS_MVEL = "customGroup";
-        final String TASK_PRIORITY_MVEL = "10";
-        final String TASK_DESCRIPTION_MVEL = "Task08 description\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
-        final String TASK_CREATED_BY_MVEL = "customUser";
-        final String TASK_ON_ENTRY_ACTION_MVEL = "System.out.println(\"On Entry Action\");";
-        final String TASK_ON_EXIT_ACTION_MVEL = "System.out.println(\"On Exit Action\");";
-
-        final String TASK_DATA_INPUT_OUTPUT_JAVA = "|input:String,Skippable:Object,GroupId:Object,Comment:Object,Description:Object,Priority:Object,CreatedBy:Object||output:String|[din]processGlobalVar->input,[dout]output->processGlobalVar";
-        final String TASK_DATA_INPUT_OUTPUT_JAVASCRIPT = "|input:String,Skippable:Object,GroupId:Object,Comment:Object,Description:Object,Priority:Object,CreatedBy:Object||output:String|[din]processGlobalVar->input,[dout]output->processGlobalVar";
-        final String TASK_DATA_INPUT_OUTPUT_MVEL = "|input:String,Skippable:Object,GroupId:Object,Comment:Object,Description:Object,Priority:Object,CreatedBy:Object||output:String|[din]processGlobalVar->input,[dout]output->processGlobalVar";
-
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_TASK_FILE_PATH);
-        assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
-
-        UserTask filledTopLevelTaskJava = getTaskNodeById(diagram,
-                                                          FILLED_ONE_INCOME_TOP_LEVEL_TASK_JAVA_ID,
-                                                          ONE_INCOME_EDGE,
-                                                          HAS_OUTCOME_EDGE);
-        assertGeneralSet(filledTopLevelTaskJava.getGeneral(), TASK_NAME_JAVA, TASK_DOCUMENTATION_JAVA);
-        assertUserTaskExecutionSet(filledTopLevelTaskJava.getExecutionSet(),
-                                   TASK_TASK_NAME_JAVA,
-                                   TASK_SUBJECT_JAVA,
-                                   TASK_ACTORS_JAVA,
-                                   TASK_GROUPS_JAVA,
-                                   IS_ASYNC,
-                                   IS_SKIPPABLE,
-                                   TASK_PRIORITY_JAVA,
-                                   TASK_DESCRIPTION_JAVA,
-                                   TASK_CREATED_BY_JAVA,
-                                   AD_HOC_AUTOSTART,
-                                   TASK_DATA_INPUT_OUTPUT_JAVA,
-                                   TASK_ON_ENTRY_ACTION_JAVA,
-                                   TASK_SCRIPT_JAVA_LANGUAGE,
-                                   TASK_ON_EXIT_ACTION_JAVA,
-                                   TASK_SCRIPT_JAVA_LANGUAGE
-        );
-
-        UserTask filledTopLevelTaskJavascript = getTaskNodeById(diagram,
-                                                                FILLED_ONE_INCOME_TOP_LEVEL_TASK_JAVASCRIPT_ID,
-                                                                ONE_INCOME_EDGE,
-                                                                HAS_OUTCOME_EDGE);
-        assertGeneralSet(filledTopLevelTaskJavascript.getGeneral(), TASK_NAME_JAVASCRIPT, TASK_DOCUMENTATION_JAVASCRIPT);
-        assertUserTaskExecutionSet(filledTopLevelTaskJavascript.getExecutionSet(),
-                                   TASK_TASK_NAME_JAVASCRIPT,
-                                   TASK_SUBJECT_JAVASCRIPT,
-                                   TASK_ACTORS_JAVASCRIPT,
-                                   TASK_GROUPS_JAVASCRIPT,
-                                   IS_ASYNC,
-                                   IS_SKIPPABLE,
-                                   TASK_PRIORITY_JAVASCRIPT,
-                                   TASK_DESCRIPTION_JAVASCRIPT,
-                                   TASK_CREATED_BY_JAVASCRIPT,
-                                   AD_HOC_AUTOSTART,
-                                   TASK_DATA_INPUT_OUTPUT_JAVASCRIPT,
-                                   TASK_ON_ENTRY_ACTION_JAVASCRIPT,
-                                   TASK_SCRIPT_JAVASCRIPT_LANGUAGE,
-                                   TASK_ON_EXIT_ACTION_JAVASCRIPT,
-                                   TASK_SCRIPT_JAVASCRIPT_LANGUAGE);
-
-        UserTask filledTopLevelTaskMvel = getTaskNodeById(diagram,
-                                                          FILLED_ONE_INCOME_TOP_LEVEL_TASK_MVEL_ID,
-                                                          ONE_INCOME_EDGE,
-                                                          HAS_OUTCOME_EDGE);
-        assertGeneralSet(filledTopLevelTaskMvel.getGeneral(), TASK_NAME_MVEL, TASK_DOCUMENTATION_MVEL);
-        assertUserTaskExecutionSet(filledTopLevelTaskMvel.getExecutionSet(),
-                                   TASK_TASK_NAME_MVEL,
-                                   TASK_SUBJECT_MVEL,
-                                   TASK_ACTORS_MVEL,
-                                   TASK_GROUPS_MVEL,
-                                   IS_ASYNC,
-                                   IS_SKIPPABLE,
-                                   TASK_PRIORITY_MVEL,
-                                   TASK_DESCRIPTION_MVEL,
-                                   TASK_CREATED_BY_MVEL,
-                                   AD_HOC_AUTOSTART,
-                                   TASK_DATA_INPUT_OUTPUT_MVEL,
-                                   TASK_ON_ENTRY_ACTION_MVEL,
                                    TASK_SCRIPT_MVEL_LANGUAGE,
-                                   TASK_ON_EXIT_ACTION_MVEL,
-                                   TASK_SCRIPT_MVEL_LANGUAGE);
-    }
-
-    @Test
-    @Override
-    public void testUnmarshallTopLevelTaskOneIncomeEmptyProperties() throws Exception {
-        // cannot be empty
-        final String TASK_NAME = "Task_2";
-        // cannot be empty
-        final String TASK_TASK_NAME = "Task";
-
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_TASK_FILE_PATH);
-        assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
-
-        UserTask emptyTopLevelTask = getTaskNodeById(diagram,
-                                                     EMPTY_ONE_INCOME_TOP_LEVEL_TASK_ID,
-                                                     ONE_INCOME_EDGE,
-                                                     HAS_OUTCOME_EDGE);
-        assertGeneralSet(emptyTopLevelTask.getGeneral(), TASK_NAME, EMPTY_VALUE);
-        assertUserTaskExecutionSet(emptyTopLevelTask.getExecutionSet(),
-                                   TASK_TASK_NAME,
-                                   EMPTY_VALUE,
-                                   EMPTY_VALUE,
-                                   EMPTY_VALUE,
-                                   IS_NOT_ASYNC,
-                                   IS_NOT_SKIPPABLE,
-                                   EMPTY_VALUE,
-                                   EMPTY_VALUE,
-                                   EMPTY_VALUE,
-                                   NOT_AD_HOC_AUTOSTART,
-                                   EMPTY_TASK_DATA_INPUT_OUTPUT,
-                                   EMPTY_VALUE,
-                                   TASK_SCRIPT_JAVA_LANGUAGE,
-                                   EMPTY_VALUE,
-                                   TASK_SCRIPT_JAVA_LANGUAGE
-        );
-    }
-
-    @Test
-    @Override
-    public void testUnmarshallSubprocessLevelTaskOneIncomeEmptyProperties() throws Exception {
-        // cannot be empty
-        final String TASK_NAME = "Task_5";
-        // cannot be empty
-        final String TASK_TASK_NAME = "Task";
-
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_TASK_FILE_PATH);
-        assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
-
-        UserTask emptySubprocessLevelTask = getTaskNodeById(diagram,
-                                                            EMPTY_ONE_INCOME_SUBPROCESS_LEVEL_TASK_ID,
-                                                            ONE_INCOME_EDGE,
-                                                            HAS_OUTCOME_EDGE);
-        assertGeneralSet(emptySubprocessLevelTask.getGeneral(), TASK_NAME, EMPTY_VALUE);
-        assertUserTaskExecutionSet(emptySubprocessLevelTask.getExecutionSet(),
-                                   TASK_TASK_NAME,
-                                   EMPTY_VALUE,
-                                   EMPTY_VALUE,
-                                   EMPTY_VALUE,
-                                   IS_NOT_ASYNC,
-                                   IS_NOT_SKIPPABLE,
-                                   EMPTY_VALUE,
-                                   EMPTY_VALUE,
-                                   EMPTY_VALUE,
-                                   NOT_AD_HOC_AUTOSTART,
-                                   EMPTY_TASK_DATA_INPUT_OUTPUT,
-                                   EMPTY_VALUE,
-                                   TASK_SCRIPT_JAVA_LANGUAGE,
-                                   EMPTY_VALUE,
-                                   TASK_SCRIPT_JAVA_LANGUAGE
-        );
+                                   TASK_CONTENT_MVEL,
+                                   SLA_DUE_DATE);
     }
 
     @Test
@@ -624,9 +869,14 @@ public class UserTaskTest extends Task<UserTask> {
         final String TASK_ON_ENTRY_ACTION_MVEL = "System.out.println(\"On Entry Action\");";
         final String TASK_ON_EXIT_ACTION_MVEL = "System.out.println(\"On Exit Action\");";
 
-        final String TASK_DATA_INPUT_OUTPUT_JAVA = "|input:String,Skippable:Object,GroupId:Object,Comment:Object,Description:Object,Priority:Object,CreatedBy:Object||output:String|[din]processGlobalVar->input,[dout]output->processGlobalVar";
-        final String TASK_DATA_INPUT_OUTPUT_JAVASCRIPT = "|input:String,Skippable:Object,GroupId:Object,Comment:Object,Description:Object,Priority:Object,CreatedBy:Object||output:String|[din]processGlobalVar->input,[dout]output->processGlobalVar";
-        final String TASK_DATA_INPUT_OUTPUT_MVEL = "|input:String,Skippable:Object,GroupId:Object,Comment:Object,Description:Object,Priority:Object,CreatedBy:Object||output:String|[din]processGlobalVar->input,[dout]output->processGlobalVar";
+        final String TASK_DATA_INPUT_OUTPUT_JAVA = "|input:String,Skippable:Object,GroupId:Object,Comment:Object,Description:Object,Priority:Object,CreatedBy:Object,Content:Object||output:String|[din]processGlobalVar->input,[dout]output->processGlobalVar";
+        final String TASK_DATA_INPUT_OUTPUT_JAVASCRIPT = "|input:String,Skippable:Object,GroupId:Object,Comment:Object,Description:Object,Priority:Object,CreatedBy:Object,Content:Object||output:String|[din]processGlobalVar->input,[dout]output->processGlobalVar";
+        final String TASK_DATA_INPUT_OUTPUT_MVEL = "|input:String,Skippable:Object,GroupId:Object,Comment:Object,Description:Object,Priority:Object,CreatedBy:Object,Content:Object||output:String|[din]processGlobalVar->input,[dout]output->processGlobalVar";
+
+        final String TASK_CONTENT_JAVA = "Content example. Sub-Process level. One income. Java.";
+        final String TASK_CONTENT_JAVASCRIPT = "Content example. Sub-Process level. One income. Javascript.";
+        final String TASK_CONTENT_MVEL = "Content example. Sub-Process level. One income. MVEL.";
+        final String SLA_DUE_DATE = "25/12/1983";
 
         Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_TASK_FILE_PATH);
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
@@ -651,8 +901,9 @@ public class UserTaskTest extends Task<UserTask> {
                                    TASK_ON_ENTRY_ACTION_JAVA,
                                    TASK_SCRIPT_JAVA_LANGUAGE,
                                    TASK_ON_EXIT_ACTION_JAVA,
-                                   TASK_SCRIPT_JAVA_LANGUAGE
-        );
+                                   TASK_SCRIPT_JAVA_LANGUAGE,
+                                   TASK_CONTENT_JAVA,
+                                   SLA_DUE_DATE);
 
         UserTask filledSubprocessLevelTaskJavascript = getTaskNodeById(diagram,
                                                                        FILLED_ONE_INCOME_SUBPROCESS_LEVEL_TASK_JAVASCRIPT_ID,
@@ -674,7 +925,9 @@ public class UserTaskTest extends Task<UserTask> {
                                    TASK_ON_ENTRY_ACTION_JAVASCRIPT,
                                    TASK_SCRIPT_JAVASCRIPT_LANGUAGE,
                                    TASK_ON_EXIT_ACTION_JAVASCRIPT,
-                                   TASK_SCRIPT_JAVASCRIPT_LANGUAGE);
+                                   TASK_SCRIPT_JAVASCRIPT_LANGUAGE,
+                                   TASK_CONTENT_JAVASCRIPT,
+                                   SLA_DUE_DATE);
 
         UserTask filledSubprocessLevelTaskMvel = getTaskNodeById(diagram,
                                                                  FILLED_ONE_INCOME_SUBPROCESS_LEVEL_TASK_MVEL_ID,
@@ -696,191 +949,9 @@ public class UserTaskTest extends Task<UserTask> {
                                    TASK_ON_ENTRY_ACTION_MVEL,
                                    TASK_SCRIPT_MVEL_LANGUAGE,
                                    TASK_ON_EXIT_ACTION_MVEL,
-                                   TASK_SCRIPT_MVEL_LANGUAGE);
-    }
-
-    @Test
-    @Override
-    public void testUnmarshallTopLevelTaskTwoIncomesFilledProperties() throws Exception {
-        final String TASK_NAME_JAVA = "Task03 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
-        final String TASK_DOCUMENTATION_JAVA = "Task03 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
-        final String TASK_TASK_NAME_JAVA = "Task03ImplExecName";
-        final String TASK_SUBJECT_JAVA = "subject03 ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
-        final String TASK_ACTORS_JAVA = "customUser";
-        final String TASK_GROUPS_JAVA = "customGroup";
-        final String TASK_PRIORITY_JAVA = "10";
-        final String TASK_DESCRIPTION_JAVA = "Task03 description\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
-        final String TASK_CREATED_BY_JAVA = "customUser";
-        final String TASK_ON_ENTRY_ACTION_JAVA = "System.out.println(\"On Entry Action\");";
-        final String TASK_ON_EXIT_ACTION_JAVA = "System.out.println(\"On Exit Action\");";
-
-        final String TASK_NAME_JAVASCRIPT = "Task06 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
-        final String TASK_DOCUMENTATION_JAVASCRIPT = "Task06 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
-        final String TASK_TASK_NAME_JAVASCRIPT = "Task06ImplExecName";
-        final String TASK_SUBJECT_JAVASCRIPT = "subject06 ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
-        final String TASK_ACTORS_JAVASCRIPT = "customUser";
-        final String TASK_GROUPS_JAVASCRIPT = "customGroup";
-        final String TASK_PRIORITY_JAVASCRIPT = "10";
-        final String TASK_DESCRIPTION_JAVASCRIPT = "Task06 description\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
-        final String TASK_CREATED_BY_JAVASCRIPT = "customUser";
-        final String TASK_ON_ENTRY_ACTION_JAVASCRIPT = "console.log(\"On Entry Action\");";
-        final String TASK_ON_EXIT_ACTION_JAVASCRIPT = "console.log(\"On Exit Action\");";
-
-        final String TASK_NAME_MVEL = "Task09 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
-        final String TASK_DOCUMENTATION_MVEL = "Task09 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
-        final String TASK_TASK_NAME_MVEL = "Task09ImplExecName";
-        final String TASK_SUBJECT_MVEL = "subject09 ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
-        final String TASK_ACTORS_MVEL = "customUser";
-        final String TASK_GROUPS_MVEL = "customGroup";
-        final String TASK_PRIORITY_MVEL = "10";
-        final String TASK_DESCRIPTION_MVEL = "Task09 description\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
-        final String TASK_CREATED_BY_MVEL = "customUser";
-        final String TASK_ON_ENTRY_ACTION_MVEL = "System.out.println(\"On Entry Action\");";
-        final String TASK_ON_EXIT_ACTION_MVEL = "System.out.println(\"On Exit Action\");";
-
-        final String TASK_DATA_INPUT_OUTPUT_JAVA = "|input:String,Skippable:Object,GroupId:Object,Comment:Object,Description:Object,Priority:Object,CreatedBy:Object||output:String|[din]processGlobalVar->input,[dout]output->processGlobalVar";
-        final String TASK_DATA_INPUT_OUTPUT_JAVASCRIPT = "|input:String,Skippable:Object,GroupId:Object,Comment:Object,Description:Object,Priority:Object,CreatedBy:Object||output:String|[din]processGlobalVar->input,[dout]output->processGlobalVar";
-        final String TASK_DATA_INPUT_OUTPUT_MVEL = "|input:String,Skippable:Object,GroupId:Object,Comment:Object,Description:Object,Priority:Object,CreatedBy:Object||output:String|[din]processGlobalVar->input,[dout]output->processGlobalVar";
-
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_TASK_FILE_PATH);
-        assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
-
-        UserTask filledTopLevelTaskJava = getTaskNodeById(diagram,
-                                                          FILLED_TWO_INCOMES_TOP_LEVEL_TASK_JAVA_ID,
-                                                          TWO_INCOME_EDGES,
-                                                          HAS_OUTCOME_EDGE);
-        assertGeneralSet(filledTopLevelTaskJava.getGeneral(), TASK_NAME_JAVA, TASK_DOCUMENTATION_JAVA);
-        assertUserTaskExecutionSet(filledTopLevelTaskJava.getExecutionSet(),
-                                   TASK_TASK_NAME_JAVA,
-                                   TASK_SUBJECT_JAVA,
-                                   TASK_ACTORS_JAVA,
-                                   TASK_GROUPS_JAVA,
-                                   IS_ASYNC,
-                                   IS_SKIPPABLE,
-                                   TASK_PRIORITY_JAVA,
-                                   TASK_DESCRIPTION_JAVA,
-                                   TASK_CREATED_BY_JAVA,
-                                   AD_HOC_AUTOSTART,
-                                   TASK_DATA_INPUT_OUTPUT_JAVA,
-                                   TASK_ON_ENTRY_ACTION_JAVA,
-                                   TASK_SCRIPT_JAVA_LANGUAGE,
-                                   TASK_ON_EXIT_ACTION_JAVA,
-                                   TASK_SCRIPT_JAVA_LANGUAGE
-        );
-
-        UserTask filledTopLevelTaskJavascript = getTaskNodeById(diagram,
-                                                                FILLED_TWO_INCOMES_TOP_LEVEL_TASK_JAVASCRIPT_ID,
-                                                                TWO_INCOME_EDGES,
-                                                                HAS_OUTCOME_EDGE);
-        assertGeneralSet(filledTopLevelTaskJavascript.getGeneral(), TASK_NAME_JAVASCRIPT, TASK_DOCUMENTATION_JAVASCRIPT);
-        assertUserTaskExecutionSet(filledTopLevelTaskJavascript.getExecutionSet(),
-                                   TASK_TASK_NAME_JAVASCRIPT,
-                                   TASK_SUBJECT_JAVASCRIPT,
-                                   TASK_ACTORS_JAVASCRIPT,
-                                   TASK_GROUPS_JAVASCRIPT,
-                                   IS_ASYNC,
-                                   IS_SKIPPABLE,
-                                   TASK_PRIORITY_JAVASCRIPT,
-                                   TASK_DESCRIPTION_JAVASCRIPT,
-                                   TASK_CREATED_BY_JAVASCRIPT,
-                                   AD_HOC_AUTOSTART,
-                                   TASK_DATA_INPUT_OUTPUT_JAVASCRIPT,
-                                   TASK_ON_ENTRY_ACTION_JAVASCRIPT,
-                                   TASK_SCRIPT_JAVASCRIPT_LANGUAGE,
-                                   TASK_ON_EXIT_ACTION_JAVASCRIPT,
-                                   TASK_SCRIPT_JAVASCRIPT_LANGUAGE);
-
-        UserTask filledTopLevelTaskMvel = getTaskNodeById(diagram,
-                                                          FILLED_TWO_INCOMES_TOP_LEVEL_TASK_MVEL_ID,
-                                                          TWO_INCOME_EDGES,
-                                                          HAS_OUTCOME_EDGE);
-        assertGeneralSet(filledTopLevelTaskMvel.getGeneral(), TASK_NAME_MVEL, TASK_DOCUMENTATION_MVEL);
-        assertUserTaskExecutionSet(filledTopLevelTaskMvel.getExecutionSet(),
-                                   TASK_TASK_NAME_MVEL,
-                                   TASK_SUBJECT_MVEL,
-                                   TASK_ACTORS_MVEL,
-                                   TASK_GROUPS_MVEL,
-                                   IS_ASYNC,
-                                   IS_SKIPPABLE,
-                                   TASK_PRIORITY_MVEL,
-                                   TASK_DESCRIPTION_MVEL,
-                                   TASK_CREATED_BY_MVEL,
-                                   AD_HOC_AUTOSTART,
-                                   TASK_DATA_INPUT_OUTPUT_MVEL,
-                                   TASK_ON_ENTRY_ACTION_MVEL,
                                    TASK_SCRIPT_MVEL_LANGUAGE,
-                                   TASK_ON_EXIT_ACTION_MVEL,
-                                   TASK_SCRIPT_MVEL_LANGUAGE);
-    }
-
-    @Test
-    @Override
-    public void testUnmarshallTopLevelTaskTwoIncomesEmptyProperties() throws Exception {
-        // cannot be empty
-        final String TASK_NAME = "Task_3";
-        // cannot be empty
-        final String TASK_TASK_NAME = "Task";
-
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_TASK_FILE_PATH);
-        assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
-
-        UserTask emptyTopLevelTask = getTaskNodeById(diagram,
-                                                     EMPTY_TWO_INCOMES_TOP_LEVEL_TASK_ID,
-                                                     TWO_INCOME_EDGES,
-                                                     HAS_OUTCOME_EDGE);
-        assertGeneralSet(emptyTopLevelTask.getGeneral(), TASK_NAME, EMPTY_VALUE);
-        assertUserTaskExecutionSet(emptyTopLevelTask.getExecutionSet(),
-                                   TASK_TASK_NAME,
-                                   EMPTY_VALUE,
-                                   EMPTY_VALUE,
-                                   EMPTY_VALUE,
-                                   IS_NOT_ASYNC,
-                                   IS_NOT_SKIPPABLE,
-                                   EMPTY_VALUE,
-                                   EMPTY_VALUE,
-                                   EMPTY_VALUE,
-                                   NOT_AD_HOC_AUTOSTART,
-                                   EMPTY_TASK_DATA_INPUT_OUTPUT,
-                                   EMPTY_VALUE,
-                                   TASK_SCRIPT_JAVA_LANGUAGE,
-                                   EMPTY_VALUE,
-                                   TASK_SCRIPT_JAVA_LANGUAGE
-        );
-    }
-
-    @Test
-    @Override
-    public void testUnmarshallSubprocessLevelTaskTwoIncomesEmptyProperties() throws Exception {
-        // cannot be empty
-        final String TASK_NAME = "Task_6";
-        // cannot be empty
-        final String TASK_TASK_NAME = "Task";
-
-        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_TASK_FILE_PATH);
-        assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
-
-        UserTask emptySubprocessLevelTask = getTaskNodeById(diagram,
-                                                            EMPTY_TWO_INCOMES_SUBPROCESS_LEVEL_TASK_ID,
-                                                            TWO_INCOME_EDGES,
-                                                            HAS_OUTCOME_EDGE);
-        assertGeneralSet(emptySubprocessLevelTask.getGeneral(), TASK_NAME, EMPTY_VALUE);
-        assertUserTaskExecutionSet(emptySubprocessLevelTask.getExecutionSet(),
-                                   TASK_TASK_NAME,
-                                   EMPTY_VALUE,
-                                   EMPTY_VALUE,
-                                   EMPTY_VALUE,
-                                   IS_NOT_ASYNC,
-                                   IS_NOT_SKIPPABLE,
-                                   EMPTY_VALUE,
-                                   EMPTY_VALUE,
-                                   EMPTY_VALUE,
-                                   NOT_AD_HOC_AUTOSTART,
-                                   EMPTY_TASK_DATA_INPUT_OUTPUT,
-                                   EMPTY_VALUE,
-                                   TASK_SCRIPT_JAVA_LANGUAGE,
-                                   EMPTY_VALUE,
-                                   TASK_SCRIPT_JAVA_LANGUAGE
-        );
+                                   TASK_CONTENT_MVEL,
+                                   SLA_DUE_DATE);
     }
 
     @Test
@@ -922,9 +993,14 @@ public class UserTaskTest extends Task<UserTask> {
         final String TASK_ON_ENTRY_ACTION_MVEL = "System.out.println(\"On Entry Action\");";
         final String TASK_ON_EXIT_ACTION_MVEL = "System.out.println(\"On Exit Action\");";
 
-        final String TASK_DATA_INPUT_OUTPUT_JAVA = "|input:String,Skippable:Object,GroupId:Object,Comment:Object,Description:Object,Priority:Object,CreatedBy:Object||output:String|[din]processGlobalVar->input,[dout]output->processGlobalVar";
-        final String TASK_DATA_INPUT_OUTPUT_JAVASCRIPT = "|input:String,Skippable:Object,GroupId:Object,Comment:Object,Description:Object,Priority:Object,CreatedBy:Object||output:String|[din]processGlobalVar->input,[dout]output->processGlobalVar";
-        final String TASK_DATA_INPUT_OUTPUT_MVEL = "|input:String,Skippable:Object,GroupId:Object,Comment:Object,Description:Object,Priority:Object,CreatedBy:Object||output:String|[din]processGlobalVar->input,[dout]output->processGlobalVar";
+        final String TASK_DATA_INPUT_OUTPUT_JAVA = "|input:String,Skippable:Object,GroupId:Object,Comment:Object,Description:Object,Priority:Object,CreatedBy:Object,Content:Object||output:String|[din]processGlobalVar->input,[dout]output->processGlobalVar";
+        final String TASK_DATA_INPUT_OUTPUT_JAVASCRIPT = "|input:String,Skippable:Object,GroupId:Object,Comment:Object,Description:Object,Priority:Object,CreatedBy:Object,Content:Object||output:String|[din]processGlobalVar->input,[dout]output->processGlobalVar";
+        final String TASK_DATA_INPUT_OUTPUT_MVEL = "|input:String,Skippable:Object,GroupId:Object,Comment:Object,Description:Object,Priority:Object,CreatedBy:Object,Content:Object||output:String|[din]processGlobalVar->input,[dout]output->processGlobalVar";
+
+        final String TASK_CONTENT_JAVA = "Content example. Sub-Process level. Two incomes. Java.";
+        final String TASK_CONTENT_JAVASCRIPT = "Content example. Sub-Process level. Two incomes. Javascript.";
+        final String TASK_CONTENT_MVEL = "Content example. Sub-Process level. Two incomes. MVEL.";
+        final String SLA_DUE_DATE = "25/12/1983";
 
         Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_TASK_FILE_PATH);
         assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
@@ -949,8 +1025,9 @@ public class UserTaskTest extends Task<UserTask> {
                                    TASK_ON_ENTRY_ACTION_JAVA,
                                    TASK_SCRIPT_JAVA_LANGUAGE,
                                    TASK_ON_EXIT_ACTION_JAVA,
-                                   TASK_SCRIPT_JAVA_LANGUAGE
-        );
+                                   TASK_SCRIPT_JAVA_LANGUAGE,
+                                   TASK_CONTENT_JAVA,
+                                   SLA_DUE_DATE);
 
         UserTask filledSubprocessLevelTaskJavascript = getTaskNodeById(diagram,
                                                                        FILLED_TWO_INCOMES_SUBPROCESS_LEVEL_TASK_JAVASCRIPT_ID,
@@ -972,7 +1049,9 @@ public class UserTaskTest extends Task<UserTask> {
                                    TASK_ON_ENTRY_ACTION_JAVASCRIPT,
                                    TASK_SCRIPT_JAVASCRIPT_LANGUAGE,
                                    TASK_ON_EXIT_ACTION_JAVASCRIPT,
-                                   TASK_SCRIPT_JAVASCRIPT_LANGUAGE);
+                                   TASK_SCRIPT_JAVASCRIPT_LANGUAGE,
+                                   TASK_CONTENT_JAVASCRIPT,
+                                   SLA_DUE_DATE);
 
         UserTask filledSubprocessLevelTaskMvel = getTaskNodeById(diagram,
                                                                  FILLED_TWO_INCOMES_SUBPROCESS_LEVEL_TASK_MVEL_ID,
@@ -994,12 +1073,12 @@ public class UserTaskTest extends Task<UserTask> {
                                    TASK_ON_ENTRY_ACTION_MVEL,
                                    TASK_SCRIPT_MVEL_LANGUAGE,
                                    TASK_ON_EXIT_ACTION_MVEL,
-                                   TASK_SCRIPT_MVEL_LANGUAGE);
+                                   TASK_SCRIPT_MVEL_LANGUAGE,
+                                   TASK_CONTENT_MVEL,
+                                   SLA_DUE_DATE);
     }
 
     @Test
-    @Ignore("NEW Fails only because of a field ordering problem in AssignmentsInfo")
-    // AssignmentsInfo contains a string. Will pass once we migrate to an actual data structure
     @Override
     public void testMarshallTopLevelTaskFilledProperties() throws Exception {
         checkTaskMarshalling(FILLED_TOP_LEVEL_TASK_JAVA_ID, ZERO_INCOME_EDGES, HAS_NO_OUTCOME_EDGE);
@@ -1138,7 +1217,9 @@ public class UserTaskTest extends Task<UserTask> {
                                             String onEntryActionScriptValue,
                                             String onEntryActionScriptLanguage,
                                             String onExitActionScriptValue,
-                                            String onExitActionScriptLanguage) {
+                                            String onExitActionScriptLanguage,
+                                            String content,
+                                            String slaDueDate) {
         assertNotNull(executionSet);
         assertNotNull(executionSet.getTaskName());
         assertNotNull(executionSet.getSubject());
@@ -1165,6 +1246,11 @@ public class UserTaskTest extends Task<UserTask> {
         assertNotNull(onEntryScriptTypeValues.get(0));
         assertNotNull(onExitScriptTypeValues.get(0));
 
+        if (_marshallerType == Marshaller.NEW) {
+            assertNotNull(executionSet.getContent().getValue());
+            assertNotNull(executionSet.getSlaDueDate().getValue());
+        }
+
         assertEquals(taskName, executionSet.getTaskName().getValue());
         assertEquals(subject, executionSet.getSubject().getValue());
         assertEquals(actors, executionSet.getActors().getValue());
@@ -1181,5 +1267,10 @@ public class UserTaskTest extends Task<UserTask> {
         assertEquals(onEntryActionScriptLanguage, onEntryScriptTypeValues.get(0).getLanguage());
         assertEquals(onExitActionScriptValue, onExitScriptTypeValues.get(0).getScript());
         assertEquals(onExitActionScriptLanguage, onExitScriptTypeValues.get(0).getLanguage());
+
+        if (_marshallerType == Marshaller.NEW) {
+            assertEquals(content, executionSet.getContent().getValue());
+            assertEquals(slaDueDate, executionSet.getSlaDueDate().getValue());
+        }
     }
 }

@@ -40,6 +40,7 @@ public class CustomElement<T> {
     };
     public static final ElementDefinition<String> caseIdPrefix = new StringElement("customCaseIdPrefix", "");
     public static final ElementDefinition<String> caseRole = new StringElement("customCaseRoles", "");
+    public static final ElementDefinition<String> slaDueDate = new StringElement("customSLADueDate", "");
 
     private final ElementDefinition<T> elementDefinition;
     private final BaseElement element;
