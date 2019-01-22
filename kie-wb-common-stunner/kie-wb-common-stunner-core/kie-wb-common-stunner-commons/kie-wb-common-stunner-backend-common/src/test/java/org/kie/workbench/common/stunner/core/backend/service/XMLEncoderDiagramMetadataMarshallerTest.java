@@ -26,7 +26,9 @@ import org.kie.workbench.common.stunner.core.diagram.MetadataImpl;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(MockitoJUnitRunner.class)
 public class XMLEncoderDiagramMetadataMarshallerTest {
@@ -50,6 +52,9 @@ public class XMLEncoderDiagramMetadataMarshallerTest {
         metadata.setTitle("title1");
         String result = tested.marshall(metadata);
         assertNotNull(result);
+        assertFalse(result.isEmpty());
+        assertTrue(result.contains("<java"));
+        assertTrue(result.contains("</java>"));
     }
 
     @Test

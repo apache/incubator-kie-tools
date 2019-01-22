@@ -41,11 +41,11 @@ public class XMLEncoderDiagramMetadataMarshaller implements DiagramMetadataMarsh
 
     @Override
     public String marshall(final Metadata metadata) throws IOException {
-        try (final ByteArrayOutputStream os = new ByteArrayOutputStream();
-             final XMLEncoder encoder = new XMLEncoder(os)) {
-            encoder.writeObject(metadata);
-            String raw = os.toString(CHARSET);
-            return raw;
-        }
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        XMLEncoder encoder = new XMLEncoder(os);
+        encoder.writeObject(metadata);
+        encoder.close();
+        String raw = os.toString(CHARSET);
+        return raw;
     }
 }
