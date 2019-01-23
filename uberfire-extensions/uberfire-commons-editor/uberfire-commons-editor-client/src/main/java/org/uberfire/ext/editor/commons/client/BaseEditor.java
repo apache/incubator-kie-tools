@@ -593,10 +593,23 @@ public abstract class BaseEditor<T, M> {
         disableMenuItem(MenuItems.VALIDATE);
     }
 
-    private void disableMenuItem(final MenuItems menuItem) {
-        if (menus.getItemsMap().containsKey(menuItem)) {
-            menus.getItemsMap().get(menuItem).setEnabled(false);
+    public void disableMenuItem(final MenuItems menuItem) {
+        setEnableMenuItem(menuItem, false);
+    }
+
+    public void enableMenuItem(final MenuItems menuItem) {
+        setEnableMenuItem(menuItem, true);
+    }
+
+    private void setEnableMenuItem(final MenuItems menuItem,
+                                   final boolean isEnabled) {
+        if (menus().getItemsMap().containsKey(menuItem)) {
+            menus().getItemsMap().get(menuItem).setEnabled(isEnabled);
         }
+    }
+
+    Menus menus() {
+        return menus;
     }
 
     public Command getValidateCommand() {

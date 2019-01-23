@@ -17,7 +17,9 @@
 package org.uberfire.ext.editor.commons.client;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.function.Supplier;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -44,6 +46,7 @@ import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.menu.MenuItem;
+import org.uberfire.workbench.model.menu.Menus;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -538,6 +541,38 @@ public class BaseEditorTest {
         final Integer expectedHash = fakeContent.hashCode();
 
         assertEquals(expectedHash, actualHash);
+    }
+
+    @Test
+    public void testDisableMenuItem() {
+
+        final Menus menus = mock(Menus.class);
+        final MenuItem menuItem = mock(MenuItem.class);
+        final Map<Object, MenuItem> itemMap = new HashMap<>();
+
+        itemMap.put(SAVE, menuItem);
+        when(menus.getItemsMap()).thenReturn(itemMap);
+        doReturn(menus).when(editor).menus();
+
+        editor.disableMenuItem(SAVE);
+
+        verify(menuItem).setEnabled(false);
+    }
+
+    @Test
+    public void testEnableMenuItem() {
+
+        final Menus menus = mock(Menus.class);
+        final MenuItem menuItem = mock(MenuItem.class);
+        final Map<Object, MenuItem> itemMap = new HashMap<>();
+
+        itemMap.put(SAVE, menuItem);
+        when(menus.getItemsMap()).thenReturn(itemMap);
+        doReturn(menus).when(editor).menus();
+
+        editor.enableMenuItem(SAVE);
+
+        verify(menuItem).setEnabled(true);
     }
 
     private DefaultMetadata fakeMetadata(final int hashCode) {
