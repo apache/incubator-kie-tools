@@ -19,6 +19,7 @@ import java.lang.annotation.Annotation;
 
 import org.gwtbootstrap3.client.ui.constants.IconRotate;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.kie.workbench.common.stunner.client.widgets.resources.i18n.StunnerWidgetsConstants;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.Toolbar;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.ToolbarCommand;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
@@ -83,9 +84,8 @@ public abstract class AbstractToolbarCommand<S extends ClientSession, C extends 
         }
     }
 
-    // TODO: I18n.
     protected String getConfirmMessage() {
-        return "Are you sure?";
+        return translationService.getValue(StunnerWidgetsConstants.AbstractToolbarCommand_ConfirmMessage);
     }
 
     private <V> void executeWithConfirm(final ClientSessionCommand.Callback<V> callback) {
@@ -120,8 +120,7 @@ public abstract class AbstractToolbarCommand<S extends ClientSession, C extends 
         };
         final Command noCommand = () -> {
         };
-        // TODO: I18n.
-        final YesNoCancelPopup popup = YesNoCancelPopup.newYesNoCancelPopup("Are you sure?",
+        final YesNoCancelPopup popup = YesNoCancelPopup.newYesNoCancelPopup(getConfirmMessage(),
                                                                             null,
                                                                             yesCommand,
                                                                             noCommand,

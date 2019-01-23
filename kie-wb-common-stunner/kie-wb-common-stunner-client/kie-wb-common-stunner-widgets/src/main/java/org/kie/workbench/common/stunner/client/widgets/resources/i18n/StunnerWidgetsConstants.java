@@ -21,26 +21,29 @@ import org.jboss.errai.ui.shared.api.annotations.TranslationKey;
 public interface StunnerWidgetsConstants {
 
     @TranslationKey(defaultValue = "")
-    public static String DefinitionPaletteGroupWidgetViewImpl_showMore = "DefinitionPaletteGroupWidgetViewImpl.showMore";
+    String DefinitionPaletteGroupWidgetViewImpl_showMore = "DefinitionPaletteGroupWidgetViewImpl.showMore";
 
     @TranslationKey(defaultValue = "")
-    public static String DefinitionPaletteGroupWidgetViewImpl_showLess = "DefinitionPaletteGroupWidgetViewImpl.showLess";
+    String DefinitionPaletteGroupWidgetViewImpl_showLess = "DefinitionPaletteGroupWidgetViewImpl.showLess";
 
     @TranslationKey(defaultValue = "")
-    public static String NameEditBoxWidgetViewImpl_save = "NameEditBoxWidgetViewImpl.save";
+    String NameEditBoxWidgetViewImpl_save = "NameEditBoxWidgetViewImpl.save";
 
     @TranslationKey(defaultValue = "")
-    public static String NameEditBoxWidgetViewImpl_close = "NameEditBoxWidgetViewImpl.close";
+    String NameEditBoxWidgetViewImpl_close = "NameEditBoxWidgetViewImpl.close";
 
     @TranslationKey(defaultValue = "")
-    public static String NameEditBoxWidgetViewImp_name = "NameEditBoxWidgetViewImpl.name";
+    String NameEditBoxWidgetViewImp_name = "NameEditBoxWidgetViewImpl.name";
 
     @TranslationKey(defaultValue = "")
-    public static String SessionPresenterView_Error = "SessionPresenterView.Error";
+    String SessionPresenterView_Error = "SessionPresenterView.Error";
 
     @TranslationKey(defaultValue = "")
-    public static String SessionPresenterView_Warning = "SessionPresenterView.Warning";
+    String SessionPresenterView_Warning = "SessionPresenterView.Warning";
 
     @TranslationKey(defaultValue = "")
-    public static String SessionPresenterView_Info = "SessionPresenterView.Info";
+    String SessionPresenterView_Info = "SessionPresenterView.Info";
+
+    @TranslationKey(defaultValue = "Are you sure?")
+    String AbstractToolbarCommand_ConfirmMessage = "AbstractToolbarCommand.ConfirmMessage";
 }
