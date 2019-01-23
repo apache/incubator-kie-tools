@@ -26,6 +26,7 @@ import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorDock;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
 import org.kie.workbench.common.dmn.client.editors.types.DataTypePageTabActiveEvent;
 import org.kie.workbench.common.dmn.client.editors.types.DataTypesPage;
+import org.kie.workbench.common.dmn.client.editors.types.listview.common.DataTypeEditModeToggleEvent;
 import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
 import org.kie.workbench.common.dmn.client.session.DMNEditorSession;
 import org.kie.workbench.common.dmn.project.client.type.DMNDiagramResourceType;
@@ -42,6 +43,7 @@ import org.kie.workbench.common.workbench.client.PerspectiveIds;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.uberfire.client.workbench.widgets.multipage.MultiPageEditor;
+import org.uberfire.ext.editor.commons.client.menu.MenuItems;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
@@ -270,5 +272,31 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
         diagramEditor.onDataTypePageNavTabActiveEvent(mock(DataTypePageTabActiveEvent.class));
 
         verify(multiPage).selectPage(2);
+    }
+
+    @Test
+    public void testOnDataTypeEditModeToggleWhenEditModeIsEnabled() {
+
+        final DataTypeEditModeToggleEvent editModeToggleEvent = mock(DataTypeEditModeToggleEvent.class);
+
+        doNothing().when(diagramEditor).disableMenuItem(any());
+        when(editModeToggleEvent.isEditModeEnabled()).thenReturn(true);
+
+        diagramEditor.getOnDataTypeEditModeToggleCallback(editModeToggleEvent).onInvoke();
+
+        verify(diagramEditor).disableMenuItem(MenuItems.SAVE);
+    }
+
+    @Test
+    public void testOnDataTypeEditModeToggleWhenEditModeIsNotEnabled() {
+
+        final DataTypeEditModeToggleEvent editModeToggleEvent = mock(DataTypeEditModeToggleEvent.class);
+
+        doNothing().when(diagramEditor).enableMenuItem(any());
+        when(editModeToggleEvent.isEditModeEnabled()).thenReturn(false);
+
+        diagramEditor.getOnDataTypeEditModeToggleCallback(editModeToggleEvent).onInvoke();
+
+        verify(diagramEditor).enableMenuItem(MenuItems.SAVE);
     }
 }

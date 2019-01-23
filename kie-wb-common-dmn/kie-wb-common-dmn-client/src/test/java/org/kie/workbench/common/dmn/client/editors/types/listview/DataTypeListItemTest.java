@@ -28,6 +28,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManager;
+import org.kie.workbench.common.dmn.client.editors.types.listview.common.DataTypeEditModeToggleEvent;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.SmallSwitchComponent;
 import org.kie.workbench.common.dmn.client.editors.types.listview.confirmation.DataTypeConfirmation;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.DataTypeConstraint;
@@ -36,12 +37,15 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
+import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.dmn.client.editors.types.persistence.CreationType.ABOVE;
 import static org.kie.workbench.common.dmn.client.editors.types.persistence.CreationType.BELOW;
 import static org.kie.workbench.common.dmn.client.editors.types.persistence.CreationType.NESTED;
@@ -86,6 +90,12 @@ public class DataTypeListItemTest {
     @Mock
     private DataTypeConfirmation confirmation;
 
+    @Mock
+    private EventSourceMock<DataTypeEditModeToggleEvent> editModeToggleEvent;
+
+    @Captor
+    private ArgumentCaptor<DataTypeEditModeToggleEvent> eventArgumentCaptor;
+
     private DataTypeManager dataTypeManager;
 
     private DataTypeListItem listItem;
@@ -93,7 +103,7 @@ public class DataTypeListItemTest {
     @Before
     public void setup() {
         dataTypeManager = spy(new DataTypeManager(null, null, itemDefinitionStore, null, null, null, null, null));
-        listItem = spy(new DataTypeListItem(view, dataTypeSelectComponent, dataTypeConstraintComponent, dataTypeListComponent, dataTypeManager, confirmation));
+        listItem = spy(new DataTypeListItem(view, dataTypeSelectComponent, dataTypeConstraintComponent, dataTypeListComponent, dataTypeManager, confirmation, editModeToggleEvent));
         listItem.init(dataTypeList);
     }
 
@@ -280,6 +290,9 @@ public class DataTypeListItemTest {
         verify(view).hideKebabMenu();
         verify(dataTypeSelectComponent).enableEditMode();
         verify(dataTypeConstraintComponent).enableEditMode();
+        verify(editModeToggleEvent).fire(eventArgumentCaptor.capture());
+
+        assertTrue(eventArgumentCaptor.getValue().isEditModeEnabled());
     }
 
     @Test
@@ -297,6 +310,7 @@ public class DataTypeListItemTest {
         verify(view, never()).hideKebabMenu();
         verify(dataTypeSelectComponent, never()).enableEditMode();
         verify(dataTypeConstraintComponent, never()).enableEditMode();
+        verify(editModeToggleEvent, never()).fire(any());
     }
 
     @Test
@@ -464,6 +478,9 @@ public class DataTypeListItemTest {
         verify(listItem).refreshListYesLabel();
         verify(dataTypeSelectComponent).disableEditMode();
         verify(dataTypeConstraintComponent).disableEditMode();
+        verify(editModeToggleEvent).fire(eventArgumentCaptor.capture());
+
+        assertFalse(eventArgumentCaptor.getValue().isEditModeEnabled());
     }
 
     @Test

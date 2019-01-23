@@ -23,6 +23,7 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import elemental2.dom.DomGlobal;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.dmn.client.commands.general.NavigateToExpressionEditorCommand;
@@ -30,6 +31,7 @@ import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorDock;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
 import org.kie.workbench.common.dmn.client.editors.types.DataTypePageTabActiveEvent;
 import org.kie.workbench.common.dmn.client.editors.types.DataTypesPage;
+import org.kie.workbench.common.dmn.client.editors.types.listview.common.DataTypeEditModeToggleEvent;
 import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.project.client.type.DMNDiagramResourceType;
@@ -66,6 +68,7 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
+import org.uberfire.ext.editor.commons.client.menu.MenuItems;
 import org.uberfire.ext.widgets.core.client.editors.texteditor.TextEditorView;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnFocus;
@@ -75,6 +78,8 @@ import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.menu.Menus;
+
+import static elemental2.dom.DomGlobal.setTimeout;
 
 @Dependent
 @DiagramEditor
@@ -243,6 +248,22 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
     @Override
     protected String getEditorIdentifier() {
         return EDITOR_ID;
+    }
+
+    public void onDataTypeEditModeToggle(final @Observes DataTypeEditModeToggleEvent event) {
+        /* Delaying the 'onDataTypeEditModeToggleCallback' since external events
+         * refresh the menu widget and override this change. */
+        setTimeout(getOnDataTypeEditModeToggleCallback(event), 250);
+    }
+
+    DomGlobal.SetTimeoutCallbackFn getOnDataTypeEditModeToggleCallback(final DataTypeEditModeToggleEvent event) {
+        return (e) -> {
+            if (event.isEditModeEnabled()) {
+                disableMenuItem(MenuItems.SAVE);
+            } else {
+                enableMenuItem(MenuItems.SAVE);
+            }
+        };
     }
 
     void onEditExpressionEvent(final @Observes EditExpressionEvent event) {

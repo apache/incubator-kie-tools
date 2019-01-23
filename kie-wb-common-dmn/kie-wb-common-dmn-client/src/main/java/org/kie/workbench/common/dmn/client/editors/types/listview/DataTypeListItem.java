@@ -23,11 +23,13 @@ import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import elemental2.dom.HTMLElement;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManager;
+import org.kie.workbench.common.dmn.client.editors.types.listview.common.DataTypeEditModeToggleEvent;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.SmallSwitchComponent;
 import org.kie.workbench.common.dmn.client.editors.types.listview.confirmation.DataTypeConfirmation;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.DataTypeConstraint;
@@ -54,6 +56,8 @@ public class DataTypeListItem {
 
     private final DataTypeConfirmation confirmation;
 
+    private final Event<DataTypeEditModeToggleEvent> editModeToggleEvent;
+
     private DataType dataType;
 
     private int level;
@@ -74,13 +78,15 @@ public class DataTypeListItem {
                             final DataTypeConstraint dataTypeConstraintComponent,
                             final SmallSwitchComponent dataTypeListComponent,
                             final DataTypeManager dataTypeManager,
-                            final DataTypeConfirmation confirmation) {
+                            final DataTypeConfirmation confirmation,
+                            final Event<DataTypeEditModeToggleEvent> editModeToggleEvent) {
         this.view = view;
         this.dataTypeSelectComponent = dataTypeSelectComponent;
         this.dataTypeConstraintComponent = dataTypeConstraintComponent;
         this.dataTypeListComponent = dataTypeListComponent;
         this.dataTypeManager = dataTypeManager;
         this.confirmation = confirmation;
+        this.editModeToggleEvent = editModeToggleEvent;
     }
 
     @PostConstruct
@@ -189,6 +195,8 @@ public class DataTypeListItem {
 
         dataTypeSelectComponent.enableEditMode();
         dataTypeConstraintComponent.enableEditMode();
+
+        editModeToggleEvent.fire(new DataTypeEditModeToggleEvent(true));
     }
 
     public void disableEditMode() {
@@ -262,6 +270,8 @@ public class DataTypeListItem {
 
         dataTypeSelectComponent.disableEditMode();
         dataTypeConstraintComponent.disableEditMode();
+
+        editModeToggleEvent.fire(new DataTypeEditModeToggleEvent(false));
     }
 
     void refreshListYesLabel() {

@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.showcase.client.screens.editor;
 
+import java.util.List;
 import java.util.function.Consumer;
 
 import com.google.gwt.user.client.ui.Widget;
@@ -27,6 +28,7 @@ import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorDock;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
 import org.kie.workbench.common.dmn.client.editors.types.DataTypePageTabActiveEvent;
 import org.kie.workbench.common.dmn.client.editors.types.DataTypesPage;
+import org.kie.workbench.common.dmn.client.editors.types.listview.common.DataTypeEditModeToggleEvent;
 import org.kie.workbench.common.dmn.client.session.DMNEditorSession;
 import org.kie.workbench.common.dmn.showcase.client.perspectives.AuthoringPerspective;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
@@ -49,7 +51,10 @@ import org.mockito.stubbing.Answer;
 import org.uberfire.client.workbench.widgets.multipage.MultiPageEditor;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
+import org.uberfire.workbench.model.menu.MenuItem;
+import org.uberfire.workbench.model.menu.Menus;
 
+import static java.util.Collections.singletonList;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Mockito.doAnswer;
@@ -225,5 +230,39 @@ public class SessionDiagramEditorScreenTest {
         editor.onDataTypePageNavTabActiveEvent(mock(DataTypePageTabActiveEvent.class));
 
         verify(multiPageEditor).selectPage(1);
+    }
+
+    @Test
+    public void testOnDataTypeEditModeToggleWhenEditModeIsEnabled() {
+
+        final DataTypeEditModeToggleEvent event = mock(DataTypeEditModeToggleEvent.class);
+        final MenuItem menuItem = mock(MenuItem.class);
+        final Menus menus = mock(Menus.class);
+        final List<MenuItem> items = singletonList(menuItem);
+
+        when(menus.getItems()).thenReturn(items);
+        when(event.isEditModeEnabled()).thenReturn(true);
+        doReturn(menus).when(editor).getMenu();
+
+        editor.onDataTypeEditModeToggle(event);
+
+        verify(menuItem).setEnabled(false);
+    }
+
+    @Test
+    public void testOnDataTypeEditModeToggleWhenEditModeIsNotEnabled() {
+
+        final DataTypeEditModeToggleEvent event = mock(DataTypeEditModeToggleEvent.class);
+        final MenuItem menuItem = mock(MenuItem.class);
+        final Menus menus = mock(Menus.class);
+        final List<MenuItem> items = singletonList(menuItem);
+
+        when(menus.getItems()).thenReturn(items);
+        when(event.isEditModeEnabled()).thenReturn(false);
+        doReturn(menus).when(editor).getMenu();
+
+        editor.onDataTypeEditModeToggle(event);
+
+        verify(menuItem).setEnabled(true);
     }
 }

@@ -34,6 +34,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorV
 import org.kie.workbench.common.dmn.client.editors.toolbar.ToolbarStateHandler;
 import org.kie.workbench.common.dmn.client.editors.types.DataTypePageTabActiveEvent;
 import org.kie.workbench.common.dmn.client.editors.types.DataTypesPage;
+import org.kie.workbench.common.dmn.client.editors.types.listview.common.DataTypeEditModeToggleEvent;
 import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.client.widgets.toolbar.DMNEditorToolbar;
@@ -84,6 +85,7 @@ import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.menu.MenuFactory;
+import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
 
 @Dependent
@@ -195,6 +197,27 @@ public class SessionDiagramEditorScreen implements KieEditorWrapperView.KieEdito
             load(name,
                  callback);
         }
+    }
+
+    public void onDataTypeEditModeToggle(final @Observes DataTypeEditModeToggleEvent editModeToggleEvent) {
+
+        if (editModeToggleEvent.isEditModeEnabled()) {
+            disableSaveMenuItem();
+        } else {
+            enableSaveMenuItem();
+        }
+    }
+
+    private void disableSaveMenuItem() {
+        getSaveMenuItem().setEnabled(false);
+    }
+
+    private void enableSaveMenuItem() {
+        getSaveMenuItem().setEnabled(true);
+    }
+
+    private MenuItem getSaveMenuItem() {
+        return getMenu().getItems().get(0);
     }
 
     private Menus makeMenuBar() {

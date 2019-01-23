@@ -204,6 +204,11 @@
       <artifactId>errai-data-binding</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>com.google.elemental2</groupId>
+      <artifactId>elemental2-dom</artifactId>
+    </dependency>
+
     <!-- Test scope -->
     <dependency>
       <groupId>junit</groupId>
