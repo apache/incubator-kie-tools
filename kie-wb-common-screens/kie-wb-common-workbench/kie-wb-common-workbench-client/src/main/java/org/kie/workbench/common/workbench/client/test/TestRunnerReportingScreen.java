@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,7 +53,6 @@ public class TestRunnerReportingScreen
     public TestRunnerReportingScreen() {
         //Zero argument constructor for CDI
     }
-
 
     @Inject
     public TestRunnerReportingScreen(TestRunnerReportingView view,
@@ -129,7 +128,7 @@ public class TestRunnerReportingScreen
         Long runTime = testResultMessage.getRunTime();
         Date runtime = new Date(runTime);
 
-        String milliseconds = DateTimeFormat.getFormat("SSS").format(runtime) + " milliseconds";
+        String milliseconds = formatMilliseconds(DateTimeFormat.getFormat("SSS").format(runtime)) + " milliseconds";
         String seconds = DateTimeFormat.getFormat("s").format(runtime) + " seconds";
         String minutes = DateTimeFormat.getFormat("m").format(runtime) + " minutes";
 
@@ -140,6 +139,10 @@ public class TestRunnerReportingScreen
         } else {
             return minutes + " and " + seconds;
         }
+    }
+
+    String formatMilliseconds(String originalFormat) {
+        return originalFormat.replaceFirst("^0+(?!$)", "");
     }
 
     private String makeMessage(Failure failure) {

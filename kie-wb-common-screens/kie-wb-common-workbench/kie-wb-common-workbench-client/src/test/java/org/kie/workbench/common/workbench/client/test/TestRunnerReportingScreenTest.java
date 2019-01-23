@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.assertj.core.api.SoftAssertions;
 import org.guvnor.common.services.shared.test.Failure;
 import org.guvnor.common.services.shared.test.TestResultMessage;
 import org.guvnor.messageconsole.events.PublishBatchMessagesEvent;
@@ -46,81 +47,58 @@ public class TestRunnerReportingScreenTest {
     private TestRunnerReportingView view;
     @Mock
     private Failure failure;
-
     @Mock
     private EventSourceMock event;
 
     private TestRunnerReportingScreen screen;
 
     @Before
-    public void setUp() throws Exception {
-        screen = new TestRunnerReportingScreen(view,
-                                               event);
+    public void setUp() {
+        screen = new TestRunnerReportingScreen(view, event);
     }
 
     @Test
     public void onViewAlerts() {
-
         screen.onViewAlerts();
 
         verify(event).fire(publishEventCaptor.capture());
 
         final PublishBatchMessagesEvent value = publishEventCaptor.getValue();
-
         assertTrue(value.isCleanExisting());
         assertTrue(value.getMessagesToPublish().isEmpty());
     }
 
     @Test
     public void onViewAlertsSendMessage() {
-
-        TestResultMessage testResultMessage = new TestResultMessage("id",
-                                                                    1,
-                                                                    2500,
-                                                                    Collections.singletonList(failure));
-        screen.onTestRun(testResultMessage);
+        screen.onTestRun(createTRMWithFailures());
         screen.onViewAlerts();
 
         verify(event).fire(publishEventCaptor.capture());
 
         final PublishBatchMessagesEvent value = publishEventCaptor.getValue();
-
         assertFalse(value.getMessagesToPublish().isEmpty());
     }
 
     @Test
     public void onViewAlerts_resetBetweenRuns() {
-
-        screen.onTestRun(new TestResultMessage("id",
-                                               1,
-                                               2500,
-                                               Collections.singletonList(failure)));
-
-        screen.onTestRun(new TestResultMessage("id",
-                                               1,
-                                               2500,
-                                               new ArrayList<>()));
+        screen.onTestRun(createTRMWithFailures());
+        screen.onTestRun(createTRMWithoutFailures(2500));
         screen.onViewAlerts();
 
         verify(event).fire(publishEventCaptor.capture());
 
         final PublishBatchMessagesEvent value = publishEventCaptor.getValue();
-
         assertTrue(value.getMessagesToPublish().isEmpty());
     }
 
     @Test
-    public void testSetPresenter() throws Exception {
+    public void testSetPresenter() {
         verify(view).setPresenter(screen);
     }
 
     @Test
     public void testSuccessfulRun() {
-        TestResultMessage testResultMessage = new TestResultMessage("id",
-                                                                    1,
-                                                                    250,
-                                                                    new ArrayList<>());
-        screen.onTestRun(testResultMessage);
+        screen.onTestRun(createTRMWithoutFailures(250));
         verify(view).showSuccess();
         verify(view).setRunStatus(any(),
                                   eq("1"),
@@ -131,11 +109,8 @@ public class TestRunnerReportingScreenTest {
     public void testUnSuccessfulRun() {
         when(failure.getDisplayName()).thenReturn("Expected true but was false.");
         when(failure.getMessage()).thenReturn("This is a non-null message");
-        TestResultMessage testResultMessage = new TestResultMessage("id",
-                                                                    1,
-                                                                    2500,
-                                                                    Collections.singletonList(failure));
-        screen.onTestRun(testResultMessage);
+
+        screen.onTestRun(createTRMWithFailures());
         verify(view).showFailure();
         verify(view).setRunStatus(any(),
                                   eq("1"),
@@ -144,15 +119,29 @@ public class TestRunnerReportingScreenTest {
 
     @Test
     public void testRunTimeInMinutes() {
-        TestResultMessage testResultMessage = new TestResultMessage("id",
-                                                                    150,
-                                                                    125000,
-                                                                    new ArrayList<>());
-        screen.onTestRun(testResultMessage);
+        screen.onTestRun(createTRMWithoutFailures(125000));
         verify(view).showSuccess();
         verify(view).setRunStatus(any(),
-                                  eq("150"),
+                                  eq("1"),
                                   eq("2 minutes and 5 seconds"));
     }
 
+    @Test
+    public void testMillisecondsFormatting() {
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(screen.formatMilliseconds("0")).isEqualTo("0");
+            softly.assertThat(screen.formatMilliseconds("00")).isEqualTo("0");
+            softly.assertThat(screen.formatMilliseconds("110")).isEqualTo("110");
+            softly.assertThat(screen.formatMilliseconds("0101")).isEqualTo("101");
+            softly.assertThat(screen.formatMilliseconds("000110")).isEqualTo("110");
+        });
+    }
+
+    private TestResultMessage createTRMWithoutFailures(long runtime) {
+        return new TestResultMessage("id", 1, runtime, new ArrayList<>());
+    }
+
+    private TestResultMessage createTRMWithFailures() {
+        return new TestResultMessage("id", 1, 2500, Collections.singletonList(failure));
+    }
 }
