@@ -304,7 +304,12 @@ public class ClientBPMNDocumentationService implements BPMNDocumentationService 
         final Set<?> properties = definitionManager.adapters().forDefinition().getProperties(definition);
         return properties.stream()
                 .filter(prop -> !ignoredPropertiesIds.containsKey(propertyAdapter.getId(prop)))
+                .filter(prop -> isNotEmpty(propertyAdapter.getCaption(prop)))
                 .collect(Collectors.toMap(propertyAdapter::getCaption, this::getElementValue));
+    }
+
+    private static boolean isNotEmpty(String value) {
+        return null != value && value.trim().length() > 0;
     }
 
     private String getElementValue(Object prop) {
