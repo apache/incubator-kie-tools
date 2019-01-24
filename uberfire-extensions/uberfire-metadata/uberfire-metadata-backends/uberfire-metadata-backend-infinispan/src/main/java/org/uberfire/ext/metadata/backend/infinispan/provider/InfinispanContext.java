@@ -32,10 +32,13 @@ import org.infinispan.client.hotrod.RemoteCacheManager;
 import org.infinispan.client.hotrod.configuration.AuthenticationConfigurationBuilder;
 import org.infinispan.client.hotrod.configuration.ConfigurationBuilder;
 import org.infinispan.client.hotrod.marshall.ProtoStreamMarshaller;
+import org.infinispan.commons.CacheConfigurationException;
 import org.infinispan.protostream.BaseMarshaller;
 import org.infinispan.protostream.SerializationContext;
 import org.infinispan.protostream.annotations.ProtoSchemaBuilder;
 import org.infinispan.query.remote.client.ProtobufMetadataManagerConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.commons.lifecycle.Disposable;
 import org.uberfire.ext.metadata.backend.infinispan.exceptions.InfinispanException;
 import org.uberfire.ext.metadata.backend.infinispan.proto.KObjectMarshaller;
@@ -66,6 +69,8 @@ public class InfinispanContext implements Disposable {
     private final SchemaGenerator schemaGenerator;
 
     private final InfinispanConfiguration infinispanConfiguration;
+
+    private Logger logger = LoggerFactory.getLogger(InfinispanContext.class);
 
     private static final class LazyHolder {
 
@@ -204,10 +209,17 @@ public class InfinispanContext implements Disposable {
     public RemoteCache<String, KObject> getCache(String index) {
         String i = AttributesUtil.toProtobufFormat(index).toLowerCase();
         if (!this.getIndices().contains(i)) {
-            cacheManager
-                    .administration()
-                    .createCache(i,
-                                 this.infinispanConfiguration.getIndexedConfiguration(i));
+            try {
+                cacheManager
+                        .administration()
+                        .createCache(i,
+                                     this.infinispanConfiguration.getIndexedConfiguration(i));
+            } catch (CacheConfigurationException ex) {
+                logger.warn("Can't create cache with name <{}>",
+                            i);
+                logger.warn("Cause:",
+                            ex);
+            }
         }
         return this.cacheManager.getCache(i);
     }
