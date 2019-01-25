@@ -99,6 +99,11 @@ public class ShapeViewExtStub
     }
 
     @Override
+    public Object setTitleStrokeAlpha(final double alpha){
+        return this;
+    }
+
+    @Override
     public Object setTitleFontFamily(final String fontFamily) {
         return this;
     }

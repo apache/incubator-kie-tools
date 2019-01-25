@@ -41,7 +41,7 @@ public class GeneralRectangleDimensionsSet implements RectangleDimensionsSet {
 
     private static final String MIN_WIDTH = "50.0";
 
-    private static final String MAX_WIDTH = "200.0";
+    private static final String MAX_WIDTH = "600.0";
 
     private static final String MIN_HEIGHT = "50.0";
 

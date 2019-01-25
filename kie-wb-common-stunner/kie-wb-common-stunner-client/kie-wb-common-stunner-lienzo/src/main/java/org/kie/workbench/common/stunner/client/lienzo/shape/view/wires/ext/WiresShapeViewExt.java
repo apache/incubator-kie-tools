@@ -79,7 +79,7 @@ public class WiresShapeViewExt<T extends WiresShapeViewExt>
 
     protected void setEventHandlerManager(final ViewEventHandlerManager eventHandlerManager) {
         this.eventHandlerManager = eventHandlerManager;
-        setTextViewDecorator(new WiresTextDecorator(() -> eventHandlerManager));
+        setTextViewDecorator(new WiresTextDecorator(() -> eventHandlerManager, getPath().getBoundingBox()));
         addTextAsChild();
     }
 
@@ -175,6 +175,12 @@ public class WiresShapeViewExt<T extends WiresShapeViewExt>
     @SuppressWarnings("unchecked")
     public T setTitleStrokeWidth(final double strokeWidth) {
         textViewDecorator.setTitleStrokeWidth(strokeWidth);
+        return cast();
+    }
+
+    @Override
+    public T setTitleStrokeAlpha(final double strokeAlpha){
+        textViewDecorator.setTitleStrokeAlpha(strokeAlpha);
         return cast();
     }
 

@@ -65,23 +65,18 @@ public class FontSet implements DMNPropertySet {
     @Valid
     private FontSize fontSize;
 
-    private FontBorderSize fontBorderSize;
-
     public FontSet() {
         this(new FontFamily(),
              new FontColour(),
-             new FontSize(),
-             new FontBorderSize());
+             new FontSize());
     }
 
     public FontSet(final FontFamily fontFamily,
                    final FontColour fontColour,
-                   final FontSize fontSize,
-                   final FontBorderSize fontBorderSize) {
+                   final FontSize fontSize) {
         this.fontFamily = fontFamily;
         this.fontColour = fontColour;
         this.fontSize = fontSize;
-        this.fontBorderSize = fontBorderSize;
     }
 
     public FontFamily getFontFamily() {
@@ -96,10 +91,6 @@ public class FontSet implements DMNPropertySet {
         return fontSize;
     }
 
-    public FontBorderSize getFontBorderSize() {
-        return fontBorderSize;
-    }
-
     public void setFontFamily(final FontFamily fontFamily) {
         this.fontFamily = fontFamily;
     }
@@ -110,10 +101,6 @@ public class FontSet implements DMNPropertySet {
 
     public void setFontSize(final FontSize fontSize) {
         this.fontSize = fontSize;
-    }
-
-    public void setFontBorderSize(final FontBorderSize fontBorderSize) {
-        this.fontBorderSize = fontBorderSize;
     }
 
     @Override
@@ -133,17 +120,13 @@ public class FontSet implements DMNPropertySet {
         if (fontColour != null ? !fontColour.equals(fontSet.fontColour) : fontSet.fontColour != null) {
             return false;
         }
-        if (fontSize != null ? !fontSize.equals(fontSet.fontSize) : fontSet.fontSize != null) {
-            return false;
-        }
-        return fontBorderSize != null ? fontBorderSize.equals(fontSet.fontBorderSize) : fontSet.fontBorderSize == null;
+        return fontSize != null ? fontSize.equals(fontSet.fontSize) : fontSet.fontSize == null;
     }
 
     @Override
     public int hashCode() {
         return HashUtil.combineHashCodes(fontFamily != null ? fontFamily.hashCode() : 0,
                                          fontColour != null ? fontColour.hashCode() : 0,
-                                         fontSize != null ? fontSize.hashCode() : 0,
-                                         fontBorderSize != null ? fontBorderSize.hashCode() : 0);
+                                         fontSize != null ? fontSize.hashCode() : 0);
     }
 }

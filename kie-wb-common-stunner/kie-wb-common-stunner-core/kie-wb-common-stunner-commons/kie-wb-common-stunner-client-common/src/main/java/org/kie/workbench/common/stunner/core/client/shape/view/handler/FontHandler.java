@@ -38,6 +38,7 @@ public class FontHandler<W, V extends ShapeView> implements ShapeViewHandler<W, 
     private final Function<W, Double> fontSizeProvider;
     private final Function<W, String> strokeColorProvider;
     private final Function<W, Double> strokeSizeProvider;
+    private final Function<W, Double> strokeAlphaProvider;
     private final Function<W, HasTitle.Position> positionProvider;
     private final Function<W, Double> positionXOffsetProvider;
     private final Function<W, Double> positionYOffsetProvider;
@@ -50,6 +51,7 @@ public class FontHandler<W, V extends ShapeView> implements ShapeViewHandler<W, 
                 final Function<W, String> strokeColorProvider,
                 final Function<W, Double> strokeSizeProvider,
                 final Function<W, HasTitle.Position> positionProvider,
+                final Function<W, Double> strokeAlphaProvider,
                 final Function<W, Double> positionXOffsetProvider,
                 final Function<W, Double> positionYOffsetProvider,
                 final Function<W, Double> rotationProvider) {
@@ -63,6 +65,7 @@ public class FontHandler<W, V extends ShapeView> implements ShapeViewHandler<W, 
         this.positionXOffsetProvider = positionXOffsetProvider;
         this.positionYOffsetProvider = positionYOffsetProvider;
         this.rotationProvider = rotationProvider;
+        this.strokeAlphaProvider = strokeAlphaProvider;
     }
 
     @Override
@@ -76,6 +79,7 @@ public class FontHandler<W, V extends ShapeView> implements ShapeViewHandler<W, 
             final Double fontSize = fontSizeProvider.apply(element);
             final String strokeColor = strokeColorProvider.apply(element);
             final Double strokeSize = strokeSizeProvider.apply(element);
+            final Double strokeAlpha = strokeAlphaProvider.apply(element);
             final HasTitle.Position position = positionProvider.apply(element);
             final Double positionXOffset = positionXOffsetProvider.apply(element);
             final Double positionYOffset = positionYOffsetProvider.apply(element);
@@ -94,6 +98,9 @@ public class FontHandler<W, V extends ShapeView> implements ShapeViewHandler<W, 
             }
             if (strokeSize != null) {
                 hasTitle.setTitleStrokeWidth(strokeSize);
+            }
+            if (strokeAlpha != null) {
+                hasTitle.setTitleStrokeAlpha(strokeAlpha);
             }
             if (null != alpha) {
                 hasTitle.setTitleAlpha(alpha);
@@ -121,6 +128,7 @@ public class FontHandler<W, V extends ShapeView> implements ShapeViewHandler<W, 
         private Function<W, Double> fontSizeProvider;
         private Function<W, String> strokeColorProvider;
         private Function<W, Double> strokeSizeProvider;
+        private Function<W, Double> strokeAlphaProvider;
         private Function<W, HasTitle.Position> positionProvider;
         private Function<W, Double> positionXOffsetProvider;
         private Function<W, Double> positionYOffsetProvider;
@@ -137,6 +145,7 @@ public class FontHandler<W, V extends ShapeView> implements ShapeViewHandler<W, 
             this.positionXOffsetProvider = value -> null;
             this.positionYOffsetProvider = value -> null;
             this.rotationProvider = value -> null;
+            this.strokeAlphaProvider = value -> null;
         }
 
         public Builder<W, V> alpha(Function<W, Double> alphaProvider) {
@@ -169,6 +178,11 @@ public class FontHandler<W, V extends ShapeView> implements ShapeViewHandler<W, 
             return this;
         }
 
+        public Builder<W, V> strokeAlpha(Function<W, Double> provider) {
+            this.strokeAlphaProvider = provider;
+            return this;
+        }
+
         public Builder<W, V> position(Function<W, HasTitle.Position> provider) {
             this.positionProvider = provider;
             return this;
@@ -197,6 +211,7 @@ public class FontHandler<W, V extends ShapeView> implements ShapeViewHandler<W, 
                                      strokeColorProvider,
                                      strokeSizeProvider,
                                      positionProvider,
+                                     strokeAlphaProvider,
                                      positionXOffsetProvider,
                                      positionYOffsetProvider,
                                      rotationProvider);

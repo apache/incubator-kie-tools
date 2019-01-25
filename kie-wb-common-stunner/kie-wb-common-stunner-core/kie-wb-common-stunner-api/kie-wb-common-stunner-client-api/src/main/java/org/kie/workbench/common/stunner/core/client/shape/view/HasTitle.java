@@ -46,6 +46,10 @@ public interface HasTitle<T> {
 
     T setTitleStrokeWidth(final double strokeWidth);
 
+    default T setTitleStrokeAlpha(final double alpha){
+       return (T) this;
+    }
+
     T setTitleStrokeColor(final String color);
 
     T moveTitleToTop();

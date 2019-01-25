@@ -53,6 +53,7 @@ public class FontHandlerTest {
         tested = new FontHandler.Builder<Object, ShapeViewExtStub>()
                 .strokeColor(o -> "strokeColor")
                 .strokeSize(o -> 5d)
+                .strokeAlpha(o -> 0.77d)
                 .fontColor(o -> "fontColor")
                 .fontFamily(o -> "fontFamily")
                 .fontSize(o -> 10.5d)
@@ -66,6 +67,7 @@ public class FontHandlerTest {
         tested.handle(bean, view);
         verify(view).setTitleStrokeColor(eq("strokeColor"));
         verify(view).setTitleStrokeWidth(eq(5d));
+        verify(view).setTitleStrokeAlpha(eq(0.77d));
         verify(view).setTitleFontColor(eq("fontColor"));
         verify(view).setTitleFontFamily(eq("fontFamily"));
         verify(view).setTitleFontSize(eq(10.5d));
@@ -81,6 +83,7 @@ public class FontHandlerTest {
         tested = new FontHandler.Builder<Object, ShapeViewExtStub>()
                 .strokeColor(o -> null)
                 .strokeSize(o -> null)
+                .strokeAlpha(o -> null)
                 .fontColor(o -> null)
                 .fontFamily(o -> null)
                 .fontSize(o -> null)
@@ -94,6 +97,7 @@ public class FontHandlerTest {
         tested.handle(bean, view);
         verify(view, never()).setTitleStrokeColor(anyString());
         verify(view, never()).setTitleStrokeWidth(anyDouble());
+        verify(view, never()).setStrokeAlpha(anyDouble());
         verify(view, never()).setTitleFontColor(anyString());
         verify(view, never()).setTitleFontFamily(anyString());
         verify(view, never()).setTitleFontSize(anyDouble());

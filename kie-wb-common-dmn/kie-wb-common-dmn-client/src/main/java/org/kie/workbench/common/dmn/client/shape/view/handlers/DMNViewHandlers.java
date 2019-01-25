@@ -44,7 +44,9 @@ public class DMNViewHandlers {
             this.fontFamily(bean -> bean.getFontSet().getFontFamily().getValue())
                     .fontColor(bean -> bean.getFontSet().getFontColour().getValue())
                     .fontSize(bean -> bean.getFontSet().getFontSize().getValue())
-                    .strokeSize(bean -> bean.getFontSet().getFontBorderSize().getValue());
+                    .strokeColor(bean -> null)
+                    .strokeAlpha(bean -> 0.0)
+                    .strokeSize(bean -> 0.0);
         }
     }
 

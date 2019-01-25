@@ -73,9 +73,10 @@ public class WiresTextDecorator {
     // used to ensure the BoundingBox represents the positioning of the WiresTextDecorator
     private Line textSpacer = new Line().setAlpha(0.1).setListening(false);
 
-    public WiresTextDecorator(final Supplier<ViewEventHandlerManager> eventHandlerManager) {
+    public WiresTextDecorator(final Supplier<ViewEventHandlerManager> eventHandlerManager,
+                              final BoundingBox boundingBox) {
         this.eventHandlerManager = eventHandlerManager;
-        initialize();
+        initialize(boundingBox);
     }
 
     public void setTextClickHandler(final ViewHandler<TextClickEvent> textClickEventViewHandler) {
@@ -94,7 +95,7 @@ public class WiresTextDecorator {
         this.textOutEventViewHandler = textOutEventViewHandler;
     }
 
-    private void initialize() {
+    private void initialize(final BoundingBox boundingBox) {
         this.text = new Text("")
                 .setAlpha(TEXT_ALPHA)
                 .setFontFamily(TEXT_FONT_FAMILY)
@@ -109,7 +110,6 @@ public class WiresTextDecorator {
                                                               0,
                                                               1,
                                                               1));
-
         this.text.setWrapper(textWrapper);
         this.currentTextLayout = TEXT_LAYOUT_ALIGN;
         textContainer.add(text);
@@ -117,6 +117,7 @@ public class WiresTextDecorator {
         // Ensure path bounds are available on the selection context.
         text.setFillBoundsForSelection(true);
         initializeHandlers();
+        resize(boundingBox.getWidth(), boundingBox.getHeight());
     }
 
     private void initializeHandlers() {
@@ -260,6 +261,10 @@ public class WiresTextDecorator {
         text.setStrokeWidth(strokeWidth);
     }
 
+    public void setTitleStrokeAlpha(final double strokeAlpha) {
+        text.setStrokeAlpha(strokeAlpha);
+    }
+
     @SuppressWarnings("unchecked")
     public void moveTitleToTop() {
         textContainer.moveToTop();
@@ -281,6 +286,7 @@ public class WiresTextDecorator {
                        final double height) {
         this.width = width;
         this.height = height;
+        update();
     }
 
     public void destroy() {
@@ -309,7 +315,7 @@ public class WiresTextDecorator {
         return null != text && text.trim().length() > 0;
     }
 
-    private void updateTextBoundaries() {
+    void updateTextBoundaries() {
         setTextBoundaries(new BoundingBox(0,
                                           0,
                                           width,

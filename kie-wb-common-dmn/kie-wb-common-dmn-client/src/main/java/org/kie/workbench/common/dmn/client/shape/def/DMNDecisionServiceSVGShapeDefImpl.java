@@ -70,7 +70,7 @@ public class DMNDecisionServiceSVGShapeDefImpl implements DMNDecisionServiceSVGS
                 .fontFamily(bean -> bean.getFontSet().getFontFamily().getValue())
                 .fontColor(bean -> bean.getFontSet().getFontColour().getValue())
                 .fontSize(bean -> bean.getFontSet().getFontSize().getValue())
-                .strokeSize(bean -> bean.getFontSet().getFontBorderSize().getValue())
+                .strokeAlpha(bean -> 0.0d)
                 .position(bean -> HasTitle.Position.TOP)
                 .positionYOffset(bean -> Y_OFFSET)
                 .build();
