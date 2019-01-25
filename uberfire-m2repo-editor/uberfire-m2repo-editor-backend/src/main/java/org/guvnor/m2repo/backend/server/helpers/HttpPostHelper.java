@@ -51,7 +51,7 @@ public class HttpPostHelper {
     private static final Logger log = LoggerFactory.getLogger(HttpPostHelper.class);
 
     @Inject
-    private ExtendedM2RepoService m2RepoService;
+    protected ExtendedM2RepoService m2RepoService;
 
     /**
      * Posting accepts content of various types -
@@ -66,7 +66,7 @@ public class HttpPostHelper {
     }
 
     @SuppressWarnings("rawtypes")
-    private FormData extractFormData(final HttpServletRequest request) throws IOException {
+    protected FormData extractFormData(final HttpServletRequest request) throws IOException {
         FileItemFactory factory = new DiskFileItemFactory();
         ServletFileUpload upload = new ServletFileUpload(factory);
         upload.setHeaderEncoding("UTF-8");
@@ -108,7 +108,7 @@ public class HttpPostHelper {
         return null;
     }
 
-    private String upload(final FormData formData) throws IOException {
+    protected String upload(final FormData formData) throws IOException {
         //Validate upload
         final FileItem fileItem = formData.getFile();
         if (fileItem == null) {
@@ -128,7 +128,7 @@ public class HttpPostHelper {
         }
     }
 
-    private String uploadJar(final FormData formData) throws IOException {
+    protected String uploadJar(final FormData formData) throws IOException {
         GAV gav = formData.getGav();
         InputStream jarStream = null;
 
@@ -161,10 +161,10 @@ public class HttpPostHelper {
                     return UPLOAD_MISSING_POM;
                 }
                 jarStream.reset();
+                
+                formData.setGav(gav);
             }
-
-            m2RepoService.deployJar(jarStream,
-                                    gav);
+            deploy(gav, jarStream);
 
             return UPLOAD_OK;
         } catch (IOException ioe) {
@@ -177,8 +177,14 @@ public class HttpPostHelper {
             }
         }
     }
+    
+    protected void deploy(GAV gav, InputStream jarStream) {
 
-    private String uploadPom(final FormData formData) throws IOException {
+        m2RepoService.deployJar(jarStream,
+                                gav);
+    }
+
+    protected String uploadPom(final FormData formData) throws IOException {
         ReusableInputStream pomStream = null;
 
         try {
