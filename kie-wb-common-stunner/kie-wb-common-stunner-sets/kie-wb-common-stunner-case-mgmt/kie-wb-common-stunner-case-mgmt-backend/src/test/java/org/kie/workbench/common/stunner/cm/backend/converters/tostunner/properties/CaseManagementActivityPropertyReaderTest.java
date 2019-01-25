@@ -49,7 +49,6 @@ public class CaseManagementActivityPropertyReaderTest {
         definitionResolver = new DefinitionResolver(definitions, Collections.emptyList());
     }
 
-
     @Test
     public void testIsCase_true() throws Exception {
         String id = UUID.randomUUID().toString();
@@ -59,7 +58,7 @@ public class CaseManagementActivityPropertyReaderTest {
         CaseManagementCustomElement.isCase.of(callActivity).set(Boolean.TRUE);
 
         tested = new CaseManagementActivityPropertyReader(callActivity,
-                                                          definitionResolver.getPlane(),
+                                                          definitionResolver.getDiagram(),
                                                           definitionResolver);
 
         assertTrue(tested.isCase());
@@ -74,7 +73,7 @@ public class CaseManagementActivityPropertyReaderTest {
         CaseManagementCustomElement.isCase.of(callActivity).set(Boolean.FALSE);
 
         tested = new CaseManagementActivityPropertyReader(callActivity,
-                                                          definitionResolver.getPlane(),
+                                                          definitionResolver.getDiagram(),
                                                           definitionResolver);
 
         assertFalse(tested.isCase());

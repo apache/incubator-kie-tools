@@ -17,7 +17,7 @@
 package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties;
 
 import org.eclipse.bpmn2.SubProcess;
-import org.eclipse.bpmn2.di.BPMNPlane;
+import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationSet;
@@ -28,8 +28,8 @@ public class SubProcessPropertyReader extends FlowElementPropertyReader {
     protected final SubProcess process;
     private final DefinitionResolver definitionResolver;
 
-    public SubProcessPropertyReader(SubProcess element, BPMNPlane plane, DefinitionResolver definitionResolver) {
-        super(element, plane, definitionResolver.getShape(element.getId()));
+    public SubProcessPropertyReader(SubProcess element, BPMNDiagram diagram, DefinitionResolver definitionResolver) {
+        super(element, diagram, definitionResolver.getShape(element.getId()), definitionResolver.getResolutionFactor());
         this.process = element;
         this.definitionResolver = definitionResolver;
     }

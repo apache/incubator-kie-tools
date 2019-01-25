@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 import org.eclipse.bpmn2.FlowElement;
 import org.eclipse.bpmn2.Process;
-import org.eclipse.bpmn2.di.BPMNPlane;
+import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomAttribute;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
@@ -33,8 +33,8 @@ public class ProcessPropertyReader extends BasePropertyReader {
     private final Process process;
     private final Map<String, FlowElement> flowElements;
 
-    public ProcessPropertyReader(Process element, BPMNPlane plane, BPMNShape shape) {
-        super(element, plane, shape);
+    public ProcessPropertyReader(Process element, BPMNDiagram diagram, BPMNShape shape, double resolutionFactor) {
+        super(element, diagram, shape, resolutionFactor);
         this.process = element;
         this.flowElements =
                 process.getFlowElements().stream()

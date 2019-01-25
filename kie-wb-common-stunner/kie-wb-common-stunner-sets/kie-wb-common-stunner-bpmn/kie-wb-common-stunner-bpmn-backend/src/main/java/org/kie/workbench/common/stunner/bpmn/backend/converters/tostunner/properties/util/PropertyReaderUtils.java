@@ -31,40 +31,49 @@ public class PropertyReaderUtils {
     public static Point2D getSourcePosition(DefinitionResolver definitionResolver,
                                             String edgeId,
                                             String sourceId) {
-        Bounds sourceBounds = definitionResolver.getShape(sourceId).getBounds();
-        List<Point> waypoint = definitionResolver.getEdge(edgeId).getWaypoint();
+        final double resolutionFactor = definitionResolver.getResolutionFactor();
+        final Bounds sourceBounds = definitionResolver.getShape(sourceId).getBounds();
+        final List<Point> waypoint = definitionResolver.getEdge(edgeId).getWaypoint();
 
         return waypoint.isEmpty() ?
-                sourcePosition(sourceBounds)
+                sourcePosition(sourceBounds, resolutionFactor)
                 : offsetPosition(sourceBounds,
-                                 waypoint.get(0));
+                                 waypoint.get(0),
+                                 resolutionFactor);
     }
 
     public static Point2D getTargetPosition(DefinitionResolver definitionResolver,
                                             String edgeId,
                                             String targetId) {
-        Bounds targetBounds = definitionResolver.getShape(targetId).getBounds();
-        List<Point> waypoint = definitionResolver.getEdge(edgeId).getWaypoint();
+        final double resolutionFactor = definitionResolver.getResolutionFactor();
+        final Bounds targetBounds = definitionResolver.getShape(targetId).getBounds();
+        final List<Point> waypoint = definitionResolver.getEdge(edgeId).getWaypoint();
 
         return waypoint.isEmpty() ?
-                targetPosition(targetBounds)
+                targetPosition(targetBounds, resolutionFactor)
                 : offsetPosition(targetBounds,
-                                 waypoint.get(waypoint.size() - 1));
+                                 waypoint.get(waypoint.size() - 1),
+                                 resolutionFactor);
     }
 
     public static List<Point2D> getControlPoints(DefinitionResolver definitionResolver,
                                                  String edgeId) {
-        List<Point> waypoint = definitionResolver.getEdge(edgeId).getWaypoint();
-        List<Point2D> result = new ArrayList<>();
+        final double resolutionFactor = definitionResolver.getResolutionFactor();
+        final List<Point> waypoint = definitionResolver.getEdge(edgeId).getWaypoint();
+        final List<Point2D> result = new ArrayList<>();
         if (waypoint.size() > 2) {
             List<Point> points = waypoint.subList(1,
                                                   waypoint.size() - 1);
             for (Point p : points) {
-                result.add(Point2D.create(p.getX(),
-                                          p.getY()));
+                result.add(createPoint2D(p, resolutionFactor));
             }
         }
         return result;
+    }
+
+    private static Point2D createPoint2D(Point p, double factor) {
+        return Point2D.create(p.getX() * factor,
+                              p.getY() * factor);
     }
 
     public static boolean isAutoConnectionSource(BaseElement element) {
@@ -75,19 +84,22 @@ public class PropertyReaderUtils {
         return CustomElement.autoConnectionTarget.of(element).get();
     }
 
-    private static Point2D sourcePosition(Bounds sourceBounds) {
-        return Point2D.create(sourceBounds.getWidth(),
-                              sourceBounds.getHeight() / 2);
+    private static Point2D sourcePosition(Bounds sourceBounds,
+                                          double factor) {
+        return Point2D.create(sourceBounds.getWidth() * factor,
+                              sourceBounds.getHeight() * factor / 2);
     }
 
-    private static Point2D targetPosition(Bounds targetBounds) {
+    private static Point2D targetPosition(Bounds targetBounds,
+                                          double factor) {
         return Point2D.create(0,
-                              targetBounds.getHeight() / 2);
+                              targetBounds.getHeight() * factor / 2);
     }
 
     private static Point2D offsetPosition(Bounds sourceBounds,
-                                          Point wayPoint) {
-        return Point2D.create(wayPoint.getX() - sourceBounds.getX(),
-                              wayPoint.getY() - sourceBounds.getY());
+                                          Point wayPoint,
+                                          double factor) {
+        return Point2D.create((wayPoint.getX() * factor) - (sourceBounds.getX() * factor),
+                              (wayPoint.getY() * factor) - (sourceBounds.getY() * factor));
     }
 }

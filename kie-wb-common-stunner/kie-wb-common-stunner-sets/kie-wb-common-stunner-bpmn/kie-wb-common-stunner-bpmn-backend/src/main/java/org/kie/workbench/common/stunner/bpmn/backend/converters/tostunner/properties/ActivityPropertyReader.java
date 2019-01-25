@@ -21,7 +21,7 @@ import java.util.Optional;
 
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.InputOutputSpecification;
-import org.eclipse.bpmn2.di.BPMNPlane;
+import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomAttribute;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
@@ -34,8 +34,8 @@ public class ActivityPropertyReader extends FlowElementPropertyReader {
     private final Activity activity;
     private DefinitionResolver definitionResolver;
 
-    public ActivityPropertyReader(Activity activity, BPMNPlane plane, DefinitionResolver definitionResolver) {
-        super(activity, plane, definitionResolver.getShape(activity.getId()));
+    public ActivityPropertyReader(Activity activity, BPMNDiagram diagram, DefinitionResolver definitionResolver) {
+        super(activity, diagram, definitionResolver.getShape(activity.getId()), definitionResolver.getResolutionFactor());
         this.activity = activity;
         this.definitionResolver = definitionResolver;
     }

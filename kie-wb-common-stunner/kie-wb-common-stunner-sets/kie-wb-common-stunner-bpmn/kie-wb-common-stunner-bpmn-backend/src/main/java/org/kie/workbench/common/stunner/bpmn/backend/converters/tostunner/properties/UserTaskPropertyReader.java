@@ -28,7 +28,7 @@ import org.eclipse.bpmn2.InputOutputSpecification;
 import org.eclipse.bpmn2.PotentialOwner;
 import org.eclipse.bpmn2.ResourceRole;
 import org.eclipse.bpmn2.UserTask;
-import org.eclipse.bpmn2.di.BPMNPlane;
+import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomInput;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
@@ -40,8 +40,8 @@ public class UserTaskPropertyReader extends TaskPropertyReader {
 
     private final UserTask task;
 
-    public UserTaskPropertyReader(UserTask element, BPMNPlane plane, DefinitionResolver definitionResolver) {
-        super(element, plane, definitionResolver);
+    public UserTaskPropertyReader(UserTask element, BPMNDiagram diagram, DefinitionResolver definitionResolver) {
+        super(element, diagram, definitionResolver);
         this.task = element;
     }
 

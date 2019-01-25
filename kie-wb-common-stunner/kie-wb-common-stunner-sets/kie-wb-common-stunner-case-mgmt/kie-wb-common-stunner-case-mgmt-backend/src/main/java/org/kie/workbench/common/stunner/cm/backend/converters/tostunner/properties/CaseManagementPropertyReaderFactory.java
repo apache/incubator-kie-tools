@@ -28,6 +28,6 @@ public class CaseManagementPropertyReaderFactory extends PropertyReaderFactory {
 
     @Override
     public ActivityPropertyReader of(Activity el) {
-        return new CaseManagementActivityPropertyReader(el, plane, definitionResolver);
+        return new CaseManagementActivityPropertyReader(el, diagram, definitionResolver);
     }
 }

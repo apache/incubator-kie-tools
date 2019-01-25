@@ -23,13 +23,13 @@ import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.MultiInstanceLoopCharacteristics;
 import org.eclipse.bpmn2.Property;
 import org.eclipse.bpmn2.SubProcess;
-import org.eclipse.bpmn2.di.BPMNPlane;
+import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
 
 public class MultipleInstanceSubProcessPropertyReader extends SubProcessPropertyReader {
 
-    public MultipleInstanceSubProcessPropertyReader(SubProcess element, BPMNPlane plane, DefinitionResolver definitionResolver) {
-        super(element, plane, definitionResolver);
+    public MultipleInstanceSubProcessPropertyReader(SubProcess element, BPMNDiagram diagram, DefinitionResolver definitionResolver) {
+        super(element, diagram, definitionResolver);
     }
 
     public String getCollectionInput() {

@@ -17,7 +17,7 @@
 package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties;
 
 import org.eclipse.bpmn2.BoundaryEvent;
-import org.eclipse.bpmn2.di.BPMNPlane;
+import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomAttribute;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
@@ -27,8 +27,8 @@ public class BoundaryEventPropertyReader extends CatchEventPropertyReader {
 
     private final BoundaryEvent event;
 
-    public BoundaryEventPropertyReader(BoundaryEvent event, BPMNPlane plane, DefinitionResolver definitionResolver) {
-        super(event, plane, definitionResolver);
+    public BoundaryEventPropertyReader(BoundaryEvent event, BPMNDiagram diagram, DefinitionResolver definitionResolver) {
+        super(event, diagram, definitionResolver);
         this.event = event;
     }
 
@@ -38,17 +38,14 @@ public class BoundaryEventPropertyReader extends CatchEventPropertyReader {
     }
 
     @Override
-    public Bounds getBounds() {
-        org.eclipse.dd.dc.Bounds bounds = shape.getBounds();
-        Point2D docker = getDockerInfo();
-        return Bounds.create(
-                docker.getX(),
-                docker.getY(),
-                docker.getX() + bounds.getWidth(),
-                docker.getY() + bounds.getHeight());
+    protected Bounds computeBounds(final org.eclipse.dd.dc.Bounds bounds) {
+        final Point2D docker = getDockerInfo();
+        final double x = docker.getX() * resolutionFactor;
+        final double y = docker.getY() * resolutionFactor;
+        return Bounds.create(x, y, x + WIDTH, y + HEIGHT);
     }
 
-    private Point2D getDockerInfo() {
+    Point2D getDockerInfo() {
         return CustomAttribute.dockerInfo.of(element).get();
     }
 }

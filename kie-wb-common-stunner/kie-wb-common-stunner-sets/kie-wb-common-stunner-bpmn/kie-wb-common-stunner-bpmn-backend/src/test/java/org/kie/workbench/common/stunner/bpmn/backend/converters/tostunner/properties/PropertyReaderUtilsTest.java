@@ -91,6 +91,7 @@ public class PropertyReaderUtilsTest {
         when(point.getX()).thenReturn(WAY_POINT_X);
         when(point.getY()).thenReturn(WAY_POINT_Y);
 
+        when(definitionResolver.getResolutionFactor()).thenReturn(1d);
         when(definitionResolver.getEdge(EDGE_ID)).thenReturn(edge);
         when(definitionResolver.getShape(SHAPE_ID)).thenReturn(shape);
         when(shape.getBounds()).thenReturn(bounds);
@@ -100,7 +101,7 @@ public class PropertyReaderUtilsTest {
     public void testGetSourcePositionWithNoWaypoint() {
         when(edge.getWaypoint()).thenReturn(Collections.emptyList());
         Point2D point = PropertyReaderUtils.getSourcePosition(definitionResolver, EDGE_ID, SHAPE_ID);
-        assertPoint(BOUNDS_WIDTH, BOUNDS_HEIGHT/2, point);
+        assertPoint(BOUNDS_WIDTH, BOUNDS_HEIGHT / 2, point);
     }
 
     @Test
@@ -114,7 +115,7 @@ public class PropertyReaderUtilsTest {
     public void testGetTargetPositionWithNoWaypoint() {
         when(edge.getWaypoint()).thenReturn(Collections.emptyList());
         Point2D point = PropertyReaderUtils.getTargetPosition(definitionResolver, EDGE_ID, SHAPE_ID);
-        assertPoint(0, BOUNDS_HEIGHT/2, point);
+        assertPoint(0, BOUNDS_HEIGHT / 2, point);
     }
 
     @Test
@@ -192,6 +193,27 @@ public class PropertyReaderUtilsTest {
         testIsAutoConnectionTarget(null, false);
     }
 
+    @Test
+    public void testResolutionFactoryIsBeingAppliedOnControlPoints() {
+        when(definitionResolver.getResolutionFactor()).thenReturn(0.25d);
+        when(edge.getWaypoint()).thenReturn(Collections.emptyList());
+        Point2D point = PropertyReaderUtils.getSourcePosition(definitionResolver, EDGE_ID, SHAPE_ID);
+        assertPoint(0.5f, 0.5f, point);
+        when(edge.getWaypoint()).thenReturn(Collections.emptyList());
+        point = PropertyReaderUtils.getTargetPosition(definitionResolver, EDGE_ID, SHAPE_ID);
+        assertPoint(0, 0.5f, point);
+        List<Point> waypoints = mockPoints(1, 2, 3);
+        when(edge.getWaypoint()).thenReturn(waypoints);
+        List<Point2D> result = PropertyReaderUtils.getControlPoints(definitionResolver, EDGE_ID);
+        waypoints.remove(0);
+        waypoints.remove(waypoints.size() - 1);
+        assertEquals(waypoints.size(), result.size());
+        for (int i = 0; i < result.size(); i++) {
+            assertEquals(waypoints.get(i).getX() * 0.25d, result.get(i).getX(), 0);
+            assertEquals(waypoints.get(i).getY() * 0.25d, result.get(i).getY(), 0);
+        }
+    }
+
     private void testIsAutoConnectionTarget(String valueToSet, boolean expectedResult) {
         prepareExtensionElement(CustomElement.autoConnectionTarget.name(), valueToSet);
         assertEquals(expectedResult, PropertyReaderUtils.isAutoConnectionTarget(baseElement));
@@ -218,7 +240,7 @@ public class PropertyReaderUtilsTest {
         when(edge.getWaypoint()).thenReturn(waypoints);
         List<Point2D> result = PropertyReaderUtils.getControlPoints(definitionResolver, EDGE_ID);
         waypoints.remove(0);
-        waypoints.remove(waypoints.size() -1);
+        waypoints.remove(waypoints.size() - 1);
         assertPoints(waypoints, result);
     }
 
@@ -240,8 +262,8 @@ public class PropertyReaderUtilsTest {
         List<Point> result = new ArrayList<>();
         for (int i = 0; i < size; i++) {
             Point point = mock(Point.class);
-            when(point.getX()).thenReturn(mockXStart+i);
-            when(point.getY()).thenReturn(mockYStart+i);
+            when(point.getX()).thenReturn(mockXStart + i);
+            when(point.getY()).thenReturn(mockYStart + i);
             result.add(point);
         }
         return result;

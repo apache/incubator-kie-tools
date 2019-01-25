@@ -28,7 +28,7 @@ import org.eclipse.bpmn2.DataInputAssociation;
 import org.eclipse.bpmn2.DataOutput;
 import org.eclipse.bpmn2.DataOutputAssociation;
 import org.eclipse.bpmn2.InputOutputSpecification;
-import org.eclipse.bpmn2.di.BPMNPlane;
+import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomAttribute;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomInput;
@@ -40,8 +40,8 @@ public class BusinessRuleTaskPropertyReader extends TaskPropertyReader {
 
     private final BusinessRuleTask task;
 
-    public BusinessRuleTaskPropertyReader(BusinessRuleTask task, BPMNPlane plane, DefinitionResolver definitionResolver) {
-        super(task, plane, definitionResolver);
+    public BusinessRuleTaskPropertyReader(BusinessRuleTask task, BPMNDiagram diagram, DefinitionResolver definitionResolver) {
+        super(task, diagram, definitionResolver);
         this.task = task;
     }
 

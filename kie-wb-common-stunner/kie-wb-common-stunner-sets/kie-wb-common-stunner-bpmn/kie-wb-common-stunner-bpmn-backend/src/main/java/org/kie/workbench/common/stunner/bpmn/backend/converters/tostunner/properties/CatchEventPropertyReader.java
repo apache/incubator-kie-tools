@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.eclipse.bpmn2.CatchEvent;
 import org.eclipse.bpmn2.EventDefinition;
-import org.eclipse.bpmn2.di.BPMNPlane;
+import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.AssignmentsInfo;
 
@@ -30,8 +30,8 @@ public class CatchEventPropertyReader extends EventPropertyReader {
 
     private final CatchEvent catchEvent;
 
-    public CatchEventPropertyReader(CatchEvent catchEvent, BPMNPlane plane, DefinitionResolver definitionResolver) {
-        super(catchEvent, plane, definitionResolver, EventPropertyReader.getSignalRefId(catchEvent.getEventDefinitions()));
+    public CatchEventPropertyReader(CatchEvent catchEvent, BPMNDiagram diagram, DefinitionResolver definitionResolver) {
+        super(catchEvent, diagram, definitionResolver, EventPropertyReader.getSignalRefId(catchEvent.getEventDefinitions()));
         this.catchEvent = catchEvent;
     }
 

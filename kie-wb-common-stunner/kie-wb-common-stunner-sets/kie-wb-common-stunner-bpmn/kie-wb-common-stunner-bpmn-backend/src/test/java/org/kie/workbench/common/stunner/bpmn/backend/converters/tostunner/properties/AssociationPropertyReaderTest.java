@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.eclipse.bpmn2.Association;
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.di.BPMNPlane;
 import org.junit.Before;
 import org.junit.Test;
@@ -65,6 +66,9 @@ public class AssociationPropertyReaderTest {
     private BaseElement targetRef;
 
     @Mock
+    private BPMNDiagram bpmnDiagram;
+
+    @Mock
     private BPMNPlane bpmnLane;
 
     private Point2D position;
@@ -75,13 +79,14 @@ public class AssociationPropertyReaderTest {
     @Before
     public void setUp() {
         position = Point2D.create(X, Y);
+        when(bpmnDiagram.getPlane()).thenReturn(bpmnLane);
         when(association.getId()).thenReturn(ASSOCIATION_ID);
         when(sourceRef.getId()).thenReturn(SOURCE_ID);
         when(targetRef.getId()).thenReturn(TARGET_ID);
         when(association.getSourceRef()).thenReturn(sourceRef);
         when(association.getTargetRef()).thenReturn(targetRef);
 
-        propertyReader = new AssociationPropertyReader(association, bpmnLane, definitionResolver);
+        propertyReader = new AssociationPropertyReader(association, bpmnDiagram, definitionResolver);
     }
 
     @Test

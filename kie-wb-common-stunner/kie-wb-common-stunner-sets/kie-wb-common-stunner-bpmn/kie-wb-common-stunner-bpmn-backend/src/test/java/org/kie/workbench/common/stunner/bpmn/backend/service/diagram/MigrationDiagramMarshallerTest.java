@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -55,8 +56,37 @@ import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.VariablesTypeSerializer;
 import org.kie.workbench.common.stunner.bpmn.backend.workitem.service.WorkItemDefinitionBackendService;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
+import org.kie.workbench.common.stunner.bpmn.definition.EndCompensationEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.EndErrorEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.EndEscalationEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.EndMessageEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.EndSignalEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveGateway;
+import org.kie.workbench.common.stunner.bpmn.definition.InclusiveGateway;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateCompensationEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateCompensationEventThrowing;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateConditionalEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateErrorEventCatching;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateEscalationEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateEscalationEventThrowing;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEventCatching;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEventThrowing;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventCatching;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventThrowing;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
+import org.kie.workbench.common.stunner.bpmn.definition.ParallelGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.ScriptTask;
+import org.kie.workbench.common.stunner.bpmn.definition.StartCompensationEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.StartConditionalEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.StartErrorEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.StartEscalationEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.StartMessageEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.StartSignalEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.StartTimerEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.backend.BackendFactoryManager;
@@ -531,15 +561,6 @@ public class MigrationDiagramMarshallerTest {
             View oldContent = o.getContent();
             View newContent = n.getContent();
 
-            Bounds oldBounds = oldContent.getBounds();
-            Bounds newBounds = newContent.getBounds();
-
-            assertEquals(
-                    fileName + ": Bounds should match for " + o.getUUID(),
-                    oldBounds,
-                    newBounds
-            );
-
             Object oldDefinition = oldContent.getDefinition();
             Object newDefinition = newContent.getDefinition();
 
@@ -548,7 +569,73 @@ public class MigrationDiagramMarshallerTest {
                     oldDefinition,
                     newDefinition
             );
+
+            // Check only bounds for nodes that are NOT parsed by using fixed sizes.
+            if (!areBoundsFixed(newDefinition)) {
+                Bounds oldBounds = oldContent.getBounds();
+                Bounds newBounds = newContent.getBounds();
+
+                assertEquals(
+                        fileName + ": Bounds should match for " + o.getUUID(),
+                        oldBounds,
+                        newBounds
+                );
+            }
         }
+    }
+
+    private static Class[] EVENTS = new Class[]{StartNoneEvent.class,
+            StartMessageEvent.class,
+            StartSignalEvent.class,
+            StartTimerEvent.class,
+            StartErrorEvent.class,
+            StartConditionalEvent.class,
+            StartEscalationEvent.class,
+            StartCompensationEvent.class,
+            EndNoneEvent.class,
+            EndSignalEvent.class,
+            EndMessageEvent.class,
+            EndTerminateEvent.class,
+            EndErrorEvent.class,
+            EndEscalationEvent.class,
+            EndCompensationEvent.class,
+            IntermediateTimerEvent.class,
+            IntermediateMessageEventCatching.class,
+            IntermediateSignalEventCatching.class,
+            IntermediateSignalEventThrowing.class,
+            IntermediateErrorEventCatching.class,
+            IntermediateEscalationEvent.class,
+            IntermediateCompensationEvent.class,
+            IntermediateMessageEventThrowing.class,
+            IntermediateConditionalEvent.class,
+            IntermediateEscalationEventThrowing.class,
+            IntermediateCompensationEventThrowing.class
+    };
+
+    private static Class[] GATEWAYS = new Class[]{
+            ParallelGateway.class,
+            ExclusiveGateway.class,
+            InclusiveGateway.class
+    };
+
+    public static boolean areBoundsFixed(final Object def) {
+        return isEvent(def) || isGateway(def);
+    }
+
+    private static boolean isEvent(final Object def) {
+        return isClassType(EVENTS, def);
+    }
+
+    private static boolean isGateway(final Object def) {
+        return isClassType(GATEWAYS, def);
+    }
+
+    private static boolean isClassType(final Class[] types,
+                                       final Object def) {
+        return Stream.of(types)
+                .filter(eClass -> eClass.isInstance(def))
+                .findAny()
+                .isPresent();
     }
 
     private Map<String, Node<View, ?>> asNodeMap(Iterable nodes) {

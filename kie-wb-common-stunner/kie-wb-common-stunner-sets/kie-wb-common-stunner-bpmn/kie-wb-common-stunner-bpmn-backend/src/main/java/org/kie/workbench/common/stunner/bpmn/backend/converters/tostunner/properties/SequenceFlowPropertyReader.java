@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.eclipse.bpmn2.FormalExpression;
 import org.eclipse.bpmn2.SequenceFlow;
-import org.eclipse.bpmn2.di.BPMNPlane;
+import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomAttribute;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.util.PropertyReaderUtils;
@@ -36,11 +36,12 @@ public class SequenceFlowPropertyReader extends FlowElementPropertyReader {
     private final SequenceFlow seq;
 
     public SequenceFlowPropertyReader(SequenceFlow seq,
-                                      BPMNPlane plane,
+                                      BPMNDiagram diagram,
                                       DefinitionResolver definitionResolver) {
         super(seq,
-              plane,
-              definitionResolver.getShape(seq.getId()));
+              diagram,
+              definitionResolver.getShape(seq.getId()),
+              definitionResolver.getResolutionFactor());
         this.seq = seq;
         conditionExpression = (FormalExpression) seq.getConditionExpression();
         this.definitionResolver = definitionResolver;

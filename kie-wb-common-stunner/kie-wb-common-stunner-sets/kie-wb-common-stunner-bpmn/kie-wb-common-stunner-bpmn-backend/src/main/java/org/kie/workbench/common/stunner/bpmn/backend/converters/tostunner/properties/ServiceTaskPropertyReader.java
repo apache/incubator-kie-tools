@@ -22,7 +22,7 @@ import java.util.Optional;
 import org.drools.core.util.StringUtils;
 import org.eclipse.bpmn2.InputOutputSpecification;
 import org.eclipse.bpmn2.Task;
-import org.eclipse.bpmn2.di.BPMNPlane;
+import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomInput;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
@@ -34,8 +34,8 @@ public class ServiceTaskPropertyReader extends TaskPropertyReader {
 
     private final WorkItemDefinition workItemDefinition;
 
-    public ServiceTaskPropertyReader(Task task, WorkItemDefinition workItemDefinition, BPMNPlane plane, DefinitionResolver definitionResolver) {
-        super(task, plane, definitionResolver);
+    public ServiceTaskPropertyReader(Task task, WorkItemDefinition workItemDefinition, BPMNDiagram diagram, DefinitionResolver definitionResolver) {
+        super(task, diagram, definitionResolver);
         this.workItemDefinition = workItemDefinition;
     }
 

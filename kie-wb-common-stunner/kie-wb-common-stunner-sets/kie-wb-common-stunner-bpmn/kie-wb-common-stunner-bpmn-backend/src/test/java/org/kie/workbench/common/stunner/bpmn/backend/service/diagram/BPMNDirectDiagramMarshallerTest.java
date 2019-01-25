@@ -1322,10 +1322,10 @@ public class BPMNDirectDiagramMarshallerTest {
         assertEquals(300,
                      ul.getY(),
                      0);
-        assertEquals(335,
+        assertEquals(361,
                      lr.getX(),
                      0);
-        assertEquals(330,
+        assertEquals(356,
                      lr.getY(),
                      0);
     }
@@ -1360,10 +1360,10 @@ public class BPMNDirectDiagramMarshallerTest {
         assertEquals(70,
                      ul.getY(),
                      0);
-        assertEquals(87,
+        assertEquals(113,
                      lr.getX(),
                      0);
-        assertEquals(100,
+        assertEquals(126,
                      lr.getY(),
                      0);
     }
@@ -2028,7 +2028,7 @@ public class BPMNDirectDiagramMarshallerTest {
                       5,
                       3);
         // Assert that the boundary event location and size are the expected ones.
-        assertTrue(result.contains("Bounds height=\"30.0\" width=\"30.0\" x=\"312.0\" y=\"195.0\""));
+        assertTrue(result.contains("Bounds height=\"56.0\" width=\"56.0\" x=\"299.0\" y=\"182.0\""));
     }
 
     @Test

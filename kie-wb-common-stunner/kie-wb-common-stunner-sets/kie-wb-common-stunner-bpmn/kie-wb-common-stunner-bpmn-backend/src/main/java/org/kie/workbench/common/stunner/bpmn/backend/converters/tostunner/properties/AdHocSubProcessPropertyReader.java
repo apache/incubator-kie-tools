@@ -18,7 +18,7 @@ package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.prope
 
 import org.eclipse.bpmn2.AdHocSubProcess;
 import org.eclipse.bpmn2.FormalExpression;
-import org.eclipse.bpmn2.di.BPMNPlane;
+import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeValue;
 
@@ -26,8 +26,8 @@ public class AdHocSubProcessPropertyReader extends SubProcessPropertyReader {
 
     private final AdHocSubProcess process;
 
-    public AdHocSubProcessPropertyReader(AdHocSubProcess element, BPMNPlane plane, DefinitionResolver definitionResolver) {
-        super(element, plane, definitionResolver);
+    public AdHocSubProcessPropertyReader(AdHocSubProcess element, BPMNDiagram diagram, DefinitionResolver definitionResolver) {
+        super(element, diagram, definitionResolver);
         this.process = element;
     }
 

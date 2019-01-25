@@ -19,7 +19,7 @@ package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.prope
 import java.util.Optional;
 
 import org.eclipse.bpmn2.Lane;
-import org.eclipse.bpmn2.di.BPMNPlane;
+import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
 
@@ -27,8 +27,8 @@ public class LanePropertyReader extends BasePropertyReader {
 
     private final Lane lane;
 
-    public LanePropertyReader(Lane el, BPMNPlane plane, BPMNShape shape) {
-        super(el, plane, shape);
+    public LanePropertyReader(Lane el, BPMNDiagram diagram, BPMNShape shape, double resolutionFactor) {
+        super(el, diagram, shape, resolutionFactor);
         this.lane = el;
     }
 

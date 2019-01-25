@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.eclipse.bpmn2.BaseElement;
-import org.eclipse.bpmn2.di.BPMNPlane;
+import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
@@ -39,16 +39,21 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSize;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 
-public abstract class BasePropertyReader {
+public class BasePropertyReader {
 
     protected final BaseElement element;
     protected final BPMNShape shape;
-    protected final BPMNPlane plane;
+    protected final BPMNDiagram diagram;
+    protected final double resolutionFactor;
 
-    public BasePropertyReader(BaseElement element, BPMNPlane plane, BPMNShape shape) {
+    public BasePropertyReader(final BaseElement element,
+                              final BPMNDiagram diagram,
+                              final BPMNShape shape,
+                              final double resolutionFactor) {
         this.element = element;
-        this.plane = plane;
+        this.diagram = diagram;
         this.shape = shape;
+        this.resolutionFactor = resolutionFactor;
     }
 
     public String getDocumentation() {
@@ -63,21 +68,21 @@ public abstract class BasePropertyReader {
     }
 
     public FontSet getFontSet() {
-        return new FontSet(
-                new FontFamily(),
-                new FontColor(optionalAttribute("fontcolor")//, "color")
-                                      .orElse(colorsDefaultFont())),
-                new FontSize(optionalAttribute("fontsize")
-                                     .map(Double::parseDouble).orElse(null)),
-                new FontBorderSize(),
-                new FontBorderColor());
+        final FontFamily fontFamily = new FontFamily();
+        final FontColor fontColor = new FontColor(optionalAttribute("fontcolor")
+                                                          .orElse(colorsDefaultFont()));
+        final FontSize fontSize = new FontSize(optionalAttribute("fontsize")
+                                                       .map(Double::parseDouble).orElse(null));
+        final FontBorderSize fontBorderSize = new FontBorderSize();
+        final FontBorderColor fontBorderColor = new FontBorderColor();
+        return new FontSet(fontFamily, fontColor, fontSize, fontBorderSize, fontBorderColor);
     }
 
     public BackgroundSet getBackgroundSet() {
         return new BackgroundSet(
-                new BgColor(optionalAttribute("bgcolor")//, "background-color")
+                new BgColor(optionalAttribute("bgcolor")
                                     .orElse(colorsDefaultBg())),
-                new BorderColor(optionalAttribute(/*"border-color", */"bordercolor")
+                new BorderColor(optionalAttribute("bordercolor")
                                         .orElse(colorsDefaultBr())),
                 new BorderSize()
         );
@@ -96,7 +101,10 @@ public abstract class BasePropertyReader {
     }
 
     protected Optional<String> optionalAttribute(String... attributeIds) {
-        List<String> attributes = Arrays.asList(attributeIds);
+        if (element.getAnyAttribute().isEmpty()) {
+            return Optional.empty();
+        }
+        final List<String> attributes = Arrays.asList(attributeIds);
         return element.getAnyAttribute().stream()
                 .filter(e -> attributes.contains(e.getEStructuralFeature().getName()))
                 .map(e -> e.getValue().toString())
@@ -107,12 +115,15 @@ public abstract class BasePropertyReader {
         if (shape == null) {
             return Bounds.create();
         }
-        org.eclipse.dd.dc.Bounds bounds = shape.getBounds();
-        return Bounds.create(
-                bounds.getX(),
-                bounds.getY(),
-                bounds.getX() + bounds.getWidth(),
-                bounds.getY() + bounds.getHeight());
+        return computeBounds(shape.getBounds());
+    }
+
+    protected Bounds computeBounds(final org.eclipse.dd.dc.Bounds bounds) {
+        final double x = bounds.getX() * resolutionFactor;
+        final double y = bounds.getY() * resolutionFactor;
+        final double width = bounds.getWidth() * resolutionFactor;
+        final double height = bounds.getHeight() * resolutionFactor;
+        return Bounds.create(x, y, x + width, y + height);
     }
 
     public CircleDimensionSet getCircleDimensionSet() {
@@ -120,7 +131,7 @@ public abstract class BasePropertyReader {
             return new CircleDimensionSet();
         }
         return new CircleDimensionSet(new Radius(
-                shape.getBounds().getWidth() / 2d));
+                shape.getBounds().getWidth() * resolutionFactor / 2d));
     }
 
     public RectangleDimensionsSet getRectangleDimensionsSet() {
@@ -128,6 +139,7 @@ public abstract class BasePropertyReader {
             return new RectangleDimensionsSet();
         }
         org.eclipse.dd.dc.Bounds bounds = shape.getBounds();
-        return new RectangleDimensionsSet((double) bounds.getWidth(), (double) bounds.getHeight());
+        return new RectangleDimensionsSet(bounds.getWidth() * resolutionFactor,
+                                          bounds.getHeight() * resolutionFactor);
     }
 }

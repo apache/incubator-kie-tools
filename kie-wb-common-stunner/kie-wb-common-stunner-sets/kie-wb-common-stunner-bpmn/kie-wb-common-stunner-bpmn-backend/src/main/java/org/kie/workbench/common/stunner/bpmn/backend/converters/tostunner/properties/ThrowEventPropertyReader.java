@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.eclipse.bpmn2.EventDefinition;
 import org.eclipse.bpmn2.ThrowEvent;
-import org.eclipse.bpmn2.di.BPMNPlane;
+import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.AssignmentsInfo;
 
@@ -30,8 +30,8 @@ public class ThrowEventPropertyReader extends EventPropertyReader {
 
     private final ThrowEvent throwEvent;
 
-    public ThrowEventPropertyReader(ThrowEvent throwEvent, BPMNPlane plane, DefinitionResolver definitionResolver) {
-        super(throwEvent, plane, definitionResolver, EventPropertyReader.getSignalRefId(throwEvent.getEventDefinitions()));
+    public ThrowEventPropertyReader(ThrowEvent throwEvent, BPMNDiagram diagram, DefinitionResolver definitionResolver) {
+        super(throwEvent, diagram, definitionResolver, EventPropertyReader.getSignalRefId(throwEvent.getEventDefinitions()));
         this.throwEvent = throwEvent;
     }
 

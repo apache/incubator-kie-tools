@@ -17,14 +17,26 @@
 package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties;
 
 import org.eclipse.bpmn2.Gateway;
-import org.eclipse.bpmn2.di.BPMNPlane;
+import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomAttribute;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 
 public class GatewayPropertyReader extends FlowElementPropertyReader {
 
-    public GatewayPropertyReader(Gateway element, BPMNPlane plane, BPMNShape shape) {
-        super(element, plane, shape);
+    // These values are present in the SVG declaration for the gateway shape.
+    static final double WIDTH = 56d;
+    static final double HEIGHT = 56d;
+
+    public GatewayPropertyReader(Gateway element, BPMNDiagram diagram, BPMNShape shape, double resolutionFactor) {
+        super(element, diagram, shape, resolutionFactor);
+    }
+
+    @Override
+    protected Bounds computeBounds(org.eclipse.dd.dc.Bounds bounds) {
+        final double x = bounds.getX() * resolutionFactor;
+        final double y = bounds.getY() * resolutionFactor;
+        return Bounds.create(x, y, x + WIDTH, y + HEIGHT);
     }
 
     public String getDefaultRoute() {

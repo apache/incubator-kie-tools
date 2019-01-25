@@ -55,6 +55,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.TaskTypeSerializer;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.TimerSettingsTypeSerializer;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.VariablesTypeSerializer;
+import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.MigrationDiagramMarshallerTest;
 import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.MockApplicationFactoryManager;
 import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.TaskTypeMorphDefinition;
 import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.Unmarshalling;
@@ -410,12 +411,6 @@ public abstract class BPMNDiagramMarshallerBase {
             Bounds oldBounds = oldContent.getBounds();
             Bounds newBounds = newContent.getBounds();
 
-            assertEquals(
-                    fileName + ": Bounds should match for " + o.getUUID(),
-                    oldBounds,
-                    newBounds
-            );
-
             Object oldDefinition = oldContent.getDefinition();
             Object newDefinition = newContent.getDefinition();
 
@@ -424,6 +419,14 @@ public abstract class BPMNDiagramMarshallerBase {
                     oldDefinition,
                     newDefinition
             );
+
+            if (!MigrationDiagramMarshallerTest.areBoundsFixed(newDefinition)) {
+                assertEquals(
+                        fileName + ": Bounds should match for " + o.getUUID(),
+                        oldBounds,
+                        newBounds
+                );
+            }
         }
     }
 

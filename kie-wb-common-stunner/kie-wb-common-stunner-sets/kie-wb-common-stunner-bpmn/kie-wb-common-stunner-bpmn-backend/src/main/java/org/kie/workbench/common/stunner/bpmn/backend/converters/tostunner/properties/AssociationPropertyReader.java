@@ -19,7 +19,7 @@ package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.prope
 import java.util.List;
 
 import org.eclipse.bpmn2.Association;
-import org.eclipse.bpmn2.di.BPMNPlane;
+import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.util.PropertyReaderUtils;
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
@@ -32,11 +32,12 @@ public class AssociationPropertyReader extends BasePropertyReader {
     private final Association association;
 
     public AssociationPropertyReader(Association association,
-                                     BPMNPlane plane,
+                                     BPMNDiagram diagram,
                                      DefinitionResolver definitionResolver) {
         super(association,
-              plane,
-              definitionResolver.getShape(association.getId()));
+              diagram,
+              definitionResolver.getShape(association.getId()),
+              definitionResolver.getResolutionFactor());
         this.association = association;
         this.definitionResolver = definitionResolver;
     }

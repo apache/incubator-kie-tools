@@ -19,7 +19,7 @@ package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.prope
 import java.util.Optional;
 
 import org.eclipse.bpmn2.ScriptTask;
-import org.eclipse.bpmn2.di.BPMNPlane;
+import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationSet;
@@ -29,8 +29,8 @@ public class ScriptTaskPropertyReader extends TaskPropertyReader {
 
     private final ScriptTask task;
 
-    public ScriptTaskPropertyReader(ScriptTask task, BPMNPlane plane, DefinitionResolver definitionResolver) {
-        super(task, plane, definitionResolver);
+    public ScriptTaskPropertyReader(ScriptTask task, BPMNDiagram diagram, DefinitionResolver definitionResolver) {
+        super(task, diagram, definitionResolver);
         this.task = task;
     }
 

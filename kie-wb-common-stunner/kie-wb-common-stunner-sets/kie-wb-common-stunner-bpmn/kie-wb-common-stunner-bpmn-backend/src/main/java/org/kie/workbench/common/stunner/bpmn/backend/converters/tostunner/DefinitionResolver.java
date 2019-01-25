@@ -32,11 +32,14 @@ import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.Relationship;
 import org.eclipse.bpmn2.RootElement;
 import org.eclipse.bpmn2.Signal;
+import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.di.BPMNPlane;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.eclipse.emf.ecore.util.FeatureMap;
 import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinition;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * An object that resolves child definitions.
@@ -44,23 +47,28 @@ import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinition;
  * Because the Stunner model aggregates different aspects of a node,
  * while the Eclipse model keeps them in separate sections, we use this
  * object to access such aspects, namely
- *
+ * <p>
  * <ul>
  * <li>shapes</li>
  * <li>simulation parameters</li>
  * </ul>.
- *
+ * <p>
  * <em>signal</em> concern is due to a bug in current Eclipse BPMN2 implementation,
  * which is outdated w.r.t. upstream.
  */
 public class DefinitionResolver {
+
+    private static final Logger LOG = LoggerFactory.getLogger(DefinitionResolver.class);
+    static final String BPMN_DIAGRAM_RESOLUTION_PROPERTY = "org.kie.stunner.bpmn.marshaller.resolution";
+    static final double DEFAULT_RESOLUTION = 112.5d;
 
     private final Map<String, Signal> signals;
     private final Map<String, ElementParameters> simulationParameters;
     private final Collection<WorkItemDefinition> workItemDefinitions;
     private final Definitions definitions;
     private final Process process;
-    private final BPMNPlane plane;
+    private final BPMNDiagram diagram;
+    private final double resolutionFactor;
 
     public DefinitionResolver(
             Definitions definitions,
@@ -70,11 +78,20 @@ public class DefinitionResolver {
         this.simulationParameters = initSimulationParameters(definitions);
         this.workItemDefinitions = workItemDefinitions;
         this.process = findProcess();
-        this.plane = findPlane();
+        this.diagram = findDiagram();
+        this.resolutionFactor = calculateResolutionFactor(diagram);
+    }
+
+    public BPMNDiagram getDiagram() {
+        return diagram;
+    }
+
+    public double getResolutionFactor() {
+        return resolutionFactor;
     }
 
     public BPMNPlane getPlane() {
-        return plane;
+        return diagram.getPlane();
     }
 
     public Definitions getDefinitions() {
@@ -96,7 +113,7 @@ public class DefinitionResolver {
      * Message, Error, Timer resolution, is that Message, Error, Timer
      * instances are usually attached to the events that refer them,
      * so that we can do:
-     *
+     * <p>
      * <code><pre>
      *     Message mySignal = myEvent.getMessageRef()
      * </pre></code>
@@ -136,6 +153,7 @@ public class DefinitionResolver {
         return signals;
     }
 
+    @SuppressWarnings("unchecked")
     private Map<String, ElementParameters> initSimulationParameters(Definitions definitions) {
         Map<String, ElementParameters> simulationParameters = new HashMap<>();
         List<Relationship> relationships = definitions.getRelationships();
@@ -166,12 +184,12 @@ public class DefinitionResolver {
                 .findFirst().get();
     }
 
-    private BPMNPlane findPlane() {
-        return definitions.getDiagrams().get(0).getPlane();
+    private BPMNDiagram findDiagram() {
+        return definitions.getDiagrams().get(0);
     }
 
     public BPMNShape getShape(String elementId) {
-        return plane.getPlaneElement().stream()
+        return getPlane().getPlaneElement().stream()
                 .filter(dia -> dia instanceof BPMNShape)
                 .map(shape -> (BPMNShape) shape)
                 .filter(shape -> shape.getBpmnElement().getId().equals(elementId))
@@ -179,10 +197,31 @@ public class DefinitionResolver {
     }
 
     public BPMNEdge getEdge(String elementId) {
-        return plane.getPlaneElement().stream()
+        return getPlane().getPlaneElement().stream()
                 .filter(dia -> dia instanceof BPMNEdge)
                 .map(edge -> (BPMNEdge) edge)
                 .filter(edge -> edge.getBpmnElement().getId().equals(elementId))
                 .findFirst().get();
+    }
+
+    static double calculateResolutionFactor(final BPMNDiagram diagram) {
+        final float resolution = diagram.getResolution();
+        // If no resolution set on the model, the eclipse parsers default to 0.0F.
+        return resolution == 0 ?
+                1 :
+                obtainResolutionFactor() / resolution;
+    }
+
+    static double obtainResolutionFactor() {
+        final String resolution = System.getProperty(BPMN_DIAGRAM_RESOLUTION_PROPERTY);
+        if (null != resolution && resolution.trim().length() > 0) {
+            try {
+                return Double.parseDouble(resolution);
+            } catch (NumberFormatException e) {
+                LOG.error("Error parsing the BPMN diagram's resolution - marshalling factor... " +
+                                  "Using as default [" + DEFAULT_RESOLUTION + "].", e);
+            }
+        }
+        return DEFAULT_RESOLUTION;
     }
 }

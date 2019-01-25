@@ -77,7 +77,7 @@ public class CaseManagementCallActivityConverterTest {
         CaseManagementCustomElement.isCase.of(callActivity).set(Boolean.TRUE);
 
         CaseManagementActivityPropertyReader propertyReader = new CaseManagementActivityPropertyReader(callActivity,
-                                                                                                       definitionResolver.getPlane(),
+                                                                                                       definitionResolver.getDiagram(),
                                                                                                        definitionResolver);
 
         tested.createNode(callActivity, propertyReader);
@@ -94,7 +94,7 @@ public class CaseManagementCallActivityConverterTest {
         CaseManagementCustomElement.isCase.of(callActivity).set(Boolean.FALSE);
 
         CaseManagementActivityPropertyReader propertyReader = new CaseManagementActivityPropertyReader(callActivity,
-                                                                                                       definitionResolver.getPlane(),
+                                                                                                       definitionResolver.getDiagram(),
                                                                                                        definitionResolver);
 
         tested.createNode(callActivity, propertyReader);
@@ -111,7 +111,7 @@ public class CaseManagementCallActivityConverterTest {
         CaseManagementCustomElement.isCase.of(callActivity).set(Boolean.TRUE);
 
         CaseManagementActivityPropertyReader propertyReader = new CaseManagementActivityPropertyReader(callActivity,
-                                                                                                       definitionResolver.getPlane(),
+                                                                                                       definitionResolver.getDiagram(),
                                                                                                        definitionResolver);
 
         BaseReusableSubprocessTaskExecutionSet result =
@@ -130,7 +130,7 @@ public class CaseManagementCallActivityConverterTest {
         CaseManagementCustomElement.isCase.of(callActivity).set(Boolean.FALSE);
 
         CaseManagementActivityPropertyReader propertyReader = new CaseManagementActivityPropertyReader(callActivity,
-                                                                                                       definitionResolver.getPlane(),
+                                                                                                       definitionResolver.getDiagram(),
                                                                                                        definitionResolver);
 
         BaseReusableSubprocessTaskExecutionSet result =

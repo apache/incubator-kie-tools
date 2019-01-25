@@ -26,7 +26,7 @@ import org.eclipse.bpmn2.Expression;
 import org.eclipse.bpmn2.FormalExpression;
 import org.eclipse.bpmn2.SignalEventDefinition;
 import org.eclipse.bpmn2.TimerEventDefinition;
-import org.eclipse.bpmn2.di.BPMNPlane;
+import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
 import org.kie.workbench.common.stunner.bpmn.definition.property.common.ConditionExpression;
@@ -35,14 +35,19 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.event.timer.Tim
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.timer.TimerSettingsValue;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationAttributeSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeValue;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 
 public abstract class EventPropertyReader extends FlowElementPropertyReader {
+
+    // These values are present in the SVG declaration for the event shape.
+    static final double WIDTH = 56d;
+    static final double HEIGHT = 56d;
 
     private final DefinitionResolver definitionResolver;
     private String signalRefId = null;
 
-    EventPropertyReader(Event element, BPMNPlane plane, DefinitionResolver definitionResolver, String eventDefinition) {
-        super(element, plane, definitionResolver.getShape(element.getId()));
+    EventPropertyReader(Event element, BPMNDiagram diagram, DefinitionResolver definitionResolver, String eventDefinition) {
+        super(element, diagram, definitionResolver.getShape(element.getId()), definitionResolver.getResolutionFactor());
         this.definitionResolver = definitionResolver;
         this.signalRefId = eventDefinition;
     }
@@ -52,6 +57,13 @@ public abstract class EventPropertyReader extends FlowElementPropertyReader {
             return ((SignalEventDefinition) eventDefinitions.get(0)).getSignalRef();
         }
         return null;
+    }
+
+    @Override
+    protected Bounds computeBounds(final org.eclipse.dd.dc.Bounds bounds) {
+        final double x = bounds.getX() * resolutionFactor;
+        final double y = bounds.getY() * resolutionFactor;
+        return Bounds.create(x, y, x + WIDTH, y + HEIGHT);
     }
 
     public String getSignalScope() {

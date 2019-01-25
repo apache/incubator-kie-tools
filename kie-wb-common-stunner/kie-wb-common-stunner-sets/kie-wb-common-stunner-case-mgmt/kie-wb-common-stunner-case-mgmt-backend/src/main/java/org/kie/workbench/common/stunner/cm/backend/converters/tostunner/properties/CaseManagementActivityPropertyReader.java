@@ -16,7 +16,7 @@
 package org.kie.workbench.common.stunner.cm.backend.converters.tostunner.properties;
 
 import org.eclipse.bpmn2.Activity;
-import org.eclipse.bpmn2.di.BPMNPlane;
+import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.ActivityPropertyReader;
 import org.kie.workbench.common.stunner.cm.backend.converters.customproperties.CaseManagementCustomElement;
@@ -24,9 +24,9 @@ import org.kie.workbench.common.stunner.cm.backend.converters.customproperties.C
 public class CaseManagementActivityPropertyReader extends ActivityPropertyReader {
 
     public CaseManagementActivityPropertyReader(Activity activity,
-                                                BPMNPlane plane,
+                                                BPMNDiagram diagram,
                                                 DefinitionResolver definitionResolver) {
-        super(activity, plane, definitionResolver);
+        super(activity, diagram, definitionResolver);
     }
 
     public boolean isCase() {
