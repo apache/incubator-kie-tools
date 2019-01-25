@@ -26,6 +26,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.jgroups.util.Util.assertEquals;
 import static org.kie.workbench.common.stunner.core.util.SafeComparator.TO_STRING_COMPARATOR;
+import static org.kie.workbench.common.stunner.core.util.SafeComparator.TO_STRING_REVERSE_COMPARATOR;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -83,5 +84,14 @@ public class SafeComparatorTest {
         assertEquals(-1, TO_STRING_COMPARATOR.compare(param1, param2));
         assertEquals(0, TO_STRING_COMPARATOR.compare(param1, param1));
         assertEquals(1, TO_STRING_COMPARATOR.compare(param2, param1));
+    }
+
+    @Test
+    public void testToStringReverseComparator() {
+        when(param1.toString()).thenReturn("value1");
+        when(param2.toString()).thenReturn("value2");
+        assertEquals(-1, TO_STRING_REVERSE_COMPARATOR.compare(param2, param1));
+        assertEquals(0, TO_STRING_REVERSE_COMPARATOR.compare(param1, param1));
+        assertEquals(1, TO_STRING_REVERSE_COMPARATOR.compare(param1, param2));
     }
 }

@@ -58,6 +58,9 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 )
 public class BusinessRuleTask extends BaseTask implements DataIOModel {
 
+    public static final String EXECUTION_SET = "executionSet";
+    public static final String DATA_IO_SET = "dataIOSet";
+
     @PropertySet
     @FormField(
             afterElement = "general"

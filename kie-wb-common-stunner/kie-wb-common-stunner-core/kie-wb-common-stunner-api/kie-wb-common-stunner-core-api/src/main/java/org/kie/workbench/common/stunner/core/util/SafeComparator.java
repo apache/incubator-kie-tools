@@ -21,7 +21,11 @@ import java.util.function.Supplier;
 
 public class SafeComparator<T> implements Comparator<T> {
 
-    public static final SafeComparator<Object> TO_STRING_COMPARATOR = of(() -> (obj1, obj2) -> obj1.toString().compareTo(obj2.toString()));
+    public static final SafeComparator<Object> TO_STRING_COMPARATOR =
+            of(() -> (obj1, obj2) -> obj1.toString().compareTo(obj2.toString()));
+
+    public static final SafeComparator<Object> TO_STRING_REVERSE_COMPARATOR =
+            of(() -> (obj1, obj2) -> obj2.toString().compareTo(obj1.toString()));
 
     private Supplier<Comparator<T>> comparatorSupplier;
 

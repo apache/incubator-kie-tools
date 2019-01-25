@@ -66,7 +66,9 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocSubpr
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.BusinessRuleTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.Content;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.CreatedBy;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.DecisionName;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.Description;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.DmnModelName;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.IsAsync;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.MITrigger;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceCollectionInput;
@@ -75,9 +77,11 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleIn
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceDataInput;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceDataOutput;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceSubprocessTaskExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.Namespace;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnEntryAction;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnExitAction;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.RuleFlowGroup;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.RuleLanguage;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.SLADueDate;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.Script;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTaskExecutionSet;
@@ -94,6 +98,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
+
 import static org.kie.workbench.common.stunner.core.util.EqualsAndHashCodeTestUtils.TestCaseBuilder;
 
 public class HashCodeAndEqualityTest {
@@ -1279,12 +1284,20 @@ public class HashCodeAndEqualityTest {
                 .addTrueCase(new BusinessRuleTaskExecutionSet(),
                              new BusinessRuleTaskExecutionSet())
 
-                .addTrueCase(new BusinessRuleTaskExecutionSet(new RuleFlowGroup(),
+                .addTrueCase(new BusinessRuleTaskExecutionSet(new RuleLanguage(),
+                                                              new RuleFlowGroup(),
+                                                              new Namespace(),
+                                                              new DecisionName(),
+                                                              new DmnModelName(),
                                                               new OnEntryAction(),
                                                               new OnExitAction(),
                                                               new IsAsync(),
                                                               new AdHocAutostart()),
-                             new BusinessRuleTaskExecutionSet(new RuleFlowGroup(),
+                             new BusinessRuleTaskExecutionSet(new RuleLanguage(),
+                                                              new RuleFlowGroup(),
+                                                              new Namespace(),
+                                                              new DecisionName(),
+                                                              new DmnModelName(),
                                                               new OnEntryAction(),
                                                               new OnExitAction(),
                                                               new IsAsync(),

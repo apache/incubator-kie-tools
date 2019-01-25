@@ -41,12 +41,16 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocAutos
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.BusinessRuleTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.Content;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.CreatedBy;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.DecisionName;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.Description;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.DmnModelName;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.EmptyTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.IsAsync;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.Namespace;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnEntryAction;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnExitAction;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.RuleFlowGroup;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.RuleLanguage;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.SLADueDate;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.Script;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTaskExecutionSet;
@@ -135,8 +139,30 @@ public class TaskConverter {
                 p.getAssignmentsInfo()
         ));
 
+        RuleLanguage ruleLanguage = new RuleLanguage(p.getImplementation());
+        RuleFlowGroup ruleFlowGroup = null;
+        Namespace namespace = null;
+        DecisionName decisionName = null;
+        DmnModelName dmnModelName = null;
+
+        if (ruleLanguage.getValue().equals(RuleLanguage.DRL)) {
+            ruleFlowGroup = new RuleFlowGroup(p.getRuleFlowGroup());
+            namespace = new Namespace();
+            decisionName = new DecisionName();
+            dmnModelName = new DmnModelName();
+        } else if (ruleLanguage.getValue().equals(RuleLanguage.DMN)) {
+            ruleFlowGroup = new RuleFlowGroup();
+            namespace = new Namespace(p.getNamespace());
+            decisionName = new DecisionName(p.getDecisionName());
+            dmnModelName = new DmnModelName(p.getDmnModelName());
+        }
+
         definition.setExecutionSet(new BusinessRuleTaskExecutionSet(
-                new RuleFlowGroup(p.getRuleFlowGroup()),
+                new RuleLanguage(p.getImplementation()),
+                ruleFlowGroup,
+                namespace,
+                decisionName,
+                dmnModelName,
                 new OnEntryAction(p.getOnEntryAction()),
                 new OnExitAction(p.getOnExitAction()),
                 new IsAsync(p.isAsync()),

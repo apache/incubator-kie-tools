@@ -18,11 +18,13 @@ package org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshallin
 
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.Marshaller;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.BusinessRuleTaskExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.RuleLanguage;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeValue;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
@@ -65,9 +67,12 @@ public class BusinessRuleTaskTest extends Task<BusinessRuleTask> {
     private static final String FILLED_TWO_INCOMES_TOP_LEVEL_TASK_JAVASCRIPT_ID = "CF34C3FA-B9A5-49C9-A63A-988F120EAB9D";
     private static final String FILLED_TWO_INCOMES_TOP_LEVEL_TASK_MVEL_ID = "1D6B0146-E20A-488F-8E27-584009BDC92F";
 
-    private static final int AMOUNT_OF_NODES_IN_DIAGRAM = 69;
+    private static final String DMN_RULE_LANGUAGE_TASK_ID = "_10EAF4D5-66E2-49B4-B2A6-EE5DCA14E9C5";
+
+    private static final int AMOUNT_OF_NODES_IN_DIAGRAM = 70;
 
     private static final String EMPTY_TASK_DATA_INPUT_OUTPUT = "||||";
+    private static final String DMN_TASK_DATA_INPUT_OUTPUT = "|namespace:java.lang.String,decision:java.lang.String,model:java.lang.String|||[din]namespace=Namespace,[din]decision=DecisionName,[din]model=DMNModelName";
     private static final String TASK_SCRIPT_JAVA_LANGUAGE = "java";
     private static final String TASK_SCRIPT_JAVASCRIPT_LANGUAGE = "javascript";
     private static final String TASK_SCRIPT_MVEL_LANGUAGE = "mvel";
@@ -76,8 +81,15 @@ public class BusinessRuleTaskTest extends Task<BusinessRuleTask> {
     private static final boolean AD_HOC_AUTOSTART = true;
     private static final boolean NOT_AD_HOC_AUTOSTART = false;
 
+    private final Marshaller marshallerType;
+
     public BusinessRuleTaskTest(Marshaller marshallerType) {
         super(marshallerType);
+        this.marshallerType = marshallerType;
+    }
+
+    @Ignore("Test is ignored, Business Rule Task has properties that are not supported by the old marshallers.")
+    public void testMigration() {
     }
 
     @Test
@@ -110,7 +122,11 @@ public class BusinessRuleTaskTest extends Task<BusinessRuleTask> {
                                                                   HAS_NO_OUTCOME_EDGE);
         assertGeneralSet(filledTopLevelTaskJava.getGeneral(), TASK_NAME_JAVA, TASK_DOCUMENTATION_JAVA);
         assertBusinessRuleTaskExecutionSet(filledTopLevelTaskJava.getExecutionSet(),
+                                           RuleLanguage.DRL,
                                            RULE_FLOW_GROUP,
+                                           EMPTY_VALUE,
+                                           EMPTY_VALUE,
+                                           EMPTY_VALUE,
                                            TASK_ON_ENTRY_ACTION_JAVA,
                                            TASK_SCRIPT_JAVA_LANGUAGE,
                                            TASK_ON_EXIT_ACTION_JAVA,
@@ -125,7 +141,11 @@ public class BusinessRuleTaskTest extends Task<BusinessRuleTask> {
                                                                         HAS_NO_OUTCOME_EDGE);
         assertGeneralSet(filledTopLevelTaskJavascript.getGeneral(), TASK_NAME_JAVASCRIPT, TASK_DOCUMENTATION_JAVASCRIPT);
         assertBusinessRuleTaskExecutionSet(filledTopLevelTaskJavascript.getExecutionSet(),
+                                           RuleLanguage.DRL,
                                            RULE_FLOW_GROUP,
+                                           EMPTY_VALUE,
+                                           EMPTY_VALUE,
+                                           EMPTY_VALUE,
                                            TASK_ON_ENTRY_ACTION_JAVASCRIPT,
                                            TASK_SCRIPT_JAVASCRIPT_LANGUAGE,
                                            TASK_ON_EXIT_ACTION_JAVASCRIPT,
@@ -140,7 +160,11 @@ public class BusinessRuleTaskTest extends Task<BusinessRuleTask> {
                                                                   HAS_NO_OUTCOME_EDGE);
         assertGeneralSet(filledTopLevelTaskMvel.getGeneral(), TASK_NAME_MVEL, TASK_DOCUMENTATION_MVEL);
         assertBusinessRuleTaskExecutionSet(filledTopLevelTaskMvel.getExecutionSet(),
+                                           RuleLanguage.DRL,
                                            RULE_FLOW_GROUP,
+                                           EMPTY_VALUE,
+                                           EMPTY_VALUE,
+                                           EMPTY_VALUE,
                                            TASK_ON_ENTRY_ACTION_MVEL,
                                            TASK_SCRIPT_MVEL_LANGUAGE,
                                            TASK_ON_EXIT_ACTION_MVEL,
@@ -162,6 +186,10 @@ public class BusinessRuleTaskTest extends Task<BusinessRuleTask> {
                                                              HAS_NO_OUTCOME_EDGE);
         assertGeneralSet(emptyTopLevelTask.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
         assertBusinessRuleTaskExecutionSet(emptyTopLevelTask.getExecutionSet(),
+                                           RuleLanguage.DRL,
+                                           EMPTY_VALUE,
+                                           EMPTY_VALUE,
+                                           EMPTY_VALUE,
                                            EMPTY_VALUE,
                                            EMPTY_VALUE,
                                            TASK_SCRIPT_JAVA_LANGUAGE,
@@ -202,7 +230,11 @@ public class BusinessRuleTaskTest extends Task<BusinessRuleTask> {
                                                                          HAS_NO_OUTCOME_EDGE);
         assertGeneralSet(filledSubprocessLevelTaskJava.getGeneral(), TASK_NAME_JAVA, TASK_DOCUMENTATION_JAVA);
         assertBusinessRuleTaskExecutionSet(filledSubprocessLevelTaskJava.getExecutionSet(),
+                                           RuleLanguage.DRL,
                                            RULE_FLOW_GROUP,
+                                           EMPTY_VALUE,
+                                           EMPTY_VALUE,
+                                           EMPTY_VALUE,
                                            TASK_ON_ENTRY_ACTION_JAVA,
                                            TASK_SCRIPT_JAVA_LANGUAGE,
                                            TASK_ON_EXIT_ACTION_JAVA,
@@ -217,7 +249,11 @@ public class BusinessRuleTaskTest extends Task<BusinessRuleTask> {
                                                                                HAS_NO_OUTCOME_EDGE);
         assertGeneralSet(filledSubprocessLevelTaskJavascript.getGeneral(), TASK_NAME_JAVASCRIPT, TASK_DOCUMENTATION_JAVASCRIPT);
         assertBusinessRuleTaskExecutionSet(filledSubprocessLevelTaskJavascript.getExecutionSet(),
+                                           RuleLanguage.DRL,
                                            RULE_FLOW_GROUP,
+                                           EMPTY_VALUE,
+                                           EMPTY_VALUE,
+                                           EMPTY_VALUE,
                                            TASK_ON_ENTRY_ACTION_JAVASCRIPT,
                                            TASK_SCRIPT_JAVASCRIPT_LANGUAGE,
                                            TASK_ON_EXIT_ACTION_JAVASCRIPT,
@@ -232,7 +268,11 @@ public class BusinessRuleTaskTest extends Task<BusinessRuleTask> {
                                                                          HAS_NO_OUTCOME_EDGE);
         assertGeneralSet(filledSubprocessLevelTaskMvel.getGeneral(), TASK_NAME_MVEL, TASK_DOCUMENTATION_MVEL);
         assertBusinessRuleTaskExecutionSet(filledSubprocessLevelTaskMvel.getExecutionSet(),
+                                           RuleLanguage.DRL,
                                            RULE_FLOW_GROUP,
+                                           EMPTY_VALUE,
+                                           EMPTY_VALUE,
+                                           EMPTY_VALUE,
                                            TASK_ON_ENTRY_ACTION_MVEL,
                                            TASK_SCRIPT_MVEL_LANGUAGE,
                                            TASK_ON_EXIT_ACTION_MVEL,
@@ -254,6 +294,10 @@ public class BusinessRuleTaskTest extends Task<BusinessRuleTask> {
                                                                     HAS_NO_OUTCOME_EDGE);
         assertGeneralSet(emptySubprocessLevelTask.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
         assertBusinessRuleTaskExecutionSet(emptySubprocessLevelTask.getExecutionSet(),
+                                           RuleLanguage.DRL,
+                                           EMPTY_VALUE,
+                                           EMPTY_VALUE,
+                                           EMPTY_VALUE,
                                            EMPTY_VALUE,
                                            EMPTY_VALUE,
                                            TASK_SCRIPT_JAVA_LANGUAGE,
@@ -294,7 +338,11 @@ public class BusinessRuleTaskTest extends Task<BusinessRuleTask> {
                                                                   HAS_OUTCOME_EDGE);
         assertGeneralSet(filledTopLevelTaskJava.getGeneral(), TASK_NAME_JAVA, TASK_DOCUMENTATION_JAVA);
         assertBusinessRuleTaskExecutionSet(filledTopLevelTaskJava.getExecutionSet(),
+                                           RuleLanguage.DRL,
                                            RULE_FLOW_GROUP,
+                                           EMPTY_VALUE,
+                                           EMPTY_VALUE,
+                                           EMPTY_VALUE,
                                            TASK_ON_ENTRY_ACTION_JAVA,
                                            TASK_SCRIPT_JAVA_LANGUAGE,
                                            TASK_ON_EXIT_ACTION_JAVA,
@@ -309,7 +357,11 @@ public class BusinessRuleTaskTest extends Task<BusinessRuleTask> {
                                                                         HAS_OUTCOME_EDGE);
         assertGeneralSet(filledTopLevelTaskJavascript.getGeneral(), TASK_NAME_JAVASCRIPT, TASK_DOCUMENTATION_JAVASCRIPT);
         assertBusinessRuleTaskExecutionSet(filledTopLevelTaskJavascript.getExecutionSet(),
+                                           RuleLanguage.DRL,
                                            RULE_FLOW_GROUP,
+                                           EMPTY_VALUE,
+                                           EMPTY_VALUE,
+                                           EMPTY_VALUE,
                                            TASK_ON_ENTRY_ACTION_JAVASCRIPT,
                                            TASK_SCRIPT_JAVASCRIPT_LANGUAGE,
                                            TASK_ON_EXIT_ACTION_JAVASCRIPT,
@@ -324,7 +376,11 @@ public class BusinessRuleTaskTest extends Task<BusinessRuleTask> {
                                                                   HAS_OUTCOME_EDGE);
         assertGeneralSet(filledTopLevelTaskMvel.getGeneral(), TASK_NAME_MVEL, TASK_DOCUMENTATION_MVEL);
         assertBusinessRuleTaskExecutionSet(filledTopLevelTaskMvel.getExecutionSet(),
+                                           RuleLanguage.DRL,
                                            RULE_FLOW_GROUP,
+                                           EMPTY_VALUE,
+                                           EMPTY_VALUE,
+                                           EMPTY_VALUE,
                                            TASK_ON_ENTRY_ACTION_MVEL,
                                            TASK_SCRIPT_MVEL_LANGUAGE,
                                            TASK_ON_EXIT_ACTION_MVEL,
@@ -346,6 +402,10 @@ public class BusinessRuleTaskTest extends Task<BusinessRuleTask> {
                                                              HAS_OUTCOME_EDGE);
         assertGeneralSet(emptyTopLevelTask.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
         assertBusinessRuleTaskExecutionSet(emptyTopLevelTask.getExecutionSet(),
+                                           RuleLanguage.DRL,
+                                           EMPTY_VALUE,
+                                           EMPTY_VALUE,
+                                           EMPTY_VALUE,
                                            EMPTY_VALUE,
                                            EMPTY_VALUE,
                                            TASK_SCRIPT_JAVA_LANGUAGE,
@@ -368,6 +428,10 @@ public class BusinessRuleTaskTest extends Task<BusinessRuleTask> {
                                                                     HAS_OUTCOME_EDGE);
         assertGeneralSet(emptySubprocessLevelTask.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
         assertBusinessRuleTaskExecutionSet(emptySubprocessLevelTask.getExecutionSet(),
+                                           RuleLanguage.DRL,
+                                           EMPTY_VALUE,
+                                           EMPTY_VALUE,
+                                           EMPTY_VALUE,
                                            EMPTY_VALUE,
                                            EMPTY_VALUE,
                                            TASK_SCRIPT_JAVA_LANGUAGE,
@@ -408,7 +472,11 @@ public class BusinessRuleTaskTest extends Task<BusinessRuleTask> {
                                                                          HAS_OUTCOME_EDGE);
         assertGeneralSet(filledSubprocessLevelTaskJava.getGeneral(), TASK_NAME_JAVA, TASK_DOCUMENTATION_JAVA);
         assertBusinessRuleTaskExecutionSet(filledSubprocessLevelTaskJava.getExecutionSet(),
+                                           RuleLanguage.DRL,
                                            RULE_FLOW_GROUP,
+                                           EMPTY_VALUE,
+                                           EMPTY_VALUE,
+                                           EMPTY_VALUE,
                                            TASK_ON_ENTRY_ACTION_JAVA,
                                            TASK_SCRIPT_JAVA_LANGUAGE,
                                            TASK_ON_EXIT_ACTION_JAVA,
@@ -423,7 +491,11 @@ public class BusinessRuleTaskTest extends Task<BusinessRuleTask> {
                                                                                HAS_OUTCOME_EDGE);
         assertGeneralSet(filledSubprocessLevelTaskJavascript.getGeneral(), TASK_NAME_JAVASCRIPT, TASK_DOCUMENTATION_JAVASCRIPT);
         assertBusinessRuleTaskExecutionSet(filledSubprocessLevelTaskJavascript.getExecutionSet(),
+                                           RuleLanguage.DRL,
                                            RULE_FLOW_GROUP,
+                                           EMPTY_VALUE,
+                                           EMPTY_VALUE,
+                                           EMPTY_VALUE,
                                            TASK_ON_ENTRY_ACTION_JAVASCRIPT,
                                            TASK_SCRIPT_JAVASCRIPT_LANGUAGE,
                                            TASK_ON_EXIT_ACTION_JAVASCRIPT,
@@ -438,7 +510,11 @@ public class BusinessRuleTaskTest extends Task<BusinessRuleTask> {
                                                                          HAS_OUTCOME_EDGE);
         assertGeneralSet(filledSubprocessLevelTaskMvel.getGeneral(), TASK_NAME_MVEL, TASK_DOCUMENTATION_MVEL);
         assertBusinessRuleTaskExecutionSet(filledSubprocessLevelTaskMvel.getExecutionSet(),
+                                           RuleLanguage.DRL,
                                            RULE_FLOW_GROUP,
+                                           EMPTY_VALUE,
+                                           EMPTY_VALUE,
+                                           EMPTY_VALUE,
                                            TASK_ON_ENTRY_ACTION_MVEL,
                                            TASK_SCRIPT_MVEL_LANGUAGE,
                                            TASK_ON_EXIT_ACTION_MVEL,
@@ -478,7 +554,11 @@ public class BusinessRuleTaskTest extends Task<BusinessRuleTask> {
                                                                   HAS_OUTCOME_EDGE);
         assertGeneralSet(filledTopLevelTaskJava.getGeneral(), TASK_NAME_JAVA, TASK_DOCUMENTATION_JAVA);
         assertBusinessRuleTaskExecutionSet(filledTopLevelTaskJava.getExecutionSet(),
+                                           RuleLanguage.DRL,
                                            RULE_FLOW_GROUP,
+                                           EMPTY_VALUE,
+                                           EMPTY_VALUE,
+                                           EMPTY_VALUE,
                                            TASK_ON_ENTRY_ACTION_JAVA,
                                            TASK_SCRIPT_JAVA_LANGUAGE,
                                            TASK_ON_EXIT_ACTION_JAVA,
@@ -493,7 +573,11 @@ public class BusinessRuleTaskTest extends Task<BusinessRuleTask> {
                                                                         HAS_OUTCOME_EDGE);
         assertGeneralSet(filledTopLevelTaskJavascript.getGeneral(), TASK_NAME_JAVASCRIPT, TASK_DOCUMENTATION_JAVASCRIPT);
         assertBusinessRuleTaskExecutionSet(filledTopLevelTaskJavascript.getExecutionSet(),
+                                           RuleLanguage.DRL,
                                            RULE_FLOW_GROUP,
+                                           EMPTY_VALUE,
+                                           EMPTY_VALUE,
+                                           EMPTY_VALUE,
                                            TASK_ON_ENTRY_ACTION_JAVASCRIPT,
                                            TASK_SCRIPT_JAVASCRIPT_LANGUAGE,
                                            TASK_ON_EXIT_ACTION_JAVASCRIPT,
@@ -508,7 +592,11 @@ public class BusinessRuleTaskTest extends Task<BusinessRuleTask> {
                                                                   HAS_OUTCOME_EDGE);
         assertGeneralSet(filledTopLevelTaskMvel.getGeneral(), TASK_NAME_MVEL, TASK_DOCUMENTATION_MVEL);
         assertBusinessRuleTaskExecutionSet(filledTopLevelTaskMvel.getExecutionSet(),
+                                           RuleLanguage.DRL,
                                            RULE_FLOW_GROUP,
+                                           EMPTY_VALUE,
+                                           EMPTY_VALUE,
+                                           EMPTY_VALUE,
                                            TASK_ON_ENTRY_ACTION_MVEL,
                                            TASK_SCRIPT_MVEL_LANGUAGE,
                                            TASK_ON_EXIT_ACTION_MVEL,
@@ -530,6 +618,10 @@ public class BusinessRuleTaskTest extends Task<BusinessRuleTask> {
                                                              HAS_OUTCOME_EDGE);
         assertGeneralSet(emptyTopLevelTask.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
         assertBusinessRuleTaskExecutionSet(emptyTopLevelTask.getExecutionSet(),
+                                           RuleLanguage.DRL,
+                                           EMPTY_VALUE,
+                                           EMPTY_VALUE,
+                                           EMPTY_VALUE,
                                            EMPTY_VALUE,
                                            EMPTY_VALUE,
                                            TASK_SCRIPT_JAVA_LANGUAGE,
@@ -552,6 +644,10 @@ public class BusinessRuleTaskTest extends Task<BusinessRuleTask> {
                                                                     HAS_OUTCOME_EDGE);
         assertGeneralSet(emptySubprocessLevelTask.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
         assertBusinessRuleTaskExecutionSet(emptySubprocessLevelTask.getExecutionSet(),
+                                           RuleLanguage.DRL,
+                                           EMPTY_VALUE,
+                                           EMPTY_VALUE,
+                                           EMPTY_VALUE,
                                            EMPTY_VALUE,
                                            EMPTY_VALUE,
                                            TASK_SCRIPT_JAVA_LANGUAGE,
@@ -592,7 +688,11 @@ public class BusinessRuleTaskTest extends Task<BusinessRuleTask> {
                                                                          HAS_OUTCOME_EDGE);
         assertGeneralSet(filledSubprocessLevelTaskJava.getGeneral(), TASK_NAME_JAVA, TASK_DOCUMENTATION_JAVA);
         assertBusinessRuleTaskExecutionSet(filledSubprocessLevelTaskJava.getExecutionSet(),
+                                           RuleLanguage.DRL,
                                            RULE_FLOW_GROUP,
+                                           EMPTY_VALUE,
+                                           EMPTY_VALUE,
+                                           EMPTY_VALUE,
                                            TASK_ON_ENTRY_ACTION_JAVA,
                                            TASK_SCRIPT_JAVA_LANGUAGE,
                                            TASK_ON_EXIT_ACTION_JAVA,
@@ -607,7 +707,11 @@ public class BusinessRuleTaskTest extends Task<BusinessRuleTask> {
                                                                                HAS_OUTCOME_EDGE);
         assertGeneralSet(filledSubprocessLevelTaskJavascript.getGeneral(), TASK_NAME_JAVASCRIPT, TASK_DOCUMENTATION_JAVASCRIPT);
         assertBusinessRuleTaskExecutionSet(filledSubprocessLevelTaskJavascript.getExecutionSet(),
+                                           RuleLanguage.DRL,
                                            RULE_FLOW_GROUP,
+                                           EMPTY_VALUE,
+                                           EMPTY_VALUE,
+                                           EMPTY_VALUE,
                                            TASK_ON_ENTRY_ACTION_JAVASCRIPT,
                                            TASK_SCRIPT_JAVASCRIPT_LANGUAGE,
                                            TASK_ON_EXIT_ACTION_JAVASCRIPT,
@@ -622,7 +726,11 @@ public class BusinessRuleTaskTest extends Task<BusinessRuleTask> {
                                                                          HAS_OUTCOME_EDGE);
         assertGeneralSet(filledSubprocessLevelTaskMvel.getGeneral(), TASK_NAME_MVEL, TASK_DOCUMENTATION_MVEL);
         assertBusinessRuleTaskExecutionSet(filledSubprocessLevelTaskMvel.getExecutionSet(),
+                                           RuleLanguage.DRL,
                                            RULE_FLOW_GROUP,
+                                           EMPTY_VALUE,
+                                           EMPTY_VALUE,
+                                           EMPTY_VALUE,
                                            TASK_ON_ENTRY_ACTION_MVEL,
                                            TASK_SCRIPT_MVEL_LANGUAGE,
                                            TASK_ON_EXIT_ACTION_MVEL,
@@ -630,6 +738,40 @@ public class BusinessRuleTaskTest extends Task<BusinessRuleTask> {
                                            IS_ASYNC,
                                            AD_HOC_AUTOSTART);
         assertDataIOSet(filledSubprocessLevelTaskMvel.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
+    }
+
+    @Test
+    public void testUnmarshallDMNRuleLanguageProperties() throws Exception {
+        final String DMN_LANGUAGE_TASK_NAME = "DMN Task";
+
+        Diagram<Graph, Metadata> diagram = unmarshall(marshaller, BPMN_TASK_FILE_PATH);
+        assertDiagram(diagram, AMOUNT_OF_NODES_IN_DIAGRAM);
+
+        BusinessRuleTask emptyTopLevelTask = getTaskNodeById(diagram,
+                                                             DMN_RULE_LANGUAGE_TASK_ID,
+                                                             ZERO_INCOME_EDGES,
+                                                             HAS_NO_OUTCOME_EDGE);
+        assertGeneralSet(emptyTopLevelTask.getGeneral(), DMN_LANGUAGE_TASK_NAME, EMPTY_VALUE);
+        assertBusinessRuleTaskExecutionSet(emptyTopLevelTask.getExecutionSet(),
+                                           RuleLanguage.DMN,
+                                           EMPTY_VALUE,
+                                           "Namespace",
+                                           "DecisionName",
+                                           "DMNModelName",
+                                           EMPTY_VALUE,
+                                           TASK_SCRIPT_JAVA_LANGUAGE,
+                                           EMPTY_VALUE,
+                                           TASK_SCRIPT_JAVA_LANGUAGE,
+                                           IS_NOT_ASYNC,
+                                           NOT_AD_HOC_AUTOSTART);
+
+        if (marshallerType == Marshaller.NEW) {
+            assertDataIOSet(emptyTopLevelTask.getDataIOSet(), EMPTY_TASK_DATA_INPUT_OUTPUT);
+        }
+
+        if (marshallerType == Marshaller.OLD) {
+            assertDataIOSet(emptyTopLevelTask.getDataIOSet(), DMN_TASK_DATA_INPUT_OUTPUT);
+        }
     }
 
     @Test
@@ -678,6 +820,11 @@ public class BusinessRuleTaskTest extends Task<BusinessRuleTask> {
         checkTaskMarshalling(FILLED_TWO_INCOMES_SUBPROCESS_LEVEL_TASK_JAVA_ID, TWO_INCOME_EDGES, HAS_OUTCOME_EDGE);
         checkTaskMarshalling(FILLED_TWO_INCOMES_SUBPROCESS_LEVEL_TASK_JAVASCRIPT_ID, TWO_INCOME_EDGES, HAS_OUTCOME_EDGE);
         checkTaskMarshalling(FILLED_TWO_INCOMES_SUBPROCESS_LEVEL_TASK_MVEL_ID, TWO_INCOME_EDGES, HAS_OUTCOME_EDGE);
+    }
+
+    @Test
+    public void testMarshallDMNRuleLanguageProperties() throws Exception {
+        checkTaskMarshalling(DMN_RULE_LANGUAGE_TASK_ID, ZERO_INCOME_EDGES, HAS_NO_OUTCOME_EDGE);
     }
 
     @Override
@@ -757,7 +904,11 @@ public class BusinessRuleTaskTest extends Task<BusinessRuleTask> {
     }
 
     private void assertBusinessRuleTaskExecutionSet(BusinessRuleTaskExecutionSet executionSet,
+                                                    String ruleLanguage,
                                                     String ruleFlowGroup,
+                                                    String namespace,
+                                                    String decisionName,
+                                                    String dmnModelName,
                                                     String onEntryActionScriptValue,
                                                     String onEntryActionScriptLanguage,
                                                     String onExitActionScriptValue,
@@ -765,7 +916,11 @@ public class BusinessRuleTaskTest extends Task<BusinessRuleTask> {
                                                     boolean isAsync,
                                                     boolean adHocAutostart) {
         assertNotNull(executionSet);
+        assertNotNull(executionSet.getRuleLanguage());
         assertNotNull(executionSet.getRuleFlowGroup());
+        assertNotNull(executionSet.getNamespace());
+        assertNotNull(executionSet.getDmnModelName());
+        assertNotNull(executionSet.getDmnModelName());
         assertNotNull(executionSet.getOnEntryAction());
         assertNotNull(executionSet.getOnExitAction());
         assertNotNull(executionSet.getIsAsync());
@@ -782,7 +937,16 @@ public class BusinessRuleTaskTest extends Task<BusinessRuleTask> {
         assertNotNull(onEntryScriptTypeValues.get(0));
         assertNotNull(onExitScriptTypeValues.get(0));
 
-        assertEquals(ruleFlowGroup, executionSet.getRuleFlowGroup().getValue());
+        if (marshallerType == Marshaller.NEW) {
+            assertEquals(ruleLanguage, executionSet.getRuleLanguage().getValue());
+            assertEquals(ruleFlowGroup, executionSet.getRuleFlowGroup().getValue());
+            assertEquals(namespace, executionSet.getNamespace().getValue());
+            assertEquals(decisionName, executionSet.getDecisionName().getValue());
+            assertEquals(dmnModelName, executionSet.getDmnModelName().getValue());
+        } else if (marshallerType == Marshaller.OLD) {
+            assertEquals(ruleFlowGroup, executionSet.getRuleFlowGroup().getValue());
+        }
+
         assertEquals(onEntryActionScriptValue, onEntryScriptTypeValues.get(0).getScript());
         assertEquals(onEntryActionScriptLanguage, onEntryScriptTypeValues.get(0).getLanguage());
         assertEquals(onExitActionScriptValue, onExitScriptTypeValues.get(0).getScript());

@@ -32,6 +32,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.ScriptTask;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.TaskGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.BusinessRuleTaskExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.RuleLanguage;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.UserTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTask;
@@ -141,8 +142,18 @@ public class TaskConverter {
         p.setAsync(executionSet.getIsAsync().getValue());
         p.setOnEntryAction(executionSet.getOnEntryAction());
         p.setOnExitAction(executionSet.getOnExitAction());
-        p.setRuleFlowGroup(executionSet.getRuleFlowGroup());
         p.setAdHocAutostart(executionSet.getAdHocAutostart().getValue());
+
+        RuleLanguage ruleLanguage = executionSet.getRuleLanguage();
+        p.setImplementation(ruleLanguage);
+
+        if (ruleLanguage.getValue().equals(RuleLanguage.DRL)) {
+            p.setRuleFlowGroup(executionSet.getRuleFlowGroup());
+        } else if (ruleLanguage.getValue().equals(RuleLanguage.DMN)) {
+            p.setNamespace(executionSet.getNamespace());
+            p.setDecisionName(executionSet.getDecisionName());
+            p.setDmnModelName(executionSet.getDmnModelName());
+        }
 
         p.setAssignmentsInfo(definition.getDataIOSet().getAssignmentsinfo());
 
