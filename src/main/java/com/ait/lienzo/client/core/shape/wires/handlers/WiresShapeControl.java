@@ -16,6 +16,8 @@
 
 package com.ait.lienzo.client.core.shape.wires.handlers;
 
+import com.ait.tooling.common.api.java.util.function.Supplier;
+
 /**
  * The Wires Shape control type.
  * This orchestrates the different controls related to Wires Shapes.
@@ -24,6 +26,8 @@ public interface WiresShapeControl extends WiresMoveControl,
                                            WiresMouseControl,
                                            WiresControl,
                                            WiresBoundsConstraintControl {
+
+    void useIndex(Supplier<WiresLayerIndex> index);
 
     void setAlignAndDistributeControl(AlignAndDistributeControl control);
 

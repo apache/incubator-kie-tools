@@ -38,6 +38,7 @@ import com.ait.lienzo.client.core.types.OnLayerBeforeDraw;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.widget.DragConstraintEnforcer;
 import com.ait.lienzo.client.widget.DragContext;
+import com.ait.tooling.common.api.java.util.function.Supplier;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import com.ait.tooling.nativetools.client.collection.NFastStringMap;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
@@ -119,6 +120,7 @@ public final class WiresManager
 
         m_index = new AlignAndDistribute(layer);
         m_handler = null;
+        m_controlFactory = new WiresControlFactoryImpl();
         m_wiresHandlerFactory = new WiresHandlerFactoryImpl();
     }
 
@@ -391,10 +393,6 @@ public final class WiresManager
 
     public WiresControlFactory getControlFactory()
     {
-        if (null == m_controlFactory)
-        {
-            m_controlFactory = new WiresControlFactoryImpl();
-        }
         return m_controlFactory;
     }
 

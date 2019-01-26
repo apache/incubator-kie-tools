@@ -145,6 +145,12 @@ public class WiresConnector
     public void destroy()
     {
         destroyPointHandles();
+        if (null != getHeadConnection()) {
+            getHeadConnection().destroy();
+        }
+        if (null != getTailConnection()) {
+            getTailConnection().destroy();
+        }
         m_connectorControl.destroy();
         m_connectorControl = null;
         removeFromLayer();

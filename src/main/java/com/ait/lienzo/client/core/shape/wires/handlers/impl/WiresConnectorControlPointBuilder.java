@@ -190,7 +190,7 @@ public class WiresConnectorControlPointBuilder
 
         destroyMousePointerCP();
 
-        final Point2D location = ShapeControlUtils.getViewportRelativeLocation(getLayer().getViewport(), x, y);
+        final Point2D location = WiresShapeControlUtils.getViewportRelativeLocation(getLayer().getViewport(), x, y);
         int           index    = getPointNearTo(location);
         if (index > -1)
         {
@@ -211,7 +211,7 @@ public class WiresConnectorControlPointBuilder
             return;
         }
 
-        final Point2D relLocation = ShapeControlUtils.getViewportRelativeLocation(getLayer().getViewport(), x, y);
+        final Point2D relLocation = WiresShapeControlUtils.getViewportRelativeLocation(getLayer().getViewport(), x, y);
 
         final Point2DArray linePoints   = connector.getLine().getPoint2DArray();
         final Point2D      closestPoint = Geometry.findClosestPointOnLine(relLocation.getX(), relLocation.getY(), linePoints);

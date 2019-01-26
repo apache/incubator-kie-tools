@@ -171,11 +171,10 @@ public class WiresConnectorControlImpl implements WiresConnectorControl
     }
 
     @Override
-    public boolean onMoveComplete()
+    public void onMoveComplete()
     {
         m_connector.getGroup().setX(0).setY(0);
         batch();
-        return true;
     }
 
     @Override
@@ -258,12 +257,7 @@ public class WiresConnectorControlImpl implements WiresConnectorControl
                                    final double y,
                                    final int index)
     {
-        if (getControlPointsAcceptor().add(m_connector, index, new Point2D(x, y)))
-        {
-            m_connector.addControlPoint(x, y, index);
-            return true;
-        }
-        return false;
+        return getControlPointsAcceptor().add(m_connector, index, new Point2D(x, y));
     }
 
     @Override
@@ -274,11 +268,7 @@ public class WiresConnectorControlImpl implements WiresConnectorControl
         {
             return;
         }
-        if (getControlPointsAcceptor().delete(m_connector,
-                                              index))
-        {
-            m_connector.destroyControlPoints(new int[]{index});
-        }
+        getControlPointsAcceptor().delete(m_connector, index);
         refreshControlPoints();
     }
 
@@ -310,6 +300,11 @@ public class WiresConnectorControlImpl implements WiresConnectorControl
         return null != m_connector.getPointHandles() && m_connector.getPointHandles().isVisible();
     }
 
+    @Override
+    public boolean accept() {
+        return true;
+    }
+
     public HandlerRegistrationManager getControlPointEventRegistrationManager()
     {
         return m_HandlerRegistrationManager;
@@ -331,16 +326,8 @@ public class WiresConnectorControlImpl implements WiresConnectorControl
         {
             final double tx = location.getX();
             final double ty = location.getY();
-            final boolean accept = getControlPointsAcceptor().move(m_connector,
-                                                                   controlPoints
-                                                                           .copy()
-                                                                           .set(index, location));
-            // Check rollback
-            if (accept)
-            {
-                m_connector.moveControlPoint(index, new Point2D(tx, ty));
-            }
-            return accept;
+            return getControlPointsAcceptor().move(m_connector,
+                                                   controlPoints.copy().set(index, location));
         }
         return true;
     }
@@ -477,13 +464,8 @@ public class WiresConnectorControlImpl implements WiresConnectorControl
         @Override
         public void onNodeDragEnd(final NodeDragEndEvent event)
         {
-            final boolean allowed = connectionControl.onMoveComplete();
+            connectionControl.onMoveComplete();
 
-            // Cancel the drag operation if the connection operation is not allowed.
-            if (!allowed)
-            {
-                event.getDragContext().reset();
-            }
             //decorate connection shape
             final ShapeState shapeState = (connection.isAutoConnection() || connection.getMagnet() != null ?
                                            ShapeState.VALID : ShapeState.INVALID);

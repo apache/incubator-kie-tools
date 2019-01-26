@@ -27,14 +27,15 @@ import com.ait.lienzo.client.core.shape.wires.event.WiresResizeEndHandler;
 import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStepEvent;
 import com.ait.lienzo.client.core.shape.wires.event.WiresResizeStepHandler;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresDockingControl;
-import com.ait.lienzo.client.core.shape.wires.picker.ColorMapBackedPicker;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresParentPickerControl;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.util.Geometry;
+import com.ait.tooling.common.api.java.util.function.Supplier;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 import com.google.gwt.event.shared.HandlerRegistration;
 
-public class WiresDockingControlImpl extends AbstractWiresParentPickerControl
+public class WiresDockingControlImpl extends AbstractWiresControl<WiresDockingControlImpl>
         implements WiresDockingControl {
 
     private final HandlerRegistrationManager      m_handlerRegistrations;
@@ -44,46 +45,20 @@ public class WiresDockingControlImpl extends AbstractWiresParentPickerControl
     private double  xRatio;
     private double  yRatio;
 
-    public WiresDockingControlImpl(final WiresShape shape,
-                                   final ColorMapBackedPicker.PickerOptions pickerOptions) {
-        super(shape,
-              pickerOptions);
-        m_handlerRegistrations = new HandlerRegistrationManager();
-    }
-
-    public WiresDockingControlImpl(final WiresParentPickerControlImpl parentPickerControl) {
+    public WiresDockingControlImpl(final Supplier<WiresParentPickerControl> parentPickerControl) {
         this(parentPickerControl, new HandlerRegistrationManager());
     }
 
-    WiresDockingControlImpl(final WiresParentPickerControlImpl parentPickerControl,
+    WiresDockingControlImpl(final Supplier<WiresParentPickerControl> parentPickerControl,
                                    final HandlerRegistrationManager registrationManager) {
         super(parentPickerControl);
         m_handlerRegistrations = registrationManager;
     }
 
     @Override
-    protected void beforeMoveStart(double x,
-                                   double y) {
-        super.beforeMoveStart(x,
-                              y);
+    protected void doMoveStart(final double x,
+                               final double y) {
         m_absInitialPathLocation = getShape().getPath().getComputedLocation();
-    }
-
-    @Override
-    public WiresDockingControl setEnabled(final boolean enabled) {
-        if (enabled) {
-            enable();
-        } else {
-            disable();
-        }
-        return this;
-    }
-
-    @Override
-    protected void afterMoveStart(double x,
-                                  double y) {
-        super.afterMoveStart(x,
-                             y);
         final WiresShape shape = getShape();
         if (null != shape.getDockedTo()) {
             shape.setDockedTo(null);
@@ -91,8 +66,8 @@ public class WiresDockingControlImpl extends AbstractWiresParentPickerControl
     }
 
     @Override
-    protected boolean afterMove(double dx,
-                                double dy) {
+    protected boolean doMove(final double dx,
+                             final double dy) {
         m_intersection = null;
         if (isAllow()) {
             m_intersection = findIntersection(dx,
@@ -137,14 +112,15 @@ public class WiresDockingControlImpl extends AbstractWiresParentPickerControl
 
     @Override
     public boolean isAllow() {
-        final WiresLayer m_layer = getParentPickerControl().getWiresLayer();
+        final WiresLayer m_layer = getWiresLayer();
+        final PickerPart.ShapePart parentShapePart = getParentPickerControl().getParentShapePart();
         final WiresManager wiresManager = m_layer.getWiresManager();
         final IDockingAcceptor dockingAcceptor = wiresManager.getDockingAcceptor();
         return !isEnabled() ||
                 null != getParent() &&
-                        null != getParentShapePart() &&
+                        null != parentShapePart &&
                         getParent() instanceof WiresShape &&
-                        getParentShapePart() == PickerPart.ShapePart.BORDER &&
+                        parentShapePart == PickerPart.ShapePart.BORDER &&
                         (dockingAcceptor.dockingAllowed(getParent(),
                                                         getShape()));
     }
@@ -195,14 +171,13 @@ public class WiresDockingControlImpl extends AbstractWiresParentPickerControl
 
     @Override
     public void reset() {
-        if (isEnabled()) {
-            if (getParentPickerControl().getShapeLocationControl().isStartDocked() &&
-                    getParentPickerControl().getInitialParent() != getShape().getParent()) {
-                dock(getParentPickerControl().getInitialParent());
-                moveChild(getShape(),
-                     getParentPickerControl().getInitialParent(),
-                    getParentPickerControl().getShapeLocationControl().getShapeInitialLocation());
-            }
+        if (isEnabled() &&
+                isStartDocked() &&
+                getParentPickerControl().getInitialParent() != getShape().getParent()) {
+            dock(getParentPickerControl().getInitialParent());
+            moveChild(getShape(),
+                      getParentPickerControl().getInitialParent(),
+                      getParentPickerControl().getShapeInitialLocation());
         }
     }
 
@@ -214,12 +189,13 @@ public class WiresDockingControlImpl extends AbstractWiresParentPickerControl
     }
 
     private boolean _isAccept() {
-        final WiresLayer m_layer = getParentPickerControl().getWiresLayer();
+        final WiresLayer m_layer = getWiresLayer();
+        final PickerPart.ShapePart parentShapePart = getParentPickerControl().getParentShapePart();
         final WiresManager wiresManager = m_layer.getWiresManager();
         final IDockingAcceptor dockingAcceptor = wiresManager.getDockingAcceptor();
         return null != getParent() &&
-                null != getParentShapePart()
-                && getParentShapePart() == PickerPart.ShapePart.BORDER
+                null != parentShapePart
+                && parentShapePart == PickerPart.ShapePart.BORDER
                 && dockingAcceptor.acceptDocking(getParent(),
                                                  getShape());
     }

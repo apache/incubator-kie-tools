@@ -16,6 +16,8 @@
 
 package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 
+import java.util.Collection;
+
 import com.ait.lienzo.client.core.event.NodeDragEndEvent;
 import com.ait.lienzo.client.core.event.NodeDragEndHandler;
 import com.ait.lienzo.client.core.shape.wires.PickerPart;
@@ -24,10 +26,12 @@ import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresCompositeControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresControl;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresLayerIndex;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeHighlight;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.widget.DragConstraintEnforcer;
 import com.ait.lienzo.client.widget.DragContext;
+import com.ait.tooling.common.api.java.util.function.Supplier;
 
 /**
  * This handler's goals are:
@@ -39,13 +43,16 @@ public class WiresCompositeShapeHandler
         implements DragConstraintEnforcer,
                    NodeDragEndHandler {
 
+    private final Supplier<WiresLayerIndex> indexBuilder;
     private final WiresCompositeControl shapeControl;
     private final WiresShapeHighlight<PickerPart.ShapePart> highlight;
 
-    public WiresCompositeShapeHandler(final WiresCompositeControl shapeControl,
+    public WiresCompositeShapeHandler(final Supplier<WiresLayerIndex> indexBuilder,
+                                      final WiresCompositeControl shapeControl,
                                       final WiresShapeHighlight<PickerPart.ShapePart> highlight,
                                       final WiresManager manager) {
         super(manager);
+        this.indexBuilder = indexBuilder;
         this.shapeControl = shapeControl;
         this.highlight = highlight;
     }
@@ -53,6 +60,14 @@ public class WiresCompositeShapeHandler
     @Override
     public void startDrag(final DragContext dragContext) {
         super.startDrag(dragContext);
+
+        final WiresLayerIndex index = buildIndex();
+        shapeControl.useIndex(new Supplier<WiresLayerIndex>() {
+            @Override
+            public WiresLayerIndex get() {
+                return index;
+            }
+        });
 
         shapeControl.onMoveStart(dragContext.getDragStartX(),
                                  dragContext.getDragStartY());
@@ -72,6 +87,7 @@ public class WiresCompositeShapeHandler
         boolean shouldRestore = true;
 
         final WiresContainer parent = shapeControl.getSharedParent();
+
         if (null != parent && parent instanceof WiresShape) {
             if (shapeControl.isAllowed()) {
                 highlight.highlight((WiresShape) parent,
@@ -100,10 +116,9 @@ public class WiresCompositeShapeHandler
         final int dy = adjustedY.intValue();
 
         shapeControl.onMove(dx, dy);
+        shapeControl.onMoveComplete();
 
-        final boolean isComplete = shapeControl.onMoveComplete();
-        final boolean isAccept = isComplete && shapeControl.accept();
-        if (isAccept) {
+        if (shapeControl.accept()) {
             shapeControl.execute();
         } else {
             reset();
@@ -111,16 +126,52 @@ public class WiresCompositeShapeHandler
 
         // Highlights.
         highlight.restore();
+
+        // Clear the index once operations are complete.
+        clearIndex();
     }
 
     @Override
     protected void doReset() {
         super.doReset();
         highlight.restore();
+        clearIndex();
     }
 
     @Override
     public WiresControl getControl() {
         return shapeControl;
+    }
+
+
+    private WiresLayerIndex buildIndex() {
+        final Collection<WiresShape> shapes = shapeControl.getContext().getShapes();
+        final WiresLayerIndex index = indexBuilder.get();
+        if (!shapes.isEmpty()) {
+            for (WiresShape shape : shapes) {
+                WiresShapeControlUtils.excludeFromIndex(index, shape);
+            }
+        }
+        index.build(getWiresManager().getLayer());
+        return index;
+
+    }
+
+    private void clearIndex() {
+        WiresLayerIndex index = getIndex();
+        if (null != index) {
+            index.clear();
+        }
+    }
+
+    WiresLayerIndex getIndex() {
+        final Collection<WiresShape> shapes = shapeControl.getContext().getShapes();
+        if (!shapes.isEmpty()) {
+            return shapes.iterator().next()
+                    .getControl()
+                    .getParentPickerControl()
+                    .getIndex();
+        }
+        return null;
     }
 }

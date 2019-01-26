@@ -103,28 +103,29 @@ public class WiresConnectorHandlerImpl implements WiresConnectorHandler
     public void onNodeDragStart(final NodeDragStartEvent event)
     {
         getControl().hideControlPoints();
-        this.getControl().onMoveStart(event.getDragContext().getDragStartX(),
+        getControl().onMoveStart(event.getDragContext().getDragStartX(),
                                       event.getDragContext().getDragStartY());
     }
 
     @Override
     public void onNodeDragMove(final NodeDragMoveEvent event)
     {
-        this.getControl().onMove(event.getDragContext().getDragStartX(),
+        getControl().onMove(event.getDragContext().getDragStartX(),
                                  event.getDragContext().getDragStartY());
     }
 
     @Override
     public void onNodeDragEnd(final NodeDragEndEvent event)
     {
-        if (getControl().onMoveComplete())
-        {
+        getControl().onMove(event.getDragContext().getDragStartX(),
+                            event.getDragContext().getDragStartY());
+        if (getControl().accept()) {
+            getControl().onMoveComplete();
             getControl().execute();
-        }
-        else
-        {
+        } else {
             getControl().reset();
         }
+        
     }
 
     public WiresConnectorControlImpl getControl()
@@ -179,7 +180,7 @@ public class WiresConnectorHandlerImpl implements WiresConnectorHandler
                     @Override
                     public void run()
                     {
-                        final Point2D point = ShapeControlUtils.getViewportRelativeLocation(getLayer().getViewport(), event);
+                        final Point2D point = WiresShapeControlUtils.getViewportRelativeLocation(getLayer().getViewport(), event);
                         mouseDownEventConsumer.accept(new Event(point.getX(), point.getY(), false));
                         builder.createControlPointAt(event.getX(), event.getY());
                     }
@@ -217,7 +218,7 @@ public class WiresConnectorHandlerImpl implements WiresConnectorHandler
             mouseDownTimer = null;
         }
         getControl().getControlPointBuilder().closeControlPointBuildAnimation();
-        final Point2D location = ShapeControlUtils.getViewportRelativeLocation(getLayer().getViewport(), mouseEvent);
+        final Point2D location = WiresShapeControlUtils.getViewportRelativeLocation(getLayer().getViewport(), mouseEvent);
         final Event   event    = new Event(location.getX(), location.getY(), mouseEvent.isShiftKeyDown());
         mouseClickEventConsumer.accept(event);
     }

@@ -48,4 +48,9 @@ public interface WiresControlFactory {
      */
     WiresShapeHighlight<PickerPart.ShapePart> newShapeHighlight(WiresManager wiresManager);
 
+    /**
+     * Creates a new wires index..
+     */
+    WiresLayerIndex newIndex(WiresManager manager);
+
 }

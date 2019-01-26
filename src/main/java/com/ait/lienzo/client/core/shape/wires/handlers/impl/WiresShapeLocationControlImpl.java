@@ -96,8 +96,7 @@ public class WiresShapeLocationControlImpl implements WiresShapeLocationControl 
     }
 
     @Override
-    public boolean onMoveComplete() {
-        return true;
+    public void onMoveComplete() {
     }
 
     @Override
@@ -151,7 +150,7 @@ public class WiresShapeLocationControlImpl implements WiresShapeLocationControl 
         return m_mouseStartY;
     }
 
-    protected boolean isStartDocked() {
+    public boolean isStartDocked() {
         return m_startDocked;
     }
 
@@ -163,7 +162,7 @@ public class WiresShapeLocationControlImpl implements WiresShapeLocationControl 
         return m_shapeStartCenterY;
     }
 
-    protected Point2D getShapeInitialLocation() {
+    public Point2D getShapeInitialLocation() {
         return shapeInitialLocation;
     }
 

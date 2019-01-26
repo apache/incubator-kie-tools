@@ -5,12 +5,13 @@ import com.ait.lienzo.client.core.types.Point2D;
 
 public interface WiresShapeLocationControl extends WiresMoveControl,
                                                    WiresControl {
+    WiresShape getShape();
 
-    public Point2D getCurrentLocation();
+    Point2D getShapeInitialLocation();
 
-    public WiresShape getShape();
+    Point2D getCurrentLocation();
 
-    public Point2D getShapeLocation();
+    Point2D getShapeLocation();
 
     void setShapeLocation(Point2D location);
 

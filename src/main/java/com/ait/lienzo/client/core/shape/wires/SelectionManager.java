@@ -33,6 +33,7 @@ import com.ait.lienzo.client.core.shape.Rectangle;
 import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresCompositeControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresControlFactory;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresLayerIndex;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresCompositeShapeHandler;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
@@ -41,6 +42,7 @@ import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.lienzo.client.widget.DragConstraintEnforcer;
 import com.ait.lienzo.client.widget.DragContext;
+import com.ait.tooling.common.api.java.util.function.Supplier;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -1240,7 +1242,15 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
 
         public SelectionDragHandler(SelectionManager selectionManager) {
             this.m_selectionManager = selectionManager;
-            this.multipleShapeHandler = new WiresCompositeShapeHandler(m_selectionManager.m_shapeControl,
+            Supplier<WiresLayerIndex> indexBuilder = new Supplier<WiresLayerIndex>() {
+
+                @Override
+                public WiresLayerIndex get() {
+                    return getControlFactory().newIndex(getWiresManager());
+                }
+            };
+            this.multipleShapeHandler = new WiresCompositeShapeHandler(indexBuilder,
+                                                                       m_selectionManager.m_shapeControl,
                                                                        getControlFactory().newShapeHighlight(getWiresManager()),
                                                                        getWiresManager());
             running = false;

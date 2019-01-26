@@ -26,23 +26,24 @@ import com.ait.lienzo.shared.core.types.Direction;
 
 public class WiresConnection extends AbstractControlHandle
 {
-    private WiresMagnet                           m_magnet;
 
-    private WiresConnector                        m_connector;
+    private final WiresConnector                  m_connector;
 
-    private final IDirectionalMultiPointShape<?> m_line;
+    private final IDirectionalMultiPointShape<?>  m_line;
 
-    private MultiPath                             m_endPath;
-
-    private Point2D                               m_point;
+    private final MultiPath                       m_endPath;
 
     private ArrowEnd                              m_end;
+
+    private Point2D                               m_point;
 
     private boolean                               m_autoConnection;
 
     private double                                m_xOffset;
 
     private double                                m_yOffset;
+
+    WiresMagnet                                   m_magnet;
 
     public WiresConnection(WiresConnector connector, MultiPath endPath, ArrowEnd end)
     {
@@ -241,5 +242,6 @@ public class WiresConnection extends AbstractControlHandle
     public void destroy()
     {
         super.destroy();
+        setMagnet(null);
     }
 }

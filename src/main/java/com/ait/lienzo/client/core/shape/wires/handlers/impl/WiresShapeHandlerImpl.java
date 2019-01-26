@@ -25,11 +25,15 @@ import com.ait.lienzo.client.core.shape.wires.WiresContainer;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.shape.wires.handlers.MouseEvent;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresLayerIndex;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeHighlight;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.widget.DragContext;
 import com.ait.tooling.common.api.java.util.function.Consumer;
+import com.ait.tooling.common.api.java.util.function.Supplier;
+
+import static com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresShapeControlUtils.excludeFromIndex;
 
 /**
  * This handler's goals are:
@@ -38,14 +42,17 @@ import com.ait.tooling.common.api.java.util.function.Consumer;
  */
 public class WiresShapeHandlerImpl extends WiresManager.WiresDragHandler implements WiresShapeHandler {
 
-    private final WiresShape                                shape;
+    private final Supplier<WiresLayerIndex> indexBuilder;
+    private final WiresShape shape;
     private final WiresShapeHighlight<PickerPart.ShapePart> highlight;
-    private final Consumer<NodeMouseClickEvent>             clickEventConsumer;
+    private final Consumer<NodeMouseClickEvent> clickEventConsumer;
 
-    public WiresShapeHandlerImpl(final WiresShape shape,
+    public WiresShapeHandlerImpl(final Supplier<WiresLayerIndex> indexBuilder,
+                                 final WiresShape shape,
                              final WiresShapeHighlight<PickerPart.ShapePart> highlight,
                              final WiresManager manager) {
         super(manager);
+        this.indexBuilder = indexBuilder;
         this.shape = shape;
         this.highlight = highlight;
         this.clickEventConsumer = new Consumer<NodeMouseClickEvent>() {
@@ -59,11 +66,13 @@ public class WiresShapeHandlerImpl extends WiresManager.WiresDragHandler impleme
         };
     }
 
-    public WiresShapeHandlerImpl(final WiresShape shape,
+    public WiresShapeHandlerImpl(final Supplier<WiresLayerIndex> indexBuilder,
+                                 final WiresShape shape,
                                  final WiresShapeHighlight<PickerPart.ShapePart> highlight,
                                  final WiresManager manager,
                                  final Consumer<NodeMouseClickEvent> clickEventConsumer) {
         super(manager);
+        this.indexBuilder = indexBuilder;
         this.shape = shape;
         this.highlight = highlight;
         this.clickEventConsumer = clickEventConsumer;
@@ -72,6 +81,18 @@ public class WiresShapeHandlerImpl extends WiresManager.WiresDragHandler impleme
     @Override
     public void startDrag(DragContext dragContext) {
         super.startDrag(dragContext);
+        final WiresManager wiresManager = getWiresManager();
+
+        // Build and use the index for current layer.
+        final WiresLayerIndex index = indexBuilder.get();
+        excludeFromIndex(index, getShape());
+        index.build(wiresManager.getLayer());
+        getControl().useIndex(new Supplier<WiresLayerIndex>() {
+            @Override
+            public WiresLayerIndex get() {
+                return index;
+            }
+        });
 
         // Delegate start dragging to shape control.
         final Point2D startAdjusted = dragContext.getStartAdjusted();
@@ -141,9 +162,10 @@ public class WiresShapeHandlerImpl extends WiresManager.WiresDragHandler impleme
         final int dy = adjustedY.intValue();
 
         getControl().onMove(dx, dy);
+        getControl().onMoveComplete();
 
         // Complete the control operation.
-        if (getControl().onMoveComplete() && getControl().accept()) {
+        if (getControl().accept()) {
             getControl().execute();
         } else {
             reset();
@@ -151,12 +173,20 @@ public class WiresShapeHandlerImpl extends WiresManager.WiresDragHandler impleme
 
         // Restore highlights, if any.
         highlight.restore();
+
+        // Clear the index once operations are complete.
+        clearIndex();
     }
 
     @Override
     protected void doReset() {
         super.doReset();
         highlight.restore();
+        clearIndex();
+    }
+
+    private void clearIndex() {
+        getControl().getParentPickerControl().getIndex().clear();
     }
 
     @Override

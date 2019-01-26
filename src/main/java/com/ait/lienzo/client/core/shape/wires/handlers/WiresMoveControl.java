@@ -26,10 +26,8 @@ public interface WiresMoveControl {
 
     /**
      * The moving has been completed, so operations can be performed at this point.
-     * @return <code>true</code> in case everything if fine, operations completed
-     * and no errors. Returns <code>false</code> otherwise.
      */
-    boolean onMoveComplete();
+    void onMoveComplete();
 
     /**
      * Returns the current adjustment to apply to the wires object, in case

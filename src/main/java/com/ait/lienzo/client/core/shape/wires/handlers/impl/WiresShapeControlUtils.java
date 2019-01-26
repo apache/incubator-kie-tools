@@ -16,29 +16,88 @@
 
 package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+
 import com.ait.lienzo.client.core.event.AbstractNodeMouseEvent;
 import com.ait.lienzo.client.core.shape.IDirectionalMultiPointShape;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.OrthogonalPolyLine;
 import com.ait.lienzo.client.core.shape.Viewport;
+import com.ait.lienzo.client.core.shape.wires.MagnetManager;
 import com.ait.lienzo.client.core.shape.wires.WiresConnection;
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.shape.wires.WiresContainer;
 import com.ait.lienzo.client.core.shape.wires.WiresMagnet;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresLayerIndex;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.PathPartList;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.client.core.util.Geometry;
+import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+public class WiresShapeControlUtils {
 
-public class ShapeControlUtils {
+    public static void moveShapeUpToParent(final WiresShape shape,
+                                           final WiresContainer parent) {
+        if (null != parent && null != parent.getContainer()) {
+            parent.getContainer().moveUp(shape.getGroup());
+        }
+        moveConnectorsToTop(shape, new ArrayList<WiresShape>());
+    }
 
+    private static void moveConnectorsToTop(final WiresShape shape,
+                                            final Collection<WiresShape> processed) {
+        processed.add(shape);
+        final NFastArrayList<WiresConnector> connectors = getConnectors(shape);
+        for (WiresConnector connector : connectors) {
+            connector.getGroup().moveToTop();
+        }
+            final NFastArrayList<WiresShape> childShapes = shape.getChildShapes();
+            if (null != childShapes) {
+                for (WiresShape childShape : childShapes) {
+                    if (!processed.contains(childShape)) {
+                        moveConnectorsToTop(childShape, processed);
+                    }
+                }
+            }
+    }
+
+    public static NFastArrayList<WiresConnector> getConnectors(final WiresShape shape) {
+        final NFastArrayList<WiresConnector> connectors = new NFastArrayList<>();
+        if (null != shape && null != shape.getMagnets()) {
+            final MagnetManager.Magnets magnets = shape.getMagnets();
+            for (int i = 0; i < magnets.size(); i++) {
+                final WiresMagnet magnet = magnets.getMagnet(i);
+                if (null != magnet && null != magnet.getConnections()) {
+                    final NFastArrayList<WiresConnection> connections = magnet.getConnections();
+                    for (WiresConnection connection : connections) {
+                        final WiresConnector connector = connection.getConnector();
+                        if (null != connector) {
+                            connectors.add(connector);
+                        }
+                    }
+                }
+            }
+        }
+        return connectors;
+    }
+
+    public static void excludeFromIndex(final WiresLayerIndex index,
+                                       final WiresShape shape) {
+        index.exclude(shape);
+        final NFastArrayList<WiresShape> children = shape.getChildShapes();
+        for (int i = 0; i < children.size(); i++) {
+            excludeFromIndex(index,
+                             children.get(i));
+        }
+    }
     public static Point2D getViewportRelativeLocation(final Viewport viewport,
                                                       final AbstractNodeMouseEvent mouseEvent) {
         return getViewportRelativeLocation(viewport,

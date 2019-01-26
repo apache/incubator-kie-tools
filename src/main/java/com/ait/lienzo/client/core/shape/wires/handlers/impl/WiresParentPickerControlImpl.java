@@ -18,43 +18,33 @@ package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 
 import com.ait.lienzo.client.core.shape.wires.PickerPart;
 import com.ait.lienzo.client.core.shape.wires.WiresContainer;
-import com.ait.lienzo.client.core.shape.wires.WiresLayer;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.shape.wires.handlers.MouseEvent;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresLayerIndex;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresMouseControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresParentPickerControl;
-import com.ait.lienzo.client.core.shape.wires.picker.ColorMapBackedPicker;
 import com.ait.lienzo.client.core.types.Point2D;
+import com.ait.tooling.common.api.java.util.function.Supplier;
 
 public class WiresParentPickerControlImpl implements WiresParentPickerControl,
                                                      WiresMouseControl {
 
     private final WiresShapeLocationControlImpl shapeLocationControl;
-    private final ColorMapBackedPickerProvider colorMapBackedPickerProvider;
-    private final ColorMapBackendPickerIndex index;
+    private final Supplier<WiresLayerIndex> index;
     private WiresContainer m_parent;
-    private ColorMapBackedPicker m_picker;
     private PickerPart m_parentPart;
     private WiresContainer initialParent;
 
-    public WiresParentPickerControlImpl(WiresShape m_shape,
-                                        ColorMapBackedPicker.PickerOptions pickerOptions) {
+    public WiresParentPickerControlImpl(final WiresShape m_shape,
+                                        final Supplier<WiresLayerIndex> index) {
         this(new WiresShapeLocationControlImpl(m_shape),
-             pickerOptions);
+             index);
     }
 
-    public WiresParentPickerControlImpl(WiresShapeLocationControlImpl shapeLocationControl,
-                                        ColorMapBackedPicker.PickerOptions pickerOptions) {
+    public WiresParentPickerControlImpl(final WiresShapeLocationControlImpl shapeLocationControl,
+                                        final Supplier<WiresLayerIndex> index) {
         this.shapeLocationControl = shapeLocationControl;
-        this.colorMapBackedPickerProvider = new ColorMapBackedPickerProviderImpl(pickerOptions);
-        this.index = new ColorMapBackendPickerIndex();
-    }
-
-    public WiresParentPickerControlImpl(WiresShapeLocationControlImpl shapeLocationControl,
-                                 ColorMapBackedPickerProvider colorMapBackedPickerProvider) {
-        this.shapeLocationControl = shapeLocationControl;
-        this.colorMapBackedPickerProvider = colorMapBackedPickerProvider;
-        this.index = new ColorMapBackendPickerIndex();
+        this.index = index;
     }
 
     @Override
@@ -63,7 +53,6 @@ public class WiresParentPickerControlImpl implements WiresParentPickerControl,
         shapeLocationControl.onMoveStart(x, y);
         initialParent = getShape().getParent();
         m_parent = getShape().getParent();
-        rebuildPicker();
 
         if (m_parent != null && m_parent instanceof WiresShape) {
             if (getShape().getDockedTo() == null) {
@@ -74,10 +63,6 @@ public class WiresParentPickerControlImpl implements WiresParentPickerControl,
                                            (int) shapeLocationControl.getShapeStartCenterY());
             }
         }
-    }
-
-    public void rebuildPicker() {
-        m_picker = colorMapBackedPickerProvider.get(getShape().getWiresManager().getLayer());
     }
 
     @Override
@@ -118,7 +103,7 @@ public class WiresParentPickerControlImpl implements WiresParentPickerControl,
 
     private PickerPart findShapeAt(double x,
                                    double y) {
-        final PickerPart parent = m_picker.findShapeAt((int) x,
+        final PickerPart parent = index.get().findShapeAt((int) x,
                                                        (int) y);
         // Ensure same shape is not the parent found, even if it
         // has been indexed in the colormap picker.
@@ -135,10 +120,8 @@ public class WiresParentPickerControlImpl implements WiresParentPickerControl,
     }
 
     @Override
-    public boolean onMoveComplete() {
-        boolean b = shapeLocationControl.onMoveComplete();
-        clear();
-        return b;
+    public void onMoveComplete() {
+        shapeLocationControl.onMoveComplete();
     }
 
     @Override
@@ -165,11 +148,6 @@ public class WiresParentPickerControlImpl implements WiresParentPickerControl,
 
     public void clear() {
         shapeLocationControl.clear();
-        if (null != m_picker)
-        {
-            m_picker.destroy();
-            m_picker = null;
-        }
         m_parent = null;
         m_parentPart = null;
         initialParent = null;
@@ -196,13 +174,18 @@ public class WiresParentPickerControlImpl implements WiresParentPickerControl,
         shapeLocationControl.setShapeLocation(location);
     }
 
-    public ColorMapBackedPicker getPicker() {
-        return m_picker;
-    }
-
     @Override
     public WiresShape getShape() {
         return shapeLocationControl.getShape();
+    }
+
+    @Override
+    public Point2D getShapeInitialLocation() {
+        return shapeLocationControl.getShapeInitialLocation();
+    }
+
+    public WiresShapeLocationControlImpl getShapeLocationControl() {
+        return shapeLocationControl;
     }
 
     @Override
@@ -217,75 +200,25 @@ public class WiresParentPickerControlImpl implements WiresParentPickerControl,
     }
 
     @Override
-    public Index getIndex()
+    public WiresLayerIndex getIndex()
     {
-        return index;
-    }
-
-    public WiresShapeLocationControlImpl getShapeLocationControl() {
-        return shapeLocationControl;
-    }
-
-    public WiresLayer getWiresLayer() {
-        return getShape().getWiresManager().getLayer();
+        return index.get();
     }
 
     public WiresContainer getInitialParent() {
         return initialParent;
     }
 
-    public ColorMapBackedPicker.PickerOptions getPickerOptions() {
-        return colorMapBackedPickerProvider.getOptions();
+    public double getMouseStartX() {
+        return shapeLocationControl.getMouseStartX();
     }
 
-    public interface ColorMapBackedPickerProvider {
-
-        ColorMapBackedPicker get(WiresLayer layer);
-
-        ColorMapBackedPicker.PickerOptions getOptions();
-
+    public double getMouseStartY() {
+        return shapeLocationControl.getMouseStartY();
     }
 
-    public static class ColorMapBackedPickerProviderImpl implements ColorMapBackedPickerProvider {
-
-        private final ColorMapBackedPicker.PickerOptions pickerOptions;
-
-        public ColorMapBackedPickerProviderImpl(final ColorMapBackedPicker.PickerOptions pickerOptions) {
-            this.pickerOptions = pickerOptions;
-        }
-
-        @Override
-        public ColorMapBackedPicker get(final WiresLayer layer)
-        {
-            return new ColorMapBackedPicker(layer,
-                                            pickerOptions);
-        }
-
-        @Override
-        public ColorMapBackedPicker.PickerOptions getOptions() {
-            return pickerOptions;
-        }
+    public boolean isStartDocked() {
+        return shapeLocationControl.isStartDocked();
     }
 
-    private class ColorMapBackendPickerIndex implements WiresParentPickerControl.Index {
-
-
-        @Override
-        public void exclude(final WiresContainer shape)
-        {
-            getPickerOptions().getShapesToSkip().add(shape);
-        }
-
-        @Override
-        public PickerPart findShapeAt(final int x, final int y)
-        {
-            return m_picker.findShapeAt(x, y);
-        }
-
-        @Override
-        public void clear()
-        {
-            getPickerOptions().getShapesToSkip().clear();
-        }
-    }
 }

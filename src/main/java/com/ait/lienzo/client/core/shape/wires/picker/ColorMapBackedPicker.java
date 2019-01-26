@@ -38,20 +38,15 @@ public class ColorMapBackedPicker
 
     private final PickerOptions                m_options;
 
-    public ColorMapBackedPicker(final WiresLayer layer,
-                                final PickerOptions options) {
-        this(layer.getChildShapes(),
-             layer.getLayer().getScratchPad(),
-             options);
-    }
-
-    public ColorMapBackedPicker(final NFastArrayList<WiresShape> shapes,
-                                final ScratchPad scratchPad,
+    public ColorMapBackedPicker(final ScratchPad scratchPad,
                                 final PickerOptions options)
     {
         m_scratchPad = scratchPad;
         m_ctx = scratchPad.getContext();
         m_options = options;
+    }
+
+    public void build(final NFastArrayList<WiresShape> shapes) {
         m_scratchPad.clear();
         processShapes(shapes);
     }
@@ -135,7 +130,7 @@ public class ColorMapBackedPicker
         return null;
     }
 
-    public void destroy() {
+    public void clear() {
         m_scratchPad.clear();
         m_colorMap.clear();
         m_shapesMap.clear();

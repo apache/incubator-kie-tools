@@ -32,4 +32,6 @@ public interface WiresConnectorControl extends WiresMoveControl, WiresControl {
 
     boolean areControlPointsVisible();
 
+    boolean accept();
+
 }

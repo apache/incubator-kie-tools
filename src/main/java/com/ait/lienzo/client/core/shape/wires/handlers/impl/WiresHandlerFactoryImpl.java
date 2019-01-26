@@ -21,9 +21,12 @@ import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorHandler;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresControlFactory;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresControlPointHandler;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresHandlerFactory;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresLayerIndex;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeHighlight;
+import com.ait.tooling.common.api.java.util.function.Supplier;
 
 /**
  * Default factory implementation for Wires Handlers.
@@ -46,6 +49,16 @@ public class WiresHandlerFactoryImpl implements WiresHandlerFactory {
     public WiresShapeHandler newShapeHandler(final WiresShape shape,
                                              final WiresShapeHighlight<PickerPart.ShapePart> highlight,
                                              final WiresManager manager) {
-        return new WiresShapeHandlerImpl(shape, highlight, manager);
+        final WiresControlFactory controlFactory = manager.getControlFactory();
+        final Supplier<WiresLayerIndex> indexBuilder = new Supplier<WiresLayerIndex>() {
+            @Override
+            public WiresLayerIndex get() {
+                return controlFactory.newIndex(manager);
+            }
+        };
+        return new WiresShapeHandlerImpl(indexBuilder,
+                                         shape,
+                                         highlight,
+                                         manager);
     }
 }

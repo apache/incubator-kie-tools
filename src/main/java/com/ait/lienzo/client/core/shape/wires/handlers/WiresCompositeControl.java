@@ -21,6 +21,7 @@ import java.util.Collection;
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.shape.wires.WiresContainer;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
+import com.ait.tooling.common.api.java.util.function.Supplier;
 
 /**
  * A control that composites other wires controls, this way ot provides support for operating on
@@ -33,19 +34,22 @@ public interface WiresCompositeControl extends WiresMoveControl,
                                                WiresControl,
                                                WiresBoundsConstraintControl {
 
-    public interface Context {
+    interface Context {
 
-        public Collection<WiresShape> getShapes();
+        Collection<WiresShape> getShapes();
 
-        public Collection<WiresConnector> getConnectors();
+        Collection<WiresConnector> getConnectors();
 
     }
 
-    void setContext(Context provider);
+    void useIndex(Supplier<WiresLayerIndex> index);
 
     boolean isAllowed();
 
     boolean accept();
 
     WiresContainer getSharedParent();
+
+    Context getContext();
+
 }

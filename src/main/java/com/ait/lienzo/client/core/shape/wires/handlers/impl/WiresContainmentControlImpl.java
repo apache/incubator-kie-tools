@@ -22,30 +22,15 @@ import com.ait.lienzo.client.core.shape.wires.WiresLayer;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresContainmentControl;
-import com.ait.lienzo.client.core.shape.wires.picker.ColorMapBackedPicker;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresParentPickerControl;
 import com.ait.lienzo.client.core.types.Point2D;
+import com.ait.tooling.common.api.java.util.function.Supplier;
 
-public class WiresContainmentControlImpl extends AbstractWiresParentPickerControl
+public class WiresContainmentControlImpl extends AbstractWiresControl<WiresContainmentControlImpl>
         implements WiresContainmentControl {
 
-    public WiresContainmentControlImpl(WiresShape shape,
-                                       ColorMapBackedPicker.PickerOptions pickerOptions) {
-        super(shape,
-              pickerOptions);
-    }
-
-    public WiresContainmentControlImpl(WiresParentPickerControlImpl parentPickerControl) {
+    public WiresContainmentControlImpl(final Supplier<WiresParentPickerControl> parentPickerControl) {
         super(parentPickerControl);
-    }
-
-    @Override
-    public WiresContainmentControl setEnabled(final boolean enabled) {
-        if (enabled) {
-            enable();
-        } else {
-            disable();
-        }
-        return this;
     }
 
     @Override
@@ -105,14 +90,13 @@ public class WiresContainmentControlImpl extends AbstractWiresParentPickerContro
 
     @Override
     public void reset() {
-        if (isEnabled()) {
-            if (!getParentPickerControl().getShapeLocationControl().isStartDocked() &&
-                    getParentPickerControl().getInitialParent() != getShape().getParent()) {
-                addIntoParent(getShape(),
-                              getParentPickerControl().getInitialParent(),
-                              getParentPickerControl().getShapeLocationControl().getShapeInitialLocation());
-                getShape().setDockedTo(null);
-            }
+        if (isEnabled() &&
+                !isStartDocked() &&
+                getParentPickerControl().getInitialParent() != getShape().getParent()) {
+            addIntoParent(getShape(),
+                          getParentPickerControl().getInitialParent(),
+                          getParentPickerControl().getShapeInitialLocation());
+            getShape().setDockedTo(null);
         }
     }
 
@@ -137,7 +121,7 @@ public class WiresContainmentControlImpl extends AbstractWiresParentPickerContro
         shape.setDockedTo(null);
     }
 
-    public static Point2D calculateCandidateLocation(final WiresParentPickerControlImpl parentPickerControl) {
+    public static Point2D calculateCandidateLocation(final WiresParentPickerControl parentPickerControl) {
         final WiresLayer m_layer = parentPickerControl.getShape().getWiresManager().getLayer();
         final WiresContainer parent = parentPickerControl.getParent();
         final Point2D current = parentPickerControl.getShapeLocation();
@@ -149,7 +133,4 @@ public class WiresContainmentControlImpl extends AbstractWiresParentPickerContro
         }
     }
 
-    private WiresLayer getWiresLayer() {
-        return getParentPickerControl().getWiresLayer();
-    }
 }

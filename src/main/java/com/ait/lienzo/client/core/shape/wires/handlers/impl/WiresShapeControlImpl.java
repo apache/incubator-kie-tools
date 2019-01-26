@@ -22,6 +22,7 @@ import java.util.Collections;
 import com.ait.lienzo.client.core.shape.wires.OptionalBounds;
 import com.ait.lienzo.client.core.shape.wires.PickerPart;
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
+import com.ait.lienzo.client.core.shape.wires.WiresContainer;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.shape.wires.handlers.AlignAndDistributeControl;
@@ -30,16 +31,15 @@ import com.ait.lienzo.client.core.shape.wires.handlers.WiresBoundsConstraintCont
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresContainmentControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresDockingControl;
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresLayerIndex;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresMagnetsControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresParentPickerControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
-import com.ait.lienzo.client.core.shape.wires.picker.ColorMapBackedPicker;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.tooling.common.api.java.util.function.Consumer;
 import com.ait.tooling.common.api.java.util.function.Supplier;
-import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 
 /**
  * The default WiresShapeControl implementation.
@@ -49,7 +49,8 @@ public class WiresShapeControlImpl
         implements WiresShapeControl,
                    WiresBoundsConstraintControl.SupportsOptionalBounds<WiresShapeControlImpl> {
 
-    private final WiresParentPickerCachedControl parentPickerControl;
+    private final WiresParentPickerControl parentPickerControl;
+    private Supplier<WiresLayerIndex> index;
     private WiresMagnetsControl m_magnetsControl;
     private WiresDockingControl m_dockingAndControl;
     private WiresContainmentControl m_containmentControl;
@@ -62,19 +63,30 @@ public class WiresShapeControlImpl
     private WiresConnector[] m_connectorsWithSpecialConnections;
     private Collection<WiresConnector> m_connectors;
 
-    public WiresShapeControlImpl(WiresShape shape,
-                                 WiresManager wiresManager) {
-        final ColorMapBackedPicker.PickerOptions pickerOptions =
-                new ColorMapBackedPicker.PickerOptions(true,
-                                                       wiresManager.getDockingAcceptor().getHotspotSize());
-        parentPickerControl = new WiresParentPickerCachedControl(shape,
-                                                                 pickerOptions);
-        m_dockingAndControl = new WiresDockingControlImpl(getParentPickerControl());
-        m_containmentControl = new WiresContainmentControlImpl(getParentPickerControl());
+    public WiresShapeControlImpl(WiresShape shape) {
+        parentPickerControl = new WiresParentPickerControlImpl(shape,
+                                                               new Supplier<WiresLayerIndex>() {
+                                                                   @Override
+                                                                   public WiresLayerIndex get() {
+                                                                       return index.get();
+                                                                   }
+                                                               });
+        m_dockingAndControl = new WiresDockingControlImpl(new Supplier<WiresParentPickerControl>() {
+            @Override
+            public WiresParentPickerControl get() {
+                return parentPickerControl;
+            }
+        });
+        m_containmentControl = new WiresContainmentControlImpl(new Supplier<WiresParentPickerControl>() {
+            @Override
+            public WiresParentPickerControl get() {
+                return parentPickerControl;
+            }
+        });
         m_magnetsControl = new WiresMagnetsControlImpl(shape);
     }
 
-    public WiresShapeControlImpl(WiresParentPickerCachedControl parentPickerControl,
+    public WiresShapeControlImpl(WiresParentPickerControl parentPickerControl,
                                  WiresMagnetsControl m_magnetsControl,
                                  WiresDockingControl m_dockingAndControl,
                                  WiresContainmentControl m_containmentControl) {
@@ -92,15 +104,9 @@ public class WiresShapeControlImpl
         d_accept = false;
         c_accept = false;
 
-        // Important - skip the shape and its children, if any, from the picker.
-        // Otherwise children or the shape itself are being processed by the parent picker
-        // and it ends up with wrong parent-child nested issues.
-        final WiresParentPickerControl.Index index = parentPickerControl.getIndex();
-        index.exclude(getShape());
-        final NFastArrayList<WiresShape> children = getShape().getChildShapes();
-        for (int i = 0; i < children.size(); i++) {
-            index.exclude(children.get(i));
-        }
+        // Delegate move start to the shape's parent control
+        parentPickerControl.onMoveStart(x,
+                                        y);
 
         // Delegate move start to the shape's docking control
         if (m_dockingAndControl != null) {
@@ -120,11 +126,11 @@ public class WiresShapeControlImpl
         }
 
         // index nested shapes that have special m_connectors, to avoid searching during drag.
-        m_connectorsWithSpecialConnections = ShapeControlUtils.collectionSpecialConnectors(getShape());
+        m_connectorsWithSpecialConnections = WiresShapeControlUtils.collectionSpecialConnectors(getShape());
 
         //setting the child connectors that should be moved with the Shape
         m_connectors = getShape().getChildShapes() != null && !getShape().getChildShapes().isEmpty() ?
-                       ShapeControlUtils.lookupChildrenConnectorsToUpdate(getShape()).values() :
+                       WiresShapeControlUtils.lookupChildrenConnectorsToUpdate(getShape()).values() :
                        Collections.<WiresConnector>emptyList();
 
         forEachConnectorControl(new Consumer<WiresConnectorControl>() {
@@ -234,8 +240,10 @@ public class WiresShapeControlImpl
             }
         });
 
-        ShapeControlUtils.checkForAndApplyLineSplice(getWiresManager(),
-                                                     getShape());
+        WiresShapeControlUtils.checkForAndApplyLineSplice(getWiresManager(),
+                                                          getShape());
+
+        moveShapeUpToParent();
 
         return adjust;
     }
@@ -263,26 +271,24 @@ public class WiresShapeControlImpl
     }
 
     @Override
-    public boolean onMoveComplete() {
-        final boolean dcompleted = null == m_dockingAndControl || m_dockingAndControl.onMoveComplete();
-        final boolean ccompleted = null == m_containmentControl || m_containmentControl.onMoveComplete();
+    public void onMoveComplete() {
+        parentPickerControl.onMoveComplete();
+        if (null != m_dockingAndControl) {
+            m_dockingAndControl.onMoveComplete();
+        }
+        if (null != m_containmentControl) {
+            m_containmentControl.onMoveComplete();
+        }
         if (m_alignAndDistributeControl != null) {
             m_alignAndDistributeControl.dragEnd();
         }
-        if (dcompleted && ccompleted) {
-            final boolean[] accept = new boolean[] {true};
-            forEachConnectorControl(new Consumer<WiresConnectorControl>() {
-                @Override
-                public void accept(WiresConnectorControl control)
-                {
-                    if (!control.onMoveComplete()) {
-                        accept[0] = false;
-                    }
-                }
-            });
-            return accept[0];
-        }
-        return false;
+        forEachConnectorControl(new Consumer<WiresConnectorControl>() {
+            @Override
+            public void accept(WiresConnectorControl control)
+            {
+                control.onMoveComplete();
+            }
+        });
     }
 
     @Override
@@ -315,8 +321,11 @@ public class WiresShapeControlImpl
             }
         });
 
-        ShapeControlUtils.checkForAndApplyLineSplice(getWiresManager(),
-                                                     getShape());
+        WiresShapeControlUtils.checkForAndApplyLineSplice(getWiresManager(),
+                                                          getShape());
+
+        moveShapeUpToParent();
+
         clear();
     }
 
@@ -398,6 +407,11 @@ public class WiresShapeControlImpl
     }
 
     @Override
+    public void useIndex(Supplier<WiresLayerIndex> index) {
+        this.index = index;
+    }
+
+    @Override
     public void setAlignAndDistributeControl(AlignAndDistributeControl control) {
         this.m_alignAndDistributeControl = control;
     }
@@ -423,7 +437,7 @@ public class WiresShapeControlImpl
     }
 
     @Override
-    public WiresParentPickerCachedControl getParentPickerControl() {
+    public WiresParentPickerControl getParentPickerControl() {
         return parentPickerControl;
     }
 
@@ -432,10 +446,14 @@ public class WiresShapeControlImpl
         return m_adjust;
     }
 
+    public Supplier<WiresLayerIndex> getIndex() {
+        return index;
+    }
+
     private void shapeUpdated(final boolean isAcceptOp) {
-        ShapeControlUtils.updateSpecialConnections(m_connectorsWithSpecialConnections,
-                                                   isAcceptOp);
-        ShapeControlUtils.updateNestedShapes(getShape());
+        WiresShapeControlUtils.updateSpecialConnections(m_connectorsWithSpecialConnections,
+                                                        isAcceptOp);
+        WiresShapeControlUtils.updateNestedShapes(getShape());
     }
 
     private void clearState() {
@@ -460,7 +478,8 @@ public class WiresShapeControlImpl
         return getShape().getWiresManager();
     }
 
-    private ColorMapBackedPicker getPicker() {
-        return parentPickerControl.getPicker();
+    private void moveShapeUpToParent() {
+        WiresContainer parent = getParentPickerControl().getParent();
+        WiresShapeControlUtils.moveShapeUpToParent(getShape(), parent);
     }
 }

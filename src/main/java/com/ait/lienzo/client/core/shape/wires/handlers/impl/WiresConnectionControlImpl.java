@@ -113,12 +113,10 @@ public class WiresConnectionControlImpl implements WiresConnectionControl {
     }
 
     @Override
-    public boolean onMoveComplete() {
+    public void onMoveComplete() {
         WiresConnection connection = getConnection();
 
-        boolean accept = makeAndUpdateSpecialConnections();
-
-        if (!accept) {
+        if (!makeAndUpdateSpecialConnections()) {
             connection.setAutoConnection(m_initialAutoConnect);
             connection.setMagnet(m_initial_magnet);
             WiresConnector connector = connection.getConnector();
@@ -137,7 +135,6 @@ public class WiresConnectionControlImpl implements WiresConnectionControl {
         m_initial_magnet = null;
         m_shape_color_map.clear();
         m_magnet_color_map.clear();
-        return accept;
     }
 
     private boolean makeAndUpdateSpecialConnections() {

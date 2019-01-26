@@ -51,9 +51,8 @@ public class WiresMagnetsControlImpl implements WiresMagnetsControl {
     }
 
     @Override
-    public boolean onMoveComplete() {
+    public void onMoveComplete() {
         shape.shapeMoved();
-        return false;
     }
 
     @Override
