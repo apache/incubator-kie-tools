@@ -47,6 +47,7 @@ import static org.kie.workbench.common.dmn.client.editors.types.listview.DataTyp
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper.DOWN_ARROW_CSS_CLASS;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper.FOCUSED_CSS_CLASS;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper.RIGHT_ARROW_CSS_CLASS;
+import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeListItemView_ArrowKeysTooltip;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
@@ -143,6 +144,7 @@ public class DataTypeListItemViewTest {
         doNothing().when(view).setupReadOnly(dataType);
         doNothing().when(view).setupActionButtons();
         doNothing().when(view).setupEventHandlers();
+        doNothing().when(view).setupShortcutsTooltips();
 
         view.setDataType(dataType);
 
@@ -306,6 +308,48 @@ public class DataTypeListItemViewTest {
 
         assertEquals(name, nameText.textContent);
         assertEquals(name, nameInput.value);
+    }
+
+    @Test
+    public void testSetupShortcutsTooltips() {
+
+        final Element editButton = mock(Element.class);
+        final Element saveButton = mock(Element.class);
+        final Element insertNestedField = mock(Element.class);
+        final Element closeButton = mock(Element.class);
+        final Element insertFieldAbove = mock(Element.class);
+        final Element insertFieldBelow = mock(Element.class);
+        final Element removeButton = mock(Element.class);
+        final Element arrow = mock(Element.class);
+        final String arrowKeysTooltip = "arrowKeysTooltip";
+
+        doReturn(editButton).when(view).getEditButton();
+        doReturn(saveButton).when(view).getSaveButton();
+        doReturn(insertNestedField).when(view).getInsertNestedField();
+        doReturn(closeButton).when(view).getCloseButton();
+        doReturn(insertFieldAbove).when(view).getInsertFieldAbove();
+        doReturn(insertFieldBelow).when(view).getInsertFieldBelow();
+        doReturn(removeButton).when(view).getRemoveButton();
+        doReturn(arrow).when(view).getArrow();
+        when(translationService.format(DataTypeListItemView_ArrowKeysTooltip)).thenReturn(arrowKeysTooltip);
+
+        view.setupShortcutsTooltips();
+
+        verify(editButton).setAttribute("title", "Ctrl + E");
+        verify(saveButton).setAttribute("title", "Ctrl + S");
+        verify(insertNestedField).setAttribute("title", "Ctrl + B");
+        verify(closeButton).setAttribute("title", "Esc");
+        verify(insertFieldAbove).setAttribute("title", "Ctrl + U");
+        verify(insertFieldBelow).setAttribute("title", "Ctrl + D");
+        verify(removeButton).setAttribute("title", "Ctrl + Backspace");
+        verify(arrow).setAttribute("title", arrowKeysTooltip);
+        verify(view).setupTooltips();
+    }
+
+    @Test
+    public void testSetupTooltips() {
+
+        view.setupTooltips();
     }
 
     @Test

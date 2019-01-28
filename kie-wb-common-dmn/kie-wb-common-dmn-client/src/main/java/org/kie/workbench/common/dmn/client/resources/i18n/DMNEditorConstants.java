@@ -257,6 +257,9 @@ public class DMNEditorConstants {
     public static final String DataTypeListItemView_List = "DataTypeListItemView.List";
 
     @TranslationKey(defaultValue = "")
+    public static final String DataTypeListItemView_ArrowKeysTooltip = "DataTypeListItemView.ArrowKeysTooltip";
+
+    @TranslationKey(defaultValue = "")
     public static final String SmallSwitchComponentView_Yes = "SmallSwitchComponentView.Yes";
 
     @TranslationKey(defaultValue = "")

@@ -18,6 +18,7 @@ package org.kie.workbench.common.dmn.client.editors.types.listview.common;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import elemental2.dom.Element;
+import elemental2.dom.NodeList;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsType;
 
@@ -29,5 +30,10 @@ public abstract class JQueryTooltip {
     @JsMethod(namespace = GLOBAL, name = "jQuery")
     public native static JQueryTooltip $(final Element selector);
 
+    @JsMethod(namespace = GLOBAL, name = "jQuery")
+    public native static JQueryTooltip $(final NodeList<Element> selector);
+
     public native JQueryTooltip tooltip(final JavaScriptObject properties);
+
+    public native JQueryTooltip tooltip();
 }

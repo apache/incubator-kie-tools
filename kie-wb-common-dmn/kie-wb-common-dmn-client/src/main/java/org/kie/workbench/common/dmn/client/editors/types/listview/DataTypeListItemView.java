@@ -43,12 +43,14 @@ import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.Dat
 
 import static org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper.hide;
 import static org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper.show;
+import static org.kie.workbench.common.dmn.client.editors.types.listview.common.JQueryTooltip.$;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper.asDownArrow;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper.asFocusedDataType;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper.asNonFocusedDataType;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper.asRightArrow;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper.isFocusedDataType;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper.isRightArrow;
+import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeListItemView_ArrowKeysTooltip;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeListItemView_List;
 
 @Dependent
@@ -369,6 +371,32 @@ public class DataTypeListItemView implements DataTypeListItem.View {
         setupReadOnly(dataType);
         setupActionButtons();
         setupEventHandlers();
+        setupShortcutsTooltips();
+    }
+
+    void setupShortcutsTooltips() {
+
+        final String arrowKeysTooltip = translationService.format(DataTypeListItemView_ArrowKeysTooltip);
+
+        setTitleAttribute(getEditButton(), "Ctrl + E");
+        setTitleAttribute(getSaveButton(), "Ctrl + S");
+        setTitleAttribute(getInsertNestedField(), "Ctrl + B");
+        setTitleAttribute(getInsertFieldAbove(), "Ctrl + U");
+        setTitleAttribute(getInsertFieldBelow(), "Ctrl + D");
+        setTitleAttribute(getRemoveButton(), "Ctrl + Backspace");
+        setTitleAttribute(getCloseButton(), "Esc");
+        setTitleAttribute(getArrow(), arrowKeysTooltip);
+        setupTooltips();
+    }
+
+    private void setTitleAttribute(final Element element,
+                                   final String value) {
+        final String attribute = "title";
+        element.setAttribute(attribute, value);
+    }
+
+    void setupTooltips() {
+        $(getElement().querySelectorAll("[data-toggle='tooltip'")).tooltip();
     }
 
     void setupEventHandlers() {
