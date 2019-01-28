@@ -153,7 +153,7 @@ public class JavaSourceVisitor extends ResourceReferenceCollector {
         if (implementedInterfaces != null) {
             for (String implementedInterface : implementedInterfaces) {
                 try {
-                    implementedInterface = classTypeResolver.getFullTypeName(implementedInterface);
+                    implementedInterface = classTypeResolver.getFullTypeName(javaClassSource.resolveType(implementedInterface));
                     addJavaResourceReference(implementedInterface);
                     // TODO: add relationship information ( implements )
                 } catch (ClassNotFoundException e) {

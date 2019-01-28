@@ -45,6 +45,8 @@ public class JavaSourceVisitorTest {
 
     private static JavaClassSource javaClassSource;
 
+    private static JavaClassSource javaClassSource2;
+
     private static JavaInterfaceSource javaInterfaceSource;
 
     private static JavaEnumSource javaEnumSource;
@@ -55,7 +57,9 @@ public class JavaSourceVisitorTest {
 
     @BeforeClass
     public static void setUpJavaSources() throws URISyntaxException, IOException {
+
         javaClassSource = (JavaClassSource) Roaster.parse( JavaSourceVisitorTest.class.getResource( "/org/kie/workbench/common/screens/datamodeller/backend/server/indexing/Pojo2.java" ) );
+        javaClassSource2 = (JavaClassSource) Roaster.parse(JavaSourceVisitorTest.class.getResource("/org/kie/workbench/common/screens/datamodeller/backend/server/indexing/Pojo3.java"));
         javaInterfaceSource = (JavaInterfaceSource) Roaster.parse( JavaSourceVisitorTest.class.getResource( "/org/kie/workbench/common/screens/datamodeller/backend/server/indexing/Interface2.java" ) );
         javaEnumSource = (JavaEnumSource) Roaster.parse( JavaSourceVisitorTest.class.getResource( "/org/kie/workbench/common/screens/datamodeller/backend/server/indexing/Enum2.java" ) );
     }
@@ -116,9 +120,17 @@ public class JavaSourceVisitorTest {
         checkVisitor( Arrays.asList( "ref:java => int" ) );
     }
 
+    @Test
+    public void visitJavaClassImplmentingInterfaceWithGenerics() {
+        visitor.visit(javaClassSource2);
+
+        checkVisitor(Arrays.asList("ref:java => org.kie.workbench.common.screens.datamodeller.backend.server.indexing.Pojo3", "ref:java => java.lang.Object", "ref:java => java.lang.Comparable", "ref:java => int"));
+    }
+
     private void checkVisitor( Collection<String> referenceDefinitions ) {
         Collection<ResourceReference> resourceReferences = visitor.getResourceReferences();
-        assertEquals( referenceDefinitions.size(), resourceReferences.size() );
+
+        assertEquals(referenceDefinitions.size(), resourceReferences.size());
 
         List<String> resourceReferenceList = resourceReferences.stream().map( resourceReference -> resourceReference.toString() ).collect( Collectors.toList() );
         assertTrue( resourceReferenceList.containsAll( referenceDefinitions ) );
