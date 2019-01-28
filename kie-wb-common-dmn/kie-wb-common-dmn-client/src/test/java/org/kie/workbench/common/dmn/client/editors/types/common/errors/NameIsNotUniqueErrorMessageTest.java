@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.editors.types.persistence.validation;
+package org.kie.workbench.common.dmn.client.editors.types.common.errors;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
@@ -24,13 +24,13 @@ import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
-import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.NameIsDefaultTypeMessage_RegularMessage;
-import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.NameIsDefaultTypeMessage_StrongMessage;
+import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.NameIsNotUniqueErrorMessage_RegularMessage;
+import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.NameIsNotUniqueErrorMessage_StrongMessage;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class NameIsDefaultTypeMessageTest {
+public class NameIsNotUniqueErrorMessageTest {
 
     @Mock
     private TranslationService translationService;
@@ -39,10 +39,12 @@ public class NameIsDefaultTypeMessageTest {
     public void testGetStrongMessage() {
 
         final DataType dataType = mock(DataType.class);
+        final String dataTypeName = "name";
         final String expectedErrorMessage = "*Expected strong message.*";
-        final NameIsDefaultTypeMessage errorMessage = new NameIsDefaultTypeMessage(translationService);
+        final NameIsNotUniqueErrorMessage errorMessage = new NameIsNotUniqueErrorMessage(translationService);
 
-        when(translationService.format(NameIsDefaultTypeMessage_StrongMessage)).thenReturn(expectedErrorMessage);
+        when(dataType.getName()).thenReturn(dataTypeName);
+        when(translationService.format(NameIsNotUniqueErrorMessage_StrongMessage, dataTypeName)).thenReturn(expectedErrorMessage);
 
         final String actualErrorMessage = errorMessage.getStrongMessage(dataType);
 
@@ -53,9 +55,9 @@ public class NameIsDefaultTypeMessageTest {
     public void testGetRegularMessage() {
 
         final String expectedErrorMessage = "Expected regular message.";
-        final NameIsDefaultTypeMessage errorMessage = new NameIsDefaultTypeMessage(translationService);
+        final NameIsNotUniqueErrorMessage errorMessage = new NameIsNotUniqueErrorMessage(translationService);
 
-        when(translationService.format(NameIsDefaultTypeMessage_RegularMessage)).thenReturn(expectedErrorMessage);
+        when(translationService.format(NameIsNotUniqueErrorMessage_RegularMessage)).thenReturn(expectedErrorMessage);
 
         final String actualErrorMessage = errorMessage.getRegularMessage();
 

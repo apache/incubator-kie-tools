@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.editors.types.persistence.validation;
+package org.kie.workbench.common.dmn.client.editors.types.common.errors;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -22,24 +22,24 @@ import javax.inject.Inject;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 
-import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.NameIsNotUniqueErrorMessage_RegularMessage;
-import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.NameIsNotUniqueErrorMessage_StrongMessage;
+import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.NameIsBlankErrorMessage_RegularMessage;
+import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.NameIsBlankErrorMessage_StrongMessage;
 
 @Dependent
-public class NameIsNotUniqueErrorMessage extends ErrorMessage {
+public class NameIsBlankErrorMessage extends ErrorMessage {
 
     @Inject
-    public NameIsNotUniqueErrorMessage(final TranslationService translationService) {
+    public NameIsBlankErrorMessage(final TranslationService translationService) {
         super(translationService);
     }
 
     @Override
     String getStrongMessage(final DataType dataType) {
-        return translationService.format(NameIsNotUniqueErrorMessage_StrongMessage, dataType.getName());
+        return translationService.format(NameIsBlankErrorMessage_StrongMessage);
     }
 
     @Override
     String getRegularMessage() {
-        return translationService.format(NameIsNotUniqueErrorMessage_RegularMessage);
+        return translationService.format(NameIsBlankErrorMessage_RegularMessage);
     }
 }

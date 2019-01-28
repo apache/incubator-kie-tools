@@ -227,6 +227,12 @@ public class DMNEditorConstants {
     public static final String NameIsBlankErrorMessage_RegularMessage = "NameIsBlankErrorMessage.RegularMessage";
 
     @TranslationKey(defaultValue = "")
+    public static final String NameIsInvalidErrorMessage_StrongMessage = "NameIsInvalidErrorMessage.StrongMessage";
+
+    @TranslationKey(defaultValue = "")
+    public static final String NameIsInvalidErrorMessage_RegularMessage = "NameIsInvalidErrorMessage.RegularMessage";
+
+    @TranslationKey(defaultValue = "")
     public static final String NameIsNotUniqueErrorMessage_StrongMessage = "NameIsNotUniqueErrorMessage.StrongMessage";
 
     @TranslationKey(defaultValue = "")

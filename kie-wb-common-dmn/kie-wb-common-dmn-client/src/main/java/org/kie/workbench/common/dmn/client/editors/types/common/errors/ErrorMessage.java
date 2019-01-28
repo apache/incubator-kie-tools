@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.editors.types.persistence.validation;
+package org.kie.workbench.common.dmn.client.editors.types.common.errors;
+
+import java.util.Optional;
 
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
@@ -24,7 +26,7 @@ import static org.kie.workbench.common.dmn.client.editors.types.listview.DataTyp
 import static org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItemView.UUID_ATTR;
 import static org.kie.workbench.common.dmn.client.editors.types.messages.DataTypeFlashMessage.Type.ERROR;
 
-abstract class ErrorMessage {
+public abstract class ErrorMessage {
 
     final TranslationService translationService;
 
@@ -32,15 +34,19 @@ abstract class ErrorMessage {
         this.translationService = translationService;
     }
 
-    DataTypeFlashMessage getFlashMessage(final DataType dataType) {
+    public DataTypeFlashMessage getFlashMessage(final DataType dataType) {
         return new DataTypeFlashMessage(ERROR, getStrongMessage(dataType), getRegularMessage(), getErrorElementSelector(dataType));
     }
 
     private String getErrorElementSelector(final DataType dataType) {
-        return "[" + UUID_ATTR + "=\"" + dataType.getUUID() + "\"] [data-type-field=\"" + NAME_DATA_FIELD + "\"]";
+        return "[" + UUID_ATTR + "=\"" + getUUID(dataType) + "\"] [data-type-field=\"" + NAME_DATA_FIELD + "\"]";
     }
 
     abstract String getStrongMessage(final DataType dataType);
 
     abstract String getRegularMessage();
+
+    private String getUUID(final DataType dataType) {
+        return Optional.ofNullable(dataType).map(DataType::getUUID).orElse("");
+    }
 }

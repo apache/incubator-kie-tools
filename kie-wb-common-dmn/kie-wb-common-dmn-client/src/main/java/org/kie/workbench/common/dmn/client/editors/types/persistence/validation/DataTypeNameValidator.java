@@ -25,6 +25,9 @@ import javax.inject.Inject;
 
 import org.kie.workbench.common.dmn.client.editors.types.common.BuiltInTypeUtils;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
+import org.kie.workbench.common.dmn.client.editors.types.common.errors.NameIsBlankErrorMessage;
+import org.kie.workbench.common.dmn.client.editors.types.common.errors.NameIsDefaultTypeMessage;
+import org.kie.workbench.common.dmn.client.editors.types.common.errors.NameIsNotUniqueErrorMessage;
 import org.kie.workbench.common.dmn.client.editors.types.messages.DataTypeFlashMessage;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.DataTypeStore;
 

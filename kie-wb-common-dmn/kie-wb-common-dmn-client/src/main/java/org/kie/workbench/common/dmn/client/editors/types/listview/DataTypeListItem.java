@@ -33,6 +33,7 @@ import org.kie.workbench.common.dmn.client.editors.types.listview.common.DataTyp
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.SmallSwitchComponent;
 import org.kie.workbench.common.dmn.client.editors.types.listview.confirmation.DataTypeConfirmation;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.DataTypeConstraint;
+import org.kie.workbench.common.dmn.client.editors.types.listview.validation.DataTypeNameFormatValidator;
 import org.uberfire.client.mvp.UberElemental;
 import org.uberfire.mvp.Command;
 
@@ -58,6 +59,8 @@ public class DataTypeListItem {
 
     private final Event<DataTypeEditModeToggleEvent> editModeToggleEvent;
 
+    private final DataTypeNameFormatValidator nameFormatValidator;
+
     private DataType dataType;
 
     private int level;
@@ -79,6 +82,7 @@ public class DataTypeListItem {
                             final SmallSwitchComponent dataTypeListComponent,
                             final DataTypeManager dataTypeManager,
                             final DataTypeConfirmation confirmation,
+                            final DataTypeNameFormatValidator nameFormatValidator,
                             final Event<DataTypeEditModeToggleEvent> editModeToggleEvent) {
         this.view = view;
         this.dataTypeSelectComponent = dataTypeSelectComponent;
@@ -86,6 +90,7 @@ public class DataTypeListItem {
         this.dataTypeListComponent = dataTypeListComponent;
         this.dataTypeManager = dataTypeManager;
         this.confirmation = confirmation;
+        this.nameFormatValidator = nameFormatValidator;
         this.editModeToggleEvent = editModeToggleEvent;
     }
 
@@ -211,7 +216,7 @@ public class DataTypeListItem {
         final DataType updatedDataType = updateProperties(getDataType());
 
         if (updatedDataType.isValid()) {
-            confirmation.ifDataTypeDoesNotHaveLostSubDataTypes(updatedDataType, doSaveAndCloseEditMode(updatedDataType), doDisableEditMode());
+            confirmation.ifDataTypeDoesNotHaveLostSubDataTypes(updatedDataType, doValidateDataTypeNameAndSave(updatedDataType), doDisableEditMode());
         } else {
             discardDataTypeProperties();
         }
@@ -221,10 +226,13 @@ public class DataTypeListItem {
         return this::disableEditMode;
     }
 
+    Command doValidateDataTypeNameAndSave(final DataType dataType) {
+        return () -> nameFormatValidator.ifIsValid(dataType, doSaveAndCloseEditMode(dataType));
+    }
+
     Command doSaveAndCloseEditMode(final DataType dataType) {
         return () -> {
-            final List<DataType> updateDataTypes = persist(dataType);
-            dataTypeList.refreshItemsByUpdatedDataTypes(updateDataTypes);
+            dataTypeList.refreshItemsByUpdatedDataTypes(persist(dataType));
             closeEditMode();
         };
     }

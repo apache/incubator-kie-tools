@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.editors.types.persistence.validation;
+package org.kie.workbench.common.dmn.client.editors.types.common.errors;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -22,24 +22,24 @@ import javax.inject.Inject;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 
-import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.NameIsBlankErrorMessage_RegularMessage;
-import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.NameIsBlankErrorMessage_StrongMessage;
+import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.NameIsInvalidErrorMessage_RegularMessage;
+import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.NameIsInvalidErrorMessage_StrongMessage;
 
 @Dependent
-public class NameIsBlankErrorMessage extends ErrorMessage {
+public class NameIsInvalidErrorMessage extends ErrorMessage {
 
     @Inject
-    public NameIsBlankErrorMessage(final TranslationService translationService) {
+    public NameIsInvalidErrorMessage(final TranslationService translationService) {
         super(translationService);
     }
 
     @Override
     String getStrongMessage(final DataType dataType) {
-        return translationService.format(NameIsBlankErrorMessage_StrongMessage);
+        return translationService.format(NameIsInvalidErrorMessage_StrongMessage);
     }
 
     @Override
     String getRegularMessage() {
-        return translationService.format(NameIsBlankErrorMessage_RegularMessage);
+        return translationService.format(NameIsInvalidErrorMessage_RegularMessage);
     }
 }

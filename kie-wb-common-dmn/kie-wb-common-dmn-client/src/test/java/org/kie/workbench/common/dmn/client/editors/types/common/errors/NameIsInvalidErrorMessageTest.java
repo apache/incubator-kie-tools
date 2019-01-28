@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.editors.types.persistence.validation;
+package org.kie.workbench.common.dmn.client.editors.types.common.errors;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
@@ -24,13 +24,13 @@ import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
-import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.NameIsBlankErrorMessage_RegularMessage;
-import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.NameIsBlankErrorMessage_StrongMessage;
+import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.NameIsInvalidErrorMessage_RegularMessage;
+import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.NameIsInvalidErrorMessage_StrongMessage;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class NameIsBlankErrorMessageTest {
+public class NameIsInvalidErrorMessageTest {
 
     @Mock
     private TranslationService translationService;
@@ -40,9 +40,9 @@ public class NameIsBlankErrorMessageTest {
 
         final DataType dataType = mock(DataType.class);
         final String expectedErrorMessage = "*Expected strong message.*";
-        final NameIsBlankErrorMessage errorMessage = new NameIsBlankErrorMessage(translationService);
+        final NameIsInvalidErrorMessage errorMessage = new NameIsInvalidErrorMessage(translationService);
 
-        when(translationService.format(NameIsBlankErrorMessage_StrongMessage)).thenReturn(expectedErrorMessage);
+        when(translationService.format(NameIsInvalidErrorMessage_StrongMessage)).thenReturn(expectedErrorMessage);
 
         final String actualErrorMessage = errorMessage.getStrongMessage(dataType);
 
@@ -53,9 +53,9 @@ public class NameIsBlankErrorMessageTest {
     public void testGetRegularMessage() {
 
         final String expectedErrorMessage = "Expected regular message.";
-        final NameIsBlankErrorMessage errorMessage = new NameIsBlankErrorMessage(translationService);
+        final NameIsInvalidErrorMessage errorMessage = new NameIsInvalidErrorMessage(translationService);
 
-        when(translationService.format(NameIsBlankErrorMessage_RegularMessage)).thenReturn(expectedErrorMessage);
+        when(translationService.format(NameIsInvalidErrorMessage_RegularMessage)).thenReturn(expectedErrorMessage);
 
         final String actualErrorMessage = errorMessage.getRegularMessage();
 
