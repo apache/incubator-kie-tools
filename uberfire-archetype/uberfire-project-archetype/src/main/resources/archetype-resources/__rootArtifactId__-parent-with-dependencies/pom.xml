@@ -52,7 +52,7 @@
     <version.com.google.guava>${version.com.google.guava}</version.com.google.guava>
     <version.com.sun.xml.bind>${version.com.sun.xml.bind}</version.com.sun.xml.bind>
 
-    <version.org.hibernate.javax.persistence.hibernate-jpa-2_1-api>${version.org.hibernate.javax.persistence.hibernate-jpa-2.1-api}</version.org.hibernate.javax.persistence.hibernate-jpa-2_1-api>
+    <version.javax.persistence>${version.javax.persistence}</version.javax.persistence>
     <version.org.jasypt>${version.org.jasypt.jasypt}</version.org.jasypt>
     <version.org.javassist>${version.org.javassist}</version.org.javassist>
     <version.org.scannotation>${version.org.scannotation}</version.org.scannotation>
@@ -691,9 +691,9 @@
       </dependency>
 
       <dependency><!-- JPA 2 implementation agnostic jar -->
-        <groupId>org.hibernate.javax.persistence</groupId>
-        <artifactId>hibernate-jpa-2.1-api</artifactId>
-        <version>\${version.org.hibernate.javax.persistence.hibernate-jpa-2_1-api}</version>
+        <groupId>javax.persistence</groupId>
+        <artifactId>javax.persistence-api</artifactId>
+        <version>\${version.javax.persistence}</version>
       </dependency>
 
       <dependency>

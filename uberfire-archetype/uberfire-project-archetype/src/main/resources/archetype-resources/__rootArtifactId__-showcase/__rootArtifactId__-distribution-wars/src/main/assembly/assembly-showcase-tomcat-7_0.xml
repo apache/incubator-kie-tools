@@ -32,7 +32,7 @@
         <include>org.slf4j:slf4j-api:jar</include>
         <include>ch.qos.cal10n:cal10n-api:jar</include>
 
-        <include>org.hibernate.javax.persistence:hibernate-jpa-2.1-api:jar</include>
+        <include>javax.persistence:javax.persistence-api:jar</include>
         <include>org.jboss.logging:jboss-logging:jar</include>
 
         <include>org.jboss.weld:weld-api:jar</include>

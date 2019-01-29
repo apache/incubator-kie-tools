@@ -3,7 +3,7 @@
     {
       "type":"JPA",
       "deps":[
-            {"groupId":"org.hibernate.javax.persistence", "artifactId":"hibernate-jpa-2.1-api", "version":"1.0.2.Final", "scope":""}
+            {"groupId":"javax.persistence", "artifactId":"javax.persistence-api", "version":"2.2", "scope":""}
       ]
     }
   ]

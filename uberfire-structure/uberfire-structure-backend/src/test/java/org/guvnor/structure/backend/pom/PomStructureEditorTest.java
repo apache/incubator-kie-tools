@@ -60,8 +60,8 @@ public class PomStructureEditorTest {
         model = reader.read(new ByteArrayInputStream(Files.readAllBytes(Paths.get(tmp.toAbsolutePath().toString() + File.separator + POM))));
         assertThat(model.getDependencies()).hasSize(1);
         Dependency dep = model.getDependencies().get(0);
-        assertThat(dep.getGroupId()).containsOnlyOnce("org.hibernate.javax.persistence");
-        assertThat(dep.getArtifactId()).containsOnlyOnce("hibernate-jpa-2.1-api");
-        assertThat(dep.getVersion()).containsOnlyOnce("1.0.2.Final");
+        assertThat(dep.getGroupId()).containsOnlyOnce("javax.persistence");
+        assertThat(dep.getArtifactId()).containsOnlyOnce("javax.persistence-api");
+        assertThat(dep.getVersion()).containsOnlyOnce("2.2");
     }
 }

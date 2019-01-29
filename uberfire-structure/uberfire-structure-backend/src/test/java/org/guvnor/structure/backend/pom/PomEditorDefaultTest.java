@@ -142,8 +142,8 @@ public class PomEditorDefaultTest {
         tmp = TestUtil.createAndCopyToDirectory(tmpRoot,
                                                 "dummyOverride",
                                                 "target/test-classes/dummy");
-        DynamicPomDependency dep = new DynamicPomDependency("org.hibernate.javax.persistence",
-                                                            "hibernate-jpa-2.1-api",
+        DynamicPomDependency dep = new DynamicPomDependency("javax.persistence",
+                                                            "javax.persistence-api",
                                                             "1.0.3.Final",
                                                             "");
         List<DynamicPomDependency> deps = Arrays.asList(dep);
@@ -155,8 +155,8 @@ public class PomEditorDefaultTest {
         MavenXpp3Reader reader = new MavenXpp3Reader();
         Model model = reader.read(new ByteArrayInputStream(Files.readAllBytes(Paths.get(tmp.toAbsolutePath().toString() + File.separator + POM))));
         Dependency changedDep = getDependency(model.getDependencies(),
-                                              "org.hibernate.javax.persistence",
-                                              "hibernate-jpa-2.1-api");
+                                              "javax.persistence",
+                                              "javax.persistence-api");
         assertThat(changedDep.getVersion()).isEqualTo("1.0.3.Final");
     }
 
@@ -199,8 +199,8 @@ public class PomEditorDefaultTest {
                                                             "junit",
                                                             "4.13",
                                                             "");
-        DynamicPomDependency depTwo = new DynamicPomDependency("org.hibernate.javax.persistence",
-                                                               "hibernate-jpa-2.1-api",
+        DynamicPomDependency depTwo = new DynamicPomDependency("javax.persistence",
+                                                               "javax.persistence-api",
                                                                "1.0.3.Final",
                                                                "");
         List<DynamicPomDependency> deps = Arrays.asList(dep,
@@ -213,8 +213,8 @@ public class PomEditorDefaultTest {
         MavenXpp3Reader reader = new MavenXpp3Reader();
         Model model = reader.read(new ByteArrayInputStream(Files.readAllBytes(Paths.get(tmp.toAbsolutePath().toString() + File.separator + POM))));
         Dependency changedDep = getDependency(model.getDependencies(),
-                                              "org.hibernate.javax.persistence",
-                                              "hibernate-jpa-2.1-api");
+                                              "javax.persistence",
+                                              "javax.persistence-api");
         assertThat(changedDep.getVersion()).isEqualTo("1.0.3.Final");
         changedDep = getDependency(model.getDependencies(),
                                    "junit",

@@ -32,9 +32,9 @@ import static org.assertj.core.api.Assertions.*;
 
 class TestUtil {
 
-    public final static String GROUP_ID_TEST = "org.hibernate.javax.persistence";
-    public final static String ARTIFACT_ID_TEST = "hibernate-jpa-2.1-api";
-    public final static String VERSION_ID_TEST = "1.0.2.Final";
+    public final static String GROUP_ID_TEST = "javax.persistence";
+    public final static String ARTIFACT_ID_TEST = "javax.persistence-api";
+    public final static String VERSION_ID_TEST = "2.2";
     private static Logger logger = LoggerFactory.getLogger(TestUtil.class);
 
     public static void testJPADep(Map<DependencyType, List<DynamicPomDependency>> mapping) {

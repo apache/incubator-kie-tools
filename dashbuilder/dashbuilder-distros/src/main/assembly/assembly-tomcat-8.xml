@@ -67,7 +67,7 @@
         <include>org.jboss.weld.environment:weld-environment-common</include>
         <include>org.jboss.classfilewriter:jboss-classfilewriter</include>
 
-        <include>org.hibernate.javax.persistence:hibernate-jpa-2.1-api:jar</include>
+        <include>javax.persistence:javax.persistence-api:jar</include>
         <include>org.jboss.logging:jboss-logging:jar</include>
 
         <include>net.jcip:jcip-annotations</include>
