@@ -70,6 +70,10 @@ public interface D3 {
         void scaleTo(D3 element,
                      double scale);
 
+        void scaleExtent(double[] scaleExtent);
+
+        void translateExtent(double[][] translateExtent);
+
         void transform(D3 selection,
                        Transform transform);
     }
@@ -85,6 +89,12 @@ public interface D3 {
 
         @JsProperty
         double getK();
+
+        @JsProperty
+        void setX(double x);
+
+        @JsProperty
+        void setY(double y);
     }
 
     @JsType(isNative = true)
