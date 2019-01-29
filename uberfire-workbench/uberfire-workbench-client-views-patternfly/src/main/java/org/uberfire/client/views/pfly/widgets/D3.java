@@ -43,8 +43,18 @@ public interface D3 {
 
     Object attr(String name);
 
+    Object style(String name);
+
     D3 style(String name,
              Object value);
+
+    D3 append(String content);
+
+    D3 html(String content);
+
+    D3 text(String content);
+
+    Node node();
 
     @JsProperty
     Transform getZoomIdentity();
@@ -115,6 +125,29 @@ public interface D3 {
 
         @JsProperty
         Transform getTransform();
+    }
+
+    @JsType(isNative = true)
+    interface Node {
+
+        DOMRect getBoundingClientRect();
+
+    }
+
+    @JsType(isNative = true)
+    interface DOMRect {
+
+        @JsProperty
+        double getX();
+
+        @JsProperty
+        double getY();
+
+        @JsProperty
+        double getWidth();
+
+        @JsProperty
+        double getHeight();
     }
 
     class Builder {
