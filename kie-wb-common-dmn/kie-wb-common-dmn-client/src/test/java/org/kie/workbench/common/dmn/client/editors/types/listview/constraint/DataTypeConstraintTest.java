@@ -16,13 +16,14 @@
 
 package org.kie.workbench.common.dmn.client.editors.types.listview.constraint;
 
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import elemental2.dom.HTMLElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItem;
 import org.mockito.Mock;
@@ -30,6 +31,7 @@ import org.mockito.Mock;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType.ENUMERATION;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -161,7 +163,7 @@ public class DataTypeConstraintTest {
         final DataTypeListItem listItem = mock(DataTypeListItem.class);
         final String constraint = "1,2,3";
         final String type = "string";
-        final Consumer<String> onShowConsumer = (s) -> { /* Nothing. */ };
+        final BiConsumer<String, ConstraintType> onShowConsumer = (s, c) -> { /* Nothing. */ };
 
         doReturn(listItem).when(dataTypeConstraint).getListItem();
         doReturn(constraint).when(dataTypeConstraint).getValue();
@@ -170,7 +172,7 @@ public class DataTypeConstraintTest {
 
         dataTypeConstraint.openModal();
 
-        constraintModal.load(type, constraint);
+        constraintModal.load(type, constraint, ENUMERATION);
         constraintModal.show(onShowConsumer);
     }
 
@@ -178,12 +180,14 @@ public class DataTypeConstraintTest {
     public void testGetOnShowConsumer() {
 
         final String expectedConstraint = "1,2,3";
-
-        dataTypeConstraint.getOnShowConsumer().accept(expectedConstraint);
+        final ConstraintType expectedConstraintType = ENUMERATION;
+        dataTypeConstraint.getOnShowConsumer().accept(expectedConstraint, ENUMERATION);
 
         final String actualConstraint = dataTypeConstraint.getValue();
+        final ConstraintType actualConstraintType = dataTypeConstraint.getConstraintType();
 
         assertEquals(expectedConstraint, actualConstraint);
+        assertEquals(expectedConstraintType, actualConstraintType);
         verify(dataTypeConstraint).refreshView();
     }
 }

@@ -77,7 +77,8 @@ public class ItemDefinitionUpdateHandler {
             return new UnaryTests(new Id(),
                                   new Description(),
                                   new Text(constraint),
-                                  null);
+                                  null,
+                                  dataType.getConstraintType());
         }
 
         return itemDefinition.getAllowedValues();

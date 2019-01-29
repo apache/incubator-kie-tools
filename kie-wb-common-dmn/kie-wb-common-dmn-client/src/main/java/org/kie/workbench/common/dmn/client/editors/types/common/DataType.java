@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.DataTypeActiveRecord;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.common.RecordEngine;
 
@@ -40,6 +41,8 @@ public class DataType extends DataTypeActiveRecord {
     private boolean isList;
 
     private List<DataType> subDataTypes = new ArrayList<>();
+
+    private ConstraintType constraintType;
 
     public DataType(final RecordEngine<DataType> recordEngine) {
         super(recordEngine);
@@ -109,6 +112,14 @@ public class DataType extends DataTypeActiveRecord {
 
     void setConstraint(final String constraint) {
         this.constraint = constraint;
+    }
+
+    public ConstraintType getConstraintType() {
+        return constraintType;
+    }
+
+    void setConstraintType(final ConstraintType constraintType) {
+        this.constraintType = constraintType;
     }
 
     public boolean isTopLevel() {

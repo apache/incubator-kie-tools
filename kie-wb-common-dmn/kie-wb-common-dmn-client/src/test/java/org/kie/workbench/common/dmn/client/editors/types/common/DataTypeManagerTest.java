@@ -26,6 +26,7 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
 import org.kie.workbench.common.dmn.api.definition.v1_1.UnaryTests;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
@@ -121,6 +122,16 @@ public class DataTypeManagerTest {
 
         dataTypeNameValidator = spy(new DataTypeNameValidator(flashMessageEvent, blankErrorMessage, notUniqueErrorMessage, nameIsDefaultTypeMessage, dataTypeStore));
         manager = spy(new DataTypeManagerFake());
+    }
+
+    @Test
+    public void testWithConstraintType() {
+
+        final ConstraintType expectedConstraintType = ConstraintType.ENUMERATION;
+        final DataType dataType = manager.from(makeDataType("uuid")).withConstraintType(expectedConstraintType.value()).get();
+        final ConstraintType actualConstraintType = dataType.getConstraintType();
+
+        assertEquals(expectedConstraintType, actualConstraintType);
     }
 
     @Test

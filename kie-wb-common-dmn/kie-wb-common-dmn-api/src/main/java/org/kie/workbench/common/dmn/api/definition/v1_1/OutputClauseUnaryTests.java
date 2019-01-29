@@ -54,15 +54,20 @@ public class OutputClauseUnaryTests extends DMNModelInstrumentedBase implements 
     @FormField(labelKey = "text")
     protected Text text;
 
+    protected ConstraintType constraintType;
+
     public OutputClauseUnaryTests() {
         this(new Id(),
-             new Text());
+             new Text(),
+             null);
     }
 
     public OutputClauseUnaryTests(final Id id,
-                                  final Text text) {
+                                  final Text text,
+                                  final ConstraintType constraintTypeField) {
         this.id = id;
         this.text = text;
+        this.constraintType = constraintTypeField;
     }
 
     // -----------------------
@@ -81,6 +86,15 @@ public class OutputClauseUnaryTests extends DMNModelInstrumentedBase implements 
 
     public void setText(final Text value) {
         this.text = value;
+    }
+
+    @Override
+    public ConstraintType getConstraintType() {
+        return constraintType;
+    }
+
+    public void setConstraintTypeField(final ConstraintType constraintTypeField) {
+        this.constraintType = constraintTypeField;
     }
 
     @Override

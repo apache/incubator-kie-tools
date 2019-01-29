@@ -44,8 +44,8 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 @Bindable
 @Definition(graphFactory = NodeFactory.class)
 @FormDefinition(policy = FieldPolicy.ONLY_MARKED,
-        defaultFieldSettings = {@FieldParam(name = FIELD_CONTAINER_PARAM, value = COLLAPSIBLE_CONTAINER)},
-        startElement = "id")
+    defaultFieldSettings = {@FieldParam(name = FIELD_CONTAINER_PARAM, value = COLLAPSIBLE_CONTAINER)},
+    startElement = "id")
 public class UnaryTests extends DMNElement implements IsUnaryTests,
                                                       DomainObject {
 
@@ -57,6 +57,8 @@ public class UnaryTests extends DMNElement implements IsUnaryTests,
 
     private Text text;
 
+    private ConstraintType constraintType;
+
     @Property
     @FormField(afterElement = "description")
     protected ExpressionLanguage expressionLanguage;
@@ -65,17 +67,20 @@ public class UnaryTests extends DMNElement implements IsUnaryTests,
         this(new Id(),
              new Description(),
              new Text(),
-             new ExpressionLanguage());
+             new ExpressionLanguage(),
+             null);
     }
 
     public UnaryTests(final Id id,
                       final Description description,
                       final Text text,
-                      final ExpressionLanguage expressionLanguage) {
+                      final ExpressionLanguage expressionLanguage,
+                      final ConstraintType constraintType) {
         super(id,
               description);
         this.text = text;
         this.expressionLanguage = expressionLanguage;
+        this.constraintType = constraintType;
     }
 
     // -----------------------
@@ -108,6 +113,14 @@ public class UnaryTests extends DMNElement implements IsUnaryTests,
 
     public void setExpressionLanguage(final ExpressionLanguage value) {
         this.expressionLanguage = value;
+    }
+
+    public ConstraintType getConstraintType() {
+        return constraintType;
+    }
+
+    public void setConstraintType(final ConstraintType constraintType) {
+        this.constraintType = constraintType;
     }
 
     // ------------------------------------------------------

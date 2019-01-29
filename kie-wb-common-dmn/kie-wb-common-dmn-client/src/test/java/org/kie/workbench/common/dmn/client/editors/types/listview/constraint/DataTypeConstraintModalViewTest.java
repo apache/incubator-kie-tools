@@ -26,14 +26,16 @@ import elemental2.dom.HTMLElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.DataTypeConstraintComponent;
 import org.mockito.Mock;
 import org.uberfire.client.views.pfly.selectpicker.JQuerySelectPickerEvent;
 import org.uberfire.client.views.pfly.selectpicker.JQuerySelectPickerTarget;
 
 import static org.junit.Assert.assertEquals;
-import static org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.DataTypeConstraintComponent.Type.ENUMERATION;
-import static org.mockito.Matchers.anyString;
+import static org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType.ENUMERATION;
+import static org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType.EXPRESSION;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -161,11 +163,11 @@ public class DataTypeConstraintModalViewTest {
 
         final JQuerySelectPickerEvent jQueryEvent = mock(JQuerySelectPickerEvent.class);
         final JQuerySelectPickerTarget pickerTarget = mock(JQuerySelectPickerTarget.class);
-        final String constraintType = ENUMERATION.name();
+        final ConstraintType constraintType = ENUMERATION;
 
-        doNothing().when(view).loadComponent(anyString());
+        doNothing().when(view).loadComponent(ENUMERATION);
         jQueryEvent.target = pickerTarget;
-        pickerTarget.value = constraintType;
+        pickerTarget.value = constraintType.value();
 
         view.onSelectChange(jQueryEvent);
 
@@ -186,7 +188,7 @@ public class DataTypeConstraintModalViewTest {
     @Test
     public void testLoadComponent() {
 
-        final String constraintType = ENUMERATION.name();
+        final ConstraintType constraintType = ENUMERATION;
         final DataTypeConstraintComponent constrainComponent = mock(DataTypeConstraintComponent.class);
         final Element element = mock(Element.class);
 
@@ -207,11 +209,12 @@ public class DataTypeConstraintModalViewTest {
         final Element selectPicker = mock(HTMLElement.class);
 
         when(presenter.getConstraintValue()).thenReturn(null);
+        when(presenter.inferComponentType(any())).thenCallRealMethod();
         doReturn(selectPicker).when(view).getSelectPicker();
 
         view.onShow();
 
-        verify(view).setPickerValue(selectPicker, "");
+        verify(view).setPickerValue(selectPicker, EXPRESSION.value());
     }
 
     @Test
@@ -226,7 +229,7 @@ public class DataTypeConstraintModalViewTest {
 
         view.onShow();
 
-        verify(view).setPickerValue(selectPicker, ENUMERATION.name());
+        verify(view).setPickerValue(selectPicker, ENUMERATION.value());
     }
 
     @Test

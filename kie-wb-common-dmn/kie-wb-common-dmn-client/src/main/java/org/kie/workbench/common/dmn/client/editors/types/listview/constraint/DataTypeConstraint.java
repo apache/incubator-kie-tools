@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.editors.types.listview.constraint;
 
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
@@ -24,6 +24,7 @@ import javax.inject.Inject;
 
 import elemental2.dom.HTMLElement;
 import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
+import org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType;
 import org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItem;
 import org.uberfire.client.mvp.UberElemental;
 
@@ -41,6 +42,7 @@ public class DataTypeConstraint {
     private String constraintValue = "";
 
     private DataTypeListItem listItem;
+    private ConstraintType constraintType;
 
     @Inject
     public DataTypeConstraint(final View view,
@@ -67,6 +69,10 @@ public class DataTypeConstraint {
 
     public String getValue() {
         return constraintValue;
+    }
+
+    public ConstraintType getConstraintType() {
+        return constraintType;
     }
 
     public HTMLElement getElement() {
@@ -109,13 +115,15 @@ public class DataTypeConstraint {
     }
 
     void openModal() {
-        constraintModal.load(getListItem().getType(), getValue());
+        constraintModal.load(getListItem().getType(), getValue(), getConstraintType());
         constraintModal.show(getOnShowConsumer());
     }
 
-    Consumer<String> getOnShowConsumer() {
-        return newConstraintValue -> {
+    BiConsumer<String, ConstraintType> getOnShowConsumer() {
+        return (newConstraintValue, newConstraintType) -> {
             constraintValue = newConstraintValue;
+            constraintType = newConstraintType;
+
             refreshView();
         };
     }

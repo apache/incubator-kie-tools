@@ -30,6 +30,7 @@ import elemental2.dom.HTMLElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType;
 import org.uberfire.client.views.pfly.selectpicker.JQuerySelectPickerEvent;
 
 import static org.kie.workbench.common.stunner.core.util.StringUtils.isEmpty;
@@ -141,7 +142,9 @@ public class DataTypeConstraintModalView implements DataTypeConstraintModal.View
         final String constraintType = event.target.value;
 
         if (!isEmpty(constraintType)) {
-            loadComponent(constraintType);
+            final ConstraintType constraint = ConstraintType.fromString(constraintType);
+            loadComponent(constraint);
+            presenter.setConstraintType(constraint);
         }
     }
 
@@ -152,7 +155,7 @@ public class DataTypeConstraintModalView implements DataTypeConstraintModal.View
     }
 
     @Override
-    public void loadComponent(final String constraintType) {
+    public void loadComponent(final ConstraintType constraintType) {
         presenter.setupComponent(constraintType);
         componentContainer.innerHTML = "";
         componentContainer.appendChild(presenter.getCurrentComponent().getElement());
@@ -164,10 +167,10 @@ public class DataTypeConstraintModalView implements DataTypeConstraintModal.View
     }
 
     private String getConstraintType() {
-        if (isEmpty(presenter.getConstraintValue())) {
-            return "";
+        if (presenter.getConstraintType() == null) {
+            return presenter.inferComponentType(presenter.getConstraintValue()).value();
         } else {
-            return presenter.inferComponentType(presenter.getConstraintValue()).name();
+            return presenter.getConstraintType().toString();
         }
     }
 

@@ -14,33 +14,24 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common;
+package org.kie.workbench.common.dmn.backend.definition.v1_1;
 
-import elemental2.dom.Element;
+import org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType;
 
-public interface DataTypeConstraintComponent {
+public class ConstraintTypeFieldPropertyConverter {
 
-    String getValue();
-
-    void setValue(final String value);
-
-    Element getElement();
-
-    DataTypeConstraintComponent NONE = new DataTypeConstraintComponent() {
-
-        @Override
-        public String getValue() {
-            return "";
+    public static ConstraintType wbFromDMN(final String constraintType) {
+        if (constraintType == null) {
+            return null;
+        } else {
+            return ConstraintType.fromString(constraintType);
         }
+    }
 
-        @Override
-        public void setValue(final String value) {
-            // Empty.
+    public static String dmnFromWB(final ConstraintType constraintType) {
+        if (constraintType == null) {
+            return null;
         }
-
-        @Override
-        public Element getElement() {
-            return new Element();
-        }
-    };
+        return constraintType.value();
+    }
 }

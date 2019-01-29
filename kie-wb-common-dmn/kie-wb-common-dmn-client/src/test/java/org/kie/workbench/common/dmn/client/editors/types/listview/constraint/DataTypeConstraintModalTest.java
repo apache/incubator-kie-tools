@@ -16,25 +16,25 @@
 
 package org.kie.workbench.common.dmn.client.editors.types.listview.constraint;
 
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.DataTypeConstraintComponent;
-import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.DataTypeConstraintComponent.Type;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.enumeration.DataTypeConstraintEnumeration;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.expression.DataTypeConstraintExpression;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.range.DataTypeConstraintRange;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
+import static org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType.ENUMERATION;
+import static org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType.EXPRESSION;
+import static org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType.RANGE;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.constraint.DataTypeConstraintModal.CONSTRAINT_INITIAL_VALUE;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.constraint.DataTypeConstraintModal.WIDTH;
-import static org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.DataTypeConstraintComponent.Type.ENUMERATION;
-import static org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.DataTypeConstraintComponent.Type.EXPRESSION;
-import static org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.DataTypeConstraintComponent.Type.RANGE;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
@@ -107,17 +107,19 @@ public class DataTypeConstraintModalTest {
     public void testDoSave() {
 
         final String expectedConstraint = "1,2,3";
-        final Consumer<String> onSave = mock(Consumer.class);
+        final ConstraintType expectedConstraintType = ENUMERATION;
+        final BiConsumer<String, ConstraintType> onSave = mock(BiConsumer.class);
 
         doNothing().when(modal).hide();
         doReturn(onSave).when(modal).getOnSave();
+        modal.setConstraintType(expectedConstraintType);
 
         modal.doSave(expectedConstraint);
 
         final String actualConstraint = modal.getConstraintValue();
 
         assertEquals(expectedConstraint, actualConstraint);
-        verify(onSave).accept(expectedConstraint);
+        verify(onSave).accept(expectedConstraint, expectedConstraintType);
         verify(modal).hide();
     }
 
@@ -127,9 +129,9 @@ public class DataTypeConstraintModalTest {
         final String constraint = "1,2,3";
         final String type = "string";
 
-        modal.load(type, constraint);
+        modal.load(type, constraint, ConstraintType.ENUMERATION);
 
-        verify(modal).prepareView(type, constraint);
+        verify(modal).prepareView(type, constraint, ConstraintType.ENUMERATION);
     }
 
     @Test
@@ -138,7 +140,7 @@ public class DataTypeConstraintModalTest {
         final String constraint = "";
         final String type = "string";
 
-        modal.prepareView(type, constraint);
+        modal.prepareView(type, constraint, null);
 
         verify(view).setType(type);
         verify(view).setupEmptyContainer();
@@ -150,10 +152,10 @@ public class DataTypeConstraintModalTest {
         final String constraint = "1,2,3";
         final String type = "string";
 
-        modal.prepareView(type, constraint);
+        modal.prepareView(type, constraint, ConstraintType.ENUMERATION);
 
         verify(view).setType(type);
-        verify(view).loadComponent(ENUMERATION.name());
+        verify(view).loadComponent(ENUMERATION);
     }
 
     @Test
@@ -162,16 +164,16 @@ public class DataTypeConstraintModalTest {
         final String constraint = "..";
         final String type = "string";
 
-        modal.prepareView(type, constraint);
+        modal.prepareView(type, constraint, ConstraintType.RANGE);
 
         verify(view).setType(type);
-        verify(view).loadComponent(RANGE.name());
+        verify(view).loadComponent(RANGE);
     }
 
     @Test
     public void testSetupComponentWhenConstraintTypeIsEnumeration() {
 
-        final String type = ENUMERATION.name();
+        final ConstraintType type = ENUMERATION;
         final String constraint = "1,2,3";
 
         doReturn(constraint).when(modal).getConstraintValue();
@@ -184,7 +186,7 @@ public class DataTypeConstraintModalTest {
     @Test
     public void testSetupComponentWhenConstraintTypeIsExpression() {
 
-        final String type = EXPRESSION.name();
+        final ConstraintType type = EXPRESSION;
         final String constraint = "expression";
 
         doReturn(constraint).when(modal).getConstraintValue();
@@ -197,7 +199,7 @@ public class DataTypeConstraintModalTest {
     @Test
     public void testSetupComponentWhenConstraintTypeIsRange() {
 
-        final String type = RANGE.name();
+        final ConstraintType type = RANGE;
         final String constraint = "(1..2)";
 
         doReturn(constraint).when(modal).getConstraintValue();
@@ -210,8 +212,8 @@ public class DataTypeConstraintModalTest {
     @Test
     public void testInferComponentTypeWhenItReturnsRange() {
 
-        final Type expectedType = RANGE;
-        final Type actualType = modal.inferComponentType("(1..3]");
+        final ConstraintType expectedType = RANGE;
+        final ConstraintType actualType = modal.inferComponentType("(1..3]");
 
         assertEquals(expectedType, actualType);
     }
@@ -219,8 +221,8 @@ public class DataTypeConstraintModalTest {
     @Test
     public void testInferComponentTypeWhenItReturnsEnumeration() {
 
-        final Type expectedType = ENUMERATION;
-        final Type actualType = modal.inferComponentType("1,2,3");
+        final ConstraintType expectedType = ENUMERATION;
+        final ConstraintType actualType = modal.inferComponentType("1,2,3");
 
         assertEquals(expectedType, actualType);
     }
@@ -228,8 +230,8 @@ public class DataTypeConstraintModalTest {
     @Test
     public void testInferComponentTypeWhenItReturnsExpression() {
 
-        final Type expectedType = EXPRESSION;
-        final Type actualType = modal.inferComponentType("expression");
+        final ConstraintType expectedType = EXPRESSION;
+        final ConstraintType actualType = modal.inferComponentType("expression");
 
         assertEquals(expectedType, actualType);
     }
@@ -237,13 +239,13 @@ public class DataTypeConstraintModalTest {
     @Test
     public void testShow() {
 
-        final Consumer<String> expectedOnSave = (s) -> { /* Nothing. */ };
+        final BiConsumer<String, ConstraintType> expectedOnSave = (s, c) -> { /* Nothing. */ };
 
         doNothing().when(modal).superShow();
 
         modal.show(expectedOnSave);
 
-        final Consumer<String> actualOnSave = modal.getOnSave();
+        final BiConsumer<String, ConstraintType> actualOnSave = modal.getOnSave();
 
         assertEquals(expectedOnSave, actualOnSave);
         verify(modal).superShow();

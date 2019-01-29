@@ -24,4 +24,6 @@ public interface IsUnaryTests {
     Id getId();
 
     Text getText();
+
+    ConstraintType getConstraintType();
 }

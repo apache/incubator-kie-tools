@@ -16,6 +16,10 @@
 
 package org.kie.workbench.common.dmn.backend.definition.v1_1;
 
+import javax.xml.namespace.QName;
+
+import org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType;
+import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.definition.v1_1.IsUnaryTests;
 import org.kie.workbench.common.dmn.api.definition.v1_1.UnaryTests;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
@@ -29,13 +33,21 @@ public class UnaryTestsPropertyConverter {
         if (dmn == null) {
             return null;
         }
-        Id id = new Id(dmn.getId());
-        Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
-        ExpressionLanguage expressionLanguage = ExpressionLanguagePropertyConverter.wbFromDMN(dmn.getExpressionLanguage());
-        UnaryTests result = new UnaryTests(id,
-                                           description,
-                                           new Text(dmn.getText()),
-                                           expressionLanguage);
+        final Id id = new Id(dmn.getId());
+        final Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
+        final ExpressionLanguage expressionLanguage = ExpressionLanguagePropertyConverter.wbFromDMN(dmn.getExpressionLanguage());
+        ConstraintType constraintTypeField = null;
+        final QName key = new QName(DMNModelInstrumentedBase.Namespace.KIE.getUri(),
+                                    ConstraintType.CONSTRAINT_KEY,
+                                    DMNModelInstrumentedBase.Namespace.KIE.getPrefix());
+        if (dmn.getAdditionalAttributes().containsKey(key)) {
+            constraintTypeField = ConstraintTypeFieldPropertyConverter.wbFromDMN(dmn.getAdditionalAttributes().get(key));
+        }
+        final UnaryTests result = new UnaryTests(id,
+                                                 description,
+                                                 new Text(dmn.getText()),
+                                                 expressionLanguage,
+                                                 constraintTypeField);
         return result;
     }
 
@@ -43,9 +55,18 @@ public class UnaryTestsPropertyConverter {
         if (wb == null) {
             return null;
         }
-        org.kie.dmn.model.api.UnaryTests result = new org.kie.dmn.model.v1_2.TUnaryTests();
+        final org.kie.dmn.model.api.UnaryTests result = new org.kie.dmn.model.v1_2.TUnaryTests();
         result.setId(wb.getId().getValue());
         result.setText(wb.getText().getValue());
+
+        final ConstraintType constraint = wb.getConstraintType();
+
+        if (constraint != null) {
+            final QName key = new QName(DMNModelInstrumentedBase.Namespace.KIE.getUri(),
+                                        ConstraintType.CONSTRAINT_KEY,
+                                        DMNModelInstrumentedBase.Namespace.KIE.getPrefix());
+            result.getAdditionalAttributes().put(key, constraint.value());
+        }
 
         return result;
     }

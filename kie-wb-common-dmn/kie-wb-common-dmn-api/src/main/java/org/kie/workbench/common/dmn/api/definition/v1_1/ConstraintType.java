@@ -14,33 +14,33 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common;
+package org.kie.workbench.common.dmn.api.definition.v1_1;
 
-import elemental2.dom.Element;
+public enum ConstraintType {
+    ENUMERATION,
+    EXPRESSION,
+    RANGE;
 
-public interface DataTypeConstraintComponent {
+    public static final String CONSTRAINT_KEY = "constraintType";
 
-    String getValue();
+    public static ConstraintType fromString(final String value) {
 
-    void setValue(final String value);
-
-    Element getElement();
-
-    DataTypeConstraintComponent NONE = new DataTypeConstraintComponent() {
-
-        @Override
-        public String getValue() {
-            return "";
+        if (ENUMERATION.value().equalsIgnoreCase(value)) {
+            return ENUMERATION;
         }
 
-        @Override
-        public void setValue(final String value) {
-            // Empty.
+        if (EXPRESSION.value().equalsIgnoreCase(value)) {
+            return EXPRESSION;
         }
 
-        @Override
-        public Element getElement() {
-            return new Element();
+        if (RANGE.value().equalsIgnoreCase(value)) {
+            return RANGE;
         }
-    };
+
+        return null;
+    }
+
+    public String value() {
+        return name().toLowerCase();
+    }
 }

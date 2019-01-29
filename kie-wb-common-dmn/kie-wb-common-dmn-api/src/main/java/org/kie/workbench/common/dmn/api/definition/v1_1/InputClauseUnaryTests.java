@@ -16,16 +16,21 @@
 
 package org.kie.workbench.common.dmn.api.definition.v1_1;
 
+import java.util.Objects;
+
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.dmn.api.property.DMNPropertySet;
+import org.kie.workbench.common.dmn.api.property.dmn.ConstraintTypeProperty;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Text;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
+import org.kie.workbench.common.forms.adf.definitions.annotations.field.selector.SelectorDataProvider;
 import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSettings;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.type.ListBoxFieldType;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
@@ -42,9 +47,9 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 @Bindable
 @PropertySet
 @FormDefinition(policy = FieldPolicy.ONLY_MARKED,
-        defaultFieldSettings = {@FieldParam(name = FIELD_CONTAINER_PARAM, value = COLLAPSIBLE_CONTAINER)},
-        i18n = @I18nSettings(keyPreffix = "org.kie.workbench.common.dmn.api.definition.v1_1.InputClauseUnaryTests"),
-        startElement = "text")
+    defaultFieldSettings = {@FieldParam(name = FIELD_CONTAINER_PARAM, value = COLLAPSIBLE_CONTAINER)},
+    i18n = @I18nSettings(keyPreffix = "org.kie.workbench.common.dmn.api.definition.v1_1.InputClauseUnaryTests"),
+    startElement = "text")
 public class InputClauseUnaryTests extends DMNModelInstrumentedBase implements IsUnaryTests,
                                                                                DMNPropertySet {
 
@@ -54,15 +59,32 @@ public class InputClauseUnaryTests extends DMNModelInstrumentedBase implements I
     @FormField(afterElement = "description", labelKey = "text")
     protected Text text;
 
+    @Property
+    @FormField(afterElement = "text",
+        labelKey = "constraintType",
+        type = ListBoxFieldType.class,
+        settings = {@FieldParam(name = "addEmptyOption", value = "expression")})
+    @SelectorDataProvider(
+        type = SelectorDataProvider.ProviderType.CLIENT,
+        className = "org.kie.workbench.common.dmn.api.property.dmn.dataproviders.ConstraintTypeDataProvider")
+    protected ConstraintTypeProperty constraintTypeProperty;
+
     public InputClauseUnaryTests() {
         this(new Id(),
-             new Text());
+             new Text(),
+             null);
     }
 
     public InputClauseUnaryTests(final Id id,
-                                 final Text text) {
+                                 final Text text,
+                                 final ConstraintType constraintType) {
         this.id = id;
         this.text = text;
+        String constraintTypeString = "";
+        if (constraintType != null) {
+            constraintTypeString = constraintType.value();
+        }
+        this.constraintTypeProperty = new ConstraintTypeProperty(constraintTypeString);
     }
 
     // -----------------------
@@ -77,6 +99,19 @@ public class InputClauseUnaryTests extends DMNModelInstrumentedBase implements I
     @Override
     public Text getText() {
         return text;
+    }
+
+    @Override
+    public ConstraintType getConstraintType() {
+        return ConstraintType.fromString(constraintTypeProperty.getValue());
+    }
+
+    public void setConstraintTypeProperty(final ConstraintTypeProperty constraintTypeProperty) {
+        this.constraintTypeProperty = constraintTypeProperty;
+    }
+
+    public ConstraintTypeProperty getConstraintTypeProperty() {
+        return constraintTypeProperty;
     }
 
     public void setText(final Text value) {
@@ -97,12 +132,18 @@ public class InputClauseUnaryTests extends DMNModelInstrumentedBase implements I
         if (id != null ? !id.equals(that.id) : that.id != null) {
             return false;
         }
+
+        if (!Objects.equals(constraintTypeProperty, that.constraintTypeProperty)) {
+            return false;
+        }
+
         return text != null ? text.equals(that.text) : that.text == null;
     }
 
     @Override
     public int hashCode() {
         return HashUtil.combineHashCodes(id != null ? id.hashCode() : 0,
-                                         text != null ? text.hashCode() : 0);
+                                         text != null ? text.hashCode() : 0,
+                                         constraintTypeProperty != null ? constraintTypeProperty.hashCode() : 0);
     }
 }

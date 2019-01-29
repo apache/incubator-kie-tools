@@ -23,6 +23,7 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
 import org.kie.workbench.common.dmn.api.definition.v1_1.UnaryTests;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
@@ -174,6 +175,7 @@ public class ItemDefinitionUpdateHandlerTest {
         final ItemDefinition itemDefinition = mock(ItemDefinition.class);
 
         when(dataType.getConstraint()).thenReturn(null);
+        when(dataType.getConstraintType()).thenReturn(null);
 
         final UnaryTests actualAllowedValues = handler.makeAllowedValues(dataType, itemDefinition);
 
@@ -187,14 +189,17 @@ public class ItemDefinitionUpdateHandlerTest {
         final ItemDefinition itemDefinition = mock(ItemDefinition.class);
         final UnaryTests expectedAllowedValues = mock(UnaryTests.class);
         final String expectedText = "(1..20)";
+        final ConstraintType expectedConstraintType = ConstraintType.RANGE;
 
         when(itemDefinition.getAllowedValues()).thenReturn(expectedAllowedValues);
+        when(expectedAllowedValues.getConstraintType()).thenReturn(expectedConstraintType);
         when(expectedAllowedValues.getText()).thenReturn(new Text(expectedText));
         when(dataType.getConstraint()).thenReturn(expectedText);
 
         final UnaryTests actualAllowedValues = handler.makeAllowedValues(dataType, itemDefinition);
 
         assertEquals(expectedAllowedValues, actualAllowedValues);
+        assertEquals(expectedConstraintType, actualAllowedValues.getConstraintType());
     }
 
     @Test
@@ -203,8 +208,10 @@ public class ItemDefinitionUpdateHandlerTest {
         final DataType dataType = mock(DataType.class);
         final ItemDefinition itemDefinition = mock(ItemDefinition.class);
         final String expectedText = "(1..20)";
+        final ConstraintType expectedConstraintType = ConstraintType.RANGE;
 
         when(dataType.getConstraint()).thenReturn(expectedText);
+        when(dataType.getConstraintType()).thenReturn(expectedConstraintType);
 
         final UnaryTests actualAllowedValues = handler.makeAllowedValues(dataType, itemDefinition);
 
@@ -212,5 +219,6 @@ public class ItemDefinitionUpdateHandlerTest {
         assertNotNull(actualAllowedValues.getDescription());
         assertEquals(expectedText, actualAllowedValues.getText().getValue());
         assertNull(actualAllowedValues.getExpressionLanguage());
+        assertEquals(expectedConstraintType, actualAllowedValues.getConstraintType());
     }
 }

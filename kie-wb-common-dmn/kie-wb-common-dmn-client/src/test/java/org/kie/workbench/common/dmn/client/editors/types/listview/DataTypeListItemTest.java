@@ -271,6 +271,7 @@ public class DataTypeListItemTest {
         final String expectedType = "type";
         final String expectedConstraint = "constraint";
         final boolean expectedIsList = true;
+        final String expectedConstraintType = "";
 
         doReturn(dataType).when(listItem).getDataType();
         when(dataType.getName()).thenReturn(expectedName);
@@ -285,6 +286,7 @@ public class DataTypeListItemTest {
         assertEquals(expectedType, listItem.getOldType());
         assertEquals(expectedConstraint, listItem.getOldConstraint());
         assertEquals(expectedIsList, listItem.getOldIsList());
+        assertEquals(expectedConstraintType, listItem.getOldConstraintType());
 
         verify(view).showSaveButton();
         verify(view).showDataTypeNameInput();
@@ -464,6 +466,7 @@ public class DataTypeListItemTest {
         final String expectedName = "name";
         final String expectedType = "type";
         final String expectedConstraint = "constraint";
+        final String expectedConstraintType = "enumeration";
         final boolean expectedIsList = true;
 
         doReturn(dataType).when(listItem).getDataType();
@@ -471,6 +474,7 @@ public class DataTypeListItemTest {
         doReturn(expectedType).when(listItem).getOldType();
         doReturn(expectedConstraint).when(listItem).getOldConstraint();
         doReturn(expectedIsList).when(listItem).getOldIsList();
+        doReturn(expectedConstraintType).when(listItem).getOldConstraintType();
 
         listItem.discardDataTypeProperties();
 
@@ -478,6 +482,7 @@ public class DataTypeListItemTest {
         assertEquals(expectedType, dataType.getType());
         assertEquals(expectedConstraint, dataType.getConstraint());
         assertEquals(expectedIsList, dataType.isList());
+        assertEquals(expectedConstraintType, dataType.getConstraintType().value());
     }
 
     @Test
