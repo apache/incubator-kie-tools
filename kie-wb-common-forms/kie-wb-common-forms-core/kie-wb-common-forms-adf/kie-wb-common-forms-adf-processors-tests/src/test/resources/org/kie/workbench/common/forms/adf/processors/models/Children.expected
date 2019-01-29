@@ -1,0 +1,142 @@
+/*
+* Copyright 2019 Red Hat, Inc. and/or its affiliates.
+*  
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*  
+*    http://www.apache.org/licenses/LICENSE-2.0
+*  
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+
+package org.kie.workbench.common.forms.adf.processors.models.formBuilder.provider;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.annotation.Generated;
+import javax.enterprise.context.ApplicationScoped;
+
+import org.kie.workbench.common.forms.adf.definitions.settings.ColSpan;
+import org.kie.workbench.common.forms.adf.service.building.FieldStatusModifier;
+import org.kie.workbench.common.forms.adf.service.building.FormGenerationResourcesProvider;
+import org.kie.workbench.common.forms.adf.service.definitions.FormDefinitionSettings;
+import org.kie.workbench.common.forms.adf.service.definitions.I18nSettings;
+import org.kie.workbench.common.forms.adf.service.definitions.elements.FieldElement;
+import org.kie.workbench.common.forms.adf.service.definitions.elements.FormElement;
+import org.kie.workbench.common.forms.adf.service.definitions.layout.LayoutColumnDefinition;
+import org.kie.workbench.common.forms.adf.service.definitions.layout.LayoutDefinition;
+import org.kie.workbench.common.forms.model.FieldDefinition;
+import org.kie.workbench.common.forms.model.TypeKind;
+import org.kie.workbench.common.forms.model.impl.TypeInfoImpl;
+
+@Generated("org.kie.workbench.common.forms.adf.processors.FormDefinitionsProcessor")
+@ApplicationScoped
+public class ModuleFormGenerationResourcesProvider implements FormGenerationResourcesProvider {
+
+    private Map<String, FormDefinitionSettings> definitionSettings = new HashMap<>();
+
+    private Map<String, FieldStatusModifier> fieldStatusModifiers = new HashMap<>();
+
+    private Map<String, String> fieldStatusModifiersReferences = new HashMap<>();
+
+    public ModuleFormGenerationResourcesProvider() {
+        definitionSettings.put("org.kie.workbench.common.forms.adf.processors.models.Children", new org_kie_workbench_common_forms_adf_processors_models_ChildrenFormBuilder().getSettings());
+    }
+
+    @Override
+    public Map<String, FormDefinitionSettings> getDefinitionSettings() {
+        return definitionSettings;
+    }
+
+    @Override
+    public Map<String, FieldStatusModifier> getFieldModifiers() {
+        return fieldStatusModifiers;
+    }
+
+    @Override
+    public Map<String, String> getFieldModifierReferences() {
+        return fieldStatusModifiersReferences;
+    }
+
+    class org_kie_workbench_common_forms_adf_processors_models_ChildrenFormBuilder {
+        public FormDefinitionSettings getSettings() {
+            FormDefinitionSettings settings = new FormDefinitionSettings("org.kie.workbench.common.forms.adf.processors.models.Children");
+            settings.setI18nSettings(new I18nSettings("test.properties"));
+            settings.setLayout(new LayoutDefinition(new LayoutColumnDefinition[] { new LayoutColumnDefinition(ColSpan.AUTO) }));
+            List<FormElement> elements = new ArrayList<FormElement>();
+            elements.add(getFormElement_lastName());
+            elements.add(getFormElement_birthDay());
+            elements.add(getFormElement_name());
+            elements.add(getFormElement_favouriteToys());
+            settings.getFormElements().addAll(elements);
+            return settings;
+        }
+
+        private FormElement getFormElement_lastName() {
+            FieldElement field = new FieldElement("lastName", "lastName", new TypeInfoImpl(TypeKind.BASE, "java.lang.String", false));
+            field.setPreferredType(org.kie.workbench.common.forms.model.FieldType.class);
+            field.setLabelKey("ChildI18n.lastName");
+            field.setHelpMessageKey("");
+            field.setRequired(false);
+            field.setReadOnly(false);
+            field.getParams().put("param1", "value1");
+            field.getLayoutSettings().setAfterElement("name");
+            field.getLayoutSettings().setHorizontalSpan(1);
+            field.getLayoutSettings().setVerticalSpan(1);
+            field.getLayoutSettings().setWrap(false);
+            return field;
+        }
+
+        private FormElement getFormElement_birthDay() {
+            FieldElement field = new FieldElement("birthDay", "birthDay", new TypeInfoImpl(TypeKind.BASE, "java.util.Date", false));
+            field.setPreferredType(org.kie.workbench.common.forms.model.FieldType.class);
+            field.setLabelKey("ChildI18n.birthDay");
+            field.setHelpMessageKey("");
+            field.setRequired(false);
+            field.setReadOnly(false);
+            field.getParams().put("param1", "value1");
+            field.getLayoutSettings().setAfterElement("lastName");
+            field.getLayoutSettings().setHorizontalSpan(1);
+            field.getLayoutSettings().setVerticalSpan(1);
+            field.getLayoutSettings().setWrap(false);
+            return field;
+        }
+
+        private FormElement getFormElement_name() {
+            FieldElement field = new FieldElement("name", "name", new TypeInfoImpl(TypeKind.BASE, "java.lang.String", false));
+            field.setPreferredType(org.kie.workbench.common.forms.model.FieldType.class);
+            field.setLabelKey("ChildI18n.name");
+            field.setHelpMessageKey("");
+            field.setRequired(false);
+            field.setReadOnly(false);
+            field.getParams().put("param1", "value1");
+            field.getLayoutSettings().setAfterElement("");
+            field.getLayoutSettings().setHorizontalSpan(1);
+            field.getLayoutSettings().setVerticalSpan(1);
+            field.getLayoutSettings().setWrap(false);
+            return field;
+        }
+
+        private FormElement getFormElement_favouriteToys() {
+            FieldElement field = new FieldElement("favouriteToys", "favouriteToys", new TypeInfoImpl(TypeKind.BASE, "java.lang.String", false));
+            field.setPreferredType(org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.type.TextAreaFieldType.class);
+            field.setLabelKey("ChildI18n.favouriteToys");
+            field.setHelpMessageKey("");
+            field.setRequired(false);
+            field.setReadOnly(false);
+            field.getParams().put("param1", "value1");
+            field.getLayoutSettings().setAfterElement("school");
+            field.getLayoutSettings().setHorizontalSpan(1);
+            field.getLayoutSettings().setVerticalSpan(1);
+            field.getLayoutSettings().setWrap(false);
+            return field;
+        }
+    }
+}

@@ -36,5 +36,6 @@
     <module>kie-wb-common-forms-adf-base</module>
     <module>kie-wb-common-forms-adf-processors</module>
     <module>kie-wb-common-forms-adf-engine</module>
+    <module>kie-wb-common-forms-adf-processors-tests</module>
   </modules>
 </project>

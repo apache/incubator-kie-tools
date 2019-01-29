@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,25 +18,53 @@ package org.kie.workbench.common.forms.adf.processors;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+
+import javax.annotation.processing.Messager;
+import javax.annotation.processing.ProcessingEnvironment;
+import javax.annotation.processing.RoundEnvironment;
+import javax.lang.model.util.Elements;
 
 public class SourceGenerationContext {
 
+    private final ProcessingEnvironment processingEnvironment;
+    private final RoundEnvironment roundEnvironment;
+
     private List<String> imports = new ArrayList<>();
 
-    private List<Map<String, String>> fieldDefinitions = new ArrayList<>();
+    private List<FieldDefinitionModifierData> fieldDefinitions = new ArrayList<>();
 
-    private List<Map<String, String>> forms = new ArrayList<>();
+    private List<FormDefinitionData> forms = new ArrayList<>();
+
+    public SourceGenerationContext(ProcessingEnvironment processingEnvironment, RoundEnvironment roundEnvironment) {
+        this.processingEnvironment = processingEnvironment;
+        this.roundEnvironment = roundEnvironment;
+    }
 
     public List<String> getImports() {
         return imports;
     }
 
-    public List<Map<String, String>> getForms() {
+    public List<FormDefinitionData> getForms() {
         return forms;
     }
 
-    public List<Map<String, String>> getFieldDefinitions() {
+    public List<FieldDefinitionModifierData> getFieldDefinitions() {
         return fieldDefinitions;
+    }
+
+    public ProcessingEnvironment getProcessingEnvironment() {
+        return processingEnvironment;
+    }
+
+    public RoundEnvironment getRoundEnvironment() {
+        return roundEnvironment;
+    }
+
+    public Elements getElementUtils() {
+        return processingEnvironment.getElementUtils();
+    }
+
+    public Messager getMessager() {
+        return processingEnvironment.getMessager();
     }
 }

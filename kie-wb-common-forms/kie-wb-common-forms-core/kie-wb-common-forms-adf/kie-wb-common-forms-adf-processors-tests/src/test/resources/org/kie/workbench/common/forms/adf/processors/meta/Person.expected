@@ -1,0 +1,161 @@
+/*
+* Copyright 2019 Red Hat, Inc. and/or its affiliates.
+*  
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*  
+*    http://www.apache.org/licenses/LICENSE-2.0
+*  
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+
+package org.kie.workbench.common.forms.adf.processors.meta.formBuilder.provider;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.annotation.Generated;
+import javax.enterprise.context.ApplicationScoped;
+
+import org.kie.workbench.common.forms.adf.definitions.settings.ColSpan;
+import org.kie.workbench.common.forms.adf.service.building.FieldStatusModifier;
+import org.kie.workbench.common.forms.adf.service.building.FormGenerationResourcesProvider;
+import org.kie.workbench.common.forms.adf.service.definitions.FormDefinitionSettings;
+import org.kie.workbench.common.forms.adf.service.definitions.I18nSettings;
+import org.kie.workbench.common.forms.adf.service.definitions.elements.FieldElement;
+import org.kie.workbench.common.forms.adf.service.definitions.elements.FormElement;
+import org.kie.workbench.common.forms.adf.service.definitions.layout.LayoutColumnDefinition;
+import org.kie.workbench.common.forms.adf.service.definitions.layout.LayoutDefinition;
+import org.kie.workbench.common.forms.model.FieldDefinition;
+import org.kie.workbench.common.forms.model.TypeKind;
+import org.kie.workbench.common.forms.model.impl.TypeInfoImpl;
+
+@Generated("org.kie.workbench.common.forms.adf.processors.FormDefinitionsProcessor")
+@ApplicationScoped
+public class ModuleFormGenerationResourcesProvider implements FormGenerationResourcesProvider {
+
+    private Map<String, FormDefinitionSettings> definitionSettings = new HashMap<>();
+
+    private Map<String, FieldStatusModifier> fieldStatusModifiers = new HashMap<>();
+
+    private Map<String, String> fieldStatusModifiersReferences = new HashMap<>();
+
+    public ModuleFormGenerationResourcesProvider() {
+        definitionSettings.put("org.kie.workbench.common.forms.adf.processors.meta.Person", new org_kie_workbench_common_forms_adf_processors_meta_PersonFormBuilder().getSettings());
+        fieldStatusModifiers.put("org_kie_workbench_common_forms_adf_processors_meta_Name_FieldStatusModifier", new org_kie_workbench_common_forms_adf_processors_meta_Name_FieldStatusModifier());
+        fieldStatusModifiers.put("org_kie_workbench_common_forms_adf_processors_meta_Age_FieldStatusModifier", new org_kie_workbench_common_forms_adf_processors_meta_Age_FieldStatusModifier());
+        fieldStatusModifiers.put("org_kie_workbench_common_forms_adf_processors_meta_Married_FieldStatusModifier", new org_kie_workbench_common_forms_adf_processors_meta_Married_FieldStatusModifier());
+    }
+
+    @Override
+    public Map<String, FormDefinitionSettings> getDefinitionSettings() {
+        return definitionSettings;
+    }
+
+    @Override
+    public Map<String, FieldStatusModifier> getFieldModifiers() {
+        return fieldStatusModifiers;
+    }
+
+    @Override
+    public Map<String, String> getFieldModifierReferences() {
+        return fieldStatusModifiersReferences;
+    }
+
+    class org_kie_workbench_common_forms_adf_processors_meta_PersonFormBuilder {
+        public FormDefinitionSettings getSettings() {
+            FormDefinitionSettings settings = new FormDefinitionSettings("org.kie.workbench.common.forms.adf.processors.meta.Person");
+            settings.setI18nSettings(new I18nSettings("org.kie.workbench.common.forms.adf.processors.meta.Person"));
+            settings.setLayout(new LayoutDefinition(new LayoutColumnDefinition[] { new LayoutColumnDefinition(ColSpan.AUTO) }));
+            List<FormElement> elements = new ArrayList<FormElement>();
+            elements.add(getFormElement_name());
+            elements.add(getFormElement_age());
+            elements.add(getFormElement_married());
+            settings.getFormElements().addAll(elements);
+            return settings;
+        }
+
+        private FormElement getFormElement_name() {
+            FieldElement field = new FieldElement("name", "name.value", new TypeInfoImpl(TypeKind.BASE, "java.lang.String", false));
+            field.setPreferredType(org.kie.workbench.common.forms.model.FieldType.class);
+            field.setLabelKey("name");
+            field.setHelpMessageKey("");
+            field.setRequired(false);
+            field.setReadOnly(false);
+            field.getLayoutSettings().setAfterElement("");
+            field.getLayoutSettings().setHorizontalSpan(1);
+            field.getLayoutSettings().setVerticalSpan(1);
+            field.getLayoutSettings().setWrap(false);
+            fieldStatusModifiersReferences.put("org.kie.workbench.common.forms.adf.processors.meta.Person.name", "org_kie_workbench_common_forms_adf_processors_meta_Name_FieldStatusModifier");
+            return field;
+        }
+
+        private FormElement getFormElement_age() {
+            FieldElement field = new FieldElement("age", "age.value", new TypeInfoImpl(TypeKind.BASE, "java.lang.Integer", false));
+            field.setPreferredType(org.kie.workbench.common.forms.model.FieldType.class);
+            field.setLabelKey("org.kie.workbench.common.forms.adf.processors.meta.Age.suffix");
+            field.setHelpMessageKey("org.kie.workbench.common.forms.adf.processors.meta.Age.suffix");
+            field.setRequired(false);
+            field.setReadOnly(false);
+            field.getLayoutSettings().setAfterElement("name");
+            field.getLayoutSettings().setHorizontalSpan(1);
+            field.getLayoutSettings().setVerticalSpan(1);
+            field.getLayoutSettings().setWrap(false);
+            fieldStatusModifiersReferences.put("org.kie.workbench.common.forms.adf.processors.meta.Person.age", "org_kie_workbench_common_forms_adf_processors_meta_Age_FieldStatusModifier");
+            return field;
+        }
+
+        private FormElement getFormElement_married() {
+            FieldElement field = new FieldElement("married", "married.value", new TypeInfoImpl(TypeKind.BASE, "java.lang.Boolean", false));
+            field.setPreferredType(org.kie.workbench.common.forms.model.FieldType.class);
+            field.setLabelKey("married");
+            field.setHelpMessageKey("");
+            field.setRequired(false);
+            field.setReadOnly(false);
+            field.getLayoutSettings().setAfterElement("age");
+            field.getLayoutSettings().setHorizontalSpan(1);
+            field.getLayoutSettings().setVerticalSpan(1);
+            field.getLayoutSettings().setWrap(false);
+            fieldStatusModifiersReferences.put("org.kie.workbench.common.forms.adf.processors.meta.Person.married", "org_kie_workbench_common_forms_adf_processors_meta_Married_FieldStatusModifier");
+            return field;
+        }
+    }
+
+    class org_kie_workbench_common_forms_adf_processors_meta_Name_FieldStatusModifier implements FieldStatusModifier<org.kie.workbench.common.forms.adf.processors.meta.Name> {
+        @Override
+        public void modifyFieldStatus(FieldDefinition field, org.kie.workbench.common.forms.adf.processors.meta.Name model) {
+            if (model != null) {
+                field.setReadOnly(Boolean.TRUE.equals(model.getReadOnly()));
+                field.setRequired(Boolean.TRUE.equals(model.getRequired()));
+            }
+        }
+    }
+
+    class org_kie_workbench_common_forms_adf_processors_meta_Age_FieldStatusModifier implements FieldStatusModifier<org.kie.workbench.common.forms.adf.processors.meta.Age> {
+        @Override
+        public void modifyFieldStatus(FieldDefinition field, org.kie.workbench.common.forms.adf.processors.meta.Age model) {
+            if (model != null) {
+                field.setReadOnly(Boolean.TRUE.equals(model.getReadOnly()));
+                field.setRequired(Boolean.TRUE.equals(model.getRequired()));
+            }
+        }
+    }
+
+    class org_kie_workbench_common_forms_adf_processors_meta_Married_FieldStatusModifier implements FieldStatusModifier<org.kie.workbench.common.forms.adf.processors.meta.Married> {
+        @Override
+        public void modifyFieldStatus(FieldDefinition field, org.kie.workbench.common.forms.adf.processors.meta.Married model) {
+            if (model != null) {
+                field.setLabel(model.getLabel());
+                field.setHelpMessage(model.getHelp());
+                field.setReadOnly(Boolean.TRUE.equals(model.getReadOnly()));
+                field.setRequired(Boolean.TRUE.equals(model.getRequired()));
+            }
+        }
+    }
+}
