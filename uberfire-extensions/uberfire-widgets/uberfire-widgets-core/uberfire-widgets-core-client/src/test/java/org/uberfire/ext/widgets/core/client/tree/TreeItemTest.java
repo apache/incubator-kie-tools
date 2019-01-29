@@ -26,9 +26,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class TreeItemTest {
@@ -155,7 +158,65 @@ public class TreeItemTest {
         verify(childTreeContainer,
                times(1)).setParentItem(eq(testedRoot));
         verify(content,
-               times(2)).add(treeItem2);
+               times(2)).add(eq(treeItem2));
+        verify(treeItem1,
+               times(1)).setTree(eq(tree));
+    }
+
+    @Test
+    public void testInsertItem() {
+        final TreeItem childTreeItem = mock(TreeItem.class);
+        when(childTreeItem.getType()).thenReturn(TreeItem.Type.ITEM);
+        final int index = 7;
+        final TreeItem treeItem1 = testedRoot.insertItem(childTreeItem, index);
+        assertEquals(treeItem1,
+                     childTreeItem);
+        verify(childTreeItem,
+               times(1)).setTree(eq(tree));
+        verify(childTreeItem,
+               times(1)).setParentItem(eq(testedRoot));
+        verify(content,
+               times(1)).insert(eq(childTreeItem), eq(index));
+    }
+
+    @Test
+    public void testInsertContainer() {
+        final TreeItem childTreeContainer = mock(TreeItem.class);
+        when(childTreeContainer.getType()).thenReturn(TreeItem.Type.CONTAINER);
+        final int index = 10;
+        final TreeItem treeItem1 = testedRoot.insertItem(childTreeContainer, index);
+        assertEquals(treeItem1,
+                     childTreeContainer);
+        verify(childTreeContainer,
+               times(1)).setTree(eq(tree));
+        verify(childTreeContainer,
+               times(1)).setParentItem(eq(testedRoot));
+        verify(content,
+               times(1)).insert(eq(childTreeContainer), eq(index));
+    }
+
+    @Test
+    public void testInsertItemToContainer() {
+        final TreeItem childTreeContainer = mock(TreeItem.class);
+        when(childTreeContainer.getType()).thenReturn(TreeItem.Type.CONTAINER);
+        final TreeItem childTreeItem = mock(TreeItem.class);
+        when(childTreeItem.getType()).thenReturn(TreeItem.Type.ITEM);
+        final int index1 = 17;
+        final int index2 = 25;
+        final TreeItem treeItem1 = testedRoot.insertItem(childTreeContainer, index1);
+        final TreeItem treeItem2 = testedContainer.insertItem(treeItem1, index2);
+        assertEquals(treeItem1,
+                     childTreeContainer);
+        assertEquals(treeItem2,
+                     treeItem1);
+        verify(childTreeContainer,
+               times(1)).setTree(eq(tree));
+        verify(childTreeContainer,
+               times(1)).setParentItem(eq(testedRoot));
+        verify(content,
+               times(1)).insert(eq(treeItem2), eq(index1));
+        verify(content,
+               times(1)).insert(eq(treeItem2), eq(index2));
         verify(treeItem1,
                times(1)).setTree(eq(tree));
     }

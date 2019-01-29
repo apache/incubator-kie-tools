@@ -17,6 +17,7 @@
 package org.uberfire.ext.widgets.core.client.tree;
 
 import java.util.Iterator;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import com.google.gwt.core.client.GWT;
@@ -235,10 +236,42 @@ public class TreeItem<I extends TreeItem> extends Composite {
         return this.type;
     }
 
-    @SuppressWarnings("unchecked")
     public I addItem(final I item) {
+        return addChild(item, t -> content.add(t));
+    }
+
+    public I insertItem(final I item, final int index) {
+        return addChild(item, t -> content.insert(t, index));
+    }
+
+    public I addItem(final Type type,
+                     final String value,
+                     final String label,
+                     final IsWidget icon) {
+        return addChild(type,
+                        value,
+                        label,
+                        icon,
+                        this::addItem);
+    }
+
+    public I insertItem(final Type type,
+                        final String value,
+                        final String label,
+                        final IsWidget icon,
+                        final int index) {
+        return addChild(type,
+                        value,
+                        label,
+                        icon,
+                        t -> insertItem(t, index));
+    }
+
+    @SuppressWarnings("unchecked")
+    private I addChild(final I item,
+                       final Consumer<I> addItemFunction) {
         checkContainerType();
-        content.add(item);
+        addItemFunction.accept(item);
         item.setTree(tree);
         item.setParentItem(this);
         return item;
@@ -251,15 +284,16 @@ public class TreeItem<I extends TreeItem> extends Composite {
     }
 
     @SuppressWarnings("unchecked")
-    public I addItem(final Type type,
-                     final String value,
-                     final String label,
-                     final IsWidget icon) {
+    private I addChild(final Type type,
+                       final String value,
+                       final String label,
+                       final IsWidget icon,
+                       final Consumer<I> addItemFunction) {
         final I child = makeChild(type,
                                   value,
                                   label,
                                   icon);
-        addItem(child);
+        addItemFunction.accept(child);
         return child;
     }
 
