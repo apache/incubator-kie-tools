@@ -31,6 +31,7 @@ import org.infinispan.client.hotrod.RemoteCache;
 import org.infinispan.client.hotrod.RemoteCacheManager;
 import org.infinispan.client.hotrod.configuration.AuthenticationConfigurationBuilder;
 import org.infinispan.client.hotrod.configuration.ConfigurationBuilder;
+import org.infinispan.client.hotrod.exceptions.HotRodClientException;
 import org.infinispan.client.hotrod.marshall.ProtoStreamMarshaller;
 import org.infinispan.commons.CacheConfigurationException;
 import org.infinispan.protostream.BaseMarshaller;
@@ -64,6 +65,7 @@ public class InfinispanContext implements Disposable {
     private static final String SCHEMA_PROTO = "schema.proto";
     private static final String ORG_KIE = "org.kie.";
     public static final String SASL_MECHANISM = "DIGEST-MD5";
+    private static final String CACHE_PREFIX = "appformer_";
     private final RemoteCacheManager cacheManager;
     private final KieProtostreamMarshaller marshaller = new KieProtostreamMarshaller();
     private final SchemaGenerator schemaGenerator;
@@ -105,13 +107,13 @@ public class InfinispanContext implements Disposable {
         cacheManager = this.createRemoteCache(properties);
 
         if (!this.getIndices().contains(TYPES_CACHE)) {
-            cacheManager.administration().createCache(TYPES_CACHE,
-                                                      this.infinispanConfiguration.getConfiguration(TYPES_CACHE));
+            cacheManager.administration().createCache(getTypesCacheName(),
+                                                      this.infinispanConfiguration.getConfiguration(getTypesCacheName()));
         }
 
         if (!this.getIndices().contains(SCHEMAS_CACHE)) {
-            cacheManager.administration().createCache(SCHEMAS_CACHE,
-                                                      this.infinispanConfiguration.getConfiguration(SCHEMAS_CACHE));
+            cacheManager.administration().createCache(getSchemaCacheName(),
+                                                      this.infinispanConfiguration.getConfiguration(getSchemaCacheName()));
         }
 
         marshaller.registerMarshaller(new KieProtostreamMarshaller.KieMarshallerSupplier<KObject>() {
@@ -134,10 +136,18 @@ public class InfinispanContext implements Disposable {
         SerializationContext serializationContext = ProtoStreamMarshaller.getSerializationContext(cacheManager);
 
         addProtobufClass(serializationContext,
-                         SCHEMA_PROTO,
+                         addCachePrefix(SCHEMA_PROTO),
                          Schema.class);
 
         this.loadProtobufSchema(getProtobufCache());
+    }
+
+    private String getSchemaCacheName() {
+        return addCachePrefix(SCHEMAS_CACHE);
+    }
+
+    private String getTypesCacheName() {
+        return addCachePrefix(TYPES_CACHE);
     }
 
     private RemoteCacheManager createRemoteCache(Map<String, String> properties) {
@@ -206,22 +216,31 @@ public class InfinispanContext implements Disposable {
         return this.cacheManager.getCache(ProtobufMetadataManagerConstants.PROTOBUF_METADATA_CACHE_NAME);
     }
 
+    private static String addCachePrefix(String content) {
+        return CACHE_PREFIX + content;
+    }
+
     public RemoteCache<String, KObject> getCache(String index) {
-        String i = AttributesUtil.toProtobufFormat(index).toLowerCase();
-        if (!this.getIndices().contains(i)) {
+        String cacheName = AttributesUtil.toProtobufFormat(index).toLowerCase();
+
+        if (!this.getIndices().contains(cacheName)) {
+
+            String appformerCacheName = addCachePrefix(cacheName);
+
             try {
                 cacheManager
                         .administration()
-                        .createCache(i,
-                                     this.infinispanConfiguration.getIndexedConfiguration(i));
-            } catch (CacheConfigurationException ex) {
+                        .createCache(appformerCacheName,
+                                     this.infinispanConfiguration.getIndexedConfiguration(appformerCacheName));
+            } catch (HotRodClientException | CacheConfigurationException ex) {
                 logger.warn("Can't create cache with name <{}>",
-                            i);
+                            appformerCacheName);
                 logger.warn("Cause:",
                             ex);
             }
         }
-        return this.cacheManager.getCache(i);
+
+        return this.cacheManager.getCache(addCachePrefix(cacheName));
     }
 
     public List<String> getTypes(String index) {
@@ -252,7 +271,7 @@ public class InfinispanContext implements Disposable {
     public void loadProtobufSchema(RemoteCache<String, String> metadataCache) {
         metadataCache.entrySet()
                 .stream()
-                .filter(entry -> !entry.getKey().equals(SCHEMA_PROTO))
+                .filter(entry -> !entry.getKey().equals(addCachePrefix(SCHEMA_PROTO)))
                 .forEach((entry) -> {
                     int index = entry.getKey().lastIndexOf('.');
                     String protoTypeName = entry.getKey().substring(0,
@@ -278,17 +297,21 @@ public class InfinispanContext implements Disposable {
     }
 
     public List<String> getIndices() {
-        return new ArrayList<>(this.cacheManager.getCacheNames());
+        return new ArrayList<>(this.cacheManager.getCacheNames())
+                .stream()
+                .filter(s -> s.startsWith(CACHE_PREFIX))
+                .map(s -> s.substring(CACHE_PREFIX.length()))
+                .collect(toList());
     }
 
     public Optional<Schema> getSchema(String clusterId) {
-        Schema schema = (Schema) this.cacheManager.getCache(SCHEMAS_CACHE).get(clusterId.toLowerCase());
+        Schema schema = (Schema) this.cacheManager.getCache(getSchemaCacheName()).get(clusterId.toLowerCase());
         return Optional.ofNullable(schema);
     }
 
     public void addSchema(Schema schema) {
-        this.cacheManager.getCache(SCHEMAS_CACHE).put(AttributesUtil.toProtobufFormat(schema.getName()).toLowerCase(),
-                                                      schema);
+        this.cacheManager.getCache(getSchemaCacheName()).put(AttributesUtil.toProtobufFormat(schema.getName()).toLowerCase(),
+                                                             schema);
     }
 }
 
