@@ -19,9 +19,11 @@ import java.util.List;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasCommand;
+import org.kie.workbench.common.stunner.core.client.canvas.command.AddCanvasChildNodeCommand;
+import org.kie.workbench.common.stunner.core.client.canvas.command.AddCanvasNodeCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
-import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
+import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -47,6 +49,9 @@ public class CaseManagementDrawCommand extends AbstractCanvasCommand {
         final Diagram diagram = context.getDiagram();
         final String shapeSetId = context.getDiagram().getMetadata().getShapeSetId();
 
+        final CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation> commandBuilder =
+                new CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation>().forward();
+
         childrenTraverseProcessor
                 .traverse(diagram.getGraph(),
                           new AbstractChildrenTraverseCallback<Node<View, Edge>, Edge<Child, Node>>() {
@@ -54,25 +59,17 @@ public class CaseManagementDrawCommand extends AbstractCanvasCommand {
                               @Override
                               public void startNodeTraversal(final Node<View, Edge> node) {
                                   super.startNodeTraversal(node);
-                                  addNode(node);
+                                  commandBuilder.addCommand(new AddCanvasNodeCommand((Node) node, shapeSetId));
                               }
 
                               @Override
                               public boolean startNodeTraversal(final List<Node<View, Edge>> parents,
                                                                 final Node<View, Edge> node) {
-                                  super.startNodeTraversal(parents,
-                                                           node);
-                                  addNode(node);
-                                  context.addChild(parents.get(parents.size() - 1),
-                                                   node);
+                                  super.startNodeTraversal(parents, node);
+                                  commandBuilder.addCommand(new AddCanvasChildNodeCommand(parents.get(parents.size() - 1),
+                                                                                          node,
+                                                                                          shapeSetId));
                                   return true;
-                              }
-
-                              private void addNode(final Node<View, Edge> node) {
-                                  context.register(shapeSetId,
-                                                   node);
-                                  context.applyElementMutation(node,
-                                                               MutationContext.STATIC);
                               }
 
                               @Override
@@ -81,11 +78,16 @@ public class CaseManagementDrawCommand extends AbstractCanvasCommand {
                               }
                           });
 
-        return buildResult();
+        return executeCommands(context, commandBuilder);
     }
 
     @Override
     public CommandResult<CanvasViolation> undo(final AbstractCanvasHandler context) {
         throw new UnsupportedOperationException("Draw cannot be undone, yet.");
+    }
+
+    protected CommandResult<CanvasViolation> executeCommands(final AbstractCanvasHandler context,
+                                                             final CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation> commandBuilder) {
+        return commandBuilder.build().execute(context);
     }
 }

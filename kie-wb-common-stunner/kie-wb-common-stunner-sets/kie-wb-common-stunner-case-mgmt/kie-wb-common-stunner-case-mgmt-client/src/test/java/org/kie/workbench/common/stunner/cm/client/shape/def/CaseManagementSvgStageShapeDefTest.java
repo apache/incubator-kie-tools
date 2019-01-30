@@ -20,6 +20,9 @@ import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.Height;
+import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.RectangleDimensionsSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.Width;
 import org.kie.workbench.common.stunner.cm.client.resources.CaseManagementSVGGlyphFactory;
 import org.kie.workbench.common.stunner.cm.client.resources.CaseManagementSVGViewFactory;
 import org.kie.workbench.common.stunner.cm.definition.AdHocSubprocess;
@@ -47,6 +50,23 @@ public class CaseManagementSvgStageShapeDefTest {
 
     @Test
     public void testNewViewInstance() throws Exception {
+        tested.newViewInstance(factory, new AdHocSubprocess());
+
+        verify(factory, times(1)).stage();
+    }
+
+    @Test
+    public void testNewViewInstance_zeroDimension() throws Exception {
+        final Width width = new Width(0.0);
+        final Height height = new Height(0.0);
+
+        final RectangleDimensionsSet dimensionsSet = new RectangleDimensionsSet();
+        dimensionsSet.setWidth(width);
+        dimensionsSet.setHeight(height);
+
+        final AdHocSubprocess adHocSubprocess = new AdHocSubprocess();
+        adHocSubprocess.setDimensionsSet(dimensionsSet);
+
         tested.newViewInstance(factory, new AdHocSubprocess());
 
         verify(factory, times(1)).stage();

@@ -54,8 +54,10 @@ public class CaseManagementSvgStageShapeDef extends BaseDimensionedShapeDef
 
     @Override
     public SVGShapeView<?> newViewInstance(final CaseManagementSVGViewFactory factory, final AdHocSubprocess bean) {
-        return newViewInstance(Optional.ofNullable(bean.getDimensionsSet().getWidth()),
-                               Optional.ofNullable(bean.getDimensionsSet().getHeight()),
+        return newViewInstance(Optional.ofNullable(bean.getDimensionsSet().getWidth())
+                                       .filter(width -> width.getValue() != null && width.getValue().compareTo(0.0) > 0),
+                               Optional.ofNullable(bean.getDimensionsSet().getHeight())
+                                       .filter(height -> height.getValue() != null && height.getValue().compareTo(0.0) > 0),
                                factory.stage());
     }
 
@@ -64,5 +66,4 @@ public class CaseManagementSvgStageShapeDef extends BaseDimensionedShapeDef
                           final String defId) {
         return CaseManagementSVGGlyphFactory.STAGE_GLYPH;
     }
-
 }

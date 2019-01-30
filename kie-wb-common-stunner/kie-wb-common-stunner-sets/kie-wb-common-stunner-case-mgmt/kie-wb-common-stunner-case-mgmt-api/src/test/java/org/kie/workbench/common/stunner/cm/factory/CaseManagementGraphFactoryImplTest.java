@@ -20,6 +20,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.factory.BPMNGraphFactoryImpl;
+import org.kie.workbench.common.stunner.cm.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
@@ -95,6 +96,10 @@ public class CaseManagementGraphFactoryImplTest {
         when(factoryManager.newElement(anyString(),
                                        eq(CaseManagementDiagram.class))).thenReturn(diagramNode);
 
+        final Node stageNode = mock(Node.class);
+        when(factoryManager.newElement(anyString(),
+                                       eq(AdHocSubprocess.class))).thenReturn(stageNode);
+
         final Graph<DefinitionSet, Node> graph = factory.build("uuid1", "defSetId");
 
         assertNotNull(graph);
@@ -107,12 +112,15 @@ public class CaseManagementGraphFactoryImplTest {
         verify(graphCommandFactory,
                times(1)).addNode(eq(diagramNode));
 
+        verify(graphCommandFactory,
+               times(1)).addChildNode(eq(diagramNode), eq(stageNode));
+
         verify(graphCommandManager,
                times(1)).execute(any(GraphCommandExecutionContext.class), commandCaptor.capture());
 
         final Command command = commandCaptor.getValue();
         assertTrue(command instanceof CompositeCommand);
         final CompositeCommand compositeCommand = (CompositeCommand) command;
-        assertEquals(1, compositeCommand.size());
+        assertEquals(2, compositeCommand.size());
     }
 }

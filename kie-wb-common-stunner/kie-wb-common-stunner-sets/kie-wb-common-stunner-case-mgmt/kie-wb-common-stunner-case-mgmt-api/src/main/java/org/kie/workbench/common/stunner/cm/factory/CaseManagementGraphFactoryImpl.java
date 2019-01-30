@@ -25,6 +25,7 @@ import javax.inject.Inject;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.factory.BPMNGraphFactory;
 import org.kie.workbench.common.stunner.bpmn.factory.BPMNGraphFactoryImpl;
+import org.kie.workbench.common.stunner.cm.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
@@ -133,7 +134,12 @@ public class CaseManagementGraphFactoryImpl extends AbstractGraphFactory impleme
 
         final Node<Definition<CaseManagementDiagram>, Edge> diagramNode =
                 (Node<Definition<CaseManagementDiagram>, Edge>) factoryManager.newElement(UUID.uuid(), diagramType);
+
+        final Node<Definition<AdHocSubprocess>, Edge> stageNode =
+                (Node<Definition<AdHocSubprocess>, Edge>) factoryManager.newElement(UUID.uuid(), AdHocSubprocess.class);
+
         commands.add(graphCommandFactory.addNode(diagramNode));
+        commands.add(graphCommandFactory.addChildNode(diagramNode, stageNode));
 
         return commands;
     }
