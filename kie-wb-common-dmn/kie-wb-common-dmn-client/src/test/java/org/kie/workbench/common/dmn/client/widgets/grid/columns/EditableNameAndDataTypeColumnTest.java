@@ -198,6 +198,9 @@ public class EditableNameAndDataTypeColumnTest {
         hasNameAndTypeRef.getTypeRef();
         verify(informationItem).getTypeRef();
 
+        hasNameAndTypeRef.getHasTypeRefs();
+        verify(informationItem).getHasTypeRefs();
+
         assertThat(hasNameAndTypeRef.asDMNModelInstrumentedBase()).isEqualTo(informationItem);
     }
 

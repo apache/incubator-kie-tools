@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,14 +22,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
-import org.kie.workbench.common.dmn.api.definition.HasVariable;
 import org.kie.workbench.common.dmn.api.definition.v1_1.common.HasTypeRefHelper;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -38,63 +36,34 @@ import static org.powermock.api.mockito.PowerMockito.when;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({HasTypeRefHelper.class})
-public class BindingTest {
+public class InvocationTest {
 
-    private Binding binding;
+    private Invocation invocation;
 
     @Before
     public void setup() {
-        this.binding = spy(new Binding());
-    }
-
-    @Test
-    public void testImplementsHasVariable() {
-        assertTrue(binding instanceof HasVariable);
-    }
-
-    @Test
-    public void testHasVariableProxyGetter() {
-        assertEquals(binding.getParameter(),
-                     binding.getVariable());
-    }
-
-    @Test
-    public void testHasVariableProxySetter() {
-        final InformationItem variable = new InformationItem();
-        binding.setVariable(variable);
-
-        assertEquals(variable,
-                     binding.getParameter());
-    }
-
-    @Test
-    public void testParameterSetter() {
-        final InformationItem variable = new InformationItem();
-        binding.setParameter(variable);
-
-        assertEquals(variable,
-                     binding.getVariable());
+        this.invocation = spy(new Invocation());
     }
 
     @Test
     public void testGetHasTypeRefs() {
 
         final Expression expression = mock(Expression.class);
-        final InformationItem parameter = mock(InformationItem.class);
+        final List<Binding> binding = asList(mock(Binding.class), mock(Binding.class));
         final HasTypeRef hasTypeRef1 = mock(HasTypeRef.class);
         final HasTypeRef hasTypeRef2 = mock(HasTypeRef.class);
         final HasTypeRef hasTypeRef3 = mock(HasTypeRef.class);
         final HasTypeRef hasTypeRef4 = mock(HasTypeRef.class);
 
-        doReturn(expression).when(binding).getExpression();
-        doReturn(parameter).when(binding).getParameter();
+        doReturn(expression).when(invocation).getExpression();
+        doReturn(binding).when(invocation).getBinding();
 
         mockStatic(HasTypeRefHelper.class);
         when(HasTypeRefHelper.getNotNullHasTypeRefs(expression)).thenReturn(asList(hasTypeRef1, hasTypeRef2));
-        when(HasTypeRefHelper.getNotNullHasTypeRefs(parameter)).thenReturn(asList(hasTypeRef3, hasTypeRef4));
+        when(HasTypeRefHelper.getFlatHasTypeRefs(binding)).thenReturn(asList(hasTypeRef3, hasTypeRef4));
 
-        final List<HasTypeRef> actualHasTypeRefs = binding.getHasTypeRefs();
-        final List<HasTypeRef> expectedHasTypeRefs = asList(hasTypeRef1, hasTypeRef2, hasTypeRef3, hasTypeRef4);
+        final List<HasTypeRef> actualHasTypeRefs = invocation.getHasTypeRefs();
+        final List<HasTypeRef> expectedHasTypeRefs = asList(invocation, hasTypeRef1, hasTypeRef2, hasTypeRef3, hasTypeRef4);
 
         assertEquals(expectedHasTypeRefs, actualHasTypeRefs);
     }

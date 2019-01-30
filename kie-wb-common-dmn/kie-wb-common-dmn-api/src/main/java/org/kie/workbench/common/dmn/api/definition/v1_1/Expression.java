@@ -15,10 +15,15 @@
  */
 package org.kie.workbench.common.dmn.api.definition.v1_1;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
+
+import static java.util.Collections.singletonList;
 
 public abstract class Expression extends DMNElement implements HasTypeRef {
 
@@ -52,5 +57,10 @@ public abstract class Expression extends DMNElement implements HasTypeRef {
     @Override
     public DMNModelInstrumentedBase asDMNModelInstrumentedBase() {
         return this;
+    }
+
+    @Override
+    public List<HasTypeRef> getHasTypeRefs() {
+        return new ArrayList<>(singletonList(this));
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,14 +22,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
-import org.kie.workbench.common.dmn.api.definition.HasVariable;
 import org.kie.workbench.common.dmn.api.definition.v1_1.common.HasTypeRefHelper;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -38,63 +36,39 @@ import static org.powermock.api.mockito.PowerMockito.when;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({HasTypeRefHelper.class})
-public class BindingTest {
+public class DecisionTableTest {
 
-    private Binding binding;
+    private DecisionTable decisionTable;
 
     @Before
     public void setup() {
-        this.binding = spy(new Binding());
-    }
-
-    @Test
-    public void testImplementsHasVariable() {
-        assertTrue(binding instanceof HasVariable);
-    }
-
-    @Test
-    public void testHasVariableProxyGetter() {
-        assertEquals(binding.getParameter(),
-                     binding.getVariable());
-    }
-
-    @Test
-    public void testHasVariableProxySetter() {
-        final InformationItem variable = new InformationItem();
-        binding.setVariable(variable);
-
-        assertEquals(variable,
-                     binding.getParameter());
-    }
-
-    @Test
-    public void testParameterSetter() {
-        final InformationItem variable = new InformationItem();
-        binding.setParameter(variable);
-
-        assertEquals(variable,
-                     binding.getVariable());
+        this.decisionTable = spy(new DecisionTable());
     }
 
     @Test
     public void testGetHasTypeRefs() {
 
-        final Expression expression = mock(Expression.class);
-        final InformationItem parameter = mock(InformationItem.class);
+        final List<InputClause> inputClauses = asList(mock(InputClause.class), mock(InputClause.class));
+        final List<OutputClause> outputClauses = asList(mock(OutputClause.class), mock(OutputClause.class));
+        final List<DecisionRule> decisionRules = asList(mock(DecisionRule.class), mock(DecisionRule.class));
         final HasTypeRef hasTypeRef1 = mock(HasTypeRef.class);
         final HasTypeRef hasTypeRef2 = mock(HasTypeRef.class);
         final HasTypeRef hasTypeRef3 = mock(HasTypeRef.class);
         final HasTypeRef hasTypeRef4 = mock(HasTypeRef.class);
+        final HasTypeRef hasTypeRef5 = mock(HasTypeRef.class);
+        final HasTypeRef hasTypeRef6 = mock(HasTypeRef.class);
 
-        doReturn(expression).when(binding).getExpression();
-        doReturn(parameter).when(binding).getParameter();
+        doReturn(inputClauses).when(decisionTable).getInput();
+        doReturn(outputClauses).when(decisionTable).getOutput();
+        doReturn(decisionRules).when(decisionTable).getRule();
 
         mockStatic(HasTypeRefHelper.class);
-        when(HasTypeRefHelper.getNotNullHasTypeRefs(expression)).thenReturn(asList(hasTypeRef1, hasTypeRef2));
-        when(HasTypeRefHelper.getNotNullHasTypeRefs(parameter)).thenReturn(asList(hasTypeRef3, hasTypeRef4));
+        when(HasTypeRefHelper.getFlatHasTypeRefs(inputClauses)).thenReturn(asList(hasTypeRef1, hasTypeRef2));
+        when(HasTypeRefHelper.getFlatHasTypeRefs(outputClauses)).thenReturn(asList(hasTypeRef3, hasTypeRef4));
+        when(HasTypeRefHelper.getFlatHasTypeRefs(decisionRules)).thenReturn(asList(hasTypeRef5, hasTypeRef6));
 
-        final List<HasTypeRef> actualHasTypeRefs = binding.getHasTypeRefs();
-        final List<HasTypeRef> expectedHasTypeRefs = asList(hasTypeRef1, hasTypeRef2, hasTypeRef3, hasTypeRef4);
+        final List<HasTypeRef> actualHasTypeRefs = decisionTable.getHasTypeRefs();
+        final List<HasTypeRef> expectedHasTypeRefs = asList(decisionTable, hasTypeRef1, hasTypeRef2, hasTypeRef3, hasTypeRef4, hasTypeRef5, hasTypeRef6);
 
         assertEquals(expectedHasTypeRefs, actualHasTypeRefs);
     }

@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.dmn.api.definition.v1_1;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -38,6 +40,8 @@ import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
+import static java.util.Collections.singletonList;
+import static org.kie.workbench.common.dmn.api.definition.v1_1.common.HasTypeRefHelper.getNotNullHasTypeRefs;
 import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers.nestedForms.AbstractEmbeddedFormsInitializer.COLLAPSIBLE_CONTAINER;
 import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers.nestedForms.AbstractEmbeddedFormsInitializer.FIELD_CONTAINER_PARAM;
 
@@ -89,6 +93,16 @@ public class OutputClause extends DMNElement implements HasTypeRef,
         this.defaultOutputEntry = defaultOutputEntry;
         this.name = name;
         this.typeRef = typeRef;
+    }
+
+    @Override
+    public List<HasTypeRef> getHasTypeRefs() {
+
+        final List<HasTypeRef> hasTypeRefs = new ArrayList<>(singletonList(this));
+
+        hasTypeRefs.addAll(getNotNullHasTypeRefs(getDefaultOutputEntry()));
+
+        return hasTypeRefs;
     }
 
     // -----------------------

@@ -18,10 +18,13 @@ package org.kie.workbench.common.dmn.api.definition.v1_1;
 import java.util.ArrayList;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
+
+import static org.kie.workbench.common.dmn.api.definition.v1_1.common.HasTypeRefHelper.getFlatHasTypeRefs;
 
 @Portable
 public class List extends Expression {
@@ -50,6 +53,16 @@ public class List extends Expression {
             expression = new ArrayList<>();
         }
         return this.expression;
+    }
+
+    @Override
+    public java.util.List<HasTypeRef> getHasTypeRefs() {
+
+        final java.util.List<HasTypeRef> hasTypeRefs = super.getHasTypeRefs();
+
+        hasTypeRefs.addAll(getFlatHasTypeRefs(getExpression()));
+
+        return hasTypeRefs;
     }
 
     @Override
@@ -83,3 +96,4 @@ public class List extends Expression {
                                          expression != null ? expression.hashCode() : 0);
     }
 }
+

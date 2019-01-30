@@ -584,14 +584,14 @@ public class DataTypeManagerTest {
         final DataType dataType = makeDataType("uuid1");
         final DataType tPerson = makeDataType("uuid2", "tPerson");
         final DataType tCompany1 = makeDataType("uuid3", "tCompany");
-        final DataType tCompany2 = makeDataType("uuid3", "tCompany (2)");
+        final DataType tCompany2 = makeDataType("uuid3", "tCompany - 2");
         final List<DataType> siblings = asList(tPerson, tCompany1, tCompany2);
 
         doReturn(dataType).when(manager).get();
         doReturn(siblings).when(dataTypeNameValidator).siblings(dataType);
 
         final String actualDataTypeName = manager.withDataType(dataType).withUniqueName("tCompany").get().getName();
-        final String expectedDataTypeName = "tCompany (3)";
+        final String expectedDataTypeName = "tCompany - 3";
 
         assertEquals(expectedDataTypeName, actualDataTypeName);
     }

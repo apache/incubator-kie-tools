@@ -31,8 +31,8 @@ import org.kie.workbench.common.dmn.api.property.dmn.Text;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataTypeManager;
 import org.kie.workbench.common.dmn.client.editors.types.common.ItemDefinitionUtils;
+import org.kie.workbench.common.dmn.client.editors.types.persistence.handlers.common.PropertiesPanelNotifier;
 
-import static org.kie.workbench.common.dmn.api.property.dmn.QName.NULL_NS_URI;
 import static org.kie.workbench.common.stunner.core.util.StringUtils.isEmpty;
 
 @Dependent
@@ -42,15 +42,21 @@ public class ItemDefinitionUpdateHandler {
 
     private final ItemDefinitionUtils itemDefinitionUtils;
 
+    private final PropertiesPanelNotifier panelNotifier;
+
     @Inject
     public ItemDefinitionUpdateHandler(final DataTypeManager dataTypeManager,
-                                       final ItemDefinitionUtils itemDefinitionUtils) {
+                                       final ItemDefinitionUtils itemDefinitionUtils,
+                                       final PropertiesPanelNotifier panelNotifier) {
         this.dataTypeManager = dataTypeManager;
         this.itemDefinitionUtils = itemDefinitionUtils;
+        this.panelNotifier = panelNotifier;
     }
 
     public void update(final DataType dataType,
                        final ItemDefinition itemDefinition) {
+
+        final String itemDefinitionBeforeUpdate = itemDefinition.getName().getValue();
 
         if (isStructure(dataType)) {
             itemDefinition.setTypeRef(null);
@@ -62,6 +68,16 @@ public class ItemDefinitionUpdateHandler {
         itemDefinition.setIsCollection(dataType.isList());
         itemDefinition.setName(makeName(dataType));
         itemDefinition.setAllowedValues(makeAllowedValues(dataType, itemDefinition));
+
+        notifyPropertiesPanel(itemDefinitionBeforeUpdate, itemDefinition);
+    }
+
+    private void notifyPropertiesPanel(final String itemDefinitionBeforeUpdate,
+                                       final ItemDefinition itemDefinition) {
+        panelNotifier
+                .withOldLocalPart(itemDefinitionBeforeUpdate)
+                .withNewQName(makeQName(itemDefinition))
+                .notifyPanel();
     }
 
     UnaryTests makeAllowedValues(final DataType dataType,
@@ -84,19 +100,27 @@ public class ItemDefinitionUpdateHandler {
         return itemDefinition.getAllowedValues();
     }
 
-    String getText(final ItemDefinition itemDefinition) {
-        return itemDefinitionUtils.getConstraintText(itemDefinition);
-    }
-
     Name makeName(final DataType dataType) {
         return new Name(dataType.getName());
     }
 
     QName makeQName(final DataType dataType) {
-        return normaliseTypeRef(new QName(NULL_NS_URI, dataType.getType()));
+        return normaliseTypeRef(makeQName(dataType.getType()));
     }
 
-    QName normaliseTypeRef(final QName typeRef) {
+    QName makeQName(final ItemDefinition itemDefinition) {
+        return normaliseTypeRef(makeQName(itemDefinition.getName().getValue()));
+    }
+
+    private String getText(final ItemDefinition itemDefinition) {
+        return itemDefinitionUtils.getConstraintText(itemDefinition);
+    }
+
+    private QName makeQName(final String value) {
+        return new QName(QName.NULL_NS_URI, value);
+    }
+
+    private QName normaliseTypeRef(final QName typeRef) {
         return itemDefinitionUtils.normaliseTypeRef(typeRef);
     }
 

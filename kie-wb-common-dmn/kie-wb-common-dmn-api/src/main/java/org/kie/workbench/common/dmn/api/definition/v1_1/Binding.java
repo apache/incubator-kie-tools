@@ -15,13 +15,21 @@
  */
 package org.kie.workbench.common.dmn.api.definition.v1_1;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
+import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
+import org.kie.workbench.common.dmn.api.definition.HasTypeRefs;
 import org.kie.workbench.common.dmn.api.definition.HasVariable;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
+import static org.kie.workbench.common.dmn.api.definition.v1_1.common.HasTypeRefHelper.getNotNullHasTypeRefs;
+
 @Portable
 public class Binding extends DMNModelInstrumentedBase implements HasExpression,
+                                                                 HasTypeRefs,
                                                                  HasVariable<InformationItem> {
 
     private InformationItem parameter;
@@ -83,5 +91,16 @@ public class Binding extends DMNModelInstrumentedBase implements HasExpression,
     public int hashCode() {
         return HashUtil.combineHashCodes(parameter != null ? parameter.hashCode() : 0,
                                          expression != null ? expression.hashCode() : 0);
+    }
+
+    @Override
+    public List<HasTypeRef> getHasTypeRefs() {
+
+        final List<HasTypeRef> hasTypeRefs = new ArrayList<>();
+
+        hasTypeRefs.addAll(getNotNullHasTypeRefs(getExpression()));
+        hasTypeRefs.addAll(getNotNullHasTypeRefs(getParameter()));
+
+        return hasTypeRefs;
     }
 }

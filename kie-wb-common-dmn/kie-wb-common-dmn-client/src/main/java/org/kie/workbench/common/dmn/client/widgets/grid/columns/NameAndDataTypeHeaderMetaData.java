@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.dmn.client.widgets.grid.columns;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiConsumer;
@@ -36,6 +38,8 @@ import org.kie.workbench.common.dmn.client.editors.types.HasNameAndTypeRef;
 import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridHeaderColumnRenderContext;
+
+import static java.util.Collections.singletonList;
 
 public abstract class NameAndDataTypeHeaderMetaData<E extends Expression> extends EditablePopupHeaderMetaData<HasNameAndTypeRef, NameAndDataTypePopoverView.Presenter> implements HasNameAndTypeRef {
 
@@ -140,5 +144,10 @@ public abstract class NameAndDataTypeHeaderMetaData<E extends Expression> extend
     @Override
     public DMNModelInstrumentedBase asDMNModelInstrumentedBase() {
         return hasTypeRef.get().asDMNModelInstrumentedBase();
+    }
+
+    @Override
+    public List<HasTypeRef> getHasTypeRefs() {
+        return new ArrayList<>(singletonList(this));
     }
 }

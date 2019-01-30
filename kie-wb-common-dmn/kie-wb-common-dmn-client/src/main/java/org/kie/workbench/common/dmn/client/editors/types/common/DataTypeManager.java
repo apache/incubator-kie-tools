@@ -218,7 +218,7 @@ public class DataTypeManager {
     private DataTypeManager withUniqueName(final String name,
                                            final int nameSuffix) {
 
-        withName(nameSuffix == 1 ? name : name + " (" + nameSuffix + ")");
+        withName(nameSuffix == 1 ? name : name + " - " + nameSuffix);
 
         if (dataTypeNameValidator.isNotUnique(get())) {
             return withUniqueName(name, nameSuffix + 1);

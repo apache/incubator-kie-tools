@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.dmn.api.definition.v1_1;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import javax.validation.Valid;
@@ -23,6 +25,7 @@ import javax.validation.Valid;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.soup.commons.util.Sets;
+import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.property.DMNPropertySet;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
@@ -39,6 +42,8 @@ import org.kie.workbench.common.stunner.core.definition.annotation.definition.Ca
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
+
+import static java.util.Collections.singletonList;
 
 /**
  * This is in essence a clone of {@link InformationItem} specifically for use with {@link BusinessKnowledgeModel},
@@ -108,6 +113,11 @@ public class InformationItemPrimary extends DMNModelInstrumentedBase implements 
     @Override
     public DMNModelInstrumentedBase asDMNModelInstrumentedBase() {
         return this;
+    }
+
+    @Override
+    public List<HasTypeRef> getHasTypeRefs() {
+        return new ArrayList<>(singletonList(this));
     }
 
     // ------------------

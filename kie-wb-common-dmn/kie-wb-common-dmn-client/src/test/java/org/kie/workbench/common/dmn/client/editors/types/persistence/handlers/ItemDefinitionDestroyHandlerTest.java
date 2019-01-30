@@ -30,6 +30,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.ItemDefinitionStore;
+import org.kie.workbench.common.dmn.client.editors.types.persistence.handlers.common.PropertiesPanelNotifier;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.mockito.Mock;
 
@@ -37,9 +38,13 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
@@ -51,33 +56,55 @@ public class ItemDefinitionDestroyHandlerTest {
     @Mock
     private DMNGraphUtils dmnGraphUtils;
 
+    @Mock
+    private PropertiesPanelNotifier panelNotifier;
+
     private ItemDefinitionDestroyHandler handler;
 
     @Before
     public void setup() {
-        handler = spy(new ItemDefinitionDestroyHandler(itemDefinitionStore, dmnGraphUtils));
+        handler = spy(new ItemDefinitionDestroyHandler(itemDefinitionStore, dmnGraphUtils, panelNotifier));
     }
 
     @Test
     public void testDestroy() {
 
         final String uuid = "uuid";
+        final String oldItemDefinitionName = "oldItemDefinitionName";
         final DataType dataType = mock(DataType.class);
+        final Name name = mock(Name.class);
         final ItemDefinition itemDefinition = makeItemDefinition();
         final ItemDefinition itemDefinitionParent = makeItemDefinition(itemDefinition);
         final List<ItemDefinition> itemDefinitions = new ArrayList<ItemDefinition>() {{
             add(itemDefinition);
         }};
 
+        when(name.getValue()).thenReturn(oldItemDefinitionName);
         when(itemDefinitionStore.get(uuid)).thenReturn(itemDefinition);
         when(dataType.getUUID()).thenReturn(uuid);
         doReturn(Optional.of(itemDefinitionParent)).when(handler).findItemDefinitionParent(dataType);
+        doReturn(name).when(itemDefinition).getName();
         doReturn(itemDefinitions).when(handler).itemDefinitions();
+        doNothing().when(handler).notifyPropertiesPanel(anyString());
 
         handler.destroy(dataType);
 
         assertEquals(emptyList(), itemDefinitionParent.getItemComponent());
         assertEquals(emptyList(), itemDefinitions);
+        verify(handler).notifyPropertiesPanel(oldItemDefinitionName);
+    }
+
+    @Test
+    public void testNotifyPropertiesPanel() {
+
+        final String destroyedItemDefinition = "destroyedItemDefinition";
+
+        when(panelNotifier.withOldLocalPart(destroyedItemDefinition)).thenReturn(panelNotifier);
+        when(panelNotifier.withNewQName(eq(new QName()))).thenReturn(panelNotifier);
+
+        handler.notifyPropertiesPanel(destroyedItemDefinition);
+
+        verify(panelNotifier).notifyPanel();
     }
 
     @Test

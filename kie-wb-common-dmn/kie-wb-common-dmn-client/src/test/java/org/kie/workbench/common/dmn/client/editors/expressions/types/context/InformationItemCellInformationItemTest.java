@@ -16,16 +16,23 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.context;
 
+import java.util.List;
+
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.InformationItemCell.HasNameAndDataTypeCell;
 
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class InformationItemCellInformationItemTest extends InformationItemCellNameTest {
@@ -90,5 +97,21 @@ public class InformationItemCellInformationItemTest extends InformationItemCellN
 
         verify(group).add(text1);
         verify(group).add(text2);
+    }
+
+    @Test
+    public void testHasNameAndDataTypeCellGetHasTypeRefs() {
+
+        final InformationItem informationItem = mock(InformationItem.class);
+        final HasNameAndDataTypeCell hasNameAndDataTypeCell = HasNameAndDataTypeCell.wrap(informationItem);
+        final HasTypeRef hasTypeRef1 = mock(HasTypeRef.class);
+        final HasTypeRef hasTypeRef2 = mock(HasTypeRef.class);
+        final List<HasTypeRef> expectedHasTypeRefs = asList(hasTypeRef1, hasTypeRef2);
+
+        when(informationItem.getHasTypeRefs()).thenReturn(expectedHasTypeRefs);
+
+        final List<HasTypeRef> actualHasTypeRefs = hasNameAndDataTypeCell.getHasTypeRefs();
+
+        assertEquals(expectedHasTypeRefs, actualHasTypeRefs);
     }
 }

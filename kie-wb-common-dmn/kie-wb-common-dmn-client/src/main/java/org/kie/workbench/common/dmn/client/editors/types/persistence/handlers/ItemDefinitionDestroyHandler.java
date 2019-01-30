@@ -26,8 +26,10 @@ import javax.inject.Inject;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.Definitions;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
+import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.ItemDefinitionStore;
+import org.kie.workbench.common.dmn.client.editors.types.persistence.handlers.common.PropertiesPanelNotifier;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 
 @Dependent
@@ -37,16 +39,21 @@ public class ItemDefinitionDestroyHandler {
 
     private final DMNGraphUtils dmnGraphUtils;
 
+    private final PropertiesPanelNotifier panelNotifier;
+
     @Inject
     public ItemDefinitionDestroyHandler(final ItemDefinitionStore itemDefinitionStore,
-                                        final DMNGraphUtils dmnGraphUtils) {
+                                        final DMNGraphUtils dmnGraphUtils,
+                                        final PropertiesPanelNotifier panelNotifier) {
         this.itemDefinitionStore = itemDefinitionStore;
         this.dmnGraphUtils = dmnGraphUtils;
+        this.panelNotifier = panelNotifier;
     }
 
     public void destroy(final DataType dataType) {
 
         final ItemDefinition itemDefinition = findItemDefinition(dataType);
+        final String destroyedItemDefinition = itemDefinition.getName().getValue();
         final Optional<ItemDefinition> itemDefinitionParent = findItemDefinitionParent(dataType);
 
         itemDefinitionParent.ifPresent(parent -> {
@@ -55,6 +62,15 @@ public class ItemDefinitionDestroyHandler {
 
         itemDefinitions().remove(itemDefinition);
         itemDefinitionStore.unIndex(dataType.getUUID());
+
+        notifyPropertiesPanel(destroyedItemDefinition);
+    }
+
+    void notifyPropertiesPanel(final String destroyedItemDefinition) {
+        panelNotifier
+                .withOldLocalPart(destroyedItemDefinition)
+                .withNewQName(new QName())
+                .notifyPanel();
     }
 
     Optional<ItemDefinition> findItemDefinitionParent(final DataType dataType) {

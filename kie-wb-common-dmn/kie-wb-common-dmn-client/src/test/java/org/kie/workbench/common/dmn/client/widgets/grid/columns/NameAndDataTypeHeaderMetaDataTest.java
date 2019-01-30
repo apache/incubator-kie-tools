@@ -18,11 +18,15 @@ package org.kie.workbench.common.dmn.client.widgets.grid.columns;
 
 import java.util.Optional;
 
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.client.editors.expressions.util.RendererUtils;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+
+import static java.util.Collections.singletonList;
+import static org.junit.Assert.assertEquals;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(RendererUtils.class)
@@ -42,5 +46,18 @@ public class NameAndDataTypeHeaderMetaDataTest extends BaseNameAndDataTypeHeader
                 return NAME_DATA_TYPE_COLUMN_GROUP;
             }
         };
+    }
+
+    @Test
+    public void testGetHasTypeRefs() {
+
+        metaData = new NameAndDataTypeHeaderMetaData(null, null, null, null, null, null, null, null) {
+
+            public String getColumnGroup() {
+                return null;
+            }
+        };
+
+        assertEquals(singletonList(metaData), metaData.getHasTypeRefs());
     }
 }

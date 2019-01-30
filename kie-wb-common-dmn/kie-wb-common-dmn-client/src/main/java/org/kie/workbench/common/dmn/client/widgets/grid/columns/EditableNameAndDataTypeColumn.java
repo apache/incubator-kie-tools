@@ -42,6 +42,8 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellEditContext;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 
+import static org.kie.workbench.common.dmn.api.definition.v1_1.common.HasTypeRefHelper.getNotNullHasTypeRefs;
+
 public abstract class EditableNameAndDataTypeColumn<G extends BaseExpressionGrid> extends DMNSimpleGridColumn<G, InformationItemCell.HasNameCell> {
 
     private final Predicate<Integer> isEditable;
@@ -149,6 +151,11 @@ public abstract class EditableNameAndDataTypeColumn<G extends BaseExpressionGrid
                         @Override
                         public DMNModelInstrumentedBase asDMNModelInstrumentedBase() {
                             return binding.asDMNModelInstrumentedBase();
+                        }
+
+                        @Override
+                        public List<HasTypeRef> getHasTypeRefs() {
+                            return getNotNullHasTypeRefs(binding);
                         }
                     },
                     uiRowIndex,

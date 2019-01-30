@@ -396,7 +396,7 @@ public class DataTypeListItemView implements DataTypeListItem.View {
     }
 
     void setupTooltips() {
-        $(getElement().querySelectorAll("[data-toggle='tooltip'")).tooltip();
+        $(getElement().querySelectorAll("[data-toggle='tooltip']")).tooltip();
     }
 
     void setupEventHandlers() {

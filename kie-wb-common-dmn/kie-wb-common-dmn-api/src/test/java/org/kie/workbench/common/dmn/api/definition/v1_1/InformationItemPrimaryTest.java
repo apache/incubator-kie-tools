@@ -16,11 +16,15 @@
 
 package org.kie.workbench.common.dmn.api.definition.v1_1;
 
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.property.dmn.QNameHolder;
 
+import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
 
 public class InformationItemPrimaryTest {
@@ -63,5 +67,14 @@ public class InformationItemPrimaryTest {
         informationItemPrimary.setTypeRefHolder(typeRefHolder);
 
         assertEquals(typeRef, informationItemPrimary.getTypeRefHolder().getValue());
+    }
+
+    @Test
+    public void testGetHasTypeRefs() {
+
+        final List<HasTypeRef> actualHasTypeRefs = informationItemPrimary.getHasTypeRefs();
+        final List<HasTypeRef> expectedHasTypeRefs = singletonList(informationItemPrimary);
+
+        assertEquals(expectedHasTypeRefs, actualHasTypeRefs);
     }
 }

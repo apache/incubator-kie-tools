@@ -26,6 +26,8 @@ import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
+import static java.util.Collections.singletonList;
+
 @Portable
 public class ItemDefinition extends NamedElement implements HasTypeRef {
 
@@ -77,6 +79,11 @@ public class ItemDefinition extends NamedElement implements HasTypeRef {
     @Override
     public DMNModelInstrumentedBase asDMNModelInstrumentedBase() {
         return this;
+    }
+
+    @Override
+    public List<HasTypeRef> getHasTypeRefs() {
+        return new ArrayList<>(singletonList(this));
     }
 
     public UnaryTests getAllowedValues() {

@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions.types.context;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
 
@@ -33,6 +34,8 @@ import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCell;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
+
+import static org.kie.workbench.common.dmn.api.definition.v1_1.common.HasTypeRefHelper.getNotNullHasTypeRefs;
 
 public class InformationItemCell extends ContextGridCell<InformationItemCell.HasNameCell> {
 
@@ -112,6 +115,11 @@ public class InformationItemCell extends ContextGridCell<InformationItemCell.Has
                 @Override
                 public DMNModelInstrumentedBase asDMNModelInstrumentedBase() {
                     return informationItem;
+                }
+
+                @Override
+                public List<HasTypeRef> getHasTypeRefs() {
+                    return getNotNullHasTypeRefs(informationItem);
                 }
 
                 @Override

@@ -20,10 +20,14 @@ import java.util.List;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
+import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
+
+import static org.kie.workbench.common.dmn.api.definition.v1_1.common.HasTypeRefHelper.getFlatHasTypeRefs;
+import static org.kie.workbench.common.dmn.api.definition.v1_1.common.HasTypeRefHelper.getNotNullHasTypeRefs;
 
 @Portable
 public class FunctionDefinition extends Expression implements HasExpression {
@@ -83,6 +87,17 @@ public class FunctionDefinition extends Expression implements HasExpression {
 
     public void setKind(Kind kind) {
         this.kind = kind;
+    }
+
+    @Override
+    public List<HasTypeRef> getHasTypeRefs() {
+
+        final List<HasTypeRef> hasTypeRefs = super.getHasTypeRefs();
+
+        hasTypeRefs.addAll(getNotNullHasTypeRefs(getExpression()));
+        hasTypeRefs.addAll(getFlatHasTypeRefs(getFormalParameter()));
+
+        return hasTypeRefs;
     }
 
     @Override

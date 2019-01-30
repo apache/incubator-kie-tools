@@ -19,12 +19,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
+import org.kie.workbench.common.dmn.api.definition.HasTypeRefs;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
+import static org.kie.workbench.common.dmn.api.definition.v1_1.common.HasTypeRefHelper.getFlatHasTypeRefs;
+
 @Portable
-public class DecisionRule extends DMNElement {
+public class DecisionRule extends DMNElement implements HasTypeRefs {
 
     private List<UnaryTests> inputEntry;
     private List<LiteralExpression> outputEntry;
@@ -58,6 +62,11 @@ public class DecisionRule extends DMNElement {
             outputEntry = new ArrayList<>();
         }
         return this.outputEntry;
+    }
+
+    @Override
+    public List<HasTypeRef> getHasTypeRefs() {
+        return new ArrayList<>(getFlatHasTypeRefs(getOutputEntry()));
     }
 
     @Override
