@@ -35,6 +35,11 @@ public class DMNFeelExpressionEvaluatorTest {
         assertThatThrownBy(() -> expressionEvaluator.evaluate(new Object(), null, null))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Raw expression should be a string");
+
+        assertThatThrownBy(() -> expressionEvaluator.evaluate("! true", null, null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Impossible to parse the expression '! true'");
+
     }
 
     @Test

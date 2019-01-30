@@ -51,6 +51,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -163,6 +164,13 @@ public class DMNScenarioRunnerHelperTest {
 
         assertEquals(1, newScenarioRunnerData.getResults().size());
         assertTrue(newScenarioRunnerData.getResults().get(0).getResult());
+
+        // verify that when expression evaluation fails the corresponding expression is marked as error
+        runnerHelper.verifyConditions(simulation.getSimulationDescriptor(),
+                                      newScenarioRunnerData,
+                                      mock(ExpressionEvaluator.class),
+                                      requestContext);
+        assertTrue(newScenarioRunnerData.getResults().get(0).getFactMappingValue().isError());
     }
 
     @SuppressWarnings("unchecked")

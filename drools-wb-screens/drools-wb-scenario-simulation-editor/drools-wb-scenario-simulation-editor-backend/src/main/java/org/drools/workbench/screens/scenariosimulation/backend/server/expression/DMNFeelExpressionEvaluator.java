@@ -40,6 +40,9 @@ public class DMNFeelExpressionEvaluator implements ExpressionEvaluator {
         }
         EvaluationContext evaluationContext = newEvaluationContext();
         List<UnaryTest> unaryTests = feel.evaluateUnaryTests((String) rawExpression);
+        if(unaryTests.size() < 1) {
+            throw new IllegalArgumentException("Impossible to parse the expression '" + rawExpression + "'");
+        }
         return unaryTests.stream().allMatch(unaryTest -> unaryTest.apply(evaluationContext, resultValue));
     }
 
