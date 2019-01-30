@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.stunner.core.client.session.command.impl;
 
+import java.lang.annotation.Annotation;
+
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,7 +30,10 @@ import org.kie.workbench.common.stunner.core.client.session.command.ClientSessio
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
+import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -36,6 +42,7 @@ import org.uberfire.mocks.EventSourceMock;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -75,6 +82,23 @@ public class ClearSessionCommandTest {
     @Mock
     private CommandResult commandResult;
 
+    @Mock
+    private DefinitionUtils definitionUtils;
+
+    @Mock
+    private Diagram diagram;
+
+    @Mock
+    private Metadata metadata;
+
+    private final String DEFINITION_SET_ID = "mockDefinitionSetId";
+
+    @Mock
+    private Annotation qualifier;
+
+    @Mock
+    private ManagedInstance<CanvasCommandFactory<AbstractCanvasHandler>> canvasCommandFactoryInstance;
+
     private ArgumentCaptor<ClearSessionCommandExecutedEvent> commandExecutedEventCaptor;
 
     @Before
@@ -85,11 +109,20 @@ public class ClearSessionCommandTest {
         when(sessionCommandManager.getRegistry()).thenReturn(commandRegistry);
         when(canvasCommandFactory.clearCanvas()).thenReturn(clearCanvasCommand);
 
+        when(canvasHandler.getDiagram()).thenReturn(diagram);
+        when(diagram.getMetadata()).thenReturn(metadata);
+        when(metadata.getDefinitionSetId()).thenReturn(DEFINITION_SET_ID);
+        when(definitionUtils.getQualifier(eq(DEFINITION_SET_ID))).thenReturn(qualifier);
+        when(canvasCommandFactoryInstance.select(eq(qualifier))).thenReturn(canvasCommandFactoryInstance);
+        when(canvasCommandFactoryInstance.isUnsatisfied()).thenReturn(false);
+        when(canvasCommandFactoryInstance.get()).thenReturn(canvasCommandFactory);
+
         commandExecutedEventCaptor = ArgumentCaptor.forClass(ClearSessionCommandExecutedEvent.class);
 
-        command = new ClearSessionCommand(canvasCommandFactory,
+        command = new ClearSessionCommand(canvasCommandFactoryInstance,
                                           sessionCommandManager,
-                                          commandExecutedEvent);
+                                          commandExecutedEvent,
+                                          definitionUtils);
         command.bind(session);
     }
 

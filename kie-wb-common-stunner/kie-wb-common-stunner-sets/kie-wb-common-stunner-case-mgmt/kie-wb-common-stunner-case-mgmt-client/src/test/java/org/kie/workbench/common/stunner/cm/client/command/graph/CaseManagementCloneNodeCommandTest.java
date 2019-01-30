@@ -17,21 +17,50 @@
 package org.kie.workbench.common.stunner.cm.client.command.graph;
 
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.core.graph.command.impl.CloneNodeCommand;
 import org.kie.workbench.common.stunner.core.graph.command.impl.CloneNodeCommandTest;
+import org.kie.workbench.common.stunner.core.graph.command.impl.RegisterNodeCommand;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CaseManagementCloneNodeCommandTest extends CloneNodeCommandTest {
+
+    private CaseManagementCloneNodeCommand tested;
 
     @Before
     public void setUp() {
         super.setUp();
 
-        cloneNodeCommand = new CaseManagementCloneNodeCommand(candidate,
-                                                              parent.getUUID(),
-                                                              position,
-                                                              null,
-                                                              childrenTraverseProcessorManagedInstance);
+        tested = new CaseManagementCloneNodeCommand(candidate,
+                                                    parent.getUUID(),
+                                                    position,
+                                                    null,
+                                                    childrenTraverseProcessorManagedInstance);
+        cloneNodeCommand = tested;
+    }
+
+    @Test
+    public void testCreateNodeCommands() throws Exception {
+        tested.createNodeCommands(candidate, parent.getUUID(), position);
+
+        assertEquals(2, tested.getCommands().size());
+        assertTrue(RegisterNodeCommand.class.isInstance(tested.getCommands().get(0)));
+        assertTrue(CaseManagementAddChildNodeGraphCommand.class.isInstance(tested.getCommands().get(1)));
+    }
+
+    @Test
+    public void testCreateCloneChildCommand() throws Exception {
+        final CloneNodeCommand command = tested.createCloneChildCommand(candidate,
+                                                                        parent.getUUID(),
+                                                                        position,
+                                                                        null,
+                                                                        childrenTraverseProcessorManagedInstance);
+
+        assertTrue(CaseManagementCloneNodeCommand.class.isInstance(command));
     }
 }

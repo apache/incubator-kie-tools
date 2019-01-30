@@ -23,6 +23,7 @@ import java.util.UUID;
 
 import org.kie.workbench.common.stunner.cm.client.canvas.CaseManagementCanvas;
 import org.kie.workbench.common.stunner.cm.client.canvas.CaseManagementCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
@@ -38,6 +39,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
 public abstract class CaseManagementAbstractCommandTest {
@@ -73,6 +75,12 @@ public abstract class CaseManagementAbstractCommandTest {
     @Mock
     protected Node candidate;
 
+    @Mock
+    protected Shape rootShape;
+
+    @Mock
+    protected Node rootNode;
+
     protected String shapeUUID;
 
 
@@ -105,10 +113,14 @@ public abstract class CaseManagementAbstractCommandTest {
         when(metadata.getDefinitionSetId()).thenReturn(DEF_SET_ID);
         when(metadata.getShapeSetId()).thenReturn(SHAPE_SET_ID);
         when(metadata.getCanvasRootUUID()).thenReturn(CANVAS_ROOT_UUID);
+        when(canvas.getShape(eq(CANVAS_ROOT_UUID))).thenReturn(rootShape);
 
         when(node.getUUID()).thenReturn(UUID.randomUUID().toString());
         when(parent.getUUID()).thenReturn(UUID.randomUUID().toString());
         when(candidate.getUUID()).thenReturn(UUID.randomUUID().toString());
+        when(rootNode.getUUID()).thenReturn(CANVAS_ROOT_UUID);
+
+        ((MapIndex) index).addNode(rootNode);
 
         shapeUUID = UUID.randomUUID().toString();
     }

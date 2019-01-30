@@ -28,13 +28,23 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 @SuppressWarnings("unchecked")
 public class CaseManagementAddChildNodeGraphCommand extends org.kie.workbench.common.stunner.core.graph.command.impl.AddChildNodeCommand {
 
-    private final int index;
+    private final OptionalInt index;
 
     public CaseManagementAddChildNodeGraphCommand(final Node parent,
                                                   final Node child,
                                                   final int index) {
         super(parent,
               child);
+
+        this.index = OptionalInt.of(index);
+    }
+
+    public CaseManagementAddChildNodeGraphCommand(final String parentUUID,
+                                                  final Node child,
+                                                  final OptionalInt index) {
+        super(parentUUID,
+              child,
+              null);
 
         this.index = index;
     }
@@ -46,7 +56,7 @@ public class CaseManagementAddChildNodeGraphCommand extends org.kie.workbench.co
         this.addCommand(new RegisterNodeCommand(child));
         this.addCommand(new CaseManagementSetChildNodeGraphCommand(parent,
                                                                    child,
-                                                                   OptionalInt.of(index),
+                                                                   index,
                                                                    Optional.empty(),
                                                                    OptionalInt.empty()));
         return this;

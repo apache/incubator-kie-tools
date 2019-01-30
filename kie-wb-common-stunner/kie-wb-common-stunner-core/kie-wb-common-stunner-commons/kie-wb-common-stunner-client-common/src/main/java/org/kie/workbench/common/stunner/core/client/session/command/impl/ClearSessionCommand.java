@@ -20,9 +20,11 @@ import java.util.logging.Logger;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
+import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
@@ -33,6 +35,7 @@ import org.kie.workbench.common.stunner.core.client.session.command.AbstractClie
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 import static java.util.logging.Level.FINE;
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
@@ -48,29 +51,35 @@ public class ClearSessionCommand extends AbstractClientSessionCommand<EditorSess
 
     private static Logger LOGGER = Logger.getLogger(ClearSessionCommand.class.getName());
 
-    private final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
+    private final ManagedInstance<CanvasCommandFactory<AbstractCanvasHandler>> canvasCommandFactoryInstance;
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
     private final Event<ClearSessionCommandExecutedEvent> commandExecutedEvent;
+    private final DefinitionUtils definitionUtils;
+    private CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
 
     protected ClearSessionCommand() {
         this(null,
+             null,
              null,
              null);
     }
 
     @Inject
-    public ClearSessionCommand(final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
+    public ClearSessionCommand(final @Any ManagedInstance<CanvasCommandFactory<AbstractCanvasHandler>> canvasCommandFactoryInstance,
                                final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                               final Event<ClearSessionCommandExecutedEvent> commandExecutedEvent) {
+                               final Event<ClearSessionCommandExecutedEvent> commandExecutedEvent,
+                               final DefinitionUtils definitionUtils) {
         super(true);
-        this.canvasCommandFactory = canvasCommandFactory;
+        this.canvasCommandFactoryInstance = canvasCommandFactoryInstance;
         this.sessionCommandManager = sessionCommandManager;
         this.commandExecutedEvent = commandExecutedEvent;
+        this.definitionUtils = definitionUtils;
     }
 
     @Override
     public void bind(final EditorSession session) {
         super.bind(session);
+        canvasCommandFactory = this.loadCanvasFactory(canvasCommandFactoryInstance, definitionUtils);
     }
 
     @Override

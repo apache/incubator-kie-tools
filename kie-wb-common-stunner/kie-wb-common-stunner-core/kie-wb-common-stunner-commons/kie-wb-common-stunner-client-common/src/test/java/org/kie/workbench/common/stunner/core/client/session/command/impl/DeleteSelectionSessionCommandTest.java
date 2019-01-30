@@ -16,20 +16,25 @@
 
 package org.kie.workbench.common.stunner.core.client.session.command.impl;
 
+import java.lang.annotation.Annotation;
+
 import javax.enterprise.event.Event;
 
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyboardControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.ClientSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -43,27 +48,38 @@ public class DeleteSelectionSessionCommandTest extends BaseSessionCommandKeyboar
     private ClientSessionCommand.Callback callback;
 
     @Mock
-    private EditorSession session;
+    private DefinitionUtils definitionUtils;
+
+    private final String DEFINITION_SET_ID = "mockDefinitionSetId";
 
     @Mock
-    private KeyboardControl keyboardControl;
+    private Annotation qualifier;
 
     @Mock
-    private SelectionControl selectionControl;
+    private ManagedInstance<CanvasCommandFactory<AbstractCanvasHandler>> canvasCommandFactoryInstance;
+
+    @Override
+    public void setup() {
+        super.setup();
+
+        when(metadata.getDefinitionSetId()).thenReturn(DEFINITION_SET_ID);
+        when(definitionUtils.getQualifier(eq(DEFINITION_SET_ID))).thenReturn(qualifier);
+        when(canvasCommandFactoryInstance.select(eq(qualifier))).thenReturn(canvasCommandFactoryInstance);
+        when(canvasCommandFactoryInstance.isUnsatisfied()).thenReturn(false);
+        when(canvasCommandFactoryInstance.get()).thenReturn(canvasCommandFactory);
+    }
 
     @Override
     protected AbstractClientSessionCommand<EditorSession> getCommand() {
         return new DeleteSelectionSessionCommand(sessionCommandManager,
-                                                 canvasCommandFactory,
-                                                 canvasClearSelectionEventEvent);
+                                                 canvasCommandFactoryInstance,
+                                                 canvasClearSelectionEventEvent,
+                                                 definitionUtils);
     }
 
     @Test
     public void testClearSessionInvoked() {
-        DeleteSelectionSessionCommand deleteCommand = (DeleteSelectionSessionCommand) getCommand();
-
-        when(session.getKeyboardControl()).thenReturn(keyboardControl);
-        when(session.getSelectionControl()).thenReturn(selectionControl);
+        DeleteSelectionSessionCommand deleteCommand = (DeleteSelectionSessionCommand) this.command;
 
         deleteCommand.bind(session);
 

@@ -27,7 +27,7 @@ import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecution
 import org.kie.workbench.common.stunner.core.graph.command.impl.RemoveChildCommand;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
-import static org.kie.workbench.common.stunner.cm.client.command.CaseManagementCanvasCommandFactory.getChildIndex;
+import static org.kie.workbench.common.stunner.cm.client.command.util.CaseManagementCommandUtil.getChildIndex;
 
 @Portable
 public class CaseManagementRemoveChildCommand extends RemoveChildCommand {

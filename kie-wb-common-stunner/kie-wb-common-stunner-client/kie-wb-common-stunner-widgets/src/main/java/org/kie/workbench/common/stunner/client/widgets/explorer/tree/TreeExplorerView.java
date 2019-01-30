@@ -55,7 +55,7 @@ public class TreeExplorerView extends Composite implements TreeExplorer.View {
                      final HandlerRegistration handlerRegistration
     ) {
         this.presenter = presenter;
-        this.uiBinder = uiBinder;
+        TreeExplorerView.uiBinder = uiBinder;
         this.tree = tree;
         this.handlerRegistration = handlerRegistration;
     }
@@ -164,7 +164,10 @@ public class TreeExplorerView extends Composite implements TreeExplorer.View {
     }
 
     public TreeExplorer.View removeItem(String uuid) {
-        tree.getItemByUuid(uuid).remove();
+        final TreeItem item = tree.getItemByUuid(uuid);
+        if (item != null) {
+            item.remove();
+        }
         return this;
     }
 

@@ -16,11 +16,15 @@
 
 package org.kie.workbench.common.stunner.cm.client.command.graph;
 
+import java.util.OptionalInt;
+import java.util.function.Supplier;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
+import org.kie.workbench.common.stunner.core.graph.processing.index.map.MapIndex;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
@@ -29,26 +33,26 @@ import static org.junit.Assert.assertTrue;
 @RunWith(MockitoJUnitRunner.class)
 public class CaseManagementAddChildNodeGraphCommandTest extends CaseManagementAbstractGraphCommandTest {
 
-    private int index;
+    private int targetIndex;
 
     @Before
     public void setup() {
         super.setup();
-        index = parent.getOutEdges().size();
+        targetIndex = parent.getOutEdges().size();
+        ((MapIndex) index).addNode(parent);
     }
 
-    @Test
-    public void checkExecute() {
-        addChildNode();
+    private void checkExecute(Supplier<CaseManagementAddChildNodeGraphCommand> addNodeSupplier) {
+        addNodeSupplier.get();
 
         assertEquals(1,
                      parent.getOutEdges().size());
         assertEquals(1,
                      candidate.getInEdges().size());
-        assertEquals(parent.getOutEdges().get(index),
+        assertEquals(parent.getOutEdges().get(targetIndex),
                      candidate.getInEdges().get(0));
 
-        final Edge edge = parent.getOutEdges().get(index);
+        final Edge edge = parent.getOutEdges().get(targetIndex);
         assertEquals(parent,
                      edge.getSourceNode());
         assertEquals(candidate,
@@ -56,18 +60,9 @@ public class CaseManagementAddChildNodeGraphCommandTest extends CaseManagementAb
         assertTrue(edge.getContent() instanceof Child);
     }
 
-    private CaseManagementAddChildNodeGraphCommand addChildNode() {
-        final CaseManagementAddChildNodeGraphCommand command = new CaseManagementAddChildNodeGraphCommand(parent,
-                                                                                                          candidate,
-                                                                                                          index);
-        command.execute(context);
-        return command;
-    }
-
-    @Test
-    public void checkUndo() {
+    private void checkUndo(Supplier<CaseManagementAddChildNodeGraphCommand> addNodeSupplier) {
         //Setup the relationship to undo
-        final CaseManagementAddChildNodeGraphCommand command = addChildNode();
+        final CaseManagementAddChildNodeGraphCommand command = addNodeSupplier.get();
 
         //Perform test
         command.undo(context);
@@ -76,5 +71,41 @@ public class CaseManagementAddChildNodeGraphCommandTest extends CaseManagementAb
                      parent.getOutEdges().size());
         assertEquals(0,
                      candidate.getInEdges().size());
+    }
+
+    private CaseManagementAddChildNodeGraphCommand addChildNode1() {
+        final CaseManagementAddChildNodeGraphCommand command = new CaseManagementAddChildNodeGraphCommand(parent,
+                                                                                                          candidate,
+                                                                                                          targetIndex);
+        command.execute(context);
+        return command;
+    }
+
+    private CaseManagementAddChildNodeGraphCommand addChildNode2() {
+        final CaseManagementAddChildNodeGraphCommand command = new CaseManagementAddChildNodeGraphCommand(parent.getUUID(),
+                                                                                                          candidate,
+                                                                                                          OptionalInt.of(targetIndex));
+        command.execute(context);
+        return command;
+    }
+
+    @Test
+    public void checkExecute1() {
+        checkExecute(this::addChildNode1);
+    }
+
+    @Test
+    public void checkUndo1() {
+        checkUndo(this::addChildNode1);
+    }
+
+    @Test
+    public void checkExecute2() {
+        checkExecute(this::addChildNode2);
+    }
+
+    @Test
+    public void checkUndo2() {
+        checkUndo(this::addChildNode2);
     }
 }

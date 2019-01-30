@@ -23,9 +23,11 @@ import java.util.stream.Collectors;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
+import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementsClearEvent;
@@ -42,6 +44,7 @@ import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.graph.Element;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 import static org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeysMatcher.doKeysMatch;
@@ -57,29 +60,35 @@ public class DeleteSelectionSessionCommand extends AbstractSelectionAwareSession
     private static Logger LOGGER = Logger.getLogger(DeleteSelectionSessionCommand.class.getName());
 
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
-    private final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
+    private final ManagedInstance<CanvasCommandFactory<AbstractCanvasHandler>> canvasCommandFactoryInstance;
     private final Event<CanvasClearSelectionEvent> clearSelectionEvent;
+    private final DefinitionUtils definitionUtils;
+    private CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
 
     protected DeleteSelectionSessionCommand() {
         this(null,
+             null,
              null,
              null);
     }
 
     @Inject
     public DeleteSelectionSessionCommand(final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                                         final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
-                                         final Event<CanvasClearSelectionEvent> clearSelectionEvent) {
+                                         final @Any ManagedInstance<CanvasCommandFactory<AbstractCanvasHandler>> canvasCommandFactoryInstance,
+                                         final Event<CanvasClearSelectionEvent> clearSelectionEvent,
+                                         final DefinitionUtils definitionUtils) {
         super(false);
         this.sessionCommandManager = sessionCommandManager;
-        this.canvasCommandFactory = canvasCommandFactory;
+        this.canvasCommandFactoryInstance = canvasCommandFactoryInstance;
         this.clearSelectionEvent = clearSelectionEvent;
+        this.definitionUtils = definitionUtils;
     }
 
     @Override
     public void bind(final EditorSession session) {
         super.bind(session);
         session.getKeyboardControl().addKeyShortcutCallback(this::onKeyDownEvent);
+        this.canvasCommandFactory = this.loadCanvasFactory(canvasCommandFactoryInstance, definitionUtils);
     }
 
     @Override

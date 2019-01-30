@@ -113,10 +113,16 @@ public class CloneNodeCommand extends AbstractGraphCompositeCommand {
         cloneNodeContentWithProperties(context);
 
         //creating node commands to be executed
-        addCommand(new RegisterNodeCommand(clone));
-        addCommand(new AddChildNodeCommand(parentUUID.get(), clone, position));
+        createNodeCommands(clone, parentUUID.get(), position);
 
         return this;
+    }
+
+    protected void createNodeCommands(final Node<View, Edge> clone,
+                                      final String parentUUID,
+                                      final Point2D position) {
+        addCommand(new RegisterNodeCommand(clone));
+        addCommand(new AddChildNodeCommand(parentUUID, clone, position));
     }
 
     void cloneNodeContentWithProperties(final GraphCommandExecutionContext context) {
@@ -185,11 +191,11 @@ public class CloneNodeCommand extends AbstractGraphCompositeCommand {
             public boolean startNodeTraversal(final List<Node<View, Edge>> parents,
                                               final Node<View, Edge> node) {
                 //clone child and map clone uuid
-                CloneNodeCommand command = new CloneNodeCommand(node,
-                                                                clone.getUUID(),
-                                                                getPosition((View) node.getContent()),
-                                                                childClone -> cloneNodeMapUUID.put(node.getUUID(), childClone),
-                                                                childrenTraverseProcessor);
+                CloneNodeCommand command = createCloneChildCommand(node,
+                                                                   clone.getUUID(),
+                                                                   getPosition(node.getContent()),
+                                                                   childClone -> cloneNodeMapUUID.put(node.getUUID(), childClone),
+                                                                   childrenTraverseProcessor);
                 childrenCommands.add(command);
                 commandResults.add(command.execute(context));
                 //just traverse the first level children of the root node
@@ -225,6 +231,18 @@ public class CloneNodeCommand extends AbstractGraphCompositeCommand {
                                       .map(command -> command.execute(context))
                                       .collect(Collectors.toList()));
         return commandResults;
+    }
+
+    protected CloneNodeCommand createCloneChildCommand(final Node candidate,
+                                                       final String parentUuid,
+                                                       final Point2D position,
+                                                       final Consumer<Node> callback,
+                                                       final ManagedInstance<ChildrenTraverseProcessor> childrenTraverseProcessor) {
+        return new CloneNodeCommand(candidate,
+                                    parentUuid,
+                                    position,
+                                    callback,
+                                    childrenTraverseProcessor);
     }
 
     private List<CommandResult<RuleViolation>> processDockedNodes(GraphCommandExecutionContext context) {

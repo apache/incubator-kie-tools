@@ -85,8 +85,10 @@ public class CloneNodeCommandTest extends AbstractCloneCommandTest {
         assertNotNull(addChildCommand);
         assertEquals(addChildCommand.getCandidate(), clone);
         assertEquals(addChildCommand.getParent(graphCommandExecutionContext), parent);
-        assertEquals(addChildCommand.getLocation().getX(), position.getX(), 0);
-        assertEquals(addChildCommand.getLocation().getY(), position.getY(), 0);
+        if (addChildCommand.getLocation() != null) {
+            assertEquals(addChildCommand.getLocation().getX(), position.getX(), 0);
+            assertEquals(addChildCommand.getLocation().getY(), position.getY(), 0);
+        }
     }
 
     @Test

@@ -32,9 +32,11 @@ import java.util.stream.StreamSupport;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.clipboard.ClipboardControl;
@@ -51,6 +53,7 @@ import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
+import org.kie.workbench.common.stunner.core.command.impl.ReverseCommand;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
@@ -59,6 +62,7 @@ import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.util.Counter;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 import static org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeysMatcher.doKeysMatch;
@@ -74,28 +78,32 @@ public class PasteSelectionSessionCommand extends AbstractClientSessionCommand<E
     private static Logger LOGGER = Logger.getLogger(PasteSelectionSessionCommand.class.getName());
 
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
-    private final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
+    private final ManagedInstance<CanvasCommandFactory<AbstractCanvasHandler>> canvasCommandFactoryInstance;
     private final Event<CanvasSelectionEvent> selectionEvent;
     private final Map<String, String> clonedElements;
     private final CopySelectionSessionCommand copySelectionSessionCommand;
     private ClipboardControl<Element, AbstractCanvas, ClientSession> clipboardControl;
     private transient DoubleSummaryStatistics yPositionStatistics;
+    private final DefinitionUtils definitionUtils;
+    private CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
 
     protected PasteSelectionSessionCommand() {
-        this(null, null, null, null);
+        this(null, null, null, null, null);
     }
 
     @Inject
     public PasteSelectionSessionCommand(final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                                        final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
+                                        @Any ManagedInstance<CanvasCommandFactory<AbstractCanvasHandler>> canvasCommandFactoryInstance,
                                         final Event<CanvasSelectionEvent> selectionEvent,
-                                        final CopySelectionSessionCommand copySelectionSessionCommand) {
+                                        final CopySelectionSessionCommand copySelectionSessionCommand,
+                                        final DefinitionUtils definitionUtils) {
         super(true);
         this.sessionCommandManager = sessionCommandManager;
-        this.canvasCommandFactory = canvasCommandFactory;
+        this.canvasCommandFactoryInstance = canvasCommandFactoryInstance;
         this.selectionEvent = selectionEvent;
         this.clonedElements = new HashMap<>();
         this.copySelectionSessionCommand = copySelectionSessionCommand;
+        this.definitionUtils = definitionUtils;
     }
 
     @Override
@@ -104,6 +112,7 @@ public class PasteSelectionSessionCommand extends AbstractClientSessionCommand<E
         session.getKeyboardControl().addKeyShortcutCallback(this::onKeyDownEvent);
         this.clipboardControl = session.getClipboardControl();
         this.copySelectionSessionCommand.bind(session);
+        this.canvasCommandFactory = this.loadCanvasFactory(canvasCommandFactoryInstance, definitionUtils);
     }
 
     @Override
@@ -155,10 +164,11 @@ public class PasteSelectionSessionCommand extends AbstractClientSessionCommand<E
             CommandResult<CanvasViolation> finalResult;
             if (wasNodesDeletedFromGraph()) {
                 //in case of a cut command the source elements were deleted from graph, so first undo the command to take node back into canvas
-                clipboardControl.getRollbackCommands().forEach(command -> command.undo(getCanvasHandler()));
-                finalResult = executeCommands(nodesCommandBuilder, processedNodesCountdown);
+                clipboardControl.getRollbackCommands().forEach(command -> nodesCommandBuilder.addFirstCommand(new ReverseCommand(command)));
                 //after the clone execution than delete source elements again
-                clipboardControl.getRollbackCommands().forEach(command -> command.execute(getCanvasHandler()));
+                clipboardControl.getRollbackCommands().forEach(nodesCommandBuilder::addCommand);
+
+                finalResult = executeCommands(nodesCommandBuilder, processedNodesCountdown);
             } else {
                 //if elements are still on the graph, in case copy command, just execute the clone commands
                 finalResult = executeCommands(nodesCommandBuilder, processedNodesCountdown);

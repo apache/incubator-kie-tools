@@ -63,7 +63,7 @@ public class CompositeCommand<T, V> extends AbstractCompositeCommand<T, V> {
     @NonPortable
     public static class Builder<T, V> {
 
-        private final List<Command<T, V>> commands = new LinkedList<>();
+        private final LinkedList<Command<T, V>> commands = new LinkedList<>();
         private boolean reverse = true;
 
         /**
@@ -79,6 +79,11 @@ public class CompositeCommand<T, V> extends AbstractCompositeCommand<T, V> {
          */
         public Builder<T, V> forward() {
             this.reverse = false;
+            return this;
+        }
+
+        public Builder<T, V> addFirstCommand(final Command<T, V> command) {
+            commands.addFirst(command);
             return this;
         }
 

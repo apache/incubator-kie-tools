@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.client.session.command.impl;
 
+import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -25,6 +26,7 @@ import java.util.function.Consumer;
 
 import javax.enterprise.event.Event;
 
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -54,6 +56,7 @@ import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.core.util.UUID;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
@@ -154,6 +157,17 @@ public class PasteSelectionSessionCommandTest extends BaseSessionCommandKeyboard
     @Mock
     private org.uberfire.mvp.Command statusCallback;
 
+    @Mock
+    private DefinitionUtils definitionUtils;
+
+    private final String DEFINITION_SET_ID = "mockDefinitionSetId";
+
+    @Mock
+    private Annotation qualifier;
+
+    @Mock
+    private ManagedInstance<CanvasCommandFactory<AbstractCanvasHandler>> canvasCommandFactoryInstance;
+
     private static final String CLONE_UUID = UUID.uuid();
 
     private static final String CLONE2_UUID = UUID.uuid();
@@ -191,6 +205,12 @@ public class PasteSelectionSessionCommandTest extends BaseSessionCommandKeyboard
 
         super.setup();
         this.pasteSelectionSessionCommand = getCommand();
+
+        when(metadata.getDefinitionSetId()).thenReturn(DEFINITION_SET_ID);
+        when(definitionUtils.getQualifier(eq(DEFINITION_SET_ID))).thenReturn(qualifier);
+        when(canvasCommandFactoryInstance.select(eq(qualifier))).thenReturn(canvasCommandFactoryInstance);
+        when(canvasCommandFactoryInstance.isUnsatisfied()).thenReturn(false);
+        when(canvasCommandFactoryInstance.get()).thenReturn(canvasCommandFactory);
     }
 
     @Test
@@ -305,8 +325,9 @@ public class PasteSelectionSessionCommandTest extends BaseSessionCommandKeyboard
 
     @Override
     protected PasteSelectionSessionCommand getCommand() {
-        return new PasteSelectionSessionCommand(sessionCommandManager, canvasCommandFactory,
-                                                selectionEvent, copySelectionSessionCommand);
+        return new PasteSelectionSessionCommand(sessionCommandManager, canvasCommandFactoryInstance,
+                                                selectionEvent, copySelectionSessionCommand,
+                                                definitionUtils);
     }
 
     @Override

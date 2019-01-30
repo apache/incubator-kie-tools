@@ -15,15 +15,21 @@
  */
 package org.kie.workbench.common.stunner.core.client.session.command;
 
+import java.lang.annotation.Annotation;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.AbstractCanvasHandlerEvent;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.InstanceUtils;
+import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.uberfire.mvp.Command;
 
 public abstract class AbstractClientSessionCommand<S extends ClientSession> implements ClientSessionCommand<S> {
@@ -41,6 +47,15 @@ public abstract class AbstractClientSessionCommand<S extends ClientSession> impl
     @Override
     public void bind(final S session) {
         this.session = session;
+    }
+
+    protected CanvasCommandFactory<AbstractCanvasHandler> loadCanvasFactory(
+            final ManagedInstance<CanvasCommandFactory<AbstractCanvasHandler>> canvasCommandFactoryInstance,
+            final DefinitionUtils definitionUtils) {
+        final Diagram diagram = session.getCanvasHandler().getDiagram();
+        final String id = diagram.getMetadata().getDefinitionSetId();
+        final Annotation qualifier = definitionUtils.getQualifier(id);
+        return InstanceUtils.lookup(canvasCommandFactoryInstance, qualifier);
     }
 
     public abstract boolean accepts(final ClientSession session);

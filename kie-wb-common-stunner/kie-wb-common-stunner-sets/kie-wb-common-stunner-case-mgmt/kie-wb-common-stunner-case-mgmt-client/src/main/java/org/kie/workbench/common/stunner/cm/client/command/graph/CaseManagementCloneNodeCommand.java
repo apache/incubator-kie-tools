@@ -15,15 +15,19 @@
  */
 package org.kie.workbench.common.stunner.cm.client.command.graph;
 
+import java.util.OptionalInt;
 import java.util.function.Consumer;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
+import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.impl.CloneNodeCommand;
+import org.kie.workbench.common.stunner.core.graph.command.impl.RegisterNodeCommand;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
+import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.ChildrenTraverseProcessor;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
@@ -56,5 +60,26 @@ public class CaseManagementCloneNodeCommand extends CloneNodeCommand {
     @Override
     public CommandResult<RuleViolation> undo(GraphCommandExecutionContext context) {
         return new CaseManagementSafeDeleteNodeCommand(getClone()).execute(context);
+    }
+
+    @Override
+    protected void createNodeCommands(final Node<View, Edge> clone,
+                                      final String parentUUID,
+                                      final Point2D position) {
+        addCommand(new RegisterNodeCommand(clone));
+        addCommand(new CaseManagementAddChildNodeGraphCommand(parentUUID, clone, OptionalInt.empty()));
+    }
+
+    @Override
+    protected CloneNodeCommand createCloneChildCommand(final Node candidate,
+                                                       final String parentUuid,
+                                                       final Point2D position,
+                                                       final Consumer<Node> callback,
+                                                       final ManagedInstance<ChildrenTraverseProcessor> childrenTraverseProcessor) {
+        return new CaseManagementCloneNodeCommand(candidate,
+                                                  parentUuid,
+                                                  position,
+                                                  callback,
+                                                  childrenTraverseProcessor);
     }
 }
