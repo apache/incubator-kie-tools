@@ -83,6 +83,10 @@ public class ExpressionEditorViewImplTest {
 
     private static final String NODE_UUID = "uuid";
 
+    private static final String UNDEFINED_EXPRESSION_DEFINITION_NAME = "Undefined";
+
+    private static final String LITERAL_EXPRESSION_DEFINITION_NAME = "Literal Expression";
+
     @Mock
     private Anchor returnToDRG;
 
@@ -213,24 +217,26 @@ public class ExpressionEditorViewImplTest {
         expressionEditorDefinitions.add(undefinedExpressionEditorDefinition);
         expressionEditorDefinitions.add(literalExpressionEditorDefinition);
 
-        doReturn(expressionEditorDefinitions).when(expressionEditorDefinitionsSupplier).get();
-        doReturn(Optional.empty()).when(undefinedExpressionEditorDefinition).getModelClass();
-        doReturn(new BaseGridData()).when(undefinedExpressionEditor).getModel();
-        doReturn(Optional.of(undefinedExpressionEditor)).when(undefinedExpressionEditorDefinition).getEditor(any(GridCellTuple.class),
-                                                                                                             any(Optional.class),
-                                                                                                             any(HasExpression.class),
-                                                                                                             any(Optional.class),
-                                                                                                             any(Optional.class),
-                                                                                                             anyInt());
+        when(expressionEditorDefinitionsSupplier.get()).thenReturn(expressionEditorDefinitions);
+        when(undefinedExpressionEditorDefinition.getModelClass()).thenReturn(Optional.empty());
+        when(undefinedExpressionEditorDefinition.getName()).thenReturn(UNDEFINED_EXPRESSION_DEFINITION_NAME);
+        when(undefinedExpressionEditor.getModel()).thenReturn(new BaseGridData());
+        when(undefinedExpressionEditorDefinition.getEditor(any(GridCellTuple.class),
+                                                           any(Optional.class),
+                                                           any(HasExpression.class),
+                                                           any(Optional.class),
+                                                           any(Optional.class),
+                                                           anyInt())).thenReturn(Optional.of(undefinedExpressionEditor));
 
-        doReturn(Optional.of(new LiteralExpression())).when(literalExpressionEditorDefinition).getModelClass();
-        doReturn(new BaseGridData()).when(literalExpressionEditor).getModel();
-        doReturn(Optional.of(literalExpressionEditor)).when(literalExpressionEditorDefinition).getEditor(any(GridCellTuple.class),
-                                                                                                         any(Optional.class),
-                                                                                                         any(HasExpression.class),
-                                                                                                         any(Optional.class),
-                                                                                                         any(Optional.class),
-                                                                                                         anyInt());
+        when(literalExpressionEditorDefinition.getModelClass()).thenReturn(Optional.of(new LiteralExpression()));
+        when(literalExpressionEditorDefinition.getName()).thenReturn(LITERAL_EXPRESSION_DEFINITION_NAME);
+        when(literalExpressionEditor.getModel()).thenReturn(new BaseGridData());
+        when(literalExpressionEditorDefinition.getEditor(any(GridCellTuple.class),
+                                                         any(Optional.class),
+                                                         any(HasExpression.class),
+                                                         any(Optional.class),
+                                                         any(Optional.class),
+                                                         anyInt())).thenReturn(Optional.of(literalExpressionEditor));
 
         doAnswer((i) -> i.getArguments()[1]).when(translationService).format(anyString(), anyObject());
         doAnswer((i) -> i.getArguments()[0]).when(translationService).getTranslation(anyString());
@@ -329,7 +335,7 @@ public class ExpressionEditorViewImplTest {
                            hasExpression,
                            hasName);
 
-        verify(expressionType).setTextContent(eq(LiteralExpression.class.getSimpleName()));
+        verify(expressionType).setTextContent(eq(LITERAL_EXPRESSION_DEFINITION_NAME));
     }
 
     @Test

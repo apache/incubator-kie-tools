@@ -18,6 +18,7 @@ package org.kie.workbench.common.dmn.client.decision.factories;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -36,8 +37,10 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.Invocation;
 import org.kie.workbench.common.dmn.api.definition.v1_1.List;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Relation;
+import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorItem;
 import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorPresenter;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
@@ -76,16 +79,20 @@ public class DecisionNavigatorNestedItemFactory {
 
     private final DecisionNavigatorPresenter decisionNavigatorPresenter;
 
+    private final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
+
     private final Event<CanvasSelectionEvent> canvasSelectionEvent;
 
     @Inject
     public DecisionNavigatorNestedItemFactory(final SessionManager sessionManager,
                                               final Event<EditExpressionEvent> editExpressionEvent,
                                               final DecisionNavigatorPresenter decisionNavigatorPresenter,
+                                              final @DMNEditor Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
                                               final Event<CanvasSelectionEvent> canvasSelectionEvent) {
         this.sessionManager = sessionManager;
         this.editExpressionEvent = editExpressionEvent;
         this.decisionNavigatorPresenter = decisionNavigatorPresenter;
+        this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
         this.canvasSelectionEvent = canvasSelectionEvent;
     }
 
@@ -136,7 +143,8 @@ public class DecisionNavigatorNestedItemFactory {
     }
 
     String getLabel(final Node<View, Edge> node) {
-        return getExpression(node).getClass().getSimpleName();
+        final Optional<Expression> expression = Optional.of(getExpression(node));
+        return expressionEditorDefinitionsSupplier.get().getExpressionEditorDefinition(expression).get().getName();
     }
 
     DecisionNavigatorItem.Type getType(final Node<View, Edge> node) {

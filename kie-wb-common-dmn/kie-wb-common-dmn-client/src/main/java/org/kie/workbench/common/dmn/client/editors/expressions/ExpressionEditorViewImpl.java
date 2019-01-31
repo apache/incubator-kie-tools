@@ -212,7 +212,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
 
     private void setExpressionTypeText(final Optional<Expression> expression) {
         expressionType.setTextContent(expression.isPresent() ?
-                                              expression.get().getClass().getSimpleName() :
+                                              expressionEditorDefinitionsSupplier.get().getExpressionEditorDefinition(expression).get().getName() :
                                               "<" + translationService.getTranslation(DMNEditorConstants.ExpressionEditor_UndefinedExpressionType) + ">");
     }
 

@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.client.decision.factories;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
@@ -33,6 +34,8 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.InputData;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorItem;
 import org.kie.workbench.common.dmn.client.decision.DecisionNavigatorPresenter;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
@@ -58,6 +61,8 @@ import static org.mockito.Mockito.when;
 @RunWith(GwtMockitoTestRunner.class)
 public class DecisionNavigatorNestedItemFactoryTest {
 
+    private static final String DECISION_TABLE_DEFINITION_NAME = "Decision Table";
+
     @Mock
     private SessionManager sessionManager;
 
@@ -71,16 +76,31 @@ public class DecisionNavigatorNestedItemFactoryTest {
     private DecisionNavigatorPresenter decisionNavigatorPresenter;
 
     @Mock
+    private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
+
+    @Mock
     private EventSourceMock<CanvasSelectionEvent> canvasSelectionEvent;
+
+    @Mock
+    private ExpressionEditorDefinition decisionTableEditorDefinition;
 
     private DecisionNavigatorNestedItemFactory factory;
 
     @Before
+    @SuppressWarnings("unchecked")
     public void setup() {
         factory = spy(new DecisionNavigatorNestedItemFactory(sessionManager,
                                                              editExpressionEvent,
                                                              decisionNavigatorPresenter,
+                                                             expressionEditorDefinitionsSupplier,
                                                              canvasSelectionEvent));
+
+        final ExpressionEditorDefinitions expressionEditorDefinitions = new ExpressionEditorDefinitions();
+        expressionEditorDefinitions.add(decisionTableEditorDefinition);
+
+        when(expressionEditorDefinitionsSupplier.get()).thenReturn(expressionEditorDefinitions);
+        when(decisionTableEditorDefinition.getModelClass()).thenReturn(Optional.of(new DecisionTable()));
+        when(decisionTableEditorDefinition.getName()).thenReturn(DECISION_TABLE_DEFINITION_NAME);
     }
 
     @Test
@@ -178,13 +198,12 @@ public class DecisionNavigatorNestedItemFactoryTest {
     public void testGetLabel() {
 
         final DecisionTable expression = new DecisionTable();
-        final String expectedType = "DecisionTable";
 
         doReturn(expression).when(factory).getExpression(node);
 
         final String actualLabel = factory.getLabel(node);
 
-        assertEquals(expectedType, actualLabel);
+        assertEquals(DECISION_TABLE_DEFINITION_NAME, actualLabel);
     }
 
     @Test
