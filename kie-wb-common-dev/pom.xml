@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.kie.workbench</groupId>
     <artifactId>kie-wb-common</artifactId>
-    <version>7.17.0-SNAPSHOT</version>
+    <version>7.18.0-SNAPSHOT</version>
   </parent>
   <artifactId>kie-wb-common-dev</artifactId>
   <packaging>pom</packaging>

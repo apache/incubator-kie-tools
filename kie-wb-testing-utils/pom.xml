@@ -20,7 +20,7 @@
   <parent>
     <artifactId>kie-wb-common</artifactId>
     <groupId>org.kie.workbench</groupId>
-    <version>7.17.0-SNAPSHOT</version>
+    <version>7.18.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>kie-wb-testing-utils</artifactId>

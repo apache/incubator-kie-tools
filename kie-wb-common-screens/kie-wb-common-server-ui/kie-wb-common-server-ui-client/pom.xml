@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.kie.workbench.screens</groupId>
     <artifactId>kie-wb-common-server-ui</artifactId>
-    <version>7.17.0-SNAPSHOT</version>
+    <version>7.18.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>kie-wb-common-server-ui-client</artifactId>

@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.kie.workbench.profile</groupId>
     <artifactId>kie-wb-common-profile</artifactId>
-    <version>7.17.0-SNAPSHOT</version>
+    <version>7.18.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>kie-wb-common-profile-backend</artifactId>

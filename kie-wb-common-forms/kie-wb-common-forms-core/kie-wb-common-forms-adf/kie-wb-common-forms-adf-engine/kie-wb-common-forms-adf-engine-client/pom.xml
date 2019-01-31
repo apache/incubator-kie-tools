@@ -21,7 +21,7 @@
   <parent>
     <artifactId>kie-wb-common-forms-adf-engine</artifactId>
     <groupId>org.kie.workbench.forms</groupId>
-    <version>7.17.0-SNAPSHOT</version>
+    <version>7.18.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 

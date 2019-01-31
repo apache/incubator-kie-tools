@@ -19,7 +19,7 @@
   <parent>
     <groupId>org.kie.workbench</groupId>
     <artifactId>kie-wb-common-ala</artifactId>
-    <version>7.17.0-SNAPSHOT</version>
+    <version>7.18.0-SNAPSHOT</version>
   </parent>
   <artifactId>kie-wb-common-ala-source-git</artifactId>
   <name>KIE Workbench Common ALA :: Source Git</name>

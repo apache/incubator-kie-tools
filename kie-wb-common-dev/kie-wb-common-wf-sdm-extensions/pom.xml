@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.kie.workbench</groupId>
     <artifactId>kie-wb-common-dev</artifactId>
-    <version>7.17.0-SNAPSHOT</version>
+    <version>7.18.0-SNAPSHOT</version>
   </parent>
   <artifactId>kie-wb-common-wf-sdm-extensions</artifactId>
   <name>Kie Workbench - Common - Dev - WildFly SDM Extensions</name>

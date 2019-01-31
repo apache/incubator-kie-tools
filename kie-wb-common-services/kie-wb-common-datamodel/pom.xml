@@ -22,7 +22,7 @@
   <parent>
     <groupId>org.kie.workbench.services</groupId>
     <artifactId>kie-wb-common-services</artifactId>
-    <version>7.17.0-SNAPSHOT</version>
+    <version>7.18.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>kie-wb-common-datamodel</artifactId>
