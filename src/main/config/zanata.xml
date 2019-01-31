@@ -3,7 +3,7 @@
 <config xmlns="http://zanata.org/namespace/config/">
   <url>https://vendors.zanata.redhat.com/</url>
   <project>uberfire</project>
-  <project-version>2.14.0</project-version>
+  <project-version>2.15.0</project-version>
   <project-type>utf8properties</project-type>
 
   <locales>
