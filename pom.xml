@@ -27,7 +27,7 @@
 
   <groupId>org.uberfire</groupId>
   <artifactId>uberfire-parent</artifactId>
-  <version>2.14.0-SNAPSHOT</version>
+  <version>2.15.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>UberFire parent</name>
@@ -50,7 +50,7 @@
 
   <properties>
     <uberfire.version>${project.version}</uberfire.version>
-    <version.org.kie>7.17.0-SNAPSHOT</version.org.kie>
+    <version.org.kie>7.18.0-SNAPSHOT</version.org.kie>
     <version.org.kie.soup>${version.org.kie}</version.org.kie.soup>
     <version.com.allen-sauer.gwt.dnd>3.3.3</version.com.allen-sauer.gwt.dnd>
     <version.com.google.elemental2>1.0.0-beta-1</version.com.google.elemental2>
