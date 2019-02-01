@@ -46,6 +46,12 @@ public class DecisionTableTest {
     }
 
     @Test
+    public void testDefaultHitPolicy() {
+        assertEquals(HitPolicy.UNIQUE,
+                     decisionTable.getHitPolicy());
+    }
+
+    @Test
     public void testGetHasTypeRefs() {
 
         final List<InputClause> inputClauses = asList(mock(InputClause.class), mock(InputClause.class));

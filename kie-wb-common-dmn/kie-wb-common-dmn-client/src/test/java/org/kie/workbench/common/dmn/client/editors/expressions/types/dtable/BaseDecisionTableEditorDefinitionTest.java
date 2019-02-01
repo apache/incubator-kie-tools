@@ -159,7 +159,7 @@ public abstract class BaseDecisionTableEditorDefinitionTest {
     }
 
     protected void assertBasicEnrichment(final DecisionTable model) {
-        assertThat(model.getHitPolicy()).isEqualTo(HitPolicy.ANY);
+        assertThat(model.getHitPolicy()).isEqualTo(HitPolicy.UNIQUE);
         assertThat(model.getPreferredOrientation()).isEqualTo(DecisionTableOrientation.RULE_AS_ROW);
     }
 

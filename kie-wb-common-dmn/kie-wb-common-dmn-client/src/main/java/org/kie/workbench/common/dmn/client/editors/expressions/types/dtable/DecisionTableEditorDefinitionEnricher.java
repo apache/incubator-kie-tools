@@ -86,7 +86,7 @@ public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorMo
                        final HasExpression hasExpression,
                        final Optional<DecisionTable> expression) {
         expression.ifPresent(dtable -> {
-            dtable.setHitPolicy(HitPolicy.ANY);
+            dtable.setHitPolicy(HitPolicy.UNIQUE);
             dtable.setPreferredOrientation(DecisionTableOrientation.RULE_AS_ROW);
 
             final InputClause inputClause = new InputClause();
