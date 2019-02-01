@@ -69,7 +69,6 @@ import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.NameAndDataTypeHeaderMetaData;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
-import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextBoxSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
@@ -1017,7 +1016,7 @@ public class DecisionTableGridTest {
         final GridCellTuple tupleWithoutValue = new GridCellTuple(0, 3, gridWidget);
         final GridCellValueTuple tupleWithValue = new GridCellValueTuple<>(0, 3, gridWidget, new BaseGridCellValue<>("value"));
 
-        final TextBoxSingletonDOMElementFactory factory = grid.getBodyTextBoxFactory();
+        final TextAreaSingletonDOMElementFactory factory = grid.getBodyTextAreaFactory();
         assertThat(factory.getHasNoValueCommand().apply(tupleWithoutValue)).isInstanceOf(DeleteCellValueCommand.class);
         assertThat(factory.getHasValueCommand().apply(tupleWithValue)).isInstanceOf(SetCellValueCommand.class);
     }
@@ -1029,7 +1028,7 @@ public class DecisionTableGridTest {
         final GridCellTuple tupleWithoutValue = new GridCellTuple(0, 3, gridWidget);
         final GridCellValueTuple tupleWithValue = new GridCellValueTuple<>(0, 3, gridWidget, new BaseGridCellValue<>("value"));
 
-        final TextBoxSingletonDOMElementFactory factory = grid.getBodyTextBoxFactory();
+        final TextAreaSingletonDOMElementFactory factory = grid.getBodyTextAreaFactory();
         assertThat(factory.getHasNoValueCommand().apply(tupleWithoutValue)).isInstanceOf(DeleteCellValueCommand.class);
         assertThat(factory.getHasValueCommand().apply(tupleWithValue)).isInstanceOf(SetCellValueCommand.class);
     }

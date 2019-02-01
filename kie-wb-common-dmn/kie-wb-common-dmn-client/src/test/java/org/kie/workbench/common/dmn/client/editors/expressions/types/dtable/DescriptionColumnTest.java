@@ -17,39 +17,39 @@
 package org.kie.workbench.common.dmn.client.editors.expressions.types.dtable;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtbootstrap3.client.ui.TextArea;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.BaseDOMElementSingletonColumnTest;
-import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextBoxSingletonDOMElementFactory;
-import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.dom.TextBoxDOMElement;
+import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
+import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.dom.TextAreaDOMElement;
 import org.mockito.Mock;
 
 import static org.mockito.Mockito.mock;
 
 @RunWith(LienzoMockitoTestRunner.class)
-public class DescriptionColumnTest extends BaseDOMElementSingletonColumnTest<TextBoxSingletonDOMElementFactory, TextBoxDOMElement, TextBox, DescriptionColumn, DecisionTableGrid> {
+public class DescriptionColumnTest extends BaseDOMElementSingletonColumnTest<TextAreaSingletonDOMElementFactory, TextAreaDOMElement, TextArea, DescriptionColumn, DecisionTableGrid> {
 
     @Mock
-    private TextBoxSingletonDOMElementFactory factory;
+    private TextAreaSingletonDOMElementFactory factory;
 
     @Mock
-    private TextBoxDOMElement domElement;
+    private TextAreaDOMElement domElement;
 
     @Mock
-    private TextBox widget;
+    private TextArea widget;
 
     @Override
-    protected TextBoxSingletonDOMElementFactory getFactory() {
+    protected TextAreaSingletonDOMElementFactory getFactory() {
         return factory;
     }
 
     @Override
-    protected TextBoxDOMElement getDomElement() {
+    protected TextAreaDOMElement getDomElement() {
         return domElement;
     }
 
     @Override
-    protected TextBox getWidget() {
+    protected TextArea getWidget() {
         return widget;
     }
 

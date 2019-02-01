@@ -17,17 +17,17 @@
 package org.kie.workbench.common.dmn.client.editors.expressions.types.dtable;
 
 import com.ait.lienzo.client.core.shape.Group;
-import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtbootstrap3.client.ui.TextArea;
 import org.kie.workbench.common.dmn.client.editors.expressions.util.RendererUtils;
-import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextBoxSingletonDOMElementFactory;
-import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.dom.TextBoxDOMElement;
+import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
+import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.dom.TextAreaDOMElement;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.single.impl.BaseGridColumnSingletonDOMElementRenderer;
 
-public class DescriptionColumnRenderer extends BaseGridColumnSingletonDOMElementRenderer<String, TextBox, TextBoxDOMElement> {
+public class DescriptionColumnRenderer extends BaseGridColumnSingletonDOMElementRenderer<String, TextArea, TextAreaDOMElement> {
 
-    public DescriptionColumnRenderer(final TextBoxSingletonDOMElementFactory factory) {
+    public DescriptionColumnRenderer(final TextAreaSingletonDOMElementFactory factory) {
         super(factory);
     }
 

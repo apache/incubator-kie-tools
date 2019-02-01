@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import org.kie.soup.commons.validation.PortablePreconditions;
-import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextBoxSingletonDOMElementFactory;
+import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNSimpleGridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
@@ -31,10 +31,10 @@ import org.uberfire.ext.wires.core.grids.client.widget.dom.single.HasSingletonDO
 
 public class DescriptionColumn extends DMNSimpleGridColumn<DecisionTableGrid, String> implements HasSingletonDOMElementResource {
 
-    private final TextBoxSingletonDOMElementFactory factory;
+    private final TextAreaSingletonDOMElementFactory factory;
 
     public DescriptionColumn(final HeaderMetaData headerMetaData,
-                             final TextBoxSingletonDOMElementFactory factory,
+                             final TextAreaSingletonDOMElementFactory factory,
                              final DecisionTableGrid gridWidget) {
         this(Collections.singletonList(headerMetaData),
              factory,
@@ -42,7 +42,7 @@ public class DescriptionColumn extends DMNSimpleGridColumn<DecisionTableGrid, St
     }
 
     public DescriptionColumn(final List<HeaderMetaData> headerMetaData,
-                             final TextBoxSingletonDOMElementFactory factory,
+                             final TextAreaSingletonDOMElementFactory factory,
                              final DecisionTableGrid gridWidget) {
         super(headerMetaData,
               new DescriptionColumnRenderer(factory),

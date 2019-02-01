@@ -45,6 +45,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.GridFactory
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableHeaderMetaData;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
+import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextBoxSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.handlers.EditableHeaderGridWidgetEditCellMouseEventHandler;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
@@ -646,6 +647,17 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
 
         verify(gridLayer).draw();
         verify(gridLayer, never()).select(any(GridWidget.class));
+    }
+
+    @Test
+    public void testHeaderTextBoxFactory() {
+        appendColumns(GridColumn.class);
+        when(grid.getModel().getColumns().get(0).getHeaderMetaData()).thenReturn(Collections.singletonList(mock(EditableHeaderMetaData.class)));
+        when(mapper.getUiModel()).thenReturn(() -> grid.getModel());
+
+        final TextBoxSingletonDOMElementFactory factory = grid.getHeaderTextBoxFactory();
+        assertThat(factory.getHasNoValueCommand().apply(tupleWithoutValue)).isInstanceOf(DeleteHeaderValueCommand.class);
+        assertThat(factory.getHasValueCommand().apply(tupleWithValue)).isInstanceOf(SetHeaderValueCommand.class);
     }
 
     @Test

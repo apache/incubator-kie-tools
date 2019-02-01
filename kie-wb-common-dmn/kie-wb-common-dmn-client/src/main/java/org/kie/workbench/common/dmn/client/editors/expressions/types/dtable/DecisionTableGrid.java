@@ -59,7 +59,6 @@ import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverV
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
-import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextBoxSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
@@ -96,7 +95,6 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
     private final HitPolicyPopoverView.Presenter hitPolicyEditor;
     private final NameAndDataTypePopoverView.Presenter headerEditor;
 
-    private final TextBoxSingletonDOMElementFactory textBoxFactory = getBodyTextBoxFactory();
     private final TextAreaSingletonDOMElementFactory textAreaFactory = getBodyTextAreaFactory();
 
     private class ListSelectorItemDefinition {
@@ -189,7 +187,7 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
             e.getOutput().forEach(oc -> model.appendColumn(makeOutputClauseColumn(oc)));
             model.appendColumn(new DescriptionColumn(new BaseHeaderMetaData(translationService.format(DMNEditorConstants.DecisionTableEditor_DescriptionColumnHeader),
                                                                             DESCRIPTION_GROUP),
-                                                     textBoxFactory,
+                                                     textAreaFactory,
                                                      this));
         });
 

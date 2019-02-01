@@ -20,12 +20,12 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import org.gwtbootstrap3.client.ui.TextArea;
+import org.gwtbootstrap3.client.ui.TextBox;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.editors.expressions.util.RendererUtils;
-import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.dom.TextAreaDOMElement;
+import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.dom.TextBoxDOMElement;
 import org.mockito.Mock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -52,7 +52,7 @@ public class InvocationColumnExpressionHeaderMetaDataTest {
     private Consumer<String> titleSetter;
 
     @Mock
-    private SingletonDOMElementFactory<TextArea, TextAreaDOMElement> factory;
+    private SingletonDOMElementFactory<TextBox, TextBoxDOMElement> factory;
 
     @Mock
     private GridHeaderColumnRenderContext context;

@@ -69,12 +69,8 @@ public class TextAreaDOMElement extends BaseDOMElement<String, TextArea> impleme
                              Style.Unit.PX);
         style.setPaddingRight(2,
                               Style.Unit.PX);
-        style.setPaddingTop(2,
-                            Style.Unit.PX);
-        style.setPaddingBottom(2,
-                               Style.Unit.PX);
         style.setFontSize(10,
-                          Style.Unit.PX);
+                          Style.Unit.PT);
         style.setProperty("resize",
                           "none");
 

@@ -250,16 +250,6 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
                                                       newCellHasValueCommand());
     }
 
-    public TextBoxSingletonDOMElementFactory getBodyTextBoxFactory() {
-        return new TextBoxSingletonDOMElementFactory(gridPanel,
-                                                     gridLayer,
-                                                     this,
-                                                     sessionManager,
-                                                     sessionCommandManager,
-                                                     newCellHasNoValueCommand(),
-                                                     newCellHasValueCommand());
-    }
-
     protected Function<GridCellTuple, Command> newCellHasNoValueCommand() {
         return (gridCellTuple) -> new DeleteCellValueCommand(gridCellTuple,
                                                              () -> uiModelMapper,
@@ -280,6 +270,16 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
                                                       sessionCommandManager,
                                                       newHeaderHasNoValueCommand(),
                                                       newHeaderHasValueCommand());
+    }
+
+    public TextBoxSingletonDOMElementFactory getHeaderTextBoxFactory() {
+        return new TextBoxSingletonDOMElementFactory(gridPanel,
+                                                     gridLayer,
+                                                     this,
+                                                     sessionManager,
+                                                     sessionCommandManager,
+                                                     newHeaderHasNoValueCommand(),
+                                                     newHeaderHasValueCommand());
     }
 
     protected Function<GridCellTuple, Command> newHeaderHasNoValueCommand() {

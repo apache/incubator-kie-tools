@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.dom;
 import java.util.Objects;
 import java.util.function.Function;
 
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.TakesValue;
 import com.google.gwt.user.client.ui.Focusable;
 import org.gwtbootstrap3.client.ui.TextBox;
@@ -29,11 +30,13 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
+import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
+import org.uberfire.ext.wires.core.grids.client.widget.dom.impl.BaseDOMElement;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 
-public class TextBoxDOMElement extends org.uberfire.ext.wires.core.grids.client.widget.dom.impl.TextBoxDOMElement implements TakesValue<String>,
-                                                                                                                             Focusable {
+public class TextBoxDOMElement extends BaseDOMElement<String, TextBox> implements TakesValue<String>,
+                                                                                  Focusable {
 
     private final SessionManager sessionManager;
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
@@ -56,6 +59,28 @@ public class TextBoxDOMElement extends org.uberfire.ext.wires.core.grids.client.
         this.sessionCommandManager = sessionCommandManager;
         this.hasNoValueCommand = hasNoValueCommand;
         this.hasValueCommand = hasValueCommand;
+
+        final Style style = widget.getElement().getStyle();
+        style.setWidth(100,
+                       Style.Unit.PCT);
+        style.setHeight(100,
+                        Style.Unit.PCT);
+        style.setPaddingLeft(2,
+                             Style.Unit.PX);
+        style.setPaddingRight(2,
+                              Style.Unit.PX);
+        style.setFontSize(10,
+                          Style.Unit.PT);
+
+        getContainer().getElement().getStyle().setPaddingLeft(5,
+                                                              Style.Unit.PX);
+        getContainer().getElement().getStyle().setPaddingRight(5,
+                                                               Style.Unit.PX);
+        getContainer().getElement().getStyle().setPaddingTop(5,
+                                                             Style.Unit.PX);
+        getContainer().getElement().getStyle().setPaddingBottom(5,
+                                                                Style.Unit.PX);
+        getContainer().setWidget(widget);
     }
 
     @Override
@@ -87,6 +112,11 @@ public class TextBoxDOMElement extends org.uberfire.ext.wires.core.grids.client.
     @Override
     public void setTabIndex(final int index) {
         getWidget().setTabIndex(index);
+    }
+
+    @Override
+    public void initialise(final GridBodyCellRenderContext context) {
+        transform(context);
     }
 
     @Override

@@ -154,7 +154,7 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGri
         }
         headerMetaData.add(new InvocationColumnExpressionHeaderMetaData(this::getExpressionText,
                                                                         this::setExpressionText,
-                                                                        getHeaderTextAreaFactory(),
+                                                                        getHeaderTextBoxFactory(),
                                                                         Optional.of(translationService.getTranslation(DMNEditorConstants.InvocationEditor_EnterFunction))));
 
         final InvocationParameterColumn nameColumn = new InvocationParameterColumn(headerMetaData,

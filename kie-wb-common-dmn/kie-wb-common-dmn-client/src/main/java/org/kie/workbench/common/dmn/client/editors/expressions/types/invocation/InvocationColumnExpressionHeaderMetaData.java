@@ -21,14 +21,14 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import com.ait.lienzo.client.core.shape.Group;
-import org.gwtbootstrap3.client.ui.TextArea;
+import org.gwtbootstrap3.client.ui.TextBox;
 import org.kie.workbench.common.dmn.client.editors.expressions.util.RendererUtils;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableTextHeaderMetaData;
-import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.dom.TextAreaDOMElement;
+import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.dom.TextBoxDOMElement;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridHeaderColumnRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.single.SingletonDOMElementFactory;
 
-public class InvocationColumnExpressionHeaderMetaData extends EditableTextHeaderMetaData<TextArea, TextAreaDOMElement> {
+public class InvocationColumnExpressionHeaderMetaData extends EditableTextHeaderMetaData<TextBox, TextBoxDOMElement> {
 
     static final String EXPRESSION_COLUMN_GROUP = "InvocationColumnExpressionHeaderMetaData$Expression";
 
@@ -36,7 +36,7 @@ public class InvocationColumnExpressionHeaderMetaData extends EditableTextHeader
 
     public InvocationColumnExpressionHeaderMetaData(final Supplier<String> titleGetter,
                                                     final Consumer<String> titleSetter,
-                                                    final SingletonDOMElementFactory<TextArea, TextAreaDOMElement> factory,
+                                                    final SingletonDOMElementFactory<TextBox, TextBoxDOMElement> factory,
                                                     final Optional<String> placeHolder) {
         super(titleGetter,
               titleSetter,
