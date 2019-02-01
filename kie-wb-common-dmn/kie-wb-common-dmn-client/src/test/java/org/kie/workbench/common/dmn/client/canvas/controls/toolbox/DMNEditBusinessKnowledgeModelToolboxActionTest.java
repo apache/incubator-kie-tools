@@ -84,7 +84,7 @@ public class DMNEditBusinessKnowledgeModelToolboxActionTest {
     public void setup() throws Exception {
         bkmNode = new NodeImpl<>(E_UUID);
         bkm = new BusinessKnowledgeModel();
-        final Bounds bounds = Bounds.create(0d, 0d,100d, 150d);
+        final Bounds bounds = Bounds.create(0d, 0d, 100d, 150d);
         final View<BusinessKnowledgeModel> nodeContent = new ViewImpl<>(bkm,
                                                                         bounds);
         bkmNode.setContent(nodeContent);

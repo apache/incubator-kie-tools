@@ -178,10 +178,10 @@ public class DataTypeConstraintModal extends Elemental2Modal<DataTypeConstraintM
 
     private boolean isEnumeration(final String constraintValue) {
         return !constraintValue.startsWith("(")
-            && !constraintValue.startsWith("[")
-            && !constraintValue.endsWith("]")
-            && !constraintValue.endsWith(")")
-            && constraintValue.contains(",");
+                && !constraintValue.startsWith("[")
+                && !constraintValue.endsWith("]")
+                && !constraintValue.endsWith(")")
+                && constraintValue.contains(",");
     }
 
     private boolean isRange(final String constraintValue) {

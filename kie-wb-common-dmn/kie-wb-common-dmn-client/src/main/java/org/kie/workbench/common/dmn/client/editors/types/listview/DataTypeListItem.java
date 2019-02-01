@@ -243,10 +243,10 @@ public class DataTypeListItem {
 
     List<DataType> persist(final DataType dataType) {
         return dataTypeManager
-            .from(dataType)
-            .withSubDataTypes(dataTypeSelectComponent.getSubDataTypes())
-            .get()
-            .update();
+                .from(dataType)
+                .withSubDataTypes(dataTypeSelectComponent.getSubDataTypes())
+                .get()
+                .update();
     }
 
     void discardNewDataType() {
@@ -262,13 +262,13 @@ public class DataTypeListItem {
 
     DataType discardDataTypeProperties() {
         return dataTypeManager
-            .withDataType(getDataType())
-            .withName(getOldName())
-            .withType(getOldType())
-            .withConstraint(getOldConstraint())
-            .withConstraintType(getOldConstraintType())
-            .asList(getOldIsList())
-            .get();
+                .withDataType(getDataType())
+                .withName(getOldName())
+                .withType(getOldType())
+                .withConstraint(getOldConstraint())
+                .withConstraintType(getOldConstraintType())
+                .asList(getOldIsList())
+                .get();
     }
 
     void closeEditMode() {
@@ -313,9 +313,9 @@ public class DataTypeListItem {
 
     List<DataType> removeTopLevelDataTypes(final List<DataType> destroyedDataTypes) {
         return destroyedDataTypes.stream()
-            .filter(dataType -> dataType.isTopLevel() && (isDestroyedDataType(dataType) || isAReferenceToDestroyedDataType(dataType)))
-            .peek(dataTypeList::removeItem)
-            .collect(Collectors.toList());
+                .filter(dataType -> dataType.isTopLevel() && (isDestroyedDataType(dataType) || isAReferenceToDestroyedDataType(dataType)))
+                .peek(dataTypeList::removeItem)
+                .collect(Collectors.toList());
     }
 
     private boolean isDestroyedDataType(final DataType dataType) {
@@ -328,13 +328,13 @@ public class DataTypeListItem {
 
     DataType updateProperties(final DataType dataType) {
         return dataTypeManager
-            .from(dataType)
-            .withName(getName())
-            .withType(getType())
-            .withConstraint(getConstraint())
-            .withConstraintType(getConstraintType())
-            .asList(isList())
-            .get();
+                .from(dataType)
+                .withName(getName())
+                .withType(getType())
+                .withConstraint(getConstraint())
+                .withConstraintType(getConstraintType())
+                .asList(isList())
+                .get();
     }
 
     private String getConstraintType() {
@@ -373,7 +373,7 @@ public class DataTypeListItem {
         return oldConstraint;
     }
 
-    String getOldConstraintType(){
+    String getOldConstraintType() {
         if (oldConstraintType == null) {
             return "";
         }
@@ -438,9 +438,9 @@ public class DataTypeListItem {
     String getNewDataTypeHash(final DataType newDataType,
                               final String referenceDataTypeHash) {
         return Stream
-            .of(referenceDataTypeHash, newDataType.getName())
-            .filter(s -> !isEmpty(s))
-            .collect(Collectors.joining("."));
+                .of(referenceDataTypeHash, newDataType.getName())
+                .filter(s -> !isEmpty(s))
+                .collect(Collectors.joining("."));
     }
 
     private DataType newDataType() {

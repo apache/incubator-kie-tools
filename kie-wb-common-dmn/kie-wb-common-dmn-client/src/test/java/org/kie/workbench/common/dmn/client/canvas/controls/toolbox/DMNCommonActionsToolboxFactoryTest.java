@@ -132,7 +132,7 @@ public class DMNCommonActionsToolboxFactoryTest {
         final Node<View<Decision>, Edge> decisionNode =
                 new NodeImpl<>("decisionNode1");
         final Decision decision = new Decision();
-        final Bounds bounds = Bounds.create(0d, 0d,100d,150d);
+        final Bounds bounds = Bounds.create(0d, 0d, 100d, 150d);
         final View<Decision> nodeContent = new ViewImpl<>(decision,
                                                           bounds);
         decisionNode.setContent(nodeContent);
@@ -166,7 +166,7 @@ public class DMNCommonActionsToolboxFactoryTest {
         final Node<View<BusinessKnowledgeModel>, Edge> bkmNode =
                 new NodeImpl<>("bkmNode1");
         final BusinessKnowledgeModel bkm = new BusinessKnowledgeModel();
-        final Bounds bounds = Bounds.create(0d, 0d,100d,150d);
+        final Bounds bounds = Bounds.create(0d, 0d, 100d, 150d);
         final View<BusinessKnowledgeModel> nodeContent = new ViewImpl<>(bkm,
                                                                         bounds);
         bkmNode.setContent(nodeContent);

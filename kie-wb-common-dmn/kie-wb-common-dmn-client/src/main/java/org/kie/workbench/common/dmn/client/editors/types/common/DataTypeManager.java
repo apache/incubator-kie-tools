@@ -95,41 +95,41 @@ public class DataTypeManager {
 
     public DataTypeManager fromNew() {
         return this
-            .newDataType()
-            .withUUID()
-            .withParentUUID(TOP_LEVEL_PARENT_UUID)
-            .withNoName()
-            .withNoConstraint()
-            .asList(false)
-            .withDefaultType();
+                .newDataType()
+                .withUUID()
+                .withParentUUID(TOP_LEVEL_PARENT_UUID)
+                .withNoName()
+                .withNoConstraint()
+                .asList(false)
+                .withDefaultType();
     }
 
     public DataTypeManager from(final ItemDefinition itemDefinition) {
         return this
-            .newDataType()
-            .withUUID()
-            .withParentUUID(TOP_LEVEL_PARENT_UUID)
-            .withItemDefinition(itemDefinition)
-            .withItemDefinitionName()
-            .withItemDefinitionType()
-            .withItemDefinitionConstraint()
-            .withItemDefinitionCollection()
-            .withItemDefinitionSubDataTypes()
-            .withIndexedItemDefinition();
+                .newDataType()
+                .withUUID()
+                .withParentUUID(TOP_LEVEL_PARENT_UUID)
+                .withItemDefinition(itemDefinition)
+                .withItemDefinitionName()
+                .withItemDefinitionType()
+                .withItemDefinitionConstraint()
+                .withItemDefinitionCollection()
+                .withItemDefinitionSubDataTypes()
+                .withIndexedItemDefinition();
     }
 
     public DataTypeManager from(final BuiltInType builtInType) {
         return this
-            .newDataType()
-            .withUUID()
-            .withName(none())
-            .withBuiltInType(builtInType);
+                .newDataType()
+                .withUUID()
+                .withName(none())
+                .withBuiltInType(builtInType);
     }
 
     public DataTypeManager from(final DataType dataType) {
         return this
-            .withDataType(dataType)
-            .withItemDefinition(getItemDefinition(dataType));
+                .withDataType(dataType)
+                .withItemDefinition(getItemDefinition(dataType));
     }
 
     public DataTypeManager withParentUUID(final String parentUUID) {
@@ -305,11 +305,11 @@ public class DataTypeManager {
             return new ArrayList<>();
         } else {
             return existingItemDefinition
-                .get()
-                .getItemComponent()
-                .stream()
-                .map(this::createSubDataType)
-                .collect(toList());
+                    .get()
+                    .getItemComponent()
+                    .stream()
+                    .map(this::createSubDataType)
+                    .collect(toList());
         }
     }
 
@@ -333,18 +333,18 @@ public class DataTypeManager {
 
     DataType createSubDataType(final ItemDefinition itemDefinition) {
         return anotherManager()
-            .newDataType()
-            .withUUID()
-            .withParentUUID(getDataTypeUUID().orElseThrow(() -> new UnsupportedOperationException("A parent data type must have an UUID.")))
-            .withItemDefinition(itemDefinition)
-            .withItemDefinitionName()
-            .withItemDefinitionType()
-            .withItemDefinitionConstraint()
-            .withItemDefinitionCollection()
-            .withTypeStack(getSubDataTypeStack())
-            .withItemDefinitionSubDataTypes()
-            .withIndexedItemDefinition()
-            .get();
+                .newDataType()
+                .withUUID()
+                .withParentUUID(getDataTypeUUID().orElseThrow(() -> new UnsupportedOperationException("A parent data type must have an UUID.")))
+                .withItemDefinition(itemDefinition)
+                .withItemDefinitionName()
+                .withItemDefinitionType()
+                .withItemDefinitionConstraint()
+                .withItemDefinitionCollection()
+                .withTypeStack(getSubDataTypeStack())
+                .withItemDefinitionSubDataTypes()
+                .withIndexedItemDefinition()
+                .get();
     }
 
     private String none() {

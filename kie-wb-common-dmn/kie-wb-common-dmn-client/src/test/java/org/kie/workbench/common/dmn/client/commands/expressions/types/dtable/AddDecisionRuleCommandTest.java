@@ -25,6 +25,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionRule;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InputClause;
 import org.kie.workbench.common.dmn.api.definition.v1_1.OutputClause;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.DecisionRuleFactory;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.DecisionTableDefaultValueUtilities;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.DecisionTableUIModelMapper;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.DescriptionColumn;
@@ -95,7 +96,6 @@ public class AddDecisionRuleCommandTest {
     @Before
     public void setup() {
         this.dtable = new DecisionTable();
-        this.rule = new DecisionRule();
         this.uiModel = new DMNGridData();
         this.uiModel.appendColumn(uiRowNumberColumn);
         this.uiModelRow = new BaseGridRow();
@@ -110,6 +110,7 @@ public class AddDecisionRuleCommandTest {
     }
 
     private void makeCommand(final int index) {
+        this.rule = DecisionRuleFactory.makeDecisionRule(dtable);
         this.command = spy(new AddDecisionRuleCommand(dtable,
                                                       rule,
                                                       uiModel,
@@ -161,14 +162,14 @@ public class AddDecisionRuleCommandTest {
 
     @Test
     public void testGraphCommandExecuteConstructedRuleInputs() {
-        makeCommand(0);
-
         assertEquals(0, dtable.getRule().size());
         final int inputsCount = 2;
 
         for (int i = 0; i < inputsCount; i++) {
             dtable.getInput().add(new InputClause());
         }
+
+        makeCommand(0);
 
         final Command<GraphCommandExecutionContext, RuleViolation> graphCommand = command.newGraphCommand(canvasHandler);
 
@@ -192,14 +193,14 @@ public class AddDecisionRuleCommandTest {
 
     @Test
     public void testGraphCommandExecuteConstructedRuleOutputs() {
-        makeCommand(0);
-
         assertEquals(0, dtable.getRule().size());
         final int outputsCount = 2;
 
         for (int i = 0; i < outputsCount; i++) {
             dtable.getOutput().add(new OutputClause());
         }
+
+        makeCommand(0);
 
         final Command<GraphCommandExecutionContext, RuleViolation> graphCommand = command.newGraphCommand(canvasHandler);
 
@@ -285,10 +286,10 @@ public class AddDecisionRuleCommandTest {
 
     @Test
     public void testCanvasCommandAddRuleAndThenUndo() throws Exception {
-        makeCommand(0);
-
         dtable.getInput().add(new InputClause());
         dtable.getOutput().add(new OutputClause());
+
+        makeCommand(0);
 
         final Command<GraphCommandExecutionContext, RuleViolation> graphCommand = command.newGraphCommand(canvasHandler);
         graphCommand.execute(graphCommandExecutionContext);

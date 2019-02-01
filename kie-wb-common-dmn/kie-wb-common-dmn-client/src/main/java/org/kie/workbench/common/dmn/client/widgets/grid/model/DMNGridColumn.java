@@ -69,7 +69,7 @@ public abstract class DMNGridColumn<G extends GridWidget, T> extends BaseGridCol
             }
         }
     }
-    
+
     @Override
     public void destroyResources() {
         if (gridWidget instanceof BaseExpressionGrid) {

@@ -36,6 +36,7 @@ import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.NOPDomainObject;
 import org.kie.workbench.common.dmn.api.definition.v1_1.BuiltinAggregator;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
+import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionRule;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
 import org.kie.workbench.common.dmn.api.definition.v1_1.HitPolicy;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItemPrimary;
@@ -138,6 +139,8 @@ public class DecisionTableGridTest {
     private static final int DEFAULT_INSERT_RULE_BELOW = 1;
 
     private static final int DEFAULT_DELETE_RULE = 2;
+
+    private static final int DEFAULT_DUPLICATE_RULE = 3;
 
     private static final int INSERT_COLUMN_BEFORE = 0;
 
@@ -513,8 +516,8 @@ public class DecisionTableGridTest {
 
         final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 1);
 
-        assertThat(items.size()).isEqualTo(7);
-        assertDefaultListItems(items.subList(4, 7), true);
+        assertThat(items.size()).isEqualTo(8);
+        assertDefaultListItems(items.subList(4, 8), true);
 
         assertListSelectorItem(items.get(INSERT_COLUMN_BEFORE),
                                DMNEditorConstants.DecisionTableEditor_InsertInputClauseLeft,
@@ -544,8 +547,8 @@ public class DecisionTableGridTest {
 
         final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 2);
 
-        assertThat(items.size()).isEqualTo(7);
-        assertDefaultListItems(items.subList(4, 7), true);
+        assertThat(items.size()).isEqualTo(8);
+        assertDefaultListItems(items.subList(4, 8), true);
 
         assertListSelectorItem(items.get(INSERT_COLUMN_BEFORE),
                                DMNEditorConstants.DecisionTableEditor_InsertOutputClauseLeft,
@@ -596,8 +599,8 @@ public class DecisionTableGridTest {
 
         final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 1);
 
-        assertThat(items.size()).isEqualTo(7);
-        assertDefaultListItems(items.subList(4, 7), true);
+        assertThat(items.size()).isEqualTo(8);
+        assertDefaultListItems(items.subList(4, 8), true);
 
         assertListSelectorItem(items.get(INSERT_COLUMN_BEFORE),
                                DMNEditorConstants.DecisionTableEditor_InsertInputClauseLeft,
@@ -621,8 +624,8 @@ public class DecisionTableGridTest {
 
         final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 2);
 
-        assertThat(items.size()).isEqualTo(7);
-        assertDefaultListItems(items.subList(4, 7), true);
+        assertThat(items.size()).isEqualTo(8);
+        assertDefaultListItems(items.subList(4, 8), true);
 
         assertListSelectorItem(items.get(INSERT_COLUMN_BEFORE),
                                DMNEditorConstants.DecisionTableEditor_InsertOutputClauseLeft,
@@ -638,7 +641,7 @@ public class DecisionTableGridTest {
 
     private void assertDefaultListItems(final List<HasListSelectorControl.ListSelectorItem> items,
                                         final boolean enabled) {
-        assertThat(items.size()).isEqualTo(3);
+        assertThat(items.size()).isEqualTo(4);
         assertListSelectorItem(items.get(DEFAULT_INSERT_RULE_ABOVE),
                                DMNEditorConstants.DecisionTableEditor_InsertDecisionRuleAbove,
                                enabled);
@@ -648,6 +651,9 @@ public class DecisionTableGridTest {
         assertListSelectorItem(items.get(DEFAULT_DELETE_RULE),
                                DMNEditorConstants.DecisionTableEditor_DeleteDecisionRule,
                                enabled && grid.getModel().getRowCount() > 1);
+        assertListSelectorItem(items.get(DEFAULT_DUPLICATE_RULE),
+                               DMNEditorConstants.DecisionTableEditor_DuplicateDecisionRule,
+                               enabled);
     }
 
     private void assertListSelectorItem(final HasListSelectorControl.ListSelectorItem item,
@@ -709,6 +715,19 @@ public class DecisionTableGridTest {
 
         verify(cellEditorControls).hide();
         verify(grid).deleteDecisionRule(eq(0));
+    }
+
+    @Test
+    public void testOnItemSelectedDuplicateRow() {
+        setupGrid(makeHasNameForDecision(), 0);
+
+        final List<HasListSelectorControl.ListSelectorItem> items = grid.getItems(0, 0);
+        final HasListSelectorControl.ListSelectorTextItem ti = (HasListSelectorControl.ListSelectorTextItem) items.get(DEFAULT_DUPLICATE_RULE);
+
+        grid.onItemSelected(ti);
+
+        verify(cellEditorControls).hide();
+        verify(grid).duplicateDecisionRule(eq(0));
     }
 
     @Test
@@ -857,7 +876,16 @@ public class DecisionTableGridTest {
     public void testAddDecisionRule() {
         setupGrid(makeHasNameForDecision(), 0);
 
+        final DecisionTable dtable = grid.getExpression().get();
+        assertThat(dtable.getRule().size()).isEqualTo(1);
+        assertThat(dtable.getRule().get(0).getInputEntry().size()).isEqualTo(1);
+        assertThat(dtable.getRule().get(0).getOutputEntry().size()).isEqualTo(1);
+
         addDecisionRule(0);
+
+        assertThat(dtable.getRule().size()).isEqualTo(2);
+        assertThat(dtable.getRule().get(1).getInputEntry().size()).isEqualTo(1);
+        assertThat(dtable.getRule().get(1).getOutputEntry().size()).isEqualTo(1);
 
         verifyCommandExecuteOperation(BaseExpressionGrid.RESIZE_EXISTING);
     }
@@ -883,6 +911,44 @@ public class DecisionTableGridTest {
 
         final DeleteDecisionRuleCommand deleteDecisionRuleCommand = deleteDecisionRuleCommandCaptor.getValue();
         deleteDecisionRuleCommand.execute(canvasHandler);
+
+        verifyCommandExecuteOperation(BaseExpressionGrid.RESIZE_EXISTING);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testDuplicateDecisionRule() {
+        setupGrid(makeHasNameForDecision(), 0);
+
+        final DecisionTable dtable = grid.getExpression().get();
+        assertThat(dtable.getRule().size()).isEqualTo(1);
+        final DecisionRule rule0 = dtable.getRule().get(0);
+        assertThat(rule0.getInputEntry().size()).isEqualTo(1);
+        assertThat(rule0.getOutputEntry().size()).isEqualTo(1);
+
+        rule0.getInputEntry().get(0).getText().setValue("input");
+        rule0.getOutputEntry().get(0).getText().setValue("output");
+        rule0.getDescription().setValue("description");
+
+        grid.duplicateDecisionRule(0);
+
+        verify(sessionCommandManager).execute(eq(canvasHandler),
+                                              addDecisionRuleCommandCaptor.capture());
+
+        final AddDecisionRuleCommand addDecisionRuleCommand = addDecisionRuleCommandCaptor.getValue();
+        addDecisionRuleCommand.execute(canvasHandler);
+
+        assertThat(dtable.getRule().size()).isEqualTo(2);
+        final DecisionRule rule1 = dtable.getRule().get(1);
+        assertThat(rule1.getInputEntry().size()).isEqualTo(1);
+        assertThat(rule1.getOutputEntry().size()).isEqualTo(1);
+
+        assertThat(rule0.getInputEntry().get(0).getText().getValue()).isEqualTo("input");
+        assertThat(rule0.getOutputEntry().get(0).getText().getValue()).isEqualTo("output");
+        assertThat(rule0.getDescription().getValue()).isEqualTo("description");
+        assertThat(rule1.getInputEntry().get(0).getText().getValue()).isEqualTo("input");
+        assertThat(rule1.getOutputEntry().get(0).getText().getValue()).isEqualTo("output");
+        assertThat(rule1.getDescription().getValue()).isEqualTo("description");
 
         verifyCommandExecuteOperation(BaseExpressionGrid.RESIZE_EXISTING);
     }

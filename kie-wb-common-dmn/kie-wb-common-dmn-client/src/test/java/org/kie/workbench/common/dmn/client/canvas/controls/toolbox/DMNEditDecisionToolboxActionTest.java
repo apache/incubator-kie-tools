@@ -78,7 +78,7 @@ public class DMNEditDecisionToolboxActionTest {
     public void setup() throws Exception {
         decisionNode = new NodeImpl<>(E_UUID);
         decision = new Decision();
-        final Bounds bounds = Bounds.create(0d, 0d,100d,150d);
+        final Bounds bounds = Bounds.create(0d, 0d, 100d, 150d);
         final View<Decision> nodeContent = new ViewImpl<>(decision,
                                                           bounds);
         decisionNode.setContent(nodeContent);

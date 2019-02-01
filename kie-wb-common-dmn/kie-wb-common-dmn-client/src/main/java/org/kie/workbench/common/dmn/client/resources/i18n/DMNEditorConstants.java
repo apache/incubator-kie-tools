@@ -149,6 +149,9 @@ public class DMNEditorConstants {
     public static final String DecisionTableEditor_DeleteDecisionRule = "DecisionTableEditor.DeleteDecisionRule";
 
     @TranslationKey(defaultValue = "")
+    public static final String DecisionTableEditor_DuplicateDecisionRule = "DecisionTableEditor.DuplicateDecisionRule";
+
+    @TranslationKey(defaultValue = "")
     public static final String DecisionTableEditor_InsertInputClauseLeft = "DecisionTableEditor.InsertInputClauseLeft";
 
     @TranslationKey(defaultValue = "")

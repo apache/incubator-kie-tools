@@ -20,13 +20,9 @@ import java.util.stream.IntStream;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionRule;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
-import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
-import org.kie.workbench.common.dmn.api.definition.v1_1.UnaryTests;
-import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.client.commands.VetoExecutionCommand;
 import org.kie.workbench.common.dmn.client.commands.VetoUndoCommand;
 import org.kie.workbench.common.dmn.client.commands.util.CommandUtils;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.DecisionTableDefaultValueUtilities;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.DecisionTableUIModelMapper;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasCommand;
@@ -81,24 +77,6 @@ public class AddDecisionRuleCommand extends AbstractCanvasGraphCommand implement
             public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext context) {
                 dtable.getRule().add(uiRowIndex,
                                      rule);
-
-                for (int ie = 0; ie < dtable.getInput().size(); ie++) {
-                    final UnaryTests ut = new UnaryTests();
-                    ut.getText().setValue(DecisionTableDefaultValueUtilities.INPUT_CLAUSE_UNARY_TEST_TEXT);
-                    rule.getInputEntry().add(ut);
-                    ut.setParent(rule);
-                }
-                for (int oe = 0; oe < dtable.getOutput().size(); oe++) {
-                    final LiteralExpression le = new LiteralExpression();
-                    le.getText().setValue(DecisionTableDefaultValueUtilities.OUTPUT_CLAUSE_EXPRESSION_TEXT);
-                    rule.getOutputEntry().add(le);
-                    le.setParent(rule);
-                }
-                final Description d = new Description();
-                d.setValue(DecisionTableDefaultValueUtilities.RULE_DESCRIPTION);
-                rule.setDescription(d);
-
-                rule.setParent(dtable);
 
                 return GraphCommandResultBuilder.SUCCESS;
             }
