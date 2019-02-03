@@ -37,6 +37,9 @@
           <drools:metaData name="case">
             <drools:metaValue><![CDATA[true]]></drools:metaValue>
           </drools:metaData>
+          <drools:metaData name="customAutoStart">
+             <drools:metaValue><![CDATA[true]]></drools:metaValue>
+          </drools:metaData>
         </bpmn2:extensionElements>
         <bpmn2:ioSpecification id="_BdpdEf5HEeiIRPCiEoQNIw">
           <bpmn2:dataInput id="_702B6EEA-4DC2-48D7-B423-0824C050B046_SubcaseTestInputX" drools:dtype="Boolean" itemSubjectRef="__702B6EEA-4DC2-48D7-B423-0824C050B046_SubcaseTestInputXItem" name="SubcaseTest"/>

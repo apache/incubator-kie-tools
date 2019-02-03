@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.cm.backend.converters.fromstunner.properties;
 
 import org.junit.Test;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.AdHocSubProcessPropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.CallActivityPropertyWriter;
 
 import static org.junit.Assert.assertTrue;
@@ -27,9 +28,16 @@ public class CaseManagementPropertyWriterFactoryTest {
     private CaseManagementPropertyWriterFactory tested = new CaseManagementPropertyWriterFactory();
 
     @Test
-    public void testOf() throws Exception {
+    public void testOf_CallActivity() throws Exception {
         final CallActivityPropertyWriter propertyWriter = tested.of(bpmn2.createCallActivity());
 
-        assertTrue(propertyWriter instanceof CaseManagementCallActivityPropertyWriter);
+        assertTrue(CaseManagementCallActivityPropertyWriter.class.isInstance(propertyWriter));
+    }
+
+    @Test
+    public void testOf_AdHocSubProcess() throws Exception {
+        final AdHocSubProcessPropertyWriter propertyWriter = tested.of(bpmn2.createAdHocSubProcess());
+
+        assertTrue(CaseManagementAdHocSubProcessPropertyWriter.class.isInstance(propertyWriter));
     }
 }

@@ -32,7 +32,6 @@ import org.kie.workbench.common.stunner.backend.definition.factory.TestScopeMode
 import org.kie.workbench.common.stunner.bpmn.backend.converters.TypedFactoryManager;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
 import org.kie.workbench.common.stunner.bpmn.backend.workitem.service.WorkItemDefinitionBackendService;
-import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
 import org.kie.workbench.common.stunner.bpmn.definition.property.assignee.Actors;
 import org.kie.workbench.common.stunner.bpmn.definition.property.assignee.Groupid;
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseFileVariables;
@@ -43,11 +42,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.connectors.Prio
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.AssignmentsInfo;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.AdHoc;
-import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.DiagramSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Id;
-import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Package;
-import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.ProcessInstanceDescription;
-import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Version;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.Height;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.Width;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
@@ -55,9 +50,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.general.Documen
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.TaskGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocAutostart;
-import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocCompletionCondition;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocOrdering;
-import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocSubprocessTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.CreatedBy;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.Description;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.Independent;
@@ -69,18 +62,25 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptType
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.Skippable;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.Subject;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskName;
-import org.kie.workbench.common.stunner.bpmn.definition.property.task.UserTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.WaitForCompletion;
-import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessData;
-import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessVariables;
 import org.kie.workbench.common.stunner.cm.CaseManagementDefinitionSet;
 import org.kie.workbench.common.stunner.cm.backend.converters.fromstunner.properties.CaseManagementPropertyWriterFactory;
 import org.kie.workbench.common.stunner.cm.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
 import org.kie.workbench.common.stunner.cm.definition.CaseReusableSubprocess;
 import org.kie.workbench.common.stunner.cm.definition.ProcessReusableSubprocess;
+import org.kie.workbench.common.stunner.cm.definition.UserTask;
+import org.kie.workbench.common.stunner.cm.definition.property.diagram.DiagramSet;
+import org.kie.workbench.common.stunner.cm.definition.property.diagram.Package;
+import org.kie.workbench.common.stunner.cm.definition.property.diagram.ProcessInstanceDescription;
+import org.kie.workbench.common.stunner.cm.definition.property.diagram.Version;
+import org.kie.workbench.common.stunner.cm.definition.property.task.AdHocCompletionCondition;
+import org.kie.workbench.common.stunner.cm.definition.property.task.AdHocSubprocessTaskExecutionSet;
 import org.kie.workbench.common.stunner.cm.definition.property.task.CaseReusableSubprocessTaskExecutionSet;
 import org.kie.workbench.common.stunner.cm.definition.property.task.ProcessReusableSubprocessTaskExecutionSet;
+import org.kie.workbench.common.stunner.cm.definition.property.task.UserTaskExecutionSet;
+import org.kie.workbench.common.stunner.cm.definition.property.variables.ProcessData;
+import org.kie.workbench.common.stunner.cm.definition.property.variables.ProcessVariables;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.backend.BackendFactoryManager;
@@ -266,7 +266,7 @@ public class CaseManagementDirectDiagramMarshallerTest {
         View<UserTask> task1Content = new ViewImpl<>(task1, Bounds.create(0.0, 0.0, 153.0, 103.0));
         Node<View<UserTask>, Edge> task1Node = new NodeImpl<>("_E95AD08A-4595-4FA4-8948-3318D8BE7941");
         task1Node.getLabels().addAll(task1.getLabels());
-        task1Node.getLabels().add("org.kie.workbench.common.stunner.bpmn.definition.UserTask");
+        task1Node.getLabels().add("org.kie.workbench.common.stunner.cm.definition.UserTask");
         task1Node.setContent(task1Content);
 
         Edge<Child, Node> task1InEdge = new EdgeImpl<>("_B24CB4A4-93A0-4BC0-87A5-BD3968CC184F");
@@ -504,6 +504,8 @@ public class CaseManagementDirectDiagramMarshallerTest {
 
         stage.getExecutionSet().setAdHocOrdering(new AdHocOrdering("Sequential"));
 
+        stage.getExecutionSet().setAdHocAutostart(new AdHocAutostart(true));
+
         ScriptTypeValue completionCondition = new ScriptTypeValue();
         completionCondition.setScript("autocomplete");
         completionCondition.setLanguage("drools");
@@ -560,7 +562,7 @@ public class CaseManagementDirectDiagramMarshallerTest {
                    "<bpmn2:itemDefinition id=\"_StageTestItem\" structureRef=\"Boolean\"/>");
 
         hasElement(result,
-                   "<bpmn2:process id=\"StageTest\" drools:version=\"1.0\" drools:adHoc=\"false\" name=\"StageTest\" isExecutable=\"true\">");
+                   "<bpmn2:process id=\"StageTest\" drools:version=\"1.0\" drools:adHoc=\"true\" name=\"StageTest\" isExecutable=\"true\">");
 
         hasElement(result,
                    "<bpmn2:adHocSubProcess id=\"" + UUID_REGEX + "\" name=\"StageTest\" ordering=\"Sequential\">");
@@ -570,6 +572,10 @@ public class CaseManagementDirectDiagramMarshallerTest {
 
         hasElement(result,
                    "<drools:metaData name=\"elementname\">(\\s*)" + Pattern.quote("<drools:metaValue><![CDATA[StageTest]]></drools:metaValue>")
+                           + "(\\s*)</drools:metaData>");
+
+        hasElement(result,
+                   "<drools:metaData name=\"customAutoStart\">(\\s*)" + Pattern.quote("<drools:metaValue><![CDATA[true]]></drools:metaValue>")
                            + "(\\s*)</drools:metaData>");
 
         hasElement(result,
@@ -628,6 +634,7 @@ public class CaseManagementDirectDiagramMarshallerTest {
         subcaseExecutionSet.setIndependent(new Independent(true));
         subcaseExecutionSet.setIsAsync(new IsAsync(true));
         subcaseExecutionSet.setWaitForCompletion(new WaitForCompletion(true));
+        subcaseExecutionSet.setAdHocAutostart(new AdHocAutostart(true));
 
         ScriptTypeValue entryAction = new ScriptTypeValue();
         entryAction.setScript(("SubcaseTest"));
@@ -688,7 +695,7 @@ public class CaseManagementDirectDiagramMarshallerTest {
                    "<bpmn2:itemDefinition id=\"_+" + UUID_REGEX + "_SubcaseTestOutputXItem\" structureRef=\"Boolean\"/>");
 
         hasElement(result,
-                   "<bpmn2:process id=\"SubcaseTest\" drools:version=\"1.0\" drools:adHoc=\"false\" name=\"SubcaseTest\" isExecutable=\"true\">");
+                   "<bpmn2:process id=\"SubcaseTest\" drools:version=\"1.0\" drools:adHoc=\"true\" name=\"SubcaseTest\" isExecutable=\"true\">");
 
         hasElement(result,
                    "<bpmn2:adHocSubProcess id=\"" + UUID_REGEX + "\" name=\"StageSubcaseTest\" ordering=\"Sequential\">");
@@ -719,6 +726,10 @@ public class CaseManagementDirectDiagramMarshallerTest {
 
         hasElement(result,
                    "<drools:metaData name=\"case\">(\\s*)" + Pattern.quote("<drools:metaValue><![CDATA[true]]></drools:metaValue>")
+                           + "(\\s*)</drools:metaData>");
+
+        hasElement(result,
+                   "<drools:metaData name=\"customAutoStart\">(\\s*)" + Pattern.quote("<drools:metaValue><![CDATA[true]]></drools:metaValue>")
                            + "(\\s*)</drools:metaData>");
 
         hasElement(result,
@@ -795,6 +806,7 @@ public class CaseManagementDirectDiagramMarshallerTest {
         subprocessExecutionSet.setIndependent(new Independent(true));
         subprocessExecutionSet.setIsAsync(new IsAsync(true));
         subprocessExecutionSet.setWaitForCompletion(new WaitForCompletion(true));
+        subprocessExecutionSet.setAdHocAutostart(new AdHocAutostart(true));
 
         ScriptTypeValue entryAction = new ScriptTypeValue();
         entryAction.setScript(("SubprocessTest"));
@@ -855,7 +867,7 @@ public class CaseManagementDirectDiagramMarshallerTest {
                    "<bpmn2:itemDefinition id=\"_+" + UUID_REGEX + "_SubprocessTestOutputXItem\" structureRef=\"Boolean\"/>");
 
         hasElement(result,
-                   "<bpmn2:process id=\"SubprocessTest\" drools:version=\"1.0\" drools:adHoc=\"false\" name=\"SubprocessTest\" isExecutable=\"true\">");
+                   "<bpmn2:process id=\"SubprocessTest\" drools:version=\"1.0\" drools:adHoc=\"true\" name=\"SubprocessTest\" isExecutable=\"true\">");
 
         hasElement(result,
                    "<bpmn2:adHocSubProcess id=\"" + UUID_REGEX + "\" name=\"StageSubprocessTest\" ordering=\"Sequential\">");
@@ -882,6 +894,10 @@ public class CaseManagementDirectDiagramMarshallerTest {
 
         hasElement(result,
                    "<drools:metaData name=\"customAsync\">(\\s*)" + Pattern.quote("<drools:metaValue><![CDATA[true]]></drools:metaValue>")
+                           + "(\\s*)</drools:metaData>");
+
+        hasElement(result,
+                   "<drools:metaData name=\"customAutoStart\">(\\s*)" + Pattern.quote("<drools:metaValue><![CDATA[true]]></drools:metaValue>")
                            + "(\\s*)</drools:metaData>");
 
         hasElement(result,
@@ -985,7 +1001,7 @@ public class CaseManagementDirectDiagramMarshallerTest {
         View<UserTask> taskContent = new ViewImpl<>(task, Bounds.create(0.0, 0.0, 153.0, 103.0));
         Node<View<UserTask>, Edge> taskNode = new NodeImpl<>("_E95AD08A-4595-4FA4-8948-3318D8BE7941");
         taskNode.getLabels().addAll(task.getLabels());
-        taskNode.getLabels().add("org.kie.workbench.common.stunner.bpmn.definition.UserTask");
+        taskNode.getLabels().add("org.kie.workbench.common.stunner.cm.definition.UserTask");
         taskNode.setContent(taskContent);
 
         Edge<Child, Node> taskInEdge = new EdgeImpl<>("_B24CB4A4-93A0-4BC0-87A5-BD3968CC184F");
@@ -1048,7 +1064,7 @@ public class CaseManagementDirectDiagramMarshallerTest {
                    "<bpmn2:itemDefinition id=\"_" + UUID_REGEX + "_TaskTestOutputXItem\" structureRef=\"Boolean\"/>");
 
         hasElement(result,
-                   "<bpmn2:process id=\"TaskTest\" drools:version=\"1.0\" drools:adHoc=\"false\" name=\"TaskTest\" isExecutable=\"true\">");
+                   "<bpmn2:process id=\"TaskTest\" drools:version=\"1.0\" drools:adHoc=\"true\" name=\"TaskTest\" isExecutable=\"true\">");
 
         hasElement(result,
                    "<bpmn2:adHocSubProcess id=\"" + UUID_REGEX + "\" name=\"StageTaskTest\" ordering=\"Sequential\">");
@@ -1194,34 +1210,34 @@ public class CaseManagementDirectDiagramMarshallerTest {
             Node<View<AdHocSubprocess>, Edge> stage1 = root.getOutEdges().get(0).getTargetNode();
             assertEquals(1, stage1.getInEdges().size());
             assertEquals(2, stage1.getOutEdges().size());
-            assertTrue(stage1.getContent().getDefinition() instanceof AdHocSubprocess);
+            assertTrue(AdHocSubprocess.class.isInstance(stage1.getContent().getDefinition()));
 
             Node<View<UserTask>, Edge> task1 = stage1.getOutEdges().get(0).getTargetNode();
             assertEquals(1, task1.getInEdges().size());
             assertEquals(0, task1.getOutEdges().size());
-            assertTrue(task1.getContent().getDefinition() instanceof UserTask);
+            assertTrue(UserTask.class.isInstance(task1.getContent().getDefinition()));
 
             Node<View<CaseReusableSubprocess>, Edge> case1 = stage1.getOutEdges().get(1).getTargetNode();
             assertEquals(1, case1.getInEdges().size());
             assertEquals(0, case1.getOutEdges().size());
-            assertTrue(case1.getContent().getDefinition() instanceof CaseReusableSubprocess);
+            assertTrue(CaseReusableSubprocess.class.isInstance(case1.getContent().getDefinition()));
             assertTrue(case1.getContent().getDefinition().getExecutionSet().getIsCase().getValue());
 
             Node<View<AdHocSubprocess>, Edge> stage2 = root.getOutEdges().get(1).getTargetNode();
             assertEquals(1, stage2.getInEdges().size());
             assertEquals(2, stage2.getOutEdges().size());
-            assertTrue(stage2.getContent().getDefinition() instanceof AdHocSubprocess);
+            assertTrue(AdHocSubprocess.class.isInstance(stage2.getContent().getDefinition()));
 
             Node<View<CaseReusableSubprocess>, Edge> case2 = stage2.getOutEdges().get(0).getTargetNode();
             assertEquals(1, case2.getInEdges().size());
             assertEquals(0, case2.getOutEdges().size());
-            assertTrue(case2.getContent().getDefinition() instanceof CaseReusableSubprocess);
+            assertTrue(CaseReusableSubprocess.class.isInstance(case2.getContent().getDefinition()));
             assertTrue(case2.getContent().getDefinition().getExecutionSet().getIsCase().getValue());
 
             Node<View<ProcessReusableSubprocess>, Edge> process2 = stage2.getOutEdges().get(1).getTargetNode();
             assertEquals(1, process2.getInEdges().size());
             assertEquals(0, process2.getOutEdges().size());
-            assertTrue(process2.getContent().getDefinition() instanceof ProcessReusableSubprocess);
+            assertTrue(ProcessReusableSubprocess.class.isInstance(process2.getContent().getDefinition()));
             assertFalse(process2.getContent().getDefinition().getExecutionSet().getIsCase().getValue());
         }
     }
@@ -1296,6 +1312,7 @@ public class CaseManagementDirectDiagramMarshallerTest {
 
             AdHocSubprocessTaskExecutionSet executionSet = stage.getExecutionSet();
             assertEquals("Sequential", executionSet.getAdHocOrdering().getValue());
+            assertTrue(executionSet.getAdHocAutostart().getValue());
 
             ScriptTypeValue completionCondition = executionSet.getAdHocCompletionCondition().getValue();
             assertEquals("autocomplete", completionCondition.getScript());
@@ -1352,6 +1369,7 @@ public class CaseManagementDirectDiagramMarshallerTest {
             assertTrue(subcaseExecutionSet.getIndependent().getValue());
             assertTrue(subcaseExecutionSet.getIsAsync().getValue());
             assertTrue(subcaseExecutionSet.getWaitForCompletion().getValue());
+            assertTrue(subcaseExecutionSet.getAdHocAutostart().getValue());
 
             ScriptTypeValue entryAction = subcaseExecutionSet.getOnEntryAction().getValue().getValues().get(0);
             assertEquals("SubcaseTest", entryAction.getScript());
@@ -1407,6 +1425,7 @@ public class CaseManagementDirectDiagramMarshallerTest {
             assertTrue(subprocessExecutionSet.getIndependent().getValue());
             assertTrue(subprocessExecutionSet.getIsAsync().getValue());
             assertTrue(subprocessExecutionSet.getWaitForCompletion().getValue());
+            assertTrue(subprocessExecutionSet.getAdHocAutostart().getValue());
 
             ScriptTypeValue entryAction = subprocessExecutionSet.getOnEntryAction().getValue().getValues().get(0);
             assertEquals("SubprocessTest", entryAction.getScript());
@@ -1483,8 +1502,8 @@ public class CaseManagementDirectDiagramMarshallerTest {
 
     @Test
     public void testCreateFromStunnerConverterFactory() throws Exception {
-        assertTrue(tested.createFromStunnerConverterFactory(new GraphImpl("x", new GraphNodeStoreImpl()), new CaseManagementPropertyWriterFactory())
-                           instanceof org.kie.workbench.common.stunner.cm.backend.converters.fromstunner.CaseManagementConverterFactory);
+        assertTrue(org.kie.workbench.common.stunner.cm.backend.converters.fromstunner.CaseManagementConverterFactory.class.isInstance(
+                tested.createFromStunnerConverterFactory(new GraphImpl("x", new GraphNodeStoreImpl()), new CaseManagementPropertyWriterFactory())));
     }
 
     @Test
@@ -1501,13 +1520,13 @@ public class CaseManagementDirectDiagramMarshallerTest {
 
         TypedFactoryManager typedFactoryManager = new TypedFactoryManager(factoryManager);
 
-        assertTrue(tested.createToStunnerConverterFactory(definitionResolver, typedFactoryManager)
-                           instanceof org.kie.workbench.common.stunner.cm.backend.converters.tostunner.CaseManagementConverterFactory);
+        assertTrue(org.kie.workbench.common.stunner.cm.backend.converters.tostunner.CaseManagementConverterFactory.class.isInstance(
+                tested.createToStunnerConverterFactory(definitionResolver, typedFactoryManager)));
     }
 
     @Test
     public void testCreatePropertyWriterFactory() throws Exception {
-        assertTrue(tested.createPropertyWriterFactory() instanceof CaseManagementPropertyWriterFactory);
+        assertTrue(CaseManagementPropertyWriterFactory.class.isInstance(tested.createPropertyWriterFactory()));
     }
 
     @Test

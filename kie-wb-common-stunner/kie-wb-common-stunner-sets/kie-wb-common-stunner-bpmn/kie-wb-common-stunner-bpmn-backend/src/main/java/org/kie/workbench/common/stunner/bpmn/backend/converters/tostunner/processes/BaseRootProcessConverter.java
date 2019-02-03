@@ -32,17 +32,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseFileVari
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseIdPrefix;
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseManagementSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseRoles;
-import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.AdHoc;
-import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.DiagramSet;
-import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Executable;
-import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Id;
-import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Package;
-import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.ProcessInstanceDescription;
-import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Version;
-import org.kie.workbench.common.stunner.bpmn.definition.property.general.Documentation;
-import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
-import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessData;
-import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessVariables;
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.BaseDiagramSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.BaseProcessData;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
@@ -50,14 +41,15 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 /**
  * Convert the root Process with all its children to a BPMNDiagram
  */
-public abstract class BaseRootProcessConverter<D extends BPMNDiagram>  {
+public abstract class BaseRootProcessConverter<D extends BPMNDiagram<S, P>,
+        S extends BaseDiagramSet, P extends BaseProcessData> {
 
-    private final ProcessConverterDelegate delegate;
+    final ProcessConverterDelegate delegate;
 
     public BaseRootProcessConverter(TypedFactoryManager typedFactoryManager,
                                     PropertyReaderFactory propertyReaderFactory,
                                     DefinitionResolver definitionResolver,
-                                    BaseConverterFactory<D, ?, ?> factory) {
+                                    BaseConverterFactory factory) {
         this.delegate = new ProcessConverterDelegate(typedFactoryManager,
                                                      propertyReaderFactory,
                                                      definitionResolver,
@@ -82,27 +74,19 @@ public abstract class BaseRootProcessConverter<D extends BPMNDiagram>  {
     }
 
     private BpmnNode convertProcessNode(String id, Process process) {
-        Node<View<D>, Edge> diagramNode = delegate.factoryManager.newNode(id, getDiagramClass());
+        Node<View<D>, Edge> diagramNode = createNode(id);
         D definition = diagramNode.getContent().getDefinition();
 
         ProcessPropertyReader e = delegate.propertyReaderFactory.of(process);
 
-        definition.setDiagramSet(new DiagramSet(new Name(process.getName()),
-                                                new Documentation(e.getDocumentation()),
-                                                new Id(process.getId()),
-                                                new Package(e.getPackage()),
-                                                new Version(e.getVersion()),
-                                                new AdHoc(e.isAdHoc()),
-                                                new ProcessInstanceDescription(e.getDescription()),
-                                                new Executable(process.isIsExecutable()))
-        );
+        definition.setDiagramSet(createDiagramSet(process, e));
 
         definition.setCaseManagementSet(new CaseManagementSet(new CaseIdPrefix(e.getCaseIdPrefix()),
                                                               new CaseRoles(e.getCaseRoles()),
                                                               new CaseFileVariables(e.getCaseFileVariables())
         ));
 
-        definition.setProcessData(new ProcessData(new ProcessVariables(e.getProcessVariables())));
+        definition.setProcessData(createProcessData(e.getProcessVariables()));
 
         diagramNode.getContent().setBounds(e.getBounds());
 
@@ -112,5 +96,9 @@ public abstract class BaseRootProcessConverter<D extends BPMNDiagram>  {
         return BpmnNode.of(diagramNode);
     }
 
-    public abstract Class<D> getDiagramClass();
+    protected abstract Node<View<D>, Edge> createNode(String id);
+
+    protected abstract S createDiagramSet(Process process, ProcessPropertyReader e);
+
+    protected abstract P createProcessData(String processVariables);
 }

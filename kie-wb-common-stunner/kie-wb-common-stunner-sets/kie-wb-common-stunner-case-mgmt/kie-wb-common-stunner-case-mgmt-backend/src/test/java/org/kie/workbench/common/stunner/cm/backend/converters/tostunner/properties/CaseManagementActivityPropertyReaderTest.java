@@ -24,6 +24,7 @@ import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
 import org.kie.workbench.common.stunner.cm.backend.converters.customproperties.CaseManagementCustomElement;
 
@@ -77,5 +78,35 @@ public class CaseManagementActivityPropertyReaderTest {
                                                           definitionResolver);
 
         assertFalse(tested.isCase());
+    }
+
+    @Test
+    public void testIsAdHocAutostart_true() throws Exception {
+        String id = UUID.randomUUID().toString();
+
+        CallActivity callActivity = bpmn2.createCallActivity();
+        callActivity.setId(id);
+        CustomElement.autoStart.of(callActivity).set(Boolean.TRUE);
+
+        tested = new CaseManagementActivityPropertyReader(callActivity,
+                                                          definitionResolver.getDiagram(),
+                                                          definitionResolver);
+
+        assertTrue(tested.isAdHocAutostart());
+    }
+
+    @Test
+    public void testIsAdHocAutostart_false() throws Exception {
+        String id = UUID.randomUUID().toString();
+
+        CallActivity callActivity = bpmn2.createCallActivity();
+        callActivity.setId(id);
+        CustomElement.autoStart.of(callActivity).set(Boolean.FALSE);
+
+        tested = new CaseManagementActivityPropertyReader(callActivity,
+                                                          definitionResolver.getDiagram(),
+                                                          definitionResolver);
+
+        assertFalse(tested.isAdHocAutostart());
     }
 }

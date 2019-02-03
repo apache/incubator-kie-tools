@@ -32,6 +32,9 @@
         <drools:metaData name="elementname">
           <drools:metaValue><![CDATA[StageTest]]></drools:metaValue>
         </drools:metaData>
+        <drools:metaData name="customAutoStart">
+          <drools:metaValue><![CDATA[true]]></drools:metaValue>
+        </drools:metaData>
         <drools:onEntry-script scriptFormat="http://www.java.com/java">
           <drools:script><![CDATA[StageTest]]></drools:script>
         </drools:onEntry-script>

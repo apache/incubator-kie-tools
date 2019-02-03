@@ -15,31 +15,34 @@
  */
 package org.kie.workbench.common.stunner.cm.backend.converters.fromstunner.activities;
 
-import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.activities.BaseReusableSubprocessConverter;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.activities.ReusableSubprocessConverter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.PropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.PropertyWriterFactory;
+import org.kie.workbench.common.stunner.bpmn.definition.BaseReusableSubprocess;
 import org.kie.workbench.common.stunner.cm.backend.converters.fromstunner.properties.CaseManagementCallActivityPropertyWriter;
-import org.kie.workbench.common.stunner.cm.definition.BaseCaseManagementReusableSubprocess;
-import org.kie.workbench.common.stunner.cm.definition.property.task.BaseCaseManagementReusableSubprocessTaskExecutionSet;
+import org.kie.workbench.common.stunner.cm.definition.ReusableSubprocess;
+import org.kie.workbench.common.stunner.cm.definition.property.task.ReusableSubprocessTaskExecutionSet;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
 public class CaseManagementReusableSubprocessConverter
-        extends BaseReusableSubprocessConverter<BaseCaseManagementReusableSubprocess> {
+        extends ReusableSubprocessConverter {
 
     public CaseManagementReusableSubprocessConverter(PropertyWriterFactory propertyWriterFactory) {
         super(propertyWriterFactory);
     }
 
     @Override
-    public PropertyWriter toFlowElement(Node<View<BaseCaseManagementReusableSubprocess>, ?> n) {
+    public PropertyWriter toFlowElement(Node<View<BaseReusableSubprocess>, ?> n) {
         CaseManagementCallActivityPropertyWriter p = (CaseManagementCallActivityPropertyWriter) super.toFlowElement(n);
 
-        BaseCaseManagementReusableSubprocess definition = n.getContent().getDefinition();
+        ReusableSubprocess definition = (ReusableSubprocess) n.getContent().getDefinition();
 
-        BaseCaseManagementReusableSubprocessTaskExecutionSet executionSet = definition.getExecutionSet();
+        ReusableSubprocessTaskExecutionSet executionSet = definition.getExecutionSet();
 
         p.setCase(executionSet.getIsCase().getValue());
+
+        p.setAdHocAutostart(executionSet.getAdHocAutostart().getValue());
 
         return p;
     }

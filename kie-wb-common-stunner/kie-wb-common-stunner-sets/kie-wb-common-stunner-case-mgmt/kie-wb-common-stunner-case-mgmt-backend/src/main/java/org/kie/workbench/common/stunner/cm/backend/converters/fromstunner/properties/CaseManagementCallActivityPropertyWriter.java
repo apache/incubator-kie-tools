@@ -16,6 +16,7 @@
 package org.kie.workbench.common.stunner.cm.backend.converters.fromstunner.properties;
 
 import org.eclipse.bpmn2.CallActivity;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.CallActivityPropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.VariableScope;
 import org.kie.workbench.common.stunner.cm.backend.converters.customproperties.CaseManagementCustomElement;
@@ -28,5 +29,9 @@ public class CaseManagementCallActivityPropertyWriter extends CallActivityProper
 
     public void setCase(Boolean isCase) {
         CaseManagementCustomElement.isCase.of(flowElement).set(isCase);
+    }
+
+    public void setAdHocAutostart(boolean autoStart) {
+        CustomElement.autoStart.of(flowElement).set(autoStart);
     }
 }

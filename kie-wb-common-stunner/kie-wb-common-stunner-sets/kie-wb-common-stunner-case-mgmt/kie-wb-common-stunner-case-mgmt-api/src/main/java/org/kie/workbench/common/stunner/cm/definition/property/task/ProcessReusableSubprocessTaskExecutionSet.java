@@ -23,8 +23,10 @@ import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
+import org.kie.workbench.common.forms.adf.definitions.annotations.SkipFormField;
 import org.kie.workbench.common.forms.adf.definitions.annotations.field.selector.SelectorDataProvider;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.type.ListBoxFieldType;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocAutostart;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.CalledElement;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.Independent;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.IsAsync;
@@ -45,7 +47,7 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
         startElement = "calledElement"
 )
 public class ProcessReusableSubprocessTaskExecutionSet
-        implements BaseCaseManagementReusableSubprocessTaskExecutionSet {
+        implements ReusableSubprocessTaskExecutionSet {
 
     @Property
     @SelectorDataProvider(
@@ -58,16 +60,13 @@ public class ProcessReusableSubprocessTaskExecutionSet
     protected CalledElement calledElement;
 
     @Property
-    @FormField(
-            readonly = true,
-            afterElement = "calledElement"
-    )
+    @SkipFormField
     @Valid
     protected IsCase isCase;
 
     @Property
     @FormField(
-            afterElement = "isCase"
+            afterElement = "calledElement"
     )
     @Valid
     protected Independent independent;
@@ -87,7 +86,12 @@ public class ProcessReusableSubprocessTaskExecutionSet
     protected IsAsync isAsync;
 
     @Property
-    @FormField(afterElement = "isAsync",
+    @FormField(afterElement = "isAsync")
+    @Valid
+    private AdHocAutostart adHocAutostart;
+
+    @Property
+    @FormField(afterElement = "adHocAutostart",
             settings = {@FieldParam(name = "mode", value = "ACTION_SCRIPT")}
     )
     @Valid
@@ -106,6 +110,7 @@ public class ProcessReusableSubprocessTaskExecutionSet
              new Independent(),
              new WaitForCompletion(),
              new IsAsync(),
+             new AdHocAutostart(),
              new OnEntryAction(new ScriptTypeListValue().addValue(new ScriptTypeValue("java", ""))),
              new OnExitAction(new ScriptTypeListValue().addValue(new ScriptTypeValue("java", ""))));
     }
@@ -115,6 +120,7 @@ public class ProcessReusableSubprocessTaskExecutionSet
                                                      final @MapsTo("independent") Independent independent,
                                                      final @MapsTo("waitForCompletion") WaitForCompletion waitForCompletion,
                                                      final @MapsTo("isAsync") IsAsync isAsync,
+                                                     final @MapsTo("adHocAutostart") AdHocAutostart adHocAutostart,
                                                      final @MapsTo("onEntryAction") OnEntryAction onEntryAction,
                                                      final @MapsTo("onExitAction") OnExitAction onExitAction) {
         this.calledElement = calledElement;
@@ -122,6 +128,7 @@ public class ProcessReusableSubprocessTaskExecutionSet
         this.independent = independent;
         this.waitForCompletion = waitForCompletion;
         this.isAsync = isAsync;
+        this.adHocAutostart = adHocAutostart;
         this.onEntryAction = onEntryAction;
         this.onExitAction = onExitAction;
     }
@@ -152,13 +159,13 @@ public class ProcessReusableSubprocessTaskExecutionSet
     }
 
     @Override
-    public WaitForCompletion getWaitForCompletion() {
-        return waitForCompletion;
+    public void setIndependent(final Independent independent) {
+        this.independent = independent;
     }
 
     @Override
-    public void setIndependent(final Independent independent) {
-        this.independent = independent;
+    public WaitForCompletion getWaitForCompletion() {
+        return waitForCompletion;
     }
 
     @Override
@@ -174,6 +181,16 @@ public class ProcessReusableSubprocessTaskExecutionSet
     @Override
     public void setIsAsync(IsAsync isAsync) {
         this.isAsync = isAsync;
+    }
+
+    @Override
+    public AdHocAutostart getAdHocAutostart() {
+        return adHocAutostart;
+    }
+
+    @Override
+    public void setAdHocAutostart(AdHocAutostart adHocAutostart) {
+        this.adHocAutostart = adHocAutostart;
     }
 
     @Override
@@ -203,6 +220,7 @@ public class ProcessReusableSubprocessTaskExecutionSet
                                          independent.hashCode(),
                                          waitForCompletion.hashCode(),
                                          isAsync.hashCode(),
+                                         adHocAutostart.hashCode(),
                                          onEntryAction.hashCode(),
                                          onExitAction.hashCode());
     }
@@ -216,10 +234,10 @@ public class ProcessReusableSubprocessTaskExecutionSet
                     independent.equals(other.independent) &&
                     waitForCompletion.equals(other.waitForCompletion) &&
                     isAsync.equals(other.isAsync) &&
+                    adHocAutostart.equals(other.adHocAutostart) &&
                     onEntryAction.equals(other.onEntryAction) &&
                     onExitAction.equals(other.onExitAction);
         }
         return false;
     }
-
 }

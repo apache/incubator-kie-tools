@@ -46,21 +46,16 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class CaseCalledElementFormProviderTest {
 
-    @Mock
-    FormRenderingContext context;
-
-    @Mock
-    RefactoringQueryService queryService;
-
-    @Mock
-    Path path1;
-
-    @Mock
-    Path path2;
-
     private static final String ID1 = "P1.Process1";
     private static final String ID2 = "P1.Process2";
-
+    @Mock
+    FormRenderingContext context;
+    @Mock
+    RefactoringQueryService queryService;
+    @Mock
+    Path path1;
+    @Mock
+    Path path2;
     private CaseCalledElementFormProvider tested = new CaseCalledElementFormProvider();
 
     @Before
@@ -77,14 +72,14 @@ public class CaseCalledElementFormProviderTest {
 
         when(queryService.query(eq(tested.getQueryName()),
                                 anyObject())).thenAnswer(invocation -> {
-                                    Set<ValueIndexTerm> terms = invocation.getArgumentAt(1, Set.class);
+            Set<ValueIndexTerm> terms = invocation.getArgumentAt(1, Set.class);
 
-                                    if (terms.stream().anyMatch(t -> tested.getProcessIdResourceType().toString().equals(t.getTerm()))) {
-                                        return results;
-                                    }
+            if (terms.stream().anyMatch(t -> tested.getProcessIdResourceType().toString().equals(t.getTerm()))) {
+                return results;
+            }
 
-                                    return null;
-                                });
+            return null;
+        });
     }
 
     @Test

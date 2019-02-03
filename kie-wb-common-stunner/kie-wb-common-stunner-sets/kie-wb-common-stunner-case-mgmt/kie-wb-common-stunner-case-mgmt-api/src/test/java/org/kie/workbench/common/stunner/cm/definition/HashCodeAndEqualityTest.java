@@ -17,9 +17,13 @@
 package org.kie.workbench.common.stunner.cm.definition;
 
 import org.junit.Test;
+import org.kie.workbench.common.stunner.cm.definition.property.diagram.DiagramSet;
+import org.kie.workbench.common.stunner.cm.definition.property.diagram.Package;
+import org.kie.workbench.common.stunner.cm.definition.property.diagram.Version;
 import org.kie.workbench.common.stunner.cm.definition.property.subprocess.IsCase;
 import org.kie.workbench.common.stunner.cm.definition.property.task.CaseReusableSubprocessTaskExecutionSet;
 import org.kie.workbench.common.stunner.cm.definition.property.task.ProcessReusableSubprocessTaskExecutionSet;
+import org.kie.workbench.common.stunner.cm.definition.property.task.UserTaskExecutionSet;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -84,16 +88,72 @@ public class HashCodeAndEqualityTest {
     }
 
     @Test
-    public void testCaseEquals() {
+    public void testUserTaskEquals() {
+        UserTask a = new UserTask();
+        UserTask b = new UserTask();
+        assertDefObjectEquals(a, b);
+    }
+
+    @Test
+    public void testUserTaskHashCode() {
+        UserTask a = new UserTask();
+        UserTask b = new UserTask();
+        assertDefObjectHashCode(a, b);
+    }
+
+    @Test
+    public void testIsCaseEquals() {
         IsCase a = new IsCase();
         IsCase b = new IsCase();
         assertDefObjectEquals(a, b);
     }
 
     @Test
-    public void testCaseHashCode() {
+    public void testIsCaseHashCode() {
         IsCase a = new IsCase();
         IsCase b = new IsCase();
+        assertDefObjectHashCode(a, b);
+    }
+
+    @Test
+    public void testDiagramSetEquals() {
+        DiagramSet a = new DiagramSet();
+        DiagramSet b = new DiagramSet();
+        assertDefObjectEquals(a, b);
+    }
+
+    @Test
+    public void testDiagramSetCode() {
+        DiagramSet a = new DiagramSet();
+        DiagramSet b = new DiagramSet();
+        assertDefObjectHashCode(a, b);
+    }
+
+    @Test
+    public void testPackageEquals() {
+        Package a = new Package();
+        Package b = new Package();
+        assertDefObjectEquals(a, b);
+    }
+
+    @Test
+    public void testPackageCode() {
+        Package a = new Package();
+        Package b = new Package();
+        assertDefObjectHashCode(a, b);
+    }
+
+    @Test
+    public void testVersionEquals() {
+        Version a = new Version();
+        Version b = new Version();
+        assertDefObjectEquals(a, b);
+    }
+
+    @Test
+    public void testVersionCode() {
+        Version a = new Version();
+        Version b = new Version();
         assertDefObjectHashCode(a, b);
     }
 
@@ -122,6 +182,20 @@ public class HashCodeAndEqualityTest {
     public void testProcessReusableSubprocessTaskExecutionSetHashCode() {
         ProcessReusableSubprocessTaskExecutionSet a = new ProcessReusableSubprocessTaskExecutionSet();
         ProcessReusableSubprocessTaskExecutionSet b = new ProcessReusableSubprocessTaskExecutionSet();
+        assertDefObjectHashCode(a, b);
+    }
+
+    @Test
+    public void testUserTaskExecutionSetEquals() {
+        UserTaskExecutionSet a = new UserTaskExecutionSet();
+        UserTaskExecutionSet b = new UserTaskExecutionSet();
+        assertDefObjectEquals(a, b);
+    }
+
+    @Test
+    public void testUserTaskExecutionSetHashCode() {
+        UserTaskExecutionSet a = new UserTaskExecutionSet();
+        UserTaskExecutionSet b = new UserTaskExecutionSet();
         assertDefObjectHashCode(a, b);
     }
 

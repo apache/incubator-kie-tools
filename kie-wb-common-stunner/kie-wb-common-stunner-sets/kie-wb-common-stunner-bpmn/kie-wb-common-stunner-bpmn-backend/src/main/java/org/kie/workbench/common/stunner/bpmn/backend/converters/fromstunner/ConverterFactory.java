@@ -19,29 +19,24 @@ package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.activities.ReusableSubprocessConverter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.processes.SubProcessConverter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.PropertyWriterFactory;
-import org.kie.workbench.common.stunner.bpmn.definition.AdHocSubprocess;
-import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
-import org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess;
 
-public class ConverterFactory extends BaseConverterFactory<BPMNDiagramImpl, AdHocSubprocess, ReusableSubprocess> {
+public class ConverterFactory extends BaseConverterFactory {
 
-    public ConverterFactory(DefinitionsBuildingContext context,
-                            PropertyWriterFactory propertyWriterFactory) {
-        super(context,
-              propertyWriterFactory);
+    private ReusableSubprocessConverter reusableSubprocessConverter;
+
+    public ConverterFactory(DefinitionsBuildingContext context, PropertyWriterFactory propertyWriterFactory) {
+        super(context, propertyWriterFactory);
+
+        this.reusableSubprocessConverter = new ReusableSubprocessConverter(propertyWriterFactory);
     }
 
     @Override
     public ReusableSubprocessConverter reusableSubprocessConverter() {
-        return new ReusableSubprocessConverter(propertyWriterFactory);
-    }
-
-    public SubProcessConverter subProcessConverter() {
-        return new SubProcessConverter(context, propertyWriterFactory, this);
+        return reusableSubprocessConverter;
     }
 
     @Override
-    protected FlowElementConverter createFlowElementConverter() {
-        return new FlowElementConverter(this);
+    public SubProcessConverter subProcessConverter() {
+        return new SubProcessConverter(context, propertyWriterFactory, this);
     }
 }

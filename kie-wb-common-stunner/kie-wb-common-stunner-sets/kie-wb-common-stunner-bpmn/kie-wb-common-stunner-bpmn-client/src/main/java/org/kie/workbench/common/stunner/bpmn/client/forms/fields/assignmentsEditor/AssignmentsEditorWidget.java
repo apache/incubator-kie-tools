@@ -48,18 +48,18 @@ import org.kie.workbench.common.stunner.bpmn.client.forms.fields.i18n.StunnerFor
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.AssignmentData;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Variable;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils;
-import org.kie.workbench.common.stunner.bpmn.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
-import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
+import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
+import org.kie.workbench.common.stunner.bpmn.definition.BaseAdHocSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseTask;
+import org.kie.workbench.common.stunner.bpmn.definition.BaseUserTask;
 import org.kie.workbench.common.stunner.bpmn.definition.EmbeddedSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.EventSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.MultipleInstanceSubprocess;
-import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseFileVariables;
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseManagementSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOModel;
-import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessVariables;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.BaseProcessVariables;
 import org.kie.workbench.common.stunner.bpmn.service.DataTypesService;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
@@ -307,7 +307,7 @@ public class AssignmentsEditorWidget extends Composite implements HasValue<Strin
         Node selectedElement = getSelectedElement();
         Element parent = null;
         if (selectedElement != null) {
-            parent = graphUtils.getParent(selectedElement);
+            parent = GraphUtils.getParent(selectedElement);
         }
         Iterator<Element> it = diagram.getGraph().nodes().iterator();
         StringBuffer variables = new StringBuffer();
@@ -315,9 +315,9 @@ public class AssignmentsEditorWidget extends Composite implements HasValue<Strin
             Element element = it.next();
             if (element.getContent() instanceof View) {
                 Object oDefinition = ((View) element.getContent()).getDefinition();
-                if ((oDefinition instanceof BPMNDiagramImpl)) {
-                    BPMNDiagramImpl bpmnDiagram = (BPMNDiagramImpl) oDefinition;
-                    ProcessVariables processVariables = bpmnDiagram.getProcessData().getProcessVariables();
+                if ((oDefinition instanceof BPMNDiagram)) {
+                    BPMNDiagram bpmnDiagram = (BPMNDiagram) oDefinition;
+                    BaseProcessVariables processVariables = bpmnDiagram.getProcessData().getProcessVariables();
                     if (processVariables != null) {
                         if (variables.length() > 0) {
                             variables.append(",");
@@ -337,12 +337,12 @@ public class AssignmentsEditorWidget extends Composite implements HasValue<Strin
                 }
                 if (parent != null) {
                     if (parent.equals(element)) {
-                        ProcessVariables subprocessVariables = null;
+                        BaseProcessVariables subprocessVariables = null;
                         if (oDefinition instanceof EventSubprocess) {
                             EventSubprocess subprocess = (EventSubprocess) oDefinition;
                             subprocessVariables = subprocess.getProcessData().getProcessVariables();
-                        } else if (oDefinition instanceof AdHocSubprocess) {
-                            AdHocSubprocess subprocess = (AdHocSubprocess) oDefinition;
+                        } else if (oDefinition instanceof BaseAdHocSubprocess) {
+                            BaseAdHocSubprocess subprocess = (BaseAdHocSubprocess) oDefinition;
                             subprocessVariables = subprocess.getProcessData().getProcessVariables();
                         } else if (oDefinition instanceof MultipleInstanceSubprocess) {
                             MultipleInstanceSubprocess subprocess = (MultipleInstanceSubprocess) oDefinition;
@@ -492,7 +492,7 @@ public class AssignmentsEditorWidget extends Composite implements HasValue<Strin
     }
 
     protected String getDisallowedPropertyNames() {
-        if (bpmnModel instanceof UserTask) {
+        if (bpmnModel instanceof BaseUserTask) {
             return "GroupId,Skippable,Comment,Description,Priority,Content,TaskName,Locale,CreatedBy,NotCompletedReassign,NotStartedReassign,NotCompletedNotify,NotStartedNotify";
         } else {
             return "";

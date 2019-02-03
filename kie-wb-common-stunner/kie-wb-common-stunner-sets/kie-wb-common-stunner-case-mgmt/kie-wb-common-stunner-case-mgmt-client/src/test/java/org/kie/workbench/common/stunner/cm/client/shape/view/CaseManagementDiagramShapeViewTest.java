@@ -70,7 +70,6 @@ public class CaseManagementDiagramShapeViewTest {
         grandchild.setUUID(UUID.randomUUID().toString());
         child.add(grandchild);
 
-
         CaseManagementShapeView ghost = tested.getGhost();
 
         assertTrue(ghost instanceof CaseManagementDiagramShapeView);
@@ -86,7 +85,6 @@ public class CaseManagementDiagramShapeViewTest {
         assertTrue(ghostChild.getChildShapes().size() == 1);
         CaseManagementShapeView ghostGrandchild = (CaseManagementShapeView) ghostChild.getChildShapes().toList().get(0);
         assertEquals(ghostGrandchild.getUUID(), grandchild.getUUID());
-
     }
 
     private static class MockShape extends Rectangle {

@@ -19,10 +19,21 @@ package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.proce
 import org.kie.workbench.common.stunner.bpmn.backend.converters.TypedFactoryManager;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.ConverterFactory;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.AdHocSubProcessPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.PropertyReaderFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.AdHocSubprocess;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocCompletionCondition;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocOrdering;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocSubprocessTaskExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnEntryAction;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnExitAction;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessData;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessVariables;
+import org.kie.workbench.common.stunner.core.graph.Edge;
+import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
-public class SubProcessConverter extends BaseSubProcessConverter<AdHocSubprocess> {
+public class SubProcessConverter extends BaseSubProcessConverter<AdHocSubprocess, ProcessData, AdHocSubprocessTaskExecutionSet> {
 
     public SubProcessConverter(TypedFactoryManager typedFactoryManager,
                                PropertyReaderFactory propertyReaderFactory,
@@ -35,8 +46,20 @@ public class SubProcessConverter extends BaseSubProcessConverter<AdHocSubprocess
     }
 
     @Override
-    protected Class<AdHocSubprocess> getAdhocSubprocessClass() {
-        return AdHocSubprocess.class;
+    protected Node<View<AdHocSubprocess>, Edge> createNode(String id) {
+        return delegate.factoryManager.newNode(id, AdHocSubprocess.class);
     }
 
+    @Override
+    protected ProcessData createProcessData(String processVariables) {
+        return new ProcessData(new ProcessVariables(processVariables));
+    }
+
+    @Override
+    protected AdHocSubprocessTaskExecutionSet createAdHocSubprocessTaskExecutionSet(AdHocSubProcessPropertyReader p) {
+        return new AdHocSubprocessTaskExecutionSet(new AdHocCompletionCondition(p.getAdHocCompletionCondition()),
+                                                   new AdHocOrdering(p.getAdHocOrdering()),
+                                                   new OnEntryAction(p.getOnEntryAction()),
+                                                   new OnExitAction(p.getOnExitAction()));
+    }
 }

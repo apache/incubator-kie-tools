@@ -15,14 +15,19 @@
  */
 package org.kie.workbench.common.stunner.cm.backend.converters.fromstunner.properties;
 
+import org.eclipse.bpmn2.AdHocSubProcess;
 import org.eclipse.bpmn2.CallActivity;
-import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.CallActivityPropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.PropertyWriterFactory;
 
 public class CaseManagementPropertyWriterFactory extends PropertyWriterFactory {
 
     @Override
-    public CallActivityPropertyWriter of(CallActivity e) {
+    public CaseManagementCallActivityPropertyWriter of(CallActivity e) {
         return new CaseManagementCallActivityPropertyWriter(e, variableScope);
+    }
+
+    @Override
+    public CaseManagementAdHocSubProcessPropertyWriter of(AdHocSubProcess e) {
+        return new CaseManagementAdHocSubProcessPropertyWriter(e, variableScope);
     }
 }

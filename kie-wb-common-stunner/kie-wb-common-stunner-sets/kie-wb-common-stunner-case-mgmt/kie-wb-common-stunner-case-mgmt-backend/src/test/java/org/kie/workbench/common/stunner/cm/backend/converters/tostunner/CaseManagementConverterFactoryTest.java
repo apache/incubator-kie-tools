@@ -27,7 +27,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.Defini
 import org.kie.workbench.common.stunner.cm.backend.converters.tostunner.activities.CaseManagementCallActivityConverter;
 import org.kie.workbench.common.stunner.cm.backend.converters.tostunner.processes.CaseManagementRootProcessConverter;
 import org.kie.workbench.common.stunner.cm.backend.converters.tostunner.processes.CaseManagementSubProcessConverter;
-import org.kie.workbench.common.stunner.cm.backend.converters.tostunner.properties.CaseManagementPropertyReaderFactory;
+import org.kie.workbench.common.stunner.cm.backend.converters.tostunner.tasks.CaseManagementTaskConverter;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 
 import static org.junit.Assert.assertTrue;
@@ -60,21 +60,21 @@ public class CaseManagementConverterFactoryTest {
 
     @Test
     public void testRootProcessConverter() throws Exception {
-        assertTrue(tested.rootProcessConverter() instanceof CaseManagementRootProcessConverter);
+        assertTrue(CaseManagementRootProcessConverter.class.isInstance(tested.rootProcessConverter()));
     }
 
     @Test
     public void testSubProcessConverter() throws Exception {
-        assertTrue(tested.subProcessConverter() instanceof CaseManagementSubProcessConverter);
+        assertTrue(CaseManagementSubProcessConverter.class.isInstance(tested.subProcessConverter()));
     }
 
     @Test
     public void testCreateCallActivityConverter() throws Exception {
-        assertTrue(tested.createCallActivityConverter() instanceof CaseManagementCallActivityConverter);
+        assertTrue(CaseManagementCallActivityConverter.class.isInstance(tested.callActivityConverter()));
     }
 
     @Test
-    public void testCreatePropertyReaderFactory() throws Exception {
-        assertTrue(tested.createPropertyReaderFactory() instanceof CaseManagementPropertyReaderFactory);
+    public void testTaskConverter() throws Exception {
+        assertTrue(CaseManagementTaskConverter.class.isInstance(tested.taskConverter()));
     }
 }

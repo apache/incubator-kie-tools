@@ -27,6 +27,7 @@ import org.kie.workbench.common.stunner.cm.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
 import org.kie.workbench.common.stunner.cm.definition.CaseReusableSubprocess;
 import org.kie.workbench.common.stunner.cm.definition.ProcessReusableSubprocess;
+import org.kie.workbench.common.stunner.cm.definition.UserTask;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.mockito.Mock;
 
@@ -60,9 +61,11 @@ public class CaseManagementOryxIdMappingsTest {
 
     @Test
     public void checkGetDefinitionMappings() {
+        assertDefinitionMappings(CaseManagementDiagram.class);
         assertDefinitionMappings(CaseReusableSubprocess.class);
         assertDefinitionMappings(ProcessReusableSubprocess.class);
         assertDefinitionMappings(AdHocSubprocess.class);
+        assertDefinitionMappings(UserTask.class);
     }
 
     private void assertDefinitionMappings(final Class cmClass) {
@@ -71,12 +74,12 @@ public class CaseManagementOryxIdMappingsTest {
         assertNotNull(cmDefinitionMappings);
     }
 
-
     @Test
     public void testGetDefinition() throws Exception {
         assertGetDefinistion("AdHocSubprocess", AdHocSubprocess.class);
         assertGetDefinistion("CaseReusableSubprocess", CaseReusableSubprocess.class);
         assertGetDefinistion("ProcessReusableSubprocess", ProcessReusableSubprocess.class);
+        assertGetDefinistion("Task", UserTask.class);
     }
 
     private void assertGetDefinistion(final String oryxId, final Class<?> expectedResult) {
@@ -89,6 +92,7 @@ public class CaseManagementOryxIdMappingsTest {
         assertGetOryxDefinitionId(new AdHocSubprocess(), "AdHocSubprocess");
         assertGetOryxDefinitionId(new CaseReusableSubprocess(), "ReusableSubprocess");
         assertGetOryxDefinitionId(new ProcessReusableSubprocess(), "ReusableSubprocess");
+        assertGetOryxDefinitionId(new UserTask(), "Task");
     }
 
     private void assertGetOryxDefinitionId(final Object def, final String expectedId) {

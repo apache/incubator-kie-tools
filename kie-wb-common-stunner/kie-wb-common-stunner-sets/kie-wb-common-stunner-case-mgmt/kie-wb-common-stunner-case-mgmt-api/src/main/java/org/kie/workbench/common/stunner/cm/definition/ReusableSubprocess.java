@@ -27,12 +27,11 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.Rect
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationSet;
-import org.kie.workbench.common.stunner.cm.definition.property.task.BaseCaseManagementReusableSubprocessTaskExecutionSet;
+import org.kie.workbench.common.stunner.cm.definition.property.task.ReusableSubprocessTaskExecutionSet;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
-
-public abstract class BaseCaseManagementReusableSubprocess<E extends BaseCaseManagementReusableSubprocessTaskExecutionSet>
+public abstract class ReusableSubprocess<E extends ReusableSubprocessTaskExecutionSet>
         extends BaseReusableSubprocess<E> implements DataIOModel {
 
     @PropertySet
@@ -40,12 +39,12 @@ public abstract class BaseCaseManagementReusableSubprocess<E extends BaseCaseMan
     @Valid
     protected DataIOSet dataIOSet;
 
-    public BaseCaseManagementReusableSubprocess(final @MapsTo("general") BPMNGeneralSet general,
-                                                final @MapsTo("dataIOSet") DataIOSet dataIOSet,
-                                                final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
-                                                final @MapsTo("fontSet") FontSet fontSet,
-                                                final @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet,
-                                                final @MapsTo("simulationSet") SimulationSet simulationSet) {
+    public ReusableSubprocess(final @MapsTo("general") BPMNGeneralSet general,
+                              final @MapsTo("dataIOSet") DataIOSet dataIOSet,
+                              final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
+                              final @MapsTo("fontSet") FontSet fontSet,
+                              final @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet,
+                              final @MapsTo("simulationSet") SimulationSet simulationSet) {
         super(general,
               backgroundSet,
               fontSet,
@@ -103,8 +102,8 @@ public abstract class BaseCaseManagementReusableSubprocess<E extends BaseCaseMan
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof BaseCaseManagementReusableSubprocess) {
-            BaseCaseManagementReusableSubprocess other = (BaseCaseManagementReusableSubprocess) o;
+        if (o instanceof ReusableSubprocess) {
+            ReusableSubprocess other = (ReusableSubprocess) o;
 
             return super.equals(other) &&
                     dataIOSet.equals(other.dataIOSet);

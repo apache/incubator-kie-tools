@@ -13,15 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.workbench.common.stunner.cm.definition.property.task;
 
-import org.kie.workbench.common.stunner.bpmn.definition.property.task.BaseReusableSubprocessTaskExecutionSet;
-import org.kie.workbench.common.stunner.cm.definition.property.subprocess.IsCase;
+package org.kie.workbench.common.stunner.bpmn.definition.property.diagram;
 
-public interface BaseCaseManagementReusableSubprocessTaskExecutionSet
-        extends BaseReusableSubprocessTaskExecutionSet {
+import org.kie.workbench.common.stunner.bpmn.definition.BPMNProperty;
 
-    IsCase getIsCase();
+public interface BaseVersion extends BPMNProperty {
 
-    void setIsCase(final IsCase isCase);
+    String getValue();
+
+    void setValue(final String value);
 }

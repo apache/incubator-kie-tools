@@ -42,7 +42,6 @@ public class CaseManagementCloneNodeCommandTest extends CaseManagementAbstractCo
     @Mock
     private Point2D clonePosition;
 
-
     @Mock
     private AbstractCanvasHandler canvasHandler;
 
@@ -67,7 +66,7 @@ public class CaseManagementCloneNodeCommandTest extends CaseManagementAbstractCo
 
     @Test
     public void testGetCloneCanvasNodeCommand() {
-        final CaseManagementCloneCanvasNodeCommand command  = tested.getCloneCanvasNodeCommand(parent, clone, shapeUUID);
+        final CaseManagementCloneCanvasNodeCommand command = tested.getCloneCanvasNodeCommand(parent, clone, shapeUUID);
 
         assertEquals(parent, command.getParent());
         assertEquals(clone, command.getCandidate());

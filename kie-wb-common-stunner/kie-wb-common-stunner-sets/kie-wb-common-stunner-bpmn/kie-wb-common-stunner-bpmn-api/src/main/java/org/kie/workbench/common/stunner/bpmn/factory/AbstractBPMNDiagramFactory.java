@@ -21,7 +21,7 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
-import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.DiagramSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.BaseDiagramSet;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.factory.impl.BindableDiagramFactory;
@@ -65,18 +65,18 @@ public abstract class AbstractBPMNDiagramFactory<M extends Metadata, D extends D
                                            final Node<Definition<BPMNDiagram>, ?> diagramNode,
                                            final M metadata) {
         // Default initializations.
-        final Optional<DiagramSet> diagramSet = Optional.ofNullable(diagramNode)
+        final Optional<BaseDiagramSet> diagramSet = Optional.ofNullable(diagramNode)
                 .map(Node::<Definition<BPMNDiagram>>getContent)
                 .map(Definition::getDefinition)
                 .map(BPMNDiagram::getDiagramSet);
 
         diagramSet
-                .map(DiagramSet::getId)
+                .map(BaseDiagramSet::getId)
                 .filter(id -> Objects.isNull(id.getValue()))
                 .ifPresent(id -> id.setValue(metadata.getTitle()));
 
         diagramSet
-                .map(DiagramSet::getName)
+                .map(BaseDiagramSet::getName)
                 .filter(attr -> Objects.isNull(attr.getValue()))
                 .ifPresent(attr -> attr.setValue(name));
     }

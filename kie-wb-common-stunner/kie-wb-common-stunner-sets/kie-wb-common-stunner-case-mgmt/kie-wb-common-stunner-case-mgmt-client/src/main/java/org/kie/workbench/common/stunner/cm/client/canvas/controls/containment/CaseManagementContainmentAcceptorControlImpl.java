@@ -50,9 +50,9 @@ public class CaseManagementContainmentAcceptorControlImpl
         extends AbstractAcceptorControl
         implements ContainmentAcceptorControl<AbstractCanvasHandler> {
 
+    final IContainmentAcceptor containmentAcceptor;
     private final CaseManagementCanvasCommandFactory canvasCommandFactory;
     private final CaseManagementContainmentStateHolder state;
-    final IContainmentAcceptor containmentAcceptor;
 
     @Inject
     public CaseManagementContainmentAcceptorControlImpl(final @CaseManagementEditor CaseManagementCanvasCommandFactory canvasCommandFactory,

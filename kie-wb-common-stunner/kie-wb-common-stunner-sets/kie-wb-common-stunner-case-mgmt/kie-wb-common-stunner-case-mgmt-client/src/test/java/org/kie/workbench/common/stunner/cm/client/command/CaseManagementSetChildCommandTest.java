@@ -56,7 +56,6 @@ public class CaseManagementSetChildCommandTest extends CaseManagementAbstractCom
                                                    50.0,
                                                    50.0);
 
-
         this.command = new CaseManagementSetChildCommand(this.parent,
                                                          this.candidate);
 

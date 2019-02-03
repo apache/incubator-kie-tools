@@ -26,7 +26,6 @@ import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldValue;
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.I18nMode;
-import org.kie.workbench.common.stunner.bpmn.definition.BPMNProperty;
 import org.kie.workbench.common.stunner.bpmn.definition.property.type.ScriptType;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.property.Type;
@@ -38,7 +37,7 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 @Bindable
 @Property
 @FieldDefinition(i18nMode = I18nMode.OVERRIDE_I18N_KEY)
-public class AdHocCompletionCondition implements BPMNProperty {
+public class AdHocCompletionCondition implements BaseAdHocCompletionCondition {
 
     @Type
     public static final PropertyType type = new ScriptType();
@@ -59,6 +58,7 @@ public class AdHocCompletionCondition implements BPMNProperty {
         return type;
     }
 
+    @Override
     public ScriptTypeValue getValue() {
         return value;
     }

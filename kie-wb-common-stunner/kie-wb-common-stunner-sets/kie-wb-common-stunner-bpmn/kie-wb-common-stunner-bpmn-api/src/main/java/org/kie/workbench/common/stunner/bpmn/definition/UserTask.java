@@ -26,7 +26,6 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
-import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOModel;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.RectangleDimensionsSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Documentation;
@@ -56,7 +55,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
         startElement = "general",
         defaultFieldSettings = {@FieldParam(name = FIELD_CONTAINER_PARAM, value = COLLAPSIBLE_CONTAINER)}
 )
-public class UserTask extends BaseTask implements DataIOModel {
+public class UserTask extends BaseUserTask<UserTaskExecutionSet> {
 
     @PropertySet
     @FormField(
@@ -93,29 +92,11 @@ public class UserTask extends BaseTask implements DataIOModel {
     }
 
     @Override
-    public boolean hasInputVars() {
-        return true;
-    }
-
-    @Override
-    public boolean isSingleInputVar() {
-        return false;
-    }
-
-    @Override
-    public boolean hasOutputVars() {
-        return true;
-    }
-
-    @Override
-    public boolean isSingleOutputVar() {
-        return false;
-    }
-
     public UserTaskExecutionSet getExecutionSet() {
         return executionSet;
     }
 
+    @Override
     public void setExecutionSet(final UserTaskExecutionSet executionSet) {
         this.executionSet = executionSet;
     }

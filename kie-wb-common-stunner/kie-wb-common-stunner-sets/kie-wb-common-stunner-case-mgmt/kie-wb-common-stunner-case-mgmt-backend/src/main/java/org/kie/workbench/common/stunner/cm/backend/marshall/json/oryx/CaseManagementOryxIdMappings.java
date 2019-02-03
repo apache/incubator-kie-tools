@@ -29,6 +29,10 @@ import org.kie.workbench.common.stunner.cm.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
 import org.kie.workbench.common.stunner.cm.definition.CaseReusableSubprocess;
 import org.kie.workbench.common.stunner.cm.definition.ProcessReusableSubprocess;
+import org.kie.workbench.common.stunner.cm.definition.UserTask;
+import org.kie.workbench.common.stunner.cm.definition.property.diagram.ProcessInstanceDescription;
+import org.kie.workbench.common.stunner.cm.definition.property.task.AdHocCompletionCondition;
+import org.kie.workbench.common.stunner.cm.definition.property.variables.ProcessVariables;
 import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 
@@ -53,10 +57,12 @@ public class CaseManagementOryxIdMappings extends BaseOryxIdMappings {
         definitionIdMappings.put(AdHocSubprocess.class, "AdHocSubprocess");
         definitionIdMappings.put(CaseReusableSubprocess.class, "ReusableSubprocess");
         definitionIdMappings.put(ProcessReusableSubprocess.class, "ReusableSubprocess");
+        definitionIdMappings.put(UserTask.class, "Task");
 
         definitionMappings.put("AdHocSubprocess", AdHocSubprocess.class);
         definitionMappings.put("CaseReusableSubprocess", CaseReusableSubprocess.class);
         definitionMappings.put("ProcessReusableSubprocess", ProcessReusableSubprocess.class);
+        definitionMappings.put("Task", UserTask.class);
 
         super.init(definitions);
     }
@@ -69,15 +75,30 @@ public class CaseManagementOryxIdMappings extends BaseOryxIdMappings {
     @Override
     public Map<Class<?>, Map<Class<?>, String>> getDefinitionMappings() {
         final Map<Class<?>, Map<Class<?>, String>> definitionMappings = super.getDefinitionMappings();
-        final Map<Class<?>, String> caseReusableSubprocessPropertiesMap = definitionMappings.get(org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess.class);
-        definitionMappings.put(CaseReusableSubprocess.class,
-                               caseReusableSubprocessPropertiesMap);
-        final Map<Class<?>, String> adHocSubprocessPropertiesMap = definitionMappings.get(org.kie.workbench.common.stunner.bpmn.definition.AdHocSubprocess.class);
-        definitionMappings.put(AdHocSubprocess.class,
-                               adHocSubprocessPropertiesMap);
-        final Map<Class<?>, String> processReusableSubprocessPropertiesMap = definitionMappings.get(org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess.class);
-        definitionMappings.put(ProcessReusableSubprocess.class,
-                               processReusableSubprocessPropertiesMap);
+
+        final Map<Class<?>, String> diagramPropertiesMap = definitionMappings.get(getDiagramType());
+        diagramPropertiesMap.remove(org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessVariables.class, "vardefs");
+        diagramPropertiesMap.put(ProcessVariables.class, "vardefs");
+        diagramPropertiesMap.put(ProcessInstanceDescription.class, "customdescription");
+
+        final Map<Class<?>, String> adHocSubprocessPropertiesMap =
+                new HashMap<>(definitionMappings.get(org.kie.workbench.common.stunner.bpmn.definition.AdHocSubprocess.class));
+        adHocSubprocessPropertiesMap.remove(org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessVariables.class);
+        adHocSubprocessPropertiesMap.put(ProcessVariables.class, "vardefs");
+        adHocSubprocessPropertiesMap.put(AdHocCompletionCondition.class, "adhoccompletioncondition");
+        definitionMappings.put(AdHocSubprocess.class, adHocSubprocessPropertiesMap);
+
+        final Map<Class<?>, String> caseReusableSubprocessPropertiesMap =
+                new HashMap<>(definitionMappings.get(org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess.class));
+        definitionMappings.put(CaseReusableSubprocess.class, caseReusableSubprocessPropertiesMap);
+
+        final Map<Class<?>, String> processReusableSubprocessPropertiesMap =
+                new HashMap<>(definitionMappings.get(org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess.class));
+        definitionMappings.put(ProcessReusableSubprocess.class, processReusableSubprocessPropertiesMap);
+
+        final Map<Class<?>, String> userTaskPropertiesMap =
+                new HashMap<>(definitionMappings.get(org.kie.workbench.common.stunner.bpmn.definition.UserTask.class));
+        definitionMappings.put(UserTask.class, userTaskPropertiesMap);
 
         return definitionMappings;
     }

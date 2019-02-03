@@ -13,16 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.kie.workbench.common.stunner.cm.backend.converters.fromstunner.processes;
 
-import org.eclipse.bpmn2.Activity;
+import java.util.UUID;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.DefinitionsBuildingContext;
-import org.kie.workbench.common.stunner.bpmn.definition.BPMNViewDefinition;
-import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocOrdering;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.SubProcessPropertyWriter;
+import org.kie.workbench.common.stunner.bpmn.definition.BaseAdHocSubprocess;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocAutostart;
 import org.kie.workbench.common.stunner.cm.backend.converters.fromstunner.CaseManagementConverterFactory;
+import org.kie.workbench.common.stunner.cm.backend.converters.fromstunner.properties.CaseManagementAdHocSubProcessPropertyWriter;
 import org.kie.workbench.common.stunner.cm.backend.converters.fromstunner.properties.CaseManagementPropertyWriterFactory;
 import org.kie.workbench.common.stunner.cm.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
@@ -34,37 +38,48 @@ import org.kie.workbench.common.stunner.core.graph.impl.GraphImpl;
 import org.kie.workbench.common.stunner.core.graph.impl.NodeImpl;
 import org.kie.workbench.common.stunner.core.graph.store.GraphNodeStoreImpl;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class CaseManagementSubProcessConverterTest {
 
     private CaseManagementSubProcessConverter tested;
 
     @Before
-    public void setup() {
-        final DefinitionsBuildingContext context = new DefinitionsBuildingContext(new GraphImpl("x", new GraphNodeStoreImpl()),
-                                                                                  CaseManagementDiagram.class);
+    public void setUp() throws Exception {
+        CaseManagementPropertyWriterFactory factory = new CaseManagementPropertyWriterFactory();
 
-        final CaseManagementPropertyWriterFactory propertyFactory = new CaseManagementPropertyWriterFactory();
+        DefinitionsBuildingContext definitionsBuildingContext = new DefinitionsBuildingContext(new GraphImpl("x", new GraphNodeStoreImpl()),
+                                                                                               CaseManagementDiagram.class);
 
-        final CaseManagementConverterFactory factory = new CaseManagementConverterFactory(context, propertyFactory);
-
-        tested = new CaseManagementSubProcessConverter(context, propertyFactory, factory);
+        tested = new CaseManagementSubProcessConverter(definitionsBuildingContext,
+                                                       factory,
+                                                       new CaseManagementConverterFactory(definitionsBuildingContext, factory));
     }
 
     @Test
-    public void testConvertSubProcess() {
-        final Node<View<? extends BPMNViewDefinition>, ?> node = new NodeImpl<>("n");
-        final AdHocSubprocess subProcessNode = new AdHocSubprocess();
-        subProcessNode.getExecutionSet().setAdHocOrdering(new AdHocOrdering("Sequential"));
-        node.setContent(new ViewImpl<>(subProcessNode, Bounds.create()));
+    public void testConvertAdHocSubprocessNode_autostart() throws Exception {
+        final AdHocSubprocess definition = new AdHocSubprocess();
+        definition.getExecutionSet().setAdHocAutostart(new AdHocAutostart(true));
+        final View<BaseAdHocSubprocess> view = new ViewImpl<>(definition, Bounds.create());
+        final Node<View<BaseAdHocSubprocess>, ?> node = new NodeImpl<>(UUID.randomUUID().toString());
+        node.setContent(view);
 
-        final Activity activity = tested.convertSubProcess(node).value().getFlowElement();
-        assertEquals("<![CDATA[Stage]]>", CustomElement.name.of(activity).get());
+        SubProcessPropertyWriter writer = tested.convertAdHocSubprocessNode(node);
+        assertTrue(CaseManagementAdHocSubProcessPropertyWriter.class.isInstance(writer));
+        assertTrue(CustomElement.autoStart.of(writer.getFlowElement()).get());
     }
 
     @Test
-    public void testGetAdhocSubprocessClass() throws Exception {
-        assertEquals(tested.getAdhocSubprocessClass(), AdHocSubprocess.class);
+    public void testConvertAdHocSubprocessNode_notautostart() throws Exception {
+        final AdHocSubprocess definition = new AdHocSubprocess();
+        definition.getExecutionSet().setAdHocAutostart(new AdHocAutostart(false));
+        final View<BaseAdHocSubprocess> view = new ViewImpl<>(definition, Bounds.create());
+        final Node<View<BaseAdHocSubprocess>, ?> node = new NodeImpl<>(UUID.randomUUID().toString());
+        node.setContent(view);
+
+        SubProcessPropertyWriter writer = tested.convertAdHocSubprocessNode(node);
+        assertTrue(CaseManagementAdHocSubProcessPropertyWriter.class.isInstance(writer));
+        assertFalse(CustomElement.autoStart.of(writer.getFlowElement()).get());
     }
 }

@@ -30,5 +30,4 @@ public class CaseManagementAddNodeCommandTest extends AddNodeCommandTest {
 
         tested = new CaseManagementAddNodeCommand(node);
     }
-
 }

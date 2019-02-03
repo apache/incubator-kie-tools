@@ -42,17 +42,12 @@ public class CaseManagementConverterFactoryTest {
     }
 
     @Test
-    public void testSubProcessConverter() throws Exception {
-        assertTrue(tested.subProcessConverter() instanceof CaseManagementSubProcessConverter);
-    }
-
-    @Test
-    public void testCreateFlowElementConverter() throws Exception {
-        assertTrue(tested.createFlowElementConverter() instanceof CaseManagementFlowElementConverter);
-    }
-
-    @Test
     public void testReusableSubprocessConverter() throws Exception {
-        assertTrue(tested.reusableSubprocessConverter() instanceof CaseManagementReusableSubprocessConverter);
+        assertTrue(CaseManagementReusableSubprocessConverter.class.isInstance(tested.reusableSubprocessConverter()));
+    }
+
+    @Test
+    public void testSubProcessConverter() throws Exception {
+        assertTrue(CaseManagementSubProcessConverter.class.isInstance(tested.subProcessConverter()));
     }
 }

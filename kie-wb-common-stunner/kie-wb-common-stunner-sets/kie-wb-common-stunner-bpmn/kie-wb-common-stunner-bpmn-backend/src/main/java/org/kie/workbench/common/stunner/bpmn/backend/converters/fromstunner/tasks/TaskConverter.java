@@ -26,15 +26,15 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.prop
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.ServiceTaskPropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.UserTaskPropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseTask;
+import org.kie.workbench.common.stunner.bpmn.definition.BaseUserTask;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
 import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
 import org.kie.workbench.common.stunner.bpmn.definition.ScriptTask;
-import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.TaskGeneralSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.BaseUserTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.BusinessRuleTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.RuleLanguage;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTaskExecutionSet;
-import org.kie.workbench.common.stunner.bpmn.definition.property.task.UserTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTask;
 import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTaskExecutionSet;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -55,7 +55,7 @@ public class TaskConverter {
                 .when(NoneTask.class, this::noneTask)
                 .when(ScriptTask.class, this::scriptTask)
                 .when(BusinessRuleTask.class, this::businessRuleTask)
-                .when(UserTask.class, this::userTask)
+                .when(BaseUserTask.class, this::userTask)
                 .when(ServiceTask.class, this::serviceTask)
                 .apply(node).value();
     }
@@ -91,10 +91,10 @@ public class TaskConverter {
         return p;
     }
 
-    private PropertyWriter userTask(Node<View<UserTask>, ?> n) {
+    private PropertyWriter userTask(Node<View<BaseUserTask>, ?> n) {
         org.eclipse.bpmn2.UserTask task = bpmn2.createUserTask();
         task.setId(n.getUUID());
-        UserTask definition = n.getContent().getDefinition();
+        BaseUserTask definition = n.getContent().getDefinition();
         UserTaskPropertyWriter p = propertyWriterFactory.of(task);
 
         TaskGeneralSet general = definition.getGeneral();
@@ -103,7 +103,7 @@ public class TaskConverter {
 
         p.setSimulationSet(definition.getSimulationSet());
 
-        UserTaskExecutionSet executionSet = definition.getExecutionSet();
+        BaseUserTaskExecutionSet executionSet = definition.getExecutionSet();
 
         p.setTaskName(executionSet.getTaskName().getValue());
         p.setActors(executionSet.getActors());

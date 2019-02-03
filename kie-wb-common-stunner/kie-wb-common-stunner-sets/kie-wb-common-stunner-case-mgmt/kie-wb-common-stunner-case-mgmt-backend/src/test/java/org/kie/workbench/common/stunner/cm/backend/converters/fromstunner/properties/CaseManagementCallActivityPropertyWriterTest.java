@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.cm.backend.converters.fromstunner.properties;
 
 import org.junit.Test;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.FlatVariableScope;
 import org.kie.workbench.common.stunner.cm.backend.converters.customproperties.CaseManagementCustomElement;
 
@@ -42,5 +43,19 @@ public class CaseManagementCallActivityPropertyWriterTest {
         tested.setCase(Boolean.FALSE);
 
         assertFalse(CaseManagementCustomElement.isCase.of(tested.getFlowElement()).get());
+    }
+
+    @Test
+    public void testSetAdHocAutostart_true() throws Exception {
+        tested.setAdHocAutostart(Boolean.TRUE);
+
+        assertTrue(CustomElement.autoStart.of(tested.getFlowElement()).get());
+    }
+
+    @Test
+    public void testSetAdHocAutostart_false() throws Exception {
+        tested.setAdHocAutostart(Boolean.FALSE);
+
+        assertFalse(CustomElement.autoStart.of(tested.getFlowElement()).get());
     }
 }

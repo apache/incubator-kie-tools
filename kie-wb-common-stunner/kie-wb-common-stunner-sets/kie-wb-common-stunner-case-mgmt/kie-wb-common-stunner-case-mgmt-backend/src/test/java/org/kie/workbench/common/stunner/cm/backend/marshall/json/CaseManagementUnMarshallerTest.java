@@ -20,8 +20,11 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.fasterxml.jackson.core.JsonGenerator;
+import org.eclipse.bpmn2.AdHocSubProcess;
 import org.eclipse.bpmn2.CallActivity;
 import org.eclipse.bpmn2.ExtensionAttributeValue;
 import org.eclipse.bpmn2.FlowNode;
@@ -48,6 +51,7 @@ import static org.mockito.Mockito.when;
 
 public class CaseManagementUnMarshallerTest {
 
+    private String expectedStencil;
     private CaseManagementUnMarshaller tested = new CaseManagementUnMarshaller(mock(GraphObjectBuilderFactory.class),
                                                                                mock(DefinitionManager.class),
                                                                                mock(FactoryManager.class),
@@ -70,34 +74,51 @@ public class CaseManagementUnMarshallerTest {
                             float yOffset) throws IOException {
             assertEquals(stencil, expectedStencil);
         }
-    };
 
-    private String expectedStencil;
+        @Override
+        void doSetAdHocSubProcessProperties(AdHocSubProcess subProcess, Map<String, Object> properties) {
+            // mock do nothing
+        }
+    };
 
     @Test
     public void testMarshallNode_AdHocSubprocess() throws Exception {
-        expectedStencil = "AdHocSubprocess";
+        final MetaDataType adhocAutostartMetaDataType = mock(MetaDataType.class);
+        when(adhocAutostartMetaDataType.getName()).thenReturn("customAutoStart");
+        when(adhocAutostartMetaDataType.getMetaValue()).thenReturn("true");
 
-        tested.marshallNode(mock(FlowNode.class),
-                            new HashMap<>(),
-                            "AdHocSubprocess",
-                            mock(BPMNPlane.class),
-                            mock(JsonGenerator.class),
-                            0.0f,
-                            0.0f);
+        final FeatureMap featureMap = mock(FeatureMap.class);
+        when(featureMap.get(eq(DroolsPackage.Literals.DOCUMENT_ROOT__META_DATA), eq(true)))
+                .thenReturn(Stream.of(adhocAutostartMetaDataType).collect(Collectors.toList()));
+
+        final ExtensionAttributeValue extensionAttributeValue = mock(ExtensionAttributeValue.class);
+        when(extensionAttributeValue.getValue()).thenReturn(featureMap);
+
+        final AdHocSubProcess adHocSubProcess = mock(AdHocSubProcess.class);
+        when(adHocSubProcess.getExtensionValues()).thenReturn(Collections.singletonList(extensionAttributeValue));
+
+        final Map<String, Object> properties = new HashMap<>();
+        tested.setAdHocSubProcessProperties(adHocSubProcess,
+                                            properties);
+
+        assertEquals("true", properties.get("customautostart"));
     }
 
     @Test
     public void testMarshallNode_CaseReusableSubprocess() throws Exception {
         expectedStencil = "CaseReusableSubprocess";
 
-        final MetaDataType metaDataType = mock(MetaDataType.class);
-        when(metaDataType.getName()).thenReturn("case");
-        when(metaDataType.getMetaValue()).thenReturn("true");
+        final MetaDataType caseMetaDataType = mock(MetaDataType.class);
+        when(caseMetaDataType.getName()).thenReturn("case");
+        when(caseMetaDataType.getMetaValue()).thenReturn("true");
+
+        final MetaDataType adhocAutostartMetaDataType = mock(MetaDataType.class);
+        when(adhocAutostartMetaDataType.getName()).thenReturn("customAutoStart");
+        when(adhocAutostartMetaDataType.getMetaValue()).thenReturn("true");
 
         final FeatureMap featureMap = mock(FeatureMap.class);
         when(featureMap.get(eq(DroolsPackage.Literals.DOCUMENT_ROOT__META_DATA), eq(true)))
-                .thenReturn(Collections.singletonList(metaDataType));
+                .thenReturn(Stream.of(caseMetaDataType, adhocAutostartMetaDataType).collect(Collectors.toList()));
 
         final ExtensionAttributeValue extensionAttributeValue = mock(ExtensionAttributeValue.class);
         when(extensionAttributeValue.getValue()).thenReturn(featureMap);
@@ -105,26 +126,32 @@ public class CaseManagementUnMarshallerTest {
         final CallActivity callActivity = mock(CallActivity.class);
         when(callActivity.getExtensionValues()).thenReturn(Collections.singletonList(extensionAttributeValue));
 
-        tested.marshallNode(callActivity,
-                            new HashMap<>(),
-                            "ReusableSubprocess",
-                            mock(BPMNPlane.class),
-                            mock(JsonGenerator.class),
-                            0.0f,
-                            0.0f);
+        final Map<String, Object> properties = new HashMap<>();
+        tested.marshallReusableSubprocessNode(callActivity,
+                                              mock(BPMNPlane.class),
+                                              mock(JsonGenerator.class),
+                                              0.0f,
+                                              0.0f,
+                                              properties);
+
+        assertEquals("true", properties.get("customautostart"));
     }
 
     @Test
     public void testMarshallNode_ProcessReusableSubprocess() throws Exception {
         expectedStencil = "ProcessReusableSubprocess";
 
-        final MetaDataType metaDataType = mock(MetaDataType.class);
-        when(metaDataType.getName()).thenReturn("case");
-        when(metaDataType.getMetaValue()).thenReturn("false");
+        final MetaDataType caseMetaDataType = mock(MetaDataType.class);
+        when(caseMetaDataType.getName()).thenReturn("case");
+        when(caseMetaDataType.getMetaValue()).thenReturn("false");
+
+        final MetaDataType adhocAutostartMetaDataType = mock(MetaDataType.class);
+        when(adhocAutostartMetaDataType.getName()).thenReturn("customAutoStart");
+        when(adhocAutostartMetaDataType.getMetaValue()).thenReturn("false");
 
         final FeatureMap featureMap = mock(FeatureMap.class);
         when(featureMap.get(eq(DroolsPackage.Literals.DOCUMENT_ROOT__META_DATA), eq(true)))
-                .thenReturn(Collections.singletonList(metaDataType));
+                .thenReturn(Stream.of(caseMetaDataType, adhocAutostartMetaDataType).collect(Collectors.toList()));
 
         final ExtensionAttributeValue extensionAttributeValue = mock(ExtensionAttributeValue.class);
         when(extensionAttributeValue.getValue()).thenReturn(featureMap);
@@ -132,12 +159,14 @@ public class CaseManagementUnMarshallerTest {
         final CallActivity callActivity = mock(CallActivity.class);
         when(callActivity.getExtensionValues()).thenReturn(Collections.singletonList(extensionAttributeValue));
 
-        tested.marshallNode(callActivity,
-                            new HashMap<>(),
-                            "ReusableSubprocess",
-                            mock(BPMNPlane.class),
-                            mock(JsonGenerator.class),
-                            0.0f,
-                            0.0f);
+        final Map<String, Object> properties = new HashMap<>();
+        tested.marshallReusableSubprocessNode(callActivity,
+                                              mock(BPMNPlane.class),
+                                              mock(JsonGenerator.class),
+                                              0.0f,
+                                              0.0f,
+                                              properties);
+
+        assertEquals("false", properties.get("customautostart"));
     }
 }

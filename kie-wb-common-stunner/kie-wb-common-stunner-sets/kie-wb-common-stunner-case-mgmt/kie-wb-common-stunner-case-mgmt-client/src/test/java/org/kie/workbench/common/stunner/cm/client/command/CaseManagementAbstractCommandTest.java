@@ -83,7 +83,6 @@ public abstract class CaseManagementAbstractCommandTest {
 
     protected String shapeUUID;
 
-
     protected static void assertCommandSuccess(final CommandResult<? extends RuleViolation> result) {
         final List<RuleViolation> violations = new ArrayList<>();
         result.getViolations().forEach(violations::add);

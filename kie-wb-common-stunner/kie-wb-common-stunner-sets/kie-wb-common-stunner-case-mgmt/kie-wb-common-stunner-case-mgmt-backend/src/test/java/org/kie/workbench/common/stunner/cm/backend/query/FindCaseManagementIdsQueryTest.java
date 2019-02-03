@@ -56,7 +56,6 @@ public class FindCaseManagementIdsQueryTest {
                                                   ResourceType.JAVA));
 
         tested.validateTerms(queryTerms);
-
     }
 
     @Test

@@ -53,7 +53,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
         policy = FieldPolicy.ONLY_MARKED,
         defaultFieldSettings = {@FieldParam(name = FIELD_CONTAINER_PARAM, value = COLLAPSIBLE_CONTAINER)}
 )
-public class BPMNDiagramImpl implements BPMNDiagram {
+public class BPMNDiagramImpl implements BPMNDiagram<DiagramSet, ProcessData> {
 
     @Category
     public static final transient String category = BPMNCategories.CONTAINERS;

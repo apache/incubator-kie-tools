@@ -66,5 +66,4 @@ public class IsCase implements BPMNProperty {
         }
         return false;
     }
-
 }

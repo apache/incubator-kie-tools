@@ -27,13 +27,13 @@ import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.Bpmn2Marshall
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.Bpmn2UnMarshaller;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.builder.GraphObjectBuilderFactory;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.OryxManager;
-import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.DiagramSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Id;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
 import org.kie.workbench.common.stunner.cm.CaseManagementDefinitionSet;
 import org.kie.workbench.common.stunner.cm.backend.marshall.json.CaseManagementMarshaller;
 import org.kie.workbench.common.stunner.cm.backend.marshall.json.CaseManagementUnMarshaller;
 import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
+import org.kie.workbench.common.stunner.cm.definition.property.diagram.DiagramSet;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.backend.service.XMLEncoderDiagramMetadataMarshaller;
@@ -59,33 +59,26 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class CaseManagementDiagramMarshallerTest {
 
+    @Rule
+    public ExpectedException exceptionRule = ExpectedException.none();
     @Mock
     private XMLEncoderDiagramMetadataMarshaller diagramMetadataMarshaller;
-
     @Mock
     private GraphObjectBuilderFactory graphBuilderFactory;
-
     @Mock
     private DefinitionManager definitionManager;
-
     @Mock
     private GraphIndexBuilder<?> indexBuilder;
-
     @Mock
     private OryxManager oryxManager;
-
     @Mock
     private FactoryManager factoryManager;
-
     @Mock
     private GraphCommandManager graphCommandManager;
-
     @Mock
     private GraphCommandFactory commandFactory;
-
     @Mock
     private RuleManager rulesManager;
-
     private CaseManagementDiagramMarshaller marshaller;
 
     @Before
@@ -122,9 +115,6 @@ public class CaseManagementDiagramMarshallerTest {
 
         assertEquals(metadata.getTitle(), name);
     }
-
-    @Rule
-    public ExpectedException exceptionRule = ExpectedException.none();
 
     @Test
     public void testMarshall_validateName() throws Exception {
@@ -169,7 +159,7 @@ public class CaseManagementDiagramMarshallerTest {
     public void testCreateBpmn2Marshaller() throws Exception {
         final Bpmn2Marshaller bpmn2Marshaller = this.marshaller.createBpmn2Marshaller(mock(DefinitionManager.class),
                                                                                       mock(OryxManager.class));
-        assertTrue(bpmn2Marshaller instanceof CaseManagementMarshaller);
+        assertTrue(CaseManagementMarshaller.class.isInstance(bpmn2Marshaller));
     }
 
     @Test
@@ -186,6 +176,6 @@ public class CaseManagementDiagramMarshallerTest {
                                                                                             Object.class,
                                                                                             CaseManagementDiagram.class);
 
-        assertTrue(bpmn2UnMarshaller instanceof CaseManagementUnMarshaller);
+        assertTrue(CaseManagementUnMarshaller.class.isInstance(bpmn2UnMarshaller));
     }
 }

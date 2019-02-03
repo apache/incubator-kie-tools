@@ -31,9 +31,6 @@ import static org.junit.Assert.assertTrue;
 @RunWith(MockitoJUnitRunner.class)
 public class CaseManagementAddNodeCommandTest extends CaseManagementAbstractCommandTest {
 
-
-
-
     private CaseManagementAddNodeCommand tested;
 
     @Before

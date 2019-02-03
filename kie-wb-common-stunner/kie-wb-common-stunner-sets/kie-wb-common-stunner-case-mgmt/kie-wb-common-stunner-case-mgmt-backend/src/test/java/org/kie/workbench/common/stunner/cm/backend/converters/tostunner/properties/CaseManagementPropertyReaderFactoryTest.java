@@ -48,7 +48,12 @@ public class CaseManagementPropertyReaderFactoryTest {
     }
 
     @Test
-    public void testOf() throws Exception {
-        assertTrue(tested.of(bpmn2.createCallActivity()) instanceof CaseManagementActivityPropertyReader);
+    public void testOf_callActivity() throws Exception {
+        assertTrue(CaseManagementActivityPropertyReader.class.isInstance(tested.of(bpmn2.createCallActivity())));
+    }
+
+    @Test
+    public void testOf_adHocSubProcess() throws Exception {
+        assertTrue(CaseManagementAdHocSubProcessPropertyReader.class.isInstance(tested.of(bpmn2.createAdHocSubProcess())));
     }
 }

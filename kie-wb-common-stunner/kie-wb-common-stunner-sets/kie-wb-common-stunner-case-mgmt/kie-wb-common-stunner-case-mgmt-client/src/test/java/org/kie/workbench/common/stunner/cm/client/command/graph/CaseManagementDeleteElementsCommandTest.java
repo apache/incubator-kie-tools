@@ -45,7 +45,8 @@ public class CaseManagementDeleteElementsCommandTest extends CaseManagementAbstr
         final CaseManagementSafeDeleteNodeCommand command =
                 tested.createSafeDeleteNodeCommand(node,
                                                    SafeDeleteNodeCommand.Options.defaults(),
-                                                   new DeleteElementsCommand.DeleteCallback() {});
+                                                   new DeleteElementsCommand.DeleteCallback() {
+                                                   });
 
         assertEquals(node, command.getNode());
     }

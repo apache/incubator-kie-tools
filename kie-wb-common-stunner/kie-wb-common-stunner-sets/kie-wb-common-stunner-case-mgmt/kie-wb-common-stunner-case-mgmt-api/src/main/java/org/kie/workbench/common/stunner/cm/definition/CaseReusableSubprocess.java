@@ -49,7 +49,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
         defaultFieldSettings = {@FieldParam(name = FIELD_CONTAINER_PARAM, value = COLLAPSIBLE_CONTAINER)}
 )
 public class CaseReusableSubprocess
-        extends BaseCaseManagementReusableSubprocess<CaseReusableSubprocessTaskExecutionSet> {
+        extends ReusableSubprocess<CaseReusableSubprocessTaskExecutionSet> {
 
     @PropertySet
     @FormField(

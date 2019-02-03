@@ -63,6 +63,6 @@ public class CaseManagementDataEventListenerTest {
         final Collection<Resource> resources = tested.getResources();
         assertTrue(resources.stream().allMatch(
                 r -> (processId.equals(r.getResourceFQN()) && tested.getProcessIdResourceType().equals(r.getResourceType()))
-                || (processName.equals(r.getResourceFQN()) && tested.getProcessNameResourceType().equals(r.getResourceType()))));
+                        || (processName.equals(r.getResourceFQN()) && tested.getProcessNameResourceType().equals(r.getResourceType()))));
     }
 }

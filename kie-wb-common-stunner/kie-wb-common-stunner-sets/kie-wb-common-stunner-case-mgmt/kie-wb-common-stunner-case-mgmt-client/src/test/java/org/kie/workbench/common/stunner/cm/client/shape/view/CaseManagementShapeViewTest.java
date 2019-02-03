@@ -54,10 +54,10 @@ public class CaseManagementShapeViewTest {
         primitiveShapes.setID(UUID.randomUUID().toString());
 
         final CaseManagementShapeView view = new CaseManagementShapeView(name,
-                                           new SVGPrimitiveShape(primitiveShapes),
-                                           0d,
-                                           0d,
-                                           false);
+                                                                         new SVGPrimitiveShape(primitiveShapes),
+                                                                         0d,
+                                                                         0d,
+                                                                         false);
         view.setUUID(UUID.randomUUID().toString());
 
         return spy(view);
@@ -214,7 +214,6 @@ public class CaseManagementShapeViewTest {
         CaseManagementShapeView ghostChild = (CaseManagementShapeView) ghost.getChildShapes().toList().get(0);
         assertEquals(ghostChild.getUUID(),
                      child.getUUID());
-
     }
 
     @Test
@@ -288,7 +287,6 @@ public class CaseManagementShapeViewTest {
                      0);
         assertEquals(shape.getIndex(child3),
                      1);
-
     }
 
     private static class MockShape extends Rectangle {

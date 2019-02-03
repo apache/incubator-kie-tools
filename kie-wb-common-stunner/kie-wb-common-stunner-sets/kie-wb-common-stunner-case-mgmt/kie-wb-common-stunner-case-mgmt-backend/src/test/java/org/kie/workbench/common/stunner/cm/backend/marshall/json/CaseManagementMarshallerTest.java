@@ -70,7 +70,6 @@ public class CaseManagementMarshallerTest {
         assertTrue(IntStream.range(0, itemDefinitionList.size())
                            .allMatch(i -> itemDefinitionList.get(i).equals(rootElementList.get(i))));
 
-
         rootElementList.clear();
 
         marshaller.revisitSubProcessItemDefs(definitions);

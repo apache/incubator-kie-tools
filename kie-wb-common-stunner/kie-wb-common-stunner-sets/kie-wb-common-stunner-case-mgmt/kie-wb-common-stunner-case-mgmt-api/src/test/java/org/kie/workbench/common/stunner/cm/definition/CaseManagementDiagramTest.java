@@ -24,31 +24,26 @@ import javax.validation.ValidatorFactory;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.DiagramSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Id;
-import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Package;
-import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Version;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
+import org.kie.workbench.common.stunner.cm.definition.property.diagram.DiagramSet;
+import org.kie.workbench.common.stunner.cm.definition.property.diagram.Package;
+import org.kie.workbench.common.stunner.cm.definition.property.diagram.Version;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class CaseManagementDiagramTest {
 
-    private Validator validator;
-
     private static final String NAME_VALID = "My New CM";
     private static final String NAME_INVALID = "";
-
     private static final String ID_VALID = "Project1.MyNewCM";
     private static final String ID_INVALID = "";
-
     private static final String PACKAGE_VALID = "myorg.project1";
     private static final String PACKAGE_INVALID = "";
-
     private static final String VERSION_VALID = "1.0";
     private static final String VERSION_INVALID = "";
-
+    private Validator validator;
     private CaseManagementDiagram tested;
 
     @Before

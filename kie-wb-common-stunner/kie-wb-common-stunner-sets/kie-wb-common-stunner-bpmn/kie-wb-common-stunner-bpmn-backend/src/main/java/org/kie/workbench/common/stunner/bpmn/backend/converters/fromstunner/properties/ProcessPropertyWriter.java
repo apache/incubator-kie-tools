@@ -48,7 +48,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Elem
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseFileVariables;
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseIdPrefix;
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseRoles;
-import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessVariables;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.BaseProcessVariables;
 
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpmn2;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpsim;
@@ -177,7 +177,7 @@ public class ProcessPropertyWriter extends BasePropertyWriter implements Element
         CustomElement.description.of(process).set(value);
     }
 
-    public void setProcessVariables(ProcessVariables processVariables) {
+    public void setProcessVariables(BaseProcessVariables processVariables) {
         String value = processVariables.getValue();
         DeclarationList declarationList = DeclarationList.fromString(value);
 

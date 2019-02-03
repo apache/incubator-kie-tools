@@ -34,12 +34,10 @@ import static org.junit.Assert.assertTrue;
 
 public class AdHocSubProcessTest {
 
-    private Validator validator;
-
     private static final String NAME_VALID = "My New Process";
     private static final double WIDTH_VALID = 250d;
     private static final double HEIGHT_VALID = 50d;
-
+    private Validator validator;
     private AdHocSubprocess tested;
 
     @Before

@@ -44,8 +44,8 @@ public class CaseManagementDeleteElementsCommand extends DeleteElementsCommand {
 
     @Override
     protected CaseManagementSafeDeleteNodeCommand createSafeDeleteNodeCommand(final Node<?, Edge> node,
-                                                                final SafeDeleteNodeCommand.Options options,
-                                                                final DeleteCallback callback) {
+                                                                              final SafeDeleteNodeCommand.Options options,
+                                                                              final DeleteCallback callback) {
         return new CaseManagementSafeDeleteNodeCommand(node,
                                                        callback.onDeleteNode(node, options),
                                                        options);

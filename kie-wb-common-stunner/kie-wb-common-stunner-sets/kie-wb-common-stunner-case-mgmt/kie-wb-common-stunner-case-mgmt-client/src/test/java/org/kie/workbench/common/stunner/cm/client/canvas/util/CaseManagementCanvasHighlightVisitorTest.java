@@ -139,7 +139,8 @@ public class CaseManagementCanvasHighlightVisitorTest {
         shapes.add(childShape3);
 
         final CaseManagementCanvasHighlightVisitor visitor = new CaseManagementCanvasHighlightVisitor();
-        visitor.run(handler, () -> {});
+        visitor.run(handler, () -> {
+        });
 
         assertThat(visitor.getShapes(), is(shapes));
     }

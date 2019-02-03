@@ -32,10 +32,10 @@ import org.kie.workbench.common.stunner.bpmn.definition.BPMNCategories;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseManagementSet;
-import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.DiagramSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.RectangleDimensionsSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
-import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessData;
+import org.kie.workbench.common.stunner.cm.definition.property.diagram.DiagramSet;
+import org.kie.workbench.common.stunner.cm.definition.property.variables.ProcessData;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
@@ -60,49 +60,41 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 // Unfortunately extending the foregoing and providing a new @CanContain annotation leads to problems with identifying
 // Factories for Definitions; as CM's BindableDefinitionAdapterProxy is then generated with support for the super-class.
 // This then leads the unmarshalling of model Elements to Definitions to use the wrong Factory and hence fail.
-public class CaseManagementDiagram implements BPMNDiagram {
+public class CaseManagementDiagram implements BPMNDiagram<DiagramSet, ProcessData> {
 
     @Category
     public static final transient String category = BPMNCategories.CONTAINERS;
     public static final String DIAGRAM_SET = "diagramSet";
     public static final String PROCESS_DATA = "processData";
     public static final String CASE_MANAGEMENT_SET = "caseManagementSet";
-
-    @PropertySet
-    @FormField
-    @Valid
-    private DiagramSet diagramSet;
-
+    public static final Double WIDTH = 2800d;
+    public static final Double HEIGHT = 1400d;
+    @Labels
+    private final Set<String> labels = new Sets.Builder<String>()
+            .add("canContainArtifacts")
+            .add("diagram")
+            .build();
     @PropertySet
     @FormField(
             afterElement = DIAGRAM_SET
     )
     @Valid
     protected ProcessData processData;
-
     @PropertySet
     @FormField(
             afterElement = PROCESS_DATA
     )
     protected CaseManagementSet caseManagementSet;
-
-    @PropertySet
-    private BackgroundSet backgroundSet;
-
-    @PropertySet
-    private FontSet fontSet;
-
     @PropertySet
     protected RectangleDimensionsSet dimensionsSet;
-
-    @Labels
-    private final Set<String> labels = new Sets.Builder<String>()
-            .add("canContainArtifacts")
-            .add("diagram")
-            .build();
-
-    public static final Double WIDTH = 2800d;
-    public static final Double HEIGHT = 1400d;
+    @PropertySet
+    @FormField
+    @Valid
+    private DiagramSet diagramSet;
+    @PropertySet
+    private BackgroundSet backgroundSet;
+    @PropertySet
+    private FontSet fontSet;
 
     public CaseManagementDiagram() {
         this(new DiagramSet(""),
@@ -140,6 +132,11 @@ public class CaseManagementDiagram implements BPMNDiagram {
         return diagramSet;
     }
 
+    @Override
+    public void setDiagramSet(final DiagramSet diagramSet) {
+        this.diagramSet = diagramSet;
+    }
+
     public RectangleDimensionsSet getDimensionsSet() {
         return dimensionsSet;
     }
@@ -164,28 +161,23 @@ public class CaseManagementDiagram implements BPMNDiagram {
     }
 
     @Override
-    public BackgroundSet getBackgroundSet() {
-        return backgroundSet;
-    }
-
-    @Override
-    public FontSet getFontSet() {
-        return fontSet;
-    }
-
-    @Override
-    public void setDiagramSet(final DiagramSet diagramSet) {
-        this.diagramSet = diagramSet;
-    }
-
-    @Override
     public void setProcessData(final ProcessData processData) {
         this.processData = processData;
     }
 
     @Override
+    public BackgroundSet getBackgroundSet() {
+        return backgroundSet;
+    }
+
+    @Override
     public void setBackgroundSet(final BackgroundSet backgroundSet) {
         this.backgroundSet = backgroundSet;
+    }
+
+    @Override
+    public FontSet getFontSet() {
+        return fontSet;
     }
 
     @Override

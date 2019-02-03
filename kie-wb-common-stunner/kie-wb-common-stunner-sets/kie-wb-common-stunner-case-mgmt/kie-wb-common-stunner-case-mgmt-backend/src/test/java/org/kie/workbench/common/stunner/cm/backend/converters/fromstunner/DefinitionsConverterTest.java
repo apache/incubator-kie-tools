@@ -17,19 +17,20 @@ package org.kie.workbench.common.stunner.cm.backend.converters.fromstunner;
 
 import org.eclipse.bpmn2.Definitions;
 import org.junit.Test;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.ConverterFactory;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.DefinitionsBuildingContext;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.DefinitionsConverter;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.AdHoc;
-import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.DiagramSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Executable;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Id;
-import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Package;
-import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.ProcessInstanceDescription;
-import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Version;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Documentation;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
 import org.kie.workbench.common.stunner.cm.backend.converters.fromstunner.properties.CaseManagementPropertyWriterFactory;
 import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
+import org.kie.workbench.common.stunner.cm.definition.property.diagram.DiagramSet;
+import org.kie.workbench.common.stunner.cm.definition.property.diagram.Package;
+import org.kie.workbench.common.stunner.cm.definition.property.diagram.ProcessInstanceDescription;
+import org.kie.workbench.common.stunner.cm.definition.property.diagram.Version;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewImpl;
 import org.kie.workbench.common.stunner.core.graph.impl.GraphImpl;
@@ -59,7 +60,7 @@ public class DefinitionsConverterTest {
 
         CaseManagementPropertyWriterFactory factory = new CaseManagementPropertyWriterFactory();
 
-        CaseManagementConverterFactory f = new CaseManagementConverterFactory(
+        ConverterFactory f = new ConverterFactory(
                 new DefinitionsBuildingContext(new GraphImpl("x", nodeStore), CaseManagementDiagram.class),
                 factory);
 

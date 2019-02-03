@@ -25,9 +25,8 @@ import java.util.function.Predicate;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
-import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseFileVariables;
-import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessVariables;
+import org.kie.workbench.common.stunner.bpmn.definition.property.variables.BaseProcessVariables;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
@@ -68,9 +67,9 @@ public class VariablesProvider
             node = sessionManager.getCurrentSession().getCanvasHandler().getDiagram().getGraph().getNode(elementUUID);
             Object oDefinition = ((View) node.getContent()).getDefinition();
             if (oDefinition instanceof BPMNDiagram) {
-                BPMNDiagramImpl bpmnDiagram = (BPMNDiagramImpl) oDefinition;
+                BPMNDiagram bpmnDiagram = (BPMNDiagram) oDefinition;
 
-                ProcessVariables processVars = bpmnDiagram.getProcessData().getProcessVariables();
+                BaseProcessVariables processVars = bpmnDiagram.getProcessData().getProcessVariables();
                 addPropertyVariableToResult(result, processVars.getValue());
 
                 CaseFileVariables caseVars = bpmnDiagram.getCaseManagementSet().getCaseFileVariables();

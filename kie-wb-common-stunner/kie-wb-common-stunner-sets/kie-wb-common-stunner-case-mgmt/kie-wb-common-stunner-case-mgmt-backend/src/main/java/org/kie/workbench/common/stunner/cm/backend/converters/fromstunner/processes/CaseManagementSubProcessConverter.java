@@ -13,25 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.kie.workbench.common.stunner.cm.backend.converters.fromstunner.processes;
 
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.BaseConverterFactory;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.DefinitionsBuildingContext;
-import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.processes.BaseSubProcessConverter;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.processes.SubProcessConverter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.PropertyWriterFactory;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.SubProcessPropertyWriter;
+import org.kie.workbench.common.stunner.bpmn.definition.BaseAdHocSubprocess;
+import org.kie.workbench.common.stunner.cm.backend.converters.fromstunner.properties.CaseManagementAdHocSubProcessPropertyWriter;
 import org.kie.workbench.common.stunner.cm.definition.AdHocSubprocess;
+import org.kie.workbench.common.stunner.cm.definition.property.task.AdHocSubprocessTaskExecutionSet;
+import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
-public class CaseManagementSubProcessConverter
-        extends BaseSubProcessConverter<AdHocSubprocess> {
+public class CaseManagementSubProcessConverter extends SubProcessConverter {
 
     public CaseManagementSubProcessConverter(DefinitionsBuildingContext context,
                                              PropertyWriterFactory propertyWriterFactory,
-                                             BaseConverterFactory<?, AdHocSubprocess, ?> converterFactory) {
+                                             BaseConverterFactory converterFactory) {
         super(context, propertyWriterFactory, converterFactory);
     }
 
     @Override
-    protected Class<AdHocSubprocess> getAdhocSubprocessClass() {
-        return AdHocSubprocess.class;
+    protected SubProcessPropertyWriter convertAdHocSubprocessNode(Node<View<BaseAdHocSubprocess>, ?> n) {
+        CaseManagementAdHocSubProcessPropertyWriter p =
+                (CaseManagementAdHocSubProcessPropertyWriter) super.convertAdHocSubprocessNode(n);
+
+        AdHocSubprocess definition = (AdHocSubprocess) n.getContent().getDefinition();
+
+        AdHocSubprocessTaskExecutionSet executionSet = definition.getExecutionSet();
+
+        p.setAdHocAutostart(executionSet.getAdHocAutostart().getValue());
+
+        return p;
     }
 }

@@ -82,7 +82,6 @@ public class CaseManagementCanvasHighlightVisitor extends CanvasHighlightVisitor
                                       shapes.add(shape);
                                   }
                               }
-
                           });
     }
 

@@ -57,7 +57,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
         defaultFieldSettings = {@FieldParam(name = FIELD_CONTAINER_PARAM, value = COLLAPSIBLE_CONTAINER)}
 )
 public class AdHocSubprocess
-        extends BaseAdHocSubprocess {
+        extends BaseAdHocSubprocess<ProcessData, AdHocSubprocessTaskExecutionSet> {
 
     @PropertySet
     @FormField(afterElement = "general")

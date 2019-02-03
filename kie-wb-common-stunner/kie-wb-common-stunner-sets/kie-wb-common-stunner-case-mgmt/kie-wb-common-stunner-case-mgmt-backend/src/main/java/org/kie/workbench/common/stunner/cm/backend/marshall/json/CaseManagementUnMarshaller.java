@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.util.Map;
 
 import com.fasterxml.jackson.core.JsonGenerator;
+import org.eclipse.bpmn2.AdHocSubProcess;
+import org.eclipse.bpmn2.CallActivity;
 import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.di.BPMNPlane;
 import org.kie.workbench.common.stunner.bpmn.backend.legacy.util.Utils;
@@ -63,21 +65,24 @@ public class CaseManagementUnMarshaller extends Bpmn2UnMarshaller {
     }
 
     @Override
-    protected void marshallNode(FlowNode node,
-                                Map<String, Object> properties,
-                                String stencil,
-                                BPMNPlane plane,
-                                JsonGenerator generator,
-                                float xOffset,
-                                float yOffset) throws IOException {
+    protected void marshallReusableSubprocessNode(CallActivity node,
+                                                  BPMNPlane plane,
+                                                  JsonGenerator generator,
+                                                  float xOffset,
+                                                  float yOffset,
+                                                  Map<String, Object> properties) throws IOException {
+        marshallAutoStart(node, properties);
 
-        String trueStencil = stencil;
+        String stencil = isCase(node) ? "CaseReusableSubprocess" : "ProcessReusableSubprocess";
 
-        if ("ReusableSubprocess".equals(stencil)) {
-            trueStencil = isCase(node) ? "CaseReusableSubprocess" : "ProcessReusableSubprocess";
-        }
+        doMarshallNode(node, properties, stencil, plane, generator, xOffset, yOffset);
+    }
 
-        doMarshallNode(node, properties, trueStencil, plane, generator, xOffset, yOffset);
+    @Override
+    protected void setAdHocSubProcessProperties(AdHocSubProcess subProcess, Map<String, Object> properties) {
+        marshallAutoStart(subProcess, properties);
+
+        doSetAdHocSubProcessProperties(subProcess, properties);
     }
 
     void doMarshallNode(FlowNode node,
@@ -90,7 +95,19 @@ public class CaseManagementUnMarshaller extends Bpmn2UnMarshaller {
         super.marshallNode(node, properties, stencil, plane, generator, xOffset, yOffset);
     }
 
+    void doSetAdHocSubProcessProperties(AdHocSubProcess subProcess, Map<String, Object> properties) {
+        super.setAdHocSubProcessProperties(subProcess, properties);
+    }
+
     private boolean isCase(FlowNode node) {
         return Boolean.valueOf(Utils.getMetaDataValue(node.getExtensionValues(), "case"));
+    }
+
+    private void marshallAutoStart(FlowNode node, Map<String, Object> properties) {
+        // custom autostart
+        String customAutoStartMetaData = Utils.getMetaDataValue(node.getExtensionValues(), "customAutoStart");
+        String customAutoStart = (customAutoStartMetaData != null && customAutoStartMetaData.length() > 0) ?
+                customAutoStartMetaData : "false";
+        properties.put("customautostart", customAutoStart);
     }
 }

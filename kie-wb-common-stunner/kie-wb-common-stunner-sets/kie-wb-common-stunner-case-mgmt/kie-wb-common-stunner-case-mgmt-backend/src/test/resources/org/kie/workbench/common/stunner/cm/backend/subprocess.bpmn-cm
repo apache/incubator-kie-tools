@@ -34,6 +34,9 @@
           <drools:metaData name="customAsync">
             <drools:metaValue><![CDATA[true]]></drools:metaValue>
           </drools:metaData>
+          <drools:metaData name="customAutoStart">
+            <drools:metaValue><![CDATA[true]]></drools:metaValue>
+          </drools:metaData>
         </bpmn2:extensionElements>
         <bpmn2:ioSpecification id="_5KvLsP5GEeiIRPCiEoQNIw">
           <bpmn2:dataInput id="_33AA6E8F-239A-4B6F-A861-3F6C159DA437_SubprocessTestInputX" drools:dtype="Boolean" itemSubjectRef="__33AA6E8F-239A-4B6F-A861-3F6C159DA437_SubprocessTestInputXItem" name="SubprocessTest"/>

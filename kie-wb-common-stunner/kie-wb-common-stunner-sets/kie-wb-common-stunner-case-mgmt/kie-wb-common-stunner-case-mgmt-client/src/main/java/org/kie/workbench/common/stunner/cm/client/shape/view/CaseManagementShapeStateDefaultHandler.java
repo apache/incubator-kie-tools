@@ -55,5 +55,4 @@ public class CaseManagementShapeStateDefaultHandler
         backgroundShapeSupplier = shapeSupplier;
         return this;
     }
-
 }

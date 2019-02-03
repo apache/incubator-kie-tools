@@ -32,12 +32,12 @@ import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
 import org.kie.workbench.common.stunner.bpmn.definition.ParallelGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.SequenceFlow;
 import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
-import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
 import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTask;
 import org.kie.workbench.common.stunner.cm.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
 import org.kie.workbench.common.stunner.cm.definition.CaseReusableSubprocess;
 import org.kie.workbench.common.stunner.cm.definition.ProcessReusableSubprocess;
+import org.kie.workbench.common.stunner.cm.definition.UserTask;
 import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -59,25 +59,25 @@ public class CaseManagementPaletteDefinitionBuilder
     public static final String SUBCASES = "Subcases";
 
     private static final Map<String, String> CAT_TITLES = new Maps.Builder<String, String>()
-        .put(STAGES,
-             STAGES)
-        .put(TASKS,
-             TASKS)
-        .put(SUBPROCESSES,
-             SUBPROCESSES)
-        .put(SUBCASES,
-             SUBCASES)
+            .put(STAGES,
+                 STAGES)
+            .put(TASKS,
+                 TASKS)
+            .put(SUBPROCESSES,
+                 SUBPROCESSES)
+            .put(SUBCASES,
+                 SUBCASES)
             .build();
 
     private static final Map<String, String> DEFINITION_CATEGORY_MAPPINGS = new Maps.Builder<String, String>()
-        .put(AdHocSubprocess.class.getName(),
-             STAGES)
-        .put(UserTask.class.getName(),
-             TASKS)
-        .put(ProcessReusableSubprocess.class.getName(),
-             SUBPROCESSES)
-        .put(CaseReusableSubprocess.class.getName(),
-             SUBCASES)
+            .put(AdHocSubprocess.class.getName(),
+                 STAGES)
+            .put(UserTask.class.getName(),
+                 TASKS)
+            .put(ProcessReusableSubprocess.class.getName(),
+                 SUBPROCESSES)
+            .put(CaseReusableSubprocess.class.getName(),
+                 SUBCASES)
             .build();
 
     private final AbstractPaletteDefinitionBuilder paletteDefinitionBuilder;

@@ -32,16 +32,15 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.prop
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.LanePropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.ProcessPropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.SubProcessPropertyWriter;
-import org.kie.workbench.common.stunner.bpmn.definition.BaseAdHocSubprocess;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
-class ProcessConverterDelegate<A extends BaseAdHocSubprocess> {
+class ProcessConverterDelegate {
 
-    private final BaseConverterFactory<?, A, ?> converterFactory;
+    private final BaseConverterFactory converterFactory;
 
-    ProcessConverterDelegate(BaseConverterFactory<?, A, ?> converterFactory) {
+    ProcessConverterDelegate(BaseConverterFactory converterFactory) {
         this.converterFactory = converterFactory;
     }
 

@@ -19,7 +19,7 @@ package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.pro
 import org.eclipse.bpmn2.AdHocOrdering;
 import org.eclipse.bpmn2.AdHocSubProcess;
 import org.eclipse.bpmn2.FormalExpression;
-import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocCompletionCondition;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.BaseAdHocCompletionCondition;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeValue;
 
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpmn2;
@@ -39,7 +39,7 @@ public class AdHocSubProcessPropertyWriter extends SubProcessPropertyWriter {
         process.setOrdering(AdHocOrdering.getByName(value.getValue()));
     }
 
-    public void setAdHocCompletionCondition(AdHocCompletionCondition adHocCompletionCondition) {
+    public void setAdHocCompletionCondition(BaseAdHocCompletionCondition adHocCompletionCondition) {
         FormalExpression e = bpmn2.createFormalExpression();
         ScriptTypeValue s = adHocCompletionCondition.getValue();
         e.setLanguage(scriptLanguageToUri(s.getLanguage()));

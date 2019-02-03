@@ -23,9 +23,10 @@ import org.kie.workbench.common.stunner.bpmn.client.forms.fields.conditionEditor
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.conditionEditor.VariableSearchServiceTest;
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseFileVariables;
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseManagementSet;
-import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessData;
 import org.kie.workbench.common.stunner.cm.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
+import org.kie.workbench.common.stunner.cm.definition.property.variables.ProcessData;
+import org.kie.workbench.common.stunner.cm.definition.property.variables.ProcessVariables;
 import org.kie.workbench.common.stunner.core.graph.Node;
 
 import static org.mockito.Mockito.mock;
@@ -68,14 +69,14 @@ public class CaseManagementVariableSearchServiceTest extends VariableSearchServi
 
     private AdHocSubprocess mockCMAdHocSubProcess(String variables) {
         AdHocSubprocess adHocSubprocess = mock(AdHocSubprocess.class);
-        ProcessData processData = mockProcessData(variables);
+        ProcessData processData = mockCMProcessData(variables);
         when(adHocSubprocess.getProcessData()).thenReturn(processData);
         return adHocSubprocess;
     }
 
     private CaseManagementDiagram mockCMDiagram(String variables, String caseVariables) {
         CaseManagementDiagram cmDiagram = mock(CaseManagementDiagram.class);
-        ProcessData processData = mockProcessData(variables);
+        ProcessData processData = mockCMProcessData(variables);
         when(cmDiagram.getProcessData()).thenReturn(processData);
         CaseManagementSet caseManagementSet = mock(CaseManagementSet.class);
         CaseFileVariables caseFileVariables = mock(CaseFileVariables.class);
@@ -83,5 +84,13 @@ public class CaseManagementVariableSearchServiceTest extends VariableSearchServi
         when(caseFileVariables.getValue()).thenReturn(caseVariables);
         when(cmDiagram.getCaseManagementSet()).thenReturn(caseManagementSet);
         return cmDiagram;
+    }
+
+    protected ProcessData mockCMProcessData(String variables) {
+        final ProcessData processData = mock(ProcessData.class);
+        final ProcessVariables processVariables = mock(ProcessVariables.class);
+        when(processData.getProcessVariables()).thenReturn(processVariables);
+        when(processVariables.getValue()).thenReturn(variables);
+        return processData;
     }
 }

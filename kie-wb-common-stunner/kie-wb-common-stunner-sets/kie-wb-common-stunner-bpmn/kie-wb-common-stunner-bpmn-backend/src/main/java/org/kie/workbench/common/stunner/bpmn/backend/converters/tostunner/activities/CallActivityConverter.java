@@ -32,7 +32,7 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
-public class CallActivityConverter extends BaseCallActivityConverter<ReusableSubprocess> {
+public class CallActivityConverter extends BaseCallActivityConverter<ReusableSubprocess, ReusableSubprocessTaskExecutionSet> {
 
     public CallActivityConverter(TypedFactoryManager factoryManager,
                                  PropertyReaderFactory propertyReaderFactory) {
@@ -45,13 +45,13 @@ public class CallActivityConverter extends BaseCallActivityConverter<ReusableSub
     }
 
     @Override
-    protected ReusableSubprocessTaskExecutionSet createReusableSubprocessTaskExecutionSet(CalledElement calledElement,
-                                                                                          Independent independent,
-                                                                                          WaitForCompletion waitForCompletion,
-                                                                                          IsAsync isAsync,
-                                                                                          OnEntryAction onEntryAction,
-                                                                                          OnExitAction onExitAction,
+    protected ReusableSubprocessTaskExecutionSet createReusableSubprocessTaskExecutionSet(CallActivity activity,
                                                                                           ActivityPropertyReader p) {
-        return new ReusableSubprocessTaskExecutionSet(calledElement, independent, waitForCompletion, isAsync, onEntryAction, onExitAction);
+        return new ReusableSubprocessTaskExecutionSet(new CalledElement(activity.getCalledElement()),
+                                                      new Independent(p.isIndependent()),
+                                                      new WaitForCompletion(p.isWaitForCompletion()),
+                                                      new IsAsync(p.isAsync()),
+                                                      new OnEntryAction(p.getOnEntryAction()),
+                                                      new OnExitAction(p.getOnExitAction()));
     }
 }

@@ -4,18 +4,18 @@
   "width": "1200",
   "height": "800",
   "nodes": [
-      {
-        "id": "lane1",
-        "stencilId": "lane",
-        "x": "90",
-        "y": "10"
-      },
-      {
-        "id": "event1",
-        "stencilId": "startNoneEvent",
-        "x": "10",
-        "y": "90"
-      },
+    {
+      "id": "lane1",
+      "stencilId": "lane",
+      "x": "90",
+      "y": "10"
+    },
+    {
+      "id": "event1",
+      "stencilId": "startNoneEvent",
+      "x": "10",
+      "y": "90"
+    },
     {
       "id": "task1",
       "stencilId": "userTask",

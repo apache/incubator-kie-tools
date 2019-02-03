@@ -26,18 +26,14 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.lanes.
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.processes.BaseRootProcessConverter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.processes.BaseSubProcessConverter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.PropertyReaderFactory;
-import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.tasks.TaskConverter;
-import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
-import org.kie.workbench.common.stunner.bpmn.definition.BaseAdHocSubprocess;
-import org.kie.workbench.common.stunner.bpmn.definition.BaseReusableSubprocess;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.tasks.BaseTaskConverter;
 
-public abstract class BaseConverterFactory<D extends BPMNDiagram, A extends BaseAdHocSubprocess, R extends BaseReusableSubprocess> {
+public abstract class BaseConverterFactory {
 
     protected final DefinitionResolver definitionResolver;
     protected final TypedFactoryManager factoryManager;
     protected final PropertyReaderFactory propertyReaderFactory;
 
-    private final TaskConverter taskConverter;
     private final EdgeConverter edgeConverter;
 
     private final FlowElementConverter flowElementConverter;
@@ -45,15 +41,15 @@ public abstract class BaseConverterFactory<D extends BPMNDiagram, A extends Base
     private final IntermediateCatchEventConverter intermediateCatchEventConverter;
     private final IntermediateThrowEventConverter intermediateThrowEventConverter;
     private final EndEventConverter endEventConverter;
-    private final BaseCallActivityConverter callActivityConverter;
     private final LaneConverter laneConverter;
     private final GatewayConverter gatewayConverter;
 
     public BaseConverterFactory(DefinitionResolver definitionResolver,
-                                TypedFactoryManager factoryManager) {
+                                TypedFactoryManager factoryManager,
+                                PropertyReaderFactory propertyReaderFactory) {
         this.definitionResolver = definitionResolver;
         this.factoryManager = factoryManager;
-        this.propertyReaderFactory = createPropertyReaderFactory();
+        this.propertyReaderFactory = propertyReaderFactory;
 
         this.flowElementConverter = new FlowElementConverter(this);
 
@@ -61,8 +57,6 @@ public abstract class BaseConverterFactory<D extends BPMNDiagram, A extends Base
         this.intermediateCatchEventConverter = new IntermediateCatchEventConverter(factoryManager, propertyReaderFactory);
         this.intermediateThrowEventConverter = new IntermediateThrowEventConverter(factoryManager, propertyReaderFactory);
         this.endEventConverter = new EndEventConverter(factoryManager, propertyReaderFactory);
-        this.callActivityConverter = createCallActivityConverter();
-        this.taskConverter = new TaskConverter(factoryManager, propertyReaderFactory);
         this.laneConverter = new LaneConverter(factoryManager, propertyReaderFactory);
         this.gatewayConverter = new GatewayConverter(factoryManager, propertyReaderFactory);
         this.edgeConverter = new EdgeConverter(factoryManager, propertyReaderFactory);
@@ -92,13 +86,11 @@ public abstract class BaseConverterFactory<D extends BPMNDiagram, A extends Base
         return endEventConverter;
     }
 
-    public BaseCallActivityConverter callActivityConverter() {
-        return callActivityConverter;
-    }
+    public abstract BaseCallActivityConverter callActivityConverter();
 
-    public abstract BaseRootProcessConverter<D> rootProcessConverter();
+    public abstract BaseRootProcessConverter rootProcessConverter();
 
-    public abstract BaseSubProcessConverter<A> subProcessConverter();
+    public abstract BaseSubProcessConverter subProcessConverter();
 
     public LaneConverter laneConverter() {
         return laneConverter;
@@ -108,12 +100,5 @@ public abstract class BaseConverterFactory<D extends BPMNDiagram, A extends Base
         return gatewayConverter;
     }
 
-    public TaskConverter taskConverter() {
-        return taskConverter;
-    }
-
-    protected abstract BaseCallActivityConverter<R> createCallActivityConverter();
-
-    protected abstract PropertyReaderFactory createPropertyReaderFactory();
-
+    public abstract BaseTaskConverter taskConverter();
 }

@@ -21,7 +21,7 @@ import org.guvnor.common.services.project.model.Package;
 import org.kie.workbench.common.stunner.bpmn.BPMNDefinitionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
-import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.DiagramSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.BaseDiagramSet;
 import org.kie.workbench.common.stunner.bpmn.factory.AbstractBPMNDiagramFactory;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Graph;
@@ -74,7 +74,7 @@ public class BPMNProjectDiagramFactoryImpl
                                            final ProjectMetadata metadata) {
         // Set kie related properties for the current project.
         final BPMNDiagram diagram = diagramNode.getContent().getDefinition();
-        final DiagramSet diagramSet = diagram.getDiagramSet();
+        final BaseDiagramSet diagramSet = diagram.getDiagramSet();
         final String id = diagramSet.getId().getValue();
         if (id == null || id.isEmpty()) {
             final String projectName = null != metadata.getModuleName() ? metadata.getModuleName() + "." : "";

@@ -28,7 +28,6 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.annotations.field.selector.SelectorDataProvider;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.type.ListBoxFieldType;
-import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
@@ -37,7 +36,7 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 @Bindable
 @PropertySet
 @FormDefinition(startElement = "adHocCompletionCondition")
-public class AdHocSubprocessTaskExecutionSet implements BPMNPropertySet {
+public class AdHocSubprocessTaskExecutionSet implements BaseAdHocSubprocessTaskExecutionSet {
 
     @Property
     @FormField(settings = {@FieldParam(name = "mode", value = "COMPLETION_CONDITION")})
@@ -90,6 +89,7 @@ public class AdHocSubprocessTaskExecutionSet implements BPMNPropertySet {
         this.onExitAction = onExitAction;
     }
 
+    @Override
     public AdHocCompletionCondition getAdHocCompletionCondition() {
         return adHocCompletionCondition;
     }
@@ -98,6 +98,7 @@ public class AdHocSubprocessTaskExecutionSet implements BPMNPropertySet {
         this.adHocCompletionCondition = adHocCompletionCondition;
     }
 
+    @Override
     public AdHocOrdering getAdHocOrdering() {
         return adHocOrdering;
     }
@@ -106,6 +107,7 @@ public class AdHocSubprocessTaskExecutionSet implements BPMNPropertySet {
         this.adHocOrdering = adHocOrdering;
     }
 
+    @Override
     public OnEntryAction getOnEntryAction() {
         return onEntryAction;
     }
@@ -114,6 +116,7 @@ public class AdHocSubprocessTaskExecutionSet implements BPMNPropertySet {
         this.onEntryAction = onEntryAction;
     }
 
+    @Override
     public OnExitAction getOnExitAction() {
         return onExitAction;
     }

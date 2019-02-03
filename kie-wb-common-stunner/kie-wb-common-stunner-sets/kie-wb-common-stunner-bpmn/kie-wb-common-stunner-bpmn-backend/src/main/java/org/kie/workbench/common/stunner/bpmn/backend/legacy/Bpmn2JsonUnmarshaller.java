@@ -297,13 +297,13 @@ public class Bpmn2JsonUnmarshaller {
         }
     */
     public Bpmn2Resource unmarshall(String json,
-                                    String preProcessingData) throws JsonParseException, IOException {
+                                    String preProcessingData) throws IOException {
         return unmarshall(new JsonFactory().createJsonParser(json),
                           preProcessingData);
     }
 
     public Bpmn2Resource unmarshall(File file,
-                                    String preProcessingData) throws JsonParseException, IOException {
+                                    String preProcessingData) throws IOException {
         return unmarshall(new JsonFactory().createJsonParser(file),
                           preProcessingData);
     }
@@ -324,7 +324,7 @@ public class Bpmn2JsonUnmarshaller {
      * @throws IOException
      */
     protected Bpmn2Resource unmarshall(JsonParser parser,
-                                       String preProcessingData) throws JsonParseException, IOException {
+                                       String preProcessingData) throws IOException {
         try {
             parser.nextToken(); // open the object
             ResourceSet rSet = new ResourceSetImpl();
@@ -1507,7 +1507,7 @@ public class Bpmn2JsonUnmarshaller {
             FeatureMap.Entry entry = iter.next();
             if (entry.getEStructuralFeature().getName().equals("msgref")) {
                 msgName = (String) entry.getValue();
-                idefId = (String) entry.getValue() + "Type";
+                idefId = entry.getValue() + "Type";
             }
         }
         if (msgName != null && !msgName.isEmpty() && idefId != null && !idefId.isEmpty()) {
@@ -1756,7 +1756,7 @@ public class Bpmn2JsonUnmarshaller {
                                                 .getFlowElements();
                                         for (FlowElement f : fes) {
                                             if (f instanceof Activity
-                                                    && ((Activity) f)
+                                                    && f
                                                     .getName()
                                                     .equals(activityNameRef)) {
                                                 ((CompensateEventDefinition) ed)
@@ -1890,7 +1890,7 @@ public class Bpmn2JsonUnmarshaller {
                                                 .getFlowElements();
                                         for (FlowElement f : fes) {
                                             if (f instanceof Activity
-                                                    && ((Activity) f)
+                                                    && f
                                                     .getName()
                                                     .equals(activityNameRef)) {
                                                 ((CompensateEventDefinition) ed)
@@ -2490,7 +2490,7 @@ public class Bpmn2JsonUnmarshaller {
                                         Process p = (Process) r;
                                         List<FlowElement> fes = p.getFlowElements();
                                         for (FlowElement f : fes) {
-                                            if (f instanceof Activity && ((Activity) f).getName().equals(activityNameRef)) {
+                                            if (f instanceof Activity && f.getName().equals(activityNameRef)) {
                                                 ((CompensateEventDefinition) ed).setActivityRef((Activity) f);
                                                 ((Activity) f).setIsForCompensation(true);
                                             }
@@ -2613,7 +2613,7 @@ public class Bpmn2JsonUnmarshaller {
                                         Process p = (Process) r;
                                         List<FlowElement> fes = p.getFlowElements();
                                         for (FlowElement f : fes) {
-                                            if (f instanceof Activity && ((Activity) f).getName().equals(activityNameRef)) {
+                                            if (f instanceof Activity && f.getName().equals(activityNameRef)) {
                                                 ((CompensateEventDefinition) ed).setActivityRef((Activity) f);
                                                 ((Activity) f).setIsForCompensation(true);
                                             }
@@ -3324,7 +3324,7 @@ public class Bpmn2JsonUnmarshaller {
     }
 
     public BaseElement unmarshallItem(JsonParser parser,
-                                      String preProcessingData) throws JsonParseException, IOException {
+                                      String preProcessingData) throws IOException {
         String resourceId = null;
         Map<String, String> properties = null;
         String stencil = null;
@@ -4372,6 +4372,16 @@ public class Bpmn2JsonUnmarshaller {
                 ahsp.setOrdering(AdHocOrdering.SEQUENTIAL);
             }
         }
+
+        // adHocAutostart metadata
+        if (properties.get("customautostart") != null
+                && properties.get("customautostart").length() > 0
+                && properties.get("customautostart").equals("true")) {
+            Utils.setMetaDataExtensionValue(ahsp,
+                                            "customAutoStart",
+                                            wrapInCDATABlock(properties.get("customautostart")));
+        }
+
         String adHocCompletionCondition = properties.get("adhoccompletioncondition");
         if (adHocCompletionCondition != null) {
             ScriptTypeValue value = new ScriptTypeTypeSerializer().parse(adHocCompletionCondition);
@@ -4805,7 +4815,7 @@ public class Bpmn2JsonUnmarshaller {
                                 false);
                         SimpleFeatureMapEntry extensionEntry = new SimpleFeatureMapEntry(extensionAttribute,
                                                                                          properties.get("errorref"));
-                        ((ErrorEventDefinition) event.getEventDefinitions().get(0)).getAnyAttribute().add(extensionEntry);
+                        event.getEventDefinitions().get(0).getAnyAttribute().add(extensionEntry);
                     }
                 } else if (ed instanceof ConditionalEventDefinition) {
                     applyConditionalEventProperties((ConditionalEventDefinition) ed,
@@ -4820,7 +4830,7 @@ public class Bpmn2JsonUnmarshaller {
                                 false);
                         SimpleFeatureMapEntry extensionEntry = new SimpleFeatureMapEntry(extensionAttribute,
                                                                                          properties.get("escalationcode"));
-                        ((EscalationEventDefinition) event.getEventDefinitions().get(0)).getAnyAttribute().add(extensionEntry);
+                        event.getEventDefinitions().get(0).getAnyAttribute().add(extensionEntry);
                     }
                 } else if (ed instanceof MessageEventDefinition) {
                     if (properties.get("messageref") != null && !"".equals(properties.get("messageref"))) {
@@ -4832,7 +4842,7 @@ public class Bpmn2JsonUnmarshaller {
                                 false);
                         SimpleFeatureMapEntry extensionEntry = new SimpleFeatureMapEntry(extensionAttribute,
                                                                                          properties.get("messageref"));
-                        ((MessageEventDefinition) event.getEventDefinitions().get(0)).getAnyAttribute().add(extensionEntry);
+                        event.getEventDefinitions().get(0).getAnyAttribute().add(extensionEntry);
                     }
                 } else if (ed instanceof CompensateEventDefinition) {
                     if (properties.get("activityref") != null && !"".equals(properties.get("activityref"))) {
@@ -4844,7 +4854,7 @@ public class Bpmn2JsonUnmarshaller {
                                 false);
                         SimpleFeatureMapEntry extensionEntry = new SimpleFeatureMapEntry(extensionAttribute,
                                                                                          properties.get("activityref"));
-                        ((CompensateEventDefinition) event.getEventDefinitions().get(0)).getAnyAttribute().add(extensionEntry);
+                        event.getEventDefinitions().get(0).getAnyAttribute().add(extensionEntry);
                     }
                 }
             }
@@ -5044,7 +5054,7 @@ public class Bpmn2JsonUnmarshaller {
                             false);
                     SimpleFeatureMapEntry extensionEntry = new SimpleFeatureMapEntry(extensionAttribute,
                                                                                      properties.get("errorref"));
-                    ((ErrorEventDefinition) event.getEventDefinitions().get(0)).getAnyAttribute().add(extensionEntry);
+                    event.getEventDefinitions().get(0).getAnyAttribute().add(extensionEntry);
                 }
             } else if (ed instanceof ConditionalEventDefinition) {
                 applyConditionalEventProperties((ConditionalEventDefinition) ed,
@@ -5059,7 +5069,7 @@ public class Bpmn2JsonUnmarshaller {
                             false);
                     SimpleFeatureMapEntry extensionEntry = new SimpleFeatureMapEntry(extensionAttribute,
                                                                                      properties.get("escalationcode"));
-                    ((EscalationEventDefinition) event.getEventDefinitions().get(0)).getAnyAttribute().add(extensionEntry);
+                    event.getEventDefinitions().get(0).getAnyAttribute().add(extensionEntry);
                 }
             } else if (ed instanceof MessageEventDefinition) {
                 if (properties.get("messageref") != null && !"".equals(properties.get("messageref"))) {
@@ -5071,7 +5081,7 @@ public class Bpmn2JsonUnmarshaller {
                             false);
                     SimpleFeatureMapEntry extensionEntry = new SimpleFeatureMapEntry(extensionAttribute,
                                                                                      properties.get("messageref"));
-                    ((MessageEventDefinition) event.getEventDefinitions().get(0)).getAnyAttribute().add(extensionEntry);
+                    event.getEventDefinitions().get(0).getAnyAttribute().add(extensionEntry);
                 }
             } else if (ed instanceof CompensateEventDefinition) {
                 if (properties.get("activityref") != null && !"".equals(properties.get("activityref"))) {
@@ -5083,7 +5093,7 @@ public class Bpmn2JsonUnmarshaller {
                             false);
                     SimpleFeatureMapEntry extensionEntry = new SimpleFeatureMapEntry(extensionAttribute,
                                                                                      properties.get("activityref"));
-                    ((CompensateEventDefinition) event.getEventDefinitions().get(0)).getAnyAttribute().add(extensionEntry);
+                    event.getEventDefinitions().get(0).getAnyAttribute().add(extensionEntry);
                 }
             }
         } catch (IndexOutOfBoundsException e) {
@@ -5577,6 +5587,16 @@ public class Bpmn2JsonUnmarshaller {
                                             "customAsync",
                                             wrapInCDATABlock(properties.get("isasync")));
         }
+
+        // adHocAutostart metadata
+        if (properties.get("customautostart") != null
+                && properties.get("customautostart").length() > 0
+                && properties.get("customautostart").equals("true")) {
+            Utils.setMetaDataExtensionValue(callActivity,
+                                            "customAutoStart",
+                                            wrapInCDATABlock(properties.get("customautostart")));
+        }
+
         parseAssignmentsInfo(properties);
         //callActivity data input set
         applyDataInputProperties(callActivity,
@@ -7013,7 +7033,7 @@ public class Bpmn2JsonUnmarshaller {
         }
     }
 
-    private Map<String, String> unmarshallProperties(JsonParser parser) throws JsonParseException, IOException {
+    private Map<String, String> unmarshallProperties(JsonParser parser) throws IOException {
         Map<String, String> properties = new HashMap<String, String>();
         while (parser.nextToken() != JsonToken.END_OBJECT) {
             String fieldname = parser.getCurrentName();

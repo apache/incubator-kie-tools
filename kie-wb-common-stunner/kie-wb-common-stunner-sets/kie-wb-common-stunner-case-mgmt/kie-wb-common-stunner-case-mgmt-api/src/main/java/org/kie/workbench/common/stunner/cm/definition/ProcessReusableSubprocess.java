@@ -48,7 +48,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
         defaultFieldSettings = {@FieldParam(name = FIELD_CONTAINER_PARAM, value = COLLAPSIBLE_CONTAINER)}
 )
 public class ProcessReusableSubprocess
-        extends BaseCaseManagementReusableSubprocess<ProcessReusableSubprocessTaskExecutionSet> {
+        extends ReusableSubprocess<ProcessReusableSubprocessTaskExecutionSet> {
 
     @PropertySet
     @FormField(
@@ -68,12 +68,12 @@ public class ProcessReusableSubprocess
     }
 
     public ProcessReusableSubprocess(final @MapsTo("general") BPMNGeneralSet general,
-                                  final @MapsTo("executionSet") ProcessReusableSubprocessTaskExecutionSet executionSet,
-                                  final @MapsTo("dataIOSet") DataIOSet dataIOSet,
-                                  final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
-                                  final @MapsTo("fontSet") FontSet fontSet,
-                                  final @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet,
-                                  final @MapsTo("simulationSet") SimulationSet simulationSet) {
+                                     final @MapsTo("executionSet") ProcessReusableSubprocessTaskExecutionSet executionSet,
+                                     final @MapsTo("dataIOSet") DataIOSet dataIOSet,
+                                     final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
+                                     final @MapsTo("fontSet") FontSet fontSet,
+                                     final @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet,
+                                     final @MapsTo("simulationSet") SimulationSet simulationSet) {
         super(general,
               dataIOSet,
               backgroundSet,

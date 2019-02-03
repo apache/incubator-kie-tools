@@ -19,21 +19,52 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.TypedFactoryMana
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.BaseConverterFactory;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.processes.BaseSubProcessConverter;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.AdHocSubProcessPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.PropertyReaderFactory;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocAutostart;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocOrdering;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnEntryAction;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnExitAction;
+import org.kie.workbench.common.stunner.cm.backend.converters.tostunner.properties.CaseManagementAdHocSubProcessPropertyReader;
 import org.kie.workbench.common.stunner.cm.definition.AdHocSubprocess;
+import org.kie.workbench.common.stunner.cm.definition.property.task.AdHocCompletionCondition;
+import org.kie.workbench.common.stunner.cm.definition.property.task.AdHocSubprocessTaskExecutionSet;
+import org.kie.workbench.common.stunner.cm.definition.property.variables.ProcessData;
+import org.kie.workbench.common.stunner.cm.definition.property.variables.ProcessVariables;
+import org.kie.workbench.common.stunner.core.graph.Edge;
+import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
-public class CaseManagementSubProcessConverter extends BaseSubProcessConverter<AdHocSubprocess> {
+public class CaseManagementSubProcessConverter extends BaseSubProcessConverter<AdHocSubprocess, ProcessData, AdHocSubprocessTaskExecutionSet> {
+
+    private TypedFactoryManager factoryManager;
 
     public CaseManagementSubProcessConverter(TypedFactoryManager typedFactoryManager,
                                              PropertyReaderFactory propertyReaderFactory,
                                              DefinitionResolver definitionResolver,
                                              BaseConverterFactory converterFactory) {
         super(typedFactoryManager, propertyReaderFactory, definitionResolver, converterFactory);
+
+        this.factoryManager = typedFactoryManager;
     }
 
     @Override
-    protected Class<AdHocSubprocess> getAdhocSubprocessClass() {
-        return AdHocSubprocess.class;
+    protected Node<View<AdHocSubprocess>, Edge> createNode(String id) {
+        return factoryManager.newNode(id, AdHocSubprocess.class);
     }
 
+    @Override
+    protected ProcessData createProcessData(String processVariables) {
+        return new ProcessData(new ProcessVariables(processVariables));
+    }
+
+    @Override
+    protected AdHocSubprocessTaskExecutionSet createAdHocSubprocessTaskExecutionSet(AdHocSubProcessPropertyReader p) {
+        CaseManagementAdHocSubProcessPropertyReader reader = (CaseManagementAdHocSubProcessPropertyReader) p;
+        return new AdHocSubprocessTaskExecutionSet(new AdHocCompletionCondition(reader.getAdHocCompletionCondition()),
+                                                   new AdHocOrdering(reader.getAdHocOrdering()),
+                                                   new AdHocAutostart(reader.isAdHocAutostart()),
+                                                   new OnEntryAction(reader.getOnEntryAction()),
+                                                   new OnExitAction(reader.getOnExitAction()));
+    }
 }

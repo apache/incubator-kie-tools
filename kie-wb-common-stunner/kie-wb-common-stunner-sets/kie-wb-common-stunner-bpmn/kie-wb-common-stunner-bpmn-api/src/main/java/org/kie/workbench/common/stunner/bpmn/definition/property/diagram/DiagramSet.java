@@ -25,8 +25,6 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.type.TextAreaFieldType;
-import org.kie.workbench.common.stunner.bpmn.definition.BPMNBaseInfo;
-import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Documentation;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
@@ -40,8 +38,7 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
         policy = FieldPolicy.ONLY_MARKED,
         startElement = "name"
 )
-public class DiagramSet implements BPMNPropertySet,
-                                   BPMNBaseInfo {
+public class DiagramSet implements BaseDiagramSet {
 
     public static final String ADHOC = "adHoc";
 
@@ -136,34 +133,42 @@ public class DiagramSet implements BPMNPropertySet,
              new Executable());
     }
 
+    @Override
     public Name getName() {
         return name;
     }
 
+    @Override
     public Documentation getDocumentation() {
         return documentation;
     }
 
+    @Override
     public Id getId() {
         return id;
     }
 
+    @Override
     public Package getPackageProperty() {
         return packageProperty;
     }
 
+    @Override
     public Version getVersion() {
         return version;
     }
 
+    @Override
     public AdHoc getAdHoc() {
         return adHoc;
     }
 
+    @Override
     public ProcessInstanceDescription getProcessInstanceDescription() {
         return processInstanceDescription;
     }
 
+    @Override
     public Executable getExecutable() {
         return executable;
     }

@@ -40,18 +40,13 @@ public class CaseManagementDeleteCanvasNodeCommandTest extends AbstractCanvasCom
 
     private static final String C_ID = "c1";
     private static final String P_ID = "p1";
-
+    private final int index = 0;
     @Mock
     private Node candidate;
-
     @Mock
     private Node parent;
-
     @Mock
     private View view;
-
-    private final int index = 0;
-
     private CaseManagementDeleteCanvasNodeCommand tested;
 
     @Before

@@ -26,7 +26,6 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.type.TextAreaFieldType;
-import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.assignee.Actors;
 import org.kie.workbench.common.stunner.bpmn.definition.property.assignee.Groupid;
 import org.kie.workbench.common.stunner.bpmn.definition.property.connectors.Priority;
@@ -41,7 +40,7 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 @Bindable
 @PropertySet
 @FormDefinition(startElement = "taskName")
-public class UserTaskExecutionSet implements BPMNPropertySet {
+public class UserTaskExecutionSet implements BaseUserTaskExecutionSet {
 
     @Property
     @FormField
@@ -196,6 +195,7 @@ public class UserTaskExecutionSet implements BPMNPropertySet {
         this.slaDueDate = slaDueDate;
     }
 
+    @Override
     public TaskName getTaskName() {
         return taskName;
     }
@@ -204,6 +204,7 @@ public class UserTaskExecutionSet implements BPMNPropertySet {
         this.taskName = taskName;
     }
 
+    @Override
     public Actors getActors() {
         return actors;
     }
@@ -212,6 +213,7 @@ public class UserTaskExecutionSet implements BPMNPropertySet {
         this.actors = actors;
     }
 
+    @Override
     public Groupid getGroupid() {
         return groupid;
     }
@@ -220,6 +222,7 @@ public class UserTaskExecutionSet implements BPMNPropertySet {
         this.groupid = groupid;
     }
 
+    @Override
     public AssignmentsInfo getAssignmentsinfo() {
         return assignmentsinfo;
     }
@@ -228,6 +231,7 @@ public class UserTaskExecutionSet implements BPMNPropertySet {
         this.assignmentsinfo = assignmentsinfo;
     }
 
+    @Override
     public IsAsync getIsAsync() {
         return isAsync;
     }
@@ -236,6 +240,7 @@ public class UserTaskExecutionSet implements BPMNPropertySet {
         this.isAsync = isAsync;
     }
 
+    @Override
     public Skippable getSkippable() {
         return skippable;
     }
@@ -244,6 +249,7 @@ public class UserTaskExecutionSet implements BPMNPropertySet {
         this.skippable = skippable;
     }
 
+    @Override
     public Priority getPriority() {
         return priority;
     }
@@ -252,6 +258,7 @@ public class UserTaskExecutionSet implements BPMNPropertySet {
         this.priority = priority;
     }
 
+    @Override
     public Subject getSubject() {
         return subject;
     }
@@ -260,6 +267,7 @@ public class UserTaskExecutionSet implements BPMNPropertySet {
         this.subject = subject;
     }
 
+    @Override
     public Description getDescription() {
         return description;
     }
@@ -268,6 +276,7 @@ public class UserTaskExecutionSet implements BPMNPropertySet {
         this.description = description;
     }
 
+    @Override
     public CreatedBy getCreatedBy() {
         return createdBy;
     }
@@ -276,6 +285,7 @@ public class UserTaskExecutionSet implements BPMNPropertySet {
         this.createdBy = createdBy;
     }
 
+    @Override
     public AdHocAutostart getAdHocAutostart() {
         return adHocAutostart;
     }
@@ -284,6 +294,7 @@ public class UserTaskExecutionSet implements BPMNPropertySet {
         this.adHocAutostart = adHocAutostart;
     }
 
+    @Override
     public OnEntryAction getOnEntryAction() {
         return onEntryAction;
     }
@@ -292,6 +303,7 @@ public class UserTaskExecutionSet implements BPMNPropertySet {
         this.onEntryAction = onEntryAction;
     }
 
+    @Override
     public OnExitAction getOnExitAction() {
         return onExitAction;
     }
@@ -300,6 +312,7 @@ public class UserTaskExecutionSet implements BPMNPropertySet {
         this.onExitAction = onExitAction;
     }
 
+    @Override
     public Content getContent() {
         return content;
     }
@@ -308,6 +321,7 @@ public class UserTaskExecutionSet implements BPMNPropertySet {
         this.content = content;
     }
 
+    @Override
     public SLADueDate getSlaDueDate() {
         return slaDueDate;
     }

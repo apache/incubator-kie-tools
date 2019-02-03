@@ -21,15 +21,19 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.activi
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.processes.RootProcessConverter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.processes.SubProcessConverter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.PropertyReaderFactory;
-import org.kie.workbench.common.stunner.bpmn.definition.AdHocSubprocess;
-import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
-import org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.tasks.TaskConverter;
 
-public class ConverterFactory extends BaseConverterFactory<BPMNDiagramImpl, AdHocSubprocess, ReusableSubprocess> {
+public class ConverterFactory
+        extends BaseConverterFactory {
 
     public ConverterFactory(DefinitionResolver definitionResolver,
                             TypedFactoryManager factoryManager) {
-        super(definitionResolver, factoryManager);
+        super(definitionResolver, factoryManager, new PropertyReaderFactory(definitionResolver));
+    }
+
+    @Override
+    public CallActivityConverter callActivityConverter() {
+        return new CallActivityConverter(factoryManager, propertyReaderFactory);
     }
 
     @Override
@@ -46,12 +50,7 @@ public class ConverterFactory extends BaseConverterFactory<BPMNDiagramImpl, AdHo
     }
 
     @Override
-    protected CallActivityConverter createCallActivityConverter() {
-        return new CallActivityConverter(factoryManager, propertyReaderFactory);
-    }
-
-    @Override
-    protected PropertyReaderFactory createPropertyReaderFactory() {
-        return new PropertyReaderFactory(definitionResolver);
+    public TaskConverter taskConverter() {
+        return new TaskConverter(factoryManager, propertyReaderFactory);
     }
 }

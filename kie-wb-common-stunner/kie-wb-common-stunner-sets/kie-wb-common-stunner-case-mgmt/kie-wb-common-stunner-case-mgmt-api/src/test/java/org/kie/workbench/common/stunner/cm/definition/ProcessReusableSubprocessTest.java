@@ -34,13 +34,10 @@ import static org.junit.Assert.assertTrue;
 
 public class ProcessReusableSubprocessTest {
 
-    private Validator validator;
-
     private static final String NAME_VALID = "My New Process";
-
     private static final Boolean CASE_VALID = Boolean.TRUE;
     private static final Boolean CASE_INVALID = null;
-
+    private Validator validator;
     private ProcessReusableSubprocess tested;
 
     @Before
@@ -54,9 +51,8 @@ public class ProcessReusableSubprocessTest {
         tested = new ProcessReusableSubprocess();
         BPMNGeneralSet generalSet = tested.getGeneral();
         generalSet.setName(new Name(NAME_VALID));
-        ProcessReusableSubprocessTaskExecutionSet executionSet =tested.getExecutionSet();
+        ProcessReusableSubprocessTaskExecutionSet executionSet = tested.getExecutionSet();
         executionSet.setIsCase(new IsCase(CASE_VALID));
-
     }
 
     @Test

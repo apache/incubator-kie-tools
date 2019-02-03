@@ -46,7 +46,6 @@ import bpsim.UniformDistributionType;
 import bpsim.impl.BpsimPackageImpl;
 import com.fasterxml.jackson.core.JsonEncoding;
 import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonGenerator;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -367,7 +366,7 @@ public class Bpmn2JsonMarshaller {
 
     protected void marshallDefinitions(Definitions def,
                                        JsonGenerator generator,
-                                       String preProcessingData) throws JsonGenerationException, IOException {
+                                       String preProcessingData) throws IOException {
         try {
             generator.writeStartObject();
             generator.writeObjectField("resourceId",
@@ -450,7 +449,7 @@ public class Bpmn2JsonMarshaller {
                                   propVal);
                     }
                     // packageName and version and adHoc are jbpm-specific extension attribute
-                    Iterator<FeatureMap.Entry> iter = ((Process) rootElement).getAnyAttribute().iterator();
+                    Iterator<FeatureMap.Entry> iter = rootElement.getAnyAttribute().iterator();
                     while (iter.hasNext()) {
                         FeatureMap.Entry entry = iter.next();
                         if (entry.getEStructuralFeature().getName().equals("packageName")) {
@@ -597,7 +596,7 @@ public class Bpmn2JsonMarshaller {
 
     protected void marshallCallableElement(CallableElement callableElement,
                                            Definitions def,
-                                           JsonGenerator generator) throws JsonGenerationException, IOException {
+                                           JsonGenerator generator) throws IOException {
         generator.writeStartObject();
         generator.writeObjectField("resourceId",
                                    callableElement.getId());
@@ -627,7 +626,7 @@ public class Bpmn2JsonMarshaller {
     protected void marshallProcess(Process process,
                                    Definitions def,
                                    JsonGenerator generator,
-                                   String preProcessingData) throws JsonGenerationException, IOException {
+                                   String preProcessingData) throws IOException {
         BPMNPlane plane = null;
         for (BPMNDiagram d : def.getDiagrams()) {
             if (d != null) {
@@ -932,7 +931,7 @@ public class Bpmn2JsonMarshaller {
                        new TimerSettingsTypeSerializer().serialize(timerSettings));
     }
 
-    private void setAdHocSubProcessProperties(final AdHocSubProcess subProcess,
+    protected void setAdHocSubProcessProperties(final AdHocSubProcess subProcess,
                                               final Map<String, Object> properties) {
         if (subProcess.getOrdering().equals(AdHocOrdering.PARALLEL)) {
             properties.put(ADHOCORDERING,
@@ -1060,7 +1059,7 @@ public class Bpmn2JsonMarshaller {
                                        float xOffset,
                                        float yOffset,
                                        String preProcessingData,
-                                       Definitions def) throws JsonGenerationException, IOException {
+                                       Definitions def) throws IOException {
         Bounds bounds = ((BPMNShape) findDiagramElement(plane,
                                                         lane)).getBounds();
         List<String> nodeRefIds = new ArrayList<String>();
@@ -1208,7 +1207,7 @@ public class Bpmn2JsonMarshaller {
                                        float xOffset,
                                        float yOffset,
                                        String preProcessingData,
-                                       Definitions def) throws JsonGenerationException, IOException {
+                                       Definitions def) throws IOException {
         generator.writeStartObject();
         generator.writeObjectField("resourceId",
                                    flowElement.getId());
@@ -1435,7 +1434,7 @@ public class Bpmn2JsonMarshaller {
         } else if (flowElement instanceof DataObject) {
             // only marshall if we can find DI info for it - BZ 800346
             if (findDiagramElement(plane,
-                                   (DataObject) flowElement) != null) {
+                                   flowElement) != null) {
                 marshallDataObject((DataObject) flowElement,
                                    plane,
                                    generator,
@@ -1443,7 +1442,7 @@ public class Bpmn2JsonMarshaller {
                                    yOffset,
                                    flowElementProperties);
             } else {
-                _logger.debug("Could not marshall Data Object " + (DataObject) flowElement + " because no DI information could be found.");
+                _logger.debug("Could not marshall Data Object " + flowElement + " because no DI information could be found.");
             }
         } else {
             throw new UnsupportedOperationException("Unknown flow element " + flowElement);
@@ -1456,7 +1455,7 @@ public class Bpmn2JsonMarshaller {
                                       JsonGenerator generator,
                                       float xOffset,
                                       float yOffset,
-                                      Map<String, Object> properties) throws JsonGenerationException, IOException {
+                                      Map<String, Object> properties) throws IOException {
         setSimulationProperties(startEvent.getId(),
                                 properties);
         List<EventDefinition> eventDefinitions = startEvent.getEventDefinitions();
@@ -1549,7 +1548,7 @@ public class Bpmn2JsonMarshaller {
                                     JsonGenerator generator,
                                     float xOffset,
                                     float yOffset,
-                                    Map<String, Object> properties) throws JsonGenerationException, IOException {
+                                    Map<String, Object> properties) throws IOException {
         setSimulationProperties(endEvent.getId(),
                                 properties);
         List<EventDefinition> eventDefinitions = endEvent.getEventDefinitions();
@@ -1632,7 +1631,7 @@ public class Bpmn2JsonMarshaller {
                                                   JsonGenerator generator,
                                                   float xOffset,
                                                   float yOffset,
-                                                  Map<String, Object> properties) throws JsonGenerationException, IOException {
+                                                  Map<String, Object> properties) throws IOException {
         List<EventDefinition> eventDefinitions = catchEvent.getEventDefinitions();
         // simulation properties
         setSimulationProperties(catchEvent.getId(),
@@ -1708,7 +1707,7 @@ public class Bpmn2JsonMarshaller {
                                          JsonGenerator generator,
                                          float xOffset,
                                          float yOffset,
-                                         Map<String, Object> catchEventProperties) throws JsonGenerationException, IOException {
+                                         Map<String, Object> catchEventProperties) throws IOException {
         List<EventDefinition> eventDefinitions = boundaryEvent.getEventDefinitions();
         if (boundaryEvent.isCancelActivity()) {
             catchEventProperties.put(BOUNDARYCANCELACTIVITY,
@@ -1791,7 +1790,7 @@ public class Bpmn2JsonMarshaller {
                                                   JsonGenerator generator,
                                                   float xOffset,
                                                   float yOffset,
-                                                  Map<String, Object> properties) throws JsonGenerationException, IOException {
+                                                  Map<String, Object> properties) throws IOException {
         List<EventDefinition> eventDefinitions = throwEvent.getEventDefinitions();
         // simulation properties
         setSimulationProperties(throwEvent.getId(),
@@ -1851,7 +1850,7 @@ public class Bpmn2JsonMarshaller {
                                         JsonGenerator generator,
                                         float xOffset,
                                         float yOffset,
-                                        Map<String, Object> flowElementProperties) throws JsonGenerationException, IOException {
+                                        Map<String, Object> flowElementProperties) throws IOException {
         Map<String, Object> properties = new LinkedHashMap<String, Object>(flowElementProperties);
         Iterator<FeatureMap.Entry> iter = callActivity.getAnyAttribute().iterator();
         while (iter.hasNext()) {
@@ -1917,6 +1916,21 @@ public class Bpmn2JsonMarshaller {
         // simulation properties
         setSimulationProperties(callActivity.getId(),
                                 properties);
+
+        marshallReusableSubprocessNode(callActivity,
+                                       plane,
+                                       generator,
+                                       xOffset,
+                                       yOffset,
+                                       properties);
+    }
+
+    protected void marshallReusableSubprocessNode(CallActivity callActivity,
+                                                  BPMNPlane plane,
+                                                  JsonGenerator generator,
+                                                  float xOffset,
+                                                  float yOffset,
+                                                  Map<String, Object> properties) throws IOException {
         marshallNode(callActivity,
                      properties,
                      "ReusableSubprocess",
@@ -1933,7 +1947,7 @@ public class Bpmn2JsonMarshaller {
                                 float yOffset,
                                 String preProcessingData,
                                 Definitions def,
-                                Map<String, Object> flowElementProperties) throws JsonGenerationException, IOException {
+                                Map<String, Object> flowElementProperties) throws IOException {
         Map<String, Object> properties = new LinkedHashMap<String, Object>(flowElementProperties);
         String taskType = "None";
         if (task instanceof BusinessRuleTask) {
@@ -1983,7 +1997,7 @@ public class Bpmn2JsonMarshaller {
             StringBuilder sb = new StringBuilder();
             for (ResourceRole role : roles) {
                 if (role instanceof PotentialOwner) {
-                    FormalExpression fe = (FormalExpression) ((PotentialOwner) role).getResourceAssignmentExpression().getExpression();
+                    FormalExpression fe = (FormalExpression) role.getResourceAssignmentExpression().getExpression();
                     if (fe.getBody() != null && fe.getBody().length() > 0) {
                         sb.append(fe.getBody());
                         sb.append(",");
@@ -2565,7 +2579,7 @@ public class Bpmn2JsonMarshaller {
                                            JsonGenerator generator,
                                            float xOffset,
                                            float yOffset,
-                                           Map<String, Object> flowElementProperties) throws JsonGenerationException, IOException {
+                                           Map<String, Object> flowElementProperties) throws IOException {
         marshallNode(gateway,
                      flowElementProperties,
                      "ParallelGateway",
@@ -2580,7 +2594,7 @@ public class Bpmn2JsonMarshaller {
                                             JsonGenerator generator,
                                             float xOffset,
                                             float yOffset,
-                                            Map<String, Object> flowElementProperties) throws JsonGenerationException, IOException {
+                                            Map<String, Object> flowElementProperties) throws IOException {
         if (gateway.getDefault() != null) {
             SequenceFlow defsf = gateway.getDefault();
             String defGatewayStr = defsf.getId();
@@ -2601,7 +2615,7 @@ public class Bpmn2JsonMarshaller {
                                             JsonGenerator generator,
                                             float xOffset,
                                             float yOffset,
-                                            Map<String, Object> flowElementProperties) throws JsonGenerationException, IOException {
+                                            Map<String, Object> flowElementProperties) throws IOException {
         if (gateway.getDefault() != null) {
             SequenceFlow defsf = gateway.getDefault();
             String defGatewayStr = defsf.getId();
@@ -2622,7 +2636,7 @@ public class Bpmn2JsonMarshaller {
                                              JsonGenerator generator,
                                              float xOffset,
                                              float yOffset,
-                                             Map<String, Object> flowElementProperties) throws JsonGenerationException, IOException {
+                                             Map<String, Object> flowElementProperties) throws IOException {
         marshallNode(gateway,
                      flowElementProperties,
                      "EventbasedGateway",
@@ -2637,7 +2651,7 @@ public class Bpmn2JsonMarshaller {
                                           JsonGenerator generator,
                                           float xOffset,
                                           float yOffset,
-                                          Map<String, Object> flowElementProperties) throws JsonGenerationException, IOException {
+                                          Map<String, Object> flowElementProperties) throws IOException {
         marshallNode(gateway,
                      flowElementProperties,
                      "ComplexGateway",
@@ -2653,7 +2667,7 @@ public class Bpmn2JsonMarshaller {
                                 BPMNPlane plane,
                                 JsonGenerator generator,
                                 float xOffset,
-                                float yOffset) throws JsonGenerationException, IOException {
+                                float yOffset) throws IOException {
         if (properties == null) {
             properties = new LinkedHashMap<String, Object>();
         }
@@ -2833,7 +2847,7 @@ public class Bpmn2JsonMarshaller {
                                       JsonGenerator generator,
                                       float xOffset,
                                       float yOffset,
-                                      Map<String, Object> flowElementProperties) throws JsonGenerationException, IOException {
+                                      Map<String, Object> flowElementProperties) throws IOException {
         Map<String, Object> properties = new LinkedHashMap<String, Object>(flowElementProperties);
 
         putDocumentationProperty(dataObject,
@@ -2928,7 +2942,7 @@ public class Bpmn2JsonMarshaller {
                                       float yOffset,
                                       String preProcessingData,
                                       Definitions def,
-                                      Map<String, Object> flowElementProperties) throws JsonGenerationException, IOException {
+                                      Map<String, Object> flowElementProperties) throws IOException {
         Map<String, Object> properties = new LinkedHashMap<String, Object>(flowElementProperties);
         if (subProcess.getName() != null) {
             properties.put(NAME,
@@ -3292,7 +3306,7 @@ public class Bpmn2JsonMarshaller {
                                         BPMNPlane plane,
                                         JsonGenerator generator,
                                         float xOffset,
-                                        float yOffset) throws JsonGenerationException, IOException {
+                                        float yOffset) throws IOException {
         // dont marshal "dangling" sequence flow..better to just omit than fail
         if (sequenceFlow.getSourceRef() == null || sequenceFlow.getTargetRef() == null) {
             return;
@@ -3525,7 +3539,7 @@ public class Bpmn2JsonMarshaller {
     }
 
     protected void marshallProperties(Map<String, Object> properties,
-                                      JsonGenerator generator) throws JsonGenerationException, IOException {
+                                      JsonGenerator generator) throws IOException {
         generator.writeObjectFieldStart("properties");
         for (Entry<String, Object> entry : properties.entrySet()) {
             generator.writeObjectField(entry.getKey(),
@@ -3570,7 +3584,7 @@ public class Bpmn2JsonMarshaller {
                                        float xOffset,
                                        float yOffset,
                                        String preProcessingData,
-                                       Definitions def) throws JsonGenerationException, IOException {
+                                       Definitions def) throws IOException {
         Map<String, Object> properties = new LinkedHashMap<String, Object>();
         Iterator<FeatureMap.Entry> iter = association.getAnyAttribute().iterator();
         boolean foundBrColor = false;
@@ -3687,7 +3701,7 @@ public class Bpmn2JsonMarshaller {
                                           float yOffset,
                                           String preProcessingData,
                                           Definitions def,
-                                          Map<String, Object> flowElementProperties) throws JsonGenerationException, IOException {
+                                          Map<String, Object> flowElementProperties) throws IOException {
         flowElementProperties.put("name",
                                   textAnnotation.getText());
         // overwrite name if elementname extension element is present
@@ -3718,7 +3732,7 @@ public class Bpmn2JsonMarshaller {
                                  float xOffset,
                                  float yOffset,
                                  String preProcessingData,
-                                 Definitions def) throws JsonGenerationException, IOException {
+                                 Definitions def) throws IOException {
         Map<String, Object> properties = new LinkedHashMap<>();
         if (group.getCategoryValueRef() != null && group.getCategoryValueRef().getValue() != null) {
             properties.put("name",
@@ -3806,7 +3820,7 @@ public class Bpmn2JsonMarshaller {
     }
 
     protected void marshallStencil(String stencilId,
-                                   JsonGenerator generator) throws JsonGenerationException, IOException {
+                                   JsonGenerator generator) throws IOException {
         generator.writeObjectFieldStart("stencil");
         generator.writeObjectField("id",
                                    stencilId);

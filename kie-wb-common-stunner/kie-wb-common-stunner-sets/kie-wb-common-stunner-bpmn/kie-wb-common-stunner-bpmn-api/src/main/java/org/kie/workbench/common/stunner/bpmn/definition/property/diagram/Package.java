@@ -26,7 +26,6 @@ import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.FieldValue;
 import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.I18nMode;
-import org.kie.workbench.common.stunner.bpmn.definition.BPMNProperty;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.property.Value;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
@@ -35,7 +34,7 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 @Bindable
 @Property
 @FieldDefinition(i18nMode = I18nMode.OVERRIDE_I18N_KEY)
-public class Package implements BPMNProperty {
+public class Package implements BasePackage {
 
     public static final String DEFAULT_PACKAGE = "org.jbpm";
 
@@ -52,10 +51,12 @@ public class Package implements BPMNProperty {
         this.value = value;
     }
 
+    @Override
     public String getValue() {
         return value;
     }
 
+    @Override
     public void setValue(final String value) {
         this.value = value;
     }
