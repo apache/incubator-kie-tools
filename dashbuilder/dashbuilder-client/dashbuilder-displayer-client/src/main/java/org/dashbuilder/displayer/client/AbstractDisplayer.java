@@ -228,7 +228,7 @@ public abstract class AbstractDisplayer<V extends AbstractDisplayer.View> implem
     public boolean isDrawn() {
         return drawn;
     }
-
+    
     /**
      * Draw the displayer by executing first the lookup call to retrieve the target data set
      */
@@ -319,13 +319,19 @@ public abstract class AbstractDisplayer<V extends AbstractDisplayer.View> implem
                     @Override
                     public boolean onError(final ClientRuntimeError error) {
                         showError(error);
+                        requestDraw();
                         return false;
                     }
+
                 });
             } catch (Exception e) {
                 showError(new ClientRuntimeError(e));
             }
         }
+    }
+    
+    private void requestDraw() {
+        drawn = false;
     }
 
     public void showError(ClientRuntimeError error) {

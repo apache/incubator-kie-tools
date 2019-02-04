@@ -21,10 +21,17 @@ public class DisplayerMock extends AbstractDisplayer<AbstractDisplayer.View> {
 
     private AbstractDisplayer.View view;
     private DisplayerConstraints constraints;
+    private boolean ignoreError;
 
     public DisplayerMock(AbstractDisplayer.View view, DisplayerConstraints constraints) {
         this.view = view;
         this.constraints = constraints;
+    }
+    
+    public DisplayerMock(AbstractDisplayer.View view, DisplayerConstraints constraints, boolean ignoreError) {
+        this.view = view;
+        this.constraints = constraints;
+        this.ignoreError = ignoreError;
     }
 
     @Override
@@ -50,7 +57,8 @@ public class DisplayerMock extends AbstractDisplayer<AbstractDisplayer.View> {
     @Override
     public void handleError(ClientRuntimeError error) {
         super.handleError(error);
-
-        throw new RuntimeException(error.getRootCause());
+        if (! ignoreError) {
+            throw new RuntimeException(error.getRootCause());
+        }
     }
 }

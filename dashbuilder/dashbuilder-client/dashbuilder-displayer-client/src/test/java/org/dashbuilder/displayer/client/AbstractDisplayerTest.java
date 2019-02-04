@@ -14,18 +14,33 @@
  */
 package org.dashbuilder.displayer.client;
 
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyListOf;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.util.List;
 
 import org.dashbuilder.common.client.error.ClientRuntimeError;
+import org.dashbuilder.dataset.DataSet;
 import org.dashbuilder.dataset.client.AbstractDataSetTest;
+import org.dashbuilder.dataset.client.DataSetReadyCallback;
 import org.dashbuilder.displayer.DisplayerSettings;
+import org.dashbuilder.displayer.DisplayerSettingsFactory;
 import org.dashbuilder.displayer.client.formatter.ValueFormatterRegistry;
 import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.mockito.Mockito.*;
-
-public abstract class AbstractDisplayerTest extends AbstractDataSetTest {
+@RunWith(MockitoJUnitRunner.class)
+public class AbstractDisplayerTest extends AbstractDataSetTest {
 
     @Mock
     protected RendererManager rendererManager;
@@ -67,6 +82,10 @@ public abstract class AbstractDisplayerTest extends AbstractDataSetTest {
     public AbstractDisplayer createNewDisplayer(DisplayerSettings settings) {
         return initDisplayer(new DisplayerMock(mock(AbstractDisplayer.View.class), null), settings);
     }
+    
+    public AbstractDisplayer createNewDisplayer(DisplayerSettings settings, boolean ignoreError) {
+        return initDisplayer(new DisplayerMock(mock(AbstractDisplayer.View.class), null, ignoreError), settings);
+    }
 
     public <D extends AbstractDisplayer> D initDisplayer(D displayer, DisplayerSettings settings) {
         displayer.setEvaluator(new DisplayerEvaluatorMock());
@@ -81,5 +100,29 @@ public abstract class AbstractDisplayerTest extends AbstractDataSetTest {
             displayer.setDataSetHandler(new DataSetHandlerImpl(clientServices, settings.getDataSetLookup()));
         }
         return displayer;
+    }
+    
+    @Test
+    public void callbackOnErrorTest() throws Exception {
+        DataSetHandler dataSetHandler = mock(DataSetHandler.class);
+        DisplayerSettings simpleSettings = DisplayerSettingsFactory.newTableSettings()
+        .dataset(EXPENSES)
+        .filterOn(true, false, true)
+        .buildSettings();
+        AbstractDisplayer simpleDisplayer = createNewDisplayer(simpleSettings, true);
+        
+        simpleDisplayer.listenerList = java.util.Collections.emptyList();
+        simpleDisplayer.setDataSetHandler(dataSetHandler);
+        simpleDisplayer.redraw();
+        assertTrue(simpleDisplayer.isDrawn());
+        
+        doAnswer((InvocationOnMock invocation) -> {
+            DataSetReadyCallback callback =  (DataSetReadyCallback) invocation.getArguments()[0];
+            callback.onError(new ClientRuntimeError("test"));
+            return null;
+        }).when(dataSetHandler).lookupDataSet(any());
+        
+        simpleDisplayer.redraw();
+        assertTrue(!simpleDisplayer.isDrawn());
     }
 }
