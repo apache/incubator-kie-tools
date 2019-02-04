@@ -39,12 +39,14 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyDouble;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -78,6 +80,9 @@ public class ScenarioSimulationGridWidgetMouseEventHandlerTest extends AbstractS
 
     @Mock
     private BaseGridRendererHelper.RenderingBlockInformation renderingBlockInformation;
+
+    @Mock
+    private GridCellEditAction gridCellEditActionMock;
 
     private NodeMouseClickEvent clickEvent;
 
@@ -161,4 +166,72 @@ public class ScenarioSimulationGridWidgetMouseEventHandlerTest extends AbstractS
                                              doubleClickEvent));
         verify(informationHeaderMetaDataMock, times(1)).edit(any(GridBodyCellEditContext.class));
     }
+
+    @Test
+    public void handleBodyCell() {
+        commonHandleBodyCell(0, false, gridCellEditActionMock, false);
+        commonHandleBodyCell(2, false, gridCellEditActionMock, false);
+        commonHandleBodyCell(1, true, mock(GridCellEditAction.class), false);
+        commonHandleBodyCell(1, true, gridCellEditActionMock, true);
+    }
+
+    @Test
+    public void  manageStartEditingGridCellNullCell() {
+        doReturn(null).when(scenarioGridModelMock).getCell(eq(0), eq(0));
+        assertFalse(handler.manageStartEditingGridCell(scenarioGridMock, 0, 0, gridColumnMock));
+    }
+
+    @Test
+    public void  manageStartEditingGridCellAlreadyEditingCell() {
+        when(scenarioGridCellMock.isEditingMode()).thenReturn(true);
+        doReturn(scenarioGridCellMock).when(scenarioGridModelMock).getCell(eq(0), eq(0));
+        assertTrue(handler.manageStartEditingGridCell(scenarioGridMock, 0, 0, gridColumnMock));
+        verify(scenarioGridCellMock, times(1)).isEditingMode();
+        verify(scenarioGridCellMock, never()).setEditingMode(anyBoolean());
+    }
+
+    @Test
+    public void  manageStartEditingGridCellNotEditingCell() {
+        commonManageStartEditingGridCellNotEditingCell(true, false, false);
+        commonManageStartEditingGridCellNotEditingCell(false, false, false);
+        commonManageStartEditingGridCellNotEditingCell(true, true, false);
+        commonManageStartEditingGridCellNotEditingCell(false, true, true);
+    }
+
+    private void commonHandleBodyCell(int selectedSize, boolean selectedCellRightSize, GridCellEditAction gridCellEditAction, boolean expectCall) {
+        List<GridData.SelectedCell> selectedCellsMock = mock(List.class);
+        when(selectedCellsMock.size()).thenReturn(selectedSize);
+        when(scenarioGridModelMock.getSelectedCells()).thenReturn(selectedCellsMock);
+        when(scenarioGridCellMock.getSupportedEditAction()).thenReturn(gridCellEditAction);
+        doReturn(gridCellEditActionMock).when(handler).getSupportedEditActionLocal(any());
+        doReturn(scenarioGridCellMock).when(scenarioGridModelMock).getCell(eq(0), eq(0));
+        boolean retrieved = handler.handleBodyCell(scenarioGridMock,
+                               relativeLocation,
+                               0,
+                               0,
+                               doubleClickEvent);
+        if (selectedCellRightSize) {
+            if (expectCall) {
+                verify(handler, times(1)).manageStartEditingGridCell(eq(scenarioGridMock), eq(0), eq(0), eq(gridColumnMock));
+            } else {
+                verify(handler, never()).manageStartEditingGridCell(any(),any(), any(), any());
+            }
+        } else {
+            assertFalse(retrieved);
+            verify(handler, never()).manageStartEditingGridCell(any(),any(), any(), any());
+        }
+        reset(handler);
+    }
+
+    private void commonManageStartEditingGridCellNotEditingCell(boolean columnReadOnly, boolean startEditingCell, boolean expected) {
+        when(scenarioGridCellMock.isEditingMode()).thenReturn(false);
+        when(gridColumnMock.isReadOnly()).thenReturn(columnReadOnly);
+        when(scenarioGridMock.startEditingCell(0, 0)).thenReturn(startEditingCell);
+        doReturn(scenarioGridCellMock).when(scenarioGridModelMock).getCell(eq(0), eq(0));
+        handler.manageStartEditingGridCell(scenarioGridMock, 0, 0, gridColumnMock);
+        verify(scenarioGridCellMock, times(1)).setEditingMode(eq(expected));
+        reset(scenarioGridCellMock);
+    }
+
+
 }

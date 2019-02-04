@@ -42,7 +42,6 @@ import org.drools.workbench.screens.scenariosimulation.client.events.ReloadRight
 import org.drools.workbench.screens.scenariosimulation.client.metadata.ScenarioHeaderMetaData;
 import org.drools.workbench.screens.scenariosimulation.client.utils.ScenarioSimulationGridHeaderUtilities;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGrid;
-import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridCell;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
@@ -284,7 +283,7 @@ public class ScenarioSimulationGridPanelClickHandler implements ClickHandler,
         if (uiRowIndex == null) {
             return false;
         } else {
-            return manageGridLeftClick(uiRowIndex, uiColumnIndex, scenarioGridColumn);
+            return manageGridLeftClick(uiRowIndex, uiColumnIndex);
         }
         } else {
             return true;
@@ -357,23 +356,20 @@ public class ScenarioSimulationGridPanelClickHandler implements ClickHandler,
     }
 
     /**
-     * This method check if the click happened on an <i>writable</i> column of a <b>grid row</b>. If it is so, start editing the cell,
+     * This method check if the click happened on an column of a <b>grid row</b>. If it is so, select the cell,
      * otherwise returns <code>false</code>
      * @param uiRowIndex
      * @param uiColumnIndex
-     * @param scenarioGridColumn
      * @return
      */
-    protected boolean manageGridLeftClick(Integer uiRowIndex, Integer uiColumnIndex, ScenarioGridColumn scenarioGridColumn) {
+    protected boolean manageGridLeftClick(Integer uiRowIndex, Integer uiColumnIndex) {
         final GridCell<?> cell = scenarioGrid.getModel().getCell(uiRowIndex, uiColumnIndex);
         if (cell == null) {
             return false;
-        }
-        if (((ScenarioGridCell) cell).isEditingMode()) {
+        } else {
+            scenarioGrid.getModel().selectCell(uiRowIndex, uiColumnIndex);
             return true;
         }
-        ((ScenarioGridCell) cell).setEditingMode((!scenarioGridColumn.isReadOnly()) && scenarioGrid.startEditingCell(uiRowIndex, uiColumnIndex));
-        return ((ScenarioGridCell) cell).isEditingMode();
     }
 
     // Indirection add for test
