@@ -3,7 +3,7 @@
 <config xmlns="http://zanata.org/namespace/config/">
   <url>https://vendors.zanata.redhat.com/</url>
   <project>kie-wb-common</project>
-  <project-version>7.17.0</project-version>
+  <project-version>7.18.0</project-version>
   <project-type>utf8properties</project-type>
 
   <locales>
