@@ -27,6 +27,7 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.screens.scenariosimulation.client.events.SetInstanceHeaderEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.SetPropertyHeaderEvent;
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
+import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
 import org.junit.Before;
 import org.junit.Test;
@@ -70,9 +71,9 @@ public class RightPanelPresenterTest extends AbstractRightPanelTest {
     private ListGroupItemPresenter listGroupItemPresenterMock;
 
     @Mock
-    private  ListGroupItemView selectedListGroupItemViewMock;
+    private ListGroupItemView selectedListGroupItemViewMock;
     @Mock
-    private  FieldItemView selectedFieldItemViewMock;
+    private FieldItemView selectedFieldItemViewMock;
 
     @Mock
     private EventBus eventBusMock;
@@ -154,7 +155,6 @@ public class RightPanelPresenterTest extends AbstractRightPanelTest {
         verify(rightPanelViewMock, times(1)).getInstanceListContainer();
         verify(instanceListContainerMock, times(1)).removeAllChildren();
     }
-
 
     @Test
     public void getFactModelTree() {
@@ -247,7 +247,6 @@ public class RightPanelPresenterTest extends AbstractRightPanelTest {
         rightPanelPresenter.onModifyColumn();
         verify(eventBusMock, never()).fireEvent(isA(SetPropertyHeaderEvent.class));
         verify(eventBusMock, times(1)).fireEvent(isA(SetInstanceHeaderEvent.class));
-
     }
 
     @Test
@@ -265,7 +264,17 @@ public class RightPanelPresenterTest extends AbstractRightPanelTest {
         search += ";" + key;
         assertTrue(rightPanelPresenter.filterTerm(key, search, false));
         assertFalse(rightPanelPresenter.filterTerm(key, search, true));
-
     }
 
+    @Test
+    public void initCheatSheetRule() {
+        rightPanelPresenter.initCheatSheet(ScenarioSimulationModel.Type.RULE);
+        verify(rightPanelViewMock, times(1)).setRuleCheatSheetContent();
+    }
+
+    @Test
+    public void initCheatSheetDMN() {
+        rightPanelPresenter.initCheatSheet(ScenarioSimulationModel.Type.DMN);
+        verify(rightPanelViewMock, times(1)).setDMNCheatSheetContent();
+    }
 }

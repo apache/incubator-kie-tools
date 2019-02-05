@@ -18,6 +18,7 @@ package org.drools.workbench.screens.scenariosimulation.client.editor;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
+import org.drools.workbench.screens.scenariosimulation.client.editor.strategies.DataManagementStrategy;
 import org.drools.workbench.screens.scenariosimulation.client.events.RedoEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.UndoEvent;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioSimulationDocksHandler;
@@ -128,6 +129,8 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
     private ScenarioMenuItem undoMenuItemMock;
     @Mock
     private ScenarioMenuItem redoMenuItemMock;
+    @Mock
+    private DataManagementStrategy dataManagementStrategyMock;
 
     @Before
     public void setup() {
@@ -171,6 +174,7 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
                 this.packageName = SCENARIO_PACKAGE;
                 this.eventBus = eventBusMock;
                 this.context = contextMock;
+                this.dataManagementStrategy = dataManagementStrategyMock;
             }
 
             @Override
@@ -360,6 +364,15 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
     public void isDirty() {
         when(scenarioSimulationViewMock.getScenarioGridPanel()).thenThrow(new RuntimeException());
         assertFalse(presenter.isDirty());
+    }
+
+    @Test
+    public void setRightPanel() {
+        presenter.setRightPanel(rightPanelPresenterMock);
+        verify(contextMock, times(1)).setRightPanelPresenter(rightPanelPresenterMock);
+        verify(rightPanelPresenterMock, times(1)).setEventBus(eventBusMock);
+        verify(dataManagementStrategyMock, times(1)).populateRightPanel(rightPanelPresenterMock, scenarioGridModelMock);
+        verify(rightPanelPresenterMock, times(1)).initCheatSheet(any());
     }
 
     private void onClosePlaceStatusOpen() {

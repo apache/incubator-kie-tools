@@ -20,11 +20,13 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
 import com.google.gwt.dom.client.ButtonElement;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.InputElement;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.UListElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -78,6 +80,14 @@ public class RightPanelViewImpl
 
     @DataField("kieTestEditorTabContent")
     protected DivElement kieTestEditorTabContent = Document.get().createDivElement();
+
+    @Inject
+    @DataField("ruleCheatSheet")
+    protected DivElement ruleCheatSheet = Document.get().createDivElement();
+
+    @Inject
+    @DataField("dmnCheatSheet")
+    protected DivElement dmnCheatSheet = Document.get().createDivElement();
 
     protected List<DivElement> managedDivElements;
 
@@ -203,5 +213,17 @@ public class RightPanelViewImpl
         } else {
             managedDivElements.forEach(divElement -> divElement.removeClassName("disabled"));
         }
+    }
+
+    @Override
+    public void setRuleCheatSheetContent() {
+        ruleCheatSheet.getStyle().setDisplay(Style.Display.BLOCK);
+        dmnCheatSheet.getStyle().setDisplay(Style.Display.NONE);
+    }
+
+    @Override
+    public void setDMNCheatSheetContent() {
+        ruleCheatSheet.getStyle().setDisplay(Style.Display.NONE);
+        dmnCheatSheet.getStyle().setDisplay(Style.Display.BLOCK);
     }
 }

@@ -347,11 +347,17 @@ public class ScenarioSimulationEditorPresenter
         // Execute only when DatamanagementStrategy already set and  RightPanelPresenter is actually available
         if (dataManagementStrategy != null) {
             getRightPanelPresenter().ifPresent(presenter -> {
-                context.setRightPanelPresenter(presenter);
-                presenter.setEventBus(eventBus);
-                dataManagementStrategy.populateRightPanel(presenter, scenarioGridPanel.getScenarioGrid().getModel());
+                setRightPanel(presenter);
             });
         }
+    }
+
+    protected void setRightPanel(RightPanelView.Presenter presenter) {
+        context.setRightPanelPresenter(presenter);
+        presenter.setEventBus(eventBus);
+        dataManagementStrategy.populateRightPanel(presenter, scenarioGridPanel.getScenarioGrid().getModel());
+        ScenarioSimulationModel.Type type = dataManagementStrategy instanceof DMODataManagementStrategy ? ScenarioSimulationModel.Type.RULE : ScenarioSimulationModel.Type.DMN;
+        presenter.initCheatSheet(type);
     }
 
     protected void clearRightPanelStatus() {
