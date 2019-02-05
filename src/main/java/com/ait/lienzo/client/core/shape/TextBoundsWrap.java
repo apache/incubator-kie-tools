@@ -27,7 +27,7 @@ import com.ait.lienzo.shared.core.types.TextUnit;
 /**
  * ITextWrapper implementation that wraps text when a line exceeds the width of the provided boundary.
  */
-public class TextBoundsWrap extends TextNoWrap {
+public class TextBoundsWrap extends TextNoWrap implements ITextWrapperWithBoundaries  {
 
     private BoundingBox wrapBoundaries;
 
@@ -64,9 +64,9 @@ public class TextBoundsWrap extends TextNoWrap {
         return wrapBoundaries;
     }
 
-    public TextBoundsWrap setWrapBoundaries(final BoundingBox boundaries) {
+    @Override
+    public void setWrapBoundaries(final BoundingBox boundaries) {
         wrapBoundaries = boundaries;
-        return this;
     }
 
     public BoundingBox getTextBoundaries() {

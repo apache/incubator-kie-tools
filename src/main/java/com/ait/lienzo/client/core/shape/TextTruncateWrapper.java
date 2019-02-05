@@ -25,8 +25,8 @@ import com.ait.lienzo.client.core.types.BoundingBox;
  * ITextWrapper implementation that truncates text and appends "..." if there is no space left.
  */
 @SuppressWarnings("Duplicates")
-public class TextTruncateWrapper extends TextNoWrap {
-
+public class TextTruncateWrapper extends TextNoWrap implements ITextWrapperWithBoundaries
+{
     private static final double     Y_OFFSET           = 0.8;
 
     private BoundingBox             m_wrapBoundaries;
@@ -45,11 +45,10 @@ public class TextTruncateWrapper extends TextNoWrap {
         return m_wrapBoundaries;
     }
 
-    public TextTruncateWrapper setWrapBoundaries(final BoundingBox boundaries)
+    @Override
+    public void setWrapBoundaries(final BoundingBox boundaries)
     {
         m_wrapBoundaries = boundaries;
-
-        return this;
     }
 
     @Override
