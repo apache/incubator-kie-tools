@@ -41,6 +41,7 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
+import org.uberfire.mvp.Command;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.ResourceAction;
 import org.uberfire.security.ResourceRef;
@@ -56,6 +57,10 @@ import org.uberfire.workbench.type.ResourceTypeDefinition;
 public class NewScenarioSimulationHandler
         extends DefaultNewResourceHandler {
 
+    protected TitledAttachmentFileWidget uploadWidget;
+
+    protected SourceTypeSelector sourceTypeSelector;
+
     private Caller<ScenarioSimulationService> scenarioSimulationService;
 
     private ScenarioSimulationResourceType resourceType;
@@ -65,8 +70,6 @@ public class NewScenarioSimulationHandler
     private final LibraryPlaces libraryPlaces;
     private final AssetQueryService assetQueryService;
 
-    private TitledAttachmentFileWidget uploadWidget;
-    private SourceTypeSelector sourceTypeSelector;
 
     @Inject
     public NewScenarioSimulationHandler(final ScenarioSimulationResourceType resourceType,
@@ -109,23 +112,28 @@ public class NewScenarioSimulationHandler
     @Override
     public boolean canCreate() {
         return authorizationManager.authorize(new ResourceRef(ScenarioSimulationEditorPresenter.IDENTIFIER,
-                                                              ActivityResourceType.EDITOR),
-                                              ResourceAction.READ,
-                                              sessionInfo.getIdentity());
+                                                                           ActivityResourceType.EDITOR),
+                                                           ResourceAction.READ,
+                                                           sessionInfo.getIdentity());
+    }
+
+    @Override
+    public Command getCommand(final NewResourcePresenter newResourcePresenter) {
+        return () -> getCommandMethod(newResourcePresenter);
     }
 
     @Override
     public void create(final Package pkg,
                        final String baseFileName,
                        final NewResourcePresenter presenter) {
+        if (!sourceTypeSelector.validate()) {
+            return;
+        }
         final ScenarioSimulationModel.Type selectedType = sourceTypeSelector.getSelectedType();
         String value;
         switch (selectedType) {
             case DMN:
                 value = uploadWidget.getSelectedPath();
-                if (value == null || value.isEmpty()) {
-                    return;
-                }
                 break;
             case RULE:
             default:
@@ -149,4 +157,10 @@ public class NewScenarioSimulationHandler
         extensions.add(Pair.newPair(ScenarioSimulationEditorConstants.INSTANCE.sourceType(), sourceTypeSelector));
         extensions.add(Pair.newPair("", uploadWidget));
     }
+
+    protected void getCommandMethod(NewResourcePresenter newResourcePresenter) {
+        uploadWidget.clearStatus();
+        newResourcePresenter.show(NewScenarioSimulationHandler.this);
+    }
+
 }

@@ -137,4 +137,6 @@ public interface ScenarioSimulationEditorConstants
     String sourceType();
 
     String chooseDMN();
+
+    String chooseValidDMNAsset();
 }

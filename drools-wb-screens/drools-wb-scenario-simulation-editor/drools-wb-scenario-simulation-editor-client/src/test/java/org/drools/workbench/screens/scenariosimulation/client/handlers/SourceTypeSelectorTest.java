@@ -24,6 +24,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -58,11 +60,40 @@ public class SourceTypeSelectorTest {
     }
 
     @Test
+    public void validateDMO() {
+        commonValidate(false, false, true);
+    }
+
+    @Test
+    public void validateInvalidDMN() {
+        commonValidate(true, false, false);
+    }
+
+    @Test
+    public void validateValidDMN() {
+        commonValidate(true, true, true);
+    }
+
+    @Test
     public void addRadioButtons() {
         reset(uploadWidgetMock);
         sourceTypeSelector.addRadioButtons();
         assertEquals(2, sourceTypeSelector.radioButtonList.size());
         verify(uploadWidgetMock, times(1)).setVisible(false);
 
+    }
+
+    private void commonValidate(boolean isDMNSelected, boolean validate, boolean expected) {
+        doReturn(isDMNSelected).when(sourceTypeSelector).isDMNSelected();
+        doReturn(validate).when(uploadWidgetMock).validate();
+        boolean retrieved = sourceTypeSelector.validate();
+        if (isDMNSelected) {
+            verify(uploadWidgetMock, times(1)).validate();
+        }
+        if (expected) {
+            assertTrue(retrieved);
+        } else {
+            assertFalse(retrieved);
+        }
     }
 }

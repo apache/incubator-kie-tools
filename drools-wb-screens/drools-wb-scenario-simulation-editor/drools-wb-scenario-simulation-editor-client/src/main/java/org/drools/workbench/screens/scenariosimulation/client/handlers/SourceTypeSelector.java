@@ -47,6 +47,14 @@ public class SourceTypeSelector extends VerticalPanel implements ValueChangeHand
         }
     }
 
+    public boolean validate() {
+        if (isDMNSelected()) {
+            return uploadWidget.validate();
+        } else {
+            return true;
+        }
+    }
+
     public boolean isDMNSelected() {
         return radioButtonList.stream()
                 .filter(CheckBox::getValue)

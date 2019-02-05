@@ -18,6 +18,7 @@ package org.drools.workbench.screens.scenariosimulation.client.handlers;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.screens.scenariosimulation.client.editor.ScenarioSimulationEditorPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.type.ScenarioSimulationResourceType;
+import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
 import org.drools.workbench.screens.scenariosimulation.service.ScenarioSimulationService;
 import org.guvnor.common.services.project.model.Package;
 import org.jboss.errai.security.shared.api.identity.User;
@@ -26,6 +27,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.library.client.screens.assets.AssetQueryService;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
+import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -46,7 +48,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -70,7 +75,7 @@ public class NewScenarioSimulationHandlerTest extends AbstractNewScenarioTest {
     @Mock
     private SessionInfo sessionInfoMock;
     @Mock
-    private  AssetQueryService assetQueryServiceMock;
+    private AssetQueryService assetQueryServiceMock;
 
     @Mock
     private User userMock;
@@ -78,22 +83,50 @@ public class NewScenarioSimulationHandlerTest extends AbstractNewScenarioTest {
     @Captor
     private ArgumentCaptor<ResourceRef> refArgumentCaptor;
 
+    @Mock
+    private TitledAttachmentFileWidget uploadWidgetMock;
+
+    @Mock
+    private SourceTypeSelector sourceTypeSelectorMock;
+
     private NewScenarioSimulationHandler handler;
+
+    private CallerMock<ScenarioSimulationService> scenarioSimulationServiceCallerMock;
 
     @Before
     public void setUp() throws Exception {
-        handler = new NewScenarioSimulationHandler(resourceTypeMock,
-                                                   busyIndicatorViewMock,
-                                                   notificationEventMock,
-                                                   newResourceSuccessEventMock,
-                                                   placeManagerMock,
-                                                   new CallerMock<>(scenarioSimulationServiceMock),
-                                                   authorizationManagerMock,
-                                                   sessionInfoMock,
-                                                   libraryPlacesMock,
-                                                   assetQueryServiceMock);
-        handler.setupExtensions();
+        scenarioSimulationServiceCallerMock = new CallerMock<>(scenarioSimulationServiceMock);
+        handler = spy(new NewScenarioSimulationHandler(resourceTypeMock,
+                                                       busyIndicatorViewMock,
+                                                       notificationEventMock,
+                                                       newResourceSuccessEventMock,
+                                                       placeManagerMock,
+                                                       scenarioSimulationServiceCallerMock,
+                                                       authorizationManagerMock,
+                                                       sessionInfoMock,
+                                                       libraryPlacesMock,
+                                                       assetQueryServiceMock) {
+            {
+                this.uploadWidget = uploadWidgetMock;
+                this.sourceTypeSelector = sourceTypeSelectorMock;
+            }
+        });
         when(sessionInfoMock.getIdentity()).thenReturn(userMock);
+    }
+
+    @Test
+    public void createValidDMO() {
+        createCommon(ScenarioSimulationModel.Type.RULE, true, true);
+    }
+
+    @Test
+    public void createInvalidDMN() {
+        createCommon(ScenarioSimulationModel.Type.DMN, false, false);
+    }
+
+    @Test
+    public void createValidDMN() {
+        createCommon(ScenarioSimulationModel.Type.DMN, true, true);
     }
 
     @Test
@@ -116,6 +149,8 @@ public class NewScenarioSimulationHandlerTest extends AbstractNewScenarioTest {
 
     @Test
     public void checkRightResourceType() throws Exception {
+        doReturn(true).when(sourceTypeSelectorMock).validate();
+        when(sourceTypeSelectorMock.getSelectedType()).thenReturn(ScenarioSimulationModel.Type.RULE);
         handler.create(new Package(),
                        "newfile.scesim",
                        mock(NewResourcePresenter.class));
@@ -127,6 +162,24 @@ public class NewScenarioSimulationHandlerTest extends AbstractNewScenarioTest {
         verify(placeManagerMock).goTo(any(Path.class));
     }
 
+    @Test
+    public void getCommandMethod() {
+        NewResourcePresenter newResourcePresenterMock = mock(NewResourcePresenter.class);
+        handler.getCommandMethod(newResourcePresenterMock);
+        verify(uploadWidgetMock, times(1)).clearStatus();
+        verify(newResourcePresenterMock, times(1)).show(any());
+    }
+
+    private void createCommon(ScenarioSimulationModel.Type type, boolean validate, boolean called) {
+        doReturn(validate).when(sourceTypeSelectorMock).validate();
+        when(sourceTypeSelectorMock.getSelectedType()).thenReturn(type);
+        handler.create(mock(Package.class), "BASEFILENAME", mock(NewResourcePresenter.class));
+        if (called) {
+            verify(busyIndicatorViewMock, times(1)).showBusyIndicator(eq(CommonConstants.INSTANCE.Saving()));
+            verify(scenarioSimulationServiceMock, times(1)).create(any(), any(), any(), any(), any(), any());
+        }
+    }
+
     private void assertResourceRef() {
         verify(authorizationManagerMock).authorize(refArgumentCaptor.capture(),
                                                    eq(ResourceAction.READ),
@@ -136,6 +189,4 @@ public class NewScenarioSimulationHandlerTest extends AbstractNewScenarioTest {
         assertEquals(ActivityResourceType.EDITOR,
                      refArgumentCaptor.getValue().getResourceType());
     }
-
-
 }

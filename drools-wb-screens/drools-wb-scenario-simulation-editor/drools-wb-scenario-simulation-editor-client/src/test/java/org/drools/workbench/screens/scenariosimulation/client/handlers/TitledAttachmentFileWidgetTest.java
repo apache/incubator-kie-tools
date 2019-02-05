@@ -24,6 +24,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.gwtbootstrap3.client.ui.FormLabel;
+import org.gwtbootstrap3.client.ui.html.Span;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,7 +38,10 @@ import org.kie.workbench.common.screens.library.api.ProjectAssetsQuery;
 import org.mockito.Mock;
 import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
@@ -56,6 +60,8 @@ public class TitledAttachmentFileWidgetTest extends AbstractNewScenarioTest {
     private FormLabel titleLabelMock;
     @Mock
     private ComboBox comboBoxMock;
+    @Mock
+    private Span errorLabelMock;
 
     private TitledAttachmentFileWidget titledAttachmentFileWidget;
 
@@ -66,6 +72,7 @@ public class TitledAttachmentFileWidgetTest extends AbstractNewScenarioTest {
                 this.fields = fieldsMock;
                 this.titleLabel = titleLabelMock;
                 this.comboBox = comboBoxMock;
+                this.errorLabel = errorLabelMock;
             }
 
             @Override
@@ -76,16 +83,42 @@ public class TitledAttachmentFileWidgetTest extends AbstractNewScenarioTest {
     }
 
     @Test
+    public void clearStatus() {
+        titledAttachmentFileWidget.selectedPath ="SELECTED_PATH";
+        assertNotNull(titledAttachmentFileWidget.selectedPath);
+        titledAttachmentFileWidget.clearStatus();
+        verify(comboBoxMock, times(1)).setText(eq(null));
+        verify(titledAttachmentFileWidget, times(1)).updateAssetList();
+        verify(errorLabelMock, times(1)).setText(eq(null));
+        assertNull(titledAttachmentFileWidget.selectedPath);
+    }
+
+    @Test
     public void updateAssetList() {
         titledAttachmentFileWidget.updateAssetList();
         verify(comboBoxMock, times(1)).clear();
-        verify(titledAttachmentFileWidget, times(1)).getAssets(isA(RemoteCallback.class));
+        verify(titledAttachmentFileWidget, times(1)).updateAssets(isA(RemoteCallback.class));
+    }
+
+    @Test
+    public void validateNullPath() {
+        commonValidate(null, false);
+    }
+
+    @Test
+    public void validateEmptyPath() {
+        commonValidate("", false);
+    }
+
+    @Test
+    public void validatePopulatedPath() {
+        commonValidate("SELECTED_PATH", true);
     }
 
     @Test
     public void getAssets() {
         RemoteCallback<AssetQueryResult> callbackMock = mock(RemoteCallback.class);
-        titledAttachmentFileWidget.getAssets(callbackMock);
+        titledAttachmentFileWidget.updateAssets(callbackMock);
         verify(titledAttachmentFileWidget, times(1)).createProjectQuery();
         verify(assetQueryServiceMock, times(1)).getAssets(isA(ProjectAssetsQuery.class));
         verify(invokerMock, times(1)).call(eq(callbackMock), isA(DefaultErrorCallback.class));
@@ -103,6 +136,18 @@ public class TitledAttachmentFileWidgetTest extends AbstractNewScenarioTest {
         AssetQueryResult assetQueryResult = getAssetQueryResult(size);
         titledAttachmentFileWidget.addAssets(assetQueryResult);
         verify(comboBoxMock, times(size)).addItem(anyString());
+    }
+
+    private void commonValidate(String selectedPath, boolean expected) {
+        titledAttachmentFileWidget.selectedPath = selectedPath;
+        boolean retrieved = titledAttachmentFileWidget.validate();
+        if (expected) {
+            verify(errorLabelMock, times(1)).setText(eq(null));
+            assertTrue(retrieved);
+        } else {
+            verify(errorLabelMock, times(1)).setText(eq(ScenarioSimulationEditorConstants.INSTANCE.chooseValidDMNAsset()));
+            assertFalse(retrieved);
+        }
     }
 
     private AssetQueryResult getAssetQueryResult(int size) {
