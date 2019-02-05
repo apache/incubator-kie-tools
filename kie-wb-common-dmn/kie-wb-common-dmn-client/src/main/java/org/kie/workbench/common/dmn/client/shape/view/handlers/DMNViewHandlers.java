@@ -18,6 +18,7 @@ package org.kie.workbench.common.dmn.client.shape.view.handlers;
 
 import org.kie.workbench.common.dmn.api.definition.DMNDefinition;
 import org.kie.workbench.common.dmn.api.definition.DMNViewDefinition;
+import org.kie.workbench.common.stunner.core.client.shape.TextWrapperStrategy;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.client.shape.view.handler.FontHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.handler.SizeHandler;
@@ -44,6 +45,7 @@ public class DMNViewHandlers {
             this.fontFamily(bean -> bean.getFontSet().getFontFamily().getValue())
                     .fontColor(bean -> bean.getFontSet().getFontColour().getValue())
                     .fontSize(bean -> bean.getFontSet().getFontSize().getValue())
+                    .textWrapperStrategy(bean -> TextWrapperStrategy.TRUNCATE)
                     .strokeColor(bean -> null)
                     .strokeAlpha(bean -> 0.0)
                     .strokeSize(bean -> 0.0);

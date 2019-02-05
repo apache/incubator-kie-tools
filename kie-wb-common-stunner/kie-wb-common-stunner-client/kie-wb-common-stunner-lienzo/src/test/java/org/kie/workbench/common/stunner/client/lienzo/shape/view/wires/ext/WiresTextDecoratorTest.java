@@ -18,6 +18,8 @@ package org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.ext;
 
 import java.util.function.Supplier;
 
+import com.ait.lienzo.client.core.shape.ITextWrapper;
+import com.ait.lienzo.client.core.shape.ITextWrapperWithBoundaries;
 import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.client.core.shape.TextBoundsWrap;
 import com.ait.lienzo.client.core.types.BoundingBox;
@@ -27,13 +29,17 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.ViewEventHandlerManager;
+import org.kie.workbench.common.stunner.core.client.shape.TextWrapperStrategy;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyDouble;
 import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -45,6 +51,9 @@ public class WiresTextDecoratorTest {
 
     @Mock
     private ViewEventHandlerManager manager;
+
+    @Mock
+    private ITextWrapperWithBoundaries textWrapperWithBoundaries;
 
     private final BoundingBox bb = new BoundingBox(new Point2D(0, 0),
                                                    new Point2D(100, 100));
@@ -83,5 +92,54 @@ public class WiresTextDecoratorTest {
 
         decorator.update();
         verify(decorator).updateTextBoundaries();
+    }
+
+    @Test
+    public void testSetTextWrapperBounds() {
+        testSetTextWrapperStrategy(TextWrapperStrategy.BOUNDS);
+    }
+
+    @Test
+    public void testSetTextWrapperBoundsAndLineBreaks() {
+        testSetTextWrapperStrategy(TextWrapperStrategy.BOUNDS_AND_LINE_BREAKS);
+    }
+
+    @Test
+    public void testSetTextWrapperLineBreak() {
+        testSetTextWrapperStrategy(TextWrapperStrategy.LINE_BREAK);
+    }
+
+    @Test
+    public void testSetTextWrapperNoWrap() {
+        testSetTextWrapperStrategy(TextWrapperStrategy.NO_WRAP);
+    }
+
+    @Test
+    public void testSetTextWrapperTruncate() {
+        testSetTextWrapperStrategy(TextWrapperStrategy.TRUNCATE);
+    }
+
+    private void testSetTextWrapperStrategy(final TextWrapperStrategy wrapperStrategy) {
+        final WiresTextDecorator decorator = spy(new WiresTextDecorator(eventHandlerManager, bb));
+        final Text text = (Text) decorator.getView().asGroup().getChildNodes().get(0);
+        final ITextWrapper expectedWrapper = TextWrapperProvider.get(wrapperStrategy, text);
+
+        doCallRealMethod().when(decorator).setTextWrapper(any());
+
+        decorator.setTextWrapper(wrapperStrategy);
+
+        verify(decorator).updateTextBoundaries();
+        assertEquals(expectedWrapper.getClass(), text.getWrapper().getClass());
+    }
+
+    @Test
+    public void ensureSetWrapBoundariesIsCalled(){
+        final WiresTextDecorator decorator = spy(new WiresTextDecorator(eventHandlerManager, bb));
+        doCallRealMethod().when(decorator).setTextWrapper(any());
+        doReturn(textWrapperWithBoundaries).when(decorator).getTextWrapper(any());
+
+        decorator.setTextWrapper(any());
+
+        verify(textWrapperWithBoundaries).setWrapBoundaries(any());
     }
 }

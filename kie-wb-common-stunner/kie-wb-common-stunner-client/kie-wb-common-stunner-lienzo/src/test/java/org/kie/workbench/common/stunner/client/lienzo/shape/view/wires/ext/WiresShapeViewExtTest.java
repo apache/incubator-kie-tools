@@ -21,6 +21,7 @@ import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.core.client.shape.TextWrapperStrategy;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
 import org.mockito.Mock;
 
@@ -68,5 +69,35 @@ public class WiresShapeViewExtTest {
         tested.setTitleYOffsetPosition(10.0);
 
         verify(textDecorator).setTitleYOffsetPosition(10.0);
+    }
+
+    @Test
+    public void testSetTextWrapperBounds() {
+        testSetTextWrapperStrategy(TextWrapperStrategy.BOUNDS);
+    }
+
+    @Test
+    public void testSetTextWrapperBoundsAndLineBreaks() {
+        testSetTextWrapperStrategy(TextWrapperStrategy.BOUNDS_AND_LINE_BREAKS);
+    }
+
+    @Test
+    public void testSetTextWrapperLineBreak() {
+        testSetTextWrapperStrategy(TextWrapperStrategy.LINE_BREAK);
+    }
+
+    @Test
+    public void testSetTextWrapperNoWrap() {
+        testSetTextWrapperStrategy(TextWrapperStrategy.NO_WRAP);
+    }
+
+    @Test
+    public void testSetTextWrapperTruncate() {
+        testSetTextWrapperStrategy(TextWrapperStrategy.TRUNCATE);
+    }
+
+    private void testSetTextWrapperStrategy(final TextWrapperStrategy wrapperStrategy) {
+        tested.setTextWrapper(wrapperStrategy);
+        verify(textDecorator).setTextWrapper(wrapperStrategy);
     }
 }

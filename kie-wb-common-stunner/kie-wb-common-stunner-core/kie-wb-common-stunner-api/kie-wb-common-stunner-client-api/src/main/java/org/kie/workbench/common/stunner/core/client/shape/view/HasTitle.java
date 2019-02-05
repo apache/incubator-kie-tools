@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.client.shape.view;
 
+import org.kie.workbench.common.stunner.core.client.shape.TextWrapperStrategy;
+
 public interface HasTitle<T> {
 
     enum Position {
@@ -46,8 +48,12 @@ public interface HasTitle<T> {
 
     T setTitleStrokeWidth(final double strokeWidth);
 
-    default T setTitleStrokeAlpha(final double alpha){
-       return (T) this;
+    default T setTitleStrokeAlpha(final double alpha) {
+        return (T) this;
+    }
+
+    default T setTextWrapper(final TextWrapperStrategy strategy) {
+        return (T) this;
     }
 
     T setTitleStrokeColor(final String color);

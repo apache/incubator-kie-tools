@@ -24,7 +24,10 @@ import org.kie.workbench.common.dmn.api.property.dimensions.GeneralRectangleDime
 import org.kie.workbench.common.dmn.api.property.dimensions.Height;
 import org.kie.workbench.common.dmn.api.property.dimensions.RectangleDimensionsSet;
 import org.kie.workbench.common.dmn.api.property.dimensions.Width;
+import org.kie.workbench.common.dmn.api.property.font.FontSet;
 import org.kie.workbench.common.dmn.client.shape.def.DMNSVGShapeDefImpl;
+import org.kie.workbench.common.stunner.core.client.shape.TextWrapperStrategy;
+import org.kie.workbench.common.stunner.core.client.shape.view.handler.FontHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.handler.SizeHandler;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
@@ -58,6 +61,8 @@ public class DMNViewHandlersTest {
         doReturn(bounds).when(view).getBounds();
 
         doReturn(dimensions).when(definition).getDimensionsSet();
+
+        doReturn(new FontSet()).when(definition).getFontSet();
     }
 
     @Test
@@ -70,5 +75,15 @@ public class DMNViewHandlersTest {
         verify(shape).setMaxWidth(eq(dimensions.getMaximumWidth()));
         verify(shape).setMinHeight(eq(dimensions.getMinimumHeight()));
         verify(shape).setMaxHeight(eq(dimensions.getMaximumHeight()));
+    }
+
+    @Test
+    public void testNewFontHandler() {
+
+        final FontHandler<DMNViewDefinition, SVGShapeView> handler = new DMNSVGShapeDefImpl().newFontHandler();
+        handler.handle(definition,
+                       shape);
+
+        verify(shape).setTextWrapper(TextWrapperStrategy.TRUNCATE);
     }
 }

@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.core.client.shape.view.handler;
 
 import java.util.function.Function;
 
+import org.kie.workbench.common.stunner.core.client.shape.TextWrapperStrategy;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeViewHandler;
@@ -43,6 +44,7 @@ public class FontHandler<W, V extends ShapeView> implements ShapeViewHandler<W, 
     private final Function<W, Double> positionXOffsetProvider;
     private final Function<W, Double> positionYOffsetProvider;
     private final Function<W, Double> rotationProvider;
+    private final Function<W, TextWrapperStrategy> textWrapperStrategyProvider;
 
     FontHandler(final Function<W, Double> alphaProvider,
                 final Function<W, String> fontFamilyProvider,
@@ -54,7 +56,8 @@ public class FontHandler<W, V extends ShapeView> implements ShapeViewHandler<W, 
                 final Function<W, Double> strokeAlphaProvider,
                 final Function<W, Double> positionXOffsetProvider,
                 final Function<W, Double> positionYOffsetProvider,
-                final Function<W, Double> rotationProvider) {
+                final Function<W, Double> rotationProvider,
+                final Function<W, TextWrapperStrategy> textWrapperStrategyProvider) {
         this.alphaProvider = alphaProvider;
         this.fontFamilyProvider = fontFamilyProvider;
         this.fontColorProvider = fontColorProvider;
@@ -66,6 +69,7 @@ public class FontHandler<W, V extends ShapeView> implements ShapeViewHandler<W, 
         this.positionYOffsetProvider = positionYOffsetProvider;
         this.rotationProvider = rotationProvider;
         this.strokeAlphaProvider = strokeAlphaProvider;
+        this.textWrapperStrategyProvider = textWrapperStrategyProvider;
     }
 
     @Override
@@ -84,6 +88,7 @@ public class FontHandler<W, V extends ShapeView> implements ShapeViewHandler<W, 
             final Double positionXOffset = positionXOffsetProvider.apply(element);
             final Double positionYOffset = positionYOffsetProvider.apply(element);
             final Double rotation = rotationProvider.apply(element);
+            final TextWrapperStrategy wrapperStrategy = textWrapperStrategyProvider.apply(element);
             if (fontFamily != null && fontFamily.trim().length() > 0) {
                 hasTitle.setTitleFontFamily(fontFamily);
             }
@@ -117,6 +122,9 @@ public class FontHandler<W, V extends ShapeView> implements ShapeViewHandler<W, 
             if (null != rotation) {
                 hasTitle.setTitleRotation(rotation);
             }
+            if (wrapperStrategy != null) {
+                hasTitle.setTextWrapper(wrapperStrategy);
+            }
         }
     }
 
@@ -133,6 +141,7 @@ public class FontHandler<W, V extends ShapeView> implements ShapeViewHandler<W, 
         private Function<W, Double> positionXOffsetProvider;
         private Function<W, Double> positionYOffsetProvider;
         private Function<W, Double> rotationProvider;
+        private Function<W, TextWrapperStrategy> textWrapperStrategyProvider;
 
         public Builder() {
             this.alphaProvider = value -> null;
@@ -146,6 +155,7 @@ public class FontHandler<W, V extends ShapeView> implements ShapeViewHandler<W, 
             this.positionYOffsetProvider = value -> null;
             this.rotationProvider = value -> null;
             this.strokeAlphaProvider = value -> null;
+            this.textWrapperStrategyProvider = value -> null;
         }
 
         public Builder<W, V> alpha(Function<W, Double> alphaProvider) {
@@ -203,6 +213,11 @@ public class FontHandler<W, V extends ShapeView> implements ShapeViewHandler<W, 
             return this;
         }
 
+        public Builder<W, V> textWrapperStrategy(Function<W, TextWrapperStrategy> provider) {
+            this.textWrapperStrategyProvider = provider;
+            return this;
+        }
+
         public FontHandler<W, V> build() {
             return new FontHandler<>(alphaProvider,
                                      fontFamilyProvider,
@@ -214,7 +229,8 @@ public class FontHandler<W, V extends ShapeView> implements ShapeViewHandler<W, 
                                      strokeAlphaProvider,
                                      positionXOffsetProvider,
                                      positionYOffsetProvider,
-                                     rotationProvider);
+                                     rotationProvider,
+                                     textWrapperStrategyProvider);
         }
     }
 }

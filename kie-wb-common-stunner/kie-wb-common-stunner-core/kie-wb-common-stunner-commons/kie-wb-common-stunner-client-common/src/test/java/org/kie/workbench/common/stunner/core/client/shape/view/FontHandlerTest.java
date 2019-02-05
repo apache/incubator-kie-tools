@@ -20,6 +20,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeViewExtStub;
+import org.kie.workbench.common.stunner.core.client.shape.TextWrapperStrategy;
 import org.kie.workbench.common.stunner.core.client.shape.view.handler.FontHandler;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -56,6 +57,7 @@ public class FontHandlerTest {
                 .strokeAlpha(o -> 0.77d)
                 .fontColor(o -> "fontColor")
                 .fontFamily(o -> "fontFamily")
+                .textWrapperStrategy(o -> TextWrapperStrategy.NO_WRAP)
                 .fontSize(o -> 10.5d)
                 .alpha(o -> 0.7d)
                 .rotation(o -> 180d)
@@ -76,6 +78,7 @@ public class FontHandlerTest {
         verify(view).setTitlePosition(eq(HasTitle.Position.TOP));
         verify(view).setTitleXOffsetPosition(eq(X_OFFSET));
         verify(view).setTitleYOffsetPosition(eq(Y_OFFSET));
+        verify(view).setTextWrapper(TextWrapperStrategy.NO_WRAP);
     }
 
     @Test
@@ -87,6 +90,7 @@ public class FontHandlerTest {
                 .fontColor(o -> null)
                 .fontFamily(o -> null)
                 .fontSize(o -> null)
+                .textWrapperStrategy(o -> null)
                 .alpha(o -> null)
                 .rotation(o -> null)
                 .position(o -> null)
@@ -106,5 +110,6 @@ public class FontHandlerTest {
         verify(view, never()).setTitlePosition(any(HasTitle.Position.class));
         verify(view, never()).setTitleXOffsetPosition(anyDouble());
         verify(view, never()).setTitleYOffsetPosition(anyDouble());
+        verify(view, never()).setTextWrapper(any());
     }
 }

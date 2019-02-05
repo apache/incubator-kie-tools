@@ -20,6 +20,8 @@ import java.util.function.Supplier;
 
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IPrimitive;
+import com.ait.lienzo.client.core.shape.ITextWrapper;
+import com.ait.lienzo.client.core.shape.ITextWrapperWithBoundaries;
 import com.ait.lienzo.client.core.shape.Line;
 import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.client.core.shape.TextBoundsWrap;
@@ -28,6 +30,7 @@ import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.shared.core.types.TextAlign;
 import com.google.gwt.event.shared.HandlerRegistration;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.ViewEventHandlerManager;
+import org.kie.workbench.common.stunner.core.client.shape.TextWrapperStrategy;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.TextClickEvent;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.TextDoubleClickEvent;
@@ -63,7 +66,7 @@ public class WiresTextDecorator {
     private ViewHandler<TextClickEvent> textClickEventViewHandler;
     private ViewHandler<TextDoubleClickEvent> textDblClickEventViewHandler;
     private Text text;
-    private TextBoundsWrap textWrapper;
+    private ITextWrapper textWrapper;
     private LayoutContainer.Layout currentTextLayout;
     private double width;
     private double height;
@@ -265,6 +268,18 @@ public class WiresTextDecorator {
         text.setStrokeAlpha(strokeAlpha);
     }
 
+    public void setTextWrapper(final TextWrapperStrategy strategy) {
+
+        final ITextWrapper wrapper = getTextWrapper(strategy);
+        this.textWrapper = wrapper;
+        text.setWrapper(textWrapper);
+        updateTextBoundaries();
+    }
+
+    ITextWrapper getTextWrapper(final TextWrapperStrategy strategy) {
+        return TextWrapperProvider.get(strategy, text);
+    }
+
     @SuppressWarnings("unchecked")
     public void moveTitleToTop() {
         textContainer.moveToTop();
@@ -323,22 +338,28 @@ public class WiresTextDecorator {
     }
 
     void setTextBoundaries(BoundingBox boundaries) {
+        if (!(textWrapper instanceof ITextWrapperWithBoundaries)) {
+            return;
+        }
+
+        final ITextWrapperWithBoundaries textWrapperWithBoundaries = (ITextWrapperWithBoundaries) textWrapper;
+
         switch (getLayout()) {
             case LEFT:
                 if (null != boundaries) {
-                    textWrapper.setWrapBoundaries(new BoundingBox(boundaries.getMinY(),
-                                                                  boundaries.getMaxX(),
-                                                                  boundaries.getMaxY(),
-                                                                  boundaries.getMaxX()));
+                    textWrapperWithBoundaries.setWrapBoundaries(new BoundingBox(boundaries.getMinY(),
+                                                                                boundaries.getMaxX(),
+                                                                                boundaries.getMaxY(),
+                                                                                boundaries.getMaxX()));
                 }
                 break;
 
             case RIGHT:
                 if (null != boundaries) {
-                    textWrapper.setWrapBoundaries(new BoundingBox(boundaries.getMinY(),
-                                                                  boundaries.getMaxX(),
-                                                                  boundaries.getMaxY(),
-                                                                  boundaries.getMaxX()));
+                    textWrapperWithBoundaries.setWrapBoundaries(new BoundingBox(boundaries.getMinY(),
+                                                                                boundaries.getMaxX(),
+                                                                                boundaries.getMaxY(),
+                                                                                boundaries.getMaxX()));
                 }
                 break;
 
@@ -346,7 +367,7 @@ public class WiresTextDecorator {
             case CENTER:
             case BOTTOM:
             default:
-                textWrapper.setWrapBoundaries(boundaries);
+                textWrapperWithBoundaries.setWrapBoundaries(boundaries);
                 break;
         }
     }

@@ -25,6 +25,7 @@ import org.kie.workbench.common.dmn.api.property.dimensions.GeneralRectangleDime
 import org.kie.workbench.common.dmn.client.resources.DMNDecisionServiceSVGViewFactory;
 import org.kie.workbench.common.dmn.client.resources.DMNSVGGlyphFactory;
 import org.kie.workbench.common.stunner.core.client.components.palette.AbstractPalette.PaletteGlyphConsumer;
+import org.kie.workbench.common.stunner.core.client.shape.TextWrapperStrategy;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
 import org.kie.workbench.common.stunner.core.client.shape.view.handler.FontHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.handler.SizeHandler;
@@ -104,6 +105,7 @@ public class DMNDecisionServiceSVGShapeDefImplTest {
 
         verify(shapeView).setTitlePosition(HasTitle.Position.TOP);
         verify(shapeView).setTitleYOffsetPosition(DMNDecisionServiceSVGShapeDefImpl.Y_OFFSET);
+        verify(shapeView).setTextWrapper(TextWrapperStrategy.TRUNCATE);
     }
 
     @Test

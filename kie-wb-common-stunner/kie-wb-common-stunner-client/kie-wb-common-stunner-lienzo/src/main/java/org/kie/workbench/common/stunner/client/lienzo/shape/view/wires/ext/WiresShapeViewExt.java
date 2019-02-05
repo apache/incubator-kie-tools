@@ -31,6 +31,7 @@ import org.kie.workbench.common.stunner.client.lienzo.shape.view.ViewEventHandle
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresShapeView;
 import org.kie.workbench.common.stunner.client.lienzo.util.LienzoShapeUtils;
 import org.kie.workbench.common.stunner.client.lienzo.util.ShapeControlPointsHelper;
+import org.kie.workbench.common.stunner.core.client.shape.TextWrapperStrategy;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasControlPoints;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasEventHandlers;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasFillGradient;
@@ -182,6 +183,12 @@ public class WiresShapeViewExt<T extends WiresShapeViewExt>
     public T setTitleStrokeAlpha(final double strokeAlpha){
         textViewDecorator.setTitleStrokeAlpha(strokeAlpha);
         return cast();
+    }
+
+    @Override
+    public T setTextWrapper(final TextWrapperStrategy wrapperStrategy){
+        textViewDecorator.setTextWrapper(wrapperStrategy);
+        return(cast());
     }
 
     @Override

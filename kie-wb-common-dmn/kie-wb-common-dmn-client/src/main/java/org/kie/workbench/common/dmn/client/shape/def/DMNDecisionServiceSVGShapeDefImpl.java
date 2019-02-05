@@ -24,6 +24,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionService;
 import org.kie.workbench.common.dmn.api.property.dimensions.GeneralRectangleDimensionsSet;
 import org.kie.workbench.common.dmn.client.resources.DMNDecisionServiceSVGViewFactory;
 import org.kie.workbench.common.dmn.client.resources.DMNSVGGlyphFactory;
+import org.kie.workbench.common.stunner.core.client.shape.TextWrapperStrategy;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
 import org.kie.workbench.common.stunner.core.client.shape.view.handler.FontHandler;
@@ -70,6 +71,7 @@ public class DMNDecisionServiceSVGShapeDefImpl implements DMNDecisionServiceSVGS
                 .fontFamily(bean -> bean.getFontSet().getFontFamily().getValue())
                 .fontColor(bean -> bean.getFontSet().getFontColour().getValue())
                 .fontSize(bean -> bean.getFontSet().getFontSize().getValue())
+                .textWrapperStrategy(bean -> TextWrapperStrategy.TRUNCATE)
                 .strokeAlpha(bean -> 0.0d)
                 .position(bean -> HasTitle.Position.TOP)
                 .positionYOffset(bean -> Y_OFFSET)
