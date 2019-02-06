@@ -50,13 +50,12 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.Request;
 import org.kie.workbench.common.stunner.core.client.command.RequiresCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
-import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistry;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.Session;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Element;
-import org.kie.workbench.common.stunner.core.registry.RegistryFactory;
 import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
+import org.kie.workbench.common.stunner.core.registry.impl.ClientCommandRegistry;
 import org.uberfire.mvp.Command;
 
 @Dependent
@@ -67,22 +66,19 @@ public class DefaultEditorSession
     private final CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager;
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
     private final SessionCommandManager<AbstractCanvasHandler> requestCommandManager;
-    private final StunnerPreferencesRegistry stunnerPreferencesRegistry;
     private final CommandRegistry<org.kie.workbench.common.stunner.core.command.Command<AbstractCanvasHandler, CanvasViolation>> commandRegistry;
 
     @Inject
     public DefaultEditorSession(final ManagedSession session,
-                                final RegistryFactory registryFactory,
                                 final CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager,
                                 final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                 final @Request SessionCommandManager<AbstractCanvasHandler> requestCommandManager,
-                                final StunnerPreferencesRegistry stunnerPreferencesRegistry) {
+                                final ClientCommandRegistry<org.kie.workbench.common.stunner.core.command.Command<AbstractCanvasHandler, CanvasViolation>> clientCommandRegistry) {
         this.session = session;
-        this.commandRegistry = registryFactory.newCommandRegistry();
+        this.commandRegistry = clientCommandRegistry;
         this.sessionCommandManager = sessionCommandManager;
         this.requestCommandManager = requestCommandManager;
         this.canvasCommandManager = canvasCommandManager;
-        this.stunnerPreferencesRegistry = stunnerPreferencesRegistry;
     }
 
     @PostConstruct

@@ -42,11 +42,10 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.select.Selec
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.ToolboxControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
+import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
-import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistry;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
-import org.kie.workbench.common.stunner.core.registry.RegistryFactory;
-import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
+import org.kie.workbench.common.stunner.core.registry.impl.ClientCommandRegistry;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.mvp.Command;
@@ -65,12 +64,6 @@ public class DefaultEditorSessionTest {
     private ManagedSession managedSession;
 
     @Mock
-    private CommandRegistry commandRegistry;
-
-    @Mock
-    private RegistryFactory registryFactory;
-
-    @Mock
     private CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager;
 
     @Mock
@@ -80,14 +73,13 @@ public class DefaultEditorSessionTest {
     private SessionCommandManager<AbstractCanvasHandler> requestCommandManage;
 
     @Mock
-    private StunnerPreferencesRegistry preferencesRegistry;
+    private ClientCommandRegistry<org.kie.workbench.common.stunner.core.command.Command<AbstractCanvasHandler, CanvasViolation>> clientCommandRegistry;
 
     private DefaultEditorSession tested;
 
     @Before
     @SuppressWarnings("unchecked")
     public void setUp() {
-        when(registryFactory.newCommandRegistry()).thenReturn(commandRegistry);
         when(managedSession.onCanvasControlRegistered(any(Consumer.class))).thenReturn(managedSession);
         when(managedSession.onCanvasControlDestroyed(any(Consumer.class))).thenReturn(managedSession);
         when(managedSession.onCanvasHandlerControlRegistered(any(Consumer.class))).thenReturn(managedSession);
@@ -99,11 +91,10 @@ public class DefaultEditorSessionTest {
         when(managedSession.registerCanvasHandlerControl(any(Class.class),
                                                          any(Class.class))).thenReturn(managedSession);
         tested = new DefaultEditorSession(managedSession,
-                                          registryFactory,
                                           canvasCommandManager,
                                           sessionCommandManager,
                                           requestCommandManage,
-                                          preferencesRegistry);
+                                          clientCommandRegistry);
     }
 
     @Test
@@ -117,7 +108,6 @@ public class DefaultEditorSessionTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void testInit() {
         Metadata metadata = mock(Metadata.class);
         Command command = mock(Command.class);
@@ -147,17 +137,15 @@ public class DefaultEditorSessionTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void testOpen() {
         tested.open();
         verify(managedSession, times(1)).open();
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void testDestroy() {
         tested.destroy();
-        verify(commandRegistry, times(1)).clear();
+        verify(clientCommandRegistry, times(1)).clear();
         verify(managedSession, times(1)).destroy();
     }
 }

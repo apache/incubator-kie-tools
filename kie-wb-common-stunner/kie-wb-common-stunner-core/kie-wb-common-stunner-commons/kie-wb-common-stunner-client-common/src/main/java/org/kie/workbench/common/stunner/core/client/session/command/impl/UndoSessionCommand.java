@@ -16,16 +16,13 @@
 
 package org.kie.workbench.common.stunner.core.client.session.command.impl;
 
-import java.util.Objects;
-
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandExecutedEvent;
-import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasUndoCommandExecutedEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.event.registration.RegisterChangedEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
@@ -87,7 +84,7 @@ public class UndoSessionCommand extends AbstractClientSessionCommand<EditorSessi
                      callback);
         final SessionCommandManager<AbstractCanvasHandler> scm = getSessionCommandManager();
         if (null != scm) {
-            final CommandResult<CanvasViolation> result = getSessionCommandManager().undo((AbstractCanvasHandler) getSession().getCanvasHandler());
+            final CommandResult<CanvasViolation> result = getSessionCommandManager().undo(getSession().getCanvasHandler());
             checkState();
             if (CommandUtils.isError(result)) {
                 callback.onError((V) result);
@@ -98,25 +95,10 @@ public class UndoSessionCommand extends AbstractClientSessionCommand<EditorSessi
         }
     }
 
-    void onCommandExecuted(final @Observes CanvasCommandExecutedEvent commandExecutedEvent) {
-        checkNotNull("commandExecutedEvent",
-                     commandExecutedEvent);
+    void onCommandAdded(final @Observes RegisterChangedEvent registerChangedEvent) {
+        checkNotNull("registerChangedEvent",
+                     registerChangedEvent);
         checkState();
-    }
-
-    void onCommandUndoExecuted(final @Observes CanvasUndoCommandExecutedEvent commandUndoExecutedEvent) {
-        checkNotNull("commandUndoExecutedEvent",
-                     commandUndoExecutedEvent);
-        checkState();
-    }
-
-    void onClearSessionExecuted(final @Observes ClearSessionCommandExecutedEvent event) {
-        checkNotNull("event",
-                     event);
-        if (Objects.equals(getSession(),
-                           event.getClientSession())) {
-            checkState();
-        }
     }
 
     private void checkState() {

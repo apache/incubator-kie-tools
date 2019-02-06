@@ -41,10 +41,12 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.Abs
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyboardControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.resize.ResizeControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.ToolboxControl;
+import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
-import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistry;
+import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.registry.RegistryFactory;
 import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
+import org.kie.workbench.common.stunner.core.registry.impl.ClientCommandRegistry;
 import org.mockito.Mock;
 
 import static org.mockito.Matchers.eq;
@@ -67,7 +69,7 @@ public class DMNEditorSessionTest extends BaseDMNSessionTest<DMNEditorSession> {
     private SessionCommandManager<AbstractCanvasHandler> requestCommandManager;
 
     @Mock
-    private StunnerPreferencesRegistry stunnerPreferencesRegistry;
+    private ClientCommandRegistry<Command<AbstractCanvasHandler, CanvasViolation>> clientCommandRegistry;
 
     @Mock
     private ResizeControl resizeControl;
@@ -120,14 +122,12 @@ public class DMNEditorSessionTest extends BaseDMNSessionTest<DMNEditorSession> {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     protected DMNEditorSession getSession() {
         final DMNEditorSession session = new DMNEditorSession(managedSession,
-                                                              registryFactory,
                                                               canvasCommandManager,
                                                               sessionCommandManager,
                                                               requestCommandManager,
-                                                              stunnerPreferencesRegistry);
+                                                              clientCommandRegistry);
         session.constructInstance();
         return session;
     }

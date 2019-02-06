@@ -16,10 +16,10 @@
 
 package org.kie.workbench.common.stunner.core.client.command;
 
+import java.util.ArrayList;
 import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
@@ -216,7 +216,7 @@ public class RequestCommandManager extends AbstractSessionCommandManager {
                 LOGGER.log(Level.FINEST,
                            "Adding commands for current request into registry [size=" + commands.size() + "]");
                 getRegistry().register(new CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation>()
-                                               .addCommands(commands.stream().collect(Collectors.toList()))
+                                               .addCommands(new ArrayList<>(commands))
                                                .build());
             }
             LOGGER.log(Level.FINEST,

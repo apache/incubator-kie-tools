@@ -15,8 +15,6 @@
  */
 package org.kie.workbench.common.stunner.core.command.util;
 
-import java.util.logging.Logger;
-
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -24,8 +22,8 @@ import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandManager;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
-import org.kie.workbench.common.stunner.core.registry.RegistryFactory;
 import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
+import org.kie.workbench.common.stunner.core.registry.impl.ClientCommandRegistry;
 
 /**
  * This handler is an util class that achieves command "re-do" features.
@@ -46,8 +44,6 @@ import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
 @Dependent
 public class RedoCommandHandler<C extends Command> {
 
-    private static Logger LOGGER = Logger.getLogger(RedoCommandHandler.class.getName());
-
     private final CommandRegistry<C> registry;
 
     protected RedoCommandHandler() {
@@ -55,8 +51,8 @@ public class RedoCommandHandler<C extends Command> {
     }
 
     @Inject
-    public RedoCommandHandler(final RegistryFactory registryFactory) {
-        this.registry = registryFactory.newCommandRegistry();
+    public RedoCommandHandler(final ClientCommandRegistry<C> clientCommandRegistry) {
+        this.registry = clientCommandRegistry;
     }
 
     public boolean onUndoCommandExecuted(final C command) {
@@ -64,7 +60,6 @@ public class RedoCommandHandler<C extends Command> {
         return isEnabled();
     }
 
-    @SuppressWarnings("unchecked")
     public boolean onCommandExecuted(final C command) {
         if (isEnabled()) {
             final C last = registry.peek();

@@ -23,8 +23,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandExecutedEvent;
-import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasUndoCommandExecutedEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.event.registration.RegisterChangedEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
@@ -127,59 +126,13 @@ public class UndoSessionCommandTest extends BaseSessionCommandKeyboardTest {
         command.bind(session);
         command.listen(statusCallback);
 
-        ((UndoSessionCommand) command).onCommandExecuted(new CanvasCommandExecutedEvent(null,
-                                                                                        null,
-                                                                                        null));
+        ((UndoSessionCommand) command).onCommandAdded(new RegisterChangedEvent());
         assertFalse(command.isEnabled());
 
         commandHistory.add(mock(Command.class));
 
-        ((UndoSessionCommand) command).onCommandExecuted(new CanvasCommandExecutedEvent(null,
-                                                                                        null,
-                                                                                        null));
+        ((UndoSessionCommand) command).onCommandAdded(new RegisterChangedEvent());
         assertTrue(command.isEnabled());
-        verify(statusCallback,
-               times(2)).execute();
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void testOnCommandUndoExecuted() {
-        command.bind(session);
-        command.listen(statusCallback);
-
-        ((UndoSessionCommand) command).onCommandUndoExecuted(new CanvasUndoCommandExecutedEvent(null,
-                                                                                                null,
-                                                                                                null));
-        assertFalse(command.isEnabled());
-
-        commandHistory.add(mock(Command.class));
-
-        ((UndoSessionCommand) command).onCommandUndoExecuted(new CanvasUndoCommandExecutedEvent(null,
-                                                                                                null,
-                                                                                                null));
-        assertTrue(command.isEnabled());
-
-        verify(statusCallback,
-               times(2)).execute();
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void testOnClearSessionExecuted() {
-        command.bind(session);
-        command.listen(statusCallback);
-
-        ((UndoSessionCommand) command).onClearSessionExecuted(new ClearSessionCommandExecutedEvent(mock(ClearSessionCommand.class),
-                                                                                                   session));
-        assertFalse(command.isEnabled());
-
-        commandHistory.add(mock(Command.class));
-
-        ((UndoSessionCommand) command).onClearSessionExecuted(new ClearSessionCommandExecutedEvent(mock(ClearSessionCommand.class),
-                                                                                                   session));
-        assertTrue(command.isEnabled());
-
         verify(statusCallback,
                times(2)).execute();
     }

@@ -40,14 +40,14 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.select.Selec
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SingleSelection;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
+import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.Request;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
-import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistry;
 import org.kie.workbench.common.stunner.core.client.session.Session;
 import org.kie.workbench.common.stunner.core.client.session.impl.DefaultEditorSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.ManagedSession;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
-import org.kie.workbench.common.stunner.core.registry.RegistryFactory;
+import org.kie.workbench.common.stunner.core.registry.impl.ClientCommandRegistry;
 import org.uberfire.mvp.Command;
 
 @Dependent
@@ -57,17 +57,15 @@ public class CaseManagementEditorSession
 
     @Inject
     public CaseManagementEditorSession(final ManagedSession session,
-                                       final RegistryFactory registryFactory,
                                        final CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager,
                                        final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                        final @Request SessionCommandManager<AbstractCanvasHandler> requestCommandManager,
-                                       final StunnerPreferencesRegistry stunnerPreferencesRegistry) {
+                                       final ClientCommandRegistry<org.kie.workbench.common.stunner.core.command.Command<AbstractCanvasHandler, CanvasViolation>> clientCommandRegistry) {
         super(session,
-              registryFactory,
               canvasCommandManager,
               sessionCommandManager,
               requestCommandManager,
-              stunnerPreferencesRegistry);
+              clientCommandRegistry);
     }
 
     @Override

@@ -73,6 +73,7 @@ public class RequestCommandManagerTest {
     private RequestCommandManager tested;
 
     @Before
+    @SuppressWarnings("unchecked")
     public void setup() throws Exception {
         CanvasCommandManagerImpl commandManager = new CanvasCommandManagerImpl();
         when(canvasHandler.getCanvas()).thenReturn(canvas);
@@ -128,7 +129,6 @@ public class RequestCommandManagerTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void testSingleExecuteFailed() {
         when(command.execute(eq(canvasHandler))).thenReturn(CanvasCommandResultBuilder.FAILED);
         tested.onCanvasMouseDownEvent(mouseDownEvent);
@@ -144,7 +144,6 @@ public class RequestCommandManagerTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void testMultipleExecuteFailed() {
         when(command.execute(eq(canvasHandler))).thenReturn(CanvasCommandResultBuilder.SUCCESS);
         when(command1.execute(eq(canvasHandler))).thenReturn(CanvasCommandResultBuilder.SUCCESS);
@@ -168,7 +167,6 @@ public class RequestCommandManagerTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void testSingleUndoSuccess() {
         when(command.undo(eq(canvasHandler))).thenReturn(CanvasCommandResultBuilder.SUCCESS);
         tested.onCanvasMouseDownEvent(mouseDownEvent);
@@ -184,7 +182,6 @@ public class RequestCommandManagerTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void testSingleUndoFailed() {
         when(command.undo(eq(canvasHandler))).thenReturn(CanvasCommandResultBuilder.FAILED);
         tested.onCanvasMouseDownEvent(mouseDownEvent);
