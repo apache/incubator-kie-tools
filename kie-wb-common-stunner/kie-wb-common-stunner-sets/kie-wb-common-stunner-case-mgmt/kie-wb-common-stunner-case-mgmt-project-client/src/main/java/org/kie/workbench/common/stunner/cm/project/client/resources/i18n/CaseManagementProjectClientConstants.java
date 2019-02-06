@@ -21,18 +21,6 @@ import org.jboss.errai.ui.shared.api.annotations.TranslationKey;
 public interface CaseManagementProjectClientConstants {
 
     @TranslationKey(defaultValue = "")
-    String CaseManagementDiagramEditorExperimentalName = "CaseManagementDiagramEditor.experimentalName";
-
-    @TranslationKey(defaultValue = "")
-    String CaseManagementDiagramEditorExperimentalDescription = "CaseManagementDiagramEditor.experimentalDescription";
-
-    @TranslationKey(defaultValue = "")
-    String CaseManagementDiagramResourceTypeExperimentalName = "CaseManagementDiagramResourceType.experimentalName";
-
-    @TranslationKey(defaultValue = "")
-    String CaseManagementDiagramResourceTypeExperimentalDescription = "CaseManagementDiagramResourceType.experimentalDescription";
-
-    @TranslationKey(defaultValue = "")
     String CaseManagementDiagramResourceTypeShortName = "CaseManagementDiagramResourceType.shortName";
 
     @TranslationKey(defaultValue = "")

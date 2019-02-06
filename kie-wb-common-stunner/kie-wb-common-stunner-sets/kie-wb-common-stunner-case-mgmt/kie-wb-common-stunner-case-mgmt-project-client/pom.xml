@@ -35,13 +35,13 @@
   </properties>
 
   <dependencies>
-  
+
     <!-- Profile -->
     <dependency>
       <groupId>org.kie.workbench.profile</groupId>
       <artifactId>kie-wb-common-profile-api</artifactId>
     </dependency>
-    
+
     <!-- Stunner -->
     <dependency>
       <groupId>org.kie.workbench.stunner</groupId>
@@ -212,16 +212,6 @@
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-data-binding</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-experimental-api</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-experimental-client</artifactId>
     </dependency>
 
     <!-- Lienzo -->

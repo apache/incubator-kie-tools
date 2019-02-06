@@ -27,16 +27,8 @@ import org.kie.workbench.common.stunner.cm.client.resources.CaseManagementImageR
 import org.kie.workbench.common.stunner.cm.project.client.resources.i18n.CaseManagementProjectClientConstants;
 import org.kie.workbench.common.stunner.cm.resource.CaseManagementDefinitionSetResourceType;
 import org.uberfire.client.workbench.type.ClientResourceType;
-import org.uberfire.experimental.definition.annotations.ExperimentalFeature;
-
-import static org.kie.workbench.common.stunner.cm.project.client.resources.i18n.CaseManagementProjectClientConstants.CaseManagementDiagramResourceTypeExperimentalDescription;
-import static org.kie.workbench.common.stunner.cm.project.client.resources.i18n.CaseManagementProjectClientConstants.CaseManagementDiagramResourceTypeExperimentalName;
-import static org.uberfire.experimental.definition.annotations.ExperimentalFeature.Scope.GLOBAL;
 
 @ApplicationScoped
-@ExperimentalFeature(scope = GLOBAL,
-        nameI18nKey = CaseManagementDiagramResourceTypeExperimentalName,
-        descriptionI18nKey = CaseManagementDiagramResourceTypeExperimentalDescription)
 public class CaseManagementDiagramResourceType extends CaseManagementDefinitionSetResourceType implements ClientResourceType {
 
     private static final Image ICON = new Image(CaseManagementImageResources.INSTANCE.cmicon());
