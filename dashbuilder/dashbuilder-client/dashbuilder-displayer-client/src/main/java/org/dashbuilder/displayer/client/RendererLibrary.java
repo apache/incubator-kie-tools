@@ -73,4 +73,8 @@ public interface RendererLibrary {
      * Re-draw a list of displayers
      */
     void redraw(List<Displayer> displayerList);
+    
+    default boolean isOffline() {
+        return true;
+    }
 }

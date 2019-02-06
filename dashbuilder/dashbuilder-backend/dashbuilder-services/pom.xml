@@ -64,6 +64,11 @@
       <groupId>org.dashbuilder</groupId>
       <artifactId>dashbuilder-navigation-api</artifactId>
     </dependency>
+    
+    <dependency>
+      <groupId>org.dashbuilder</groupId>
+      <artifactId>dashbuilder-displayer-api</artifactId>
+    </dependency>    
 
     <dependency>
       <groupId>org.kie.soup</groupId>

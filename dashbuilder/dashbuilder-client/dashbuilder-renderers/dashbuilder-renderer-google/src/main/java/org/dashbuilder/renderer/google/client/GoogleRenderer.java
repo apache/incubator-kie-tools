@@ -82,9 +82,7 @@ public class GoogleRenderer extends AbstractRendererLibrary {
 
     @Override
     public boolean isDefault(DisplayerType type) {
-        return 
-                METERCHART.equals(type) ||
-                MAP.equals(type);
+        return MAP.equals(type);
     }
 
     @Override
@@ -181,5 +179,10 @@ public class GoogleRenderer extends AbstractRendererLibrary {
                 }
             }
         });
+    }
+    
+    @Override
+    public boolean isOffline() {
+        return false;
     }
 }

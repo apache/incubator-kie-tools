@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import javax.annotation.PostConstruct;
@@ -32,6 +33,7 @@ import org.dashbuilder.displayer.DisplayerSettings;
 import org.dashbuilder.displayer.DisplayerSubType;
 import org.dashbuilder.displayer.DisplayerType;
 import org.dashbuilder.displayer.client.resources.i18n.CommonConstants;
+import org.dashbuilder.renderer.RendererSettings;
 import org.dashbuilder.renderer.service.RendererSettingsService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.api.EntryPoint;
@@ -46,7 +48,7 @@ import org.jboss.errai.ioc.client.container.SyncBeanManager;
 public class RendererManager {
 
     private SyncBeanManager beanManager;
-    private List<RendererLibrary> renderersList = new ArrayList<>();
+    private List<RendererLibrary> renderersList;
     private Map<DisplayerType, RendererLibrary> renderersDefault = new EnumMap<>(DisplayerType.class);
     private Map<DisplayerType, List<RendererLibrary>> renderersByType = new EnumMap<>(DisplayerType.class);
     private Map<DisplayerSubType, List<RendererLibrary>> renderersBySubType = new EnumMap<>(DisplayerSubType.class);
@@ -66,12 +68,20 @@ public class RendererManager {
 
     @PostConstruct
     protected void init() {
-        rendererSettingsService.call((String defaultUUIDOp) -> lookupRenderers(defaultUUIDOp))
-                               .userDefaultRenderer();
+        rendererSettingsService.call((RendererSettings settings) -> lookupRenderers(settings))
+                               .getSettings();
     }
 
-    protected void lookupRenderers(String defaultUUID) {
+    protected void lookupRenderers(RendererSettings settings) {
+        String defaultUUID = settings.getDefaultRenderer();
+        boolean onlyOffline = settings.isOffline();
+        renderersList = new ArrayList<>();
         Collection<SyncBeanDef<RendererLibrary>> beanDefs = beanManager.lookupBeans(RendererLibrary.class);
+        
+        if (onlyOffline) {
+            beanDefs = beanDefs.stream().filter(bd -> bd.getInstance().isOffline()).collect(Collectors.toList());
+        }
+        
         if (defaultUUID != null && ! defaultUUID.isEmpty()) {
             beanDefs.stream()
                     .map(SyncBeanDef::getInstance)

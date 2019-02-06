@@ -4,6 +4,7 @@ import org.dashbuilder.displayer.DisplayerSettings;
 import org.dashbuilder.displayer.DisplayerSubType;
 import org.dashbuilder.displayer.DisplayerType;
 import org.dashbuilder.displayer.client.resources.i18n.CommonConstants;
+import org.dashbuilder.renderer.RendererSettings;
 import org.dashbuilder.renderer.service.RendererSettingsService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
@@ -54,6 +55,9 @@ public class RendererManagerTest {
     @Mock
     RendererSettingsService rendererSettingsService;
     
+    @Mock
+    RendererSettings rendererSettings;
+    
     Caller<RendererSettingsService> rendererSettingsServiceCaller;
     
     RendererManager rendererManager;
@@ -64,6 +68,7 @@ public class RendererManagerTest {
     @Before
     public void setUp() {
         rendererSettingsServiceCaller = new CallerMock<>(rendererSettingsService);
+        when(rendererSettingsService.getSettings()).thenReturn(rendererSettings);
         rendererManager = new RendererManager(beanManager, rendererSettingsServiceCaller);
         mockConstants();
         Map<DisplayerType, List<DisplayerSubType>> typesAndSubTypes1 = new HashMap<>();
@@ -76,8 +81,8 @@ public class RendererManagerTest {
         typesAndSubTypes2.put(BARCHART, Arrays.asList(BAR, BAR_STACKED));
         
         List<SyncBeanDef<RendererLibrary>> rendererLibrariesBeans = Arrays.asList(
-                mockSyncBeanForRendererLib(REND1_NAME, REND1_UUID, Arrays.asList(BARCHART, AREACHART), typesAndSubTypes1),
-                mockSyncBeanForRendererLib(REND2_NAME, REND2_UUID,  Collections.emptyList(), typesAndSubTypes2)
+                mockSyncBeanForRendererLib(REND1_NAME, REND1_UUID, Arrays.asList(BARCHART, AREACHART), typesAndSubTypes1, true),
+                mockSyncBeanForRendererLib(REND2_NAME, REND2_UUID,  Collections.emptyList(), typesAndSubTypes2, false)
         );
         totalBeans = rendererLibrariesBeans.size();
         when(beanManager.lookupBeans(RendererLibrary.class))
@@ -188,11 +193,9 @@ public class RendererManagerTest {
         assertNull(rendererManager.getDefaultRenderer(LINECHART));
     }
     
-    
     @Test
     public void defaultRendererSetByUserTest() {
-        when(rendererSettingsService.userDefaultRenderer())
-                                    .thenReturn(REND2_UUID);
+        when(rendererSettings.getDefaultRenderer()).thenReturn(REND2_UUID);
         rendererManager.init();
         RendererLibrary barChartDefaultRenderer = rendererManager.getDefaultRenderer(BARCHART);
         RendererLibrary areaChartDefaultRenderer = rendererManager.getDefaultRenderer(AREACHART);
@@ -208,20 +211,28 @@ public class RendererManagerTest {
     
     @Test
     public void defaultRendererWithUserBadSettingTest() {
-        when(rendererSettingsService.userDefaultRenderer())
-                                    .thenReturn("DO NOT EXIST");
+        when(rendererSettings.getDefaultRenderer()).thenReturn("DO NO EXIST");
         rendererManager.init();
         defaultRendererTest();
+    }
+    
+    @Test
+    public void offlineRendererTest() {
+        when(rendererSettings.isOffline()).thenReturn(true);
+        rendererManager.init();
+        assertEquals(1, rendererManager.getRenderers().size());
     }
     
     private SyncBeanDef<RendererLibrary> mockSyncBeanForRendererLib(String name,
                                                                     String uuid,
                                                                     List<DisplayerType> defaultTypes,
-                                                                    Map<DisplayerType, List<DisplayerSubType>> typesAndSubTypes) {
+                                                                    Map<DisplayerType, List<DisplayerSubType>> typesAndSubTypes,
+                                                                    boolean offline) {
         SyncBeanDef<RendererLibrary> libBean = mock(SyncBeanDef.class);
         RendererLibrary lib = mock(RendererLibrary.class);
         when(lib.getName()).thenReturn(name);
         when(lib.getUUID()).thenReturn(uuid);
+        when(lib.isOffline()).thenReturn(offline);
         List<DisplayerType> supportedTypesList = typesAndSubTypes.keySet().stream().collect(Collectors.toList());
         when(lib.getSupportedTypes()).thenReturn(supportedTypesList);
         typesAndSubTypes.forEach((type, subTypes) -> when(lib.getSupportedSubtypes(type)).thenReturn(subTypes));
