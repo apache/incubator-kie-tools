@@ -27,6 +27,7 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import junit.framework.TestCase;
 import org.drools.workbench.screens.scenariosimulation.client.editor.AbstractScenarioSimulationEditorTest;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
 import org.jgroups.util.Util;
@@ -41,6 +42,7 @@ import org.uberfire.client.callbacks.Callback;
 
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.soup.project.datamodel.oracle.ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS;
@@ -101,6 +103,15 @@ public class DMODataManagementStrategyTest extends AbstractScenarioSimulationEdi
     public void manageScenarioSimulationModelContent() {
         dmoDataManagementStrategy.manageScenarioSimulationModelContent(observablePathMock, content);
         assertEquals(dmoDataManagementStrategy.oracle, oracleMock);
+    }
+
+    @Test
+    public void isADataType() {
+        when(oracleMock.getFactTypes()).thenReturn(new String[]{});
+        commonIsADataType("TEST", false);
+        when(oracleMock.getFactTypes()).thenReturn(new String[]{"TEST"});
+        commonIsADataType("TOAST", false);
+        commonIsADataType("TEST", true);
     }
 
     @Test
@@ -168,6 +179,16 @@ public class DMODataManagementStrategyTest extends AbstractScenarioSimulationEdi
         SortedMap<String, FactModelTree> factTypeFieldsMap = getFactTypeFieldsMapInner(values);
         SortedMap<String, FactModelTree> retrieved  = dmoDataManagementStrategy.getInstanceMap(factTypeFieldsMap);
         assertNotNull(retrieved);
+    }
+
+
+    private void commonIsADataType(String value, boolean expected) {
+        boolean retrieved = dmoDataManagementStrategy.isADataType(value);
+        if (expected) {
+            TestCase.assertTrue(retrieved);
+        } else {
+            assertFalse(retrieved);
+        }
     }
 
     private ModelField[] getModelFieldsInner(Map<String, String> simpleProperties) {

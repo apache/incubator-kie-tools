@@ -493,7 +493,7 @@ public class ScenarioGridModel extends BaseGridData {
     }
 
     /**
-     * Returns <code>true</code> if type mapped to the selected column is the same as the provided one
+     * Returns <code>true</code> if no column is selected <b>OR</b> if type of the property mapped to the selected column is the same as the provided one
      * @param className
      * @return
      */
@@ -502,7 +502,7 @@ public class ScenarioGridModel extends BaseGridData {
     }
 
     /**
-     * Returns <code>true</code> if type mapped to the column at given index is the same as the provided one
+     * Returns <code>true</code> if type of the property mapped to the column at given index is the same as the provided one
      * @param columnIndex
      * @param className
      * @return
@@ -513,14 +513,27 @@ public class ScenarioGridModel extends BaseGridData {
         return factMappingByIndex.getClassName().equals(className);
     }
 
-    public boolean validateHeaderUpdate(String value, int rowIndex, int columnIndex) {
-        ScenarioHeaderMetaData headerToEdit = (ScenarioHeaderMetaData) getColumns().get(columnIndex).getHeaderMetaData().get(rowIndex);
-        boolean isValid = !headerToEdit.isInstanceHeader() || (!isInstanceName(value) && isUnique(value, rowIndex, columnIndex));
-        if (!isValid) {
-            eventBus.fireEvent(new ScenarioNotificationEvent("Name '" + value + "' can not be used",
-                                                             NotificationEvent.NotificationType.ERROR));
+    /**
+     * Returns <code>true</code> if type given <b>headerName</b> is the same as the <b>Fact</b> mapped to the
+     * column at given index
+     * @param columnIndex
+     * @param headerName
+     * @return
+     */
+    public boolean isSameInstanceHeader(int columnIndex, String headerName) {
+        SimulationDescriptor simulationDescriptor = simulation.getSimulationDescriptor();
+        final FactIdentifier factIdentifierByIndex = simulationDescriptor.getFactMappingByIndex(columnIndex).getFactIdentifier();
+        String columnClassName = factIdentifierByIndex.getClassName();
+        if (columnClassName.contains(".")) {
+            columnClassName = columnClassName.substring(columnClassName.lastIndexOf(".") + 1);
         }
-        return isValid;
+        return Objects.equals(columnClassName, headerName);
+    }
+
+    public boolean validateHeaderUpdate(String value, int rowIndex, int columnIndex, boolean isADataType) {
+        ScenarioHeaderMetaData headerToEdit = (ScenarioHeaderMetaData) getColumns().get(columnIndex).getHeaderMetaData().get(rowIndex);
+        boolean isSameInstanceHeader = isSameInstanceHeader(columnIndex, value);
+        return !headerToEdit.isInstanceHeader() || (isADataType && isSameInstanceHeader && isUniqueInstanceHeaderTitle(value, rowIndex, columnIndex)) || (!isADataType && isUniqueInstanceHeaderTitle(value, rowIndex, columnIndex));
     }
 
     public void resetErrors() {
@@ -657,7 +670,14 @@ public class ScenarioGridModel extends BaseGridData {
         Objects.requireNonNull(simulation, "Bind a simulation to the ScenarioGridModel to use it");
     }
 
-    protected boolean isUnique(String value, int rowIndex, int columnIndex) {
+    /**
+     * Verify the given value is not already used as instance header name
+     * @param value
+     * @param rowIndex
+     * @param columnIndex
+     * @return
+     */
+    protected boolean isUniqueInstanceHeaderTitle(String value, int rowIndex, int columnIndex) {
         Range instanceLimits = getInstanceLimits(columnIndex);
         SimulationDescriptor simulationDescriptor = simulation.getSimulationDescriptor();
         FactIdentifier factIdentifier = simulationDescriptor.getFactMappingByIndex(columnIndex).getFactIdentifier();
@@ -684,6 +704,11 @@ public class ScenarioGridModel extends BaseGridData {
                 .noneMatch(elem -> Objects.equals(elem.getTitle(), value));
     }
 
+    /**
+     * Verify if the given name is the name of an already existing instance.
+     * @param value
+     * @return
+     */
     protected boolean isInstanceName(String value) {
         Set<String> aggregated = new HashSet<>();
         if (dataObjectsInstancesName != null) {

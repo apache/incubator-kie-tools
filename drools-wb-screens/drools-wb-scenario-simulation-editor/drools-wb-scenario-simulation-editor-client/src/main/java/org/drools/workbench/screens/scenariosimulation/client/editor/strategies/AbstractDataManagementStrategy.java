@@ -18,12 +18,20 @@ package org.drools.workbench.screens.scenariosimulation.client.editor.strategies
 import java.util.HashMap;
 import java.util.Map;
 
+import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
 
 /**
  * Abstract class to provide common methods to be used by actual implementations.
  */
 public abstract class AbstractDataManagementStrategy implements DataManagementStrategy {
+
+    protected ScenarioSimulationModel model;
+
+    @Override
+    public void setModel(ScenarioSimulationModel model) {
+        this.model = model;
+    }
 
     protected static FactModelTree getSimpleClassFactModelTree(Class clazz) {
         String key = clazz.getSimpleName();
@@ -33,4 +41,6 @@ public abstract class AbstractDataManagementStrategy implements DataManagementSt
         String packageName = fullName.substring(0, fullName.lastIndexOf("."));
         return new FactModelTree(key, packageName, simpleProperties);
     }
+
+
 }

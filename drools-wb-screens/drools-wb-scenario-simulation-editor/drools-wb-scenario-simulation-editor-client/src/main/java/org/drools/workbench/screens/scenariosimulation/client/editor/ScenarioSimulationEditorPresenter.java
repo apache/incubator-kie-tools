@@ -250,7 +250,8 @@ public class ScenarioSimulationEditorPresenter
 
     public void onRunScenario() {
         view.getScenarioGridPanel().getScenarioGrid().getModel().resetErrors();
-        service.call(refreshModel()).runScenario(versionRecordManager.getCurrentPath(), model);
+        model.setSimulation(context.getStatus().getSimulation());
+        service.call(refreshModel(), new HasBusyIndicatorDefaultErrorCallback(view)).runScenario(versionRecordManager.getCurrentPath(), model);
     }
 
     public void onUndo() {
@@ -274,6 +275,10 @@ public class ScenarioSimulationEditorPresenter
         fileMenuBuilder.addNewTopLevelMenu(view.getDownloadMenuItem(getPathSupplier()));
     }
 
+    public DataManagementStrategy getDataManagementStrategy() {
+        return dataManagementStrategy;
+    }
+
     protected RemoteCallback<ScenarioSimulationModel> refreshModel() {
         return this::refreshModelContent;
     }
@@ -284,6 +289,7 @@ public class ScenarioSimulationEditorPresenter
         view.refreshContent(simulation);
         context.getStatus().setSimulation(simulation);
         scenarioSimulationDocksHandler.expandTestResultsDock();
+        dataManagementStrategy.setModel(model);
     }
 
     protected void registerRightPanelCallback() {
@@ -368,57 +374,6 @@ public class ScenarioSimulationEditorPresenter
         return MarshallingWrapper.toJSON(model);
     }
 
-    private String getFileDownloadURL(final Supplier<Path> pathSupplier) {
-        return GWT.getModuleBaseURL() + "defaulteditor/download?path=" + pathSupplier.get().toURI();
-    }
-
-    private RemoteCallback<ScenarioSimulationModelContent> getModelSuccessCallback() {
-        return content -> {
-            //Path is set to null when the Editor is closed (which can happen before async calls complete).
-            if (versionRecordManager.getCurrentPath() == null) {
-                return;
-            }
-            packageName = content.getDataModel().getPackageName();
-            resetEditorPages(content.getOverview());
-            if(ScenarioSimulationModel.Type.RULE.equals(content.getModel().getSimulation().getSimulationDescriptor().getType())) {
-                dataManagementStrategy = new DMODataManagementStrategy(oracleFactory);
-            }
-            else {
-                dataManagementStrategy = new DMNDataManagementStrategy(dmnTypeService);
-            }
-            dataManagementStrategy.manageScenarioSimulationModelContent(versionRecordManager.getCurrentPath(), content);
-            populateRightPanel();
-            model = content.getModel();
-            if (dataManagementStrategy instanceof DMODataManagementStrategy) {
-                importsWidget.setContent(((DMODataManagementStrategy) dataManagementStrategy).getOracle(),
-                                         model.getImports(),
-                                         isReadOnly);
-                addImportsTab(importsWidget);
-            }
-            baseView.hideBusyIndicator();
-            view.setContent(model.getSimulation());
-            setOriginalHash(getJsonModel(model).hashCode());
-        };
-    }
-
-    private Optional<RightPanelView> getRightPanelView() {
-        final DefaultPlaceRequest placeRequest = new DefaultPlaceRequest(RightPanelPresenter.IDENTIFIER);
-        if (PlaceStatus.OPEN.equals(placeManager.getStatus(placeRequest))) {
-            final AbstractWorkbenchActivity rightPanelActivity = (AbstractWorkbenchActivity) placeManager.getActivity(placeRequest);
-            return Optional.of((RightPanelView) rightPanelActivity.getWidget());
-        } else {
-            return Optional.empty();
-        }
-    }
-
-    private Optional<RightPanelView.Presenter> getRightPanelPresenter() {
-        return getRightPanelView().isPresent() ? Optional.of(getRightPanelView().get().getPresenter()) : Optional.empty();
-    }
-
-    private Command getPopulateRightPanelCommand() {
-        return this::populateRightPanel;
-    }
-
     protected boolean isDirty() {
         try {
             view.getScenarioGridPanel().getScenarioGrid().getModel().resetErrors();
@@ -447,5 +402,59 @@ public class ScenarioSimulationEditorPresenter
     @Override
     protected Caller<? extends SupportsSaveAndRename<ScenarioSimulationModel, Metadata>> getSaveAndRenameServiceCaller() {
         return service;
+    }
+
+    protected void getModelSuccessCallbackMethod(ScenarioSimulationModelContent content) {
+        //Path is set to null when the Editor is closed (which can happen before async calls complete).
+        if (versionRecordManager.getCurrentPath() == null) {
+            return;
+        }
+        packageName = content.getDataModel().getPackageName();
+        resetEditorPages(content.getOverview());
+        if(ScenarioSimulationModel.Type.RULE.equals(content.getModel().getSimulation().getSimulationDescriptor().getType())) {
+            dataManagementStrategy = new DMODataManagementStrategy(oracleFactory);
+        }
+        else {
+            dataManagementStrategy = new DMNDataManagementStrategy(dmnTypeService);
+        }
+        dataManagementStrategy.manageScenarioSimulationModelContent(versionRecordManager.getCurrentPath(), content);
+        populateRightPanel();
+        model = content.getModel();
+        if (dataManagementStrategy instanceof DMODataManagementStrategy) {
+            importsWidget.setContent(((DMODataManagementStrategy) dataManagementStrategy).getOracle(),
+                                     model.getImports(),
+                                     isReadOnly);
+            addImportsTab(importsWidget);
+        }
+        baseView.hideBusyIndicator();
+        view.setContent(model.getSimulation());
+        context.getStatus().setSimulation(model.getSimulation());
+        setOriginalHash(getJsonModel(model).hashCode());
+    }
+
+    private String getFileDownloadURL(final Supplier<Path> pathSupplier) {
+        return GWT.getModuleBaseURL() + "defaulteditor/download?path=" + pathSupplier.get().toURI();
+    }
+
+    private RemoteCallback<ScenarioSimulationModelContent> getModelSuccessCallback() {
+        return this::getModelSuccessCallbackMethod;
+    }
+
+    private Optional<RightPanelView> getRightPanelView() {
+        final DefaultPlaceRequest placeRequest = new DefaultPlaceRequest(RightPanelPresenter.IDENTIFIER);
+        if (PlaceStatus.OPEN.equals(placeManager.getStatus(placeRequest))) {
+            final AbstractWorkbenchActivity rightPanelActivity = (AbstractWorkbenchActivity) placeManager.getActivity(placeRequest);
+            return Optional.of((RightPanelView) rightPanelActivity.getWidget());
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    private Optional<RightPanelView.Presenter> getRightPanelPresenter() {
+        return getRightPanelView().isPresent() ? Optional.of(getRightPanelView().get().getPresenter()) : Optional.empty();
+    }
+
+    private Command getPopulateRightPanelCommand() {
+        return this::populateRightPanel;
     }
 }

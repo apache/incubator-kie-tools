@@ -30,10 +30,14 @@ public class SetHeaderValueCommand extends AbstractScenarioSimulationCommand {
     }
 
     @Override
-    protected void internalExecute(ScenarioSimulationContext context) {
+    protected void internalExecute(ScenarioSimulationContext context) throws Exception {
         final ScenarioSimulationContext.Status status = context.getStatus();
-        if (context.getModel().validateHeaderUpdate(status.getCellValue(), status.getRowIndex(), status.getColumnIndex())) {
-            context.getModel().updateHeader(status.getColumnIndex(), status.getRowIndex(), status.getCellValue());
+        final String headerValue = status.getCellValue();
+        boolean isADataType = context.getScenarioSimulationEditorPresenter().getDataManagementStrategy() != null &&  context.getScenarioSimulationEditorPresenter().getDataManagementStrategy().isADataType(headerValue);
+        if (context.getModel().validateHeaderUpdate(headerValue, status.getRowIndex(), status.getColumnIndex(), isADataType)) {
+            context.getModel().updateHeader(status.getColumnIndex(), status.getRowIndex(), headerValue);
+        } else {
+            throw new Exception("Name \"" + headerValue + "\" cannot be used");
         }
     }
 }

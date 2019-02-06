@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 
 import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.RightPanelView;
-import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModelContent;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTuple;
@@ -34,12 +33,11 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 
-public class DMNDataManagementStrategy implements DataManagementStrategy {
+public class DMNDataManagementStrategy extends AbstractDataManagementStrategy {
 
+    protected ResultHolder factModelTreeHolder = new ResultHolder();
     private final Caller<DMNTypeService> dmnTypeService;
     private Path currentPath;
-    private ScenarioSimulationModel model;
-    private ResultHolder factModelTreeHolder = new ResultHolder();
 
     public DMNDataManagementStrategy(Caller<DMNTypeService> dmnTypeService) {
         this.dmnTypeService = dmnTypeService;
@@ -64,6 +62,11 @@ public class DMNDataManagementStrategy implements DataManagementStrategy {
         model = toManage.getModel();
     }
 
+    @Override
+    public boolean isADataType(String value) {
+        return factModelTreeHolder.factModelTuple.getHiddenFacts().keySet().contains(value) || factModelTreeHolder.factModelTuple.getVisibleFacts().keySet().contains(value);
+    }
+
     private RemoteCallback<FactModelTuple> getSuccessCallback(RightPanelView.Presenter rightPanelPresenter) {
         return factMappingTuple -> {
             factModelTreeHolder.setFactModelTuple(factMappingTuple);
@@ -85,7 +88,7 @@ public class DMNDataManagementStrategy implements DataManagementStrategy {
         };
     }
 
-    static private class ResultHolder {
+    static protected class ResultHolder {
         FactModelTuple factModelTuple;
 
         public FactModelTuple getFactModelTuple() {

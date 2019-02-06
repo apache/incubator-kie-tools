@@ -22,6 +22,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -44,15 +46,22 @@ public class SetHeaderValueCommandTest extends AbstractScenarioSimulationCommand
 
     @Test
     public void executeNotValid() {
-        when(scenarioGridModelMock.validateHeaderUpdate(eq(VALUE), eq(ROW_INDEX), eq(COLUMN_INDEX))).thenReturn(false);
-        command.execute(scenarioSimulationContext);
-        verify(scenarioGridModelMock, never()).updateHeader(eq(COLUMN_INDEX), eq(ROW_INDEX), eq(VALUE));
+        commonExecute(false, false);
     }
 
     @Test
     public void executeValid() {
-        when(scenarioGridModelMock.validateHeaderUpdate(eq(VALUE), eq(ROW_INDEX), eq(COLUMN_INDEX))).thenReturn(true);
+        commonExecute(true, true);
+    }
+
+    private void commonExecute(boolean validateHeaderUpdate, boolean executed) {
+        when(scenarioGridModelMock.validateHeaderUpdate(eq(VALUE), eq(ROW_INDEX), eq(COLUMN_INDEX), anyBoolean())).thenReturn(validateHeaderUpdate);
         command.execute(scenarioSimulationContext);
-        verify(scenarioGridModelMock, times(1)).updateHeader(eq(COLUMN_INDEX), eq(ROW_INDEX), eq(VALUE));
+        verify(dataManagementStrategyMock, times(1)).isADataType(anyString());
+        if (executed) {
+            verify(scenarioGridModelMock, times(1)).updateHeader(eq(COLUMN_INDEX), eq(ROW_INDEX), eq(VALUE));
+        } else {
+            verify(scenarioGridModelMock, never()).updateHeader(eq(COLUMN_INDEX), eq(ROW_INDEX), eq(VALUE));
+        }
     }
 }

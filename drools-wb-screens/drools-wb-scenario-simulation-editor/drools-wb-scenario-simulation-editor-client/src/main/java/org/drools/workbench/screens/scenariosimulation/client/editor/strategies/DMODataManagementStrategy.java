@@ -30,7 +30,6 @@ import java.util.stream.Collectors;
 import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.RightPanelView;
 import org.drools.workbench.screens.scenariosimulation.model.FactMappingType;
-import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModelContent;
 import org.drools.workbench.screens.scenariosimulation.model.SimulationDescriptor;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
@@ -47,8 +46,6 @@ public class DMODataManagementStrategy extends AbstractDataManagementStrategy {
 
     //Package for which this Scenario Simulation relates
     protected String packageName = "";
-
-    private ScenarioSimulationModel model;
 
     public DMODataManagementStrategy(final AsyncPackageDataModelOracleFactory oracleFactory) {
         this.oracleFactory = oracleFactory;
@@ -88,6 +85,11 @@ public class DMODataManagementStrategy extends AbstractDataManagementStrategy {
         oracle = oracleFactory.makeAsyncPackageDataModelOracle(currentPath,
                                                                model,
                                                                toManage.getDataModel());
+    }
+
+    @Override
+    public boolean isADataType(String value) {
+        return oracle != null && Arrays.asList(oracle.getFactTypes()).contains(value);
     }
 
     public AsyncPackageDataModelOracle getOracle() {

@@ -23,6 +23,7 @@ import java.util.stream.Stream;
 
 import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.RightPanelView;
+import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModelContent;
 import org.uberfire.backend.vfs.ObservablePath;
 
@@ -43,4 +44,13 @@ public interface DataManagementStrategy {
     void populateRightPanel(final RightPanelView.Presenter rightPanelPresenter, final ScenarioGridModel scenarioGridModel);
 
     void manageScenarioSimulationModelContent(ObservablePath currentPath, ScenarioSimulationModelContent toManage);
+
+    void setModel(ScenarioSimulationModel model);
+
+    /**
+     * Returns <code>true</code> if the given value is a <b>data</b> type (e.g. a <b>FactType</b> for DMO)
+     * @param value
+     * @return
+     */
+    boolean isADataType(String value);
 }
