@@ -16,6 +16,10 @@
 
 package org.kie.workbench.common.stunner.client.widgets.explorer.tree;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.OptionalInt;
+
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Widget;
@@ -35,6 +39,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -48,9 +53,6 @@ public class TreeExplorerViewTest {
 
     @Mock
     TreeExplorer presenter;
-
-    @Mock
-    TreeExplorerView.ViewBinder uiBinder;
 
     @Mock
     Tree<TreeItem> tree;
@@ -71,18 +73,21 @@ public class TreeExplorerViewTest {
 
     @Before
     public void setup() {
-        this.testedTreeExplorerView = new TreeExplorerView(presenter,
-                                                           uiBinder,
-                                                           tree,
-                                                           handlerRegistration);
+        this.testedTreeExplorerView = spy(new TreeExplorerView(presenter,
+                                                               tree,
+                                                               handlerRegistration));
+
+        when(item.getUuid()).thenReturn(ITEM_UUID);
+        when(item.getParentItem()).thenReturn(parentItem);
+        when(parentItem.getUuid()).thenReturn(PARENT_UUID);
     }
 
     @Test
     public void testInit() {
         testedTreeExplorerView.init(presenter);
-        verify(uiBinder,
-               times(1)).createAndBindUi(eq(testedTreeExplorerView));
-        verify(tree,
+        verify(testedTreeExplorerView,
+               times(1)).initWidget(any());
+        verify(testedTreeExplorerView.tree,
                times(1)).addSelectionHandler(any(SelectionHandler.class));
     }
 
@@ -139,51 +144,108 @@ public class TreeExplorerViewTest {
                                        NAME,
                                        widgetIcon,
                                        true,
-                                       true);
-        verify(parentItem,
-               times(1)).addItem(eq(TreeItem.Type.CONTAINER),
-                                 eq(ITEM_UUID),
-                                 eq(NAME),
-                                 eq(widgetIcon));
+                                       true,
+                                       OptionalInt.empty());
+
+        ArgumentCaptor<TreeItem> itemCaptor = ArgumentCaptor.forClass(TreeItem.class);
+        verify(parentItem, times(1)).addItem(itemCaptor.capture());
+
+        final TreeItem treeItem = itemCaptor.getValue();
+        assertEquals(TreeItem.Type.CONTAINER, treeItem.getType());
+        assertEquals(ITEM_UUID, treeItem.getUuid());
+        assertEquals(NAME, treeItem.getLabel());
+    }
+
+    @Test
+    public void addItemWithParentIndex() {
+        when(tree.getItemByUuid(PARENT_UUID)).thenReturn(parentItem);
+
+        final List<TreeItem> items = new ArrayList<>(1);
+        items.add(item);
+        when(parentItem.getChildren()).thenReturn(items);
+
+        testedTreeExplorerView.addItem(ITEM_UUID,
+                                       PARENT_UUID,
+                                       NAME,
+                                       widgetIcon,
+                                       true,
+                                       true,
+                                       OptionalInt.of(0));
+
+        ArgumentCaptor<TreeItem> itemCaptor = ArgumentCaptor.forClass(TreeItem.class);
+        verify(parentItem, times(1)).insertItem(itemCaptor.capture(), eq(0));
+
+        final TreeItem treeItem = itemCaptor.getValue();
+        assertEquals(TreeItem.Type.CONTAINER, treeItem.getType());
+        assertEquals(ITEM_UUID, treeItem.getUuid());
+        assertEquals(NAME, treeItem.getLabel());
+    }
+
+    private TreeItem mockOldItem() {
+        TreeItem oldItem = mock(TreeItem.class);
+        when(tree.getItemByUuid(ITEM_UUID)).thenReturn(oldItem);
+        when(oldItem.getLabel()).thenReturn(NAME);
+        when(oldItem.getParentItem()).thenReturn(parentItem);
+        when(oldItem.getUuid()).thenReturn(ITEM_UUID);
+        return oldItem;
     }
 
     @Test
     public void isItemNameChanged() {
-        TreeItem oldItem = mock(TreeItem.class);
-        when(tree.getItemByUuid(ITEM_UUID)).thenReturn(oldItem);
+        TreeItem oldItem = mockOldItem();
         when(oldItem.getLabel()).thenReturn("OLD_ITEM");
+
         boolean isItemChanged = testedTreeExplorerView.isItemChanged(ITEM_UUID,
                                                                      PARENT_UUID,
-                                                                     NAME);
+                                                                     NAME,
+                                                                     OptionalInt.empty());
         assertTrue(isItemChanged);
     }
 
     @Test
     public void isItemParentChanged() {
-        TreeItem oldItem = mock(TreeItem.class);
-        when(tree.getItemByUuid(ITEM_UUID)).thenReturn(oldItem);
-        when(oldItem.getLabel()).thenReturn(NAME);
-        when(item.getParentItem()).thenReturn(parentItem);
-        when(oldItem.getParentItem()).thenReturn(parentItem);
-        when(oldItem.getUuid()).thenReturn(ITEM_UUID);
+        mockOldItem();
         when(parentItem.getUuid()).thenReturn("PARENT_CHANGED");
+
         assertTrue(testedTreeExplorerView.isItemChanged(ITEM_UUID,
                                                         PARENT_UUID,
-                                                        NAME));
+                                                        NAME,
+                                                        OptionalInt.empty()));
+    }
+
+    @Test
+    public void isItemIndexChanged() {
+        TreeItem oldItem = mockOldItem();
+        when(item.getUuid()).thenReturn("INDEX_CHANGED");
+        when(parentItem.getChildCount()).thenReturn(2);
+        when(parentItem.getChild(eq(0))).thenReturn(item);
+        when(parentItem.getChild(eq(1))).thenReturn(oldItem);
+
+        assertTrue(testedTreeExplorerView.isItemChanged(ITEM_UUID,
+                                                        PARENT_UUID,
+                                                        NAME,
+                                                        OptionalInt.of(0)));
+        assertFalse(testedTreeExplorerView.isItemChanged(ITEM_UUID,
+                                                         PARENT_UUID,
+                                                         NAME,
+                                                         OptionalInt.of(1)));
+        assertTrue(testedTreeExplorerView.isItemChanged(ITEM_UUID,
+                                                        PARENT_UUID,
+                                                        NAME,
+                                                        OptionalInt.of(2)));
     }
 
     @Test
     public void isNotItemChanged() {
-        TreeItem oldItem = mock(TreeItem.class);
-        when(tree.getItemByUuid(ITEM_UUID)).thenReturn(oldItem);
-        when(oldItem.getLabel()).thenReturn(NAME);
-        when(item.getParentItem()).thenReturn(parentItem);
-        when(oldItem.getParentItem()).thenReturn(parentItem);
-        when(oldItem.getUuid()).thenReturn(ITEM_UUID);
+        mockOldItem();
         when(parentItem.getUuid()).thenReturn(PARENT_UUID);
+        when(parentItem.getChildCount()).thenReturn(1);
+        when(parentItem.getChild(eq(0))).thenReturn(item);
+
         assertFalse(testedTreeExplorerView.isItemChanged(ITEM_UUID,
                                                          PARENT_UUID,
-                                                         NAME));
+                                                         NAME,
+                                                         OptionalInt.of(0)));
     }
 
     @Test

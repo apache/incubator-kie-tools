@@ -17,7 +17,9 @@
 package org.kie.workbench.common.stunner.client.widgets.explorer.tree;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.OptionalInt;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -36,6 +38,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.TextPropertyProvider;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.TextPropertyProviderFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasClearEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementUpdatedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
@@ -49,6 +52,7 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
+import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.impl.NodeImpl;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.AbstractChildrenTraverseCallback;
@@ -62,6 +66,7 @@ import org.uberfire.mvp.Command;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyBoolean;
@@ -270,6 +275,34 @@ public class TreeExplorerTest {
         testedTree.checkEventContext(clearEvent,
                                      runnable);
         assertFalse(testedTree.isEventInProgress());
+    }
+
+    @Test
+    public void testOnElementUpdated_childHighlighted() {
+        final Node parent = mock(Node.class);
+        when(parent.getUUID()).thenReturn("PARENT_UUID");
+        when(parent.getContent()).thenReturn(mock(View.class));
+
+        final Node child = mock(Node.class);
+        when(child.getUUID()).thenReturn("CHILD_UUID");
+        when(child.getContent()).thenReturn(mock(View.class));
+
+        final Edge edge = mock(Edge.class);
+        when(edge.getSourceNode()).thenReturn(parent);
+        when(edge.getTargetNode()).thenReturn(child);
+        when(edge.getContent()).thenReturn(mock(Child.class));
+
+        final List<Edge> edges = Collections.singletonList(edge);
+        when(parent.getOutEdges()).thenReturn(edges);
+        when(child.getInEdges()).thenReturn(edges);
+
+        when(view.isItemChanged(anyString(), anyString(), anyString(), any(OptionalInt.class))).thenReturn(true);
+
+        testedTree.show(canvasHandler);
+        final CanvasElementUpdatedEvent event = new CanvasElementUpdatedEvent(canvasHandler, child);
+        testedTree.onCanvasElementUpdatedEvent(event);
+
+        verify(view, times(1)).setSelectedItem(eq("CHILD_UUID"));
     }
 
     private TreeExplorer createTestInstance() {

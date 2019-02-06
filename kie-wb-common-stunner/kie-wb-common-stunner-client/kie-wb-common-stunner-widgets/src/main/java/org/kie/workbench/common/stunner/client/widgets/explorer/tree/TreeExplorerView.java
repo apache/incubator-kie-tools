@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.client.widgets.explorer.tree;
 
+import java.util.OptionalInt;
 import java.util.function.BiPredicate;
 
 import javax.enterprise.context.Dependent;
@@ -36,7 +37,7 @@ import org.uberfire.ext.widgets.core.client.tree.TreeItem;
 @Dependent
 public class TreeExplorerView extends Composite implements TreeExplorer.View {
 
-    private static ViewBinder uiBinder = GWT.create(ViewBinder.class);
+    static ViewBinder uiBinder = GWT.create(ViewBinder.class);
 
     @UiField
     Tree<TreeItem> tree;
@@ -50,14 +51,17 @@ public class TreeExplorerView extends Composite implements TreeExplorer.View {
     }
 
     TreeExplorerView(final TreeExplorer presenter,
-                     final ViewBinder uiBinder,
                      final Tree<TreeItem> tree,
                      final HandlerRegistration handlerRegistration
     ) {
         this.presenter = presenter;
-        TreeExplorerView.uiBinder = uiBinder;
         this.tree = tree;
         this.handlerRegistration = handlerRegistration;
+    }
+
+    @Override
+    protected void initWidget(Widget widget) {
+        super.initWidget(widget);
     }
 
     @Override
@@ -95,12 +99,14 @@ public class TreeExplorerView extends Composite implements TreeExplorer.View {
         return this;
     }
 
+    @SuppressWarnings("unchecked")
     public TreeExplorer.View addItem(final String uuid,
                                      final String parentsUuid,
                                      final String name,
                                      final IsWidget icon,
                                      final boolean isContainer,
-                                     final boolean state) {
+                                     final boolean state,
+                                     final OptionalInt index) {
         checkNotExist(uuid);
         final TreeItem.Type itemType = isContainer ? TreeItem.Type.CONTAINER : TreeItem.Type.ITEM;
         final TreeItem item = buildItem(uuid,
@@ -108,10 +114,11 @@ public class TreeExplorerView extends Composite implements TreeExplorer.View {
                                         icon,
                                         itemType);
         final TreeItem parent = tree.getItemByUuid(parentsUuid);
-        parent.addItem(itemType,
-                       uuid,
-                       name,
-                       icon);
+        if (index.isPresent()) {
+            parent.insertItem(item, index.getAsInt());
+        } else {
+            parent.addItem(item);
+        }
         parent.setState(getState(state));
         item.setState(getState(state));
         return this;
@@ -119,7 +126,8 @@ public class TreeExplorerView extends Composite implements TreeExplorer.View {
 
     public boolean isItemChanged(final String uuid,
                                  final String parentUuid,
-                                 final String name) {
+                                 final String name,
+                                 final OptionalInt index) {
 
         final TreeItem oldItem = tree.getItemByUuid(uuid);
         if (oldItem != null) {
@@ -129,8 +137,9 @@ public class TreeExplorerView extends Composite implements TreeExplorer.View {
             }
             final TreeItem oldItemParent = oldItem.getParentItem();
             final String oldParentUuid = null != oldItemParent ? oldItemParent.getUuid() : null;
-            return ((oldParentUuid == null && parentUuid == null) ||
-                    (null != parentUuid && !parentUuid.equals(oldParentUuid)));
+            return (((oldParentUuid == null && parentUuid == null) ||
+                    (null != parentUuid && !parentUuid.equals(oldParentUuid)))) ||
+                    isIndexChanged().test(oldItem, index);
         }
         return false;
     }
@@ -200,6 +209,16 @@ public class TreeExplorerView extends Composite implements TreeExplorer.View {
 
     private BiPredicate<TreeItem, String> isNameChanged() {
         return (item, name) -> !item.getLabel().equals(name);
+    }
+
+    private BiPredicate<TreeItem, OptionalInt> isIndexChanged() {
+        // check if the given item is at the given index
+        return (item, index) -> {
+            final TreeItem parentItem = item.getParentItem();
+            final int i = index.orElse(-1);
+            return i < 0 || i >= parentItem.getChildCount() ||
+                    !item.getUuid().equals(parentItem.getChild(i).getUuid());
+        };
     }
 
     interface ViewBinder extends UiBinder<Widget, TreeExplorerView> {

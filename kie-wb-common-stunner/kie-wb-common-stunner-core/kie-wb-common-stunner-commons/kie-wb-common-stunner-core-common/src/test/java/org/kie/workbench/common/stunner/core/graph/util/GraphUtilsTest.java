@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.core.graph.util;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.OptionalInt;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -267,5 +268,27 @@ public class GraphUtilsTest {
         when(definitionAdapter.getProperties(any(DomainObject.class))).thenReturn(new Sets.Builder<String>().add(PROPERTY).build());
         when(adapterManager.forProperty()).thenReturn(propertyAdapter);
         when(propertyAdapter.getId(PROPERTY)).thenReturn(PROPERTY_ID);
+    }
+
+    @Test
+    public void testGetChildIndex() {
+        final OptionalInt index1 = GraphUtils.getChildIndex(graphInstance.parentNode, TestingGraphInstanceBuilder.START_NODE_UUID);
+        assertTrue(index1.isPresent());
+        assertEquals(0, index1.getAsInt());
+
+        final OptionalInt index2 = GraphUtils.getChildIndex(graphInstance.parentNode, TestingGraphInstanceBuilder.INTERM_NODE_UUID);
+        assertTrue(index2.isPresent());
+        assertEquals(1, index2.getAsInt());
+
+        final OptionalInt index3 = GraphUtils.getChildIndex(graphInstance.parentNode, TestingGraphInstanceBuilder.END_NODE_UUID);
+        assertTrue(index3.isPresent());
+        assertEquals(2, index3.getAsInt());
+
+        final OptionalInt index4 = GraphUtils.getChildIndex(graphInstance.parentNode, TestingGraphInstanceBuilder.DOCKED_NODE_UUID);
+        assertTrue(index4.isPresent());
+        assertEquals(3, index4.getAsInt());
+
+        final OptionalInt index5 = GraphUtils.getChildIndex(graphInstance.parentNode, "node_not_exist");
+        assertFalse(index5.isPresent());
     }
 }

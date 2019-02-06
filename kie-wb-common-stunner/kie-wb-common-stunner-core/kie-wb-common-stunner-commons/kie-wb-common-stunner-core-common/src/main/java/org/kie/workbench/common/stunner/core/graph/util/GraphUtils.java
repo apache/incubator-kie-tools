@@ -23,10 +23,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.Set;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
@@ -416,5 +418,18 @@ public class GraphUtils {
             }
             return false;
         }
+    }
+
+    public static OptionalInt getChildIndex(final Element element,
+                                            final String uuid) {
+        if (!(element instanceof Node)) {
+            return OptionalInt.empty();
+        }
+
+        final Node<?, ?> node = (Node<?, ? extends Edge>) element;
+        return Objects.nonNull(node.getOutEdges()) ?
+                IntStream.range(0, node.getOutEdges().size())
+                        .filter(i -> uuid.equals(node.getOutEdges().get(i).getTargetNode().getUUID())).findFirst() :
+                OptionalInt.empty();
     }
 }
