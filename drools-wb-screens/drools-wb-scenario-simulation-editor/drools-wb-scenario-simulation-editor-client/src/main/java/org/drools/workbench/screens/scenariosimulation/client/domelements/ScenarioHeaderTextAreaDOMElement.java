@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.workbench.screens.scenariosimulation.client.factories;
+package org.drools.workbench.screens.scenariosimulation.client.domelements;
 
 import java.util.Objects;
 

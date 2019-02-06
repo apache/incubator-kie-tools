@@ -78,7 +78,7 @@ abstract class AbstractRightPanelTest {
                 .range(0, 3)
                 .forEach(id -> {
                     String key = getRandomString();
-                    FactModelTree value = new FactModelTree(key, FACT_PACKAGE, getMockSimpleProperties());
+                    FactModelTree value = new FactModelTree(key, FACT_PACKAGE, getMockSimpleProperties(), new HashMap<>());
                     toReturn.put(key, value);
                     if (id == 1) {
                         value.addSimpleProperty(getRandomString(), getRandomFactModelTree(toReturn, 0));
@@ -99,7 +99,7 @@ abstract class AbstractRightPanelTest {
             String fullName = DataManagementStrategy.SIMPLE_CLASSES_MAP.get(key).getCanonicalName();
             simpleProperties.put("value", fullName);
             String packageName = fullName.substring(0, fullName.lastIndexOf("."));
-            FactModelTree value = new FactModelTree(key, packageName, simpleProperties);
+            FactModelTree value = new FactModelTree(key, packageName, simpleProperties, new HashMap<>());
             toReturn.put(key, value);
         }
         return toReturn;

@@ -90,10 +90,6 @@ public class ScenarioSimulationGridHeaderUtilities {
         return ci.getColumn();
     }
 
-    public static boolean hasEditableHeader(final GridColumn<?> column) {
-        return column.getHeaderMetaData().stream().anyMatch(md -> md instanceof ScenarioHeaderMetaData);
-    }
-
     public static boolean isEditableHeader(final GridColumn<?> column,
                                            final Integer uiHeaderRowIndex) {
         GridColumn.HeaderMetaData headerMetaData = column.getHeaderMetaData().get(uiHeaderRowIndex);

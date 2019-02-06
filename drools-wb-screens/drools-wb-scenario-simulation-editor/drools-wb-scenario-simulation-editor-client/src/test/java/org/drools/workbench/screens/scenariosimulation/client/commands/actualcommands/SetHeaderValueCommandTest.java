@@ -38,9 +38,9 @@ public class SetHeaderValueCommandTest extends AbstractScenarioSimulationCommand
     public void setup() {
         super.setup();
         command = spy(new SetHeaderValueCommand());
-        scenarioSimulationContext.getStatus().setRowIndex(ROW_INDEX);
-        scenarioSimulationContext.getStatus().setColumnIndex(COLUMN_INDEX);
-        scenarioSimulationContext.getStatus().setCellValue(VALUE);
+        scenarioSimulationContextLocal.getStatus().setRowIndex(ROW_INDEX);
+        scenarioSimulationContextLocal.getStatus().setColumnIndex(COLUMN_INDEX);
+        scenarioSimulationContextLocal.getStatus().setCellValue(VALUE);
         assertTrue(command.isUndoable());
     }
 
@@ -56,7 +56,7 @@ public class SetHeaderValueCommandTest extends AbstractScenarioSimulationCommand
 
     private void commonExecute(boolean validateHeaderUpdate, boolean executed) {
         when(scenarioGridModelMock.validateHeaderUpdate(eq(VALUE), eq(ROW_INDEX), eq(COLUMN_INDEX), anyBoolean())).thenReturn(validateHeaderUpdate);
-        command.execute(scenarioSimulationContext);
+        command.execute(scenarioSimulationContextLocal);
         verify(dataManagementStrategyMock, times(1)).isADataType(anyString());
         if (executed) {
             verify(scenarioGridModelMock, times(1)).updateHeader(eq(COLUMN_INDEX), eq(ROW_INDEX), eq(VALUE));

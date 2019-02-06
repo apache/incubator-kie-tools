@@ -70,16 +70,16 @@ public class SetInstanceHeaderCommandTest extends AbstractScenarioSimulationComm
     @Test
     public void executeNoColumn() {
         gridColumnMock = null;
-        command.execute(scenarioSimulationContext);
-        verify((SetInstanceHeaderCommand) command, never()).executeIfSelectedColumn(scenarioSimulationContext, gridColumnMock);
+        command.execute(scenarioSimulationContextLocal);
+        verify((SetInstanceHeaderCommand) command, never()).executeIfSelectedColumn(scenarioSimulationContextLocal, gridColumnMock);
     }
 
     @Test
     public void executeDMN() {
-        scenarioSimulationContext.getStatus().setFullPackage(FULL_PACKAGE);
-        scenarioSimulationContext.getStatus().setClassName(VALUE_CLASS_NAME);
+        scenarioSimulationContextLocal.getStatus().setFullPackage(FULL_PACKAGE);
+        scenarioSimulationContextLocal.getStatus().setClassName(VALUE_CLASS_NAME);
         when(simulationDescriptorMock.getType()).thenReturn(ScenarioSimulationModel.Type.DMN);
-        command.execute(scenarioSimulationContext);
+        command.execute(scenarioSimulationContextLocal);
         verify(gridColumnMock, times(1)).setEditableHeaders(eq(false));
         verify(gridColumnMock, atLeastOnce()).getInformationHeaderMetaData();
         verify(informationHeaderMetaDataMock, times(1)).setTitle(eq(VALUE_CLASS_NAME));
@@ -90,10 +90,10 @@ public class SetInstanceHeaderCommandTest extends AbstractScenarioSimulationComm
 
     @Test
     public void executeRULE() {
-        scenarioSimulationContext.getStatus().setFullPackage(FULL_PACKAGE);
-        scenarioSimulationContext.getStatus().setClassName(VALUE_CLASS_NAME);
+        scenarioSimulationContextLocal.getStatus().setFullPackage(FULL_PACKAGE);
+        scenarioSimulationContextLocal.getStatus().setClassName(VALUE_CLASS_NAME);
         when(simulationDescriptorMock.getType()).thenReturn(ScenarioSimulationModel.Type.RULE);
-        command.execute(scenarioSimulationContext);
+        command.execute(scenarioSimulationContextLocal);
         verify(gridColumnMock, times(1)).setEditableHeaders(eq(true));
         verify(gridColumnMock, atLeastOnce()).getInformationHeaderMetaData();
         verify(informationHeaderMetaDataMock, times(1)).setTitle(eq(VALUE_CLASS_NAME));

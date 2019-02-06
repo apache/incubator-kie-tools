@@ -31,6 +31,9 @@ import com.google.gwt.event.shared.EventBus;
 import org.drools.workbench.screens.scenariosimulation.client.events.ReloadRightPanelEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.ScenarioGridReloadEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.ScenarioNotificationEvent;
+import org.drools.workbench.screens.scenariosimulation.client.factories.CollectionEditorSingletonDOMElementFactory;
+import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioCellTextAreaSingletonDOMElementFactory;
+import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioHeaderTextBoxSingletonDOMElementFactory;
 import org.drools.workbench.screens.scenariosimulation.client.metadata.ScenarioHeaderMetaData;
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.drools.workbench.screens.scenariosimulation.client.values.ScenarioGridCellValue;
@@ -66,6 +69,11 @@ public class ScenarioGridModel extends BaseGridData {
     protected Set<String> dataObjectsInstancesName;
 
     protected Set<String> simpleJavaTypeInstancesName;
+    protected CollectionEditorSingletonDOMElementFactory collectionEditorSingletonDOMElementFactory;
+    protected ScenarioCellTextAreaSingletonDOMElementFactory scenarioCellTextAreaSingletonDOMElementFactory;
+    protected ScenarioHeaderTextBoxSingletonDOMElementFactory scenarioHeaderTextBoxSingletonDOMElementFactory;
+
+
 
     public ScenarioGridModel() {
     }
@@ -103,6 +111,30 @@ public class ScenarioGridModel extends BaseGridData {
         } while (!isNewInstanceName(instanceTitle) ||
                 !isNewPropertyName(propertyTitle));
         return new AbstractMap.SimpleEntry<>(instanceTitle, propertyTitle);
+    }
+
+    public CollectionEditorSingletonDOMElementFactory getCollectionEditorSingletonDOMElementFactory() {
+        return collectionEditorSingletonDOMElementFactory;
+    }
+
+    public void setCollectionEditorSingletonDOMElementFactory(CollectionEditorSingletonDOMElementFactory collectionEditorSingletonDOMElementFactory) {
+        this.collectionEditorSingletonDOMElementFactory = collectionEditorSingletonDOMElementFactory;
+    }
+
+    public ScenarioCellTextAreaSingletonDOMElementFactory getScenarioCellTextAreaSingletonDOMElementFactory() {
+        return scenarioCellTextAreaSingletonDOMElementFactory;
+    }
+
+    public void setScenarioCellTextAreaSingletonDOMElementFactory(ScenarioCellTextAreaSingletonDOMElementFactory scenarioCellTextAreaSingletonDOMElementFactory) {
+        this.scenarioCellTextAreaSingletonDOMElementFactory = scenarioCellTextAreaSingletonDOMElementFactory;
+    }
+
+    public ScenarioHeaderTextBoxSingletonDOMElementFactory getScenarioHeaderTextBoxSingletonDOMElementFactory() {
+        return scenarioHeaderTextBoxSingletonDOMElementFactory;
+    }
+
+    public void setScenarioHeaderTextBoxSingletonDOMElementFactory(ScenarioHeaderTextBoxSingletonDOMElementFactory scenarioHeaderTextBoxSingletonDOMElementFactory) {
+        this.scenarioHeaderTextBoxSingletonDOMElementFactory = scenarioHeaderTextBoxSingletonDOMElementFactory;
     }
 
     /**

@@ -57,9 +57,9 @@ public class SetPropertyHeaderCommandTest extends AbstractScenarioSimulationComm
                 return gridColumnMock;
             }
         });
-        scenarioSimulationContext.getStatus().setFullPackage(FULL_PACKAGE);
-        scenarioSimulationContext.getStatus().setValue(VALUE);
-        scenarioSimulationContext.getStatus().setValueClassName(VALUE_CLASS_NAME);
+        scenarioSimulationContextLocal.getStatus().setFullPackage(FULL_PACKAGE);
+        scenarioSimulationContextLocal.getStatus().setValue(VALUE);
+        scenarioSimulationContextLocal.getStatus().setValueClassName(VALUE_CLASS_NAME);
         assertTrue(command.isUndoable());
         when(simulationDescriptorMock.getType()).thenReturn(ScenarioSimulationModel.Type.RULE);
     }
@@ -67,15 +67,15 @@ public class SetPropertyHeaderCommandTest extends AbstractScenarioSimulationComm
     @Test
     public void executeNoColumn() {
         gridColumnMock = null;
-        command.execute(scenarioSimulationContext);
-        verify((SetPropertyHeaderCommand) command, never()).executeIfSelectedColumn(scenarioSimulationContext, gridColumnMock);
+        command.execute(scenarioSimulationContextLocal);
+        verify((SetPropertyHeaderCommand) command, never()).executeIfSelectedColumn(scenarioSimulationContextLocal, gridColumnMock);
     }
 
     @Test
     public void executeKeepDataFalseDMN() {
-        scenarioSimulationContext.getStatus().setKeepData(false);
+        scenarioSimulationContextLocal.getStatus().setKeepData(false);
         when(simulationDescriptorMock.getType()).thenReturn(ScenarioSimulationModel.Type.DMN);
-        command.execute(scenarioSimulationContext);
+        command.execute(scenarioSimulationContextLocal);
         verify(gridColumnMock, times(1)).setEditableHeaders(eq(false));
         verify(propertyHeaderMetaDataMock, times(1)).setColumnGroup(anyString());
         verify(propertyHeaderMetaDataMock, times(1)).setTitle(VALUE);
@@ -85,9 +85,9 @@ public class SetPropertyHeaderCommandTest extends AbstractScenarioSimulationComm
 
     @Test
     public void executeKeepDataFalseRule() {
-        scenarioSimulationContext.getStatus().setKeepData(false);
+        scenarioSimulationContextLocal.getStatus().setKeepData(false);
         when(simulationDescriptorMock.getType()).thenReturn(ScenarioSimulationModel.Type.RULE);
-        command.execute(scenarioSimulationContext);
+        command.execute(scenarioSimulationContextLocal);
         verify(gridColumnMock, times(1)).setEditableHeaders(eq(true));
         verify(propertyHeaderMetaDataMock, times(1)).setColumnGroup(anyString());
         verify(propertyHeaderMetaDataMock, times(1)).setTitle(VALUE);
@@ -97,8 +97,8 @@ public class SetPropertyHeaderCommandTest extends AbstractScenarioSimulationComm
 
     @Test
     public void executeKeepDataTrue() {
-        scenarioSimulationContext.getStatus().setKeepData(true);
-        command.execute(scenarioSimulationContext);
+        scenarioSimulationContextLocal.getStatus().setKeepData(true);
+        command.execute(scenarioSimulationContextLocal);
         verify(propertyHeaderMetaDataMock, times(1)).setColumnGroup(anyString());
         verify(propertyHeaderMetaDataMock, times(1)).setTitle(VALUE);
         verify(propertyHeaderMetaDataMock, times(1)).setReadOnly(false);

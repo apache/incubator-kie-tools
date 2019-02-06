@@ -84,7 +84,6 @@ public abstract class AbstractRunnerHelper {
             Map<List<String>, Object> paramsForBean = getParamsForBean(simulationDescriptor,
                                                                        factIdentifier,
                                                                        entry.getValue(),
-                                                                       classLoader,
                                                                        expressionEvaluator);
 
             Object bean = getDirectMapping(paramsForBean)
@@ -156,7 +155,6 @@ public abstract class AbstractRunnerHelper {
     public Map<List<String>, Object> getParamsForBean(SimulationDescriptor simulationDescriptor,
                                                       FactIdentifier factIdentifier,
                                                       List<FactMappingValue> factMappingValues,
-                                                      ClassLoader classLoader,
                                                       ExpressionEvaluator expressionEvaluator) {
         Map<List<String>, Object> paramsForBean = new HashMap<>();
 
@@ -170,7 +168,8 @@ public abstract class AbstractRunnerHelper {
                     .map(ExpressionElement::getStep).collect(toList());
 
             try {
-                Object value = expressionEvaluator.getValueForGiven(factMapping.getClassName(), factMappingValue.getRawValue());
+                Object value = expressionEvaluator.getValueForGiven(factMapping.getClassName(),
+                                                                    factMappingValue.getRawValue());
                 paramsForBean.put(pathToField, value);
             } catch (IllegalArgumentException e) {
                 factMappingValue.setError(true);

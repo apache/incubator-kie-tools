@@ -27,12 +27,14 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
 import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.RightPanelView;
 import org.drools.workbench.screens.scenariosimulation.model.FactMappingType;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModelContent;
 import org.drools.workbench.screens.scenariosimulation.model.SimulationDescriptor;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
+import org.drools.workbench.screens.scenariosimulation.utils.ScenarioSimulationSharedUtils;
 import org.kie.soup.project.datamodel.oracle.ModelField;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleFactory;
@@ -43,12 +45,14 @@ public class DMODataManagementStrategy extends AbstractDataManagementStrategy {
 
     private AsyncPackageDataModelOracleFactory oracleFactory;
     protected AsyncPackageDataModelOracle oracle;
+    protected ScenarioSimulationContext scenarioSimulationContext;
 
     //Package for which this Scenario Simulation relates
     protected String packageName = "";
 
-    public DMODataManagementStrategy(final AsyncPackageDataModelOracleFactory oracleFactory) {
+    public DMODataManagementStrategy(final AsyncPackageDataModelOracleFactory oracleFactory, final ScenarioSimulationContext scenarioSimulationContext) {
         this.oracleFactory = oracleFactory;
+        this.scenarioSimulationContext = scenarioSimulationContext;
     }
 
     @Override
@@ -140,18 +144,18 @@ public class DMODataManagementStrategy extends AbstractDataManagementStrategy {
                     .stream()
                     .filter(factMapping -> !Objects.equals(FactMappingType.OTHER, factMapping.getExpressionIdentifier().getType()))
                     .forEach(factMapping -> {
-                String dataObjectName = factMapping.getFactIdentifier().getClassName();
-                if (dataObjectName.contains(".")) {
-                    dataObjectName = dataObjectName.substring(dataObjectName.lastIndexOf(".") + 1);
-                }
-                final String instanceName = factMapping.getFactAlias();
-                if (!instanceName.equals(dataObjectName)) {
-                    final FactModelTree factModelTree = sourceMap.get(dataObjectName);
-                    if (factModelTree != null) {
-                        toReturn.put(instanceName, factModelTree);
-                    }
-                }
-            });
+                        String dataObjectName = factMapping.getFactIdentifier().getClassName();
+                        if (dataObjectName.contains(".")) {
+                            dataObjectName = dataObjectName.substring(dataObjectName.lastIndexOf(".") + 1);
+                        }
+                        final String instanceName = factMapping.getFactAlias();
+                        if (!instanceName.equals(dataObjectName)) {
+                            final FactModelTree factModelTree = sourceMap.get(dataObjectName);
+                            if (factModelTree != null) {
+                                toReturn.put(instanceName, factModelTree);
+                            }
+                        }
+                    });
         }
         return toReturn;
     }
@@ -162,21 +166,49 @@ public class DMODataManagementStrategy extends AbstractDataManagementStrategy {
      * @param factName
      * @param modelFields
      * @return
+     * @implNote For the moment being, due to current implementation of <b>DMO</b>, it it not possible to retrieve <b>all</b>
+     * the generic types of a class with more then one, but only the last one. So, for <code>Map</code>, the <b>key</b>
+     * will allways be a <code>java.lang.String</code>
      */
     protected FactModelTree getFactModelTree(String factName, ModelField[] modelFields) {
         Map<String, String> simpleProperties = new HashMap<>();
-        for (ModelField modelField : modelFields) {
-            if (!modelField.getName().equals("this")) {
-                String className = SIMPLE_CLASSES_MAP.containsKey(modelField.getClassName()) ? SIMPLE_CLASSES_MAP.get(modelField.getClassName()).getCanonicalName() : modelField.getClassName();
-                simpleProperties.put(modelField.getName(), className);
-            }
-        }
+        Map<String, List<String>> genericTypesMap = new HashMap<>();
         String factPackageName = packageName;
         String fullFactClassName = oracle.getFQCNByFactName(factName);
         if (fullFactClassName != null && fullFactClassName.contains(".")) {
             factPackageName = fullFactClassName.substring(0, fullFactClassName.lastIndexOf("."));
         }
-        return new FactModelTree(factName, factPackageName, simpleProperties);
+        for (ModelField modelField : modelFields) {
+            if (!modelField.getName().equals("this")) {
+                String className = SIMPLE_CLASSES_MAP.containsKey(modelField.getClassName()) ? SIMPLE_CLASSES_MAP.get(modelField.getClassName()).getCanonicalName() : modelField.getClassName();
+                simpleProperties.put(modelField.getName(), className);
+                if (ScenarioSimulationSharedUtils.isCollection(className)) {
+                    populateGenericTypeMap(genericTypesMap, factName, modelField.getName(), ScenarioSimulationSharedUtils.isList(className));
+                }
+            }
+        }
+        return new FactModelTree(factName, factPackageName, simpleProperties, genericTypesMap);
+    }
+
+    /**
+     * Populate the given <code>Map</code> with the generic type(s) of given property.
+     * If <code>isList</code> is false, the first generic will be <b>java.lang.String</b>
+     * @param toPopulate
+     * @param factName
+     * @param propertyName
+     * @param isList
+     * @implNote due to current DMO implementation, it is not possible to retrive <b>all</b> generic types of a given class, but only the last one; for the moment being, the generic type
+     * for <code>Map</code> will be <b>java.lang.String</b>
+     */
+    protected void populateGenericTypeMap(Map<String, List<String>> toPopulate, String factName, String propertyName, boolean isList) {
+        List<String> genericTypes = new ArrayList<>();
+        if (!isList) {
+            genericTypes.add(String.class.getName());
+        }
+        String genericInfo = oracle.getParametricFieldType(factName, propertyName);
+        String fullGenericInfoClassName = oracle.getFQCNByFactName(genericInfo);
+        genericTypes.add(fullGenericInfoClassName);
+        toPopulate.put(propertyName, genericTypes);
     }
 
     /**
@@ -204,6 +236,7 @@ public class DMODataManagementStrategy extends AbstractDataManagementStrategy {
         if (factTypeFieldsMap.size() == expectedElements) {
             factTypeFieldsMap.values().forEach(factModelTree -> populateFactModelTree(factModelTree, factTypeFieldsMap));
             rightPanelPresenter.setDataObjectFieldsMap(factTypeFieldsMap);
+            scenarioSimulationContext.setDataObjectFieldsMap(factTypeFieldsMap);
             SortedMap<String, FactModelTree> instanceFieldsMap = getInstanceMap(factTypeFieldsMap);
             rightPanelPresenter.setInstanceFieldsMap(instanceFieldsMap);
             Set<String> dataObjectsInstancesName = new HashSet<>(factTypeFieldsMap.keySet());

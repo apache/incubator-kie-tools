@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package org.drools.workbench.screens.scenariosimulation.client.factories;
+package org.drools.workbench.screens.scenariosimulation.client.domelements;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.drools.workbench.screens.scenariosimulation.client.events.SetCellValueEvent;
+import org.drools.workbench.screens.scenariosimulation.client.factories.AbstractFactoriesTest;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridCell;
 import org.junit.Before;
 import org.junit.Test;

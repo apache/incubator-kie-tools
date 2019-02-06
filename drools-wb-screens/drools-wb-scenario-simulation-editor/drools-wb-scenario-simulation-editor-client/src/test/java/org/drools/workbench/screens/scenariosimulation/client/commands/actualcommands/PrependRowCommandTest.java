@@ -41,7 +41,7 @@ public class PrependRowCommandTest extends AbstractScenarioSimulationCommandTest
 
     @Test
     public void execute() {
-        command.execute(scenarioSimulationContext);
+        command.execute(scenarioSimulationContextLocal);
         verify(scenarioGridModelMock, times(1)).insertRow(eq(0), isA(ScenarioGridRow.class));
     }
 }

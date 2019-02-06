@@ -17,10 +17,10 @@
 package org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioCellTextAreaSingletonDOMElementFactory;
+import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioHeaderTextBoxSingletonDOMElementFactory;
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
-import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridLayer;
-import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
 import org.drools.workbench.screens.scenariosimulation.model.FactMappingType;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,7 +46,8 @@ public class DeleteColumnCommandTest extends AbstractScenarioSimulationCommandTe
         super.setup();
         command = spy(new DeleteColumnCommand() {
             @Override
-            protected ScenarioGridColumn getScenarioGridColumnLocal(String instanceTitle, String propertyTitle, String columnId, String columnGroup, FactMappingType factMappingType, ScenarioGridPanel scenarioGridPanel, ScenarioGridLayer gridLayer, String placeHolder) {
+            protected ScenarioGridColumn getScenarioGridColumnLocal(String instanceTitle, String propertyTitle, String columnId, String columnGroup, FactMappingType factMappingType, ScenarioHeaderTextBoxSingletonDOMElementFactory factoryHeader,
+                                                                    ScenarioCellTextAreaSingletonDOMElementFactory factoryCell, String placeHolder) {
                 return gridColumnMock;
             }
         });
@@ -55,16 +56,16 @@ public class DeleteColumnCommandTest extends AbstractScenarioSimulationCommandTe
 
     @Test
     public void execute() {
-        scenarioSimulationContext.getStatus().setColumnIndex(COLUMN_INDEX);
-        scenarioSimulationContext.getStatus().setColumnGroup(COLUMN_GROUP);
+        scenarioSimulationContextLocal.getStatus().setColumnIndex(COLUMN_INDEX);
+        scenarioSimulationContextLocal.getStatus().setColumnGroup(COLUMN_GROUP);
         doReturn(4l).when(scenarioGridModelMock).getGroupSize(COLUMN_GROUP);
-        command.execute(scenarioSimulationContext);
+        command.execute(scenarioSimulationContextLocal);
         verify(scenarioGridModelMock, times(1)).deleteColumn(eq(COLUMN_INDEX));
         verify(scenarioGridModelMock, never()).insertColumn(anyInt(), anyObject());
         reset(scenarioGridModelMock);
         doReturn(0l).when(scenarioGridModelMock).getGroupSize(COLUMN_GROUP);
-        command.execute(scenarioSimulationContext);
-        verify(command, times(1)).getScenarioGridColumnLocal(anyString(), anyString(), anyString(), eq(COLUMN_GROUP), eq(factMappingType), eq(scenarioGridPanelMock), eq(scenarioGridLayerMock), eq(ScenarioSimulationEditorConstants.INSTANCE.defineValidType()));
+        command.execute(scenarioSimulationContextLocal);
+        verify(command, times(1)).getScenarioGridColumnLocal(anyString(), anyString(), anyString(), eq(COLUMN_GROUP), eq(factMappingType), eq(scenarioHeaderTextBoxSingletonDOMElementFactoryTest), eq(scenarioCellTextAreaSingletonDOMElementFactoryTest), eq(ScenarioSimulationEditorConstants.INSTANCE.defineValidType()));
         verify(scenarioGridModelMock, times(1)).deleteColumn(eq(COLUMN_INDEX));
         verify(scenarioGridModelMock, times(1)).insertColumn(eq(COLUMN_INDEX), eq(gridColumnMock));
     }

@@ -48,7 +48,6 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.NodeMouseEventHandle
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.DefaultGridWidgetCellSelectorMouseEventHandler;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.SelectionExtension;
 
-import static org.drools.workbench.screens.scenariosimulation.client.editor.strategies.DataManagementStrategy.SIMPLE_CLASSES_MAP;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -114,7 +113,7 @@ public class ScenarioGridTest {
         factMappingInteger = new FactMapping(EXPRESSION_ALIAS_INTEGER, factIdentifierInteger, new ExpressionIdentifier("GIVEN", FactMappingType.GIVEN));
         factMappingIndex = new FactMapping(EXPRESSION_ALIAS_INDEX, FactIdentifier.INDEX, ExpressionIdentifier.INDEX);
         simulation = getSimulation();
-        scenarioGrid = spy(new ScenarioGrid(scenarioGridModelMock, scenarioGridLayerMock, scenarioGridRendererMock, scenarioGridPanelMock) {
+        scenarioGrid = spy(new ScenarioGrid(scenarioGridModelMock, scenarioGridLayerMock, scenarioGridRendererMock) {
 
             @Override
             protected void appendRow(int rowIndex, Scenario scenario) {
@@ -122,12 +121,8 @@ public class ScenarioGridTest {
             }
 
             @Override
-            protected ScenarioHeaderTextBoxSingletonDOMElementFactory getScenarioHeaderTextBoxSingletonDOMElementFactory() {
-                return scenarioHeaderTextBoxSingletonDOMElementFactoryMock;
-            }
-
-            @Override
-            protected ScenarioSimulationBuilders.HeaderBuilder getHeaderBuilderLocal(String instanceTitle, String propertyTitle, String columnId, String columnGroup, FactMappingType factMappingType, ScenarioHeaderTextBoxSingletonDOMElementFactory factoryHeader) {
+            protected ScenarioSimulationBuilders.HeaderBuilder getHeaderBuilderLocal(String instanceTitle, String
+                    propertyTitle, String columnId, String columnGroup, FactMappingType factMappingType) {
                 return headerBuilderMock;
             }
 
@@ -215,13 +210,11 @@ public class ScenarioGridTest {
         final FactMappingType type = factMappingDescription.getExpressionIdentifier().getType();
         String columnGroup = type.name();
         scenarioGrid.getScenarioGridColumnLocal(instanceTitle, propertyTitle, columnId, columnGroup, type, ScenarioSimulationEditorConstants.INSTANCE.insertValue());
-        verify(scenarioGrid, times(1)).getScenarioHeaderTextBoxSingletonDOMElementFactory();
         verify(scenarioGrid, times(1)).getHeaderBuilderLocal(eq(instanceTitle),
                                                              eq(propertyTitle),
                                                              eq(columnId),
                                                              eq(columnGroup),
-                                                             eq(type),
-                                                             eq(scenarioHeaderTextBoxSingletonDOMElementFactoryMock));
+                                                             eq(type));
     }
 
     @Test
@@ -249,12 +242,6 @@ public class ScenarioGridTest {
         factMappingInteger.getExpressionElements().clear();
         assertFalse(scenarioGrid.isPropertyAssigned(false, factMappingInteger));
         assertTrue(scenarioGrid.isPropertyAssigned(true, factMappingInteger));
-    }
-
-    @Test
-    public void isSimpleJavaType() {
-        SIMPLE_CLASSES_MAP.values().forEach(clazz -> assertTrue(scenarioGrid.isSimpleJavaType(clazz.getName())));
-        assertFalse(scenarioGrid.isSimpleJavaType("com.TestBean"));
     }
 
     @Test

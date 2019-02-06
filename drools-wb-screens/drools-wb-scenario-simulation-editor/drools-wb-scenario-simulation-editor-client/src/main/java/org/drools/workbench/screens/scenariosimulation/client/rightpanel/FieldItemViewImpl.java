@@ -32,7 +32,7 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 public class FieldItemViewImpl implements FieldItemView {
 
     @DataField("fieldElement")
-    LIElement fieldElement = Document.get().createLIElement();
+    protected LIElement fieldElement = Document.get().createLIElement();
 
     private Presenter fieldItemPresenter;
 

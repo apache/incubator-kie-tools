@@ -15,7 +15,7 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.metadata;
 
-import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioHeaderTextAreaDOMElement;
+import org.drools.workbench.screens.scenariosimulation.client.domelements.ScenarioHeaderTextAreaDOMElement;
 import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioHeaderTextBoxSingletonDOMElementFactory;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellEditAction;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;

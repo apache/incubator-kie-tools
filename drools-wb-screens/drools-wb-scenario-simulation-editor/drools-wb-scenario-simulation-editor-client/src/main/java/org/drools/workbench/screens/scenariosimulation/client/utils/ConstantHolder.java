@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,19 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.workbench.screens.scenariosimulation.client.widgets;
+package org.drools.workbench.screens.scenariosimulation.client.utils;
 
-import com.ait.lienzo.client.core.shape.Group;
+/**
+ * Class used to store constants used throughout the code
+ */
+public class ConstantHolder {
 
-public class ScenarioMenuItem extends Group {
-
-    private String caption;
-
-    public ScenarioMenuItem(String caption) {
-        this.caption = caption;
-    }
-
-    public String getCaption() {
-        return caption;
-    }
+    public static final String FA_ANGLE_DOWN = "fa-angle-down";
+    public static final String FA_ANGLE_RIGHT = "fa-angle-right";
+    public static final String HIDDEN = "hidden";
+    public static final String NODE_HIDDEN = "node-hidden";
 }

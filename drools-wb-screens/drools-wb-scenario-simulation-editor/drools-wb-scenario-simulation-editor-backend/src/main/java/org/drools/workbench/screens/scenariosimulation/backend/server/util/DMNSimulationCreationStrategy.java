@@ -35,6 +35,7 @@ import org.drools.workbench.screens.scenariosimulation.model.SimulationDescripto
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTuple;
 import org.drools.workbench.screens.scenariosimulation.service.DMNTypeService;
+import org.drools.workbench.screens.scenariosimulation.utils.ScenarioSimulationSharedUtils;
 import org.uberfire.backend.vfs.Path;
 
 import static org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree.Type;
@@ -92,6 +93,9 @@ public class DMNSimulationCreationStrategy implements SimulationCreationStrategy
 
                 FactMapping factMapping = factMappingExtractor.getFactMapping(factModelTree, factName, previousSteps, factType);
 
+                if(ScenarioSimulationSharedUtils.isList(factType)) {
+                    factMapping.setGenericTypes(factModelTree.getGenericTypeInfo(factName));
+                }
                 factMapping.addExpressionElement(factName, factType);
             }
 

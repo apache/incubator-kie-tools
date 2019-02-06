@@ -21,6 +21,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
 import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.RightPanelView;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModelContent;
@@ -37,10 +38,12 @@ public class DMNDataManagementStrategy extends AbstractDataManagementStrategy {
 
     protected ResultHolder factModelTreeHolder = new ResultHolder();
     private final Caller<DMNTypeService> dmnTypeService;
-    private Path currentPath;
+    protected ScenarioSimulationContext scenarioSimulationContext;
+    protected Path currentPath;
 
-    public DMNDataManagementStrategy(Caller<DMNTypeService> dmnTypeService) {
+    public DMNDataManagementStrategy(Caller<DMNTypeService> dmnTypeService, ScenarioSimulationContext scenarioSimulationContext) {
         this.dmnTypeService = dmnTypeService;
+        this.scenarioSimulationContext = scenarioSimulationContext;
     }
 
     @Override
@@ -67,18 +70,25 @@ public class DMNDataManagementStrategy extends AbstractDataManagementStrategy {
         return factModelTreeHolder.factModelTuple.getHiddenFacts().keySet().contains(value) || factModelTreeHolder.factModelTuple.getVisibleFacts().keySet().contains(value);
     }
 
-    private RemoteCallback<FactModelTuple> getSuccessCallback(RightPanelView.Presenter rightPanelPresenter) {
-        return factMappingTuple -> {
-            factModelTreeHolder.setFactModelTuple(factMappingTuple);
-            final SortedMap<String, FactModelTree> visibleFacts = factMappingTuple.getVisibleFacts();
-            final Map<Boolean, List<Map.Entry<String, FactModelTree>>> partitionBy = visibleFacts.entrySet().stream()
-                    .collect(Collectors.partitioningBy(stringFactModelTreeEntry -> stringFactModelTreeEntry.getValue().isSimple()));
-            final SortedMap<String, FactModelTree> complexDataObjects = new TreeMap<>(partitionBy.get(false).stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
-            final SortedMap<String, FactModelTree> simpleDataObjects = new TreeMap<>(partitionBy.get(true).stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
-            rightPanelPresenter.setDataObjectFieldsMap(complexDataObjects);
-            rightPanelPresenter.setSimpleJavaTypeFieldsMap(simpleDataObjects);
-            rightPanelPresenter.setHiddenFieldsMap(factMappingTuple.getHiddenFacts());
-        };
+    protected RemoteCallback<FactModelTuple> getSuccessCallback(RightPanelView.Presenter rightPanelPresenter) {
+        return factMappingTuple -> successCallbackContent(factMappingTuple, rightPanelPresenter);
+    }
+
+    protected void successCallbackContent(FactModelTuple factMappingTuple, RightPanelView.Presenter rightPanelPresenter) {
+        factModelTreeHolder.setFactModelTuple(factMappingTuple);
+        final SortedMap<String, FactModelTree> visibleFacts = factMappingTuple.getVisibleFacts();
+        final Map<Boolean, List<Map.Entry<String, FactModelTree>>> partitionBy = visibleFacts.entrySet().stream()
+                .collect(Collectors.partitioningBy(stringFactModelTreeEntry -> stringFactModelTreeEntry.getValue().isSimple()));
+        final SortedMap<String, FactModelTree> complexDataObjects = new TreeMap<>(partitionBy.get(false).stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+        final SortedMap<String, FactModelTree> simpleDataObjects = new TreeMap<>(partitionBy.get(true).stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+        rightPanelPresenter.setDataObjectFieldsMap(complexDataObjects);
+        rightPanelPresenter.setSimpleJavaTypeFieldsMap(simpleDataObjects);
+        rightPanelPresenter.setHiddenFieldsMap(factMappingTuple.getHiddenFacts());
+
+        SortedMap<String, FactModelTree> context = new TreeMap<>();
+        context.putAll(factMappingTuple.getVisibleFacts());
+        context.putAll(factMappingTuple.getHiddenFacts());
+        scenarioSimulationContext.setDataObjectFieldsMap(context);
     }
 
     private ErrorCallback<Object> getErrorCallback(RightPanelView.Presenter rightPanelPresenter) {

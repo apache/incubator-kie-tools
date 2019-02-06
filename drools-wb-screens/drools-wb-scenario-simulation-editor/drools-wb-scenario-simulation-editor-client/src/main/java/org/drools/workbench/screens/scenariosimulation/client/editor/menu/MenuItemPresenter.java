@@ -25,7 +25,7 @@ import org.drools.workbench.screens.scenariosimulation.client.utils.ViewsProvide
 public class MenuItemPresenter implements MenuItemView.Presenter {
 
     @Inject
-    ViewsProvider viewsProvider;
+    protected ViewsProvider viewsProvider;
 
     @Override
     public void onClickEvent(ClickEvent event) {

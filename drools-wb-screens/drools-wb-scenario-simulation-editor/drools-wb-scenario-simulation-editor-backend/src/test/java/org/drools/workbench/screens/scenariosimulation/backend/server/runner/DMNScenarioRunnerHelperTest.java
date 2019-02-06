@@ -72,7 +72,7 @@ public class DMNScenarioRunnerHelperTest {
     private static final String TEST_DESCRIPTION = "Test description";
     private static final ClassLoader classLoader = RuleScenarioRunnerHelperTest.class.getClassLoader();
     private static final ExpressionEvaluator expressionEvaluator = new DMNFeelExpressionEvaluator(classLoader);
-    private static final DMNScenarioRunnerHelper runnerHelper = new DMNScenarioRunnerHelper(null);
+    private static final DMNScenarioRunnerHelper runnerHelper = new DMNScenarioRunnerHelper();
 
     private Simulation simulation;
     private FactIdentifier personFactIdentifier;

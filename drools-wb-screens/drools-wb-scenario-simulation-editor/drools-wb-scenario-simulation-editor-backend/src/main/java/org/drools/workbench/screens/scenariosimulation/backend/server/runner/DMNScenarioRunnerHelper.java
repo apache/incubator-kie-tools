@@ -45,12 +45,6 @@ import static org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus.SU
 
 public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
 
-    private final SimulationDescriptor simulationDescriptor;
-
-    public DMNScenarioRunnerHelper(SimulationDescriptor simulationDescriptor) {
-        this.simulationDescriptor = simulationDescriptor;
-    }
-
     @Override
     public RequestContext executeScenario(KieContainer kieContainer,
                                           ScenarioRunnerData scenarioRunnerData,

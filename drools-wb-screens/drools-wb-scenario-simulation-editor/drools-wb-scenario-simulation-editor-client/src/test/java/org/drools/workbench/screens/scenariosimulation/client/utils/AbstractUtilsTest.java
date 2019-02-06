@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.drools.workbench.screens.scenariosimulation.client.factories.CollectionEditorSingletonDOMElementFactory;
 import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioCellTextAreaSingletonDOMElementFactory;
 import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioHeaderTextBoxSingletonDOMElementFactory;
 import org.drools.workbench.screens.scenariosimulation.client.metadata.ScenarioHeaderMetaData;
@@ -39,6 +40,9 @@ public abstract class AbstractUtilsTest {
 
     @Mock
     protected ScenarioHeaderTextBoxSingletonDOMElementFactory scenarioHeaderTextBoxSingletonDOMElementFactoryMock;
+
+    @Mock
+    protected CollectionEditorSingletonDOMElementFactory collectionEditorSingletonDOMElementFactoryMock;
 
     @Mock
     protected ScenarioGridLayer mockScenarioGridLayer;
@@ -67,6 +71,4 @@ public abstract class AbstractUtilsTest {
         scenarioHeaderMetaDataList = Collections.singletonList(scenarioHeaderMetaDataMock);
         doReturn(scenarioHeaderMetaDataList).when(headerBuilderMock).build();
     }
-
-
 }

@@ -38,8 +38,8 @@ public abstract class AbstractInsertColumnCommand extends AbstractScenarioSimula
                                                                                       status.getColumnId(),
                                                                                       status.getColumnGroup(),
                                                                                       factMappingType,
-                                                                                      context.getScenarioGridPanel(),
-                                                                                      context.getScenarioGridLayer(),
+                                                                                      context.getScenarioHeaderTextBoxSingletonDOMElementFactory(),
+                                                                                      context.getScenarioCellTextAreaSingletonDOMElementFactory(),
                                                                                       ScenarioSimulationEditorConstants.INSTANCE.defineValidType());
         context.getModel().insertColumn(index, scenarioGridColumnLocal);
     }

@@ -15,14 +15,19 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.commands;
 
+import java.util.SortedMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.drools.workbench.screens.scenariosimulation.client.editor.ScenarioSimulationEditorPresenter;
+import org.drools.workbench.screens.scenariosimulation.client.factories.CollectionEditorSingletonDOMElementFactory;
+import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioCellTextAreaSingletonDOMElementFactory;
+import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioHeaderTextBoxSingletonDOMElementFactory;
 import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.RightPanelView;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridLayer;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
 import org.drools.workbench.screens.scenariosimulation.model.Simulation;
+import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mvp.PlaceRequest;
 
@@ -39,6 +44,7 @@ public class ScenarioSimulationContext {
     protected ScenarioGridLayer scenarioGridLayer;
     protected ScenarioSimulationEditorPresenter scenarioSimulationEditorPresenter;
     protected RightPanelView.Presenter rightPanelPresenter;
+    protected SortedMap<String, FactModelTree> dataObjectFieldsMap;
 
     protected Status status = new Status();
 
@@ -95,6 +101,14 @@ public class ScenarioSimulationContext {
         this.rightPanelPresenter = rightPanelPresenter;
     }
 
+    public SortedMap<String, FactModelTree> getDataObjectFieldsMap() {
+        return dataObjectFieldsMap;
+    }
+
+    public void setDataObjectFieldsMap(SortedMap<String, FactModelTree> dataObjectFieldsMap) {
+        this.dataObjectFieldsMap = dataObjectFieldsMap;
+    }
+
     public ScenarioGridPanel getScenarioGridPanel() {
         return scenarioGridPanel;
     }
@@ -135,6 +149,18 @@ public class ScenarioSimulationContext {
 
     public long getId() {
         return id;
+    }
+
+    public CollectionEditorSingletonDOMElementFactory getCollectionEditorSingletonDOMElementFactory() {
+        return model.getCollectionEditorSingletonDOMElementFactory();
+    }
+
+    public ScenarioCellTextAreaSingletonDOMElementFactory getScenarioCellTextAreaSingletonDOMElementFactory() {
+        return model.getScenarioCellTextAreaSingletonDOMElementFactory();
+    }
+
+    public ScenarioHeaderTextBoxSingletonDOMElementFactory getScenarioHeaderTextBoxSingletonDOMElementFactory() {
+        return model.getScenarioHeaderTextBoxSingletonDOMElementFactory();
     }
 
     /**

@@ -30,6 +30,9 @@ import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
+import static org.drools.workbench.screens.scenariosimulation.client.utils.ConstantHolder.FA_ANGLE_DOWN;
+import static org.drools.workbench.screens.scenariosimulation.client.utils.ConstantHolder.HIDDEN;
+
 /**
  * This class is used to represent a <b>complex</b> (i.e. expandable) property, i.e. a class containing other properties
  */
@@ -37,9 +40,7 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 @Templated
 public class ListGroupItemViewImpl implements ListGroupItemView {
 
-    public static final String FA_ANGLE_DOWN = "fa-angle-down";
     public static final String LIST_VIEW_PF_EXPAND_ACTIVE = "list-view-pf-expand-active";
-    public static final String HIDDEN = "hidden";
 
     @DataField("listGroupExpansion")
     protected DivElement listGroupExpansion = Document.get().createDivElement();

@@ -23,10 +23,12 @@ import org.drools.workbench.screens.scenariosimulation.client.editor.ScenarioSim
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidgetKeyboardHandler;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -58,6 +60,7 @@ public class ScenarioSimulationProducerTest extends AbstractProducerTest {
         final ScenarioSimulationContext retrieved = scenarioSimulationProducer.getScenarioSimulationContext();
         assertNotNull(retrieved);
         assertEquals(scenarioGridPanelMock, retrieved.getScenarioGridPanel());
+        verify(scenarioGridPanelMock, times(1)).addKeyDownHandler(isA(BaseGridWidgetKeyboardHandler.class));
         verify(scenarioSimulationEventHandlerMock, times(1)).setEventBus(eq(eventBusMock));
         verify(scenarioSimulationEventHandlerMock, times(1)).setDeletePopupPresenter(eq(deletePopupPresenterMock));
         verify(scenarioSimulationEventHandlerMock, times(1)).setPreserveDeletePopupPresenter(eq(preserveDeletePopupPresenterMock));

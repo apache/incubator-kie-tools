@@ -45,14 +45,14 @@ public class DeleteRowCommandTest extends AbstractScenarioSimulationCommandTest 
 
     @Test
     public void execute() {
-        scenarioSimulationContext.getStatus().setRowIndex(ROW_INDEX);
+        scenarioSimulationContextLocal.getStatus().setRowIndex(ROW_INDEX);
         when(rowsMock.isEmpty()).thenReturn(false);
-        command.execute(scenarioSimulationContext);
+        command.execute(scenarioSimulationContextLocal);
         verify(scenarioGridModelMock, times(1)).deleteRow(eq(ROW_INDEX));
         verify(scenarioGridModelMock, never()).insertRow(anyInt(), isA(ScenarioGridRow.class));
         reset(scenarioGridModelMock);
         when(rowsMock.isEmpty()).thenReturn(true);
-        command.execute(scenarioSimulationContext);
+        command.execute(scenarioSimulationContextLocal);
         verify(scenarioGridModelMock, times(1)).deleteRow(eq(ROW_INDEX));
         verify(scenarioGridModelMock, times(1)).insertRow(eq(0), isA(ScenarioGridRow.class));
     }

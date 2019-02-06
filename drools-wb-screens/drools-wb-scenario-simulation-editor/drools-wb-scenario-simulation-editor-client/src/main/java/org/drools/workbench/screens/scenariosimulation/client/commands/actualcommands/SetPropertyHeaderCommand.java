@@ -15,6 +15,7 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands;
 
+import java.util.SortedMap;
 import java.util.stream.IntStream;
 
 import javax.enterprise.context.Dependent;
@@ -23,6 +24,9 @@ import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioS
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
 import org.drools.workbench.screens.scenariosimulation.model.FactIdentifier;
+import org.drools.workbench.screens.scenariosimulation.model.FactMapping;
+import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
+import org.drools.workbench.screens.scenariosimulation.utils.ScenarioSimulationSharedUtils;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 
 import static org.drools.workbench.screens.scenariosimulation.client.utils.ScenarioSimulationUtils.getPropertyMetaDataGroup;
@@ -52,10 +56,21 @@ public class SetPropertyHeaderCommand extends AbstractSetHeaderCommand {
         selectedColumn.getPropertyHeaderMetaData().setColumnGroup(getPropertyMetaDataGroup(selectedColumn.getInformationHeaderMetaData().getColumnGroup()));
         setPropertyMetaData(selectedColumn.getPropertyHeaderMetaData(), title, false, selectedColumn, ScenarioSimulationEditorConstants.INSTANCE.insertValue());
         selectedColumn.setPropertyAssigned(true);
+        String propertyClass = context.getStatus().getValueClassName();
+        String propertyName = title; // TODO GC CHECK
         context.getModel().updateColumnProperty(columnIndex,
                                                 selectedColumn,
                                                 value,
-                                                context.getStatus().getValueClassName(), context.getStatus().isKeepData());
+                                                propertyClass, context.getStatus().isKeepData());
+        final SortedMap<String, FactModelTree> dataObjectFieldsMap = context.getDataObjectFieldsMap();
+        final FactModelTree factModelTree = dataObjectFieldsMap.get(className);
+        if (ScenarioSimulationSharedUtils.isCollection(propertyClass)) {
+            selectedColumn.setFactory(context.getCollectionEditorSingletonDOMElementFactory());
+            final FactMapping factMappingByIndex = context.getModel().getSimulation().get().getSimulationDescriptor().getFactMappingByIndex(columnIndex);
+            factMappingByIndex.setGenericTypes(factModelTree.getGenericTypeInfo(propertyName));
+        } else {
+            selectedColumn.setFactory(context.getScenarioCellTextAreaSingletonDOMElementFactory());
+        }
         if (context.getScenarioSimulationEditorPresenter() != null) {
             context.getScenarioSimulationEditorPresenter().reloadRightPanel(false);
         }

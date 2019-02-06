@@ -35,33 +35,33 @@ public class ReloadRightPanelCommandTest extends AbstractScenarioSimulationComma
     public void setup() {
         super.setup();
         command = spy(new ReloadRightPanelCommand());
-        scenarioSimulationContext.setScenarioSimulationEditorPresenter(scenarioSimulationEditorPresenterMock);
+        scenarioSimulationContextLocal.setScenarioSimulationEditorPresenter(scenarioSimulationEditorPresenterMock);
         assertFalse(command.isUndoable());
     }
 
     @Test
     public void executeDisableOpen() {
-        scenarioSimulationContext.getStatus().setDisable(true);
-        scenarioSimulationContext.getStatus().setOpenDock(true);
-        command.execute(scenarioSimulationContext);
+        scenarioSimulationContextLocal.getStatus().setDisable(true);
+        scenarioSimulationContextLocal.getStatus().setOpenDock(true);
+        command.execute(scenarioSimulationContextLocal);
         verify(scenarioSimulationEditorPresenterMock, times(1)).expandToolsDock();
         verify(scenarioSimulationEditorPresenterMock, times(1)).reloadRightPanel(eq(true));
     }
 
     @Test
     public void executeNotDisableOpen() {
-        scenarioSimulationContext.getStatus().setDisable(false);
-        scenarioSimulationContext.getStatus().setOpenDock(true);
-        command.execute(scenarioSimulationContext);
+        scenarioSimulationContextLocal.getStatus().setDisable(false);
+        scenarioSimulationContextLocal.getStatus().setOpenDock(true);
+        command.execute(scenarioSimulationContextLocal);
         verify(scenarioSimulationEditorPresenterMock, times(1)).expandToolsDock();
         verify(scenarioSimulationEditorPresenterMock, times(1)).reloadRightPanel(eq(false));
     }
 
     @Test
     public void executeDisableNotOpen() {
-        scenarioSimulationContext.getStatus().setDisable(true);
-        scenarioSimulationContext.getStatus().setOpenDock(false);
-        command.execute(scenarioSimulationContext);
+        scenarioSimulationContextLocal.getStatus().setDisable(true);
+        scenarioSimulationContextLocal.getStatus().setOpenDock(false);
+        command.execute(scenarioSimulationContextLocal);
         verify(scenarioSimulationEditorPresenterMock, never()).expandToolsDock();
         verify(scenarioSimulationEditorPresenterMock, times(1)).reloadRightPanel(eq(true));
     }

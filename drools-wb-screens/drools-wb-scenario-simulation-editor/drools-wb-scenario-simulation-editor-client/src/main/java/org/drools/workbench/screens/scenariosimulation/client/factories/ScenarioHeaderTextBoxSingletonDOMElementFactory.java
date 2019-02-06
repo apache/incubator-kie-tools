@@ -16,6 +16,7 @@
 
 package org.drools.workbench.screens.scenariosimulation.client.factories;
 
+import org.drools.workbench.screens.scenariosimulation.client.domelements.ScenarioHeaderTextAreaDOMElement;
 import org.gwtbootstrap3.client.ui.TextArea;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.impl.BaseDOMElement;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;

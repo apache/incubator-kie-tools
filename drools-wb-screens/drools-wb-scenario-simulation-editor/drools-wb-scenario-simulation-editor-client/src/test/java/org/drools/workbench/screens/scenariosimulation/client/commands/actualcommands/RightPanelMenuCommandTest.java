@@ -54,13 +54,13 @@ public class RightPanelMenuCommandTest extends AbstractScenarioSimulationCommand
 
     @Test
     public void execute() {
-        scenarioSimulationContext.setPlaceManager(placeManagerMock);
-        scenarioSimulationContext.setRightPanelRequest(placeRequestMock);
+        scenarioSimulationContextLocal.setPlaceManager(placeManagerMock);
+        scenarioSimulationContextLocal.setRightPanelRequest(placeRequestMock);
         when(placeManagerMock.getStatus(placeRequestMock)).thenReturn(PlaceStatus.OPEN);
-        command.execute(scenarioSimulationContext);
+        command.execute(scenarioSimulationContextLocal);
         verify(placeManagerMock, times(1)).closePlace(placeRequestMock);
         when(placeManagerMock.getStatus(placeRequestMock)).thenReturn(PlaceStatus.CLOSE);
-        command.execute(scenarioSimulationContext);
+        command.execute(scenarioSimulationContextLocal);
         verify(placeManagerMock, times(1)).goTo(placeRequestMock);
     }
 }

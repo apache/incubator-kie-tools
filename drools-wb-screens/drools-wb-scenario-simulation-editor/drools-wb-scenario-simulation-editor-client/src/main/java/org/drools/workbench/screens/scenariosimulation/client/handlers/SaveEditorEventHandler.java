@@ -13,25 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.workbench.screens.scenariosimulation.client.widgets;
+package org.drools.workbench.screens.scenariosimulation.client.handlers;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import com.google.gwt.event.shared.EventHandler;
+import org.drools.workbench.screens.scenariosimulation.client.events.SaveEditorEvent;
 
-import com.ait.lienzo.client.core.shape.Group;
-
-public class ScenarioMenu extends Group {
-
-    private List<ScenarioMenuItem> items;
-
-    public ScenarioMenu() {
-        this.items = getMenuItems();
-    }
-
-    private List<ScenarioMenuItem> getMenuItems() {
-        return asList("One", "Two", "Three")
-                .stream()
-                .map(ScenarioMenuItem::new)
-                .collect(Collectors.toList());
-    }
+/**
+ * <code>EventHandler</code> for {@link SaveEditorEvent}
+ */
+public interface SaveEditorEventHandler extends EventHandler {
+    void onEvent(SaveEditorEvent event);
 }

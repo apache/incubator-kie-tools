@@ -301,7 +301,7 @@ public class RuleScenarioRunnerHelperTest {
         factMappingValues.add(factMappingValue);
 
         try {
-            runnerHelper.getParamsForBean(simulation.getSimulationDescriptor(), disputeFactIdentifier, factMappingValues, classLoader, expressionEvaluator);
+            runnerHelper.getParamsForBean(simulation.getSimulationDescriptor(), disputeFactIdentifier, factMappingValues, expressionEvaluator);
             fail();
         } catch (ScenarioException ignored) {
 

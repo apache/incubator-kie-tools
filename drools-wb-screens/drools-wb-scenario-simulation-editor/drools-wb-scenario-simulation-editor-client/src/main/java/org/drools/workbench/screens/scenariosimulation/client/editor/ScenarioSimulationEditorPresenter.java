@@ -412,10 +412,10 @@ public class ScenarioSimulationEditorPresenter
         packageName = content.getDataModel().getPackageName();
         resetEditorPages(content.getOverview());
         if(ScenarioSimulationModel.Type.RULE.equals(content.getModel().getSimulation().getSimulationDescriptor().getType())) {
-            dataManagementStrategy = new DMODataManagementStrategy(oracleFactory);
+            dataManagementStrategy = new DMODataManagementStrategy(oracleFactory, context);
         }
         else {
-            dataManagementStrategy = new DMNDataManagementStrategy(dmnTypeService);
+            dataManagementStrategy = new DMNDataManagementStrategy(dmnTypeService, context);
         }
         dataManagementStrategy.manageScenarioSimulationModelContent(versionRecordManager.getCurrentPath(), content);
         populateRightPanel();

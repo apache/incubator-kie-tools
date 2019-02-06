@@ -18,8 +18,11 @@ package org.drools.workbench.screens.scenariosimulation.client.widgets;
 import java.util.List;
 import java.util.function.Consumer;
 
-import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioCellTextAreaDOMElement;
-import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioCellTextAreaSingletonDOMElementFactory;
+import com.google.gwt.user.client.ui.FocusWidget;
+import com.google.gwt.user.client.ui.HasFocus;
+import com.google.gwt.user.client.ui.Widget;
+import org.drools.workbench.screens.scenariosimulation.client.domelements.CollectionEditorDOMElement;
+import org.drools.workbench.screens.scenariosimulation.client.domelements.ScenarioCellTextAreaDOMElement;
 import org.drools.workbench.screens.scenariosimulation.client.metadata.ScenarioHeaderMetaData;
 import org.drools.workbench.screens.scenariosimulation.client.values.ScenarioGridCellValue;
 import org.drools.workbench.screens.scenariosimulation.model.FactIdentifier;
@@ -27,11 +30,13 @@ import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
+import org.uberfire.ext.wires.core.grids.client.widget.dom.impl.BaseDOMElement;
+import org.uberfire.ext.wires.core.grids.client.widget.dom.single.impl.BaseSingletonDOMElementFactory;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.GridColumnRenderer;
 
 public class ScenarioGridColumn extends BaseGridColumn<String> {
 
-    private final ScenarioCellTextAreaSingletonDOMElementFactory factory;
+    private BaseSingletonDOMElementFactory<String, ? extends Widget, ? extends BaseDOMElement<String, ? extends Widget>> factory;
 
     protected final ScenarioHeaderMetaData informationHeaderMetaData;
     protected final ScenarioHeaderMetaData propertyHeaderMetaData;
@@ -58,7 +63,7 @@ public class ScenarioGridColumn extends BaseGridColumn<String> {
                               GridColumnRenderer<String> columnRenderer,
                               double width,
                               boolean isMovable,
-                              ScenarioCellTextAreaSingletonDOMElementFactory factory,
+                              BaseSingletonDOMElementFactory<String, ? extends Widget, ? extends BaseDOMElement<String, ? extends Widget>> factory,
                               String placeHolder) {
         super(headerMetaData, columnRenderer, width);
         this.informationHeaderMetaData = (ScenarioHeaderMetaData) headerMetaData.stream().filter(hdm -> ((ScenarioHeaderMetaData) hdm).isInstanceHeader()).findFirst().orElse(headerMetaData.get(0));
@@ -76,12 +81,29 @@ public class ScenarioGridColumn extends BaseGridColumn<String> {
     public void edit(GridCell<String> cell, GridBodyCellRenderContext context, Consumer<GridCellValue<String>> callback) {
         factory.attachDomElement(context,
                                  e -> {
-                                     e.getWidget().setValue(assertCell(cell).getValue().getValue());
                                      if (e instanceof ScenarioCellTextAreaDOMElement) {
-                                         ((ScenarioCellTextAreaDOMElement) e).setScenarioGridCell((ScenarioGridCell)cell);
+                                         ((ScenarioCellTextAreaDOMElement) e).getWidget().setValue(assertCell(cell).getValue().getValue());
+                                         ((ScenarioCellTextAreaDOMElement) e).setScenarioGridCell((ScenarioGridCell) cell);
+                                     } else if (e instanceof CollectionEditorDOMElement) {
+                                         CollectionEditorDOMElement collectionEditorDOMElement = (CollectionEditorDOMElement) e;
+                                         collectionEditorDOMElement.getWidget().setValue(assertCell(cell).getValue().getValue());
+                                         collectionEditorDOMElement.setScenarioGridCell((ScenarioGridCell) cell);
                                      }
                                  },
-                                 e -> e.getWidget().setFocus(true));
+                                 e -> {
+                                     if ((e.getWidget() instanceof HasFocus)) {
+                                         ((FocusWidget) e.getWidget()).setFocus(true);
+                                     }
+                                 });
+    }
+
+    /**
+     * Set the <b>factory</b> used for creation of the editing <code>DOMElement</code>
+     * @param factory
+     */
+    public void setFactory(BaseSingletonDOMElementFactory<String, ? extends Widget, ? extends
+            BaseDOMElement<String, ? extends Widget>> factory) {
+        this.factory = factory;
     }
 
     /**

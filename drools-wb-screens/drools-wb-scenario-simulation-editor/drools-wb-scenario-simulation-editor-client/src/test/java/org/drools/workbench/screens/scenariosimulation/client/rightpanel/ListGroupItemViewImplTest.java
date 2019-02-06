@@ -27,9 +27,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
-import static org.drools.workbench.screens.scenariosimulation.client.rightpanel.ListGroupItemViewImpl.FA_ANGLE_DOWN;
-import static org.drools.workbench.screens.scenariosimulation.client.rightpanel.ListGroupItemViewImpl.HIDDEN;
 import static org.drools.workbench.screens.scenariosimulation.client.rightpanel.ListGroupItemViewImpl.LIST_VIEW_PF_EXPAND_ACTIVE;
+import static org.drools.workbench.screens.scenariosimulation.client.utils.ConstantHolder.FA_ANGLE_DOWN;
+import static org.drools.workbench.screens.scenariosimulation.client.utils.ConstantHolder.HIDDEN;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;

@@ -26,8 +26,17 @@ import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioC
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationEventHandler;
 import org.drools.workbench.screens.scenariosimulation.client.editor.ScenarioSimulationView;
+import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioSimulationKeyboardEditHandler;
 import org.drools.workbench.screens.scenariosimulation.client.popup.DeletePopupPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.popup.PreserveDeletePopupPresenter;
+import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridLayer;
+import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidgetKeyboardHandler;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationMoveDown;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationMoveLeft;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationMoveRight;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationMoveUp;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationSelectTopLeftCell;
 import org.uberfire.workbench.events.NotificationEvent;
 
 /**
@@ -35,7 +44,6 @@ import org.uberfire.workbench.events.NotificationEvent;
  */
 @Dependent
 public class ScenarioSimulationProducer {
-
 
     @Inject
     protected ScenarioSimulationViewProducer scenarioSimulationViewProducer;
@@ -57,19 +65,30 @@ public class ScenarioSimulationProducer {
     @Inject
     protected ScenarioCommandManager scenarioCommandManager;
 
-    protected ScenarioSimulationContext scenarioSimulationContext;
-
     @Inject
     protected Event<NotificationEvent> notificationEvent;
 
+
+
     @PostConstruct
     public void init() {
-        scenarioSimulationContext = new ScenarioSimulationContext(getScenarioSimulationView().getScenarioGridPanel());
+        final ScenarioGridPanel scenarioGridPanel = getScenarioSimulationView().getScenarioGridPanel();
+        final ScenarioGridLayer scenarioGridLayer = scenarioGridPanel.getScenarioGridLayer();
+        final ScenarioSimulationKeyboardEditHandler scenarioSimulationKeyboardEditHandler = new ScenarioSimulationKeyboardEditHandler(scenarioGridLayer, getEventBus());
+        final BaseGridWidgetKeyboardHandler handler = new BaseGridWidgetKeyboardHandler(scenarioGridLayer);
+        handler.addOperation(scenarioSimulationKeyboardEditHandler,
+                             new KeyboardOperationSelectTopLeftCell(scenarioGridLayer),
+                             new KeyboardOperationMoveLeft(scenarioGridLayer),
+                             new KeyboardOperationMoveRight(scenarioGridLayer),
+                             new KeyboardOperationMoveUp(scenarioGridLayer),
+                             new KeyboardOperationMoveDown(scenarioGridLayer));
+        scenarioGridPanel.addKeyDownHandler(handler);
+
         scenarioSimulationEventHandler.setEventBus(getEventBus());
         scenarioSimulationEventHandler.setDeletePopupPresenter(deletePopupPresenter);
         scenarioSimulationEventHandler.setPreserveDeletePopupPresenter(preserveDeletePopupPresenter);
         scenarioSimulationEventHandler.setNotificationEvent(notificationEvent);
-        scenarioSimulationEventHandler.setContext(scenarioSimulationContext);
+        scenarioSimulationEventHandler.setContext(getScenarioSimulationContext());
         scenarioSimulationEventHandler.setScenarioCommandManager(scenarioCommandManager);
         scenarioSimulationEventHandler.setScenarioCommandRegistry(scenarioCommandRegistry);
     }
@@ -83,6 +102,8 @@ public class ScenarioSimulationProducer {
     }
 
     public ScenarioSimulationContext getScenarioSimulationContext() {
-        return scenarioSimulationContext;
+        return scenarioSimulationViewProducer.getScenarioSimulationContext();
     }
+
+
 }

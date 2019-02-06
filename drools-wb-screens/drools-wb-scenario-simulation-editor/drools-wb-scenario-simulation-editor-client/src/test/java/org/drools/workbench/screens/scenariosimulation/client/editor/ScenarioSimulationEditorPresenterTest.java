@@ -28,7 +28,6 @@ import org.drools.workbench.screens.scenariosimulation.client.rightpanel.RightPa
 import org.drools.workbench.screens.scenariosimulation.client.type.ScenarioSimulationResourceType;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGrid;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridLayer;
-import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModelContent;
 import org.guvnor.common.services.shared.metadata.model.Overview;
@@ -97,8 +96,6 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
     private ScenarioGrid scenarioGridMock;
     @Mock
     private ScenarioGridLayer scenarioGridLayerMock;
-    @Mock
-    private ScenarioGridPanel scenarioGridPanelMock;
     @Mock
     private ScenarioSimulationView scenarioSimulationViewMock;
     @Mock
@@ -216,12 +213,12 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
 
         final AsyncPackageDataModelOracle oracle = mock(AsyncPackageDataModelOracle.class);
         when(oracleFactoryMock.makeAsyncPackageDataModelOracle(any(),
-                                                               eq(model),
+                                                               eq(modelLocal),
                                                                eq(content.getDataModel()))).thenReturn(oracle);
         presenter.onStartup(mock(ObservablePath.class),
                             mock(PlaceRequest.class));
         verify(importsWidgetPresenterMock).setContent(oracle,
-                                                      model.getImports(),
+                                                      modelLocal.getImports(),
                                                       false);
         verify(kieViewMock).addImportsTab(importsWidgetPresenterMock);
         verify(scenarioSimulationViewMock).showLoading();
@@ -334,20 +331,20 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
 
     @Test
     public void onRunTest() throws Exception {
-        doReturn(new ScenarioSimulationModelContent(model,
+        doReturn(new ScenarioSimulationModelContent(modelLocal,
                                                     new Overview(),
                                                     new PackageDataModelOracleBaselinePayload())).when(scenarioSimulationServiceMock).loadContent(any());
         when(scenarioSimulationServiceMock.runScenario(any(), any())).thenReturn(scenarioSimulationModelMock);
         when(statusMock.getSimulation()).thenReturn(simulationMock);
         when(contextMock.getStatus()).thenReturn(statusMock);
-        assertFalse(model.getSimulation().equals(simulationMock));
+        assertFalse(modelLocal.getSimulation().equals(simulationMock));
         presenter.onStartup(observablePathMock, placeRequestMock);
         presenter.onRunScenario();
-        verify(scenarioSimulationServiceMock).runScenario(any(), eq(model));
+        verify(scenarioSimulationServiceMock).runScenario(any(), eq(modelLocal));
         verify(scenarioGridModelMock, times(1)).resetErrors();
         verify(scenarioSimulationViewMock, times(1)).refreshContent(any());
         verify(scenarioSimulationDocksHandlerMock).expandTestResultsDock();
-        assertTrue(model.getSimulation().equals(simulationMock));
+        assertTrue(modelLocal.getSimulation().equals(simulationMock));
     }
 
     @Test

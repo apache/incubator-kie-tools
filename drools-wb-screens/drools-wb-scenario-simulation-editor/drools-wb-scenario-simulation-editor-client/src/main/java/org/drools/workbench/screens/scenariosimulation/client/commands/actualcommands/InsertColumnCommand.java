@@ -57,8 +57,8 @@ public class InsertColumnCommand extends AbstractScenarioSimulationCommand {
                                                                                       status.getColumnId(),
                                                                                       columnGroup,
                                                                                       factMappingType,
-                                                                                      context.getScenarioGridPanel(),
-                                                                                      context.getScenarioGridLayer(),
+                                                                                      context.getScenarioHeaderTextBoxSingletonDOMElementFactory(),
+                                                                                      context.getScenarioCellTextAreaSingletonDOMElementFactory(),
                                                                                       placeHolder);
         scenarioGridColumnLocal.setPropertyAssigned(false);
         if (cloneInstance) {

@@ -21,13 +21,11 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationViolation;
-import org.drools.workbench.screens.scenariosimulation.client.factories.FactoryProvider;
+import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioCellTextAreaSingletonDOMElementFactory;
 import org.drools.workbench.screens.scenariosimulation.client.factories.ScenarioHeaderTextBoxSingletonDOMElementFactory;
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.drools.workbench.screens.scenariosimulation.client.utils.ScenarioSimulationBuilders;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
-import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridLayer;
-import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
 import org.drools.workbench.screens.scenariosimulation.model.FactIdentifier;
 import org.drools.workbench.screens.scenariosimulation.model.FactMappingType;
 import org.drools.workbench.screens.scenariosimulation.model.Simulation;
@@ -150,8 +148,9 @@ public abstract class AbstractScenarioSimulationCommand extends AbstractCommand<
      * @param columnId
      * @param columnGroup
      * @param factMappingType
-     * @param scenarioGridPanel
-     * @param gridLayer
+     * @param factoryHeader
+     * @param factoryCell
+     * @param placeHolder
      * @return
      */
     protected ScenarioGridColumn getScenarioGridColumnLocal(String instanceTitle,
@@ -159,17 +158,16 @@ public abstract class AbstractScenarioSimulationCommand extends AbstractCommand<
                                                             String columnId,
                                                             String columnGroup,
                                                             FactMappingType factMappingType,
-                                                            ScenarioGridPanel scenarioGridPanel,
-                                                            ScenarioGridLayer gridLayer,
+                                                            ScenarioHeaderTextBoxSingletonDOMElementFactory factoryHeader,
+                                                            ScenarioCellTextAreaSingletonDOMElementFactory factoryCell,
                                                             String placeHolder) {
-        ScenarioHeaderTextBoxSingletonDOMElementFactory factoryHeader = FactoryProvider.getHeaderTextBoxFactory(scenarioGridPanel, gridLayer);
         ScenarioSimulationBuilders.HeaderBuilder headerBuilder = getHeaderBuilder(instanceTitle, propertyTitle, columnId, columnGroup, factMappingType, factoryHeader);
-        return getScenarioGridColumn(headerBuilder, scenarioGridPanel, gridLayer, placeHolder);
+        return getScenarioGridColumn(headerBuilder, factoryCell, placeHolder);
     }
 
     protected ScenarioGridColumn getScenarioGridColumnLocal(ScenarioSimulationBuilders.HeaderBuilder headerBuilder, ScenarioSimulationContext context) {
         // indirection add for test
-        return getScenarioGridColumn(headerBuilder, context.getScenarioGridPanel(), context.getScenarioGridLayer(), ScenarioSimulationEditorConstants.INSTANCE.insertValue());
+        return getScenarioGridColumn(headerBuilder, context.getScenarioCellTextAreaSingletonDOMElementFactory(), ScenarioSimulationEditorConstants.INSTANCE.insertValue());
     }
 
     protected Optional<FactIdentifier> getFactIdentifierByColumnTitle(String columnTitle, ScenarioSimulationContext context) {

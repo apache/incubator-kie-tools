@@ -19,6 +19,7 @@ package org.drools.workbench.screens.scenariosimulation.client.editor.strategies
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -74,8 +75,8 @@ public class DMODataManagementStrategyTest extends AbstractScenarioSimulationEdi
     public void setup() {
         super.setup();
         when(oracleMock.getFQCNByFactName(FACT_NAME)).thenReturn(FULL_FACT_CLASSNAME);
-        when(oracleFactoryMock.makeAsyncPackageDataModelOracle(observablePathMock, model, content.getDataModel())).thenReturn(oracleMock);
-        this.dmoDataManagementStrategy = spy(new DMODataManagementStrategy(oracleFactoryMock) {
+        when(oracleFactoryMock.makeAsyncPackageDataModelOracle(observablePathMock, modelLocal, content.getDataModel())).thenReturn(oracleMock);
+        this.dmoDataManagementStrategy = spy(new DMODataManagementStrategy(oracleFactoryMock, scenarioSimulationContextLocal) {
             {
                 this.oracle = oracleMock;
             }
@@ -181,6 +182,11 @@ public class DMODataManagementStrategyTest extends AbstractScenarioSimulationEdi
         assertNotNull(retrieved);
     }
 
+    @Test
+    public void populateGenericTypeMap() {
+        commonPopulateGenericTypeMap(true);
+        commonPopulateGenericTypeMap(false);
+    }
 
     private void commonIsADataType(String value, boolean expected) {
         boolean retrieved = dmoDataManagementStrategy.isADataType(value);
@@ -190,6 +196,25 @@ public class DMODataManagementStrategyTest extends AbstractScenarioSimulationEdi
             assertFalse(retrieved);
         }
     }
+
+    private void commonPopulateGenericTypeMap(boolean isList) {
+        Map<String, List<String>> toPopulate = new HashMap<>();
+        String factName = "FACT_NAME";
+        String propertyName = "PROPERTY_NAME";
+        String factType = "Book";
+        String fullFactType = "com." + factType;
+        when(oracleMock.getParametricFieldType(factName, propertyName)).thenReturn(factType);
+        when(oracleMock.getFQCNByFactName(factType)).thenReturn(fullFactType);
+        dmoDataManagementStrategy.populateGenericTypeMap(toPopulate, factName, propertyName, isList);
+        assertTrue(toPopulate.containsKey(propertyName));
+        final List<String> retrieved = toPopulate.get(propertyName);
+        if (!isList) {
+            assertEquals(String.class.getName(), retrieved.get(0));
+        }
+        assertEquals(fullFactType, retrieved.get(retrieved.size()-1));
+
+    }
+
 
     private ModelField[] getModelFieldsInner(Map<String, String> simpleProperties) {
         List<ModelField> toReturn = new ArrayList<>();
@@ -208,7 +233,7 @@ public class DMODataManagementStrategyTest extends AbstractScenarioSimulationEdi
     }
 
     private FactModelTree getFactModelTreeInner(String factName) {
-        return new FactModelTree(factName, SCENARIO_PACKAGE, getSimplePropertiesInner());
+        return new FactModelTree(factName, SCENARIO_PACKAGE, getSimplePropertiesInner(), new HashMap<>());
     }
 
     private SortedMap<String, FactModelTree> getFactTypeFieldsMapInner(Collection<String> keys) {

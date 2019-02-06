@@ -19,6 +19,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.event.shared.EventBus;
+import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
 import org.drools.workbench.screens.scenariosimulation.client.editor.ScenarioSimulationView;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioSimulationGridPanelClickHandler;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
@@ -39,17 +40,17 @@ public class ScenarioSimulationViewProducer {
     protected ScenarioSimulationGridPanelClickHandlerProducer scenarioSimulationGridPanelClickHandlerProducer;
 
     public ScenarioSimulationView getScenarioSimulationView(EventBus eventBus) {
-
         final ScenarioGridPanel scenarioGridPanel = scenarioGridPanelProducer.getScenarioGridPanel();
         scenarioGridPanel.setEventBus(eventBus);
-
         final ScenarioSimulationGridPanelClickHandler scenarioSimulationGridPanelClickHandler = scenarioSimulationGridPanelClickHandlerProducer.getScenarioSimulationGridPanelClickHandler();
-
         scenarioSimulationGridPanelClickHandler.setScenarioGrid(scenarioGridPanel.getScenarioGrid());
         scenarioSimulationGridPanelClickHandler.setEventBus(eventBus);
-
         scenarioGridPanel.addClickHandler(scenarioSimulationGridPanelClickHandler);
         scenarioSimulationView.setScenarioGridPanel(scenarioGridPanel);
         return scenarioSimulationView;
+    }
+
+    public ScenarioSimulationContext getScenarioSimulationContext() {
+        return scenarioGridPanelProducer.getScenarioSimulationContext();
     }
 }

@@ -16,68 +16,119 @@
 .disabled {
     color: rgb(153, 153, 153);
     cursor: not-allowed;
-    pointer-events:none;
+    pointer-events: none;
 }
 
 /*
 For RightPanel
  */
 .kie-tree-list-view-pf-view--compact {
-       border-color: transparent;
-   }
+    border-color: transparent;
+}
+
 .kie-tree-list-view-pf-view--compact .list-group-item {
     padding-top: 0;
     padding-bottom: 0;
     margin-bottom: -2px;
 }
+
 .kie-tree-list-view-pf-view--compact .list-group-item :hover {
     background-color: transparent;
 }
+
 .kie-tree-list-view-pf-view--compact .list-group-item .list-view-pf-expand {
     margin-top: 0;
     margin-bottom: 0;
 }
+
 .kie-tree-list-view-pf-view--compact .list-group-item.list-view-pf-expand-active {
     background-color: #fff;
     border-color: transparent;
     box-shadow: none;
 }
+
 .kie-tree-list-view-pf-view--compact .list-group-item.list-view-pf-expand-active:first-child {
     border-color: transparent;
 }
+
 .kie-tree-list-view-pf-view--compact .selected > .list-group-item-header {
     background-color: #edf8ff;
 }
+
 .kie-tree-list-view-pf-view--compact .list-group-item-header {
     padding-top: 0;
     padding-bottom: 0;
     padding-left: 0;
     font-weight: bold;
 }
+
 .kie-tree-list-view-pf-view--compact .list-group-item-header:hover {
     background-color: #edf8ff;
 }
+
 .kie-tree-list-view-pf-view--compact .list-view-pf-main-info {
     padding-top: 5px;
     padding-bottom: 5px;
 }
+
 .kie-tree-list-view-pf-view--compact .list-group-item-container {
     border-top-color: transparent;
     padding-top: 0;
     padding-bottom: 0;
 }
+
 .kie-tree-list-view-pf-view--compact .ul--plain {
     list-style: none;
     padding-inline-start: 0;
 }
+
 .kie-tree-list-view-pf-view--compact .ul--plain li {
     padding: .25em;
 }
+
 .kie-tree-list-view-pf-view--compact .ul--plain li:hover {
     background-color: #edf8ff;
 }
+
 .kie-tree-list-view-pf-view--compact .ul--plain > .selected {
     background-color: #edf8ff;
+}
+
+.treeview .node-hidden {
+    display: none;
+}
+
+.kie-object-list {
+    list-style-type: none;
+}
+
+.kie-object-list .list-group {
+    border-top: none;
+    padding-left: 1.25rem;
+}
+
+.kie-object-list .list-group-item {
+    border: none;
+}
+
+.kie-object-list--mapping {
+    display: inline-table;
+}
+
+.kie-object-list__expander {
+    padding-right: 1em;
+}
+
+li.list-group-item.kie-object-list__separator, li.list-group-item.kie-object-list__separator:first-child {
+    border-top: 1px solid #ededed;
+}
+
+.kie-object-list__field-value {
+    font-weight: bold;
+}
+
+.kie-object-list__field-label {
+    font-weight: normal;
 }
 
 

@@ -48,4 +48,31 @@ public interface ScenarioSimulationEditorStylesCss extends CssResource {
 
     @ClassName("ul--plain")
     String ulPlain();
+
+    @ClassName("node-hidden")
+    String nodeHidden();
+
+    @ClassName("treeview")
+    String treeview();
+
+    @ClassName("list-group")
+    String listGroup();
+
+    @ClassName("kie-object-list__field-label")
+    String kieObjectList__fieldLabel();
+
+    @ClassName("kie-object-list__separator")
+    String kieObjectList__separator();
+
+    @ClassName("kie-object-list")
+    String kieObjectList();
+
+    @ClassName("kie-object-list--mapping")
+    String kieObjectListMapping();
+
+    @ClassName("kie-object-list__field-value")
+    String kieObjectList__fieldValue();
+
+    @ClassName("kie-object-list__expander")
+    String kieObjectList__expander();
 }

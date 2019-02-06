@@ -24,7 +24,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidgetKeyboardHandler;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.eq;
@@ -55,7 +54,6 @@ public class ScenarioGridPanelProducerTest extends AbstractProducerTest {
     @Test
     public void init() {
         scenarioGridPanelProducer.init();
-        verify(scenarioGridPanelMock, times(1)).addKeyDownHandler(isA(BaseGridWidgetKeyboardHandler.class));
         verify(scenarioGridLayerMock, times(1)).addScenarioGrid(isA(ScenarioGrid.class));
         verify(scenarioGridPanelMock, times(1)).add(eq(scenarioGridLayerMock));
     }

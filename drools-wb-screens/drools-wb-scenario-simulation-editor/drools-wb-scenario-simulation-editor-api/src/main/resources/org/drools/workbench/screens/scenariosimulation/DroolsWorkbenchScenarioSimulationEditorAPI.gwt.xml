@@ -30,5 +30,6 @@
   <source path="model"/>
   <source path="type"/>
   <source path="service"/>
+  <source path="utils"/>
 
 </module>

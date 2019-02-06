@@ -85,9 +85,10 @@ public abstract class AbstractScenarioSimulationEditorTest extends AbstractScena
     protected ScenarioGridModel scenarioGridModelMock;
 
     protected ScenarioSimulationModelContent content;
-    protected ScenarioSimulationModel model;
+    protected ScenarioSimulationModel modelLocal;
 
     public void setup() {
+        super.setup();
         // Mock FileMenuBuilder usage since we cannot use FileMenuBuilderImpl either
         when(fileMenuBuilderMock.addSave(any(MenuItem.class))).thenReturn(fileMenuBuilderMock);
         when(fileMenuBuilderMock.addCopy(any(ObservablePath.class), any(DefaultFileNameValidator.class))).thenReturn(fileMenuBuilderMock);
@@ -100,9 +101,9 @@ public abstract class AbstractScenarioSimulationEditorTest extends AbstractScena
         when(workbenchContextMock.getActiveWorkspaceProject()).thenReturn(Optional.empty());
         when(gridContextMenuMock.getView()).thenReturn(gridContextMenuViewMock);
         when(headerGivenContextMenuMock.getView()).thenReturn(headerContextMenuViewMock);
-        this.model = new ScenarioSimulationModel();
-        model.setSimulation(getSimulation(ScenarioSimulationModel.Type.RULE, "default"));
-        this.content = new ScenarioSimulationModelContent(model,
+        this.modelLocal = new ScenarioSimulationModel();
+        modelLocal.setSimulation(getSimulation(ScenarioSimulationModel.Type.RULE, "default"));
+        this.content = new ScenarioSimulationModelContent(modelLocal,
                                                           overviewMock,
                                                           mock(PackageDataModelOracleBaselinePayload.class));
         when(scenarioSimulationServiceMock.loadContent(observablePathMock)).thenReturn(content);

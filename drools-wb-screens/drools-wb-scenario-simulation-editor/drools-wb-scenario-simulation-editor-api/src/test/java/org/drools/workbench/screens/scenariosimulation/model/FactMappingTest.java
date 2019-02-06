@@ -16,6 +16,8 @@
 
 package org.drools.workbench.screens.scenariosimulation.model;
 
+import java.util.ArrayList;
+
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -29,6 +31,7 @@ public class FactMappingTest {
         FactMapping original = new FactMapping("FACT_ALIAS", new FactIdentifier("FI_TEST", "com.test.Foo"), new ExpressionIdentifier("EI_TEST", FactMappingType.GIVEN));
         original.addExpressionElement("FIRST_STEP", String.class.getName());
         original.setExpressionAlias("EA_TEST");
+        original.setGenericTypes(new ArrayList<>());
         FactMapping retrieved = original.cloneFactMapping();
         assertTrue(retrieved.equals(original));
     }

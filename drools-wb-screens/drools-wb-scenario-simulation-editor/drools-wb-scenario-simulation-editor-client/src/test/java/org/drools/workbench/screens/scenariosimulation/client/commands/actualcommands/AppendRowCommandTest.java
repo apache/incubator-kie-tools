@@ -42,7 +42,7 @@ public class AppendRowCommandTest extends AbstractScenarioSimulationCommandTest 
 
     @Test
     public void execute() {
-        command.execute(scenarioSimulationContext);
+        command.execute(scenarioSimulationContextLocal);
         verify(scenarioGridModelMock, times(1)).appendRow(isA(ScenarioGridRow.class));
     }
 }

@@ -38,8 +38,8 @@ public class DisableRightPanelCommandTest extends AbstractScenarioSimulationComm
 
     @Test
     public void execute() {
-        scenarioSimulationContext.setRightPanelPresenter(rightPanelPresenterMock);
-        command.execute(scenarioSimulationContext);
+        scenarioSimulationContextLocal.setRightPanelPresenter(rightPanelPresenterMock);
+        command.execute(scenarioSimulationContextLocal);
         verify(rightPanelPresenterMock, times(1)).onDisableEditorTab();
     }
 }

@@ -39,13 +39,13 @@ import static org.drools.workbench.screens.scenariosimulation.model.ScenarioSimu
 
 public abstract class AbstractScenarioRunner extends Runner {
 
-    private final ClassLoader classLoader;
-    private final Function<ClassLoader, ExpressionEvaluator> expressionEvaluatorFactory;
-    private final Description desc;
-    private final KieContainer kieContainer;
-    private final SimulationDescriptor simulationDescriptor;
-    private Map<Integer, Scenario> scenarios;
-    private String fileName;
+    protected final ClassLoader classLoader;
+    protected final Function<ClassLoader, ExpressionEvaluator> expressionEvaluatorFactory;
+    protected final Description desc;
+    protected final KieContainer kieContainer;
+    protected final SimulationDescriptor simulationDescriptor;
+    protected Map<Integer, Scenario> scenarios;
+    protected String fileName;
 
     public AbstractScenarioRunner(KieContainer kieContainer,
                                   Simulation simulation,
@@ -57,7 +57,8 @@ public abstract class AbstractScenarioRunner extends Runner {
     public AbstractScenarioRunner(KieContainer kieContainer,
                                   SimulationDescriptor simulationDescriptor,
                                   Map<Integer, Scenario> scenarios,
-                                  String fileName, Function<ClassLoader, ExpressionEvaluator> expressionEvaluatorFactory) {
+                                  String fileName,
+                                  Function<ClassLoader, ExpressionEvaluator> expressionEvaluatorFactory) {
         this.kieContainer = kieContainer;
         this.simulationDescriptor = simulationDescriptor;
         this.scenarios = scenarios;

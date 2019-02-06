@@ -49,8 +49,8 @@ public class DeleteColumnCommand extends AbstractScenarioSimulationCommand {
                                                                                                 String.valueOf(new Date().getTime()),
                                                                                                 status.getColumnGroup(),
                                                                                                 factMappingType,
-                                                                                                context.getScenarioGridPanel(),
-                                                                                                context.getScenarioGridLayer(),
+                                                                                                context.getScenarioHeaderTextBoxSingletonDOMElementFactory(),
+                                                                                                context.getScenarioCellTextAreaSingletonDOMElementFactory(),
                                                                                                 ScenarioSimulationEditorConstants.INSTANCE.defineValidType()));
         }
         GridColumn<?> selectedColumn = context.getModel().getSelectedColumn();
