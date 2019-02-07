@@ -16,23 +16,50 @@
 
 package org.drools.workbench.screens.scenariosimulation.backend.server.util;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.kie.api.runtime.KieContainer;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNRuntime;
 
 public class DMNSimulationUtils {
 
+    private static String delimiter = "/";
+
     private DMNSimulationUtils() {
     }
 
     public static DMNModel extractDMNModel(DMNRuntime dmnRuntime, String path) {
-        return dmnRuntime.getModels().stream()
-                .filter(model -> path.endsWith(model.getResource().getSourcePath()))
-                .findFirst()
-                .orElseThrow(() -> new IllegalStateException("Cannot find a DMN model with resource=" + path));
+        List<String> pathSplit = Arrays.asList(new StringBuilder(path).reverse().toString().split(delimiter));
+        List<DMNModel> dmnModels = dmnRuntime.getModels();
+
+        return findDMNModel(dmnModels, pathSplit, 1);
     }
 
     public static DMNRuntime extractDMNRuntime(KieContainer kieContainer) {
         return kieContainer.newKieSession().getKieRuntime(DMNRuntime.class);
+    }
+
+    public static DMNModel findDMNModel(List<DMNModel> dmnModels, List<String> pathToFind, int step) {
+        List<DMNModel> result = new ArrayList<>();
+        String pathToCompare = String.join(delimiter, pathToFind.subList(0, step));
+        for (DMNModel dmnModel : dmnModels) {
+            String modelPath = new StringBuilder(dmnModel.getResource().getSourcePath()).reverse().toString();
+            if (modelPath.startsWith(pathToCompare)) {
+                result.add(dmnModel);
+            }
+        }
+        if (result.size() == 0) {
+            throw new IllegalArgumentException("Retrieving the DMNModel has failed. Make sure the used DMN asset does not " +
+                                                       "produce any compilation errors and that the project does not " +
+                                                       "contain multiple DMN assets with the same name and namespace. " +
+                                                       "After addressing the issues, build the project again.");
+        } else if (result.size() == 1) {
+            return result.get(0);
+        } else {
+            return findDMNModel(dmnModels, pathToFind, step + 1);
+        }
     }
 }

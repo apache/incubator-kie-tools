@@ -17,6 +17,7 @@ package org.drools.workbench.screens.scenariosimulation.backend.server;
 
 import java.util.List;
 
+import org.assertj.core.api.Assertions;
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.AbstractScenarioRunner;
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.RuleScenarioRunner;
 import org.drools.workbench.screens.scenariosimulation.backend.server.runner.ScenarioException;
@@ -148,5 +149,15 @@ public class ScenarioRunnerServiceImplTest {
         assertEquals(errorMessageFormatted, failure.getMessage());
         assertEquals(1, value.getRunCount());
         assertTrue(failure.getDisplayName().startsWith(testDescription));
+    }
+
+    @Test
+    public void kieContainerTest() {
+        when(buildInfoServiceMock.getBuildInfo(any())).thenReturn(buildInfoMock);
+        when(buildInfoMock.getKieContainer()).thenReturn(null);
+        Assertions.assertThatThrownBy(() -> scenarioRunnerService.getKieContainer(mock(Path.class)))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Retrieving KieContainer has failed. Fix all compilation errors within the " +
+                                    "project and build the project again.");
     }
 }

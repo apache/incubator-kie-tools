@@ -26,7 +26,7 @@ public class ScenarioSimulationSharedUtils {
      * @return
      */
     public static boolean isCollection(String className) {
-        return List.class.getName().equals(className) || Map.class.getName().equals(className);
+        return isList(className) || isMap(className);
     }
 
     /**
@@ -36,5 +36,15 @@ public class ScenarioSimulationSharedUtils {
      */
     public static boolean isList(String className) {
         return List.class.getName().equals(className);
+    }
+
+
+    /**
+     * Returns true if given string equals <code>List.class.getName()</code>
+     * @param className
+     * @return
+     */
+    public static boolean isMap(String className) {
+        return Map.class.getName().equals(className);
     }
 }

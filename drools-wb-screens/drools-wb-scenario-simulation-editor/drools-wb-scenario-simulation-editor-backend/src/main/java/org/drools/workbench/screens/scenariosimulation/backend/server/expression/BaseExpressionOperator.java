@@ -172,7 +172,7 @@ public enum BaseExpressionOperator {
     }
 
     protected Optional<String> match(String value) {
-        if(value == null) {
+        if (value == null) {
             return Optional.empty();
         }
         value = value.trim();

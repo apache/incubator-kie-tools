@@ -17,6 +17,10 @@
 package org.drools.workbench.screens.scenariosimulation.backend.server.expression;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 import org.junit.Test;
 
@@ -32,20 +36,57 @@ public class DMNFeelExpressionEvaluatorTest {
     public void evaluate() {
         assertTrue(expressionEvaluator.evaluate("not( true )", false, boolean.class));
         assertTrue(expressionEvaluator.evaluate(">2, >5", BigDecimal.valueOf(6), BigDecimal.class));
-        assertThatThrownBy(() -> expressionEvaluator.evaluate(new Object(), null, null))
+        assertThatThrownBy(() -> expressionEvaluator.evaluate(new Object(), null, Object.class))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Raw expression should be a string");
 
         assertThatThrownBy(() -> expressionEvaluator.evaluate("! true", null, null))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Impossible to parse the expression '! true'");
-
     }
 
     @Test
     public void getValueForGiven() {
-        assertEquals(BigDecimal.valueOf(5), expressionEvaluator.getValueForGiven(BigDecimal.class.getCanonicalName(), "2 + 3"));
+        assertEquals(BigDecimal.valueOf(5), expressionEvaluator.getValueForGiven(BigDecimal.class.getCanonicalName(), null, "2 + 3"));
         Object nonStringObject = new Object();
-        assertEquals(nonStringObject, expressionEvaluator.getValueForGiven("class", nonStringObject));
+        assertEquals(nonStringObject, expressionEvaluator.getValueForGiven("class", null, nonStringObject));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void expressionTest() {
+
+        String listJsonString = "[{\"name\": \"\\\"John\\\"\"}, " +
+                "{\"name\": \"\\\"John\\\"\", \"names\" : [{\"value\": \"\\\"Anna\\\"\"}, {\"value\": \"\\\"Mario\\\"\"}]}]";
+
+        List<Map<String, Object>> parsedValue = (List<Map<String, Object>>) expressionEvaluator.convertResult(listJsonString, List.class.getCanonicalName(),
+                                                                                                              Collections.singletonList(Map.class.getCanonicalName()));
+
+        assertEquals(2, parsedValue.size());
+        assertEquals(2, ((List<Object>) parsedValue.get(1).get("names")).size());
+        assertTrue(((List<Object>) parsedValue.get(1).get("names")).contains("Anna"));
+
+        String mapJsonString = "{\"first\": {\"name\": \"\\\"John\\\"\"}}";
+        Map<String, Map<String, Object>> parsedMap = (Map<String, Map<String, Object>>) expressionEvaluator
+                .convertResult(mapJsonString, Map.class.getCanonicalName(),
+                               Arrays.asList(String.class.getCanonicalName(), Object.class.getCanonicalName()));
+
+        assertEquals(1, parsedMap.size());
+        assertEquals("John", parsedMap.get("first").get("name"));
+
+        mapJsonString = "{\"first\": {\"siblings\": [{\"name\" : \"\\\"John\\\"\"}]}}";
+        parsedMap = (Map<String, Map<String, Object>>) expressionEvaluator
+                .convertResult(mapJsonString, Map.class.getCanonicalName(),
+                               Arrays.asList(String.class.getCanonicalName(), Object.class.getCanonicalName()));
+        assertEquals(1, parsedMap.size());
+        assertEquals("John", ((List<Map<String, Object>>) parsedMap.get("first").get("siblings")).get(0).get("name"));
+
+        mapJsonString = "{\"first\": {\"phones\": {\"number\" : \"1\"}}}";
+        parsedMap = (Map<String, Map<String, Object>>) expressionEvaluator
+                .convertResult(mapJsonString, Map.class.getCanonicalName(),
+                               Arrays.asList(String.class.getCanonicalName(), Object.class.getCanonicalName()));
+
+        assertEquals(1, parsedMap.size());
+        assertEquals(BigDecimal.valueOf(1), ((Map<String, Object>) parsedMap.get("first").get("phones")).get("number"));
     }
 }

@@ -78,7 +78,6 @@ public class DMNTypeServiceImplTest extends AbstractDMNTest {
         assertTrue(simpleStringFactModelTree.getSimpleProperties().containsKey("value"));
         assertEquals("string", simpleStringFactModelTree.getSimpleProperties().get("value"));
 
-
         // Single property collection retrieve
         DMNType simpleCollectionString = new SimpleTypeImpl(null, "string", null);
         ((SimpleTypeImpl) simpleCollectionString).setCollection(true);
@@ -89,7 +88,6 @@ public class DMNTypeServiceImplTest extends AbstractDMNTest {
         assertEquals(1, simpleCollectionStringFactModelTree.getSimpleProperties().size());
         assertTrue(simpleCollectionStringFactModelTree.getSimpleProperties().containsKey("value"));
         assertEquals("string", simpleCollectionStringFactModelTree.getSimpleProperties().get("value"));
-
 
         // Complex object retrieve
         DMNType person = new CompositeTypeImpl();

@@ -93,7 +93,7 @@ public class DMNSimulationCreationStrategy implements SimulationCreationStrategy
 
                 FactMapping factMapping = factMappingExtractor.getFactMapping(factModelTree, factName, previousSteps, factType);
 
-                if(ScenarioSimulationSharedUtils.isList(factType)) {
+                if (ScenarioSimulationSharedUtils.isList(factType)) {
                     factMapping.setGenericTypes(factModelTree.getGenericTypeInfo(factName));
                 }
                 factMapping.addExpressionElement(factName, factType);

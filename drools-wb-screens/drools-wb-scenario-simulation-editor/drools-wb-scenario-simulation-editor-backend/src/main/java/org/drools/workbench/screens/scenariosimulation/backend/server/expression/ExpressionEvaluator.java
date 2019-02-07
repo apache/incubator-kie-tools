@@ -16,9 +16,11 @@
 
 package org.drools.workbench.screens.scenariosimulation.backend.server.expression;
 
+import java.util.List;
+
 public interface ExpressionEvaluator {
 
     boolean evaluate(Object rawExpression, Object resultValue, Class<?> resultClass);
 
-    Object getValueForGiven(String className, Object raw);
+    Object getValueForGiven(String className, List<String> genericClasses, Object raw);
 }

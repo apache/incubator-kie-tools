@@ -15,7 +15,19 @@
  */
 package org.drools.workbench.screens.scenariosimulation.backend.server.expression;
 
-public class BaseExpressionEvaluator implements ExpressionEvaluator {
+import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.drools.workbench.screens.scenariosimulation.utils.ScenarioSimulationSharedUtils;
+
+public class BaseExpressionEvaluator extends AbstractExpressionEvaluator {
 
     private final ClassLoader classLoader;
 
@@ -30,16 +42,91 @@ public class BaseExpressionEvaluator implements ExpressionEvaluator {
             return BaseExpressionOperator.EQUALS.eval(raw, resultValue, resultClass, classLoader);
         }
 
-        String rawValue = (String) raw;
-        return BaseExpressionOperator.findOperator(rawValue).eval(rawValue, resultValue, resultClass, classLoader);
+        return internalEvaluate(raw, resultValue, resultClass);
     }
 
     @Override
-    public Object getValueForGiven(String className, Object raw) {
+    public Object getValueForGiven(String className, List<String> genericClasses, Object raw) {
         if (!(raw instanceof String)) {
             return raw;
         }
-        String rawValue = (String) raw;
+
+        return internalGetValueForGiven(className, genericClasses, (String) raw);
+    }
+
+    @Override
+    protected boolean internalUnaryEvaluation(String rawExpression, Object resultValue, Class<?> resultClass, boolean skipEmptyString) {
+        if (rawExpression != null && skipEmptyString && rawExpression.isEmpty()) {
+            return true;
+        }
+        return BaseExpressionOperator.findOperator(rawExpression).eval(rawExpression, resultValue, resultClass, classLoader);
+    }
+
+    @Override
+    protected Object internalLiteralEvaluate(String rawValue, String className) {
         return BaseExpressionOperator.findOperator(rawValue).getValueForGiven(className, rawValue, classLoader);
+    }
+
+    @Override
+    protected Object extractFieldValue(Object result, String fieldName) {
+        try {
+            return result.getClass().getDeclaredField(fieldName).get(result);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Impossible to find field: " + fieldName, e);
+        }
+    }
+
+    @Override
+    protected Object createObject(String className, List<String> genericClasses) {
+        if (ScenarioSimulationSharedUtils.isMap(className)) {
+            return new HashMap();
+        } else {
+            try {
+                return classLoader.loadClass(className).newInstance();
+            } catch (Exception e) {
+                throw new IllegalArgumentException("Impossible to instantiate " + className, e);
+            }
+        }
+    }
+
+    @Override
+    protected void setField(Object toReturn, String fieldName, Object fieldValue) {
+        if (toReturn instanceof Map) {
+            Map returnMap = (Map) toReturn;
+            returnMap.put(fieldName, fieldValue);
+        } else {
+            try {
+                Field declaredField = toReturn.getClass().getDeclaredField(fieldName);
+                declaredField.setAccessible(true);
+                declaredField.set(toReturn, fieldValue);
+            } catch (Exception e) {
+                throw new IllegalArgumentException("Impossible to set the field " + fieldName, e);
+            }
+        }
+    }
+
+    @Override
+    protected Map.Entry<String, List<String>> getFieldClassNameAndGenerics(Object element, String fieldName, String className, List<String> genericClasses) {
+        try {
+            if (ScenarioSimulationSharedUtils.isMap(className)) {
+                return new AbstractMap.SimpleEntry<>(genericClasses.get(genericClasses.size() - 1), Collections.emptyList());
+            }
+            Field declaredField = element.getClass().getDeclaredField(fieldName);
+            Class<?> fieldType = declaredField.getType();
+            List<String> genericsString = new ArrayList<>();
+            if (declaredField.getGenericType() instanceof ParameterizedType) {
+                ParameterizedType generics = (ParameterizedType) declaredField.getGenericType();
+                for (Type typeArgument : generics.getActualTypeArguments()) {
+                    if (typeArgument instanceof ParameterizedType) {
+                        genericsString.add(((ParameterizedType) typeArgument).getRawType().getTypeName());
+                    } else {
+                        genericsString.add(typeArgument.getTypeName());
+                    }
+                }
+            }
+            return new AbstractMap.SimpleEntry<>(fieldType.getCanonicalName(), genericsString);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Impossible to get the field " + fieldName, e);
+        }
     }
 }

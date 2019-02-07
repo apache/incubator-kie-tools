@@ -57,6 +57,7 @@ import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
 import org.uberfire.java.nio.file.OpenOption;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -65,6 +66,7 @@ import static org.mockito.Matchers.anyMap;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -318,11 +320,20 @@ public class ScenarioSimulationServiceImplTest {
     public void ensureDependenciesTest() {
         service.ensureDependencies(module);
 
-        int expectedCalls = service.getDependecies(null).size();
-        verify(pomService, times(expectedCalls)).save(any(Path.class),
-                                                      any(POM.class),
-                                                      any(Metadata.class),
-                                                      anyString());
+        verify(pomService, times(1)).save(any(Path.class),
+                                          any(POM.class),
+                                          any(Metadata.class),
+                                          anyString());
+
+        reset(pomService);
+        when(dependencies.containsDependency(any())).thenReturn(true);
+
+        service.ensureDependencies(module);
+
+        verify(pomService, never()).save(any(Path.class),
+                                         any(POM.class),
+                                         any(Metadata.class),
+                                         anyString());
     }
 
     @Test
@@ -330,26 +341,12 @@ public class ScenarioSimulationServiceImplTest {
         String groupId = "groupId";
         String artifactId = "artifactId";
         String version = "version";
-        POM pom = new POM();
         GAV gav = new GAV(groupId, artifactId, version);
         Dependencies dependencies = new Dependencies();
 
-        service.editPomIfNecessary(path, pom, dependencies, gav);
+        assertTrue(service.editPomIfNecessary(dependencies, gav));
 
-        verify(pomService, times(1))
-                .save(any(Path.class),
-                      any(POM.class),
-                      any(Metadata.class),
-                      anyString());
-
-        reset(pomService);
-        ;
-        service.editPomIfNecessary(path, pom, dependencies, gav);
-        verify(pomService, times(0))
-                .save(any(Path.class),
-                      any(POM.class),
-                      any(Metadata.class),
-                      anyString());
+        assertFalse(service.editPomIfNecessary(dependencies, gav));
     }
 
     @Test

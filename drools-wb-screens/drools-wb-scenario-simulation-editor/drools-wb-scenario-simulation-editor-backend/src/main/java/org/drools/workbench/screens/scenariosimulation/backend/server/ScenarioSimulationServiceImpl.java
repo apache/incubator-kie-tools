@@ -341,18 +341,25 @@ public class ScenarioSimulationServiceImpl
 
         String kieVersion = props.getProperty(KIE_VERSION);
 
-        getDependecies(kieVersion).forEach(gav -> {
-            editPomIfNecessary(module.getPomXMLPath(), projectPom, dependencies, gav);
-        });
+        boolean toSave = false;
+        Path modulePomXMLPath = module.getPomXMLPath();
+        for (GAV gav : getDependencies(kieVersion)) {
+            toSave |= editPomIfNecessary(dependencies, gav);
+        }
+
+        if (toSave) {
+            pomService.save(modulePomXMLPath, projectPom, null, "");
+        }
     }
 
-    void editPomIfNecessary(Path pomPath, POM projectPom, Dependencies dependencies, GAV gav) {
+    boolean editPomIfNecessary(Dependencies dependencies, GAV gav) {
         Dependency scenarioDependency = new Dependency(gav);
         scenarioDependency.setScope("test");
         if (!dependencies.containsDependency(gav)) {
             dependencies.add(scenarioDependency);
-            pomService.save(pomPath, projectPom, null, "");
+            return true;
         }
+        return false;
     }
 
     org.uberfire.java.nio.file.Path getActivatorPath(Package rootModulePackage) {
@@ -360,9 +367,12 @@ public class ScenarioSimulationServiceImpl
         return packagePath.resolve(ScenarioJunitActivator.ACTIVATOR_CLASS_NAME + ".java");
     }
 
-    List<GAV> getDependecies(String kieVersion) {
+    List<GAV> getDependencies(String kieVersion) {
         return Arrays.asList(new GAV("org.drools", "drools-wb-scenario-simulation-editor-api", kieVersion),
                              new GAV("org.drools", "drools-wb-scenario-simulation-editor-backend", kieVersion),
-                             new GAV("org.drools", "drools-compiler", kieVersion));
+                             new GAV("org.drools", "drools-compiler", kieVersion),
+                             new GAV("org.kie", "kie-dmn-feel", kieVersion),
+                             new GAV("org.kie", "kie-dmn-api", kieVersion),
+                             new GAV("org.kie", "kie-dmn-core", kieVersion));
     }
 }
