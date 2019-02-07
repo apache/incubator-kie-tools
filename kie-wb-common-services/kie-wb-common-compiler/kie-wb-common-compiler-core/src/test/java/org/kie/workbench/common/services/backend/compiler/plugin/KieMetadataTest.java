@@ -79,6 +79,7 @@ public class KieMetadataTest {
     }
 
     @Test //AF-1459 it tooks 30% of the time of the time spent by all module's test (108), alone it took 30 sec
+    @Ignore("See https://issues.jboss.org/browse/AF-1819")
     public void compileAndLoadKieJarMetadataAllResourcesPackagedJar() throws Exception {
         /**
          * If the test fail check if the Drools core classes used, KieModuleMetaInfo and TypeMetaInfo implements Serializable
