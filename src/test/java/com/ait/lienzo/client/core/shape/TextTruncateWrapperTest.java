@@ -81,7 +81,7 @@ public class TextTruncateWrapperTest extends BaseTextTest {
                                                  0,
                                                  0.8)
                            },
-                           12);
+                           28);
     }
 
     @Test
@@ -95,7 +95,7 @@ public class TextTruncateWrapperTest extends BaseTextTest {
                                                  0,
                                                  1.8)
                            },
-                           12);
+                           28);
     }
 
     @Test
@@ -112,18 +112,18 @@ public class TextTruncateWrapperTest extends BaseTextTest {
                                                  0,
                                                  2.8)
                            },
-                           12);
+                           28);
     }
 
     @Test
     public void testTruncateSingleWord() {
         testTextBoundsWrap("LongWordThatDoesntFits",
                            new Object[]{
-                                   new DrawnText("LongW...",
+                                   new DrawnText("Lo...",
                                                  0,
                                                  0.8)
                            },
-                           12,
+                           22,
                            2);
     }
 
@@ -138,7 +138,7 @@ public class TextTruncateWrapperTest extends BaseTextTest {
                                                  0,
                                                  1.8),
                            },
-                           12,
+                           28,
                            6);
     }
 
@@ -156,7 +156,7 @@ public class TextTruncateWrapperTest extends BaseTextTest {
                                                  0,
                                                  2.8)
                            },
-                           12,
+                           28,
                            8);
     }
 
@@ -171,7 +171,7 @@ public class TextTruncateWrapperTest extends BaseTextTest {
                                                  0,
                                                  1.8)
                            },
-                           12,
+                           28,
                            6);
     }
 
@@ -179,20 +179,20 @@ public class TextTruncateWrapperTest extends BaseTextTest {
     public void testTruncateSequenceOfShortWords() {
         testTextBoundsWrap("Word1 Word2 Word3 Word4 Word5 Word6 Word7",
                            new Object[]{
-                                   new DrawnText("Word1 ",
+                                   new DrawnText("Word1",
                                                  0,
                                                  0.8),
-                                   new DrawnText("Wo... ",
+                                   new DrawnText("Wo...",
                                                  0,
                                                  1.8)
                            },
-                           10,
+                           25,
                            6);
     }
 
     private void testTextBoundsWrap(final String text,
                                     final Object[] results) {
-        testTextBoundsWrap(text, results, 10);
+        testTextBoundsWrap(text, results, 26);
     }
 
     private void testTextBoundsWrap(final String text,

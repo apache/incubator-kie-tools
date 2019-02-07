@@ -28,6 +28,7 @@ import com.ait.lienzo.client.core.shape.OrthogonalPolyLineTest;
 import com.ait.lienzo.client.core.shape.PolyLineTest;
 import com.ait.lienzo.client.core.shape.TextBoundsWrapTest;
 import com.ait.lienzo.client.core.shape.TextLineBreakWrapTest;
+import com.ait.lienzo.client.core.shape.TextTruncateWrapperTest;
 import com.ait.lienzo.client.core.types.BoundingBoxTest;
 import com.ait.lienzo.client.core.util.GeometryTest;
 import com.ait.lienzo.client.widget.LienzoHandlerManagerTest;
@@ -82,7 +83,8 @@ import org.junit.runners.Suite;
         PreviewPanelTest.class,
         PreviewLayerTest.class,
         PreviewLayerDecoratorTest.class,
-        BoundsProviderFactoryTest.class
+        BoundsProviderFactoryTest.class,
+        TextTruncateWrapperTest.class
 })
 public class LienzoCoreTestSuite {
 
