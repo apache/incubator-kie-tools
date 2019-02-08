@@ -9,4 +9,10 @@ public class WorkbenchConstants {
 
     @TranslationKey(defaultValue = "FAILED")
     public static final String FAILED = "TestRunnerReportingViewImpl.FAILED";
+
+    @TranslationKey(defaultValue = "Passed")
+    public static final String Passed = "TestResultDonutPresenter.Passed";
+
+    @TranslationKey(defaultValue = "Failed")
+    public static final String Failed = "TestResultDonutPresenter.Failed";
 }

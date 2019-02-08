@@ -55,11 +55,13 @@ public class TestRunnerReportingScreen
     }
 
     @Inject
-    public TestRunnerReportingScreen(TestRunnerReportingView view,
-                                     Event<PublishBatchMessagesEvent> publishBatchMessagesEvent) {
+    public TestRunnerReportingScreen(final TestRunnerReportingView view,
+                                     final Event<PublishBatchMessagesEvent> publishBatchMessagesEvent) {
         this.view = view;
         this.publishBatchMessagesEvent = publishBatchMessagesEvent;
         view.setPresenter(this);
+
+        view.resetDonut();
     }
 
     @DefaultPosition
@@ -91,7 +93,7 @@ public class TestRunnerReportingScreen
         publishBatchMessagesEvent.fire(messagesEvent);
     }
 
-    public void onTestRun(@Observes TestResultMessage testResultMessage) {
+    public void onTestRun(final @Observes TestResultMessage testResultMessage) {
         reset();
 
         if (testResultMessage.wasSuccessful()) {
@@ -99,15 +101,21 @@ public class TestRunnerReportingScreen
         } else {
             if (testResultMessage.getFailures() != null) {
                 systemMessages = testResultMessage.getFailures().stream().map(this::convert).collect(Collectors.toList());
+
             }
             view.showFailure();
         }
+
+        int failures = testResultMessage.getFailures().size();
+        view.showSuccessFailureDiagram((testResultMessage.getRunCount() - failures),
+                                       failures);
+
         view.setRunStatus(getCompletedAt(),
                           getScenariosRun(testResultMessage),
                           getDuration(testResultMessage));
     }
 
-    private SystemMessage convert(Failure failure) {
+    private SystemMessage convert(final Failure failure) {
         SystemMessage systemMessage = new SystemMessage();
         systemMessage.setMessageType("TestResults");
         systemMessage.setLevel(Level.ERROR);
@@ -120,13 +128,13 @@ public class TestRunnerReportingScreen
         return timeFormat.format(new Date());
     }
 
-    private String getScenariosRun(TestResultMessage testResultMessage) {
+    private String getScenariosRun(final TestResultMessage testResultMessage) {
         return String.valueOf(testResultMessage.getRunCount());
     }
 
-    private String getDuration(TestResultMessage testResultMessage) {
-        Long runTime = testResultMessage.getRunTime();
-        Date runtime = new Date(runTime);
+    private String getDuration(final TestResultMessage testResultMessage) {
+        final Long runTime = testResultMessage.getRunTime();
+        final Date runtime = new Date(runTime);
 
         String milliseconds = formatMilliseconds(DateTimeFormat.getFormat("SSS").format(runtime)) + " milliseconds";
         String seconds = DateTimeFormat.getFormat("s").format(runtime) + " seconds";
@@ -141,7 +149,7 @@ public class TestRunnerReportingScreen
         }
     }
 
-    String formatMilliseconds(String originalFormat) {
+    String formatMilliseconds(final String originalFormat) {
         return originalFormat.replaceFirst("^0+(?!$)", "");
     }
 

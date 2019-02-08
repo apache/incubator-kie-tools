@@ -16,18 +16,12 @@
 
 package org.kie.workbench.common.workbench.client.test;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.ui.Widget;
 import elemental2.dom.HTMLAnchorElement;
 import elemental2.dom.HTMLDivElement;
-import org.guvnor.messageconsole.events.PublishBatchMessagesEvent;
-import org.guvnor.messageconsole.events.SystemMessage;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
@@ -62,7 +56,40 @@ public class TestRunnerReportingViewImpl
     @DataField
     private HTMLAnchorElement viewAlerts;
 
+    @DataField
+    private HTMLDivElement donutDivContainer;
+
+    @DataField
+    private HTMLDivElement donutDiv;
+
+    private TestResultDonutPresenter testResultDonutPresenter;
     private TranslationService translationService;
+
+    @Inject
+    public TestRunnerReportingViewImpl(final HTMLDivElement resultPanel,
+                                       final HTMLDivElement testResultIcon,
+                                       final HTMLDivElement testResultText,
+                                       final HTMLDivElement scenariosRun,
+                                       final HTMLDivElement completedAt,
+                                       final HTMLDivElement duration,
+                                       final HTMLAnchorElement viewAlerts,
+                                       final HTMLDivElement donutDivContainer,
+                                       final HTMLDivElement donutDiv,
+                                       final TestResultDonutPresenter testResultDonutPresenter,
+                                       final TranslationService translationService) {
+        this.resultPanel = resultPanel;
+        this.testResultIcon = testResultIcon;
+        this.testResultText = testResultText;
+        this.scenariosRun = scenariosRun;
+        this.completedAt = completedAt;
+        this.duration = duration;
+        this.viewAlerts = viewAlerts;
+        this.donutDivContainer = donutDivContainer;
+        this.donutDiv = donutDiv;
+        this.testResultDonutPresenter = testResultDonutPresenter;
+        this.translationService = translationService;
+        testResultDonutPresenter.init(donutDiv);
+    }
 
     @EventHandler("viewAlerts")
     public void onClickEvent(ClickEvent event) {
@@ -76,6 +103,7 @@ public class TestRunnerReportingViewImpl
         this.duration.textContent = "";
         this.completedAt.textContent = "";
         this.scenariosRun.textContent = "";
+        resetDonut();
     }
 
     @Override
@@ -104,23 +132,17 @@ public class TestRunnerReportingViewImpl
         this.duration.textContent = duration;
     }
 
-    @Inject
-    public TestRunnerReportingViewImpl(HTMLDivElement resultPanel,
-                                       HTMLDivElement testResultIcon,
-                                       HTMLDivElement testResultText,
-                                       HTMLDivElement scenariosRun,
-                                       HTMLDivElement completedAt,
-                                       HTMLDivElement duration,
-                                       HTMLAnchorElement viewAlerts,
-                                       TranslationService translationService) {
-        this.resultPanel = resultPanel;
-        this.testResultIcon = testResultIcon;
-        this.testResultText = testResultText;
-        this.scenariosRun = scenariosRun;
-        this.completedAt = completedAt;
-        this.duration = duration;
-        this.viewAlerts = viewAlerts;
-        this.translationService = translationService;
+    @Override
+    public void resetDonut() {
+        donutDivContainer.hidden = true;
+    }
+
+    @Override
+    public void showSuccessFailureDiagram(final int passed,
+                                          final int failed) {
+        donutDivContainer.hidden = false;
+        testResultDonutPresenter.showSuccessFailureDiagram(passed,
+                                                           failed);
     }
 
     @Override

@@ -35,6 +35,7 @@ import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -97,6 +98,11 @@ public class TestRunnerReportingScreenTest {
     }
 
     @Test
+    public void initFailureDiagram() {
+        verify(view).resetDonut();
+    }
+
+    @Test
     public void testSuccessfulRun() {
         screen.onTestRun(createTRMWithoutFailures(250));
         verify(view).showSuccess();
@@ -107,11 +113,15 @@ public class TestRunnerReportingScreenTest {
 
     @Test
     public void testUnSuccessfulRun() {
+        reset(view);
+
         when(failure.getDisplayName()).thenReturn("Expected true but was false.");
         when(failure.getMessage()).thenReturn("This is a non-null message");
 
         screen.onTestRun(createTRMWithFailures());
         verify(view).showFailure();
+        verify(view).showSuccessFailureDiagram(0,
+                                               1);
         verify(view).setRunStatus(any(),
                                   eq("1"),
                                   eq("2 seconds and 500 milliseconds"));
@@ -119,8 +129,12 @@ public class TestRunnerReportingScreenTest {
 
     @Test
     public void testRunTimeInMinutes() {
+        reset(view);
+
         screen.onTestRun(createTRMWithoutFailures(125000));
         verify(view).showSuccess();
+        verify(view).showSuccessFailureDiagram(1,
+                                               0);
         verify(view).setRunStatus(any(),
                                   eq("1"),
                                   eq("2 minutes and 5 seconds"));
