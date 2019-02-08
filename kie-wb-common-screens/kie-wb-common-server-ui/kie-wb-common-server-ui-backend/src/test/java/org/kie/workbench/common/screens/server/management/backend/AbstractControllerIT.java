@@ -37,6 +37,7 @@ import org.kie.workbench.common.screens.server.management.backend.service.Embedd
 import org.kie.workbench.common.screens.server.management.backend.service.RuleCapabilitiesServiceCDI;
 import org.kie.workbench.common.screens.server.management.backend.service.RuntimeManagementServiceCDI;
 import org.kie.workbench.common.screens.server.management.backend.service.SpecManagementServiceCDI;
+import org.kie.workbench.common.screens.server.management.backend.storage.ServerTemplateOCPStorage;
 import org.kie.workbench.common.screens.server.management.backend.storage.ServerTemplateVFSStorage;
 import org.kie.workbench.common.screens.server.management.backend.storage.migration.ServerTemplateMigration;
 import org.kie.workbench.common.screens.server.management.backend.utils.ControllerExtension;
@@ -105,6 +106,7 @@ public abstract class AbstractControllerIT {
                 .addClass(SpecManagementServiceCDI.class)
 
                 .addClass(ServerTemplateVFSStorage.class)
+                .addClass(ServerTemplateOCPStorage.class)
                 .addClass(ServerTemplateMigration.class)
 
                 .addClass(ControllerExtension.class)

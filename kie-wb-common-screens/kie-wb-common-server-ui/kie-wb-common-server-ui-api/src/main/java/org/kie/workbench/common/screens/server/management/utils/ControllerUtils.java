@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.screens.server.management.utils;
 
+import java.util.Properties;
+
 import static org.kie.server.common.KeyStoreHelperUtil.loadControllerPassword;
 
 public final class ControllerUtils {
@@ -27,27 +29,37 @@ public final class ControllerUtils {
     public static final String CFG_KIE_CONTROLLER_USER = "org.kie.workbench.controller.user";
     public static final String CFG_KIE_CONTROLLER_PASSWORD = "org.kie.workbench.controller.pwd";
     public static final String CFG_KIE_CONTROLLER_TOKEN = "org.kie.workbench.controller.token";
+    public static final String CFG_KIE_CONTROLLER_OCP_ENABLED = "org.kie.workbench.controller.openshift.enabled";
 
-    private ControllerUtils(){}
+    private static ThreadLocal<Properties> configProps = new ThreadLocal<>().withInitial(System::getProperties);
 
-    public static boolean useEmbeddedController(){
+    private ControllerUtils() {}
+
+    public static Properties getConfigProps() {
+        return configProps.get();
+    }
+
+    public static boolean useEmbeddedController() {
         return getControllerURL() == null;
     }
 
-    public static String getControllerURL(){
-        return System.getProperty(KIE_SERVER_CONTROLLER);
+    public static String getControllerURL() {
+        return getConfigProps().getProperty(KIE_SERVER_CONTROLLER);
     }
 
-    public static String getControllerUser(){
-        return System.getProperty(CFG_KIE_CONTROLLER_USER, "kieserver");
+    public static String getControllerUser() {
+        return getConfigProps().getProperty(CFG_KIE_CONTROLLER_USER, "kieserver");
     }
 
-    public static String getControllerPassword(){
-        return loadControllerPassword(System.getProperty(CFG_KIE_CONTROLLER_PASSWORD, "kieserver1!"));
+    public static String getControllerPassword() {
+        return loadControllerPassword(getConfigProps().getProperty(CFG_KIE_CONTROLLER_PASSWORD, "kieserver1!"));
     }
 
-    public static String getControllerToken(){
-        return System.getProperty(CFG_KIE_CONTROLLER_TOKEN);
+    public static String getControllerToken() {
+        return getConfigProps().getProperty(CFG_KIE_CONTROLLER_TOKEN);
     }
 
+    public static boolean isOpenShiftSupported() {
+        return "true".equals(getConfigProps().getProperty(CFG_KIE_CONTROLLER_OCP_ENABLED, "false"));
+    }
 }

@@ -24,10 +24,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.screens.server.management.backend.KieServerEmbeddedControllerProducer;
 import org.kie.workbench.common.screens.server.management.backend.KieServerStandaloneControllerProducer;
+import org.kie.workbench.common.screens.server.management.backend.storage.ServerTemplateOCPStorage;
 import org.kie.workbench.common.screens.server.management.utils.ControllerUtils;
 
+import static org.kie.workbench.common.screens.server.management.utils.ControllerUtils.CFG_KIE_CONTROLLER_OCP_ENABLED;
 import static org.kie.workbench.common.screens.server.management.utils.ControllerUtils.KIE_SERVER_CONTROLLER;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class ControllerExtensionTest {
 
@@ -36,7 +41,8 @@ public class ControllerExtensionTest {
     @Before
     @After
     public void clear() {
-        System.clearProperty(KIE_SERVER_CONTROLLER);
+        ControllerUtils.getConfigProps().remove(KIE_SERVER_CONTROLLER, "http://localhost:8080/controller");
+        ControllerUtils.getConfigProps().remove(CFG_KIE_CONTROLLER_OCP_ENABLED, "true");
     }
 
     @Test
@@ -51,14 +57,23 @@ public class ControllerExtensionTest {
 
     @Test
     public void testEmbeddedAnnotationWithStandaloneController() {
-        System.setProperty(ControllerUtils.KIE_SERVER_CONTROLLER,
-                           "http://localhost:8080/controller");
-
+        ControllerUtils.getConfigProps().put(KIE_SERVER_CONTROLLER, "http://localhost:8080/controller");
         final ProcessAnnotatedType annotatedType = createAnnotatedType(KieServerEmbeddedControllerProducer.class);
 
         extension.processEmbeddedController(annotatedType);
 
         verify(annotatedType).veto();
+    }
+
+    @Test
+    public void testEmbeddedAnnotationWithServerTemplateOCPStorage() {
+        ControllerUtils.getConfigProps().put(CFG_KIE_CONTROLLER_OCP_ENABLED, "true");
+        final ProcessAnnotatedType annotatedType = createAnnotatedType(ServerTemplateOCPStorage.class);
+
+        extension.processEmbeddedController(annotatedType);
+
+        verify(annotatedType,
+               never()).veto();
     }
 
     @Test
@@ -72,9 +87,7 @@ public class ControllerExtensionTest {
 
     @Test
     public void testStandaloneAnnotationWithStandaloneController() {
-        System.setProperty(ControllerUtils.KIE_SERVER_CONTROLLER,
-                           "http://localhost:8080/controller");
-
+        ControllerUtils.getConfigProps().put(KIE_SERVER_CONTROLLER, "http://localhost:8080/controller");
         final ProcessAnnotatedType annotatedType = createAnnotatedType(KieServerStandaloneControllerProducer.class);
 
         extension.processStandaloneController(annotatedType);

@@ -37,9 +37,7 @@ import io.fabric8.kubernetes.api.model.ServiceAccount;
 import io.fabric8.kubernetes.client.dsl.Resource;
 import io.fabric8.openshift.api.model.DeploymentConfig;
 import io.fabric8.openshift.api.model.DoneableDeploymentConfig;
-import io.fabric8.openshift.api.model.DoneablePolicyBinding;
 import io.fabric8.openshift.api.model.ImageStream;
-import io.fabric8.openshift.api.model.PolicyBinding;
 import io.fabric8.openshift.api.model.Route;
 import io.fabric8.openshift.api.model.RoutePort;
 import io.fabric8.openshift.api.model.RouteSpec;
@@ -153,75 +151,9 @@ public class OpenShiftClient {
     }
 
     private void addServiceAccountRole(String prjName, String name, String role) {
-        Resource<PolicyBinding, DoneablePolicyBinding> bindingResource =
-                delegate.policyBindings().inNamespace(prjName).withName(":default");
-        DoneablePolicyBinding binding;
-        if (bindingResource.get() == null) {
-            binding = bindingResource.createNew();
-        } else {
-            binding = bindingResource.edit();
-        }
-        binding.editOrNewMetadata()
-            .withName(":default")
-            .endMetadata()
-            .editOrNewPolicyRef()
-            .withName("default")
-            .endPolicyRef()
-            .addNewRoleBinding()
-            .withName(role)
-            .editOrNewRoleBinding()
-            .editOrNewMetadata()
-            .withName(role)
-            .withNamespace(prjName)
-            .endMetadata()
-            .addToUserNames("system:serviceaccount:" + prjName + ":" + name)
-            .addNewSubject()
-            .withName("default")
-            .withNamespace(prjName)
-            .withKind("ServiceAccount")
-            .endSubject()
-            .withNewRoleRef()
-            .withName(role)
-            .endRoleRef()
-            .endRoleBinding()
-            .endRoleBinding()
-            .done();
     }
 
     private void addSystemGroupRole(String prjName, String name, String role) {
-        Resource<PolicyBinding, DoneablePolicyBinding> bindingResource =
-                delegate.policyBindings().inNamespace(prjName).withName(":default");
-        DoneablePolicyBinding binding;
-        if (bindingResource.get() == null) {
-            binding = bindingResource.createNew();
-        } else {
-            binding = bindingResource.edit();
-        }
-        binding.editOrNewMetadata()
-            .withName(":default")
-            .endMetadata()
-            .editOrNewPolicyRef()
-            .withName("default")
-            .endPolicyRef()
-            .addNewRoleBinding()
-            .withName(role)
-            .editOrNewRoleBinding()
-            .editOrNewMetadata()
-            .withName(role)
-            .withNamespace(prjName)
-            .endMetadata()
-            .addToGroupNames("system:serviceaccounts:" + prjName)
-            .addNewSubject()
-            .withName("default")
-            .withNamespace(prjName)
-            .withKind("SystemGroup")
-            .endSubject()
-            .withNewRoleRef()
-            .withName(role)
-            .endRoleRef()
-            .endRoleBinding()
-            .endRoleBinding()
-            .done();
     }
 
     private void createFromUri(String prjName, String uri) throws OpenShiftClientException {

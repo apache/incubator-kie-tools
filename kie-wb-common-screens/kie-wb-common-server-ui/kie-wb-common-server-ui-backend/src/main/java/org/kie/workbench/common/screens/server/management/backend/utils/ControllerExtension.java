@@ -21,6 +21,8 @@ import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.inject.spi.WithAnnotations;
 
+import org.kie.workbench.common.screens.server.management.backend.storage.ServerTemplateOCPStorage;
+import org.kie.workbench.common.screens.server.management.backend.storage.ServerTemplateVFSStorage;
 import org.kie.workbench.common.screens.server.management.utils.ControllerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,18 +35,40 @@ public class ControllerExtension implements Extension {
         LOGGER.info("Processing standalone controller class: {}", event.getAnnotatedType().getJavaClass());
         StandaloneController a = event.getAnnotatedType().getJavaClass().getAnnotation(StandaloneController.class);
         if (a != null && ControllerUtils.useEmbeddedController()) {
-            LOGGER.info("Removing standalone controller class {} from CDI context", event.getAnnotatedType().getJavaClass());
-            event.veto();
+            removeControllerClassFromCDIContext(event);
         }
     }
 
     public <T> void processEmbeddedController(@WithAnnotations({EmbeddedController.class}) @Observes ProcessAnnotatedType<T> event) {
         LOGGER.info("Processing embedded controller class: {}", event.getAnnotatedType().getJavaClass());
         EmbeddedController a = event.getAnnotatedType().getJavaClass().getAnnotation(EmbeddedController.class);
-        if (a != null && ControllerUtils.useEmbeddedController() == false) {
-            LOGGER.info("Removing embedded controller class {} from CDI context", event.getAnnotatedType().getJavaClass());
-            event.veto();
+        if (a != null) {
+            if (ControllerUtils.useEmbeddedController()) {
+                /**
+                 * Select server template storage implementation for embedded controller
+                 * based on system properties loaded by ControllerUtils
+                 */
+                if (ControllerUtils.isOpenShiftSupported()) {
+                    if (ServerTemplateVFSStorage.class
+                                                      .isAssignableFrom(event.getAnnotatedType().getJavaClass())) {
+                        removeControllerClassFromCDIContext(event);
+                    }
+                } else {
+                    if (ServerTemplateOCPStorage.class
+                                                      .isAssignableFrom(event.getAnnotatedType().getJavaClass())) {
+                        removeControllerClassFromCDIContext(event);
+                    }
+                }
+            } else {
+                removeControllerClassFromCDIContext(event);
+            }
         }
+
+    }
+
+    private <T> void removeControllerClassFromCDIContext(ProcessAnnotatedType<T> event) {
+        LOGGER.info("Removing controller class {} from CDI context", event.getAnnotatedType().getJavaClass());
+        event.veto();
     }
 
 }

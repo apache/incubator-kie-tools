@@ -124,56 +124,6 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-shade-plugin</artifactId>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-            <configuration>
-              <dependencyReducedPomLocation>${project.build.directory}/dependency-reduced-pom.xml</dependencyReducedPomLocation>
-              <keepDependenciesWithProvidedScope>true</keepDependenciesWithProvidedScope>
-              <artifactSet>
-                <includes>
-                  <include>io.fabric8:kubernetes-model</include>
-                  <include>io.fabric8:kubernetes-client</include>
-                  <include>io.fabric8:openshift-client</include>
-                  <include>io.fabric8:zjsonpatch</include>
-                  <include>com.fasterxml.jackson.core:jackson-annotations</include>
-                  <include>com.fasterxml.jackson.core:jackson-core</include>
-                  <include>com.fasterxml.jackson.core:jackson-databind</include>
-                  <include>com.fasterxml.jackson.dataformat:jackson-dataformat-yaml</include>
-                  <include>com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider</include>
-                  <include>com.fasterxml.jackson.jaxrs:jackson-jaxrs-base</include>
-                  <include>com.fasterxml.jackson.module:jackson-module-jaxb-annotations</include>
-                </includes>
-              </artifactSet>
-              <filters>
-                <filter>
-                  <artifact>io.fabric8:kubernetes-client</artifact>
-                  <excludes>
-                    <exclude>io/fabric8/kubernetes/client/ConfigFluent.class</exclude>
-                    <exclude>io/fabric8/kubernetes/client/ConfigBuilder.class</exclude>
-                    <exclude>io/fabric8/kubernetes/client/ConfigFluentImpl.class</exclude>
-                  </excludes>
-                </filter>
-              </filters>
-              <relocations>
-                <relocation>
-                  <pattern>com.fasterxml.jackson</pattern>
-                  <shadedPattern>org.kie.workbench.ala.openshift.jackson</shadedPattern>
-                </relocation>
-              </relocations>
-              <transformers>
-                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
-              </transformers>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
     </plugins>
   </build>
 
