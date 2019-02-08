@@ -39,6 +39,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSel
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.handlers.DelegatingGridWidgetCellSelectorMouseEventHandler;
 import org.kie.workbench.common.dmn.client.widgets.grid.handlers.DelegatingGridWidgetEditCellMouseEventHandler;
+import org.kie.workbench.common.dmn.client.widgets.grid.handlers.EditableHeaderGridWidgetEditCellMouseEventHandler;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
@@ -111,9 +112,12 @@ public class LiteralExpressionGrid extends BaseDelegatingExpressionGrid<LiteralE
 
     @Override
     protected List<NodeMouseEventHandler> getNodeMouseClickEventHandlers(final GridSelectionManager selectionManager) {
-        return Collections.singletonList(new DelegatingGridWidgetCellSelectorMouseEventHandler(selectionManager,
-                                                                                               this::getParentInformation,
-                                                                                               () -> nesting));
+        final List<NodeMouseEventHandler> handlers = new ArrayList<>();
+        handlers.add(new DelegatingGridWidgetCellSelectorMouseEventHandler(selectionManager,
+                                                                           this::getParentInformation,
+                                                                           () -> nesting));
+        handlers.add(new EditableHeaderGridWidgetEditCellMouseEventHandler());
+        return handlers;
     }
 
     @Override
