@@ -16,6 +16,7 @@
 
 package org.guvnor.common.services.project.client.repositories;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -53,12 +54,9 @@ public class ConflictingRepositoriesPopupTest {
 
     @Test
     public void testInitialization() {
-        verify(view,
-               times(1)).init(eq(presenter));
-        verify(view,
-               never()).addOKButton();
-        verify(view,
-               never()).addOverrideButton(any(Command.class));
+        verify(view).init(eq(presenter));
+        verify(view, never()).addOKButton();
+        verify(view, never()).addOverrideButton();
     }
 
     @Test
@@ -72,19 +70,12 @@ public class ConflictingRepositoriesPopupTest {
         }};
         when(user.getRoles()).thenReturn(roles);
 
-        presenter.setContent(gav,
-                             metadata,
-                             command);
+        presenter.setContent(gav, metadata, command);
 
-        verify(view,
-               times(1)).clear();
-        verify(view,
-               times(1)).setContent(eq(gav),
-                                    eq(metadata));
-        verify(view,
-               times(1)).addOKButton();
-        verify(view,
-               times(1)).addOverrideButton(any(Command.class));
+        verify(view).clear();
+        verify(view).setContent(eq(gav), eq(metadata));
+        verify(view).addOKButton();
+        verify(view).addOverrideButton();
     }
 
     @Test
@@ -100,15 +91,10 @@ public class ConflictingRepositoriesPopupTest {
                              metadata,
                              command);
 
-        verify(view,
-               times(1)).clear();
-        verify(view,
-               times(1)).setContent(eq(gav),
-                                    eq(metadata));
-        verify(view,
-               times(1)).addOKButton();
-        verify(view,
-               never()).addOverrideButton(any(Command.class));
+        verify(view).clear();
+        verify(view).setContent(eq(gav), eq(metadata));
+        verify(view).addOKButton();
+        verify(view, never()).addOverrideButton();
     }
 
     @Test
@@ -126,44 +112,55 @@ public class ConflictingRepositoriesPopupTest {
                              metadata,
                              command);
 
-        verify(view,
-               times(1)).clear();
-        verify(view,
-               times(1)).setContent(eq(gav),
-                                    eq(metadata));
-        verify(view,
-               times(1)).addOKButton();
-        verify(view,
-               times(1)).addOverrideButton(any(Command.class));
+        verify(view).clear();
+        verify(view).setContent(eq(gav), eq(metadata));
+        verify(view).addOKButton();
+        verify(view).addOverrideButton();
 
         //Re-use
-        presenter.setContent(gav,
-                             metadata,
-                             command);
-        verify(view,
-               times(2)).clear();
-        verify(view,
-               times(2)).setContent(eq(gav),
+        presenter.setContent(gav, metadata, command);
+        verify(view, times(2)).clear();
+        verify(view, times(2)).setContent(eq(gav),
                                     eq(metadata));
-        verify(view,
-               times(2)).addOKButton();
-        verify(view,
-               times(2)).addOverrideButton(any(Command.class));
+        verify(view, times(2)).addOKButton();
+        verify(view, times(2)).addOverrideButton();
     }
 
     @Test
     public void testShow() {
         presenter.show();
 
-        verify(view,
-               times(1)).show();
+        verify(view).show();
     }
 
     @Test
     public void testHide() {
         presenter.hide();
 
-        verify(view,
-               times(1)).hide();
+        verify(view).hide();
+    }
+
+    @Test
+    public void testActions() {
+        final Command okCommand = mock(Command.class);
+        final Command overrideCommand = mock(Command.class);
+
+        final GAV gav = mock(GAV.class);
+
+        final Set<MavenRepositoryMetadata> metadata = new HashSet<MavenRepositoryMetadata>();
+        final Set<Role> roles = Collections.singleton(new RoleImpl(AppRoles.ADMIN.getName()));
+
+        when(user.getRoles()).thenReturn(roles);
+
+        presenter.setContent(gav, metadata, okCommand, overrideCommand);
+
+        presenter.override();
+
+        verify(view).hide();
+        verify(overrideCommand).execute();
+
+        presenter.hide();
+        verify(view, times(2)).hide();
+        verify(okCommand).execute();
     }
 }

@@ -16,6 +16,15 @@
 
 package org.uberfire.client.promise;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JavaScriptObject;
+import elemental2.promise.Promise;
+import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.ErrorCallback;
+import org.jboss.errai.common.client.api.RemoteCallback;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiFunction;
@@ -23,18 +32,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.JavaScriptObject;
-import elemental2.promise.Promise;
-import org.jboss.errai.bus.client.api.messaging.Message;
-import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.common.client.api.ErrorCallback;
-import org.jboss.errai.common.client.api.RemoteCallback;
-
-import static org.jboss.errai.bus.client.framework.AbstractRpcProxy.DEFAULT_RPC_ERROR_CALLBACK;
 import static org.uberfire.client.promise.PromisePolyfillBootstrapper.ensurePromiseApiIsAvailable;
 
 @Dependent
@@ -160,28 +157,13 @@ public class Promises {
         if (o instanceof Promises.Error) {
             return resolve()
                     .then(i -> catchBlock.apply((RuntimeException) ((Error) o).getThrowable()))
-                    .catch_(i -> handleCatchBlockExceptions(o));
+                    .catch_(this::handleCatchBlockExceptions);
         }
 
         return expectedRejectionHandler.apply((V) o);
     }
 
     private <T> Promise<T> handleCatchBlockExceptions(final Object rejectedObject) {
-
-        if (rejectedObject instanceof Error) {
-            final Error error = (Error) rejectedObject;
-
-            if (!(error.getObject() instanceof Message)) {
-                GWT.getUncaughtExceptionHandler().onUncaughtException(
-                        new RuntimeException("Promise.Error did not contain a Message. " +
-                                                     "Something's not right."));
-
-                return resolve();
-            }
-
-            DEFAULT_RPC_ERROR_CALLBACK.error((Message) error.getObject(), error.getThrowable());
-            return resolve();
-        }
 
         if (rejectedObject instanceof Throwable) {
             GWT.getUncaughtExceptionHandler().onUncaughtException((Throwable) rejectedObject);

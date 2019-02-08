@@ -151,36 +151,27 @@ public class ConflictingRepositoriesPopupViewImpl
         final List<MavenRepositoryMetadata> sortedRepositories = new ArrayList<MavenRepositoryMetadata>();
         sortedRepositories.addAll(repositories);
         Collections.sort(sortedRepositories,
-                         new Comparator<MavenRepositoryMetadata>() {
-                             @Override
-                             public int compare(final MavenRepositoryMetadata md1,
-                                                final MavenRepositoryMetadata md2) {
-                                 if (md1.getSource().equals(md2.getSource())) {
-                                     return md1.getId().compareToIgnoreCase(md2.getId());
-                                 }
-                                 return md1.getSource().ordinal() - md2.getSource().ordinal();
-                             }
-                         });
+                (md1, md2) -> {
+                    if (md1.getSource().equals(md2.getSource())) {
+                        return md1.getId().compareToIgnoreCase(md2.getId());
+                    }
+                    return md1.getSource().ordinal() - md2.getSource().ordinal();
+                });
         return sortedRepositories;
     }
 
     @Override
     public void addOKButton() {
         footer.addButton(CommonConstants.INSTANCE.OK(),
-                         new Command() {
-                             @Override
-                             public void execute() {
-                                 presenter.hide();
-                             }
-                         },
+                         presenter::hide,
                          IconType.PLUS,
                          ButtonType.PRIMARY);
     }
 
     @Override
-    public void addOverrideButton(final Command command) {
+    public void addOverrideButton() {
         footer.addButton(ProjectResources.CONSTANTS.ConflictingRepositoriesOverride(),
-                         command,
+                         presenter::override,
                          ButtonType.DEFAULT);
     }
 }

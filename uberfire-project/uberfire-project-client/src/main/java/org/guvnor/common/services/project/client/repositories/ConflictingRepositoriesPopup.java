@@ -38,6 +38,9 @@ public class ConflictingRepositoriesPopup
     private User identity;
     private ConflictingRepositoriesPopupView view;
 
+    private Command okCommand;
+    private Command overrideCommand;
+
     public ConflictingRepositoriesPopup() {
     }
 
@@ -49,24 +52,29 @@ public class ConflictingRepositoriesPopup
         view.init(this);
     }
 
-    @Override
+    public void setContent(final GAV gav,
+                           final Set<MavenRepositoryMetadata> repositories,
+                           final Command overrideCommand) {
+        setContent(gav, repositories, null, overrideCommand);
+    }
+
     public void setContent(final GAV gav,
                            final Set<MavenRepositoryMetadata> metadata,
-                           final Command command) {
-        checkNotNull("gav",
-                     gav);
-        checkNotNull("metadata",
-                     metadata);
-        checkNotNull("command",
-                     command);
+                           final Command okCommand,
+                           final Command overrideCommand) {
+        checkNotNull("gav", gav);
+        checkNotNull("metadata", metadata);
+        checkNotNull("overrideCommand", overrideCommand);
 
-        view.setContent(gav,
-                        metadata);
+        this.okCommand = okCommand;
+        this.overrideCommand = overrideCommand;
+
+        view.setContent(gav, metadata);
 
         view.clear();
         view.addOKButton();
         if (isUserAdministrator()) {
-            view.addOverrideButton(command);
+            view.addOverrideButton();
         }
     }
 
@@ -81,7 +89,20 @@ public class ConflictingRepositoriesPopup
     }
 
     @Override
-    public void hide() {
+    public void override() {
+        safeExecute(overrideCommand);
         view.hide();
+    }
+
+    @Override
+    public void hide() {
+        safeExecute(okCommand);
+        view.hide();
+    }
+
+    private void safeExecute(final Command command) {
+        if (command != null) {
+            command.execute();
+        }
     }
 }

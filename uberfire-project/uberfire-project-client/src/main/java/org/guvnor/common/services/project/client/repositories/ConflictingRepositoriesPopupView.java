@@ -21,18 +21,15 @@ import java.util.Set;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.MavenRepositoryMetadata;
 import org.uberfire.client.mvp.UberView;
-import org.uberfire.mvp.Command;
 
 public interface ConflictingRepositoriesPopupView
         extends UberView<ConflictingRepositoriesPopupView.Presenter> {
 
     interface Presenter {
 
-        void setContent(final GAV gav,
-                        final Set<MavenRepositoryMetadata> repositories,
-                        final Command command);
-
         void show();
+
+        void override();
 
         void hide();
     }
@@ -44,7 +41,7 @@ public interface ConflictingRepositoriesPopupView
 
     void addOKButton();
 
-    void addOverrideButton(final Command command);
+    void addOverrideButton();
 
     void show();
 
