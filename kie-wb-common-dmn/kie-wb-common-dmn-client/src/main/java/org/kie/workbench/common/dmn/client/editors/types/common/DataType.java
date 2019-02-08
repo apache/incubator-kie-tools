@@ -24,6 +24,8 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.DataTypeActiveRecord;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.common.RecordEngine;
 
+import static org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType.NONE;
+
 public class DataType extends DataTypeActiveRecord {
 
     public static final String TOP_LEVEL_PARENT_UUID = "";
@@ -42,7 +44,7 @@ public class DataType extends DataTypeActiveRecord {
 
     private List<DataType> subDataTypes = new ArrayList<>();
 
-    private ConstraintType constraintType;
+    private ConstraintType constraintType = NONE;
 
     public DataType(final RecordEngine<DataType> recordEngine) {
         super(recordEngine);

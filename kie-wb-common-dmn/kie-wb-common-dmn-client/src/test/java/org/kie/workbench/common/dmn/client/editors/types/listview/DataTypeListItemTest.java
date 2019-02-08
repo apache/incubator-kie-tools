@@ -47,6 +47,8 @@ import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType.BOOLEAN;
+import static org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType.STRING;
 import static org.kie.workbench.common.dmn.client.editors.types.persistence.CreationType.ABOVE;
 import static org.kie.workbench.common.dmn.client.editors.types.persistence.CreationType.BELOW;
 import static org.kie.workbench.common.dmn.client.editors.types.persistence.CreationType.NESTED;
@@ -82,9 +84,6 @@ public class DataTypeListItemTest {
     @Mock
     private ItemDefinitionStore itemDefinitionStore;
 
-    @Captor
-    private ArgumentCaptor<DataType> dataTypeCaptor;
-
     @Mock
     private DataTypeList dataTypeList;
 
@@ -100,15 +99,20 @@ public class DataTypeListItemTest {
     @Captor
     private ArgumentCaptor<DataTypeEditModeToggleEvent> eventArgumentCaptor;
 
+    private String structure = "Structure";
+
     private DataTypeManager dataTypeManager;
 
     private DataTypeListItem listItem;
 
     @Before
     public void setup() {
+
         dataTypeManager = spy(new DataTypeManager(null, null, itemDefinitionStore, null, null, null, null, null));
         listItem = spy(new DataTypeListItem(view, dataTypeSelectComponent, dataTypeConstraintComponent, dataTypeListComponent, dataTypeManager, confirmation, nameFormatValidator, editModeToggleEvent));
         listItem.init(dataTypeList);
+
+        doReturn(structure).when(dataTypeManager).structure();
     }
 
     @Test
@@ -157,6 +161,7 @@ public class DataTypeListItemTest {
         listItem.setupConstraintComponent();
 
         verify(dataTypeConstraintComponent).init(listItem);
+        verify(listItem).refreshConstraintComponent();
     }
 
     @Test
@@ -454,8 +459,9 @@ public class DataTypeListItemTest {
         listItem.discardNewDataType();
 
         verify(view).setDataType(dataType);
-        verify(listItem).setupSelectComponent();
         verify(listItem).setupListComponent();
+        verify(listItem).setupSelectComponent();
+        verify(listItem).setupConstraintComponent();
         verify(listItem).refreshSubItems(subDataTypes);
     }
 
@@ -823,6 +829,36 @@ public class DataTypeListItemTest {
         final String expectedHash = "value";
 
         assertEquals(expectedHash, actualHash);
+    }
+
+    @Test
+    public void testRefreshConstraintComponentWhenSelectedTypeIsStructure() {
+
+        when(dataTypeSelectComponent.getValue()).thenReturn(structure);
+
+        listItem.refreshConstraintComponent();
+
+        verify(dataTypeConstraintComponent).disable();
+    }
+
+    @Test
+    public void testRefreshConstraintComponentWhenSelectedTypeIsBoolean() {
+
+        when(dataTypeSelectComponent.getValue()).thenReturn(BOOLEAN.getName());
+
+        listItem.refreshConstraintComponent();
+
+        verify(dataTypeConstraintComponent).disable();
+    }
+
+    @Test
+    public void testRefreshConstraintComponentWhenSelectedTypeIsNotBooleanNeitherStructure() {
+
+        when(dataTypeSelectComponent.getValue()).thenReturn(STRING.getName());
+
+        listItem.refreshConstraintComponent();
+
+        verify(dataTypeConstraintComponent).enable();
     }
 
     private DataType makeDataType() {

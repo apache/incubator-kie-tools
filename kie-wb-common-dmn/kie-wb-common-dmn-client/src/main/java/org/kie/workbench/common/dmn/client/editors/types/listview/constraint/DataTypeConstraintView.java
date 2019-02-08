@@ -135,6 +135,16 @@ public class DataTypeConstraintView implements DataTypeConstraint.View {
         }
     }
 
+    @Override
+    public void enable() {
+        show(getElement());
+    }
+
+    @Override
+    public void disable() {
+        hide(getElement());
+    }
+
     void setupTooltip(final JavaScriptObject javaScriptObject) {
         $(constraintsTooltip).tooltip(javaScriptObject);
     }

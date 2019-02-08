@@ -155,7 +155,9 @@ public class DataTypeSelectView implements DataTypeSelect.View {
 
     @Override
     public void setDataType(final DataType dataType) {
-        typeText.textContent = "(" + dataType.getType() + ")";
+        final String type = dataType.getType();
+        typeText.textContent = "(" + type + ")";
+        value = type;
     }
 
     public void onSelectChange(final JQuerySelectPickerEvent event) {

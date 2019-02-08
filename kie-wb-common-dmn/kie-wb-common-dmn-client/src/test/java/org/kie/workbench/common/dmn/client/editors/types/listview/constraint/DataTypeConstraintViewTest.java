@@ -201,4 +201,30 @@ public class DataTypeConstraintViewTest {
 
         verify(jsonObject).put(eq("container"), eq(new JSONString("body")));
     }
+
+    @Test
+    public void testEnable() {
+
+        final HTMLElement element = mock(HTMLElement.class);
+        element.classList = mock(DOMTokenList.class);
+
+        doReturn(element).when(view).getElement();
+
+        view.enable();
+
+        element.classList.remove(HIDDEN_CSS_CLASS);
+    }
+
+    @Test
+    public void testDisable() {
+
+        final HTMLElement element = mock(HTMLElement.class);
+        element.classList = mock(DOMTokenList.class);
+
+        doReturn(element).when(view).getElement();
+
+        view.disable();
+
+        element.classList.add(HIDDEN_CSS_CLASS);
+    }
 }

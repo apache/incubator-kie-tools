@@ -23,6 +23,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.Text;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
+import static org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType.NONE;
 
 @RunWith(MockitoJUnitRunner.class)
 public class InputClauseUnaryTestsTest {
@@ -72,8 +73,13 @@ public class InputClauseUnaryTestsTest {
     }
 
     @Test
+    public void ensureThatConstraintTypeIsSetToNone() {
+        ensureThatConstraintTypeIsSet(NONE);
+    }
+
+    @Test
     public void ensureThatConstraintTypeIsSetToNull() {
-        ensureThatConstraintTypeIsSet(null);
+        ensureThatConstraintTypeIsSet(NONE);
     }
 
     private void ensureThatConstraintTypeIsSet(final ConstraintType constraintType) {

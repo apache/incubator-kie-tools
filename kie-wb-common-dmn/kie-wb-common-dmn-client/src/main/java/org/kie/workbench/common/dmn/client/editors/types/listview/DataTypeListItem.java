@@ -38,6 +38,7 @@ import org.kie.workbench.common.dmn.client.editors.types.listview.validation.Dat
 import org.uberfire.client.mvp.UberElemental;
 import org.uberfire.mvp.Command;
 
+import static org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType.BOOLEAN;
 import static org.kie.workbench.common.dmn.client.editors.types.persistence.CreationType.ABOVE;
 import static org.kie.workbench.common.dmn.client.editors.types.persistence.CreationType.BELOW;
 import static org.kie.workbench.common.dmn.client.editors.types.persistence.CreationType.NESTED;
@@ -129,6 +130,7 @@ public class DataTypeListItem {
 
     void setupConstraintComponent() {
         dataTypeConstraintComponent.init(this);
+        refreshConstraintComponent();
     }
 
     void setupSelectComponent() {
@@ -257,6 +259,7 @@ public class DataTypeListItem {
 
         setupListComponent();
         setupSelectComponent();
+        setupConstraintComponent();
         refreshSubItems(oldDataType.getSubDataTypes());
     }
 
@@ -445,6 +448,22 @@ public class DataTypeListItem {
 
     private DataType newDataType() {
         return dataTypeManager.fromNew().get();
+    }
+
+    void refreshConstraintComponent() {
+        if (isBooleanType() || isStructureType()) {
+            dataTypeConstraintComponent.disable();
+        } else {
+            dataTypeConstraintComponent.enable();
+        }
+    }
+
+    private boolean isBooleanType() {
+        return Objects.equals(BOOLEAN.getName(), getType());
+    }
+
+    private boolean isStructureType() {
+        return Objects.equals(dataTypeManager.structure(), getType());
     }
 
     public interface View extends UberElemental<DataTypeListItem> {

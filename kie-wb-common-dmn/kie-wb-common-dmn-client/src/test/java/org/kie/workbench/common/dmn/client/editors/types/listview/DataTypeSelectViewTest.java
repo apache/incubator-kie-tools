@@ -236,14 +236,16 @@ public class DataTypeSelectViewTest {
     @Test
     public void testSetDataType() {
 
-        final String type = "type";
-        final DataType dataType = makeDataType(type);
+        final String expectedType = "type";
+        final DataType dataType = makeDataType(expectedType);
         final String expectedTypeText = "(type)";
 
         view.setDataType(dataType);
 
+        final String actualType = view.getValue();
         final String actualTypeText = typeText.textContent;
 
+        assertEquals(expectedType, actualType);
         assertEquals(expectedTypeText, actualTypeText);
     }
 

@@ -16,31 +16,33 @@
 
 package org.kie.workbench.common.dmn.api.definition.v1_1;
 
+import java.util.Optional;
+
 public enum ConstraintType {
+
     ENUMERATION,
     EXPRESSION,
-    RANGE;
+    RANGE,
+    NONE;
 
     public static final String CONSTRAINT_KEY = "constraintType";
 
     public static ConstraintType fromString(final String value) {
-
-        if (ENUMERATION.value().equalsIgnoreCase(value)) {
-            return ENUMERATION;
+        try {
+            return valueOf(upperCase(value));
+        } catch (final IllegalArgumentException e) {
+            return NONE;
         }
-
-        if (EXPRESSION.value().equalsIgnoreCase(value)) {
-            return EXPRESSION;
-        }
-
-        if (RANGE.value().equalsIgnoreCase(value)) {
-            return RANGE;
-        }
-
-        return null;
     }
 
     public String value() {
         return name().toLowerCase();
+    }
+
+    private static String upperCase(final String value) {
+        return Optional
+                .ofNullable(value)
+                .orElse("")
+                .toUpperCase();
     }
 }

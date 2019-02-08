@@ -33,16 +33,20 @@ import static org.kie.workbench.common.stunner.core.util.StringUtils.isEmpty;
 @Dependent
 public class DataTypeConstraint {
 
+    static final String NONE = "";
+
     private final View view;
 
     private final DataTypeConstraintModal constraintModal;
 
     private boolean isEditModeEnabled = false;
 
-    private String constraintValue = "";
+    private String constraintValue = NONE;
+
+    private ConstraintType constraintType = ConstraintType.NONE;
+    ;
 
     private DataTypeListItem listItem;
-    private ConstraintType constraintType;
 
     @Inject
     public DataTypeConstraint(final View view,
@@ -121,9 +125,7 @@ public class DataTypeConstraint {
 
     BiConsumer<String, ConstraintType> getOnShowConsumer() {
         return (newConstraintValue, newConstraintType) -> {
-            constraintValue = newConstraintValue;
-            constraintType = newConstraintType;
-
+            setConstraint(newConstraintValue, newConstraintType);
             refreshView();
         };
     }
@@ -134,6 +136,21 @@ public class DataTypeConstraint {
 
     boolean isEditModeEnabled() {
         return isEditModeEnabled;
+    }
+
+    public void disable() {
+        setConstraint(NONE, ConstraintType.NONE);
+        view.disable();
+    }
+
+    public void enable() {
+        view.enable();
+    }
+
+    private void setConstraint(final String value,
+                               final ConstraintType type) {
+        constraintValue = value;
+        constraintType = type;
     }
 
     public interface View extends UberElemental<DataTypeConstraint>,
@@ -152,5 +169,9 @@ public class DataTypeConstraint {
         void hideText();
 
         void setText(final String text);
+
+        void enable();
+
+        void disable();
     }
 }

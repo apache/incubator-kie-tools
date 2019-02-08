@@ -190,4 +190,23 @@ public class DataTypeConstraintTest {
         assertEquals(expectedConstraintType, actualConstraintType);
         verify(dataTypeConstraint).refreshView();
     }
+
+    @Test
+    public void testDisable() {
+
+        dataTypeConstraint.disable();
+
+        final String actualConstraint = dataTypeConstraint.getValue();
+        final ConstraintType actualConstraintType = dataTypeConstraint.getConstraintType();
+
+        assertEquals(DataTypeConstraint.NONE, actualConstraint);
+        assertEquals(ConstraintType.NONE, actualConstraintType);
+        verify(view).disable();
+    }
+
+    @Test
+    public void testEnable() {
+        dataTypeConstraint.enable();
+        verify(view).enable();
+    }
 }

@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.dmn.backend.definition.v1_1;
 
+import java.util.Objects;
+
 import javax.xml.namespace.QName;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType;
@@ -27,6 +29,8 @@ import org.kie.workbench.common.dmn.api.property.dmn.ExpressionLanguage;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Text;
 
+import static org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType.NONE;
+
 public class UnaryTestsPropertyConverter {
 
     public static UnaryTests wbFromDMN(final org.kie.dmn.model.api.UnaryTests dmn) {
@@ -36,12 +40,14 @@ public class UnaryTestsPropertyConverter {
         final Id id = new Id(dmn.getId());
         final Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
         final ExpressionLanguage expressionLanguage = ExpressionLanguagePropertyConverter.wbFromDMN(dmn.getExpressionLanguage());
-        ConstraintType constraintTypeField = null;
+        final ConstraintType constraintTypeField;
         final QName key = new QName(DMNModelInstrumentedBase.Namespace.KIE.getUri(),
                                     ConstraintType.CONSTRAINT_KEY,
                                     DMNModelInstrumentedBase.Namespace.KIE.getPrefix());
         if (dmn.getAdditionalAttributes().containsKey(key)) {
             constraintTypeField = ConstraintTypeFieldPropertyConverter.wbFromDMN(dmn.getAdditionalAttributes().get(key));
+        } else {
+            constraintTypeField = NONE;
         }
         final UnaryTests result = new UnaryTests(id,
                                                  description,
@@ -61,7 +67,7 @@ public class UnaryTestsPropertyConverter {
 
         final ConstraintType constraint = wb.getConstraintType();
 
-        if (constraint != null) {
+        if (isNotNone(constraint)) {
             final QName key = new QName(DMNModelInstrumentedBase.Namespace.KIE.getUri(),
                                         ConstraintType.CONSTRAINT_KEY,
                                         DMNModelInstrumentedBase.Namespace.KIE.getPrefix());
@@ -69,5 +75,9 @@ public class UnaryTestsPropertyConverter {
         }
 
         return result;
+    }
+
+    private static boolean isNotNone(final ConstraintType constraint) {
+        return !Objects.equals(constraint, NONE);
     }
 }

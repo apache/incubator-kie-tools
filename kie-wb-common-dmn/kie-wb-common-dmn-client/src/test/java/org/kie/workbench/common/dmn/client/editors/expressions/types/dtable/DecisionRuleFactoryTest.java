@@ -28,6 +28,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.OutputClause;
 import org.kie.workbench.common.dmn.api.definition.v1_1.UnaryTests;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType.NONE;
 
 public class DecisionRuleFactoryTest {
 
@@ -60,7 +61,7 @@ public class DecisionRuleFactoryTest {
         assertThat(inputEntries.size()).isEqualTo(2);
         assertThat(inputEntries)
                 .allSatisfy(unaryTests -> assertUnaryTestsText(unaryTests, DecisionTableDefaultValueUtilities.INPUT_CLAUSE_UNARY_TEST_TEXT))
-                .allSatisfy(unaryTests -> assertThat(unaryTests.getConstraintType()).isNull())
+                .allSatisfy(unaryTests -> assertThat(unaryTests.getConstraintType()).isEqualTo(NONE))
                 .allSatisfy(unaryTests -> assertThat(unaryTests.getParent()).isEqualTo(rule));
 
         final List<LiteralExpression> outputEntries = rule.getOutputEntry();

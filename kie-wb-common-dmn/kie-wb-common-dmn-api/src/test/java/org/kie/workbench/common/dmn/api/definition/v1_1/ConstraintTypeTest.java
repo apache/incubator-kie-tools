@@ -19,33 +19,44 @@ package org.kie.workbench.common.dmn.api.definition.v1_1;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType.ENUMERATION;
+import static org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType.EXPRESSION;
+import static org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType.NONE;
+import static org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType.RANGE;
 
 public class ConstraintTypeTest {
 
     @Test
     public void testEnumerationString() {
-        testFromString(ConstraintType.ENUMERATION, "enumeration");
-        testFromString(ConstraintType.ENUMERATION, "Enumeration");
-        testFromString(ConstraintType.ENUMERATION, "ENUMERATION");
+        testFromString(ENUMERATION, "enumeration");
+        testFromString(ENUMERATION, "Enumeration");
+        testFromString(ENUMERATION, "ENUMERATION");
     }
 
     @Test
     public void testExpressionString() {
-        testFromString(ConstraintType.EXPRESSION, "expression");
-        testFromString(ConstraintType.EXPRESSION, "Expression");
-        testFromString(ConstraintType.EXPRESSION, "EXPRESSION");
+        testFromString(EXPRESSION, "expression");
+        testFromString(EXPRESSION, "Expression");
+        testFromString(EXPRESSION, "EXPRESSION");
     }
 
     @Test
     public void testRangeString() {
-        testFromString(ConstraintType.RANGE, "range");
-        testFromString(ConstraintType.RANGE, "Range");
-        testFromString(ConstraintType.RANGE, "RANGE");
+        testFromString(RANGE, "range");
+        testFromString(RANGE, "Range");
+        testFromString(RANGE, "RANGE");
+    }
+
+    @Test
+    public void testNullString() {
+        testFromString(NONE, "none");
+        testFromString(NONE, "None");
+        testFromString(NONE, "NONE");
     }
 
     @Test
     public void testUnknownString() {
-        testFromString(null, "unknownvalue");
+        testFromString(NONE, "unknownvalue");
     }
 
     private void testFromString(ConstraintType expected, String value) {

@@ -37,6 +37,7 @@ import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
+import static org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType.NONE;
 import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers.nestedForms.AbstractEmbeddedFormsInitializer.COLLAPSIBLE_CONTAINER;
 import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers.nestedForms.AbstractEmbeddedFormsInitializer.FIELD_CONTAINER_PARAM;
 
@@ -68,7 +69,7 @@ public class UnaryTests extends DMNElement implements IsUnaryTests,
              new Description(),
              new Text(),
              new ExpressionLanguage(),
-             null);
+             NONE);
     }
 
     public UnaryTests(final Id id,

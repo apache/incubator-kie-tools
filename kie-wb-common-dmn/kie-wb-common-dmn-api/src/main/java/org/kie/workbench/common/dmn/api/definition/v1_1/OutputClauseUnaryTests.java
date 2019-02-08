@@ -30,6 +30,7 @@ import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
+import static org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType.NONE;
 import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers.nestedForms.AbstractEmbeddedFormsInitializer.COLLAPSIBLE_CONTAINER;
 import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers.nestedForms.AbstractEmbeddedFormsInitializer.FIELD_CONTAINER_PARAM;
 
@@ -59,7 +60,7 @@ public class OutputClauseUnaryTests extends DMNModelInstrumentedBase implements 
     public OutputClauseUnaryTests() {
         this(new Id(),
              new Text(),
-             null);
+             NONE);
     }
 
     public OutputClauseUnaryTests(final Id id,

@@ -31,8 +31,11 @@ import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.ran
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType.ENUMERATION;
 import static org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType.EXPRESSION;
+import static org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType.NONE;
 import static org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType.RANGE;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.constraint.DataTypeConstraintModal.CONSTRAINT_INITIAL_VALUE;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.constraint.DataTypeConstraintModal.WIDTH;
@@ -214,9 +217,9 @@ public class DataTypeConstraintModalTest {
     }
 
     @Test
-    public void testSetupComponentWhenConstraintTypeIsNull() {
+    public void testSetupComponentWhenConstraintTypeIsNone() {
 
-        final ConstraintType type = null;
+        final ConstraintType type = NONE;
         final String constraint = "(1..2)";
 
         doReturn(ENUMERATION).when(modal).inferComponentType(constraint);
@@ -226,6 +229,21 @@ public class DataTypeConstraintModalTest {
 
         assertEquals(constraintEnumeration, modal.getCurrentComponent());
         verify(constraintEnumeration).setValue(constraint);
+    }
+
+    @Test
+    public void testIsNoneWhenConstraintTypeIsENUMERATION() {
+        assertFalse(modal.isNone(ENUMERATION));
+    }
+
+    @Test
+    public void testIsNoneWhenConstraintTypeIsNONE() {
+        assertTrue(modal.isNone(NONE));
+    }
+
+    @Test
+    public void testIsNoneWhenConstraintTypeIsNull() {
+        assertTrue(modal.isNone(null));
     }
 
     @Test
