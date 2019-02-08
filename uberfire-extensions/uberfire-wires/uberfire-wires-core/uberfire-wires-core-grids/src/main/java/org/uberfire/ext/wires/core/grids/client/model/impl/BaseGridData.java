@@ -738,10 +738,13 @@ public class BaseGridData implements GridData {
         GridWidthMetadata gridWidthMetadata = new GridWidthMetadata(optionalCurrentWidth);
         int visibleWidth = getVisibleWidth();
 
+        double calculatedWidth;
         if (gridWidthMetadata.numberOfAutoColumn < 2) {
-            return visibleWidth - gridWidthMetadata.fixedWidth;
+            calculatedWidth = visibleWidth - gridWidthMetadata.fixedWidth;
+        } else {
+            calculatedWidth = (visibleWidth - gridWidthMetadata.fixedWidth) / (gridWidthMetadata.numberOfAutoColumn - 1);
         }
-        return (visibleWidth - gridWidthMetadata.fixedWidth) / (gridWidthMetadata.numberOfAutoColumn - 1);
+        return Math.max(calculatedWidth, column.getMinimumWidth());
     }
 
     private class GridWidthMetadata {

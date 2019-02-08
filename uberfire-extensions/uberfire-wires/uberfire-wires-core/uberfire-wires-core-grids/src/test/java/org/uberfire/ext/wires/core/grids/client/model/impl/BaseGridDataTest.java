@@ -423,6 +423,14 @@ public class BaseGridDataTest {
         data.appendColumn(column3);
 
         assertEquals(((data.getVisibleWidth() - originalWidth) / 2), data.calculateInitWidth(column2, OptionalDouble.empty()), 0.1);
+
+        BaseGridColumn<String> column4 = new BaseGridColumn<>(header, columnRenderer, originalWidth);
+        column4.setColumnWidthMode(GridColumn.ColumnWidthMode.AUTO);
+        double minWidth = originalWidth * 10;
+        column4.setMinimumWidth(minWidth);
+        data.appendColumn(column4);
+
+        assertEquals(minWidth, column4.getWidth(), 0.1);
     }
 
     static class CustomGridCell<T> extends BaseGridCell<T> {
