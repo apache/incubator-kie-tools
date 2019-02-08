@@ -21,7 +21,6 @@ import javax.inject.Named;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import elemental2.dom.HTMLAnchorElement;
-import elemental2.dom.HTMLButtonElement;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLLIElement;
@@ -32,9 +31,8 @@ import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
-import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
+import org.kie.workbench.common.screens.library.client.screens.project.actions.ProjectMainActions;
 import org.uberfire.ext.widgets.common.client.common.BusyPopup;
-import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
 
 @Templated
 public class ProjectView implements ProjectScreen.View,
@@ -133,21 +131,8 @@ public class ProjectView implements ProjectScreen.View,
     private HTMLAnchorElement reimport;
 
     @Inject
-    @DataField("build")
-    private HTMLButtonElement build;
-
-    @Inject
-    @DataField("deploy")
-    private HTMLButtonElement deploy;
-
-    @Inject
     @DataField("main-actions")
     private HTMLDivElement mainActions;
-
-    @Override
-    public void addMainAction(final IsElement action) {
-        mainActions.appendChild(action.getElement());
-    }
 
     @Override
     public void setAssetsCount(int count) {
@@ -191,16 +176,6 @@ public class ProjectView implements ProjectScreen.View,
     }
 
     @Override
-    public void setBuildEnabled(boolean enabled) {
-        this.build.disabled = !enabled;
-    }
-
-    @Override
-    public void setDeployEnabled(boolean enabled) {
-        this.deploy.disabled = !enabled;
-    }
-
-    @Override
     public void setDeleteProjectVisible(boolean visible) {
         this.deleteProject.hidden = !visible;
     }
@@ -228,6 +203,12 @@ public class ProjectView implements ProjectScreen.View,
     @Override
     public String getReimportSuccessfulMessage() {
         return translationService.getTranslation(LibraryConstants.ReimportSuccessful);
+    }
+
+    @Override
+    public void addMainAction(HTMLElement element) {
+        domUtil.removeAllElementChildren(mainActions);
+        mainActions.appendChild(element);
     }
 
     @Override
@@ -283,16 +264,6 @@ public class ProjectView implements ProjectScreen.View,
         presenter.rename();
     }
 
-    @EventHandler("build")
-    public void build(final ClickEvent event) {
-        presenter.build();
-    }
-
-    @EventHandler("deploy")
-    public void deploy(final ClickEvent event) {
-        presenter.deploy();
-    }
-
     @EventHandler("add-asset-action")
     public void addAsset(final ClickEvent event) {
         presenter.addAsset();
@@ -321,11 +292,6 @@ public class ProjectView implements ProjectScreen.View,
         this.deactivate(this.contributorsTabItem);
         this.deactivate(this.metricsTabItem);
         this.deactivate(this.settingsTabItem);
-    }
-
-    @Override
-    public void showABuildIsAlreadyRunning() {
-        ErrorPopup.showMessage(ProjectEditorResources.CONSTANTS.ABuildIsAlreadyRunning());
     }
 
     @Override

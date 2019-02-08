@@ -153,6 +153,11 @@ public class PomEditorServiceImpl implements PomEditorService {
             if (pom.getGav().equals(module.getPom().getGav())) {
                 return;
             }
+
+            // If GAV is snapshot we can freely override the module
+            if(pom.getGav().isSnapshot()) {
+                return;
+            }
         } catch (final XmlPullParserException e) {
             throw new InvalidPomException(e.getLineNumber(), e.getColumnNumber());
         } catch (final IOException e) {

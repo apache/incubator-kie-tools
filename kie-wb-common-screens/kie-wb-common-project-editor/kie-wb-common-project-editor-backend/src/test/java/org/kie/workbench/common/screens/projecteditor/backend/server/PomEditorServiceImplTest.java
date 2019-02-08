@@ -17,6 +17,7 @@
 package org.kie.workbench.common.screens.projecteditor.backend.server;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -24,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.io.IOUtils;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.guvnor.common.services.backend.metadata.MetadataServerSideService;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
@@ -516,6 +518,39 @@ public class PomEditorServiceImplTest {
                never()).resolveModule(pomPath);
         verify(moduleRepositoriesService,
                never()).load(pomPath);
+        verify(repositoryResolver,
+               never()).getRepositoriesResolvingArtifact(eq(pomXml),
+                                                         any(MavenRepositoryMetadata.class));
+
+        verify(ioService,
+               times(1)).startBatch(any(FileSystem.class));
+        verify(ioService,
+               times(1)).write(any(org.uberfire.java.nio.file.Path.class),
+                               eq(pomXml),
+                               eq(attributes),
+                               any(CommentedOption.class));
+        verify(ioService,
+               times(1)).endBatch();
+    }
+
+    @Test
+    public void testSaveSnapshotGAV() throws IOException {
+        when(pom.getGav()).thenReturn(new GAV("groupId",
+                                              "artifactId",
+                                              "0.0.1"));
+
+        pomXml = IOUtils.toString(this.getClass().getResourceAsStream("/testproject/pom.xml"), Charset.defaultCharset());
+
+        service.save(pomPath,
+                     pomXml,
+                     metaData,
+                     comment,
+                     DeploymentMode.VALIDATED);
+
+        verify(moduleService,
+               times(1)).resolveModule(pomPath);
+        verify(moduleRepositoriesService,
+               never()).load(moduleRepositoriesPath);
         verify(repositoryResolver,
                never()).getRepositoriesResolvingArtifact(eq(pomXml),
                                                          any(MavenRepositoryMetadata.class));

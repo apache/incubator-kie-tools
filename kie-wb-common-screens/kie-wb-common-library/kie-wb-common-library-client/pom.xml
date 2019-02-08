@@ -202,6 +202,11 @@
     </dependency>
 
     <dependency>
+      <groupId>org.gwtbootstrap3</groupId>
+      <artifactId>gwtbootstrap3-extras</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-widgets-core-client</artifactId>
     </dependency>
@@ -300,6 +305,13 @@
     <dependency>
       <groupId>com.google.elemental2</groupId>
       <artifactId>elemental2-promise</artifactId>
+    </dependency>
+
+    <!-- test -->
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
     </dependency>
 
     <dependency>

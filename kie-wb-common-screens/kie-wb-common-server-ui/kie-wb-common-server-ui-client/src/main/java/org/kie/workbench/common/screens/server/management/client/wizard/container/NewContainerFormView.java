@@ -88,6 +88,9 @@ public class NewContainerFormView extends Composite
     @DataField("new-version")
     TextBox version;
 
+    @DataField("new-version-help")
+    Element versionHelp = DOM.createSpan();
+
     @Inject
     @DataField("new-start-container")
     CheckBox startContainer;
@@ -179,6 +182,7 @@ public class NewContainerFormView extends Composite
         groupId.setText("");
         artifactId.setText("");
         version.setText("");
+        versionHelp.setInnerText("");
         startContainer.setValue(false);
 
         noErrors();
@@ -318,27 +322,37 @@ public class NewContainerFormView extends Composite
     }
 
     @Override
+    public void errorRegularModeSupportsDoesntSnapshots() {
+        versionHelp.setInnerText(translationService.getTranslation(Constants.NewContainerFormView_RegularModeSupportsDoesntSnapshots));
+    }
+
+    @Override
+    public void errorDevelopmentModeSupportsSnapshots() {
+        versionHelp.setInnerText(translationService.getTranslation(Constants.NewContainerFormView_DevelopmentModeSupportsSnapshots));
+    }
+
+    @Override
     public String getInvalidErrorMessage() {
-        return translationService.format(Constants.NewContainerFormView_InvalidErrorMessage);
+        return translationService.getTranslation(Constants.NewContainerFormView_InvalidErrorMessage);
     }
 
     @Override
     public String getNewContainerWizardTitle() {
-        return translationService.format(Constants.NewContainerFormView_NewContainerWizardTitle);
+        return translationService.getTranslation(Constants.NewContainerFormView_NewContainerWizardTitle);
     }
 
     @Override
     public String getNewContainerWizardSaveSuccess() {
-        return translationService.format(Constants.NewContainerFormView_NewContainerWizardSaveSuccess);
+        return translationService.getTranslation(Constants.NewContainerFormView_NewContainerWizardSaveSuccess);
     }
 
     @Override
     public String getNewContainerWizardSaveError() {
-        return translationService.format(Constants.NewContainerFormView_NewContainerWizardSaveError);
+        return translationService.getTranslation(Constants.NewContainerFormView_NewContainerWizardSaveError);
     }
 
     private String getTitleText() {
-        return translationService.format(Constants.NewContainerFormView_TitleText);
+        return translationService.getTranslation(Constants.NewContainerFormView_TitleText);
     }
 
     private String getStartContainerCheckBoxText() {

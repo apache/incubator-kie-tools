@@ -16,11 +16,18 @@
 
 package org.kie.workbench.common.screens.projecteditor.backend.server;
 
+import java.util.HashSet;
+
+import org.assertj.core.api.Assertions;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
+import org.guvnor.common.services.project.model.GAV;
+import org.guvnor.common.services.project.model.MavenRepositoryMetadata;
+import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.ModuleRepositories;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.ProjectImports;
 import org.guvnor.common.services.project.service.DeploymentMode;
+import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
 import org.guvnor.common.services.project.service.ModuleRepositoriesService;
 import org.guvnor.common.services.project.service.ModuleRepositoryResolver;
 import org.guvnor.common.services.project.service.POMService;
@@ -54,6 +61,11 @@ import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ProjectScreenModelSaverTest {
+
+    private static final String GROUP = "group";
+    private static final String ARTIFACT = "artifact";
+    private static final String VERSION = "1.0";
+    private static final String SNAPSHOT = "-SNAPSHOT";
 
     @Mock
     private POMService pomService;
@@ -271,5 +283,67 @@ public class ProjectScreenModelSaverTest {
                                       eq(whiteList),
                                       eq(metadata),
                                       eq("message white list"));
+    }
+
+    @Test
+    public void testWithSaveClashingGAV() {
+        final ProjectScreenModel model = new ProjectScreenModel();
+
+        final POM pom = new POM(new GAV(GROUP, ARTIFACT, VERSION));
+
+        model.setPOM(pom);
+        model.setRepositories(new ModuleRepositories());
+
+        final Metadata metadata = new Metadata();
+        model.setWhiteListMetaData(metadata);
+
+        KieModule module = mock(KieModule.class);
+
+        when(module.getPom()).thenReturn(new POM(new GAV(GROUP, ARTIFACT, VERSION + SNAPSHOT)));
+
+        when(moduleService.resolveModule(pathToPom)).thenReturn(module);
+
+        HashSet<MavenRepositoryMetadata> mavenRepositoryMetadata = new HashSet<>();
+        mavenRepositoryMetadata.add(mock(MavenRepositoryMetadata.class));
+
+        when(repositoryResolver.getRepositoriesResolvingArtifact(any(GAV.class), any(Module.class))).thenReturn(mavenRepositoryMetadata);
+
+        Assertions.assertThatThrownBy(() -> saver.save(pathToPom, model, DeploymentMode.VALIDATED, ""))
+                .isInstanceOf(GAVAlreadyExistsException.class);
+    }
+
+    @Test
+    public void testSaveWithSnapshotClashingGAV() {
+        final ProjectScreenModel model = new ProjectScreenModel();
+
+        final POM pom = new POM(new GAV(GROUP, ARTIFACT, VERSION + SNAPSHOT));
+
+        model.setPOM(pom);
+        model.setRepositories(new ModuleRepositories());
+
+        final Metadata metadata = new Metadata();
+        model.setWhiteListMetaData(metadata);
+
+        KieModule module = mock(KieModule.class);
+
+        when(module.getPom()).thenReturn(new POM(new GAV(GROUP, ARTIFACT, VERSION + SNAPSHOT)));
+
+        when(moduleService.resolveModule(pathToPom)).thenReturn(module);
+
+        HashSet<MavenRepositoryMetadata> mavenRepositoryMetadata = new HashSet<>();
+        mavenRepositoryMetadata.add(mock(MavenRepositoryMetadata.class));
+
+        when(repositoryResolver.getRepositoriesResolvingArtifact(any(GAV.class), any(Module.class))).thenReturn(mavenRepositoryMetadata);
+
+        saver.save(pathToPom, model, DeploymentMode.VALIDATED, "");
+
+        verify(pomModelCache).invalidateCache(module);
+        verify(ioService).startBatch(any(), any());
+        verify(pomService).save(any(), any(), any(), any());
+        verify(kModuleService).save(any(), any(), any(), any());
+        verify(importsService).save(any(), any(), any(), any());
+        verify(repositoriesService).save(any(), any(), any());
+        verify(whiteListService).save(any(), any(), any(), any());
+        verify(ioService).endBatch();
     }
 }

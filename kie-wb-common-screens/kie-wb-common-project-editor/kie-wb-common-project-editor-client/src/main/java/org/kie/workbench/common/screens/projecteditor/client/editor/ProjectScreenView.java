@@ -30,8 +30,7 @@ import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
 import org.uberfire.mvp.Command;
 
 public interface ProjectScreenView
-        extends BuildExecutor.View,
-                HasBusyIndicator,
+        extends HasBusyIndicator,
                 IsWidget {
 
     interface Presenter {

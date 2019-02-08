@@ -82,6 +82,11 @@
       <artifactId>uberfire-commons-editor-api</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-preferences-api</artifactId>
+    </dependency>
+
   </dependencies>
 
 </project>

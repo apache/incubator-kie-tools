@@ -29,6 +29,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.server.api.model.KieContainerStatus;
+import org.kie.server.api.model.KieServerMode;
 import org.kie.server.api.model.ReleaseId;
 import org.kie.server.controller.api.model.spec.Capability;
 import org.kie.server.controller.api.model.spec.ContainerConfig;
@@ -49,6 +50,7 @@ import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
 
 import static org.junit.Assert.*;
+import static org.kie.workbench.common.screens.server.management.client.wizard.container.NewContainerFormPresenter.SNAPSHOT;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
@@ -177,6 +179,68 @@ public class NewContainerFormPresenterTest {
         verify(view).errorOnGroupId();
         verify(view).errorOnArtifactId();
         verify(view).errorOnVersion();
+    }
+
+    @Test
+    public void testIsValidWithTemplateDevelopmentMode() {
+        when(view.getContainerName()).thenReturn("containerName");
+        when(view.getGroupId()).thenReturn("groupId");
+        when(view.getArtifactId()).thenReturn("artifactId");
+        when(view.getVersion()).thenReturn("1.0");
+
+        ServerTemplate serverTemplate = new ServerTemplate();
+        serverTemplate.setMode(KieServerMode.DEVELOPMENT);
+
+        presenter.setServerTemplate(serverTemplate);
+
+        assertFalse(presenter.isValid());
+
+        verify(view).noErrorOnContainerName();
+        verify(view).noErrorOnGroupId();
+        verify(view).noErrorOnArtifactId();
+
+        verify(view).errorOnVersion();
+        verify(view).errorDevelopmentModeSupportsSnapshots();
+
+        when(view.getVersion()).thenReturn("1.0" + SNAPSHOT);
+
+        assertTrue(presenter.isValid());
+
+        verify(view, times(2)).noErrorOnContainerName();
+        verify(view, times(2)).noErrorOnGroupId();
+        verify(view, times(2)).noErrorOnArtifactId();
+        verify(view).noErrorOnVersion();
+    }
+
+    @Test
+    public void testIsValidWithTemplateRegularMode() {
+        when(view.getContainerName()).thenReturn("containerName");
+        when(view.getGroupId()).thenReturn("groupId");
+        when(view.getArtifactId()).thenReturn("artifactId");
+        when(view.getVersion()).thenReturn("1.0");
+
+        ServerTemplate serverTemplate = new ServerTemplate();
+        serverTemplate.setMode(KieServerMode.REGULAR);
+
+        presenter.setServerTemplate(serverTemplate);
+
+        assertTrue(presenter.isValid());
+
+        verify(view).noErrorOnContainerName();
+        verify(view).noErrorOnGroupId();
+        verify(view).noErrorOnArtifactId();
+        verify(view).noErrorOnVersion();
+
+        when(view.getVersion()).thenReturn("1.0" + SNAPSHOT);
+
+        assertFalse(presenter.isValid());
+
+        verify(view, times(2)).noErrorOnContainerName();
+        verify(view, times(2)).noErrorOnGroupId();
+        verify(view, times(2)).noErrorOnArtifactId();
+
+        verify(view).errorOnVersion();
+        verify(view).errorRegularModeSupportsDoesntSnapshots();
     }
 
     @Test

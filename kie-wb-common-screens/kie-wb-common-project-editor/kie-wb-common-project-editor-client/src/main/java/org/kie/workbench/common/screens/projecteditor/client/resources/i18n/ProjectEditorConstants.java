@@ -93,6 +93,8 @@ public interface ProjectEditorConstants
 
     String BuildSuccessful();
 
+    String BuildAndInstallSuccessful();
+
     String DeploySuccessful();
 
     String BuildFailed();
@@ -327,9 +329,11 @@ public interface ProjectEditorConstants
 
     String DeployFailed();
 
-    String DeploymentSkippedDueToNoServerTemplateConfigured();
+    String DeploymentSkippedDueToNoServerTemplateConfiguredForMode(String mode);
 
     String DeploySuccessfulButContainerFailedToStart();
 
     String DeploySuccessfulAndContainerStarted();
+
+    String DeploySuccessfulAndContainerUpdated();
 }

@@ -22,7 +22,9 @@
   <inherits name='org.guvnor.common.services.project.GuvnorProjectAPI'/>
   <inherits name='org.kie.workbench.common.services.KieWorkbenchCommonServicesAPI'/>
   <inherits name="org.kie.workbench.common.services.datamodel.KieWorkbenchCommonDataModelAPI"/>
+  <inherits name="org.uberfire.preferences.UberfirePreferencesAPI"/>
 
+  <source path="build"/>
   <source path="model"/>
   <source path="service"/>
   <source path="type"/>

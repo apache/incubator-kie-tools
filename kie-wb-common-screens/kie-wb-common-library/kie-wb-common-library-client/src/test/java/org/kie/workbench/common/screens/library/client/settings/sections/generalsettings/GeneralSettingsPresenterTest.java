@@ -1,6 +1,5 @@
 package org.kie.workbench.common.screens.library.client.settings.sections.generalsettings;
 
-import com.google.gwt.core.client.GWT;
 import org.guvnor.common.services.project.client.preferences.ProjectScopedResolutionStrategySupplier;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
@@ -29,19 +28,23 @@ import org.uberfire.promise.SyncPromises;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class GeneralSettingsPresenterTest {
 
-    @Mock
+    private static final String GROUP = "org.test";
+    private static final String ARTIFACT = "artifact";
+    private static final String VERSION = "1.0";
+
+    private POM pom;
+
+    private GAV gav;
+
     private GeneralSettingsPresenter generalSettingsPresenter;
+
+    @Mock
+    private ProjectScreenModel model;
 
     @Mock
     private GeneralSettingsView view;
@@ -81,17 +84,25 @@ public class GeneralSettingsPresenterTest {
 
     @Before
     public void before() {
+        gav = spy(new GAV(GROUP, ARTIFACT, VERSION));
+
+        pom = spy(new POM());
+
+        when(pom.getGav()).thenReturn(gav);
+
+        when(model.getPOM()).thenReturn(pom);
+
         projectServiceCaller = new CallerMock<>(projectService);
         generalSettingsPresenter = spy(new GeneralSettingsPresenter(view,
-                                                                    promises,
-                                                                    menuItem,
-                                                                    new CallerMock<>(validationService),
-                                                                    projectServiceCaller,
-                                                                    settingsSectionChangeEvent,
-                                                                    gavPreferences,
-                                                                    projectScopedResolutionStrategySupplier,
-                                                                    gitUrlsPresenter,
-                                                                    libraryPlaces));
+                promises,
+                menuItem,
+                new CallerMock<>(validationService),
+                projectServiceCaller,
+                settingsSectionChangeEvent,
+                gavPreferences,
+                projectScopedResolutionStrategySupplier,
+                gitUrlsPresenter,
+                libraryPlaces));
 
         doReturn(space).when(project).getOrganizationalUnit();
         doReturn(project).when(libraryPlaces).getActiveWorkspace();
@@ -99,12 +110,6 @@ public class GeneralSettingsPresenterTest {
 
     @Test
     public void testSetup() {
-
-        final ProjectScreenModel model = mock(ProjectScreenModel.class);
-        final POM pom = mock(POM.class);
-
-        doReturn(pom).when(model).getPOM();
-        doReturn(new GAV()).when(pom).getGav();
 
         generalSettingsPresenter.setup(model).catch_(i -> {
             Assert.fail("Promise should've been resolved!");
@@ -117,75 +122,66 @@ public class GeneralSettingsPresenterTest {
         verify(view).setGroupId(any());
         verify(view).setArtifactId(any());
         verify(view).setVersion(any());
+
         verify(view).setGitUrlsView(any());
 
         verify(gitUrlsPresenter).setup(any());
 
-        verify(gavPreferences).load(any(),
-                                    any(),
-                                    any());
+        verify(gavPreferences).load(any(), any(), any());
     }
 
     @Test
     public void testName() {
-        final POM pom = spy(new POM());
         generalSettingsPresenter.pom = pom;
 
         generalSettingsPresenter.setName("Name");
 
         Assert.assertEquals(pom.getName(),
-                            "Name");
+                "Name");
         verify(generalSettingsPresenter).fireChangeEvent();
     }
 
     @Test
     public void testDescription() {
-        final POM pom = spy(new POM());
         generalSettingsPresenter.pom = pom;
 
         generalSettingsPresenter.setDescription("Description");
 
         Assert.assertEquals("Description",
-                            pom.getDescription());
+                pom.getDescription());
         verify(generalSettingsPresenter).fireChangeEvent();
     }
 
     @Test
     public void testVersion() {
-        final POM pom = spy(new POM());
-        doReturn(new GAV()).when(pom).getGav();
         generalSettingsPresenter.pom = pom;
 
         generalSettingsPresenter.setVersion("Version");
 
         Assert.assertEquals("Version",
-                            pom.getGav().getVersion());
+                pom.getGav().getVersion());
         verify(generalSettingsPresenter).fireChangeEvent();
     }
 
     @Test
     public void testArtifactId() {
-        final POM pom = spy(new POM());
-        doReturn(new GAV()).when(pom).getGav();
         generalSettingsPresenter.pom = pom;
 
         generalSettingsPresenter.setArtifactId("ArtifactId");
 
         Assert.assertEquals("ArtifactId",
-                            pom.getGav().getArtifactId());
+                pom.getGav().getArtifactId());
         verify(generalSettingsPresenter).fireChangeEvent();
     }
 
     @Test
     public void testGroupId() {
-        final POM pom = spy(new POM());
-        doReturn(new GAV()).when(pom).getGav();
         generalSettingsPresenter.pom = pom;
 
         generalSettingsPresenter.setGroupId("GroupId");
 
         Assert.assertEquals("GroupId",
-                            pom.getGav().getGroupId());
+                pom.getGav().getGroupId());
         verify(generalSettingsPresenter).fireChangeEvent();
     }
 
@@ -193,23 +189,23 @@ public class GeneralSettingsPresenterTest {
     public void testSave() {
 
         generalSettingsPresenter.save("Test comment",
-                                      null).catch_(i -> {
+                null).catch_(i -> {
             Assert.fail("Promise should've been resolved!");
             return promises.resolve();
         });
 
         verify(gavPreferences).save(any(PreferenceScopeResolutionStrategyInfo.class),
-                                    any(),
-                                    any());
+                any(),
+                any());
     }
 
     @Test
     public void testValidate() {
         generalSettingsPresenter.pom = new POM("Name",
-                                               null,
-                                               "url",
-                                               new GAV("GroupId:ArtifactId:Version"),
-                                               false);
+                null,
+                "url",
+                new GAV("GroupId:ArtifactId:Version"),
+                false);
 
         doReturn("EmptyNameMessage").when(view).getEmptyNameMessage();
         doReturn("InvalidNameMessage").when(view).getInvalidNameMessage();
@@ -229,8 +225,8 @@ public class GeneralSettingsPresenterTest {
         doReturn(true).when(validationService).validateArtifactId(eq("ArtifactId"));
         doReturn(true).when(validationService).validateGAVVersion(eq("Version"));
         doReturn(true).when(projectService).spaceHasNoProjectsWithName(any(),
-                                                                       eq("Name"),
-                                                                       eq(project));
+                eq("Name"),
+                eq(project));
 
         generalSettingsPresenter.validate().catch_(i -> {
             Assert.fail("Promise should've been resolved!");
@@ -240,33 +236,33 @@ public class GeneralSettingsPresenterTest {
         verify(view).hideError();
 
         verify(generalSettingsPresenter).validateStringIsNotEmpty(eq("Name"),
-                                                                  eq("EmptyNameMessage"));
+                eq("EmptyNameMessage"));
         verify(generalSettingsPresenter).executeValidation(any(),
-                                                           eq("InvalidNameMessage"));
+                eq("InvalidNameMessage"));
         verify(validationService).isProjectNameValid(eq("Name"));
         verify(generalSettingsPresenter).executeValidation(eq(projectServiceCaller),
-                                                           any(),
-                                                           eq("DuplicatedProjectNameMessage"));
+                any(),
+                eq("DuplicatedProjectNameMessage"));
         verify(projectService).spaceHasNoProjectsWithName(any(),
-                                                          eq("Name"),
-                                                          eq(project));
+                eq("Name"),
+                eq(project));
 
         verify(generalSettingsPresenter).validateStringIsNotEmpty(eq("GroupId"),
-                                                                  eq("EmptyGroupIdMessage"));
+                eq("EmptyGroupIdMessage"));
         verify(generalSettingsPresenter).executeValidation(any(),
-                                                           eq("InvalidGroupIdMessage"));
+                eq("InvalidGroupIdMessage"));
         verify(validationService).validateGroupId(eq("GroupId"));
 
         verify(generalSettingsPresenter).validateStringIsNotEmpty(eq("ArtifactId"),
-                                                                  eq("EmptyArtifactIdMessage"));
+                eq("EmptyArtifactIdMessage"));
         verify(generalSettingsPresenter).executeValidation(any(),
-                                                           eq("InvalidArtifactIdMessage"));
+                eq("InvalidArtifactIdMessage"));
         verify(validationService).validateArtifactId(eq("ArtifactId"));
 
         verify(generalSettingsPresenter).validateStringIsNotEmpty(eq("Version"),
-                                                                  eq("EmptyVersionMessage"));
+                eq("EmptyVersionMessage"));
         verify(generalSettingsPresenter).executeValidation(any(),
-                                                           eq("InvalidVersionMessage"));
+                eq("InvalidVersionMessage"));
         verify(validationService).validateGAVVersion(eq("Version"));
     }
 
@@ -274,9 +270,9 @@ public class GeneralSettingsPresenterTest {
     public void testValidateWithOneError() {
 
         generalSettingsPresenter.pom = new POM("",
-                                               null,
-                                               "",
-                                               new GAV());
+                null,
+                "",
+                new GAV());
 
         doReturn("NameMessage").when(view).getEmptyNameMessage();
 
@@ -287,9 +283,9 @@ public class GeneralSettingsPresenterTest {
 
         verify(generalSettingsPresenter).showErrorAndReject(eq("NameMessage"));
         verify(generalSettingsPresenter).validateStringIsNotEmpty(eq(""),
-                                                                  eq("NameMessage"));
+                eq("NameMessage"));
         verify(validationService,
-               never()).isProjectNameValid(any());
+                never()).isProjectNameValid(any());
     }
 
     @Test
@@ -315,7 +311,7 @@ public class GeneralSettingsPresenterTest {
         }).catch_(e -> {
             verify(view).showError(eq("Test message"));
             Assert.assertEquals(e,
-                                generalSettingsPresenter);
+                    generalSettingsPresenter);
             return promises.resolve();
         });
     }
@@ -323,9 +319,9 @@ public class GeneralSettingsPresenterTest {
     @Test
     public void testValidateStringIsNotEmpty() {
         generalSettingsPresenter.validateStringIsNotEmpty("NotEmptyString",
-                                                          "Message").then(e -> {
+                "Message").then(e -> {
             Assert.assertEquals(e,
-                                true);
+                    true);
             return promises.resolve();
         }).catch_(e -> {
             Assert.fail("Promise should've been resolved!");
@@ -336,12 +332,12 @@ public class GeneralSettingsPresenterTest {
     @Test
     public void testValidateStringIsNotEmptyWithEmptyString() {
         generalSettingsPresenter.validateStringIsNotEmpty("",
-                                                          "Message").then(e -> {
+                "Message").then(e -> {
             Assert.fail("Promise should've not been resolved!");
             return promises.resolve();
         }).catch_(e -> {
             Assert.assertEquals(e,
-                                "Message");
+                    "Message");
             return promises.resolve();
         });
     }
@@ -349,12 +345,12 @@ public class GeneralSettingsPresenterTest {
     @Test
     public void testValidateStringIsNotEmptyWithNullString() {
         generalSettingsPresenter.validateStringIsNotEmpty(null,
-                                                          "Message").then(e -> {
+                "Message").then(e -> {
             Assert.fail("Promise should've not been resolved!");
             return promises.resolve();
         }).catch_(e -> {
             Assert.assertEquals(e,
-                                "Message");
+                    "Message");
             return promises.resolve();
         });
     }
@@ -365,10 +361,10 @@ public class GeneralSettingsPresenterTest {
         doReturn(true).when(validationService).validate(eq(pom));
 
         generalSettingsPresenter.executeValidation(s -> s.validate(pom),
-                                                   "Test message").then(valid -> {
+                "Test message").then(valid -> {
             verify(validationService).validate(eq(pom));
             Assert.assertEquals(valid,
-                                true);
+                    true);
             return promises.resolve();
         }).catch_(e -> {
             Assert.fail("Promise should've been resolved!");
@@ -382,13 +378,13 @@ public class GeneralSettingsPresenterTest {
         doReturn(false).when(validationService).validate(eq(pom));
 
         generalSettingsPresenter.executeValidation(s -> s.validate(pom),
-                                                   "Test message").then(valid -> {
+                "Test message").then(valid -> {
             Assert.fail("Promise should've been resolved!");
             return promises.resolve();
         }).catch_(e -> {
             verify(validationService).validate(eq(pom));
             Assert.assertEquals(e,
-                                "Test message");
+                    "Test message");
             return promises.resolve();
         });
     }
@@ -410,26 +406,26 @@ public class GeneralSettingsPresenterTest {
     @Test
     public void testCurrentHashCode() {
         final POM pom = new POM("Name",
-                                "Description",
-                                "url",
-                                new GAV("GroupId:ArtifactId:Version"),
-                                false);
+                "Description",
+                "url",
+                new GAV("GroupId:ArtifactId:Version"),
+                false);
         generalSettingsPresenter.pom = pom;
 
         int originalHashCode = generalSettingsPresenter.currentHashCode();
 
         doReturn(true).when(gavPreferences).isConflictingGAVCheckDisabled();
         Assert.assertNotEquals(originalHashCode,
-                               generalSettingsPresenter.currentHashCode());
+                generalSettingsPresenter.currentHashCode());
         originalHashCode = generalSettingsPresenter.currentHashCode();
 
         doReturn(true).when(gavPreferences).isChildGAVEditEnabled();
         Assert.assertNotEquals(originalHashCode,
-                               generalSettingsPresenter.currentHashCode());
+                generalSettingsPresenter.currentHashCode());
         originalHashCode = generalSettingsPresenter.currentHashCode();
 
         pom.setName("Name2");
         Assert.assertNotEquals(originalHashCode,
-                               generalSettingsPresenter.currentHashCode());
+                generalSettingsPresenter.currentHashCode());
     }
 }

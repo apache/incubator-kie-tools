@@ -133,6 +133,11 @@ public class ProjectScreenModelSaver {
             return;
         }
 
+        // If GAV is snapshot we can freely override the module
+        if(gav.isSnapshot()) {
+            return;
+        }
+
         // Check is the Module's "proposed" GAV resolves to any pre-existing artifacts.
         // Use the Repositories in the model since the User may update the Repositories filter and save.
         final ModuleRepositories moduleRepositories = model.getRepositories();

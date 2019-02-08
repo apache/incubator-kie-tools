@@ -393,6 +393,9 @@ public class LibraryConstants {
     public static final String PreferenceDisableGAVConflictCheck_Tooltip = "PreferenceDisableGAVConflictCheck.Tooltip";
 
     @TranslationKey(defaultValue = "")
+    public static final String DevelopmentMode_Tooltip = "DevelopmentModeTooltip";
+
+    @TranslationKey(defaultValue = "")
     public static final String ItemSuccessfullyDuplicated = "ItemSuccessfullyDuplicated";
 
     @TranslationKey(defaultValue = "")

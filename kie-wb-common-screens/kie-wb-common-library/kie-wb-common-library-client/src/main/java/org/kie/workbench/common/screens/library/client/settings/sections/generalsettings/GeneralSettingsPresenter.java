@@ -104,7 +104,6 @@ public class GeneralSettingsPresenter extends Section<ProjectScreenModel> {
     private final ProjectScopedResolutionStrategySupplier projectScopedResolutionStrategySupplier;
     private final GitUrlsPresenter gitUrlsPresenter;
     private final LibraryPlaces libraryPlaces;
-
     POM pom;
 
     @Inject
@@ -150,7 +149,6 @@ public class GeneralSettingsPresenter extends Section<ProjectScreenModel> {
             gavPreferences.load(projectScopedResolutionStrategySupplier.get(), gavPreferences -> {
                 view.setConflictingGAVCheckDisabled(gavPreferences.isConflictingGAVCheckDisabled());
                 view.setChildGavEditEnabled(gavPreferences.isChildGAVEditEnabled());
-
                 resolve.onInvoke(promises.resolve());
             }, reject::onInvoke);
         });
@@ -224,7 +222,7 @@ public class GeneralSettingsPresenter extends Section<ProjectScreenModel> {
                                  errorMessage);
     }
 
-    void setVersion(final String version) {
+    void setVersion(String version) {
         pom.getGav().setVersion(version);
         fireChangeEvent();
     }
@@ -272,9 +270,13 @@ public class GeneralSettingsPresenter extends Section<ProjectScreenModel> {
 
     @Override
     public int currentHashCode() {
-        return pom.hashCode() +
-                (gavPreferences.isChildGAVEditEnabled() ? 1 : 2) +
-                (gavPreferences.isConflictingGAVCheckDisabled() ? 4 : 8);
+        int result = pom.hashCode();
+        result = 31 * result + (gavPreferences.isChildGAVEditEnabled() ? 1 : 2);
+        result = ~~result;
+        result = 31 * result + (gavPreferences.isConflictingGAVCheckDisabled() ? 4 : 8);
+        result = ~~result;
+
+        return result;
     }
 
     public GitUrlsPresenter getGitUrlsPresenter() {

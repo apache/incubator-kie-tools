@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.screens.library.client.settings.sections.generalsettings;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -32,6 +33,7 @@ import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
 import org.kie.workbench.common.screens.library.client.settings.generalsettings.GitUrlsPresenter;
+import org.kie.workbench.common.screens.library.client.settings.sections.generalsettings.version.VersionEditor;
 
 @Templated
 public class GeneralSettingsView implements GeneralSettingsPresenter.View {
@@ -87,19 +89,23 @@ public class GeneralSettingsView implements GeneralSettingsPresenter.View {
     private HTMLInputElement artifactId;
 
     @Inject
-    @DataField("version")
-    private HTMLInputElement version;
+    @DataField
+    private VersionEditor versionEditor;
 
     @Inject
     @Named("h3")
     @DataField("title")
     private HTMLHeadingElement title;
 
+    @PostConstruct
+    public void setup() {
+        this.tooltipDisableGAVConflictCheck.title = translationService.getTranslation(LibraryConstants.PreferenceDisableGAVConflictCheck_Tooltip);
+    }
+
     @Override
     public void init(final GeneralSettingsPresenter presenter) {
         this.presenter = presenter;
-        this.tooltipDisableGAVConflictCheck.title = translationService
-                .getTranslation(LibraryConstants.PreferenceDisableGAVConflictCheck_Tooltip);
+
         hideError();
     }
 
@@ -133,11 +139,6 @@ public class GeneralSettingsView implements GeneralSettingsPresenter.View {
         presenter.setArtifactId(artifactId.value);
     }
 
-    @EventHandler("version")
-    public void onVersionChanged(final ChangeEvent ignore) {
-        presenter.setVersion(version.value);
-    }
-
     @Override
     public String getName() {
         return name.value;
@@ -160,7 +161,7 @@ public class GeneralSettingsView implements GeneralSettingsPresenter.View {
 
     @Override
     public String getVersion() {
-        return version.value;
+        return versionEditor.getVersion();
     }
 
     @Override
@@ -199,8 +200,8 @@ public class GeneralSettingsView implements GeneralSettingsPresenter.View {
     }
 
     @Override
-    public void setVersion(final String version) {
-        this.version.value = version;
+    public void setVersion(String version) {
+        this.versionEditor.setUpVersion(version, newVersion -> presenter.setVersion(newVersion));
     }
 
     @Override

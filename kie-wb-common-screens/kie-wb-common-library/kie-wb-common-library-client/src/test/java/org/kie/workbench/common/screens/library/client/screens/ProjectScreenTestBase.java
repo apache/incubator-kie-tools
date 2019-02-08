@@ -21,7 +21,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.guvnor.common.services.project.client.security.ProjectController;
+import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.Module;
+import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Branch;
@@ -35,6 +37,7 @@ import org.kie.workbench.common.screens.library.api.AssetQueryResult;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.api.ProjectAssetsQuery;
 import org.kie.workbench.common.screens.library.client.events.AssetDetailEvent;
+import org.kie.workbench.common.screens.library.client.screens.project.ProjectScreen;
 import org.kie.workbench.common.screens.library.client.util.LibraryPermissions;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.mockito.ArgumentCaptor;
@@ -49,6 +52,10 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 public class ProjectScreenTestBase {
+
+    protected static final String GROUP_ID = "groupId";
+    protected static final String ARTIFACT = "artifact";
+    protected static final String VERSION = "0.1";
 
     @Mock
     protected LibraryPlaces libraryPlaces;
@@ -80,9 +87,12 @@ public class ProjectScreenTestBase {
         final Path rootPath = mock(Path.class);
         doReturn("git://modulePath").when(rootPath).toURI();
         final Module module = mock(Module.class);
+
         doReturn("mainModuleName").when(module).getModuleName();
         doReturn("modulePath").when(module).getIdentifier();
         doReturn(rootPath).when(module).getRootPath();
+        when(module.getPom()).thenReturn(new POM(new GAV(GROUP_ID, ARTIFACT, VERSION)));
+
         final Path pomPath = mock(Path.class);
         doReturn(pomPath).when(module).getPomXMLPath();
 

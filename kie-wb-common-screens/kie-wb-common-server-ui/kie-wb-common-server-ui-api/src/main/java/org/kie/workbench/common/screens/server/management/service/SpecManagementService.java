@@ -50,6 +50,15 @@ public interface SpecManagementService {
                                Capability capability,
                                ContainerConfig containerConfig);
 
+
+    void updateContainerSpec(String serverTemplateId,
+                             ContainerSpec containerSpec);
+
+    void updateContainerSpec(String serverTemplateId,
+                             String containerId,
+                             ContainerSpec containerSpec,
+                             boolean resetBeforeUpdate);
+
     void startContainer(ContainerSpecKey containerSpecKey);
 
     void stopContainer(ContainerSpecKey containerSpecKey);

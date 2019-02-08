@@ -114,6 +114,12 @@ public class Constants {
     public static final String NewContainerFormView_InvalidErrorMessage = "NewContainerFormView.InvalidErrorMessage";
 
     @TranslationKey(defaultValue = "")
+    public static final String NewContainerFormView_RegularModeSupportsDoesntSnapshots = "NewContainerFormView.RegularModeSupportsDoesntSnapshots";
+
+    @TranslationKey(defaultValue = "")
+    public static final String NewContainerFormView_DevelopmentModeSupportsSnapshots = "NewContainerFormView.DevelopmentModeSupportsSnapshots";
+
+    @TranslationKey(defaultValue = "")
     public static final String NewContainerFormView_NewContainerWizardTitle = "NewContainerFormView.NewContainerWizardTitle";
 
     @TranslationKey(defaultValue = "")

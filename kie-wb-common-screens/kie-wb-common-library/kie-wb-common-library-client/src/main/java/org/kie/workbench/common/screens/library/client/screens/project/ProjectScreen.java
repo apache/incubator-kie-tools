@@ -24,15 +24,11 @@ import javax.inject.Inject;
 import com.google.gwt.core.client.Callback;
 import elemental2.dom.HTMLElement;
 import elemental2.promise.Promise;
-import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
 import org.guvnor.common.services.project.model.WorkspaceProject;
-import org.guvnor.messageconsole.client.console.widget.button.ViewHideAlertsButtonPresenter;
-import org.guvnor.structure.client.security.OrganizationalUnitController;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
 import org.kie.workbench.common.screens.defaulteditor.client.editor.NewFileUploader;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.client.perspective.LibraryPerspective;
@@ -40,13 +36,13 @@ import org.kie.workbench.common.screens.library.client.screens.assets.AssetsScre
 import org.kie.workbench.common.screens.library.client.screens.assets.events.UpdatedAssetsEvent;
 import org.kie.workbench.common.screens.library.client.screens.organizationalunit.contributors.tab.ContributorsListPresenter;
 import org.kie.workbench.common.screens.library.client.screens.organizationalunit.contributors.tab.ProjectContributorsListServiceImpl;
+import org.kie.workbench.common.screens.library.client.screens.project.actions.ProjectMainActions;
 import org.kie.workbench.common.screens.library.client.screens.project.branch.delete.DeleteBranchPopUpScreen;
 import org.kie.workbench.common.screens.library.client.screens.project.delete.DeleteProjectPopUpScreen;
 import org.kie.workbench.common.screens.library.client.screens.project.rename.RenameProjectPopUpScreen;
 import org.kie.workbench.common.screens.library.client.settings.SettingsPresenter;
 import org.kie.workbench.common.screens.library.client.util.LibraryPermissions;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
-import org.kie.workbench.common.screens.projecteditor.client.build.BuildExecutor;
 import org.kie.workbench.common.screens.projecteditor.client.validation.ProjectNameValidator;
 import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenService;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
@@ -69,10 +65,7 @@ public class ProjectScreen {
     private Elemental2DomUtil elemental2DomUtil;
     protected WorkspaceProject workspaceProject;
 
-    public interface View extends UberElemental<ProjectScreen>,
-                                  BuildExecutor.View {
-
-        void addMainAction(IsElement action);
+    public interface View extends UberElemental<ProjectScreen> {
 
         void setAssetsCount(int count);
 
@@ -94,10 +87,6 @@ public class ProjectScreen {
 
         void setDeleteBranchVisible(boolean visible);
 
-        void setBuildEnabled(boolean enabled);
-
-        void setDeployEnabled(boolean enabled);
-
         void setActionsVisible(boolean visible);
 
         String getLoadingMessage();
@@ -105,6 +94,12 @@ public class ProjectScreen {
         String getItemSuccessfullyDuplicatedMessage();
 
         String getReimportSuccessfulMessage();
+
+        void showBusyIndicator(String loadingMessage);
+
+        void hideBusyIndicator();
+
+        void addMainAction(HTMLElement element);
     }
 
     private final LibraryPlaces libraryPlaces;
@@ -116,7 +111,6 @@ public class ProjectScreen {
     private SettingsPresenter settingsPresenter;
     private final NewFileUploader newFileUploader;
     private final NewResourcePresenter newResourcePresenter;
-    private BuildExecutor buildExecutor;
     private ManagedInstance<DeleteProjectPopUpScreen> deleteProjectPopUpScreen;
     private ManagedInstance<DeleteBranchPopUpScreen> deleteBranchPopUpScreen;
     private ManagedInstance<RenameProjectPopUpScreen> renameProjectPopUpScreen;
@@ -127,8 +121,8 @@ public class ProjectScreen {
     private ProjectNameValidator projectNameValidator;
     private Promises promises;
     private Event<NotificationEvent> notificationEvent;
-    private ViewHideAlertsButtonPresenter viewHideAlertsButtonPresenter;
     private ProjectContributorsListServiceImpl projectContributorsListService;
+    private ProjectMainActions projectMainActions;
 
     @Inject
     public ProjectScreen(final View view,
@@ -140,7 +134,6 @@ public class ProjectScreen {
                          final SettingsPresenter settingsPresenter,
                          final NewFileUploader newFileUploader,
                          final NewResourcePresenter newResourcePresenter,
-                         final BuildExecutor buildExecutor,
                          final ManagedInstance<DeleteProjectPopUpScreen> deleteProjectPopUpScreen,
                          final ManagedInstance<DeleteBranchPopUpScreen> deleteBranchPopUpScreen,
                          final ManagedInstance<RenameProjectPopUpScreen> renameProjectPopUpScreen,
@@ -150,8 +143,8 @@ public class ProjectScreen {
                          final ProjectNameValidator projectNameValidator,
                          final Promises promises,
                          final Event<NotificationEvent> notificationEvent,
-                         final ViewHideAlertsButtonPresenter viewHideAlertsButtonPresenter,
-                         final ProjectContributorsListServiceImpl projectContributorsListService) {
+                         final ProjectContributorsListServiceImpl projectContributorsListService,
+                         final ProjectMainActions projectMainActions) {
         this.view = view;
         this.libraryPlaces = libraryPlaces;
         this.assetsScreen = assetsScreen;
@@ -161,7 +154,6 @@ public class ProjectScreen {
         this.settingsPresenter = settingsPresenter;
         this.newFileUploader = newFileUploader;
         this.newResourcePresenter = newResourcePresenter;
-        this.buildExecutor = buildExecutor;
         this.deleteProjectPopUpScreen = deleteProjectPopUpScreen;
         this.deleteBranchPopUpScreen = deleteBranchPopUpScreen;
         this.renameProjectPopUpScreen = renameProjectPopUpScreen;
@@ -171,18 +163,17 @@ public class ProjectScreen {
         this.projectNameValidator = projectNameValidator;
         this.promises = promises;
         this.notificationEvent = notificationEvent;
-        this.viewHideAlertsButtonPresenter = viewHideAlertsButtonPresenter;
         this.projectContributorsListService = projectContributorsListService;
         this.elemental2DomUtil = new Elemental2DomUtil();
+        this.projectMainActions = projectMainActions;
     }
 
     @PostConstruct
     public void initialize() {
         this.workspaceProject = this.libraryPlaces.getActiveWorkspace();
         this.view.init(this);
-        this.buildExecutor.init(this.view);
         this.view.setTitle(libraryPlaces.getActiveWorkspace().getName());
-        this.view.addMainAction(viewHideAlertsButtonPresenter.getView());
+        this.view.addMainAction(projectMainActions.getElement());
         this.resolveAssetsCount();
         this.showAssets();
 
@@ -199,8 +190,8 @@ public class ProjectScreen {
         this.view.setReimportVisible(userCanUpdateProject);
         this.view.setDeleteProjectVisible(userCanDeleteProject);
         this.view.setDeleteBranchVisible(userCanDeleteBranch);
-        this.view.setBuildEnabled(userCanBuildProject);
-        this.view.setDeployEnabled(userCanDeployProject);
+
+        setupMainActions();
 
         this.view.setActionsVisible(userCanUpdateProject || userCanDeleteProject || userCanBuildProject || userCanDeployProject || userCanCreateProjects);
 
@@ -218,6 +209,12 @@ public class ProjectScreen {
 
         contributorsListScreen.setup(projectContributorsListService,
                                      contributorCount -> this.view.setContributorsCount(contributorCount));
+    }
+
+    private void setupMainActions() {
+        projectMainActions.setBuildEnabled(userCanBuildProject());
+        projectMainActions.setDeployEnabled(userCanDeployProject());
+        projectMainActions.setRedeployEnabled(workspaceProject.getMainModule().getPom().getGav().isSnapshot());
     }
 
     @OnMayClose
@@ -241,6 +238,7 @@ public class ProjectScreen {
         if (current.getWorkspaceProject() != null) {
             this.workspaceProject = current.getWorkspaceProject();
             this.view.setTitle(workspaceProject.getName());
+            setupMainActions();
         }
     }
 
@@ -358,18 +356,6 @@ public class ProjectScreen {
             view.hideBusyIndicator();
             return promises.reject(x);
         });
-    }
-
-    public void build() {
-        if (this.userCanBuildProject()) {
-            this.buildExecutor.triggerBuild();
-        }
-    }
-
-    public void deploy() {
-        if (this.userCanDeployProject()) {
-            this.buildExecutor.triggerBuildAndDeploy();
-        }
     }
 
     public boolean userCanDeleteProject() {

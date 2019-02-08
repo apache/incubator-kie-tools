@@ -17,6 +17,7 @@ package org.kie.workbench.common.screens.server.management.client.wizard.contain
 
 import java.util.Map;
 import java.util.Optional;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -30,6 +31,7 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.server.api.model.KieContainerStatus;
+import org.kie.server.api.model.KieServerMode;
 import org.kie.server.api.model.ReleaseId;
 import org.kie.server.controller.api.model.spec.Capability;
 import org.kie.server.controller.api.model.spec.ContainerConfig;
@@ -50,6 +52,8 @@ import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull
 
 @Dependent
 public class NewContainerFormPresenter implements WizardPage {
+
+    public static final String SNAPSHOT = "-SNAPSHOT";
 
     private final Logger logger;
     private final View view;
@@ -224,6 +228,25 @@ public class NewContainerFormPresenter implements WizardPage {
         return !view.getVersion().trim().isEmpty();
     }
 
+    public boolean isArtifactSupportedByServer() {
+        String version = view.getVersion().trim();
+        if (!version.isEmpty()) {
+
+            boolean isSnapshot = isSnapshot(version);
+
+            if (serverTemplate.getMode().equals(KieServerMode.DEVELOPMENT)) {
+                return isSnapshot;
+            }
+
+            return !isSnapshot;
+        }
+        return true;
+    }
+
+    private boolean isSnapshot(String version) {
+        return version.toUpperCase().endsWith(SNAPSHOT);
+    }
+
     public boolean isValid() {
         if (mode.equals(Mode.OPTIONAL) && isEmpty()) {
             view.noErrors();
@@ -252,7 +275,17 @@ public class NewContainerFormPresenter implements WizardPage {
         }
 
         if (isVersionValid()) {
-            view.noErrorOnVersion();
+            if (isArtifactSupportedByServer()) {
+                view.noErrorOnVersion();
+            } else {
+                view.errorOnVersion();
+                if (serverTemplate.getMode().equals(KieServerMode.DEVELOPMENT)) {
+                    view.errorDevelopmentModeSupportsSnapshots();
+                } else {
+                    view.errorRegularModeSupportsDoesntSnapshots();
+                }
+                hasError = true;
+            }
         } else {
             view.errorOnVersion();
             hasError = true;
@@ -333,6 +366,10 @@ public class NewContainerFormPresenter implements WizardPage {
         void errorOnArtifactId();
 
         void errorOnVersion();
+
+        void errorRegularModeSupportsDoesntSnapshots();
+
+        void errorDevelopmentModeSupportsSnapshots();
 
         void setArtifactListWidgetView(ArtifactListWidgetPresenter.View view);
 

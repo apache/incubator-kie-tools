@@ -36,9 +36,16 @@ import org.kie.workbench.common.screens.server.management.service.SpecManagement
 @ApplicationScoped
 public class SpecManagementServiceCDI implements SpecManagementService {
 
-    @Inject
-    @Any
     private org.kie.server.controller.api.service.SpecManagementService service;
+
+    SpecManagementServiceCDI() {
+        // constructor for testing puropses
+    }
+
+    @Inject
+    public SpecManagementServiceCDI(@Any org.kie.server.controller.api.service.SpecManagementService service) {
+        this.service = service;
+    }
 
     @Override
     public void deleteServerInstance(final ServerInstanceKey serverInstanceKey) {
@@ -155,6 +162,20 @@ public class SpecManagementServiceCDI implements SpecManagementService {
                                       containerSpecId,
                                       capability,
                                       containerConfig);
+    }
+
+    @Override
+    public void updateContainerSpec(final String serverTemplateId,
+                                    final ContainerSpec containerSpec) {
+        service.updateContainerSpec(serverTemplateId, containerSpec);
+    }
+
+    @Override
+    public void updateContainerSpec(final String serverTemplateId,
+                                    final String containerId,
+                                    final ContainerSpec containerSpec,
+                                    final boolean resetBeforeUpdate) {
+        service.updateContainerSpec(serverTemplateId, containerId, containerSpec, resetBeforeUpdate);
     }
 
     @Override
