@@ -16,25 +16,60 @@
 
 package org.kie.workbench.common.dmn.client.editors.types.listview.constraint.enumeration;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import elemental2.dom.Element;
+import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.ErrorCallback;
+import org.jboss.errai.common.client.api.RemoteCallback;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
+import org.kie.workbench.common.dmn.api.editors.types.DMNParseService;
+import org.kie.workbench.common.dmn.client.editors.types.common.ScrollHelper;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.DataTypeConstraintComponent;
+import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.DataTypeConstraintParserWarningEvent;
+import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.enumeration.item.DataTypeConstraintEnumerationItem;
 import org.uberfire.client.mvp.UberElemental;
+
+import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.joining;
+import static org.kie.workbench.common.stunner.core.util.StringUtils.isEmpty;
 
 @Dependent
 public class DataTypeConstraintEnumeration implements DataTypeConstraintComponent {
 
+    private static final String SEPARATOR = ", ";
+
     private final View view;
 
-    private String constraintValue;
+    private final Caller<DMNParseService> service;
+
+    private final ScrollHelper scrollHelper;
+
+    private final Event<DataTypeConstraintParserWarningEvent> parserWarningEvent;
+
+    private final ManagedInstance<DataTypeConstraintEnumerationItem> enumerationItemInstances;
+
+    private List<DataTypeConstraintEnumerationItem> enumerationItems = new ArrayList<>();
 
     @Inject
-    public DataTypeConstraintEnumeration(final View view) {
+    public DataTypeConstraintEnumeration(final View view,
+                                         final Caller<DMNParseService> service,
+                                         final ScrollHelper scrollHelper,
+                                         final Event<DataTypeConstraintParserWarningEvent> parserWarningEvent,
+                                         final ManagedInstance<DataTypeConstraintEnumerationItem> enumerationItemInstances) {
         this.view = view;
+        this.service = service;
+        this.scrollHelper = scrollHelper;
+        this.parserWarningEvent = parserWarningEvent;
+        this.enumerationItemInstances = enumerationItemInstances;
     }
 
     @PostConstruct
@@ -44,12 +79,47 @@ public class DataTypeConstraintEnumeration implements DataTypeConstraintComponen
 
     @Override
     public String getValue() {
-        return constraintValue;
+        return getEnumerationItems()
+                .stream()
+                .map(DataTypeConstraintEnumerationItem::getValue)
+                .filter(itemValue -> !isEmpty(itemValue))
+                .collect(joining(SEPARATOR));
     }
 
     @Override
     public void setValue(final String value) {
-        constraintValue = value;
+        service.call(getSuccessCallback(), getErrorCallback()).parseFEELList(value);
+    }
+
+    public void refreshView() {
+        setValue(getValue());
+        render();
+    }
+
+    RemoteCallback<List<String>> getSuccessCallback() {
+        return this::loadConstraintValues;
+    }
+
+    ErrorCallback<Object> getErrorCallback() {
+        return (message, throwable) -> {
+            showWarningMessage();
+            loadConstraintValues(emptyList());
+            return false;
+        };
+    }
+
+    private void showWarningMessage() {
+        parserWarningEvent.fire(new DataTypeConstraintParserWarningEvent());
+    }
+
+    private void loadConstraintValues(final List<String> constraintValues) {
+
+        setEnumerationItems(makeEnumerationItems(constraintValues));
+        render();
+
+        if (constraintValues.isEmpty()) {
+            addEnumerationItem();
+        }
     }
 
     @Override
@@ -57,8 +127,53 @@ public class DataTypeConstraintEnumeration implements DataTypeConstraintComponen
         return view.getElement();
     }
 
+    public void render() {
+        view.clear();
+        getEnumerationItems().forEach(enumerationItem -> view.addItem(enumerationItem.getElement()));
+    }
+
+    void addEnumerationItem() {
+
+        final DataTypeConstraintEnumerationItem enumerationItem = makeEnumerationItem("");
+
+        getEnumerationItems().add(enumerationItem);
+
+        render();
+        scrollToBottom();
+        enumerationItem.enableEditMode();
+    }
+
+    DataTypeConstraintEnumerationItem makeEnumerationItem(final String value) {
+
+        final DataTypeConstraintEnumerationItem enumerationItem = enumerationItemInstances.get();
+
+        enumerationItem.setValue(value);
+        enumerationItem.setDataTypeConstraintEnumeration(this);
+
+        return enumerationItem;
+    }
+
+    private List<DataTypeConstraintEnumerationItem> makeEnumerationItems(final List<String> convert) {
+        return convert.stream().map(this::makeEnumerationItem).collect(Collectors.toList());
+    }
+
+    private void scrollToBottom() {
+        scrollHelper.scrollToBottom(getElement());
+    }
+
+    void setEnumerationItems(final List<DataTypeConstraintEnumerationItem> enumerationItems) {
+        this.enumerationItems = enumerationItems;
+    }
+
+    public List<DataTypeConstraintEnumerationItem> getEnumerationItems() {
+        return enumerationItems;
+    }
+
     public interface View extends UberElemental<DataTypeConstraintEnumeration>,
                                   IsElement {
 
+        void clear();
+
+        void addItem(final Element enumerationItem);
     }
 }

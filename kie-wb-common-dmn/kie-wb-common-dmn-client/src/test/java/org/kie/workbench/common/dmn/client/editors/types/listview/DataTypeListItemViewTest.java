@@ -335,14 +335,14 @@ public class DataTypeListItemViewTest {
 
         view.setupShortcutsTooltips();
 
-        verify(editButton).setAttribute("title", "Ctrl + E");
-        verify(saveButton).setAttribute("title", "Ctrl + S");
-        verify(insertNestedField).setAttribute("title", "Ctrl + B");
-        verify(closeButton).setAttribute("title", "Esc");
-        verify(insertFieldAbove).setAttribute("title", "Ctrl + U");
-        verify(insertFieldBelow).setAttribute("title", "Ctrl + D");
-        verify(removeButton).setAttribute("title", "Ctrl + Backspace");
-        verify(arrow).setAttribute("title", arrowKeysTooltip);
+        verify(editButton).setAttribute("data-title", "Ctrl + E");
+        verify(saveButton).setAttribute("data-title", "Ctrl + S");
+        verify(insertNestedField).setAttribute("data-title", "Ctrl + B");
+        verify(closeButton).setAttribute("data-title", "Esc");
+        verify(insertFieldAbove).setAttribute("data-title", "Ctrl + U");
+        verify(insertFieldBelow).setAttribute("data-title", "Ctrl + D");
+        verify(removeButton).setAttribute("data-title", "Ctrl + Backspace");
+        verify(arrow).setAttribute("data-title", arrowKeysTooltip);
         verify(view).setupTooltips();
     }
 

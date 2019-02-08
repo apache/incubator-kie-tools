@@ -17,17 +17,52 @@
 package org.kie.workbench.common.dmn.client.editors.types.listview.constraint.enumeration;
 
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import elemental2.dom.Element;
+import elemental2.dom.HTMLAnchorElement;
+import elemental2.dom.HTMLDivElement;
+import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 @Templated
 @Dependent
 public class DataTypeConstraintEnumerationView implements DataTypeConstraintEnumeration.View {
 
+    @DataField("items")
+    private final HTMLDivElement items;
+
+    @DataField("add-icon")
+    private final HTMLAnchorElement addIcon;
+
     private DataTypeConstraintEnumeration presenter;
+
+    @Inject
+    public DataTypeConstraintEnumerationView(final HTMLDivElement items,
+                                             final HTMLAnchorElement addIcon) {
+        this.items = items;
+        this.addIcon = addIcon;
+    }
 
     @Override
     public void init(final DataTypeConstraintEnumeration presenter) {
         this.presenter = presenter;
+    }
+
+    @EventHandler("add-icon")
+    public void onAddIconClick(final ClickEvent e) {
+        presenter.addEnumerationItem();
+    }
+
+    @Override
+    public void clear() {
+        items.innerHTML = "";
+    }
+
+    @Override
+    public void addItem(final Element enumerationItem) {
+        items.appendChild(enumerationItem);
     }
 }

@@ -139,8 +139,9 @@ public class MenuInitializerTest {
 
         final JQueryEvent event = mock(JQueryEvent.class);
         final HTMLElement target = mock(HTMLElement.class);
-        final double left = 1d;
-        final double top = 1d;
+        final double left = 1;
+        final double top = 1;
+        final double zIndex = 1051;
         final JSONObject expectedJSONObject = mock(JSONObject.class);
 
         // Mock "JSONObject" since it relies on a native implementation.
@@ -149,12 +150,14 @@ public class MenuInitializerTest {
         event.target = target;
         doReturn(left).when(initializer).offsetLeft(target);
         doReturn(top).when(initializer).offsetTop(target);
+        doReturn(top).when(initializer).offsetTop(target);
 
         final JSONObject actualJSONObject = initializer.bodyDropdownProperties(event);
 
         verify(expectedJSONObject).put("position", new JSONString("absolute"));
         verify(expectedJSONObject).put("left", new JSONNumber(left));
         verify(expectedJSONObject).put("top", new JSONNumber(top));
+        verify(expectedJSONObject).put("z-index", new JSONNumber(zIndex));
         assertEquals(expectedJSONObject, actualJSONObject);
     }
 
@@ -171,6 +174,7 @@ public class MenuInitializerTest {
         verify(expectedJSONObject).put("position", new JSONString(""));
         verify(expectedJSONObject).put("left", new JSONString(""));
         verify(expectedJSONObject).put("top", new JSONString(""));
+        verify(expectedJSONObject).put("z-index", new JSONString(""));
         assertEquals(expectedJSONObject, actualJSONObject);
     }
 }

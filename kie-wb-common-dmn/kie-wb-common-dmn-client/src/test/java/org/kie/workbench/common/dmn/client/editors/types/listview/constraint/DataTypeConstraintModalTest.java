@@ -24,6 +24,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.DataTypeConstraintComponent;
+import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.DataTypeConstraintParserWarningEvent;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.enumeration.DataTypeConstraintEnumeration;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.expression.DataTypeConstraintExpression;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.range.DataTypeConstraintRange;
@@ -180,6 +181,7 @@ public class DataTypeConstraintModalTest {
 
         modal.setupComponent(type);
 
+        assertEquals(constraintEnumeration, modal.getCurrentComponent());
         verify(constraintEnumeration).setValue(constraint);
     }
 
@@ -193,6 +195,7 @@ public class DataTypeConstraintModalTest {
 
         modal.setupComponent(type);
 
+        assertEquals(constraintExpression, modal.getCurrentComponent());
         verify(constraintExpression).setValue(constraint);
     }
 
@@ -206,7 +209,23 @@ public class DataTypeConstraintModalTest {
 
         modal.setupComponent(type);
 
+        assertEquals(constraintRange, modal.getCurrentComponent());
         verify(constraintRange).setValue(constraint);
+    }
+
+    @Test
+    public void testSetupComponentWhenConstraintTypeIsNull() {
+
+        final ConstraintType type = null;
+        final String constraint = "(1..2)";
+
+        doReturn(ENUMERATION).when(modal).inferComponentType(constraint);
+        doReturn(constraint).when(modal).getConstraintValue();
+
+        modal.setupComponent(type);
+
+        assertEquals(constraintEnumeration, modal.getCurrentComponent());
+        verify(constraintEnumeration).setValue(constraint);
     }
 
     @Test
@@ -250,5 +269,13 @@ public class DataTypeConstraintModalTest {
         assertEquals(expectedOnSave, actualOnSave);
         verify(modal).superShow();
         verify(view).onShow();
+    }
+
+    @Test
+    public void testOnDataTypeConstraintParserWarningEvent() {
+
+        modal.onDataTypeConstraintParserWarningEvent(mock(DataTypeConstraintParserWarningEvent.class));
+
+        verify(view).showConstraintWarningMessage();
     }
 }

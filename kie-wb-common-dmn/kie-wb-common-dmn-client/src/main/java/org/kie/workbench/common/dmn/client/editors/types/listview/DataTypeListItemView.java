@@ -391,7 +391,7 @@ public class DataTypeListItemView implements DataTypeListItem.View {
 
     private void setTitleAttribute(final Element element,
                                    final String value) {
-        final String attribute = "title";
+        final String attribute = "data-title";
         element.setAttribute(attribute, value);
     }
 

@@ -18,6 +18,7 @@ package org.kie.workbench.common.dmn.client.editors.types.listview.constraint;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import elemental2.dom.DOMTokenList;
 import elemental2.dom.Element;
 import elemental2.dom.HTMLAnchorElement;
 import elemental2.dom.HTMLButtonElement;
@@ -35,6 +36,7 @@ import org.uberfire.client.views.pfly.selectpicker.JQuerySelectPickerTarget;
 import static org.junit.Assert.assertEquals;
 import static org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType.ENUMERATION;
 import static org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType.EXPRESSION;
+import static org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper.HIDDEN_CSS_CLASS;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
@@ -74,13 +76,19 @@ public class DataTypeConstraintModalViewTest {
     private HTMLDivElement selectConstraint;
 
     @Mock
+    private HTMLDivElement constraintWarningMessage;
+
+    @Mock
+    private HTMLButtonElement closeConstraintWarningMessage;
+
+    @Mock
     private DataTypeConstraintModal presenter;
 
     private DataTypeConstraintModalView view;
 
     @Before
     public void setup() {
-        view = spy(new DataTypeConstraintModalView(header, body, footer, componentContainer, okButton, cancelButton, clearAllAnchor, type, selectConstraint));
+        view = spy(new DataTypeConstraintModalView(header, body, footer, componentContainer, okButton, cancelButton, clearAllAnchor, type, selectConstraint, constraintWarningMessage, closeConstraintWarningMessage));
         view.init(presenter);
     }
 
@@ -264,5 +272,23 @@ public class DataTypeConstraintModalViewTest {
         final Element actualSelect = view.getSelectPicker();
 
         assertEquals(expectedSelect, actualSelect);
+    }
+
+    @Test
+    public void testOnCloseConstraintWarningClick() {
+        constraintWarningMessage.classList = mock(DOMTokenList.class);
+
+        view.onCloseConstraintWarningClick(mock(ClickEvent.class));
+
+        verify(constraintWarningMessage.classList).add(HIDDEN_CSS_CLASS);
+    }
+
+    @Test
+    public void testShowConstraintWarningMessage() {
+        constraintWarningMessage.classList = mock(DOMTokenList.class);
+
+        view.showConstraintWarningMessage();
+
+        verify(constraintWarningMessage.classList).remove(HIDDEN_CSS_CLASS);
     }
 }

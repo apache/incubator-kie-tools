@@ -33,6 +33,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
+import org.kie.workbench.common.dmn.client.editors.types.common.ScrollHelper;
 import org.kie.workbench.common.dmn.client.editors.types.search.DataTypeSearchBar;
 import org.mockito.Mock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -48,7 +49,6 @@ import static org.kie.workbench.common.dmn.client.editors.types.listview.DataTyp
 import static org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItemView.UUID_ATTR;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper.RIGHT_ARROW_CSS_CLASS;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyDouble;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
@@ -108,6 +108,9 @@ public class DataTypeListViewTest {
     private HTMLElement searchBarElement;
 
     @Mock
+    private ScrollHelper scrollHelper;
+
+    @Mock
     private DataTypeList presenter;
 
     private DataTypeListView view;
@@ -123,7 +126,7 @@ public class DataTypeListViewTest {
         listItems.classList = mock(DOMTokenList.class);
         listItems.childNodes = new NodeList<>();
 
-        view = spy(new DataTypeListView(listItems, collapsedDescription, expandedDescription, viewMore, viewLess, addButton, placeholder, searchBarContainer, expandAll, collapseAll, noDataTypesFound));
+        view = spy(new DataTypeListView(listItems, collapsedDescription, expandedDescription, viewMore, viewLess, addButton, placeholder, searchBarContainer, expandAll, collapseAll, noDataTypesFound, scrollHelper));
         view.init(presenter);
 
         doReturn(element).when(view).getElement();
@@ -331,14 +334,10 @@ public class DataTypeListViewTest {
     public void testOnAddClick() {
 
         final ClickEvent event = mock(ClickEvent.class);
-        final double expectedScrollTop = 200d;
-
-        doNothing().when(view).scrollTo(any(), anyDouble());
-        listItems.scrollHeight = expectedScrollTop;
 
         view.onAddClick(event);
 
-        verify(view).scrollTo(listItems, expectedScrollTop);
+        verify(scrollHelper).animatedScrollToBottom(listItems);
         verify(presenter).addDataType();
     }
 

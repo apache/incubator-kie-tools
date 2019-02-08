@@ -24,10 +24,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.json.client.JSONNumber;
-import com.google.gwt.json.client.JSONObject;
 import elemental2.dom.Element;
 import elemental2.dom.HTMLAnchorElement;
 import elemental2.dom.HTMLButtonElement;
@@ -38,6 +35,7 @@ import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
+import org.kie.workbench.common.dmn.client.editors.types.common.ScrollHelper;
 import org.uberfire.client.views.pfly.selectpicker.ElementHelper;
 
 import static org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper.hide;
@@ -48,7 +46,6 @@ import static org.kie.workbench.common.dmn.client.editors.types.listview.DataTyp
 import static org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItemView.UUID_ATTR;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper.isRightArrow;
 import static org.uberfire.client.views.pfly.selectpicker.ElementHelper.remove;
-import static org.uberfire.client.views.pfly.selectpicker.JQuery.$;
 
 @Templated
 @ApplicationScoped
@@ -87,6 +84,8 @@ public class DataTypeListView implements DataTypeList.View {
     @DataField("no-data-types-found")
     private final HTMLDivElement noDataTypesFound;
 
+    private final ScrollHelper scrollHelper;
+
     private DataTypeList presenter;
 
     @Inject
@@ -100,7 +99,8 @@ public class DataTypeListView implements DataTypeList.View {
                             final HTMLDivElement searchBarContainer,
                             final HTMLAnchorElement expandAll,
                             final HTMLAnchorElement collapseAll,
-                            final HTMLDivElement noDataTypesFound) {
+                            final HTMLDivElement noDataTypesFound,
+                            final ScrollHelper scrollHelper) {
         this.listItems = listItems;
         this.collapsedDescription = collapsedDescription;
         this.expandedDescription = expandedDescription;
@@ -112,6 +112,7 @@ public class DataTypeListView implements DataTypeList.View {
         this.expandAll = expandAll;
         this.collapseAll = collapseAll;
         this.noDataTypesFound = noDataTypesFound;
+        this.scrollHelper = scrollHelper;
     }
 
     @Override
@@ -188,11 +189,7 @@ public class DataTypeListView implements DataTypeList.View {
 
     @EventHandler("add-button")
     public void onAddClick(final ClickEvent e) {
-
-        final double scrollTop = listItems.scrollHeight;
-
-        scrollTo(listItems, scrollTop);
-
+        scrollHelper.animatedScrollToBottom(listItems);
         presenter.addDataType();
     }
 
@@ -326,15 +323,6 @@ public class DataTypeListView implements DataTypeList.View {
         }
     }
 
-    void scrollTo(final HTMLDivElement listItems,
-                  final double scrollPosition) {
-
-        final JavaScriptObject scrollTopProperty = property("scrollTop", scrollPosition);
-        final int duration = 800;
-
-        $(listItems).animate(scrollTopProperty, duration);
-    }
-
     @Override
     public void showNoDataTypesFound() {
         show(noDataTypesFound);
@@ -357,12 +345,5 @@ public class DataTypeListView implements DataTypeList.View {
     @Override
     public HTMLDivElement getListItems() {
         return listItems;
-    }
-
-    private JavaScriptObject property(final String key,
-                                      final double value) {
-        final JSONObject jsonObject = new JSONObject();
-        jsonObject.put(key, new JSONNumber(value));
-        return jsonObject.getJavaScriptObject();
     }
 }

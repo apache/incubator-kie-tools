@@ -28,6 +28,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
+import org.kie.workbench.common.dmn.client.editors.types.common.ScrollHelper;
 import org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeList;
 import org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItem;
 import org.mockito.Mock;
@@ -57,11 +58,14 @@ public class DataTypeListShortcutsViewTest {
     @Mock
     private DataTypeListShortcuts presenter;
 
+    @Mock
+    private ScrollHelper scrollHelper;
+
     private DataTypeListShortcutsView view;
 
     @Before
     public void setup() {
-        view = spy(new DataTypeListShortcutsView());
+        view = spy(new DataTypeListShortcutsView(scrollHelper));
         view.init(presenter);
     }
 
@@ -328,22 +332,16 @@ public class DataTypeListShortcutsViewTest {
     @Test
     public void testScrollTo() {
 
-        final HTMLElement element = mock(HTMLElement.class);
+        final Element element = mock(Element.class);
         final HTMLElement container = mock(HTMLElement.class);
         final DataTypeList dataTypeList = mock(DataTypeList.class);
 
         when(presenter.getDataTypeList()).thenReturn(dataTypeList);
         when(dataTypeList.getListItemsElement()).thenReturn(container);
 
-        element.offsetTop = 1000;
-        container.offsetTop = 200;
-
         view.scrollTo(element);
 
-        final int actual = (int) container.scrollTop;
-        final int expected = 780;
-
-        assertEquals(expected, actual);
+        verify(scrollHelper).scrollTo(element, container, 20);
     }
 
     @Test

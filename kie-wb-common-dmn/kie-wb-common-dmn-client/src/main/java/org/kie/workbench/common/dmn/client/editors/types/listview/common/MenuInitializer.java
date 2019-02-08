@@ -74,6 +74,7 @@ public class MenuInitializer {
         jsonObject.put("position", new JSONString("absolute"));
         jsonObject.put("left", new JSONNumber(offsetLeft(e.target)));
         jsonObject.put("top", new JSONNumber(offsetTop(e.target)));
+        jsonObject.put("z-index", new JSONNumber(1051)); // The '.modal.in' CSS has a z-index of '1050', so the dropdown element needs a higher value.
         return jsonObject;
     }
 
@@ -82,6 +83,7 @@ public class MenuInitializer {
         jsonObject.put("position", new JSONString(""));
         jsonObject.put("left", new JSONString(""));
         jsonObject.put("top", new JSONString(""));
+        jsonObject.put("z-index", new JSONString(""));
         return jsonObject;
     }
 

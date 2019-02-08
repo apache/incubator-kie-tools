@@ -33,6 +33,8 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType;
 import org.uberfire.client.views.pfly.selectpicker.JQuerySelectPickerEvent;
 
+import static org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper.hide;
+import static org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper.show;
 import static org.kie.workbench.common.stunner.core.util.StringUtils.isEmpty;
 import static org.uberfire.client.views.pfly.selectpicker.JQuerySelectPicker.$;
 
@@ -67,6 +69,12 @@ public class DataTypeConstraintModalView implements DataTypeConstraintModal.View
     @DataField("select-constraint")
     private final HTMLDivElement selectConstraint;
 
+    @DataField("constraint-warning-message")
+    private final HTMLDivElement constraintWarningMessage;
+
+    @DataField("close-constraint-warning-message")
+    private final HTMLButtonElement closeConstraintWarningMessage;
+
     private DataTypeConstraintModal presenter;
 
     @Inject
@@ -78,7 +86,9 @@ public class DataTypeConstraintModalView implements DataTypeConstraintModal.View
                                        final HTMLButtonElement cancelButton,
                                        final HTMLAnchorElement clearAllAnchor,
                                        final @Named("span") HTMLElement type,
-                                       final HTMLDivElement selectConstraint) {
+                                       final HTMLDivElement selectConstraint,
+                                       final HTMLDivElement constraintWarningMessage,
+                                       final HTMLButtonElement closeConstraintWarningMessage) {
         this.header = header;
         this.body = body;
         this.footer = footer;
@@ -88,6 +98,8 @@ public class DataTypeConstraintModalView implements DataTypeConstraintModal.View
         this.clearAllAnchor = clearAllAnchor;
         this.type = type;
         this.selectConstraint = selectConstraint;
+        this.constraintWarningMessage = constraintWarningMessage;
+        this.closeConstraintWarningMessage = closeConstraintWarningMessage;
     }
 
     @PostConstruct
@@ -130,6 +142,16 @@ public class DataTypeConstraintModalView implements DataTypeConstraintModal.View
     @EventHandler("clear-all-anchor")
     public void onClearAllAnchorClick(final ClickEvent e) {
         presenter.clearAll();
+    }
+
+    @EventHandler("close-constraint-warning-message")
+    public void onCloseConstraintWarningClick(final ClickEvent e) {
+        hide(constraintWarningMessage);
+    }
+
+    @Override
+    public void showConstraintWarningMessage() {
+        show(constraintWarningMessage);
     }
 
     @Override

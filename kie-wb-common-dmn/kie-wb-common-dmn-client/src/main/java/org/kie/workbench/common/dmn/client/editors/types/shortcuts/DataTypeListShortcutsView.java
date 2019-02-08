@@ -23,10 +23,12 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
 import elemental2.dom.Element;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.NodeList;
+import org.kie.workbench.common.dmn.client.editors.types.common.ScrollHelper;
 import org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItem;
 import org.uberfire.client.views.pfly.selectpicker.JQueryList;
 
@@ -41,11 +43,18 @@ public class DataTypeListShortcutsView implements DataTypeListShortcuts.View {
 
     static final String HIGHLIGHT = "key-highlight";
 
+    private final ScrollHelper scrollHelper;
+
     final ListUtils utils = new ListUtils();
 
     private String currentUUID = "";
 
     private DataTypeListShortcuts presenter;
+
+    @Inject
+    public DataTypeListShortcutsView(final ScrollHelper scrollHelper) {
+        this.scrollHelper = scrollHelper;
+    }
 
     public void init(final DataTypeListShortcuts presenter) {
         this.presenter = presenter;
@@ -104,6 +113,14 @@ public class DataTypeListShortcutsView implements DataTypeListShortcuts.View {
         scrollTo(element);
     }
 
+    void scrollTo(final Element target) {
+
+        final int padding = 20;
+        final HTMLElement container = presenter.getDataTypeList().getListItemsElement();
+
+        scrollHelper.scrollTo(target, container, padding);
+    }
+
     public void reset() {
         cleanCurrentHighlight();
         setCurrentUUID("");
@@ -126,15 +143,6 @@ public class DataTypeListShortcutsView implements DataTypeListShortcuts.View {
 
     void addHighlightClass(final Element element) {
         element.classList.add(HIGHLIGHT);
-    }
-
-    void scrollTo(final Element element) {
-
-        final HTMLElement htmlElement = (HTMLElement) element;
-        final HTMLElement container = presenter.getDataTypeList().getListItemsElement();
-        final int padding = 20;
-
-        container.scrollTop = htmlElement.offsetTop - container.offsetTop - padding;
     }
 
     private Optional<DataTypeListItem> getDataTypeListItem(final String uuid) {
