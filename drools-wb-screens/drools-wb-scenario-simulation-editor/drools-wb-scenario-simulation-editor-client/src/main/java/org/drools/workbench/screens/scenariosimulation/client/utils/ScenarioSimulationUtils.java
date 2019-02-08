@@ -267,7 +267,7 @@ public class ScenarioSimulationUtils {
             case Description:
                 return 300;
             default:
-                return 200;
+                return 114;
         }
     }
 
