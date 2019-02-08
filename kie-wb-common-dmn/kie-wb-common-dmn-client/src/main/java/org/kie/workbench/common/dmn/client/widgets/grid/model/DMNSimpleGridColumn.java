@@ -18,27 +18,32 @@ package org.kie.workbench.common.dmn.client.widgets.grid.model;
 
 import java.util.List;
 
+import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
+import org.kie.workbench.common.dmn.client.widgets.grid.BaseGrid;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCell;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.GridColumnRenderer;
 
-public abstract class DMNSimpleGridColumn<G extends GridWidget, T> extends DMNGridColumn<G, T> {
+public abstract class DMNSimpleGridColumn<G extends BaseGrid<? extends Expression>, T> extends DMNGridColumn<G, T> {
 
     public DMNSimpleGridColumn(final HeaderMetaData headerMetaData,
                                final GridColumnRenderer<T> columnRenderer,
+                               final double width,
                                final G gridWidget) {
         super(headerMetaData,
               columnRenderer,
+              width,
               gridWidget);
     }
 
     public DMNSimpleGridColumn(final List<HeaderMetaData> headerMetaData,
                                final GridColumnRenderer<T> columnRenderer,
+                               final double width,
                                final G gridWidget) {
         super(headerMetaData,
               columnRenderer,
+              width,
               gridWidget);
     }
 

@@ -24,15 +24,20 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.im
 
 class EmptyColumn extends BaseGridColumn<String> {
 
-    EmptyColumn(final List<HeaderMetaData> headerMetaData) {
+    static final double DEFAULT_WIDTH = 50.0;
+
+    EmptyColumn(final List<HeaderMetaData> headerMetaData,
+                final double width) {
         this(headerMetaData,
-             new StringColumnRenderer());
+             new StringColumnRenderer(),
+             width);
     }
 
     private EmptyColumn(final List<HeaderMetaData> headerMetaData,
-                        final GridColumnRenderer<String> columnRenderer) {
+                        final GridColumnRenderer<String> columnRenderer,
+                        final double width) {
         super(headerMetaData,
               columnRenderer,
-              50.0);
+              width);
     }
 }

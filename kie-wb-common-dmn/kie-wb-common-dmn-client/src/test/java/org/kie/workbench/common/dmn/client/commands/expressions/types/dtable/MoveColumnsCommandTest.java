@@ -305,6 +305,67 @@ public class MoveColumnsCommandTest {
         graphCommand.execute(graphCommandExecutionContext);
     }
 
+    @Test
+    public void testInputClauseComponentWidths() {
+        moveColumnsToPositionCommand(Arrays.asList(uiInputClauseColumnTwo, uiInputClauseColumnThree), 1);
+
+        assertComponentWidths(1, 2, 3);
+    }
+
+    @Test
+    public void testOutputClauseComponentWidths() {
+        moveColumnsToPositionCommand(Arrays.asList(uiOutputClauseColumnTwo, uiOutputClauseColumnThree), 4);
+
+        assertComponentWidths(4, 5, 6);
+    }
+
+    private void assertComponentWidths(final int uiColumn1Index,
+                                       final int uiColumn2Index,
+                                       final int uiColumn3Index) {
+        final List<Double> componentWidths = dtable.getComponentWidths();
+        componentWidths.set(uiColumn1Index, 10.0);
+        componentWidths.set(uiColumn2Index, 20.0);
+        componentWidths.set(uiColumn3Index, 30.0);
+
+        final Command<GraphCommandExecutionContext, RuleViolation> graphCommand = command.newGraphCommand(canvasHandler);
+
+        //Execute
+        assertEquals(GraphCommandResultBuilder.SUCCESS,
+                     graphCommand.execute(graphCommandExecutionContext));
+
+        assertEquals(dtable.getRequiredComponentWidthCount(),
+                     dtable.getComponentWidths().size());
+
+        assertEquals(20.0,
+                     dtable.getComponentWidths().get(uiColumn1Index),
+                     0.0);
+        assertEquals(30.0,
+                     dtable.getComponentWidths().get(uiColumn2Index),
+                     0.0);
+        assertEquals(10.0,
+                     dtable.getComponentWidths().get(uiColumn3Index),
+                     0.0);
+
+        //Move UI columns as MoveColumnsCommand.undo() relies on the UiModel being updated
+        command.newCanvasCommand(canvasHandler).execute(canvasHandler);
+
+        //Undo
+        assertEquals(GraphCommandResultBuilder.SUCCESS,
+                     graphCommand.undo(graphCommandExecutionContext));
+
+        assertEquals(dtable.getRequiredComponentWidthCount(),
+                     dtable.getComponentWidths().size());
+        assertEquals(10.0,
+                     dtable.getComponentWidths().get(uiColumn1Index),
+                     0.0);
+        assertEquals(20.0,
+                     dtable.getComponentWidths().get(uiColumn2Index),
+                     0.0);
+        assertEquals(30.0,
+                     dtable.getComponentWidths().get(uiColumn3Index),
+                     0.0);
+    }
+
     private void assertClauses(final int... clausesIndexes) {
         assertEquals(inputClauseOne, dtable.getInput().get(clausesIndexes[0]));
         assertEquals(inputClauseTwo, dtable.getInput().get(clausesIndexes[1]));

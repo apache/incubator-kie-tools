@@ -37,9 +37,11 @@ import org.kie.workbench.common.dmn.api.property.dmn.Text;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.invocation.AddParameterBindingCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.invocation.ClearExpressionTypeCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.invocation.DeleteParameterBindingCommand;
+import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionGrid;
 import org.kie.workbench.common.dmn.client.editors.expressions.util.SelectionUtils;
 import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
@@ -48,6 +50,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorGridRow;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
@@ -56,7 +59,6 @@ import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
-import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
@@ -76,7 +78,6 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGri
     public InvocationGrid(final GridCellTuple parent,
                           final Optional<String> nodeUUID,
                           final HasExpression hasExpression,
-                          final Optional<Invocation> expression,
                           final Optional<HasName> hasName,
                           final DMNGridPanel gridPanel,
                           final DMNGridLayer gridLayer,
@@ -84,7 +85,7 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGri
                           final DefinitionUtils definitionUtils,
                           final SessionManager sessionManager,
                           final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                          final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
+                          final DefaultCanvasCommandFactory canvasCommandFactory,
                           final Event<ExpressionEditorChanged> editorSelectedEvent,
                           final Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent,
                           final Event<DomainObjectSelectionEvent> domainObjectSelectionEvent,
@@ -97,7 +98,6 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGri
         super(parent,
               nodeUUID,
               hasExpression,
-              expression,
               hasName,
               gridPanel,
               gridLayer,
@@ -132,7 +132,7 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGri
     public InvocationUIModelMapper makeUiModelMapper() {
         return new InvocationUIModelMapper(this,
                                            this::getModel,
-                                           () -> expression,
+                                           getExpression(),
                                            expressionEditorDefinitionsSupplier,
                                            listSelector,
                                            nesting);
@@ -141,9 +141,11 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGri
     @Override
     protected void initialiseUiColumns() {
         final List<GridColumn.HeaderMetaData> headerMetaData = new ArrayList<>();
+        final RowNumberColumn rowNumberColumn = new RowNumberColumn();
+        rowNumberColumn.setWidth(getAndSetInitialWidth(0, rowNumberColumn.getWidth()));
+
         if (nesting == 0) {
             headerMetaData.add(new InvocationColumnHeaderMetaData(hasExpression,
-                                                                  expression,
                                                                   hasName,
                                                                   clearDisplayNameConsumer(true),
                                                                   setDisplayNameConsumer(true),
@@ -158,6 +160,7 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGri
                                                                         Optional.of(translationService.getTranslation(DMNEditorConstants.InvocationEditor_EnterFunction))));
 
         final InvocationParameterColumn nameColumn = new InvocationParameterColumn(headerMetaData,
+                                                                                   getAndSetInitialWidth(1, DMNGridColumn.DEFAULT_WIDTH),
                                                                                    this,
                                                                                    rowIndex -> true,
                                                                                    clearDisplayNameConsumer(false),
@@ -168,9 +171,10 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGri
                                                                                    Optional.of(translationService.getTranslation(DMNEditorConstants.InvocationEditor_EditParameter)));
         final ExpressionEditorColumn expressionColumn = new ExpressionEditorColumn(gridLayer,
                                                                                    headerMetaData,
+                                                                                   getAndSetInitialWidth(2, UndefinedExpressionColumn.DEFAULT_WIDTH),
                                                                                    this);
 
-        model.appendColumn(new RowNumberColumn());
+        model.appendColumn(rowNumberColumn);
         model.appendColumn(nameColumn);
         model.appendColumn(expressionColumn);
 
@@ -178,19 +182,19 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGri
     }
 
     private String getExpressionText() {
-        return expression.map(invocation -> (LiteralExpression) invocation.getExpression())
+        return getExpression().get().map(invocation -> (LiteralExpression) invocation.getExpression())
                 .map(LiteralExpression::getText)
                 .orElse(new Text())
                 .getValue();
     }
 
     private void setExpressionText(final String text) {
-        expression.ifPresent(invocation -> ((LiteralExpression) invocation.getExpression()).getText().setValue(text));
+        getExpression().get().ifPresent(invocation -> ((LiteralExpression) invocation.getExpression()).getText().setValue(text));
     }
 
     @Override
     protected void initialiseUiModel() {
-        expression.ifPresent(invocation -> {
+        getExpression().get().ifPresent(invocation -> {
             invocation.getBinding().stream().forEach(binding -> {
                 model.appendRow(new ExpressionEditorGridRow());
                 uiModelMapper.fromDMNModel(model.getRowCount() - 1,
@@ -215,13 +219,13 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGri
                                              !isMultiRow,
                                              () -> {
                                                  cellEditorControls.hide();
-                                                 expression.ifPresent(e -> addParameterBinding(uiRowIndex));
+                                                 getExpression().get().ifPresent(e -> addParameterBinding(uiRowIndex));
                                              }));
         items.add(ListSelectorTextItem.build(translationService.format(DMNEditorConstants.InvocationEditor_InsertParameterBelow),
                                              !isMultiRow,
                                              () -> {
                                                  cellEditorControls.hide();
-                                                 expression.ifPresent(e -> addParameterBinding(uiRowIndex + 1));
+                                                 getExpression().get().ifPresent(e -> addParameterBinding(uiRowIndex + 1));
                                              }));
         items.add(ListSelectorTextItem.build(translationService.format(DMNEditorConstants.InvocationEditor_DeleteParameter),
                                              !isMultiRow && model.getRowCount() > 1,
@@ -264,7 +268,7 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGri
     }
 
     void addParameterBinding(final int index) {
-        expression.ifPresent(invocation -> {
+        getExpression().get().ifPresent(invocation -> {
             final Binding binding = new Binding();
             final InformationItem parameter = new InformationItem();
             parameter.setName(new Name());
@@ -287,7 +291,7 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGri
     }
 
     void deleteParameterBinding(final int index) {
-        expression.ifPresent(invocation -> {
+        getExpression().get().ifPresent(invocation -> {
             sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
                                           new DeleteParameterBindingCommand(invocation,
                                                                             model,
@@ -300,7 +304,7 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGri
         final GridCellTuple gc = new GridCellTuple(uiRowIndex,
                                                    InvocationUIModelMapper.BINDING_EXPRESSION_COLUMN_INDEX,
                                                    this);
-        expression.ifPresent(invocation -> {
+        getExpression().get().ifPresent(invocation -> {
             final HasExpression hasExpression = invocation.getBinding().get(uiRowIndex);
             sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
                                           new ClearExpressionTypeCommand(gc,
@@ -326,8 +330,8 @@ public class InvocationGrid extends BaseExpressionGrid<Invocation, InvocationGri
         }
 
         if (uiColumnIndex == InvocationUIModelMapper.BINDING_PARAMETER_COLUMN_INDEX) {
-            if (expression.isPresent()) {
-                final Invocation invocation = expression.get();
+            if (getExpression().get().isPresent()) {
+                final Invocation invocation = getExpression().get().get();
                 fireDomainObjectSelectionEvent(invocation.getBinding().get(uiRowIndex).getVariable());
                 return;
             }

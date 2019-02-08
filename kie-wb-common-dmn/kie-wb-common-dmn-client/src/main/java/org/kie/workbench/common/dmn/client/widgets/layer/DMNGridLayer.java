@@ -33,10 +33,12 @@ import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionContain
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.literal.LiteralExpressionGrid;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionGrid;
+import org.kie.workbench.common.dmn.client.widgets.dnd.DMNGridWidgetDnDMouseUpHandler;
 import org.kie.workbench.common.dmn.client.widgets.dnd.DelegatingGridWidgetDndMouseMoveHandler;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridTheme;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.widget.dnd.GridWidgetDnDMouseMoveHandler;
+import org.uberfire.ext.wires.core.grids.client.widget.dnd.GridWidgetDnDMouseUpHandler;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.DefaultGridLayer;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLayerRedrawManager;
@@ -207,5 +209,11 @@ public class DMNGridLayer extends DefaultGridLayer {
     protected GridWidgetDnDMouseMoveHandler getGridWidgetDnDMouseMoveHandler() {
         return new DelegatingGridWidgetDndMouseMoveHandler(this,
                                                            getGridWidgetHandlersState());
+    }
+
+    @Override
+    protected GridWidgetDnDMouseUpHandler getGridWidgetDnDMouseUpHandler() {
+        return new DMNGridWidgetDnDMouseUpHandler(this,
+                                                  getGridWidgetHandlersState());
     }
 }

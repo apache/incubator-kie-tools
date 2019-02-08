@@ -17,7 +17,10 @@
 package org.kie.workbench.common.dmn.backend.definition.v1_1;
 
 import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
+import org.kie.workbench.common.dmn.api.definition.HasComponentWidths;
 import org.kie.workbench.common.dmn.api.definition.v1_1.BusinessKnowledgeModel;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DRGElement;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
@@ -35,6 +38,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.Question;
 import org.kie.workbench.common.dmn.api.property.font.FontSet;
+import org.kie.workbench.common.dmn.backend.definition.v1_1.dd.ComponentWidths;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -51,7 +55,8 @@ public class DecisionConverter implements NodeConverter<org.kie.dmn.model.api.De
     }
 
     @Override
-    public Node<View<Decision>, ?> nodeFromDMN(final org.kie.dmn.model.api.Decision dmn) {
+    public Node<View<Decision>, ?> nodeFromDMN(final org.kie.dmn.model.api.Decision dmn,
+                                               final BiConsumer<String, HasComponentWidths> hasComponentWidthsConsumer) {
         @SuppressWarnings("unchecked")
         Node<View<Decision>, ?> node = (Node<View<Decision>, ?>) factoryManager.newElement(dmn.getId(),
                                                                                            Decision.class).asNode();
@@ -59,7 +64,8 @@ public class DecisionConverter implements NodeConverter<org.kie.dmn.model.api.De
         Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
         Name name = new Name(dmn.getName());
         InformationItemPrimary informationItem = InformationItemPrimaryPropertyConverter.wbFromDMN(dmn.getVariable());
-        Expression expression = ExpressionPropertyConverter.wbFromDMN(dmn.getExpression());
+        Expression expression = ExpressionPropertyConverter.wbFromDMN(dmn.getExpression(),
+                                                                      hasComponentWidthsConsumer);
         Decision decision = new Decision(id,
                                          description,
                                          name,
@@ -85,7 +91,8 @@ public class DecisionConverter implements NodeConverter<org.kie.dmn.model.api.De
     }
 
     @Override
-    public org.kie.dmn.model.api.Decision dmnFromNode(final Node<View<Decision>, ?> node) {
+    public org.kie.dmn.model.api.Decision dmnFromNode(final Node<View<Decision>, ?> node,
+                                                      final Consumer<ComponentWidths> componentWidthsConsumer) {
         Decision source = node.getContent().getDefinition();
         org.kie.dmn.model.api.Decision d = new org.kie.dmn.model.v1_2.TDecision();
         d.setId(source.getId().getValue());
@@ -96,7 +103,8 @@ public class DecisionConverter implements NodeConverter<org.kie.dmn.model.api.De
             variable.setParent(d);
         }
         d.setVariable(variable);
-        org.kie.dmn.model.api.Expression expression = ExpressionPropertyConverter.dmnFromWB(source.getExpression());
+        org.kie.dmn.model.api.Expression expression = ExpressionPropertyConverter.dmnFromWB(source.getExpression(),
+                                                                                            componentWidthsConsumer);
         if (expression != null) {
             expression.setParent(d);
         }

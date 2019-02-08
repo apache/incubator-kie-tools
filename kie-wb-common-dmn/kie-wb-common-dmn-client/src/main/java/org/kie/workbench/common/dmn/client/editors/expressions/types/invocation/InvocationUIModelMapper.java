@@ -93,14 +93,13 @@ public class InvocationUIModelMapper extends BaseUIModelMapper<Invocation> {
 
                     final Optional<ExpressionEditorDefinition<Expression>> expressionEditorDefinition = expressionEditorDefinitionsSupplier.get().getExpressionEditorDefinition(expression);
                     expressionEditorDefinition.ifPresent(ed -> {
-                        final Optional<BaseExpressionGrid> editor = ed.getEditor(new GridCellTuple(rowIndex,
-                                                                                                   columnIndex,
-                                                                                                   gridWidget),
-                                                                                 Optional.empty(),
-                                                                                 binding,
-                                                                                 expression,
-                                                                                 Optional.ofNullable(binding.getParameter()),
-                                                                                 nesting + 1);
+                        final Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>> editor = ed.getEditor(new GridCellTuple(rowIndex,
+                                                                                                                                                                          columnIndex,
+                                                                                                                                                                          gridWidget),
+                                                                                                                                                        Optional.empty(),
+                                                                                                                                                        binding,
+                                                                                                                                                        Optional.ofNullable(binding.getParameter()),
+                                                                                                                                                        nesting + 1);
                         uiModel.get().setCell(rowIndex,
                                               columnIndex,
                                               () -> new InvocationGridCell<>(new ExpressionCellValue(editor),
@@ -130,7 +129,7 @@ public class InvocationUIModelMapper extends BaseUIModelMapper<Invocation> {
                     cell.get().ifPresent(v -> {
                         final ExpressionCellValue ecv = (ExpressionCellValue) v;
                         ecv.getValue().ifPresent(beg -> {
-                            beg.getExpression().ifPresent(e -> invocation.getBinding()
+                            beg.getExpression().get().ifPresent(e -> invocation.getBinding()
                                     .get(rowIndex)
                                     .setExpression((Expression) e));
                         });

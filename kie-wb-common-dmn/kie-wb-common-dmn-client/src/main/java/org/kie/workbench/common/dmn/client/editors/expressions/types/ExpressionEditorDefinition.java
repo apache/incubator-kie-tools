@@ -22,7 +22,9 @@ import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
+import org.uberfire.ext.wires.core.grids.client.model.GridData;
 
 public interface ExpressionEditorDefinition<T extends Expression> extends ExpressionEditorModelEnricher<T> {
 
@@ -32,10 +34,9 @@ public interface ExpressionEditorDefinition<T extends Expression> extends Expres
 
     Optional<T> getModelClass();
 
-    Optional<BaseExpressionGrid> getEditor(final GridCellTuple parent,
-                                           final Optional<String> nodeUUID,
-                                           final HasExpression hasExpression,
-                                           final Optional<T> expression,
-                                           final Optional<HasName> hasName,
-                                           final int nesting);
+    Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>> getEditor(final GridCellTuple parent,
+                                                                                                                  final Optional<String> nodeUUID,
+                                                                                                                  final HasExpression hasExpression,
+                                                                                                                  final Optional<HasName> hasName,
+                                                                                                                  final int nesting);
 }

@@ -25,6 +25,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
 import org.kie.workbench.common.dmn.api.definition.v1_1.List;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Relation;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.DecisionTableUIModelMapperHelper;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.relation.RelationColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.relation.RelationDefaultValueUtilities;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.relation.RelationUIModelMapper;
@@ -45,6 +46,7 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -110,7 +112,7 @@ public class AddRelationColumnCommandTest {
         command = spy(new AddRelationColumnCommand(relation,
                                                    informationItem,
                                                    uiModel,
-                                                   uiModelColumn,
+                                                   () -> uiModelColumn,
                                                    uiColumnIndex,
                                                    uiModelMapper,
                                                    executeCanvasOperation,
@@ -439,5 +441,30 @@ public class AddRelationColumnCommandTest {
         verify(command).updateParentInformation();
 
         verify(undoCanvasOperation).execute();
+    }
+
+    @Test
+    public void testComponentWidths() {
+        final Command<GraphCommandExecutionContext, RuleViolation> graphCommand = command.newGraphCommand(handler);
+        final Command<AbstractCanvasHandler, CanvasViolation> canvasCommand = command.newCanvasCommand(handler);
+
+        //Execute
+        assertEquals(GraphCommandResultBuilder.SUCCESS,
+                     graphCommand.execute(gce));
+        assertEquals(CanvasCommandResultBuilder.SUCCESS,
+                     canvasCommand.execute(handler));
+
+        assertEquals(relation.getRequiredComponentWidthCount(),
+                     relation.getComponentWidths().size());
+        assertNull(relation.getComponentWidths().get(DecisionTableUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT));
+
+        //Undo
+        assertEquals(GraphCommandResultBuilder.SUCCESS,
+                     graphCommand.undo(gce));
+        assertEquals(CanvasCommandResultBuilder.SUCCESS,
+                     canvasCommand.undo(handler));
+
+        assertEquals(relation.getRequiredComponentWidthCount(),
+                     relation.getComponentWidths().size());
     }
 }

@@ -47,9 +47,9 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 @Bindable
 @PropertySet
 @FormDefinition(policy = FieldPolicy.ONLY_MARKED,
-    defaultFieldSettings = {@FieldParam(name = FIELD_CONTAINER_PARAM, value = COLLAPSIBLE_CONTAINER)},
-    i18n = @I18nSettings(keyPreffix = "org.kie.workbench.common.dmn.api.definition.v1_1.InputClauseUnaryTests"),
-    startElement = "text")
+        defaultFieldSettings = {@FieldParam(name = FIELD_CONTAINER_PARAM, value = COLLAPSIBLE_CONTAINER)},
+        i18n = @I18nSettings(keyPreffix = "org.kie.workbench.common.dmn.api.definition.v1_1.InputClauseUnaryTests"),
+        startElement = "text")
 public class InputClauseUnaryTests extends DMNModelInstrumentedBase implements IsUnaryTests,
                                                                                DMNPropertySet {
 
@@ -61,12 +61,12 @@ public class InputClauseUnaryTests extends DMNModelInstrumentedBase implements I
 
     @Property
     @FormField(afterElement = "text",
-        labelKey = "constraintType",
-        type = ListBoxFieldType.class,
-        settings = {@FieldParam(name = "addEmptyOption", value = "expression")})
+            labelKey = "constraintType",
+            type = ListBoxFieldType.class,
+            settings = {@FieldParam(name = "addEmptyOption", value = "expression")})
     @SelectorDataProvider(
-        type = SelectorDataProvider.ProviderType.CLIENT,
-        className = "org.kie.workbench.common.dmn.api.property.dmn.dataproviders.ConstraintTypeDataProvider")
+            type = SelectorDataProvider.ProviderType.CLIENT,
+            className = "org.kie.workbench.common.dmn.api.property.dmn.dataproviders.ConstraintTypeDataProvider")
     protected ConstraintTypeProperty constraintTypeProperty;
 
     public InputClauseUnaryTests() {

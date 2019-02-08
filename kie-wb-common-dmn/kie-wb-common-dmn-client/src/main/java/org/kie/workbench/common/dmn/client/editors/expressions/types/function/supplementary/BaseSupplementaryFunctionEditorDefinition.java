@@ -27,25 +27,28 @@ import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ContextEntry;
+import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
+import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.BaseEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
-import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
+import org.uberfire.ext.wires.core.grids.client.model.GridData;
 
 public abstract class BaseSupplementaryFunctionEditorDefinition extends BaseEditorDefinition<Context, FunctionSupplementaryGridData> {
 
@@ -60,7 +63,7 @@ public abstract class BaseSupplementaryFunctionEditorDefinition extends BaseEdit
     public BaseSupplementaryFunctionEditorDefinition(final DefinitionUtils definitionUtils,
                                                      final SessionManager sessionManager,
                                                      final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                                                     final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
+                                                     final DefaultCanvasCommandFactory canvasCommandFactory,
                                                      final Event<ExpressionEditorChanged> editorSelectedEvent,
                                                      final Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent,
                                                      final Event<DomainObjectSelectionEvent> domainObjectSelectionEvent,
@@ -105,20 +108,18 @@ public abstract class BaseSupplementaryFunctionEditorDefinition extends BaseEdit
     }
 
     @Override
-    public Optional<BaseExpressionGrid> getEditor(final GridCellTuple parent,
-                                                  final Optional<String> nodeUUID,
-                                                  final HasExpression hasExpression,
-                                                  final Optional<Context> expression,
-                                                  final Optional<HasName> hasName,
-                                                  final int nesting) {
+    public Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>> getEditor(final GridCellTuple parent,
+                                                                                                                         final Optional<String> nodeUUID,
+                                                                                                                         final HasExpression hasExpression,
+                                                                                                                         final Optional<HasName> hasName,
+                                                                                                                         final int nesting) {
         return Optional.of(new FunctionSupplementaryGrid(parent,
                                                          nodeUUID,
                                                          hasExpression,
-                                                         expression,
                                                          hasName,
                                                          getGridPanel(),
                                                          getGridLayer(),
-                                                         makeGridData(expression),
+                                                         makeGridData(() -> Optional.ofNullable(((Context) hasExpression.getExpression()))),
                                                          definitionUtils,
                                                          sessionManager,
                                                          sessionCommandManager,
@@ -134,7 +135,7 @@ public abstract class BaseSupplementaryFunctionEditorDefinition extends BaseEdit
     }
 
     @Override
-    protected FunctionSupplementaryGridData makeGridData(final Optional<Context> expression) {
+    protected FunctionSupplementaryGridData makeGridData(final Supplier<Optional<Context>> expression) {
         return new FunctionSupplementaryGridData(new DMNGridData(),
                                                  sessionManager,
                                                  sessionCommandManager,

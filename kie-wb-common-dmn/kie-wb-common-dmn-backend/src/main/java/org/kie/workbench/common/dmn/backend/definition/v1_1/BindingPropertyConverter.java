@@ -16,18 +16,25 @@
 
 package org.kie.workbench.common.dmn.backend.definition.v1_1;
 
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+
+import org.kie.workbench.common.dmn.api.definition.HasComponentWidths;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Binding;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
+import org.kie.workbench.common.dmn.backend.definition.v1_1.dd.ComponentWidths;
 
 public class BindingPropertyConverter {
 
-    public static Binding wbFromDMN(final org.kie.dmn.model.api.Binding dmn) {
+    public static Binding wbFromDMN(final org.kie.dmn.model.api.Binding dmn,
+                                    final BiConsumer<String, HasComponentWidths> hasComponentWidthsConsumer) {
         if (dmn == null) {
             return null;
         }
         InformationItem convertedParameter = InformationItemPropertyConverter.wbFromDMN(dmn.getParameter());
-        Expression convertedExpression = ExpressionPropertyConverter.wbFromDMN(dmn.getExpression());
+        Expression convertedExpression = ExpressionPropertyConverter.wbFromDMN(dmn.getExpression(),
+                                                                               hasComponentWidthsConsumer);
 
         Binding result = new Binding();
         if (convertedParameter != null) {
@@ -41,13 +48,15 @@ public class BindingPropertyConverter {
         return result;
     }
 
-    public static org.kie.dmn.model.api.Binding dmnFromWB(final Binding wb) {
+    public static org.kie.dmn.model.api.Binding dmnFromWB(final Binding wb,
+                                                          final Consumer<ComponentWidths> componentWidthsConsumer) {
         if (wb == null) {
             return null;
         }
         org.kie.dmn.model.api.Binding result = new org.kie.dmn.model.v1_2.TBinding();
         org.kie.dmn.model.api.InformationItem convertedParameter = InformationItemPropertyConverter.dmnFromWB(wb.getParameter());
-        org.kie.dmn.model.api.Expression convertedExpression = ExpressionPropertyConverter.dmnFromWB(wb.getExpression());
+        org.kie.dmn.model.api.Expression convertedExpression = ExpressionPropertyConverter.dmnFromWB(wb.getExpression(),
+                                                                                                     componentWidthsConsumer);
 
         if (convertedParameter != null) {
             convertedParameter.setParent(result);

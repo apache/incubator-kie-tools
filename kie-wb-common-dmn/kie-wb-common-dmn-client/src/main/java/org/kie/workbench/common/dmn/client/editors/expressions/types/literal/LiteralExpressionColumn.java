@@ -35,9 +35,11 @@ public class LiteralExpressionColumn extends DMNSimpleGridColumn<LiteralExpressi
 
     public LiteralExpressionColumn(final List<HeaderMetaData> headerMetaData,
                                    final TextAreaSingletonDOMElementFactory factory,
+                                   final double width,
                                    final LiteralExpressionGrid gridWidget) {
         super(headerMetaData,
               new NameAndDataTypeDOMElementColumnRenderer<>(factory),
+              width,
               gridWidget);
         this.factory = PortablePreconditions.checkNotNull("factory",
                                                           factory);

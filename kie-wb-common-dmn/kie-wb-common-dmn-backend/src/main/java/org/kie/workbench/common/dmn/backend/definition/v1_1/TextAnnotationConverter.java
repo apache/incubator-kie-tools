@@ -16,6 +16,10 @@
 
 package org.kie.workbench.common.dmn.backend.definition.v1_1;
 
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+
+import org.kie.workbench.common.dmn.api.definition.HasComponentWidths;
 import org.kie.workbench.common.dmn.api.definition.v1_1.TextAnnotation;
 import org.kie.workbench.common.dmn.api.property.background.BackgroundSet;
 import org.kie.workbench.common.dmn.api.property.dimensions.GeneralRectangleDimensionsSet;
@@ -24,6 +28,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Text;
 import org.kie.workbench.common.dmn.api.property.dmn.TextFormat;
 import org.kie.workbench.common.dmn.api.property.font.FontSet;
+import org.kie.workbench.common.dmn.backend.definition.v1_1.dd.ComponentWidths;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
@@ -38,7 +43,8 @@ public class TextAnnotationConverter implements NodeConverter<org.kie.dmn.model.
     }
 
     @Override
-    public Node<View<TextAnnotation>, ?> nodeFromDMN(final org.kie.dmn.model.api.TextAnnotation dmn) {
+    public Node<View<TextAnnotation>, ?> nodeFromDMN(final org.kie.dmn.model.api.TextAnnotation dmn,
+                                                     final BiConsumer<String, HasComponentWidths> hasComponentWidthsConsumer) {
         @SuppressWarnings("unchecked")
         Node<View<TextAnnotation>, ?> node = (Node<View<TextAnnotation>, ?>) factoryManager.newElement(dmn.getId(),
                                                                                                        TextAnnotation.class).asNode();
@@ -58,7 +64,8 @@ public class TextAnnotationConverter implements NodeConverter<org.kie.dmn.model.
     }
 
     @Override
-    public org.kie.dmn.model.api.TextAnnotation dmnFromNode(final Node<View<TextAnnotation>, ?> node) {
+    public org.kie.dmn.model.api.TextAnnotation dmnFromNode(final Node<View<TextAnnotation>, ?> node,
+                                                            final Consumer<ComponentWidths> componentWidthsConsumer) {
         TextAnnotation source = node.getContent().getDefinition();
         org.kie.dmn.model.api.TextAnnotation result = new org.kie.dmn.model.v1_2.TTextAnnotation();
         result.setId(source.getId().getValue());

@@ -29,13 +29,14 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.im
 
 public class DecisionTableRowNumberColumn extends DMNGridColumn<DecisionTableGrid, Integer> implements IsRowDragHandle {
 
-    private static final double DEFAULT_WIDTH = 50.0;
+    public static final double DEFAULT_WIDTH = 50.0;
 
     public DecisionTableRowNumberColumn(final Supplier<HitPolicy> hitPolicySupplier,
                                         final Supplier<BuiltinAggregator> builtinAggregatorSupplier,
                                         final CellEditorControlsView.Presenter cellEditorControls,
                                         final HitPolicyPopoverView.Presenter editor,
                                         final Optional<String> editorTitle,
+                                        final double width,
                                         final DecisionTableGrid gridWidget) {
         super(new RowNumberColumnHeaderMetaData(hitPolicySupplier,
                                                 builtinAggregatorSupplier,
@@ -44,11 +45,10 @@ public class DecisionTableRowNumberColumn extends DMNGridColumn<DecisionTableGri
                                                 editorTitle,
                                                 gridWidget),
               new IntegerColumnRenderer(),
+              width,
               gridWidget);
         setMovable(false);
         setResizable(false);
         setFloatable(true);
-
-        setWidthInternal(DEFAULT_WIDTH);
     }
 }

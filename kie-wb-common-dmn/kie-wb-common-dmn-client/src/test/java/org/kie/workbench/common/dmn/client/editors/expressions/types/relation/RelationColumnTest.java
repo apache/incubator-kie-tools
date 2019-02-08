@@ -23,6 +23,7 @@ import org.gwtbootstrap3.client.ui.TextArea;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.client.editors.expressions.mocks.MockHasDOMElementResourcesHeaderMetaData;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
@@ -30,6 +31,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.BaseDOMElementSingletonColumnTest;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.dom.TextAreaDOMElement;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.mockito.Mock;
@@ -88,6 +90,7 @@ public class RelationColumnTest extends BaseDOMElementSingletonColumnTest<TextAr
     protected RelationColumn getColumn() {
         return new RelationColumn(headerMetaData,
                                   factory,
+                                  RelationColumn.DEFAULT_WIDTH,
                                   gridWidget);
     }
 
@@ -156,7 +159,7 @@ public class RelationColumnTest extends BaseDOMElementSingletonColumnTest<TextAr
     private final void assertMinimumWidth(final double peerWidth,
                                           final double relationGridWidth,
                                           final double expectedMinimumWidth,
-                                          final Optional<BaseExpressionGrid>... peers) {
+                                          final Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>>... peers) {
         doReturn(peerWidth).when(peerExpressionEditor).getMinimumWidth();
         doReturn(relationGridWidth).when(gridWidget).getWidth();
 

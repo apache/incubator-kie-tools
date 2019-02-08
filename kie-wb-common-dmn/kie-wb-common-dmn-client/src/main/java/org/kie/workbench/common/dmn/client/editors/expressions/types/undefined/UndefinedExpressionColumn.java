@@ -38,11 +38,13 @@ public class UndefinedExpressionColumn extends DMNGridColumn<UndefinedExpression
     private final UndefinedExpressionSelectorPopoverView.Presenter undefinedExpressionSelector;
     private final TranslationService translationService;
 
-    public UndefinedExpressionColumn(final UndefinedExpressionGrid gridWidget,
+    public UndefinedExpressionColumn(final double width,
+                                     final UndefinedExpressionGrid gridWidget,
                                      final CellEditorControlsView.Presenter cellEditorControls,
                                      final UndefinedExpressionSelectorPopoverView.Presenter undefinedExpressionSelector,
                                      final TranslationService translationService) {
         this(Collections.emptyList(),
+             width,
              gridWidget,
              cellEditorControls,
              undefinedExpressionSelector,
@@ -50,18 +52,18 @@ public class UndefinedExpressionColumn extends DMNGridColumn<UndefinedExpression
     }
 
     public UndefinedExpressionColumn(final List<HeaderMetaData> headerMetaData,
+                                     final double width,
                                      final UndefinedExpressionGrid gridWidget,
                                      final CellEditorControlsView.Presenter cellEditorControls,
                                      final UndefinedExpressionSelectorPopoverView.Presenter undefinedExpressionSelector,
                                      final TranslationService translationService) {
         super(headerMetaData,
               new UndefinedExpressionColumnRenderer(),
+              width,
               gridWidget);
         this.cellEditorControls = cellEditorControls;
         this.undefinedExpressionSelector = undefinedExpressionSelector;
         this.translationService = translationService;
-
-        setWidthInternal(UndefinedExpressionColumn.DEFAULT_WIDTH);
     }
 
     @Override

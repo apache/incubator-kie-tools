@@ -96,6 +96,8 @@ public class DeleteOutputClauseCommand extends AbstractCanvasGraphCommand implem
 
             @Override
             public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext gce) {
+                dtable.getComponentWidths().remove(uiColumnIndex);
+
                 final int clauseIndex = getOutputClauseIndex();
                 dtable.getRule().forEach(row -> row.getOutputEntry().remove(clauseIndex));
                 dtable.getOutput().remove(clauseIndex);
@@ -105,6 +107,8 @@ public class DeleteOutputClauseCommand extends AbstractCanvasGraphCommand implem
 
             @Override
             public CommandResult<RuleViolation> undo(final GraphCommandExecutionContext gce) {
+                dtable.getComponentWidths().add(uiColumnIndex, oldUiModelColumn.getWidth());
+
                 final int clauseIndex = getOutputClauseIndex();
                 dtable.getOutput().add(clauseIndex,
                                        oldOutputClause);

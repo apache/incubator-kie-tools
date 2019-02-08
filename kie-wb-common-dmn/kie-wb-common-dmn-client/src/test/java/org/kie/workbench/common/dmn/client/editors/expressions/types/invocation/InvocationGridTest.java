@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
+import java.util.stream.IntStream;
 
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Transform;
@@ -42,6 +43,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.invocation.AddParameterBindingCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.invocation.ClearExpressionTypeCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.invocation.DeleteParameterBindingCommand;
+import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.dmn.client.commands.general.DeleteCellValueCommand;
 import org.kie.workbench.common.dmn.client.commands.general.DeleteHasNameCommand;
 import org.kie.workbench.common.dmn.client.commands.general.DeleteHeaderValueCommand;
@@ -68,6 +70,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextBoxS
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellValueTuple;
@@ -77,7 +80,6 @@ import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.UpdateElementPropertyCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
-import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -114,7 +116,6 @@ import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
@@ -200,7 +201,7 @@ public class InvocationGridTest {
     private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
 
     @Mock
-    private CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
+    private DefaultCanvasCommandFactory canvasCommandFactory;
 
     @Mock
     private CellEditorControlsView.Presenter cellEditorControls;
@@ -318,27 +319,25 @@ public class InvocationGridTest {
         expressionEditorDefinitions.add(literalExpressionEditorDefinition);
         expressionEditorDefinitions.add(undefinedExpressionEditorDefinition);
 
-        doReturn(expressionEditorDefinitions).when(expressionEditorDefinitionsSupplier).get();
-        doReturn(Optional.of(literalExpression)).when(literalExpressionEditorDefinition).getModelClass();
-        doReturn(Optional.of(literalExpressionEditor)).when(literalExpressionEditorDefinition).getEditor(any(GridCellTuple.class),
-                                                                                                         any(Optional.class),
-                                                                                                         any(HasExpression.class),
-                                                                                                         any(Optional.class),
-                                                                                                         any(Optional.class),
-                                                                                                         anyInt());
+        when(expressionEditorDefinitionsSupplier.get()).thenReturn(expressionEditorDefinitions);
+        when(literalExpressionEditorDefinition.getModelClass()).thenReturn(Optional.of(literalExpression));
+        when(literalExpressionEditorDefinition.getEditor(any(GridCellTuple.class),
+                                                         any(Optional.class),
+                                                         any(HasExpression.class),
+                                                         any(Optional.class),
+                                                         anyInt())).thenReturn(Optional.of(literalExpressionEditor));
 
-        doReturn(parent).when(undefinedExpressionEditor).getParentInformation();
-        doReturn(Optional.empty()).when(undefinedExpressionEditorDefinition).getModelClass();
-        doReturn(Optional.of(undefinedExpressionEditor)).when(undefinedExpressionEditorDefinition).getEditor(any(GridCellTuple.class),
-                                                                                                             any(Optional.class),
-                                                                                                             any(HasExpression.class),
-                                                                                                             any(Optional.class),
-                                                                                                             any(Optional.class),
-                                                                                                             anyInt());
+        when(undefinedExpressionEditor.getParentInformation()).thenReturn(parent);
+        when(undefinedExpressionEditorDefinition.getModelClass()).thenReturn(Optional.empty());
+        when(undefinedExpressionEditorDefinition.getEditor(any(GridCellTuple.class),
+                                                           any(Optional.class),
+                                                           any(HasExpression.class),
+                                                           any(Optional.class),
+                                                           anyInt())).thenReturn(Optional.of(undefinedExpressionEditor));
 
-        doReturn(session).when(sessionManager).getCurrentSession();
-        doReturn(canvasHandler).when(session).getCanvasHandler();
-        doReturn(graphContext).when(canvasHandler).getGraphExecutionContext();
+        when(sessionManager.getCurrentSession()).thenReturn(session);
+        when(session.getCanvasHandler()).thenReturn(canvasHandler);
+        when(canvasHandler.getGraphExecutionContext()).thenReturn(graphContext);
 
         final Decision decision = new Decision();
         decision.setName(new Name("name"));
@@ -368,10 +367,10 @@ public class InvocationGridTest {
     }
 
     private void setupGrid(final int nesting) {
+        this.hasExpression.setExpression(expression.get());
         this.grid = spy((InvocationGrid) definition.getEditor(parent,
                                                               nesting == 0 ? Optional.of(NODE_UUID) : Optional.empty(),
                                                               hasExpression,
-                                                              expression,
                                                               hasName,
                                                               nesting).get());
 
@@ -404,6 +403,34 @@ public class InvocationGridTest {
         final ExpressionCellValue dcv0 = (ExpressionCellValue) uiModel.getCell(0, 2).getValue();
         assertEquals(undefinedExpressionEditor,
                      dcv0.getValue().get());
+    }
+
+    @Test
+    public void testInitialColumnWidthsFromDefinition() {
+        setupGrid(0);
+
+        assertComponentWidths(50.0,
+                              DMNGridColumn.DEFAULT_WIDTH,
+                              UndefinedExpressionColumn.DEFAULT_WIDTH);
+    }
+
+    @Test
+    public void testInitialColumnWidthsFromExpression() {
+        final List<Double> componentWidths = expression.get().getComponentWidths();
+        componentWidths.set(0, 100.0);
+        componentWidths.set(1, 200.0);
+        componentWidths.set(2, 300.0);
+
+        setupGrid(0);
+
+        assertComponentWidths(100.0,
+                              200.0,
+                              300.0);
+    }
+
+    private void assertComponentWidths(final double... widths) {
+        final GridData uiModel = grid.getModel();
+        IntStream.range(0, widths.length).forEach(i -> assertEquals(widths[i], uiModel.getColumns().get(i).getWidth(), 0.0));
     }
 
     @Test

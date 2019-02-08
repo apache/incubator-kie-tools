@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.IntStream;
 
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Transform;
@@ -44,6 +45,7 @@ import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.A
 import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.AddRelationRowCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.DeleteRelationColumnCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.DeleteRelationRowCommand;
+import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.dmn.client.commands.general.DeleteCellValueCommand;
 import org.kie.workbench.common.dmn.client.commands.general.DeleteHasNameCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetCellValueCommand;
@@ -58,6 +60,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextArea
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellValueTuple;
@@ -67,7 +70,6 @@ import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasGraphCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
-import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -98,7 +100,6 @@ import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
@@ -185,7 +186,7 @@ public class RelationGridTest {
     private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
 
     @Mock
-    private CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
+    private DefaultCanvasCommandFactory canvasCommandFactory;
 
     @Mock
     private CellEditorControlsView.Presenter cellEditorControls;
@@ -271,9 +272,9 @@ public class RelationGridTest {
         expression = definition.getModelClass();
         definition.enrich(Optional.empty(), hasExpression, expression);
 
-        doReturn(canvasHandler).when(session).getCanvasHandler();
-        doReturn(parentGridData).when(parentGridWidget).getModel();
-        doReturn(Collections.singletonList(parentGridColumn)).when(parentGridData).getColumns();
+        when(session.getCanvasHandler()).thenReturn(canvasHandler);
+        when(parentGridWidget.getModel()).thenReturn(parentGridData);
+        when(parentGridData.getColumns()).thenReturn(Collections.singletonList(parentGridColumn));
 
         parent = spy(new GridCellTuple(0, 0, parentGridWidget));
 
@@ -293,10 +294,10 @@ public class RelationGridTest {
     }
 
     private void setupGrid(final int nesting) {
+        this.hasExpression.setExpression(expression.get());
         this.grid = spy((RelationGrid) definition.getEditor(parent,
                                                             nesting == 0 ? Optional.of(NODE_UUID) : Optional.empty(),
                                                             hasExpression,
-                                                            expression,
                                                             hasName,
                                                             nesting).get());
     }
@@ -377,6 +378,31 @@ public class RelationGridTest {
 
         assertThat(uiModel.getCell(0, 0).getValue().getValue()).isEqualTo(1);
         assertThat(uiModel.getCell(0, 1).getValue().getValue()).isEqualTo("");
+    }
+
+    @Test
+    public void testInitialColumnWidthsFromDefinition() {
+        setupGrid(0);
+
+        assertComponentWidths(50.0,
+                              DMNGridColumn.DEFAULT_WIDTH);
+    }
+
+    @Test
+    public void testInitialColumnWidthsFromExpression() {
+        final java.util.List<Double> componentWidths = expression.get().getComponentWidths();
+        componentWidths.set(0, 200.0);
+        componentWidths.set(1, 300.0);
+
+        setupGrid(0);
+
+        assertComponentWidths(200.0,
+                              300.0);
+    }
+
+    private void assertComponentWidths(final double... widths) {
+        final GridData uiModel = grid.getModel();
+        IntStream.range(0, widths.length).forEach(i -> assertEquals(widths[i], uiModel.getColumns().get(i).getWidth(), 0.0));
     }
 
     @Test

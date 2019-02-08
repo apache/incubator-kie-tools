@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.client.commands.expressions.types.relation;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.stream.Collectors;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.List;
@@ -104,6 +105,10 @@ public class MoveColumnsCommand extends AbstractCanvasGraphCommand implements Ve
                                          relativeOldIndex,
                                          relation.getColumn(),
                                          informationItemIndexesToMove);
+                    CommandUtils.moveComponentWidths(Relation.STATIC_COLUMNS + relativeIndex,
+                                                     Relation.STATIC_COLUMNS + relativeOldIndex,
+                                                     relation.getComponentWidths(),
+                                                     Collections.singletonList(oldIndex));
 
                     updateRowsData(relativeIndex,
                                    relativeOldIndex,

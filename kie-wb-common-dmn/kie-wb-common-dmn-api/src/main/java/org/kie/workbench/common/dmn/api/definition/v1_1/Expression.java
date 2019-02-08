@@ -17,7 +17,9 @@ package org.kie.workbench.common.dmn.api.definition.v1_1;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
+import org.kie.workbench.common.dmn.api.definition.HasComponentWidths;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
@@ -25,9 +27,12 @@ import org.kie.workbench.common.dmn.api.property.dmn.QName;
 
 import static java.util.Collections.singletonList;
 
-public abstract class Expression extends DMNElement implements HasTypeRef {
+public abstract class Expression extends DMNElement implements HasTypeRef,
+                                                               HasComponentWidths {
 
     protected QName typeRef;
+
+    protected java.util.List<Double> componentWidths = new ArrayList<>();
 
     public Expression() {
     }
@@ -52,6 +57,16 @@ public abstract class Expression extends DMNElement implements HasTypeRef {
     @Override
     public void setTypeRef(final QName typeRef) {
         this.typeRef = typeRef;
+    }
+
+    @Override
+    public java.util.List<Double> getComponentWidths() {
+        final int requiredComponentWidthCount = getRequiredComponentWidthCount();
+        if (componentWidths.size() != requiredComponentWidthCount) {
+            componentWidths = new ArrayList<>(requiredComponentWidthCount);
+            IntStream.range(0, requiredComponentWidthCount).forEach(i -> componentWidths.add(null));
+        }
+        return componentWidths;
     }
 
     @Override

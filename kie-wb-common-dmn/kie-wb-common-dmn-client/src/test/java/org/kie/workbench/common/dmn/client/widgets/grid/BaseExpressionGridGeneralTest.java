@@ -33,9 +33,9 @@ import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.NOPDomainObject;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
-import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.dmn.client.commands.factory.canvas.SetComponentWidthCommand;
 import org.kie.workbench.common.dmn.client.commands.general.DeleteHasNameCommand;
 import org.kie.workbench.common.dmn.client.commands.general.DeleteHeaderValueCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetHasNameCommand;
@@ -192,14 +192,11 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
     @Override
     @SuppressWarnings("unchecked")
     public BaseExpressionGrid getGrid() {
-        final HasExpression hasExpression = mock(HasExpression.class);
-        final Optional<LiteralExpression> expression = Optional.of(mock(LiteralExpression.class));
         final Optional<HasName> hasName = Optional.of(decision);
 
         return new BaseExpressionGrid(parentCell,
                                       Optional.empty(),
-                                      hasExpression,
-                                      expression,
+                                      HasExpression.NOP,
                                       hasName,
                                       gridPanel,
                                       gridLayer,
@@ -858,6 +855,20 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
         command.execute(canvasHandler);
     }
 
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testRegisterColumnResizeCompleted() {
+        final DMNGridColumn uiColumn = mockColumn(200.0, grid);
+
+        grid.registerColumnResizeCompleted(uiColumn, 100.0);
+
+        verify(sessionCommandManager).execute(eq(canvasHandler),
+                                              commandCaptor.capture());
+
+        final Command command = commandCaptor.getValue();
+        assertThat(command).isInstanceOf(SetComponentWidthCommand.class);
+    }
+
     /*
      * Test that parent column width is updated to sum of nested columns
      * The update is forced from nested column at position indexOfColumnToUpdate
@@ -868,12 +879,14 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
         // parent column
         final BaseExpressionGrid parentGrid = mock(BaseExpressionGrid.class);
         final GridData parentGridData = mock(GridData.class);
-        final DMNGridColumn parentColumn = mockColumn(100, null);
-        doReturn(parentGrid).when(parentCell).getGridWidget();
-        doReturn(parentGridData).when(parentGrid).getModel();
-        doReturn(Collections.singletonList(parentColumn)).when(parentGridData).getColumns();
-        doReturn(Collections.singleton(parentGrid)).when(gridLayer).getGridWidgets();
-        doReturn(widthsOfNestedColumns.length).when(parentGridData).getColumnCount();
+        when(parentGrid.getModel()).thenReturn(parentGridData);
+        when(parentGrid.getExpression()).thenReturn(Optional::empty);
+
+        final DMNGridColumn parentColumn = mockColumn(100, parentGrid);
+        when(parentCell.getGridWidget()).thenReturn(parentGrid);
+        when(parentGridData.getColumns()).thenReturn(Collections.singletonList(parentColumn));
+        when(parentGridData.getColumnCount()).thenReturn(widthsOfNestedColumns.length);
+        when(gridLayer.getGridWidgets()).thenReturn(Collections.singleton(parentGrid));
 
         // nested columns
         final List<DMNGridColumn> columns = Arrays.stream(widthsOfNestedColumns)
@@ -929,11 +942,12 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
 
     @SuppressWarnings("unchecked")
     private DMNGridColumn mockColumn(final double width,
-                                     final GridWidget gridWidget) {
+                                     final BaseGrid gridWidget) {
         final GridColumn.HeaderMetaData headerMetaData = mock(GridColumn.HeaderMetaData.class);
         final GridColumnRenderer columnRenderer = mock(GridColumnRenderer.class);
         return new DMNGridColumn(headerMetaData,
                                  columnRenderer,
+                                 width,
                                  gridWidget) {{
             setWidth(width);
         }};

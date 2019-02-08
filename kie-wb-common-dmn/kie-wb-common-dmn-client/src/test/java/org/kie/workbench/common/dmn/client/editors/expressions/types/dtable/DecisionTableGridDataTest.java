@@ -18,6 +18,7 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.dtable;
 
 import java.util.Collections;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
@@ -70,7 +71,7 @@ public class DecisionTableGridDataTest {
 
     private DecisionTableGridData uiModel;
 
-    private Optional<DecisionTable> expression = Optional.of(new DecisionTable());
+    private Supplier<Optional<DecisionTable>> expression = () -> Optional.of(new DecisionTable());
 
     @Before
     public void setup() {

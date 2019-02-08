@@ -19,9 +19,11 @@ package org.kie.workbench.common.dmn.client.commands.general;
 import java.util.Optional;
 
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
+import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionContainerUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCache;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasCommand;
@@ -29,12 +31,13 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultB
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
+import org.uberfire.ext.wires.core.grids.client.model.GridData;
 
 public class ClearExpressionTypeCommand extends BaseClearExpressionCommand {
 
     private final String nodeUUID;
     private final ExpressionGridCache expressionGridCache;
-    private final Optional<BaseExpressionGrid> oldExpressionGrid;
+    private final Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>> oldExpressionGrid;
 
     public ClearExpressionTypeCommand(final GridCellTuple cellTuple,
                                       final String nodeUUID,

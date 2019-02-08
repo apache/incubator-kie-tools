@@ -19,12 +19,15 @@ package org.kie.workbench.common.dmn.client.commands.expressions.types.undefined
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import org.kie.workbench.common.dmn.api.definition.HasExpression;
+import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.client.commands.VetoExecutionCommand;
 import org.kie.workbench.common.dmn.client.commands.VetoUndoCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
+import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCache;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellValueTuple;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.UIModelMapper;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasGraphCommand;
@@ -38,34 +41,44 @@ import org.kie.workbench.common.stunner.core.graph.command.impl.AbstractGraphCom
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
+import org.uberfire.mvp.ParameterizedCommand;
 
 import static org.kie.workbench.common.dmn.client.commands.util.CommandUtils.extractGridCellValue;
 
 public class SetCellValueCommand extends AbstractCanvasGraphCommand implements VetoExecutionCommand,
                                                                                VetoUndoCommand {
 
-    private final GridCellValueTuple<ExpressionCellValue> cellTuple;
+    private final GridCellTuple cellTuple;
     private final Optional<String> nodeUUID;
-    private final Supplier<UIModelMapper> uiModelMapper;
+    private final HasExpression hasExpression;
+    private final Supplier<Optional<Expression>> expression;
     private final ExpressionGridCache expressionGridCache;
-    private final org.uberfire.mvp.Command executeCanvasOperation;
+    private final ParameterizedCommand<Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>>> executeCanvasOperation;
     private final org.uberfire.mvp.Command undoCanvasOperation;
+    private final Supplier<Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>>> editorSupplier;
 
+    private Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>> editor = Optional.empty();
+    private final Optional<Expression> oldExpression;
     private final Optional<GridCellValue<?>> oldCellValue;
 
-    public SetCellValueCommand(final GridCellValueTuple<ExpressionCellValue> cellTuple,
+    public SetCellValueCommand(final GridCellTuple cellTuple,
                                final Optional<String> nodeUUID,
-                               final Supplier<UIModelMapper> uiModelMapper,
+                               final HasExpression hasExpression,
+                               final Supplier<Optional<Expression>> expression,
                                final ExpressionGridCache expressionGridCache,
-                               final org.uberfire.mvp.Command executeCanvasOperation,
-                               final org.uberfire.mvp.Command undoCanvasOperation) {
+                               final ParameterizedCommand<Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>>> executeCanvasOperation,
+                               final org.uberfire.mvp.Command undoCanvasOperation,
+                               final Supplier<Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>>> editorSupplier) {
         this.cellTuple = cellTuple;
         this.nodeUUID = nodeUUID;
-        this.uiModelMapper = uiModelMapper;
+        this.hasExpression = hasExpression;
+        this.expression = expression;
         this.expressionGridCache = expressionGridCache;
         this.executeCanvasOperation = executeCanvasOperation;
         this.undoCanvasOperation = undoCanvasOperation;
+        this.editorSupplier = editorSupplier;
 
+        this.oldExpression = Optional.ofNullable(hasExpression.getExpression());
         this.oldCellValue = extractGridCellValue(cellTuple);
     }
 
@@ -80,22 +93,18 @@ public class SetCellValueCommand extends AbstractCanvasGraphCommand implements V
             @Override
             @SuppressWarnings("unchecked")
             public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext context) {
-                uiModelMapper.get().toDMNModel(cellTuple.getRowIndex(),
-                                               cellTuple.getColumnIndex(),
-                                               () -> Optional.of(cellTuple.getValue()));
-
-                // The parent of the Expression represented by the ExpressionCellValue
-                // is set by UndefinedExpressionUIModelMapper instead of this Command
-                // for simplicity.
+                expression.get().ifPresent(e -> {
+                    hasExpression.setExpression(e);
+                    e.setParent(hasExpression.asDMNModelInstrumentedBase());
+                });
 
                 return GraphCommandResultBuilder.SUCCESS;
             }
 
             @Override
             public CommandResult<RuleViolation> undo(final GraphCommandExecutionContext context) {
-                uiModelMapper.get().toDMNModel(cellTuple.getRowIndex(),
-                                               cellTuple.getColumnIndex(),
-                                               () -> oldCellValue);
+                hasExpression.setExpression(oldExpression.orElse(null));
+
                 return GraphCommandResultBuilder.SUCCESS;
             }
         };
@@ -106,14 +115,19 @@ public class SetCellValueCommand extends AbstractCanvasGraphCommand implements V
         return new AbstractCanvasCommand() {
             @Override
             public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
-                nodeUUID.ifPresent(uuid -> expressionGridCache.putExpressionGrid(uuid, cellTuple.getValue().getValue()));
+                if (!editor.isPresent()) {
+                    editor = editorSupplier.get();
+                }
 
+                nodeUUID.ifPresent(uuid -> expressionGridCache.putExpressionGrid(uuid, editor));
+
+                final ExpressionCellValue value = new ExpressionCellValue(editor);
                 final GridData gridData = cellTuple.getGridWidget().getModel();
                 gridData.setCellValue(cellTuple.getRowIndex(),
                                       cellTuple.getColumnIndex(),
-                                      cellTuple.getValue());
+                                      value);
 
-                executeCanvasOperation.execute();
+                executeCanvasOperation.execute(editor);
 
                 return CanvasCommandResultBuilder.SUCCESS;
             }

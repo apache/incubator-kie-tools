@@ -29,6 +29,8 @@ import static org.kie.workbench.common.dmn.api.definition.v1_1.common.HasTypeRef
 @Portable
 public class List extends Expression {
 
+    private static final int STATIC_COLUMNS = 1;
+
     private java.util.List<Expression> expression;
 
     public List() {
@@ -66,6 +68,11 @@ public class List extends Expression {
     }
 
     @Override
+    public int getRequiredComponentWidthCount() {
+        return getExpression().size() + STATIC_COLUMNS;
+    }
+
+    @Override
     public boolean equals(final Object o) {
         if (this == o) {
             return true;
@@ -85,6 +92,9 @@ public class List extends Expression {
         if (typeRef != null ? !typeRef.equals(that.typeRef) : that.typeRef != null) {
             return false;
         }
+        if (componentWidths != null ? !componentWidths.equals(that.componentWidths) : that.componentWidths != null) {
+            return false;
+        }
         return expression != null ? expression.equals(that.expression) : that.expression == null;
     }
 
@@ -93,6 +103,7 @@ public class List extends Expression {
         return HashUtil.combineHashCodes(id != null ? id.hashCode() : 0,
                                          description != null ? description.hashCode() : 0,
                                          typeRef != null ? typeRef.hashCode() : 0,
+                                         componentWidths != null ? componentWidths.hashCode() : 0,
                                          expression != null ? expression.hashCode() : 0);
     }
 }

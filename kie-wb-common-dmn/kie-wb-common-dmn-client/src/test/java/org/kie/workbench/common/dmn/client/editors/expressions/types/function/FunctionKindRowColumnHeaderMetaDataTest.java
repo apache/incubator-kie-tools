@@ -34,7 +34,7 @@ public class FunctionKindRowColumnHeaderMetaDataTest {
 
     private FunctionDefinition function;
 
-    private Supplier<FunctionDefinition> functionSupplier;
+    private Supplier<Optional<FunctionDefinition>> functionSupplier;
 
     @Mock
     private CellEditorControlsView.Presenter cellEditorControls;
@@ -51,7 +51,7 @@ public class FunctionKindRowColumnHeaderMetaDataTest {
     @Before
     public void setup() {
         this.function = new FunctionDefinition();
-        this.functionSupplier = () -> function;
+        this.functionSupplier = () -> Optional.ofNullable(function);
 
         this.functionKindRow = new FunctionKindRowColumnHeaderMetaData(functionSupplier,
                                                                        cellEditorControls,
@@ -62,7 +62,7 @@ public class FunctionKindRowColumnHeaderMetaDataTest {
 
     @Test
     public void testGetTitle() {
-        final String expected = functionSupplier.get().getKind().code();
+        final String expected = functionSupplier.get().get().getKind().code();
         assertEquals(expected, functionKindRow.getTitle());
     }
 }

@@ -24,6 +24,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.mocks.MockHasDOME
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.BaseDOMElementSingletonColumnTest;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.dom.TextAreaDOMElement;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.mockito.Mock;
 
 import static org.mockito.Mockito.mock;
@@ -65,6 +66,7 @@ public class InputClauseColumnTest extends BaseDOMElementSingletonColumnTest<Tex
     protected InputClauseColumn getColumn() {
         return new InputClauseColumn(headerMetaData,
                                      factory,
+                                     DMNGridColumn.DEFAULT_WIDTH,
                                      gridWidget);
     }
 

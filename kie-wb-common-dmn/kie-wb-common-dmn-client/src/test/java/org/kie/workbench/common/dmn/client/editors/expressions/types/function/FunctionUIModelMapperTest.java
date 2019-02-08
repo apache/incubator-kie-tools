@@ -49,8 +49,8 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FunctionUIModelMapperTest {
@@ -104,36 +104,34 @@ public class FunctionUIModelMapperTest {
         this.uiModel.appendRow(new BaseGridRow());
         this.uiModel.appendRow(new BaseGridRow());
         this.uiModel.appendColumn(uiExpressionEditorColumn);
-        doReturn(0).when(uiExpressionEditorColumn).getIndex();
-        doReturn(uiModel).when(gridWidget).getModel();
+        when(uiExpressionEditorColumn.getIndex()).thenReturn(0);
+        when(gridWidget.getModel()).thenReturn(uiModel);
 
         //Core Editor definitions
         final ExpressionEditorDefinitions expressionEditorDefinitions = new ExpressionEditorDefinitions();
         expressionEditorDefinitions.add(literalExpressionEditorDefinition);
 
-        doReturn(expressionEditorDefinitions).when(expressionEditorDefinitionsSupplier).get();
-        doReturn(Optional.of(literalExpression)).when(literalExpressionEditorDefinition).getModelClass();
-        doReturn(Optional.of(literalExpression)).when(literalExpressionEditor).getExpression();
-        doReturn(Optional.of(literalExpressionEditor)).when(literalExpressionEditorDefinition).getEditor(any(GridCellTuple.class),
-                                                                                                         any(Optional.class),
-                                                                                                         any(HasExpression.class),
-                                                                                                         any(Optional.class),
-                                                                                                         any(Optional.class),
-                                                                                                         anyInt());
+        when(expressionEditorDefinitionsSupplier.get()).thenReturn(expressionEditorDefinitions);
+        when(literalExpressionEditorDefinition.getModelClass()).thenReturn(Optional.of(literalExpression));
+        when(literalExpressionEditor.getExpression()).thenReturn(() -> Optional.of(literalExpression));
+        when(literalExpressionEditorDefinition.getEditor(any(GridCellTuple.class),
+                                                         any(Optional.class),
+                                                         any(HasExpression.class),
+                                                         any(Optional.class),
+                                                         anyInt())).thenReturn(Optional.of(literalExpressionEditor));
 
         //Supplementary Editor definitions
         final ExpressionEditorDefinitions supplementaryEditorDefinitions = new ExpressionEditorDefinitions();
         supplementaryEditorDefinitions.add(supplementaryEditorDefinition);
 
-        doReturn(supplementaryEditorDefinitions).when(supplementaryEditorDefinitionsSupplier).get();
-        doReturn(Optional.of(context)).when(supplementaryEditorDefinition).getModelClass();
-        doReturn(Optional.of(context)).when(supplementaryEditor).getExpression();
-        doReturn(Optional.of(supplementaryEditor)).when(supplementaryEditorDefinition).getEditor(any(GridCellTuple.class),
-                                                                                                 any(Optional.class),
-                                                                                                 any(HasExpression.class),
-                                                                                                 any(Optional.class),
-                                                                                                 any(Optional.class),
-                                                                                                 anyInt());
+        when(supplementaryEditorDefinitionsSupplier.get()).thenReturn(supplementaryEditorDefinitions);
+        when(supplementaryEditorDefinition.getModelClass()).thenReturn(Optional.of(context));
+        when(supplementaryEditor.getExpression()).thenReturn(() -> Optional.of(context));
+        when(supplementaryEditorDefinition.getEditor(any(GridCellTuple.class),
+                                                     any(Optional.class),
+                                                     any(HasExpression.class),
+                                                     any(Optional.class),
+                                                     anyInt())).thenReturn(Optional.of(supplementaryEditor));
 
         this.function = new FunctionDefinition();
 
@@ -191,7 +189,6 @@ public class FunctionUIModelMapperTest {
         verify(definition).getEditor(parentCaptor.capture(),
                                      eq(Optional.empty()),
                                      eq(function),
-                                     eq(Optional.ofNullable(function.getExpression())),
                                      eq(Optional.empty()),
                                      eq(1));
         final GridCellTuple parent = parentCaptor.getValue();

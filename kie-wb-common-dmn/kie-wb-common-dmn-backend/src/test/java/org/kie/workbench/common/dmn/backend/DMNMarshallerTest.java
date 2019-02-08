@@ -34,6 +34,7 @@ import java.util.Optional;
 import java.util.Scanner;
 import java.util.Spliterator;
 import java.util.Spliterators;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -83,6 +84,7 @@ import org.kie.dmn.model.v1_2.TDecision;
 import org.kie.dmn.model.v1_2.TInputData;
 import org.kie.dmn.model.v1_2.TTextAnnotation;
 import org.kie.workbench.common.dmn.api.DMNDefinitionSet;
+import org.kie.workbench.common.dmn.api.definition.HasComponentWidths;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Association;
 import org.kie.workbench.common.dmn.api.definition.v1_1.AuthorityRequirement;
 import org.kie.workbench.common.dmn.api.definition.v1_1.BusinessKnowledgeModel;
@@ -1703,6 +1705,8 @@ public class DMNMarshallerTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testStunnerConstellationButtonCausingPoint2DbeingNull() throws IOException {
+        final BiConsumer<String, HasComponentWidths> hasComponentWidthsConsumer = (uuid, hcw) -> {/*NOP*/};
+
         Diagram diagram = applicationFactoryManager.newDiagram("testDiagram",
                                                                BindableAdapterUtils.getDefinitionSetId(DMNDefinitionSet.class),
                                                                null);
@@ -1710,14 +1714,16 @@ public class DMNMarshallerTest {
         Node diagramRoot = DMNMarshaller.findDMNDiagramRoot(g);
         testAugmentWithNSPrefixes(((DMNDiagram) ((View<?>) diagramRoot.getContent()).getDefinition()).getDefinitions());
 
-        org.kie.dmn.model.api.InputData dmnInputData = (org.kie.dmn.model.api.InputData) new TInputData();
+        org.kie.dmn.model.api.InputData dmnInputData = new TInputData();
         dmnInputData.setId("inputDataID");
         dmnInputData.setName(dmnInputData.getId());
-        Node inputDataNode = new InputDataConverter(applicationFactoryManager).nodeFromDMN(dmnInputData);
-        org.kie.dmn.model.api.Decision dmnDecision = (org.kie.dmn.model.api.Decision) new TDecision();
+        Node inputDataNode = new InputDataConverter(applicationFactoryManager).nodeFromDMN(dmnInputData,
+                                                                                           hasComponentWidthsConsumer);
+        org.kie.dmn.model.api.Decision dmnDecision = new TDecision();
         dmnDecision.setId("decisionID");
         dmnDecision.setName(dmnDecision.getId());
-        Node decisionNode = new DecisionConverter(applicationFactoryManager).nodeFromDMN(dmnDecision);
+        Node decisionNode = new DecisionConverter(applicationFactoryManager).nodeFromDMN(dmnDecision,
+                                                                                         hasComponentWidthsConsumer);
         g.addNode(inputDataNode);
         g.addNode(decisionNode);
         View content = (View) decisionNode.getContent();
@@ -1760,6 +1766,8 @@ public class DMNMarshallerTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testAssociationEdgeDMNDI() throws IOException {
+        final BiConsumer<String, HasComponentWidths> hasComponentWidthsConsumer = (uuid, hcw) -> {/*NOP*/};
+
         Diagram diagram = applicationFactoryManager.newDiagram("testDiagram",
                                                                BindableAdapterUtils.getDefinitionSetId(DMNDefinitionSet.class),
                                                                null);
@@ -1770,10 +1778,12 @@ public class DMNMarshallerTest {
         org.kie.dmn.model.api.InputData dmnInputData = new TInputData();
         dmnInputData.setId("inputDataID");
         dmnInputData.setName(dmnInputData.getId());
-        Node inputDataNode = new InputDataConverter(applicationFactoryManager).nodeFromDMN(dmnInputData);
+        Node inputDataNode = new InputDataConverter(applicationFactoryManager).nodeFromDMN(dmnInputData,
+                                                                                           hasComponentWidthsConsumer);
         org.kie.dmn.model.api.TextAnnotation dmnTextAnnotation = new TTextAnnotation();
         dmnTextAnnotation.setId("textAnnotationID");
-        Node textAnnotationNode = new TextAnnotationConverter(applicationFactoryManager).nodeFromDMN(dmnTextAnnotation);
+        Node textAnnotationNode = new TextAnnotationConverter(applicationFactoryManager).nodeFromDMN(dmnTextAnnotation,
+                                                                                                     hasComponentWidthsConsumer);
         g.addNode(inputDataNode);
         g.addNode(textAnnotationNode);
         View content = (View) textAnnotationNode.getContent();
@@ -1803,6 +1813,30 @@ public class DMNMarshallerTest {
         assertThat(dmnDefinitions.getDMNDI().getDMNDiagram().get(0).getDMNDiagramElement().stream().filter(DMNEdge.class::isInstance).count()).isEqualTo(1);
         DMNEdge dmndiEdge = findEdgeByDMNI(dmnDefinitions.getDMNDI().getDMNDiagram().get(0), associationID);
         assertThat(dmndiEdge.getWaypoint()).hasSize(2);
+    }
+
+    @Test
+    public void test_ExpressionComponentWidthPersistence() throws IOException {
+        roundTripUnmarshalThenMarshalUnmarshal(this.getClass().getResourceAsStream("/DROOLS-2262.dmn"),
+                                               this::checkComponentWidths);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void checkComponentWidths(Graph<?, Node<?, ?>> graph) {
+        final Node<?, ?> node = graph.getNode("_37883BDC-DB54-4925-B539-A0F19B1DDE41");
+        assertThat(node).isNotNull();
+        assertNodeContentDefinitionIs(node, Decision.class);
+
+        final Decision definition = ((View<Decision>) node.getContent()).getDefinition();
+        assertThat(definition.getExpression()).isNotNull();
+
+        final HasComponentWidths expression = definition.getExpression();
+        final List<Double> componentWidths = expression.getComponentWidths();
+        assertThat(componentWidths.size()).isEqualTo(expression.getRequiredComponentWidthCount());
+        assertThat(componentWidths.get(0)).isEqualTo(50.0);
+        assertThat(componentWidths.get(1)).isEqualTo(150.0);
+        assertThat(componentWidths.get(2)).isEqualTo(200.0);
+        assertThat(componentWidths.get(3)).isEqualTo(250.0);
     }
 
     private static void testAugmentWithNSPrefixes(org.kie.workbench.common.dmn.api.definition.v1_1.Definitions definitions) {
@@ -1839,6 +1873,12 @@ public class DMNMarshallerTest {
                                                 final Expression expression) {
         final Node<View, ?> decisionNode = nodeOfDefinition(unmarshalledGraph.nodes().iterator(), Decision.class);
         final Expression decisionNodeExpression = ((Decision) decisionNode.getContent().getDefinition()).getExpression();
+
+        // The process of marshalling an Expression that has been programmatically instantiated (vs created in the UI)
+        // leads to the _source_ Expression ComponentWidths being initialised. Therefore to ensure a like-for-like equality
+        // comparison ensure the unmarshalled _target_ Expression has had it's ComponentWidths initialised too.
+        decisionNodeExpression.getComponentWidths();
+        ((Context) decisionNodeExpression).getContextEntry().get(0).getExpression().getComponentWidths();
         assertThat(decisionNodeExpression).isEqualTo(expression);
     }
 

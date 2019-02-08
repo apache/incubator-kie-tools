@@ -50,7 +50,6 @@ public abstract class NameAndDataTypeHeaderMetaData<E extends Expression> extend
     private final BiConsumer<HasTypeRef, QName> setTypeRefConsumer;
 
     public NameAndDataTypeHeaderMetaData(final HasExpression hasExpression,
-                                         final Optional<E> expression,
                                          final Optional<HasName> hasName,
                                          final Consumer<HasName> clearDisplayNameConsumer,
                                          final BiConsumer<HasName, Name> setDisplayNameConsumer,
@@ -59,7 +58,7 @@ public abstract class NameAndDataTypeHeaderMetaData<E extends Expression> extend
                                          final NameAndDataTypePopoverView.Presenter editor,
                                          final Optional<String> editorTitle) {
         this(hasName,
-             () -> TypeRefUtils.getTypeRefOfExpression(expression.get(), hasExpression),
+             () -> TypeRefUtils.getTypeRefOfExpression(hasExpression.getExpression(), hasExpression),
              clearDisplayNameConsumer,
              setDisplayNameConsumer,
              setTypeRefConsumer,

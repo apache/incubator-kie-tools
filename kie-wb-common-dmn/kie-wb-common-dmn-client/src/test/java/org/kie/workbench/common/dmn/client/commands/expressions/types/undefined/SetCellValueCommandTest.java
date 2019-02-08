@@ -17,17 +17,19 @@
 package org.kie.workbench.common.dmn.client.commands.expressions.types.undefined;
 
 import java.util.Optional;
-import java.util.function.Supplier;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.api.definition.HasExpression;
+import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
+import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.client.commands.VetoExecutionCommand;
 import org.kie.workbench.common.dmn.client.commands.VetoUndoCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCache;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellValueTuple;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
@@ -41,15 +43,14 @@ import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
+import org.uberfire.mvp.ParameterizedCommand;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
@@ -59,9 +60,9 @@ import static org.mockito.Mockito.when;
 public class SetCellValueCommandTest {
 
     private static final int ROW_INDEX = 0;
+
     private static final int COLUMN_INDEX = 0;
-    private static final Optional<BaseExpressionGrid> OLD_CELL_VALUE = Optional.empty();
-    private static final Optional<BaseExpressionGrid> NEW_CELL_VALUE = Optional.of(mock(BaseExpressionGrid.class));
+
     private static final String UUID = "uuid";
 
     @Mock
@@ -74,16 +75,16 @@ public class SetCellValueCommandTest {
     private GridData gridModel;
 
     @Mock
-    private GridCell oldGridCell;
+    private DMNModelInstrumentedBase hasExpressionParent;
 
     @Mock
-    private ExpressionCellValue oldGridCellValue;
+    private HasExpression hasExpression;
 
     @Mock
-    private GridCell newGridCell;
+    private Expression expression;
 
     @Mock
-    private ExpressionCellValue newGridCellValue;
+    private BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper> expressionEditor;
 
     @Mock
     private AbstractCanvasHandler canvasHandler;
@@ -95,117 +96,88 @@ public class SetCellValueCommandTest {
     private ExpressionGridCache expressionGridCache;
 
     @Mock
-    private BaseUIModelMapper<?> uiModelMapper;
-
-    @Mock
-    private org.uberfire.mvp.Command executeCanvasOperation;
+    private ParameterizedCommand<Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>>> executeCanvasOperation;
 
     @Mock
     private org.uberfire.mvp.Command undoCanvasOperation;
 
-    @Captor
-    private ArgumentCaptor<Supplier<Optional<GridCellValue<?>>>> gridCellValueSupplierCaptor;
+    @Mock
+    private Expression oldExpression;
+
+    @Mock
+    private GridCell oldCell;
+
+    @Mock
+    private GridCellValue oldCellValue;
 
     @Captor
-    private ArgumentCaptor<ExpressionCellValue> expressionCellValueCaptor;
+    private ArgumentCaptor<GridCellValue> gridCellValueCaptor;
 
     private SetCellValueCommand command;
 
     @SuppressWarnings("unchecked")
-    public void setup(final GridCell oldGridCell,
-                      final GridCellValue oldGridCellValue,
-                      final Optional<BaseExpressionGrid> oldCellValue,
-                      final Optional<String> uuid) {
-        when(gridModel.getCell(ROW_INDEX,
-                               COLUMN_INDEX)).thenReturn(oldGridCell);
-        if (oldGridCell != null) {
-            when(oldGridCell.getValue()).thenReturn(oldGridCellValue);
-            if (oldGridCellValue != null) {
-                when(oldGridCellValue.getValue()).thenReturn(oldCellValue);
-            }
-        }
-        when(newGridCell.getValue()).thenReturn(newGridCellValue);
-        when(newGridCellValue.getValue()).thenReturn(NEW_CELL_VALUE);
+    public void setup(final Optional<String> uuid) {
         when(gridWidget.getModel()).thenReturn(gridModel);
+        when(hasExpression.asDMNModelInstrumentedBase()).thenReturn(hasExpressionParent);
+        when(oldCell.getValue()).thenReturn(oldCellValue);
 
-        this.command = new SetCellValueCommand(new GridCellValueTuple(ROW_INDEX,
-                                                                      COLUMN_INDEX,
-                                                                      gridWidget,
-                                                                      newGridCellValue),
+        this.command = new SetCellValueCommand(new GridCellTuple(ROW_INDEX,
+                                                                 COLUMN_INDEX,
+                                                                 gridWidget),
                                                uuid,
-                                               () -> uiModelMapper,
+                                               hasExpression,
+                                               () -> Optional.ofNullable(expression),
                                                expressionGridCache,
                                                executeCanvasOperation,
-                                               undoCanvasOperation);
+                                               undoCanvasOperation,
+                                               () -> Optional.of(expressionEditor));
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void checkGraphCommand() {
-        setup(oldGridCell,
-              oldGridCellValue,
-              OLD_CELL_VALUE,
-              Optional.of(UUID));
+        setup(Optional.of(UUID));
         assertEquals(GraphCommandResultBuilder.SUCCESS,
                      command.getGraphCommand(canvasHandler).allow(graphCommandExecutionContext));
-        verify(uiModelMapper,
-               never()).toDMNModel(anyInt(),
-                                   anyInt(),
-                                   any(Supplier.class));
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void executeGraphCommand() {
-        setup(oldGridCell,
-              oldGridCellValue,
-              OLD_CELL_VALUE,
-              Optional.of(UUID));
+        setup(Optional.of(UUID));
         assertEquals(GraphCommandResultBuilder.SUCCESS,
                      command.getGraphCommand(canvasHandler).execute(graphCommandExecutionContext));
 
-        assertGraphMutation(newGridCellValue,
-                            NEW_CELL_VALUE);
+        verify(hasExpression).setExpression(expression);
+        verify(expression).setParent(hasExpressionParent);
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void undoGraphCommand() {
-        setup(oldGridCell,
-              oldGridCellValue,
-              OLD_CELL_VALUE,
-              Optional.of(UUID));
+        setup(Optional.of(UUID));
         assertEquals(GraphCommandResultBuilder.SUCCESS,
                      command.getGraphCommand(canvasHandler).undo(graphCommandExecutionContext));
 
-        assertGraphMutation(oldGridCellValue,
-                            OLD_CELL_VALUE);
+        verify(hasExpression).setExpression(null);
     }
 
-    private void assertGraphMutation(final GridCellValue gridCellValue,
-                                     final Optional<BaseExpressionGrid> value) {
-        verify(uiModelMapper).toDMNModel(eq(ROW_INDEX),
-                                         eq(COLUMN_INDEX),
-                                         gridCellValueSupplierCaptor.capture());
+    @Test
+    public void undoGraphCommandWithNonNullOriginalExpression() {
+        when(hasExpression.getExpression()).thenReturn(oldExpression);
 
-        final Supplier<Optional<GridCellValue<?>>> gridCellValueSupplier = gridCellValueSupplierCaptor.getValue();
-        assertNotNull(gridCellValueSupplier);
+        setup(Optional.of(UUID));
+        assertEquals(GraphCommandResultBuilder.SUCCESS,
+                     command.getGraphCommand(canvasHandler).execute(graphCommandExecutionContext));
+        verify(hasExpression).setExpression(expression);
+        verify(expression).setParent(hasExpressionParent);
 
-        final Optional<GridCellValue<?>> oGridCellValue = gridCellValueSupplier.get();
-        assertTrue(oGridCellValue.isPresent());
+        assertEquals(GraphCommandResultBuilder.SUCCESS,
+                     command.getGraphCommand(canvasHandler).undo(graphCommandExecutionContext));
 
-        assertEquals(gridCellValue,
-                     oGridCellValue.get());
-        assertEquals(value,
-                     oGridCellValue.get().getValue());
+        verify(hasExpression).setExpression(eq(oldExpression));
     }
 
     @Test
     public void allowCanvasCommand() {
-        setup(oldGridCell,
-              oldGridCellValue,
-              OLD_CELL_VALUE,
-              Optional.of(UUID));
+        setup(Optional.of(UUID));
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      command.getCanvasCommand(canvasHandler).allow(canvasHandler));
         verify(gridModel,
@@ -216,131 +188,118 @@ public class SetCellValueCommandTest {
 
     @Test
     public void executeCanvasCommand() {
-        setup(oldGridCell,
-              oldGridCellValue,
-              OLD_CELL_VALUE,
-              Optional.of(UUID));
+        setup(Optional.of(UUID));
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      command.getCanvasCommand(canvasHandler).execute(canvasHandler));
 
-        verify(expressionGridCache).putExpressionGrid(eq(UUID), eq(NEW_CELL_VALUE));
+        verify(expressionGridCache).putExpressionGrid(eq(UUID), eq(Optional.of(expressionEditor)));
 
-        assertCanvasMutation(newGridCellValue,
-                             executeCanvasOperation);
+        assertCanvasMutationOnExecute();
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void executeCanvasCommandWithNestedGrid() {
-        setup(oldGridCell,
-              oldGridCellValue,
-              OLD_CELL_VALUE,
-              Optional.empty());
+        setup(Optional.empty());
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      command.getCanvasCommand(canvasHandler).execute(canvasHandler));
 
         verify(expressionGridCache, never()).putExpressionGrid(anyString(), any(Optional.class));
 
-        assertCanvasMutation(newGridCellValue,
-                             executeCanvasOperation);
+        assertCanvasMutationOnExecute();
     }
 
     @Test
     public void undoCanvasCommand() {
-        setup(oldGridCell,
-              oldGridCellValue,
-              OLD_CELL_VALUE,
-              Optional.of(UUID));
+        setup(Optional.of(UUID));
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      command.getCanvasCommand(canvasHandler).undo(canvasHandler));
 
         verify(expressionGridCache).removeExpressionGrid(eq(UUID));
 
-        assertCanvasMutation(oldGridCellValue,
-                             undoCanvasOperation);
+        assertCanvasMutationOnUndo();
     }
 
     @Test
     public void undoCanvasCommandWithNestedGrid() {
-        setup(oldGridCell,
-              oldGridCellValue,
-              OLD_CELL_VALUE,
-              Optional.empty());
+        setup(Optional.empty());
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      command.getCanvasCommand(canvasHandler).undo(canvasHandler));
 
         verify(expressionGridCache, never()).removeExpressionGrid(anyString());
 
-        assertCanvasMutation(oldGridCellValue,
-                             undoCanvasOperation);
+        assertCanvasMutationOnUndo();
     }
 
     @Test
-    public void executeCanvasCommandThenUndoWithNullOriginalCell() {
-        setup(null,
-              null,
-              null,
-              Optional.of(UUID));
+    @SuppressWarnings("unchecked")
+    public void executeCanvasCommandThenUndoWithNonNullOriginalCell() {
+        when(gridModel.getCell(ROW_INDEX, COLUMN_INDEX)).thenReturn(oldCell);
 
+        setup(Optional.of(UUID));
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      command.getCanvasCommand(canvasHandler).execute(canvasHandler));
 
-        assertCanvasMutation(newGridCellValue,
-                             executeCanvasOperation);
+        assertCanvasMutationOnExecute();
 
         reset(gridModel);
-
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      command.getCanvasCommand(canvasHandler).undo(canvasHandler));
 
-        verify(gridModel).deleteCell(eq(ROW_INDEX),
-                                     eq(COLUMN_INDEX));
-        verify(undoCanvasOperation).execute();
+        assertCanvasMutationOnUndoWithNonNullOriginalCell();
     }
 
     @Test
-    public void executeCanvasCommandThenUndoWithNullOriginalValue() {
-        setup(oldGridCell,
-              null,
-              null,
-              Optional.of(UUID));
+    @SuppressWarnings("unchecked")
+    public void executeCanvasCommandThenUndoWithNonNullOriginalCellWithNestedGrid() {
+        when(gridModel.getCell(ROW_INDEX, COLUMN_INDEX)).thenReturn(oldCell);
 
+        setup(Optional.empty());
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      command.getCanvasCommand(canvasHandler).execute(canvasHandler));
 
-        assertCanvasMutation(newGridCellValue,
-                             executeCanvasOperation);
+        assertCanvasMutationOnExecute();
 
         reset(gridModel);
-
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      command.getCanvasCommand(canvasHandler).undo(canvasHandler));
 
-        verify(gridModel).deleteCell(eq(ROW_INDEX),
-                                     eq(COLUMN_INDEX));
-        verify(undoCanvasOperation).execute();
-    }
-
-    private void assertCanvasMutation(final GridCellValue gridCellValue,
-                                      final org.uberfire.mvp.Command expectedCommand) {
-        verify(gridModel).setCellValue(eq(ROW_INDEX),
-                                       eq(COLUMN_INDEX),
-                                       expressionCellValueCaptor.capture());
-
-        assertEquals(gridCellValue,
-                     expressionCellValueCaptor.getValue());
-
-        verify(expectedCommand).execute();
+        assertCanvasMutationOnUndoWithNonNullOriginalCell();
     }
 
     @Test
     public void checkCommandDefinition() {
-        setup(oldGridCell,
-              oldGridCellValue,
-              OLD_CELL_VALUE,
-              Optional.of(UUID));
+        setup(Optional.of(UUID));
 
         assertTrue(command instanceof VetoExecutionCommand);
         assertTrue(command instanceof VetoUndoCommand);
+    }
+
+    private void assertCanvasMutationOnExecute() {
+        verify(gridModel).setCellValue(eq(ROW_INDEX),
+                                       eq(COLUMN_INDEX),
+                                       gridCellValueCaptor.capture());
+
+        final GridCellValue<?> gcv = gridCellValueCaptor.getValue();
+        assertTrue(gcv instanceof ExpressionCellValue);
+        final ExpressionCellValue ecv = (ExpressionCellValue) gcv;
+        assertEquals(ecv.getValue().get(), expressionEditor);
+
+        verify(executeCanvasOperation).execute(eq(Optional.of(expressionEditor)));
+    }
+
+    private void assertCanvasMutationOnUndo() {
+        verify(gridModel).deleteCell(eq(ROW_INDEX),
+                                     eq(COLUMN_INDEX));
+
+        verify(undoCanvasOperation).execute();
+    }
+
+    private void assertCanvasMutationOnUndoWithNonNullOriginalCell() {
+        verify(gridModel).setCellValue(eq(ROW_INDEX),
+                                       eq(COLUMN_INDEX),
+                                       eq(oldCellValue));
+
+        verify(undoCanvasOperation).execute();
     }
 }

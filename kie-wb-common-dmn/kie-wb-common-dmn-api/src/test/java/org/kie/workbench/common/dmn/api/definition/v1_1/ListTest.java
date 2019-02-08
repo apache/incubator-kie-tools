@@ -18,6 +18,7 @@ package org.kie.workbench.common.dmn.api.definition.v1_1;
 
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,7 +48,6 @@ public class ListTest {
 
     @Test
     public void testGetHasTypeRefs() {
-
         final List<Expression> expression = asList(mock(Expression.class), mock(Expression.class));
         final HasTypeRef hasTypeRef1 = mock(HasTypeRef.class);
         final HasTypeRef hasTypeRef2 = mock(HasTypeRef.class);
@@ -61,5 +61,12 @@ public class ListTest {
         final List<HasTypeRef> expectedHasTypeRefs = asList(list, hasTypeRef1, hasTypeRef2);
 
         assertEquals(expectedHasTypeRefs, actualHasTypeRefs);
+    }
+
+    @Test
+    public void testComponentWidths() {
+        assertEquals(list.getRequiredComponentWidthCount(),
+                     list.getComponentWidths().size());
+        list.getComponentWidths().forEach(Assert::assertNull);
     }
 }

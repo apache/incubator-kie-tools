@@ -26,16 +26,18 @@ import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellE
 
 public class FunctionKindRowColumn extends EmptyColumn {
 
-    public FunctionKindRowColumn(final Supplier<FunctionDefinition> functionSupplier,
+    public FunctionKindRowColumn(final Supplier<Optional<FunctionDefinition>> functionSupplier,
                                  final CellEditorControlsView.Presenter cellEditorControls,
                                  final KindPopoverView.Presenter editor,
                                  final Optional<String> editorTitle,
+                                 final double width,
                                  final FunctionGrid gridWidget) {
         super(Collections.singletonList(new FunctionKindRowColumnHeaderMetaData(functionSupplier,
                                                                                 cellEditorControls,
                                                                                 editor,
                                                                                 editorTitle,
-                                                                                gridWidget)));
+                                                                                gridWidget)),
+              width);
         setMovable(false);
         setResizable(false);
     }

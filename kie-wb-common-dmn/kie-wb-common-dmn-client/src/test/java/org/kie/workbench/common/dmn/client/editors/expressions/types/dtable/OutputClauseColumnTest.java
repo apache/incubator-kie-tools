@@ -27,6 +27,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.mocks.MockHasDOME
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.BaseDOMElementSingletonColumnTest;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.dom.TextAreaDOMElement;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 
@@ -72,6 +73,7 @@ public class OutputClauseColumnTest extends BaseDOMElementSingletonColumnTest<Te
         headerMetaData.add(this.headerMetaData);
         return new OutputClauseColumn(() -> headerMetaData,
                                       factory,
+                                      DMNGridColumn.DEFAULT_WIDTH,
                                       gridWidget);
     }
 

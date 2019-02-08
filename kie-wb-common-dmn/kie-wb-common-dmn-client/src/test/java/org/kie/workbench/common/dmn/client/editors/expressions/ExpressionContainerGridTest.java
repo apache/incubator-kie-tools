@@ -35,19 +35,22 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
+import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.dmn.client.commands.general.ClearExpressionTypeCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetHasNameCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.literal.LiteralExpressionColumn;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.literal.LiteralExpressionGrid;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionGrid;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
-import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCache;
 import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCacheImpl;
+import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
@@ -104,6 +107,8 @@ public class ExpressionContainerGridTest {
 
     private static final double COLUMN_NEW_WIDTH = 300.0;
 
+    private static final double LITERAL_EXPRESSION_EDITOR_PADDING = 10.0;
+
     @Mock
     private CellEditorControlsView.Presenter cellEditorControls;
 
@@ -120,6 +125,9 @@ public class ExpressionContainerGridTest {
     private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
 
     @Mock
+    private DefaultCanvasCommandFactory canvasCommandFactory;
+
+    @Mock
     private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
 
     @Mock
@@ -129,7 +137,7 @@ public class ExpressionContainerGridTest {
     private ExpressionEditorDefinition literalExpressionEditorDefinition;
 
     @Mock
-    private BaseExpressionGrid literalExpressionEditor;
+    private LiteralExpressionGrid literalExpressionEditor;
 
     @Mock
     private UndefinedExpressionEditorDefinition undefinedExpressionEditorDefinition;
@@ -172,6 +180,9 @@ public class ExpressionContainerGridTest {
 
     @Mock
     private CellSelectionManager cellSelectionManager;
+
+    @Mock
+    private TextAreaSingletonDOMElementFactory textAreaSingletonDOMElementFactory;
 
     @Captor
     private ArgumentCaptor<Optional<HasName>> hasNameCaptor;
@@ -219,6 +230,7 @@ public class ExpressionContainerGridTest {
                                                 listSelector,
                                                 sessionManager,
                                                 sessionCommandManager,
+                                                canvasCommandFactory,
                                                 expressionEditorDefinitionsSupplier,
                                                 () -> expressionGridCache,
                                                 onHasExpressionChanged,
@@ -237,40 +249,38 @@ public class ExpressionContainerGridTest {
         expressionEditorDefinitions.add(undefinedExpressionEditorDefinition);
         expressionEditorDefinitions.add(literalExpressionEditorDefinition);
 
-        doReturn(expressionEditorDefinitions).when(expressionEditorDefinitionsSupplier).get();
-        doReturn(true).when(literalExpressionEditor).isCacheable();
-        doReturn(parent).when(literalExpressionEditor).getParentInformation();
-        doReturn(new BaseGridData()).when(literalExpressionEditor).getModel();
-        doReturn(Optional.of(literalExpression)).when(literalExpressionEditorDefinition).getModelClass();
-        doReturn(Optional.of(literalExpressionEditor)).when(literalExpressionEditorDefinition).getEditor(any(GridCellTuple.class),
-                                                                                                         any(Optional.class),
-                                                                                                         any(HasExpression.class),
-                                                                                                         any(Optional.class),
-                                                                                                         any(Optional.class),
-                                                                                                         anyInt());
+        when(expressionEditorDefinitionsSupplier.get()).thenReturn(expressionEditorDefinitions);
+        when(literalExpressionEditor.isCacheable()).thenReturn(true);
+        when(literalExpressionEditor.getParentInformation()).thenReturn(parent);
+        when(literalExpressionEditor.getModel()).thenReturn(new BaseGridData());
+        when(literalExpressionEditorDefinition.getModelClass()).thenReturn(Optional.of(literalExpression));
+        when(literalExpressionEditorDefinition.getEditor(any(GridCellTuple.class),
+                                                         any(Optional.class),
+                                                         any(HasExpression.class),
+                                                         any(Optional.class),
+                                                         anyInt())).thenReturn(Optional.of(literalExpressionEditor));
 
-        doReturn(parent).when(undefinedExpressionEditor).getParentInformation();
-        doReturn(new BaseGridData()).when(undefinedExpressionEditor).getModel();
-        doReturn(Optional.empty()).when(undefinedExpressionEditorDefinition).getModelClass();
-        doReturn(Optional.of(undefinedExpressionEditor)).when(undefinedExpressionEditorDefinition).getEditor(any(GridCellTuple.class),
-                                                                                                             any(Optional.class),
-                                                                                                             any(HasExpression.class),
-                                                                                                             any(Optional.class),
-                                                                                                             any(Optional.class),
-                                                                                                             anyInt());
+        when(undefinedExpressionEditor.getParentInformation()).thenReturn(parent);
+        when(undefinedExpressionEditor.getModel()).thenReturn(new BaseGridData());
+        when(undefinedExpressionEditorDefinition.getModelClass()).thenReturn(Optional.empty());
+        when(undefinedExpressionEditorDefinition.getEditor(any(GridCellTuple.class),
+                                                           any(Optional.class),
+                                                           any(HasExpression.class),
+                                                           any(Optional.class),
+                                                           anyInt())).thenReturn(Optional.of(undefinedExpressionEditor));
 
-        doReturn(session).when(sessionManager).getCurrentSession();
-        doReturn(canvasHandler).when(session).getCanvasHandler();
-        doReturn(graphExecutionContext).when(canvasHandler).getGraphExecutionContext();
+        when(sessionManager.getCurrentSession()).thenReturn(session);
+        when(session.getCanvasHandler()).thenReturn(canvasHandler);
+        when(canvasHandler.getGraphExecutionContext()).thenReturn(graphExecutionContext);
         doReturn(mock(Bounds.class)).when(gridLayer).getVisibleBounds();
 
         when(canvasHandler.getDiagram()).thenReturn(diagram);
         when(diagram.getGraph()).thenReturn(graph);
         when(graph.nodes()).thenReturn(Collections.singletonList(node));
 
-        doReturn(grid).when(parent).getGridWidget();
-        doReturn(0).when(parent).getRowIndex();
-        doReturn(0).when(parent).getColumnIndex();
+        when(parent.getGridWidget()).thenReturn(grid);
+        when(parent.getRowIndex()).thenReturn(0);
+        when(parent.getColumnIndex()).thenReturn(0);
 
         doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).format(anyString());
     }
@@ -333,6 +343,28 @@ public class ExpressionContainerGridTest {
 
         verify(literalExpressionEditor).selectFirstCell();
         verify(gridLayer).batch();
+    }
+
+    @Test
+    public void testResizeContainerCorrectlyResizesExpressionComponentWidth() {
+        final BaseGridData literalExpressionModel = new BaseGridData();
+        final DMNGridColumn literalExpressionEditorColumn = new LiteralExpressionColumn(Collections.emptyList(),
+                                                                                        textAreaSingletonDOMElementFactory,
+                                                                                        DMNGridColumn.DEFAULT_WIDTH,
+                                                                                        literalExpressionEditor);
+        literalExpressionModel.appendColumn(literalExpressionEditorColumn);
+
+        when(literalExpressionEditor.getExpression()).thenReturn(() -> Optional.of(literalExpression));
+        when(literalExpressionEditor.getModel()).thenReturn(literalExpressionModel);
+        when(literalExpressionEditor.getPadding()).thenReturn(LITERAL_EXPRESSION_EDITOR_PADDING);
+        when(hasExpression.getExpression()).thenReturn(literalExpression);
+
+        grid.setExpression(NODE_UUID,
+                           hasExpression,
+                           Optional.of(hasName));
+        grid.getModel().getColumns().get(0).setWidth(COLUMN_NEW_WIDTH);
+
+        assertThat(literalExpression.getComponentWidths().get(0)).isEqualTo(COLUMN_NEW_WIDTH - LITERAL_EXPRESSION_EDITOR_PADDING * 2);
     }
 
     @Test

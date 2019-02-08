@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.relation;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import org.kie.soup.commons.util.Lists;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Relation;
@@ -37,13 +38,13 @@ public class RelationGridData extends DelegatingGridData {
 
     private final SessionManager sessionManager;
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
-    private final Optional<Relation> expression;
+    private final Supplier<Optional<Relation>> expression;
     private final Command canvasOperation;
 
     public RelationGridData(final DMNGridData delegate,
                             final SessionManager sessionManager,
                             final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                            final Optional<Relation> expression,
+                            final Supplier<Optional<Relation>> expression,
                             final Command canvasOperation) {
         super(delegate);
         this.sessionManager = sessionManager;
@@ -64,12 +65,12 @@ public class RelationGridData extends DelegatingGridData {
     @Override
     public void moveRowsTo(final int index,
                            final List<GridRow> rows) {
-        expression.ifPresent(relation -> sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
-                                                                       new MoveRowsCommand(relation,
-                                                                                           delegate,
-                                                                                           index,
-                                                                                           rows,
-                                                                                           canvasOperation)));
+        expression.get().ifPresent(relation -> sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
+                                                                             new MoveRowsCommand(relation,
+                                                                                                 delegate,
+                                                                                                 index,
+                                                                                                 rows,
+                                                                                                 canvasOperation)));
     }
 
     @Override
@@ -85,12 +86,12 @@ public class RelationGridData extends DelegatingGridData {
     @Override
     public void moveColumnsTo(final int index,
                               final List<GridColumn<?>> columns) {
-        expression.ifPresent(relation -> sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
-                                                                       new MoveColumnsCommand(relation,
-                                                                                              delegate,
-                                                                                              index,
-                                                                                              columns,
-                                                                                              canvasOperation)));
+        expression.get().ifPresent(relation -> sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
+                                                                             new MoveColumnsCommand(relation,
+                                                                                                    delegate,
+                                                                                                    index,
+                                                                                                    columns,
+                                                                                                    canvasOperation)));
     }
 
     @Override
@@ -114,10 +115,20 @@ public class RelationGridData extends DelegatingGridData {
     }
 
     private void assertResizableColumns() {
-        final int lastColumnIndex = getColumnCount() - 1;
-        for (int columnIndex = 0; columnIndex < getColumnCount(); columnIndex++) {
-            final GridColumn<?> uiColumn = getColumns().get(columnIndex);
-            uiColumn.setResizable(columnIndex != lastColumnIndex);
+        final int columnCount = getColumnCount();
+        final List<GridColumn<?>> gridColumns = getColumns();
+        if (columnCount > 0) {
+            gridColumns.get(0).setResizable(false);
+            if (columnCount > 1) {
+                final int lastColumnIndex = columnCount - 1;
+                gridColumns.get(lastColumnIndex).setResizable(false);
+                if (columnCount > 2) {
+                    for (int columnIndex = 1; columnIndex < lastColumnIndex; columnIndex++) {
+                        final GridColumn<?> uiColumn = gridColumns.get(columnIndex);
+                        uiColumn.setResizable(true);
+                    }
+                }
+            }
         }
     }
 }

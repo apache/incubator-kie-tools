@@ -16,15 +16,22 @@
 
 package org.kie.workbench.common.dmn.backend.definition.v1_1;
 
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+
+import org.kie.workbench.common.dmn.api.definition.HasComponentWidths;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ContextEntry;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
+import org.kie.workbench.common.dmn.backend.definition.v1_1.dd.ComponentWidths;
 
 public class ContextEntryPropertyConverter {
 
-    public static ContextEntry wbFromDMN(final org.kie.dmn.model.api.ContextEntry dmn) {
+    public static ContextEntry wbFromDMN(final org.kie.dmn.model.api.ContextEntry dmn,
+                                         final BiConsumer<String, HasComponentWidths> hasComponentWidthsConsumer) {
         InformationItem variable = InformationItemPropertyConverter.wbFromDMN(dmn.getVariable());
-        Expression expression = ExpressionPropertyConverter.wbFromDMN(dmn.getExpression());
+        Expression expression = ExpressionPropertyConverter.wbFromDMN(dmn.getExpression(),
+                                                                      hasComponentWidthsConsumer);
 
         ContextEntry result = new ContextEntry();
         if (variable != null) {
@@ -38,14 +45,16 @@ public class ContextEntryPropertyConverter {
         return result;
     }
 
-    public static org.kie.dmn.model.api.ContextEntry dmnFromWB(final ContextEntry wb) {
+    public static org.kie.dmn.model.api.ContextEntry dmnFromWB(final ContextEntry wb,
+                                                               final Consumer<ComponentWidths> componentWidthsConsumer) {
         org.kie.dmn.model.api.ContextEntry result = new org.kie.dmn.model.v1_2.TContextEntry();
 
         org.kie.dmn.model.api.InformationItem variable = InformationItemPropertyConverter.dmnFromWB(wb.getVariable());
         if (variable != null) {
             variable.setParent(result);
         }
-        org.kie.dmn.model.api.Expression expression = ExpressionPropertyConverter.dmnFromWB(wb.getExpression());
+        org.kie.dmn.model.api.Expression expression = ExpressionPropertyConverter.dmnFromWB(wb.getExpression(),
+                                                                                            componentWidthsConsumer);
         if (expression != null) {
             expression.setParent(result);
         }

@@ -21,11 +21,11 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InputData;
 import org.kie.workbench.common.dmn.api.definition.v1_1.TextAnnotation;
 import org.kie.workbench.common.dmn.api.property.dmn.Text;
+import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.TextPropertyProvider;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.TextPropertyProviderFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
-import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
@@ -45,12 +45,14 @@ import static org.mockito.Mockito.when;
 public class TextAnnotationTextPropertyProviderImplTest {
 
     public static final String NAME_FIELD = "name";
+
     public static final String NAME_VALUE = "text";
+
     @Mock
     private DefinitionUtils definitionUtils;
 
     @Mock
-    private CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
+    private DefaultCanvasCommandFactory canvasCommandFactory;
 
     @Mock
     private Element<? extends Definition> element;

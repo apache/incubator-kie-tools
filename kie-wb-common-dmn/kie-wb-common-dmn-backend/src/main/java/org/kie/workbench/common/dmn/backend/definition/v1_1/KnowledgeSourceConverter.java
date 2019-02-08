@@ -17,7 +17,10 @@
 package org.kie.workbench.common.dmn.backend.definition.v1_1;
 
 import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
+import org.kie.workbench.common.dmn.api.definition.HasComponentWidths;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DRGElement;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InputData;
@@ -30,6 +33,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.KnowledgeSourceType;
 import org.kie.workbench.common.dmn.api.property.dmn.LocationURI;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.font.FontSet;
+import org.kie.workbench.common.dmn.backend.definition.v1_1.dd.ComponentWidths;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -45,7 +49,8 @@ public class KnowledgeSourceConverter implements NodeConverter<org.kie.dmn.model
     }
 
     @Override
-    public Node<View<KnowledgeSource>, ?> nodeFromDMN(final org.kie.dmn.model.api.KnowledgeSource dmn) {
+    public Node<View<KnowledgeSource>, ?> nodeFromDMN(final org.kie.dmn.model.api.KnowledgeSource dmn,
+                                                      final BiConsumer<String, HasComponentWidths> hasComponentWidthsConsumer) {
         @SuppressWarnings("unchecked")
         Node<View<KnowledgeSource>, ?> node = (Node<View<KnowledgeSource>, ?>) factoryManager.newElement(dmn.getId(),
                                                                                                          KnowledgeSource.class).asNode();
@@ -67,7 +72,8 @@ public class KnowledgeSourceConverter implements NodeConverter<org.kie.dmn.model
     }
 
     @Override
-    public org.kie.dmn.model.api.KnowledgeSource dmnFromNode(final Node<View<KnowledgeSource>, ?> node) {
+    public org.kie.dmn.model.api.KnowledgeSource dmnFromNode(final Node<View<KnowledgeSource>, ?> node,
+                                                             final Consumer<ComponentWidths> componentWidthsConsumer) {
         KnowledgeSource source = node.getContent().getDefinition();
         org.kie.dmn.model.api.KnowledgeSource result = new org.kie.dmn.model.v1_2.TKnowledgeSource();
         result.setId(source.getId().getValue());

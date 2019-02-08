@@ -34,6 +34,7 @@ import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.A
 import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.AddRelationRowCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.DeleteRelationColumnCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.DeleteRelationRowCommand;
+import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.dmn.client.editors.expressions.util.SelectionUtils;
 import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
@@ -43,6 +44,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextArea
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.LiteralExpressionGridRow;
@@ -51,7 +53,6 @@ import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
-import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
@@ -75,7 +76,6 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
     public RelationGrid(final GridCellTuple parent,
                         final Optional<String> nodeUUID,
                         final HasExpression hasExpression,
-                        final Optional<Relation> expression,
                         final Optional<HasName> hasName,
                         final DMNGridPanel gridPanel,
                         final DMNGridLayer gridLayer,
@@ -83,7 +83,7 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
                         final DefinitionUtils definitionUtils,
                         final SessionManager sessionManager,
                         final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                        final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
+                        final DefaultCanvasCommandFactory canvasCommandFactory,
                         final Event<ExpressionEditorChanged> editorSelectedEvent,
                         final Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent,
                         final Event<DomainObjectSelectionEvent> domainObjectSelectionEvent,
@@ -95,7 +95,6 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
         super(parent,
               nodeUUID,
               hasExpression,
-              expression,
               hasName,
               gridPanel,
               gridLayer,
@@ -128,24 +127,30 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
     @Override
     public RelationUIModelMapper makeUiModelMapper() {
         return new RelationUIModelMapper(this::getModel,
-                                         () -> expression,
+                                         getExpression(),
                                          listSelector);
     }
 
     @Override
     public void initialiseUiColumns() {
-        expression.ifPresent(e -> {
-            model.appendColumn(new RowNumberColumn());
-            e.getColumn().forEach(ii -> {
-                final GridColumn relationColumn = makeRelationColumn(ii);
+        int uiColumnIndex = 0;
+        final RowNumberColumn rowNumberColumn = new RowNumberColumn();
+        rowNumberColumn.setWidth(getAndSetInitialWidth(uiColumnIndex++, rowNumberColumn.getWidth()));
+
+        if (getExpression().get().isPresent()) {
+            model.appendColumn(rowNumberColumn);
+            final Relation e = getExpression().get().get();
+            for (int index = 0; index < e.getColumn().size(); index++) {
+                final GridColumn relationColumn = makeRelationColumn(uiColumnIndex++, e.getColumn().get(index));
                 model.appendColumn(relationColumn);
-            });
-        });
+            }
+        }
 
         getRenderer().setColumnRenderConstraint((isSelectionLayer, gridColumn) -> true);
     }
 
-    private RelationColumn makeRelationColumn(final InformationItem informationItem) {
+    private RelationColumn makeRelationColumn(final int index,
+                                              final InformationItem informationItem) {
         final RelationColumn relationColumn = new RelationColumn(new RelationColumnHeaderMetaData(informationItem,
                                                                                                   clearDisplayNameConsumer(false),
                                                                                                   setDisplayNameConsumer(false),
@@ -154,6 +159,7 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
                                                                                                   headerEditor,
                                                                                                   Optional.of(translationService.getTranslation(DMNEditorConstants.RelationEditor_EditRelation))),
                                                                  factory,
+                                                                 getAndSetInitialWidth(index, DMNGridColumn.DEFAULT_WIDTH),
                                                                  this);
         return relationColumn;
     }
@@ -164,7 +170,7 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
 
     @Override
     public void initialiseUiModel() {
-        expression.ifPresent(e -> {
+        getExpression().get().ifPresent(e -> {
             e.getRow().forEach(r -> {
                 int columnIndex = 0;
                 model.appendRow(makeRelationRow());
@@ -190,38 +196,38 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
                                              !isMultiColumn && uiColumnIndex > 0,
                                              () -> {
                                                  cellEditorControls.hide();
-                                                 expression.ifPresent(e -> addColumn(uiColumnIndex));
+                                                 getExpression().get().ifPresent(e -> addColumn(uiColumnIndex));
                                              }));
         items.add(ListSelectorTextItem.build(translationService.format(DMNEditorConstants.RelationEditor_InsertColumnRight),
                                              !isMultiColumn && uiColumnIndex > 0,
                                              () -> {
                                                  cellEditorControls.hide();
-                                                 expression.ifPresent(e -> addColumn(uiColumnIndex + 1));
+                                                 getExpression().get().ifPresent(e -> addColumn(uiColumnIndex + 1));
                                              }));
         items.add(ListSelectorTextItem.build(translationService.format(DMNEditorConstants.RelationEditor_DeleteColumn),
                                              !isMultiColumn && model.getColumnCount() - RelationUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT > 1 && uiColumnIndex > 0,
                                              () -> {
                                                  cellEditorControls.hide();
-                                                 expression.ifPresent(e -> deleteColumn(uiColumnIndex));
+                                                 getExpression().get().ifPresent(e -> deleteColumn(uiColumnIndex));
                                              }));
         items.add(new ListSelectorDividerItem());
         items.add(ListSelectorTextItem.build(translationService.format(DMNEditorConstants.RelationEditor_InsertRowAbove),
                                              !isMultiRow,
                                              () -> {
                                                  cellEditorControls.hide();
-                                                 expression.ifPresent(e -> addRow(uiRowIndex));
+                                                 getExpression().get().ifPresent(e -> addRow(uiRowIndex));
                                              }));
         items.add(ListSelectorTextItem.build(translationService.format(DMNEditorConstants.RelationEditor_InsertRowBelow),
                                              !isMultiRow,
                                              () -> {
                                                  cellEditorControls.hide();
-                                                 expression.ifPresent(e -> addRow(uiRowIndex + 1));
+                                                 getExpression().get().ifPresent(e -> addRow(uiRowIndex + 1));
                                              }));
         items.add(ListSelectorTextItem.build(translationService.format(DMNEditorConstants.RelationEditor_DeleteRow),
                                              !isMultiRow && model.getRowCount() > 1,
                                              () -> {
                                                  cellEditorControls.hide();
-                                                 expression.ifPresent(e -> deleteRow(uiRowIndex));
+                                                 getExpression().get().ifPresent(e -> deleteRow(uiRowIndex));
                                              }));
         return items;
     }
@@ -233,16 +239,15 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
     }
 
     void addColumn(final int index) {
-        expression.ifPresent(relation -> {
+        getExpression().get().ifPresent(relation -> {
             final InformationItem informationItem = new InformationItem();
-            final RelationColumn relationColumn = makeRelationColumn(informationItem);
             informationItem.setName(new Name());
 
             final CommandResult<CanvasViolation> result = sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
                                                                                         new AddRelationColumnCommand(relation,
                                                                                                                      informationItem,
                                                                                                                      model,
-                                                                                                                     relationColumn,
+                                                                                                                     () -> makeRelationColumn(index, informationItem),
                                                                                                                      index,
                                                                                                                      uiModelMapper,
                                                                                                                      () -> resize(BaseExpressionGrid.RESIZE_EXISTING),
@@ -256,7 +261,7 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
     }
 
     void deleteColumn(final int index) {
-        expression.ifPresent(relation -> {
+        getExpression().get().ifPresent(relation -> {
             sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
                                           new DeleteRelationColumnCommand(relation,
                                                                           model,
@@ -268,7 +273,7 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
     }
 
     void addRow(final int index) {
-        expression.ifPresent(relation -> {
+        getExpression().get().ifPresent(relation -> {
             final GridRow relationRow = makeRelationRow();
             sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
                                           new AddRelationRowCommand(relation,
@@ -282,7 +287,7 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
     }
 
     void deleteRow(final int index) {
-        expression.ifPresent(relation -> {
+        getExpression().get().ifPresent(relation -> {
             sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
                                           new DeleteRelationRowCommand(relation,
                                                                        model,
@@ -299,8 +304,8 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
             return;
         }
 
-        if (expression.isPresent()) {
-            final Relation relation = expression.get();
+        if (getExpression().get().isPresent()) {
+            final Relation relation = getExpression().get().get();
             final RelationUIModelMapperHelper.RelationSection section = RelationUIModelMapperHelper.getSection(relation, uiColumnIndex);
             if (section == RelationUIModelMapperHelper.RelationSection.INFORMATION_ITEM) {
                 final int iiIndex = RelationUIModelMapperHelper.getInformationItemIndex(relation, uiColumnIndex);
@@ -318,8 +323,8 @@ public class RelationGrid extends BaseExpressionGrid<Relation, RelationGridData,
     @Override
     public void doAfterHeaderSelectionChange(final int uiHeaderRowIndex,
                                              final int uiHeaderColumnIndex) {
-        if (expression.isPresent()) {
-            final Relation relation = expression.get();
+        if (getExpression().get().isPresent()) {
+            final Relation relation = getExpression().get().get();
             final RelationUIModelMapperHelper.RelationSection section = RelationUIModelMapperHelper.getSection(relation, uiHeaderColumnIndex);
             if (section == RelationUIModelMapperHelper.RelationSection.INFORMATION_ITEM) {
                 final int iiIndex = RelationUIModelMapperHelper.getInformationItemIndex(relation, uiHeaderColumnIndex);

@@ -37,11 +37,11 @@ public class FunctionColumnParametersHeaderMetaData extends EditablePopupHeaderM
 
     static final String PARAMETER_COLUMN_GROUP = "FunctionColumnParametersHeaderMetaData$Parameters";
 
-    private final Supplier<FunctionDefinition> functionSupplier;
+    private final Supplier<Optional<FunctionDefinition>> functionSupplier;
     private final FunctionGrid gridWidget;
     private final TranslationService translationService;
 
-    public FunctionColumnParametersHeaderMetaData(final Supplier<FunctionDefinition> functionSupplier,
+    public FunctionColumnParametersHeaderMetaData(final Supplier<Optional<FunctionDefinition>> functionSupplier,
                                                   final TranslationService translationService,
                                                   final CellEditorControlsView.Presenter cellEditorControls,
                                                   final ParametersPopoverView.Presenter editor,
@@ -92,12 +92,12 @@ public class FunctionColumnParametersHeaderMetaData extends EditablePopupHeaderM
     }
 
     String getExpressionLanguageTitle() {
-        final FunctionDefinition.Kind kind = KindUtilities.getKind(functionSupplier.get());
+        final FunctionDefinition.Kind kind = KindUtilities.getKind(functionSupplier.get().get());
         return kind == null ? translationService.getTranslation(DMNEditorConstants.FunctionEditor_Undefined) : kind.code();
     }
 
     String getFormalParametersTitle() {
-        final List<InformationItem> formalParameters = functionSupplier.get().getFormalParameter();
+        final List<InformationItem> formalParameters = functionSupplier.get().get().getFormalParameter();
         final StringBuilder sb = new StringBuilder();
         sb.append("(");
         if (!formalParameters.isEmpty()) {
@@ -108,6 +108,6 @@ public class FunctionColumnParametersHeaderMetaData extends EditablePopupHeaderM
     }
 
     boolean hasFormalParametersSet() {
-        return !functionSupplier.get().getFormalParameter().isEmpty();
+        return !functionSupplier.get().get().getFormalParameter().isEmpty();
     }
 }

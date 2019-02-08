@@ -20,9 +20,12 @@ import java.util.Optional;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.ext.wires.core.grids.client.model.GridData;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -37,7 +40,7 @@ public class ExpressionCellValueTest {
 
     private ExpressionCellValue ecv;
 
-    private void setup(final Optional<BaseExpressionGrid> editor) {
+    private void setup(final Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>> editor) {
         this.ecv = new ExpressionCellValue(editor);
     }
 

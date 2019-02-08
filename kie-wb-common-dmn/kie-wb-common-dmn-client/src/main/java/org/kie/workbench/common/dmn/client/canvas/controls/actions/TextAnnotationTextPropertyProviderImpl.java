@@ -20,10 +20,11 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.TextAnnotation;
+import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
+import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.TextPropertyProvider;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
-import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
@@ -32,7 +33,7 @@ import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 @ApplicationScoped
 public class TextAnnotationTextPropertyProviderImpl implements TextPropertyProvider {
 
-    private CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
+    private DefaultCanvasCommandFactory canvasCommandFactory;
     private DefinitionUtils definitionUtils;
 
     public TextAnnotationTextPropertyProviderImpl() {
@@ -40,7 +41,7 @@ public class TextAnnotationTextPropertyProviderImpl implements TextPropertyProvi
     }
 
     @Inject
-    public TextAnnotationTextPropertyProviderImpl(final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
+    public TextAnnotationTextPropertyProviderImpl(final @DMNEditor DefaultCanvasCommandFactory canvasCommandFactory,
                                                   final DefinitionUtils definitionUtils) {
         this.canvasCommandFactory = canvasCommandFactory;
         this.definitionUtils = definitionUtils;

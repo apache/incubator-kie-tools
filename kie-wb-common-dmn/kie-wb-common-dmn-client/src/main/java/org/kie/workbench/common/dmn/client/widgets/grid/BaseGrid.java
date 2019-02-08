@@ -16,8 +16,10 @@
 
 package org.kie.workbench.common.dmn.client.widgets.grid;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.stream.StreamSupport;
 
 import javax.enterprise.event.Event;
@@ -27,15 +29,21 @@ import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.NOPDomainObject;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
+import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
+import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
+import org.kie.workbench.common.dmn.client.commands.factory.canvas.SetComponentWidthCommand;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
+import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -45,16 +53,18 @@ import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
 
-public abstract class BaseGrid extends BaseGridWidget implements HasListSelectorControl {
+public abstract class BaseGrid<E extends Expression> extends BaseGridWidget implements HasListSelectorControl {
 
     protected Optional<String> nodeUUID;
-    protected HasExpression hasExpression = null;
+    protected HasExpression hasExpression;
     protected Optional<HasName> hasName = Optional.empty();
     protected Optional<DomainObject> selectedDomainObject = Optional.empty();
 
     protected final DMNGridLayer gridLayer;
     protected final SessionManager sessionManager;
     protected final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
+    protected final DefaultCanvasCommandFactory canvasCommandFactory;
+
     protected final Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent;
     protected final Event<DomainObjectSelectionEvent> domainObjectSelectionEvent;
     protected final CellEditorControlsView.Presenter cellEditorControls;
@@ -65,18 +75,20 @@ public abstract class BaseGrid extends BaseGridWidget implements HasListSelector
                     final GridRenderer gridRenderer,
                     final SessionManager sessionManager,
                     final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
+                    final DefaultCanvasCommandFactory canvasCommandFactory,
                     final Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent,
                     final Event<DomainObjectSelectionEvent> domainObjectSelectionEvent,
                     final CellEditorControlsView.Presenter cellEditorControls,
                     final TranslationService translationService) {
         this(Optional.empty(),
-             null,
+             HasExpression.NOP,
              Optional.empty(),
              gridLayer,
              gridData,
              gridRenderer,
              sessionManager,
              sessionCommandManager,
+             canvasCommandFactory,
              refreshFormPropertiesEvent,
              domainObjectSelectionEvent,
              cellEditorControls,
@@ -91,6 +103,7 @@ public abstract class BaseGrid extends BaseGridWidget implements HasListSelector
                     final GridRenderer gridRenderer,
                     final SessionManager sessionManager,
                     final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
+                    final DefaultCanvasCommandFactory canvasCommandFactory,
                     final Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent,
                     final Event<DomainObjectSelectionEvent> domainObjectSelectionEvent,
                     final CellEditorControlsView.Presenter cellEditorControls,
@@ -105,10 +118,34 @@ public abstract class BaseGrid extends BaseGridWidget implements HasListSelector
         this.gridLayer = gridLayer;
         this.sessionManager = sessionManager;
         this.sessionCommandManager = sessionCommandManager;
+        this.canvasCommandFactory = canvasCommandFactory;
+
         this.refreshFormPropertiesEvent = refreshFormPropertiesEvent;
         this.domainObjectSelectionEvent = domainObjectSelectionEvent;
         this.cellEditorControls = cellEditorControls;
         this.translationService = translationService;
+    }
+
+    protected double getAndSetInitialWidth(final int uiColumnIndex,
+                                           final double initialWidth) {
+        if (getExpression().get().isPresent()) {
+            final Expression e = getExpression().get().get();
+            final List<Double> componentWidths = e.getComponentWidths();
+            if (Objects.isNull(componentWidths.get(uiColumnIndex))) {
+                componentWidths.set(uiColumnIndex, initialWidth);
+            }
+            return componentWidths.get(uiColumnIndex);
+        }
+        throw new IllegalStateException("Unable to initialise column width if Expression has not been set.");
+    }
+
+    public Supplier<Optional<E>> getExpression() {
+        return () -> Optional.ofNullable(cast(hasExpression.getExpression()));
+    }
+
+    @SuppressWarnings("unchecked")
+    private E cast(final Expression e) {
+        return (E) e;
     }
 
     protected void fireDomainObjectSelectionEvent() {
@@ -175,5 +212,23 @@ public abstract class BaseGrid extends BaseGridWidget implements HasListSelector
                             .findFirst();
                 })
                 .orElse(Optional.empty());
+    }
+
+    /**
+     * The width of a column is updated dynamically during a resize operation. This registers a {@link Command} on
+     * the {@link SessionCommandManager} at the point the column resize operation completed to support "undo'ing"
+     * column resize operations.
+     * @param uiColumn The column being resized.
+     * @param uiColumnInitialWidth The column's initial width when the resize operation started.
+     */
+    public void registerColumnResizeCompleted(final DMNGridColumn uiColumn,
+                                              final double uiColumnInitialWidth) {
+        getCanvasHandler().ifPresent(canvasHandler -> {
+            final AbstractCanvasHandler abstractCanvasHandler = (AbstractCanvasHandler) canvasHandler;
+            final CanvasCommand<AbstractCanvasHandler> command = new SetComponentWidthCommand(uiColumn,
+                                                                                              uiColumnInitialWidth,
+                                                                                              uiColumn.getWidth());
+            sessionCommandManager.execute(abstractCanvasHandler, command);
+        });
     }
 }

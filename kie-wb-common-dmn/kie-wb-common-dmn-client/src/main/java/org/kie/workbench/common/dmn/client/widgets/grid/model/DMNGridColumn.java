@@ -19,15 +19,16 @@ package org.kie.workbench.common.dmn.client.widgets.grid.model;
 import java.util.List;
 
 import org.kie.soup.commons.util.Lists;
+import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
+import org.kie.workbench.common.dmn.client.widgets.grid.BaseGrid;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridColumn;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.HasDOMElementResources;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.GridColumnRenderer;
 
-public abstract class DMNGridColumn<G extends GridWidget, T> extends BaseGridColumn<T> implements HasDOMElementResources {
+public abstract class DMNGridColumn<G extends BaseGrid<? extends Expression>, T> extends BaseGridColumn<T> implements HasDOMElementResources {
 
     public static final double DEFAULT_WIDTH = 100.0;
 
@@ -35,25 +36,46 @@ public abstract class DMNGridColumn<G extends GridWidget, T> extends BaseGridCol
 
     public DMNGridColumn(final HeaderMetaData headerMetaData,
                          final GridColumnRenderer<T> columnRenderer,
+                         final double width,
                          final G gridWidget) {
         this(new Lists.Builder<HeaderMetaData>()
                      .add(headerMetaData)
                      .build(),
              columnRenderer,
+             width,
              gridWidget);
     }
 
     public DMNGridColumn(final List<HeaderMetaData> headerMetaData,
                          final GridColumnRenderer<T> columnRenderer,
+                         final double width,
                          final G gridWidget) {
         super(headerMetaData,
               columnRenderer,
-              DEFAULT_WIDTH);
+              width);
         this.gridWidget = gridWidget;
     }
 
-    public void setWidthInternal(final double width) {
+    public G getGridWidget() {
+        return gridWidget;
+    }
+
+    @Override
+    public void setWidth(final double width) {
+        setComponentWidth(width);
         super.setWidth(width);
+    }
+
+    public void setWidthInternal(final double width) {
+        setComponentWidth(width);
+        super.setWidth(width);
+    }
+
+    protected void setComponentWidth(final double width) {
+        gridWidget.getExpression().get().ifPresent(e -> {
+            final int index = gridWidget.getModel().getColumns().indexOf(DMNGridColumn.this);
+            e.getComponentWidths().set(index, width);
+        });
     }
 
     public void updateWidthOfPeers() {

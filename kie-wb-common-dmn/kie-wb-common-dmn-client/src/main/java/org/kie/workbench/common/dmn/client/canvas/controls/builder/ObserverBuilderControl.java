@@ -21,11 +21,10 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
+import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.api.ClientDefinitionManager;
-import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.impl.Observer;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
-import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationMessages;
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.graph.processing.index.bounds.GraphBoundsIndexer;
@@ -40,7 +39,7 @@ public class ObserverBuilderControl extends org.kie.workbench.common.stunner.cor
     public ObserverBuilderControl(final ClientDefinitionManager clientDefinitionManager,
                                   final ClientFactoryService clientFactoryServices,
                                   final RuleManager ruleManager,
-                                  final @DMNEditor CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
+                                  final @DMNEditor DefaultCanvasCommandFactory canvasCommandFactory,
                                   final ClientTranslationMessages translationMessages,
                                   final GraphBoundsIndexer graphBoundsIndexer,
                                   final Event<CanvasSelectionEvent> canvasSelectionEvent) {

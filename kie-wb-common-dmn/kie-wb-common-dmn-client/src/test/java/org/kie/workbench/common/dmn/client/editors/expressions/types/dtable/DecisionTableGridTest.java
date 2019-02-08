@@ -23,6 +23,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.IntStream;
 
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Transform;
@@ -54,6 +55,7 @@ import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.Del
 import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.DeleteOutputClauseCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.SetBuiltinAggregatorCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.dtable.SetHitPolicyCommand;
+import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.dmn.client.commands.general.DeleteCellValueCommand;
 import org.kie.workbench.common.dmn.client.commands.general.DeleteHasNameCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetCellValueCommand;
@@ -72,6 +74,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextArea
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellValueTuple;
@@ -83,7 +86,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanva
 import org.kie.workbench.common.stunner.core.client.canvas.command.UpdateElementPropertyCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
-import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
@@ -122,7 +124,6 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
@@ -197,7 +198,7 @@ public class DecisionTableGridTest {
     private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
 
     @Mock
-    private CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
+    private DefaultCanvasCommandFactory canvasCommandFactory;
 
     @Mock
     private UpdateElementPropertyCommand updateElementPropertyCommand;
@@ -336,10 +337,10 @@ public class DecisionTableGridTest {
         expression = definition.getModelClass();
         definition.enrich(Optional.empty(), hasExpression, expression);
 
-        doReturn(canvasHandler).when(session).getCanvasHandler();
-        doReturn(graphCommandContext).when(canvasHandler).getGraphExecutionContext();
-        doReturn(parentGridData).when(parentGridWidget).getModel();
-        doReturn(Collections.singletonList(parentGridColumn)).when(parentGridData).getColumns();
+        when(session.getCanvasHandler()).thenReturn(canvasHandler);
+        when(canvasHandler.getGraphExecutionContext()).thenReturn(graphCommandContext);
+        when(parentGridWidget.getModel()).thenReturn(parentGridData);
+        when(parentGridData.getColumns()).thenReturn(Collections.singletonList(parentGridColumn));
 
         parent = spy(new GridCellTuple(0, 0, parentGridWidget));
 
@@ -369,10 +370,10 @@ public class DecisionTableGridTest {
 
     private void setupGrid(final Optional<HasName> hasName,
                            final int nesting) {
+        this.hasExpression.setExpression(expression.get());
         this.grid = spy((DecisionTableGrid) definition.getEditor(parent,
                                                                  nesting == 0 ? Optional.of(NODE_UUID) : Optional.empty(),
                                                                  hasExpression,
-                                                                 expression,
                                                                  hasName,
                                                                  nesting).get());
     }
@@ -407,6 +408,37 @@ public class DecisionTableGridTest {
                      uiModel.getCell(0, 2).getValue().getValue());
         assertEquals(DecisionTableDefaultValueUtilities.RULE_DESCRIPTION,
                      uiModel.getCell(0, 3).getValue().getValue());
+    }
+
+    @Test
+    public void testInitialColumnWidthsFromDefinition() {
+        setupGrid(makeHasNameForDecision(), 0);
+
+        assertComponentWidths(DecisionTableRowNumberColumn.DEFAULT_WIDTH,
+                              DMNGridColumn.DEFAULT_WIDTH,
+                              DMNGridColumn.DEFAULT_WIDTH,
+                              DMNGridColumn.DEFAULT_WIDTH);
+    }
+
+    @Test
+    public void testInitialColumnWidthsFromExpression() {
+        final List<Double> componentWidths = expression.get().getComponentWidths();
+        componentWidths.set(0, 100.0);
+        componentWidths.set(1, 200.0);
+        componentWidths.set(2, 300.0);
+        componentWidths.set(3, 400.0);
+
+        setupGrid(makeHasNameForDecision(), 0);
+
+        assertComponentWidths(100.0,
+                              200.0,
+                              300.0,
+                              400.0);
+    }
+
+    private void assertComponentWidths(final double... widths) {
+        final GridData uiModel = grid.getModel();
+        IntStream.range(0, widths.length).forEach(i -> assertEquals(widths[i], uiModel.getColumns().get(i).getWidth(), 0.0));
     }
 
     @Test
@@ -875,7 +907,7 @@ public class DecisionTableGridTest {
     public void testAddDecisionRule() {
         setupGrid(makeHasNameForDecision(), 0);
 
-        final DecisionTable dtable = grid.getExpression().get();
+        final DecisionTable dtable = grid.getExpression().get().get();
         assertThat(dtable.getRule().size()).isEqualTo(1);
         assertThat(dtable.getRule().get(0).getInputEntry().size()).isEqualTo(1);
         assertThat(dtable.getRule().get(0).getOutputEntry().size()).isEqualTo(1);
@@ -919,7 +951,7 @@ public class DecisionTableGridTest {
     public void testDuplicateDecisionRule() {
         setupGrid(makeHasNameForDecision(), 0);
 
-        final DecisionTable dtable = grid.getExpression().get();
+        final DecisionTable dtable = grid.getExpression().get().get();
         assertThat(dtable.getRule().size()).isEqualTo(1);
         final DecisionRule rule0 = dtable.getRule().get(0);
         assertThat(rule0.getInputEntry().size()).isEqualTo(1);

@@ -74,7 +74,7 @@ public class ContextGridDataTest {
         this.uiModel = new ContextGridData(delegate,
                                            sessionManager,
                                            sessionCommandManager,
-                                           expression,
+                                           () -> expression,
                                            canvasOperation);
 
         doReturn(session).when(sessionManager).getCurrentSession();

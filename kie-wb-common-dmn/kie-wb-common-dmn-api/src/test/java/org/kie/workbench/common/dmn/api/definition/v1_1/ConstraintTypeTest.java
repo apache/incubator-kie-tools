@@ -24,28 +24,28 @@ public class ConstraintTypeTest {
 
     @Test
     public void testEnumerationString() {
-        testFromString(ConstraintType.ENUMERATION,"enumeration");
-        testFromString(ConstraintType.ENUMERATION,"Enumeration");
-        testFromString(ConstraintType.ENUMERATION,"ENUMERATION");
+        testFromString(ConstraintType.ENUMERATION, "enumeration");
+        testFromString(ConstraintType.ENUMERATION, "Enumeration");
+        testFromString(ConstraintType.ENUMERATION, "ENUMERATION");
     }
 
     @Test
     public void testExpressionString() {
-        testFromString(ConstraintType.EXPRESSION,"expression");
-        testFromString(ConstraintType.EXPRESSION,"Expression");
-        testFromString(ConstraintType.EXPRESSION,"EXPRESSION");
+        testFromString(ConstraintType.EXPRESSION, "expression");
+        testFromString(ConstraintType.EXPRESSION, "Expression");
+        testFromString(ConstraintType.EXPRESSION, "EXPRESSION");
     }
 
     @Test
     public void testRangeString() {
-        testFromString(ConstraintType.RANGE,"range");
-        testFromString(ConstraintType.RANGE,"Range");
-        testFromString(ConstraintType.RANGE,"RANGE");
+        testFromString(ConstraintType.RANGE, "range");
+        testFromString(ConstraintType.RANGE, "Range");
+        testFromString(ConstraintType.RANGE, "RANGE");
     }
 
     @Test
     public void testUnknownString() {
-        testFromString(null,"unknownvalue");
+        testFromString(null, "unknownvalue");
     }
 
     private void testFromString(ConstraintType expected, String value) {

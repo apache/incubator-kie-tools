@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
+import java.util.stream.IntStream;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
@@ -44,6 +45,7 @@ import org.kie.workbench.common.dmn.client.commands.expressions.types.function.R
 import org.kie.workbench.common.dmn.client.commands.expressions.types.function.SetKindCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.function.UpdateParameterNameCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.function.UpdateParameterTypeRefCommand;
+import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.dmn.client.commands.general.DeleteHasNameCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetHasNameCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetTypeRefCommand;
@@ -75,7 +77,6 @@ import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.UpdateElementPropertyCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
-import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -89,6 +90,7 @@ import org.kie.workbench.common.stunner.forms.client.event.RefreshFormProperties
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
@@ -147,7 +149,7 @@ public class FunctionGridTest {
     private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
 
     @Mock
-    private CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
+    private DefaultCanvasCommandFactory canvasCommandFactory;
 
     @Mock
     private DMNSession session;
@@ -216,10 +218,10 @@ public class FunctionGridTest {
     private LiteralExpressionGrid literalExpressionEditor;
 
     @Mock
-    private ExpressionEditorDefinition supplementaryLiteralExpressionEditorDefinition;
+    private ExpressionEditorDefinition supplementaryExpressionEditorDefinition;
 
     @Mock
-    private FunctionSupplementaryGrid supplementaryLiteralExpressionEditor;
+    private FunctionSupplementaryGrid supplementaryExpressionEditor;
 
     @Mock
     private Command onSuccess;
@@ -246,22 +248,13 @@ public class FunctionGridTest {
     private ArgumentCaptor<ClearExpressionTypeCommand> clearExpressionTypeCommandCaptor;
 
     @Captor
-    private ArgumentCaptor<Optional<Expression>> expressionCaptor;
-
-    @Captor
-    private ArgumentCaptor<Optional<BaseExpressionGrid>> gridWidgetCaptor;
+    private ArgumentCaptor<Optional<ExpressionEditorDefinition<Expression>>> expressionDefinitionCaptor;
 
     @Captor
     private ArgumentCaptor<GridLayerRedrawManager.PrioritizedCommand> redrawCommandCaptor;
 
     @Captor
     private ArgumentCaptor<GridCellTuple> parentCaptor;
-
-    @Captor
-    private ArgumentCaptor<Optional<LiteralExpression>> literalExpressionCaptor;
-
-    @Captor
-    private ArgumentCaptor<Optional<Context>> contextExpressionCaptor;
 
     @Captor
     private ArgumentCaptor<CompositeCommand> compositeCommandCaptor;
@@ -271,7 +264,7 @@ public class FunctionGridTest {
 
     private LiteralExpressionEditorDefinition literalExpressionEditorDefinition;
 
-    private Context supplementaryLiteralExpression = new Context();
+    private Context supplementaryExpression = new Context();
 
     private Decision hasExpression = new Decision();
 
@@ -330,27 +323,37 @@ public class FunctionGridTest {
         final ExpressionEditorDefinitions expressionEditorDefinitions = new ExpressionEditorDefinitions();
         expressionEditorDefinitions.add((ExpressionEditorDefinition) definition);
         expressionEditorDefinitions.add((ExpressionEditorDefinition) literalExpressionEditorDefinition);
-        expressionEditorDefinitions.add(supplementaryLiteralExpressionEditorDefinition);
+        expressionEditorDefinitions.add(supplementaryExpressionEditorDefinition);
 
         final Decision decision = new Decision();
         decision.setName(new Name("name"));
         hasName = Optional.of(decision);
 
-        doReturn(expressionEditorDefinitions).when(expressionEditorDefinitionsSupplier).get();
-        doReturn(expressionEditorDefinitions).when(supplementaryEditorDefinitionsSupplier).get();
+        when(expressionEditorDefinitionsSupplier.get()).thenReturn(expressionEditorDefinitions);
+        when(supplementaryEditorDefinitionsSupplier.get()).thenReturn(expressionEditorDefinitions);
 
-        doReturn(Optional.of(supplementaryLiteralExpression)).when(supplementaryLiteralExpressionEditorDefinition).getModelClass();
-        doReturn(Optional.of(supplementaryLiteralExpressionEditor)).when(supplementaryLiteralExpressionEditorDefinition).getEditor(any(GridCellTuple.class),
-                                                                                                                                   any(Optional.class),
-                                                                                                                                   any(HasExpression.class),
-                                                                                                                                   any(Optional.class),
-                                                                                                                                   any(Optional.class),
-                                                                                                                                   anyInt());
-        when(supplementaryLiteralExpressionEditor.getLayer()).thenReturn(gridLayer);
-        when(supplementaryLiteralExpressionEditor.getModel()).thenReturn(new BaseGridData(false));
-        doCallRealMethod().when(supplementaryLiteralExpressionEditor).selectFirstCell();
+        //Setup LiteralExpression definition and editor
+        doReturn(Optional.of(literalExpressionEditor)).when(literalExpressionEditorDefinition).getEditor(any(GridCellTuple.class),
+                                                                                                         any(Optional.class),
+                                                                                                         any(HasExpression.class),
+                                                                                                         any(Optional.class),
+                                                                                                         anyInt());
+        when(literalExpressionEditor.getLayer()).thenReturn(gridLayer);
+        when(literalExpressionEditor.getModel()).thenReturn(new BaseGridData(false));
+        doCallRealMethod().when(literalExpressionEditor).selectFirstCell();
 
-        doReturn(canvasHandler).when(session).getCanvasHandler();
+        //Setup Supplementary expression definition and editor
+        when(supplementaryExpressionEditorDefinition.getModelClass()).thenReturn(Optional.of(supplementaryExpression));
+        when(supplementaryExpressionEditorDefinition.getEditor(any(GridCellTuple.class),
+                                                               any(Optional.class),
+                                                               any(HasExpression.class),
+                                                               any(Optional.class),
+                                                               anyInt())).thenReturn(Optional.of(supplementaryExpressionEditor));
+        when(supplementaryExpressionEditor.getLayer()).thenReturn(gridLayer);
+        when(supplementaryExpressionEditor.getModel()).thenReturn(new BaseGridData(false));
+        doCallRealMethod().when(supplementaryExpressionEditor).selectFirstCell();
+
+        when(session.getCanvasHandler()).thenReturn(canvasHandler);
         when(gridWidget.getModel()).thenReturn(new BaseGridData(false));
 
         when(canvasHandler.getDiagram()).thenReturn(diagram);
@@ -370,10 +373,10 @@ public class FunctionGridTest {
     }
 
     private void setupGrid(final int nesting) {
+        this.hasExpression.setExpression(expression.get());
         this.grid = spy((FunctionGrid) definition.getEditor(parent,
                                                             nesting == 0 ? Optional.of(NODE_UUID) : Optional.empty(),
                                                             hasExpression,
-                                                            expression,
                                                             hasName,
                                                             nesting).get());
 
@@ -399,6 +402,31 @@ public class FunctionGridTest {
         assertTrue(uiModel.getCell(0, 1).getValue() instanceof ExpressionCellValue);
         final ExpressionCellValue dcv = (ExpressionCellValue) uiModel.getCell(0, 1).getValue();
         assertTrue(dcv.getValue().get() instanceof LiteralExpressionGrid);
+    }
+
+    @Test
+    public void testInitialColumnWidthsFromDefinition() {
+        setupGrid(0);
+
+        assertComponentWidths(EmptyColumn.DEFAULT_WIDTH,
+                              UndefinedExpressionColumn.DEFAULT_WIDTH);
+    }
+
+    @Test
+    public void testInitialColumnWidthsFromExpression() {
+        final List<Double> componentWidths = expression.get().getComponentWidths();
+        componentWidths.set(0, 100.0);
+        componentWidths.set(1, 200.0);
+
+        setupGrid(0);
+
+        assertComponentWidths(100.0,
+                              200.0);
+    }
+
+    private void assertComponentWidths(final double... widths) {
+        final GridData uiModel = grid.getModel();
+        IntStream.range(0, widths.length).forEach(i -> assertEquals(widths[i], uiModel.getColumns().get(i).getWidth(), 0.0));
     }
 
     @Test
@@ -588,38 +616,24 @@ public class FunctionGridTest {
     public void testSetKindFEEL() {
         setupGrid(0);
 
-        reset(literalExpressionEditorDefinition);
-
-        doReturn(Optional.of(literalExpressionEditor)).when(literalExpressionEditorDefinition).getEditor(any(GridCellTuple.class),
-                                                                                                         any(Optional.class),
-                                                                                                         any(HasExpression.class),
-                                                                                                         any(Optional.class),
-                                                                                                         any(Optional.class),
-                                                                                                         anyInt());
-        when(literalExpressionEditor.getLayer()).thenReturn(gridLayer);
-        when(literalExpressionEditor.getParentInformation()).thenReturn(parent);
-        when(literalExpressionEditor.getModel()).thenReturn(new BaseGridData(false));
-        when(literalExpressionEditor.getExpression()).thenReturn(Optional.empty());
-        doCallRealMethod().when(literalExpressionEditor).selectFirstCell();
-
         grid.setKind(FunctionDefinition.Kind.FEEL);
-
-        verify(literalExpressionEditorDefinition).getEditor(parentCaptor.capture(),
-                                                            eq(Optional.empty()),
-                                                            eq(hasExpression),
-                                                            literalExpressionCaptor.capture(),
-                                                            eq(hasName),
-                                                            eq(1));
-
-        final Optional<LiteralExpression> literalExpression = literalExpressionCaptor.getValue();
-        //Since we're using a concrete LiteralExpressionEditorDefinition we can only check the model is present
-        assertTrue(literalExpression.isPresent());
 
         assertSetKind(literalExpressionEditorDefinition,
                       literalExpressionEditor,
                       FunctionDefinition.Kind.FEEL,
                       LiteralExpression.class,
                       LiteralExpressionGrid.class);
+
+        verify(literalExpressionEditorDefinition).getEditor(parentCaptor.capture(),
+                                                            eq(Optional.empty()),
+                                                            eq(expression.get()),
+                                                            eq(hasName),
+                                                            eq(1));
+
+        final GridCellTuple parent = parentCaptor.getValue();
+        assertEquals(grid, parent.getGridWidget());
+        assertEquals(0, parent.getRowIndex());
+        assertEquals(1, parent.getColumnIndex());
     }
 
     @Test
@@ -627,26 +641,26 @@ public class FunctionGridTest {
     public void testSetKindJava() {
         setupGrid(0);
 
-        doReturn(ExpressionType.FUNCTION_JAVA).when(supplementaryLiteralExpressionEditorDefinition).getType();
+        doReturn(ExpressionType.FUNCTION_JAVA).when(supplementaryExpressionEditorDefinition).getType();
 
         grid.setKind(FunctionDefinition.Kind.JAVA);
 
-        verify(supplementaryLiteralExpressionEditorDefinition).getEditor(parentCaptor.capture(),
-                                                                         eq(Optional.empty()),
-                                                                         eq(hasExpression),
-                                                                         contextExpressionCaptor.capture(),
-                                                                         eq(hasName),
-                                                                         eq(1));
-
-        final Optional<Context> contextExpression = contextExpressionCaptor.getValue();
-        assertTrue(contextExpression.isPresent());
-        assertEquals(supplementaryLiteralExpression, contextExpression.get());
-
-        assertSetKind(supplementaryLiteralExpressionEditorDefinition,
-                      supplementaryLiteralExpressionEditor,
+        assertSetKind(supplementaryExpressionEditorDefinition,
+                      supplementaryExpressionEditor,
                       FunctionDefinition.Kind.JAVA,
                       Context.class,
                       FunctionSupplementaryGrid.class);
+
+        verify(supplementaryExpressionEditorDefinition).getEditor(parentCaptor.capture(),
+                                                                  eq(Optional.empty()),
+                                                                  eq(expression.get()),
+                                                                  eq(hasName),
+                                                                  eq(1));
+
+        final GridCellTuple parent = parentCaptor.getValue();
+        assertEquals(grid, parent.getGridWidget());
+        assertEquals(0, parent.getRowIndex());
+        assertEquals(1, parent.getColumnIndex());
     }
 
     @Test
@@ -654,26 +668,26 @@ public class FunctionGridTest {
     public void testSetKindPMML() {
         setupGrid(0);
 
-        doReturn(ExpressionType.FUNCTION_PMML).when(supplementaryLiteralExpressionEditorDefinition).getType();
+        doReturn(ExpressionType.FUNCTION_PMML).when(supplementaryExpressionEditorDefinition).getType();
 
         grid.setKind(FunctionDefinition.Kind.PMML);
 
-        verify(supplementaryLiteralExpressionEditorDefinition).getEditor(parentCaptor.capture(),
-                                                                         eq(Optional.empty()),
-                                                                         eq(hasExpression),
-                                                                         contextExpressionCaptor.capture(),
-                                                                         eq(hasName),
-                                                                         eq(1));
-
-        final Optional<Context> contextExpression = contextExpressionCaptor.getValue();
-        assertTrue(contextExpression.isPresent());
-        assertEquals(supplementaryLiteralExpression, contextExpression.get());
-
-        assertSetKind(supplementaryLiteralExpressionEditorDefinition,
-                      supplementaryLiteralExpressionEditor,
+        assertSetKind(supplementaryExpressionEditorDefinition,
+                      supplementaryExpressionEditor,
                       FunctionDefinition.Kind.PMML,
                       Context.class,
                       FunctionSupplementaryGrid.class);
+
+        verify(supplementaryExpressionEditorDefinition).getEditor(parentCaptor.capture(),
+                                                                  eq(Optional.empty()),
+                                                                  eq(expression.get()),
+                                                                  eq(hasName),
+                                                                  eq(1));
+
+        final GridCellTuple parent = parentCaptor.getValue();
+        assertEquals(grid, parent.getGridWidget());
+        assertEquals(0, parent.getRowIndex());
+        assertEquals(1, parent.getColumnIndex());
     }
 
     @SuppressWarnings("unchecked")
@@ -684,13 +698,10 @@ public class FunctionGridTest {
                                final Class<?> expectedEditorType) {
         verify(grid).doSetKind(eq(expectedKind),
                                eq(expression.get()),
-                               expressionCaptor.capture(),
-                               gridWidgetCaptor.capture());
+                               expressionDefinitionCaptor.capture());
         verify(definition).enrich(any(Optional.class), eq(hasExpression), any(Optional.class));
-        final Expression expression = expressionCaptor.getValue().get();
-        final BaseExpressionGrid gridWidget = gridWidgetCaptor.getValue().get();
-        assertThat(expectedExpressionType).isAssignableFrom(expression.getClass());
-        assertThat(expectedEditorType).isAssignableFrom(gridWidget.getClass());
+        final ExpressionEditorDefinition<Expression> expressionDefinition = expressionDefinitionCaptor.getValue().get();
+        assertThat(expectedExpressionType).isAssignableFrom(expressionDefinition.getModelClass().get().getClass());
 
         verify(sessionCommandManager).execute(eq(canvasHandler),
                                               setKindCommandCaptor.capture());
@@ -698,17 +709,17 @@ public class FunctionGridTest {
         final SetKindCommand setKindCommand = setKindCommandCaptor.getValue();
         setKindCommand.execute(canvasHandler);
 
+        final GridCellValue<?> gcv = grid.getModel().getCell(0, 1).getValue();
+        assertTrue(gcv instanceof ExpressionCellValue);
+        final ExpressionCellValue ecv = (ExpressionCellValue) gcv;
+        assertThat(expectedEditorType).isAssignableFrom(ecv.getValue().get().getClass());
+
         verify(grid).resize(eq(BaseExpressionGrid.RESIZE_EXISTING_MINIMUM));
         verify(editor).selectFirstCell();
 
         verify(gridLayer).batch(redrawCommandCaptor.capture());
         redrawCommandCaptor.getValue().execute();
         verify(gridLayer).draw();
-
-        final GridCellTuple parent = parentCaptor.getValue();
-        assertEquals(grid, parent.getGridWidget());
-        assertEquals(0, parent.getRowIndex());
-        assertEquals(1, parent.getColumnIndex());
 
         //Check undo operation
         reset(grid, gridLayer);
@@ -729,7 +740,6 @@ public class FunctionGridTest {
         doReturn(Optional.of(literalExpressionEditor)).when(literalExpressionEditorDefinition).getEditor(any(GridCellTuple.class),
                                                                                                          any(Optional.class),
                                                                                                          any(HasExpression.class),
-                                                                                                         any(Optional.class),
                                                                                                          any(Optional.class),
                                                                                                          anyInt());
 
@@ -894,7 +904,6 @@ public class FunctionGridTest {
         doReturn(Optional.of(literalExpressionEditor)).when(literalExpressionEditorDefinition).getEditor(any(GridCellTuple.class),
                                                                                                          any(Optional.class),
                                                                                                          any(HasExpression.class),
-                                                                                                         any(Optional.class),
                                                                                                          any(Optional.class),
                                                                                                          anyInt());
 

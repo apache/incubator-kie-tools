@@ -92,6 +92,8 @@ public class DeleteRelationColumnCommand extends AbstractCanvasGraphCommand impl
 
             @Override
             public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext gce) {
+                relation.getComponentWidths().remove(uiColumnIndex);
+
                 final int iiIndex = uiColumnIndex - RelationUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT;
                 relation.getRow().forEach(row -> row.getExpression().remove(iiIndex));
                 relation.getColumn().remove(iiIndex);
@@ -101,6 +103,8 @@ public class DeleteRelationColumnCommand extends AbstractCanvasGraphCommand impl
 
             @Override
             public CommandResult<RuleViolation> undo(final GraphCommandExecutionContext gce) {
+                relation.getComponentWidths().add(uiColumnIndex, oldUiModelColumn.getWidth());
+
                 final int iiIndex = uiColumnIndex - RelationUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT;
                 relation.getColumn().add(iiIndex,
                                          oldInformationItem);

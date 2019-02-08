@@ -26,6 +26,7 @@ import javax.inject.Inject;
 
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
+import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.FunctionGridSupplementaryEditor;
@@ -36,7 +37,6 @@ import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorCh
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
-import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.Session;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
@@ -58,7 +58,7 @@ public class PMMLFunctionEditorDefinition extends BaseSupplementaryFunctionEdito
     public PMMLFunctionEditorDefinition(final DefinitionUtils definitionUtils,
                                         final SessionManager sessionManager,
                                         final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                                        final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
+                                        final @DMNEditor DefaultCanvasCommandFactory canvasCommandFactory,
                                         final Event<ExpressionEditorChanged> editorSelectedEvent,
                                         final Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent,
                                         final Event<DomainObjectSelectionEvent> domainObjectSelectionEvent,

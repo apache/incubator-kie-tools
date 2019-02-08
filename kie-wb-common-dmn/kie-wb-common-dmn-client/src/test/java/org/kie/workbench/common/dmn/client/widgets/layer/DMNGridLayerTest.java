@@ -38,6 +38,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionContain
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.literal.LiteralExpressionGrid;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionGrid;
+import org.kie.workbench.common.dmn.client.widgets.dnd.DMNGridWidgetDnDMouseUpHandler;
 import org.kie.workbench.common.dmn.client.widgets.dnd.DelegatingGridWidgetDndMouseMoveHandler;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridTheme;
@@ -123,6 +124,11 @@ public class DMNGridLayerTest {
     @Test
     public void checkGridWidgetDnDMouseMoveHandler() {
         assertTrue(gridLayer.getGridWidgetDnDMouseMoveHandler() instanceof DelegatingGridWidgetDndMouseMoveHandler);
+    }
+
+    @Test
+    public void checkGridWidgetDnDMouseUpHandler() {
+        assertTrue(gridLayer.getGridWidgetDnDMouseUpHandler() instanceof DMNGridWidgetDnDMouseUpHandler);
     }
 
     @Test

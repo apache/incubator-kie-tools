@@ -19,25 +19,30 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.function;
 import java.util.Collections;
 import java.util.List;
 
+import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
+import org.kie.workbench.common.dmn.client.widgets.grid.BaseGrid;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridWidgetRegistry;
 
 public class FunctionColumn extends ExpressionEditorColumn {
 
     public FunctionColumn(final GridWidgetRegistry registry,
                           final HeaderMetaData headerMetaData,
-                          final GridWidget gridWidget) {
+                          final double width,
+                          final BaseGrid<? extends Expression> gridWidget) {
         this(registry,
              Collections.singletonList(headerMetaData),
+             width,
              gridWidget);
     }
 
     public FunctionColumn(final GridWidgetRegistry registry,
                           final List<HeaderMetaData> headerMetaData,
-                          final GridWidget gridWidget) {
+                          final double width,
+                          final BaseGrid<? extends Expression> gridWidget) {
         super(headerMetaData,
               new FunctionColumnRenderer(registry),
+              width,
               gridWidget);
         setMovable(false);
         setResizable(false);

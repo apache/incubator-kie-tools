@@ -38,9 +38,11 @@ public class OutputClauseColumn extends DMNSimpleGridColumn<DecisionTableGrid, S
 
     public OutputClauseColumn(final Supplier<List<HeaderMetaData>> headerMetaDataSupplier,
                               final TextAreaSingletonDOMElementFactory factory,
+                              final double width,
                               final DecisionTableGrid gridWidget) {
         super(headerMetaDataSupplier.get(),
               new NameAndDataTypeDOMElementColumnRenderer<>(factory),
+              width,
               gridWidget);
         this.headerMetaDataSupplier = PortablePreconditions.checkNotNull("headerMetaDataSupplier",
                                                                          headerMetaDataSupplier);

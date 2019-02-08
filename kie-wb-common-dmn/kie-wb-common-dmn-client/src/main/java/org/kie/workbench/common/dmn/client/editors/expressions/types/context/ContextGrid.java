@@ -35,7 +35,9 @@ import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.context.AddContextEntryCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.context.ClearExpressionTypeCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.context.DeleteContextEntryCommand;
+import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionGrid;
 import org.kie.workbench.common.dmn.client.editors.expressions.util.SelectionUtils;
 import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
@@ -45,6 +47,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridRender
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorGridRow;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
@@ -54,7 +57,6 @@ import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
-import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
@@ -79,7 +81,6 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextGridData, Co
     public ContextGrid(final GridCellTuple parent,
                        final Optional<String> nodeUUID,
                        final HasExpression hasExpression,
-                       final Optional<Context> expression,
                        final Optional<HasName> hasName,
                        final DMNGridPanel gridPanel,
                        final DMNGridLayer gridLayer,
@@ -87,7 +88,7 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextGridData, Co
                        final DefinitionUtils definitionUtils,
                        final SessionManager sessionManager,
                        final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                       final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
+                       final DefaultCanvasCommandFactory canvasCommandFactory,
                        final Event<ExpressionEditorChanged> editorSelectedEvent,
                        final Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent,
                        final Event<DomainObjectSelectionEvent> domainObjectSelectionEvent,
@@ -100,7 +101,6 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextGridData, Co
         super(parent,
               nodeUUID,
               hasExpression,
-              expression,
               hasName,
               gridPanel,
               gridLayer,
@@ -135,7 +135,7 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextGridData, Co
     public ContextUIModelMapper makeUiModelMapper() {
         return new ContextUIModelMapper(this,
                                         this::getModel,
-                                        () -> expression,
+                                        getExpression(),
                                         expressionEditorDefinitionsSupplier,
                                         listSelector,
                                         nesting);
@@ -144,11 +144,11 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextGridData, Co
     @Override
     public void initialiseUiColumns() {
         final List<GridColumn.HeaderMetaData> headerMetaData = new ArrayList<>();
-        final ContextGridRowNumberColumn rowNumberColumn = new ContextGridRowNumberColumn(headerMetaData);
+        final ContextGridRowNumberColumn rowNumberColumn = new ContextGridRowNumberColumn(headerMetaData,
+                                                                                          getAndSetInitialWidth(0, ContextGridRowNumberColumn.DEFAULT_WIDTH));
         if (nesting == 0) {
             rowNumberColumn.getHeaderMetaData().add(new BaseHeaderMetaData("#"));
             headerMetaData.add(new NameColumnHeaderMetaData(hasExpression,
-                                                            expression,
                                                             hasName,
                                                             clearDisplayNameConsumer(true),
                                                             setDisplayNameConsumer(true),
@@ -159,6 +159,7 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextGridData, Co
         }
 
         final NameColumn nameColumn = new NameColumn(headerMetaData,
+                                                     getAndSetInitialWidth(1, DMNGridColumn.DEFAULT_WIDTH),
                                                      this,
                                                      (rowIndex) -> rowIndex != getModel().getRowCount() - 1,
                                                      clearDisplayNameConsumer(false),
@@ -169,6 +170,7 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextGridData, Co
                                                      Optional.of(translationService.getTranslation(DMNEditorConstants.ContextEditor_EditContextEntry)));
         final ExpressionEditorColumn expressionColumn = new ExpressionEditorColumn(gridLayer,
                                                                                    headerMetaData,
+                                                                                   getAndSetInitialWidth(2, UndefinedExpressionColumn.DEFAULT_WIDTH),
                                                                                    this);
 
         model.appendColumn(rowNumberColumn);
@@ -180,7 +182,7 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextGridData, Co
 
     @Override
     public void initialiseUiModel() {
-        expression.ifPresent(c -> {
+        getExpression().get().ifPresent(c -> {
             c.getContextEntry().stream().forEach(ce -> {
                 model.appendRow(new ExpressionEditorGridRow());
                 uiModelMapper.fromDMNModel(model.getRowCount() - 1,
@@ -217,13 +219,13 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextGridData, Co
                                                  !isMultiRow,
                                                  () -> {
                                                      cellEditorControls.hide();
-                                                     expression.ifPresent(e -> addContextEntry(uiRowIndex));
+                                                     getExpression().get().ifPresent(e -> addContextEntry(uiRowIndex));
                                                  }));
             items.add(ListSelectorTextItem.build(translationService.format(DMNEditorConstants.ContextEditor_InsertContextEntryBelow),
                                                  !isMultiRow,
                                                  () -> {
                                                      cellEditorControls.hide();
-                                                     expression.ifPresent(e -> addContextEntry(uiRowIndex + 1));
+                                                     getExpression().get().ifPresent(e -> addContextEntry(uiRowIndex + 1));
                                                  }));
             items.add(ListSelectorTextItem.build(translationService.format(DMNEditorConstants.ContextEditor_DeleteContextEntry),
                                                  !isMultiRow && model.getRowCount() > 2 && uiRowIndex < model.getRowCount() - 1,
@@ -269,7 +271,7 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextGridData, Co
     }
 
     void addContextEntry(final int index) {
-        expression.ifPresent(c -> {
+        getExpression().get().ifPresent(c -> {
             final ContextEntry ce = new ContextEntry();
             final InformationItem informationItem = new InformationItem();
             informationItem.setName(new Name());
@@ -292,7 +294,7 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextGridData, Co
     }
 
     void deleteContextEntry(final int index) {
-        expression.ifPresent(c -> {
+        getExpression().get().ifPresent(c -> {
             sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
                                           new DeleteContextEntryCommand(c,
                                                                         model,
@@ -305,7 +307,7 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextGridData, Co
         final GridCellTuple gc = new GridCellTuple(uiRowIndex,
                                                    ContextUIModelMapperHelper.EXPRESSION_COLUMN_INDEX,
                                                    this);
-        expression.ifPresent(context -> {
+        getExpression().get().ifPresent(context -> {
             final HasExpression hasExpression = context.getContextEntry().get(uiRowIndex);
             sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
                                           new ClearExpressionTypeCommand(gc,
@@ -331,8 +333,8 @@ public class ContextGrid extends BaseExpressionGrid<Context, ContextGridData, Co
         }
 
         if (uiRowIndex < model.getRowCount() - 1) {
-            if (expression.isPresent()) {
-                final Context context = expression.get();
+            if (getExpression().get().isPresent()) {
+                final Context context = getExpression().get().get();
                 fireDomainObjectSelectionEvent(context.getContextEntry().get(uiRowIndex).getVariable());
                 return;
             }

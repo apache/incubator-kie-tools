@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.context;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.context.MoveRowsCommand;
@@ -36,13 +37,13 @@ public class ContextGridData extends DelegatingGridData {
 
     private final SessionManager sessionManager;
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
-    private final Optional<Context> expression;
+    private final Supplier<Optional<Context>> expression;
     private final Command canvasOperation;
 
     public ContextGridData(final DMNGridData delegate,
                            final SessionManager sessionManager,
                            final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                           final Optional<Context> expression,
+                           final Supplier<Optional<Context>> expression,
                            final Command canvasOperation) {
         super(delegate);
         this.sessionManager = sessionManager;
@@ -63,7 +64,7 @@ public class ContextGridData extends DelegatingGridData {
     @Override
     public void moveRowsTo(final int index,
                            final List<GridRow> rows) {
-        expression.ifPresent(context -> {
+        expression.get().ifPresent(context -> {
             final AbstractCanvasHandler handler = (AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler();
             final MoveRowsCommand command = new MoveRowsCommand(context,
                                                                 delegate,

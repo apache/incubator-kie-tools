@@ -36,17 +36,21 @@ public class InputClauseColumn extends DMNSimpleGridColumn<DecisionTableGrid, St
 
     public InputClauseColumn(final HeaderMetaData headerMetaData,
                              final TextAreaSingletonDOMElementFactory factory,
+                             final double width,
                              final DecisionTableGrid gridWidget) {
         this(Collections.singletonList(headerMetaData),
              factory,
+             width,
              gridWidget);
     }
 
     public InputClauseColumn(final List<HeaderMetaData> headerMetaData,
                              final TextAreaSingletonDOMElementFactory factory,
+                             final double width,
                              final DecisionTableGrid gridWidget) {
         super(headerMetaData,
               new NameAndDataTypeDOMElementColumnRenderer<>(factory),
+              width,
               gridWidget);
         this.factory = PortablePreconditions.checkNotNull("factory",
                                                           factory);

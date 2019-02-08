@@ -28,6 +28,7 @@ import com.ait.lienzo.client.core.types.Point2D;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
+import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.InformationItemCell;
@@ -35,16 +36,18 @@ import org.kie.workbench.common.dmn.client.editors.types.HasNameAndTypeRef;
 import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNSimpleGridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
+import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellEditContext;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 
 import static org.kie.workbench.common.dmn.api.definition.v1_1.common.HasTypeRefHelper.getNotNullHasTypeRefs;
 
-public abstract class EditableNameAndDataTypeColumn<G extends BaseExpressionGrid> extends DMNSimpleGridColumn<G, InformationItemCell.HasNameCell> {
+public abstract class EditableNameAndDataTypeColumn<G extends BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>> extends DMNSimpleGridColumn<G, InformationItemCell.HasNameCell> {
 
     private final Predicate<Integer> isEditable;
     private final Consumer<HasName> clearDisplayNameConsumer;
@@ -55,6 +58,7 @@ public abstract class EditableNameAndDataTypeColumn<G extends BaseExpressionGrid
     private final Optional<String> editorTitle;
 
     public EditableNameAndDataTypeColumn(final HeaderMetaData headerMetaData,
+                                         final double width,
                                          final G gridWidget,
                                          final Predicate<Integer> isEditable,
                                          final Consumer<HasName> clearDisplayNameConsumer,
@@ -64,6 +68,7 @@ public abstract class EditableNameAndDataTypeColumn<G extends BaseExpressionGrid
                                          final NameAndDataTypePopoverView.Presenter editor,
                                          final Optional<String> editorTitle) {
         this(Collections.singletonList(headerMetaData),
+             width,
              gridWidget,
              isEditable,
              clearDisplayNameConsumer,
@@ -75,6 +80,7 @@ public abstract class EditableNameAndDataTypeColumn<G extends BaseExpressionGrid
     }
 
     public EditableNameAndDataTypeColumn(final List<HeaderMetaData> headerMetaData,
+                                         final double width,
                                          final G gridWidget,
                                          final Predicate<Integer> isEditable,
                                          final Consumer<HasName> clearDisplayNameConsumer,
@@ -85,6 +91,7 @@ public abstract class EditableNameAndDataTypeColumn<G extends BaseExpressionGrid
                                          final Optional<String> editorTitle) {
         super(headerMetaData,
               new NameAndDataTypeColumnRenderer(),
+              width,
               gridWidget);
         this.isEditable = isEditable;
         this.clearDisplayNameConsumer = clearDisplayNameConsumer;

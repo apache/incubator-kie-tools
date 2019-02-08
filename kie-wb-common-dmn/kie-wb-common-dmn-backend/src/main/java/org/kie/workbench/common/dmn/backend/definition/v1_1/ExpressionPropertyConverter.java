@@ -16,6 +16,14 @@
 
 package org.kie.workbench.common.dmn.backend.definition.v1_1;
 
+import java.util.ArrayList;
+import java.util.Objects;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+
+import javax.xml.namespace.QName;
+
+import org.kie.workbench.common.dmn.api.definition.HasComponentWidths;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
@@ -24,29 +32,58 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.Invocation;
 import org.kie.workbench.common.dmn.api.definition.v1_1.List;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Relation;
+import org.kie.workbench.common.dmn.backend.definition.v1_1.dd.ComponentWidths;
 
 public class ExpressionPropertyConverter {
 
-    public static Expression wbFromDMN(final org.kie.dmn.model.api.Expression dmn) {
+    public static Expression wbFromDMN(final org.kie.dmn.model.api.Expression dmn,
+                                       final BiConsumer<String, HasComponentWidths> hasComponentWidthsConsumer) {
         if (dmn instanceof org.kie.dmn.model.api.LiteralExpression) {
-            return LiteralExpressionPropertyConverter.wbFromDMN((org.kie.dmn.model.api.LiteralExpression) dmn);
+            final LiteralExpression e = LiteralExpressionPropertyConverter.wbFromDMN((org.kie.dmn.model.api.LiteralExpression) dmn);
+            hasComponentWidthsConsumer.accept(dmn.getId(),
+                                              e);
+            return e;
         } else if (dmn instanceof org.kie.dmn.model.api.Context) {
-            return ContextPropertyConverter.wbFromDMN((org.kie.dmn.model.api.Context) dmn);
+            final Context e = ContextPropertyConverter.wbFromDMN((org.kie.dmn.model.api.Context) dmn,
+                                                                 hasComponentWidthsConsumer);
+            hasComponentWidthsConsumer.accept(dmn.getId(),
+                                              e);
+            return e;
         } else if (dmn instanceof org.kie.dmn.model.api.Relation) {
-            return RelationPropertyConverter.wbFromDMN((org.kie.dmn.model.api.Relation) dmn);
+            final Relation e = RelationPropertyConverter.wbFromDMN((org.kie.dmn.model.api.Relation) dmn,
+                                                                   hasComponentWidthsConsumer);
+            hasComponentWidthsConsumer.accept(dmn.getId(),
+                                              e);
+            return e;
         } else if (dmn instanceof org.kie.dmn.model.api.List) {
-            return ListPropertyConverter.wbFromDMN((org.kie.dmn.model.api.List) dmn);
+            final List e = ListPropertyConverter.wbFromDMN((org.kie.dmn.model.api.List) dmn,
+                                                           hasComponentWidthsConsumer);
+            hasComponentWidthsConsumer.accept(dmn.getId(),
+                                              e);
+            return e;
         } else if (dmn instanceof org.kie.dmn.model.api.Invocation) {
-            return InvocationPropertyConverter.wbFromDMN((org.kie.dmn.model.api.Invocation) dmn);
+            final Invocation e = InvocationPropertyConverter.wbFromDMN((org.kie.dmn.model.api.Invocation) dmn,
+                                                                       hasComponentWidthsConsumer);
+            hasComponentWidthsConsumer.accept(dmn.getId(),
+                                              e);
+            return e;
         } else if (dmn instanceof org.kie.dmn.model.api.FunctionDefinition) {
-            return FunctionDefinitionPropertyConverter.wbFromDMN((org.kie.dmn.model.api.FunctionDefinition) dmn);
+            final FunctionDefinition e = FunctionDefinitionPropertyConverter.wbFromDMN((org.kie.dmn.model.api.FunctionDefinition) dmn,
+                                                                                       hasComponentWidthsConsumer);
+            hasComponentWidthsConsumer.accept(dmn.getId(),
+                                              e);
+            return e;
         } else if (dmn instanceof org.kie.dmn.model.api.DecisionTable) {
-            return DecisionTablePropertyConverter.wbFromDMN((org.kie.dmn.model.api.DecisionTable) dmn);
+            final DecisionTable e = DecisionTablePropertyConverter.wbFromDMN((org.kie.dmn.model.api.DecisionTable) dmn);
+            hasComponentWidthsConsumer.accept(dmn.getId(),
+                                              e);
+            return e;
         }
         return null;
     }
 
-    public static org.kie.dmn.model.api.Expression dmnFromWB(final Expression wb) {
+    public static org.kie.dmn.model.api.Expression dmnFromWB(final Expression wb,
+                                                             final Consumer<ComponentWidths> componentWidthsConsumer) {
         // SPECIAL CASE: to represent a partially edited DMN file.
         // reference above.
         if (wb == null) {
@@ -54,18 +91,31 @@ public class ExpressionPropertyConverter {
             return mockedExpression;
         }
 
+        final String uuid = wb.getId().getValue();
+        if (Objects.nonNull(uuid)) {
+            final ComponentWidths componentWidths = new ComponentWidths();
+            componentWidths.setDmnElementRef(new QName(uuid));
+            componentWidths.setWidths(new ArrayList<>(wb.getComponentWidths()));
+            componentWidthsConsumer.accept(componentWidths);
+        }
+
         if (wb instanceof LiteralExpression) {
             return LiteralExpressionPropertyConverter.dmnFromWB((LiteralExpression) wb);
         } else if (wb instanceof Context) {
-            return ContextPropertyConverter.dmnFromWB((Context) wb);
+            return ContextPropertyConverter.dmnFromWB((Context) wb,
+                                                      componentWidthsConsumer);
         } else if (wb instanceof Relation) {
-            return RelationPropertyConverter.dmnFromWB((Relation) wb);
+            return RelationPropertyConverter.dmnFromWB((Relation) wb,
+                                                       componentWidthsConsumer);
         } else if (wb instanceof List) {
-            return ListPropertyConverter.dmnFromWB((List) wb);
+            return ListPropertyConverter.dmnFromWB((List) wb,
+                                                   componentWidthsConsumer);
         } else if (wb instanceof Invocation) {
-            return InvocationPropertyConverter.dmnFromWB((Invocation) wb);
+            return InvocationPropertyConverter.dmnFromWB((Invocation) wb,
+                                                         componentWidthsConsumer);
         } else if (wb instanceof FunctionDefinition) {
-            return FunctionDefinitionPropertyConverter.dmnFromWB((FunctionDefinition) wb);
+            return FunctionDefinitionPropertyConverter.dmnFromWB((FunctionDefinition) wb,
+                                                                 componentWidthsConsumer);
         } else if (wb instanceof DecisionTable) {
             return DecisionTablePropertyConverter.dmnFromWB((DecisionTable) wb);
         }

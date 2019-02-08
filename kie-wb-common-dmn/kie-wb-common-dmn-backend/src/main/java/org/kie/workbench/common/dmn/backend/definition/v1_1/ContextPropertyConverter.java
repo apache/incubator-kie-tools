@@ -17,16 +17,21 @@
 package org.kie.workbench.common.dmn.backend.definition.v1_1;
 
 import java.util.Objects;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
+import org.kie.workbench.common.dmn.api.definition.HasComponentWidths;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ContextEntry;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.dmn.backend.definition.v1_1.dd.ComponentWidths;
 
 public class ContextPropertyConverter {
 
-    public static Context wbFromDMN(final org.kie.dmn.model.api.Context dmn) {
+    public static Context wbFromDMN(final org.kie.dmn.model.api.Context dmn,
+                                    final BiConsumer<String, HasComponentWidths> hasComponentWidthsConsumer) {
         Id id = new Id(dmn.getId());
         Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
         QName typeRef = QNamePropertyConverter.wbFromDMN(dmn.getTypeRef(), dmn);
@@ -34,7 +39,8 @@ public class ContextPropertyConverter {
                                      description,
                                      typeRef);
         for (org.kie.dmn.model.api.ContextEntry ce : dmn.getContextEntry()) {
-            ContextEntry ceConverted = ContextEntryPropertyConverter.wbFromDMN(ce);
+            ContextEntry ceConverted = ContextEntryPropertyConverter.wbFromDMN(ce,
+                                                                               hasComponentWidthsConsumer);
             if (ceConverted != null) {
                 ceConverted.setParent(result);
             }
@@ -52,14 +58,16 @@ public class ContextPropertyConverter {
         return result;
     }
 
-    public static org.kie.dmn.model.api.Context dmnFromWB(final Context wb) {
+    public static org.kie.dmn.model.api.Context dmnFromWB(final Context wb,
+                                                          final Consumer<ComponentWidths> componentWidthsConsumer) {
         org.kie.dmn.model.api.Context result = new org.kie.dmn.model.v1_2.TContext();
         result.setId(wb.getId().getValue());
         result.setDescription(DescriptionPropertyConverter.dmnFromWB(wb.getDescription()));
         QNamePropertyConverter.setDMNfromWB(wb.getTypeRef(),
                                             result::setTypeRef);
         for (ContextEntry ce : wb.getContextEntry()) {
-            org.kie.dmn.model.api.ContextEntry ceConverted = ContextEntryPropertyConverter.dmnFromWB(ce);
+            org.kie.dmn.model.api.ContextEntry ceConverted = ContextEntryPropertyConverter.dmnFromWB(ce,
+                                                                                                     componentWidthsConsumer);
             if (ceConverted != null) {
                 ceConverted.setParent(result);
             }
@@ -71,8 +79,10 @@ public class ContextPropertyConverter {
         //Conversion of ContextEntries will always create a _mock_ LiteralExpression if no Expression has
         //been defined therefore remove the last entry from the org.kie.dmn.model if the WB had no Expression.
         final int contextEntriesCount = result.getContextEntry().size();
-        if (Objects.isNull(wb.getContextEntry().get(contextEntriesCount - 1).getExpression())) {
-            result.getContextEntry().remove(contextEntriesCount - 1);
+        if (contextEntriesCount > 0) {
+            if (Objects.isNull(wb.getContextEntry().get(contextEntriesCount - 1).getExpression())) {
+                result.getContextEntry().remove(contextEntriesCount - 1);
+            }
         }
 
         return result;

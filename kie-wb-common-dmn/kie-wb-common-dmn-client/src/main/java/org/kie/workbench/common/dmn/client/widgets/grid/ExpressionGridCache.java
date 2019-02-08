@@ -18,15 +18,18 @@ package org.kie.workbench.common.dmn.client.widgets.grid;
 
 import java.util.Optional;
 
+import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControl;
+import org.uberfire.ext.wires.core.grids.client.model.GridData;
 
 public interface ExpressionGridCache extends CanvasControl<AbstractCanvas> {
 
-    Optional<BaseExpressionGrid> getExpressionGrid(final String nodeUUID);
+    Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>> getExpressionGrid(final String nodeUUID);
 
     void putExpressionGrid(final String nodeUUID,
-                           final Optional<BaseExpressionGrid> gridWidget);
+                           final Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>> gridWidget);
 
     void removeExpressionGrid(final String nodeUUID);
 

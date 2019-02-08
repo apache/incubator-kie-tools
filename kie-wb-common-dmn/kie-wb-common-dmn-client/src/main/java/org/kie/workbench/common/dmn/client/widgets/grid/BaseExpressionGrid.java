@@ -37,6 +37,7 @@ import org.kie.workbench.common.dmn.api.definition.NOPDomainObject;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.dmn.client.commands.general.DeleteCellValueCommand;
 import org.kie.workbench.common.dmn.client.commands.general.DeleteHasNameCommand;
 import org.kie.workbench.common.dmn.client.commands.general.DeleteHeaderValueCommand;
@@ -61,7 +62,6 @@ import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasGraphCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
-import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.command.Command;
@@ -87,7 +87,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLayerRedra
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.GridPinnedModeManager;
 
 public abstract class BaseExpressionGrid<E extends Expression, D extends GridData, M extends BaseUIModelMapper<E>>
-        extends BaseGrid
+        extends BaseGrid<E>
         implements ExpressionGridCache.IsCacheable,
                    HasDOMElementResources {
 
@@ -98,11 +98,9 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
     public static final Function<BaseExpressionGrid, Double> RESIZE_EXISTING_MINIMUM = (beg) -> beg.getMinimumWidth() + beg.getPadding() * 2;
 
     protected final GridCellTuple parent;
-    protected final Optional<E> expression;
     protected final DMNGridPanel gridPanel;
     protected final DefinitionUtils definitionUtils;
     protected final Event<ExpressionEditorChanged> editorSelectedEvent;
-    protected final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
     protected final ListSelectorView.Presenter listSelector;
     protected final int nesting;
 
@@ -111,7 +109,6 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
     public BaseExpressionGrid(final GridCellTuple parent,
                               final Optional<String> nodeUUID,
                               final HasExpression hasExpression,
-                              final Optional<E> expression,
                               final Optional<HasName> hasName,
                               final DMNGridPanel gridPanel,
                               final DMNGridLayer gridLayer,
@@ -120,7 +117,7 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
                               final DefinitionUtils definitionUtils,
                               final SessionManager sessionManager,
                               final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                              final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
+                              final DefaultCanvasCommandFactory canvasCommandFactory,
                               final Event<ExpressionEditorChanged> editorSelectedEvent,
                               final Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent,
                               final Event<DomainObjectSelectionEvent> domainObjectSelectionEvent,
@@ -136,16 +133,15 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
               gridRenderer,
               sessionManager,
               sessionCommandManager,
+              canvasCommandFactory,
               refreshFormPropertiesEvent,
               domainObjectSelectionEvent,
               cellEditorControls,
               translationService);
         this.parent = parent;
-        this.expression = expression;
         this.gridPanel = gridPanel;
         this.definitionUtils = definitionUtils;
         this.editorSelectedEvent = editorSelectedEvent;
-        this.canvasCommandFactory = canvasCommandFactory;
         this.listSelector = listSelector;
         this.nesting = nesting;
 
@@ -375,10 +371,6 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
         selectedDomainObject = Optional.empty();
     }
 
-    public Optional<E> getExpression() {
-        return expression;
-    }
-
     public double getPadding() {
         return DEFAULT_PADDING;
     }
@@ -577,7 +569,7 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
     public void selectExpressionEditorFirstCell(final int uiRowIndex,
                                                 final int uiColumnIndex) {
         final GridCellValue<?> value = model.getCell(uiRowIndex, uiColumnIndex).getValue();
-        final Optional<BaseExpressionGrid> grid = ((ExpressionCellValue) value).getValue();
+        final Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>> grid = ((ExpressionCellValue) value).getValue();
         grid.ifPresent(beg -> {
             ((DMNGridLayer) getLayer()).select(beg);
             beg.selectFirstCell();

@@ -20,6 +20,7 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import com.google.gwt.user.client.ui.RequiresResize;
+import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
@@ -80,7 +81,7 @@ public class GridCellTuple implements RequiresResize {
                 final GridCellValue<?> value = cell.getValue();
                 if (value instanceof ExpressionCellValue) {
                     final ExpressionCellValue ecv = (ExpressionCellValue) value;
-                    final Optional<BaseExpressionGrid> editor = ecv.getValue();
+                    final Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>> editor = ecv.getValue();
                     if (editor.isPresent()) {
                         final BaseExpressionGrid beg = editor.get();
                         width = Math.max(width, requiredWidthSupplier.apply(beg));

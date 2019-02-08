@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.invocation
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.Invocation;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.invocation.MoveRowsCommand;
@@ -34,13 +35,13 @@ public class InvocationGridData extends DelegatingGridData {
 
     private final SessionManager sessionManager;
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
-    private final Optional<Invocation> expression;
+    private final Supplier<Optional<Invocation>> expression;
     private final Command canvasOperation;
 
     public InvocationGridData(final DMNGridData delegate,
                               final SessionManager sessionManager,
                               final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                              final Optional<Invocation> expression,
+                              final Supplier<Optional<Invocation>> expression,
                               final Command canvasOperation) {
         super(delegate);
         this.sessionManager = sessionManager;
@@ -61,7 +62,7 @@ public class InvocationGridData extends DelegatingGridData {
     @Override
     public void moveRowsTo(final int index,
                            final List<GridRow> rows) {
-        expression.ifPresent(invocation -> {
+        expression.get().ifPresent(invocation -> {
             final AbstractCanvasHandler handler = (AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler();
             sessionCommandManager.execute(handler,
                                           new MoveRowsCommand(invocation,

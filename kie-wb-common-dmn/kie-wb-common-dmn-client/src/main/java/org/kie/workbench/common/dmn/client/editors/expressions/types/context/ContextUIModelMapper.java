@@ -96,14 +96,13 @@ public class ContextUIModelMapper extends BaseUIModelMapper<Context> {
 
                     final Optional<ExpressionEditorDefinition<Expression>> expressionEditorDefinition = expressionEditorDefinitionsSupplier.get().getExpressionEditorDefinition(expression);
                     expressionEditorDefinition.ifPresent(ed -> {
-                        final Optional<BaseExpressionGrid> editor = ed.getEditor(new GridCellTuple(rowIndex,
-                                                                                                   columnIndex,
-                                                                                                   gridWidget),
-                                                                                 Optional.empty(),
-                                                                                 ce,
-                                                                                 expression,
-                                                                                 Optional.ofNullable(ce.getVariable()),
-                                                                                 nesting + 1);
+                        final Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>> editor = ed.getEditor(new GridCellTuple(rowIndex,
+                                                                                                                                                                          columnIndex,
+                                                                                                                                                                          gridWidget),
+                                                                                                                                                        Optional.empty(),
+                                                                                                                                                        ce,
+                                                                                                                                                        Optional.ofNullable(ce.getVariable()),
+                                                                                                                                                        nesting + 1);
 
                         uiModel.get().setCell(rowIndex,
                                               columnIndex,
@@ -141,7 +140,7 @@ public class ContextUIModelMapper extends BaseUIModelMapper<Context> {
                     cell.get().ifPresent(v -> {
                         final ExpressionCellValue ecv = (ExpressionCellValue) v;
                         ecv.getValue().ifPresent(beg -> {
-                            beg.getExpression().ifPresent(e -> context.getContextEntry()
+                            beg.getExpression().get().ifPresent(e -> context.getContextEntry()
                                     .get(rowIndex)
                                     .setExpression((Expression) e));
                         });

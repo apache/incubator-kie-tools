@@ -67,6 +67,7 @@ public class LiteralExpressionColumnTest extends BaseDOMElementSingletonColumnTe
     protected LiteralExpressionColumn getColumn() {
         return new LiteralExpressionColumn(Collections.singletonList(headerMetaData),
                                            factory,
+                                           LiteralExpressionColumn.DEFAULT_WIDTH,
                                            gridWidget);
     }
 

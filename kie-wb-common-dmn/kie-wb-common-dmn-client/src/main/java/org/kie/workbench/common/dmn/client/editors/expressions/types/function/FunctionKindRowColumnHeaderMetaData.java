@@ -30,9 +30,9 @@ class FunctionKindRowColumnHeaderMetaData extends EditablePopupHeaderMetaData<Ha
     private static final String EXPRESSION_TYPE_GROUP = "ExpressionTypeGroup";
 
     private final FunctionGrid gridWidget;
-    private final Supplier<FunctionDefinition> functionSupplier;
+    private final Supplier<Optional<FunctionDefinition>> functionSupplier;
 
-    FunctionKindRowColumnHeaderMetaData(final Supplier<FunctionDefinition> functionSupplier,
+    FunctionKindRowColumnHeaderMetaData(final Supplier<Optional<FunctionDefinition>> functionSupplier,
                                         final CellEditorControlsView.Presenter cellEditorControls,
                                         final KindPopoverView.Presenter editor,
                                         final Optional<String> editorTitle,
@@ -62,6 +62,6 @@ class FunctionKindRowColumnHeaderMetaData extends EditablePopupHeaderMetaData<Ha
 
     @Override
     public String getTitle() {
-        return functionSupplier.get().getKind().code();
+        return functionSupplier.get().get().getKind().code();
     }
 }

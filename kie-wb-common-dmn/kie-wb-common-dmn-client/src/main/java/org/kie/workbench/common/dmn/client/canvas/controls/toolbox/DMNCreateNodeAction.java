@@ -21,11 +21,11 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
+import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.api.ClientFactoryManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
-import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.GeneralCreateNodeAction;
 import org.kie.workbench.common.stunner.core.client.session.Session;
@@ -39,7 +39,7 @@ public class DMNCreateNodeAction extends GeneralCreateNodeAction {
                                final CanvasLayoutUtils canvasLayoutUtils,
                                final Event<CanvasSelectionEvent> selectionEvent,
                                final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                               final @DMNEditor CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory) {
+                               final @DMNEditor DefaultCanvasCommandFactory canvasCommandFactory) {
         super(clientFactoryManager,
               canvasLayoutUtils,
               selectionEvent,

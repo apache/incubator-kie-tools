@@ -33,6 +33,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellE
 public class InvocationParameterColumn extends EditableNameAndDataTypeColumn<InvocationGrid> {
 
     public InvocationParameterColumn(final List<HeaderMetaData> headerMetaData,
+                                     final double width,
                                      final InvocationGrid gridWidget,
                                      final Predicate<Integer> isEditable,
                                      final Consumer<HasName> clearDisplayNameConsumer,
@@ -42,6 +43,7 @@ public class InvocationParameterColumn extends EditableNameAndDataTypeColumn<Inv
                                      final NameAndDataTypePopoverView.Presenter editor,
                                      final Optional<String> editorTitle) {
         super(headerMetaData,
+              width,
               gridWidget,
               isEditable,
               clearDisplayNameConsumer,

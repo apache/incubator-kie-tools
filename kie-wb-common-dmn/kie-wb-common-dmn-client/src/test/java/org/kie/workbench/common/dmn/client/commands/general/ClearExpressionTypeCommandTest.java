@@ -25,9 +25,11 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionContainerUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCache;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.ext.wires.core.grids.client.model.GridData;
 
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
@@ -45,7 +47,7 @@ public class ClearExpressionTypeCommandTest extends BaseClearExpressionCommandTe
     private ExpressionContainerUIModelMapper uiModelMapper;
 
     @Mock
-    private BaseExpressionGrid expressionGrid;
+    private BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper> expressionGrid;
 
     @Before
     @Override

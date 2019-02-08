@@ -55,15 +55,14 @@ public class UndefinedExpressionUIModelMapper extends BaseUIModelMapper<Expressi
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void toDMNModel(final int rowIndex,
                            final int columnIndex,
                            final Supplier<Optional<GridCellValue<?>>> cell) {
         cell.get().ifPresent(v -> {
             final ExpressionCellValue ecv = (ExpressionCellValue) v;
             ecv.getValue().ifPresent(beg -> {
-                hasExpression.setExpression((Expression) beg.getExpression().orElse(null));
-                beg.getExpression().ifPresent(e -> ((Expression) e).setParent(hasExpression.asDMNModelInstrumentedBase()));
+                hasExpression.setExpression(beg.getExpression().get().orElse(null));
+                beg.getExpression().get().ifPresent(e -> e.setParent(hasExpression.asDMNModelInstrumentedBase()));
             });
         });
     }

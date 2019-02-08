@@ -35,11 +35,8 @@ public class NameAndDataTypeHeaderMetaDataHasExpressionTest extends BaseNameAndD
 
     private Decision hasExpression = new Decision();
 
-    private Optional<LiteralExpression> expression = Optional.of(new LiteralExpression());
-
     public void setup(final Optional<HasName> hasName) {
         this.metaData = new NameAndDataTypeHeaderMetaData<LiteralExpression>(hasExpression,
-                                                                             expression,
                                                                              hasName,
                                                                              clearDisplayNameConsumer,
                                                                              setDisplayNameConsumer,

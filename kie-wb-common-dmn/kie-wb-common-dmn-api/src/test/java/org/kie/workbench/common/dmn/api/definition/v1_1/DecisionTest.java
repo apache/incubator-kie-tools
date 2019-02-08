@@ -33,7 +33,6 @@ public class DecisionTest {
 
     @Test
     public void testConstructor() {
-
         final Id id = mock(Id.class);
         final Description description = mock(Description.class);
         final Name name = mock(Name.class);

@@ -33,4 +33,21 @@ public interface HasExpression {
     default boolean isClearSupported() {
         return true;
     }
+
+    HasExpression NOP = new HasExpression() {
+        @Override
+        public Expression getExpression() {
+            return null;
+        }
+
+        @Override
+        public void setExpression(final Expression expression) {
+
+        }
+
+        @Override
+        public DMNModelInstrumentedBase asDMNModelInstrumentedBase() {
+            return null;
+        }
+    };
 }

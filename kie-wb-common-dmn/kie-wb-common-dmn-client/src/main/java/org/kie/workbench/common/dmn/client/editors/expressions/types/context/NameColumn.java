@@ -33,6 +33,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellE
 public class NameColumn extends EditableNameAndDataTypeColumn<ContextGrid> {
 
     public NameColumn(final List<HeaderMetaData> headerMetaData,
+                      final double width,
                       final ContextGrid gridWidget,
                       final Predicate<Integer> isEditable,
                       final Consumer<HasName> clearDisplayNameConsumer,
@@ -42,6 +43,7 @@ public class NameColumn extends EditableNameAndDataTypeColumn<ContextGrid> {
                       final NameAndDataTypePopoverView.Presenter editor,
                       final Optional<String> editorTitle) {
         super(headerMetaData,
+              width,
               gridWidget,
               isEditable,
               clearDisplayNameConsumer,

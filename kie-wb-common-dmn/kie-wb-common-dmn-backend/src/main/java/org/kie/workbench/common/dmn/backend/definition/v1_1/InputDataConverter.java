@@ -16,6 +16,10 @@
 
 package org.kie.workbench.common.dmn.backend.definition.v1_1;
 
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+
+import org.kie.workbench.common.dmn.api.definition.HasComponentWidths;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItemPrimary;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InputData;
 import org.kie.workbench.common.dmn.api.property.background.BackgroundSet;
@@ -24,6 +28,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.font.FontSet;
+import org.kie.workbench.common.dmn.backend.definition.v1_1.dd.ComponentWidths;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
@@ -38,7 +43,8 @@ public class InputDataConverter implements NodeConverter<org.kie.dmn.model.api.I
     }
 
     @Override
-    public Node<View<InputData>, ?> nodeFromDMN(final org.kie.dmn.model.api.InputData dmn) {
+    public Node<View<InputData>, ?> nodeFromDMN(final org.kie.dmn.model.api.InputData dmn,
+                                                final BiConsumer<String, HasComponentWidths> hasComponentWidthsConsumer) {
         @SuppressWarnings("unchecked")
         Node<View<InputData>, ?> node = (Node<View<InputData>, ?>) factoryManager.newElement(dmn.getId(),
                                                                                              InputData.class).asNode();
@@ -63,7 +69,8 @@ public class InputDataConverter implements NodeConverter<org.kie.dmn.model.api.I
     }
 
     @Override
-    public org.kie.dmn.model.api.InputData dmnFromNode(final Node<View<InputData>, ?> node) {
+    public org.kie.dmn.model.api.InputData dmnFromNode(final Node<View<InputData>, ?> node,
+                                                       final Consumer<ComponentWidths> componentWidthsConsumer) {
         InputData source = node.getContent().getDefinition();
         org.kie.dmn.model.api.InputData result = new org.kie.dmn.model.v1_2.TInputData();
         result.setId(source.getId().getValue());

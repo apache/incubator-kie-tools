@@ -54,8 +54,8 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class InvocationUIModelMapperTest {
@@ -106,23 +106,22 @@ public class InvocationUIModelMapperTest {
         this.uiModel.appendColumn(uiRowNumberColumn);
         this.uiModel.appendColumn(uiNameColumn);
         this.uiModel.appendColumn(uiExpressionEditorColumn);
-        doReturn(0).when(uiRowNumberColumn).getIndex();
-        doReturn(1).when(uiNameColumn).getIndex();
-        doReturn(2).when(uiExpressionEditorColumn).getIndex();
-        doReturn(uiModel).when(gridWidget).getModel();
+        when(uiRowNumberColumn.getIndex()).thenReturn(0);
+        when(uiNameColumn.getIndex()).thenReturn(1);
+        when(uiExpressionEditorColumn.getIndex()).thenReturn(2);
+        when(gridWidget.getModel()).thenReturn(uiModel);
 
         final ExpressionEditorDefinitions expressionEditorDefinitions = new ExpressionEditorDefinitions();
         expressionEditorDefinitions.add(literalExpressionEditorDefinition);
 
-        doReturn(expressionEditorDefinitions).when(expressionEditorDefinitionsSupplier).get();
-        doReturn(Optional.of(literalExpression)).when(literalExpressionEditorDefinition).getModelClass();
-        doReturn(Optional.of(literalExpression)).when(literalExpressionEditor).getExpression();
-        doReturn(Optional.of(literalExpressionEditor)).when(literalExpressionEditorDefinition).getEditor(any(GridCellTuple.class),
-                                                                                                         any(Optional.class),
-                                                                                                         any(HasExpression.class),
-                                                                                                         any(Optional.class),
-                                                                                                         any(Optional.class),
-                                                                                                         anyInt());
+        when(expressionEditorDefinitionsSupplier.get()).thenReturn(expressionEditorDefinitions);
+        when(literalExpressionEditorDefinition.getModelClass()).thenReturn(Optional.of(literalExpression));
+        when(literalExpressionEditor.getExpression()).thenReturn(() -> Optional.of(literalExpression));
+        when(literalExpressionEditorDefinition.getEditor(any(GridCellTuple.class),
+                                                         any(Optional.class),
+                                                         any(HasExpression.class),
+                                                         any(Optional.class),
+                                                         anyInt())).thenReturn(Optional.of(literalExpressionEditor));
 
         final LiteralExpression invocationExpression = new LiteralExpression();
         invocationExpression.getText().setValue("invocation-expression");
@@ -180,7 +179,6 @@ public class InvocationUIModelMapperTest {
         verify(literalExpressionEditorDefinition).getEditor(parentCaptor.capture(),
                                                             eq(Optional.empty()),
                                                             eq(invocation.getBinding().get(0)),
-                                                            eq(Optional.of(invocation.getBinding().get(0).getExpression())),
                                                             eq(Optional.of(invocation.getBinding().get(0).getParameter())),
                                                             eq(1));
         final GridCellTuple parent = parentCaptor.getValue();

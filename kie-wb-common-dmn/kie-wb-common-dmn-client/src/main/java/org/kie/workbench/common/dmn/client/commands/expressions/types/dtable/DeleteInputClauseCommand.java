@@ -96,6 +96,8 @@ public class DeleteInputClauseCommand extends AbstractCanvasGraphCommand impleme
 
             @Override
             public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext gce) {
+                dtable.getComponentWidths().remove(uiColumnIndex);
+
                 final int clauseIndex = getInputClauseIndex();
                 dtable.getRule().forEach(row -> row.getInputEntry().remove(clauseIndex));
                 dtable.getInput().remove(clauseIndex);
@@ -105,6 +107,8 @@ public class DeleteInputClauseCommand extends AbstractCanvasGraphCommand impleme
 
             @Override
             public CommandResult<RuleViolation> undo(final GraphCommandExecutionContext gce) {
+                dtable.getComponentWidths().add(uiColumnIndex, oldUiModelColumn.getWidth());
+
                 final int clauseIndex = getInputClauseIndex();
                 dtable.getInput().add(clauseIndex,
                                       oldInputClause);

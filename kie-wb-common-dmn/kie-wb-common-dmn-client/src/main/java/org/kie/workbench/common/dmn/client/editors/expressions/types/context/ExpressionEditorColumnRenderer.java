@@ -21,13 +21,16 @@ import java.util.Optional;
 import com.ait.lienzo.client.core.shape.Group;
 import com.google.gwt.core.client.GWT;
 import org.kie.soup.commons.validation.PortablePreconditions;
+import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
+import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.impl.BaseGridColumnRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridWidgetRegistry;
 
-public class ExpressionEditorColumnRenderer extends BaseGridColumnRenderer<Optional<BaseExpressionGrid>> {
+public class ExpressionEditorColumnRenderer extends BaseGridColumnRenderer<Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>>> {
 
     private final GridWidgetRegistry registry;
 
@@ -36,7 +39,7 @@ public class ExpressionEditorColumnRenderer extends BaseGridColumnRenderer<Optio
     }
 
     @Override
-    public Group renderCell(final GridCell<Optional<BaseExpressionGrid>> cell,
+    public Group renderCell(final GridCell<Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>>> cell,
                             final GridBodyCellRenderContext context) {
         if (cell == null || cell.getValue() == null) {
             return null;

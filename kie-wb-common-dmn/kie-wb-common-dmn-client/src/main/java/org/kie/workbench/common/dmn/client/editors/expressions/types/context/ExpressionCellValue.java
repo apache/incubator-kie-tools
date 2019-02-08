@@ -18,17 +18,20 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.context;
 
 import java.util.Optional;
 
+import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
+import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 
-public class ExpressionCellValue extends BaseGridCellValue<Optional<BaseExpressionGrid>> {
+public class ExpressionCellValue extends BaseGridCellValue<Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>>> {
 
-    public ExpressionCellValue(final Optional<BaseExpressionGrid> editor) {
+    public ExpressionCellValue(final Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>> editor) {
         super(editor);
     }
 
     public Optional<Double> getMinimumWidth() {
-        final Optional<BaseExpressionGrid> editor = getValue();
+        final Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>> editor = getValue();
         if (editor.isPresent()) {
             final BaseExpressionGrid beg = editor.get();
             return Optional.of(beg.getMinimumWidth());

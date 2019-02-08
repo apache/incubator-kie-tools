@@ -35,7 +35,6 @@ public class NameColumnHeaderMetaData extends NameAndDataTypeHeaderMetaData<Cont
     private static final String NAME_DATA_TYPE_COLUMN_GROUP = "NameColumnHeaderMetaData$NameAndDataTypeColumn";
 
     public NameColumnHeaderMetaData(final HasExpression hasExpression,
-                                    final Optional<Context> expression,
                                     final Optional<HasName> hasName,
                                     final Consumer<HasName> clearDisplayNameConsumer,
                                     final BiConsumer<HasName, Name> setDisplayNameConsumer,
@@ -44,7 +43,6 @@ public class NameColumnHeaderMetaData extends NameAndDataTypeHeaderMetaData<Cont
                                     final NameAndDataTypePopoverView.Presenter editor,
                                     final Optional<String> editorTitle) {
         super(hasExpression,
-              expression,
               hasName,
               clearDisplayNameConsumer,
               setDisplayNameConsumer,

@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.dmn.client.commands.expressions.types.relation;
 
+import java.util.Optional;
+import java.util.function.Supplier;
+
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Relation;
@@ -45,17 +48,19 @@ public class AddRelationColumnCommand extends AbstractCanvasGraphCommand impleme
     private final Relation relation;
     private final InformationItem informationItem;
     private final GridData uiModel;
-    private final RelationColumn uiModelColumn;
+    private final Supplier<RelationColumn> uiModelColumnSupplier;
     private final int uiColumnIndex;
     private final RelationUIModelMapper uiModelMapper;
     private final org.uberfire.mvp.Command executeCanvasOperation;
     private final org.uberfire.mvp.Command undoCanvasOperation;
     private final String name;
 
+    private Optional<RelationColumn> uiModelColumn = Optional.empty();
+
     public AddRelationColumnCommand(final Relation relation,
                                     final InformationItem informationItem,
                                     final GridData uiModel,
-                                    final RelationColumn uiModelColumn,
+                                    final Supplier<RelationColumn> uiModelColumnSupplier,
                                     final int uiColumnIndex,
                                     final RelationUIModelMapper uiModelMapper,
                                     final org.uberfire.mvp.Command executeCanvasOperation,
@@ -63,7 +68,7 @@ public class AddRelationColumnCommand extends AbstractCanvasGraphCommand impleme
         this.relation = relation;
         this.informationItem = informationItem;
         this.uiModel = uiModel;
-        this.uiModelColumn = uiModelColumn;
+        this.uiModelColumnSupplier = uiModelColumnSupplier;
         this.uiColumnIndex = uiColumnIndex;
         this.uiModelMapper = uiModelMapper;
         this.executeCanvasOperation = executeCanvasOperation;
@@ -81,6 +86,8 @@ public class AddRelationColumnCommand extends AbstractCanvasGraphCommand impleme
 
             @Override
             public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext gce) {
+                relation.getComponentWidths().add(uiColumnIndex, null);
+
                 final int iiIndex = uiColumnIndex - RelationUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT;
                 relation.getColumn().add(iiIndex, informationItem);
                 informationItem.getName().setValue(name);
@@ -98,6 +105,8 @@ public class AddRelationColumnCommand extends AbstractCanvasGraphCommand impleme
 
             @Override
             public CommandResult<RuleViolation> undo(final GraphCommandExecutionContext gce) {
+                relation.getComponentWidths().remove(uiColumnIndex);
+
                 final int columnIndex = relation.getColumn().indexOf(informationItem);
                 relation.getRow().forEach(row -> row.getExpression().remove(columnIndex));
                 relation.getColumn().remove(informationItem);
@@ -112,8 +121,11 @@ public class AddRelationColumnCommand extends AbstractCanvasGraphCommand impleme
         return new AbstractCanvasCommand() {
             @Override
             public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler handler) {
+                if (!uiModelColumn.isPresent()) {
+                    uiModelColumn = Optional.of(uiModelColumnSupplier.get());
+                }
                 uiModel.insertColumn(uiColumnIndex,
-                                     uiModelColumn);
+                                     uiModelColumn.get());
                 for (int rowIndex = 0; rowIndex < relation.getRow().size(); rowIndex++) {
                     uiModelMapper.fromDMNModel(rowIndex,
                                                uiColumnIndex);
@@ -129,7 +141,7 @@ public class AddRelationColumnCommand extends AbstractCanvasGraphCommand impleme
             @Override
             public CommandResult<CanvasViolation> undo(final AbstractCanvasHandler handler) {
                 //Deleting the GridColumn also deletes the underlying data
-                uiModel.deleteColumn(uiModelColumn);
+                uiModelColumn.ifPresent(uiModel::deleteColumn);
 
                 updateParentInformation();
 

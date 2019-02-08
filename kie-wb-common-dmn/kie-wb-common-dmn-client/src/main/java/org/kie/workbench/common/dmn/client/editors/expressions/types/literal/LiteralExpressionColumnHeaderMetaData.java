@@ -35,7 +35,6 @@ public class LiteralExpressionColumnHeaderMetaData extends NameAndDataTypeHeader
     private static final String NAME_DATA_TYPE_COLUMN_GROUP = "LiteralExpressionColumnHeaderMetaData$NameAndDataTypeColumn";
 
     public LiteralExpressionColumnHeaderMetaData(final HasExpression hasExpression,
-                                                 final Optional<LiteralExpression> expression,
                                                  final Optional<HasName> hasName,
                                                  final Consumer<HasName> clearDisplayNameConsumer,
                                                  final BiConsumer<HasName, Name> setDisplayNameConsumer,
@@ -44,7 +43,6 @@ public class LiteralExpressionColumnHeaderMetaData extends NameAndDataTypeHeader
                                                  final NameAndDataTypePopoverView.Presenter editor,
                                                  final Optional<String> editorTitle) {
         super(hasExpression,
-              expression,
               hasName,
               clearDisplayNameConsumer,
               setDisplayNameConsumer,

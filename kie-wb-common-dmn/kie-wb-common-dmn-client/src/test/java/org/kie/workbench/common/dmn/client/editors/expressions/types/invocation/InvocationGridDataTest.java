@@ -18,6 +18,7 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.invocation
 
 import java.util.Collections;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
@@ -65,7 +66,7 @@ public class InvocationGridDataTest {
 
     private InvocationGridData uiModel;
 
-    private Optional<Invocation> expression = Optional.of(new Invocation());
+    private Supplier<Optional<Invocation>> expression = () -> Optional.of(new Invocation());
 
     @Before
     public void setup() {

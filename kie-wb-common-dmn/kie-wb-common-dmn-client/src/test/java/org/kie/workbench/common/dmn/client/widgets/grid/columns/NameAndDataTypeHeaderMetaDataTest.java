@@ -20,6 +20,7 @@ import java.util.Optional;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.client.editors.expressions.util.RendererUtils;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -51,7 +52,14 @@ public class NameAndDataTypeHeaderMetaDataTest extends BaseNameAndDataTypeHeader
     @Test
     public void testGetHasTypeRefs() {
 
-        metaData = new NameAndDataTypeHeaderMetaData(null, null, null, null, null, null, null, null) {
+        metaData = new NameAndDataTypeHeaderMetaData(HasExpression.NOP,
+                                                     Optional.empty(),
+                                                     null,
+                                                     null,
+                                                     null,
+                                                     null,
+                                                     null,
+                                                     null) {
 
             public String getColumnGroup() {
                 return null;

@@ -18,6 +18,7 @@ package org.kie.workbench.common.dmn.api.definition.v1_1;
 
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,7 +48,6 @@ public class ContextTest {
 
     @Test
     public void testGetHasTypeRefs() {
-
         final ContextEntry contextEntry1 = mock(ContextEntry.class);
         final ContextEntry contextEntry2 = mock(ContextEntry.class);
         final List<ContextEntry> contextEntry = asList(contextEntry1, contextEntry2);
@@ -63,5 +63,12 @@ public class ContextTest {
         final List<HasTypeRef> expectedHasTypeRefs = asList(context, hasTypeRef1, hasTypeRef2);
 
         assertEquals(expectedHasTypeRefs, actualHasTypeRefs);
+    }
+
+    @Test
+    public void testComponentWidths() {
+        assertEquals(context.getRequiredComponentWidthCount(),
+                     context.getComponentWidths().size());
+        context.getComponentWidths().forEach(Assert::assertNull);
     }
 }

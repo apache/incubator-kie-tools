@@ -18,8 +18,10 @@ package org.kie.workbench.common.dmn.client.widgets.grid.columns;
 
 import java.util.Optional;
 
+import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.util.ColumnIndexUtilities;
@@ -49,7 +51,7 @@ public class KeyboardOperationEditGridCell extends KeyboardOperationEditCell {
                               ColumnIndexUtilities.findUiColumnIndex(model.getColumns(),
                                                                      selectedCell.getColumnIndex())).getValue();
         if (value instanceof ExpressionCellValue) {
-            final Optional<BaseExpressionGrid> grid = ((ExpressionCellValue) value).getValue();
+            final Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>> grid = ((ExpressionCellValue) value).getValue();
             grid.ifPresent(baseExpressionGrid -> {
                 gridLayer.select(baseExpressionGrid);
                 baseExpressionGrid.selectFirstCell();

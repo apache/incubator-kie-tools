@@ -21,10 +21,12 @@ import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.FunctionDefinition;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellValueTuple;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
@@ -41,6 +43,7 @@ import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
+import org.uberfire.mvp.ParameterizedCommand;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -57,7 +60,7 @@ public class SetKindCommandTest {
     private GridColumn mockColumn;
 
     @Mock
-    private org.uberfire.mvp.Command executeCanvasOperation;
+    private ParameterizedCommand<Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>>> executeCanvasOperation;
 
     @Mock
     private org.uberfire.mvp.Command undoCanvasOperation;
@@ -72,14 +75,14 @@ public class SetKindCommandTest {
     private RuleManager ruleManager;
 
     @Mock
-    private BaseExpressionGrid originalEditor;
+    private BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper> originalEditor;
 
     private LiteralExpression originalExpression = new LiteralExpression();
 
     private FunctionDefinition.Kind originalKind = FunctionDefinition.Kind.FEEL;
 
     @Mock
-    private BaseExpressionGrid newEditor;
+    private BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper> newEditor;
 
     private LiteralExpression newExpression = new LiteralExpression();
 
@@ -118,7 +121,8 @@ public class SetKindCommandTest {
                                           newKind,
                                           Optional.of(newExpression),
                                           executeCanvasOperation,
-                                          undoCanvasOperation);
+                                          undoCanvasOperation,
+                                          () -> Optional.of(newEditor));
     }
 
     @Test
@@ -204,7 +208,7 @@ public class SetKindCommandTest {
         assertEquals(newEditor,
                      ((ExpressionCellValue) uiModel.getCell(0, 0).getValue()).getValue().get());
 
-        verify(executeCanvasOperation).execute();
+        verify(executeCanvasOperation).execute(Optional.of(newEditor));
     }
 
     @Test

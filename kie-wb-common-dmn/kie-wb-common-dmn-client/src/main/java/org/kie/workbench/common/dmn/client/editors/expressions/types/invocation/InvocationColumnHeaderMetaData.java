@@ -35,7 +35,6 @@ public class InvocationColumnHeaderMetaData extends NameAndDataTypeHeaderMetaDat
     private static final String NAME_DATA_TYPE_COLUMN_GROUP = "InvocationColumnHeaderMetaData$NameAndDataTypeColumn";
 
     public InvocationColumnHeaderMetaData(final HasExpression hasExpression,
-                                          final Optional<Invocation> expression,
                                           final Optional<HasName> hasName,
                                           final Consumer<HasName> clearDisplayNameConsumer,
                                           final BiConsumer<HasName, Name> setDisplayNameConsumer,
@@ -44,7 +43,6 @@ public class InvocationColumnHeaderMetaData extends NameAndDataTypeHeaderMetaDat
                                           final NameAndDataTypePopoverView.Presenter editor,
                                           final Optional<String> editorTitle) {
         super(hasExpression,
-              expression,
               hasName,
               clearDisplayNameConsumer,
               setDisplayNameConsumer,

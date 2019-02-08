@@ -17,7 +17,10 @@
 package org.kie.workbench.common.dmn.backend.definition.v1_1;
 
 import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
+import org.kie.workbench.common.dmn.api.definition.HasComponentWidths;
 import org.kie.workbench.common.dmn.api.definition.v1_1.BusinessKnowledgeModel;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DRGElement;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionService;
@@ -31,6 +34,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.font.FontSet;
+import org.kie.workbench.common.dmn.backend.definition.v1_1.dd.ComponentWidths;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -46,7 +50,8 @@ public class BusinessKnowledgeModelConverter implements NodeConverter<org.kie.dm
     }
 
     @Override
-    public Node<View<BusinessKnowledgeModel>, ?> nodeFromDMN(final org.kie.dmn.model.api.BusinessKnowledgeModel dmn) {
+    public Node<View<BusinessKnowledgeModel>, ?> nodeFromDMN(final org.kie.dmn.model.api.BusinessKnowledgeModel dmn,
+                                                             final BiConsumer<String, HasComponentWidths> hasComponentWidthsConsumer) {
         @SuppressWarnings("unchecked")
         Node<View<BusinessKnowledgeModel>, ?> node = (Node<View<BusinessKnowledgeModel>, ?>) factoryManager.newElement(dmn.getId(),
                                                                                                                        BusinessKnowledgeModel.class).asNode();
@@ -54,7 +59,8 @@ public class BusinessKnowledgeModelConverter implements NodeConverter<org.kie.dm
         Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
         Name name = new Name(dmn.getName());
         InformationItemPrimary informationItem = InformationItemPrimaryPropertyConverter.wbFromDMN(dmn.getVariable());
-        FunctionDefinition functionDefinition = FunctionDefinitionPropertyConverter.wbFromDMN(dmn.getEncapsulatedLogic());
+        FunctionDefinition functionDefinition = FunctionDefinitionPropertyConverter.wbFromDMN(dmn.getEncapsulatedLogic(),
+                                                                                              hasComponentWidthsConsumer);
         BusinessKnowledgeModel bkm = new BusinessKnowledgeModel(id,
                                                                 description,
                                                                 name,
@@ -76,7 +82,8 @@ public class BusinessKnowledgeModelConverter implements NodeConverter<org.kie.dm
     }
 
     @Override
-    public org.kie.dmn.model.api.BusinessKnowledgeModel dmnFromNode(final Node<View<BusinessKnowledgeModel>, ?> node) {
+    public org.kie.dmn.model.api.BusinessKnowledgeModel dmnFromNode(final Node<View<BusinessKnowledgeModel>, ?> node,
+                                                                    final Consumer<ComponentWidths> componentWidthsConsumer) {
         BusinessKnowledgeModel source = node.getContent().getDefinition();
         org.kie.dmn.model.api.BusinessKnowledgeModel result = new org.kie.dmn.model.v1_2.TBusinessKnowledgeModel();
         result.setId(source.getId().getValue());
@@ -87,7 +94,8 @@ public class BusinessKnowledgeModelConverter implements NodeConverter<org.kie.dm
             variable.setParent(result);
         }
         result.setVariable(variable);
-        org.kie.dmn.model.api.FunctionDefinition functionDefinition = FunctionDefinitionPropertyConverter.dmnFromWB(source.getEncapsulatedLogic());
+        org.kie.dmn.model.api.FunctionDefinition functionDefinition = FunctionDefinitionPropertyConverter.dmnFromWB(source.getEncapsulatedLogic(),
+                                                                                                                    componentWidthsConsumer);
         if (functionDefinition != null) {
             functionDefinition.setParent(result);
         }

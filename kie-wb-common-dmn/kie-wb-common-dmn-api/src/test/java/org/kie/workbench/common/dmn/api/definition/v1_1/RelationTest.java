@@ -18,6 +18,7 @@ package org.kie.workbench.common.dmn.api.definition.v1_1;
 
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,7 +48,6 @@ public class RelationTest {
 
     @Test
     public void testGetHasTypeRefs() {
-
         final List<InformationItem> column = asList(mock(InformationItem.class), mock(InformationItem.class));
         final List<org.kie.workbench.common.dmn.api.definition.v1_1.List> row = asList(mock(org.kie.workbench.common.dmn.api.definition.v1_1.List.class), mock(org.kie.workbench.common.dmn.api.definition.v1_1.List.class));
         final HasTypeRef hasTypeRef1 = mock(HasTypeRef.class);
@@ -66,5 +66,12 @@ public class RelationTest {
         final List<HasTypeRef> expectedHasTypeRefs = asList(relation, hasTypeRef1, hasTypeRef2, hasTypeRef3, hasTypeRef4);
 
         assertEquals(expectedHasTypeRefs, actualHasTypeRefs);
+    }
+
+    @Test
+    public void testComponentWidths() {
+        assertEquals(relation.getRequiredComponentWidthCount(),
+                     relation.getComponentWidths().size());
+        relation.getComponentWidths().forEach(Assert::assertNull);
     }
 }

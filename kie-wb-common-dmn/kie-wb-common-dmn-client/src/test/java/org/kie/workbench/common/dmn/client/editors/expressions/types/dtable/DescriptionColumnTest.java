@@ -62,6 +62,7 @@ public class DescriptionColumnTest extends BaseDOMElementSingletonColumnTest<Tex
     protected DescriptionColumn getColumn() {
         return new DescriptionColumn(headerMetaData,
                                      factory,
+                                     DescriptionColumn.DEFAULT_WIDTH,
                                      gridWidget);
     }
 }

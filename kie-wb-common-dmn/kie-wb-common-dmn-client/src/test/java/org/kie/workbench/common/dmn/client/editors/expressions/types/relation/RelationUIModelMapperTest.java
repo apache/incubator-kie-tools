@@ -40,7 +40,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.impl.RowS
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RelationUIModelMapperTest {
@@ -73,9 +73,9 @@ public class RelationUIModelMapperTest {
         this.uiModel.appendColumn(uiRowNumberColumn);
         this.uiModel.appendColumn(uiRelationColumn1);
         this.uiModel.appendColumn(uiRelationColumn2);
-        doReturn(0).when(uiRowNumberColumn).getIndex();
-        doReturn(1).when(uiRelationColumn1).getIndex();
-        doReturn(2).when(uiRelationColumn2).getIndex();
+        when(uiRowNumberColumn.getIndex()).thenReturn(0);
+        when(uiRelationColumn1.getIndex()).thenReturn(1);
+        when(uiRelationColumn2.getIndex()).thenReturn(2);
 
         this.relation = new Relation();
         this.relation.getColumn().add(new InformationItem());

@@ -28,9 +28,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
-import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
+import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
+import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.dmn.client.editors.expressions.mocks.MockHasDOMElementResourcesHeaderMetaData;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
+import org.kie.workbench.common.dmn.client.widgets.grid.BaseGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
@@ -43,25 +45,22 @@ import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
-import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
+import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.GridColumnRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
-import org.uberfire.ext.wires.core.grids.client.widget.layer.GridSelectionManager;
-import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.GridPinnedModeManager;
 import org.uberfire.mocks.EventSourceMock;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class ExpressionEditorColumnTest {
@@ -69,12 +68,6 @@ public class ExpressionEditorColumnTest {
     private static final double DEFAULT_WIDTH = 100D;
 
     private static final int PADDING = 10;
-
-    @Mock
-    private GridSelectionManager selectionManager;
-
-    @Mock
-    private GridPinnedModeManager pinnedModeManager;
 
     @Mock
     private GridRenderer renderer;
@@ -95,7 +88,7 @@ public class ExpressionEditorColumnTest {
     private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
 
     @Mock
-    private CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
+    private DefaultCanvasCommandFactory canvasCommandFactory;
 
     @Mock
     private EventSourceMock<ExpressionEditorChanged> editorSelectedEvent;
@@ -117,15 +110,38 @@ public class ExpressionEditorColumnTest {
 
     private BaseGridData gridData;
 
-    private GridWidget widget;
+    private BaseGrid<Expression> widget;
 
     private ExpressionEditorColumn column;
 
     @Before
     public void setUp() throws Exception {
         gridData = new BaseGridData();
-        widget = new BaseGridWidget(gridData, selectionManager, pinnedModeManager, renderer);
-        column = new ExpressionEditorColumn(gridLayer, new BaseHeaderMetaData("column header"), widget);
+        widget = new BaseGrid<Expression>(gridLayer,
+                                          gridData,
+                                          renderer,
+                                          sessionManager,
+                                          sessionCommandManager,
+                                          canvasCommandFactory,
+                                          refreshFormPropertiesEvent,
+                                          domainObjectSelectionEvent,
+                                          cellEditorControls,
+                                          translationService) {
+            @Override
+            public List<ListSelectorItem> getItems(final int uiRowIndex,
+                                                   final int uiColumnIndex) {
+                return Collections.emptyList();
+            }
+
+            @Override
+            public void onItemSelected(final ListSelectorItem item) {
+                //NOP for tests
+            }
+        };
+        column = new ExpressionEditorColumn(gridLayer,
+                                            new BaseHeaderMetaData("column header"),
+                                            ExpressionEditorColumn.DEFAULT_WIDTH,
+                                            widget);
     }
 
     @Test
@@ -383,21 +399,19 @@ public class ExpressionEditorColumnTest {
     }
 
     @SuppressWarnings("unchecked")
-    private BaseExpressionGrid mockEditor(final double padding,
-                                          final double... widthOfCells) {
+    private BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper> mockEditor(final double padding,
+                                                                                                                 final double... widthOfCells) {
         final GridColumn.HeaderMetaData headerMetaData = mock(GridColumn.HeaderMetaData.class);
         final GridColumnRenderer gridColumnRenderer = mock(GridColumnRenderer.class);
         final BaseExpressionGrid gridWidget = mock(BaseExpressionGrid.class);
+        when(gridWidget.getExpression()).thenReturn(Optional::empty);
 
         final GridCellTuple parent = new GridCellTuple(0, 0, null);
-        final HasExpression hasExpression = mock(HasExpression.class);
-        final Optional<LiteralExpression> expression = Optional.of(mock(LiteralExpression.class));
         final Optional<HasName> hasName = Optional.of(mock(HasName.class));
 
         return new BaseExpressionGrid(parent,
                                       Optional.empty(),
-                                      hasExpression,
-                                      expression,
+                                      HasExpression.NOP,
                                       hasName,
                                       gridPanel,
                                       gridLayer,
@@ -422,7 +436,10 @@ public class ExpressionEditorColumnTest {
             @Override
             protected void initialiseUiColumns() {
                 for (double width : widthOfCells) {
-                    model.appendColumn(new DMNGridColumn<GridWidget, Object>(headerMetaData, gridColumnRenderer, gridWidget) {{
+                    model.appendColumn(new DMNGridColumn<BaseGrid<Expression>, Object>(headerMetaData,
+                                                                                       gridColumnRenderer,
+                                                                                       width,
+                                                                                       gridWidget) {{
                         setMinimumWidth(width);
                         setWidth(width);
                     }});

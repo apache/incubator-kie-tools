@@ -17,13 +17,17 @@
 package org.kie.workbench.common.dmn.client.commands.expressions.types.function;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.FunctionDefinition;
 import org.kie.workbench.common.dmn.client.commands.VetoExecutionCommand;
 import org.kie.workbench.common.dmn.client.commands.VetoUndoCommand;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.KindUtilities;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellValueTuple;
+import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasGraphCommand;
@@ -37,35 +41,40 @@ import org.kie.workbench.common.stunner.core.graph.command.impl.AbstractGraphCom
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
+import org.uberfire.mvp.ParameterizedCommand;
 
 import static org.kie.workbench.common.dmn.client.commands.util.CommandUtils.extractGridCellValue;
 
 public class SetKindCommand extends AbstractCanvasGraphCommand implements VetoExecutionCommand,
                                                                           VetoUndoCommand {
 
-    private final GridCellValueTuple cellTuple;
+    private final GridCellTuple cellTuple;
     private final FunctionDefinition function;
     private final FunctionDefinition.Kind kind;
     private final Optional<Expression> expression;
-    private final org.uberfire.mvp.Command executeCanvasOperation;
+    private final ParameterizedCommand<Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>>> executeCanvasOperation;
     private final org.uberfire.mvp.Command undoCanvasOperation;
+    private final Supplier<Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>>> editorSupplier;
 
+    private Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>> editor = Optional.empty();
     private final FunctionDefinition.Kind oldKind;
     private final Optional<Expression> oldExpression;
     private final Optional<GridCellValue<?>> oldCellValue;
 
-    public SetKindCommand(final GridCellValueTuple cellTuple,
+    public SetKindCommand(final GridCellTuple cellTuple,
                           final FunctionDefinition function,
                           final FunctionDefinition.Kind kind,
                           final Optional<Expression> expression,
-                          final org.uberfire.mvp.Command executeCanvasOperation,
-                          final org.uberfire.mvp.Command undoCanvasOperation) {
+                          final ParameterizedCommand<Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>>> executeCanvasOperation,
+                          final org.uberfire.mvp.Command undoCanvasOperation,
+                          final Supplier<Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>>> editorSupplier) {
         this.cellTuple = cellTuple;
         this.function = function;
         this.kind = kind;
         this.expression = expression;
         this.executeCanvasOperation = executeCanvasOperation;
         this.undoCanvasOperation = undoCanvasOperation;
+        this.editorSupplier = editorSupplier;
 
         this.oldKind = KindUtilities.getKind(function);
         this.oldExpression = Optional.ofNullable(function.getExpression());
@@ -103,12 +112,17 @@ public class SetKindCommand extends AbstractCanvasGraphCommand implements VetoEx
         return new AbstractCanvasCommand() {
             @Override
             public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler handler) {
+                if (!editor.isPresent()) {
+                    editor = editorSupplier.get();
+                }
+
+                final ExpressionCellValue value = new ExpressionCellValue(editor);
                 final GridData gridData = cellTuple.getGridWidget().getModel();
                 gridData.setCellValue(cellTuple.getRowIndex(),
                                       cellTuple.getColumnIndex(),
-                                      cellTuple.getValue());
+                                      value);
 
-                executeCanvasOperation.execute();
+                executeCanvasOperation.execute(editor);
 
                 return CanvasCommandResultBuilder.SUCCESS;
             }

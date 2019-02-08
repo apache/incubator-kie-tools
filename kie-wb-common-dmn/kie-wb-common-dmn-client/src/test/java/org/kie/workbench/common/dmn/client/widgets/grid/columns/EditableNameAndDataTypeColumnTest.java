@@ -38,6 +38,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.context.Inf
 import org.kie.workbench.common.dmn.client.editors.types.HasNameAndTypeRef;
 import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -125,8 +126,11 @@ public class EditableNameAndDataTypeColumnTest {
 
     @Before
     public void setup() {
+        when(gridWidget.getExpression()).thenReturn(Optional::empty);
+
         this.cell = new BaseGridCell<>(new BaseGridCellValue<>(HasNameAndDataTypeCell.wrap(informationItem)));
         this.column = spy(new EditableNameAndDataTypeColumn<ContextGrid>(headerMetaData,
+                                                                         DMNGridColumn.DEFAULT_WIDTH,
                                                                          gridWidget,
                                                                          isEditable,
                                                                          clearDisplayNameConsumer,

@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.editors.expressions.types.function.supplementary;
+package org.kie.workbench.common.dmn.client.editors.expressions.types.function.supplementary.java;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.function.supplementary.java.JavaFunctionEditorDefinition;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.function.supplementary.BaseFunctionSupplementaryGridTest;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class JavaFunctionSupplementaryGridTest extends BaseFunctionSupplementaryGridTest<JavaFunctionEditorDefinition> {

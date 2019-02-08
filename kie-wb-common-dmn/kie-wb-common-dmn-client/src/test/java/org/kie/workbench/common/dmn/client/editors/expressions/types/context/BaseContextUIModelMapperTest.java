@@ -51,8 +51,8 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public abstract class BaseContextUIModelMapperTest<M extends ContextUIModelMapper> {
@@ -112,31 +112,29 @@ public abstract class BaseContextUIModelMapperTest<M extends ContextUIModelMappe
         this.uiModel.appendColumn(uiRowNumberColumn);
         this.uiModel.appendColumn(uiNameColumn);
         this.uiModel.appendColumn(uiExpressionEditorColumn);
-        doReturn(0).when(uiRowNumberColumn).getIndex();
-        doReturn(1).when(uiNameColumn).getIndex();
-        doReturn(2).when(uiExpressionEditorColumn).getIndex();
+        when(uiRowNumberColumn.getIndex()).thenReturn(0);
+        when(uiNameColumn.getIndex()).thenReturn(1);
+        when(uiExpressionEditorColumn.getIndex()).thenReturn(2);
 
         final ExpressionEditorDefinitions expressionEditorDefinitions = new ExpressionEditorDefinitions();
         expressionEditorDefinitions.add(literalExpressionEditorDefinition);
         expressionEditorDefinitions.add(undefinedExpressionEditorDefinition);
 
-        doReturn(expressionEditorDefinitions).when(expressionEditorDefinitionsSupplier).get();
-        doReturn(Optional.of(literalExpression)).when(literalExpressionEditorDefinition).getModelClass();
-        doReturn(Optional.of(literalExpression)).when(literalExpressionEditor).getExpression();
-        doReturn(Optional.of(literalExpressionEditor)).when(literalExpressionEditorDefinition).getEditor(any(GridCellTuple.class),
-                                                                                                         any(Optional.class),
-                                                                                                         any(HasExpression.class),
-                                                                                                         any(Optional.class),
-                                                                                                         any(Optional.class),
-                                                                                                         anyInt());
+        when(expressionEditorDefinitionsSupplier.get()).thenReturn(expressionEditorDefinitions);
+        when(literalExpressionEditorDefinition.getModelClass()).thenReturn(Optional.of(literalExpression));
+        when(literalExpressionEditor.getExpression()).thenReturn(() -> Optional.of(literalExpression));
+        when(literalExpressionEditorDefinition.getEditor(any(GridCellTuple.class),
+                                                         any(Optional.class),
+                                                         any(HasExpression.class),
+                                                         any(Optional.class),
+                                                         anyInt())).thenReturn(Optional.of(literalExpressionEditor));
 
-        doReturn(Optional.empty()).when(undefinedExpressionEditorDefinition).getModelClass();
-        doReturn(Optional.of(undefinedExpressionEditor)).when(undefinedExpressionEditorDefinition).getEditor(any(GridCellTuple.class),
-                                                                                                             any(Optional.class),
-                                                                                                             any(HasExpression.class),
-                                                                                                             any(Optional.class),
-                                                                                                             any(Optional.class),
-                                                                                                             anyInt());
+        when(undefinedExpressionEditorDefinition.getModelClass()).thenReturn(Optional.empty());
+        when(undefinedExpressionEditorDefinition.getEditor(any(GridCellTuple.class),
+                                                           any(Optional.class),
+                                                           any(HasExpression.class),
+                                                           any(Optional.class),
+                                                           anyInt())).thenReturn(Optional.of(undefinedExpressionEditor));
 
         this.context = new Context();
         this.context.getContextEntry().add(new ContextEntry() {{
@@ -166,7 +164,6 @@ public abstract class BaseContextUIModelMapperTest<M extends ContextUIModelMappe
         verify(undefinedExpressionEditorDefinition).getEditor(parentCaptor.capture(),
                                                               eq(Optional.empty()),
                                                               eq(context.getContextEntry().get(0)),
-                                                              eq(Optional.empty()),
                                                               eq(Optional.of(context.getContextEntry().get(0).getVariable())),
                                                               eq(1));
         final GridCellTuple parent = parentCaptor.getValue();
@@ -188,7 +185,6 @@ public abstract class BaseContextUIModelMapperTest<M extends ContextUIModelMappe
         verify(literalExpressionEditorDefinition).getEditor(parentCaptor.capture(),
                                                             eq(Optional.empty()),
                                                             eq(context.getContextEntry().get(1)),
-                                                            eq(Optional.of(context.getContextEntry().get(1).getExpression())),
                                                             eq(Optional.empty()),
                                                             eq(1));
         final GridCellTuple parent = parentCaptor.getValue();

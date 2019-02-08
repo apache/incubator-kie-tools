@@ -1,0 +1,47 @@
+<?xml version="1.0" ?>
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://github.com/kiegroup/drools/kie-dmn/_6C8EA88F-33F3-4738-BFC0-9308888C7FC3" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_09FCD159-E470-4047-801D-FD3465D65B14" name="_FCF28045-021F-4DC5-8971-32E5EEE80225" expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://github.com/kiegroup/drools/kie-dmn/_6C8EA88F-33F3-4738-BFC0-9308888C7FC3">
+  <dmn:extensionElements></dmn:extensionElements>
+  <dmn:decision id="_37883BDC-DB54-4925-B539-A0F19B1DDE41" name="Decision-1">
+    <dmn:variable id="_DBE14FFE-4621-4685-B55B-ABF1A225D11A" name="Decision-1"></dmn:variable>
+    <dmn:decisionTable id="_E74E71BD-AA58-4C0D-A1FC-DB23EDB88637" hitPolicy="UNIQUE" preferredOrientation="Rule-as-Row">
+      <dmn:input id="_EFE51438-5A7D-4EF6-B702-ACE65D674F00">
+        <dmn:inputExpression id="_67820F4C-9711-4695-8B02-A6DAAFD68D9E">
+          <dmn:text>input-1</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:output id="_0198058E-1412-43A1-B47C-C14860322B2B"></dmn:output>
+      <dmn:rule id="_AFC14AD7-AFDD-4BF0-B5D7-F04353BBA306">
+        <dmn:description>description</dmn:description>
+        <dmn:inputEntry id="_F166C590-E584-4F96-B64C-224313CB8535">
+          <dmn:text>in1</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="_950A7BC4-A9D7-4A8A-8837-B6C93F8E6AA8">
+          <dmn:text>out1</dmn:text>
+        </dmn:outputEntry>
+      </dmn:rule>
+    </dmn:decisionTable>
+  </dmn:decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_E74E71BD-AA58-4C0D-A1FC-DB23EDB88637">
+            <kie:width>50.0</kie:width>
+            <kie:width>150.0</kie:width>
+            <kie:width>200.0</kie:width>
+            <kie:width>250.0</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-_37883BDC-DB54-4925-B539-A0F19B1DDE41" dmnElementRef="_37883BDC-DB54-4925-B539-A0F19B1DDE41" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"></dmndi:FillColor>
+          <dmndi:StrokeColor red="0" green="0" blue="0"></dmndi:StrokeColor>
+          <dmndi:FontColor red="0" green="0" blue="0"></dmndi:FontColor>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="168" y="193" width="100" height="50"></dc:Bounds>
+        <dmndi:DMNLabel></dmndi:DMNLabel>
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

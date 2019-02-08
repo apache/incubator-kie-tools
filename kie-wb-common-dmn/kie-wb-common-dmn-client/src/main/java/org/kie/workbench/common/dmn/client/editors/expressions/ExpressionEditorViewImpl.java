@@ -35,6 +35,7 @@ import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
+import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
@@ -82,6 +83,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
     private ListSelectorView.Presenter listSelector;
     private SessionManager sessionManager;
     private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
+    private DefaultCanvasCommandFactory canvasCommandFactory;
     private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
     private Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent;
     private Event<DomainObjectSelectionEvent> domainObjectSelectionEvent;
@@ -104,6 +106,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                                     final ListSelectorView.Presenter listSelector,
                                     final SessionManager sessionManager,
                                     final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
+                                    final @DMNEditor DefaultCanvasCommandFactory canvasCommandFactory,
                                     final @DMNEditor Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
                                     final Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent,
                                     final Event<DomainObjectSelectionEvent> domainObjectSelectionEvent) {
@@ -116,6 +119,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
 
         this.sessionManager = sessionManager;
         this.sessionCommandManager = sessionCommandManager;
+        this.canvasCommandFactory = canvasCommandFactory;
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
         this.refreshFormPropertiesEvent = refreshFormPropertiesEvent;
         this.domainObjectSelectionEvent = domainObjectSelectionEvent;
@@ -164,6 +168,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                                                               listSelector,
                                                               sessionManager,
                                                               sessionCommandManager,
+                                                              canvasCommandFactory,
                                                               expressionEditorDefinitionsSupplier,
                                                               getExpressionGridCacheSupplier(),
                                                               this::setExpressionTypeText,

@@ -25,7 +25,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
-import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
+import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.literal.LiteralExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
@@ -38,7 +38,6 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -46,7 +45,7 @@ import static org.mockito.Mockito.when;
 public class UndefinedExpressionUIModelMapperTest {
 
     @Mock
-    private Expression expression;
+    private LiteralExpression expression;
 
     @Mock
     private HasExpression hasExpression;
@@ -97,7 +96,7 @@ public class UndefinedExpressionUIModelMapperTest {
 
     @Test
     public void testToDMNModelNoEditor() {
-        doReturn(Optional.empty()).when(editor).getExpression();
+        when(editor.getExpression()).thenReturn(Optional::empty);
 
         mapper.toDMNModel(0, 0, cellValueSupplier);
 
@@ -106,7 +105,7 @@ public class UndefinedExpressionUIModelMapperTest {
 
     @Test
     public void testToDMNModelWithEditor() {
-        doReturn(Optional.of(expression)).when(editor).getExpression();
+        when(editor.getExpression()).thenReturn(() -> Optional.of(expression));
 
         mapper.toDMNModel(0, 0, cellValueSupplier);
 

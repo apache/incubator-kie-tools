@@ -38,7 +38,6 @@ public class InformationItemPrimaryTest {
 
     @Test
     public void testTypeRefHolderWrapsTypeRef() {
-
         final QName typeRef = informationItemPrimary.getTypeRef();
         final QNameHolder typeRefHolder = informationItemPrimary.getTypeRefHolder();
 
@@ -47,7 +46,6 @@ public class InformationItemPrimaryTest {
 
     @Test
     public void testTypeRefHolderWrapsTypeRefAfterSettingTypeRef() {
-
         final QName typeRef = new QName();
 
         informationItemPrimary.setTypeRef(typeRef);
@@ -60,7 +58,6 @@ public class InformationItemPrimaryTest {
 
     @Test
     public void testTypeRefHolderWrapsTYpeRefAfterSettingTypeRefHolder() {
-
         final QName typeRef = informationItemPrimary.getTypeRef();
         final QNameHolder typeRefHolder = new QNameHolder();
 
@@ -71,7 +68,6 @@ public class InformationItemPrimaryTest {
 
     @Test
     public void testGetHasTypeRefs() {
-
         final List<HasTypeRef> actualHasTypeRefs = informationItemPrimary.getHasTypeRefs();
         final List<HasTypeRef> expectedHasTypeRefs = singletonList(informationItemPrimary);
 

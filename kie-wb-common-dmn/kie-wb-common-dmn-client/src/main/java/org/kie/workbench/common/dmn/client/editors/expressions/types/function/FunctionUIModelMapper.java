@@ -97,13 +97,11 @@ public class FunctionUIModelMapper extends BaseUIModelMapper<FunctionDefinition>
         final GridCellTuple expressionParent = new GridCellTuple(rowIndex,
                                                                  columnIndex,
                                                                  gridWidget);
-        final Optional<Expression> expression = Optional.ofNullable(function.getExpression());
-        final Optional<BaseExpressionGrid> editor = ed.getEditor(expressionParent,
-                                                                 Optional.empty(),
-                                                                 function,
-                                                                 expression,
-                                                                 Optional.empty(),
-                                                                 nesting);
+        final Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>> editor = ed.getEditor(expressionParent,
+                                                                                                                                        Optional.empty(),
+                                                                                                                                        function,
+                                                                                                                                        Optional.empty(),
+                                                                                                                                        nesting);
         uiModel.get().setCell(rowIndex,
                               columnIndex,
                               () -> new FunctionGridCell<>(new ExpressionCellValue(editor),
@@ -123,7 +121,7 @@ public class FunctionUIModelMapper extends BaseUIModelMapper<FunctionDefinition>
         dmnModel.get().ifPresent(function -> {
             cell.get().ifPresent(v -> {
                 final ExpressionCellValue ecv = (ExpressionCellValue) v;
-                ecv.getValue().ifPresent(beg -> function.setExpression((Expression) beg.getExpression().orElse(null)));
+                ecv.getValue().ifPresent(beg -> function.setExpression((Expression) beg.getExpression().get().orElse(null)));
             });
         });
     }

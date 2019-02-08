@@ -74,33 +74,32 @@ public class UnaryTestsPropertyConverterTest {
     }
 
     @Test
-    public void testWbFromDMNEnumeration(){
+    public void testWbFromDMNEnumeration() {
         testWbFromDMN(ENUMERATION);
     }
 
     @Test
-    public void testWbFromDMNRange(){
+    public void testWbFromDMNRange() {
         testWbFromDMN(RANGE);
     }
 
     @Test
-    public void testWbFromDMNExpression(){
+    public void testWbFromDMNExpression() {
         testWbFromDMN(EXPRESSION);
     }
 
-
     @Test
-    public void testDmnFromWBEnumeration(){
+    public void testDmnFromWBEnumeration() {
         testDmnFromWB(ENUMERATION);
     }
 
     @Test
-    public void testDmnFromWBRange(){
+    public void testDmnFromWBRange() {
         testDmnFromWB(RANGE);
     }
 
     @Test
-    public void testDmnFromWBExpression(){
+    public void testDmnFromWBExpression() {
         testDmnFromWB(EXPRESSION);
     }
 

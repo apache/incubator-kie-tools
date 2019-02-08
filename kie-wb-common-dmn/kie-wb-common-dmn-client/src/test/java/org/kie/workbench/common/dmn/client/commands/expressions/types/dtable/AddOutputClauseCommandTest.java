@@ -111,7 +111,7 @@ public class AddOutputClauseCommandTest {
         this.command = spy(new AddOutputClauseCommand(dtable,
                                                       outputClause,
                                                       uiModel,
-                                                      uiOutputClauseColumn,
+                                                      () -> uiOutputClauseColumn,
                                                       index,
                                                       uiModelMapper,
                                                       executeCanvasOperation,
@@ -402,6 +402,33 @@ public class AddOutputClauseCommandTest {
 
         verify(undoCanvasOperation).execute();
         verify(command).updateParentInformation();
+    }
+
+    @Test
+    public void testComponentWidths() {
+        makeCommand(DecisionTableUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT);
+
+        final Command<GraphCommandExecutionContext, RuleViolation> graphCommand = command.newGraphCommand(canvasHandler);
+        final Command<AbstractCanvasHandler, CanvasViolation> canvasCommand = command.newCanvasCommand(canvasHandler);
+
+        //Execute
+        assertEquals(GraphCommandResultBuilder.SUCCESS,
+                     graphCommand.execute(graphCommandExecutionContext));
+        assertEquals(CanvasCommandResultBuilder.SUCCESS,
+                     canvasCommand.execute(canvasHandler));
+
+        assertEquals(dtable.getRequiredComponentWidthCount(),
+                     dtable.getComponentWidths().size());
+        assertNull(dtable.getComponentWidths().get(DecisionTableUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT));
+
+        //Undo
+        assertEquals(GraphCommandResultBuilder.SUCCESS,
+                     graphCommand.undo(graphCommandExecutionContext));
+        assertEquals(CanvasCommandResultBuilder.SUCCESS,
+                     canvasCommand.undo(canvasHandler));
+
+        assertEquals(dtable.getRequiredComponentWidthCount(),
+                     dtable.getComponentWidths().size());
     }
 
     private void addRuleWithOutputClauseValues(String... outputClauseValues) {

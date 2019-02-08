@@ -39,6 +39,7 @@ import org.kie.workbench.common.dmn.client.commands.expressions.types.function.R
 import org.kie.workbench.common.dmn.client.commands.expressions.types.function.SetKindCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.function.UpdateParameterNameCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.function.UpdateParameterTypeRefCommand;
+import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
@@ -47,6 +48,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.function.ki
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.kindselector.KindPopoverView;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.parameters.HasParametersControl;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.function.parameters.ParametersPopoverView;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionGrid;
 import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverView;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
@@ -54,23 +56,23 @@ import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorGridRow;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellValueTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
-import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
+import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.mvp.Command;
 
 public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGridData, FunctionUIModelMapper> implements HasListSelectorControl,
@@ -87,7 +89,6 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
     public FunctionGrid(final GridCellTuple parent,
                         final Optional<String> nodeUUID,
                         final HasExpression hasExpression,
-                        final Optional<FunctionDefinition> expression,
                         final Optional<HasName> hasName,
                         final DMNGridPanel gridPanel,
                         final DMNGridLayer gridLayer,
@@ -95,7 +96,7 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
                         final DefinitionUtils definitionUtils,
                         final SessionManager sessionManager,
                         final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                        final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
+                        final DefaultCanvasCommandFactory canvasCommandFactory,
                         final Event<ExpressionEditorChanged> editorSelectedEvent,
                         final Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent,
                         final Event<DomainObjectSelectionEvent> domainObjectSelectionEvent,
@@ -111,7 +112,6 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
         super(parent,
               nodeUUID,
               hasExpression,
-              expression,
               hasName,
               gridPanel,
               gridLayer,
@@ -149,7 +149,7 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
     public FunctionUIModelMapper makeUiModelMapper() {
         return new FunctionUIModelMapper(this,
                                          this::getModel,
-                                         () -> expression,
+                                         getExpression(),
                                          expressionEditorDefinitionsSupplier,
                                          supplementaryEditorDefinitionsSupplier,
                                          listSelector,
@@ -161,7 +161,6 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
         final List<GridColumn.HeaderMetaData> headerMetaData = new ArrayList<>();
         if (nesting == 0) {
             headerMetaData.add(new FunctionColumnNameHeaderMetaData(hasExpression,
-                                                                    expression,
                                                                     hasName,
                                                                     clearDisplayNameConsumer(true),
                                                                     setDisplayNameConsumer(true),
@@ -170,21 +169,24 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
                                                                     headerEditor,
                                                                     Optional.of(translationService.getTranslation(DMNEditorConstants.FunctionEditor_EditExpression))));
         }
-        headerMetaData.add(new FunctionColumnParametersHeaderMetaData(expression::get,
+        headerMetaData.add(new FunctionColumnParametersHeaderMetaData(getExpression(),
                                                                       translationService,
                                                                       cellEditorControls,
                                                                       parametersEditor,
                                                                       Optional.of(translationService.getTranslation(DMNEditorConstants.FunctionEditor_EditParametersTitle)),
                                                                       this));
-        final GridColumn expressionColumn = new FunctionColumn(gridLayer,
-                                                               headerMetaData,
-                                                               this);
 
-        final FunctionKindRowColumn kindColumn = new FunctionKindRowColumn(expression::get,
+        final FunctionKindRowColumn kindColumn = new FunctionKindRowColumn(getExpression(),
                                                                            cellEditorControls,
                                                                            kindEditor,
                                                                            Optional.of(translationService.getTranslation(DMNEditorConstants.FunctionEditor_SelectFunctionKind)),
+                                                                           getAndSetInitialWidth(0, EmptyColumn.DEFAULT_WIDTH),
                                                                            this);
+
+        final GridColumn expressionColumn = new FunctionColumn(gridLayer,
+                                                               headerMetaData,
+                                                               getAndSetInitialWidth(1, UndefinedExpressionColumn.DEFAULT_WIDTH),
+                                                               this);
 
         model.appendColumn(kindColumn);
         model.appendColumn(expressionColumn);
@@ -194,7 +196,7 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
 
     @Override
     protected void initialiseUiModel() {
-        expression.ifPresent(e -> {
+        getExpression().get().ifPresent(e -> {
             model.appendRow(new ExpressionEditorGridRow());
             uiModelMapper.fromDMNModel(0, 1);
         });
@@ -205,7 +207,7 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
     public List<ListSelectorItem> getItems(final int uiRowIndex,
                                            final int uiColumnIndex) {
         final List<ListSelectorItem> items = new ArrayList<>();
-        final FunctionDefinition.Kind kind = KindUtilities.getKind(expression.get());
+        final FunctionDefinition.Kind kind = KindUtilities.getKind(getExpression().get().get());
 
         //If cell editor is UndefinedExpressionGrid don't add extra items
         final GridCell<?> cell = model.getCell(uiRowIndex, uiColumnIndex);
@@ -237,13 +239,13 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
     @Override
     public List<InformationItem> getParameters() {
         final List<InformationItem> parameters = new ArrayList<>();
-        expression.ifPresent(e -> parameters.addAll(e.getFormalParameter()));
+        getExpression().get().ifPresent(e -> parameters.addAll(e.getFormalParameter()));
         return parameters;
     }
 
     @Override
     public void addParameter(final Command onSuccess) {
-        expression.ifPresent(e -> {
+        getExpression().get().ifPresent(e -> {
             final InformationItem parameter = new InformationItem();
             parameter.setName(new Name("p" + e.getFormalParameter().size()));
 
@@ -260,7 +262,7 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
     @Override
     public void removeParameter(final InformationItem parameter,
                                 final Command onSuccess) {
-        expression.ifPresent(e -> {
+        getExpression().get().ifPresent(e -> {
             sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
                                           new RemoveParameterCommand(e,
                                                                      parameter,
@@ -274,7 +276,7 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
     @Override
     public void updateParameterName(final InformationItem parameter,
                                     final String name) {
-        expression.ifPresent(e -> {
+        getExpression().get().ifPresent(e -> {
             sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
                                           new UpdateParameterNameCommand(parameter,
                                                                          name,
@@ -285,7 +287,7 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
     @Override
     public void updateParameterTypeRef(final InformationItem parameter,
                                        final QName typeRef) {
-        expression.ifPresent(e -> {
+        getExpression().get().ifPresent(e -> {
             sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
                                           new UpdateParameterTypeRefCommand(parameter,
                                                                             typeRef,
@@ -294,7 +296,7 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
     }
 
     void setKind(final FunctionDefinition.Kind kind) {
-        expression.ifPresent(function -> {
+        getExpression().get().ifPresent(function -> {
             switch (kind) {
                 case FEEL:
                     doSetKind(kind,
@@ -318,50 +320,37 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
                    final FunctionDefinition function,
                    final Optional<ExpressionEditorDefinition<Expression>> oDefinition) {
         oDefinition.ifPresent(definition -> {
-            final GridCellTuple expressionParent = new GridCellTuple(0,
-                                                                     1,
-                                                                     this);
+            final GridCellTuple parent = new GridCellTuple(0, 1, FunctionGrid.this);
             final Optional<Expression> expression = definition.getModelClass();
             definition.enrich(nodeUUID, hasExpression, expression);
 
-            final Optional<BaseExpressionGrid> gridWidget = definition.getEditor(expressionParent,
-                                                                                 Optional.empty(),
-                                                                                 hasExpression,
-                                                                                 expression,
-                                                                                 hasName,
-                                                                                 nesting + 1);
-            doSetKind(kind,
-                      function,
-                      expression,
-                      gridWidget);
+            sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
+                                          new SetKindCommand(parent,
+                                                             function,
+                                                             kind,
+                                                             expression,
+                                                             (editor) -> {
+                                                                 resize(BaseExpressionGrid.RESIZE_EXISTING_MINIMUM);
+                                                                 editor.ifPresent(BaseExpressionGrid::selectFirstCell);
+                                                             },
+                                                             () -> {
+                                                                 resize(BaseExpressionGrid.RESIZE_EXISTING_MINIMUM);
+                                                                 selectFirstCell();
+                                                             },
+                                                             () -> {
+                                                                 Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>> editor = Optional.empty();
+                                                                 editor = definition.getEditor(parent,
+                                                                                               Optional.empty(),
+                                                                                               getExpression().get().get(),
+                                                                                               hasName,
+                                                                                               nesting + 1);
+                                                                 return editor;
+                                                             }));
         });
     }
 
-    void doSetKind(final FunctionDefinition.Kind kind,
-                   final FunctionDefinition function,
-                   final Optional<Expression> expression,
-                   final Optional<BaseExpressionGrid> editor) {
-        final GridCellValueTuple gcv = new GridCellValueTuple<>(0,
-                                                                1,
-                                                                this,
-                                                                new ExpressionCellValue(editor));
-        sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
-                                      new SetKindCommand(gcv,
-                                                         function,
-                                                         kind,
-                                                         expression,
-                                                         () -> {
-                                                             resize(BaseExpressionGrid.RESIZE_EXISTING_MINIMUM);
-                                                             editor.ifPresent(BaseExpressionGrid::selectFirstCell);
-                                                         },
-                                                         () -> {
-                                                             resize(BaseExpressionGrid.RESIZE_EXISTING_MINIMUM);
-                                                             selectFirstCell();
-                                                         }));
-    }
-
     void clearExpressionType() {
-        expression.ifPresent(function -> {
+        getExpression().get().ifPresent(function -> {
             final GridCellTuple gc = new GridCellTuple(0,
                                                        1,
                                                        this);

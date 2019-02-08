@@ -36,7 +36,6 @@ public class OutputClauseColumnExpressionNameHeaderMetaData extends NameAndDataT
     private static final String NAME_DATA_TYPE_COLUMN_GROUP = "OutputClauseColumnExpressionNameHeaderMetaData$NameAndDataTypeColumn";
 
     public OutputClauseColumnExpressionNameHeaderMetaData(final HasExpression hasExpression,
-                                                          final Optional<DecisionTable> expression,
                                                           final Optional<HasName> hasName,
                                                           final Consumer<HasName> clearDisplayNameConsumer,
                                                           final BiConsumer<HasName, Name> setDisplayNameConsumer,
@@ -45,7 +44,6 @@ public class OutputClauseColumnExpressionNameHeaderMetaData extends NameAndDataT
                                                           final NameAndDataTypePopoverView.Presenter editor,
                                                           final Optional<String> editorTitle) {
         super(hasExpression,
-              expression,
               hasName,
               clearDisplayNameConsumer,
               setDisplayNameConsumer,

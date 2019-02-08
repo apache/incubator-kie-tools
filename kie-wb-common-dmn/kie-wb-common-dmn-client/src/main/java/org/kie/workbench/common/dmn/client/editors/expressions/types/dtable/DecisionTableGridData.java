@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.dtable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import org.kie.soup.commons.util.Lists;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
@@ -39,13 +40,13 @@ public class DecisionTableGridData extends DelegatingGridData {
 
     private final SessionManager sessionManager;
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
-    private final Optional<DecisionTable> expression;
+    private final Supplier<Optional<DecisionTable>> expression;
     private final Command canvasOperation;
 
     public DecisionTableGridData(final DMNGridData delegate,
                                  final SessionManager sessionManager,
                                  final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                                 final Optional<DecisionTable> expression,
+                                 final Supplier<Optional<DecisionTable>> expression,
                                  final Command canvasOperation) {
         super(delegate);
         this.sessionManager = sessionManager;
@@ -68,12 +69,12 @@ public class DecisionTableGridData extends DelegatingGridData {
     @Override
     public void moveRowsTo(final int index,
                            final List<GridRow> rows) {
-        expression.ifPresent(dtable -> sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
-                                                                     new MoveRowsCommand(dtable,
-                                                                                         delegate,
-                                                                                         index,
-                                                                                         rows,
-                                                                                         canvasOperation)));
+        expression.get().ifPresent(dtable -> sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
+                                                                           new MoveRowsCommand(dtable,
+                                                                                               delegate,
+                                                                                               index,
+                                                                                               rows,
+                                                                                               canvasOperation)));
     }
 
     @Override
@@ -89,11 +90,11 @@ public class DecisionTableGridData extends DelegatingGridData {
     @Override
     public void moveColumnsTo(final int index,
                               final List<GridColumn<?>> columns) {
-        expression.ifPresent(dtable -> sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
-                                                                     new MoveColumnsCommand(dtable,
-                                                                                            delegate,
-                                                                                            index,
-                                                                                            columns,
-                                                                                            canvasOperation)));
+        expression.get().ifPresent(dtable -> sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
+                                                                           new MoveColumnsCommand(dtable,
+                                                                                                  delegate,
+                                                                                                  index,
+                                                                                                  columns,
+                                                                                                  canvasOperation)));
     }
 }

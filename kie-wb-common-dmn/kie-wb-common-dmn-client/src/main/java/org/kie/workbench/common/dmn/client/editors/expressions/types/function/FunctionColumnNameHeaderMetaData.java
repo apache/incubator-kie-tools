@@ -35,7 +35,6 @@ public class FunctionColumnNameHeaderMetaData extends NameAndDataTypeHeaderMetaD
     private static final String NAME_DATA_TYPE_COLUMN_GROUP = "FunctionColumnNameHeaderMetaData$NameAndDataTypeColumn";
 
     public FunctionColumnNameHeaderMetaData(final HasExpression hasExpression,
-                                            final Optional<FunctionDefinition> expression,
                                             final Optional<HasName> hasName,
                                             final Consumer<HasName> clearDisplayNameConsumer,
                                             final BiConsumer<HasName, Name> setDisplayNameConsumer,
@@ -44,7 +43,6 @@ public class FunctionColumnNameHeaderMetaData extends NameAndDataTypeHeaderMetaD
                                             final NameAndDataTypePopoverView.Presenter editor,
                                             final Optional<String> editorTitle) {
         super(hasExpression,
-              expression,
               hasName,
               clearDisplayNameConsumer,
               setDisplayNameConsumer,

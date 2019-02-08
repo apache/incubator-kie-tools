@@ -17,17 +17,22 @@
 package org.kie.workbench.common.dmn.backend.definition.v1_1;
 
 import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import org.kie.workbench.common.dmn.api.definition.HasComponentWidths;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Relation;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.dmn.backend.definition.v1_1.dd.ComponentWidths;
 
 public class RelationPropertyConverter {
 
-    public static Relation wbFromDMN(final org.kie.dmn.model.api.Relation dmn) {
+    public static Relation wbFromDMN(final org.kie.dmn.model.api.Relation dmn,
+                                     final BiConsumer<String, HasComponentWidths> hasComponentWidthsConsumer) {
         Id id = new Id(dmn.getId());
         Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
         QName typeRef = QNamePropertyConverter.wbFromDMN(dmn.getTypeRef(), dmn);
@@ -36,7 +41,8 @@ public class RelationPropertyConverter {
         List<org.kie.dmn.model.api.List> row = dmn.getRow();
 
         List<InformationItem> convertedColumn = column.stream().map(InformationItemPropertyConverter::wbFromDMN).collect(Collectors.toList());
-        List<org.kie.workbench.common.dmn.api.definition.v1_1.List> convertedRow = row.stream().map(ListPropertyConverter::wbFromDMN).collect(Collectors.toList());
+        List<org.kie.workbench.common.dmn.api.definition.v1_1.List> convertedRow = row.stream().map(r -> ListPropertyConverter.wbFromDMN(r,
+                                                                                                                                         hasComponentWidthsConsumer)).collect(Collectors.toList());
 
         Relation result = new Relation(id, description, typeRef, convertedColumn, convertedRow);
         for (InformationItem c : convertedColumn) {
@@ -52,7 +58,8 @@ public class RelationPropertyConverter {
         return result;
     }
 
-    public static org.kie.dmn.model.api.Relation dmnFromWB(final Relation wb) {
+    public static org.kie.dmn.model.api.Relation dmnFromWB(final Relation wb,
+                                                           final Consumer<ComponentWidths> componentWidthsConsumer) {
         org.kie.dmn.model.api.Relation result = new org.kie.dmn.model.v1_2.TRelation();
         result.setId(wb.getId().getValue());
         result.setDescription(DescriptionPropertyConverter.dmnFromWB(wb.getDescription()));
@@ -68,7 +75,8 @@ public class RelationPropertyConverter {
         }
 
         for (org.kie.workbench.common.dmn.api.definition.v1_1.List list : wb.getRow()) {
-            org.kie.dmn.model.api.List listConverted = ListPropertyConverter.dmnFromWB(list);
+            org.kie.dmn.model.api.List listConverted = ListPropertyConverter.dmnFromWB(list,
+                                                                                       componentWidthsConsumer);
             if (listConverted != null) {
                 listConverted.setParent(result);
             }

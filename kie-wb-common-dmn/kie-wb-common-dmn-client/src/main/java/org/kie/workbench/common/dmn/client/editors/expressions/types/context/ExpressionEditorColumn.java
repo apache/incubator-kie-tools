@@ -20,8 +20,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionColumn;
+import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
+import org.kie.workbench.common.dmn.client.widgets.grid.BaseGrid;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
@@ -29,38 +31,41 @@ import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.HasDOMElementResources;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.impl.BaseGridColumnRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridWidgetRegistry;
 
-public class ExpressionEditorColumn extends DMNGridColumn<GridWidget, Optional<BaseExpressionGrid>> implements HasDOMElementResources {
+public class ExpressionEditorColumn extends DMNGridColumn<BaseGrid<? extends Expression>, Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>>> implements HasDOMElementResources {
 
     public ExpressionEditorColumn(final GridWidgetRegistry registry,
                                   final HeaderMetaData headerMetaData,
-                                  final GridWidget gridWidget) {
+                                  final double width,
+                                  final BaseGrid<? extends Expression> gridWidget) {
         this(registry,
              Collections.singletonList(headerMetaData),
+             width,
              gridWidget);
     }
 
     public ExpressionEditorColumn(final GridWidgetRegistry registry,
                                   final List<HeaderMetaData> headerMetaData,
-                                  final GridWidget gridWidget) {
+                                  final double width,
+                                  final BaseGrid<? extends Expression> gridWidget) {
         this(headerMetaData,
              new ExpressionEditorColumnRenderer(registry),
+             width,
              gridWidget);
     }
 
     protected ExpressionEditorColumn(final List<HeaderMetaData> headerMetaData,
-                                     final BaseGridColumnRenderer<Optional<BaseExpressionGrid>> renderer,
-                                     final GridWidget gridWidget) {
+                                     final BaseGridColumnRenderer<Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>>> renderer,
+                                     final double width,
+                                     final BaseGrid<? extends Expression> gridWidget) {
         super(headerMetaData,
               renderer,
+              width,
               gridWidget);
         setMovable(false);
         setResizable(false);
-
-        setWidthInternal(UndefinedExpressionColumn.DEFAULT_WIDTH);
     }
 
     @Override
@@ -76,7 +81,7 @@ public class ExpressionEditorColumn extends DMNGridColumn<GridWidget, Optional<B
                     final GridCellValue<?> value = cell.getValue();
                     if (value instanceof ExpressionCellValue) {
                         final ExpressionCellValue ecv = (ExpressionCellValue) value;
-                        final Optional<BaseExpressionGrid> editor = ecv.getValue();
+                        final Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>> editor = ecv.getValue();
                         final double padding = editor.map(BaseExpressionGrid::getPadding).orElse(0.0);
                         minimumWidth = Math.max(minimumWidth,
                                                 ecv.getMinimumWidth().orElse(0.0) + padding * 2);
@@ -112,7 +117,7 @@ public class ExpressionEditorColumn extends DMNGridColumn<GridWidget, Optional<B
                     final GridCellValue<?> value = cell.getValue();
                     if (value instanceof ExpressionCellValue) {
                         final ExpressionCellValue ecv = (ExpressionCellValue) value;
-                        final Optional<BaseExpressionGrid> editor = ecv.getValue();
+                        final Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>> editor = ecv.getValue();
                         if (editor.isPresent()) {
                             final BaseExpressionGrid beg = editor.get();
                             updateWidthOfLastColumn(beg, columnWidth);

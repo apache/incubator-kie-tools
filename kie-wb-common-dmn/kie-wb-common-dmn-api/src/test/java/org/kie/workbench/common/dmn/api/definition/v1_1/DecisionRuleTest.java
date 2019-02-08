@@ -47,7 +47,6 @@ public class DecisionRuleTest {
 
     @Test
     public void testGetHasTypeRefs() {
-
         final LiteralExpression literalExpression1 = mock(LiteralExpression.class);
         final LiteralExpression literalExpression2 = mock(LiteralExpression.class);
         final List<LiteralExpression> outputEntry = asList(literalExpression1, literalExpression2);

@@ -22,13 +22,16 @@ import java.util.Optional;
 
 import javax.enterprise.context.Dependent;
 
+import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanvasControl;
+import org.uberfire.ext.wires.core.grids.client.model.GridData;
 
 @Dependent
 public class ExpressionGridCacheImpl extends AbstractCanvasControl<AbstractCanvas> implements ExpressionGridCache {
 
-    private Map<String, Optional<BaseExpressionGrid>> cache = new HashMap<>();
+    private Map<String, Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>>> cache = new HashMap<>();
 
     @Override
     protected void doInit() {
@@ -41,13 +44,13 @@ public class ExpressionGridCacheImpl extends AbstractCanvasControl<AbstractCanva
     }
 
     @Override
-    public Optional<BaseExpressionGrid> getExpressionGrid(final String nodeUUID) {
+    public Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>> getExpressionGrid(final String nodeUUID) {
         return cache.getOrDefault(nodeUUID, Optional.empty());
     }
 
     @Override
     public void putExpressionGrid(final String nodeUUID,
-                                  final Optional<BaseExpressionGrid> gridWidget) {
+                                  final Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>> gridWidget) {
         if (gridWidget.isPresent()) {
             if (gridWidget.get().isCacheable()) {
                 cache.put(nodeUUID, gridWidget);
@@ -61,7 +64,7 @@ public class ExpressionGridCacheImpl extends AbstractCanvasControl<AbstractCanva
     }
 
     //Package-protected for Unit Tests
-    Map<String, Optional<BaseExpressionGrid>> getContent() {
+    Map<String, Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>>> getContent() {
         return cache;
     }
 }

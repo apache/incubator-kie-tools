@@ -41,7 +41,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -100,12 +99,14 @@ public class UndefinedExpressionColumnTest {
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
-        doReturn(parent).when(gridWidget).getParentInformation();
-        doReturn(parentGridWidget).when(parent).getGridWidget();
-        doReturn(parentGridData).when(parentGridWidget).getModel();
-        doReturn(Collections.singletonList(parentGridColumn)).when(parentGridData).getColumns();
+        when(gridWidget.getExpression()).thenReturn(Optional::empty);
+        when(gridWidget.getParentInformation()).thenReturn(parent);
+        when(parent.getGridWidget()).thenReturn(parentGridWidget);
+        when(parentGridWidget.getModel()).thenReturn(parentGridData);
+        when(parentGridData.getColumns()).thenReturn(Collections.singletonList(parentGridColumn));
 
-        this.column = spy(new UndefinedExpressionColumn(gridWidget,
+        this.column = spy(new UndefinedExpressionColumn(UndefinedExpressionColumn.DEFAULT_WIDTH,
+                                                        gridWidget,
                                                         cellEditorControls,
                                                         undefinedExpressionSelector,
                                                         translationService));

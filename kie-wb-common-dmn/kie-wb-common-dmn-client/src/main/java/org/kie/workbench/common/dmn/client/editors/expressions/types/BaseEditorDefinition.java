@@ -17,11 +17,13 @@
 package org.kie.workbench.common.dmn.client.editors.expressions.types;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import javax.enterprise.event.Event;
 
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
+import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
@@ -31,7 +33,6 @@ import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
-import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
@@ -42,7 +43,7 @@ public abstract class BaseEditorDefinition<E extends Expression, D extends GridD
     protected DefinitionUtils definitionUtils;
     protected SessionManager sessionManager;
     protected SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
-    protected CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
+    protected DefaultCanvasCommandFactory canvasCommandFactory;
     protected Event<ExpressionEditorChanged> editorSelectedEvent;
     protected Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent;
     protected Event<DomainObjectSelectionEvent> domainObjectSelectionEvent;
@@ -56,7 +57,7 @@ public abstract class BaseEditorDefinition<E extends Expression, D extends GridD
     public BaseEditorDefinition(final DefinitionUtils definitionUtils,
                                 final SessionManager sessionManager,
                                 final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                                final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
+                                final DefaultCanvasCommandFactory canvasCommandFactory,
                                 final Event<ExpressionEditorChanged> editorSelectedEvent,
                                 final Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent,
                                 final Event<DomainObjectSelectionEvent> domainObjectSelectionEvent,
@@ -73,7 +74,7 @@ public abstract class BaseEditorDefinition<E extends Expression, D extends GridD
         this.translationService = translationService;
     }
 
-    protected abstract D makeGridData(final Optional<E> expression);
+    protected abstract D makeGridData(final Supplier<Optional<E>> expression);
 
     protected DMNGridPanel getGridPanel() {
         return ((DMNSession) sessionManager.getCurrentSession()).getGridPanel();

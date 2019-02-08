@@ -22,9 +22,12 @@ import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
+import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
+import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -63,13 +66,11 @@ public class DecisionTableEditorDefinitionTest extends BaseDecisionTableEditorDe
 
     @Test
     public void testEditor() {
-        final Optional<DecisionTable> expression = definition.getModelClass();
-        final Optional<BaseExpressionGrid> oEditor = definition.getEditor(parent,
-                                                                          Optional.empty(),
-                                                                          hasExpression,
-                                                                          expression,
-                                                                          hasName,
-                                                                          0);
+        final Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>> oEditor = definition.getEditor(parent,
+                                                                                                                                                 Optional.empty(),
+                                                                                                                                                 hasExpression,
+                                                                                                                                                 hasName,
+                                                                                                                                                 0);
 
         assertThat(oEditor).isPresent();
 

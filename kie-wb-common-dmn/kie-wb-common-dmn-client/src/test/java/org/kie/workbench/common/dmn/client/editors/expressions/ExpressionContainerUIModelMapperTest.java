@@ -37,6 +37,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCache;
 import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCacheImpl;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -44,6 +45,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
+import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 
@@ -52,9 +54,9 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ExpressionContainerUIModelMapperTest {
@@ -114,8 +116,8 @@ public class ExpressionContainerUIModelMapperTest {
         uiModel = new BaseGridData();
         uiModel.appendRow(new BaseGridRow());
         uiModel.appendColumn(uiExpressionColumn);
-        doReturn(0).when(uiExpressionColumn).getIndex();
-        doReturn(MINIMUM_COLUMN_WIDTH).when(uiExpressionColumn).getMinimumWidth();
+        when(uiExpressionColumn.getIndex()).thenReturn(0);
+        when(uiExpressionColumn.getMinimumWidth()).thenReturn(MINIMUM_COLUMN_WIDTH);
 
         parent = new GridCellTuple(0, 0, expressionContainerGrid);
 
@@ -123,24 +125,22 @@ public class ExpressionContainerUIModelMapperTest {
         expressionEditorDefinitions.add(literalExpressionEditorDefinition);
         expressionEditorDefinitions.add(undefinedExpressionEditorDefinition);
 
-        doReturn(expressionEditorDefinitions).when(expressionEditorDefinitionsSupplier).get();
-        doReturn(Optional.of(literalExpression)).when(literalExpressionEditorDefinition).getModelClass();
-        doReturn(true).when(literalExpressionEditor).isCacheable();
-        doReturn(Optional.of(literalExpression)).when(literalExpressionEditor).getExpression();
-        doReturn(Optional.of(literalExpressionEditor)).when(literalExpressionEditorDefinition).getEditor(any(GridCellTuple.class),
-                                                                                                         any(Optional.class),
-                                                                                                         any(HasExpression.class),
-                                                                                                         any(Optional.class),
-                                                                                                         any(Optional.class),
-                                                                                                         anyInt());
+        when(expressionEditorDefinitionsSupplier.get()).thenReturn(expressionEditorDefinitions);
+        when(literalExpressionEditorDefinition.getModelClass()).thenReturn(Optional.of(literalExpression));
+        when(literalExpressionEditor.isCacheable()).thenReturn(true);
+        when(literalExpressionEditor.getExpression()).thenReturn(() -> Optional.of(literalExpression));
+        when(literalExpressionEditorDefinition.getEditor(any(GridCellTuple.class),
+                                                         any(Optional.class),
+                                                         any(HasExpression.class),
+                                                         any(Optional.class),
+                                                         anyInt())).thenReturn(Optional.of(literalExpressionEditor));
 
-        doReturn(Optional.empty()).when(undefinedExpressionEditorDefinition).getModelClass();
-        doReturn(Optional.of(undefinedExpressionEditor)).when(undefinedExpressionEditorDefinition).getEditor(any(GridCellTuple.class),
-                                                                                                             any(Optional.class),
-                                                                                                             any(HasExpression.class),
-                                                                                                             any(Optional.class),
-                                                                                                             any(Optional.class),
-                                                                                                             anyInt());
+        when(undefinedExpressionEditorDefinition.getModelClass()).thenReturn(Optional.empty());
+        when(undefinedExpressionEditorDefinition.getEditor(any(GridCellTuple.class),
+                                                           any(Optional.class),
+                                                           any(HasExpression.class),
+                                                           any(Optional.class),
+                                                           anyInt())).thenReturn(Optional.of(undefinedExpressionEditor));
 
         expressionGridCache = spy(new ExpressionGridCacheImpl());
         mapper = new ExpressionContainerUIModelMapper(parent,
@@ -166,7 +166,6 @@ public class ExpressionContainerUIModelMapperTest {
         verify(undefinedExpressionEditorDefinition).getEditor(eq(parent),
                                                               nodeUUIDCaptor.capture(),
                                                               eq(hasExpression),
-                                                              eq(Optional.ofNullable(expression)),
                                                               eq(Optional.of(hasName)),
                                                               eq(0));
         final Optional<String> nodeUUID = nodeUUIDCaptor.getValue();
@@ -187,7 +186,6 @@ public class ExpressionContainerUIModelMapperTest {
         verify(literalExpressionEditorDefinition).getEditor(eq(parent),
                                                             nodeUUIDCaptor.capture(),
                                                             eq(hasExpression),
-                                                            eq(Optional.of(expression)),
                                                             eq(Optional.of(hasName)),
                                                             eq(0));
         final Optional<String> nodeUUID = nodeUUIDCaptor.getValue();
@@ -205,7 +203,6 @@ public class ExpressionContainerUIModelMapperTest {
         verify(literalExpressionEditorDefinition).getEditor(eq(parent),
                                                             nodeUUIDCaptor.capture(),
                                                             eq(hasExpression),
-                                                            eq(Optional.of(expression)),
                                                             eq(Optional.of(hasName)),
                                                             eq(0));
 
@@ -218,7 +215,6 @@ public class ExpressionContainerUIModelMapperTest {
         verify(literalExpressionEditorDefinition).getEditor(any(GridCellTuple.class),
                                                             any(Optional.class),
                                                             any(HasExpression.class),
-                                                            any(Optional.class),
                                                             any(Optional.class),
                                                             anyInt());
         verify(expressionGridCache).putExpressionGrid(anyString(),
@@ -247,7 +243,7 @@ public class ExpressionContainerUIModelMapperTest {
         assertThat(gridCellValue).isInstanceOf(ExpressionCellValue.class);
 
         final ExpressionCellValue ecv = (ExpressionCellValue) gridCellValue;
-        final Optional<BaseExpressionGrid> editor = ecv.getValue();
+        final Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>> editor = ecv.getValue();
 
         assertThat(editor.isPresent()).isTrue();
         assertThat(editor.get()).isInstanceOf(clazz);

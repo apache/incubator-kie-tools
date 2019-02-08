@@ -28,8 +28,10 @@ import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ContextEntry;
+import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
+import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.BaseEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
@@ -37,17 +39,18 @@ import org.kie.workbench.common.dmn.client.editors.types.NameAndDataTypePopoverV
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
-import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.Session;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
+import org.uberfire.ext.wires.core.grids.client.model.GridData;
 
 @ApplicationScoped
 public class ContextEditorDefinition extends BaseEditorDefinition<Context, ContextGridData> {
@@ -63,7 +66,7 @@ public class ContextEditorDefinition extends BaseEditorDefinition<Context, Conte
     public ContextEditorDefinition(final DefinitionUtils definitionUtils,
                                    final SessionManager sessionManager,
                                    final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                                   final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
+                                   final @DMNEditor DefaultCanvasCommandFactory canvasCommandFactory,
                                    final Event<ExpressionEditorChanged> editorSelectedEvent,
                                    final Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent,
                                    final Event<DomainObjectSelectionEvent> domainObjectSelectionEvent,
@@ -122,20 +125,18 @@ public class ContextEditorDefinition extends BaseEditorDefinition<Context, Conte
     }
 
     @Override
-    public Optional<BaseExpressionGrid> getEditor(final GridCellTuple parent,
-                                                  final Optional<String> nodeUUID,
-                                                  final HasExpression hasExpression,
-                                                  final Optional<Context> expression,
-                                                  final Optional<HasName> hasName,
-                                                  final int nesting) {
+    public Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>> getEditor(final GridCellTuple parent,
+                                                                                                                         final Optional<String> nodeUUID,
+                                                                                                                         final HasExpression hasExpression,
+                                                                                                                         final Optional<HasName> hasName,
+                                                                                                                         final int nesting) {
         return Optional.of(new ContextGrid(parent,
                                            nodeUUID,
                                            hasExpression,
-                                           expression,
                                            hasName,
                                            getGridPanel(),
                                            getGridLayer(),
-                                           makeGridData(expression),
+                                           makeGridData(() -> Optional.ofNullable((Context) hasExpression.getExpression())),
                                            definitionUtils,
                                            sessionManager,
                                            sessionCommandManager,
@@ -152,7 +153,7 @@ public class ContextEditorDefinition extends BaseEditorDefinition<Context, Conte
     }
 
     @Override
-    protected ContextGridData makeGridData(final Optional<Context> expression) {
+    protected ContextGridData makeGridData(final Supplier<Optional<Context>> expression) {
         return new ContextGridData(new DMNGridData(),
                                    sessionManager,
                                    sessionCommandManager,

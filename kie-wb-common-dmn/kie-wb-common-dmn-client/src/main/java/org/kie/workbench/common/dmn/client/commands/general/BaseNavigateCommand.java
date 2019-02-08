@@ -36,12 +36,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasGraphCommand;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
-import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
-import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
-import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
-import org.kie.workbench.common.stunner.core.graph.command.impl.AbstractGraphCommand;
-import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.uberfire.client.workbench.widgets.listbar.ResizeFlowPanel;
 
@@ -157,23 +152,5 @@ public abstract class BaseNavigateCommand extends AbstractCanvasGraphCommand {
 
     private CanvasHandler getCanvasHandler() {
         return null != sessionManager.getCurrentSession() ? sessionManager.getCurrentSession().getCanvasHandler() : null;
-    }
-
-    public static class NoOperationGraphCommand extends AbstractGraphCommand {
-
-        @Override
-        protected CommandResult<RuleViolation> check(final GraphCommandExecutionContext context) {
-            return GraphCommandResultBuilder.SUCCESS;
-        }
-
-        @Override
-        public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext context) {
-            return GraphCommandResultBuilder.SUCCESS;
-        }
-
-        @Override
-        public CommandResult<RuleViolation> undo(final GraphCommandExecutionContext context) {
-            return GraphCommandResultBuilder.SUCCESS;
-        }
     }
 }

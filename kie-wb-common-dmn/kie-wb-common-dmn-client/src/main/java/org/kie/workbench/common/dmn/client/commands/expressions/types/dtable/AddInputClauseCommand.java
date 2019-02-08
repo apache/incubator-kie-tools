@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.dmn.client.commands.expressions.types.dtable;
 
+import java.util.Optional;
+import java.util.function.Supplier;
+
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InputClause;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
@@ -46,17 +49,19 @@ public class AddInputClauseCommand extends AbstractCanvasGraphCommand implements
     private final DecisionTable dtable;
     private final InputClause inputClause;
     private final GridData uiModel;
-    private final InputClauseColumn uiModelColumn;
+    private final Supplier<InputClauseColumn> uiModelColumnSupplier;
     private final int uiColumnIndex;
     private final DecisionTableUIModelMapper uiModelMapper;
     private final org.uberfire.mvp.Command executeCanvasOperation;
     private final org.uberfire.mvp.Command undoCanvasOperation;
     private final String name;
 
+    private Optional<InputClauseColumn> uiModelColumn = Optional.empty();
+
     public AddInputClauseCommand(final DecisionTable dtable,
                                  final InputClause inputClause,
                                  final GridData uiModel,
-                                 final InputClauseColumn uiModelColumn,
+                                 final Supplier<InputClauseColumn> uiModelColumnSupplier,
                                  final int uiColumnIndex,
                                  final DecisionTableUIModelMapper uiModelMapper,
                                  final org.uberfire.mvp.Command executeCanvasOperation,
@@ -64,7 +69,7 @@ public class AddInputClauseCommand extends AbstractCanvasGraphCommand implements
         this.dtable = dtable;
         this.inputClause = inputClause;
         this.uiModel = uiModel;
-        this.uiModelColumn = uiModelColumn;
+        this.uiModelColumnSupplier = uiModelColumnSupplier;
         this.uiColumnIndex = uiColumnIndex;
         this.uiModelMapper = uiModelMapper;
         this.executeCanvasOperation = executeCanvasOperation;
@@ -82,6 +87,8 @@ public class AddInputClauseCommand extends AbstractCanvasGraphCommand implements
 
             @Override
             public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext context) {
+                dtable.getComponentWidths().add(uiColumnIndex, null);
+
                 final int clauseIndex = uiColumnIndex - DecisionTableUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT;
                 dtable.getInput().add(clauseIndex, inputClause);
                 final LiteralExpression le = new LiteralExpression();
@@ -102,6 +109,8 @@ public class AddInputClauseCommand extends AbstractCanvasGraphCommand implements
 
             @Override
             public CommandResult<RuleViolation> undo(final GraphCommandExecutionContext context) {
+                dtable.getComponentWidths().remove(uiColumnIndex);
+
                 final int clauseIndex = dtable.getInput().indexOf(inputClause);
                 dtable.getRule().forEach(rule -> rule.getInputEntry().remove(clauseIndex));
                 dtable.getInput().remove(inputClause);
@@ -116,8 +125,11 @@ public class AddInputClauseCommand extends AbstractCanvasGraphCommand implements
         return new AbstractCanvasCommand() {
             @Override
             public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
+                if (!uiModelColumn.isPresent()) {
+                    uiModelColumn = Optional.of(uiModelColumnSupplier.get());
+                }
                 uiModel.insertColumn(uiColumnIndex,
-                                     uiModelColumn);
+                                     uiModelColumn.get());
 
                 for (int rowIndex = 0; rowIndex < dtable.getRule().size(); rowIndex++) {
                     uiModelMapper.fromDMNModel(rowIndex,
@@ -133,7 +145,7 @@ public class AddInputClauseCommand extends AbstractCanvasGraphCommand implements
 
             @Override
             public CommandResult<CanvasViolation> undo(final AbstractCanvasHandler context) {
-                uiModel.deleteColumn(uiModelColumn);
+                uiModelColumn.ifPresent(uiModel::deleteColumn);
 
                 updateParentInformation();
 

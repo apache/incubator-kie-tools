@@ -31,10 +31,10 @@ import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.undefined.SetCellValueCommand;
+import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
-import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.selector.UndefinedExpressionSelectorPopoverView;
 import org.kie.workbench.common.dmn.client.session.DMNEditorSession;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseDelegatingExpressionGrid;
@@ -46,22 +46,22 @@ import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSel
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.handlers.DelegatingGridWidgetCellSelectorMouseEventHandler;
 import org.kie.workbench.common.dmn.client.widgets.grid.handlers.DelegatingGridWidgetEditCellMouseEventHandler;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorGridRow;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
-import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellValueTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
-import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
+import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.NodeMouseEventHandler;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridSelectionManager;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.GridPinnedModeManager;
@@ -75,7 +75,6 @@ public class UndefinedExpressionGrid extends BaseDelegatingExpressionGrid<Expres
     public UndefinedExpressionGrid(final GridCellTuple parent,
                                    final Optional<String> nodeUUID,
                                    final HasExpression hasExpression,
-                                   final Optional<Expression> expression,
                                    final Optional<HasName> hasName,
                                    final DMNGridPanel gridPanel,
                                    final DMNGridLayer gridLayer,
@@ -83,7 +82,7 @@ public class UndefinedExpressionGrid extends BaseDelegatingExpressionGrid<Expres
                                    final DefinitionUtils definitionUtils,
                                    final SessionManager sessionManager,
                                    final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                                   final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
+                                   final DefaultCanvasCommandFactory canvasCommandFactory,
                                    final Event<ExpressionEditorChanged> editorSelectedEvent,
                                    final Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent,
                                    final Event<DomainObjectSelectionEvent> domainObjectSelectionEvent,
@@ -97,7 +96,6 @@ public class UndefinedExpressionGrid extends BaseDelegatingExpressionGrid<Expres
         super(parent,
               nodeUUID,
               hasExpression,
-              expression,
               hasName,
               gridPanel,
               gridLayer,
@@ -152,7 +150,7 @@ public class UndefinedExpressionGrid extends BaseDelegatingExpressionGrid<Expres
     @Override
     public UndefinedExpressionUIModelMapper makeUiModelMapper() {
         return new UndefinedExpressionUIModelMapper(this::getModel,
-                                                    () -> expression,
+                                                    getExpression(),
                                                     listSelector,
                                                     translationService,
                                                     hasExpression);
@@ -160,7 +158,8 @@ public class UndefinedExpressionGrid extends BaseDelegatingExpressionGrid<Expres
 
     @Override
     protected void initialiseUiColumns() {
-        final DMNGridColumn undefinedExpressionColumn = new UndefinedExpressionColumn(this,
+        final DMNGridColumn undefinedExpressionColumn = new UndefinedExpressionColumn(UndefinedExpressionColumn.DEFAULT_WIDTH,
+                                                                                      this,
                                                                                       cellEditorControls,
                                                                                       undefinedExpressionSelector,
                                                                                       translationService);
@@ -198,43 +197,39 @@ public class UndefinedExpressionGrid extends BaseDelegatingExpressionGrid<Expres
 
         final Optional<ExpressionEditorDefinition<Expression>> expressionEditorDefinition = expressionEditorDefinitionsSupplier.get().getExpressionEditorDefinition(expression);
         expressionEditorDefinition.ifPresent(ed -> {
-            Optional<BaseExpressionGrid> editor = Optional.empty();
-            if (nodeUUID.isPresent()) {
-                final String uuid = nodeUUID.get();
-                editor = expressionGridCache.getExpressionGrid(uuid);
-            }
-            if (!editor.isPresent()) {
-                ed.enrich(nodeUUID, hasExpression, expression);
-                editor = ed.getEditor(parent,
-                                      nodeUUID,
-                                      hasExpression,
-                                      expression,
-                                      hasName,
-                                      nesting);
-            }
-
-            final BaseExpressionGrid _editor = editor.get();
-            final GridCellValueTuple<ExpressionCellValue> gcv = new GridCellValueTuple<>(parent.getRowIndex(),
-                                                                                         parent.getColumnIndex(),
-                                                                                         parent.getGridWidget(),
-                                                                                         new ExpressionCellValue(editor));
-
             sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
-                                          new SetCellValueCommand(gcv,
+                                          new SetCellValueCommand(parent,
                                                                   nodeUUID,
-                                                                  () -> uiModelMapper,
+                                                                  hasExpression,
+                                                                  () -> expression,
                                                                   expressionGridCache,
-                                                                  () -> {
+                                                                  (editor) -> {
                                                                       resize(BaseExpressionGrid.RESIZE_EXISTING);
-                                                                      _editor.selectFirstCell();
+                                                                      editor.ifPresent(BaseExpressionGrid::selectFirstCell);
                                                                       if (sessionManager.getCurrentSession() instanceof DMNEditorSession) {
-                                                                          final DMNEditorSession dmnEditorSession = (DMNEditorSession) sessionManager.getCurrentSession();
+                                                                          final DMNEditorSession dmnEditorSession = sessionManager.getCurrentSession();
                                                                           dmnEditorSession.getGridPanel().setFocus(true);
                                                                       }
                                                                   },
                                                                   () -> {
                                                                       resize(BaseExpressionGrid.RESIZE_EXISTING_MINIMUM);
                                                                       selectCell(0, 0, false, false);
+                                                                  },
+                                                                  () -> {
+                                                                      Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>> editor = Optional.empty();
+                                                                      if (nodeUUID.isPresent()) {
+                                                                          final String uuid = nodeUUID.get();
+                                                                          editor = expressionGridCache.getExpressionGrid(uuid);
+                                                                      }
+                                                                      if (!editor.isPresent()) {
+                                                                          ed.enrich(nodeUUID, hasExpression, expression);
+                                                                          editor = ed.getEditor(parent,
+                                                                                                nodeUUID,
+                                                                                                hasExpression,
+                                                                                                hasName,
+                                                                                                nesting);
+                                                                      }
+                                                                      return editor;
                                                                   }));
         });
     }

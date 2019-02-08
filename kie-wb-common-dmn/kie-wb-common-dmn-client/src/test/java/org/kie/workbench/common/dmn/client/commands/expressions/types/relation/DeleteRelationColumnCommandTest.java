@@ -28,6 +28,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.Relation;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.relation.RelationColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.relation.RelationUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
@@ -49,6 +50,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DeleteRelationColumnCommandTest {
@@ -362,5 +364,31 @@ public class DeleteRelationColumnCommandTest {
         verify(command).updateParentInformation();
 
         verify(undoCanvasOperation).execute();
+    }
+
+    @Test
+    public void testComponentWidths() {
+        makeCommand();
+
+        when(uiModelColumn.getWidth()).thenReturn(DMNGridColumn.DEFAULT_WIDTH);
+
+        final Command<GraphCommandExecutionContext, RuleViolation> graphCommand = command.newGraphCommand(handler);
+
+        //Execute
+        assertEquals(GraphCommandResultBuilder.SUCCESS,
+                     graphCommand.execute(gce));
+
+        assertEquals(relation.getRequiredComponentWidthCount(),
+                     relation.getComponentWidths().size());
+
+        //Undo
+        assertEquals(GraphCommandResultBuilder.SUCCESS,
+                     graphCommand.undo(gce));
+
+        assertEquals(relation.getRequiredComponentWidthCount(),
+                     relation.getComponentWidths().size());
+        assertEquals(DMNGridColumn.DEFAULT_WIDTH,
+                     relation.getComponentWidths().get(1),
+                     0.0);
     }
 }

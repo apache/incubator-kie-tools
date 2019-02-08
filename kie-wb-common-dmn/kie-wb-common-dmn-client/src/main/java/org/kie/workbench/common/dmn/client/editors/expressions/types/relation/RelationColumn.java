@@ -34,9 +34,11 @@ public class RelationColumn extends DMNSimpleGridColumn<RelationGrid, String> im
 
     public RelationColumn(final HeaderMetaData headerMetaData,
                           final TextAreaSingletonDOMElementFactory factory,
+                          final double width,
                           final RelationGrid gridWidget) {
         super(headerMetaData,
               new NameAndDataTypeDOMElementColumnRenderer<>(factory),
+              width,
               gridWidget);
         this.factory = PortablePreconditions.checkNotNull("factory",
                                                           factory);

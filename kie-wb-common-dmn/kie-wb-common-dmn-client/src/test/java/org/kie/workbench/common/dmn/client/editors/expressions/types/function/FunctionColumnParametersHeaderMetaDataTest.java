@@ -62,14 +62,14 @@ public class FunctionColumnParametersHeaderMetaDataTest {
 
     private FunctionDefinition function;
 
-    private Supplier<FunctionDefinition> functionSupplier;
+    private Supplier<Optional<FunctionDefinition>> functionSupplier;
 
     private FunctionColumnParametersHeaderMetaData header;
 
     @Before
     public void setup() {
         this.function = new FunctionDefinition();
-        this.functionSupplier = () -> function;
+        this.functionSupplier = () -> Optional.ofNullable(function);
         this.header = new FunctionColumnParametersHeaderMetaData(functionSupplier,
                                                                  translationService,
                                                                  cellEditorControls,

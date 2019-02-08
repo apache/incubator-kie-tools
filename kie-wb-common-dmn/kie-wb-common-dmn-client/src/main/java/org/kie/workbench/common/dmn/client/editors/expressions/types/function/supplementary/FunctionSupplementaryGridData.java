@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.function.s
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.function.supplementary.MoveRowsCommand;
@@ -34,13 +35,13 @@ public class FunctionSupplementaryGridData extends DelegatingGridData {
 
     private final SessionManager sessionManager;
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
-    private final Optional<Context> expression;
+    private final Supplier<Optional<Context>> expression;
     private final Command canvasOperation;
 
     public FunctionSupplementaryGridData(final DMNGridData delegate,
                                          final SessionManager sessionManager,
                                          final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                                         final Optional<Context> expression,
+                                         final Supplier<Optional<Context>> expression,
                                          final Command canvasOperation) {
         super(delegate);
         this.sessionManager = sessionManager;
@@ -61,11 +62,11 @@ public class FunctionSupplementaryGridData extends DelegatingGridData {
     @Override
     public void moveRowsTo(final int index,
                            final List<GridRow> rows) {
-        expression.ifPresent(context -> sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
-                                                                      new MoveRowsCommand(context,
-                                                                                          delegate,
-                                                                                          index,
-                                                                                          rows,
-                                                                                          canvasOperation)));
+        expression.get().ifPresent(context -> sessionCommandManager.execute((AbstractCanvasHandler) sessionManager.getCurrentSession().getCanvasHandler(),
+                                                                            new MoveRowsCommand(context,
+                                                                                                delegate,
+                                                                                                index,
+                                                                                                rows,
+                                                                                                canvasOperation)));
     }
 }

@@ -26,17 +26,27 @@ import java.util.stream.IntStream;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.assertj.core.api.Assertions;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionRule;
+import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
+import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
+import org.kie.workbench.common.dmn.client.widgets.grid.BaseGrid;
+import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
+import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.mockito.Mock;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
@@ -48,10 +58,8 @@ import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberColumn;
-import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
-import org.uberfire.ext.wires.core.grids.client.widget.layer.GridSelectionManager;
-import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.GridPinnedModeManager;
+import org.uberfire.mocks.EventSourceMock;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -68,13 +76,28 @@ public class CommandUtilsTest {
     private DMNGridLayer gridLayer;
 
     @Mock
-    private GridSelectionManager selectionManager;
-
-    @Mock
-    private GridPinnedModeManager pinnedModeManager;
-
-    @Mock
     private GridRenderer renderer;
+
+    @Mock
+    private SessionManager sessionManager;
+
+    @Mock
+    private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
+
+    @Mock
+    private DefaultCanvasCommandFactory canvasCommandFactory;
+
+    @Mock
+    private EventSourceMock<RefreshFormPropertiesEvent> refreshFormPropertiesEvent;
+
+    @Mock
+    private EventSourceMock<DomainObjectSelectionEvent> domainObjectSelectionEvent;
+
+    @Mock
+    private CellEditorControlsView.Presenter cellEditorControls;
+
+    @Mock
+    private TranslationService translationService;
 
     private DecisionRule decisionRuleOne;
     private DecisionRule decisionRuleTwo;
@@ -83,9 +106,9 @@ public class CommandUtilsTest {
     private List<Object> allRows = new ArrayList<>();
     private List<Object> rowsToMove = new ArrayList<>();
 
-    private DMNGridData uiModel;
+    private DMNGridData gridData;
 
-    private GridWidget gridWidget;
+    private BaseGrid<Expression> gridWidget;
 
     @Before
     public void setUp() throws Exception {
@@ -104,11 +127,28 @@ public class CommandUtilsTest {
 
         rowsToMove.clear();
 
-        uiModel = new DMNGridData();
-        gridWidget = new BaseGridWidget(uiModel,
-                                        selectionManager,
-                                        pinnedModeManager,
-                                        renderer);
+        gridData = new DMNGridData();
+        gridWidget = new BaseGrid<Expression>(gridLayer,
+                                              gridData,
+                                              renderer,
+                                              sessionManager,
+                                              sessionCommandManager,
+                                              canvasCommandFactory,
+                                              refreshFormPropertiesEvent,
+                                              domainObjectSelectionEvent,
+                                              cellEditorControls,
+                                              translationService) {
+            @Override
+            public List<ListSelectorItem> getItems(final int uiRowIndex,
+                                                   final int uiColumnIndex) {
+                return Collections.emptyList();
+            }
+
+            @Override
+            public void onItemSelected(final ListSelectorItem item) {
+                //NOP for tests
+            }
+        };
     }
 
     @Test
@@ -159,8 +199,8 @@ public class CommandUtilsTest {
                                   (rowIndex) -> new BaseGridCellValue<>(rowIndex + 1)));
         assertRowNumberValues();
 
-        uiModel.moveRowTo(0, uiModel.getRow(ROW_COUNT - 1));
-        CommandUtils.updateRowNumbers(uiModel, IntStream.range(0, ROW_COUNT));
+        gridData.moveRowTo(0, gridData.getRow(ROW_COUNT - 1));
+        CommandUtils.updateRowNumbers(gridData, IntStream.range(0, ROW_COUNT));
 
         assertRowNumberValues();
     }
@@ -168,13 +208,16 @@ public class CommandUtilsTest {
     private void assertRowNumberValues() {
         IntStream.range(0, ROW_COUNT)
                 .forEach(rowIndex -> assertEquals(rowIndex + 1,
-                                                  uiModel.getCell(rowIndex, 0).getValue().getValue()));
+                                                  gridData.getCell(rowIndex, 0).getValue().getValue()));
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testUpdateParentInformation_WithExpressionColumn() {
         setupUiModel(Pair.newPair(new ExpressionEditorColumn(gridLayer,
-                                                             new BaseHeaderMetaData("column"), gridWidget),
+                                                             new BaseHeaderMetaData("column"),
+                                                             ExpressionEditorColumn.DEFAULT_WIDTH,
+                                                             gridWidget),
                                   (rowIndex) -> {
                                       final BaseExpressionGrid grid = mock(BaseExpressionGrid.class);
                                       final GridCellTuple gct = new GridCellTuple(rowIndex, 0, mock(GridWidget.class));
@@ -183,16 +226,18 @@ public class CommandUtilsTest {
                                   }));
         assertParentInformationValues(0);
 
-        uiModel.moveRowTo(0, uiModel.getRow(ROW_COUNT - 1));
-        CommandUtils.updateParentInformation(uiModel);
+        gridData.moveRowTo(0, gridData.getRow(ROW_COUNT - 1));
+        CommandUtils.updateParentInformation(gridData);
 
         assertParentInformationValues(0);
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testUpdateParentInformation_WithExpressionColumnNullValues() {
         setupUiModelNullValues(Pair.newPair(new ExpressionEditorColumn(gridLayer,
                                                                        new BaseHeaderMetaData("column"),
+                                                                       ExpressionEditorColumn.DEFAULT_WIDTH,
                                                                        gridWidget),
                                             (rowIndex) -> {
                                                 final BaseExpressionGrid grid = mock(BaseExpressionGrid.class);
@@ -201,16 +246,18 @@ public class CommandUtilsTest {
                                                 return new ExpressionCellValue(Optional.of(grid));
                                             }));
         try {
-            CommandUtils.updateParentInformation(uiModel);
+            CommandUtils.updateParentInformation(gridData);
         } catch (Exception e) {
             fail();
         }
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testUpdateParentInformation_WithMultipleColumns() {
         setupUiModel(Pair.newPair(new ExpressionEditorColumn(gridLayer,
                                                              new BaseHeaderMetaData("column"),
+                                                             ExpressionEditorColumn.DEFAULT_WIDTH,
                                                              gridWidget),
                                   (rowIndex) -> {
                                       final BaseExpressionGrid grid = mock(BaseExpressionGrid.class);
@@ -222,8 +269,8 @@ public class CommandUtilsTest {
                                   (rowIndex) -> new BaseGridCellValue<>(rowIndex + 1)));
         assertParentInformationValues(0);
 
-        uiModel.moveColumnTo(0, uiModel.getColumns().get(1));
-        CommandUtils.updateParentInformation(uiModel);
+        gridData.moveColumnTo(0, gridData.getColumns().get(1));
+        CommandUtils.updateParentInformation(gridData);
 
         assertParentInformationValues(1);
     }
@@ -262,7 +309,7 @@ public class CommandUtilsTest {
     private void assertParentInformationValues(final int expressionColumnIndex) {
         IntStream.range(0, ROW_COUNT)
                 .forEach(rowIndex -> {
-                    final ExpressionCellValue ecv = ((ExpressionCellValue) uiModel.getCell(rowIndex, expressionColumnIndex).getValue());
+                    final ExpressionCellValue ecv = ((ExpressionCellValue) gridData.getCell(rowIndex, expressionColumnIndex).getValue());
                     final BaseExpressionGrid grid = ecv.getValue().get();
                     assertEquals(rowIndex,
                                  grid.getParentInformation().getRowIndex());
@@ -276,18 +323,18 @@ public class CommandUtilsTest {
         setupUiModelNullValues(columns);
         Arrays.asList(columns).forEach(column -> {
             IntStream.range(0, ROW_COUNT).forEach(rowIndex -> {
-                uiModel.setCellValue(rowIndex,
-                                     uiModel.getColumns().indexOf(column.getK1()),
-                                     column.getK2().apply(rowIndex));
+                gridData.setCellValue(rowIndex,
+                                      gridData.getColumns().indexOf(column.getK1()),
+                                      column.getK2().apply(rowIndex));
             });
         });
     }
 
     @SafeVarargs
     private final void setupUiModelNullValues(final Pair<GridColumn, Function<Integer, GridCellValue>>... columns) {
-        Arrays.asList(columns).forEach(column -> uiModel.appendColumn(column.getK1()));
+        Arrays.asList(columns).forEach(column -> gridData.appendColumn(column.getK1()));
         IntStream.range(0, ROW_COUNT).forEach(rowIndex -> {
-            uiModel.appendRow(new BaseGridRow());
+            gridData.appendRow(new BaseGridRow());
         });
     }
 }

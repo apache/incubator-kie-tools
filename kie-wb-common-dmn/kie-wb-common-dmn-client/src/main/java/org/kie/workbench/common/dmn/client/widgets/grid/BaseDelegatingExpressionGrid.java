@@ -26,6 +26,7 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
+import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.HasCellEditorControls;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
@@ -38,7 +39,6 @@ import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
-import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
@@ -54,7 +54,6 @@ public abstract class BaseDelegatingExpressionGrid<E extends Expression, D exten
     public BaseDelegatingExpressionGrid(final GridCellTuple parent,
                                         final Optional<String> nodeUUID,
                                         final HasExpression hasExpression,
-                                        final Optional<E> expression,
                                         final Optional<HasName> hasName,
                                         final DMNGridPanel gridPanel,
                                         final DMNGridLayer gridLayer,
@@ -63,7 +62,7 @@ public abstract class BaseDelegatingExpressionGrid<E extends Expression, D exten
                                         final DefinitionUtils definitionUtils,
                                         final SessionManager sessionManager,
                                         final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                                        final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
+                                        final DefaultCanvasCommandFactory canvasCommandFactory,
                                         final Event<ExpressionEditorChanged> editorSelectedEvent,
                                         final Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent,
                                         final Event<DomainObjectSelectionEvent> domainObjectSelectionEvent,
@@ -74,7 +73,6 @@ public abstract class BaseDelegatingExpressionGrid<E extends Expression, D exten
         super(parent,
               nodeUUID,
               hasExpression,
-              expression,
               hasName,
               gridPanel,
               gridLayer,

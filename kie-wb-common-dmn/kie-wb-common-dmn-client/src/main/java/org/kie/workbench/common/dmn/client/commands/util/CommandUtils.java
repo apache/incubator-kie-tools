@@ -18,6 +18,7 @@ package org.kie.workbench.common.dmn.client.commands.util;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
@@ -65,6 +66,25 @@ public class CommandUtils {
         } else if (index > oldBlockStart) {
             allRows.addAll(index - rowsToMove.size() + 1,
                            rowsToMove);
+        }
+    }
+
+    public static void moveComponentWidths(final int index,
+                                           final int oldIndex,
+                                           final List<Double> componentWidths,
+                                           final List<Integer> uiColumnIndexes) {
+        final java.util.List<Double> componentWidthsToMove = uiColumnIndexes
+                .stream()
+                .map(componentWidths::get)
+                .collect(Collectors.toList());
+
+        uiColumnIndexes.forEach(i -> componentWidths.remove(oldIndex));
+        if (index < oldIndex) {
+            componentWidths.addAll(index,
+                                   componentWidthsToMove);
+        } else if (index > oldIndex) {
+            componentWidths.addAll(oldIndex + 1,
+                                   componentWidthsToMove);
         }
     }
 

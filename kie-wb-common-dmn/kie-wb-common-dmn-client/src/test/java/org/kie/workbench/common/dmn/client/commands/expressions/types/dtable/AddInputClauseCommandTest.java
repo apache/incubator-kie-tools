@@ -48,6 +48,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.columns.RowNumberCol
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -105,7 +106,7 @@ public class AddInputClauseCommandTest {
         this.command = spy(new AddInputClauseCommand(dtable,
                                                      inputClause,
                                                      uiModel,
-                                                     uiInputClauseColumn,
+                                                     () -> uiInputClauseColumn,
                                                      index,
                                                      uiModelMapper,
                                                      executeCanvasOperation,
@@ -341,6 +342,33 @@ public class AddInputClauseCommandTest {
 
         verify(undoCanvasOperation).execute();
         verify(command).updateParentInformation();
+    }
+
+    @Test
+    public void testComponentWidths() {
+        makeCommand(DecisionTableUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT);
+
+        final Command<GraphCommandExecutionContext, RuleViolation> graphCommand = command.newGraphCommand(canvasHandler);
+        final Command<AbstractCanvasHandler, CanvasViolation> canvasCommand = command.newCanvasCommand(canvasHandler);
+
+        //Execute
+        assertEquals(GraphCommandResultBuilder.SUCCESS,
+                     graphCommand.execute(graphCommandExecutionContext));
+        assertEquals(CanvasCommandResultBuilder.SUCCESS,
+                     canvasCommand.execute(canvasHandler));
+
+        assertEquals(dtable.getRequiredComponentWidthCount(),
+                     dtable.getComponentWidths().size());
+        assertNull(dtable.getComponentWidths().get(DecisionTableUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT));
+
+        //Undo
+        assertEquals(GraphCommandResultBuilder.SUCCESS,
+                     graphCommand.undo(graphCommandExecutionContext));
+        assertEquals(CanvasCommandResultBuilder.SUCCESS,
+                     canvasCommand.undo(canvasHandler));
+
+        assertEquals(dtable.getRequiredComponentWidthCount(),
+                     dtable.getComponentWidths().size());
     }
 
     private void addRuleWithInputClauseValues(String... inputClauseValues) {

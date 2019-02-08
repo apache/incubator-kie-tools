@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.client.commands.expressions.types.relation;
 
 import java.util.Collections;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -207,7 +208,7 @@ public class MoveColumnsCommandTest extends BaseMoveCommandsTest<MoveColumnsComm
     }
 
     @Test
-    public void testCanvasCommandUndoMoveUp() {
+    public void testCanvasCommandUndoMoveLeft() {
         setupCommand(1,
                      uiModel.getColumns().get(2));
 
@@ -257,5 +258,46 @@ public class MoveColumnsCommandTest extends BaseMoveCommandsTest<MoveColumnsComm
                      uiModel.getCell(1, 1).getValue().getValue());
         assertEquals("value" + columnIndexes[1],
                      uiModel.getCell(1, 2).getValue().getValue());
+    }
+
+    @Test
+    public void testComponentWidths() {
+        setupCommand(1,
+                     uiModel.getColumns().get(2));
+        final List<Double> componentWidths = relation.getComponentWidths();
+        componentWidths.set(1, 10.0);
+        componentWidths.set(2, 20.0);
+
+        final Command<GraphCommandExecutionContext, RuleViolation> graphCommand = command.newGraphCommand(handler);
+
+        //Execute
+        assertEquals(GraphCommandResultBuilder.SUCCESS,
+                     graphCommand.execute(gce));
+
+        assertEquals(relation.getRequiredComponentWidthCount(),
+                     relation.getComponentWidths().size());
+
+        assertEquals(20.0,
+                     relation.getComponentWidths().get(1),
+                     0.0);
+        assertEquals(10.0,
+                     relation.getComponentWidths().get(2),
+                     0.0);
+
+        //Move UI columns as MoveColumnsCommand.undo() relies on the UiModel being updated
+        command.newCanvasCommand(handler).execute(handler);
+
+        //Undo
+        assertEquals(GraphCommandResultBuilder.SUCCESS,
+                     graphCommand.undo(gce));
+
+        assertEquals(relation.getRequiredComponentWidthCount(),
+                     relation.getComponentWidths().size());
+        assertEquals(10.0,
+                     relation.getComponentWidths().get(1),
+                     0.0);
+        assertEquals(20.0,
+                     relation.getComponentWidths().get(2),
+                     0.0);
     }
 }

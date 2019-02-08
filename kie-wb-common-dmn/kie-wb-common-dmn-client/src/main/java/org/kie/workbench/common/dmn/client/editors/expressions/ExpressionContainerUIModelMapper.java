@@ -75,18 +75,17 @@ public class ExpressionContainerUIModelMapper extends BaseUIModelMapper<Expressi
 
         final Optional<ExpressionEditorDefinition<Expression>> expressionEditorDefinition = expressionEditorDefinitions.get().getExpressionEditorDefinition(expression);
         expressionEditorDefinition.ifPresent(definition -> {
-            Optional<BaseExpressionGrid> editor = expressionGridCache.get().getExpressionGrid(uuid);
+            Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>> editor = expressionGridCache.get().getExpressionGrid(uuid);
             if (!editor.isPresent()) {
-                final Optional<BaseExpressionGrid> oEditor = definition.getEditor(parent,
-                                                                                  Optional.of(uuid),
-                                                                                  hasExpression,
-                                                                                  expression,
-                                                                                  hasName,
-                                                                                  0);
+                final Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>> oEditor = definition.getEditor(parent,
+                                                                                                                                                         Optional.of(uuid),
+                                                                                                                                                         hasExpression,
+                                                                                                                                                         hasName,
+                                                                                                                                                         0);
                 expressionGridCache.get().putExpressionGrid(uuid, oEditor);
                 editor = oEditor;
             }
-            final Optional<BaseExpressionGrid> _editor = editor;
+            final Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>> _editor = editor;
             uiModel.setCell(0,
                             0,
                             () -> new ContextGridCell<>(new ExpressionCellValue(_editor),

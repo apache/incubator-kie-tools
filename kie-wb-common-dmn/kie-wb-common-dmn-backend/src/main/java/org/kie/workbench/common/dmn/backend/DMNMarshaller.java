@@ -20,13 +20,16 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -46,8 +49,10 @@ import org.kie.dmn.model.api.dmndi.DMNShape;
 import org.kie.dmn.model.api.dmndi.DMNStyle;
 import org.kie.dmn.model.api.dmndi.Point;
 import org.kie.dmn.model.v1_2.dmndi.DMNDI;
+import org.kie.dmn.model.v1_2.dmndi.DiagramElement;
 import org.kie.workbench.common.dmn.api.DMNDefinitionSet;
 import org.kie.workbench.common.dmn.api.definition.DMNViewDefinition;
+import org.kie.workbench.common.dmn.api.definition.HasComponentWidths;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Association;
 import org.kie.workbench.common.dmn.api.definition.v1_1.BusinessKnowledgeModel;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNDiagram;
@@ -79,6 +84,9 @@ import org.kie.workbench.common.dmn.backend.definition.v1_1.InputDataConverter;
 import org.kie.workbench.common.dmn.backend.definition.v1_1.KnowledgeSourceConverter;
 import org.kie.workbench.common.dmn.backend.definition.v1_1.TextAnnotationConverter;
 import org.kie.workbench.common.dmn.backend.definition.v1_1.dd.ColorUtils;
+import org.kie.workbench.common.dmn.backend.definition.v1_1.dd.ComponentWidths;
+import org.kie.workbench.common.dmn.backend.definition.v1_1.dd.ComponentsWidthsExtension;
+import org.kie.workbench.common.dmn.backend.definition.v1_1.dd.DMNDIExtensionsRegister;
 import org.kie.workbench.common.dmn.backend.definition.v1_1.dd.FontSetPropertyConverter;
 import org.kie.workbench.common.dmn.backend.definition.v1_1.dd.PointUtils;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
@@ -140,7 +148,7 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
         this.knowledgeSourceConverter = new KnowledgeSourceConverter(factoryManager);
         this.textAnnotationConverter = new TextAnnotationConverter(factoryManager);
         this.decisionServiceConverter = new DecisionServiceConverter(factoryManager);
-        this.marshaller = DMNMarshallerFactory.newDefaultMarshaller();
+        this.marshaller = DMNMarshallerFactory.newMarshallerWithExtensions(Collections.singletonList(new DMNDIExtensionsRegister()));
     }
 
     @Deprecated
@@ -175,11 +183,19 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
     @SuppressWarnings("unchecked")
     public Graph unmarshall(final Metadata metadata,
                             final InputStream input) throws IOException {
+        final Map<String, HasComponentWidths> hasComponentWidthsMap = new HashMap<>();
+        final BiConsumer<String, HasComponentWidths> hasComponentWidthsConsumer = (uuid, hcw) -> {
+            if (Objects.nonNull(uuid)) {
+                hasComponentWidthsMap.put(uuid, hcw);
+            }
+        };
+
         org.kie.dmn.model.api.Definitions dmnXml = marshaller.unmarshal(new InputStreamReader(input));
 
         Map<String, Entry<org.kie.dmn.model.api.DRGElement, Node>> elems = dmnXml.getDrgElement().stream().collect(Collectors.toMap(org.kie.dmn.model.api.DRGElement::getId,
                                                                                                                                     dmn -> new SimpleEntry<>(dmn,
-                                                                                                                                                             dmnToStunner(dmn))));
+                                                                                                                                                             dmnToStunner(dmn,
+                                                                                                                                                                          hasComponentWidthsConsumer))));
 
         Set<org.kie.dmn.model.api.DecisionService> dmnDecisionServices = new HashSet<>();
         Optional<org.kie.dmn.model.api.dmndi.DMNDiagram> dmnDDDiagram = findDMNDiagram(dmnXml);
@@ -315,7 +331,8 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
                 .filter(org.kie.dmn.model.api.TextAnnotation.class::isInstance)
                 .map(org.kie.dmn.model.api.TextAnnotation.class::cast)
                 .collect(Collectors.toMap(org.kie.dmn.model.api.TextAnnotation::getId,
-                                          textAnnotationConverter::nodeFromDMN));
+                                          dmn -> textAnnotationConverter.nodeFromDMN(dmn,
+                                                                                     hasComponentWidthsConsumer)));
         textAnnotations.values().forEach(n -> ddExtAugmentStunner(dmnDDDiagram, n));
 
         List<org.kie.dmn.model.api.Association> associations = dmnXml.getArtifact().stream()
@@ -375,6 +392,23 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
         textAnnotations.values().stream().forEach(node -> connectRootWithChild(dmnDiagramRoot,
                                                                                node));
 
+        //Copy ComponentWidths information
+        final Optional<ComponentsWidthsExtension> extension = findComponentsWidthsExtension(dmnDDDiagram);
+        extension.ifPresent(componentsWidthsExtension -> {
+            hasComponentWidthsMap.entrySet().forEach(es -> {
+                componentsWidthsExtension
+                        .getComponentsWidths()
+                        .stream()
+                        .filter(componentWidths -> componentWidths.getDmnElementRef().getLocalPart().equals(es.getKey()))
+                        .findFirst()
+                        .ifPresent(componentWidths -> {
+                            final List<Double> widths = es.getValue().getComponentWidths();
+                            widths.clear();
+                            widths.addAll(componentWidths.getWidths());
+                        });
+            });
+        });
+
         return graph;
     }
 
@@ -406,17 +440,23 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
         return href.contains("#") ? href.substring(href.indexOf('#') + 1) : href;
     }
 
-    private Node dmnToStunner(org.kie.dmn.model.api.DRGElement dmn) {
+    private Node dmnToStunner(org.kie.dmn.model.api.DRGElement dmn,
+                              final BiConsumer<String, HasComponentWidths> hasComponentWidthsConsumer) {
         if (dmn instanceof org.kie.dmn.model.api.InputData) {
-            return inputDataConverter.nodeFromDMN((org.kie.dmn.model.api.InputData) dmn);
+            return inputDataConverter.nodeFromDMN((org.kie.dmn.model.api.InputData) dmn,
+                                                  hasComponentWidthsConsumer);
         } else if (dmn instanceof org.kie.dmn.model.api.Decision) {
-            return decisionConverter.nodeFromDMN((org.kie.dmn.model.api.Decision) dmn);
+            return decisionConverter.nodeFromDMN((org.kie.dmn.model.api.Decision) dmn,
+                                                 hasComponentWidthsConsumer);
         } else if (dmn instanceof org.kie.dmn.model.api.BusinessKnowledgeModel) {
-            return bkmConverter.nodeFromDMN((org.kie.dmn.model.api.BusinessKnowledgeModel) dmn);
+            return bkmConverter.nodeFromDMN((org.kie.dmn.model.api.BusinessKnowledgeModel) dmn,
+                                            hasComponentWidthsConsumer);
         } else if (dmn instanceof org.kie.dmn.model.api.KnowledgeSource) {
-            return knowledgeSourceConverter.nodeFromDMN((org.kie.dmn.model.api.KnowledgeSource) dmn);
+            return knowledgeSourceConverter.nodeFromDMN((org.kie.dmn.model.api.KnowledgeSource) dmn,
+                                                        hasComponentWidthsConsumer);
         } else if (dmn instanceof org.kie.dmn.model.api.DecisionService) {
-            return decisionServiceConverter.nodeFromDMN((org.kie.dmn.model.api.DecisionService) dmn);
+            return decisionServiceConverter.nodeFromDMN((org.kie.dmn.model.api.DecisionService) dmn,
+                                                        hasComponentWidthsConsumer);
         } else {
             throw new UnsupportedOperationException("TODO"); // TODO 
         }
@@ -499,6 +539,26 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
         }
     }
 
+    private Optional<ComponentsWidthsExtension> findComponentsWidthsExtension(final Optional<org.kie.dmn.model.api.dmndi.DMNDiagram> dmnDDDiagram) {
+        if (!dmnDDDiagram.isPresent()) {
+            return Optional.empty();
+        }
+        final org.kie.dmn.model.api.dmndi.DiagramElement.Extension dmnDDExtensions = dmnDDDiagram.get().getExtension();
+
+        if (Objects.isNull(dmnDDExtensions)) {
+            return Optional.empty();
+        }
+        final List<Object> extensions = dmnDDExtensions.getAny();
+        if (Objects.isNull(extensions)) {
+            return Optional.empty();
+        }
+        return extensions
+                .stream()
+                .filter(extension -> extension instanceof ComponentsWidthsExtension)
+                .map(extension -> (ComponentsWidthsExtension) extension)
+                .findFirst();
+    }
+
     @Override
     @SuppressWarnings("unchecked")
     public String marshall(final Diagram<Graph, Metadata> diagram) throws IOException {
@@ -532,18 +592,32 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
             PointUtils.convertToAbsoluteBounds(node);
         }
 
+        //Setup callback for marshalling ComponentWidths
+        if (dmnDDDMNDiagram.getExtension() == null) {
+            dmnDDDMNDiagram.setExtension(new DiagramElement.Extension());
+        }
+        final ComponentsWidthsExtension componentsWidthsExtension = new ComponentsWidthsExtension();
+        dmnDDDMNDiagram.getExtension().getAny().add(componentsWidthsExtension);
+
+        final Consumer<ComponentWidths> componentWidthsConsumer = (cw) -> {
+            componentsWidthsExtension.getComponentsWidths().add(cw);
+        };
+
+        //Iterate Graph processing nodes..
         for (Node<?, ?> node : g.nodes()) {
             if (node.getContent() instanceof View<?>) {
                 View<?> view = (View<?>) node.getContent();
                 if (view.getDefinition() instanceof DRGElement) {
                     DRGElement n = (org.kie.workbench.common.dmn.api.definition.v1_1.DRGElement) view.getDefinition();
                     nodes.put(n.getId().getValue(),
-                              stunnerToDMN(node));
+                              stunnerToDMN(node,
+                                           componentWidthsConsumer));
                     dmnDDDMNDiagram.getDMNDiagramElement().add(stunnerToDDExt((View<? extends DMNElement>) view));
                 } else if (view.getDefinition() instanceof TextAnnotation) {
                     TextAnnotation textAnnotation = (TextAnnotation) view.getDefinition();
                     textAnnotations.put(textAnnotation.getId().getValue(),
-                                        textAnnotationConverter.dmnFromNode((Node<View<TextAnnotation>, ?>) node));
+                                        textAnnotationConverter.dmnFromNode((Node<View<TextAnnotation>, ?>) node,
+                                                                            componentWidthsConsumer));
                     dmnDDDMNDiagram.getDMNDiagramElement().add(stunnerToDDExt((View<? extends DMNElement>) view));
 
                     List<org.kie.dmn.model.api.Association> associations = AssociationConverter.dmnFromWB((Node<View<TextAnnotation>, ?>) node);
@@ -871,19 +945,25 @@ public class DMNMarshaller implements DiagramMarshaller<Graph, Metadata, Diagram
     }
 
     @SuppressWarnings("unchecked")
-    private org.kie.dmn.model.api.DRGElement stunnerToDMN(final Node<?, ?> node) {
+    private org.kie.dmn.model.api.DRGElement stunnerToDMN(final Node<?, ?> node,
+                                                          final Consumer<ComponentWidths> componentWidthsConsumer) {
         if (node.getContent() instanceof View<?>) {
             View<?> view = (View<?>) node.getContent();
             if (view.getDefinition() instanceof InputData) {
-                return inputDataConverter.dmnFromNode((Node<View<InputData>, ?>) node);
+                return inputDataConverter.dmnFromNode((Node<View<InputData>, ?>) node,
+                                                      componentWidthsConsumer);
             } else if (view.getDefinition() instanceof Decision) {
-                return decisionConverter.dmnFromNode((Node<View<Decision>, ?>) node);
+                return decisionConverter.dmnFromNode((Node<View<Decision>, ?>) node,
+                                                     componentWidthsConsumer);
             } else if (view.getDefinition() instanceof BusinessKnowledgeModel) {
-                return bkmConverter.dmnFromNode((Node<View<BusinessKnowledgeModel>, ?>) node);
+                return bkmConverter.dmnFromNode((Node<View<BusinessKnowledgeModel>, ?>) node,
+                                                componentWidthsConsumer);
             } else if (view.getDefinition() instanceof KnowledgeSource) {
-                return knowledgeSourceConverter.dmnFromNode((Node<View<KnowledgeSource>, ?>) node);
+                return knowledgeSourceConverter.dmnFromNode((Node<View<KnowledgeSource>, ?>) node,
+                                                            componentWidthsConsumer);
             } else if (view.getDefinition() instanceof DecisionService) {
-                return decisionServiceConverter.dmnFromNode((Node<View<DecisionService>, ?>) node);
+                return decisionServiceConverter.dmnFromNode((Node<View<DecisionService>, ?>) node,
+                                                            componentWidthsConsumer);
             } else {
                 throw new UnsupportedOperationException("TODO"); // TODO 
             }

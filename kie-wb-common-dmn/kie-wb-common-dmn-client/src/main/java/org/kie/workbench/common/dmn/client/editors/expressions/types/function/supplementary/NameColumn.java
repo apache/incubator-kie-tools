@@ -24,9 +24,11 @@ import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 
 public class NameColumn extends DMNGridColumn<FunctionSupplementaryGrid, InformationItemCell.HasNameCell> {
 
-    public NameColumn(final FunctionSupplementaryGrid gridWidget) {
+    public NameColumn(final double width,
+                      final FunctionSupplementaryGrid gridWidget) {
         super(Collections.emptyList(),
               new NameAndDataTypeColumnRenderer(),
+              width,
               gridWidget);
 
         setMovable(false);

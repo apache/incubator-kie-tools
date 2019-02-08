@@ -35,17 +35,21 @@ public class DescriptionColumn extends DMNSimpleGridColumn<DecisionTableGrid, St
 
     public DescriptionColumn(final HeaderMetaData headerMetaData,
                              final TextAreaSingletonDOMElementFactory factory,
+                             final double width,
                              final DecisionTableGrid gridWidget) {
         this(Collections.singletonList(headerMetaData),
              factory,
+             width,
              gridWidget);
     }
 
     public DescriptionColumn(final List<HeaderMetaData> headerMetaData,
                              final TextAreaSingletonDOMElementFactory factory,
+                             final double width,
                              final DecisionTableGrid gridWidget) {
         super(headerMetaData,
               new DescriptionColumnRenderer(factory),
+              width,
               gridWidget);
         this.factory = PortablePreconditions.checkNotNull("factory",
                                                           factory);

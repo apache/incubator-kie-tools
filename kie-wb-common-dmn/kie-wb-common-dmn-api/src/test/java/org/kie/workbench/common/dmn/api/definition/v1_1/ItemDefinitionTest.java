@@ -36,7 +36,6 @@ public class ItemDefinitionTest {
 
     @Test
     public void testGetHasTypeRefs() {
-
         final List<HasTypeRef> actualHasTypeRefs = itemDefinition.getHasTypeRefs();
         final List<HasTypeRef> expectedHasTypeRefs = singletonList(itemDefinition);
 

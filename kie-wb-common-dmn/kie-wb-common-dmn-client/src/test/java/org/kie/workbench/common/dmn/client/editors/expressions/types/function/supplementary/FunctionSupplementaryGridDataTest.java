@@ -76,7 +76,7 @@ public class FunctionSupplementaryGridDataTest {
         this.uiModel = new FunctionSupplementaryGridData(delegate,
                                                          sessionManager,
                                                          sessionCommandManager,
-                                                         expression,
+                                                         () -> expression,
                                                          canvasOperation);
 
         doReturn(session).when(sessionManager).getCurrentSession();

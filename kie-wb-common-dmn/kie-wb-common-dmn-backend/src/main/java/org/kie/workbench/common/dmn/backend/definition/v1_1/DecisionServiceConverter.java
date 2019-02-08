@@ -19,8 +19,11 @@ package org.kie.workbench.common.dmn.backend.definition.v1_1;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import org.kie.workbench.common.dmn.api.definition.HasComponentWidths;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNElementReference;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DRGElement;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
@@ -35,6 +38,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.font.FontSet;
+import org.kie.workbench.common.dmn.backend.definition.v1_1.dd.ComponentWidths;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -51,7 +55,8 @@ public class DecisionServiceConverter implements NodeConverter<org.kie.dmn.model
     }
 
     @Override
-    public Node<View<DecisionService>, ?> nodeFromDMN(final org.kie.dmn.model.api.DecisionService dmn) {
+    public Node<View<DecisionService>, ?> nodeFromDMN(final org.kie.dmn.model.api.DecisionService dmn,
+                                                      final BiConsumer<String, HasComponentWidths> hasComponentWidthsConsumer) {
         @SuppressWarnings("unchecked")
         Node<View<DecisionService>, ?> node = (Node<View<DecisionService>, ?>) factoryManager.newElement(dmn.getId(),
                                                                                                          DecisionService.class).asNode();
@@ -86,7 +91,8 @@ public class DecisionServiceConverter implements NodeConverter<org.kie.dmn.model
 
     @Override
     @SuppressWarnings("unchecked")
-    public org.kie.dmn.model.api.DecisionService dmnFromNode(Node<View<DecisionService>, ?> node) {
+    public org.kie.dmn.model.api.DecisionService dmnFromNode(final Node<View<DecisionService>, ?> node,
+                                                             final Consumer<ComponentWidths> componentWidthsConsumer) {
         DecisionService source = node.getContent().getDefinition();
         org.kie.dmn.model.api.DecisionService ds = new org.kie.dmn.model.v1_2.TDecisionService();
         ds.setId(source.getId().getValue());

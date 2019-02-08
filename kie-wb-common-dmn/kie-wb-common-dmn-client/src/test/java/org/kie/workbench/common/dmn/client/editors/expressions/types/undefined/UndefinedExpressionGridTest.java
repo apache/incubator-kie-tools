@@ -35,6 +35,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.undefined.SetCellValueCommand;
+import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionType;
@@ -60,7 +61,6 @@ import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
-import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.impl.ManagedSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -138,7 +138,7 @@ public class UndefinedExpressionGridTest {
     private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
 
     @Mock
-    private CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
+    private DefaultCanvasCommandFactory canvasCommandFactory;
 
     @Mock
     private CellEditorControlsView.Presenter cellEditorControls;
@@ -245,27 +245,25 @@ public class UndefinedExpressionGridTest {
         expressionEditorDefinitions.add(definition);
         expressionEditorDefinitions.add(literalExpressionEditorDefinition);
 
-        doReturn(expressionEditorDefinitions).when(expressionEditorDefinitionsSupplier).get();
-        doReturn(ExpressionType.LITERAL_EXPRESSION).when(literalExpressionEditorDefinition).getType();
-        doReturn(LiteralExpression.class.getSimpleName()).when(literalExpressionEditorDefinition).getName();
+        when(expressionEditorDefinitionsSupplier.get()).thenReturn(expressionEditorDefinitions);
+        when(literalExpressionEditorDefinition.getType()).thenReturn(ExpressionType.LITERAL_EXPRESSION);
+        when(literalExpressionEditorDefinition.getName()).thenReturn(LiteralExpression.class.getSimpleName());
         doCallRealMethod().when(literalExpressionEditor).selectFirstCell();
-        doReturn(gridLayer).when(literalExpressionEditor).getLayer();
+        when(literalExpressionEditor.getLayer()).thenReturn(gridLayer);
 
         final GridData literalExpressionUiModel = new BaseGridData();
         literalExpressionUiModel.appendColumn(mock(GridColumn.class));
         literalExpressionUiModel.appendRow(mock(GridRow.class));
-        doReturn(literalExpressionUiModel).when(literalExpressionEditor).getModel();
+        when(literalExpressionEditor.getModel()).thenReturn(literalExpressionUiModel);
 
-        doReturn(Optional.of(literalExpression)).when(literalExpressionEditorDefinition).getModelClass();
-        doReturn(Optional.of(literalExpressionEditor)).when(literalExpressionEditorDefinition).getEditor(any(GridCellTuple.class),
-                                                                                                         any(Optional.class),
-                                                                                                         any(HasExpression.class),
-                                                                                                         any(Optional.class),
-                                                                                                         any(Optional.class),
-                                                                                                         anyInt());
+        when(literalExpressionEditorDefinition.getModelClass()).thenReturn(Optional.of(literalExpression));
+        when(literalExpressionEditorDefinition.getEditor(any(GridCellTuple.class),
+                                                         any(Optional.class),
+                                                         any(HasExpression.class),
+                                                         any(Optional.class),
+                                                         anyInt())).thenReturn(Optional.of(literalExpressionEditor));
 
-        doReturn(canvasHandler).when(session).getCanvasHandler();
-
+        when(session.getCanvasHandler()).thenReturn(canvasHandler);
         when(canvasHandler.getDiagram()).thenReturn(diagram);
         when(diagram.getGraph()).thenReturn(graph);
         when(graph.nodes()).thenReturn(Collections.singletonList(node));
@@ -284,7 +282,6 @@ public class UndefinedExpressionGridTest {
         this.grid = spy((UndefinedExpressionGrid) definition.getEditor(parent,
                                                                        nesting == 0 ? Optional.of(NODE_UUID) : Optional.empty(),
                                                                        hasExpression,
-                                                                       expression,
                                                                        hasName,
                                                                        nesting).get());
     }
@@ -554,18 +551,17 @@ public class UndefinedExpressionGridTest {
 
         grid.onExpressionTypeChanged(ExpressionType.LITERAL_EXPRESSION);
 
-        verify(literalExpressionEditorDefinition).getEditor(eq(parent),
-                                                            eq(nesting == 0 ? Optional.of(NODE_UUID) : Optional.empty()),
-                                                            eq(hasExpression),
-                                                            eq(Optional.of(literalExpression)),
-                                                            eq(hasName),
-                                                            eq(nesting));
-
         verify(sessionCommandManager).execute(eq(canvasHandler),
                                               setCellValueCommandArgumentCaptor.capture());
 
         final SetCellValueCommand setCellValueCommand = setCellValueCommandArgumentCaptor.getValue();
         setCellValueCommand.execute(canvasHandler);
+
+        verify(literalExpressionEditorDefinition).getEditor(eq(parent),
+                                                            eq(nesting == 0 ? Optional.of(NODE_UUID) : Optional.empty()),
+                                                            eq(hasExpression),
+                                                            eq(hasName),
+                                                            eq(nesting));
 
         assertResize(BaseExpressionGrid.RESIZE_EXISTING);
         verify(literalExpressionEditor).selectCell(eq(0),

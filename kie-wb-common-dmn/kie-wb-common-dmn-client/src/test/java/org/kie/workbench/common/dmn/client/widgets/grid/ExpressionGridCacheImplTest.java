@@ -22,8 +22,11 @@ import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.ext.wires.core.grids.client.model.GridData;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -53,7 +56,7 @@ public class ExpressionGridCacheImplTest {
 
     @Test
     public void testPutExpressionGridWhenEditorIsCacheable() {
-        final Map<String, Optional<BaseExpressionGrid>> content = cache.getContent();
+        final Map<String, Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>>> content = cache.getContent();
         when(editor.isCacheable()).thenReturn(true);
 
         cache.putExpressionGrid(UUID,
@@ -81,7 +84,7 @@ public class ExpressionGridCacheImplTest {
 
         cache.putExpressionGrid(UUID, Optional.of(editor));
 
-        final Optional<BaseExpressionGrid> content = cache.getExpressionGrid(UUID);
+        final Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>> content = cache.getExpressionGrid(UUID);
         assertThat(content).isPresent();
         assertThat(content.get()).isEqualTo(editor);
     }
@@ -93,7 +96,7 @@ public class ExpressionGridCacheImplTest {
 
     @Test
     public void testRemoveExpressionGrid() {
-        final Map<String, Optional<BaseExpressionGrid>> content = cache.getContent();
+        final Map<String, Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>>> content = cache.getContent();
         when(editor.isCacheable()).thenReturn(true);
         cache.putExpressionGrid(UUID, Optional.of(editor));
 

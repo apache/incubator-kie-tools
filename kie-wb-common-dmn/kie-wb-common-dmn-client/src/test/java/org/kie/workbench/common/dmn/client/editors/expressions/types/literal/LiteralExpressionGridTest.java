@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.literal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
 import com.ait.lienzo.client.core.event.NodeMouseClickEvent;
 import com.ait.lienzo.client.core.shape.Text;
@@ -33,6 +34,7 @@ import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
+import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.dmn.client.commands.general.DeleteCellValueCommand;
 import org.kie.workbench.common.dmn.client.commands.general.DeleteHasNameCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetCellValueCommand;
@@ -49,6 +51,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSel
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.handlers.DelegatingGridWidgetCellSelectorMouseEventHandler;
 import org.kie.workbench.common.dmn.client.widgets.grid.handlers.DelegatingGridWidgetEditCellMouseEventHandler;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
@@ -59,7 +62,6 @@ import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.UpdateElementPropertyCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
-import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -86,6 +88,7 @@ import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
@@ -137,7 +140,7 @@ public class LiteralExpressionGridTest {
     private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
 
     @Mock
-    private CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
+    private DefaultCanvasCommandFactory canvasCommandFactory;
 
     @Mock
     private DMNSession session;
@@ -242,8 +245,8 @@ public class LiteralExpressionGridTest {
         expression = definition.getModelClass();
         expression.ifPresent(e -> e.getText().setValue(EXPRESSION_TEXT));
 
-        doReturn(canvasHandler).when(session).getCanvasHandler();
-        doReturn(mock(Bounds.class)).when(gridLayer).getVisibleBounds();
+        when(session.getCanvasHandler()).thenReturn(canvasHandler);
+        when(gridLayer.getVisibleBounds()).thenReturn(mock(Bounds.class));
         when(gridWidget.getModel()).thenReturn(new BaseGridData(false));
 
         when(canvasHandler.getDiagram()).thenReturn(diagram);
@@ -266,10 +269,10 @@ public class LiteralExpressionGridTest {
     }
 
     private void setupGrid(final int nesting) {
+        this.hasExpression.setExpression(expression.get());
         this.grid = spy((LiteralExpressionGrid) definition.getEditor(parent,
                                                                      nesting == 0 ? Optional.of(NODE_UUID) : Optional.empty(),
                                                                      hasExpression,
-                                                                     expression,
                                                                      hasName,
                                                                      nesting).get());
     }
@@ -338,6 +341,28 @@ public class LiteralExpressionGridTest {
         assertThat(uiModel.getRowCount()).isEqualTo(1);
 
         assertThat(uiModel.getCell(0, 0).getValue().getValue()).isEqualTo(EXPRESSION_TEXT);
+    }
+
+    @Test
+    public void testInitialColumnWidthsFromDefinition() {
+        setupGrid(0);
+
+        assertComponentWidths(DMNGridColumn.DEFAULT_WIDTH);
+    }
+
+    @Test
+    public void testInitialColumnWidthsFromExpression() {
+        final List<Double> componentWidths = expression.get().getComponentWidths();
+        componentWidths.set(0, 200.0);
+
+        setupGrid(0);
+
+        assertComponentWidths(200.0);
+    }
+
+    private void assertComponentWidths(final double... widths) {
+        final GridData uiModel = grid.getModel();
+        IntStream.range(0, widths.length).forEach(i -> assertEquals(widths[i], uiModel.getColumns().get(i).getWidth(), 0.0));
     }
 
     @Test

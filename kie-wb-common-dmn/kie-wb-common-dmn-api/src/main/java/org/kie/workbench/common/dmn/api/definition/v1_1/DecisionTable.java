@@ -30,6 +30,8 @@ import static org.kie.workbench.common.dmn.api.definition.v1_1.common.HasTypeRef
 @Portable
 public class DecisionTable extends Expression {
 
+    private static final int STATIC_COLUMNS = 2;
+
     private List<InputClause> input;
     private List<OutputClause> output;
     private List<DecisionRule> rule;
@@ -147,6 +149,11 @@ public class DecisionTable extends Expression {
     }
 
     @Override
+    public int getRequiredComponentWidthCount() {
+        return getInput().size() + getOutput().size() + STATIC_COLUMNS;
+    }
+
+    @Override
     public boolean equals(final Object o) {
         if (this == o) {
             return true;
@@ -164,6 +171,9 @@ public class DecisionTable extends Expression {
             return false;
         }
         if (typeRef != null ? !typeRef.equals(that.typeRef) : that.typeRef != null) {
+            return false;
+        }
+        if (componentWidths != null ? !componentWidths.equals(that.componentWidths) : that.componentWidths != null) {
             return false;
         }
         if (input != null ? !input.equals(that.input) : that.input != null) {
@@ -192,6 +202,7 @@ public class DecisionTable extends Expression {
         return HashUtil.combineHashCodes(id != null ? id.hashCode() : 0,
                                          description != null ? description.hashCode() : 0,
                                          typeRef != null ? typeRef.hashCode() : 0,
+                                         componentWidths != null ? componentWidths.hashCode() : 0,
                                          input != null ? input.hashCode() : 0,
                                          output != null ? output.hashCode() : 0,
                                          rule != null ? rule.hashCode() : 0,

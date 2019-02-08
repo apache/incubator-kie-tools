@@ -24,10 +24,13 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.im
 
 public class ContextGridRowNumberColumn extends BaseGridColumn<Integer> implements IsRowDragHandle {
 
-    public ContextGridRowNumberColumn(final List<HeaderMetaData> headerMetaData) {
+    public static final double DEFAULT_WIDTH = 50.0;
+
+    public ContextGridRowNumberColumn(final List<HeaderMetaData> headerMetaData,
+                                      final double width) {
         super(headerMetaData,
               new IntegerColumnRenderer(),
-              50.0);
+              width);
         setMovable(false);
         setResizable(false);
         setFloatable(true);

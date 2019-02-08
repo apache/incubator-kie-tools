@@ -30,6 +30,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.Deci
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.DescriptionColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.InputClauseColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
@@ -50,6 +51,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DeleteInputClauseCommandTest {
@@ -240,5 +242,29 @@ public class DeleteInputClauseCommandTest {
 
         verify(undoCanvasOperation).execute();
         verify(command).updateParentInformation();
+    }
+
+    @Test
+    public void testComponentWidths() {
+        when(uiInputClauseColumn.getWidth()).thenReturn(DMNGridColumn.DEFAULT_WIDTH);
+
+        final Command<GraphCommandExecutionContext, RuleViolation> graphCommand = command.newGraphCommand(canvasHandler);
+
+        //Execute
+        assertEquals(GraphCommandResultBuilder.SUCCESS,
+                     graphCommand.execute(graphCommandExecutionContext));
+
+        assertEquals(dtable.getRequiredComponentWidthCount(),
+                     dtable.getComponentWidths().size());
+
+        //Undo
+        assertEquals(GraphCommandResultBuilder.SUCCESS,
+                     graphCommand.undo(graphCommandExecutionContext));
+
+        assertEquals(dtable.getRequiredComponentWidthCount(),
+                     dtable.getComponentWidths().size());
+        assertEquals(DMNGridColumn.DEFAULT_WIDTH,
+                     dtable.getComponentWidths().get(DecisionTableUIModelMapperHelper.ROW_INDEX_COLUMN_COUNT),
+                     0.0);
     }
 }

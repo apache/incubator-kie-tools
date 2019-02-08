@@ -28,15 +28,18 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Context;
+import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ContextGridRowNumberColumn;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ContextUIModelMapper;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridRenderer;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorGridRow;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
@@ -45,7 +48,6 @@ import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
-import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
@@ -57,7 +59,6 @@ public class FunctionSupplementaryGrid extends BaseExpressionGrid<Context, Funct
     public FunctionSupplementaryGrid(final GridCellTuple parent,
                                      final Optional<String> nodeUUID,
                                      final HasExpression hasExpression,
-                                     final Optional<Context> expression,
                                      final Optional<HasName> hasName,
                                      final DMNGridPanel gridPanel,
                                      final DMNGridLayer gridLayer,
@@ -65,7 +66,7 @@ public class FunctionSupplementaryGrid extends BaseExpressionGrid<Context, Funct
                                      final DefinitionUtils definitionUtils,
                                      final SessionManager sessionManager,
                                      final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                                     final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
+                                     final DefaultCanvasCommandFactory canvasCommandFactory,
                                      final Event<ExpressionEditorChanged> editorSelectedEvent,
                                      final Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent,
                                      final Event<DomainObjectSelectionEvent> domainObjectSelectionEvent,
@@ -77,7 +78,6 @@ public class FunctionSupplementaryGrid extends BaseExpressionGrid<Context, Funct
         super(parent,
               nodeUUID,
               hasExpression,
-              expression,
               hasName,
               gridPanel,
               gridLayer,
@@ -111,7 +111,7 @@ public class FunctionSupplementaryGrid extends BaseExpressionGrid<Context, Funct
     public ContextUIModelMapper makeUiModelMapper() {
         return new FunctionSupplementaryGridUIModelMapper(this,
                                                           this::getModel,
-                                                          () -> expression,
+                                                          getExpression(),
                                                           expressionEditorDefinitionsSupplier,
                                                           listSelector,
                                                           nesting);
@@ -119,12 +119,16 @@ public class FunctionSupplementaryGrid extends BaseExpressionGrid<Context, Funct
 
     @Override
     public void initialiseUiColumns() {
-        final NameColumn nameColumn = new NameColumn(this);
+        final ContextGridRowNumberColumn rowNumberColumn = new ContextGridRowNumberColumn(Collections.emptyList(),
+                                                                                          getAndSetInitialWidth(0, ContextGridRowNumberColumn.DEFAULT_WIDTH));
+        final NameColumn nameColumn = new NameColumn(getAndSetInitialWidth(1, DMNGridColumn.DEFAULT_WIDTH),
+                                                     this);
         final ExpressionEditorColumn expressionColumn = new ExpressionEditorColumn(gridLayer,
                                                                                    Collections.emptyList(),
+                                                                                   getAndSetInitialWidth(2, UndefinedExpressionColumn.DEFAULT_WIDTH),
                                                                                    this);
 
-        model.appendColumn(new ContextGridRowNumberColumn(Collections.emptyList()));
+        model.appendColumn(rowNumberColumn);
         model.appendColumn(nameColumn);
         model.appendColumn(expressionColumn);
 
@@ -133,7 +137,7 @@ public class FunctionSupplementaryGrid extends BaseExpressionGrid<Context, Funct
 
     @Override
     public void initialiseUiModel() {
-        expression.ifPresent(c -> {
+        getExpression().get().ifPresent(c -> {
             c.getContextEntry().stream().forEach(ce -> {
                 model.appendRow(new ExpressionEditorGridRow());
                 uiModelMapper.fromDMNModel(model.getRowCount() - 1,

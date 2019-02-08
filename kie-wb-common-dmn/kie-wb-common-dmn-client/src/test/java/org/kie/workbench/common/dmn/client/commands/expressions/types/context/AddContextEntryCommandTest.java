@@ -162,7 +162,6 @@ public class AddContextEntryCommandTest {
                                                                                                              any(Optional.class),
                                                                                                              any(HasExpression.class),
                                                                                                              any(Optional.class),
-                                                                                                             any(Optional.class),
                                                                                                              anyInt());
         this.uiModelMapper = new ContextUIModelMapper(gridWidget,
                                                       () -> uiModel,

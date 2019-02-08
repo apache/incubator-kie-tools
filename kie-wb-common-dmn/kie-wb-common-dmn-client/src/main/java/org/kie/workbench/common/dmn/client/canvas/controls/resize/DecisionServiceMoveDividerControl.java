@@ -23,12 +23,13 @@ import java.util.logging.Logger;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionService;
+import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
+import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.dmn.client.shape.view.decisionservice.DecisionServiceSVGShapeView;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanvasHandlerRegistrationControl;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
-import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
@@ -52,7 +53,7 @@ public class DecisionServiceMoveDividerControl extends AbstractCanvasHandlerRegi
 
     private static Logger LOGGER = Logger.getLogger(DecisionServiceMoveDividerControl.class.getName());
 
-    private final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
+    private final DefaultCanvasCommandFactory canvasCommandFactory;
     private RequiresCommandManager.CommandManagerProvider<AbstractCanvasHandler> commandManagerProvider;
 
     protected DecisionServiceMoveDividerControl() {
@@ -60,7 +61,7 @@ public class DecisionServiceMoveDividerControl extends AbstractCanvasHandlerRegi
     }
 
     @Inject
-    public DecisionServiceMoveDividerControl(final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory) {
+    public DecisionServiceMoveDividerControl(final @DMNEditor DefaultCanvasCommandFactory canvasCommandFactory) {
         this.canvasCommandFactory = canvasCommandFactory;
     }
 

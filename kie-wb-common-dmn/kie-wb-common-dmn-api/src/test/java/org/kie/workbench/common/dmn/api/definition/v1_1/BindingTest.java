@@ -78,7 +78,6 @@ public class BindingTest {
 
     @Test
     public void testGetHasTypeRefs() {
-
         final Expression expression = mock(Expression.class);
         final InformationItem parameter = mock(InformationItem.class);
         final HasTypeRef hasTypeRef1 = mock(HasTypeRef.class);

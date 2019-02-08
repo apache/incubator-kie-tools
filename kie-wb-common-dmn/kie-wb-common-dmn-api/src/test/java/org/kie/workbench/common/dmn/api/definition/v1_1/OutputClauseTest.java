@@ -47,7 +47,6 @@ public class OutputClauseTest {
 
     @Test
     public void testGetHasTypeRefs() {
-
         final OutputClauseLiteralExpression outputClauseLiteralExpression = mock(OutputClauseLiteralExpression.class);
         final HasTypeRef hasTypeRef1 = mock(HasTypeRef.class);
         final HasTypeRef hasTypeRef2 = mock(HasTypeRef.class);

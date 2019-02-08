@@ -36,7 +36,6 @@ public class OutputClauseLiteralExpressionTest {
 
     @Test
     public void testGetHasTypeRefs() {
-
         final List<HasTypeRef> actualHasTypeRefs = outputClauseLiteralExpression.getHasTypeRefs();
         final List<HasTypeRef> expectedHasTypeRefs = singletonList(outputClauseLiteralExpression);
 

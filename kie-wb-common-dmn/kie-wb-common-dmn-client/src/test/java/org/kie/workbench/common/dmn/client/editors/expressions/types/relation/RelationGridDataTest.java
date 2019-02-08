@@ -39,7 +39,6 @@ import org.uberfire.mvp.Command;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -51,7 +50,13 @@ public class RelationGridDataTest {
     private GridRow gridRow;
 
     @Mock
-    private GridColumn gridColumn;
+    private GridColumn gridColumn1;
+
+    @Mock
+    private GridColumn gridColumn2;
+
+    @Mock
+    private GridColumn gridColumn3;
 
     @Mock
     private SessionManager sessionManager;
@@ -80,7 +85,7 @@ public class RelationGridDataTest {
         this.uiModel = new RelationGridData(delegate,
                                             sessionManager,
                                             sessionCommandManager,
-                                            expression,
+                                            () -> expression,
                                             canvasOperation);
 
         doReturn(session).when(sessionManager).getCurrentSession();
@@ -108,7 +113,7 @@ public class RelationGridDataTest {
     @Test
     public void testMoveColumnTo() {
         uiModel.moveColumnTo(0,
-                             gridColumn);
+                             gridColumn1);
 
         verify(sessionCommandManager).execute(eq(canvasHandler),
                                               any(MoveColumnsCommand.class));
@@ -117,7 +122,7 @@ public class RelationGridDataTest {
     @Test
     public void testMoveColumnsTo() {
         uiModel.moveColumnsTo(0,
-                              Collections.singletonList(gridColumn));
+                              Collections.singletonList(gridColumn1));
 
         verify(sessionCommandManager).execute(eq(canvasHandler),
                                               any(MoveColumnsCommand.class));
@@ -125,35 +130,94 @@ public class RelationGridDataTest {
 
     @Test
     public void testAppendColumn() {
-        uiModel.appendColumn(gridColumn);
+        uiModel.appendColumn(gridColumn1);
 
-        verify(delegate).appendColumn(eq(gridColumn));
+        verify(delegate).appendColumn(eq(gridColumn1));
 
-        verify(gridColumn).setResizable(eq(false));
+        verify(gridColumn1).setResizable(eq(false));
+    }
+
+    @Test
+    public void testAppendColumns() {
+        uiModel.appendColumn(gridColumn1);
+
+        reset(gridColumn1);
+
+        uiModel.appendColumn(gridColumn2);
+
+        verify(gridColumn1).setResizable(eq(false));
+        verify(gridColumn2).setResizable(eq(false));
+
+        reset(gridColumn1, gridColumn2);
+
+        uiModel.appendColumn(gridColumn3);
+
+        verify(gridColumn1).setResizable(eq(false));
+        verify(gridColumn2).setResizable(eq(true));
+        verify(gridColumn3).setResizable(eq(false));
     }
 
     @Test
     public void testInsertColumn() {
-        uiModel.insertColumn(0, gridColumn);
+        uiModel.insertColumn(0, gridColumn1);
 
         verify(delegate).insertColumn(eq(0),
-                                      eq(gridColumn));
+                                      eq(gridColumn1));
 
-        verify(gridColumn).setResizable(eq(false));
+        verify(gridColumn1).setResizable(eq(false));
+    }
+
+    @Test
+    public void testInsertColumnsInOrder() {
+        uiModel.insertColumn(0, gridColumn1);
+
+        reset(gridColumn1);
+
+        uiModel.insertColumn(1, gridColumn2);
+
+        verify(gridColumn1).setResizable(eq(false));
+        verify(gridColumn2).setResizable(eq(false));
+
+        reset(gridColumn1, gridColumn2);
+
+        uiModel.insertColumn(2, gridColumn3);
+
+        verify(gridColumn1).setResizable(eq(false));
+        verify(gridColumn2).setResizable(eq(true));
+        verify(gridColumn3).setResizable(eq(false));
+    }
+
+    @Test
+    public void testInsertColumnsNotInOrder() {
+        uiModel.insertColumn(0, gridColumn1);
+
+        reset(gridColumn1);
+
+        uiModel.insertColumn(0, gridColumn2);
+
+        verify(gridColumn1).setResizable(eq(false));
+        verify(gridColumn2).setResizable(eq(false));
+
+        reset(gridColumn1, gridColumn2);
+
+        uiModel.insertColumn(0, gridColumn3);
+
+        verify(gridColumn1).setResizable(eq(false));
+        verify(gridColumn2).setResizable(eq(true));
+        verify(gridColumn3).setResizable(eq(false));
     }
 
     @Test
     public void testDeleteColumn() {
-        final GridColumn<?> anotherGridColumn = mock(GridColumn.class);
-        uiModel.appendColumn(anotherGridColumn);
-        uiModel.appendColumn(gridColumn);
+        uiModel.appendColumn(gridColumn1);
+        uiModel.appendColumn(gridColumn2);
 
         //Reset as methods were invoked by the appendColumn(..) calls
-        reset(anotherGridColumn);
-        uiModel.deleteColumn(gridColumn);
+        reset(gridColumn1);
+        uiModel.deleteColumn(gridColumn2);
 
-        verify(delegate).deleteColumn(eq(gridColumn));
+        verify(delegate).deleteColumn(eq(gridColumn2));
 
-        verify(anotherGridColumn).setResizable(eq(false));
+        verify(gridColumn1).setResizable(eq(false));
     }
 }

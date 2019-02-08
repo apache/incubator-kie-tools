@@ -36,6 +36,7 @@ import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
+import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
@@ -124,6 +125,9 @@ public class ExpressionEditorViewImplTest {
     private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
 
     @Mock
+    private DefaultCanvasCommandFactory canvasCommandFactory;
+
+    @Mock
     private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
 
     @Mock
@@ -196,7 +200,6 @@ public class ExpressionEditorViewImplTest {
                                                                        any(Optional.class),
                                                                        any(HasExpression.class),
                                                                        any(Optional.class),
-                                                                       any(Optional.class),
                                                                        anyInt());
         doReturn(new BaseGridData()).when(editor).getModel();
 
@@ -207,6 +210,7 @@ public class ExpressionEditorViewImplTest {
                                                      listSelector,
                                                      sessionManager,
                                                      sessionCommandManager,
+                                                     canvasCommandFactory,
                                                      expressionEditorDefinitionsSupplier,
                                                      refreshFormPropertiesEvent,
                                                      domainObjectSelectionEvent));
@@ -225,7 +229,6 @@ public class ExpressionEditorViewImplTest {
                                                            any(Optional.class),
                                                            any(HasExpression.class),
                                                            any(Optional.class),
-                                                           any(Optional.class),
                                                            anyInt())).thenReturn(Optional.of(undefinedExpressionEditor));
 
         when(literalExpressionEditorDefinition.getModelClass()).thenReturn(Optional.of(new LiteralExpression()));
@@ -234,7 +237,6 @@ public class ExpressionEditorViewImplTest {
         when(literalExpressionEditorDefinition.getEditor(any(GridCellTuple.class),
                                                          any(Optional.class),
                                                          any(HasExpression.class),
-                                                         any(Optional.class),
                                                          any(Optional.class),
                                                          anyInt())).thenReturn(Optional.of(literalExpressionEditor));
 

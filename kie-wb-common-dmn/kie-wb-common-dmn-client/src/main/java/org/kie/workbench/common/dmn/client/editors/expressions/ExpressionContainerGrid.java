@@ -33,17 +33,20 @@ import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Expression;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
+import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.dmn.client.commands.general.ClearExpressionTypeCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetHasNameCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionEditorColumn;
+import org.kie.workbench.common.dmn.client.editors.expressions.types.undefined.UndefinedExpressionColumn;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCache;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
+import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridColumn;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorGridRow;
@@ -56,22 +59,41 @@ import org.kie.workbench.common.stunner.core.client.command.SessionCommandManage
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
-import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
+import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseHeaderMetaData;
+import org.uberfire.ext.wires.core.grids.client.widget.layer.GridWidgetRegistry;
 import org.uberfire.mvp.ParameterizedCommand;
 
-public class ExpressionContainerGrid extends BaseGrid {
+public class ExpressionContainerGrid extends BaseGrid<Expression> {
 
     private static final String COLUMN_GROUP = "ExpressionContainerGrid$Expression0";
 
     private final Supplier<ExpressionGridCache> expressionGridCache;
     private final GridCellTuple parent = new GridCellTuple(0, 0, this);
-    private final GridColumn expressionColumn;
+    private final ExpressionEditorColumn expressionColumn;
 
     private final ParameterizedCommand<Optional<Expression>> onHasExpressionChanged;
     private final ParameterizedCommand<Optional<HasName>> onHasNameChanged;
 
     private ExpressionContainerUIModelMapper uiModelMapper;
+
+    private static class ExpressionEditorColumnWrapper extends ExpressionEditorColumn {
+
+        public ExpressionEditorColumnWrapper(final GridWidgetRegistry registry,
+                                             final HeaderMetaData headerMetaData,
+                                             final double width,
+                                             final BaseGrid<? extends Expression> gridWidget) {
+            super(registry,
+                  headerMetaData,
+                  width,
+                  gridWidget);
+        }
+
+        @Override
+        protected void setComponentWidth(final double width) {
+            //NOP. Synchronization with the HasComponentWidths is handled by the child grids.
+        }
+    }
 
     public ExpressionContainerGrid(final DMNGridLayer gridLayer,
                                    final CellEditorControlsView.Presenter cellEditorControls,
@@ -79,6 +101,7 @@ public class ExpressionContainerGrid extends BaseGrid {
                                    final ListSelectorView.Presenter listSelector,
                                    final SessionManager sessionManager,
                                    final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
+                                   final DefaultCanvasCommandFactory canvasCommandFactory,
                                    final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitions,
                                    final Supplier<ExpressionGridCache> expressionGridCache,
                                    final ParameterizedCommand<Optional<Expression>> onHasExpressionChanged,
@@ -90,6 +113,7 @@ public class ExpressionContainerGrid extends BaseGrid {
               new ExpressionContainerRenderer(),
               sessionManager,
               sessionCommandManager,
+              canvasCommandFactory,
               refreshFormPropertiesEvent,
               domainObjectSelectionEvent,
               cellEditorControls,
@@ -100,7 +124,7 @@ public class ExpressionContainerGrid extends BaseGrid {
 
         this.uiModelMapper = new ExpressionContainerUIModelMapper(parent,
                                                                   this::getModel,
-                                                                  () -> Optional.ofNullable(hasExpression.getExpression()),
+                                                                  getExpression(),
                                                                   () -> nodeUUID.get(),
                                                                   () -> hasExpression,
                                                                   () -> hasName,
@@ -110,9 +134,10 @@ public class ExpressionContainerGrid extends BaseGrid {
 
         setEventPropagationMode(EventPropagationMode.NO_ANCESTORS);
 
-        expressionColumn = new ExpressionEditorColumn(gridLayer,
-                                                      new BaseHeaderMetaData(COLUMN_GROUP),
-                                                      this);
+        expressionColumn = new ExpressionEditorColumnWrapper(gridLayer,
+                                                             new BaseHeaderMetaData(COLUMN_GROUP),
+                                                             UndefinedExpressionColumn.DEFAULT_WIDTH,
+                                                             this);
         expressionColumn.setMovable(false);
         expressionColumn.setResizable(true);
 
@@ -142,7 +167,7 @@ public class ExpressionContainerGrid extends BaseGrid {
 
         uiModelMapper.fromDMNModel(0, 0);
 
-        expressionColumn.setWidth(getExistingEditorWidth());
+        expressionColumn.setWidthInternal(getExistingEditorWidth());
         selectExpressionEditorFirstCell();
     }
 
@@ -153,7 +178,7 @@ public class ExpressionContainerGrid extends BaseGrid {
             final GridCellValue<?> value = cell.getValue();
             if (value instanceof ExpressionCellValue) {
                 final ExpressionCellValue ecv = (ExpressionCellValue) value;
-                final Optional<BaseExpressionGrid> editor = ecv.getValue();
+                final Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>> editor = ecv.getValue();
                 if (editor.isPresent()) {
                     final BaseExpressionGrid beg = editor.get();
                     existingWidth = Collections.max(Arrays.asList(existingWidth,
@@ -255,18 +280,18 @@ public class ExpressionContainerGrid extends BaseGrid {
                                                                      uiModelMapper,
                                                                      expressionGridCache.get(),
                                                                      () -> {
-                                                                         expressionColumn.setWidth(getExistingEditorWidth());
+                                                                         expressionColumn.setWidthInternal(getExistingEditorWidth());
                                                                          selectExpressionEditorFirstCell();
                                                                      },
                                                                      () -> {
-                                                                         expressionColumn.setWidth(getExistingEditorWidth());
+                                                                         expressionColumn.setWidthInternal(getExistingEditorWidth());
                                                                          selectExpressionEditorFirstCell();
                                                                      }));
     }
 
     void selectExpressionEditorFirstCell() {
         final GridCellValue<?> value = model.getCell(0, 0).getValue();
-        final Optional<BaseExpressionGrid> grid = ((ExpressionCellValue) value).getValue();
+        final Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>> grid = ((ExpressionCellValue) value).getValue();
         grid.ifPresent(beg -> {
             //It's not possible to set-up GridLayer for ExpressionContainerGrid in Unit Tests so defensively handle nulls
             Optional.ofNullable(getLayer()).ifPresent(layer -> ((DMNGridLayer) layer).select(beg));
