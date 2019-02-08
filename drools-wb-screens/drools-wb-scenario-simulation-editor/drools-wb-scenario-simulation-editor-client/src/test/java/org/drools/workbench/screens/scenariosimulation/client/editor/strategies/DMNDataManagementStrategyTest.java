@@ -16,11 +16,13 @@
 
 package org.drools.workbench.screens.scenariosimulation.client.editor.strategies;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.drools.workbench.screens.scenariosimulation.client.editor.AbstractScenarioSimulationEditorTest;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModelContent;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTuple;
@@ -33,10 +35,13 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.mocks.CallerMock;
 
 import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -45,18 +50,17 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class DMNDataManagementStrategyTest extends AbstractScenarioSimulationEditorTest {
+public class DMNDataManagementStrategyTest extends AbstractDataManagementStrategyTest {
 
     @Mock
     private DMNTypeService dmnTypeServiceMock;
 
-
+    private DMNDataManagementStrategy dmnDataManagementStrategySpy;
     private DMNDataManagementStrategy.ResultHolder factModelTreeHolderlocal;
 
     private FactModelTuple factModelTupleLocal;
     private SortedMap<String, FactModelTree> visibleFactsLocal = new TreeMap<>();
     private SortedMap<String, FactModelTree> hiddenFactsLocal = new TreeMap<>();
-    private DMNDataManagementStrategy dmnDataManagementStrategy;
 
     @Before
     public void setup() {
@@ -64,48 +68,45 @@ public class DMNDataManagementStrategyTest extends AbstractScenarioSimulationEdi
         factModelTupleLocal = new FactModelTuple(visibleFactsLocal, hiddenFactsLocal);
         factModelTreeHolderlocal = new DMNDataManagementStrategy.ResultHolder();
         factModelTreeHolderlocal.factModelTuple = factModelTupleLocal;
-        when(dmnTypeServiceMock.retrieveType(any(), anyString())).thenReturn(mock(FactModelTuple.class));
+        when(dmnTypeServiceMock.retrieveType(any(), anyString())).thenReturn(factModelTupleLocal);
         modelLocal.getSimulation().getSimulationDescriptor().setDmnFilePath("dmn_file_path");
-        dmnDataManagementStrategy = spy(new DMNDataManagementStrategy(new CallerMock<>(dmnTypeServiceMock), scenarioSimulationContextLocal) {
+        dmnDataManagementStrategySpy = spy(new DMNDataManagementStrategy(new CallerMock<>(dmnTypeServiceMock), scenarioSimulationContextLocal) {
             {
                 this.currentPath = mock(Path.class);
                 this.model = modelLocal;
                 this.scenarioSimulationContext = scenarioSimulationContextLocal;
             }
         });
-        dmnDataManagementStrategy.factModelTreeHolder = factModelTreeHolderlocal;
+        dmnDataManagementStrategySpy.factModelTreeHolder = factModelTreeHolderlocal;
+        abstractDataManagementStrategySpy = dmnDataManagementStrategySpy;
     }
 
     @Test
     public void populateRightPanelWithoutFactModelTuple() {
         factModelTreeHolderlocal.factModelTuple = null;
-        dmnDataManagementStrategy.populateRightPanel(rightPanelPresenterMock, scenarioGridModelMock);
+        dmnDataManagementStrategySpy.populateRightPanel(rightPanelPresenterMock, scenarioGridModelMock);
         verify(dmnTypeServiceMock, times(1)).retrieveType(any(), anyString());
-        verify(dmnDataManagementStrategy, times(1)).getSuccessCallback(rightPanelPresenterMock);
+        verify(dmnDataManagementStrategySpy, times(1)).getSuccessCallback(rightPanelPresenterMock, scenarioGridModelMock);
+        verify(dmnDataManagementStrategySpy, times(1)).getSuccessCallbackMethod(eq(factModelTupleLocal), eq(rightPanelPresenterMock), eq(scenarioGridModelMock));
+
     }
 
     @Test
     public void populateRightPanelWithFactModelTuple() {
-        dmnDataManagementStrategy.populateRightPanel(rightPanelPresenterMock, scenarioGridModelMock);
+        dmnDataManagementStrategySpy.populateRightPanel(rightPanelPresenterMock, scenarioGridModelMock);
         verify(dmnTypeServiceMock, never()).retrieveType(any(), anyString());
-        verify(dmnDataManagementStrategy, times(1)).getSuccessCallback(rightPanelPresenterMock);
+        verify(dmnDataManagementStrategySpy, times(1)).getSuccessCallback(rightPanelPresenterMock, scenarioGridModelMock);
+        verify(dmnDataManagementStrategySpy, times(1)).getSuccessCallbackMethod(eq(factModelTupleLocal), eq(rightPanelPresenterMock), eq(scenarioGridModelMock));
+
     }
 
     @Test
     public void manageScenarioSimulationModelContent() {
         final ScenarioSimulationModelContent contentMock = spy(content);
-        dmnDataManagementStrategy.manageScenarioSimulationModelContent(observablePathMock, contentMock);
+        dmnDataManagementStrategySpy.manageScenarioSimulationModelContent(observablePathMock, contentMock);
         verify(observablePathMock, times(1)).getOriginal();
         verify(contentMock, times(1)).getModel();
     }
-
-    @Test
-    public void successCallbackContent() {
-        scenarioSimulationContextLocal.setDataObjectFieldsMap(null);
-        dmnDataManagementStrategy.successCallbackContent(mock(FactModelTuple.class), rightPanelPresenterMock);
-        assertNotNull(scenarioSimulationContextLocal.getDataObjectFieldsMap());
-    }
-
 
     @Test
     public void isADataType() {
@@ -122,11 +123,25 @@ public class DMNDataManagementStrategyTest extends AbstractScenarioSimulationEdi
     }
 
     private void commonIsADataType(String value, boolean expected) {
-        boolean retrieved = dmnDataManagementStrategy.isADataType(value);
+        boolean retrieved = dmnDataManagementStrategySpy.isADataType(value);
         if (expected) {
             assertTrue(retrieved);
         } else {
             assertFalse(retrieved);
         }
+    }
+
+    @Test
+    public void getSuccessCallbackMethod() {
+        Map<String, List<String>> alreadyAssignedProperties = new HashMap<>();
+        factModelTreeHolderlocal.setFactModelTuple(null);
+        doReturn(alreadyAssignedProperties).when(dmnDataManagementStrategySpy).getPropertiesToHide(scenarioGridModelMock);
+        dmnDataManagementStrategySpy.getSuccessCallbackMethod(factModelTupleLocal, rightPanelPresenterMock, scenarioGridModelMock);
+        verify(dmnDataManagementStrategySpy, times(1)).getPropertiesToHide(eq(scenarioGridModelMock));
+        assertEquals(factModelTupleLocal, factModelTreeHolderlocal.getFactModelTuple());
+        verify(dmnDataManagementStrategySpy, times(2)).filterFactModelTreeMap(isA(SortedMap.class), eq(alreadyAssignedProperties));
+        verify(rightPanelPresenterMock, times(1)).setDataObjectFieldsMap(isA(SortedMap.class));
+        verify(rightPanelPresenterMock, times(1)).setSimpleJavaTypeFieldsMap(isA(SortedMap.class));
+        verify(rightPanelPresenterMock, times(1)).setHiddenFieldsMap(eq(hiddenFactsLocal));
     }
 }

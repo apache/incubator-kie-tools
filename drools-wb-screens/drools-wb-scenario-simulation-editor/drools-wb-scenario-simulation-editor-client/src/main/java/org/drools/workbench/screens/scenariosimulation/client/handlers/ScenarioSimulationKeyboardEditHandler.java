@@ -26,12 +26,21 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperati
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 
 public class ScenarioSimulationKeyboardEditHandler extends KeyboardOperationEditCell {
-    
+
     protected EventBus eventBus;
 
     public ScenarioSimulationKeyboardEditHandler(GridLayer gridLayer, EventBus eventBus) {
         super(gridLayer);
         this.eventBus = eventBus;
+    }
+
+    @Override
+    public boolean isExecutable(final GridWidget gridWidget) {
+        final GridData model = gridWidget.getModel();
+        if (model.getSelectedHeaderCells().size() > 0 && model.getSelectedCells().size() > 0) {
+            return false;
+        }
+        return model.getSelectedHeaderCells().size() == 1 || model.getSelectedCells().size() == 1;
     }
 
     @Override
@@ -41,18 +50,16 @@ public class ScenarioSimulationKeyboardEditHandler extends KeyboardOperationEdit
         ScenarioGrid scenarioGrid = (ScenarioGrid) gridWidget;
         final ScenarioGridModel scenarioGridModel = scenarioGrid.getModel();
         // Allows editing only if a single cell is selected
-        if (scenarioGridModel.getSelectedHeaderCells().size() > 0 && scenarioGridModel.getSelectedCells().size() > 0) {
-            return false;
-        }
-        final GridData.SelectedCell selectedCell;
+        GridData.SelectedCell selectedCell = null;
         boolean isHeader = true;
-        if (scenarioGridModel.getSelectedHeaderCells().size() == 1) {
+        if (scenarioGridModel.getSelectedHeaderCells().size() > 0) {
             selectedCell = scenarioGridModel.getSelectedHeaderCells().get(0);
-        } else if (scenarioGridModel.getSelectedCells().size() == 1) {
+        } else if (scenarioGridModel.getSelectedCells().size() >0) {
             selectedCell = scenarioGridModel.getSelectedCellsOrigin();
             isHeader = false;
-        } else {
-            return false;
+        }
+        if (selectedCell == null) {
+            return  false;
         }
         final int uiRowIndex = selectedCell.getRowIndex();
         final int uiColumnIndex = ColumnIndexUtilities.findUiColumnIndex(scenarioGridModel.getColumns(),

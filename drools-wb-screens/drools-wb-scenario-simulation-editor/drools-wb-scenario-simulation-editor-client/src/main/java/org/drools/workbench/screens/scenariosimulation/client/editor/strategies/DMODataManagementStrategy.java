@@ -73,10 +73,13 @@ public class DMODataManagementStrategy extends AbstractDataManagementStrategy {
 
         int expectedElements = dataObjectsTypes.size();
         // Instantiate a dataObjects container map
-        SortedMap<String, FactModelTree> dataObjectsFieldsMap = new TreeMap<>();
+        final SortedMap<String, FactModelTree> dataObjectsFieldsMap = new TreeMap<>();
+
+        // Instantiate a map of already assigned properties
+        final Map<String, List<String>> propertiesToHide = getPropertiesToHide(scenarioGridModel);
 
         // Instantiate the aggregator callback
-        Callback<FactModelTree> aggregatorCallback = aggregatorCallback(rightPanelPresenter, expectedElements, dataObjectsFieldsMap, scenarioGridModel);
+        Callback<FactModelTree> aggregatorCallback = aggregatorCallback(rightPanelPresenter, expectedElements, dataObjectsFieldsMap, propertiesToHide, scenarioGridModel);
         // Iterate over all dataObjects to retrieve their modelfields
         dataObjectsTypes.forEach(factType ->
                                          oracle.getFieldCompletions(factType, fieldCompletionsCallback(factType, aggregatorCallback)));
@@ -214,27 +217,32 @@ public class DMODataManagementStrategy extends AbstractDataManagementStrategy {
     /**
      * This <code>Callback</code> will receive data from other callbacks and when the retrieved results get to the
      * expected ones it will recursively elaborate the map
+     *
      * @param rightPanelPresenter
      * @param expectedElements
      * @param factTypeFieldsMap
+     * @param propertiesToHide  key: the name of the Fact class (ex. Author), value: list of properties to hide from right panel
+     * @param scenarioGridModel
      * @return
      */
-    protected Callback<FactModelTree> aggregatorCallback(final RightPanelView.Presenter rightPanelPresenter, final int expectedElements, SortedMap<String, FactModelTree> factTypeFieldsMap, final ScenarioGridModel scenarioGridModel) {
-        return result -> aggregatorCallbackMethod(rightPanelPresenter, expectedElements, factTypeFieldsMap, scenarioGridModel, result);
+    protected Callback<FactModelTree> aggregatorCallback(final RightPanelView.Presenter rightPanelPresenter, final int expectedElements, SortedMap<String, FactModelTree> factTypeFieldsMap, final Map<String, List<String>> propertiesToHide, final ScenarioGridModel scenarioGridModel) {
+        return result -> aggregatorCallbackMethod(rightPanelPresenter, expectedElements, factTypeFieldsMap, propertiesToHide, scenarioGridModel, result);
     }
 
     /**
      * Actual code of the <b>aggregatorCallback</b>; isolated for testing
+     *
      * @param rightPanelPresenter
      * @param expectedElements
      * @param factTypeFieldsMap
+     * @param propertiesToHide  key: the name of the Fact class (ex. Author), value: list of properties to hide from right panel
      * @param scenarioGridModel
      * @param result
      */
-    protected void aggregatorCallbackMethod(final RightPanelView.Presenter rightPanelPresenter, final int expectedElements, SortedMap<String, FactModelTree> factTypeFieldsMap, final ScenarioGridModel scenarioGridModel, final FactModelTree result) {
+    protected void aggregatorCallbackMethod(final RightPanelView.Presenter rightPanelPresenter, final int expectedElements, SortedMap<String, FactModelTree> factTypeFieldsMap, final Map<String, List<String>> propertiesToHide, final ScenarioGridModel scenarioGridModel, final FactModelTree result) {
         factTypeFieldsMap.put(result.getFactName(), result);
         if (factTypeFieldsMap.size() == expectedElements) {
-            factTypeFieldsMap.values().forEach(factModelTree -> populateFactModelTree(factModelTree, factTypeFieldsMap));
+            factTypeFieldsMap.values().forEach(factModelTree -> populateFactModelTree(factModelTree, factTypeFieldsMap, propertiesToHide));
             rightPanelPresenter.setDataObjectFieldsMap(factTypeFieldsMap);
             scenarioSimulationContext.setDataObjectFieldsMap(factTypeFieldsMap);
             SortedMap<String, FactModelTree> instanceFieldsMap = getInstanceMap(factTypeFieldsMap);
@@ -251,8 +259,9 @@ public class DMODataManagementStrategy extends AbstractDataManagementStrategy {
      * element exists.
      * @param toPopulate
      * @param factTypeFieldsMap
+     * @param propertiesToHide key: the name of the Fact class (ex. Author), value: list of properties to hide from right panel
      */
-    protected void populateFactModelTree(FactModelTree toPopulate, final SortedMap<String, FactModelTree> factTypeFieldsMap) {
+    protected void populateFactModelTree(FactModelTree toPopulate, final SortedMap<String, FactModelTree> factTypeFieldsMap, final Map<String, List<String>> propertiesToHide) {
         List<String> toRemove = new ArrayList<>();
         toPopulate.getSimpleProperties().forEach((key, value) -> {
             if (factTypeFieldsMap.containsKey(value)) {
@@ -260,6 +269,9 @@ public class DMODataManagementStrategy extends AbstractDataManagementStrategy {
                 toPopulate.addExpandableProperty(key, factTypeFieldsMap.get(value).getFactName());
             }
         });
+        if (propertiesToHide.containsKey(toPopulate.getFactName())) {
+            toRemove.addAll(propertiesToHide.get(toPopulate.getFactName()));
+        }
         toRemove.forEach(toPopulate::removeSimpleProperty);
     }
 }

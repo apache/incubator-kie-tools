@@ -15,6 +15,7 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.editor.strategies;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
@@ -50,10 +51,10 @@ public class DMNDataManagementStrategy extends AbstractDataManagementStrategy {
     public void populateRightPanel(final RightPanelView.Presenter rightPanelPresenter, final ScenarioGridModel scenarioGridModel) {
         String dmnFilePath = model.getSimulation().getSimulationDescriptor().getDmnFilePath();
         if(factModelTreeHolder.getFactModelTuple() != null) {
-            getSuccessCallback(rightPanelPresenter).callback(factModelTreeHolder.getFactModelTuple());
+            getSuccessCallback(rightPanelPresenter, scenarioGridModel).callback(factModelTreeHolder.getFactModelTuple());
         }
         else {
-            dmnTypeService.call(getSuccessCallback(rightPanelPresenter),
+            dmnTypeService.call(getSuccessCallback(rightPanelPresenter, scenarioGridModel),
                                 getErrorCallback(rightPanelPresenter))
                     .retrieveType(currentPath, dmnFilePath);
         }
@@ -70,17 +71,23 @@ public class DMNDataManagementStrategy extends AbstractDataManagementStrategy {
         return factModelTreeHolder.factModelTuple.getHiddenFacts().keySet().contains(value) || factModelTreeHolder.factModelTuple.getVisibleFacts().keySet().contains(value);
     }
 
-    protected RemoteCallback<FactModelTuple> getSuccessCallback(RightPanelView.Presenter rightPanelPresenter) {
-        return factMappingTuple -> successCallbackContent(factMappingTuple, rightPanelPresenter);
+    protected RemoteCallback<FactModelTuple> getSuccessCallback(RightPanelView.Presenter rightPanelPresenter, final ScenarioGridModel scenarioGridModel) {
+        return factMappingTuple -> {
+            getSuccessCallbackMethod(factMappingTuple, rightPanelPresenter, scenarioGridModel);
+        };
     }
 
-    protected void successCallbackContent(FactModelTuple factMappingTuple, RightPanelView.Presenter rightPanelPresenter) {
+    protected void getSuccessCallbackMethod(final FactModelTuple factMappingTuple, final RightPanelView.Presenter rightPanelPresenter, final ScenarioGridModel scenarioGridModel) {
+        // Instantiate a map of already assigned properties
+        final Map<String, List<String>> alreadyAssignedProperties = getPropertiesToHide(scenarioGridModel);
         factModelTreeHolder.setFactModelTuple(factMappingTuple);
         final SortedMap<String, FactModelTree> visibleFacts = factMappingTuple.getVisibleFacts();
         final Map<Boolean, List<Map.Entry<String, FactModelTree>>> partitionBy = visibleFacts.entrySet().stream()
                 .collect(Collectors.partitioningBy(stringFactModelTreeEntry -> stringFactModelTreeEntry.getValue().isSimple()));
         final SortedMap<String, FactModelTree> complexDataObjects = new TreeMap<>(partitionBy.get(false).stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
         final SortedMap<String, FactModelTree> simpleDataObjects = new TreeMap<>(partitionBy.get(true).stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+        filterFactModelTreeMap(complexDataObjects, alreadyAssignedProperties);
+        filterFactModelTreeMap(simpleDataObjects, alreadyAssignedProperties);
         rightPanelPresenter.setDataObjectFieldsMap(complexDataObjects);
         rightPanelPresenter.setSimpleJavaTypeFieldsMap(simpleDataObjects);
         rightPanelPresenter.setHiddenFieldsMap(factMappingTuple.getHiddenFacts());
@@ -89,6 +96,16 @@ public class DMNDataManagementStrategy extends AbstractDataManagementStrategy {
         context.putAll(factMappingTuple.getVisibleFacts());
         context.putAll(factMappingTuple.getHiddenFacts());
         scenarioSimulationContext.setDataObjectFieldsMap(context);
+    }
+
+    protected void filterFactModelTreeMap(SortedMap<String, FactModelTree> toFilter, Map<String, List<String>> alreadyAssignedProperties) {
+        toFilter.forEach((factName, factModelTree) -> {
+            List<String> toRemove = new ArrayList<>();
+            if (alreadyAssignedProperties.containsKey(factName)) {
+                toRemove.addAll(alreadyAssignedProperties.get(factName));
+            }
+            toRemove.forEach(factModelTree::removeSimpleProperty);
+        });
     }
 
     private ErrorCallback<Object> getErrorCallback(RightPanelView.Presenter rightPanelPresenter) {

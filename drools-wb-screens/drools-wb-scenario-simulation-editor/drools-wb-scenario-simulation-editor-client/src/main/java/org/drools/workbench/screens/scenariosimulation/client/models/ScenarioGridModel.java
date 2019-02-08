@@ -25,6 +25,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import com.google.gwt.event.shared.EventBus;
@@ -73,8 +74,6 @@ public class ScenarioGridModel extends BaseGridData {
     protected CollectionEditorSingletonDOMElementFactory collectionEditorSingletonDOMElementFactory;
     protected ScenarioCellTextAreaSingletonDOMElementFactory scenarioCellTextAreaSingletonDOMElementFactory;
     protected ScenarioHeaderTextBoxSingletonDOMElementFactory scenarioHeaderTextBoxSingletonDOMElementFactory;
-
-
 
     public ScenarioGridModel() {
     }
@@ -373,6 +372,22 @@ public class ScenarioGridModel extends BaseGridData {
     }
 
     /**
+     * This methods returns the <code>List&lt;ScenarioGridColumn&gt;</code> of a <b>single</b> block of columns of the same instance/data object.
+     * A <code>single</code> block is made of all the columns immediately to the left and right of the selected one with the same "label".
+     * If there is another column with the same "label" but separated by a different column, it is not part of the group.
+     * @param selectedColumn
+     * @return
+     */
+    public List<ScenarioGridColumn> getInstanceScenarioGridColumns(ScenarioGridColumn selectedColumn) {
+        int columnIndex = columns.indexOf(selectedColumn);
+        Range instanceRange = getInstanceLimits(columnIndex);
+        return columns.subList(instanceRange.getMinRowIndex(), instanceRange.getMaxRowIndex() + 1)
+                .stream()
+                .map(gridColumn -> (ScenarioGridColumn) gridColumn)
+                .collect(Collectors.toList());
+    }
+
+    /**
      * Return the first index to the left of the given group, i.e. <b>excluded</b> the left-most index of <b>that</b> group
      * @param groupName
      * @return
@@ -516,6 +531,38 @@ public class ScenarioGridModel extends BaseGridData {
                 .filter(rowIndex -> getCellValue(getCell(rowIndex, columnIndex)).isPresent())
                 .findFirst()
                 .isPresent();
+    }
+
+    /**
+     * Returns <code>true</code> if property mapped to the selected column is already assigned to
+     * another column of the same <b>instance</b>
+     * @param propertyName
+     * @return
+     */
+    public boolean isAlreadyAssignedProperty(String propertyName) {
+        return selectedColumn == null || isAlreadyAssignedProperty(getColumns().indexOf(selectedColumn), propertyName);
+    }
+
+    /**
+     * Returns <code>true</code> if property mapped to the column at given index is already assigned to
+     * another column of the same <b>instance</b>
+     * @param columnIndex
+     * @param propertyName
+     * @return
+     */
+    public boolean isAlreadyAssignedProperty(int columnIndex, String propertyName) {
+        Range instanceLimits = getInstanceLimits(columnIndex);
+        SimulationDescriptor simulationDescriptor = simulation.getSimulationDescriptor();
+        return IntStream.range(instanceLimits.getMinRowIndex(), instanceLimits.getMaxRowIndex()+1)
+                .filter(index -> index != columnIndex)
+                .mapToObj(simulationDescriptor::getFactMappingByIndex)
+                .anyMatch(factMapping -> {
+                    String columnProperty = factMapping.getExpressionElements()
+                            .stream()
+                            .map(expressionElement -> expressionElement.getStep())
+                            .collect(Collectors.joining("."));
+                    return Objects.equals(columnProperty, propertyName);
+                });
     }
 
     /**
@@ -673,7 +720,6 @@ public class ScenarioGridModel extends BaseGridData {
             IntStream.range(instanceLimits.getMinRowIndex(), instanceLimits.getMaxRowIndex() + 1)
                     .filter(currentIndex -> currentIndex != columnIndex)
                     .forEach(currentIndex -> simulationDescriptor.getFactMappingByIndex(currentIndex).setFactAlias(createdFactMapping.getFactAlias()));
-            selectColumn(columns.indexOf(column));
         } catch (Throwable t) {
             eventBus.fireEvent(new ScenarioNotificationEvent("Error during column creation: " + t.getMessage(), NotificationEvent.NotificationType.ERROR));
             eventBus.fireEvent(new ScenarioGridReloadEvent());

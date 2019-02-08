@@ -53,6 +53,7 @@ import org.drools.workbench.screens.scenariosimulation.client.events.PrependRowE
 import org.drools.workbench.screens.scenariosimulation.client.events.RedoEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.ReloadRightPanelEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.ScenarioGridReloadEvent;
+import org.drools.workbench.screens.scenariosimulation.client.events.ScenarioNotificationEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.SetCellValueEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.SetInstanceHeaderEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.SetPropertyHeaderEvent;
@@ -335,8 +336,16 @@ public class ScenarioSimulationEventHandlerTest extends AbstractScenarioSimulati
         verify(scenarioSimulationEventHandler, never()).commonExecution(eq(scenarioSimulationContextLocal), isA(SetPropertyHeaderCommand.class));
         //
         doReturn(gridColumnMock).when(scenarioGridModelMock).getSelectedColumn();
+        when(scenarioGridModelMock.isAlreadyAssignedProperty(VALUE)).thenReturn(true);
+        scenarioSimulationEventHandler.onEvent(event);
+        verify(scenarioSimulationEventHandler, times(1)).onEvent(isA(ScenarioNotificationEvent.class));
+        verify(scenarioSimulationEventHandler, never()).commonExecution(eq(scenarioSimulationContextLocal), isA(SetPropertyHeaderCommand.class));
+        //
+        reset(scenarioSimulationEventHandler);
+        when(scenarioGridModelMock.isAlreadyAssignedProperty(VALUE)).thenReturn(false);
         when(scenarioGridModelMock.isSelectedColumnEmpty()).thenReturn(true);
         scenarioSimulationEventHandler.onEvent(event);
+        verify(scenarioSimulationEventHandler, never()).onEvent(isA(ScenarioNotificationEvent.class));
         verify(scenarioSimulationEventHandler, times(1)).commonExecution(eq(scenarioSimulationContextLocal), isA(SetPropertyHeaderCommand.class));
         //
         reset(scenarioSimulationEventHandler);

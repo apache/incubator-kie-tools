@@ -308,6 +308,10 @@ public class ScenarioSimulationEventHandler implements AppendColumnEventHandler,
         if (context.getModel().getSelectedColumn() == null) {
             return;
         }
+        if (context.getModel().isAlreadyAssignedProperty(event.getValue())) {
+            onEvent(new ScenarioNotificationEvent("Property \"" + event.getValue() + "\" already assigned", NotificationEvent.NotificationType.ERROR));
+            return;
+        }
         context.getStatus().setFullPackage(event.getFullPackage());
         context.getStatus().setValue(event.getValue());
         context.getStatus().setValueClassName(event.getValueClassName());

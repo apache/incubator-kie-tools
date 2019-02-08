@@ -43,11 +43,13 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
+import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
@@ -327,6 +329,21 @@ public class ScenarioGridModelTest {
     public void setCell() {
         scenarioGridModel.setCell(ROW_INDEX, COLUMN_INDEX, gridCellSupplier);
         verify(scenarioGridModel, times(1)).setCell(eq(ROW_INDEX), eq(COLUMN_INDEX), eq(gridCellSupplier));
+    }
+
+    @Test
+    public void getInstanceLimits() {
+        final GridData.Range retrieved = scenarioGridModel.getInstanceLimits(3);
+        assertNotNull(retrieved);
+        assertEquals(1, retrieved.getMinRowIndex());
+        assertEquals(5, retrieved.getMaxRowIndex());
+    }
+
+    @Test
+    public void getInstanceScenarioGridColumns() {
+        final List<ScenarioGridColumn> retrieved = scenarioGridModel.getInstanceScenarioGridColumns((ScenarioGridColumn) gridColumns.get(3));
+        assertNotNull(retrieved);
+        assertEquals(6, retrieved.size());
     }
 
     @Test
