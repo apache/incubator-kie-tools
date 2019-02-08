@@ -56,14 +56,14 @@ public class KeyValueElementPresenter extends ElementPresenter<KeyValueElementVi
     public void onEditItem(KeyValueElementView keyValueElementView) {
         List<String> keyValueIds = getKeyValueIds( keyValueElementView.getItemId());
         keyValueIds.forEach(id -> propertyPresenter.editProperties(id));
-        keyValueElementView.getSaveChange().getStyle().setVisibility(Style.Visibility.VISIBLE);
+        keyValueElementView.getSaveChange().getStyle().setDisplay(Style.Display.INLINE);
     }
 
     @Override
     public void onStopEditingItem(KeyValueElementView keyValueElementView) {
         List<String> keyValueIds = getKeyValueIds( keyValueElementView.getItemId());
         keyValueIds.forEach(id -> propertyPresenter.stopEditProperties(id));
-        keyValueElementView.getSaveChange().getStyle().setVisibility(Style.Visibility.HIDDEN);
+        keyValueElementView.getSaveChange().getStyle().setDisplay(Style.Display.NONE);
     }
 
     @Override
@@ -78,7 +78,7 @@ public class KeyValueElementPresenter extends ElementPresenter<KeyValueElementVi
     public void updateItem(KeyValueElementView keyValueElementView) {
         List<String> keyValueIds = getKeyValueIds( keyValueElementView.getItemId());
         keyValueIds.forEach(id -> propertyPresenter.updateProperties(id));
-        keyValueElementView.getSaveChange().getStyle().setVisibility(Style.Visibility.HIDDEN);
+        keyValueElementView.getSaveChange().getStyle().setDisplay(Style.Display.NONE);
     }
 
     @Override

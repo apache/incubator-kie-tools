@@ -99,12 +99,12 @@ public class CollectionEditorDOMElement extends BaseDOMElement<String, Collectio
     public void initialise(final GridBodyCellRenderContext context) {
         transform(context);
         final Bounds visibleBounds = gridLayer.getVisibleBounds();
-        final double shownWidth = visibleBounds.getWidth() - visibleBounds.getY();
+        final double shownWidth = visibleBounds.getWidth();
         final double widgetWidth = (shownWidth * 0.5);
-        final double widgetLeft = ((shownWidth - widgetWidth) / 2) +  visibleBounds.getY();
+        final double widgetLeft = ((shownWidth - widgetWidth) / 2);
         widgetContainer.getElement().getStyle().setWidth(widgetWidth, Style.Unit.PX);
         widgetContainer.getElement().getStyle().setLeft(widgetLeft, Style.Unit.PX);
-        final double shownHeight = visibleBounds.getHeight() - visibleBounds.getX();
+        final double shownHeight = visibleBounds.getHeight();
         final double widgetHeight = (shownHeight * 0.5);
         widget.setFixedHeight(widgetHeight, Style.Unit.PX);
         widgetContainer.getElement().getStyle().setTop(0, Style.Unit.PX);

@@ -58,9 +58,9 @@ public class PropertyPresenter implements PropertyView.Presenter {
     public void editProperties(String itemId) {
         propertyViewMap.get(itemId)
                 .forEach(propertyEditorView -> {
-                    propertyEditorView.getPropertyValueSpan().getStyle().setVisibility(Style.Visibility.HIDDEN);
+                    propertyEditorView.getPropertyValueSpan().getStyle().setDisplay(Style.Display.NONE);
                     propertyEditorView.getPropertyValueInput().setValue(propertyEditorView.getPropertyValueSpan().getInnerText());
-                    propertyEditorView.getPropertyValueInput().getStyle().setVisibility(Style.Visibility.VISIBLE);
+                    propertyEditorView.getPropertyValueInput().getStyle().setDisplay(Style.Display.INLINE);
                     propertyEditorView.getPropertyValueInput().setDisabled(false);
                 });
     }
@@ -100,7 +100,7 @@ public class PropertyPresenter implements PropertyView.Presenter {
         propertyValueInput.setAttribute("placeholder", hashedPropertyName);
         propertyValueInput.setAttribute("data-field", "propertyValue" + hashedPropertyName);
         propertyValueInput.setDisabled(true);
-        propertyValueInput.getStyle().setVisibility(Style.Visibility.HIDDEN);
+        propertyValueInput.getStyle().setDisplay(Style.Display.NONE);
         final LIElement propertyFields = propertyEditorView.getPropertyFields();
         propertyFields.setAttribute("data-field", "propertyFields" + hashedPropertyName);
         if (propertyViewMap.containsKey(itemId)) {
@@ -144,8 +144,8 @@ public class PropertyPresenter implements PropertyView.Presenter {
                     if (toUpdate) {
                         propertyEditorView.getPropertyValueSpan().setInnerText(propertyEditorView.getPropertyValueInput().getValue());
                     }
-                    propertyEditorView.getPropertyValueSpan().getStyle().setVisibility(Style.Visibility.VISIBLE);
-                    propertyEditorView.getPropertyValueInput().getStyle().setVisibility(Style.Visibility.HIDDEN);
+                    propertyEditorView.getPropertyValueSpan().getStyle().setDisplay(Style.Display.INLINE);
+                    propertyEditorView.getPropertyValueInput().getStyle().setDisplay(Style.Display.NONE);
                     propertyEditorView.getPropertyValueInput().setDisabled(true);
                     String propertyName = propertyEditorView.getPropertyName().getInnerText();
                     propertyName = propertyName.substring(propertyName.lastIndexOf("#") + 1);

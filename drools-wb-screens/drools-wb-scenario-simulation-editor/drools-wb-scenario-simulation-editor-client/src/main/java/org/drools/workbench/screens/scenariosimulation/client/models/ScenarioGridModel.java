@@ -47,6 +47,7 @@ import org.drools.workbench.screens.scenariosimulation.model.FactMappingValue;
 import org.drools.workbench.screens.scenariosimulation.model.Scenario;
 import org.drools.workbench.screens.scenariosimulation.model.Simulation;
 import org.drools.workbench.screens.scenariosimulation.model.SimulationDescriptor;
+import org.drools.workbench.screens.scenariosimulation.utils.ScenarioSimulationSharedUtils;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
@@ -163,8 +164,15 @@ public class ScenarioGridModel extends BaseGridData {
             if (value.getRawValue() == null || value.getRawValue() instanceof String) { // Let' put a placeholder
                 String stringValue = (String) value.getRawValue();
                 int columnIndex = simulation.getSimulationDescriptor().getIndexByIdentifier(factIdentifier, expressionIdentifier);
+                final FactMapping factMappingByIndex = simulation.getSimulationDescriptor().getFactMappingByIndex(columnIndex);
                 String placeHolder = ((ScenarioGridColumn) columns.get(columnIndex)).getPlaceHolder();
-                setCell(rowIndex, columnIndex, () -> new ScenarioGridCell(new ScenarioGridCellValue(stringValue, placeHolder)));
+                setCell(rowIndex, columnIndex, () -> {
+                    ScenarioGridCell newCell = new ScenarioGridCell(new ScenarioGridCellValue(stringValue, placeHolder));
+                    if (ScenarioSimulationSharedUtils.isCollection((factMappingByIndex.getClassName()))) {
+                        newCell.setListMap(ScenarioSimulationSharedUtils.isList((factMappingByIndex.getClassName())));
+                    }
+                    return newCell;
+                });
             } else {
                 throw new UnsupportedOperationException("Only string is supported at the moment");
             }
@@ -323,7 +331,14 @@ public class ScenarioGridModel extends BaseGridData {
 
     @Override
     public Range setCellValue(int rowIndex, int columnIndex, GridCellValue<?> value) {
-        return setCell(rowIndex, columnIndex, () -> new ScenarioGridCell((ScenarioGridCellValue) value));
+        return setCell(rowIndex, columnIndex, () -> {
+            ScenarioGridCell newCell = new ScenarioGridCell((ScenarioGridCellValue) value);
+            FactMapping factMappingByIndex = simulation.getSimulationDescriptor().getFactMappingByIndex(columnIndex);
+            if (ScenarioSimulationSharedUtils.isCollection((factMappingByIndex.getClassName()))) {
+                newCell.setListMap(ScenarioSimulationSharedUtils.isList((factMappingByIndex.getClassName())));
+            }
+            return newCell;
+        });
     }
 
     @Override
@@ -678,7 +693,13 @@ public class ScenarioGridModel extends BaseGridData {
             final FactMapping factMappingByIndex = simulationDescriptor.getFactMappingByIndex(columnIndex);
             scenario.addMappingValue(factMappingByIndex.getFactIdentifier(), factMappingByIndex.getExpressionIdentifier(), null);
             String placeHolder = ((ScenarioGridColumn) columns.get(columnIndex)).isPropertyAssigned() ? ScenarioSimulationEditorConstants.INSTANCE.insertValue() : ScenarioSimulationEditorConstants.INSTANCE.defineValidType();
-            setCell(rowIndex, columnIndex, () -> new ScenarioGridCell(new ScenarioGridCellValue(null, placeHolder)));
+            setCell(rowIndex, columnIndex, () -> {
+                ScenarioGridCell newCell = new ScenarioGridCell(new ScenarioGridCellValue(null, placeHolder));
+                if (ScenarioSimulationSharedUtils.isCollection((factMappingByIndex.getClassName()))) {
+                    newCell.setListMap(ScenarioSimulationSharedUtils.isList((factMappingByIndex.getClassName())));
+                }
+                return newCell;
+            });
         });
         updateIndexColumn();
     }

@@ -112,8 +112,7 @@ public class ScenarioGridModelTest {
     @Mock
     private FactMapping factMappingMock;
 
-    @Mock
-    private List<FactMappingValue> factMappingValuesMock;
+    private List<FactMappingValue> factMappingValuesLocal = new ArrayList<>();
 
     @Mock
     private FactMappingValue factMappingValueMock;
@@ -165,6 +164,7 @@ public class ScenarioGridModelTest {
         when(scenarioGridColumnMock.getHeaderMetaData()).thenReturn(headerMetaDataList);
         IntStream.range(0, COLUMN_INDEX + 1).forEach(columnIndex -> {
             gridColumns.add(scenarioGridColumnMock);
+            factMappingValuesLocal.add(factMappingValueMock);
             when(simulationDescriptorMock.getFactMappingByIndex(columnIndex)).thenReturn(factMappingMock);
         });
         doReturn(factMappingMock).when(simulationDescriptorMock).addFactMapping(anyInt(), anyString(), anyObject(), anyObject());
@@ -173,7 +173,7 @@ public class ScenarioGridModelTest {
         when(gridCellMock.getValue()).thenReturn(gridCellValueMock);
         when(gridCellValueMock.getValue()).thenReturn(GRID_CELL_TEXT);
 
-        when(scenarioMock.getUnmodifiableFactMappingValues()).thenReturn(factMappingValuesMock);
+        when(scenarioMock.getUnmodifiableFactMappingValues()).thenReturn(factMappingValuesLocal);
 
         IntStream.range(0, ROW_COUNT).forEach(rowIndex -> {
             when(simulationMock.addScenario(rowIndex)).thenReturn(scenarioMock);
@@ -225,7 +225,6 @@ public class ScenarioGridModelTest {
 
     @Test
     public void appendRow() {
-        reset(scenarioGridModel);
         scenarioGridModel.appendRow(gridRowMock);
         verify(scenarioGridModel, atLeast(1)).checkSimulation();
         verify(scenarioGridModel, times(1)).commonAddRow(eq(ROW_COUNT));
@@ -233,16 +232,24 @@ public class ScenarioGridModelTest {
 
     @Test
     public void insertRowGridOnly() {
-        reset(scenarioGridModel);
         scenarioGridModel.insertRowGridOnly(ROW_INDEX, gridRowMock, scenarioMock);
         verify(scenarioGridModel, atLeast(1)).checkSimulation();
         verify(scenarioGridModel, never()).insertRow(eq(ROW_INDEX), eq(gridRowMock));
         verify(scenarioGridModel, times(1)).updateIndexColumn();
+        verify(scenarioGridModel, times(6)).setCell(anyInt(), anyInt(), isA(Supplier.class));
+        reset(scenarioGridModel);
+        FactMapping factMappingByIndexMock = mock(FactMapping.class);
+        when(factMappingByIndexMock.getClassName()).thenReturn(List.class.getName());
+        when(simulationDescriptorMock.getFactMappingByIndex(2)).thenReturn(factMappingByIndexMock);
+        scenarioGridModel.insertRowGridOnly(ROW_INDEX, gridRowMock, scenarioMock);
+        verify(scenarioGridModel, atLeast(1)).checkSimulation();
+        verify(scenarioGridModel, never()).insertRow(eq(ROW_INDEX), eq(gridRowMock));
+        verify(scenarioGridModel, times(1)).updateIndexColumn();
+        verify(scenarioGridModel, times(6)).setCell(anyInt(), anyInt(), isA(Supplier.class));
     }
 
     @Test
     public void insertRow() {
-        reset(scenarioGridModel);
         scenarioGridModel.insertRow(ROW_INDEX, gridRowMock);
         verify(scenarioGridModel, atLeast(1)).checkSimulation();
         verify(scenarioGridModel, times(1)).commonAddRow(eq(ROW_INDEX));
@@ -251,7 +258,6 @@ public class ScenarioGridModelTest {
 
     @Test
     public void deleteRow() {
-        reset(scenarioGridModel);
         scenarioGridModel.deleteRow(ROW_INDEX);
         verify(scenarioGridModel, atLeast(1)).checkSimulation();
         verify(simulationMock, times(1)).removeScenarioByIndex(eq(ROW_INDEX));

@@ -339,15 +339,6 @@ public class CollectionPresenterTest extends AbstractCollectionEditorTest {
     @Test
     public void populateMap() {
         collectionEditorPresenter.populateMap(jsonValueMock);
-        for (int i = 0; i < JSON_ARRAY_SIZE; i++) {
-            verify(jsonArrayMock, times(1)).get(eq(i));
-        }
-        verify(collectionEditorPresenter, times(JSON_ARRAY_SIZE)).getJSONValue("prop2");
-        verify(jsonObjectMock, times(JSON_ARRAY_SIZE)).get("prop1");
-        verify(jsonObjectMock, times(JSON_ARRAY_SIZE * 2)).get("prop2");
-        verify(jsonValueNeph1Mock, times(JSON_ARRAY_SIZE * 2)).isString();
-        verify(jsonValueNeph2Mock, times(JSON_ARRAY_SIZE)).isObject();
-        verify(nestedValue2Mock, times(JSON_ARRAY_SIZE)).keySet();
         verify(collectionEditorPresenter, times(JSON_ARRAY_SIZE)).addMapItem(anyMap(), anyMap());
     }
 

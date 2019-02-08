@@ -22,6 +22,8 @@ public class ScenarioGridCell extends BaseGridCell<String> {
 
     private boolean isEditingMode = false;
     private boolean isErrorMode = false;
+    private boolean isList = false;
+    private boolean isMap = false;
 
     public ScenarioGridCell(ScenarioGridCellValue value) {
         super(value);
@@ -42,4 +44,23 @@ public class ScenarioGridCell extends BaseGridCell<String> {
     public void setErrorMode(boolean errorMode) {
         isErrorMode = errorMode;
     }
+
+    public boolean isList() {
+        return isList;
+    }
+
+    /**
+     * Method to set the <b>isList/isMap</b> flags. Invoke this <b>only</b> for <i>collection</i> cells.
+     * By default, both <b>isList/isMap</b> are false.
+     * @param list
+     */
+    public void setListMap(boolean list) {
+        isList = list;
+        isMap = !list;
+    }
+
+    public boolean isMap() {
+        return isMap;
+    }
+
 }

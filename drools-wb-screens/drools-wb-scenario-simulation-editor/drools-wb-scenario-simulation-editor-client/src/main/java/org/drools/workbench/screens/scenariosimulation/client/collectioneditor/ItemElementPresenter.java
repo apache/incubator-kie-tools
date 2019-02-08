@@ -47,19 +47,19 @@ public class ItemElementPresenter extends ElementPresenter<ItemElementView> impl
     @Override
     public void onEditItem(ItemElementView itemElementView) {
         propertyPresenter.editProperties(itemElementView.getItemId());
-        itemElementView.getSaveChange().getStyle().setVisibility(Style.Visibility.VISIBLE);
+        itemElementView.getSaveChange().getStyle().setDisplay(Style.Display.INLINE);
     }
 
     @Override
     public void onStopEditingItem(ItemElementView itemElementView) {
         propertyPresenter.stopEditProperties(itemElementView.getItemId());
-        itemElementView.getSaveChange().getStyle().setVisibility(Style.Visibility.HIDDEN);
+        itemElementView.getSaveChange().getStyle().setDisplay(Style.Display.NONE);
     }
 
     @Override
     public void updateItem(ItemElementView itemElementView) {
         propertyPresenter.updateProperties(itemElementView.getItemId());
-        itemElementView.getSaveChange().getStyle().setVisibility(Style.Visibility.HIDDEN);
+        itemElementView.getSaveChange().getStyle().setDisplay(Style.Display.NONE);
     }
 
     @Override

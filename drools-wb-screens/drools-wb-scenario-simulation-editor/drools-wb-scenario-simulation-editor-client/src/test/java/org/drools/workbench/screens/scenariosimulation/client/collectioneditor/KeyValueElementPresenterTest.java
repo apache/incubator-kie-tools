@@ -107,7 +107,7 @@ public class KeyValueElementPresenterTest extends ElementPresenterTest<KeyValueE
     public void onEditItem() {
         elementPresenter.onEditItem(elementView1Mock);
         verify(propertyPresenterMock, times(2)).editProperties(anyString());
-        verify(styleMock, times(1)).setVisibility(Style.Visibility.VISIBLE);
+        verify(styleMock, times(1)).setDisplay(Style.Display.INLINE);
     }
 
     @Test
@@ -115,7 +115,7 @@ public class KeyValueElementPresenterTest extends ElementPresenterTest<KeyValueE
         elementPresenter.onStopEditingItem(elementView1Mock);
         verify(propertyPresenterMock, times(1)).stopEditProperties(eq(ELEMENT1_ID + "#key"));
         verify(propertyPresenterMock, times(1)).stopEditProperties(eq(ELEMENT1_ID + "#value"));
-        verify(styleMock, times(1)).setVisibility(eq(Style.Visibility.HIDDEN));
+        verify(styleMock, times(1)).setDisplay(Style.Display.NONE);
     }
 
     @Test
@@ -131,6 +131,6 @@ public class KeyValueElementPresenterTest extends ElementPresenterTest<KeyValueE
     public void updateItem() {
         elementPresenter.updateItem(elementView1Mock);
         verify(propertyPresenterMock, times(2)).updateProperties(anyString());
-        verify(styleMock, times(1)).setVisibility(Style.Visibility.HIDDEN);
+        verify(styleMock, times(1)).setDisplay(Style.Display.NONE);
     }
 }

@@ -81,12 +81,14 @@ public class ScenarioGridColumn extends BaseGridColumn<String> {
     public void edit(GridCell<String> cell, GridBodyCellRenderContext context, Consumer<GridCellValue<String>> callback) {
         factory.attachDomElement(context,
                                  e -> {
+                                     final GridCell<String> stringGridCell = assertCell(cell);
                                      if (e instanceof ScenarioCellTextAreaDOMElement) {
-                                         ((ScenarioCellTextAreaDOMElement) e).getWidget().setValue(assertCell(cell).getValue().getValue());
+                                         ((ScenarioCellTextAreaDOMElement) e).getWidget().setValue(stringGridCell.getValue().getValue());
                                          ((ScenarioCellTextAreaDOMElement) e).setScenarioGridCell((ScenarioGridCell) cell);
                                      } else if (e instanceof CollectionEditorDOMElement) {
                                          CollectionEditorDOMElement collectionEditorDOMElement = (CollectionEditorDOMElement) e;
-                                         collectionEditorDOMElement.getWidget().setValue(assertCell(cell).getValue().getValue());
+                                         collectionEditorDOMElement.getWidget().setValue(stringGridCell.getValue().getValue());
+                                         ((ScenarioGridCell) cell).setListMap(collectionEditorDOMElement.getWidget().isListWidget());
                                          collectionEditorDOMElement.setScenarioGridCell((ScenarioGridCell) cell);
                                      }
                                  },

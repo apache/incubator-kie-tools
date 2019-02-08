@@ -21,6 +21,8 @@ import java.util.function.BiFunction;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Rectangle;
 import com.ait.lienzo.client.core.shape.Text;
+import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.json.client.JSONValue;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
@@ -52,13 +54,22 @@ public class ScenarioGridColumnRenderer extends StringColumnRenderer {
             value = cell.getValue().getPlaceHolder();
         } else {
             text = ((ScenarioGridCell) cell).isErrorMode() ? theme.getErrorText() : theme.getBodyText();
-            value = cell.getValue() != null ? cell.getValue().getValue() : null;
+            value = getValueToShow((ScenarioGridCell) cell);
         }
 
         return internalRenderCell(cell,
                                   context,
                                   text,
                                   value);
+    }
+
+    @Override
+    public List<GridRenderer.RendererCommand> renderColumn(GridColumn<?> column, GridBodyColumnRenderContext context, BaseGridRendererHelper rendererHelper, BaseGridRendererHelper.RenderingInformation renderingInformation, BiFunction<Boolean, GridColumn<?>, Boolean> columnRenderingConstraint) {
+        return ColumnRenderingStrategyFlattened.render(column,
+                                                       context,
+                                                       rendererHelper,
+                                                       renderingInformation,
+                                                       columnRenderingConstraint);
     }
 
     @Override
@@ -86,7 +97,7 @@ public class ScenarioGridColumnRenderer extends StringColumnRenderer {
         return g;
     }
 
-    void applyBackgroundColor(ScenarioGridCell cell,
+    protected void applyBackgroundColor(ScenarioGridCell cell,
                               GridBodyCellRenderContext context,
                               Group group,
                               ScenarioGridRendererTheme theme) {
@@ -98,12 +109,24 @@ public class ScenarioGridColumnRenderer extends StringColumnRenderer {
         }
     }
 
-    @Override
-    public List<GridRenderer.RendererCommand> renderColumn(GridColumn<?> column, GridBodyColumnRenderContext context, BaseGridRendererHelper rendererHelper, BaseGridRendererHelper.RenderingInformation renderingInformation, BiFunction<Boolean, GridColumn<?>, Boolean> columnRenderingConstraint) {
-        return ColumnRenderingStrategyFlattened.render(column,
-                                                       context,
-                                                       rendererHelper,
-                                                       renderingInformation,
-                                                       columnRenderingConstraint);
+    protected String getValueToShow(ScenarioGridCell scenarioGridCell){
+        String rawValue = scenarioGridCell.getValue() != null ? scenarioGridCell.getValue().getValue() : null;
+        return (rawValue != null && (scenarioGridCell.isList() || scenarioGridCell.isMap())) ? getCollectionString(rawValue, scenarioGridCell.isList()) : rawValue;
+    }
+
+    protected String getCollectionString(String jsonString, boolean isList) {
+        try {
+            int size = -1;
+            String toFormat = isList ? "List(%s)" : "Map(%s)";
+            JSONValue jsonValue = JSONParser.parseStrict(jsonString);
+            if (isList) {
+                size = jsonValue.isArray().size();
+            } else {
+                size = jsonValue.isObject().keySet().size();
+            }
+            return toFormat.replace("%s", String.valueOf(size));
+        } catch (Exception e) {
+            return jsonString;
+        }
     }
 }

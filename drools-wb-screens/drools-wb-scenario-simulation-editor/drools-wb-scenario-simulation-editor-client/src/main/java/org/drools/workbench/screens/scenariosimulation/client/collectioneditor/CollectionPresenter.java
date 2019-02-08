@@ -178,23 +178,32 @@ public class CollectionPresenter implements CollectionView.Presenter {
     }
 
     protected void populateMap(JSONValue jsonValue) {
-        final JSONArray array = jsonValue.isArray();
-        for (int i = 0; i < array.size(); i++) {
+        final JSONObject jsValueObject = jsonValue.isObject();
+        jsValueObject.keySet().forEach(key -> {
             Map<String, String> keyPropertiesValues = new HashMap<>();
             Map<String, String> valuePropertiesValues = new HashMap<>();
-            final JSONObject jsonObject = array.get(i).isObject();
-            String jsonKey = jsonObject.keySet().iterator().next();
-            final JSONValue jsonKeyValue = getJSONValue(jsonKey);
-            if (jsonKeyValue == null) {
-                keyPropertiesValues.put("value", jsonKey);
+            final JSONObject jsonObjectKey = getJSONObject(key);
+            if (jsonObjectKey == null) {
+                keyPropertiesValues.put("value", key);
             } else {
-                JSONObject nestedKey = jsonKeyValue.isObject();
-                nestedKey.keySet().forEach(propertyName ->
-                                                   keyPropertiesValues.put(propertyName, nestedKey.get(propertyName).isString().stringValue()));
+                jsonObjectKey.keySet().forEach(propertyName ->
+                                                       keyPropertiesValues.put(propertyName, jsonObjectKey.get(propertyName).isString().stringValue()));
             }
-            JSONObject nestedValue = jsonObject.get(jsonKey).isObject();
-            nestedValue.keySet().forEach(propertyName -> valuePropertiesValues.put(propertyName, nestedValue.get(propertyName).isString().stringValue()));
+            JSONObject jsonObjectValue = jsValueObject.get(key).isObject();
+            if (jsonObjectValue != null) {
+                jsonObjectValue.keySet().forEach(propertyName -> valuePropertiesValues.put(propertyName, jsonObjectValue.get(propertyName).isString().stringValue()));
+            } else {
+                valuePropertiesValues.put("value", jsValueObject.get(key).toString());
+            }
             addMapItem(keyPropertiesValues, valuePropertiesValues);
+        });
+    }
+
+    protected JSONObject getJSONObject(String jsonString) {
+        try {
+            return getJSONValue(jsonString).isObject();
+        } catch (Exception e) {
+            return null;
         }
     }
 
@@ -223,8 +232,7 @@ public class CollectionPresenter implements CollectionView.Presenter {
      */
     protected String getMapValue() {
         Map<Map<String, String>, Map<String, String>> itemsProperties = mapElementPresenter.getItemsProperties();
-        JSONArray jsonArray = new JSONArray();
-        AtomicInteger counter = new AtomicInteger();
+        JSONObject toReturnModel = new JSONObject();
         itemsProperties.forEach((keyPropertiesValues, valuePropertiesMap) -> {
             String jsonKey;
             if (keyPropertiesValues.size() == 1) { // simple object - TO CHECK WRONG ASSUMPTION
@@ -236,10 +244,8 @@ public class CollectionPresenter implements CollectionView.Presenter {
             }
             JSONObject nestedValue = new JSONObject();
             valuePropertiesMap.forEach((propertyName, propertyValue) -> nestedValue.put(propertyName, new JSONString(propertyValue)));
-            JSONObject nestedObject = new JSONObject();
-            nestedObject.put(jsonKey, nestedValue);
-            jsonArray.set(counter.getAndIncrement(), nestedObject);
+            toReturnModel.put(jsonKey, nestedValue);
         });
-        return jsonArray.toString();
+        return toReturnModel.toString();
     }
 }

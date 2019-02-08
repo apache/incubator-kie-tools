@@ -82,7 +82,7 @@ public class PropertyPresenterTest extends AbstractCollectionEditorTest {
     public void setup() {
         List<PropertyView> propertyViewListLocal = new ArrayList<>();
         propertyViewListLocal.add(propertyViewMock);
-        propertyViewMapLocal.put(ITEM_ID,  propertyViewListLocal);
+        propertyViewMapLocal.put(ITEM_ID, propertyViewListLocal);
         propertySpanElementMapLocal.put(TEST_PROPERTYNAME, spanElementMock);
         when(liElementMock.getStyle()).thenReturn(styleMock);
         this.propertyEditorPresenter = spy(new PropertyPresenter() {
@@ -121,10 +121,10 @@ public class PropertyPresenterTest extends AbstractCollectionEditorTest {
     public void editProperties() {
         propertyEditorPresenter.editProperties(ITEM_ID);
         verify(spanElementMock, times(1)).getStyle();
-        verify(styleMock, times(1)).setVisibility(eq(Style.Visibility.HIDDEN));
+        verify(styleMock, times(1)).setDisplay(Style.Display.NONE);
         verify(propertyValueInputMock, times(1)).setValue(anyString());
         verify(propertyValueInputMock, times(1)).getStyle();
-        verify(styleMock, times(1)).setVisibility(eq(Style.Visibility.VISIBLE));
+        verify(styleMock, times(1)).setDisplay(Style.Display.INLINE);
         verify(propertyValueInputMock, times(1)).setDisabled(eq(false));
     }
 
@@ -154,7 +154,7 @@ public class PropertyPresenterTest extends AbstractCollectionEditorTest {
         verify(propertyValueInputMock, times(1)).setAttribute(eq("placeholder"), eq(hashedPropertyName));
         verify(propertyValueInputMock, times(1)).setAttribute(eq("data-field"), eq("propertyValue" + hashedPropertyName));
         verify(propertyValueInputMock, times(1)).setDisabled(eq(true));
-        verify(styleMock, times(1)).setVisibility(eq(Style.Visibility.HIDDEN));
+        verify(styleMock, times(1)).setDisplay(eq(Style.Display.NONE));
         verify(propertyFieldsMock, times(1)).setAttribute(eq("data-field"), eq("propertyFields" + hashedPropertyName));
         assertTrue(propertyViewMapLocal.containsKey(ITEM_ID));
         assertTrue(propertyViewMapLocal.get(ITEM_ID).contains(propertyViewMock));
@@ -203,8 +203,8 @@ public class PropertyPresenterTest extends AbstractCollectionEditorTest {
             verify(spanElementMock, times(1)).setInnerText(eq(TEST_NEWVALUE));
         }
         assertEquals(INNER_TEXT, retrieved.get(INNER_TEXT));
-        verify(styleMock, times(1)).setVisibility(eq(Style.Visibility.VISIBLE));
-        verify(styleMock, times(1)).setVisibility(eq(Style.Visibility.HIDDEN));
+        verify(styleMock, times(1)).setDisplay(Style.Display.INLINE);
+        verify(styleMock, times(1)).setDisplay(Style.Display.NONE);
         verify(propertyValueInputMock, times(1)).setDisabled(eq(true));
     }
 }

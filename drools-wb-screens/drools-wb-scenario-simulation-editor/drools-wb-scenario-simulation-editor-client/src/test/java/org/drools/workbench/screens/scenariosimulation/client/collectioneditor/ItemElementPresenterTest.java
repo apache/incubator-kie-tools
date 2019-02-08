@@ -45,7 +45,6 @@ public class ItemElementPresenterTest extends ElementPresenterTest<ItemElementVi
 
     private Map<String, String> testPropertiesMap = Collections.singletonMap("TEST-KEY", "TEST-VALUE");
 
-
     @Mock
     private LIElement propertyFieldsMock;
 
@@ -82,14 +81,14 @@ public class ItemElementPresenterTest extends ElementPresenterTest<ItemElementVi
     public void onEditItem() {
         elementPresenter.onEditItem(elementView1Mock);
         verify(propertyPresenterMock, times(1)).editProperties(anyString());
-        verify(styleMock, times(1)).setVisibility(Style.Visibility.VISIBLE);
+        verify(styleMock, times(1)).setDisplay(Style.Display.INLINE);
     }
 
     @Test
     public void onStopEditingItem() {
         elementPresenter.onStopEditingItem(elementView1Mock);
         verify(propertyPresenterMock, times(1)).stopEditProperties(eq(ELEMENT1_ID));
-        verify(styleMock, times(1)).setVisibility(eq(Style.Visibility.HIDDEN));
+        verify(styleMock, times(1)).setDisplay(eq(Style.Display.NONE));
     }
 
     @Test
@@ -104,9 +103,8 @@ public class ItemElementPresenterTest extends ElementPresenterTest<ItemElementVi
     public void updateItem() {
         elementPresenter.updateItem(elementView1Mock);
         verify(propertyPresenterMock, times(1)).updateProperties(anyString());
-        verify(styleMock, times(1)).setVisibility(Style.Visibility.HIDDEN);
+        verify(styleMock, times(1)).setDisplay(Style.Display.NONE);
     }
-
 
     @Test
     public void getItemsProperties() {
