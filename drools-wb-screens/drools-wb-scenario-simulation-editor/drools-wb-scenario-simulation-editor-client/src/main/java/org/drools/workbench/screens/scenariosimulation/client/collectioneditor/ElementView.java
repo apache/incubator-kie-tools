@@ -80,7 +80,7 @@ public interface ElementView<T extends ElementView.Presenter> extends HasPresent
 
     void onCancelChangeButton(ClickEvent clickEvent);
 
-    void toggleRowExpansion(boolean clickEvent);
+    void toggleRowExpansion(boolean toExpand);
 
     /**
      * Set the <b>id</b> of the item shown by the current <code><ListEditorElementView/code>

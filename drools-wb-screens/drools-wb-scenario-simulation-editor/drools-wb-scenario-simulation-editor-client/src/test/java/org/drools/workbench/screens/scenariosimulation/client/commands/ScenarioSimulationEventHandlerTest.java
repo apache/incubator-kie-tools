@@ -58,10 +58,13 @@ import org.drools.workbench.screens.scenariosimulation.client.events.SetCellValu
 import org.drools.workbench.screens.scenariosimulation.client.events.SetInstanceHeaderEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.SetPropertyHeaderEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.UndoEvent;
+import org.drools.workbench.screens.scenariosimulation.client.events.UnsupportedDMNEvent;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.RedoEventHandler;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.ReloadRightPanelEventHandler;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.SetCellValueEventHandler;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.UndoEventHandler;
+import org.drools.workbench.screens.scenariosimulation.client.handlers.UnsupportedDMNEventHandler;
+import org.drools.workbench.screens.scenariosimulation.client.popup.ConfirmPopupPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.popup.DeletePopupPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.popup.PreserveDeletePopupPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
@@ -127,11 +130,16 @@ public class ScenarioSimulationEventHandlerTest extends AbstractScenarioSimulati
     private HandlerRegistration setPropertyHeaderEventHandlerMock;
     @Mock
     private HandlerRegistration undoEventHandlerRegistrationMock;
+    @Mock
+    private HandlerRegistration unsupportedDMNEventHandlerRegistrationMock;
+
 
     @Mock
     private DeletePopupPresenter deletePopupPresenterMock;
     @Mock
     private PreserveDeletePopupPresenter preserveDeletePopupPresenterMock;
+    @Mock
+    private ConfirmPopupPresenter confirmPopupPresenterMock;
 
     private ScenarioSimulationEventHandler scenarioSimulationEventHandler;
 
@@ -156,6 +164,8 @@ public class ScenarioSimulationEventHandlerTest extends AbstractScenarioSimulati
         when(eventBusMock.addHandler(eq(SetInstanceHeaderEvent.TYPE), isA(ScenarioSimulationEventHandler.class))).thenReturn(setInstanceHeaderEventHandlerMock);
         when(eventBusMock.addHandler(eq(SetPropertyHeaderEvent.TYPE), isA(ScenarioSimulationEventHandler.class))).thenReturn(setPropertyHeaderEventHandlerMock);
         when(eventBusMock.addHandler(eq(UndoEvent.TYPE), isA(UndoEventHandler.class))).thenReturn(undoEventHandlerRegistrationMock);
+        when(eventBusMock.addHandler(eq(UnsupportedDMNEvent.TYPE), isA(UnsupportedDMNEventHandler.class))).thenReturn(unsupportedDMNEventHandlerRegistrationMock);
+
         when(scenarioCommandManagerMock.execute(eq(scenarioSimulationContextLocal), isA(AbstractScenarioSimulationCommand.class))).thenReturn(CommandResultBuilder.SUCCESS);
         scenarioSimulationEventHandler = spy(new ScenarioSimulationEventHandler() {
             {
@@ -163,6 +173,7 @@ public class ScenarioSimulationEventHandlerTest extends AbstractScenarioSimulati
                 this.handlerRegistrationList = handlerRegistrationListMock;
                 this.deletePopupPresenter = deletePopupPresenterMock;
                 this.preserveDeletePopupPresenter = preserveDeletePopupPresenterMock;
+                this.confirmPopupPresenter = confirmPopupPresenterMock;
                 this.context = scenarioSimulationContextLocal;
                 this.scenarioCommandManager = scenarioCommandManagerMock;
                 this.scenarioCommandRegistry = scenarioCommandRegistryMock;
@@ -391,6 +402,14 @@ public class ScenarioSimulationEventHandlerTest extends AbstractScenarioSimulati
     }
 
     @Test
+    public void onUnsupportedDMNEvent() {
+        String DMN_ERROR = "DMN_ERROR";
+        UnsupportedDMNEvent event = new UnsupportedDMNEvent(DMN_ERROR);
+        scenarioSimulationEventHandler.onEvent(event);
+        verify(confirmPopupPresenterMock, times(1)).show(anyString(), eq(DMN_ERROR));
+    }
+
+    @Test
     public void commonExecution() {
         when(scenarioCommandManagerMock.execute(eq(scenarioSimulationContextLocal), eq(appendRowCommandMock))).thenReturn(CommandResultBuilder.SUCCESS);
         scenarioSimulationEventHandler.commonExecution(scenarioSimulationContextLocal, appendRowCommandMock);
@@ -444,5 +463,7 @@ public class ScenarioSimulationEventHandlerTest extends AbstractScenarioSimulati
         verify(handlerRegistrationListMock, times(1)).add(eq(setPropertyHeaderEventHandlerMock));
         verify(eventBusMock, times(1)).addHandler(eq(UndoEvent.TYPE), isA(UndoEventHandler.class));
         verify(handlerRegistrationListMock, times(1)).add(eq(undoEventHandlerRegistrationMock));
+        verify(eventBusMock, times(1)).addHandler(eq(UnsupportedDMNEvent.TYPE), isA(UnsupportedDMNEventHandler.class));
+        verify(handlerRegistrationListMock, times(1)).add(eq(unsupportedDMNEventHandlerRegistrationMock));
     }
 }

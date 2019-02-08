@@ -54,6 +54,9 @@ public class KeyValueElementPresenter extends ElementPresenter<KeyValueElementVi
 
     @Override
     public void onEditItem(KeyValueElementView keyValueElementView) {
+        if (!keyValueElementView.isShown()) {
+            onToggleRowExpansion(keyValueElementView, false);
+        }
         List<String> keyValueIds = getKeyValueIds( keyValueElementView.getItemId());
         keyValueIds.forEach(id -> propertyPresenter.editProperties(id));
         keyValueElementView.getSaveChange().getStyle().setDisplay(Style.Display.INLINE);

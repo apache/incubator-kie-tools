@@ -24,6 +24,7 @@ import java.util.Set;
 import com.google.gwt.dom.client.HeadingElement;
 import com.google.gwt.dom.client.LIElement;
 import com.google.gwt.dom.client.SpanElement;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.UListElement;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
@@ -97,6 +98,9 @@ public class CollectionPresenterTest extends AbstractCollectionEditorTest {
     private LIElement itemElementMock;
 
     @Mock
+    private Style styleMock;
+
+    @Mock
     private JSONValue jsonValueMock;
 
     @Mock
@@ -145,6 +149,7 @@ public class CollectionPresenterTest extends AbstractCollectionEditorTest {
         when(collectionViewMock.getEditorTitle()).thenReturn(editorTitleMock);
         when(collectionViewMock.getPropertyTitle()).thenReturn(propertyTitleMock);
         when(collectionViewMock.getObjectSeparator()).thenReturn(objectSeparatorLIMock);
+        when(objectSeparatorLIMock.getStyle()).thenReturn(styleMock);
 
         when(nestedValue1Mock.keySet()).thenReturn(KEY_SET);
         when(nestedValue1Mock.get(eq("prop1"))).thenReturn(jsonValueNeph1Mock);
@@ -270,7 +275,7 @@ public class CollectionPresenterTest extends AbstractCollectionEditorTest {
         verify(collectionViewMock, times(1)).getElementsContainer();
         verify(elementsContainerMock, times(1)).getChildCount();
         verify(listElementPresenterMock, times(1)).getItemContainer(eq(ITEM_ID), eq(propertyMapLocal));
-        verify(elementsContainerMock, times(1)).insertBefore(eq(itemElementMock), eq(objectSeparatorLIMock));
+        verify(elementsContainerMock, times(1)).appendChild(eq(itemElementMock));
     }
 
     @Test
@@ -279,7 +284,7 @@ public class CollectionPresenterTest extends AbstractCollectionEditorTest {
         verify(collectionViewMock, times(1)).getElementsContainer();
         verify(elementsContainerMock, times(1)).getChildCount();
         verify(mapElementPresenterMock, times(1)).getKeyValueContainer(eq(ITEM_ID), eq(keyPropertyMapLocal), eq(propertyMapLocal));
-        verify(elementsContainerMock, times(1)).insertBefore(eq(itemElementMock), eq(objectSeparatorLIMock));
+        verify(elementsContainerMock, times(1)).appendChild(eq(itemElementMock));
     }
 
     @Test

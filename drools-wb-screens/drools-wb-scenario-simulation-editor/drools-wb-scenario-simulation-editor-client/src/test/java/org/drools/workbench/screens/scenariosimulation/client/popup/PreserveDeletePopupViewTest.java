@@ -78,7 +78,10 @@ public class PreserveDeletePopupViewTest extends ScenarioConfirmationPopupViewTe
                                      OKDELETE_BUTTON_TEXT,
                                      okPreserveCommandMock,
                                      okDeleteCommandMock);
-        verifyShow();
+        verifyShow(MAIN_TITLE_TEXT,
+                   MAIN_QUESTION_TEXT,
+                   TEXT1_TEXT,
+                   TEXT_QUESTION_TEXT);
         assertEquals(okPreserveCommandMock, ((PreserveDeletePopupView)popupView).okPreserveCommand);
         verify(option1Mock, times(1)).setInnerText(eq(OPTION1_TEXT));
         verify(option2Mock, times(1)).setInnerText(eq(OPTION2_TEXT));

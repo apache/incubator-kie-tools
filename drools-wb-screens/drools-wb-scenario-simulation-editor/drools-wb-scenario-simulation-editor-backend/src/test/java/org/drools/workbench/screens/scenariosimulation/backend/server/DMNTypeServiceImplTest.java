@@ -119,4 +119,52 @@ public class DMNTypeServiceImplTest extends AbstractDMNTest {
         assertEquals(List.class.getCanonicalName(), factModelTree.getSimpleProperties().get("phoneNumbers"));
         assertEquals(1, factModelTree.getGenericTypeInfo("friends").size());
     }
+
+    @Test
+    public void checkTypeSupport() {
+        // top level collection
+        DMNType topLevelCollection = new SimpleTypeImpl(null, "string", null);
+        ((SimpleTypeImpl) topLevelCollection).setCollection(true);
+        DMNTypeServiceImpl.ErrorHolder errorHolder = new DMNTypeServiceImpl.ErrorHolder();
+        dmnTypeServiceImpl.checkTypeSupport(topLevelCollection, errorHolder, "fieldName");
+        assertEquals(1, errorHolder.getTopLevelCollection().size());
+        assertEquals(0, errorHolder.getMultipleNestedObject().size());
+        assertEquals(0, errorHolder.getMultipleNestedCollection().size());
+        assertEquals("fieldName", errorHolder.getTopLevelCollection().get(0));
+
+        // nested collection
+        DMNType person = new CompositeTypeImpl();
+
+        SimpleTypeImpl numbers = new SimpleTypeImpl(null, "string", null);
+        numbers.setCollection(true);
+
+        DMNType phoneNumberCompositeCollection = new CompositeTypeImpl(null, "tPhoneNumber", null, true);
+        ((CompositeTypeImpl) phoneNumberCompositeCollection).addField("numbers", numbers);
+
+        ((CompositeTypeImpl) person).addField("phoneNumbers", phoneNumberCompositeCollection);
+
+        errorHolder = new DMNTypeServiceImpl.ErrorHolder();
+        dmnTypeServiceImpl.checkTypeSupport(person, errorHolder, "fieldName");
+        assertEquals(0, errorHolder.getTopLevelCollection().size());
+        assertEquals(0, errorHolder.getMultipleNestedObject().size());
+        assertEquals(1, errorHolder.getMultipleNestedCollection().size());
+        assertEquals("fieldName.phoneNumbers.numbers", errorHolder.getMultipleNestedCollection().get(0));
+
+        // nested object into collection
+        person = new CompositeTypeImpl();
+
+        CompositeTypeImpl complexNumbers = new CompositeTypeImpl(null, "tPhoneNumber", null, false);
+
+        phoneNumberCompositeCollection = new CompositeTypeImpl(null, "tPhoneNumber", null, true);
+        ((CompositeTypeImpl) phoneNumberCompositeCollection).addField("complexNumbers", complexNumbers);
+
+        ((CompositeTypeImpl) person).addField("phoneNumbers", phoneNumberCompositeCollection);
+
+        errorHolder = new DMNTypeServiceImpl.ErrorHolder();
+        dmnTypeServiceImpl.checkTypeSupport(person, errorHolder, "fieldName");
+        assertEquals(0, errorHolder.getTopLevelCollection().size());
+        assertEquals(1, errorHolder.getMultipleNestedObject().size());
+        assertEquals(0, errorHolder.getMultipleNestedCollection().size());
+        assertEquals("fieldName.phoneNumbers.complexNumbers", errorHolder.getMultipleNestedObject().get(0));
+    }
 }

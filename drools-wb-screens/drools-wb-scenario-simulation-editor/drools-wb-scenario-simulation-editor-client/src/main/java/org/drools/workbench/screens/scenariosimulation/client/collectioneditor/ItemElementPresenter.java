@@ -46,6 +46,9 @@ public class ItemElementPresenter extends ElementPresenter<ItemElementView> impl
 
     @Override
     public void onEditItem(ItemElementView itemElementView) {
+        if (!itemElementView.isShown()) {
+            onToggleRowExpansion(itemElementView, false);
+        }
         propertyPresenter.editProperties(itemElementView.getItemId());
         itemElementView.getSaveChange().getStyle().setDisplay(Style.Display.INLINE);
     }

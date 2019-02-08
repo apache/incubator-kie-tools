@@ -24,6 +24,7 @@ import com.google.gwt.event.shared.EventBus;
 import org.drools.workbench.screens.scenariosimulation.client.AbstractScenarioSimulationTest;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationEventHandler;
 import org.drools.workbench.screens.scenariosimulation.client.editor.ScenarioSimulationView;
+import org.drools.workbench.screens.scenariosimulation.client.popup.ConfirmPopupPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.popup.DeletePopupPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.popup.PreserveDeletePopupPresenter;
 import org.junit.Before;
@@ -43,6 +44,8 @@ public abstract class AbstractProducerTest extends AbstractScenarioSimulationTes
     protected DeletePopupPresenter deletePopupPresenterMock;
     @Mock
     protected PreserveDeletePopupPresenter preserveDeletePopupPresenterMock;
+    @Mock
+    protected ConfirmPopupPresenter confirmPopupPresenterMock;
     @Mock
     protected ScenarioSimulationEventHandler scenarioSimulationEventHandlerMock;
     @Mock

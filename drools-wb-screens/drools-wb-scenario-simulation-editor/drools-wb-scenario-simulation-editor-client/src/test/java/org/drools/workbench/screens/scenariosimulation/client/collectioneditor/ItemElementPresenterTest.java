@@ -32,7 +32,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -78,8 +80,19 @@ public class ItemElementPresenterTest extends ElementPresenterTest<ItemElementVi
     }
 
     @Test
-    public void onEditItem() {
+    public void onEditItemShown() {
+        doReturn(true).when(elementView1Mock).isShown();
         elementPresenter.onEditItem(elementView1Mock);
+        verify(elementPresenter, never()).onToggleRowExpansion(eq(elementView1Mock), eq((false)));
+        verify(propertyPresenterMock, times(1)).editProperties(anyString());
+        verify(styleMock, times(1)).setDisplay(Style.Display.INLINE);
+    }
+
+    @Test
+    public void onEditItemNotShown() {
+        doReturn(false).when(elementView1Mock).isShown();
+        elementPresenter.onEditItem(elementView1Mock);
+        verify(elementPresenter, times(1)).onToggleRowExpansion(eq(elementView1Mock), eq((false)));
         verify(propertyPresenterMock, times(1)).editProperties(anyString());
         verify(styleMock, times(1)).setDisplay(Style.Display.INLINE);
     }
@@ -87,6 +100,7 @@ public class ItemElementPresenterTest extends ElementPresenterTest<ItemElementVi
     @Test
     public void onStopEditingItem() {
         elementPresenter.onStopEditingItem(elementView1Mock);
+        verify(elementPresenter, never()).onToggleRowExpansion(eq(elementView1Mock), eq((false)));
         verify(propertyPresenterMock, times(1)).stopEditProperties(eq(ELEMENT1_ID));
         verify(styleMock, times(1)).setDisplay(eq(Style.Display.NONE));
     }

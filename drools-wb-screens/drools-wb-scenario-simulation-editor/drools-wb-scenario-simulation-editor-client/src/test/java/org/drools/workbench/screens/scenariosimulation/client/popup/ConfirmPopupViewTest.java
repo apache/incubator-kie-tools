@@ -17,35 +17,27 @@
 package org.drools.workbench.screens.scenariosimulation.client.popup;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.google.gwt.dom.client.ParagraphElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 @RunWith(LienzoMockitoTestRunner.class)
-public class DeletePopupViewTest extends ScenarioConfirmationPopupViewTest {
+public class ConfirmPopupViewTest extends ScenarioConfirmationPopupViewTest {
 
-    @Mock
-    private ParagraphElement textDangerMock;
 
-    private final String TEXT_DANGER_TEXT = "TEXT_DANGER_TEXT";
+    private final String MAIN_TEXT = "MAIN_TEXT";
 
     @Before
     public void setup() {
         super.commonSetup();
-        popupView = spy(new DeletePopupView() {
+        popupView = spy(new ConfirmPopupView() {
             {
                 this.mainTitle = mainTitleMock;
                 this.mainQuestion = mainQuestionMock;
                 this.text1 = text1Mock;
                 this.textQuestion = textQuestionMock;
-                this.textDanger = textDangerMock;
                 this.cancelButton = cancelButtonMock;
                 this.okDeleteButton = okDeleteButtonMock;
                 this.modal = modalMock;
@@ -56,18 +48,10 @@ public class DeletePopupViewTest extends ScenarioConfirmationPopupViewTest {
 
     @Test
     public void show() {
-        ((DeletePopupView) popupView).show(MAIN_TITLE_TEXT,
-                                           MAIN_QUESTION_TEXT,
-                                           TEXT1_TEXT,
-                                           TEXT_QUESTION_TEXT,
-                                           TEXT_DANGER_TEXT,
-                                           OKDELETE_BUTTON_TEXT,
-                                           okDeleteCommandMock);
+        ((ConfirmPopupView) popupView).show(MAIN_TITLE_TEXT,
+                                            MAIN_TEXT);
         verifyShow(MAIN_TITLE_TEXT,
-                   MAIN_QUESTION_TEXT,
-                   TEXT1_TEXT,
-                   TEXT_QUESTION_TEXT);
-        verify(textDangerMock, times(1)).setInnerText(eq(TEXT_DANGER_TEXT));
+                   null, MAIN_TEXT, null);
     }
 
 }

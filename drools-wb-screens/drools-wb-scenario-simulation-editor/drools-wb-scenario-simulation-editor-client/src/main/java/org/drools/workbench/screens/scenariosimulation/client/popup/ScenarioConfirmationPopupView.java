@@ -19,6 +19,7 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.HeadingElement;
 import com.google.gwt.dom.client.ParagraphElement;
 import org.jboss.errai.common.client.dom.HTMLElement;
@@ -78,11 +79,11 @@ public abstract class ScenarioConfirmationPopupView implements ScenarioConfirmat
                      final String okDeleteButtonText,
                      final Command okDeleteCommand) {
         this.okDeleteCommand = okDeleteCommand;
-        mainTitle.setInnerHTML(mainTitleText);
-        mainQuestion.setInnerHTML(mainQuestionText);
-        text1.setInnerText(text1Text);
-        textQuestion.setInnerText(textQuestionText);
-        okDeleteButton.setText(okDeleteButtonText);
+        conditionalShow(mainTitle, mainTitleText);
+        conditionalShow(mainQuestion, mainQuestionText);
+        conditionalShow(text1, text1Text);
+        conditionalShow(textQuestion, textQuestionText);
+        conditionalShow(okDeleteButton, okDeleteCommand, okDeleteButtonText);
         modal.show();
     }
 
@@ -107,5 +108,21 @@ public abstract class ScenarioConfirmationPopupView implements ScenarioConfirmat
     @EventHandler("cancel-button")
     public void onCancelClick(final @ForEvent("click") MouseEvent event) {
         hide();
+    }
+
+    protected void conditionalShow(Element element, String innerText) {
+        if (innerText != null) {
+            element.setInnerHTML(innerText);
+        } else {
+            element.removeFromParent();
+        }
+    }
+
+    protected void conditionalShow(Button button, Command command, String innerText) {
+        if (command == null) {
+            button.hide();
+        } else {
+            button.setText(innerText);
+        }
     }
 }

@@ -27,6 +27,7 @@ import org.uberfire.client.views.pfly.widgets.Button;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
@@ -75,7 +76,10 @@ public abstract class ScenarioConfirmationPopupViewTest extends AbstractDeletePo
                        TEXT_QUESTION_TEXT,
                        OKDELETE_BUTTON_TEXT,
                        okDeleteCommandMock);
-        verifyShow();
+        verifyShow(MAIN_TITLE_TEXT,
+                   MAIN_QUESTION_TEXT,
+                   TEXT1_TEXT,
+                   TEXT_QUESTION_TEXT);
         assertEquals(okDeleteCommandMock, popupView.okDeleteCommand);
     }
 
@@ -110,12 +114,12 @@ public abstract class ScenarioConfirmationPopupViewTest extends AbstractDeletePo
         verify(popupView, times(1)).hide();
     }
 
-    protected void verifyShow() {
-        verify(mainTitleMock, times(1)).setInnerHTML(eq(MAIN_TITLE_TEXT));
-        verify(mainQuestionMock, times(1)).setInnerHTML(eq(MAIN_QUESTION_TEXT));
-        verify(text1Mock, times(1)).setInnerText(eq(TEXT1_TEXT));
-        verify(textQuestionMock, times(1)).setInnerText(eq(TEXT_QUESTION_TEXT));
-        verify(okDeleteButtonMock, times(1)).setText(eq(OKDELETE_BUTTON_TEXT));
+    protected void verifyShow(String mainTitleText, String mainQuestionText, String text1Text, String textQuestionText) {
+        verify(popupView, times(1)).conditionalShow(eq(mainTitleMock), eq(mainTitleText));
+        verify(popupView, times(1)).conditionalShow(eq(mainQuestionMock), eq(mainQuestionText));
+        verify(popupView, times(1)).conditionalShow(eq(text1Mock), eq(text1Text));
+        verify(popupView, times(1)).conditionalShow(eq(textQuestionMock), eq(textQuestionText));
+        verify(popupView, times(1)).conditionalShow(eq(okDeleteButtonMock), any(), any());
         verify(modalMock, times(1)).show();
     }
 }

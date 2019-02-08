@@ -19,27 +19,19 @@ package org.drools.workbench.screens.scenariosimulation.client.popup;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.uberfire.mvp.Command;
-
 @Dependent
-public class DeletePopupPresenter implements DeletePopup.Presenter {
+public class ConfirmPopupPresenter implements ConfirmPopup.Presenter {
 
     @Inject
-    protected DeletePopupView deletePopupView;
+    protected ConfirmPopup confirmPopupView;
 
     @Override
-    public void show(final String mainTitleText,
-                     final String mainQuestionText,
-                     final String text1Text,
-                     final String textQuestionText,
-                     final String textDangerText,
-                     final String okDeleteButtonText,
-                     final Command okDeleteCommand) {
-        deletePopupView.show(mainTitleText, mainQuestionText, text1Text, textQuestionText, textDangerText, okDeleteButtonText, okDeleteCommand);
+    public void show(String mainTitleText, String mainText) {
+        confirmPopupView.show(mainTitleText, mainText);
     }
 
     @Override
     public void hide() {
-        deletePopupView.hide();
+        confirmPopupView.hide();
     }
 }

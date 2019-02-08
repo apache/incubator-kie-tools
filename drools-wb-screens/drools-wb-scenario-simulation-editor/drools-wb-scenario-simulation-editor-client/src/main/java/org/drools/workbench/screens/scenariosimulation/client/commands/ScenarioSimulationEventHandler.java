@@ -64,6 +64,7 @@ import org.drools.workbench.screens.scenariosimulation.client.events.SetCellValu
 import org.drools.workbench.screens.scenariosimulation.client.events.SetInstanceHeaderEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.SetPropertyHeaderEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.UndoEvent;
+import org.drools.workbench.screens.scenariosimulation.client.events.UnsupportedDMNEvent;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.AppendColumnEventHandler;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.AppendRowEventHandler;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.DeleteColumnEventHandler;
@@ -83,6 +84,8 @@ import org.drools.workbench.screens.scenariosimulation.client.handlers.SetCellVa
 import org.drools.workbench.screens.scenariosimulation.client.handlers.SetInstanceHeaderEventHandler;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.SetPropertyHeaderEventHandler;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.UndoEventHandler;
+import org.drools.workbench.screens.scenariosimulation.client.handlers.UnsupportedDMNEventHandler;
+import org.drools.workbench.screens.scenariosimulation.client.popup.ConfirmPopupPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.popup.DeletePopupPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.popup.PreserveDeletePopupPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
@@ -115,10 +118,12 @@ public class ScenarioSimulationEventHandler implements AppendColumnEventHandler,
                                                        SetCellValueEventHandler,
                                                        SetInstanceHeaderEventHandler,
                                                        SetPropertyHeaderEventHandler,
-                                                       UndoEventHandler {
+                                                       UndoEventHandler,
+                                                       UnsupportedDMNEventHandler {
 
     protected DeletePopupPresenter deletePopupPresenter;
     protected PreserveDeletePopupPresenter preserveDeletePopupPresenter;
+    protected ConfirmPopupPresenter confirmPopupPresenter;
 
     protected EventBus eventBus;
 
@@ -147,6 +152,10 @@ public class ScenarioSimulationEventHandler implements AppendColumnEventHandler,
 
     public void setPreserveDeletePopupPresenter(PreserveDeletePopupPresenter preserveDeletePopupPresenter) {
         this.preserveDeletePopupPresenter = preserveDeletePopupPresenter;
+    }
+
+    public void setConfirmPopupPresenter(ConfirmPopupPresenter confirmPopupPresenter) {
+        this.confirmPopupPresenter = confirmPopupPresenter;
     }
 
     public void setNotificationEvent(Event<NotificationEvent> notificationEvent) {
@@ -363,6 +372,11 @@ public class ScenarioSimulationEventHandler implements AppendColumnEventHandler,
         }
     }
 
+    @Override
+    public void onEvent(UnsupportedDMNEvent event) {
+        confirmPopupPresenter.show("Unsupported DMN asset", event.getMessage());
+    }
+
     /**
      * Common method to execute the given <code>Command</code> inside the given <code>ScenarioSimulationContext</code>
      * If successful, it adds the command to the <code>ScenarioCommandRegistry</code>, otherwise it fire a new <code>ScenarioNotificationEvent</code>
@@ -416,5 +430,6 @@ public class ScenarioSimulationEventHandler implements AppendColumnEventHandler,
         handlerRegistrationList.add(eventBus.addHandler(SetInstanceHeaderEvent.TYPE, this));
         handlerRegistrationList.add(eventBus.addHandler(SetPropertyHeaderEvent.TYPE, this));
         handlerRegistrationList.add(eventBus.addHandler(UndoEvent.TYPE, this));
+        handlerRegistrationList.add(eventBus.addHandler(UnsupportedDMNEvent.TYPE, this));
     }
 }

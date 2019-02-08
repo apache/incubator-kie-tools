@@ -15,6 +15,8 @@
  */
 package org.drools.workbench.screens.scenariosimulation.model.typedescriptor;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.SortedMap;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -27,6 +29,9 @@ public class FactModelTuple {
 
     private SortedMap<String, FactModelTree> visibleFacts;
     private SortedMap<String, FactModelTree> hiddenFacts;
+    private List<String> topLevelCollectionError = new ArrayList<>();
+    private List<String> multipleNestedCollectionError = new ArrayList<>();
+    private List<String> multipleNestedObjectError = new ArrayList<>();
 
     public FactModelTuple() {
         // CDI
@@ -43,5 +48,29 @@ public class FactModelTuple {
 
     public SortedMap<String, FactModelTree> getHiddenFacts() {
         return hiddenFacts;
+    }
+
+    public void addTopLevelCollectionError(String error) {
+        this.topLevelCollectionError.add(error);
+    }
+
+    public void addMultipleNestedCollectionError(String error) {
+        this.multipleNestedCollectionError.add(error);
+    }
+
+    public void addMultipleNestedObjectError(String error) {
+        this.multipleNestedObjectError.add(error);
+    }
+
+    public List<String> getTopLevelCollectionError() {
+        return topLevelCollectionError;
+    }
+
+    public List<String> getMultipleNestedCollectionError() {
+        return multipleNestedCollectionError;
+    }
+
+    public List<String> getMultipleNestedObjectError() {
+        return multipleNestedObjectError;
     }
 }

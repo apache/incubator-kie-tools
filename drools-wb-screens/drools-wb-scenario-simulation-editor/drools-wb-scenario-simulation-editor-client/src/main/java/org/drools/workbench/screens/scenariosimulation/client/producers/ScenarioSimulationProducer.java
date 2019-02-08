@@ -27,6 +27,7 @@ import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioS
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationEventHandler;
 import org.drools.workbench.screens.scenariosimulation.client.editor.ScenarioSimulationView;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioSimulationKeyboardEditHandler;
+import org.drools.workbench.screens.scenariosimulation.client.popup.ConfirmPopupPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.popup.DeletePopupPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.popup.PreserveDeletePopupPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridLayer;
@@ -55,6 +56,8 @@ public class ScenarioSimulationProducer {
     protected DeletePopupPresenter deletePopupPresenter;
     @Inject
     protected PreserveDeletePopupPresenter preserveDeletePopupPresenter;
+    @Inject
+    protected ConfirmPopupPresenter confirmPopupPresenter;
 
     @Inject
     protected ScenarioSimulationEventHandler scenarioSimulationEventHandler;
@@ -87,6 +90,7 @@ public class ScenarioSimulationProducer {
         scenarioSimulationEventHandler.setEventBus(getEventBus());
         scenarioSimulationEventHandler.setDeletePopupPresenter(deletePopupPresenter);
         scenarioSimulationEventHandler.setPreserveDeletePopupPresenter(preserveDeletePopupPresenter);
+        scenarioSimulationEventHandler.setConfirmPopupPresenter(confirmPopupPresenter);
         scenarioSimulationEventHandler.setNotificationEvent(notificationEvent);
         scenarioSimulationEventHandler.setContext(getScenarioSimulationContext());
         scenarioSimulationEventHandler.setScenarioCommandManager(scenarioCommandManager);

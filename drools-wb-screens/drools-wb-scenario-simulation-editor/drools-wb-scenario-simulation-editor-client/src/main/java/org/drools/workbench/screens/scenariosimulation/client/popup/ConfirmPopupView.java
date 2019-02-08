@@ -13,33 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.drools.workbench.screens.scenariosimulation.client.popup;
 
 import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 
-import org.uberfire.mvp.Command;
+import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 @Dependent
-public class DeletePopupPresenter implements DeletePopup.Presenter {
-
-    @Inject
-    protected DeletePopupView deletePopupView;
+@Templated
+public class ConfirmPopupView extends ScenarioConfirmationPopupView implements ConfirmPopup {
 
     @Override
-    public void show(final String mainTitleText,
-                     final String mainQuestionText,
-                     final String text1Text,
-                     final String textQuestionText,
-                     final String textDangerText,
-                     final String okDeleteButtonText,
-                     final Command okDeleteCommand) {
-        deletePopupView.show(mainTitleText, mainQuestionText, text1Text, textQuestionText, textDangerText, okDeleteButtonText, okDeleteCommand);
+    public void show(String mainTitleText, String mainText) {
+        super.show(mainTitleText, null, mainText, null,
+                   null,
+                   null);
+        cancelButton.setText("OK");
     }
 
-    @Override
-    public void hide() {
-        deletePopupView.hide();
-    }
 }

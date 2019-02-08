@@ -16,6 +16,7 @@
 
 package org.drools.workbench.screens.scenariosimulation.backend.server;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -49,15 +50,30 @@ public class DMNTypeServiceImpl
         DMNModel dmnModel = getDMNModel(path, dmnPath);
         SortedMap<String, FactModelTree> visibleFacts = new TreeMap<>();
         SortedMap<String, FactModelTree> hiddenFacts = new TreeMap<>();
+
+        ErrorHolder errorHolder = new ErrorHolder();
+
         for (InputDataNode input : dmnModel.getInputs()) {
             DMNType type = input.getType();
+
+            checkTypeSupport(type, errorHolder, input.getName());
+
             visibleFacts.put(input.getName(), createFactModelTree(input.getName(), input.getName(), type, hiddenFacts, FactModelTree.Type.INPUT));
         }
         for (DecisionNode decision : dmnModel.getDecisions()) {
             DMNType type = decision.getResultType();
+
+            checkTypeSupport(type, errorHolder, decision.getName());
+
             visibleFacts.put(decision.getName(), createFactModelTree(decision.getName(), decision.getName(), type, hiddenFacts, FactModelTree.Type.DECISION));
         }
-        return new FactModelTuple(visibleFacts, hiddenFacts);
+        FactModelTuple factModelTuple = new FactModelTuple(visibleFacts, hiddenFacts);
+
+        errorHolder.getTopLevelCollection().forEach(factModelTuple::addTopLevelCollectionError);
+        errorHolder.getMultipleNestedCollection().forEach(factModelTuple::addMultipleNestedCollectionError);
+        errorHolder.getMultipleNestedObject().forEach(factModelTuple::addMultipleNestedObjectError);
+
+        return factModelTuple;
     }
 
     public DMNModel getDMNModel(Path path, String dmnPath) {
@@ -138,5 +154,54 @@ public class DMNTypeServiceImpl
         simpleFields.put(name, List.class.getCanonicalName());
 
         return genericKey;
+    }
+
+    protected void checkTypeSupport(DMNType type, ErrorHolder errorHolder, String path) {
+        if (type.isCollection()) {
+            errorHolder.getTopLevelCollection().add(path);
+        }
+        visitType(type, false, errorHolder, path);
+    }
+
+    private void visitType(DMNType type,
+                             boolean alreadyInCollection,
+                             ErrorHolder errorHolder,
+                             String path) {
+        if (type.isComposite()) {
+            for (Map.Entry<String, DMNType> entry : type.getFields().entrySet()) {
+                String name = entry.getKey();
+                DMNType nestedType = entry.getValue();
+                String nestedPath = path + "." + name;
+                if (alreadyInCollection && nestedType.isCollection()) {
+                    errorHolder.getMultipleNestedCollection().add(nestedPath);
+                }
+                if (alreadyInCollection && nestedType.isComposite()) {
+                    errorHolder.getMultipleNestedObject().add(nestedPath);
+                }
+                visitType(nestedType,
+                          alreadyInCollection || nestedType.isCollection(),
+                          errorHolder,
+                          nestedPath);
+            }
+        }
+    }
+
+    static class ErrorHolder {
+
+        List<String> topLevelCollection = new ArrayList<>();
+        List<String> multipleNestedObject = new ArrayList<>();
+        List<String> multipleNestedCollection = new ArrayList<>();
+
+        public List<String> getTopLevelCollection() {
+            return topLevelCollection;
+        }
+
+        public List<String> getMultipleNestedObject() {
+            return multipleNestedObject;
+        }
+
+        public List<String> getMultipleNestedCollection() {
+            return multipleNestedCollection;
+        }
     }
 }

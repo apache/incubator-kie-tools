@@ -23,6 +23,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.inject.Inject;
 
 import com.google.gwt.dom.client.LIElement;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.UListElement;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
@@ -121,7 +122,7 @@ public class CollectionPresenter implements CollectionView.Presenter {
         final UListElement elementsContainer = collectionView.getElementsContainer();
         String itemId = String.valueOf(elementsContainer.getChildCount() - 1);
         final LIElement itemElement = listElementPresenter.getItemContainer(itemId, propertiesValues);
-        elementsContainer.insertBefore(itemElement, objectSeparatorLI);
+        elementsContainer.appendChild(itemElement);
     }
 
     @Override
@@ -129,7 +130,7 @@ public class CollectionPresenter implements CollectionView.Presenter {
         final UListElement elementsContainer = collectionView.getElementsContainer();
         String itemId = String.valueOf(elementsContainer.getChildCount() - 1);
         final LIElement itemElement = mapElementPresenter.getKeyValueContainer(itemId, keyPropertiesValues, valuePropertiesValues);
-        elementsContainer.insertBefore(itemElement, objectSeparatorLI);
+        elementsContainer.appendChild(itemElement);
     }
 
     @Override
@@ -164,6 +165,8 @@ public class CollectionPresenter implements CollectionView.Presenter {
         this.collectionView.getEditorTitle().setInnerText(key);
         this.collectionView.getPropertyTitle().setInnerText(propertyName);
         objectSeparatorLI = collectionView.getObjectSeparator();
+        objectSeparatorLI.addClassName("kie-object-list");
+        objectSeparatorLI.getStyle().setPadding(5, Style.Unit.PX);
     }
 
     protected void populateList(JSONValue jsonValue) {

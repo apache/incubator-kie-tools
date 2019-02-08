@@ -1,5 +1,5 @@
-<div class="kie-dataTypesList-modal modal-wide" tabindex="-1" style="width:100%"  role="dialog" id="collectionEditor">
-    <div class="modal-dialog" style="width:100%"  role="document" data-field="collectionEditorModalDialog">
+<div class="kie-dataTypesList-modal modal-wide" tabindex="-1" style="width:100%" role="dialog" id="collectionEditor">
+    <div class="modal-dialog" style="width:100%" role="document" data-field="collectionEditorModalDialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close" data-field="closeCollectionEditorButton">
@@ -15,14 +15,9 @@
                             <!-- first right side panel -->
                             <div class="tab-pane active" id="kie-ObjectListItem1" aria-labelledby="#kie-ObjectListTab1">
                                 <ul class="list-group list-group kie-object-lis" data-field="elementsContainer">
-                                    <li class="list-group-item">
+                                    <li class="list-group-item" style="list-style-type: none;">
                                         <span class="fa fa-angle-down kie-object-list__expander" data-field="faAngleRight"></span>
                                         <span class="kie-object-list__field-value" data-field="propertyTitle">visitedcities</span>
-                                    </li>
-                                    <li class="list-group-item kie-object-list__separator" data-field="objectSeparator">
-                                        <button class="btn btn-link" data-field="addItemButton">
-                                            <span class="fa fa-plus"></span> Add new item
-                                        </button>
                                     </li>
                                 </ul>
                             </div>
@@ -30,7 +25,13 @@
                     </div>
                 </div>
             </div>
+            <div class="kie-object-list__separator" data-field="objectSeparator">
+                <button class="btn btn-link" data-field="addItemButton">
+                    <span class="fa fa-plus"></span> Add new item
+                </button>
+            </div>
             <div class="modal-footer">
+
                 <button type="button" class="btn btn-default" data-dismiss="modal" data-field="cancelButton">Cancel</button>
                 <button type="button" class="btn btn-danger" data-dismiss="modal" data-field="removeButton">Remove</button>
                 <button type="button" class="btn btn-primary" data-dismiss="modal" data-field="saveButton">Save</button>

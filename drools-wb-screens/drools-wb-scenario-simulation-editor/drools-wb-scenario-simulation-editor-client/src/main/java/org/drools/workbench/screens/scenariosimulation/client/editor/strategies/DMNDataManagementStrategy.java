@@ -22,7 +22,9 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import com.google.gwt.event.shared.EventBus;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
+import org.drools.workbench.screens.scenariosimulation.client.events.UnsupportedDMNEvent;
 import org.drools.workbench.screens.scenariosimulation.client.models.ScenarioGridModel;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.RightPanelView;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModelContent;
@@ -40,11 +42,15 @@ public class DMNDataManagementStrategy extends AbstractDataManagementStrategy {
     protected ResultHolder factModelTreeHolder = new ResultHolder();
     private final Caller<DMNTypeService> dmnTypeService;
     protected ScenarioSimulationContext scenarioSimulationContext;
+    private final EventBus eventBus;
     protected Path currentPath;
 
-    public DMNDataManagementStrategy(Caller<DMNTypeService> dmnTypeService, ScenarioSimulationContext scenarioSimulationContext) {
+    public DMNDataManagementStrategy(Caller<DMNTypeService> dmnTypeService,
+                                     ScenarioSimulationContext scenarioSimulationContext,
+                                     EventBus eventBus) {
         this.dmnTypeService = dmnTypeService;
         this.scenarioSimulationContext = scenarioSimulationContext;
+        this.eventBus = eventBus;
     }
 
     @Override
@@ -77,11 +83,11 @@ public class DMNDataManagementStrategy extends AbstractDataManagementStrategy {
         };
     }
 
-    protected void getSuccessCallbackMethod(final FactModelTuple factMappingTuple, final RightPanelView.Presenter rightPanelPresenter, final ScenarioGridModel scenarioGridModel) {
+    protected void getSuccessCallbackMethod(final FactModelTuple factModelTuple, final RightPanelView.Presenter rightPanelPresenter, final ScenarioGridModel scenarioGridModel) {
         // Instantiate a map of already assigned properties
         final Map<String, List<String>> alreadyAssignedProperties = getPropertiesToHide(scenarioGridModel);
-        factModelTreeHolder.setFactModelTuple(factMappingTuple);
-        final SortedMap<String, FactModelTree> visibleFacts = factMappingTuple.getVisibleFacts();
+        factModelTreeHolder.setFactModelTuple(factModelTuple);
+        final SortedMap<String, FactModelTree> visibleFacts = factModelTuple.getVisibleFacts();
         final Map<Boolean, List<Map.Entry<String, FactModelTree>>> partitionBy = visibleFacts.entrySet().stream()
                 .collect(Collectors.partitioningBy(stringFactModelTreeEntry -> stringFactModelTreeEntry.getValue().isSimple()));
         final SortedMap<String, FactModelTree> complexDataObjects = new TreeMap<>(partitionBy.get(false).stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
@@ -90,12 +96,42 @@ public class DMNDataManagementStrategy extends AbstractDataManagementStrategy {
         filterFactModelTreeMap(simpleDataObjects, alreadyAssignedProperties);
         rightPanelPresenter.setDataObjectFieldsMap(complexDataObjects);
         rightPanelPresenter.setSimpleJavaTypeFieldsMap(simpleDataObjects);
-        rightPanelPresenter.setHiddenFieldsMap(factMappingTuple.getHiddenFacts());
+        rightPanelPresenter.setHiddenFieldsMap(factModelTuple.getHiddenFacts());
 
         SortedMap<String, FactModelTree> context = new TreeMap<>();
-        context.putAll(factMappingTuple.getVisibleFacts());
-        context.putAll(factMappingTuple.getHiddenFacts());
+        context.putAll(factModelTuple.getVisibleFacts());
+        context.putAll(factModelTuple.getHiddenFacts());
         scenarioSimulationContext.setDataObjectFieldsMap(context);
+
+        showErrorsAndCleanupState(factModelTuple);
+    }
+
+    private void showErrorsAndCleanupState(FactModelTuple factModelTuple) {
+        StringBuilder builder = new StringBuilder();
+        boolean showError = false;
+        if (factModelTuple.getTopLevelCollectionError().size() > 0) {
+            showError = true;
+            builder.append("Top-level collections are not supported! Violated by:<br/>");
+            factModelTuple.getTopLevelCollectionError().forEach(error -> builder.append("<b>"+ error + "</b><br/>"));
+            builder.append("<br/>");
+        }
+        if (factModelTuple.getMultipleNestedCollectionError().size() > 0) {
+            showError = true;
+            builder.append("Nested collections are not supported! Violated by:<br/>");
+            factModelTuple.getMultipleNestedCollectionError().forEach(error -> builder.append("<b>"+ error + "</b><br/>"));
+            builder.append("<br/>");
+        }
+        if (factModelTuple.getMultipleNestedObjectError().size() > 0) {
+            showError = true;
+            builder.append("Complex nested objects inside a collection are not supported! Violated by:<br/>");
+            factModelTuple.getMultipleNestedObjectError().forEach(error -> builder.append("<b>"+ error + "</b><br/>"));
+        }
+        if (showError) {
+            factModelTuple.getTopLevelCollectionError().clear();
+            factModelTuple.getMultipleNestedCollectionError().clear();
+            factModelTuple.getMultipleNestedObjectError().clear();
+            eventBus.fireEvent(new UnsupportedDMNEvent(builder.toString()));
+        }
     }
 
     protected void filterFactModelTreeMap(SortedMap<String, FactModelTree> toFilter, Map<String, List<String>> alreadyAssignedProperties) {
@@ -116,6 +152,7 @@ public class DMNDataManagementStrategy extends AbstractDataManagementStrategy {
     }
 
     static protected class ResultHolder {
+
         FactModelTuple factModelTuple;
 
         public FactModelTuple getFactModelTuple() {
