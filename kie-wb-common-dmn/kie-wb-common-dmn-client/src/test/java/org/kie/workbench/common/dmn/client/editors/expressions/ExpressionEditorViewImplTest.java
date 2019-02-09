@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.editors.expressions;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -44,6 +45,7 @@ import org.kie.workbench.common.dmn.client.session.DMNEditorSession;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCache;
 import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCacheImpl;
+import org.kie.workbench.common.dmn.client.widgets.grid.columns.KeyboardOperationEscapeGridCell;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
@@ -61,10 +63,17 @@ import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.BaseGridWidgetKeyboardHandler;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperation;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationEditCell;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationMoveDown;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationMoveLeft;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationMoveRight;
+import org.uberfire.ext.wires.core.grids.client.widget.grid.impl.KeyboardOperationMoveUp;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.TransformMediator;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.impl.RestrictedMousePanMediator;
 import org.uberfire.mocks.EventSourceMock;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
@@ -76,6 +85,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -175,6 +185,9 @@ public class ExpressionEditorViewImplTest {
     @Captor
     private ArgumentCaptor<TransformMediator> transformMediatorArgumentCaptor;
 
+    @Captor
+    private ArgumentCaptor<KeyboardOperation> keyboardOperationArgumentCaptor;
+
     private ExpressionGridCache expressionGridCache;
 
     private DMNGridPanelContainer gridPanelContainer;
@@ -268,6 +281,16 @@ public class ExpressionEditorViewImplTest {
         verify(gridPanel).add(gridLayer);
         verify(gridPanelContainer).clear();
         verify(gridPanelContainer).setWidget(gridPanel);
+
+        verify(view, times(6)).addKeyboardOperation(any(BaseGridWidgetKeyboardHandler.class),
+                                                    keyboardOperationArgumentCaptor.capture());
+        final List<KeyboardOperation> operations = keyboardOperationArgumentCaptor.getAllValues();
+        assertThat(operations.get(0)).isInstanceOf(KeyboardOperationEditCell.class);
+        assertThat(operations.get(1)).isInstanceOf(KeyboardOperationEscapeGridCell.class);
+        assertThat(operations.get(2)).isInstanceOf(KeyboardOperationMoveLeft.class);
+        assertThat(operations.get(3)).isInstanceOf(KeyboardOperationMoveRight.class);
+        assertThat(operations.get(4)).isInstanceOf(KeyboardOperationMoveUp.class);
+        assertThat(operations.get(5)).isInstanceOf(KeyboardOperationMoveDown.class);
     }
 
     @Test
