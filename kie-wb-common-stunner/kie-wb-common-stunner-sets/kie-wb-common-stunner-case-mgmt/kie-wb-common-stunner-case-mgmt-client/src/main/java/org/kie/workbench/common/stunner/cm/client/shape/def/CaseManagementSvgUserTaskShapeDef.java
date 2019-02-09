@@ -55,9 +55,8 @@ public final class CaseManagementSvgUserTaskShapeDef extends BaseDimensionedShap
 
     @Override
     public SVGShapeView<?> newViewInstance(final CaseManagementSVGViewFactory factory, final UserTask obj) {
-        return newViewInstance(Optional.ofNullable(obj.getDimensionsSet().getWidth()),
-                               Optional.ofNullable(obj.getDimensionsSet().getHeight()),
-                               factory.task());
+        // user task should not be resizable in case modeler
+        return newViewInstance(Optional.empty(), Optional.empty(), factory.task());
     }
 
     @Override

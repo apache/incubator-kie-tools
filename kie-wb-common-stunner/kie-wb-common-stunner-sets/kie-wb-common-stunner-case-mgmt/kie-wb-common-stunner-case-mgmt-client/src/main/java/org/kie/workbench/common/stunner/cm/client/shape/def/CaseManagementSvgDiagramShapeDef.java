@@ -38,10 +38,8 @@ public class CaseManagementSvgDiagramShapeDef extends BaseDimensionedShapeDef
     @Override
     public SVGShapeView<?> newViewInstance(final CaseManagementSVGViewFactory factory,
                                            final CaseManagementDiagram diagram) {
-
-        SVGShapeView shapeView = newViewInstance(Optional.ofNullable(diagram.getDimensionsSet().getWidth()),
-                                                 Optional.ofNullable(diagram.getDimensionsSet().getHeight()),
-                                                 factory.rectangle());
-        return shapeView;
+        return newViewInstance(Optional.ofNullable(diagram.getDimensionsSet().getWidth()),
+                               Optional.ofNullable(diagram.getDimensionsSet().getHeight()),
+                               factory.rectangle());
     }
 }

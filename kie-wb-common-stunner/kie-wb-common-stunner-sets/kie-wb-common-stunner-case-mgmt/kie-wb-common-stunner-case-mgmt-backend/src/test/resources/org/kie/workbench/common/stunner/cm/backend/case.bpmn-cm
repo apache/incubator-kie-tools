@@ -25,7 +25,6 @@
       </bpmn2:extensionElements>
       <bpmn2:incoming>_AEEF33A1-7089-4992-8455-7C91C4C404CC</bpmn2:incoming>
       <bpmn2:outgoing>_C1798A3B-426E-4F25-8011-A83987BB80D5</bpmn2:outgoing>
-      <bpmn2:sequenceFlow id="_095D55C5-98F9-4002-A953-780E5ADCA5F3" sourceRef="_4DF08597-2D2D-4CEE-B0EF-1AF0ED4ADAC2" targetRef="_438D1DB6-4161-43C5-86F5-FC6B0F97BA7B"/>
       <bpmn2:callActivity id="_4DF08597-2D2D-4CEE-B0EF-1AF0ED4ADAC2" drools:independent="false" drools:waitForCompletion="true" name="Subcase" calledElement="">
         <bpmn2:extensionElements>
           <drools:metaData name="elementname">
@@ -35,7 +34,6 @@
             <drools:metaValue><![CDATA[true]]></drools:metaValue>
           </drools:metaData>
         </bpmn2:extensionElements>
-        <bpmn2:outgoing>_095D55C5-98F9-4002-A953-780E5ADCA5F3</bpmn2:outgoing>
         <bpmn2:ioSpecification id="_QsykUfTREeitDbaXDbE4Lg"/>
       </bpmn2:callActivity>
       <bpmn2:callActivity id="_438D1DB6-4161-43C5-86F5-FC6B0F97BA7B" drools:independent="false" drools:waitForCompletion="true" name="Subprocess" calledElement="">
@@ -44,7 +42,6 @@
             <drools:metaValue><![CDATA[Subprocess]]></drools:metaValue>
           </drools:metaData>
         </bpmn2:extensionElements>
-        <bpmn2:incoming>_095D55C5-98F9-4002-A953-780E5ADCA5F3</bpmn2:incoming>
         <bpmn2:ioSpecification id="_QszLYPTREeitDbaXDbE4Lg"/>
       </bpmn2:callActivity>
       <bpmn2:completionCondition xsi:type="bpmn2:tFormalExpression" id="_QszLYfTREeitDbaXDbE4Lg" language="http://www.mvel.org/2.0"><![CDATA[autocomplete]]></bpmn2:completionCondition>
@@ -57,14 +54,12 @@
       </bpmn2:extensionElements>
       <bpmn2:incoming>_B6C01FE9-1D09-4FB1-9819-612C38CA1D7F</bpmn2:incoming>
       <bpmn2:outgoing>_AEEF33A1-7089-4992-8455-7C91C4C404CC</bpmn2:outgoing>
-      <bpmn2:sequenceFlow id="_D9157855-0CA9-4E92-9409-643BF8AA7A59" sourceRef="_E95AD08A-4595-4FA4-8948-3318D8BE7941" targetRef="_C468418F-A1EE-470A-BC30-D85888DF3DF7"/>
       <bpmn2:userTask id="_E95AD08A-4595-4FA4-8948-3318D8BE7941" name="Task">
         <bpmn2:extensionElements>
           <drools:metaData name="elementname">
             <drools:metaValue><![CDATA[Task]]></drools:metaValue>
           </drools:metaData>
         </bpmn2:extensionElements>
-        <bpmn2:outgoing>_D9157855-0CA9-4E92-9409-643BF8AA7A59</bpmn2:outgoing>
         <bpmn2:ioSpecification id="_QszLYvTREeitDbaXDbE4Lg">
           <bpmn2:dataInput id="_E95AD08A-4595-4FA4-8948-3318D8BE7941_TaskNameInputX" drools:dtype="Object" itemSubjectRef="__E95AD08A-4595-4FA4-8948-3318D8BE7941_TaskNameInputXItem" name="TaskName"/>
           <bpmn2:dataInput id="_E95AD08A-4595-4FA4-8948-3318D8BE7941_SkippableInputX" drools:dtype="Object" itemSubjectRef="__E95AD08A-4595-4FA4-8948-3318D8BE7941_SkippableInputXItem" name="Skippable"/>
@@ -97,7 +92,6 @@
             <drools:metaValue><![CDATA[true]]></drools:metaValue>
           </drools:metaData>
         </bpmn2:extensionElements>
-        <bpmn2:incoming>_D9157855-0CA9-4E92-9409-643BF8AA7A59</bpmn2:incoming>
         <bpmn2:ioSpecification id="_QszLbPTREeitDbaXDbE4Lg"/>
       </bpmn2:callActivity>
       <bpmn2:completionCondition xsi:type="bpmn2:tFormalExpression" id="_QszLbfTREeitDbaXDbE4Lg" language="http://www.mvel.org/2.0"><![CDATA[autocomplete]]></bpmn2:completionCondition>
@@ -106,48 +100,40 @@
   <bpmndi:BPMNDiagram id="_QszLbvTREeitDbaXDbE4Lg">
     <bpmndi:BPMNPlane id="_QszycPTREeitDbaXDbE4Lg" bpmnElement="NewCaseManagementdiagram">
       <bpmndi:BPMNShape id="shape__F0A19BD0-3F42-493A-9A2D-2F4C24ED75D9" bpmnElement="_F0A19BD0-3F42-493A-9A2D-2F4C24ED75D9">
-        <dc:Bounds height="50.0" width="175.14098" x="10.0" y="10.0"/>
+        <dc:Bounds height="225.0" width="225.0" x="150.0" y="50.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="shape__C468418F-A1EE-470A-BC30-D85888DF3DF7" bpmnElement="_C468418F-A1EE-470A-BC30-D85888DF3DF7">
-        <dc:Bounds height="103.0" width="153.0" x="20.0" y="20.0"/>
+        <dc:Bounds height="75.0" width="175.0" x="325.0" y="225.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="shape__E95AD08A-4595-4FA4-8948-3318D8BE7941" bpmnElement="_E95AD08A-4595-4FA4-8948-3318D8BE7941">
-        <dc:Bounds height="103.0" width="153.0" x="20.0" y="20.0"/>
+        <dc:Bounds height="75.0" width="175.0" x="325.0" y="125.0"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="edge_shape__E95AD08A-4595-4FA4-8948-3318D8BE7941_to_shape__C468418F-A1EE-470A-BC30-D85888DF3DF7" bpmnElement="_D9157855-0CA9-4E92-9409-643BF8AA7A59">
-        <di:waypoint xsi:type="dc:Point" x="96.5" y="71.5"/>
-        <di:waypoint xsi:type="dc:Point" x="96.5" y="71.5"/>
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="shape__BCD8C7E1-9833-407D-9833-E12763A9A63D" bpmnElement="_BCD8C7E1-9833-407D-9833-E12763A9A63D">
-        <dc:Bounds height="50.0" width="175.14098" x="10.0" y="10.0"/>
+        <dc:Bounds height="225.0" width="225.0" x="425.0" y="50.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="shape__438D1DB6-4161-43C5-86F5-FC6B0F97BA7B" bpmnElement="_438D1DB6-4161-43C5-86F5-FC6B0F97BA7B">
-        <dc:Bounds height="103.0" width="153.0" x="20.0" y="20.0"/>
+        <dc:Bounds height="75.0" width="175.0" x="875.0" y="225.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="shape__4DF08597-2D2D-4CEE-B0EF-1AF0ED4ADAC2" bpmnElement="_4DF08597-2D2D-4CEE-B0EF-1AF0ED4ADAC2">
-        <dc:Bounds height="103.0" width="153.0" x="20.0" y="20.0"/>
+        <dc:Bounds height="75.0" width="175.0" x="875.0" y="125.0"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="edge_shape__4DF08597-2D2D-4CEE-B0EF-1AF0ED4ADAC2_to_shape__438D1DB6-4161-43C5-86F5-FC6B0F97BA7B" bpmnElement="_095D55C5-98F9-4002-A953-780E5ADCA5F3">
-        <di:waypoint xsi:type="dc:Point" x="96.5" y="71.5"/>
-        <di:waypoint xsi:type="dc:Point" x="96.5" y="71.5"/>
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="shape__24B8C6FB-50C6-473F-9F10-CB74D2D6FBA3" bpmnElement="_24B8C6FB-50C6-473F-9F10-CB74D2D6FBA3">
-        <dc:Bounds height="55.0" width="55.0" x="20.0" y="20.0"/>
+        <dc:Bounds height="50.0" width="50.0" x="700.0" y="50.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="shape__872342CD-AC50-469A-939C-D91284964C55" bpmnElement="_872342CD-AC50-469A-939C-D91284964C55">
-        <dc:Bounds height="55.0" width="55.0" x="20.0" y="20.0"/>
+        <dc:Bounds height="50.0" width="50.0" x="50.0" y="50.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="edge_shape__872342CD-AC50-469A-939C-D91284964C55_to_shape__F0A19BD0-3F42-493A-9A2D-2F4C24ED75D9" bpmnElement="_B6C01FE9-1D09-4FB1-9819-612C38CA1D7F">
-        <di:waypoint xsi:type="dc:Point" x="47.5" y="47.5"/>
-        <di:waypoint xsi:type="dc:Point" x="97.57049" y="35.0"/>
+        <di:waypoint xsi:type="dc:Point" x="537.5" y="162.5"/>
+        <di:waypoint xsi:type="dc:Point" x="725.0" y="75.0"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="edge_shape__F0A19BD0-3F42-493A-9A2D-2F4C24ED75D9_to_shape__BCD8C7E1-9833-407D-9833-E12763A9A63D" bpmnElement="_AEEF33A1-7089-4992-8455-7C91C4C404CC">
-        <di:waypoint xsi:type="dc:Point" x="97.57049" y="35.0"/>
-        <di:waypoint xsi:type="dc:Point" x="97.57049" y="35.0"/>
+        <di:waypoint xsi:type="dc:Point" x="75.0" y="75.0"/>
+        <di:waypoint xsi:type="dc:Point" x="262.5" y="162.5"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="edge_shape__BCD8C7E1-9833-407D-9833-E12763A9A63D_to_shape__24B8C6FB-50C6-473F-9F10-CB74D2D6FBA3" bpmnElement="_C1798A3B-426E-4F25-8011-A83987BB80D5">
-        <di:waypoint xsi:type="dc:Point" x="97.57049" y="35.0"/>
-        <di:waypoint xsi:type="dc:Point" x="47.5" y="47.5"/>
+        <di:waypoint xsi:type="dc:Point" x="262.5" y="162.5"/>
+        <di:waypoint xsi:type="dc:Point" x="537.5" y="162.5"/>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

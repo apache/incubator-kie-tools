@@ -54,11 +54,8 @@ public class CaseManagementSvgStageShapeDef extends BaseDimensionedShapeDef
 
     @Override
     public SVGShapeView<?> newViewInstance(final CaseManagementSVGViewFactory factory, final AdHocSubprocess bean) {
-        return newViewInstance(Optional.ofNullable(bean.getDimensionsSet().getWidth())
-                                       .filter(width -> width.getValue() != null && width.getValue().compareTo(0.0) > 0),
-                               Optional.ofNullable(bean.getDimensionsSet().getHeight())
-                                       .filter(height -> height.getValue() != null && height.getValue().compareTo(0.0) > 0),
-                               factory.stage());
+        // stage should not be resizable in case modeler
+        return newViewInstance(Optional.empty(), Optional.empty(), factory.stage());
     }
 
     @Override

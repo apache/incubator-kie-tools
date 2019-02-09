@@ -393,12 +393,6 @@ public class CaseManagementDirectDiagramMarshallerTest {
                    "<bpmn2:sequenceFlow id=\"(" + UUID_REGEX + ")\" sourceRef=\"_F0A19BD0-3F42-493A-9A2D-2F4C24ED75D9\" targetRef=\"_BCD8C7E1-9833-407D-9833-E12763A9A63D\"/>");
         hasElement(result,
                    "<bpmn2:sequenceFlow id=\"(" + UUID_REGEX + ")\" sourceRef=\"_BCD8C7E1-9833-407D-9833-E12763A9A63D\" targetRef=\"(" + UUID_REGEX + ")\"/>");
-
-        // sequence flow created inside stages
-        hasElement(result,
-                   "<bpmn2:sequenceFlow id=\"(" + UUID_REGEX + ")\" sourceRef=\"_4DF08597-2D2D-4CEE-B0EF-1AF0ED4ADAC2\" targetRef=\"_438D1DB6-4161-43C5-86F5-FC6B0F97BA7B\"/>");
-        hasElement(result,
-                   "<bpmn2:sequenceFlow id=\"(" + UUID_REGEX + ")\" sourceRef=\"_E95AD08A-4595-4FA4-8948-3318D8BE7941\" targetRef=\"_C468418F-A1EE-470A-BC30-D85888DF3DF7\"/>");
     }
 
     private DiagramImpl createDiagram() {

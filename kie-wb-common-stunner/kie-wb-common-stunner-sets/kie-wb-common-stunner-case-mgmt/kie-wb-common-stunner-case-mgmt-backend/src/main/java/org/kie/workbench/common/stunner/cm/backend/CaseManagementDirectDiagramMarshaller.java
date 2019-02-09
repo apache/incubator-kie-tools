@@ -17,9 +17,13 @@ package org.kie.workbench.common.stunner.cm.backend;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -50,7 +54,6 @@ import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandManager;
 import org.kie.workbench.common.stunner.core.graph.command.impl.GraphCommandFactory;
-import org.kie.workbench.common.stunner.core.graph.content.Bound;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
@@ -64,6 +67,13 @@ import org.kie.workbench.common.stunner.core.util.UUID;
 @Dependent
 @CaseManagementEditor
 public class CaseManagementDirectDiagramMarshaller extends BaseDirectDiagramMarshaller {
+
+    private static final double GAP = 50.0;
+    private static final double STAGE_GAP = 25.0;
+    private static final double ORIGIN_X = 50.0;
+    private static final double ORIGIN_Y = 50.0;
+    private static final double EVENT_WIDTH = 55.0;
+    private static final double EVENT_HEIGHT = 55.0;
 
     @Inject
     public CaseManagementDirectDiagramMarshaller(final XMLEncoderDiagramMetadataMarshaller diagramMetadataMarshaller,
@@ -94,36 +104,27 @@ public class CaseManagementDirectDiagramMarshaller extends BaseDirectDiagramMars
     private void preMarshallProcess(final Diagram<Graph, Metadata> diagram) {
         Iterable<Node<View<?>, Edge>> nodes = diagram.getGraph().nodes();
 
-        // adjust the position of the elements
-        StreamSupport.stream(nodes.spliterator(), false)
-                .filter(node -> !CaseManagementDiagram.class.isInstance(node.getContent().getDefinition()))
-                .forEach(node -> {
-                    View content = (View) ((Node) node).getContent();
-                    Bounds bounds = content.getBounds();
-                    Bound ul = bounds.getUpperLeft();
-                    Bound lr = bounds.getLowerRight();
-                    content.setBounds(Bounds.create(ul.getX() + 10d, ul.getY() + 10d, lr.getX() + 10d, lr.getY() + 10d));
-                });
-
         StreamSupport.stream(nodes.spliterator(), false)
                 .filter(node -> CaseManagementDiagram.class.isInstance(node.getContent().getDefinition()))
                 .findAny().ifPresent(root -> {
-            final Node rootNode = (Node) root;
+            final Node<View, Edge<View, Node<View, Edge<View, Node<View, Edge>>>>> rootNode = (Node) root;
 
-            // create sequence flow between elements in stages
-            rootNode.getOutEdges().stream().map(e -> ((Edge) e).getTargetNode())
-                    .forEach(n -> buildChildEdge((Node) n));
+            // adjust the position of the elements
+            final double stageWidth = adjustNodeBounds(rootNode);
 
             // create start event and end event
             final Node startNoneEvent = typedFactoryManager.newNode(UUID.uuid(), StartNoneEvent.class);
-            ((View) startNoneEvent.getContent()).setBounds(Bounds.create(20, 20, 75, 75));
+            ((View) startNoneEvent.getContent()).setBounds(
+                    Bounds.create(ORIGIN_X, ORIGIN_Y, ORIGIN_X + EVENT_WIDTH, ORIGIN_Y + EVENT_HEIGHT));
             diagram.getGraph().addNode(startNoneEvent);
             createChild(UUID.uuid(), rootNode, startNoneEvent, 0);
 
+            final double endNodeEventX = (ORIGIN_X + EVENT_WIDTH) + GAP + stageWidth;
             final Node endNoneEvent = typedFactoryManager.newNode(UUID.uuid(), EndNoneEvent.class);
-            ((View) endNoneEvent.getContent()).setBounds(Bounds.create(20, 20, 75, 75));
+            ((View) endNoneEvent.getContent()).setBounds(
+                    Bounds.create(endNodeEventX, ORIGIN_Y, endNodeEventX + EVENT_WIDTH, ORIGIN_Y + EVENT_HEIGHT));
             diagram.getGraph().addNode(endNoneEvent);
-            createChild(UUID.uuid(), rootNode, endNoneEvent, -1);
+            createChild(UUID.uuid(), rootNode, endNoneEvent, rootNode.getOutEdges().size());
 
             // create sequence flow between stages
             buildChildEdge(rootNode);
@@ -160,13 +161,68 @@ public class CaseManagementDirectDiagramMarshaller extends BaseDirectDiagramMars
         edge.setSourceNode(parent);
         edge.setTargetNode(child);
 
-        if (parentIndex >= 0) {
-            parent.getOutEdges().add(parentIndex, edge);
-        } else {
-            parent.getOutEdges().add(edge);
-        }
+        parent.getOutEdges().add(parentIndex, edge);
 
         child.getInEdges().add(edge);
+    }
+
+    private double adjustNodeBounds(Node<View, Edge<View, Node<View, Edge<View, Node<View, Edge>>>>> rootNode) {
+        final List<Node<View, Edge<View, Node<View, Edge>>>> stages = rootNode.getOutEdges().stream().map(Edge::getTargetNode)
+                .filter(n -> AdHocSubprocess.class.isInstance(n.getContent().getDefinition())).collect(Collectors.toList());
+
+        if (stages.isEmpty()) {
+            return 0.0;
+        }
+
+        // calculate stage width
+        final double stageWidth = stages.stream().mapToDouble(stage -> stage.getOutEdges().stream().mapToDouble(
+                edge -> edge.getTargetNode().getContent().getBounds().getWidth() + STAGE_GAP * 2)
+                .max().orElse(stage.getContent().getBounds().getWidth())).max().getAsDouble();
+
+        // calculate stage height
+        final double stageHeight = stages.stream().mapToDouble(
+                stage -> {
+                    final double cHeight = stage.getOutEdges().stream().mapToDouble(
+                            edge -> edge.getTargetNode().getContent().getBounds().getHeight() + STAGE_GAP).sum() + STAGE_GAP;
+                    final double sHeight = stage.getContent().getBounds().getHeight();
+                    return cHeight > sHeight ? cHeight : sHeight;
+                }).max().getAsDouble();
+
+        // calculate stage x coordinates
+        final List<Double> stageXs = DoubleStream.iterate(ORIGIN_X + EVENT_WIDTH + GAP, x -> x + stageWidth + GAP)
+                .limit(stages.size()).boxed().collect(Collectors.toList());
+
+        IntStream.range(0, stages.size()).forEach(index -> {
+            final Node<View, Edge<View, Node<View, Edge>>> node = stages.get(index);
+            final double x = stageXs.get(index);
+
+            // set stage bounds
+            node.getContent().setBounds(Bounds.create(x, ORIGIN_Y, x + stageWidth, ORIGIN_Y + stageHeight));
+
+            // calculate stage child y coordinates
+            final List<Double> childYs = new ArrayList<>(node.getOutEdges().size());
+            double heightSum = STAGE_GAP;
+            for (Edge<View, Node<View, Edge>> edge : node.getOutEdges()) {
+                childYs.add(heightSum);
+                heightSum = heightSum + edge.getTargetNode().getContent().getBounds().getHeight() + STAGE_GAP;
+            }
+
+            IntStream.range(0, node.getOutEdges().size()).forEach(i -> {
+                final Node<View, Edge> childNode = node.getOutEdges().get(i).getTargetNode();
+
+                final double cx = (stageWidth - childNode.getContent().getBounds().getWidth()) / 2.0;
+                final double cy = childYs.get(i);
+
+                // set stage child bounds
+                childNode.getContent().setBounds(
+                        Bounds.create(cx,
+                                      cy,
+                                      cx + childNode.getContent().getBounds().getWidth(),
+                                      cy + childNode.getContent().getBounds().getHeight()));
+            });
+        });
+
+        return stages.size() * (stageWidth + GAP);
     }
 
     @Override
@@ -203,22 +259,15 @@ public class CaseManagementDirectDiagramMarshaller extends BaseDirectDiagramMars
                 graph.removeNode(endNode.getUUID());
             }
 
-            // remove sequence flow between elements in stages
-            Stream<Node<View<?>, Edge>> stageStream = root.getOutEdges().stream().map(Edge::getTargetNode);
+            // sort the child nodes in stages
+            Stream<Node<View<?>, Edge<View, Node<View, Edge>>>> stageStream = root.getOutEdges().stream().map(Edge::getTargetNode);
             stageStream.filter(n -> AdHocSubprocess.class.isInstance(n.getContent().getDefinition()))
-                    .forEach(n -> deleteChildEdge((Node) n));
+                    .forEach(n -> Collections.sort(n.getOutEdges(), (e1, e2) -> {
+                        final double y1 = e1.getTargetNode().getContent().getBounds().getY();
+                        final double y2 = e2.getTargetNode().getContent().getBounds().getY();
+                        return Double.compare(y1, y2);
+                    }));
         });
-
-        // reset position of elements
-        StreamSupport.stream(nodes.spliterator(), false)
-                .filter(node -> !CaseManagementDiagram.class.isInstance(node.getContent().getDefinition()))
-                .forEach(node -> {
-                    View content = (View) node.getContent();
-                    Bounds bounds = content.getBounds();
-                    Bound ul = bounds.getUpperLeft();
-                    Bound lr = bounds.getLowerRight();
-                    content.setBounds(Bounds.create(ul.getX() - 10d, ul.getY() - 10d, lr.getX() - 10d, lr.getY() - 10d));
-                });
     }
 
     @SuppressWarnings("unchecked")

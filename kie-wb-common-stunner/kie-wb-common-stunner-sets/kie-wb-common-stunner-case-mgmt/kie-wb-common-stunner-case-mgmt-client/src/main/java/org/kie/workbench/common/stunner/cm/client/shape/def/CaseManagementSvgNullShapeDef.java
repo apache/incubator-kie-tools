@@ -20,8 +20,6 @@ import java.util.Optional;
 
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.BaseDimensionedShapeDef;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNViewDefinition;
-import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.Height;
-import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.Width;
 import org.kie.workbench.common.stunner.cm.client.resources.CaseManagementSVGGlyphFactory;
 import org.kie.workbench.common.stunner.cm.client.resources.CaseManagementSVGViewFactory;
 import org.kie.workbench.common.stunner.core.client.shape.view.handler.FontHandler;
@@ -45,9 +43,7 @@ public class CaseManagementSvgNullShapeDef extends BaseDimensionedShapeDef
     @Override
     public SVGShapeView<?> newViewInstance(final CaseManagementSVGViewFactory factory,
                                            final BPMNViewDefinition bean) {
-        return newViewInstance(Optional.of(new Width(0d)),
-                               Optional.of(new Height(0d)),
-                               factory.task());
+        return newViewInstance(Optional.empty(), Optional.empty(), factory.task());
     }
 
     @Override
