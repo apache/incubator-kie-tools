@@ -27,7 +27,6 @@ import org.drools.core.rule.KieModuleMetaInfo;
 import org.drools.core.rule.TypeMetaInfo;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
@@ -79,7 +78,6 @@ public class KieMetadataTest {
     }
 
     @Test //AF-1459 it tooks 30% of the time of the time spent by all module's test (108), alone it took 30 sec
-    @Ignore("See https://issues.jboss.org/browse/AF-1819")
     public void compileAndLoadKieJarMetadataAllResourcesPackagedJar() throws Exception {
         /**
          * If the test fail check if the Drools core classes used, KieModuleMetaInfo and TypeMetaInfo implements Serializable
@@ -110,7 +108,10 @@ public class KieMetadataTest {
         Map<String, Set<String>> rulesBP = kieModuleMetaInfo.getRulesByPackage();
         assertThat(rulesBP).hasSize(8);
         Map<String, TypeMetaInfo> typesMI = kieModuleMetaInfo.getTypeMetaInfos();
-        assertThat(typesMI).hasSize(35);
+        // This is a "magic number" test and may or may not be valid since changes
+        // to the mechanism for generating classes, especially in PMML processing,
+        // may cause this value to change.
+        assertThat(typesMI).hasSize(22);
 
 
         Map<String, byte[]> projectClasloaderStore = res.getProjectClassLoaderStore();
