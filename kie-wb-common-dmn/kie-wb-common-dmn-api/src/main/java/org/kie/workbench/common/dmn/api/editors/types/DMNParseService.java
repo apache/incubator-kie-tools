@@ -24,4 +24,6 @@ import org.jboss.errai.bus.server.annotations.Remote;
 public interface DMNParseService {
 
     List<String> parseFEELList(final String source);
+
+    RangeValue parseRangeValue(final String source);
 }

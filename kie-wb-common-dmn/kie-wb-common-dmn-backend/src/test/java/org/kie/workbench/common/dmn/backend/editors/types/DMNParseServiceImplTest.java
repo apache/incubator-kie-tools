@@ -20,11 +20,14 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.workbench.common.dmn.api.editors.types.RangeValue;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class DMNParseServiceImplTest {
 
@@ -78,5 +81,59 @@ public class DMNParseServiceImplTest {
         final List<String> expectedList = emptyList();
 
         assertEquals(expectedList, actualList);
+    }
+
+    @Test
+    public void testParseRange() {
+
+        final RangeValue rangeValue = service.parseRangeValue("[1..2]");
+        assertTrue(rangeValue.getIncludeStartValue());
+        assertTrue(rangeValue.getIncludeEndValue());
+        assertEquals("1", rangeValue.getStartValue());
+        assertEquals("2", rangeValue.getEndValue());
+    }
+
+    @Test
+    public void testParseString() {
+
+        final RangeValue rangeValue = service.parseRangeValue("[abc..def]");
+        assertTrue(rangeValue.getIncludeStartValue());
+        assertTrue(rangeValue.getIncludeEndValue());
+        assertEquals("abc", rangeValue.getStartValue());
+        assertEquals("def", rangeValue.getEndValue());
+    }
+
+    @Test
+    public void testParseStringWithDots() {
+
+        final RangeValue rangeValue = service.parseRangeValue("[\"abc..\"..\"d..ef\"]");
+        assertTrue(rangeValue.getIncludeStartValue());
+        assertTrue(rangeValue.getIncludeEndValue());
+        assertEquals("\"abc..\"", rangeValue.getStartValue());
+        assertEquals("\"d..ef\"", rangeValue.getEndValue());
+    }
+
+    @Test
+    public void testParseWithInteger() {
+
+        final RangeValue rangeValue = service.parseRangeValue("[0..5]");
+        assertTrue(rangeValue.getIncludeStartValue());
+        assertTrue(rangeValue.getIncludeEndValue());
+        assertEquals("0", rangeValue.getStartValue());
+        assertEquals("5", rangeValue.getEndValue());
+    }
+
+    @Test
+    public void testParseExcludeStart() {
+
+        final RangeValue rangeValue = service.parseRangeValue("(0..5]");
+        assertFalse(rangeValue.getIncludeStartValue());
+    }
+
+    @Test
+    public void testParseExcludeEnd() {
+
+        final RangeValue rangeValue = service.parseRangeValue("[0..5)");
+        assertFalse(rangeValue.getIncludeEndValue());
     }
 }
