@@ -181,6 +181,31 @@ public class TreeExplorerViewTest {
         assertEquals(NAME, treeItem.getLabel());
     }
 
+    @Test
+    public void addItemWithParentOutOfBoundIndex() {
+        when(tree.getItemByUuid(PARENT_UUID)).thenReturn(parentItem);
+
+        final List<TreeItem> items = new ArrayList<>(1);
+        items.add(item);
+        when(parentItem.getChildren()).thenReturn(items);
+
+        testedTreeExplorerView.addItem(ITEM_UUID,
+                                       PARENT_UUID,
+                                       NAME,
+                                       widgetIcon,
+                                       true,
+                                       true,
+                                       OptionalInt.of(5));
+
+        ArgumentCaptor<TreeItem> itemCaptor = ArgumentCaptor.forClass(TreeItem.class);
+        verify(parentItem, times(1)).addItem(itemCaptor.capture());
+
+        final TreeItem treeItem = itemCaptor.getValue();
+        assertEquals(TreeItem.Type.CONTAINER, treeItem.getType());
+        assertEquals(ITEM_UUID, treeItem.getUuid());
+        assertEquals(NAME, treeItem.getLabel());
+    }
+
     private TreeItem mockOldItem() {
         TreeItem oldItem = mock(TreeItem.class);
         when(tree.getItemByUuid(ITEM_UUID)).thenReturn(oldItem);

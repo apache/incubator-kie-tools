@@ -114,7 +114,7 @@ public class TreeExplorerView extends Composite implements TreeExplorer.View {
                                         icon,
                                         itemType);
         final TreeItem parent = tree.getItemByUuid(parentsUuid);
-        if (index.isPresent()) {
+        if (index.isPresent() && index.getAsInt() <= parent.getChildCount()) {
             parent.insertItem(item, index.getAsInt());
         } else {
             parent.addItem(item);
