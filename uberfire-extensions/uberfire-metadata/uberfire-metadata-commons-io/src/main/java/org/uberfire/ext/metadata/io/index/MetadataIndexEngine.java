@@ -16,6 +16,7 @@
 
 package org.uberfire.ext.metadata.io.index;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -72,10 +73,14 @@ public class MetadataIndexEngine implements MetaIndexEngine {
     }
 
     @Override
-    public boolean freshIndex(KCluster cluster) {
-        boolean isFreshIndex = this.provider.isFreshIndex(cluster) && !batchLocks.containsKey(cluster);
+    public synchronized boolean freshIndex(KCluster cluster) {
+        boolean containsKey = batchLocks.containsKey(cluster);
+        boolean isFreshIndex = this.provider.isFreshIndex(cluster) && !containsKey;
         if (logger.isDebugEnabled()) {
-            logger.debug("Is fresh index? " + isFreshIndex);
+            logger.debug(MessageFormat.format("Cluster: {0} | Batch Locks contains key? {1} | Is Fresh Index? {2}",
+                                              cluster.getClusterId(),
+                                              containsKey,
+                                              isFreshIndex));
         }
         return isFreshIndex;
     }

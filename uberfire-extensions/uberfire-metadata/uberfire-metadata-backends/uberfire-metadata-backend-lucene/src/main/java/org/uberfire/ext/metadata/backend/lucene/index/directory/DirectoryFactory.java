@@ -46,7 +46,9 @@ public class DirectoryFactory implements LuceneIndexFactory {
 
     public DirectoryFactory(final DirectoryType type,
                             final Analyzer analyzer) {
-        this(type, analyzer, defaultHostingDir());
+        this(type,
+             analyzer,
+             defaultHostingDir());
     }
 
     public DirectoryFactory(final DirectoryType type,
@@ -54,16 +56,29 @@ public class DirectoryFactory implements LuceneIndexFactory {
                             final File hostingDir) {
         this.analyzer = analyzer;
         this.type = type;
-        listFiles(hostingDir).filter(file -> file.isDirectory())
-                             .flatMap(file -> listFiles(file))
-                             .map(file -> new KClusterImpl(clusterIdOf(file)))
-                             .forEach(cluster -> {
-                                 clusters.put(cluster, type.newIndex(cluster, newConfig(analyzer)));
-                             });
+        this.loadIndexes(type,
+                         analyzer,
+                         hostingDir);
     }
 
-    private static String clusterIdOf(File file) {
-        return file.getParentFile().getName() + "/" + file.getName();
+    protected void loadIndexes(DirectoryType type,
+                               Analyzer analyzer,
+                               File hostingDir) {
+        listFiles(hostingDir)
+                .filter(File::isDirectory)
+                .flatMap(file -> listFiles(file))
+                .filter(File::isDirectory)
+                .flatMap(file -> listFiles(file))
+                .map(file -> new KClusterImpl(clusterIdOf(file)))
+                .forEach(cluster -> clusters.put(cluster,
+                                                 type.newIndex(cluster,
+                                                               newConfig(analyzer))));
+    }
+
+    protected static String clusterIdOf(File file) {
+        return file.getParentFile().getParentFile().getName() + "/" +
+                file.getParentFile().getName() + "/" +
+                file.getName();
     }
 
     private Stream<File> listFiles(final File hostingDir) {

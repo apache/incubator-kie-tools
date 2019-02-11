@@ -110,7 +110,7 @@ public class IndexerDispatcher {
      *          any job completes execptionally, this future completes exceptionally. Must not be null.
      */
     public CompletableFuture<Void> schedule(ExecutorService executor) {
-        logger.info("Scheduling {} indexing jobs for cluster [{}].", jobs.size(), jobs.stream().findAny().map(job -> job.cluster.toString()).orElse("null"));
+        logger.info("Preparing {} indexers to analyze indexing jobs for cluster [{}].", jobs.size(), jobs.stream().findAny().map(job -> job.cluster.toString()).orElse("null"));
         final Map<String, ? extends Supplier<List<IndexEvent>>> jobsById =
                 jobs.stream()
                     .collect(Collectors.toMap(job -> job.indexer.getIndexerId(), Function.identity()));
