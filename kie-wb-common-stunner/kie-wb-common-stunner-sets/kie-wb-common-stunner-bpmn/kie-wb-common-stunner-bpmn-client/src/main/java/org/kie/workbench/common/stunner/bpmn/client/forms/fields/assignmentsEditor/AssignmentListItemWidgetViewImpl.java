@@ -23,11 +23,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import com.google.gwt.event.dom.client.BlurEvent;
-import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.text.shared.Renderer;
 import com.google.gwt.user.client.ui.Composite;
@@ -63,6 +59,9 @@ import org.uberfire.workbench.events.NotificationEvent;
 @Templated("ActivityDataIOEditorWidget.html#assignment")
 public class AssignmentListItemWidgetViewImpl extends Composite implements AssignmentListItemWidgetView,
                                                                            ComboBoxView.ModelPresenter {
+
+    private static final String EMPTY_VALUE = "";
+
     /**
      * Errai's data binding module will automatically bind the provided instance
      * of the model (see {@link #setModel(AssignmentRow)}) to all fields annotated
@@ -81,16 +80,12 @@ public class AssignmentListItemWidgetViewImpl extends Composite implements Assig
     protected VariableNameTextBox name;
 
     private boolean allowDuplicateNames = true;
-    private String duplicateNameErrorMessage = "";
+    private String duplicateNameErrorMessage = EMPTY_VALUE;
 
     @DataField
-    protected ValueListBox<String> dataType = new ValueListBox<String>(new Renderer<String>() {
+    protected ValueListBox<String> dataType = new ValueListBox<>(new Renderer<String>() {
         public String render(final String object) {
-            String s = "";
-            if (object != null) {
-                s = object.toString();
-            }
-            return s;
+            return object != null ? object : EMPTY_VALUE;
         }
 
         public void render(final String object,
@@ -105,13 +100,9 @@ public class AssignmentListItemWidgetViewImpl extends Composite implements Assig
     protected TextBox customDataType;
 
     @DataField
-    protected ValueListBox<String> processVar = new ValueListBox<String>(new Renderer<String>() {
+    protected ValueListBox<String> processVar = new ValueListBox<>(new Renderer<String>() {
         public String render(final String object) {
-            String s = "";
-            if (object != null) {
-                s = object.toString();
-            }
-            return s;
+            return object != null ? object : EMPTY_VALUE;
         }
 
         public void render(final String object,
@@ -183,7 +174,7 @@ public class AssignmentListItemWidgetViewImpl extends Composite implements Assig
             }
             return value;
         } else {
-            return "";
+            return EMPTY_VALUE;
         }
     }
 
@@ -210,28 +201,24 @@ public class AssignmentListItemWidgetViewImpl extends Composite implements Assig
         name.setRegExp(StringUtils.ALPHA_NUM_REGEXP,
                        StunnerFormsClientFieldsConstants.INSTANCE.Removed_invalid_characters_from_name(),
                        StunnerFormsClientFieldsConstants.INSTANCE.Invalid_character_in_name());
-        customDataType.addKeyDownHandler(new KeyDownHandler() {
-            @Override
-            public void onKeyDown(KeyDownEvent event) {
-                int iChar = event.getNativeKeyCode();
-                if (iChar == ' ') {
-                    event.preventDefault();
-                }
+        customDataType.addKeyDownHandler(event -> {
+            int iChar = event.getNativeKeyCode();
+            if (iChar == ' ') {
+                event.preventDefault();
             }
         });
-        name.addBlurHandler(new BlurHandler() {
-            @Override
-            public void onBlur(BlurEvent event) {
-                if (!allowDuplicateNames) {
-                    String value = name.getText();
-                    if (isDuplicateName(value)) {
-                        notification.fire(new NotificationEvent(duplicateNameErrorMessage,
-                                                                NotificationEvent.NotificationType.ERROR));
-                        name.setValue("");
-                        ValueChangeEvent.fire(name,
-                                              "");
-                    }
-                }
+        name.addChangeHandler(event -> {
+            String value = name.getText();
+            String notifyMessage = null;
+            if (isMultipleInstanceVariable(value)) {
+                notifyMessage = StunnerFormsClientFieldsConstants.INSTANCE.AssignmentNameAlreadyInUseAsMultipleInstanceInputOutputVariable(value);
+            } else if (!allowDuplicateNames && isDuplicateName(value)) {
+                notifyMessage = duplicateNameErrorMessage;
+            }
+            if (notifyMessage != null) {
+                notification.fire(new NotificationEvent(notifyMessage, NotificationEvent.NotificationType.ERROR));
+                name.setValue(EMPTY_VALUE);
+                ValueChangeEvent.fire(name, EMPTY_VALUE);
             }
         });
     }
@@ -294,27 +281,24 @@ public class AssignmentListItemWidgetViewImpl extends Composite implements Assig
 
     @Override
     public void setDataTypes(final ListBoxValues dataTypeListBoxValues) {
-        dataTypeComboBox.setCurrentTextValue("");
+        dataTypeComboBox.setCurrentTextValue(EMPTY_VALUE);
         dataTypeComboBox.setListBoxValues(dataTypeListBoxValues);
         dataTypeComboBox.setShowCustomValues(true);
         String cdt = getCustomDataType();
         if (cdt != null && !cdt.isEmpty()) {
-            dataTypeComboBox.addCustomValueToListBoxValues(cdt,
-                                                           "");
+            dataTypeComboBox.addCustomValueToListBoxValues(cdt, EMPTY_VALUE);
         }
     }
 
     @Override
     public void setProcessVariables(final ListBoxValues processVarListBoxValues) {
-        processVarComboBox.setCurrentTextValue("");
-        ListBoxValues copyProcessVarListBoxValues = new ListBoxValues(processVarListBoxValues,
-                                                                      false);
+        processVarComboBox.setCurrentTextValue(EMPTY_VALUE);
+        ListBoxValues copyProcessVarListBoxValues = new ListBoxValues(processVarListBoxValues, false);
         processVarComboBox.setListBoxValues(copyProcessVarListBoxValues);
         String con = getConstant();
         // processVar set here because the ListBoxValues must already have been set
         if (con != null && !con.isEmpty()) {
-            String displayValue = processVarComboBox.addCustomValueToListBoxValues(con,
-                                                                                   "");
+            String displayValue = processVarComboBox.addCustomValueToListBoxValues(con, EMPTY_VALUE);
             processVar.setValue(displayValue);
         }
     }
@@ -342,6 +326,11 @@ public class AssignmentListItemWidgetViewImpl extends Composite implements Assig
     @Override
     public boolean isDuplicateName(final String name) {
         return parentWidget.isDuplicateName(name);
+    }
+
+    @Override
+    public boolean isMultipleInstanceVariable(final String name) {
+        return parentWidget.isMultipleInstanceVariable(name);
     }
 
     @Override

@@ -16,9 +16,7 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.eclipse.bpmn2.BusinessRuleTask;
@@ -27,14 +25,11 @@ import org.eclipse.bpmn2.DataInput;
 import org.eclipse.bpmn2.DataInputAssociation;
 import org.eclipse.bpmn2.DataOutput;
 import org.eclipse.bpmn2.DataOutputAssociation;
-import org.eclipse.bpmn2.InputOutputSpecification;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomAttribute;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomInput;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
-import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.AssignmentsInfo;
-import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeListValue;
 
 public class BusinessRuleTaskPropertyReader extends TaskPropertyReader {
 
@@ -46,7 +41,7 @@ public class BusinessRuleTaskPropertyReader extends TaskPropertyReader {
     }
 
     public String getImplementation() {
-        return this.task.getImplementation();
+        return task.getImplementation();
     }
 
     public String getRuleFlowGroup() {
@@ -65,35 +60,6 @@ public class BusinessRuleTaskPropertyReader extends TaskPropertyReader {
         return CustomInput.dmnModelName.of(task).get();
     }
 
-    public AssignmentsInfo getAssignmentsInfo() {
-        Optional<InputOutputSpecification> ioSpecification =
-                Optional.ofNullable(task.getIoSpecification());
-
-        List<DataInput> rawDataInputs = ioSpecification.map(InputOutputSpecification::getDataInputs)
-                .orElse(Collections.emptyList());
-
-        List<DataOutput> rawDataOutputs = ioSpecification.map(InputOutputSpecification::getDataOutputs)
-                .orElse(Collections.emptyList());
-
-        AssignmentsInfo info = AssignmentsInfos.of(getDataInputs(rawDataInputs),
-                                                   getDataInputAssociations(rawDataInputs),
-                                                   getDataOutputs(rawDataOutputs),
-                                                   getDataOutputAssociations(rawDataOutputs),
-                                                   ioSpecification.isPresent());
-        if (info.getValue().isEmpty()) {
-            info.setValue("||||");
-        }
-        return info;
-    }
-
-    public ScriptTypeListValue getOnEntryAction() {
-        return Scripts.onEntry(element.getExtensionValues());
-    }
-
-    public ScriptTypeListValue getOnExitAction() {
-        return Scripts.onExit(element.getExtensionValues());
-    }
-
     public boolean isAsync() {
         return CustomElement.async.of(element).get();
     }
@@ -102,37 +68,39 @@ public class BusinessRuleTaskPropertyReader extends TaskPropertyReader {
         return CustomElement.autoStart.of(element).get();
     }
 
-    private List<DataInput> getDataInputs(final List<DataInput> rawDataInput) {
-        List<DataInput> filteredInputs = rawDataInput.stream()
+    @Override
+    protected List<DataInput> getDataInputs() {
+        List<DataInput> filteredInputs = super.getDataInputs().stream()
                 .filter(dataInput -> !isReservedDataInput(dataInput))
                 .collect(Collectors.toList());
 
         return filteredInputs;
     }
 
-    private List<DataInputAssociation> getDataInputAssociations(final List<DataInput> dataInputs) {
-        List<DataInputAssociation> dataInputAssociations = task.getDataInputAssociations();
-
-        List<DataInputAssociation> filteredInputs = dataInputAssociations.stream()
-                .filter(dia -> !isReservedDataInputAssociation(dataInputs, dia))
+    @Override
+    protected List<DataInputAssociation> getDataInputAssociations() {
+        List<DataInput> rawDataInputs = super.getDataInputs();
+        List<DataInputAssociation> filteredInputs = super.getDataInputAssociations().stream()
+                .filter(dia -> !isReservedDataInputAssociation(rawDataInputs, dia))
                 .collect(Collectors.toList());
 
         return filteredInputs;
     }
 
-    private List<DataOutput> getDataOutputs(final List<DataOutput> rawDataOutput) {
-        List<DataOutput> filterOutputs = rawDataOutput.stream()
+    @Override
+    protected List<DataOutput> getDataOutputs() {
+        List<DataOutput> filterOutputs = super.getDataOutputs().stream()
                 .filter(dataOutput -> !isReservedDataOutput(dataOutput))
                 .collect(Collectors.toList());
 
         return filterOutputs;
     }
 
-    private List<DataOutputAssociation> getDataOutputAssociations(final List<DataOutput> dataOutputs) {
-        List<DataOutputAssociation> dataOutputAssociations = task.getDataOutputAssociations();
-
-        List<DataOutputAssociation> filteredOutputs = dataOutputAssociations.stream()
-                .filter(doa -> !isReservedDataOutputAssociation(dataOutputs, doa))
+    @Override
+    protected List<DataOutputAssociation> getDataOutputAssociations() {
+        List<DataOutput> rawDataOutputs = super.getDataOutputs();
+        List<DataOutputAssociation> filteredOutputs = super.getDataOutputAssociations().stream()
+                .filter(doa -> !isReservedDataOutputAssociation(rawDataOutputs, doa))
                 .collect(Collectors.toList());
 
         return filteredOutputs;

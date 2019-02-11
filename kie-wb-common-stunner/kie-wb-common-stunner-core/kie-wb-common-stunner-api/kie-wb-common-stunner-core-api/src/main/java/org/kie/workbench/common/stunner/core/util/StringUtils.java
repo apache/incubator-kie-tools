@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.stunner.core.util;
 
+import java.util.Arrays;
+
 public class StringUtils {
 
     private StringUtils() {
@@ -26,5 +28,9 @@ public class StringUtils {
 
     public static boolean nonEmpty(final String s) {
         return !isEmpty(s);
+    }
+
+    public static boolean hasNonEmpty(final String... values) {
+        return values != null && Arrays.stream(values).anyMatch(StringUtils::nonEmpty);
     }
 }

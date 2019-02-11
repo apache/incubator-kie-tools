@@ -105,6 +105,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGen
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocSubprocessTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.BaseReusableSubprocessTaskExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.ReusableSubprocessTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskTypes;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.UserTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessData;
@@ -174,6 +175,7 @@ public class BPMNDirectDiagramMarshallerTest {
     private static final String BPMN_NOT_BOUNDARY_EVENTS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/notBoundaryIntmEvent.bpmn";
     private static final String BPMN_PROCESSVARIABLES = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/processVariables.bpmn";
     private static final String BPMN_USERTASKASSIGNMENTS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/userTaskAssignments.bpmn";
+    private static final String BPMN_USERTASK_MI = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/userTaskMI.bpmn";
     private static final String BPMN_BUSINESSRULETASKASSIGNMENTS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/businessRuleTaskAssignments.bpmn";
     private static final String BPMN_STARTNONEEVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/startNoneEvent.bpmn";
     private static final String BPMN_STARTTIMEREVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/startTimerEvent.bpmn";
@@ -205,6 +207,7 @@ public class BPMNDirectDiagramMarshallerTest {
     private static final String BPMN_BUSINESSRULETASKRULEFLOWGROUP = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/businessRuleTask.bpmn";
     private static final String BPMN_EVENT_SUBPROCESS_STARTERROREVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/isInterruptingStartErrorEvent.bpmn";
     private static final String BPMN_REUSABLE_SUBPROCESS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/reusableSubprocessCalledElement.bpmn";
+    private static final String BPMN_REUSABLE_SUBPROCESS_MI = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/reusableSubProcessMI.bpmn";
     private static final String BPMN_EMBEDDED_SUBPROCESS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/embeddedSubprocess.bpmn";
     private static final String BPMN_EVENT_SUBPROCESS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/eventSubprocess.bpmn";
     private static final String BPMN_ADHOC_SUBPROCESS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/adHocSubProcess.bpmn";
@@ -453,6 +456,27 @@ public class BPMNDirectDiagramMarshallerTest {
         AssignmentsInfo assignmentsinfo = executionSet.getAssignmentsinfo();
         assertEquals(assignmentsinfo.getValue(),
                      "|reason:com.test.Reason,Comment:Object,Skippable:Object||performance:Object|[din]reason->reason,[dout]performance->performance");
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testUnmarshallUserTaskMI() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_USERTASK_MI);
+        assertDiagram(diagram, 4);
+        assertEquals("userTaskMI", diagram.getMetadata().getTitle());
+        Node<? extends Definition, ?> node = diagram.getGraph().getNode("_CACC5C21-CE79-4445-9411-BE8C7A75E860");
+        assertNotNull(node);
+        UserTask userTask = (UserTask) node.getContent().getDefinition();
+        assertNotNull(userTask);
+        assertEquals(TaskTypes.USER, userTask.getTaskType().getValue());
+        assertEquals("TheUserTask", userTask.getGeneral().getName().getValue());
+        UserTaskExecutionSet executionSet = userTask.getExecutionSet();
+        assertTrue(executionSet.getIsMultipleInstance().getValue());
+        assertEquals("theInputCollection", executionSet.getMultipleInstanceCollectionInput().getValue());
+        assertEquals("theInputVariable", executionSet.getMultipleInstanceDataInput().getValue());
+        assertEquals("theOutputCollection", executionSet.getMultipleInstanceCollectionOutput().getValue());
+        assertEquals("theOutputVariable", executionSet.getMultipleInstanceDataOutput().getValue());
+        assertEquals("theCompletionCondition", executionSet.getMultipleInstanceCompletionCondition().getValue());
     }
 
     @Test
@@ -1649,6 +1673,27 @@ public class BPMNDirectDiagramMarshallerTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
+    public void testUnmarshallReusableSubprocessMI() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_REUSABLE_SUBPROCESS_MI);
+        assertDiagram(diagram, 4);
+        assertEquals("reusableSubProcessMI", diagram.getMetadata().getTitle());
+        Node<? extends Definition, ?> node = diagram.getGraph().getNode("_CACC5C21-CE79-4445-9411-BE8C7A75E860");
+        assertNotNull(node);
+        ReusableSubprocess subprocess = (ReusableSubprocess) node.getContent().getDefinition();
+        assertNotNull(subprocess);
+        assertEquals("TheReusableSubProcess", subprocess.getGeneral().getName().getValue());
+        ReusableSubprocessTaskExecutionSet executionSet = subprocess.getExecutionSet();
+        assertEquals("test.SubProcess", executionSet.getCalledElement().getValue());
+        assertTrue(executionSet.getIsMultipleInstance().getValue());
+        assertEquals("theInputCollection", executionSet.getMultipleInstanceCollectionInput().getValue());
+        assertEquals("theInputVariable", executionSet.getMultipleInstanceDataInput().getValue());
+        assertEquals("theOutputCollection", executionSet.getMultipleInstanceCollectionOutput().getValue());
+        assertEquals("theOutputVariable", executionSet.getMultipleInstanceDataOutput().getValue());
+        assertEquals("theCompletionCondition", executionSet.getMultipleInstanceCompletionCondition().getValue());
+    }
+
+    @Test
     public void testUnmarshallAddHocSubprocess() throws Exception {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_ADHOC_SUBPROCESS);
         AdHocSubprocess adHocSubprocess = null;
@@ -2166,6 +2211,43 @@ public class BPMNDirectDiagramMarshallerTest {
     }
 
     @Test
+    public void testMarshallUserTaskMI() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_USERTASK_MI);
+        String result = tested.marshall(diagram);
+        assertDiagram(result, 1, 3, 2);
+        assertTrue(result.contains("<bpmn2:itemDefinition id=\"_CACC5C21-CE79-4445-9411-BE8C7A75E860_multiInstanceItemType_theInputVariable\" structureRef=\"java.lang.Object\"/>"));
+        assertTrue(result.contains("<bpmn2:itemDefinition id=\"_CACC5C21-CE79-4445-9411-BE8C7A75E860_multiInstanceItemType_theOutputVariable\" structureRef=\"java.lang.Object\"/>"));
+
+        assertTrue(result.contains("<bpmn2:dataInput id=\"_CACC5C21-CE79-4445-9411-BE8C7A75E860_IN_COLLECTIONInputX\" itemSubjectRef=\"_theInputCollectionItem\" name=\"IN_COLLECTION\"/>"));
+        assertTrue(result.contains("<bpmn2:dataInput id=\"_CACC5C21-CE79-4445-9411-BE8C7A75E860_theInputVariableInputX\" itemSubjectRef=\"_CACC5C21-CE79-4445-9411-BE8C7A75E860_multiInstanceItemType_theInputVariable\" name=\"theInputVariable\"/>"));
+        assertTrue(result.contains("<bpmn2:dataOutput id=\"_CACC5C21-CE79-4445-9411-BE8C7A75E860_OUT_COLLECTIONOutputX\" itemSubjectRef=\"_theOutputCollectionItem\" name=\"OUT_COLLECTION\"/>"));
+        assertTrue(result.contains("<bpmn2:dataOutput id=\"_CACC5C21-CE79-4445-9411-BE8C7A75E860_theOutputVariableOutputX\" itemSubjectRef=\"_CACC5C21-CE79-4445-9411-BE8C7A75E860_multiInstanceItemType_theOutputVariable\" name=\"theOutputVariable\"/>"));
+
+        assertTrue(result.contains("<bpmn2:dataInputRefs>_CACC5C21-CE79-4445-9411-BE8C7A75E860_IN_COLLECTIONInputX</bpmn2:dataInputRefs>"));
+        assertTrue(result.contains("<bpmn2:dataInputRefs>_CACC5C21-CE79-4445-9411-BE8C7A75E860_theInputVariableInputX</bpmn2:dataInputRefs>"));
+        assertTrue(result.contains("<bpmn2:dataOutputRefs>_CACC5C21-CE79-4445-9411-BE8C7A75E860_OUT_COLLECTIONOutputX</bpmn2:dataOutputRefs>"));
+        assertTrue(result.contains("<bpmn2:dataOutputRefs>_CACC5C21-CE79-4445-9411-BE8C7A75E860_theOutputVariableOutputX</bpmn2:dataOutputRefs>"));
+
+        assertTrue(result.contains("<bpmn2:sourceRef>theInputCollection</bpmn2:sourceRef>"));
+        assertTrue(result.contains("<bpmn2:targetRef>_CACC5C21-CE79-4445-9411-BE8C7A75E860_IN_COLLECTIONInputX</bpmn2:targetRef>"));
+        assertTrue(result.contains("<bpmn2:sourceRef>theInputVariable</bpmn2:sourceRef>"));
+        assertTrue(result.contains("<bpmn2:targetRef>_CACC5C21-CE79-4445-9411-BE8C7A75E860_theInputVariableInputX</bpmn2:targetRef>"));
+        assertTrue(result.contains("<bpmn2:sourceRef>_CACC5C21-CE79-4445-9411-BE8C7A75E860_OUT_COLLECTIONOutputX</bpmn2:sourceRef>"));
+        assertTrue(result.contains("<bpmn2:targetRef>theOutputCollection</bpmn2:targetRef>"));
+        assertTrue(result.contains("<bpmn2:sourceRef>_CACC5C21-CE79-4445-9411-BE8C7A75E860_theOutputVariableOutputX</bpmn2:sourceRef>"));
+        assertTrue(result.contains("<bpmn2:targetRef>theOutputVariable</bpmn2:targetRef>"));
+
+        assertTrue(result.contains("<bpmn2:multiInstanceLoopCharacteristics"));
+        assertTrue(result.contains("<bpmn2:loopDataInputRef>_CACC5C21-CE79-4445-9411-BE8C7A75E860_IN_COLLECTIONInputX</bpmn2:loopDataInputRef>"));
+        assertTrue(result.contains("<bpmn2:loopDataOutputRef>_CACC5C21-CE79-4445-9411-BE8C7A75E860_OUT_COLLECTIONOutputX</bpmn2:loopDataOutputRef>"));
+        assertTrue(result.contains("<bpmn2:inputDataItem xsi:type=\"bpmn2:tDataInput\" id=\"theInputVariable\" itemSubjectRef=\"_CACC5C21-CE79-4445-9411-BE8C7A75E860_multiInstanceItemType_theInputVariable\" name=\"theInputVariable\"/>"));
+        assertTrue(result.contains("<bpmn2:outputDataItem xsi:type=\"bpmn2:tDataOutput\" id=\"theOutputVariable\" itemSubjectRef=\"_CACC5C21-CE79-4445-9411-BE8C7A75E860_multiInstanceItemType_theOutputVariable\" name=\"theOutputVariable\"/>"));
+        assertTrue(result.contains("<bpmn2:completionCondition xsi:type=\"bpmn2:tFormalExpression\" id=\""));
+        assertTrue(result.contains("<![CDATA[theCompletionCondition]]></bpmn2:completionCondition>"));
+        assertTrue(result.contains("</bpmn2:multiInstanceLoopCharacteristics>"));
+    }
+
+    @Test
     public void testMarshallBusinessRuleTaskAssignments() throws Exception {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_BUSINESSRULETASKASSIGNMENTS);
         String result = tested.marshall(diagram);
@@ -2605,6 +2687,46 @@ public class BPMNDirectDiagramMarshallerTest {
     }
 
     @Test
+    public void testMarshallReusableSubprocessMI() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_REUSABLE_SUBPROCESS_MI);
+        String result = tested.marshall(diagram);
+        assertDiagram(result, 1,3, 2);
+        assertTrue(result.contains("<bpmn2:callActivity id=\"_CACC5C21-CE79-4445-9411-BE8C7A75E860\""));
+        assertTrue(result.contains("name=\"TheReusableSubProcess\" calledElement=\"test.SubProcess\">"));
+
+        assertTrue(result.contains("<bpmn2:itemDefinition id=\"_CACC5C21-CE79-4445-9411-BE8C7A75E860_multiInstanceItemType_theInputVariable\" structureRef=\"java.lang.Object\"/>"));
+        assertTrue(result.contains("<bpmn2:itemDefinition id=\"_CACC5C21-CE79-4445-9411-BE8C7A75E860_multiInstanceItemType_theOutputVariable\" structureRef=\"java.lang.Object\"/>"));
+
+        assertTrue(result.contains("<bpmn2:dataInput id=\"_CACC5C21-CE79-4445-9411-BE8C7A75E860_IN_COLLECTIONInputX\" itemSubjectRef=\"_theInputCollectionItem\" name=\"IN_COLLECTION\"/>"));
+        assertTrue(result.contains("<bpmn2:dataInput id=\"_CACC5C21-CE79-4445-9411-BE8C7A75E860_theInputVariableInputX\" itemSubjectRef=\"_CACC5C21-CE79-4445-9411-BE8C7A75E860_multiInstanceItemType_theInputVariable\" name=\"theInputVariable\"/>"));
+        assertTrue(result.contains("<bpmn2:dataOutput id=\"_CACC5C21-CE79-4445-9411-BE8C7A75E860_OUT_COLLECTIONOutputX\" itemSubjectRef=\"_theOutputCollectionItem\" name=\"OUT_COLLECTION\"/>"));
+        assertTrue(result.contains("<bpmn2:dataOutput id=\"_CACC5C21-CE79-4445-9411-BE8C7A75E860_theOutputVariableOutputX\" itemSubjectRef=\"_CACC5C21-CE79-4445-9411-BE8C7A75E860_multiInstanceItemType_theOutputVariable\" name=\"theOutputVariable\"/>"));
+
+        assertTrue(result.contains("<bpmn2:dataInputRefs>_CACC5C21-CE79-4445-9411-BE8C7A75E860_IN_COLLECTIONInputX</bpmn2:dataInputRefs>"));
+        assertTrue(result.contains("<bpmn2:dataInputRefs>_CACC5C21-CE79-4445-9411-BE8C7A75E860_theInputVariableInputX</bpmn2:dataInputRefs>"));
+        assertTrue(result.contains("<bpmn2:dataOutputRefs>_CACC5C21-CE79-4445-9411-BE8C7A75E860_OUT_COLLECTIONOutputX</bpmn2:dataOutputRefs>"));
+        assertTrue(result.contains("<bpmn2:dataOutputRefs>_CACC5C21-CE79-4445-9411-BE8C7A75E860_theOutputVariableOutputX</bpmn2:dataOutputRefs>"));
+
+        assertTrue(result.contains("<bpmn2:sourceRef>theInputCollection</bpmn2:sourceRef>"));
+        assertTrue(result.contains("<bpmn2:targetRef>_CACC5C21-CE79-4445-9411-BE8C7A75E860_IN_COLLECTIONInputX</bpmn2:targetRef>"));
+        assertTrue(result.contains("<bpmn2:sourceRef>theInputVariable</bpmn2:sourceRef>"));
+        assertTrue(result.contains("<bpmn2:targetRef>_CACC5C21-CE79-4445-9411-BE8C7A75E860_theInputVariableInputX</bpmn2:targetRef>"));
+        assertTrue(result.contains("<bpmn2:sourceRef>_CACC5C21-CE79-4445-9411-BE8C7A75E860_OUT_COLLECTIONOutputX</bpmn2:sourceRef>"));
+        assertTrue(result.contains("<bpmn2:targetRef>theOutputCollection</bpmn2:targetRef>"));
+        assertTrue(result.contains("<bpmn2:sourceRef>_CACC5C21-CE79-4445-9411-BE8C7A75E860_theOutputVariableOutputX</bpmn2:sourceRef>"));
+        assertTrue(result.contains("<bpmn2:targetRef>theOutputVariable</bpmn2:targetRef>"));
+
+        assertTrue(result.contains("<bpmn2:multiInstanceLoopCharacteristics"));
+        assertTrue(result.contains("<bpmn2:loopDataInputRef>_CACC5C21-CE79-4445-9411-BE8C7A75E860_IN_COLLECTIONInputX</bpmn2:loopDataInputRef>"));
+        assertTrue(result.contains("<bpmn2:loopDataOutputRef>_CACC5C21-CE79-4445-9411-BE8C7A75E860_OUT_COLLECTIONOutputX</bpmn2:loopDataOutputRef>"));
+        assertTrue(result.contains("<bpmn2:inputDataItem xsi:type=\"bpmn2:tDataInput\" id=\"theInputVariable\" itemSubjectRef=\"_CACC5C21-CE79-4445-9411-BE8C7A75E860_multiInstanceItemType_theInputVariable\" name=\"theInputVariable\"/>"));
+        assertTrue(result.contains("<bpmn2:outputDataItem xsi:type=\"bpmn2:tDataOutput\" id=\"theOutputVariable\" itemSubjectRef=\"_CACC5C21-CE79-4445-9411-BE8C7A75E860_multiInstanceItemType_theOutputVariable\" name=\"theOutputVariable\"/>"));
+        assertTrue(result.contains("<bpmn2:completionCondition xsi:type=\"bpmn2:tFormalExpression\" id=\""));
+        assertTrue(result.contains("<![CDATA[theCompletionCondition]]></bpmn2:completionCondition>"));
+        assertTrue(result.contains("</bpmn2:multiInstanceLoopCharacteristics>"));
+    }
+
+    @Test
     public void testMarshallEmbeddedSubprocess() throws Exception {
         Diagram<Graph, Metadata> diagram = unmarshall(BPMN_EMBEDDED_SUBPROCESS);
         assertDiagram(diagram,
@@ -2672,12 +2794,12 @@ public class BPMNDirectDiagramMarshallerTest {
         assertTrue(result.contains("<drools:metaData name=\"customAsync\">"));
         assertTrue(result.contains("<drools:metaValue><![CDATA[true]]></drools:metaValue>"));
         assertTrue(result.contains("</drools:metaData>"));
+        assertTrue(result.contains("<bpmn2:dataOutput id=\"_2316CEC1-C1F7-41B1-8C91-3CE73ADE5571_OUT_COLLECTIONOutputX\" itemSubjectRef=\"_var2Item\" name=\"OUT_COLLECTION\"/>"));
         assertTrue(result.contains("<bpmn2:multiInstanceLoopCharacteristics"));
         assertTrue(result.contains("<bpmn2:loopDataInputRef>_2316CEC1-C1F7-41B1-8C91-3CE73ADE5571_IN_COLLECTIONInputX</bpmn2:loopDataInputRef>"));
         assertTrue(result.contains("<bpmn2:loopDataOutputRef>_2316CEC1-C1F7-41B1-8C91-3CE73ADE5571_OUT_COLLECTIONOutputX</bpmn2:loopDataOutputRef>"));
-        assertTrue(result.contains("<bpmn2:dataOutput id=\"_2316CEC1-C1F7-41B1-8C91-3CE73ADE5571_OUT_COLLECTIONOutputX\" itemSubjectRef=\"_2316CEC1-C1F7-41B1-8C91-3CE73ADE5571_multiInstanceItemType_OUT_COLLECTION\" name=\"OUT_COLLECTION\"/>"));
-        assertTrue(result.contains("<bpmn2:inputDataItem xsi:type=\"bpmn2:tDataInput\" id=\"_2316CEC1-C1F7-41B1-8C91-3CE73ADE5571_dataInputInputX\" name=\"dataInput\"/>"));
-        assertTrue(result.contains("<bpmn2:outputDataItem xsi:type=\"bpmn2:tDataOutput\" id=\"_2316CEC1-C1F7-41B1-8C91-3CE73ADE5571_dataOutputOutputX\" itemSubjectRef=\"_2316CEC1-C1F7-41B1-8C91-3CE73ADE5571_multiInstanceItemType_dataOutput\" name=\"dataOutput\"/>"));
+        assertTrue(result.contains("<bpmn2:inputDataItem xsi:type=\"bpmn2:tDataInput\" id=\"dataInput\" itemSubjectRef=\"_2316CEC1-C1F7-41B1-8C91-3CE73ADE5571_multiInstanceItemType_dataInput\" name=\"dataInput\"/>"));
+        assertTrue(result.contains("<bpmn2:outputDataItem xsi:type=\"bpmn2:tDataOutput\" id=\"dataOutput\" itemSubjectRef=\"_2316CEC1-C1F7-41B1-8C91-3CE73ADE5571_multiInstanceItemType_dataOutput\" name=\"dataOutput\"/>"));
         assertTrue(result.contains("<bpmn2:completionCondition xsi:type=\"bpmn2:tFormalExpression\""));
         assertTrue(result.contains("<![CDATA[a=b]]></bpmn2:completionCondition>"));
         assertTrue(result.contains("</bpmn2:multiInstanceLoopCharacteristics>"));

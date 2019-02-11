@@ -100,7 +100,7 @@ public class ActivityPropertyWriter extends PropertyWriter {
         }
     }
 
-    private InputOutputSpecification getIoSpecification() {
+    protected InputOutputSpecification getIoSpecification() {
         InputOutputSpecification ioSpecification = activity.getIoSpecification();
         if (ioSpecification == null) {
             ioSpecification = bpmn2.createInputOutputSpecification();
@@ -109,7 +109,7 @@ public class ActivityPropertyWriter extends PropertyWriter {
         return ioSpecification;
     }
 
-    private InputSet getInputSet(InputOutputSpecification ioSpecification) {
+    protected InputSet getInputSet(InputOutputSpecification ioSpecification) {
         List<InputSet> inputSets = ioSpecification.getInputSets();
         InputSet inputSet;
         if (inputSets.isEmpty()) {
@@ -121,7 +121,7 @@ public class ActivityPropertyWriter extends PropertyWriter {
         return inputSet;
     }
 
-    private OutputSet getOutputSet(InputOutputSpecification ioSpecification) {
+    protected OutputSet getOutputSet(InputOutputSpecification ioSpecification) {
         List<OutputSet> outputSets = ioSpecification.getOutputSets();
         OutputSet outputSet;
         if (outputSets.isEmpty()) {

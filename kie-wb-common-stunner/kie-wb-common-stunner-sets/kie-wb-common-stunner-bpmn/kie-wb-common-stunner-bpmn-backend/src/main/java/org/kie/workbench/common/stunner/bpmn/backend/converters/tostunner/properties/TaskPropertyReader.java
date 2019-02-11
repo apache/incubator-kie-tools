@@ -16,35 +16,16 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties;
 
-import org.eclipse.bpmn2.Documentation;
 import org.eclipse.bpmn2.Task;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
-import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationSet;
 
-public class TaskPropertyReader extends FlowElementPropertyReader {
+public class TaskPropertyReader extends ActivityPropertyReader {
 
     protected final Task task;
-    protected final DefinitionResolver definitionResolver;
 
     public TaskPropertyReader(Task task, BPMNDiagram diagram, DefinitionResolver definitionResolver) {
-        super(task, diagram, definitionResolver.getShape(task.getId()), definitionResolver.getResolutionFactor());
+        super(task, diagram, definitionResolver);
         this.task = task;
-        this.definitionResolver = definitionResolver;
-    }
-
-    @Override
-    public String getDocumentation() {
-        return task.getDocumentation()
-                .stream()
-                .findFirst()
-                .map(Documentation::getText)
-                .orElse("");
-    }
-
-    public SimulationSet getSimulationSet() {
-        return definitionResolver.resolveSimulationParameters(task.getId())
-                .map(SimulationSets::of)
-                .orElse(new SimulationSet());
     }
 }

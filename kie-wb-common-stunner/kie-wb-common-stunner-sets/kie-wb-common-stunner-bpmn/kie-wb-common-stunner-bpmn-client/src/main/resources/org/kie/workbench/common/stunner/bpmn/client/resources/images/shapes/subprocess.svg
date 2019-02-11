@@ -27,14 +27,25 @@
   <rect id="subProcess-background" class="subProcess_background" x="0" y="0" width="150px" height="98px" rx="2" ry="2"/>
   <rect id="subProcess-border" class="subProcess_border" stunner:shape-state="stroke" x="0" y="0" width="150px" height="98px" rx="2" ry="2"/>
 
-  <g class="subProcess_group_reusable" stunner:transform="non-scalable" stunner:layout="BOTTOM"  transform="translate(0,0) scale(1,1)">
-    <rect class="subProcess_reusable_boundingbox" x="63" y="66" width="25px" height="25px"/>
-    <path class="subProcess_reusable_icon"
+  <g id="subProcessReusableNormal" class="subProcess_group_reusable" stunner:transform="non-scalable" stunner:layout="BOTTOM"  transform="translate(0,0) scale(1,1)">
+    <rect id="subProcessReusableNormalBoundingBox" class="subProcess_reusable_boundingbox" x="63" y="66" width="25px" height="25px"/>
+    <path id="subProcessReusableNormalReusableIcon" class="subProcess_reusable_icon"
           transform="translate(71.5,72.5) scale(0.03977273,0.03977273)"
           d="M352,184v48c0,6.7-2.3,12.3-7,17s-10.3,7-17,7H224v104c0,6.7-2.3,12.3-7,17s-10.3,7-17,7h-48c-6.7,0-12.3-2.3-17-7
 	s-7-10.3-7-17V256H24c-6.7,0-12.3-2.3-17-7s-7-10.3-7-17v-48c0-6.7,2.3-12.3,7-17s10.3-7,17-7h104V56c0-6.7,2.3-12.3,7-17
 	s10.3-7,17-7h48c6.7,0,12.3,2.3,17,7s7,10.3,7,17v104h104c6.7,0,12.3,2.3,17,7S352,177.3,352,184z"/>
   </g>
+
+  <g id="subProcessReusableMI" class="subProcess_group_reusable" stunner:transform="non-scalable" stunner:layout="BOTTOM"  transform="translate(0,0) scale(1,1)">
+    <rect id="subProcessReusableMIBoundingBox" class="subProcess_reusable_boundingbox" x="63" y="66" width="25px" height="25px"/>
+    <path id="subProcessReusableMIReusableIcon" class="subProcess_reusable_icon"
+          transform="translate(71.5,72.5) scale(0.03977273,0.03977273)"
+          d="M352,184v48c0,6.7-2.3,12.3-7,17s-10.3,7-17,7H224v104c0,6.7-2.3,12.3-7,17s-10.3,7-17,7h-48c-6.7,0-12.3-2.3-17-7
+	s-7-10.3-7-17V256H24c-6.7,0-12.3-2.3-17-7s-7-10.3-7-17v-48c0-6.7,2.3-12.3,7-17s10.3-7,17-7h104V56c0-6.7,2.3-12.3,7-17
+	s10.3-7,17-7h48c6.7,0,12.3,2.3,17,7s7,10.3,7,17v104h104c6.7,0,12.3,2.3,17,7S352,177.3,352,184z"/>
+    <path id="subProcessReusableMIIMultipleInstanceIcon" class="subProcess_multipleInstance_icon" transform="translate(42,74) scale(0.035,0.035)" d="M92,44v424c0,6.6-5.4,12-12,12H48c-6.6,0-12-5.4-12-12V44c0-6.6,5.4-12,12-12h32C86.6,32,92,37.4,92,44z M252,44v424       c0,6.6-5.4,12-12,12h-32c-6.6,0-12-5.4-12-12V44c0-6.6,5.4-12,12-12h32C246.6,32,252,37.4,252,44z M412,44v424c0,6.6-5.4,12-12,12       h-32c-6.6,0-12-5.4-12-12V44c0-6.6,5.4-12,12-12h32C406.6,32,412,37.4,412,44z"/>
+  </g>
+
   <defs>
 
     <filter id="selectShadow" height="300%" width="300%" x="-75%" y="-75%">

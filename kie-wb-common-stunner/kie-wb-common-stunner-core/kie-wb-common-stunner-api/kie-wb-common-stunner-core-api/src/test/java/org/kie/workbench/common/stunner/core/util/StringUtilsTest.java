@@ -39,4 +39,13 @@ public class StringUtilsTest {
         assertFalse(StringUtils.isEmpty("string"));
         assertTrue(StringUtils.nonEmpty("string"));
     }
+
+    @Test
+    public void testHasNonEmpty() {
+        assertFalse(StringUtils.hasNonEmpty((String[]) null));
+        assertFalse(StringUtils.hasNonEmpty((String) null));
+        assertFalse(StringUtils.hasNonEmpty(null, null, null));
+        assertFalse(StringUtils.hasNonEmpty(null, "", null));
+        assertTrue(StringUtils.hasNonEmpty(null, "", "someValue"));
+    }
 }

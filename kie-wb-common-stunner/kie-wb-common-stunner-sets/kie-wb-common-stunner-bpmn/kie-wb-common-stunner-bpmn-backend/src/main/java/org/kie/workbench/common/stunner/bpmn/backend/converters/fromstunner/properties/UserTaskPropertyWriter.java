@@ -34,7 +34,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnExitActi
 
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpmn2;
 
-public class UserTaskPropertyWriter extends ActivityPropertyWriter {
+public class UserTaskPropertyWriter extends MultipleInstanceActivityPropertyWriter {
 
     private final UserTask task;
     private final CustomInput<String> description;

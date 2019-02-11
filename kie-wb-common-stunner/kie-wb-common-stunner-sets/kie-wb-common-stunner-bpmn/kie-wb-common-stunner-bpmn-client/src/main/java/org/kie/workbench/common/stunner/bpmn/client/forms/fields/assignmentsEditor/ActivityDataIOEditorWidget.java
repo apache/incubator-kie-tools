@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.assignmentsEditor;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -30,12 +31,22 @@ import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Assignmen
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Variable;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Variable.VariableType;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.ListBoxValues;
+import org.kie.workbench.common.stunner.bpmn.client.util.VariableUsage;
+import org.kie.workbench.common.stunner.bpmn.client.util.VariableUtils;
+import org.kie.workbench.common.stunner.core.client.api.SessionManager;
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
+import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.graph.Node;
+
+import static org.kie.workbench.common.stunner.core.client.util.ClientUtils.getSelectedNode;
 
 @Dependent
 public class ActivityDataIOEditorWidget implements ActivityDataIOEditorWidgetView.Presenter {
 
     @Inject
     private ActivityDataIOEditorWidgetView view;
+    @Inject
+    private SessionManager sessionManager;
 
     ListBoxValues dataTypeListBoxValues;
     ListBoxValues processVarListBoxValues;
@@ -220,6 +231,16 @@ public class ActivityDataIOEditorWidget implements ActivityDataIOEditorWidgetVie
             }
         }
         return false;
+    }
+
+    public boolean isMultipleInstanceVariable(final String name) {
+        ClientSession session = sessionManager.getCurrentSession();
+        Diagram diagram = session.getCanvasHandler().getDiagram();
+        Node selectedNode = getSelectedNode(diagram, sessionManager.getCurrentSession());
+        Collection<VariableUsage> variableUsages = VariableUtils.findVariableUsages(selectedNode, name);
+        return variableUsages.stream()
+                .anyMatch(variableUsage -> variableUsage.getUsageType() == VariableUsage.USAGE_TYPE.MULTIPLE_INSTANCE_DATA_INPUT ||
+                        variableUsage.getUsageType() == VariableUsage.USAGE_TYPE.MULTIPLE_INSTANCE_DATA_OUTPUT);
     }
 
     public void setIsVisible(final boolean visible) {

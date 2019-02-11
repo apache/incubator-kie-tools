@@ -18,7 +18,7 @@ package org.kie.workbench.common.stunner.cm.backend.converters.tostunner.activit
 import org.eclipse.bpmn2.CallActivity;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.TypedFactoryManager;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.activities.BaseCallActivityConverter;
-import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.ActivityPropertyReader;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.CallActivityPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.PropertyReaderFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocAutostart;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.CalledElement;
@@ -47,7 +47,7 @@ public class CaseManagementCallActivityConverter extends BaseCallActivityConvert
     }
 
     @Override
-    protected Node<View<ReusableSubprocess>, Edge> createNode(CallActivity activity, ActivityPropertyReader p) {
+    protected Node<View<ReusableSubprocess>, Edge> createNode(CallActivity activity, CallActivityPropertyReader p) {
         Class<? extends ReusableSubprocess> clazz = ((CaseManagementActivityPropertyReader) p).isCase() ?
                 CaseReusableSubprocess.class : ProcessReusableSubprocess.class;
 
@@ -56,7 +56,7 @@ public class CaseManagementCallActivityConverter extends BaseCallActivityConvert
 
     @Override
     protected ReusableSubprocessTaskExecutionSet createReusableSubprocessTaskExecutionSet(CallActivity activity,
-                                                                                          ActivityPropertyReader p) {
+                                                                                          CallActivityPropertyReader p) {
         CaseManagementActivityPropertyReader reader = (CaseManagementActivityPropertyReader) p;
 
         return reader.isCase() ?

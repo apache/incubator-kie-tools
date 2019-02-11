@@ -37,8 +37,8 @@ public class MultipleInstanceSubProcessPropertyWriterTest {
         assertThatCode(() -> {
             p.setInput(null);
             p.setOutput(null);
-            p.createDataInput(null);
-            p.createDataOutput(null);
+            p.createDataInput(null, null);
+            p.createDataOutput(null, null);
             p.setCompletionCondition(null);
         }).doesNotThrowAnyException();
     }

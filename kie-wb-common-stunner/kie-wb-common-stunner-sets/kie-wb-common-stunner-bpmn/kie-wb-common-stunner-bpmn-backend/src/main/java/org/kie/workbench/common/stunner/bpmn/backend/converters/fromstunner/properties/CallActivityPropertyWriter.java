@@ -23,7 +23,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.proper
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnEntryAction;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnExitAction;
 
-public class CallActivityPropertyWriter extends ActivityPropertyWriter {
+public class CallActivityPropertyWriter extends MultipleInstanceActivityPropertyWriter {
 
     private final CallActivity activity;
 

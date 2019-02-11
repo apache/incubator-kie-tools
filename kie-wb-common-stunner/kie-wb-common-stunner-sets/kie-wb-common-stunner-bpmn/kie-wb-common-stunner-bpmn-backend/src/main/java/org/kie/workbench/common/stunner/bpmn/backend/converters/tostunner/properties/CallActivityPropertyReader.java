@@ -16,25 +16,34 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties;
 
-import org.eclipse.bpmn2.SubProcess;
+import org.eclipse.bpmn2.CallActivity;
 import org.eclipse.bpmn2.di.BPMNDiagram;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomAttribute;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
 
-public class SubProcessPropertyReader extends MultipleInstanceActivityPropertyReader {
+public class CallActivityPropertyReader extends MultipleInstanceActivityPropertyReader {
 
-    protected final SubProcess process;
+    protected final CallActivity callActivity;
 
-    public SubProcessPropertyReader(SubProcess element, BPMNDiagram diagram, DefinitionResolver definitionResolver) {
-        super(element, diagram, definitionResolver);
-        this.process = element;
+    public CallActivityPropertyReader(CallActivity callActivity, BPMNDiagram diagram, DefinitionResolver definitionResolver) {
+        super(callActivity, diagram, definitionResolver);
+        this.callActivity = callActivity;
+    }
+
+    public String getCalledElement() {
+        return callActivity.getCalledElement();
+    }
+
+    public boolean isIndependent() {
+        return CustomAttribute.independent.of(element).get();
+    }
+
+    public boolean isWaitForCompletion() {
+        return CustomAttribute.waitForCompletion.of(element).get();
     }
 
     public boolean isAsync() {
         return CustomElement.async.of(element).get();
-    }
-
-    public String getProcessVariables() {
-        return ProcessVariableReader.getProcessVariables(process.getProperties());
     }
 }

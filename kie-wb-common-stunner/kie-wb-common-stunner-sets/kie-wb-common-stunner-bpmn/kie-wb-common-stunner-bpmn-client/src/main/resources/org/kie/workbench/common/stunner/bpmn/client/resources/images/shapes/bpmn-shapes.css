@@ -120,6 +120,11 @@
     fill: #393f44;
 }
 
+.task_multiple_instance_icon {
+    stroke: #000000;
+    fill: #000000;
+}
+
 #userTask .task_group_user {
     opacity: 1;
 }

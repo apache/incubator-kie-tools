@@ -39,7 +39,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.subProcess.exec
 import org.kie.workbench.common.stunner.bpmn.definition.property.subProcess.execution.EventSubprocessExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.BaseAdHocSubprocessTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.IsAsync;
-import org.kie.workbench.common.stunner.bpmn.definition.property.task.MITrigger;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.IsMultipleInstance;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceCollectionInput;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceCollectionOutput;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceCompletionCondition;
@@ -113,7 +113,7 @@ public abstract class BaseSubProcessConverter<A extends BaseAdHocSubprocess<P, S
                                                                new MultipleInstanceCompletionCondition(p.getCompletionCondition()),
                                                                new OnEntryAction(p.getOnEntryAction()),
                                                                new OnExitAction(p.getOnExitAction()),
-                                                               new MITrigger("true"),
+                                                               new IsMultipleInstance(true),
                                                                new IsAsync(p.isAsync())
                 ));
 

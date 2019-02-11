@@ -32,25 +32,25 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 @Bindable
 @Property
 @FieldDefinition(i18nMode = I18nMode.OVERRIDE_I18N_KEY)
-public class MITrigger implements BPMNProperty {
+public class IsMultipleInstance implements BPMNProperty {
 
     @Value
     @FieldValue
-    private String value;
+    private Boolean value;
 
-    public MITrigger() {
-        this("false");
+    public IsMultipleInstance() {
+        this(false);
     }
 
-    public MITrigger(final String value) {
+    public IsMultipleInstance(final Boolean value) {
         this.value = value;
     }
 
-    public String getValue() {
+    public Boolean getValue() {
         return value;
     }
 
-    public void setValue(final String value) {
+    public void setValue(final Boolean value) {
         this.value = value;
     }
 
@@ -61,8 +61,11 @@ public class MITrigger implements BPMNProperty {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof MITrigger) {
-            MITrigger other = (MITrigger) o;
+        if (this == o) {
+            return true;
+        }
+        if (o instanceof IsMultipleInstance) {
+            IsMultipleInstance other = (IsMultipleInstance) o;
             return Objects.equals(value,
                                   other.value);
         }

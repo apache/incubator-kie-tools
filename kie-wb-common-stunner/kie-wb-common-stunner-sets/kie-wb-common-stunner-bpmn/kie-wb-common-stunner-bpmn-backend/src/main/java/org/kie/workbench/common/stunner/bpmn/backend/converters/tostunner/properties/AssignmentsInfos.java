@@ -26,9 +26,7 @@ import org.eclipse.bpmn2.DataInput;
 import org.eclipse.bpmn2.DataInputAssociation;
 import org.eclipse.bpmn2.DataOutput;
 import org.eclipse.bpmn2.DataOutputAssociation;
-import org.eclipse.bpmn2.Property;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.AssociationDeclaration;
-import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.AssociationDeclaration.Direction;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.AssociationList;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomAttribute;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.DeclarationList;
@@ -37,7 +35,6 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.AssignmentsInfo;
 
 import static java.util.Arrays.asList;
-import static org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.AssociationDeclaration.Type;
 
 public class AssignmentsInfos {
 
@@ -130,17 +127,11 @@ public class AssignmentsInfos {
     }
 
     private static List<AssociationDeclaration> outAssociationDeclarations(List<DataOutputAssociation> outputAssociations) {
-        return outputAssociations.stream()
-                .map(out -> new AssociationDeclaration(
-                        Direction.Output,
-                        Type.SourceTarget,
-                        ((DataOutput) out.getSourceRef().get(0)).getName(),
-                        getPropertyName((Property) out.getTargetRef())))
+        return outputAssociations
+                .stream()
+                .map(OutputAssignmentReader::fromAssociation)
+                .filter(Objects::nonNull)
+                .map(OutputAssignmentReader::getAssociationDeclaration)
                 .collect(Collectors.toList());
-    }
-
-    // fallback to ID for https://issues.jboss.org/browse/JBPM-6708
-    private static String getPropertyName(Property prop) {
-        return prop.getName() == null ? prop.getId() : prop.getName();
     }
 }

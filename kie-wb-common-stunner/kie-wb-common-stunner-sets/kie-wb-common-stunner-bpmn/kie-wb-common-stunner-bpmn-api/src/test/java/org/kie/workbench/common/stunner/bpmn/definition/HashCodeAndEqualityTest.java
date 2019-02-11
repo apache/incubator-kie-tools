@@ -70,7 +70,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.DecisionNa
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.Description;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.DmnModelName;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.IsAsync;
-import org.kie.workbench.common.stunner.bpmn.definition.property.task.MITrigger;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.IsMultipleInstance;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceCollectionInput;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceCollectionOutput;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceCompletionCondition;
@@ -907,7 +907,7 @@ public class HashCodeAndEqualityTest {
                  new MultipleInstanceCompletionCondition(MULTIPLE_INSTANCE_COMPLETION_CONDITION),
                  new OnEntryAction(ON_ENTRY_ACTION),
                  new OnExitAction(ON_EXIT_ACTION),
-                 new MITrigger("true"),
+                 new IsMultipleInstance(true),
                  new IsAsync(IS_ASYNC));
 
         final MultipleInstanceSubprocessTaskExecutionSet B_EXECUTION_SET = new MultipleInstanceSubprocessTaskExecutionSet(
@@ -918,7 +918,7 @@ public class HashCodeAndEqualityTest {
                 new MultipleInstanceCompletionCondition(MULTIPLE_INSTANCE_COMPLETION_CONDITION),
                 new OnEntryAction(ON_ENTRY_ACTION),
                 new OnExitAction(ON_EXIT_ACTION),
-                new MITrigger("true"),
+                new IsMultipleInstance(true),
                 new IsAsync(IS_ASYNC));
 
         final MultipleInstanceSubprocessTaskExecutionSet C_EXECUTION_SET = new MultipleInstanceSubprocessTaskExecutionSet(
@@ -929,7 +929,7 @@ public class HashCodeAndEqualityTest {
                 new MultipleInstanceCompletionCondition(MULTIPLE_INSTANCE_COMPLETION_CONDITION),
                 new OnEntryAction(ON_ENTRY_ACTION),
                 new OnExitAction(ON_EXIT_ACTION),
-                new MITrigger("true"),
+                new IsMultipleInstance(true),
                 new IsAsync(IS_ASYNC));
 
         final MultipleInstanceSubprocessTaskExecutionSet D_EXECUTION_SET = new MultipleInstanceSubprocessTaskExecutionSet(
@@ -940,7 +940,7 @@ public class HashCodeAndEqualityTest {
                 new MultipleInstanceCompletionCondition(MULTIPLE_INSTANCE_COMPLETION_CONDITION),
                 new OnEntryAction(ON_ENTRY_ACTION),
                 new OnExitAction(ON_EXIT_ACTION),
-                new MITrigger("true"),
+                new IsMultipleInstance(true),
                 new IsAsync(IS_ASYNC));
 
         final MultipleInstanceSubprocessTaskExecutionSet E_EXECUTION_SET = new MultipleInstanceSubprocessTaskExecutionSet(
@@ -951,7 +951,7 @@ public class HashCodeAndEqualityTest {
                 new MultipleInstanceCompletionCondition(MULTIPLE_INSTANCE_COMPLETION_CONDITION),
                 new OnEntryAction(ON_ENTRY_ACTION),
                 new OnExitAction(ON_EXIT_ACTION),
-                new MITrigger("true"),
+                new IsMultipleInstance(true),
                 new IsAsync(IS_ASYNC));
 
         final MultipleInstanceSubprocessTaskExecutionSet F_EXECUTION_SET = new MultipleInstanceSubprocessTaskExecutionSet(
@@ -962,7 +962,7 @@ public class HashCodeAndEqualityTest {
                 new MultipleInstanceCompletionCondition(MULTIPLE_INSTANCE_COMPLETION_CONDITION),
                 new OnEntryAction(ON_ENTRY_ACTION),
                 new OnExitAction(ON_EXIT_ACTION),
-                new MITrigger("true"),
+                new IsMultipleInstance(true),
                 new IsAsync(IS_ASYNC));
 
         final MultipleInstanceSubprocessTaskExecutionSet G_EXECUTION_SET = new MultipleInstanceSubprocessTaskExecutionSet(
@@ -973,7 +973,7 @@ public class HashCodeAndEqualityTest {
                 new MultipleInstanceCompletionCondition(OTHER_VALUE),
                 new OnEntryAction(ON_ENTRY_ACTION),
                 new OnExitAction(ON_EXIT_ACTION),
-                new MITrigger("true"),
+                new IsMultipleInstance(true),
                 new IsAsync(IS_ASYNC));
 
         final MultipleInstanceSubprocessTaskExecutionSet H_EXECUTION_SET
@@ -986,7 +986,7 @@ public class HashCodeAndEqualityTest {
                  new OnEntryAction(new ScriptTypeListValue().addValue(new ScriptTypeValue("other language",
                                                                                           ""))),
                  new OnExitAction(ON_EXIT_ACTION),
-                 new MITrigger("true"),
+                 new IsMultipleInstance(true),
                  new IsAsync(IS_ASYNC));
 
         final MultipleInstanceSubprocessTaskExecutionSet I_EXECUTION_SET
@@ -999,7 +999,7 @@ public class HashCodeAndEqualityTest {
                  new OnEntryAction(ON_ENTRY_ACTION),
                  new OnExitAction(new ScriptTypeListValue().addValue(new ScriptTypeValue("other language",
                                                                                          ""))),
-                 new MITrigger("true"),
+                 new IsMultipleInstance(true),
                  new IsAsync(IS_ASYNC));
 
         final MultipleInstanceSubprocessTaskExecutionSet J_EXECUTION_SET
@@ -1011,7 +1011,7 @@ public class HashCodeAndEqualityTest {
                  new MultipleInstanceCompletionCondition(MULTIPLE_INSTANCE_COMPLETION_CONDITION),
                  new OnEntryAction(ON_ENTRY_ACTION),
                  new OnExitAction(ON_EXIT_ACTION),
-                 new MITrigger("true"),
+                 new IsMultipleInstance(true),
                  new IsAsync(false));
 
         final String PROCESS_DATA = "some value";
@@ -1369,6 +1369,12 @@ public class HashCodeAndEqualityTest {
                                                       new Description(),
                                                       new CreatedBy(),
                                                       new AdHocAutostart(),
+                                                      new IsMultipleInstance(),
+                                                      new MultipleInstanceCollectionInput(),
+                                                      new MultipleInstanceDataInput(),
+                                                      new MultipleInstanceCollectionOutput(),
+                                                      new MultipleInstanceDataOutput(),
+                                                      new MultipleInstanceCompletionCondition(),
                                                       new OnEntryAction(),
                                                       new OnExitAction(),
                                                       new Content(),
@@ -1385,6 +1391,12 @@ public class HashCodeAndEqualityTest {
                                                       new Description(),
                                                       new CreatedBy(),
                                                       new AdHocAutostart(),
+                                                      new IsMultipleInstance(),
+                                                      new MultipleInstanceCollectionInput(),
+                                                      new MultipleInstanceDataInput(),
+                                                      new MultipleInstanceCollectionOutput(),
+                                                      new MultipleInstanceDataOutput(),
+                                                      new MultipleInstanceCompletionCondition(),
                                                       new OnEntryAction(),
                                                       new OnExitAction(),
                                                       new Content(),

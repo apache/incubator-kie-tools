@@ -86,7 +86,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.CalledElem
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.CreatedBy;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.Description;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.IsAsync;
-import org.kie.workbench.common.stunner.bpmn.definition.property.task.MITrigger;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.IsMultipleInstance;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceCollectionInput;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceCollectionOutput;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceCompletionCondition;
@@ -193,7 +193,7 @@ public abstract class BaseOryxIdMappings implements OryxIdMappings {
                 .put(AdHocOrdering.class, "adhocordering")
                 .put(AdHocCompletionCondition.class, "adhoccompletioncondition")
 
-                .put(MITrigger.class, "mitrigger")
+                .put(IsMultipleInstance.class, "mitrigger")
 
                 .put(MultipleInstanceCollectionInput.class, "multipleinstancecollectioninput")
                 .put(MultipleInstanceCollectionOutput.class, "multipleinstancecollectionoutput")

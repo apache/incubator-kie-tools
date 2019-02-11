@@ -21,13 +21,14 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.function.BiFunction;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
-import org.kie.workbench.common.stunner.bpmn.definition.BaseReusableSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
 import org.kie.workbench.common.stunner.bpmn.definition.EndErrorEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndEscalationEvent;
@@ -41,6 +42,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEvent
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventThrowing;
 import org.kie.workbench.common.stunner.bpmn.definition.MultipleInstanceSubprocess;
+import org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.StartErrorEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartEscalationEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartMessageEvent;
@@ -53,6 +55,7 @@ import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.util.StringUtils;
+import org.uberfire.commons.data.Pair;
 
 import static org.kie.workbench.common.stunner.core.util.StringUtils.isEmpty;
 
@@ -60,81 +63,33 @@ public class VariableUtils {
 
     private static final String PROPERTY_IN_PREFIX = "[din]";
     private static final String PROPERTY_OUT_PREFIX = "[dout]";
+    private final static BiFunction<String, Pair<BPMNDefinition, Node<View<BPMNDefinition>, Edge>>, Collection<VariableUsage>> NO_USAGES = (s, pair) -> Collections.emptyList();
+    private final static Map<Predicate<BPMNDefinition>, BiFunction<String, Pair<BPMNDefinition, Node<View<BPMNDefinition>, Edge>>, Collection<VariableUsage>>> findFunctions = buildFindFunctions();
 
     @SuppressWarnings("unchecked")
     public static Collection<VariableUsage> findVariableUsages(Graph graph, String variableName) {
+        return findVariableUsages(graph.nodes(), variableName);
+    }
+
+    public static Collection<VariableUsage> findVariableUsages(Node node, String variableName) {
+        return findVariableUsages(Collections.singletonList(node), variableName);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static Collection<VariableUsage> findVariableUsages(Iterable<Node> nodes, String variableName) {
         if (StringUtils.isEmpty(variableName)) {
             return Collections.EMPTY_LIST;
         }
-        Iterable<Node> nodes = graph.nodes();
         return StreamSupport.stream(nodes.spliterator(), false)
                 .filter(VariableUtils::isBPMNDefinition)
                 .map(node -> (Node<View<BPMNDefinition>, Edge>) node)
-                .map(node -> findVariableUsages(variableName, node))
+                .map(node -> lookupFindFunction(node.getContent().getDefinition()).orElse(NO_USAGES).apply(variableName, Pair.newPair(node.getContent().getDefinition(), node)))
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
     }
 
-    private static boolean isBPMNDefinition(Node node) {
-        return node.getContent() instanceof View &&
-                ((View) node.getContent()).getDefinition() instanceof BPMNDefinition;
-    }
-
-    private static List<VariableUsage> findVariableUsages(String variableName, Node<View<BPMNDefinition>, Edge> node) {
-        final List<VariableUsage> result = new ArrayList<>();
-        AssignmentsInfo assignmentsInfo = null;
-        String variableInfo;
-        final BPMNDefinition definition = node.getContent().getDefinition();
-        final String displayName = definition.getGeneral() != null && definition.getGeneral().getName() != null ? definition.getGeneral().getName().getValue() : null;
-        if (definition instanceof BusinessRuleTask) {
-            assignmentsInfo = ((BusinessRuleTask) definition).getDataIOSet().getAssignmentsinfo();
-        } else if (definition instanceof UserTask) {
-            assignmentsInfo = ((UserTask) definition).getExecutionSet().getAssignmentsinfo();
-        } else if (definition instanceof ServiceTask) {
-            assignmentsInfo = ((ServiceTask) definition).getDataIOSet().getAssignmentsinfo();
-        } else if (definition instanceof EndErrorEvent) {
-            assignmentsInfo = ((EndErrorEvent) definition).getDataIOSet().getAssignmentsinfo();
-        } else if (definition instanceof EndEscalationEvent) {
-            assignmentsInfo = ((EndEscalationEvent) definition).getDataIOSet().getAssignmentsinfo();
-        } else if (definition instanceof EndMessageEvent) {
-            assignmentsInfo = ((EndMessageEvent) definition).getDataIOSet().getAssignmentsinfo();
-        } else if (definition instanceof EndSignalEvent) {
-            assignmentsInfo = ((EndSignalEvent) definition).getDataIOSet().getAssignmentsinfo();
-        } else if (definition instanceof IntermediateErrorEventCatching) {
-            assignmentsInfo = ((IntermediateErrorEventCatching) definition).getDataIOSet().getAssignmentsinfo();
-        } else if (definition instanceof IntermediateMessageEventCatching) {
-            assignmentsInfo = ((IntermediateMessageEventCatching) definition).getDataIOSet().getAssignmentsinfo();
-        } else if (definition instanceof IntermediateSignalEventCatching) {
-            assignmentsInfo = ((IntermediateSignalEventCatching) definition).getDataIOSet().getAssignmentsinfo();
-        } else if (definition instanceof IntermediateEscalationEvent) {
-            assignmentsInfo = ((IntermediateEscalationEvent) definition).getDataIOSet().getAssignmentsinfo();
-        } else if (definition instanceof IntermediateEscalationEventThrowing) {
-            assignmentsInfo = ((IntermediateEscalationEventThrowing) definition).getDataIOSet().getAssignmentsinfo();
-        } else if (definition instanceof IntermediateMessageEventThrowing) {
-            assignmentsInfo = ((IntermediateMessageEventThrowing) definition).getDataIOSet().getAssignmentsinfo();
-        } else if (definition instanceof IntermediateSignalEventThrowing) {
-            assignmentsInfo = ((IntermediateSignalEventThrowing) definition).getDataIOSet().getAssignmentsinfo();
-        } else if (definition instanceof StartErrorEvent) {
-            assignmentsInfo = ((StartErrorEvent) definition).getDataIOSet().getAssignmentsinfo();
-        } else if (definition instanceof StartEscalationEvent) {
-            assignmentsInfo = ((StartEscalationEvent) definition).getDataIOSet().getAssignmentsinfo();
-        } else if (definition instanceof StartMessageEvent) {
-            assignmentsInfo = ((StartMessageEvent) definition).getDataIOSet().getAssignmentsinfo();
-        } else if (definition instanceof StartSignalEvent) {
-            assignmentsInfo = ((StartSignalEvent) definition).getDataIOSet().getAssignmentsinfo();
-        } else if (definition instanceof BaseReusableSubprocess) {
-            assignmentsInfo = ((BaseReusableSubprocess) definition).getDataIOSet().getAssignmentsinfo();
-        } else if (definition instanceof MultipleInstanceSubprocess) {
-            MultipleInstanceSubprocess miSubprocess = (MultipleInstanceSubprocess) definition;
-            variableInfo = ((MultipleInstanceSubprocess) definition).getExecutionSet().getMultipleInstanceCollectionInput().getValue();
-            if (variableName.equals(variableInfo)) {
-                result.add(new VariableUsage(variableName, VariableUsage.USAGE_TYPE.INPUT_COLLECTION, node, miSubprocess.getGeneral().getName().getValue()));
-            }
-            variableInfo = ((MultipleInstanceSubprocess) definition).getExecutionSet().getMultipleInstanceCollectionOutput().getValue();
-            if (variableName.equals(variableInfo)) {
-                result.add(new VariableUsage(variableName, VariableUsage.USAGE_TYPE.OUTPUT_COLLECTION, node, miSubprocess.getGeneral().getName().getValue()));
-            }
-        }
+    private static Collection<VariableUsage> findVariableUsages(String variableName, AssignmentsInfo assignmentsInfo, String displayName, Node<View<BPMNDefinition>, Edge> node) {
+        Collection<VariableUsage> result = new ArrayList<>();
         if (assignmentsInfo != null) {
             Map<String, VariableUsage> decodedVariableUsages = decodeVariableUsages(assignmentsInfo.getValue(), node, displayName);
             if (decodedVariableUsages.containsKey(variableName)) {
@@ -142,6 +97,62 @@ public class VariableUtils {
             }
         }
         return result;
+    }
+
+    private static Collection<VariableUsage> findVariableUsages(String variableName, MultipleInstanceSubprocess subprocess, Node<View<BPMNDefinition>, Edge> node) {
+        final Collection<VariableUsage> result = new ArrayList<>();
+        addVariableUsages(result, variableName,
+                          subprocess.getExecutionSet().getMultipleInstanceCollectionInput().getValue(), subprocess.getExecutionSet().getMultipleInstanceDataInput().getValue(),
+                          subprocess.getExecutionSet().getMultipleInstanceCollectionOutput().getValue(), subprocess.getExecutionSet().getMultipleInstanceDataOutput().getValue(),
+                          getDisplayName(subprocess), node);
+        return result;
+    }
+
+    private static Collection<VariableUsage> findVariableUsages(String variableName, UserTask userTask, Node<View<BPMNDefinition>, Edge> node) {
+        final String displayName = getDisplayName(userTask);
+        final Collection<VariableUsage> result = findVariableUsages(variableName, userTask.getExecutionSet().getAssignmentsinfo(), displayName, node);
+        addVariableUsages(result, variableName,
+                          userTask.getExecutionSet().getMultipleInstanceCollectionInput().getValue(), userTask.getExecutionSet().getMultipleInstanceDataInput().getValue(),
+                          userTask.getExecutionSet().getMultipleInstanceCollectionOutput().getValue(), userTask.getExecutionSet().getMultipleInstanceDataOutput().getValue(),
+                          displayName, node);
+        return result;
+    }
+
+    private static Collection<VariableUsage> findVariableUsages(String variableName, ReusableSubprocess subprocess, Node<View<BPMNDefinition>, Edge> node) {
+        final String displayName = getDisplayName(subprocess);
+        final Collection<VariableUsage> result = findVariableUsages(variableName, subprocess.getDataIOSet().getAssignmentsinfo(), displayName, node);
+        addVariableUsages(result, variableName,
+                          subprocess.getExecutionSet().getMultipleInstanceCollectionInput().getValue(), subprocess.getExecutionSet().getMultipleInstanceDataInput().getValue(),
+                          subprocess.getExecutionSet().getMultipleInstanceCollectionOutput().getValue(), subprocess.getExecutionSet().getMultipleInstanceDataOutput().getValue(),
+                          displayName, node);
+        return result;
+    }
+
+    private static void addVariableUsages(Collection<VariableUsage> variableUsages, String variableName,
+                                          String miInputCollection, String miDataInput,
+                                          String miOutputCollection, String miDataOutput,
+                                          String displayName, Node<View<BPMNDefinition>, Edge> node) {
+        if (variableName.equals(miInputCollection)) {
+            variableUsages.add(new VariableUsage(variableName, VariableUsage.USAGE_TYPE.MULTIPLE_INSTANCE_INPUT_COLLECTION, node, displayName));
+        }
+        if (variableName.equals(miDataInput)) {
+            variableUsages.add(new VariableUsage(variableName, VariableUsage.USAGE_TYPE.MULTIPLE_INSTANCE_DATA_INPUT, node, displayName));
+        }
+        if (variableName.equals(miOutputCollection)) {
+            variableUsages.add(new VariableUsage(variableName, VariableUsage.USAGE_TYPE.MULTIPLE_INSTANCE_OUTPUT_COLLECTION, node, displayName));
+        }
+        if (variableName.equals(miDataOutput)) {
+            variableUsages.add(new VariableUsage(variableName, VariableUsage.USAGE_TYPE.MULTIPLE_INSTANCE_DATA_OUTPUT, node, displayName));
+        }
+    }
+
+    private static boolean isBPMNDefinition(Node node) {
+        return node.getContent() instanceof View &&
+                ((View) node.getContent()).getDefinition() instanceof BPMNDefinition;
+    }
+
+    private static String getDisplayName(BPMNDefinition definition) {
+        return definition.getGeneral() != null && definition.getGeneral().getName() != null ? definition.getGeneral().getName().getValue() : null;
     }
 
     private static Map<String, VariableUsage> decodeVariableUsages(String encodedAssignments, Node node, String displayName) {
@@ -191,5 +202,38 @@ public class VariableUtils {
                     });
         }
         return variableUsages;
+    }
+
+    private static Optional<BiFunction<String, Pair<BPMNDefinition, Node<View<BPMNDefinition>, Edge>>, Collection<VariableUsage>>> lookupFindFunction(BPMNDefinition definition) {
+        //This code should ideally be based on an iteration plus the invocation of Class.isAssignableFrom method, but unfortunately not available in GWT client classes
+        return findFunctions.entrySet().stream()
+                .filter(entry -> entry.getKey().test(definition))
+                .map(Map.Entry::getValue)
+                .findFirst();
+    }
+
+    private static Map<Predicate<BPMNDefinition>, BiFunction<String, Pair<BPMNDefinition, Node<View<BPMNDefinition>, Edge>>, Collection<VariableUsage>>> buildFindFunctions() {
+        Map<Predicate<BPMNDefinition>, BiFunction<String, Pair<BPMNDefinition, Node<View<BPMNDefinition>, Edge>>, Collection<VariableUsage>>> findFunctions = new HashMap<>();
+        findFunctions.put(d -> d instanceof BusinessRuleTask, (s, pair) -> findVariableUsages(s, ((BusinessRuleTask) pair.getK1()).getDataIOSet().getAssignmentsinfo(), getDisplayName(pair.getK1()), pair.getK2()));
+        findFunctions.put(d -> d instanceof UserTask, (s, pair) -> findVariableUsages(s, ((UserTask) pair.getK1()), pair.getK2()));
+        findFunctions.put(d -> d instanceof ServiceTask, (s, pair) -> findVariableUsages(s, ((ServiceTask) pair.getK1()).getDataIOSet().getAssignmentsinfo(), getDisplayName(pair.getK1()), pair.getK2()));
+        findFunctions.put(d -> d instanceof EndErrorEvent, (s, pair) -> findVariableUsages(s, ((EndErrorEvent) pair.getK1()).getDataIOSet().getAssignmentsinfo(), getDisplayName(pair.getK1()), pair.getK2()));
+        findFunctions.put(d -> d instanceof EndEscalationEvent, (s, pair) -> findVariableUsages(s, ((EndEscalationEvent) pair.getK1()).getDataIOSet().getAssignmentsinfo(), getDisplayName(pair.getK1()), pair.getK2()));
+        findFunctions.put(d -> d instanceof EndMessageEvent, (s, pair) -> findVariableUsages(s, ((EndMessageEvent) pair.getK1()).getDataIOSet().getAssignmentsinfo(), getDisplayName(pair.getK1()), pair.getK2()));
+        findFunctions.put(d -> d instanceof EndSignalEvent, (s, pair) -> findVariableUsages(s, ((EndSignalEvent) pair.getK1()).getDataIOSet().getAssignmentsinfo(), getDisplayName(pair.getK1()), pair.getK2()));
+        findFunctions.put(d -> d instanceof IntermediateErrorEventCatching, (s, pair) -> findVariableUsages(s, ((IntermediateErrorEventCatching) pair.getK1()).getDataIOSet().getAssignmentsinfo(), getDisplayName(pair.getK1()), pair.getK2()));
+        findFunctions.put(d -> d instanceof IntermediateMessageEventCatching, (s, pair) -> findVariableUsages(s, ((IntermediateMessageEventCatching) pair.getK1()).getDataIOSet().getAssignmentsinfo(), getDisplayName(pair.getK1()), pair.getK2()));
+        findFunctions.put(d -> d instanceof IntermediateSignalEventCatching, (s, pair) -> findVariableUsages(s, ((IntermediateSignalEventCatching) pair.getK1()).getDataIOSet().getAssignmentsinfo(), getDisplayName(pair.getK1()), pair.getK2()));
+        findFunctions.put(d -> d instanceof IntermediateEscalationEvent, (s, pair) -> findVariableUsages(s, ((IntermediateEscalationEvent) pair.getK1()).getDataIOSet().getAssignmentsinfo(), getDisplayName(pair.getK1()), pair.getK2()));
+        findFunctions.put(d -> d instanceof IntermediateEscalationEventThrowing, (s, pair) -> findVariableUsages(s, ((IntermediateEscalationEventThrowing) pair.getK1()).getDataIOSet().getAssignmentsinfo(), getDisplayName(pair.getK1()), pair.getK2()));
+        findFunctions.put(d -> d instanceof IntermediateMessageEventThrowing, (s, pair) -> findVariableUsages(s, ((IntermediateMessageEventThrowing) pair.getK1()).getDataIOSet().getAssignmentsinfo(), getDisplayName(pair.getK1()), pair.getK2()));
+        findFunctions.put(d -> d instanceof IntermediateSignalEventThrowing, (s, pair) -> findVariableUsages(s, ((IntermediateSignalEventThrowing) pair.getK1()).getDataIOSet().getAssignmentsinfo(), getDisplayName(pair.getK1()), pair.getK2()));
+        findFunctions.put(d -> d instanceof StartErrorEvent, (s, pair) -> findVariableUsages(s, ((StartErrorEvent) pair.getK1()).getDataIOSet().getAssignmentsinfo(), getDisplayName(pair.getK1()), pair.getK2()));
+        findFunctions.put(d -> d instanceof StartEscalationEvent, (s, pair) -> findVariableUsages(s, ((StartEscalationEvent) pair.getK1()).getDataIOSet().getAssignmentsinfo(), getDisplayName(pair.getK1()), pair.getK2()));
+        findFunctions.put(d -> d instanceof StartMessageEvent, (s, pair) -> findVariableUsages(s, ((StartMessageEvent) pair.getK1()).getDataIOSet().getAssignmentsinfo(), getDisplayName(pair.getK1()), pair.getK2()));
+        findFunctions.put(d -> d instanceof StartSignalEvent, (s, pair) -> findVariableUsages(s, ((StartSignalEvent) pair.getK1()).getDataIOSet().getAssignmentsinfo(), getDisplayName(pair.getK1()), pair.getK2()));
+        findFunctions.put(d -> d instanceof ReusableSubprocess, (s, pair) -> findVariableUsages(s, (ReusableSubprocess) pair.getK1(), pair.getK2()));
+        findFunctions.put(d -> d instanceof MultipleInstanceSubprocess, (s, pair) -> findVariableUsages(s, (MultipleInstanceSubprocess) pair.getK1(), pair.getK2()));
+        return findFunctions;
     }
 }

@@ -18,10 +18,12 @@ package org.kie.workbench.common.stunner.bpmn.client.shape.def;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 
 import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNGlyphFactory;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory;
+import org.kie.workbench.common.stunner.bpmn.client.shape.view.handler.SubprocessViewHandler;
 import org.kie.workbench.common.stunner.bpmn.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.EmbeddedSubprocess;
@@ -29,6 +31,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.EventSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.MultipleInstanceSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
+import org.kie.workbench.common.stunner.core.client.shape.view.handler.CompositeShapeViewHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.handler.FontHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.handler.SizeHandler;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
@@ -78,6 +81,14 @@ public class SubprocessShapeDef extends BaseDimensionedShapeDef
                 .minWidth(task -> 50d)
                 .minHeight(task -> 50d)
                 .build();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public BiConsumer<BaseSubprocess, SVGShapeView> viewHandler() {
+        return new CompositeShapeViewHandler<BaseSubprocess, SVGShapeView>()
+                .register(newViewAttributesHandler())
+                .register(new SubprocessViewHandler())::handle;
     }
 
     @Override

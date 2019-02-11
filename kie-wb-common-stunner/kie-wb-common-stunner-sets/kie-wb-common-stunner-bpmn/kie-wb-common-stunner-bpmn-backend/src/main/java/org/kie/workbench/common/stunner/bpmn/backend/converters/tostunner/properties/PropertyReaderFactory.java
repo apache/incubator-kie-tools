@@ -19,11 +19,11 @@ package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.prope
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.AdHocSubProcess;
 import org.eclipse.bpmn2.Association;
 import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.BusinessRuleTask;
+import org.eclipse.bpmn2.CallActivity;
 import org.eclipse.bpmn2.CatchEvent;
 import org.eclipse.bpmn2.FlowElement;
 import org.eclipse.bpmn2.Gateway;
@@ -100,8 +100,8 @@ public class PropertyReaderFactory {
         }
     }
 
-    public ActivityPropertyReader of(Activity el) {
-        return new ActivityPropertyReader(el, diagram, definitionResolver);
+    public CallActivityPropertyReader of(CallActivity el) {
+        return new CallActivityPropertyReader(el, diagram, definitionResolver);
     }
 
     public CatchEventPropertyReader of(CatchEvent el) {

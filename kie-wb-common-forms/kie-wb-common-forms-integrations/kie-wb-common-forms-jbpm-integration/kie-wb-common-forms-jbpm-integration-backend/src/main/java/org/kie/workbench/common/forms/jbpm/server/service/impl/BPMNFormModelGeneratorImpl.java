@@ -27,6 +27,7 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.bpmn2.Assignment;
+import org.eclipse.bpmn2.BaseElement;
 import org.eclipse.bpmn2.DataInput;
 import org.eclipse.bpmn2.DataInputAssociation;
 import org.eclipse.bpmn2.DataOutput;
@@ -34,7 +35,7 @@ import org.eclipse.bpmn2.DataOutputAssociation;
 import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.FlowElementsContainer;
 import org.eclipse.bpmn2.FormalExpression;
-import org.eclipse.bpmn2.ItemDefinition;
+import org.eclipse.bpmn2.MultiInstanceLoopCharacteristics;
 import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.RootElement;
 import org.eclipse.bpmn2.UserTask;
@@ -190,15 +191,13 @@ public class BPMNFormModelGeneratorImpl implements BPMNFormModelGenerator {
         if (dataInputAssociations != null) {
 
             for (DataInputAssociation inputAssociation : dataInputAssociations) {
-                if (inputAssociation.getTargetRef() != null) {
+                if (inputAssociation.getTargetRef() != null && !isMIInputCollection(userTask, inputAssociation)) {
 
                     String name = ((DataInput) inputAssociation.getTargetRef()).getName();
 
                     if (BPMNVariableUtils.isValidInputName(name)) {
 
-                        String type = Optional.ofNullable(inputAssociation.getTargetRef().getItemSubjectRef())
-                                .map(ItemDefinition::getStructureRef)
-                                .orElse(inputAssociation.getTargetRef().getAnyAttribute().get(0).getValue().toString());
+                        String type = extractInputType(inputAssociation);
 
                         type = BPMNVariableUtils.getRealTypeForInput(type);
 
@@ -233,15 +232,15 @@ public class BPMNFormModelGeneratorImpl implements BPMNFormModelGenerator {
         if (dataOutputAssociations != null) {
 
             dataOutputAssociations.forEach(outputAssociation -> {
-                if (outputAssociation.getSourceRef() != null && outputAssociation.getSourceRef().size() == 1) {
+                if (outputAssociation.getSourceRef() != null &&
+                        outputAssociation.getSourceRef().size() == 1 &&
+                        !isMIOutputCollection(userTask, outputAssociation)) {
 
                     DataOutput output = (DataOutput) outputAssociation.getSourceRef().get(0);
 
                     String name = output.getName();
 
-                    String type = Optional.ofNullable(output.getItemSubjectRef())
-                            .map(ItemDefinition::getStructureRef)
-                            .orElse(output.getAnyAttribute().get(0).getValue().toString());
+                    String type = extractOutputType(output);
 
                     type = BPMNVariableUtils.getRealTypeForInput(type);
 
@@ -271,5 +270,49 @@ public class BPMNFormModelGeneratorImpl implements BPMNFormModelGenerator {
             }
         }
         return null;
+    }
+
+    private static String extractInputType(DataInputAssociation inputAssociation) {
+        if (inputAssociation.getTargetRef() != null && inputAssociation.getTargetRef().getItemSubjectRef() != null) {
+            return inputAssociation.getTargetRef().getItemSubjectRef().getStructureRef();
+        } else if (inputAssociation.getTargetRef() != null &&
+                inputAssociation.getTargetRef().getAnyAttribute() != null &&
+                !inputAssociation.getTargetRef().getAnyAttribute().isEmpty()) {
+            return inputAssociation.getTargetRef().getAnyAttribute().get(0).getValue().toString();
+        }
+        return null;
+    }
+
+    private static String extractOutputType(DataOutput output) {
+        if (output.getItemSubjectRef() != null) {
+            return output.getItemSubjectRef().getStructureRef();
+        } else if (output.getAnyAttribute() != null && !output.getAnyAttribute().isEmpty()) {
+            return output.getAnyAttribute().get(0).getValue().toString();
+        }
+        return null;
+    }
+
+    private static boolean isMIInputCollection(UserTask userTask, DataInputAssociation inputAssociation) {
+        MultiInstanceLoopCharacteristics loopCharacteristics = (MultiInstanceLoopCharacteristics) userTask.getLoopCharacteristics();
+        String inputCollectionRef = loopCharacteristics != null ? getId(loopCharacteristics.getLoopDataInputRef()) : null;
+        if (StringUtils.isEmpty(inputCollectionRef)) {
+            return false;
+        }
+        String associationTargetRef = getId(inputAssociation.getTargetRef());
+        return inputCollectionRef.equals(associationTargetRef);
+    }
+
+    private static boolean isMIOutputCollection(UserTask userTask, DataOutputAssociation outputAssociation) {
+        MultiInstanceLoopCharacteristics loopCharacteristics = (MultiInstanceLoopCharacteristics) userTask.getLoopCharacteristics();
+        String outputCollectionRef = loopCharacteristics != null ? getId(loopCharacteristics.getLoopDataOutputRef()) : null;
+        if (StringUtils.isEmpty(outputCollectionRef)) {
+            return false;
+        }
+        String associationSourceRef = outputAssociation.getSourceRef() != null && !outputAssociation.getSourceRef().isEmpty() ? outputAssociation.getSourceRef().get(0).getId() : null;
+        return outputCollectionRef.equals(associationSourceRef);
+    }
+
+    private static String getId(BaseElement element) {
+        return element != null ? element.getId() : null;
     }
 }

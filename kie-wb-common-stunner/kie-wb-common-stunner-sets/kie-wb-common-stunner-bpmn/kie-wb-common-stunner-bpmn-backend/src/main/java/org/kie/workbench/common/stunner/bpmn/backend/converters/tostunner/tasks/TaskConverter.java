@@ -27,6 +27,12 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.Content;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.CreatedBy;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.Description;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.IsAsync;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.IsMultipleInstance;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceCollectionInput;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceCollectionOutput;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceCompletionCondition;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceDataInput;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceDataOutput;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnEntryAction;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnExitAction;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.SLADueDate;
@@ -37,6 +43,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.UserTaskEx
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+
+import static org.kie.workbench.common.stunner.core.util.StringUtils.hasNonEmpty;
 
 public class TaskConverter extends BaseTaskConverter<UserTask, UserTaskExecutionSet> {
 
@@ -51,20 +59,34 @@ public class TaskConverter extends BaseTaskConverter<UserTask, UserTaskExecution
 
     @Override
     protected UserTaskExecutionSet createUserTaskExecutionSet(UserTaskPropertyReader p) {
-        return new UserTaskExecutionSet(new TaskName(p.getTaskName()),
-                                        p.getActors(),
-                                        new Groupid(p.getGroupid()),
-                                        p.getAssignmentsInfo(),
-                                        new IsAsync(p.isAsync()),
-                                        new Skippable(p.isSkippable()),
-                                        new Priority(p.getPriority()),
-                                        new Subject(p.getSubject()),
-                                        new Description(p.getDescription()),
-                                        new CreatedBy(p.getCreatedBy()),
-                                        new AdHocAutostart(p.isAdHocAutostart()),
-                                        new OnEntryAction(p.getOnEntryAction()),
-                                        new OnExitAction(p.getOnExitAction()),
-                                        new Content(p.getContent()),
-                                        new SLADueDate(p.getSLADueDate()));
+        UserTaskExecutionSet executionSet = new UserTaskExecutionSet(new TaskName(p.getTaskName()),
+                                                                     p.getActors(),
+                                                                     new Groupid(p.getGroupid()),
+                                                                     p.getAssignmentsInfo(),
+                                                                     new IsAsync(p.isAsync()),
+                                                                     new Skippable(p.isSkippable()),
+                                                                     new Priority(p.getPriority()),
+                                                                     new Subject(p.getSubject()),
+                                                                     new Description(p.getDescription()),
+                                                                     new CreatedBy(p.getCreatedBy()),
+                                                                     new AdHocAutostart(p.isAdHocAutostart()),
+                                                                     new IsMultipleInstance(),
+                                                                     new MultipleInstanceCollectionInput(p.getCollectionInput()),
+                                                                     new MultipleInstanceDataInput(p.getDataInput()),
+                                                                     new MultipleInstanceCollectionOutput(p.getCollectionOutput()),
+                                                                     new MultipleInstanceDataOutput(p.getDataOutput()),
+                                                                     new MultipleInstanceCompletionCondition(p.getCompletionCondition()),
+                                                                     new OnEntryAction(p.getOnEntryAction()),
+                                                                     new OnExitAction(p.getOnExitAction()),
+                                                                     new Content(p.getContent()),
+                                                                     new SLADueDate(p.getSLADueDate()));
+
+        boolean multipleInstance = hasNonEmpty(executionSet.getMultipleInstanceCollectionInput().getValue(),
+                                               executionSet.getMultipleInstanceDataInput().getValue(),
+                                               executionSet.getMultipleInstanceCollectionOutput().getValue(),
+                                               executionSet.getMultipleInstanceDataOutput().getValue(),
+                                               executionSet.getMultipleInstanceCompletionCondition().getValue());
+        executionSet.setIsMultipleInstance(new IsMultipleInstance(multipleInstance));
+        return executionSet;
     }
 }

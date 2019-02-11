@@ -16,18 +16,12 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties;
 
-import java.util.Collections;
-import java.util.Optional;
-
 import org.drools.core.util.StringUtils;
-import org.eclipse.bpmn2.InputOutputSpecification;
 import org.eclipse.bpmn2.Task;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomInput;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
-import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.AssignmentsInfo;
-import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeListValue;
 import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinition;
 
 public class ServiceTaskPropertyReader extends TaskPropertyReader {
@@ -62,36 +56,6 @@ public class ServiceTaskPropertyReader extends TaskPropertyReader {
 
     public String getTaskName() {
         return CustomInput.taskName.of(task).get();
-    }
-
-    public AssignmentsInfo getAssignmentsInfo() {
-        Optional<InputOutputSpecification> ioSpecification =
-                Optional.ofNullable(task.getIoSpecification());
-
-        AssignmentsInfo info = AssignmentsInfos.of(
-                ioSpecification.map(InputOutputSpecification::getDataInputs)
-                        .orElse(Collections.emptyList()),
-                task.getDataInputAssociations(),
-                ioSpecification.map(InputOutputSpecification::getDataOutputs)
-                        .orElse(Collections.emptyList()),
-                task.getDataOutputAssociations(),
-                ioSpecification.isPresent()
-        );
-
-        // do not break compatibility with old marshallers: return
-        // empty delimited fields instead of empty string
-        if (info.getValue().isEmpty()) {
-            info.setValue("||||");
-        }
-        return info;
-    }
-
-    public ScriptTypeListValue getOnEntryAction() {
-        return Scripts.onEntry(element.getExtensionValues());
-    }
-
-    public ScriptTypeListValue getOnExitAction() {
-        return Scripts.onExit(element.getExtensionValues());
     }
 
     public boolean isAsync() {

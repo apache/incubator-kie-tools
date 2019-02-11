@@ -49,6 +49,8 @@ public interface AssignmentListItemWidgetView extends HasModel<AssignmentRow> {
 
     boolean isDuplicateName(final String name);
 
+    boolean isMultipleInstanceVariable(final String name);
+
     VariableType getVariableType();
 
     String getDataType();

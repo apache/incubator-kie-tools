@@ -18,15 +18,18 @@ package org.kie.workbench.common.stunner.bpmn.client.shape.def;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 
 import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNGlyphFactory;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory;
+import org.kie.workbench.common.stunner.bpmn.client.shape.view.handler.TaskViewHandler;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseTask;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
 import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
 import org.kie.workbench.common.stunner.bpmn.definition.ScriptTask;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
+import org.kie.workbench.common.stunner.core.client.shape.view.handler.CompositeShapeViewHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.handler.SizeHandler;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.kie.workbench.common.stunner.svg.client.shape.factory.SVGShapeViewResources;
@@ -60,6 +63,14 @@ public class TaskShapeDef extends BaseDimensionedShapeDef
                 .minHeight(task -> 50d)
                 .maxHeight(task -> 400d)
                 .build();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public BiConsumer<BaseTask, SVGShapeView> viewHandler() {
+        return new CompositeShapeViewHandler<BaseTask, SVGShapeView>()
+                .register(newViewAttributesHandler())
+                .register(new TaskViewHandler())::handle;
     }
 
     @Override

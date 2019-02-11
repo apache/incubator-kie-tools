@@ -110,7 +110,7 @@ public class MultipleInstanceSubprocessTaskExecutionSet implements BPMNPropertyS
 
     @Property
     @SkipFormField
-    private MITrigger miTrigger;
+    private IsMultipleInstance isMultipleInstance;
 
     public MultipleInstanceSubprocessTaskExecutionSet() {
         this(new MultipleInstanceCollectionInput(),
@@ -122,7 +122,7 @@ public class MultipleInstanceSubprocessTaskExecutionSet implements BPMNPropertyS
                                                                                       ""))),
              new OnExitAction(new ScriptTypeListValue().addValue(new ScriptTypeValue("java",
                                                                                      ""))),
-             new MITrigger("true"),
+             new IsMultipleInstance(true),
              new IsAsync());
     }
 
@@ -133,7 +133,7 @@ public class MultipleInstanceSubprocessTaskExecutionSet implements BPMNPropertyS
                                                       final @MapsTo("multipleInstanceCompletionCondition") MultipleInstanceCompletionCondition multipleInstanceCompletionCondition,
                                                       final @MapsTo("onEntryAction") OnEntryAction onEntryAction,
                                                       final @MapsTo("onExitAction") OnExitAction onExitAction,
-                                                      final @MapsTo("miTrigger") MITrigger miTrigger,
+                                                      final @MapsTo("isMultipleInstance") IsMultipleInstance isMultipleInstance,
                                                       final @MapsTo("isAsync") IsAsync isAsync
 
     ) {
@@ -144,7 +144,7 @@ public class MultipleInstanceSubprocessTaskExecutionSet implements BPMNPropertyS
         this.multipleInstanceCompletionCondition = multipleInstanceCompletionCondition;
         this.onEntryAction = onEntryAction;
         this.onExitAction = onExitAction;
-        this.miTrigger = miTrigger;
+        this.isMultipleInstance = isMultipleInstance;
         this.isAsync = isAsync;
     }
 
@@ -188,12 +188,12 @@ public class MultipleInstanceSubprocessTaskExecutionSet implements BPMNPropertyS
         this.multipleInstanceCompletionCondition = multipleInstanceCompletionCondition;
     }
 
-    public MITrigger getMiTrigger() {
-        return miTrigger;
+    public IsMultipleInstance getIsMultipleInstance() {
+        return isMultipleInstance;
     }
 
-    public void setMiTrigger(MITrigger miTrigger) {
-        this.miTrigger = miTrigger;
+    public void setIsMultipleInstance(IsMultipleInstance isMultipleInstance) {
+        this.isMultipleInstance = isMultipleInstance;
     }
 
     public OnEntryAction getOnEntryAction() {
@@ -229,7 +229,7 @@ public class MultipleInstanceSubprocessTaskExecutionSet implements BPMNPropertyS
                                          Objects.hashCode(multipleInstanceCompletionCondition),
                                          Objects.hashCode(onEntryAction),
                                          Objects.hashCode(onExitAction),
-                                         Objects.hashCode(miTrigger),
+                                         Objects.hashCode(isMultipleInstance),
                                          Objects.hashCode(isAsync));
     }
 
@@ -244,7 +244,7 @@ public class MultipleInstanceSubprocessTaskExecutionSet implements BPMNPropertyS
                     Objects.equals(multipleInstanceCompletionCondition, other.multipleInstanceCompletionCondition) &&
                     Objects.equals(onEntryAction, other.onEntryAction) &&
                     Objects.equals(onExitAction, other.onExitAction) &&
-                    Objects.equals(miTrigger, other.miTrigger) &&
+                    Objects.equals(isMultipleInstance, other.isMultipleInstance) &&
                     Objects.equals(isAsync, other.isAsync);
         }
         return false;

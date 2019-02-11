@@ -50,9 +50,13 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSe
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.TaskGeneralSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.IsMultipleInstance;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceCollectionInput;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceCollectionOutput;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceDataInput;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceDataOutput;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceSubprocessTaskExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.ReusableSubprocessTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.UserTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTask;
 import org.kie.workbench.common.stunner.core.graph.Graph;
@@ -72,6 +76,7 @@ public class VariableUtilsTest {
     private static final String ASSIGNMENTS_INFO_VALUE = "|input1:String,input3:String||output2:String,output3:String|[din]var1->input1,[din]var3->input3,[dout]output2->var2,[dout]output3->var3";
     private static final String EVENT_INPUT_ASSIGNMENTS_INFO_VALUE = "|input1:String|||[din]var1->input1";
     private static final String EVENT_OUTPUT_ASSIGNMENTS_INFO_VALUE = "||output1:var1||[dout]output1->var1";
+    private static final String COLLECTION = "COLLECTION";
 
     @Mock
     private Graph graph;
@@ -87,18 +92,23 @@ public class VariableUtilsTest {
     }
 
     @Test
-    public void testFindVariableUsagesForServiceTask() {
-        testFindVariableUsagesForTask(mockServiceTask(NODE_NAME, ASSIGNMENTS_INFO_VALUE));
+    public void testFindVariableUsagesForUserTaskInputCollection() {
+        testFindVariableUsagesForTaskCollections(mockUserTask(NODE_NAME, ASSIGNMENTS_INFO_VALUE, COLLECTION, null), COLLECTION, COLLECTION, null);
     }
 
-    private void testFindVariableUsagesForTask(Object task) {
-        List<Node> nodes = mockNodeList(task);
-        List<VariableUsage> expectedUsages = Arrays.asList(new VariableUsage("var1", VariableUsage.USAGE_TYPE.INPUT_VARIABLE, nodes.get(0), NODE_NAME));
-        testFindVariableUsages("var1", nodes, expectedUsages);
-        expectedUsages = Arrays.asList(new VariableUsage("var2", VariableUsage.USAGE_TYPE.OUTPUT_VARIABLE, nodes.get(0), NODE_NAME));
-        testFindVariableUsages("var2", nodes, expectedUsages);
-        expectedUsages = Arrays.asList(new VariableUsage("var3", VariableUsage.USAGE_TYPE.INPUT_OUTPUT_VARIABLE, nodes.get(0), NODE_NAME));
-        testFindVariableUsages("var3", nodes, expectedUsages);
+    @Test
+    public void testFindVariableUsagesForUserTaskOutputCollection() {
+        testFindVariableUsagesForTaskCollections(mockUserTask(NODE_NAME, ASSIGNMENTS_INFO_VALUE, null, COLLECTION), COLLECTION, null, COLLECTION);
+    }
+
+    @Test
+    public void testFindVariableUsagesForUserTaskInputOutputCollection() {
+        testFindVariableUsagesForTaskCollections(mockUserTask(NODE_NAME, ASSIGNMENTS_INFO_VALUE, COLLECTION, COLLECTION), COLLECTION, COLLECTION, COLLECTION);
+    }
+
+    @Test
+    public void testFindVariableUsagesForServiceTask() {
+        testFindVariableUsagesForTask(mockServiceTask(NODE_NAME, ASSIGNMENTS_INFO_VALUE));
     }
 
     @Test
@@ -194,24 +204,39 @@ public class VariableUtilsTest {
     }
 
     @Test
+    public void testFindVariableUsagesForReusableSubprocessInputCollection() {
+        testFindVariableUsagesForTaskCollections(mockReusableSubprocess(NODE_NAME, ASSIGNMENTS_INFO_VALUE, COLLECTION, null), COLLECTION, COLLECTION, null);
+    }
+
+    @Test
+    public void testFindVariableUsagesForReusableSubprocessOutputCollection() {
+        testFindVariableUsagesForTaskCollections(mockReusableSubprocess(NODE_NAME, ASSIGNMENTS_INFO_VALUE, null, COLLECTION), COLLECTION, null, COLLECTION);
+    }
+
+    @Test
+    public void testFindVariableUsagesForReusableSuprocessTaskInputOutputCollection() {
+        testFindVariableUsagesForTaskCollections(mockReusableSubprocess(NODE_NAME, ASSIGNMENTS_INFO_VALUE, COLLECTION, COLLECTION), COLLECTION, COLLECTION, COLLECTION);
+    }
+
+    @Test
     public void testFindVariableUsagesForMultipleInstanceSubProcessWithOnlyInput() {
         List<Node> nodes = mockNodeList(mockMultipleInstanceSubprocess(NODE_NAME, "var1", null));
-        List<VariableUsage> expectedUsages = Arrays.asList(new VariableUsage("var1", VariableUsage.USAGE_TYPE.INPUT_COLLECTION, nodes.get(0), NODE_NAME));
+        List<VariableUsage> expectedUsages = Arrays.asList(new VariableUsage("var1", VariableUsage.USAGE_TYPE.MULTIPLE_INSTANCE_INPUT_COLLECTION, nodes.get(0), NODE_NAME));
         testFindVariableUsages("var1", nodes, expectedUsages);
     }
 
     @Test
     public void testFindVariableUsagesForMultipleInstanceSubProcessWithOnlyOutput() {
         List<Node> nodes = mockNodeList(mockMultipleInstanceSubprocess(NODE_NAME, null, "var1"));
-        List<VariableUsage> expectedUsages = Arrays.asList(new VariableUsage("var1", VariableUsage.USAGE_TYPE.OUTPUT_COLLECTION, nodes.get(0), NODE_NAME));
+        List<VariableUsage> expectedUsages = Arrays.asList(new VariableUsage("var1", VariableUsage.USAGE_TYPE.MULTIPLE_INSTANCE_OUTPUT_COLLECTION, nodes.get(0), NODE_NAME));
         testFindVariableUsages("var1", nodes, expectedUsages);
     }
 
     @Test
     public void testFindVariableUsagesForMultipleInstanceSubProcessWithInputAndOutput() {
         List<Node> nodes = mockNodeList(mockMultipleInstanceSubprocess(NODE_NAME, "var1", "var1"));
-        List<VariableUsage> expectedUsages = Arrays.asList(new VariableUsage("var1", VariableUsage.USAGE_TYPE.INPUT_COLLECTION, nodes.get(0), NODE_NAME),
-                                                           new VariableUsage("var1", VariableUsage.USAGE_TYPE.OUTPUT_COLLECTION, nodes.get(0), NODE_NAME));
+        List<VariableUsage> expectedUsages = Arrays.asList(new VariableUsage("var1", VariableUsage.USAGE_TYPE.MULTIPLE_INSTANCE_INPUT_COLLECTION, nodes.get(0), NODE_NAME),
+                                                           new VariableUsage("var1", VariableUsage.USAGE_TYPE.MULTIPLE_INSTANCE_OUTPUT_COLLECTION, nodes.get(0), NODE_NAME));
         testFindVariableUsages("var1", nodes, expectedUsages);
     }
 
@@ -219,6 +244,32 @@ public class VariableUtilsTest {
         when(graph.nodes()).thenReturn(nodes);
         Collection<VariableUsage> result = VariableUtils.findVariableUsages(graph, variableName);
         assertEquals(expectedUsages, result);
+    }
+
+    private void testFindVariableUsagesForTask(Object task) {
+        List<Node> nodes = mockNodeList(task);
+        List<VariableUsage> expectedUsages = Arrays.asList(new VariableUsage("var1", VariableUsage.USAGE_TYPE.INPUT_VARIABLE, nodes.get(0), NODE_NAME));
+        testFindVariableUsages("var1", nodes, expectedUsages);
+        expectedUsages = Arrays.asList(new VariableUsage("var2", VariableUsage.USAGE_TYPE.OUTPUT_VARIABLE, nodes.get(0), NODE_NAME));
+        testFindVariableUsages("var2", nodes, expectedUsages);
+        expectedUsages = Arrays.asList(new VariableUsage("var3", VariableUsage.USAGE_TYPE.INPUT_OUTPUT_VARIABLE, nodes.get(0), NODE_NAME));
+        testFindVariableUsages("var3", nodes, expectedUsages);
+    }
+
+    private void testFindVariableUsagesForTaskCollections(Object task, String var, String inputCollection, String outputCollection) {
+        List<Node> nodes = mockNodeList(task);
+        List<VariableUsage> expectedUsages = new ArrayList<>();
+        addInputOutputCollections(expectedUsages, inputCollection, outputCollection, nodes.get(0));
+        testFindVariableUsages(var, nodes, expectedUsages);
+    }
+
+    private void addInputOutputCollections(List<VariableUsage> expectedResult, String inputCollection, String outputCollection, Node node) {
+        if (inputCollection != null) {
+            expectedResult.add(new VariableUsage(inputCollection, VariableUsage.USAGE_TYPE.MULTIPLE_INSTANCE_INPUT_COLLECTION, node, NODE_NAME));
+        }
+        if (outputCollection != null) {
+            expectedResult.add(new VariableUsage(outputCollection, VariableUsage.USAGE_TYPE.MULTIPLE_INSTANCE_OUTPUT_COLLECTION, node, NODE_NAME));
+        }
     }
 
     private List<Node> mockNodeList(Object... contents) {
@@ -236,6 +287,10 @@ public class VariableUtilsTest {
     }
 
     private UserTask mockUserTask(String name, String assignmentsInfoValue) {
+        return mockUserTask(name, assignmentsInfoValue, null, null);
+    }
+
+    private UserTask mockUserTask(String name, String assignmentsInfoValue, String inputCollection, String outputCollection) {
         UserTask result = mock(UserTask.class);
         TaskGeneralSet generalSet = mockTaskGeneralSet(name);
         when(result.getGeneral()).thenReturn(generalSet);
@@ -243,6 +298,19 @@ public class VariableUtilsTest {
         when(result.getExecutionSet()).thenReturn(executionSet);
         AssignmentsInfo assignmentsInfo = mockAssignmentsInfo(assignmentsInfoValue);
         when(executionSet.getAssignmentsinfo()).thenReturn(assignmentsInfo);
+        IsMultipleInstance isMultipleInstance = mock(IsMultipleInstance.class);
+        when(isMultipleInstance.getValue()).thenReturn(true);
+        MultipleInstanceCollectionInput miInputCollection = mock(MultipleInstanceCollectionInput.class);
+        when(miInputCollection.getValue()).thenReturn(inputCollection);
+        MultipleInstanceDataInput miDataInput = mock(MultipleInstanceDataInput.class);
+        MultipleInstanceCollectionOutput miOutputCollection = mock(MultipleInstanceCollectionOutput.class);
+        MultipleInstanceDataOutput miDataOutput = mock(MultipleInstanceDataOutput.class);
+        when(miOutputCollection.getValue()).thenReturn(outputCollection);
+        when(executionSet.getIsMultipleInstance()).thenReturn(isMultipleInstance);
+        when(executionSet.getMultipleInstanceCollectionInput()).thenReturn(miInputCollection);
+        when(executionSet.getMultipleInstanceDataInput()).thenReturn(miDataInput);
+        when(executionSet.getMultipleInstanceCollectionOutput()).thenReturn(miOutputCollection);
+        when(executionSet.getMultipleInstanceDataOutput()).thenReturn(miDataOutput);
         return result;
     }
 
@@ -415,12 +483,31 @@ public class VariableUtilsTest {
     }
 
     private ReusableSubprocess mockReusableSubprocess(String name, String assignmentsInfoValue) {
+        return mockReusableSubprocess(name, assignmentsInfoValue, null, null);
+    }
+
+    private ReusableSubprocess mockReusableSubprocess(String name, String assignmentsInfoValue, String inputCollection, String outputCollection) {
         ReusableSubprocess result = mock(ReusableSubprocess.class);
         BPMNGeneralSet generalSet = mockGeneralSet(name);
         when(result.getGeneral()).thenReturn(generalSet);
         AssignmentsInfo assignmentsInfo = mockAssignmentsInfo(assignmentsInfoValue);
         DataIOSet dataIOSet = mockIOSet(assignmentsInfo);
         when(result.getDataIOSet()).thenReturn(dataIOSet);
+        ReusableSubprocessTaskExecutionSet executionSet = mock(ReusableSubprocessTaskExecutionSet.class);
+        when(result.getExecutionSet()).thenReturn(executionSet);
+        IsMultipleInstance isMultipleInstance = mock(IsMultipleInstance.class);
+        when(isMultipleInstance.getValue()).thenReturn(true);
+        MultipleInstanceCollectionInput miInputCollection = mock(MultipleInstanceCollectionInput.class);
+        when(miInputCollection.getValue()).thenReturn(inputCollection);
+        MultipleInstanceDataInput miDataInput = mock(MultipleInstanceDataInput.class);
+        MultipleInstanceCollectionOutput miOutputCollection = mock(MultipleInstanceCollectionOutput.class);
+        MultipleInstanceDataOutput miDataOutput = mock(MultipleInstanceDataOutput.class);
+        when(miOutputCollection.getValue()).thenReturn(outputCollection);
+        when(executionSet.getIsMultipleInstance()).thenReturn(isMultipleInstance);
+        when(executionSet.getMultipleInstanceCollectionInput()).thenReturn(miInputCollection);
+        when(executionSet.getMultipleInstanceDataInput()).thenReturn(miDataInput);
+        when(executionSet.getMultipleInstanceCollectionOutput()).thenReturn(miOutputCollection);
+        when(executionSet.getMultipleInstanceDataOutput()).thenReturn(miDataOutput);
         return result;
     }
 
@@ -433,9 +520,13 @@ public class VariableUtilsTest {
         MultipleInstanceCollectionInput input = mock(MultipleInstanceCollectionInput.class);
         when(input.getValue()).thenReturn(inputVariable);
         when(executionSet.getMultipleInstanceCollectionInput()).thenReturn(input);
+        MultipleInstanceDataInput dataInput = mock(MultipleInstanceDataInput.class);
+        when(executionSet.getMultipleInstanceDataInput()).thenReturn(dataInput);
         MultipleInstanceCollectionOutput output = mock(MultipleInstanceCollectionOutput.class);
         when(output.getValue()).thenReturn(outputVariable);
         when(executionSet.getMultipleInstanceCollectionOutput()).thenReturn(output);
+        MultipleInstanceDataOutput dataOutput = mock(MultipleInstanceDataOutput.class);
+        when(executionSet.getMultipleInstanceDataOutput()).thenReturn(dataOutput);
         return result;
     }
 

@@ -21,8 +21,8 @@ import java.util.Set;
 
 import javax.enterprise.event.Event;
 
-import com.google.gwt.event.dom.client.BlurEvent;
-import com.google.gwt.event.dom.client.BlurHandler;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
@@ -98,7 +98,7 @@ public class AssignmentListItemWidgetViewImplTest {
     private ArgumentCaptor<KeyDownHandler> keyDownHandlerCaptor;
 
     @Captor
-    private ArgumentCaptor<BlurHandler> blurHandlerCaptor;
+    private ArgumentCaptor<ChangeHandler> changeHandlerCaptor;
 
     private AssignmentListItemWidgetViewImpl view;
 
@@ -143,6 +143,7 @@ public class AssignmentListItemWidgetViewImplTest {
                                                              anyString());
         doCallRealMethod().when(view).setParentWidget(any(ActivityDataIOEditorWidget.class));
         doCallRealMethod().when(view).isDuplicateName(anyString());
+        doCallRealMethod().when(view).isMultipleInstanceVariable(anyString());
         doCallRealMethod().when(view).setShowConstants(anyBoolean());
         doCallRealMethod().when(view).setDisallowedNames(anySet(),
                                                          anyString());
@@ -279,7 +280,7 @@ public class AssignmentListItemWidgetViewImplTest {
     }
 
     @Test
-    public void testNameBlurHandler() {
+    public void testNameChangeHandler() {
         ActivityDataIOEditorWidget parent = mock(ActivityDataIOEditorWidget.class);
         when(parent.isDuplicateName(anyString())).thenReturn(true);
         doReturn("anyName").when(name).getText();
@@ -288,9 +289,9 @@ public class AssignmentListItemWidgetViewImplTest {
         view.setParentWidget(parent);
         view.init();
         verify(name,
-               times(1)).addBlurHandler(blurHandlerCaptor.capture());
-        BlurHandler handler = blurHandlerCaptor.getValue();
-        handler.onBlur(mock(BlurEvent.class));
+               times(1)).addChangeHandler(changeHandlerCaptor.capture());
+        ChangeHandler handler = changeHandlerCaptor.getValue();
+        handler.onChange(mock(ChangeEvent.class));
         verify(parent,
                times(1)).isDuplicateName("anyName");
         verify(notification,
@@ -298,6 +299,22 @@ public class AssignmentListItemWidgetViewImplTest {
                                                     NotificationEvent.NotificationType.ERROR));
         verify(name,
                times(1)).setValue("");
+    }
+
+    @Test
+    public void testNameChangeToMIVariableName() {
+        ActivityDataIOEditorWidget parent = mock(ActivityDataIOEditorWidget.class);
+        when(parent.isDuplicateName(anyString())).thenReturn(false);
+        when(parent.isMultipleInstanceVariable("anyName")).thenReturn(true);
+        doReturn("anyName").when(name).getText();
+        view.setParentWidget(parent);
+        view.init();
+        verify(name, times(1)).addChangeHandler(changeHandlerCaptor.capture());
+        ChangeHandler handler = changeHandlerCaptor.getValue();
+        handler.onChange(mock(ChangeEvent.class));
+        verify(parent, times(1)).isMultipleInstanceVariable("anyName");
+        verify(notification, times(1)).fire(new NotificationEvent("AssignmentNameAlreadyInUseAsMultipleInstanceInputOutputVariable(anyName)", NotificationEvent.NotificationType.ERROR));
+        verify(name, times(1)).setValue("");
     }
 
     @Test

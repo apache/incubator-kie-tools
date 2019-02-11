@@ -18,13 +18,10 @@ package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.prope
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.eclipse.bpmn2.FormalExpression;
-import org.eclipse.bpmn2.InputOutputSpecification;
 import org.eclipse.bpmn2.PotentialOwner;
 import org.eclipse.bpmn2.ResourceRole;
 import org.eclipse.bpmn2.UserTask;
@@ -33,10 +30,8 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomInput;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.DefinitionResolver;
 import org.kie.workbench.common.stunner.bpmn.definition.property.assignee.Actors;
-import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.AssignmentsInfo;
-import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeListValue;
 
-public class UserTaskPropertyReader extends TaskPropertyReader {
+public class UserTaskPropertyReader extends MultipleInstanceActivityPropertyReader {
 
     private final UserTask task;
 
@@ -62,29 +57,6 @@ public class UserTaskPropertyReader extends TaskPropertyReader {
 
     private String renderActors(final Collection<String> actors) {
         return actors.stream().collect(Collectors.joining(","));
-    }
-
-    public AssignmentsInfo getAssignmentsInfo() {
-        Optional<InputOutputSpecification> ioSpecification =
-                Optional.ofNullable(task.getIoSpecification());
-
-        return AssignmentsInfos.of(
-                ioSpecification.map(InputOutputSpecification::getDataInputs)
-                        .orElse(Collections.emptyList()),
-                task.getDataInputAssociations(),
-                ioSpecification.map(InputOutputSpecification::getDataOutputs)
-                        .orElse(Collections.emptyList()),
-                task.getDataOutputAssociations(),
-                ioSpecification.isPresent()
-        );
-    }
-
-    public ScriptTypeListValue getOnEntryAction() {
-        return Scripts.onEntry(element.getExtensionValues());
-    }
-
-    public ScriptTypeListValue getOnExitAction() {
-        return Scripts.onExit(element.getExtensionValues());
     }
 
     public String getTaskName() {

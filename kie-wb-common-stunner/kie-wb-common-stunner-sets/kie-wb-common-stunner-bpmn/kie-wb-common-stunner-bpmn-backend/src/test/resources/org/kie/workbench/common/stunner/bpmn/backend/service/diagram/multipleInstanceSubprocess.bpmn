@@ -3,11 +3,12 @@
   <bpmn2:itemDefinition id="_var1Item" structureRef="String"/>
   <bpmn2:itemDefinition id="_var2Item" structureRef="String"/>
   <bpmn2:itemDefinition id="_mi-var1Item" structureRef="String"/>
-  <bpmn2:itemDefinition id="_2316CEC1-C1F7-41B1-8C91-3CE73ADE5571_multiInstanceItemType"/>
-  <bpmn2:process id="MultipleInstanceSubprocess" drools:packageName="org.jbpm" drools:version="1.0" name="MultipleInstanceSubprocess" isExecutable="true">
-    <bpmn2:property id="var1" itemSubjectRef="_var1Item"/>
-    <bpmn2:property id="var2" itemSubjectRef="_var2Item"/>
-    <bpmn2:subProcess id="_2316CEC1-C1F7-41B1-8C91-3CE73ADE5571" drools:selectable="true" color:background-color="#fafad2" color:border-color="#000000" color:color="#000000" name="Multiple Instance Subprocess">
+  <bpmn2:itemDefinition id="_2316CEC1-C1F7-41B1-8C91-3CE73ADE5571_multiInstanceItemType_dataInput" structureRef="java.lang.Object"/>
+  <bpmn2:itemDefinition id="_2316CEC1-C1F7-41B1-8C91-3CE73ADE5571_multiInstanceItemType_dataOutput" structureRef="java.lang.Object"/>
+  <bpmn2:process id="MultipleInstanceSubprocess" drools:packageName="org.jbpm" drools:version="1.0" drools:adHoc="false" name="MultipleInstanceSubprocess" isExecutable="true">
+    <bpmn2:property id="var1" itemSubjectRef="_var1Item" name="var1"/>
+    <bpmn2:property id="var2" itemSubjectRef="_var2Item" name="var2"/>
+    <bpmn2:subProcess id="_2316CEC1-C1F7-41B1-8C91-3CE73ADE5571" name="Multiple Instance Subprocess">
       <bpmn2:extensionElements>
         <drools:metaData name="elementname">
           <drools:metaValue><![CDATA[Multiple Instance Subprocess]]></drools:metaValue>
@@ -22,62 +23,54 @@
           <drools:metaValue><![CDATA[true]]></drools:metaValue>
         </drools:metaData>
       </bpmn2:extensionElements>
-      <bpmn2:ioSpecification id="_bwXzURrUEeimVt3vJ1biTA">
-        <bpmn2:dataInput id="_2316CEC1-C1F7-41B1-8C91-3CE73ADE5571_input" name="var1"/>
-        <bpmn2:dataOutput id="_2316CEC1-C1F7-41B1-8C91-3CE73ADE5571_output" name="var2"/>
-        <bpmn2:inputSet id="_bwXzUhrUEeimVt3vJ1biTA">
-          <bpmn2:dataInputRefs>_2316CEC1-C1F7-41B1-8C91-3CE73ADE5571_input</bpmn2:dataInputRefs>
+      <bpmn2:ioSpecification id="_e_GXoCFYEemYzPmZ2oiIaw">
+        <bpmn2:dataInput id="_2316CEC1-C1F7-41B1-8C91-3CE73ADE5571_IN_COLLECTIONInputX" itemSubjectRef="_var1Item" name="IN_COLLECTION"/>
+        <bpmn2:dataInput id="_2316CEC1-C1F7-41B1-8C91-3CE73ADE5571_dataInputInputX" itemSubjectRef="_2316CEC1-C1F7-41B1-8C91-3CE73ADE5571_multiInstanceItemType_dataInput" name="dataInput"/>
+        <bpmn2:dataOutput id="_2316CEC1-C1F7-41B1-8C91-3CE73ADE5571_OUT_COLLECTIONOutputX" itemSubjectRef="_var2Item" name="OUT_COLLECTION"/>
+        <bpmn2:dataOutput id="_2316CEC1-C1F7-41B1-8C91-3CE73ADE5571_dataOutputOutputX" itemSubjectRef="_2316CEC1-C1F7-41B1-8C91-3CE73ADE5571_multiInstanceItemType_dataOutput" name="dataOutput"/>
+        <bpmn2:inputSet id="_e_GXoSFYEemYzPmZ2oiIaw">
+          <bpmn2:dataInputRefs>_2316CEC1-C1F7-41B1-8C91-3CE73ADE5571_IN_COLLECTIONInputX</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_2316CEC1-C1F7-41B1-8C91-3CE73ADE5571_dataInputInputX</bpmn2:dataInputRefs>
         </bpmn2:inputSet>
-        <bpmn2:outputSet id="_bwXzUxrUEeimVt3vJ1biTA">
-          <bpmn2:dataOutputRefs>_2316CEC1-C1F7-41B1-8C91-3CE73ADE5571_output</bpmn2:dataOutputRefs>
+        <bpmn2:outputSet id="_e_GXoiFYEemYzPmZ2oiIaw">
+          <bpmn2:dataOutputRefs>_2316CEC1-C1F7-41B1-8C91-3CE73ADE5571_OUT_COLLECTIONOutputX</bpmn2:dataOutputRefs>
+          <bpmn2:dataOutputRefs>_2316CEC1-C1F7-41B1-8C91-3CE73ADE5571_dataOutputOutputX</bpmn2:dataOutputRefs>
         </bpmn2:outputSet>
       </bpmn2:ioSpecification>
-      <bpmn2:property id="mi-var1" itemSubjectRef="_mi-var1Item"/>
-      <bpmn2:dataInputAssociation id="_bwXzVBrUEeimVt3vJ1biTA">
+      <bpmn2:property id="mi-var1" itemSubjectRef="_mi-var1Item" name="mi-var1"/>
+      <bpmn2:dataInputAssociation id="_e_GXoyFYEemYzPmZ2oiIaw">
         <bpmn2:sourceRef>var1</bpmn2:sourceRef>
-        <bpmn2:targetRef>_2316CEC1-C1F7-41B1-8C91-3CE73ADE5571_input</bpmn2:targetRef>
+        <bpmn2:targetRef>_2316CEC1-C1F7-41B1-8C91-3CE73ADE5571_IN_COLLECTIONInputX</bpmn2:targetRef>
       </bpmn2:dataInputAssociation>
-      <bpmn2:dataOutputAssociation id="_bwXzVRrUEeimVt3vJ1biTA">
-        <bpmn2:sourceRef>_2316CEC1-C1F7-41B1-8C91-3CE73ADE5571_output</bpmn2:sourceRef>
+      <bpmn2:dataOutputAssociation id="_e_GXpCFYEemYzPmZ2oiIaw">
+        <bpmn2:sourceRef>_2316CEC1-C1F7-41B1-8C91-3CE73ADE5571_OUT_COLLECTIONOutputX</bpmn2:sourceRef>
         <bpmn2:targetRef>var2</bpmn2:targetRef>
       </bpmn2:dataOutputAssociation>
-      <bpmn2:multiInstanceLoopCharacteristics id="_bwXzVhrUEeimVt3vJ1biTA">
-        <bpmn2:loopDataInputRef>_2316CEC1-C1F7-41B1-8C91-3CE73ADE5571_input</bpmn2:loopDataInputRef>
-        <bpmn2:loopDataOutputRef>_2316CEC1-C1F7-41B1-8C91-3CE73ADE5571_output</bpmn2:loopDataOutputRef>
-        <bpmn2:inputDataItem xsi:type="bpmn2:tDataInput" id="dataInput"/>
-        <bpmn2:outputDataItem xsi:type="bpmn2:tDataOutput" id="dataOutput" itemSubjectRef="_2316CEC1-C1F7-41B1-8C91-3CE73ADE5571_multiInstanceItemType"/>
-        <bpmn2:completionCondition xsi:type="bpmn2:tFormalExpression" id="_bwXzVxrUEeimVt3vJ1biTA"><![CDATA[a=b]]></bpmn2:completionCondition>
+      <bpmn2:multiInstanceLoopCharacteristics id="_e_GXpSFYEemYzPmZ2oiIaw">
+        <bpmn2:loopDataInputRef>_2316CEC1-C1F7-41B1-8C91-3CE73ADE5571_IN_COLLECTIONInputX</bpmn2:loopDataInputRef>
+        <bpmn2:loopDataOutputRef>_2316CEC1-C1F7-41B1-8C91-3CE73ADE5571_OUT_COLLECTIONOutputX</bpmn2:loopDataOutputRef>
+        <bpmn2:inputDataItem xsi:type="bpmn2:tDataInput" id="dataInput" itemSubjectRef="_2316CEC1-C1F7-41B1-8C91-3CE73ADE5571_multiInstanceItemType_dataInput" name="dataInput"/>
+        <bpmn2:outputDataItem xsi:type="bpmn2:tDataOutput" id="dataOutput" itemSubjectRef="_2316CEC1-C1F7-41B1-8C91-3CE73ADE5571_multiInstanceItemType_dataOutput" name="dataOutput"/>
+        <bpmn2:completionCondition xsi:type="bpmn2:tFormalExpression" id="_e_GXpiFYEemYzPmZ2oiIaw"><![CDATA[a=b]]></bpmn2:completionCondition>
       </bpmn2:multiInstanceLoopCharacteristics>
     </bpmn2:subProcess>
   </bpmn2:process>
-  <bpmndi:BPMNDiagram id="_bwXzWBrUEeimVt3vJ1biTA">
-    <bpmndi:BPMNPlane id="_bwXzWRrUEeimVt3vJ1biTA" bpmnElement="MultipleInstanceSubprocess">
-      <bpmndi:BPMNShape id="_bwYaYBrUEeimVt3vJ1biTA" bpmnElement="_2316CEC1-C1F7-41B1-8C91-3CE73ADE5571">
+  <bpmndi:BPMNDiagram id="_e_GXpyFYEemYzPmZ2oiIaw">
+    <bpmndi:BPMNPlane id="_e_GXqCFYEemYzPmZ2oiIaw" bpmnElement="MultipleInstanceSubprocess">
+      <bpmndi:BPMNShape id="shape__2316CEC1-C1F7-41B1-8C91-3CE73ADE5571" bpmnElement="_2316CEC1-C1F7-41B1-8C91-3CE73ADE5571">
         <dc:Bounds height="160.0" width="200.0" x="150.0" y="75.0"/>
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
-  <bpmn2:relationship id="_bwYaYRrUEeimVt3vJ1biTA" type="BPSimData">
+  <bpmn2:relationship id="_e_GXqSFYEemYzPmZ2oiIaw" type="BPSimData">
     <bpmn2:extensionElements>
       <bpsim:BPSimData>
         <bpsim:Scenario xsi:type="bpsim:Scenario" id="default" name="Simulationscenario">
-          <bpsim:ScenarioParameters xsi:type="bpsim:ScenarioParameters" baseTimeUnit="min"/>
-          <bpsim:ElementParameters xsi:type="bpsim:ElementParameters" elementRef="_2316CEC1-C1F7-41B1-8C91-3CE73ADE5571" id="_bwYaYhrUEeimVt3vJ1biTA">
-            <bpsim:TimeParameters xsi:type="bpsim:TimeParameters">
-              <bpsim:ProcessingTime xsi:type="bpsim:Parameter">
-                <bpsim:UniformDistribution max="10.0" min="5.0"/>
-              </bpsim:ProcessingTime>
-            </bpsim:TimeParameters>
-            <bpsim:CostParameters xsi:type="bpsim:CostParameters">
-              <bpsim:UnitCost xsi:type="bpsim:Parameter">
-                <bpsim:FloatingParameter value="0.0"/>
-              </bpsim:UnitCost>
-            </bpsim:CostParameters>
-          </bpsim:ElementParameters>
+          <bpsim:ScenarioParameters xsi:type="bpsim:ScenarioParameters"/>
         </bpsim:Scenario>
       </bpsim:BPSimData>
     </bpmn2:extensionElements>
-    <bpmn2:source>_bwXzUBrUEeimVt3vJ1biTA</bpmn2:source>
-    <bpmn2:target>_bwXzUBrUEeimVt3vJ1biTA</bpmn2:target>
+    <bpmn2:source>_e_EicSFYEemYzPmZ2oiIaw</bpmn2:source>
+    <bpmn2:target>_e_EicSFYEemYzPmZ2oiIaw</bpmn2:target>
   </bpmn2:relationship>
 </bpmn2:definitions>

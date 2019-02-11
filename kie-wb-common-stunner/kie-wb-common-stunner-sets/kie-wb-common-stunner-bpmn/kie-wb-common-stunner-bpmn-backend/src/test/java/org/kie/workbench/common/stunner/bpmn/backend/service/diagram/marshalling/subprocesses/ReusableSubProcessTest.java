@@ -57,7 +57,7 @@ public class ReusableSubProcessTest extends SubProcess<ReusableSubprocess> {
     private static final int AMOUNT_OF_NODES_IN_DIAGRAM = 34;
 
     private static final String DEFAULT_CALLED_ELEMENT = "";
-    private static final String DEFAULT_SUB_PROCESS_DATA_INPUT_OUTPUT = "";
+    private static final String DEFAULT_SUB_PROCESS_DATA_INPUT_OUTPUT = "||||";
 
     private static final boolean IS_INDEPENDENT = true;
     private static final boolean IS_ASYNC = true;

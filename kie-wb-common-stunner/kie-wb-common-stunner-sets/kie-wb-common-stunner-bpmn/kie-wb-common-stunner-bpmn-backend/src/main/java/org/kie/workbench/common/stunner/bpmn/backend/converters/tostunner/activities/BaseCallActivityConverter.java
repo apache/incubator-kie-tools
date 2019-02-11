@@ -18,7 +18,7 @@ package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.activ
 import org.eclipse.bpmn2.CallActivity;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.TypedFactoryManager;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.BpmnNode;
-import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.ActivityPropertyReader;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.CallActivityPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.PropertyReaderFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseReusableSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
@@ -44,7 +44,7 @@ public abstract class BaseCallActivityConverter<R extends BaseReusableSubprocess
 
     @SuppressWarnings("unchecked")
     public BpmnNode convert(CallActivity activity) {
-        ActivityPropertyReader p = propertyReaderFactory.of(activity);
+        CallActivityPropertyReader p = propertyReaderFactory.of(activity);
 
         Node<View<R>, Edge> node = createNode(activity, p);
 
@@ -70,8 +70,8 @@ public abstract class BaseCallActivityConverter<R extends BaseReusableSubprocess
         return BpmnNode.of(node);
     }
 
-    protected abstract Node<View<R>, Edge> createNode(CallActivity activity, ActivityPropertyReader p);
+    protected abstract Node<View<R>, Edge> createNode(CallActivity activity, CallActivityPropertyReader p);
 
     protected abstract E createReusableSubprocessTaskExecutionSet(CallActivity activity,
-                                                                  ActivityPropertyReader p);
+                                                                  CallActivityPropertyReader p);
 }
