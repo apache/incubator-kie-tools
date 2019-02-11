@@ -147,7 +147,7 @@ public abstract class AbstractControllerIT {
     public static WebArchive createKieServerWar() {
         try {
             final File kieServerFile = Maven.configureResolver().workOffline().loadPomFromFile("pom.xml")
-                    .resolve("org.kie.server:kie-server:war:ee7:?").withoutTransitivity().asSingleFile();
+                    .resolve("org.kie.server:kie-server:war:ee8:?").withoutTransitivity().asSingleFile();
 
             return ShrinkWrap.create(ZipImporter.class,
                                      "kie-server.war").importFrom(kieServerFile)
