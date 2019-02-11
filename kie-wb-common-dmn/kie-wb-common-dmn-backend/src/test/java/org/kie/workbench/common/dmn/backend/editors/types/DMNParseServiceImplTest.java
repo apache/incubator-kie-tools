@@ -136,4 +136,13 @@ public class DMNParseServiceImplTest {
         final RangeValue rangeValue = service.parseRangeValue("[0..5)");
         assertFalse(rangeValue.getIncludeEndValue());
     }
+
+    @Test
+    public void testParseFEELListMultipleCommasInside() {
+
+        final List<String> actualList = service.parseFEELList("\"Sao Paulo, SP, South America\",\"New York, NY, North America\"");
+        final List<String> expectedList = asList("\"Sao Paulo, SP, South America\"", "\"New York, NY, North America\"");
+
+        assertEquals(expectedList, actualList);
+    }
 }
