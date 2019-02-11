@@ -45,6 +45,7 @@ public class AssetsScreen {
     private final TranslationService ts;
     private final Caller<LibraryService> libraryService;
     private WorkspaceProject workspaceProject;
+    private boolean empty = true;
 
     public interface View extends UberElemental<AssetsScreen> {
 
@@ -78,11 +79,17 @@ public class AssetsScreen {
     }
 
     public void observeAddAsset(@Observes NewResourceSuccessEvent event) {
-        this.showAssets();
+        if (isEmpty()) {
+            this.showAssets();
+        }
+    }
+
+    protected boolean isEmpty() {
+        return this.empty;
     }
 
     public void onAssetListUpdated(@Observes @Routed ProjectAssetListUpdated event) {
-        if (event.getProject().getRepository().getIdentifier().equals(workspaceProject.getRepository().getIdentifier())) {
+        if (event.getProject().getRepository().getIdentifier().equals(workspaceProject.getRepository().getIdentifier()) && isEmpty()) {
             this.showAssets();
         }
     }
@@ -96,11 +103,13 @@ public class AssetsScreen {
             busyIndicatorView.showBusyIndicator(ts.getTranslation(LibraryConstants.LoadingAssets));
 
             libraryService.call((Boolean hasAssets) -> {
-                final HTMLElement element =
-                        (hasAssets) ? populatedAssetsScreen.getView().getElement() : emptyAssetsScreen.getView().getElement();
-                ensureContentSet(element);
-                busyIndicatorView.hideBusyIndicator();
-            }, new HasBusyIndicatorDefaultErrorCallback(busyIndicatorView)).hasAssets(this.workspaceProject);
+                                    final HTMLElement element =
+                                            (hasAssets) ? populatedAssetsScreen.getView().getElement() : emptyAssetsScreen.getView().getElement();
+                                    this.empty = !hasAssets;
+                                    ensureContentSet(element);
+                                    busyIndicatorView.hideBusyIndicator();
+                                },
+                                new HasBusyIndicatorDefaultErrorCallback(busyIndicatorView)).hasAssets(this.workspaceProject);
         }
     }
 

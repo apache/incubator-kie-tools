@@ -16,13 +16,12 @@
 
 package org.kie.workbench.common.screens.library.client.screens.assets;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
 import javax.enterprise.event.Event;
 
-import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
@@ -32,6 +31,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.defaulteditor.client.editor.NewFileUploader;
 import org.kie.workbench.common.screens.explorer.client.utils.Classifier;
+import org.kie.workbench.common.screens.library.api.AssetQueryResult;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.api.ProjectAssetsQuery;
 import org.kie.workbench.common.screens.library.client.screens.EmptyState;
@@ -52,22 +52,14 @@ import org.uberfire.client.mvp.ResourceTypeManagerCache;
 import org.uberfire.client.workbench.events.SelectPlaceEvent;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.mocks.CallerMock;
-import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.category.Others;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PopulatedAssetsScreenTest extends ProjectScreenTestBase {
@@ -136,7 +128,7 @@ public class PopulatedAssetsScreenTest extends ProjectScreenTestBase {
                                                               newFileUploader,
                                                               newResourcePresenter,
                                                               libraryPermissions,
-                                                              new EventSourceMock<>(),
+                                                              mock(Event.class),
                                                               emptyState,
                                                               categoryUtils,
                                                               assetQueryService,
@@ -197,7 +189,10 @@ public class PopulatedAssetsScreenTest extends ProjectScreenTestBase {
         final ProjectAssetsQuery mockedQuery = mock(ProjectAssetsQuery.class);
         doReturn(mockedQuery)
                 .when(populatedAssetsScreen)
-                .createProjectQuery("", "ALL", 0, 0);
+                .createProjectQuery("",
+                                    "ALL",
+                                    0,
+                                    0);
         populatedAssetsScreen.init();
 
         populatedAssetsScreen.onAssetsUpdated(mockedEvent);
@@ -212,7 +207,8 @@ public class PopulatedAssetsScreenTest extends ProjectScreenTestBase {
         populatedAssetsScreen.init();
         populatedAssetsScreen.refreshOnFocus(mock(SelectPlaceEvent.class));
 
-        verify(populatedAssetsScreen, never()).update();
+        verify(populatedAssetsScreen,
+               never()).update();
     }
 
     @Test
@@ -222,11 +218,12 @@ public class PopulatedAssetsScreenTest extends ProjectScreenTestBase {
         populatedAssetsScreen.init();
         populatedAssetsScreen.refreshOnFocus(mock(SelectPlaceEvent.class));
 
-        verify(populatedAssetsScreen, never()).update();
+        verify(populatedAssetsScreen,
+               never()).update();
     }
 
     @Test
-    public void updateHidesBusyIndicatorWhenThereIsNoMainModule() throws Exception {
+    public void updateDontHidesBusyIndicator() throws Exception {
         doReturn(mock(WorkspaceProject.class)).when(libraryPlaces).getActiveWorkspace();
 
         populatedAssetsScreen.init();
@@ -234,6 +231,27 @@ public class PopulatedAssetsScreenTest extends ProjectScreenTestBase {
 
         populatedAssetsScreen.update();
 
+        verify(busyIndicatorView,
+               never()).hideBusyIndicator();
+    }
+
+    @Test
+    public void searchUpdateCallbackHidesBusyIndicator() throws Exception {
+
+        AssetQueryResult assetQueryResult = AssetQueryResult.normal(new ArrayList<>());
+        when(libraryService.getProjectAssets(any())).thenReturn(assetQueryResult);
+
+        final WorkspaceProject workspaceProject = mock(WorkspaceProject.class);
+        doReturn(workspaceProject).when(libraryPlaces).getActiveWorkspace();
+
+        doReturn(mock(KieModule.class)).when(workspaceProject).getMainModule();
+
+        populatedAssetsScreen.init();
+
+        populatedAssetsScreen.search("");
+
+        verify(busyIndicatorView).showBusyIndicator(anyString());
+        verify(populatedAssetsScreen).update(any());
         verify(busyIndicatorView).hideBusyIndicator();
     }
 
@@ -249,26 +267,8 @@ public class PopulatedAssetsScreenTest extends ProjectScreenTestBase {
         doReturn(PlaceRequest.NOWHERE).when(selectPlaceEvent).getPlace();
         populatedAssetsScreen.refreshOnFocus(selectPlaceEvent);
 
-        verify(populatedAssetsScreen, never()).update();
-    }
-
-    @Test
-    public void updateDoUpdate() throws Exception {
-
-        doNothing().when(populatedAssetsScreen).update();
-        final WorkspaceProject workspaceProject = mock(WorkspaceProject.class);
-        doReturn(workspaceProject).when(libraryPlaces).getActiveWorkspace();
-
-        doReturn(mock(KieModule.class)).when(workspaceProject).getMainModule();
-
-        populatedAssetsScreen.init();
-        final SelectPlaceEvent selectPlaceEvent = mock(SelectPlaceEvent.class);
-        final PlaceRequest placeRequest = mock(PlaceRequest.class);
-        doReturn(LibraryPlaces.PROJECT_SCREEN).when(placeRequest).getIdentifier();
-        doReturn(placeRequest).when(selectPlaceEvent).getPlace();
-        populatedAssetsScreen.refreshOnFocus(selectPlaceEvent);
-
-        verify(populatedAssetsScreen).update();
+        verify(populatedAssetsScreen,
+               never()).update();
     }
 
     @Test
@@ -291,6 +291,25 @@ public class PopulatedAssetsScreenTest extends ProjectScreenTestBase {
             assertEquals(1,
                          this.populatedAssetsScreen.getCurrentPage());
         }
+    }
+
+    @Test
+    public void updateDoUpdate() throws Exception {
+
+        doNothing().when(populatedAssetsScreen).update();
+        final WorkspaceProject workspaceProject = mock(WorkspaceProject.class);
+        doReturn(workspaceProject).when(libraryPlaces).getActiveWorkspace();
+
+        doReturn(mock(KieModule.class)).when(workspaceProject).getMainModule();
+
+        populatedAssetsScreen.init();
+        final SelectPlaceEvent selectPlaceEvent = mock(SelectPlaceEvent.class);
+        final PlaceRequest placeRequest = mock(PlaceRequest.class);
+        doReturn(LibraryPlaces.PROJECT_SCREEN).when(placeRequest).getIdentifier();
+        doReturn(placeRequest).when(selectPlaceEvent).getPlace();
+        populatedAssetsScreen.refreshOnFocus(selectPlaceEvent);
+
+        verify(populatedAssetsScreen).update();
     }
 
     @Test

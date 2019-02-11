@@ -17,15 +17,14 @@
 package org.kie.workbench.common.screens.library.client.screens.assets;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.ext.uberfire.social.activities.client.widgets.utils.SocialDateFormatter;
-import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.common.services.project.context.WorkspaceProjectContextChangeEvent;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -169,17 +168,26 @@ public class PopulatedAssetsScreen {
         }
     }
 
-    private void addAssetsToView(AssetQueryResult result) {
+    protected RemoteCallback<AssetQueryResult> addAssetsToView(Runnable callback) {
+        return ((AssetQueryResult result) -> {
+            this.addAssetsToView(result);
+            callback.run();
+        });
+    }
+
+    protected void addAssetsToView(AssetQueryResult result) {
         switch (result.getResultType()) {
             case Normal: {
                 List<AssetInfo> assetInfos = result.getAssetInfos().get();
                 if (assetInfos.isEmpty()) {
                     this.showSearchHitNothing();
                 } else {
+
                     this.hideEmptyState();
-                    assetInfos.forEach(asset -> {
+                    List<AssetItemWidget> items = assetInfos.stream().map(asset -> {
+                        AssetItemWidget item = null;
                         if (!asset.getFolderItem().getType().equals(FolderItemType.FOLDER)) {
-                            AssetItemWidget item = assetItemWidget.get();
+                            item = assetItemWidget.get();
                             final ClientResourceType assetResourceType = getResourceType(asset);
                             final String assetName = getAssetName(asset,
                                                                   assetResourceType);
@@ -192,13 +200,18 @@ public class PopulatedAssetsScreen {
                                       getCreatedTime(asset),
                                       detailsCommand((Path) asset.getFolderItem().getItem()),
                                       selectCommand((Path) asset.getFolderItem().getItem()));
-                            this.view.addAssetItem(item);
                         }
-                    });
+                        return Optional.ofNullable(item);
+                    })
+                            .filter(Optional::isPresent)
+                            .map(Optional::get)
+                            .collect(Collectors.toList());
+
+                    this.view.clear();
+                    items.forEach(this.view::addAssetItem);
                 }
 
                 this.updatedAssetsEventEvent.fire(new UpdatedAssetsEvent(assetInfos));
-                busyIndicatorView.hideBusyIndicator();
             }
             break;
             case Unindexed:
@@ -287,17 +300,17 @@ public class PopulatedAssetsScreen {
     }
 
     protected void update() {
-        this.view.clear();
-        this.hideEmptyState();
+        this.update(() -> {
+        });
+    }
 
-        busyIndicatorView.showBusyIndicator(ts.getTranslation(LibraryConstants.LoadingAssets));
+    protected void update(Runnable runnable) {
         this.resolveAssetsCount();
         this.getAssets(this.filter,
                        this.filterType,
                        getOffset(),
                        this.currentPage * this.pageSize,
-                       this::addAssetsToView);
-
+                       this.addAssetsToView(runnable));
         this.view.setCurrentPage(this.currentPage);
         this.checkPaginationButtons();
     }
@@ -370,9 +383,8 @@ public class PopulatedAssetsScreen {
                                                                amount);
 
             assetQueryService.getAssets(query)
-                    .call(callback, new DefaultErrorCallback());
-        } else {
-            busyIndicatorView.hideBusyIndicator();
+                    .call(callback,
+                          new DefaultErrorCallback());
         }
     }
 
@@ -415,7 +427,8 @@ public class PopulatedAssetsScreen {
 
     public void search(String filterText) {
         this.filter = filterText;
-        this.update();
+        busyIndicatorView.showBusyIndicator(ts.getTranslation(LibraryConstants.LoadingAssets));
+        this.update(busyIndicatorView::hideBusyIndicator);
     }
 
     private String getCreatedTime(final AssetInfo asset) {
