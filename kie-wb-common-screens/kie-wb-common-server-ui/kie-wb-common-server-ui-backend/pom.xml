@@ -99,6 +99,20 @@
     <dependency>
       <groupId>org.kie.server</groupId>
       <artifactId>kie-server-controller-openshift</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.jboss.resteasy</groupId>
+          <artifactId>resteasy-jaxrs</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.jboss.resteasy</groupId>
+          <artifactId>resteasy-jaxb-provider</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.jboss.resteasy</groupId>
+          <artifactId>resteasy-jackson-provider</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
