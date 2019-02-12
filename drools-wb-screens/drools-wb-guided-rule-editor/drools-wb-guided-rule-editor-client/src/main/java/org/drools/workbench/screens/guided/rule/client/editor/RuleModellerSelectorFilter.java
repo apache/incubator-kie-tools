@@ -34,6 +34,7 @@ public class RuleModellerSelectorFilter extends HorizontalPanel {
 
     public RuleModellerSelectorFilter() {
         getElement().getStyle().setMarginBottom(5.0, Style.Unit.PX);
+        getElement().getStyle().setWidth(100.0, Style.Unit.PCT);
     }
 
     public void setFilterChangeConsumer(final Consumer<String> filterChangeConsumer) {

@@ -230,6 +230,87 @@ public class RuleModellerConditionSelectorPopupTest {
     }
 
     @Test
+    public void testLoadContentFilteredFactMatched() throws Exception {
+        when(filterWidget.getFilterText()).thenReturn("applicant");
+
+        setupAsyncPackageDataModelOracle();
+
+        new RuleModellerConditionSelectorPopup(model, ruleModeller, 0, oracle);
+
+        verify(choices, atLeastOnce()).addItem(keyCaptor.capture(), anyString());
+
+        final List<String> keys = keyCaptor.getAllValues();
+
+        assertThat(keys).containsExactly("Applicant ...",
+                                         AbstractRuleModellerSelectorPopup.SECTION_SEPARATOR,
+                                         "ThereIsNo ...",
+                                         "ThereExists ...",
+                                         "AnyOf1 ...",
+                                         AbstractRuleModellerSelectorPopup.SECTION_SEPARATOR,
+                                         "From ...",
+                                         "FromAccumulate ...",
+                                         "FromCollect ...",
+                                         "FromEntryPoint ...",
+                                         AbstractRuleModellerSelectorPopup.SECTION_SEPARATOR,
+                                         "FreeFormDrl");
+    }
+
+    @Test
+    public void testLoadContentFilteredDslSentenceMatched() throws Exception {
+        when(filterWidget.getFilterText()).thenReturn("dsl");
+
+        setupAsyncPackageDataModelOracle();
+
+        new RuleModellerConditionSelectorPopup(model, ruleModeller, 0, oracle);
+
+        verify(choices, atLeastOnce()).addItem(keyCaptor.capture(), anyString());
+
+        final List<String> keys = keyCaptor.getAllValues();
+
+        assertThat(keys).containsExactly("dslSentence",
+                                         AbstractRuleModellerSelectorPopup.SECTION_SEPARATOR,
+                                         "ThereIsNo ...",
+                                         "ThereExists ...",
+                                         "AnyOf1 ...",
+                                         AbstractRuleModellerSelectorPopup.SECTION_SEPARATOR,
+                                         "From ...",
+                                         "FromAccumulate ...",
+                                         "FromCollect ...",
+                                         "FromEntryPoint ...",
+                                         AbstractRuleModellerSelectorPopup.SECTION_SEPARATOR,
+                                         "FreeFormDrl");
+    }
+
+    @Test
+    public void testLoadContentFilteredBothDslSentenceAndFactMatched() throws Exception {
+        // ds[l], app[l]icant
+        when(filterWidget.getFilterText()).thenReturn("l");
+
+        setupAsyncPackageDataModelOracle();
+
+        new RuleModellerConditionSelectorPopup(model, ruleModeller, 0, oracle);
+
+        verify(choices, atLeastOnce()).addItem(keyCaptor.capture(), anyString());
+
+        final List<String> keys = keyCaptor.getAllValues();
+
+        assertThat(keys).containsExactly("dslSentence",
+                                         AbstractRuleModellerSelectorPopup.SECTION_SEPARATOR,
+                                         "Applicant ...",
+                                         AbstractRuleModellerSelectorPopup.SECTION_SEPARATOR,
+                                         "ThereIsNo ...",
+                                         "ThereExists ...",
+                                         "AnyOf1 ...",
+                                         AbstractRuleModellerSelectorPopup.SECTION_SEPARATOR,
+                                         "From ...",
+                                         "FromAccumulate ...",
+                                         "FromCollect ...",
+                                         "FromEntryPoint ...",
+                                         AbstractRuleModellerSelectorPopup.SECTION_SEPARATOR,
+                                         "FreeFormDrl");
+    }
+
+    @Test
     public void testLoadContentUnfiltered() throws Exception {
         setupAsyncPackageDataModelOracle();
 

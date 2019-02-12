@@ -197,6 +197,109 @@ public class RuleModellerActionSelectorPopupTest {
     }
 
     @Test
+    public void testLoadContentFilteredFactMatched() throws Exception {
+        reset(listBox, actionPlugin);
+        when(actionPlugin.getId()).thenReturn(ACTION_ID);
+        when(actionPlugin.getActionAddDescription()).thenReturn(ACTION_DESCRIPTION);
+
+        when(filterWidget.getFilterText()).thenReturn("applicant");
+
+        popup = new RuleModellerActionSelectorPopup(model,
+                                                    ruleModeller,
+                                                    Collections.singletonList(actionPlugin),
+                                                    0,
+                                                    oracle);
+
+        verify(actionPlugin).addPluginToActionList(eq(ruleModeller), commandArgumentCaptor.capture());
+        commandArgumentCaptor.getValue().execute();
+
+        verify(listBox, atLeastOnce()).addItem(keyCaptor.capture(), anyString());
+
+        final List<String> keys = keyCaptor.getAllValues();
+
+        assertThat(keys).containsExactly("ChangeFieldValuesOf0($global)",
+                                         AbstractRuleModellerSelectorPopup.SECTION_SEPARATOR,
+                                         "InsertFact0(Applicant)",
+                                         AbstractRuleModellerSelectorPopup.SECTION_SEPARATOR,
+                                         "LogicallyInsertFact0(Applicant)",
+                                         AbstractRuleModellerSelectorPopup.SECTION_SEPARATOR,
+                                         "AddFreeFormDrl",
+                                         AbstractRuleModellerSelectorPopup.SECTION_SEPARATOR,
+                                         "CallMethodOn0($global)",
+                                         AbstractRuleModellerSelectorPopup.SECTION_SEPARATOR,
+                                         ACTION_DESCRIPTION);
+    }
+
+    @Test
+    public void testLoadContentDslSentenceMatched() throws Exception {
+        reset(listBox, actionPlugin);
+        when(actionPlugin.getId()).thenReturn(ACTION_ID);
+        when(actionPlugin.getActionAddDescription()).thenReturn(ACTION_DESCRIPTION);
+
+        when(filterWidget.getFilterText()).thenReturn("dsl");
+
+        popup = new RuleModellerActionSelectorPopup(model,
+                                                    ruleModeller,
+                                                    Collections.singletonList(actionPlugin),
+                                                    0,
+                                                    oracle);
+
+        verify(actionPlugin).addPluginToActionList(eq(ruleModeller), commandArgumentCaptor.capture());
+        commandArgumentCaptor.getValue().execute();
+
+        verify(listBox, atLeastOnce()).addItem(keyCaptor.capture(), anyString());
+
+        final List<String> keys = keyCaptor.getAllValues();
+
+        assertThat(keys).containsExactly("dslSentence",
+                                         AbstractRuleModellerSelectorPopup.SECTION_SEPARATOR,
+                                         "ChangeFieldValuesOf0($global)",
+                                         AbstractRuleModellerSelectorPopup.SECTION_SEPARATOR,
+                                         "AddFreeFormDrl",
+                                         AbstractRuleModellerSelectorPopup.SECTION_SEPARATOR,
+                                         "CallMethodOn0($global)",
+                                         AbstractRuleModellerSelectorPopup.SECTION_SEPARATOR,
+                                         ACTION_DESCRIPTION);
+    }
+
+    @Test
+    public void testLoadContentBothDslSentenceAndFactMatched() throws Exception {
+        reset(listBox, actionPlugin);
+        when(actionPlugin.getId()).thenReturn(ACTION_ID);
+        when(actionPlugin.getActionAddDescription()).thenReturn(ACTION_DESCRIPTION);
+
+        // ds[l], app[l]icant
+        when(filterWidget.getFilterText()).thenReturn("l");
+
+        popup = new RuleModellerActionSelectorPopup(model,
+                                                    ruleModeller,
+                                                    Collections.singletonList(actionPlugin),
+                                                    0,
+                                                    oracle);
+
+        verify(actionPlugin).addPluginToActionList(eq(ruleModeller), commandArgumentCaptor.capture());
+        commandArgumentCaptor.getValue().execute();
+
+        verify(listBox, atLeastOnce()).addItem(keyCaptor.capture(), anyString());
+
+        final List<String> keys = keyCaptor.getAllValues();
+
+        assertThat(keys).containsExactly("dslSentence",
+                                         AbstractRuleModellerSelectorPopup.SECTION_SEPARATOR,
+                                         "ChangeFieldValuesOf0($global)",
+                                         AbstractRuleModellerSelectorPopup.SECTION_SEPARATOR,
+                                         "InsertFact0(Applicant)",
+                                         AbstractRuleModellerSelectorPopup.SECTION_SEPARATOR,
+                                         "LogicallyInsertFact0(Applicant)",
+                                         AbstractRuleModellerSelectorPopup.SECTION_SEPARATOR,
+                                         "AddFreeFormDrl",
+                                         AbstractRuleModellerSelectorPopup.SECTION_SEPARATOR,
+                                         "CallMethodOn0($global)",
+                                         AbstractRuleModellerSelectorPopup.SECTION_SEPARATOR,
+                                         ACTION_DESCRIPTION);
+    }
+
+    @Test
     public void testLoadContentUnfiltered() throws Exception {
         verify(actionPlugin).addPluginToActionList(eq(ruleModeller), commandArgumentCaptor.capture());
         commandArgumentCaptor.getValue().execute();
