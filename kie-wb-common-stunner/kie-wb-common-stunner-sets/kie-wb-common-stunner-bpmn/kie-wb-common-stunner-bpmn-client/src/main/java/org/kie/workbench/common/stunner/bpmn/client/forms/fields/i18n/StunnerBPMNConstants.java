@@ -31,4 +31,7 @@ public interface StunnerBPMNConstants {
 
     @TranslationKey(defaultValue = "")
     String ASSIGNEE_CANNOT_BE_EMPTY = "assignee.cannotBeEmpty";
+
+    @TranslationKey(defaultValue = "")
+    String ASSIGNEE_SEARCH_ERROR = "assignee.searchError";
 }

@@ -28,9 +28,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.i18n.StunnerBPMNConstants;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.stubbing.Answer;
 import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchDropDown;
+import org.uberfire.mocks.EventSourceMock;
+import org.uberfire.mvp.ParameterizedCommand;
+import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -56,7 +60,16 @@ public class AssigneeEditorWidgetTest {
     @Mock
     private TranslationService translationService;
 
+    @Mock
+    private EventSourceMock<NotificationEvent> notification;
+
     private AssigneeEditorWidget widget;
+
+    @Captor
+    private ArgumentCaptor<ParameterizedCommand<Throwable>> commandCaptor;
+
+    @Captor
+    private ArgumentCaptor<NotificationEvent> eventCaptor;
 
     @Before
     public void init() {
@@ -64,7 +77,7 @@ public class AssigneeEditorWidgetTest {
 
         when(listItems.get()).then((Answer<AssigneeListItem>) invocationOnMock -> new AssigneeListItem(mock(LiveSearchDropDown.class), mock(AssigneeLiveSearchService.class)));
 
-        widget = new AssigneeEditorWidget(view, listItems, translationService);
+        widget = new AssigneeEditorWidget(view, listItems, translationService, notification);
     }
 
     @Test
@@ -176,7 +189,6 @@ public class AssigneeEditorWidgetTest {
         widget.getNameHeader();
         verify(translationService).getTranslation(StunnerBPMNConstants.ASSIGNEE_LABEL);
 
-
         widget.getAddLabel();
         verify(translationService).getTranslation(StunnerBPMNConstants.ASSIGNEE_NEW);
 
@@ -196,5 +208,21 @@ public class AssigneeEditorWidgetTest {
         widget.setReadOnly(false);
         verify(view,
                times(1)).setReadOnly(false);
+    }
+
+    public void testItemWithError() {
+        AssigneeListItem listItem = mock(AssigneeListItem.class);
+        when(listItems.get()).thenReturn(listItem);
+        String itemError = "ItemError";
+        String translatedMessage = "TranslatedMessage";
+        when(translationService.format(StunnerBPMNConstants.ASSIGNEE_SEARCH_ERROR, itemError)).thenReturn(translatedMessage);
+        widget.addAssignee();
+        verify(listItem).init(any(), any(), any(), any(), commandCaptor.getValue());
+
+        Exception itemException = new Exception(itemError);
+        commandCaptor.getValue().execute(itemException);
+        verify(notification).fire(eventCaptor.capture());
+        assertEquals(NotificationEvent.NotificationType.ERROR, eventCaptor.getValue().getType());
+        assertEquals(translatedMessage, eventCaptor.getValue().getNotification());
     }
 }

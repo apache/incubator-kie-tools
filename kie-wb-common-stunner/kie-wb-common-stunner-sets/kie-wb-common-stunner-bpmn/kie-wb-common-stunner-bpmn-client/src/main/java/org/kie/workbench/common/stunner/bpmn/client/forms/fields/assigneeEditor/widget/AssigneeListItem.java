@@ -47,12 +47,14 @@ public class AssigneeListItem {
         this.liveSearchService = liveSearchService;
     }
 
-    public void init(AssigneeType type, Assignee assignee, Command notifyChangeCommand, ParameterizedCommand<AssigneeListItem> removeCommand) {
+    public void init(AssigneeType type, Assignee assignee, Command notifyChangeCommand, ParameterizedCommand<AssigneeListItem> removeCommand, ParameterizedCommand<Throwable> errorCommand) {
         this.assignee = assignee;
         this.notifyChangeCommand = notifyChangeCommand;
         this.removeCommand = removeCommand;
 
         liveSearchService.init(type);
+
+        liveSearchService.setSearchErrorHandler(errorCommand::execute);
 
         liveSearchDropDown.init(liveSearchService, searchSelectionHandler);
 

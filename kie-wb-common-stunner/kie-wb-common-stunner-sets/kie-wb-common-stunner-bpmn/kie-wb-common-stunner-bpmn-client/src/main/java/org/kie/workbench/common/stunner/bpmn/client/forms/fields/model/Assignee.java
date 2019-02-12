@@ -25,15 +25,20 @@ public class Assignee {
     private String customName;
 
     public Assignee() {
+        this(null, null);
     }
 
     public Assignee(String name) {
+        this(name, null);
+    }
+
+    public Assignee(String name, String customName) {
         this.name = name;
+        this.customName = customName;
     }
 
     public Assignee(final AssigneeRow row) {
-        this.name = row.getName();
-        this.customName = row.getCustomName();
+        this(row.getName(), row.getCustomName());
     }
 
     public String getName() {

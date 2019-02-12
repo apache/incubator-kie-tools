@@ -21,6 +21,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.function.Consumer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.Dependent;
@@ -39,8 +42,12 @@ import org.uberfire.ext.widgets.common.client.dropdown.EntryCreationLiveSearchSe
 import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchCallback;
 import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchResults;
 
+import static org.kie.workbench.common.stunner.core.util.StringUtils.isEmpty;
+
 @Dependent
 public class AssigneeLiveSearchService implements EntryCreationLiveSearchService<String, AssigneeLiveSearchEntryCreationEditor> {
+
+    private static final Logger LOGGER = Logger.getLogger(AssigneeLiveSearchService.class.getName());
 
     private AssigneeType type = AssigneeType.USER;
 
@@ -49,6 +56,8 @@ public class AssigneeLiveSearchService implements EntryCreationLiveSearchService
     private AssigneeLiveSearchEntryCreationEditor editor;
 
     private List<String> customEntries = new ArrayList<>();
+
+    private Consumer<Throwable> searchErrorHandler;
 
     public AssigneeLiveSearchService() {
         this(null, null);
@@ -67,7 +76,13 @@ public class AssigneeLiveSearchService implements EntryCreationLiveSearchService
     }
 
     public void addCustomEntry(String customEntry) {
-        customEntries.add(customEntry);
+        if (!isEmpty(customEntry)) {
+            customEntries.add(customEntry);
+        }
+    }
+
+    public void setSearchErrorHandler(Consumer<Throwable> searchErrorHandler) {
+        this.searchErrorHandler = searchErrorHandler;
     }
 
     @Override
@@ -85,7 +100,7 @@ public class AssigneeLiveSearchService implements EntryCreationLiveSearchService
 
         RemoteCallback<AbstractEntityManager.SearchResponse<?>> searchResponseRemoteCallback = response -> processFilterResponse(response, filteredCustomEntries, maxResults, callback);
 
-        ErrorCallback<Message> searchErrorCallback = (message, throwable) -> processError(callback);
+        ErrorCallback<Message> searchErrorCallback = (message, throwable) -> processSearchError(filteredCustomEntries, maxResults, callback, throwable);
 
         SearchRequestImpl request = new SearchRequestImpl(pattern, 1, maxResults);
 
@@ -101,7 +116,7 @@ public class AssigneeLiveSearchService implements EntryCreationLiveSearchService
 
         SearchRequestImpl request = new SearchRequestImpl(key, 1, 1);
 
-        ErrorCallback<Message> searchErrorCallback = (message, throwable) -> processError(callback);
+        ErrorCallback<Message> searchErrorCallback = (message, throwable) -> processSearchEntryError(key, callback, throwable);
 
         RemoteCallback<AbstractEntityManager.SearchResponse<?>> searchResponseRemoteCallback = response -> searchEntry(key, response, callback);
 
@@ -112,17 +127,40 @@ public class AssigneeLiveSearchService implements EntryCreationLiveSearchService
         }
     }
 
-    private boolean processError(LiveSearchCallback<String> callback) {
-        callback.afterSearch(new LiveSearchResults<>());
+    private boolean processSearchEntryError(String key, LiveSearchCallback<String> callback, Throwable throwable) {
+        LiveSearchResults<String> results = new LiveSearchResults<>(1);
+        if (!isEmpty(key)) {
+            addCustomEntry(key);
+            results.add(key, key);
+        }
+        callback.afterSearch(results);
+        processError("It was not possible to get user or group: " + key + " from the users system.", throwable);
         return false;
+    }
+
+    private boolean processSearchError(List<String> filteredCustomEntries, int maxResults, LiveSearchCallback<String> callback, Throwable throwable) {
+        int maxSize = maxResults > filteredCustomEntries.size() ? filteredCustomEntries.size() : maxResults;
+        maxSize = maxSize < 0 ? 0 : maxSize;
+        LiveSearchResults<String> result = new LiveSearchResults<>(maxSize);
+        filteredCustomEntries.subList(0, maxSize).forEach(entry -> result.add(entry, entry));
+        callback.afterSearch(result);
+        processError("It was not possible to execute search on the users system.", throwable);
+        return false;
+    }
+
+    private void processError(String errorMessage, Throwable throwable) {
+        LOGGER.log(Level.SEVERE, errorMessage, throwable);
+        if (searchErrorHandler != null) {
+            searchErrorHandler.accept(throwable);
+        }
     }
 
     private void searchEntry(String key, AbstractEntityManager.SearchResponse<?> response, LiveSearchCallback<String> liveSearchCallback) {
 
         LiveSearchResults<String> results = new LiveSearchResults<>(1);
 
-        if(key != null) {
-            if(!customEntries.contains(key)) {
+        if (key != null) {
+            if (!customEntries.contains(key)) {
                 Optional<?> exists = response.getResults().stream().filter(item -> {
 
                     String value = null;
@@ -136,8 +174,8 @@ public class AssigneeLiveSearchService implements EntryCreationLiveSearchService
                     return key.equals(value);
                 }).findAny();
 
-                if(!exists.isPresent()) {
-                    customEntries.add(key);
+                if (!exists.isPresent()) {
+                    addCustomEntry(key);
                 }
             }
             results.add(key, key);

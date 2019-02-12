@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -36,6 +37,7 @@ import org.kie.workbench.common.stunner.bpmn.client.forms.fields.i18n.StunnerBPM
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Assignee;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils;
 import org.kie.workbench.common.stunner.bpmn.forms.model.AssigneeType;
+import org.uberfire.workbench.events.NotificationEvent;
 
 @Dependent
 public class AssigneeEditorWidget implements IsWidget,
@@ -47,6 +49,8 @@ public class AssigneeEditorWidget implements IsWidget,
 
     private TranslationService translationService;
 
+    private Event<NotificationEvent> notification;
+
     private List<AssigneeListItem> assigneeRows = new ArrayList<>();
 
     private AssigneeType type;
@@ -55,13 +59,17 @@ public class AssigneeEditorWidget implements IsWidget,
 
     private int max = -1;
 
+    private boolean errorNotificationsEnabled = true;
+
     @Inject
     public AssigneeEditorWidget(AssigneeEditorWidgetView view,
                                 ManagedInstance<AssigneeListItem> listItems,
-                                TranslationService translationService) {
+                                TranslationService translationService,
+                                Event<NotificationEvent> notification) {
         this.view = view;
         this.listItems = listItems;
         this.translationService = translationService;
+        this.notification = notification;
 
         this.view.init(this);
     }
@@ -119,10 +127,7 @@ public class AssigneeEditorWidget implements IsWidget,
             String[] assigneeArray = serializedValue.split(",");
             for (String assigneString : assigneeArray) {
                 if (!assigneString.isEmpty()) {
-                    Assignee assignee = new Assignee(assigneString);
-                    if (assignee != null) {
-                        addAssignee(assignee);
-                    }
+                    addAssignee(new Assignee(assigneString));
                 }
             }
         }
@@ -130,7 +135,7 @@ public class AssigneeEditorWidget implements IsWidget,
 
     private void addAssignee(Assignee assignee) {
         AssigneeListItem listItem = listItems.get();
-        listItem.init(type, assignee, this::doSave, this::removeAssignee);
+        listItem.init(type, assignee, this::doSave, this::removeAssignee, this::onError);
         assigneeRows.add(listItem);
         view.add(listItem);
         if (max != -1 && assigneeRows.size() == max) {
@@ -144,7 +149,7 @@ public class AssigneeEditorWidget implements IsWidget,
 
     @Override
     public void addAssignee() {
-        if(max == -1 || assigneeRows.size() < max) {
+        if (max == -1 || assigneeRows.size() < max) {
             addAssignee(new Assignee());
         }
     }
@@ -196,5 +201,12 @@ public class AssigneeEditorWidget implements IsWidget,
 
     public void setReadOnly(boolean readOnly) {
         view.setReadOnly(readOnly);
+    }
+
+    private void onError(Throwable e) {
+        if (errorNotificationsEnabled) {
+            notification.fire(new NotificationEvent(translationService.format(StunnerBPMNConstants.ASSIGNEE_SEARCH_ERROR, e.getMessage() != null ? e.getMessage() : "")));
+            errorNotificationsEnabled = false;
+        }
     }
 }

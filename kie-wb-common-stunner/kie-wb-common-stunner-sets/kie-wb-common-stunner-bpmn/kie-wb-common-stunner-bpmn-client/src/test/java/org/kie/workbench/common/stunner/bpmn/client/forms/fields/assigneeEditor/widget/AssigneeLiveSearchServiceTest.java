@@ -17,8 +17,12 @@
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.assigneeEditor.widget;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 
+import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.security.shared.api.GroupImpl;
 import org.jboss.errai.security.shared.api.identity.UserImpl;
@@ -40,7 +44,10 @@ import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchEntry;
 import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchResults;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -338,6 +345,96 @@ public class AssigneeLiveSearchServiceTest {
 
         assertEquals(1, result.size());
         assertEquals("it", result.get(0).getValue());
+    }
+
+    @Test
+    public void testSearchEntryWithErrorUser() {
+        testSearchEntryWithError(AssigneeType.USER);
+    }
+
+    @Test
+    public void testSearchEntryWithErrorGroup() {
+        testSearchEntryWithError(AssigneeType.GROUP);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void testSearchEntryWithError(AssigneeType assigneeType) {
+        Consumer<Throwable> errorHandler = mock(Consumer.class);
+        ArgumentCaptor<Throwable> errorCaptor = ArgumentCaptor.forClass(Throwable.class);
+        ArgumentCaptor<ErrorCallback> errorCallback = ArgumentCaptor.forClass(ErrorCallback.class);
+        ArgumentCaptor<LiveSearchResults> resultsArgumentCaptor = ArgumentCaptor.forClass(LiveSearchResults.class);
+        assigneeLiveSearchService.init(assigneeType);
+        assigneeLiveSearchService.setSearchErrorHandler(errorHandler);
+        assigneeLiveSearchService.searchEntry("key", callback);
+        if (assigneeType == AssigneeType.USER) {
+            verify(userSystemManager).users(any(), errorCallback.capture());
+            verify(userSystemManager, never()).groups(any(), any());
+        } else {
+            verify(userSystemManager).groups(any(), errorCallback.capture());
+            verify(userSystemManager, never()).users(any(), any());
+        }
+        Throwable error = new Throwable();
+        errorCallback.getValue().error(null, error);
+        verify(callback).afterSearch(resultsArgumentCaptor.capture());
+        verify(errorHandler).accept(errorCaptor.capture());
+        assertEquals(error, errorCaptor.getValue());
+        LiveSearchResults<String> result = resultsArgumentCaptor.getValue();
+        assertEquals(1, result.size());
+        assertEquals("key", result.get(0).getValue());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testSearchWithErrorNoCustomEntriesUser() {
+        testSearchWithError(AssigneeType.USER, "pattern", 1234, Collections.EMPTY_LIST, Collections.EMPTY_LIST);
+    }
+
+    @Test
+    public void testSearchWithErrorWithCustomEntriesUser() {
+        testSearchWithError(AssigneeType.USER, "value", 1234,
+                            Arrays.asList("value1", "value2", "other1", "other2"),
+                            Arrays.asList("value1", "value2"));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testSearchWithErrorNoCustomEntriesGroup() {
+        testSearchWithError(AssigneeType.GROUP, "pattern", 1234, Collections.EMPTY_LIST, Collections.EMPTY_LIST);
+    }
+
+    @Test
+    public void testSearchWithErrorWithCustomEntriesGroup() {
+        testSearchWithError(AssigneeType.GROUP, "value", 1234,
+                            Arrays.asList("value1", "value2", "other1", "other2"),
+                            Arrays.asList("value1", "value2"));
+    }
+
+    @SuppressWarnings("unchecked")
+    private void testSearchWithError(AssigneeType assigneeType, String pattern, int maxResults, List<String> customEntries, List<String> expectedResults) {
+        Consumer<Throwable> errorHandler = mock(Consumer.class);
+        ArgumentCaptor<Throwable> errorCaptor = ArgumentCaptor.forClass(Throwable.class);
+        ArgumentCaptor<ErrorCallback> errorCallback = ArgumentCaptor.forClass(ErrorCallback.class);
+        ArgumentCaptor<LiveSearchResults> resultsArgumentCaptor = ArgumentCaptor.forClass(LiveSearchResults.class);
+        assigneeLiveSearchService.init(assigneeType);
+        customEntries.forEach(assigneeLiveSearchService::addCustomEntry);
+        assigneeLiveSearchService.setSearchErrorHandler(errorHandler);
+        assigneeLiveSearchService.search(pattern, maxResults, callback);
+        if (assigneeType == AssigneeType.USER) {
+            verify(userSystemManager).users(any(), errorCallback.capture());
+            verify(userSystemManager, never()).groups(any(), any());
+        } else {
+            verify(userSystemManager).groups(any(), errorCallback.capture());
+            verify(userSystemManager, never()).users(any(), any());
+        }
+        Throwable error = new Throwable();
+        errorCallback.getValue().error(null, error);
+        verify(callback).afterSearch(resultsArgumentCaptor.capture());
+        verify(errorHandler).accept(errorCaptor.capture());
+        assertEquals(error, errorCaptor.getValue());
+
+        LiveSearchResults<String> result = resultsArgumentCaptor.getValue();
+        assertEquals(expectedResults.size(), result.size());
+        expectedResults.forEach(expectedValue -> assertTrue(result.stream().anyMatch(entry -> entry.getValue().equals(expectedValue))));
     }
 
     private AbstractEntityManager.SearchResponse<?> prepareUsersResponse() {

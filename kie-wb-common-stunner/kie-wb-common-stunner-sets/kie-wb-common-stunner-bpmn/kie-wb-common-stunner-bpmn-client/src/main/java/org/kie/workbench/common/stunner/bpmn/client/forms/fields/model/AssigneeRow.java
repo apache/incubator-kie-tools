@@ -32,7 +32,7 @@ public class AssigneeRow {
     private static long lastId = 0;
 
     public AssigneeRow() {
-        this.id = lastId++;
+        this(null, null);
     }
 
     public AssigneeRow(final String name,
@@ -43,9 +43,7 @@ public class AssigneeRow {
     }
 
     public AssigneeRow(final Assignee assignee) {
-        this.id = lastId++;
-        this.name = assignee.getName();
-        this.customName = assignee.getCustomName();
+        this(assignee.getName(), assignee.getCustomName());
     }
 
     public long getId() {
