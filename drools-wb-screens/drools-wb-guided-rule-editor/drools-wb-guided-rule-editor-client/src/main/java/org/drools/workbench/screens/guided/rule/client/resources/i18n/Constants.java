@@ -369,4 +369,6 @@ public interface Constants
     String PleaseSetTheEntryPoint();
 
     String ShowOptions();
+
+    String filterHint();
 }

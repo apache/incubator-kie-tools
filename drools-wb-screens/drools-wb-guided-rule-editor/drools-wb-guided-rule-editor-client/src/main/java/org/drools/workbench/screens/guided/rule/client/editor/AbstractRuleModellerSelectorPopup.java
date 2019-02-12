@@ -16,8 +16,10 @@
 
 package org.drools.workbench.screens.guided.rule.client.editor;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Predicate;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Command;
@@ -36,7 +38,7 @@ import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
  */
 public abstract class AbstractRuleModellerSelectorPopup extends BaseModal {
 
-    protected static final String SECTION_SEPARATOR = "..................";
+    public static final String SECTION_SEPARATOR = "..................";
 
     protected int MIN_WIDTH = 500;
     protected int MIN_HEIGHT = 200;
@@ -114,5 +116,20 @@ public abstract class AbstractRuleModellerSelectorPopup extends BaseModal {
             h = MIN_HEIGHT;
         }
         return h;
+    }
+
+    /**
+     * Returns true if any items match the filter.
+     * @param predicate The filter to check items against.
+     * @param items The items to check.
+     * @return
+     */
+    protected boolean anyItemsMatch(final Predicate<String> predicate,
+                                    final String[] items) {
+        return Arrays.asList(items)
+                .stream()
+                .filter(predicate::test)
+                .findFirst()
+                .isPresent();
     }
 }

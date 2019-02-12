@@ -19,6 +19,8 @@ package org.drools.workbench.screens.guided.rule.client.editor;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Predicate;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -127,7 +129,12 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
             layoutPanel.addRow(new HTML("<hr/>"));
         }
 
-        choices = makeChoicesListBox();
+        //Add a widget to filter DSLs if applicable
+        final RuleModellerSelectorFilter filterWidget = GWT.create(RuleModellerSelectorFilter.class);
+        filterWidget.setFilterChangeConsumer((filter) -> choicesPanel.setWidget(makeChoicesListBox(filter)));
+        layoutPanel.add(filterWidget);
+
+        choices = makeChoicesListBox(filterWidget.getFilterText());
         choicesPanel.add(choices);
         layoutPanel.addRow(choicesPanel);
 
@@ -140,7 +147,7 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
 
                 public void onValueChange(ValueChangeEvent<Boolean> event) {
                     onlyShowDSLStatements = event.getValue();
-                    choicesPanel.setWidget(makeChoicesListBox());
+                    choicesPanel.setWidget(makeChoicesListBox(filterWidget.getFilterText()));
                 }
             });
             layoutPanel.addRow(chkOnlyDisplayDSLConditions);
@@ -155,7 +162,7 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
         choices.setFocus(true);
     }
 
-    private ListBox makeChoicesListBox() {
+    private ListBox makeChoicesListBox(final String filter) {
         choices = GWT.create(ListBox.class);
         choices.setMultipleSelect(true);
         choices.setPixelSize(getChoicesWidth(),
@@ -169,196 +176,243 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
             }
         });
 
-        addDSLSentences();
+        final Predicate<String> predicate = (item) -> item.toLowerCase().contains(Objects.isNull(filter) ? "" : filter.toLowerCase());
+        boolean itemsAdded = addDSLSentences(predicate);
         if (!onlyShowDSLStatements) {
-            addUpdateNotModify();
-            addGlobals();
-            addRetractions();
-            addModifies();
-            addInsertions();
-            addLogicalInsertions();
-            addGlobalCollections();
-            addFreeFormDRL();
-            addCallMethodOn();
-            addCustomActionPlugins();
+            itemsAdded = addUpdateNotModify(itemsAdded) || itemsAdded;
+            itemsAdded = addGlobals(itemsAdded) || itemsAdded;
+            itemsAdded = addRetractions(itemsAdded) || itemsAdded;
+            itemsAdded = addModifies(itemsAdded) || itemsAdded;
+            itemsAdded = addInsertions(predicate, itemsAdded) || itemsAdded;
+            itemsAdded = addLogicalInsertions(predicate, itemsAdded) || itemsAdded;
+            itemsAdded = addGlobalCollections(itemsAdded) || itemsAdded;
+            itemsAdded = addFreeFormDRL(itemsAdded) || itemsAdded;
+            itemsAdded = addCallMethodOn(itemsAdded) || itemsAdded;
+            addCustomActionPlugins(itemsAdded);
         }
 
         return choices;
     }
 
     // Add DSL sentences
-    void addDSLSentences() {
+    boolean addDSLSentences(final Predicate<String> predicate) {
+        boolean moreItemsAdded = false;
+
         //DSL might be prohibited (e.g. editing a DRL file. Only DSLR files can contain DSL)
-        if (!ruleModeller.isDSLEnabled()) {
-            return;
-        }
+        if (ruleModeller.isDSLEnabled()) {
+            for (final DSLSentence sen : oracle.getDSLActions()) {
+                final String sentence = sen.toString();
+                if (predicate.test(sentence)) {
+                    final String key = "DSL" + sentence;
+                    choices.addItem(sentence,
+                                    key);
+                    cmds.put(key,
+                             new Command() {
 
-        for (final DSLSentence sen : oracle.getDSLActions()) {
-            final String sentence = sen.toString();
-            final String key = "DSL" + sentence;
-            choices.addItem(sentence,
-                            key);
-            cmds.put(key,
-                     new Command() {
-
-                         public void execute() {
-                             addNewDSLRhs(sen,
-                                          Integer.parseInt(positionCbo.getValue(positionCbo.getSelectedIndex())));
-                             hide();
-                         }
-                     });
+                                 public void execute() {
+                                     addNewDSLRhs(sen,
+                                                  Integer.parseInt(positionCbo.getValue(positionCbo.getSelectedIndex())));
+                                     hide();
+                                 }
+                             });
+                    moreItemsAdded = true;
+                }
+            }
         }
+        return moreItemsAdded;
     }
 
     //Add update, not modify
-    void addUpdateNotModify() {
+    boolean addUpdateNotModify(final boolean previousItemsAdded) {
+        boolean moreItemsAdded = false;
+
         List<String> vars = model.getLHSPatternVariables();
-        if (vars.size() == 0) {
-            return;
+        if (vars.size() > 0) {
+            if (previousItemsAdded) {
+                choices.addItem(SECTION_SEPARATOR, SECTION_SEPARATOR);
+            }
+
+            for (Iterator<String> iter = vars.iterator(); iter.hasNext(); ) {
+                final String v = iter.next();
+
+                choices.addItem(GuidedRuleEditorResources.CONSTANTS.ChangeFieldValuesOf0(v),
+                                "VAR" + v);
+                cmds.put("VAR" + v,
+                         new Command() {
+
+                             public void execute() {
+                                 addActionSetField(v,
+                                                   Integer.parseInt(positionCbo.getValue(positionCbo.getSelectedIndex())));
+                                 hide();
+                             }
+                         });
+                moreItemsAdded = true;
+            }
         }
-
-        choices.addItem(SECTION_SEPARATOR);
-        for (Iterator<String> iter = vars.iterator(); iter.hasNext(); ) {
-            final String v = iter.next();
-
-            choices.addItem(GuidedRuleEditorResources.CONSTANTS.ChangeFieldValuesOf0(v),
-                            "VAR" + v);
-            cmds.put("VAR" + v,
-                     new Command() {
-
-                         public void execute() {
-                             addActionSetField(v,
-                                               Integer.parseInt(positionCbo.getValue(positionCbo.getSelectedIndex())));
-                             hide();
-                         }
-                     });
-        }
+        return moreItemsAdded;
     }
 
     //Add Globals
-    void addGlobals() {
-        String[] globals = oracle.getGlobalVariables();
-        if (globals.length == 0) {
-            return;
-        }
-        choices.addItem(SECTION_SEPARATOR);
-        for (int i = 0; i < globals.length; i++) {
-            final String v = globals[i];
-            choices.addItem(GuidedRuleEditorResources.CONSTANTS.ChangeFieldValuesOf0(v),
-                            "GLOBVAR" + v);
-            cmds.put("GLOBVAR" + v,
-                     new Command() {
+    boolean addGlobals(final boolean previousItemsAdded) {
+        boolean moreItemsAdded = false;
 
-                         public void execute() {
-                             addActionSetField(v,
-                                               Integer.parseInt(positionCbo.getValue(positionCbo.getSelectedIndex())));
-                             hide();
-                         }
-                     });
+        String[] globals = oracle.getGlobalVariables();
+        if (globals.length > 0) {
+            if (previousItemsAdded) {
+                choices.addItem(SECTION_SEPARATOR, SECTION_SEPARATOR);
+            }
+            for (int i = 0; i < globals.length; i++) {
+                final String v = globals[i];
+                choices.addItem(GuidedRuleEditorResources.CONSTANTS.ChangeFieldValuesOf0(v),
+                                "GLOBVAR" + v);
+                cmds.put("GLOBVAR" + v,
+                         new Command() {
+
+                             public void execute() {
+                                 addActionSetField(v,
+                                                   Integer.parseInt(positionCbo.getValue(positionCbo.getSelectedIndex())));
+                                 hide();
+                             }
+                         });
+                moreItemsAdded = true;
+            }
         }
+        return moreItemsAdded;
     }
 
     //Add Retractions
-    void addRetractions() {
-        List<String> vars = model.getLHSPatternVariables();
-        if (vars.size() == 0) {
-            return;
-        }
-        choices.addItem(SECTION_SEPARATOR);
-        for (Iterator<String> iter = vars.iterator(); iter.hasNext(); ) {
-            final String v = iter.next();
-            choices.addItem(GuidedRuleEditorResources.CONSTANTS.Delete0(v),
-                            "RET" + v);
-            cmds.put("RET" + v,
-                     new Command() {
+    boolean addRetractions(final boolean previousItemsAdded) {
+        boolean moreItemsAdded = false;
 
-                         public void execute() {
-                             addRetract(v,
-                                        Integer.parseInt(positionCbo.getValue(positionCbo.getSelectedIndex())));
-                             hide();
-                         }
-                     });
+        List<String> vars = model.getLHSPatternVariables();
+        if (vars.size() > 0) {
+            if (previousItemsAdded) {
+                choices.addItem(SECTION_SEPARATOR, SECTION_SEPARATOR);
+            }
+            for (Iterator<String> iter = vars.iterator(); iter.hasNext(); ) {
+                final String v = iter.next();
+                choices.addItem(GuidedRuleEditorResources.CONSTANTS.Delete0(v),
+                                "RET" + v);
+                cmds.put("RET" + v,
+                         new Command() {
+
+                             public void execute() {
+                                 addRetract(v,
+                                            Integer.parseInt(positionCbo.getValue(positionCbo.getSelectedIndex())));
+                                 hide();
+                             }
+                         });
+                moreItemsAdded = true;
+            }
         }
+        return moreItemsAdded;
     }
 
     //Add Modifies
-    void addModifies() {
+    boolean addModifies(final boolean previousItemsAdded) {
+        boolean moreItemsAdded = false;
+
         List<String> vars = model.getAllLHSVariables();
-        if (vars.size() == 0) {
-            return;
-        }
-        choices.addItem(SECTION_SEPARATOR);
-        for (Iterator<String> iter = vars.iterator(); iter.hasNext(); ) {
-            final String v = iter.next();
+        if (vars.size() > 0) {
+            if (previousItemsAdded) {
+                choices.addItem(SECTION_SEPARATOR, SECTION_SEPARATOR);
+            }
+            for (Iterator<String> iter = vars.iterator(); iter.hasNext(); ) {
+                final String v = iter.next();
 
-            choices.addItem(GuidedRuleEditorResources.CONSTANTS.Modify0(v),
-                            "MOD" + v);
-            cmds.put("MOD" + v,
-                     new Command() {
+                choices.addItem(GuidedRuleEditorResources.CONSTANTS.Modify0(v),
+                                "MOD" + v);
+                cmds.put("MOD" + v,
+                         new Command() {
 
-                         public void execute() {
-                             addModify(v,
-                                       Integer.parseInt(positionCbo.getValue(positionCbo.getSelectedIndex())));
-                             hide();
-                         }
-                     });
+                             public void execute() {
+                                 addModify(v,
+                                           Integer.parseInt(positionCbo.getValue(positionCbo.getSelectedIndex())));
+                                 hide();
+                             }
+                         });
+                moreItemsAdded = true;
+            }
         }
+        return moreItemsAdded;
     }
 
     //Add insertions
-    void addInsertions() {
-        if (oracle.getFactTypes().length == 0) {
-            return;
-        }
-        choices.addItem(SECTION_SEPARATOR);
-        for (int i = 0; i < oracle.getFactTypes().length; i++) {
-            final String item = oracle.getFactTypes()[i];
-            choices.addItem(GuidedRuleEditorResources.CONSTANTS.InsertFact0(item),
-                            "INS" + item);
-            cmds.put("INS" + item,
-                     new Command() {
+    boolean addInsertions(final Predicate<String> predicate,
+                          final boolean previousItemsAdded) {
+        boolean moreItemsAdded = false;
 
-                         public void execute() {
-                             model.addRhsItem(new ActionInsertFact(item),
-                                              Integer.parseInt(positionCbo.getValue(positionCbo.getSelectedIndex())));
-                             hide();
-                         }
-                     });
+        if (oracle.getFactTypes().length > 0) {
+            if (anyItemsMatch(predicate, oracle.getFactTypes()) && previousItemsAdded) {
+                choices.addItem(SECTION_SEPARATOR, SECTION_SEPARATOR);
+            }
+
+            for (int i = 0; i < oracle.getFactTypes().length; i++) {
+                final String item = oracle.getFactTypes()[i];
+                if (predicate.test(item)) {
+                    choices.addItem(GuidedRuleEditorResources.CONSTANTS.InsertFact0(item),
+                                    "INS" + item);
+                    cmds.put("INS" + item,
+                             new Command() {
+
+                                 public void execute() {
+                                     model.addRhsItem(new ActionInsertFact(item),
+                                                      Integer.parseInt(positionCbo.getValue(positionCbo.getSelectedIndex())));
+                                     hide();
+                                 }
+                             });
+                    moreItemsAdded = true;
+                }
+            }
         }
+        return moreItemsAdded;
     }
 
     //Add logical insertions
-    void addLogicalInsertions() {
-        if (oracle.getFactTypes().length == 0) {
-            return;
-        }
-        choices.addItem(SECTION_SEPARATOR);
-        for (int i = 0; i < oracle.getFactTypes().length; i++) {
-            final String item = oracle.getFactTypes()[i];
-            choices.addItem(GuidedRuleEditorResources.CONSTANTS.LogicallyInsertFact0(item),
-                            "LINS" + item);
-            cmds.put("LINS" + item,
-                     new Command() {
+    boolean addLogicalInsertions(final Predicate<String> predicate,
+                                 final boolean previousItemsAdded) {
+        boolean moreItemsAdded = false;
 
-                         public void execute() {
-                             model.addRhsItem(new ActionInsertLogicalFact(item),
-                                              Integer.parseInt(positionCbo.getValue(positionCbo.getSelectedIndex())));
-                             hide();
-                         }
-                     });
+        if (oracle.getFactTypes().length > 0) {
+            if (anyItemsMatch(predicate, oracle.getFactTypes()) && previousItemsAdded) {
+                choices.addItem(SECTION_SEPARATOR, SECTION_SEPARATOR);
+            }
+
+            for (int i = 0; i < oracle.getFactTypes().length; i++) {
+                final String item = oracle.getFactTypes()[i];
+                if (predicate.test(item)) {
+                    choices.addItem(GuidedRuleEditorResources.CONSTANTS.LogicallyInsertFact0(item),
+                                    "LINS" + item);
+                    cmds.put("LINS" + item,
+                             new Command() {
+
+                                 public void execute() {
+                                     model.addRhsItem(new ActionInsertLogicalFact(item),
+                                                      Integer.parseInt(positionCbo.getValue(positionCbo.getSelectedIndex())));
+                                     hide();
+                                 }
+                             });
+                    moreItemsAdded = true;
+                }
+            }
         }
+        return moreItemsAdded;
     }
 
     //Add global collections
-    void addGlobalCollections() {
+    boolean addGlobalCollections(final boolean previousItemsAdded) {
+        boolean moreItemsAdded = false;
+
         List<String> vars = model.getLHSBoundFacts();
         if (vars.size() == 0) {
-            return;
+            return moreItemsAdded;
         }
         if (oracle.getGlobalCollections().length == 0) {
-            return;
+            return moreItemsAdded;
         }
-        choices.addItem(SECTION_SEPARATOR);
+        if (previousItemsAdded) {
+            choices.addItem(SECTION_SEPARATOR, SECTION_SEPARATOR);
+        }
         for (String bf : vars) {
             for (int i = 0; i < oracle.getGlobalCollections().length; i++) {
                 final String glob = oracle.getGlobalCollections()[i];
@@ -378,13 +432,17 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
                                  hide();
                              }
                          });
+                moreItemsAdded = true;
             }
         }
+        return moreItemsAdded;
     }
 
     //Add free-form DRL
-    void addFreeFormDRL() {
-        choices.addItem(SECTION_SEPARATOR);
+    boolean addFreeFormDRL(final boolean previousItemsAdded) {
+        if (previousItemsAdded) {
+            choices.addItem(SECTION_SEPARATOR, SECTION_SEPARATOR);
+        }
         choices.addItem(GuidedRuleEditorResources.CONSTANTS.AddFreeFormDrl(),
                         "FF");
         cmds.put("FF",
@@ -396,90 +454,108 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
                          hide();
                      }
                  });
+        return true;
     }
 
     //Add "Call method on.." options
-    void addCallMethodOn() {
+    boolean addCallMethodOn(final boolean previousItemsAdded) {
+        boolean moreItemsAdded = false;
+
         List<String> lhsVars = model.getAllLHSVariables();
         List<String> rhsVars = model.getRHSBoundFacts();
         String[] globals = oracle.getGlobalVariables();
 
         //Add globals
         if (globals.length > 0) {
-            choices.addItem(SECTION_SEPARATOR);
-        }
-        for (int i = 0; i < globals.length; i++) {
-            final String v = globals[i];
-            choices.addItem(GuidedRuleEditorResources.CONSTANTS.CallMethodOn0(v),
-                            "GLOBCALL" + v);
-            cmds.put("GLOBCALL" + v,
-                     new Command() {
+            if (previousItemsAdded) {
+                choices.addItem(SECTION_SEPARATOR, SECTION_SEPARATOR);
+            }
+            for (int i = 0; i < globals.length; i++) {
+                final String v = globals[i];
+                choices.addItem(GuidedRuleEditorResources.CONSTANTS.CallMethodOn0(v),
+                                "GLOBCALL" + v);
+                cmds.put("GLOBCALL" + v,
+                         new Command() {
 
-                         public void execute() {
-                             addCallMethod(v,
-                                           Integer.parseInt(positionCbo.getValue(positionCbo.getSelectedIndex())));
-                             hide();
-                         }
-                     });
+                             public void execute() {
+                                 addCallMethod(v,
+                                               Integer.parseInt(positionCbo.getValue(positionCbo.getSelectedIndex())));
+                                 hide();
+                             }
+                         });
+                moreItemsAdded = true;
+            }
         }
 
         //Method calls
         if (lhsVars.size() > 0) {
-            choices.addItem(SECTION_SEPARATOR);
-        }
-        for (Iterator<String> iter = lhsVars.iterator(); iter.hasNext(); ) {
-            final String v = iter.next();
+            if (previousItemsAdded || moreItemsAdded) {
+                choices.addItem(SECTION_SEPARATOR, SECTION_SEPARATOR);
+            }
+            for (Iterator<String> iter = lhsVars.iterator(); iter.hasNext(); ) {
+                final String v = iter.next();
 
-            choices.addItem(GuidedRuleEditorResources.CONSTANTS.CallMethodOn0(v),
-                            "CALL" + v);
-            cmds.put("CALL" + v,
-                     new Command() {
+                choices.addItem(GuidedRuleEditorResources.CONSTANTS.CallMethodOn0(v),
+                                "CALL" + v);
+                cmds.put("CALL" + v,
+                         new Command() {
 
-                         public void execute() {
-                             addCallMethod(v,
-                                           Integer.parseInt(positionCbo.getValue(positionCbo.getSelectedIndex())));
-                             hide();
-                         }
-                     });
+                             public void execute() {
+                                 addCallMethod(v,
+                                               Integer.parseInt(positionCbo.getValue(positionCbo.getSelectedIndex())));
+                                 hide();
+                             }
+                         });
+                moreItemsAdded = true;
+            }
         }
 
         //Update, not modify
         if (rhsVars.size() > 0) {
-            choices.addItem(SECTION_SEPARATOR);
-        }
-        for (Iterator<String> iter = rhsVars.iterator(); iter.hasNext(); ) {
-            final String v = iter.next();
+            if (previousItemsAdded || moreItemsAdded) {
+                choices.addItem(SECTION_SEPARATOR, SECTION_SEPARATOR);
+            }
+            for (Iterator<String> iter = rhsVars.iterator(); iter.hasNext(); ) {
+                final String v = iter.next();
 
-            choices.addItem(GuidedRuleEditorResources.CONSTANTS.CallMethodOn0(v),
-                            "CALL" + v);
-            cmds.put("CALL" + v,
-                     new Command() {
+                choices.addItem(GuidedRuleEditorResources.CONSTANTS.CallMethodOn0(v),
+                                "CALL" + v);
+                cmds.put("CALL" + v,
+                         new Command() {
 
-                         public void execute() {
-                             addCallMethod(v,
-                                           Integer.parseInt(positionCbo.getValue(positionCbo.getSelectedIndex())));
-                             hide();
-                         }
-                     });
+                             public void execute() {
+                                 addCallMethod(v,
+                                               Integer.parseInt(positionCbo.getValue(positionCbo.getSelectedIndex())));
+                                 hide();
+                             }
+                         });
+                moreItemsAdded = true;
+            }
         }
+
+        return moreItemsAdded;
     }
 
-    private void addCustomActionPlugins() {
+    private void addCustomActionPlugins(final boolean previousItemsAdded) {
         if (actionPlugins != null) {
-            for (RuleModellerActionPlugin actionPlugin : actionPlugins) {
-
-                final IAction iAction = actionPlugin.createIAction(ruleModeller);
-                actionPlugin.addPluginToActionList(ruleModeller,
-                                                   () -> {
-                                                       choices.addItem(actionPlugin.getActionAddDescription(),
-                                                                       actionPlugin.getId());
-                                                       cmds.put(actionPlugin.getId(),
-                                                                () -> {
-                                                                    model.addRhsItem(iAction,
-                                                                                     Integer.parseInt(positionCbo.getValue(positionCbo.getSelectedIndex())));
-                                                                    hide();
-                                                                });
-                                                   });
+            if (actionPlugins.size() > 0) {
+                if (previousItemsAdded) {
+                    choices.addItem(SECTION_SEPARATOR, SECTION_SEPARATOR);
+                }
+                for (RuleModellerActionPlugin actionPlugin : actionPlugins) {
+                    final IAction iAction = actionPlugin.createIAction(ruleModeller);
+                    actionPlugin.addPluginToActionList(ruleModeller,
+                                                       () -> {
+                                                           choices.addItem(actionPlugin.getActionAddDescription(),
+                                                                           actionPlugin.getId());
+                                                           cmds.put(actionPlugin.getId(),
+                                                                    () -> {
+                                                                        model.addRhsItem(iAction,
+                                                                                         Integer.parseInt(positionCbo.getValue(positionCbo.getSelectedIndex())));
+                                                                        hide();
+                                                                    });
+                                                       });
+                }
             }
         }
     }

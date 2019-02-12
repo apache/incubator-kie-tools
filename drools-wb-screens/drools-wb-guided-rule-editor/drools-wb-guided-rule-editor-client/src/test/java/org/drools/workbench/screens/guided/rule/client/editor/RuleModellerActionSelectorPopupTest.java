@@ -16,11 +16,14 @@
 package org.drools.workbench.screens.guided.rule.client.editor;
 
 import java.util.Collections;
+import java.util.List;
 
+import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockito;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import com.google.gwtmockito.WithClassesToStub;
 import org.assertj.core.api.Assertions;
+import org.drools.workbench.models.datamodel.rule.DSLSentence;
 import org.drools.workbench.models.datamodel.rule.IAction;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.screens.guided.rule.client.editor.plugin.RuleModellerActionPlugin;
@@ -35,8 +38,11 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.uberfire.mvp.Command;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
@@ -46,6 +52,10 @@ import static org.mockito.Mockito.when;
 @WithClassesToStub({Heading.class})
 @RunWith(GwtMockitoTestRunner.class)
 public class RuleModellerActionSelectorPopupTest {
+
+    private static final String ACTION_ID = "modify score id";
+
+    private static final String ACTION_DESCRIPTION = "modify score";
 
     @Mock
     private RuleModeller ruleModeller;
@@ -62,6 +72,12 @@ public class RuleModellerActionSelectorPopupTest {
     @Mock
     private ListBox listBox;
 
+    @GwtMock
+    private RuleModellerSelectorFilter filterWidget;
+
+    @Captor
+    private ArgumentCaptor<String> keyCaptor;
+
     @Captor
     private ArgumentCaptor<Command> commandArgumentCaptor;
 
@@ -75,42 +91,47 @@ public class RuleModellerActionSelectorPopupTest {
 
         this.model = spy(new RuleModel());
 
-        when(oracle.getDSLConditions()).thenReturn(Collections.emptyList());
-        when(oracle.getFactTypes()).thenReturn(new String[]{});
-        when(oracle.getGlobalVariables()).thenReturn(new String[]{});
+        when(oracle.getDSLActions()).thenReturn(Collections.singletonList(new DSLSentence() {{
+            setDefinition("dslSentence");
+        }}));
+        when(oracle.getFactTypes()).thenReturn(new String[]{"Applicant"});
+        when(oracle.getGlobalVariables()).thenReturn(new String[]{"$global"});
+        when(ruleModeller.isDSLEnabled()).thenReturn(true);
+        when(actionPlugin.getId()).thenReturn(ACTION_ID);
+        when(actionPlugin.getActionAddDescription()).thenReturn(ACTION_DESCRIPTION);
 
         this.popup = spy(new RuleModellerActionSelectorPopup(model,
                                                              ruleModeller,
                                                              Collections.singletonList(actionPlugin),
-                                                             null,
+                                                             0,
                                                              oracle));
         reset(model);
     }
 
     @Test
     public void checkAddUpdateNotModifyGetsPatternBindings() {
-        popup.addUpdateNotModify();
+        popup.addUpdateNotModify(false);
 
         verify(model).getLHSPatternVariables();
     }
 
     @Test
     public void checkAddRetractionsGetsPatternBindings() {
-        popup.addRetractions();
+        popup.addRetractions(false);
 
         verify(model).getLHSPatternVariables();
     }
 
     @Test
     public void checkAddModifiesGetsLhsBindings() {
-        popup.addModifies();
+        popup.addModifies(false);
 
         verify(model).getAllLHSVariables();
     }
 
     @Test
     public void checkAddCallMethodOnGetsAllBindings() {
-        popup.addCallMethodOn();
+        popup.addCallMethodOn(false);
 
         verify(model).getAllLHSVariables();
         verify(model).getRHSBoundFacts();
@@ -120,10 +141,8 @@ public class RuleModellerActionSelectorPopupTest {
     public void testActionPlugins() throws Exception {
         // reset due to calls in constructor
         reset(actionPlugin);
-        final String actionDescription = "modify score";
-        final String actionId = "modify score id";
-        doReturn(actionDescription).when(actionPlugin).getActionAddDescription();
-        doReturn(actionId).when(actionPlugin).getId();
+        doReturn(ACTION_DESCRIPTION).when(actionPlugin).getActionAddDescription();
+        doReturn(ACTION_ID).when(actionPlugin).getId();
         doReturn(iAction).when(actionPlugin).createIAction(eq(ruleModeller));
 
         popup.getContent();
@@ -135,15 +154,69 @@ public class RuleModellerActionSelectorPopupTest {
         // listbox is used as popup.choices
         reset(listBox);
         commandArgumentCaptor.getValue().execute();
-        verify(listBox).addItem(eq(actionDescription), eq(actionId));
-        Assertions.assertThat(popup.cmds).containsKeys(actionId);
+        verify(listBox).addItem(eq(ACTION_DESCRIPTION), eq(ACTION_ID));
+        Assertions.assertThat(popup.cmds).containsKeys(ACTION_ID);
 
         // reset
         // now we need listbox as popup.positionCbo
         reset(listBox);
         doReturn("123").when(listBox).getValue(anyInt());
-        popup.cmds.get(actionId).execute();
+        popup.cmds.get(ACTION_ID).execute();
         verify(model).addRhsItem(iAction, 123);
         verify(popup).hide();
+    }
+
+    @Test
+    public void testLoadContentFiltered() throws Exception {
+        reset(listBox, actionPlugin);
+        when(actionPlugin.getId()).thenReturn(ACTION_ID);
+        when(actionPlugin.getActionAddDescription()).thenReturn(ACTION_DESCRIPTION);
+
+        when(filterWidget.getFilterText()).thenReturn("cheese");
+
+        popup = new RuleModellerActionSelectorPopup(model,
+                                                    ruleModeller,
+                                                    Collections.singletonList(actionPlugin),
+                                                    0,
+                                                    oracle);
+
+        verify(actionPlugin).addPluginToActionList(eq(ruleModeller), commandArgumentCaptor.capture());
+        commandArgumentCaptor.getValue().execute();
+
+        verify(listBox, atLeastOnce()).addItem(keyCaptor.capture(), anyString());
+
+        final List<String> keys = keyCaptor.getAllValues();
+
+        assertThat(keys).containsExactly("ChangeFieldValuesOf0($global)",
+                                         AbstractRuleModellerSelectorPopup.SECTION_SEPARATOR,
+                                         "AddFreeFormDrl",
+                                         AbstractRuleModellerSelectorPopup.SECTION_SEPARATOR,
+                                         "CallMethodOn0($global)",
+                                         AbstractRuleModellerSelectorPopup.SECTION_SEPARATOR,
+                                         ACTION_DESCRIPTION);
+    }
+
+    @Test
+    public void testLoadContentUnfiltered() throws Exception {
+        verify(actionPlugin).addPluginToActionList(eq(ruleModeller), commandArgumentCaptor.capture());
+        commandArgumentCaptor.getValue().execute();
+
+        verify(listBox, atLeastOnce()).addItem(keyCaptor.capture(), anyString());
+
+        final List<String> keys = keyCaptor.getAllValues();
+
+        assertThat(keys).containsExactly("dslSentence",
+                                         AbstractRuleModellerSelectorPopup.SECTION_SEPARATOR,
+                                         "ChangeFieldValuesOf0($global)",
+                                         AbstractRuleModellerSelectorPopup.SECTION_SEPARATOR,
+                                         "InsertFact0(Applicant)",
+                                         AbstractRuleModellerSelectorPopup.SECTION_SEPARATOR,
+                                         "LogicallyInsertFact0(Applicant)",
+                                         AbstractRuleModellerSelectorPopup.SECTION_SEPARATOR,
+                                         "AddFreeFormDrl",
+                                         AbstractRuleModellerSelectorPopup.SECTION_SEPARATOR,
+                                         "CallMethodOn0($global)",
+                                         AbstractRuleModellerSelectorPopup.SECTION_SEPARATOR,
+                                         ACTION_DESCRIPTION);
     }
 }

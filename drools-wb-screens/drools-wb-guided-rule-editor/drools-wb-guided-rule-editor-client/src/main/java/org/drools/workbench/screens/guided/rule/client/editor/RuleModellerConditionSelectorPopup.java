@@ -15,6 +15,9 @@
  */
 package org.drools.workbench.screens.guided.rule.client.editor;
 
+import java.util.Objects;
+import java.util.function.Predicate;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpHandler;
@@ -114,7 +117,12 @@ public class RuleModellerConditionSelectorPopup extends AbstractRuleModellerSele
             layoutPanel.addRow(new HTML("<hr/>"));
         }
 
-        choices = makeChoicesListBox();
+        //Add a widget to filter DSLs if applicable
+        final RuleModellerSelectorFilter filterWidget = GWT.create(RuleModellerSelectorFilter.class);
+        filterWidget.setFilterChangeConsumer((filter) -> choicesPanel.setWidget(makeChoicesListBox(filter)));
+        layoutPanel.add(filterWidget);
+
+        choices = makeChoicesListBox(filterWidget.getFilterText());
         choicesPanel.add(choices);
         layoutPanel.addRow(choicesPanel);
 
@@ -127,7 +135,7 @@ public class RuleModellerConditionSelectorPopup extends AbstractRuleModellerSele
 
                 public void onValueChange(ValueChangeEvent<Boolean> event) {
                     onlyShowDSLStatements = event.getValue();
-                    choicesPanel.setWidget(makeChoicesListBox());
+                    choicesPanel.setWidget(makeChoicesListBox(filterWidget.getFilterText()));
                 }
             });
             layoutPanel.addRow(chkOnlyDisplayDSLConditions);
@@ -142,7 +150,7 @@ public class RuleModellerConditionSelectorPopup extends AbstractRuleModellerSele
         choices.setFocus(true);
     }
 
-    private ListBox makeChoicesListBox() {
+    private ListBox makeChoicesListBox(final String filter) {
         choices = GWT.create(ListBox.class);
         choices.setMultipleSelect(true);
         choices.setPixelSize(getChoicesWidth(),
@@ -156,10 +164,11 @@ public class RuleModellerConditionSelectorPopup extends AbstractRuleModellerSele
             }
         });
 
-        addDSLSentences();
+        final Predicate<String> predicate = (item) -> item.toLowerCase().contains(Objects.isNull(filter) ? "" : filter.toLowerCase());
+        boolean itemsAdded = addDSLSentences(predicate);
         if (!onlyShowDSLStatements) {
-            addFacts();
-            addExistentialConditionalElements();
+            itemsAdded = addFacts(predicate, itemsAdded) || itemsAdded;
+            addExistentialConditionalElements(itemsAdded);
             addFromConditionalElements();
             addFreeFormDrl();
         }
@@ -168,58 +177,76 @@ public class RuleModellerConditionSelectorPopup extends AbstractRuleModellerSele
     }
 
     // The list of DSL sentences
-    private void addDSLSentences() {
+    private boolean addDSLSentences(final Predicate<String> predicate) {
+        boolean moreItemsAdded = false;
+
         //DSL might be prohibited (e.g. editing a DRL file. Only DSLR files can contain DSL)
-        if (!ruleModeller.isDSLEnabled()) {
-            return;
+        if (ruleModeller.isDSLEnabled()) {
+            for (final DSLSentence sen : oracle.getDSLConditions()) {
+                final String sentence = sen.toString();
+                if (predicate.test(sentence)) {
+                    final String key = "DSL" + sentence;
+                    choices.addItem(sentence,
+                                    key);
+                    cmds.put(key,
+                             new Command() {
+
+                                 public void execute() {
+                                     addNewDSLLhs(sen,
+                                                  Integer.parseInt(positionCbo.getValue(positionCbo.getSelectedIndex())));
+                                     hide();
+                                 }
+                             });
+                    moreItemsAdded = true;
+                }
+            }
         }
 
-        for (final DSLSentence sen : oracle.getDSLConditions()) {
-            final String sentence = sen.toString();
-            final String key = "DSL" + sentence;
-            choices.addItem(sentence,
-                            key);
-            cmds.put(key,
-                     new Command() {
-
-                         public void execute() {
-                             addNewDSLLhs(sen,
-                                          Integer.parseInt(positionCbo.getValue(positionCbo.getSelectedIndex())));
-                             hide();
-                         }
-                     });
-        }
+        return moreItemsAdded;
     }
 
     // The list of facts
-    private void addFacts() {
+    private boolean addFacts(final Predicate<String> predicate,
+                             final boolean previousItemsAdded) {
+        boolean moreItemsAdded = false;
+
         if (oracle.getFactTypes().length > 0) {
-            choices.addItem(SECTION_SEPARATOR);
+            if (anyItemsMatch(predicate, oracle.getFactTypes()) && previousItemsAdded) {
+                choices.addItem(SECTION_SEPARATOR, SECTION_SEPARATOR);
+            }
 
             for (int i = 0; i < oracle.getFactTypes().length; i++) {
                 final String f = oracle.getFactTypes()[i];
-                String key = "NF" + f;
+                if (predicate.test(f)) {
+                    String key = "NF" + f;
 
-                choices.addItem(f + " ...",
-                                key);
-                cmds.put(key,
-                         new Command() {
+                    choices.addItem(f + " ...",
+                                    key);
+                    cmds.put(key,
+                             new Command() {
 
-                             public void execute() {
-                                 addNewFact(f,
-                                            Integer.parseInt(positionCbo.getValue(positionCbo.getSelectedIndex())));
-                                 hide();
-                             }
-                         });
+                                 public void execute() {
+                                     addNewFact(f,
+                                                Integer.parseInt(positionCbo.getValue(positionCbo.getSelectedIndex())));
+                                     hide();
+                                 }
+                             });
+                    moreItemsAdded = true;
+                }
             }
         }
+
+        return moreItemsAdded;
     }
 
     // The list of existential CEs
-    private void addExistentialConditionalElements() {
+    private void addExistentialConditionalElements(final boolean previousItemsAdded) {
         String ces[] = HumanReadable.CONDITIONAL_ELEMENTS;
 
-        choices.addItem(SECTION_SEPARATOR);
+        if (previousItemsAdded) {
+            choices.addItem(SECTION_SEPARATOR, SECTION_SEPARATOR);
+        }
+
         for (int i = 0; i < ces.length; i++) {
             final String ce = ces[i];
             String key = "CE" + ce;
@@ -241,7 +268,7 @@ public class RuleModellerConditionSelectorPopup extends AbstractRuleModellerSele
     private void addFromConditionalElements() {
         String fces[] = HumanReadable.FROM_CONDITIONAL_ELEMENTS;
 
-        choices.addItem(SECTION_SEPARATOR);
+        choices.addItem(SECTION_SEPARATOR, SECTION_SEPARATOR);
         for (int i = 0; i < fces.length; i++) {
             final String ce = fces[i];
             String key = "FCE" + ce;
@@ -261,7 +288,7 @@ public class RuleModellerConditionSelectorPopup extends AbstractRuleModellerSele
 
     // Free form DRL
     private void addFreeFormDrl() {
-        choices.addItem(SECTION_SEPARATOR);
+        choices.addItem(SECTION_SEPARATOR, SECTION_SEPARATOR);
         choices.addItem(GuidedRuleEditorResources.CONSTANTS.FreeFormDrl(),
                         "FF");
         cmds.put("FF",
