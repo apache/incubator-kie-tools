@@ -18,10 +18,8 @@ package org.kie.workbench.common.screens.library.client.screens;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import javax.enterprise.event.Event;
 
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
-import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.WorkspaceProject;
@@ -35,12 +33,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.library.api.LibraryInfo;
 import org.kie.workbench.common.screens.library.api.LibraryService;
-import org.kie.workbench.common.screens.library.client.events.ProjectDetailEvent;
+import org.kie.workbench.common.screens.library.api.ProjectAssetListUpdated;
 import org.kie.workbench.common.screens.library.client.screens.project.AddProjectPopUpPresenter;
 import org.kie.workbench.common.screens.library.client.util.LibraryPermissions;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.screens.library.client.widgets.common.TileWidget;
 import org.kie.workbench.common.screens.library.client.widgets.library.AddProjectButtonPresenter;
+import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.mocks.CallerMock;
@@ -129,9 +128,13 @@ public class PopulatedLibraryScreenTest {
     }
 
     private WorkspaceProject mockProject(final String projectName) {
-        final WorkspaceProject result = mock(WorkspaceProject.class);
+        final WorkspaceProject result = mock(WorkspaceProject.class,
+                                             Answers.RETURNS_DEEP_STUBS.get());
         doReturn(projectName).when(result).getName();
         doReturn(mock(Module.class)).when(result).getMainModule();
+        Repository repo = mock(Repository.class);
+        doReturn(projectName).when(repo).getIdentifier();
+        doReturn(repo).when(result).getRepository();
         return result;
     }
 
@@ -226,7 +229,8 @@ public class PopulatedLibraryScreenTest {
         libraryScreen.onRepositoryRemovedEvent(createRepositoryRemovedEvent("dora"));
 
         //one for @Setup
-        verify(libraryScreen, times(2)).refreshProjects();
+        verify(libraryScreen,
+               times(2)).refreshProjects();
     }
 
     @Test
@@ -241,6 +245,34 @@ public class PopulatedLibraryScreenTest {
         //one for @Setup
         verify(libraryScreen,
                times(1)).refreshProjects();
+    }
+
+    @Test
+    public void testOnAssetListUpdated() {
+
+        doNothing().when(libraryScreen).refreshProjects();
+
+        libraryScreen.onAssetListUpdated(createAssetListUpdatedEvent("project1Name"));
+        // Setup and Asset Update refreshProjects
+        verify(libraryScreen,
+               times(2)).refreshProjects();
+    }
+
+    @Test
+    public void testOnAssetListUpdatedDifferentSpace() {
+        doNothing().when(libraryScreen).refreshProjects();
+
+        libraryScreen.onAssetListUpdated(createAssetListUpdatedEvent("project4Name"));
+        // Only Setup refreshProjects
+        verify(libraryScreen,
+               times(1)).refreshProjects();
+    }
+
+    private ProjectAssetListUpdated createAssetListUpdatedEvent(String projectName) {
+        ProjectAssetListUpdated projectAssetListUpdated = mock(ProjectAssetListUpdated.class);
+        WorkspaceProject project = this.mockProject(projectName);
+        when(projectAssetListUpdated.getProject()).thenReturn(project);
+        return projectAssetListUpdated;
     }
 
     private void setupProjectContext(String spaceName) {
@@ -261,6 +293,7 @@ public class PopulatedLibraryScreenTest {
     }
 
     private RepositoryRemovedEvent createRepositoryRemovedEvent(String spaceName) {
+
         RepositoryRemovedEvent repositoryRemovedEvent = mock(RepositoryRemovedEvent.class);
         Repository repository = mock(Repository.class);
         when(repository.getSpace()).thenReturn(new Space(spaceName));

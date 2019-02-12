@@ -22,12 +22,10 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
-import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
-import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.WorkspaceProject;
@@ -39,7 +37,8 @@ import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.screens.library.api.LibraryInfo;
 import org.kie.workbench.common.screens.library.api.LibraryService;
-import org.kie.workbench.common.screens.library.client.events.ProjectDetailEvent;
+import org.kie.workbench.common.screens.library.api.ProjectAssetListUpdated;
+import org.kie.workbench.common.screens.library.api.Routed;
 import org.kie.workbench.common.screens.library.client.util.LibraryPermissions;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.screens.library.client.widgets.common.TileWidget;
@@ -63,7 +62,6 @@ public class PopulatedLibraryScreen {
         void clearFilterText();
 
         String getNumberOfAssetsMessage(int numberOfAssets);
-
     }
 
     private View view;
@@ -111,8 +109,12 @@ public class PopulatedLibraryScreen {
 
     void refreshProjects() {
         libraryService.call((RemoteCallback<LibraryInfo>) this::updateLibrary)
-                .getLibraryInfo(projectContext.getActiveOrganizationalUnit()
-                                        .orElseThrow(() -> new IllegalStateException("Cannot get library info without an active organizational unit.")));
+                .getLibraryInfo(getOrganizationalUnit());
+    }
+
+    private OrganizationalUnit getOrganizationalUnit() {
+        return projectContext.getActiveOrganizationalUnit()
+                .orElseThrow(() -> new IllegalStateException("Cannot get library info without an active organizational unit."));
     }
 
     private void updateLibrary(final LibraryInfo libraryInfo) {
@@ -184,7 +186,8 @@ public class PopulatedLibraryScreen {
     public void onNewProjectEvent(@Observes NewProjectEvent e) {
 
         projectContext.getActiveOrganizationalUnit().ifPresent(p -> {
-            if (eventOnCurrentSpace(p, e.getWorkspaceProject().getSpace())) {
+            if (eventOnCurrentSpace(p,
+                                    e.getWorkspaceProject().getSpace())) {
                 refreshProjects();
             }
         });
@@ -192,7 +195,8 @@ public class PopulatedLibraryScreen {
 
     public void onRepositoryRemovedEvent(@Observes RepositoryRemovedEvent e) {
         projectContext.getActiveOrganizationalUnit().ifPresent(p -> {
-            if (eventOnCurrentSpace(p, e.getRepository().getSpace())) {
+            if (eventOnCurrentSpace(p,
+                                    e.getRepository().getSpace())) {
                 refreshProjects();
             }
         });
@@ -201,5 +205,16 @@ public class PopulatedLibraryScreen {
     boolean eventOnCurrentSpace(OrganizationalUnit p,
                                 Space space) {
         return p.getSpace().getName().equalsIgnoreCase(space.getName());
+    }
+
+    public void onAssetListUpdated(@Observes @Routed ProjectAssetListUpdated event) {
+        libraryService.call((LibraryInfo libraryInfo) -> {
+            boolean anyMatch = libraryInfo.getProjects()
+                    .stream()
+                    .anyMatch(workspaceProject -> event.getProject().getRepository().getIdentifier().equals(workspaceProject.getRepository().getIdentifier()));
+            if (anyMatch) {
+                refreshProjects();
+            }
+        }).getLibraryInfo(this.getOrganizationalUnit());
     }
 }
