@@ -47,11 +47,11 @@ public class ColorMapBackedPicker
     }
 
     public void build(final NFastArrayList<WiresShape> shapes) {
-        m_scratchPad.clear();
+        clear();
         processShapes(shapes);
     }
 
-    private void processShapes(final NFastArrayList<WiresShape> shapes)
+    void processShapes(final NFastArrayList<WiresShape> shapes)
     {
         computeShapes(shapes);
         drawShapes();
