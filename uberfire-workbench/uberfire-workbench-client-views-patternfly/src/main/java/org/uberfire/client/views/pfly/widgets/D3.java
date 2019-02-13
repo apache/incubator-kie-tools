@@ -24,29 +24,27 @@ import jsinterop.annotations.JsType;
 @JsType(isNative = true)
 public interface D3 {
 
-    D3 select(String path);
+    Selection selection();
 
-    D3 select(Object object);
+    Selection select(String path);
 
-    D3 selectAll(String path);
+    Selection select(Object object);
+
+    Selection selectAll(String path);
 
     Zoom zoom();
 
-    CallbackFunction on(String event,
-                        CallbackFunction callbackFn);
+    CallbackFunction on(String event, CallbackFunction callbackFn);
 
-    D3 call(CallbackFunction function,
-            Object... args);
+    D3 call(CallbackFunction function, Object... args);
 
-    D3 attr(String name,
-            Object value);
+    D3 attr(String name, Object value);
 
     Object attr(String name);
 
     Object style(String name);
 
-    D3 style(String name,
-             Object value);
+    D3 style(String name, Object value);
 
     D3 append(String content);
 
@@ -72,20 +70,28 @@ public interface D3 {
     }
 
     @JsType(isNative = true)
+    interface Selection extends D3 {
+
+        boolean empty();
+
+        int size();
+
+        Selection filter(String path);
+
+    }
+
+    @JsType(isNative = true)
     interface Zoom extends D3 {
 
-        void scaleBy(D3 element,
-                     double scale);
+        void scaleBy(D3 element, double scale);
 
-        void scaleTo(D3 element,
-                     double scale);
+        void scaleTo(D3 element, double scale);
 
         void scaleExtent(double[] scaleExtent);
 
         void translateExtent(double[][] translateExtent);
 
-        void transform(D3 selection,
-                       Transform transform);
+        void transform(D3 selection, Transform transform);
     }
 
     @JsType(isNative = true)
