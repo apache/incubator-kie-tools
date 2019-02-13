@@ -258,13 +258,11 @@ public class AssignmentListItemWidgetViewImplTest {
     @Test
     public void testDataTypeHandlerSpace() {
         view.init();
-        verify(customDataType,
-               times(1)).addKeyDownHandler(keyDownHandlerCaptor.capture());
+        verify(customDataType, times(1)).addKeyDownHandler(keyDownHandlerCaptor.capture());
         KeyDownHandler handler = keyDownHandlerCaptor.getValue();
         doReturn(Integer.valueOf(' ')).when(keyDownEvent).getNativeKeyCode();
         handler.onKeyDown(keyDownEvent);
-        verify(keyDownEvent,
-               times(1)).preventDefault();
+        verify(keyDownEvent, times(1)).preventDefault();
     }
 
     @Test

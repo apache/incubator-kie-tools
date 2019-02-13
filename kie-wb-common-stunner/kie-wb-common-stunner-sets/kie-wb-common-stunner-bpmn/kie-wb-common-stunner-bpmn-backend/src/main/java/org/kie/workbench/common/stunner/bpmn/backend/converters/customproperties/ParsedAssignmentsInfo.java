@@ -191,7 +191,7 @@ public class ParsedAssignmentsInfo {
                         parentId,
                         variableScope,
                         varDecl,
-                        associations.lookupInput(varDecl.getIdentifier())))
+                        associations.lookupInput(varDecl.getTypedIdentifier().getName())))
                 .collect(Collectors.toList());
     }
 
@@ -203,7 +203,7 @@ public class ParsedAssignmentsInfo {
                         parentId,
                         variableScope,
                         varDecl,
-                        associations.lookupOutput(varDecl.getIdentifier())))
+                        associations.lookupOutput(varDecl.getTypedIdentifier().getName())))
                 .collect(Collectors.toList());
     }
 

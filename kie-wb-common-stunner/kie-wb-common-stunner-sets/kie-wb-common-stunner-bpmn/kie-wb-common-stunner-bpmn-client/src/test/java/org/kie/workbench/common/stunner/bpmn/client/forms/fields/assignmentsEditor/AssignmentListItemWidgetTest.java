@@ -157,12 +157,13 @@ public class AssignmentListItemWidgetTest {
                                    anyString(),
                                    anyString());
         RegExp regExp = RegExp.compile(regExpCaptor.getValue());
+        assertEquals(true,
+                     regExp.test("a1 -_+-*?'/"));
         assertEquals(false,
-                     regExp.test("a 1"));
-        assertEquals(false,
-                     regExp.test("a@1"));
+                     regExp.test("a1 -_+-*?'/1@"));
         assertEquals(true,
                      regExp.test("a1"));
+
         verify(customDataType,
                times(1)).addKeyDownHandler(any(KeyDownHandler.class));
         verify(name,

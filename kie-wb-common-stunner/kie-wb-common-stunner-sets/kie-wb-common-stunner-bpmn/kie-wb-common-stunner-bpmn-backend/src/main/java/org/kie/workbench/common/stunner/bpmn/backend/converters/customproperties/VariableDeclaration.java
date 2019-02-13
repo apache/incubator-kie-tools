@@ -29,21 +29,20 @@ public class VariableDeclaration {
     private final ItemDefinition typeDeclaration;
     private final Property typedIdentifier;
     private String identifier;
-    private String type = "";
+    private String type;
 
     public VariableDeclaration(String identifier, String type) {
-        this.identifier = identifier;
+        this.setIdentifier(identifier);
         this.type = type;
 
         this.typeDeclaration = bpmn2.createItemDefinition();
-        this.typeDeclaration.setId(Ids.item(identifier));
+        this.typeDeclaration.setId(Ids.item(this.getIdentifier()));
         this.typeDeclaration.setStructureRef(type);
 
         this.typedIdentifier = bpmn2.createProperty();
-        this.typedIdentifier.setId(Ids.typedIdentifier("GLOBAL", identifier));
+        this.typedIdentifier.setId(Ids.typedIdentifier("GLOBAL", this.getIdentifier()));
         this.typedIdentifier.setName(identifier);
         this.typedIdentifier.setItemSubjectRef(typeDeclaration);
-
     }
 
     public static VariableDeclaration fromString(String encoded) {
@@ -61,7 +60,8 @@ public class VariableDeclaration {
     }
 
     public void setIdentifier(String identifier) {
-        this.identifier = identifier;
+        String safeIdentifier = identifier.replaceAll(" ", "-");
+        this.identifier = safeIdentifier;
     }
 
     public String getType() {
@@ -83,9 +83,9 @@ public class VariableDeclaration {
     @Override
     public String toString() {
         if (type == null || type.isEmpty()) {
-            return identifier;
+            return typedIdentifier.getName();
         } else {
-            return identifier + ":" + type;
+            return typedIdentifier.getName() + ":" + type;
         }
     }
 

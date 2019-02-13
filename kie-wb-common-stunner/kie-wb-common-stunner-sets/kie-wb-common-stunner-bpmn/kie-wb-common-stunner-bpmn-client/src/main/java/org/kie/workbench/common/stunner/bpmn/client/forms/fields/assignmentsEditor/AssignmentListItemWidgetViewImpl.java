@@ -42,7 +42,6 @@ import org.kie.workbench.common.stunner.bpmn.client.forms.fields.i18n.StunnerFor
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.AssignmentRow;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Variable.VariableType;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.ListBoxValues;
-import org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils;
 import org.kie.workbench.common.stunner.bpmn.client.forms.widgets.ComboBox;
 import org.kie.workbench.common.stunner.bpmn.client.forms.widgets.ComboBoxView;
 import org.kie.workbench.common.stunner.bpmn.client.forms.widgets.VariableNameTextBox;
@@ -61,6 +60,9 @@ public class AssignmentListItemWidgetViewImpl extends Composite implements Assig
                                                                            ComboBoxView.ModelPresenter {
 
     private static final String EMPTY_VALUE = "";
+
+
+    private final static String ALLOWED_CHARS = "^[a-zA-Z0-9\\-\\_\\ \\+\\/\\*\\?\\'\\.]*$";
 
     /**
      * Errai's data binding module will automatically bind the provided instance
@@ -198,7 +200,7 @@ public class AssignmentListItemWidgetViewImpl extends Composite implements Assig
                                 true,
                                 CONSTANT_PROMPT,
                                 ENTER_CONSTANT_PROMPT);
-        name.setRegExp(StringUtils.ALPHA_NUM_REGEXP,
+        name.setRegExp(ALLOWED_CHARS,
                        StunnerFormsClientFieldsConstants.INSTANCE.Removed_invalid_characters_from_name(),
                        StunnerFormsClientFieldsConstants.INSTANCE.Invalid_character_in_name());
         customDataType.addKeyDownHandler(event -> {

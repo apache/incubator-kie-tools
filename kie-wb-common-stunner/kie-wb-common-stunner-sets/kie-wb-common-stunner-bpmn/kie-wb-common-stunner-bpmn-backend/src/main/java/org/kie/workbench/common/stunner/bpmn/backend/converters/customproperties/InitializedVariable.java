@@ -115,7 +115,10 @@ public abstract class InitializedVariable {
             super(parentId, varDecl);
             getItemDefinition().setId(Ids.dataInputItem(parentId, varDecl.getIdentifier()));
             this.dataInput = dataInputOf(
-                    parentId, varDecl.getIdentifier(), getItemDefinition());
+                    parentId,
+                    varDecl.getIdentifier(),
+                    varDecl.getTypedIdentifier().getName(),
+                    getItemDefinition());
         }
 
         public DataInput getDataInput() {
@@ -135,6 +138,7 @@ public abstract class InitializedVariable {
             this.dataOutput = dataOutputOf(
                     parentId,
                     varDecl.getIdentifier(),
+                    varDecl.getTypedIdentifier().getName(),
                     getItemDefinition());
         }
 
@@ -183,6 +187,7 @@ public abstract class InitializedVariable {
             this.dataOutput = dataOutputOf(
                     parentId,
                     varDecl.getIdentifier(),
+                    varDecl.getTypedIdentifier().getName(),
                     getItemDefinition());
         }
 
@@ -264,19 +269,19 @@ public abstract class InitializedVariable {
         }
     }
 
-    private static DataInput dataInputOf(String parentId, String identifier, ItemDefinition itemDefinition) {
+    private static DataInput dataInputOf(String parentId, String identifier, String name, ItemDefinition itemDefinition) {
         DataInput dataInput = bpmn2.createDataInput();
         dataInput.setId(Ids.dataInput(parentId, identifier));
-        dataInput.setName(identifier);
+        dataInput.setName(name);
         dataInput.setItemSubjectRef(itemDefinition);
         CustomAttribute.dtype.of(dataInput).set(itemDefinition.getStructureRef());
         return dataInput;
     }
 
-    private static DataOutput dataOutputOf(String parentId, String identifier, ItemDefinition itemDefinition) {
+    private static DataOutput dataOutputOf(String parentId, String identifier, String name, ItemDefinition itemDefinition) {
         DataOutput dataOutput = bpmn2.createDataOutput();
         dataOutput.setId(Ids.dataOutput(parentId, identifier));
-        dataOutput.setName(identifier);
+        dataOutput.setName(name);
         dataOutput.setItemSubjectRef(itemDefinition);
         CustomAttribute.dtype.of(dataOutput).set(itemDefinition.getStructureRef());
         return dataOutput;

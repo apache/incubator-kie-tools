@@ -19,7 +19,9 @@ package org.kie.workbench.common.stunner.bpmn.client.forms.util;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class StringUtilsTest {
 
@@ -73,5 +75,27 @@ public class StringUtilsTest {
     public void testCreateDataTypeDisplayName() throws Exception {
         assertEquals("Chairs [com.test]",
                      StringUtils.createDataTypeDisplayName("com.test.Chairs"));
+    }
+
+    @Test
+    public void testRegexSequence() {
+
+        String test1 = "123Test";
+        assertTrue(test1.matches(StringUtils.ALPHA_NUM_REGEXP));
+
+        String test2 = "123Test ";
+        assertFalse(test2.matches(StringUtils.ALPHA_NUM_REGEXP));
+
+        String test3 = "123Test #";
+        assertFalse(test3.matches(StringUtils.ALPHA_NUM_REGEXP));
+
+        String test4 = "123Test";
+        assertTrue(test4.matches(StringUtils.ALPHA_NUM_SPACE_REGEXP));
+
+        String test5 = "123Test ";
+        assertTrue(test5.matches(StringUtils.ALPHA_NUM_SPACE_REGEXP));
+
+        String test6 = "123Test #";
+        assertFalse(test6.matches(StringUtils.ALPHA_NUM_SPACE_REGEXP));
     }
 }

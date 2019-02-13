@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.prope
 
 import java.util.Collections;
 
+import org.eclipse.bpmn2.DataInput;
 import org.eclipse.bpmn2.DataOutput;
 import org.junit.Test;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.ParsedAssignmentsInfo;
@@ -29,10 +30,14 @@ public class AssignmentsInfosTest {
 
     @Test
     public void JBPM_7447_shouldNotFilterOutDataOutputsWithEmptyType() {
+        DataInput dataInput = bpmn2.createDataInput();
+        dataInput.setName("InputName");
+        dataInput.setId("InputID");
         DataOutput dataOutput = bpmn2.createDataOutput();
-        dataOutput.setId("Foo");
+        dataOutput.setName("OutputName");
+        dataOutput.setId("OutputID");
         ParsedAssignmentsInfo result = AssignmentsInfos.parsed(
-                Collections.emptyList(),
+                Collections.singletonList(dataInput),
                 Collections.emptyList(),
                 Collections.singletonList(dataOutput),
                 Collections.emptyList(),
