@@ -15,6 +15,8 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.SortedMap;
 import java.util.stream.IntStream;
 
@@ -41,7 +43,7 @@ public class SetPropertyHeaderCommand extends AbstractSetHeaderCommand {
     protected void executeIfSelectedColumn(ScenarioSimulationContext context, ScenarioGridColumn selectedColumn) {
         int columnIndex = context.getModel().getColumns().indexOf(selectedColumn);
         String value = context.getStatus().getValue();
-        String title = value.contains(".") ? value.substring(value.indexOf(".") + 1) : "value";
+        String propertyHeaderTitle = value.contains(".") ? value.substring(value.indexOf(".") + 1) : "value";
         String className = value.split("\\.")[0];
         String canonicalClassName = getFullPackage(context) + className;
         FactIdentifier factIdentifier = setEditableHeadersAndGetFactIdentifier(context, selectedColumn, className, canonicalClassName);
@@ -54,25 +56,40 @@ public class SetPropertyHeaderCommand extends AbstractSetHeaderCommand {
                     }
                 });
         selectedColumn.getPropertyHeaderMetaData().setColumnGroup(getPropertyMetaDataGroup(selectedColumn.getInformationHeaderMetaData().getColumnGroup()));
-        setPropertyMetaData(selectedColumn.getPropertyHeaderMetaData(), title, false, selectedColumn, ScenarioSimulationEditorConstants.INSTANCE.insertValue());
+        setPropertyMetaData(selectedColumn.getPropertyHeaderMetaData(), propertyHeaderTitle, false, selectedColumn, ScenarioSimulationEditorConstants.INSTANCE.insertValue());
         selectedColumn.setPropertyAssigned(true);
         String propertyClass = context.getStatus().getValueClassName();
-        String propertyName = title; // TODO GC CHECK
         context.getModel().updateColumnProperty(columnIndex,
                                                 selectedColumn,
                                                 value,
                                                 propertyClass, context.getStatus().isKeepData());
-        final SortedMap<String, FactModelTree> dataObjectFieldsMap = context.getDataObjectFieldsMap();
-        final FactModelTree factModelTree = dataObjectFieldsMap.get(className);
         if (ScenarioSimulationSharedUtils.isCollection(propertyClass)) {
+            final SortedMap<String, FactModelTree> dataObjectFieldsMap = context.getDataObjectFieldsMap();
+            final List<String> elements = Arrays.asList(context.getStatus().getValue().split("\\."));
+            final FactModelTree nestedFactModelTree = navigateComplexObject(dataObjectFieldsMap.get(className),
+                                                                            elements,
+                                                                            dataObjectFieldsMap);
+
             selectedColumn.setFactory(context.getCollectionEditorSingletonDOMElementFactory());
             final FactMapping factMappingByIndex = context.getModel().getSimulation().get().getSimulationDescriptor().getFactMappingByIndex(columnIndex);
-            factMappingByIndex.setGenericTypes(factModelTree.getGenericTypeInfo(propertyName));
+            factMappingByIndex.setGenericTypes(nestedFactModelTree.getGenericTypeInfo(elements.get(elements.size() - 1)));
         } else {
             selectedColumn.setFactory(context.getScenarioCellTextAreaSingletonDOMElementFactory());
         }
         if (context.getScenarioSimulationEditorPresenter() != null) {
             context.getScenarioSimulationEditorPresenter().reloadRightPanel(false);
         }
+    }
+
+    protected FactModelTree navigateComplexObject(FactModelTree factModelTree, List<String> elements, SortedMap<String, FactModelTree> dataObjectFieldsMap) {
+        FactModelTree nestedFactModelTree = factModelTree;
+        if (elements.size() > 2) {
+            for (String step : elements.subList(1, elements.size() - 1)) {
+                if (nestedFactModelTree.getExpandableProperties().containsKey(step)) {
+                    nestedFactModelTree = dataObjectFieldsMap.get(factModelTree.getExpandableProperties().get(step));
+                }
+            }
+        }
+        return nestedFactModelTree;
     }
 }

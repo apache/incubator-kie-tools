@@ -16,19 +16,25 @@
 
 package org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
 import org.drools.workbench.screens.scenariosimulation.client.utils.ScenarioSimulationBuilders;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridColumn;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModel;
+import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
@@ -103,5 +109,19 @@ public class SetPropertyHeaderCommandTest extends AbstractScenarioSimulationComm
         verify(propertyHeaderMetaDataMock, times(1)).setTitle(VALUE);
         verify(propertyHeaderMetaDataMock, times(1)).setReadOnly(false);
         verify(scenarioGridModelMock, times(1)).updateColumnProperty(anyInt(), eq(gridColumnMock), eq(VALUE), eq(VALUE_CLASS_NAME), eq(true));
+    }
+
+    @Test
+    public void navigateComplexObject() {
+        FactModelTree book = new FactModelTree("Book", "com.Book", new HashMap<>(), new HashMap<>());
+        book.addExpandableProperty("author", "Author");
+        FactModelTree author = new FactModelTree("Author", "com.Author", new HashMap<>(), new HashMap<>());
+        SortedMap<String, FactModelTree> sortedMap = spy(new TreeMap<>());
+        sortedMap.put("Book", book);
+        sortedMap.put("Author", author);
+        List<String> elements = Arrays.asList("Book", "author", "currentlyPrinted");
+        FactModelTree target = ((SetPropertyHeaderCommand) command).navigateComplexObject(book, elements, sortedMap);
+        assertEquals(target, author);
+        verify(sortedMap, times(1)).get("Author");
     }
 }

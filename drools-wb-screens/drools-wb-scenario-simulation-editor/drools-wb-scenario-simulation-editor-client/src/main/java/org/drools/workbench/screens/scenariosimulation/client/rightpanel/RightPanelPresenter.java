@@ -65,7 +65,7 @@ public class RightPanelPresenter implements RightPanelView.Presenter {
 
     protected Map<String, FactModelTree> simpleJavaInstanceFieldsMap = new TreeMap<>();
 
-    protected Map<String, FactModelTree> hiddenFieldsMap;
+    protected Map<String, FactModelTree> hiddenFieldsMap = new TreeMap<>();
 
     protected EventBus eventBus;
 

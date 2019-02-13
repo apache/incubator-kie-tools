@@ -18,6 +18,7 @@ package org.drools.workbench.screens.scenariosimulation.client.rightpanel;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -29,6 +30,7 @@ import org.mockito.Mock;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
@@ -57,6 +59,9 @@ public class ListGroupItemPresenterTest extends AbstractRightPanelTest {
     @Mock
     private List<ListGroupItemView> listGroupItemViewValuesMock;
 
+    @Mock
+    private RightPanelPresenter rightPanelPresenterMock;
+
     @Before
     public void setup() {
         super.setup();
@@ -69,6 +74,7 @@ public class ListGroupItemPresenterTest extends AbstractRightPanelTest {
                 listGroupItemViewMap = listGroupItemViewMapMock;
                 fieldItemPresenter = fieldItemPresenterMock;
                 viewsProvider = viewsProviderMock;
+                rightPanelPresenter = rightPanelPresenterMock;
             }
         });
     }
@@ -132,6 +138,17 @@ public class ListGroupItemPresenterTest extends AbstractRightPanelTest {
         when(listGroupItemViewValuesMock.contains(listGroupItemViewMock)).thenReturn(true);
         reset(listGroupItemViewMock);
         listGroupItemPresenter.onToggleRowExpansion(listGroupItemViewMock, false);
+        verify(listGroupItemViewMock, times(1)).expandRow();
+    }
+
+    @Test
+    public void onToggleRowExpansionWithFactNameHidden() {
+        listGroupItemPresenter.enable(FACT_NAME);
+        when(listGroupItemViewMock.isToExpand()).thenReturn(true);
+        when(rightPanelPresenterMock.getFactModelTreeFromFactTypeMap(anyString())).thenReturn(Optional.empty());
+        listGroupItemPresenter.onToggleRowExpansion(listGroupItemViewMock, false);
+        verify(rightPanelPresenterMock, times(1)).getFactModelTreeFromFactTypeMap(anyString());
+        verify(rightPanelPresenterMock, times(1)).getFactModelTreeFromHiddenMap(anyString());
         verify(listGroupItemViewMock, times(1)).expandRow();
     }
 
