@@ -22,7 +22,6 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.omg.CORBA.Object;
 
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
