@@ -92,7 +92,7 @@ public class WiresShapeControlHandleList implements IControlHandleList
         switchVisibility(true);
     }
 
-    void refresh()
+    public void refresh()
     {
         final BoundingBox bbox = getPath().getBoundingBox();
         resize(bbox.getWidth(), bbox.getHeight(), true);

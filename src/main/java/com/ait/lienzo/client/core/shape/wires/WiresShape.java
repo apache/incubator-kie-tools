@@ -151,6 +151,8 @@ public class WiresShape extends WiresContainer
      */
     public void refresh()
     {
+        destroyControls();
+
         _loadControls(IControlHandle.ControlHandleStandardType.RESIZE);
 
         if (null != getControls())
@@ -280,11 +282,7 @@ public class WiresShape extends WiresContainer
 
         m_innerLayoutContainer.destroy();
 
-        if (null != getControls())
-        {
-            getControls().destroy();
-            m_ctrls = null;
-        }
+        destroyControls();
 
         if (null != getMagnets())
         {
@@ -296,6 +294,13 @@ public class WiresShape extends WiresContainer
         {
             getControl().destroy();
             m_control = null;
+        }
+    }
+
+    void destroyControls() {
+        if (null != getControls()) {
+            getControls().destroy();
+            m_ctrls = null;
         }
     }
 
