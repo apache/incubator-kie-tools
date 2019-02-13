@@ -76,6 +76,16 @@ public class ColumnPickerTest {
         }).when(dataGrid).addColumn(any(Column.class),
                                     any(Header.class));
 
+        doAnswer(new Answer<Void>() {
+            @Override
+            public Void answer(InvocationOnMock invocationOnMock) throws Throwable {
+                columns.add((Column) invocationOnMock.getArguments()[1]);
+                return null;
+            }
+        }).when(dataGrid).insertColumn(any(int.class),
+                                       any(Column.class),
+                                       any(Header.class));
+
         doAnswer(new Answer<Integer>() {
             @Override
             public Integer answer(InvocationOnMock invocationOnMock) throws Throwable {
@@ -108,8 +118,9 @@ public class ColumnPickerTest {
         meta.setHeader(new TextHeader("header"));
         columnPicker.addColumn(meta);
         assertTrue(columnPicker.getColumnMetaList().contains(meta));
-        verify(dataGrid).addColumn(column,
-                                   meta.getHeader());
+        verify(dataGrid).insertColumn(0,
+                                      column,
+                                      meta.getHeader());
         assertEquals(1,
                      dataGrid.getColumnCount());
         columnPicker.removeColumn(meta);
@@ -118,6 +129,7 @@ public class ColumnPickerTest {
         assertEquals(0,
                      dataGrid.getColumnCount());
     }
+
 
     @Test
     public void testSortColumn() {
@@ -137,9 +149,11 @@ public class ColumnPickerTest {
                                               meta0));
         assertEquals(2,
                      columnPicker.getColumnMetaList().size());
-        verify(dataGrid).addColumn(column0,
+        verify(dataGrid).insertColumn(1,
+                                      column0,
                                    meta0.getHeader());
-        verify(dataGrid).addColumn(column1,
+        verify(dataGrid).insertColumn(0,
+                                   column1,
                                    meta1.getHeader());
         assertEquals(2,
                      dataGrid.getColumnCount());

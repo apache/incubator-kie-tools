@@ -139,8 +139,9 @@ public class UberfireColumnPicker<T> {
             columnMetaList.add(columnMeta);
         }
         if (columnMeta.isVisible()) {
-            dataGrid.addColumn(columnMeta.getColumn(),
-                               columnMeta.getHeader());
+            dataGrid.insertColumn(getVisibleColumnIndex(columnMeta),
+                                  columnMeta.getColumn(),
+                                  columnMeta.getHeader());
         }
     }
 

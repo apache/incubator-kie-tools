@@ -134,7 +134,7 @@ public class UberfireColumnPickerTest {
     }
 
     @Test
-    public void testAddColumnBeforeActions(){
+    public void testAddColumnBeforeActionsOnAddColumnOnDataGrid(){
         UberfireColumnPicker<String> columnPicker = new UberfireColumnPicker<>(new DataGrid<>());
         ColumnMeta<String> name = createColumnMeta("Name","name", true,true);
         ColumnMeta<String> age = createColumnMeta("Age","age", true,true);
@@ -165,6 +165,38 @@ public class UberfireColumnPickerTest {
         assertEquals("description" , columnPicker.getDataGrid().getColumn(2).getDataStoreName());
         assertEquals("etc" , columnPicker.getDataGrid().getColumn(3).getDataStoreName());
         assertEquals("actions" , columnPicker.getDataGrid().getColumn(4).getDataStoreName());
+
+    }
+
+    @Test
+    public void testAddColumnBeforeActionsOnAddColumn(){
+        UberfireColumnPicker<String> columnPicker = new UberfireColumnPicker<>(new DataGrid<>());
+        ColumnMeta<String> name = createColumnMeta("Name","name", true,true);
+        ColumnMeta<String> age = createColumnMeta("Age","age", true,true);
+        ColumnMeta<String> description = createColumnMeta("Description","description", false,true);
+        ColumnMeta<String> actions = createColumnMeta("Actions","actions", true,false);
+        ColumnMeta<String> etc = createColumnMeta("Etc","etc", true,true);
+
+        columnPicker.addColumn(name);
+        columnPicker.addColumn(age);
+        columnPicker.addColumn(description);
+        columnPicker.addColumn(actions);
+        columnPicker.addColumn(etc);
+
+        assertEquals(4, columnPicker.getDataGrid().getColumnCount());
+        assertEquals("name", columnPicker.getDataGrid().getColumn(0).getDataStoreName());
+        assertEquals("age", columnPicker.getDataGrid().getColumn(1).getDataStoreName());
+        assertEquals("etc", columnPicker.getDataGrid().getColumn(2).getDataStoreName());
+        assertEquals("actions", columnPicker.getDataGrid().getColumn(3).getDataStoreName());
+
+        ColumnMeta<String> comment = createColumnMeta("comment","comment", true,true);
+        columnPicker.addColumn(comment);
+        assertEquals(5, columnPicker.getDataGrid().getColumnCount());
+        assertEquals("name", columnPicker.getDataGrid().getColumn(0).getDataStoreName());
+        assertEquals("age", columnPicker.getDataGrid().getColumn(1).getDataStoreName());
+        assertEquals("etc", columnPicker.getDataGrid().getColumn(2).getDataStoreName());
+        assertEquals("comment", columnPicker.getDataGrid().getColumn(3).getDataStoreName());
+        assertEquals("actions", columnPicker.getDataGrid().getColumn(4).getDataStoreName());
 
     }
 }
