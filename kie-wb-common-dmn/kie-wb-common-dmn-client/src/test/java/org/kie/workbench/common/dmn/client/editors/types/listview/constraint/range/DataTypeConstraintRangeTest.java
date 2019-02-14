@@ -28,6 +28,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.editors.types.DMNParseService;
 import org.kie.workbench.common.dmn.api.editors.types.RangeValue;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.DataTypeConstraintModal;
+import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.ConstraintPlaceholderHelper;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.DataTypeConstraintParserWarningEvent;
 import org.mockito.Mock;
 import org.uberfire.mocks.EventSourceMock;
@@ -46,6 +47,9 @@ public class DataTypeConstraintRangeTest {
     private DataTypeConstraintRange.View view;
 
     @Mock
+    private ConstraintPlaceholderHelper placeholderHelper;
+
+    @Mock
     private Caller<DMNParseService> serviceCaller;
 
     @Mock
@@ -61,7 +65,7 @@ public class DataTypeConstraintRangeTest {
 
     @Before
     public void setup() {
-        constraintRange = spy(new DataTypeConstraintRange(view, serviceCaller, parserWarningEvent));
+        constraintRange = spy(new DataTypeConstraintRange(view, placeholderHelper, serviceCaller, parserWarningEvent));
     }
 
     @Test
@@ -193,5 +197,18 @@ public class DataTypeConstraintRangeTest {
         final String expected = "[some_value..other_value]";
         final String actual = constraintRange.getValue();
         assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testSetConstraintValueType() {
+
+        final String type = "string";
+        final String placeholder = "placeholder";
+
+        when(placeholderHelper.getPlaceholderSample(type)).thenReturn(placeholder);
+
+        constraintRange.setConstraintValueType(type);
+
+        verify(view).setPlaceholders(placeholder);
     }
 }

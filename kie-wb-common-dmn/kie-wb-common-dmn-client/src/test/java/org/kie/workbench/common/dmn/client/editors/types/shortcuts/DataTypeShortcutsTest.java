@@ -146,6 +146,14 @@ public class DataTypeShortcutsTest {
     }
 
     @Test
+    public void testClickListenerWhenComponentIsNotEnabled() {
+        shortcuts.disable();
+        shortcuts.clickListener(mock(Event.class));
+
+        verifyNoMoreInteractions(listShortcuts);
+    }
+
+    @Test
     public void testKeyDownListenerWhenKeyEscIsPressed() {
 
         event.key = "Esc";
@@ -432,6 +440,14 @@ public class DataTypeShortcutsTest {
     }
 
     @Test
+    public void testKeyDownListenerWhenComponentIsNotEnabled() {
+        shortcuts.disable();
+        shortcuts.keyDownListener(event);
+
+        verifyNoMoreInteractions(listShortcuts);
+    }
+
+    @Test
     public void testKeyDownListenerWhenKeyRightIsPressed() {
 
         doReturn(false).when(shortcuts).isInputEvent(any());
@@ -547,5 +563,17 @@ public class DataTypeShortcutsTest {
         doReturn(true).when(shortcuts).isDropdownOpened();
 
         assertTrue(shortcuts.isInputEvent(event));
+    }
+
+    @Test
+    public void testIsNotEnabledWhenItReturnsFalse() {
+        shortcuts.enable();
+        assertFalse(shortcuts.isNotEnabled());
+    }
+
+    @Test
+    public void testIsNotEnabledWhenItReturnsTrue() {
+        shortcuts.disable();
+        assertTrue(shortcuts.isNotEnabled());
     }
 }

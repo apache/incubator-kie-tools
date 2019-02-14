@@ -220,13 +220,16 @@ public class DataTypeConstraintEnumerationTest {
     public void testMakeEnumerationItem() {
 
         final String value = "123";
+        final String constraintValueType = "string";
         final DataTypeConstraintEnumerationItem expectedItem = mock(DataTypeConstraintEnumerationItem.class);
 
         when(enumerationItemInstances.get()).thenReturn(expectedItem);
+        doReturn(constraintValueType).when(constraintEnumeration).getConstraintValueType();
 
         final DataTypeConstraintEnumerationItem actualItem = constraintEnumeration.makeEnumerationItem(value);
 
         verify(expectedItem).setValue(value);
+        verify(expectedItem).setConstraintValueType(constraintValueType);
         verify(expectedItem).setDataTypeConstraintEnumeration(constraintEnumeration);
         assertEquals(expectedItem, actualItem);
     }

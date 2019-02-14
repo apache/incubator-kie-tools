@@ -285,4 +285,10 @@ public class DMNEditorConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String DataTypeConstraintEnumerationItemView_None = "DataTypeConstraintEnumerationItemView.None";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ConstraintPlaceholderHelper_SentenceDefault = "ConstraintPlaceholderHelper.SentenceDefault";
+
+    @TranslationKey(defaultValue = "")
+    public static final String ConstraintPlaceholderHelper_SampleDefault = "ConstraintPlaceholderHelper.SampleDefault";
 }

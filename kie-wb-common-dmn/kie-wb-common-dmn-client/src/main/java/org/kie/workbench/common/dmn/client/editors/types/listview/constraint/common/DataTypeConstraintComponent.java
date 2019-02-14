@@ -24,6 +24,8 @@ public interface DataTypeConstraintComponent {
 
     void setValue(final String value);
 
+    void setConstraintValueType(final String constraintValueType);
+
     Element getElement();
 
     DataTypeConstraintComponent NONE = new DataTypeConstraintComponent() {
@@ -35,6 +37,11 @@ public interface DataTypeConstraintComponent {
 
         @Override
         public void setValue(final String value) {
+            // Empty.
+        }
+
+        @Override
+        public void setConstraintValueType(final String type) {
             // Empty.
         }
 

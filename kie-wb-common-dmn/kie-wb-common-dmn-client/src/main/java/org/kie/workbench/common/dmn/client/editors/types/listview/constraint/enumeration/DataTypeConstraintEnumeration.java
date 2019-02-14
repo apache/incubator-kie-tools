@@ -59,6 +59,8 @@ public class DataTypeConstraintEnumeration implements DataTypeConstraintComponen
 
     private List<DataTypeConstraintEnumerationItem> enumerationItems = new ArrayList<>();
 
+    private String constraintValueType;
+
     @Inject
     public DataTypeConstraintEnumeration(final View view,
                                          final Caller<DMNParseService> service,
@@ -89,6 +91,11 @@ public class DataTypeConstraintEnumeration implements DataTypeConstraintComponen
     @Override
     public void setValue(final String value) {
         service.call(getSuccessCallback(), getErrorCallback()).parseFEELList(value);
+    }
+
+    @Override
+    public void setConstraintValueType(final String type) {
+        constraintValueType = type;
     }
 
     public void refreshView() {
@@ -148,9 +155,14 @@ public class DataTypeConstraintEnumeration implements DataTypeConstraintComponen
         final DataTypeConstraintEnumerationItem enumerationItem = enumerationItemInstances.get();
 
         enumerationItem.setValue(value);
+        enumerationItem.setConstraintValueType(getConstraintValueType());
         enumerationItem.setDataTypeConstraintEnumeration(this);
 
         return enumerationItem;
+    }
+
+    String getConstraintValueType() {
+        return constraintValueType;
     }
 
     private List<DataTypeConstraintEnumerationItem> makeEnumerationItems(final List<String> convert) {

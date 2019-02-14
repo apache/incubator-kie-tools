@@ -17,35 +17,47 @@
 package org.kie.workbench.common.dmn.client.editors.types.listview.constraint;
 
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwtmockito.GwtMockitoTestRunner;
 import elemental2.dom.DOMTokenList;
 import elemental2.dom.Element;
 import elemental2.dom.HTMLAnchorElement;
 import elemental2.dom.HTMLButtonElement;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
+import elemental2.dom.Node;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.DataTypeConstraintComponent;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+import org.uberfire.client.views.pfly.selectpicker.JQuery;
+import org.uberfire.client.views.pfly.selectpicker.JQuery.CallbackFunction;
+import org.uberfire.client.views.pfly.selectpicker.JQueryEvent;
 import org.uberfire.client.views.pfly.selectpicker.JQuerySelectPickerEvent;
 import org.uberfire.client.views.pfly.selectpicker.JQuerySelectPickerTarget;
+import org.uberfire.mvp.Command;
 
 import static org.junit.Assert.assertEquals;
 import static org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType.ENUMERATION;
 import static org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType.EXPRESSION;
 import static org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper.HIDDEN_CSS_CLASS;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
-@RunWith(GwtMockitoTestRunner.class)
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({JQuery.class})
 public class DataTypeConstraintModalViewTest {
 
     @Mock
@@ -219,6 +231,7 @@ public class DataTypeConstraintModalViewTest {
         when(presenter.getConstraintValue()).thenReturn(null);
         when(presenter.inferComponentType(any())).thenCallRealMethod();
         doReturn(selectPicker).when(view).getSelectPicker();
+        doNothing().when(view).setPickerValue(any(), anyString());
 
         view.onShow();
 
@@ -234,6 +247,7 @@ public class DataTypeConstraintModalViewTest {
         when(presenter.getConstraintValue()).thenReturn(constraint);
         when(presenter.inferComponentType(constraint)).thenReturn(ENUMERATION);
         doReturn(selectPicker).when(view).getSelectPicker();
+        doNothing().when(view).setPickerValue(any(), anyString());
 
         view.onShow();
 
@@ -245,6 +259,7 @@ public class DataTypeConstraintModalViewTest {
 
         final Element element = mock(Element.class);
         doReturn(element).when(view).getSelectPicker();
+        doNothing().when(view).triggerPickerAction(any(), anyString());
 
         view.setupSelectPicker();
 
@@ -256,6 +271,7 @@ public class DataTypeConstraintModalViewTest {
 
         final Element element = mock(Element.class);
         doReturn(element).when(view).getSelectPicker();
+        doNothing().when(view).setupOnChangeHandler(any());
 
         view.setupSelectPickerOnChangeHandler();
 
@@ -290,5 +306,32 @@ public class DataTypeConstraintModalViewTest {
         view.showConstraintWarningMessage();
 
         verify(constraintWarningMessage.classList).remove(HIDDEN_CSS_CLASS);
+    }
+
+    @Test
+    public void testSetupOnHideHandler() {
+
+        final HTMLElement body = mock(HTMLElement.class);
+        final Node modalBody = mock(Node.class);
+        final Node modalContent = mock(Node.class);
+        final Node modalDialog = mock(Node.class);
+        final Node modalComponent = mock(Node.class);
+        final Command command = mock(Command.class);
+        final JQuery jQuery = mock(JQuery.class);
+        final ArgumentCaptor<CallbackFunction> captor = ArgumentCaptor.forClass(CallbackFunction.class);
+
+        body.parentNode = modalBody;
+        modalBody.parentNode = modalContent;
+        modalContent.parentNode = modalDialog;
+        modalDialog.parentNode = modalComponent;
+        doReturn(body).when(view).getBody();
+        mockStatic(JQuery.class);
+        PowerMockito.when(JQuery.$(modalComponent)).thenReturn(jQuery);
+
+        view.setupOnHideHandler(command);
+
+        verify(jQuery).on(eq("hidden.bs.modal"), captor.capture());
+        captor.getValue().call(mock(JQueryEvent.class));
+        verify(command).execute();
     }
 }

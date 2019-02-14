@@ -296,4 +296,15 @@ public class DataTypeConstraintEnumerationItemViewTest {
         assertEquals(expectedValue, actualContent);
         assertEquals("", valueInput.value);
     }
+
+    @Test
+    public void testSetPlaceholder() {
+
+        final String attribute = "placeholder";
+        final String value = "value";
+
+        view.setPlaceholder(value);
+
+        verify(valueInput).setAttribute(attribute, value);
+    }
 }

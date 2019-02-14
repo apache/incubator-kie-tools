@@ -49,6 +49,25 @@
     margin-top: 15px;
     height: 200px;
   }
+
+  input,
+  textarea {
+    &::-webkit-input-placeholder {
+      font-style: italic;
+    }
+
+    &::-moz-placeholder {
+      font-style: italic;
+    }
+
+    &:-moz-placeholder {
+      font-style: italic;
+    }
+
+    &:-ms-input-placeholder {
+      font-style: italic;
+    }
+  }
 }
 
 .constraint-modal-footer {

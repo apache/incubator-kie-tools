@@ -22,6 +22,7 @@ import javax.inject.Inject;
 
 import elemental2.dom.Element;
 import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
+import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.ConstraintPlaceholderHelper;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.DataTypeConstraintComponent;
 import org.uberfire.client.mvp.UberElemental;
 
@@ -30,9 +31,13 @@ public class DataTypeConstraintExpression implements DataTypeConstraintComponent
 
     private final View view;
 
+    private final ConstraintPlaceholderHelper placeholderHelper;
+
     @Inject
-    public DataTypeConstraintExpression(final View view) {
+    public DataTypeConstraintExpression(final View view,
+                                        final ConstraintPlaceholderHelper placeholderHelper) {
         this.view = view;
+        this.placeholderHelper = placeholderHelper;
     }
 
     @PostConstruct
@@ -51,6 +56,11 @@ public class DataTypeConstraintExpression implements DataTypeConstraintComponent
     }
 
     @Override
+    public void setConstraintValueType(final String constraintValueType) {
+        view.setPlaceholder(placeholderHelper.getPlaceholderSentence(constraintValueType));
+    }
+
+    @Override
     public Element getElement() {
         return view.getElement();
     }
@@ -58,8 +68,10 @@ public class DataTypeConstraintExpression implements DataTypeConstraintComponent
     public interface View extends UberElemental<DataTypeConstraintExpression>,
                                   IsElement {
 
-        String getExpressionValue();
+        void setPlaceholder(final String constraintValueType);
 
         void setExpressionValue(final String value);
+
+        String getExpressionValue();
     }
 }

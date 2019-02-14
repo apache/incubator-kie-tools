@@ -190,6 +190,11 @@ public class DataTypeConstraintEnumerationItemView implements DataTypeConstraint
         setInput(value);
     }
 
+    @Override
+    public void setPlaceholder(final String placeholder) {
+        valueInput.setAttribute("placeholder", placeholder);
+    }
+
     private void setText(final String value) {
         if (isNULL(value)) {
             valueText.classList.add(NONE_CSS_CLASS);

@@ -18,8 +18,10 @@ package org.kie.workbench.common.dmn.client.editors.types.common;
 
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType.BOOLEAN;
 
 public class BuiltInTypeUtilsTest {
 
@@ -46,5 +48,16 @@ public class BuiltInTypeUtilsTest {
     @Test
     public void testIsDefaultWhenTypeIsNotDefault() {
         assertFalse(BuiltInTypeUtils.isDefault("tAddress"));
+    }
+
+    @Test
+    public void testFindBuiltInTypeByNameWhenItFinds() {
+        assertTrue(BuiltInTypeUtils.findBuiltInTypeByName("boolean").isPresent());
+        assertEquals(BOOLEAN, BuiltInTypeUtils.findBuiltInTypeByName("boolean").get());
+    }
+
+    @Test
+    public void testFindBuiltInTypeByNameWhenItDoesNotFind() {
+        assertFalse(BuiltInTypeUtils.findBuiltInTypeByName("something").isPresent());
     }
 }

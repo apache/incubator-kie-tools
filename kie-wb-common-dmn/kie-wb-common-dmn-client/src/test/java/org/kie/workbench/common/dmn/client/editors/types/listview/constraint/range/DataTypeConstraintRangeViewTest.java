@@ -171,4 +171,16 @@ public class DataTypeConstraintRangeViewTest {
         verify(presenter).disableOkButton();
         verify(presenter, never()).enableOkButton();
     }
+
+    @Test
+    public void testSetPlaceholders() {
+
+        final String attribute = "placeholder";
+        final String value = "value";
+
+        view.setPlaceholders(value);
+
+        verify(startValue).setAttribute(attribute, value);
+        verify(endValue).setAttribute(attribute, value);
+    }
 }

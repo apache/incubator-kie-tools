@@ -18,6 +18,7 @@ package org.kie.workbench.common.dmn.client.editors.types.common;
 
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
@@ -29,10 +30,17 @@ public class BuiltInTypeUtils {
                 .anyMatch(builtInTypeName -> Objects.equals(builtInTypeName, type));
     }
 
+    public static Optional<BuiltInType> findBuiltInTypeByName(final String name) {
+        return getBuiltInTypeValuesStream()
+                .filter(builtInType -> Arrays.asList(builtInType.getNames()).contains(name))
+                .findAny();
+    }
+
     private static Stream<String> builtInTypeNames() {
-        return Stream
-                .of(BuiltInType.values())
-                .map(BuiltInType::getNames)
-                .flatMap(Arrays::stream);
+        return getBuiltInTypeValuesStream().map(BuiltInType::getNames).flatMap(Arrays::stream);
+    }
+
+    private static Stream<BuiltInType> getBuiltInTypeValuesStream() {
+        return Stream.of(BuiltInType.values());
     }
 }

@@ -22,6 +22,7 @@ import elemental2.dom.HTMLElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.ConstraintPlaceholderHelper;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
@@ -35,11 +36,14 @@ public class DataTypeConstraintExpressionTest {
     @Mock
     private DataTypeConstraintExpression.View view;
 
+    @Mock
+    private ConstraintPlaceholderHelper placeholderHelper;
+
     private DataTypeConstraintExpression constraintExpression;
 
     @Before
     public void setup() {
-        constraintExpression = new DataTypeConstraintExpression(view);
+        constraintExpression = new DataTypeConstraintExpression(view, placeholderHelper);
     }
 
     @Test
@@ -81,5 +85,18 @@ public class DataTypeConstraintExpressionTest {
         final Element actualElement = constraintExpression.getElement();
 
         assertEquals(expectedElement, actualElement);
+    }
+
+    @Test
+    public void testSetConstraintValueType() {
+
+        final String type = "string";
+        final String placeholder = "placeholder";
+
+        when(placeholderHelper.getPlaceholderSentence(type)).thenReturn(placeholder);
+
+        constraintExpression.setConstraintValueType(type);
+
+        verify(view).setPlaceholder(placeholder);
     }
 }

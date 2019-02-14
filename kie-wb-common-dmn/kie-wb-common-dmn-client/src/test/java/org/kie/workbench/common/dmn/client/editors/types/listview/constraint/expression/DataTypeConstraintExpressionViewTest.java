@@ -18,16 +18,13 @@ package org.kie.workbench.common.dmn.client.editors.types.listview.constraint.ex
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import elemental2.dom.HTMLTextAreaElement;
-import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
-import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeConstraintExpressionView_Placeholder;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class DataTypeConstraintExpressionViewTest {
@@ -36,28 +33,13 @@ public class DataTypeConstraintExpressionViewTest {
     private HTMLTextAreaElement expression;
 
     @Mock
-    private TranslationService translationService;
-
-    @Mock
     private DataTypeConstraintExpression presenter;
 
     private DataTypeConstraintExpressionView view;
 
     @Before
     public void Setup() {
-        view = new DataTypeConstraintExpressionView(expression, translationService);
-    }
-
-    @Test
-    public void testInit() {
-
-        final String placeholder = "Placeholder...";
-
-        when(translationService.format(DataTypeConstraintExpressionView_Placeholder)).thenReturn(placeholder);
-
-        view.init(presenter);
-
-        verify(expression).setAttribute("placeholder", placeholder);
+        view = new DataTypeConstraintExpressionView(expression);
     }
 
     @Test
@@ -82,5 +64,16 @@ public class DataTypeConstraintExpressionViewTest {
         final String actualValue = expression.value;
 
         assertEquals(expectedValue, actualValue);
+    }
+
+    @Test
+    public void testSetPlaceholder() {
+
+        final String attribute = "placeholder";
+        final String value = "value";
+
+        view.setPlaceholder(value);
+
+        verify(expression).setAttribute(attribute, value);
     }
 }

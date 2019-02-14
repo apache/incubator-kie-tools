@@ -28,7 +28,10 @@ import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.com
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.enumeration.DataTypeConstraintEnumeration;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.expression.DataTypeConstraintExpression;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.range.DataTypeConstraintRange;
+import org.kie.workbench.common.dmn.client.editors.types.shortcuts.DataTypeShortcuts;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.uberfire.mvp.Command;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -55,6 +58,9 @@ public class DataTypeConstraintModalTest {
     private DataTypeConstraintModal.View view;
 
     @Mock
+    private DataTypeShortcuts dataTypeShortcuts;
+
+    @Mock
     private DataTypeConstraintEnumeration constraintEnumeration;
 
     @Mock
@@ -67,7 +73,7 @@ public class DataTypeConstraintModalTest {
 
     @Before
     public void setup() {
-        modal = spy(new DataTypeConstraintModal(view, constraintEnumeration, constraintExpression, constraintRange));
+        modal = spy(new DataTypeConstraintModal(view, dataTypeShortcuts, constraintEnumeration, constraintExpression, constraintRange));
     }
 
     @Test
@@ -130,65 +136,74 @@ public class DataTypeConstraintModalTest {
     }
 
     @Test
-    public void testLoad() {
+    public void testLoadWhenConstraintTypeIsNone() {
 
-        final String constraint = "1,2,3";
-        final String type = "string";
+        final String expectedConstraintValueType = "string";
+        final String expectedConstraintValue = "1,2,3";
+        final ConstraintType expectedConstraintType = RANGE;
 
-        modal.load(type, constraint, ConstraintType.ENUMERATION);
+        doReturn(expectedConstraintType).when(modal).inferComponentType(expectedConstraintValue);
 
-        verify(modal).prepareView(type, constraint, ConstraintType.ENUMERATION);
+        modal.load(expectedConstraintValueType, expectedConstraintValue, NONE);
+
+        final String actualConstraintValueType = modal.getConstraintValueType();
+        final String actualConstraintValue = modal.getConstraintValue();
+        final ConstraintType actualConstraintType = modal.getConstraintType();
+
+        verify(modal).prepareView();
+        assertEquals(expectedConstraintValueType, actualConstraintValueType);
+        assertEquals(expectedConstraintValue, actualConstraintValue);
+        assertEquals(expectedConstraintType, actualConstraintType);
     }
 
     @Test
-    public void testPrepareViewWhenConstraintValueIsBlank() {
+    public void testLoadWhenConstraintTypeIsNotNone() {
 
-        final String constraint = "";
-        final String type = "string";
+        final String expectedConstraintValueType = "string";
+        final String expectedConstraintValue = "1,2,3";
+        final ConstraintType expectedConstraintType = ENUMERATION;
 
-        modal.prepareView(type, constraint, null);
+        modal.load(expectedConstraintValueType, expectedConstraintValue, expectedConstraintType);
 
-        verify(view).setType(type);
-        verify(view).setupEmptyContainer();
+        final String actualConstraintValueType = modal.getConstraintValueType();
+        final String actualConstraintValue = modal.getConstraintValue();
+        final ConstraintType actualConstraintType = modal.getConstraintType();
+
+        verify(modal).prepareView();
+        assertEquals(expectedConstraintValueType, actualConstraintValueType);
+        assertEquals(expectedConstraintValue, actualConstraintValue);
+        assertEquals(expectedConstraintType, actualConstraintType);
     }
 
     @Test
-    public void testPrepareViewWhenConstraintValueIsNotBlank() {
+    public void testPrepareView() {
 
-        final String constraint = "1,2,3";
         final String type = "string";
+        final String constraint = "1,2,3";
 
-        modal.prepareView(type, constraint, ConstraintType.ENUMERATION);
+        doReturn(type).when(modal).getConstraintValueType();
+        doReturn(ENUMERATION).when(modal).getConstraintType();
+        doReturn(constraint).when(modal).getConstraintValue();
+
+        modal.prepareView();
 
         verify(view).setType(type);
         verify(view).loadComponent(ENUMERATION);
     }
 
     @Test
-    public void testPrepareViewWhenConstraintValueSimilarToRange() {
+    public void testPrepareViewWhenConstraintValueIsBlank() {
 
-        final String constraint = "..";
         final String type = "string";
+        final String constraint = "";
 
-        modal.prepareView(type, constraint, ConstraintType.RANGE);
-
-        verify(view).setType(type);
-        verify(view).loadComponent(RANGE);
-    }
-
-    @Test
-    public void testSetupComponentWhenConstraintTypeIsEnumeration() {
-
-        final ConstraintType type = ENUMERATION;
-        final String constraint = "1,2,3";
-
+        doReturn(type).when(modal).getConstraintValueType();
         doReturn(constraint).when(modal).getConstraintValue();
 
-        modal.setupComponent(type);
+        modal.prepareView();
 
-        assertEquals(constraintEnumeration, modal.getCurrentComponent());
-        verify(constraintEnumeration).setValue(constraint);
-        verify(modal).enableOkButton();
+        verify(view).setType(type);
+        verify(view).setupEmptyContainer();
     }
 
     @Test
@@ -196,13 +211,16 @@ public class DataTypeConstraintModalTest {
 
         final ConstraintType type = EXPRESSION;
         final String constraint = "expression";
+        final String constraintValueType = "string";
 
         doReturn(constraint).when(modal).getConstraintValue();
+        doReturn(constraintValueType).when(modal).getConstraintValueType();
 
         modal.setupComponent(type);
 
         assertEquals(constraintExpression, modal.getCurrentComponent());
         verify(constraintExpression).setValue(constraint);
+        verify(constraintExpression).setConstraintValueType(constraintValueType);
         verify(modal).enableOkButton();
     }
 
@@ -211,13 +229,16 @@ public class DataTypeConstraintModalTest {
 
         final ConstraintType type = RANGE;
         final String constraint = "(1..2)";
+        final String constraintValueType = "number";
 
         doReturn(constraint).when(modal).getConstraintValue();
+        doReturn(constraintValueType).when(modal).getConstraintValueType();
 
         modal.setupComponent(type);
 
         assertEquals(constraintRange, modal.getCurrentComponent());
         verify(constraintRange).setValue(constraint);
+        verify(constraintRange).setConstraintValueType(constraintValueType);
     }
 
     @Test
@@ -225,13 +246,16 @@ public class DataTypeConstraintModalTest {
 
         final ConstraintType type = RANGE;
         final String constraint = "";
+        final String constraintValueType = "number";
 
         doReturn(constraint).when(modal).getConstraintValue();
+        doReturn(constraintValueType).when(modal).getConstraintValueType();
 
         modal.setupComponent(type);
 
         assertEquals(constraintRange, modal.getCurrentComponent());
         verify(constraintRange).setValue(constraint);
+        verify(constraintRange).setConstraintValueType(constraintValueType);
         verify(modal, never()).enableOkButton();
     }
 
@@ -240,14 +264,17 @@ public class DataTypeConstraintModalTest {
 
         final ConstraintType type = NONE;
         final String constraint = "(1..2)";
+        final String constraintValueType = "number";
 
         doReturn(ENUMERATION).when(modal).inferComponentType(constraint);
         doReturn(constraint).when(modal).getConstraintValue();
+        doReturn(constraintValueType).when(modal).getConstraintValueType();
 
         modal.setupComponent(type);
 
         assertEquals(constraintEnumeration, modal.getCurrentComponent());
         verify(constraintEnumeration).setValue(constraint);
+        verify(constraintEnumeration).setConstraintValueType(constraintValueType);
     }
 
     @Test
@@ -296,6 +323,7 @@ public class DataTypeConstraintModalTest {
     public void testShow() {
 
         final BiConsumer<String, ConstraintType> expectedOnSave = (s, c) -> { /* Nothing. */ };
+        final ArgumentCaptor<Command> onHide = ArgumentCaptor.forClass(Command.class);
 
         doNothing().when(modal).superShow();
 
@@ -305,7 +333,22 @@ public class DataTypeConstraintModalTest {
 
         assertEquals(expectedOnSave, actualOnSave);
         verify(modal).superShow();
+        verify(dataTypeShortcuts).disable();
         verify(view).onShow();
+        verify(view).setupOnHideHandler(onHide.capture());
+        onHide.getValue().execute();
+        verify(modal).onHide();
+    }
+
+    @Test
+    public void testHide() {
+
+        doNothing().when(modal).superHide();
+
+        modal.hide();
+
+        verify(modal).superHide();
+        verify(dataTypeShortcuts).enable();
     }
 
     @Test

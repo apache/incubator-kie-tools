@@ -25,6 +25,7 @@ import elemental2.dom.HTMLElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.ConstraintPlaceholderHelper;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.enumeration.DataTypeConstraintEnumeration;
 import org.mockito.Mock;
 
@@ -46,13 +47,16 @@ public class DataTypeConstraintEnumerationItemTest {
     private DataTypeConstraintEnumerationItem.View view;
 
     @Mock
+    private ConstraintPlaceholderHelper placeholderHelper;
+
+    @Mock
     private DataTypeConstraintEnumeration dataTypeConstraintEnumeration;
 
     private DataTypeConstraintEnumerationItem enumerationItem;
 
     @Before
     public void setup() {
-        enumerationItem = spy(new DataTypeConstraintEnumerationItem(view));
+        enumerationItem = spy(new DataTypeConstraintEnumerationItem(view, placeholderHelper));
         enumerationItem.setDataTypeConstraintEnumeration(dataTypeConstraintEnumeration);
     }
 
@@ -230,5 +234,18 @@ public class DataTypeConstraintEnumerationItemTest {
 
         verify(enumerationItems).remove(enumerationItem);
         verify(dataTypeConstraintEnumeration).refreshView();
+    }
+
+    @Test
+    public void testSetConstraintValueType() {
+
+        final String type = "string";
+        final String placeholder = "placeholder";
+
+        when(placeholderHelper.getPlaceholderSample(type)).thenReturn(placeholder);
+
+        enumerationItem.setConstraintValueType(type);
+
+        verify(view).setPlaceholder(placeholder);
     }
 }

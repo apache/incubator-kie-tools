@@ -20,11 +20,8 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import elemental2.dom.HTMLTextAreaElement;
-import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-
-import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeConstraintExpressionView_Placeholder;
 
 @Templated
 @Dependent
@@ -33,25 +30,21 @@ public class DataTypeConstraintExpressionView implements DataTypeConstraintExpre
     @DataField("expression")
     private final HTMLTextAreaElement expression;
 
-    private final TranslationService translationService;
-
     private DataTypeConstraintExpression presenter;
 
     @Inject
-    public DataTypeConstraintExpressionView(final HTMLTextAreaElement expression,
-                                            final TranslationService translationService) {
+    public DataTypeConstraintExpressionView(final HTMLTextAreaElement expression) {
         this.expression = expression;
-        this.translationService = translationService;
     }
 
     @Override
     public void init(final DataTypeConstraintExpression presenter) {
         this.presenter = presenter;
-        setupPlaceholder();
     }
 
-    private void setupPlaceholder() {
-        expression.setAttribute("placeholder", translationService.format(DataTypeConstraintExpressionView_Placeholder));
+    @Override
+    public void setPlaceholder(final String placeholder) {
+        expression.setAttribute("placeholder", placeholder);
     }
 
     @Override

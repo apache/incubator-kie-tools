@@ -29,6 +29,7 @@ import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
 import org.kie.workbench.common.dmn.api.editors.types.DMNParseService;
 import org.kie.workbench.common.dmn.api.editors.types.RangeValue;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.DataTypeConstraintModal;
+import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.ConstraintPlaceholderHelper;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.DataTypeConstraintComponent;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.DataTypeConstraintParserWarningEvent;
 import org.kie.workbench.common.stunner.core.util.StringUtils;
@@ -39,17 +40,21 @@ public class DataTypeConstraintRange implements DataTypeConstraintComponent {
 
     private final View view;
 
-    private DataTypeConstraintModal modal;
+    private final ConstraintPlaceholderHelper placeholderHelper;
 
     private final Caller<DMNParseService> service;
 
     private final Event<DataTypeConstraintParserWarningEvent> parserWarningEvent;
 
+    private DataTypeConstraintModal modal;
+
     @Inject
     public DataTypeConstraintRange(final View view,
+                                   final ConstraintPlaceholderHelper placeholderHelper,
                                    final Caller<DMNParseService> service,
                                    final Event<DataTypeConstraintParserWarningEvent> parserWarningEvent) {
         this.view = view;
+        this.placeholderHelper = placeholderHelper;
         this.service = service;
         this.parserWarningEvent = parserWarningEvent;
     }
@@ -67,6 +72,11 @@ public class DataTypeConstraintRange implements DataTypeConstraintComponent {
     @Override
     public void setValue(final String value) {
         service.call(getSuccessCallback(), getErrorCallback()).parseRangeValue(value);
+    }
+
+    @Override
+    public void setConstraintValueType(final String type) {
+        view.setPlaceholders(placeholderHelper.getPlaceholderSample(type));
     }
 
     ErrorCallback<Object> getErrorCallback() {
@@ -147,5 +157,7 @@ public class DataTypeConstraintRange implements DataTypeConstraintComponent {
         boolean getIncludeEndValue();
 
         void setIncludeEndValue(final boolean includeEndValue);
+
+        void setPlaceholders(final String placeholder);
     }
 }

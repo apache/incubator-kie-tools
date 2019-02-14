@@ -27,16 +27,19 @@ import elemental2.dom.HTMLAnchorElement;
 import elemental2.dom.HTMLButtonElement;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
+import elemental2.dom.Node;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ConstraintType;
+import org.uberfire.client.views.pfly.selectpicker.JQuery;
+import org.uberfire.client.views.pfly.selectpicker.JQuerySelectPicker;
 import org.uberfire.client.views.pfly.selectpicker.JQuerySelectPickerEvent;
+import org.uberfire.mvp.Command;
 
 import static org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper.hide;
 import static org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper.show;
 import static org.kie.workbench.common.stunner.core.util.StringUtils.isEmpty;
-import static org.uberfire.client.views.pfly.selectpicker.JQuerySelectPicker.$;
 
 @Templated
 @Dependent
@@ -191,6 +194,21 @@ public class DataTypeConstraintModalView implements DataTypeConstraintModal.View
     }
 
     @Override
+    public void setupOnHideHandler(final Command handler) {
+        JQuery.$(getModalElement()).on("hidden.bs.modal", (e) -> handler.execute());
+    }
+
+    private Node getModalElement() {
+
+        final Node modalBody = getBody().parentNode;
+        final Node modalContent = modalBody.parentNode;
+        final Node modalDialog = modalContent.parentNode;
+        final Node modalComponent = modalDialog.parentNode;
+
+        return modalComponent;
+    }
+
+    @Override
     public void enableOkButton() {
         okButton.classList.remove(DISABLED_CLASS);
     }
@@ -217,12 +235,12 @@ public class DataTypeConstraintModalView implements DataTypeConstraintModal.View
     }
 
     void setupOnChangeHandler(final Element element) {
-        $(element).on("hidden.bs.select", this::onSelectChange);
+        JQuerySelectPicker.$(element).on("hidden.bs.select", this::onSelectChange);
     }
 
     void setPickerValue(final Element element,
                         final String value) {
-        $(element).selectpicker("val", value);
+        JQuerySelectPicker.$(element).selectpicker("val", value);
     }
 
     Element getSelectPicker() {
@@ -231,6 +249,6 @@ public class DataTypeConstraintModalView implements DataTypeConstraintModal.View
 
     void triggerPickerAction(final Element element,
                              final String method) {
-        $(element).selectpicker(method);
+        JQuerySelectPicker.$(element).selectpicker(method);
     }
 }

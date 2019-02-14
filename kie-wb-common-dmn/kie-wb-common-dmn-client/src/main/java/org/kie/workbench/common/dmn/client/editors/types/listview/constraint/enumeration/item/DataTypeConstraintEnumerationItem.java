@@ -24,6 +24,7 @@ import javax.inject.Inject;
 
 import elemental2.dom.Element;
 import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
+import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.ConstraintPlaceholderHelper;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.enumeration.DataTypeConstraintEnumeration;
 import org.uberfire.client.mvp.UberElemental;
 
@@ -37,6 +38,8 @@ public class DataTypeConstraintEnumerationItem {
 
     private final View view;
 
+    private final ConstraintPlaceholderHelper placeholderHelper;
+
     private DataTypeConstraintEnumeration dataTypeConstraintEnumeration;
 
     private String value;
@@ -44,8 +47,10 @@ public class DataTypeConstraintEnumerationItem {
     private String oldValue;
 
     @Inject
-    public DataTypeConstraintEnumerationItem(final View view) {
+    public DataTypeConstraintEnumerationItem(final View view,
+                                             final ConstraintPlaceholderHelper placeholderHelper) {
         this.view = view;
+        this.placeholderHelper = placeholderHelper;
     }
 
     @PostConstruct
@@ -155,6 +160,10 @@ public class DataTypeConstraintEnumerationItem {
         this.dataTypeConstraintEnumeration = dataTypeConstraintEnumeration;
     }
 
+    public void setConstraintValueType(final String constraintValueType) {
+        view.setPlaceholder(placeholderHelper.getPlaceholderSample(constraintValueType));
+    }
+
     public interface View extends UberElemental<DataTypeConstraintEnumerationItem>,
                                   IsElement {
 
@@ -173,5 +182,7 @@ public class DataTypeConstraintEnumerationItem {
         void disableHighlight();
 
         void setValue(final String value);
+
+        void setPlaceholder(final String placeholder);
     }
 }

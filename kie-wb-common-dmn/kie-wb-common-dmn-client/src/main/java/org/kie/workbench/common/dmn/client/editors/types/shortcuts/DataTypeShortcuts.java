@@ -44,6 +44,8 @@ public class DataTypeShortcuts {
 
     private boolean loaded = false;
 
+    private boolean enabled = true;
+
     @Inject
     public DataTypeShortcuts(final DataTypeListShortcuts listShortcuts) {
         this.listShortcuts = listShortcuts;
@@ -76,6 +78,11 @@ public class DataTypeShortcuts {
     }
 
     void clickListener(final Event event) {
+
+        if (isNotEnabled()) {
+            return;
+        }
+
         if (tabContentContainsTarget(event)) {
             listShortcuts.focusIn();
         } else {
@@ -83,9 +90,25 @@ public class DataTypeShortcuts {
         }
     }
 
+    public void enable() {
+        enabled = true;
+    }
+
+    public void disable() {
+        enabled = false;
+    }
+
+    boolean isNotEnabled() {
+        return !enabled;
+    }
+
     void keyDownListener(final Event e) {
 
         final KeyboardEvent event = (KeyboardEvent) e;
+
+        if (isNotEnabled()) {
+            return;
+        }
 
         switch (event.key) {
             case "Esc": /* IE/Edge specific value */
