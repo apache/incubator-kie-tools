@@ -126,8 +126,8 @@ public class DataTypeConstraintRangeTest {
         final RangeValue rangeValue = new RangeValue();
 
         constraintRange.loadConstraintValue(rangeValue);
-        verify(view).setIncludeStartValue(false);
-        verify(view).setIncludeEndValue(false);
+        verify(view).setIncludeStartValue(true);
+        verify(view).setIncludeEndValue(true);
         verify(view).setStartValue("");
         verify(view).setEndValue("");
 

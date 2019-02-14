@@ -26,6 +26,8 @@ public class RangeValue {
     public RangeValue() {
         this.startValue = "";
         this.endValue = "";
+        this.includeStartValue = true;
+        this.includeEndValue = true;
     }
 
     public boolean getIncludeStartValue() {
