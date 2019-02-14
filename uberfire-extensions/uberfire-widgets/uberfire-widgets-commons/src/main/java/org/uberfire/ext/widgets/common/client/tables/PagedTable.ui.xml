@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ Copyright 2015 JBoss, by Red Hat, Inc
+  ~ Copyright 2019 JBoss, by Red Hat, Inc
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@
            type="org.uberfire.ext.widgets.table.client.resources.i18n.CommonConstants"/>
 
   <ui:style>
-    .dataGridContainer {
+    .pagedTableContainer {
       padding-top: 10px;
       padding-bottom: 10px;
     }
@@ -58,9 +58,13 @@
       padding-top: 5px;
     }
 
+    .dataGridContainer {
+      overflow: auto;
+    }
+
   </ui:style>
 
-  <g:FlowPanel addStyleNames="{style.dataGridContainer}">
+  <g:FlowPanel addStyleNames="{style.pagedTableContainer}">
     <b:Row>
       <b:Column size="MD_12" ui:field="topToolbar"/>
     </b:Row>
@@ -78,8 +82,8 @@
         </bh:Div>
       </b:Column>
     </b:Row>
-    <b:Row>
-      <b:Column size="MD_12">
+    <b:Row addStyleNames="{style.dataGridContainer}">
+      <b:Column size="MD_12" ui:field="dataGridContainer">
         <bg:DataGrid ui:field="dataGrid"/>
       </b:Column>
     </b:Row>
@@ -87,10 +91,10 @@
       <b:Column size="MD_12">
         <uf:UberfireSimplePager ui:field="pager" addStyleNames="pagination pagination-right pull-right {style.pager}"/>
         <s:Select ui:field="pageSizesSelector" width="100px">
-          <s:Option text="10 {i18n.Items}"  value="10"/>
-          <s:Option text="20 {i18n.Items}"  value="20"/>
-          <s:Option text="50 {i18n.Items}"  value="50"/>
-          <s:Option text="100 {i18n.Items}"  value="100"/>
+          <s:Option text="10 {i18n.Items}" value="10"/>
+          <s:Option text="20 {i18n.Items}" value="20"/>
+          <s:Option text="50 {i18n.Items}" value="50"/>
+          <s:Option text="100 {i18n.Items}" value="100"/>
         </s:Select>
       </b:Column>
     </b:Row>

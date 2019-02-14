@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 JBoss Inc
+ * Copyright 2019 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -73,8 +73,7 @@ public class ColumnPickerTest {
                 columns.add((Column) invocationOnMock.getArguments()[0]);
                 return null;
             }
-        }).when(dataGrid).addColumn(any(Column.class),
-                                    any(Header.class));
+        }).when(dataGrid).addColumn(any(Column.class), any(Header.class));
 
         doAnswer(new Answer<Void>() {
             @Override
@@ -113,68 +112,54 @@ public class ColumnPickerTest {
     public void testAddRemoveColumn() {
         final Column column = mock(Column.class);
         when(column.getDataStoreName()).thenReturn("id");
-        final ColumnMeta meta = new ColumnMeta(column,
-                                               "caption");
+        final ColumnMeta meta = new ColumnMeta(column, "caption");
         meta.setHeader(new TextHeader("header"));
+
         columnPicker.addColumn(meta);
+
         assertTrue(columnPicker.getColumnMetaList().contains(meta));
-        verify(dataGrid).insertColumn(0,
-                                      column,
-                                      meta.getHeader());
-        assertEquals(1,
-                     dataGrid.getColumnCount());
+        verify(dataGrid).insertColumn(0, column, meta.getHeader());
+        assertEquals(1, dataGrid.getColumnCount());
+
         columnPicker.removeColumn(meta);
+
         assertFalse(columnPicker.getColumnMetaList().contains(meta));
         verify(dataGrid).removeColumn(0);
-        assertEquals(0,
-                     dataGrid.getColumnCount());
+        assertEquals(0, dataGrid.getColumnCount());
     }
 
 
     @Test
     public void testSortColumn() {
         final Column column1 = mock(Column.class);
-        final ColumnMeta meta1 = new ColumnMeta(column1,
-                                                "caption1",
-                                                true,
-                                                1);
+        final ColumnMeta meta1 = new ColumnMeta(column1, "caption1", true, 1);
         meta1.setHeader(new TextHeader("header1"));
         final Column column0 = mock(Column.class);
-        final ColumnMeta meta0 = new ColumnMeta(column0,
-                                                "caption0",
-                                                true,
-                                                0);
+        final ColumnMeta meta0 = new ColumnMeta(column0, "caption0", true, 0);
         meta0.setHeader(new TextHeader("header0"));
-        columnPicker.addColumns(Arrays.asList(meta1,
-                                              meta0));
-        assertEquals(2,
-                     columnPicker.getColumnMetaList().size());
-        verify(dataGrid).insertColumn(1,
-                                      column0,
-                                   meta0.getHeader());
-        verify(dataGrid).insertColumn(0,
-                                   column1,
-                                   meta1.getHeader());
-        assertEquals(2,
-                     dataGrid.getColumnCount());
+
+        columnPicker.addColumns(Arrays.asList(meta1, meta0));
+
+        assertEquals(2, columnPicker.getColumnMetaList().size());
+        verify(dataGrid).insertColumn(1, column0, meta0.getHeader());
+        verify(dataGrid).insertColumn(0, column1, meta1.getHeader());
+        assertEquals(2, dataGrid.getColumnCount());
     }
 
     @Test
     public void testColumnPreference() {
         final Column column = mock(Column.class);
         when(column.getDataStoreName()).thenReturn("id");
-        final ColumnMeta meta = new ColumnMeta(column,
-                                               "caption");
+        final ColumnMeta meta = new ColumnMeta(column, "caption");
         meta.setHeader(new TextHeader("header"));
+
         columnPicker.addColumn(meta);
         final List<GridColumnPreference> columnsState = columnPicker.getColumnsState();
-        assertEquals(1,
-                     columnsState.size());
+        assertEquals(1, columnsState.size());
+
         final GridColumnPreference preference = columnsState.get(0);
-        assertEquals(preference.getName(),
-                     column.getDataStoreName());
-        assertEquals(0,
-                     preference.getPosition().intValue());
+        assertEquals(preference.getName(), column.getDataStoreName());
+        assertEquals(0, preference.getPosition().intValue());
     }
 
     @Test
@@ -195,26 +180,14 @@ public class ColumnPickerTest {
 
     @Test
     public void testAdjustColumnWidths() {
-        final Column column1 = createColumn("col1",
-                                            "col1");
-        final ColumnMeta meta1 = new ColumnMeta(column1,
-                                                "caption1",
-                                                true,
-                                                1);
+        final Column column1 = createColumn("col1", "col1");
+        final ColumnMeta meta1 = new ColumnMeta(column1, "caption1", true, 1);
         meta1.setHeader(new TextHeader("header1"));
-        final Column column2 = createColumn("col2",
-                                            "col2");
-        final ColumnMeta meta2 = new ColumnMeta(column2,
-                                                "caption2",
-                                                true,
-                                                0);
+        final Column column2 = createColumn("col2", "col2");
+        final ColumnMeta meta2 = new ColumnMeta(column2, "caption2", true, 0);
         meta2.setHeader(new TextHeader("header2"));
-        final Column column3 = createColumn("col3",
-                                            "col3");
-        final ColumnMeta meta3 = new ColumnMeta(column3,
-                                                "caption3",
-                                                true,
-                                                0);
+        final Column column3 = createColumn("col3", "col3");
+        final ColumnMeta meta3 = new ColumnMeta(column3, "caption3", true, 0);
         meta3.setHeader(new TextHeader("header3"));
 
         when(dataGrid.getColumnWidth(column1)).thenReturn("35px");
@@ -227,14 +200,9 @@ public class ColumnPickerTest {
         columnMetasList.add(meta3);
         columnPicker.addColumns(columnMetasList);
 
-        verify(dataGrid).setColumnWidth(column1,
-                                        "35px");
-        verify(dataGrid).setColumnWidth(column2,
-                                        50,
-                                        Style.Unit.PCT);
-        verify(dataGrid).setColumnWidth(column3,
-                                        50,
-                                        Style.Unit.PCT);
+        verify(dataGrid).setColumnWidth(column1, "35px");
+        verify(dataGrid).setColumnWidth(column2, 50, Style.Unit.PCT);
+        verify(dataGrid).setColumnWidth(column3, 50, Style.Unit.PCT);
     }
 
     private Column createColumn(String value,
@@ -253,44 +221,24 @@ public class ColumnPickerTest {
 
     @Test
     public void testSetColumnWidth() {
-        final Column column1 = createColumn("col1",
-                                            "col1");
-        final ColumnMeta meta1 = new ColumnMeta(column1,
-                                                "caption1",
-                                                true,
-                                                1);
-
-        final Column column2 = createColumn("col2",
-                                            "col2");
-        final ColumnMeta meta2 = new ColumnMeta(column2,
-                                                "caption2",
-                                                true,
-                                                0);
+        final Column column1 = createColumn("col1", "col1");
+        final ColumnMeta meta1 = new ColumnMeta(column1, "caption1", true, 1);
+        final Column column2 = createColumn("col2", "col2");
+        final ColumnMeta meta2 = new ColumnMeta(column2, "caption2", true, 0);
 
         when(dataGrid.getColumnWidth(column1)).thenReturn("38.0px");
 
-        columnPicker.addColumns(Lists.newArrayList(meta1,
-                                                   meta2));
+        columnPicker.addColumns(Lists.newArrayList(meta1, meta2));
 
-        verify(dataGrid).setColumnWidth(eq(column1),
-                                        eq("38px"));
+        verify(dataGrid).setColumnWidth(eq(column1), eq("38px"));
     }
 
     @Test
     public void testAddColumnsIncrementally() {
-        final Column column1 = createColumn("col1",
-                                            "col1");
-        final ColumnMeta meta1 = new ColumnMeta(column1,
-                                                "caption1",
-                                                true,
-                                                1);
-
-        final Column column2 = createColumn("col2",
-                                            "col2");
-        final ColumnMeta meta2 = new ColumnMeta(column2,
-                                                "caption2",
-                                                true,
-                                                0);
+        final Column column1 = createColumn("col1", "col1");
+        final ColumnMeta meta1 = new ColumnMeta(column1, "caption1", true, 1);
+        final Column column2 = createColumn("col2", "col2");
+        final ColumnMeta meta2 = new ColumnMeta(column2, "caption2", true, 0);
 
         when(dataGrid.getColumn(0)).thenReturn(column1);
         when(dataGrid.getColumn(1)).thenReturn(column2);
@@ -299,16 +247,36 @@ public class ColumnPickerTest {
 
         columnPicker.addColumns(Collections.singletonList(meta1));
 
-        verify(dataGrid).setColumnWidth(eq(column1),
-                                        eq(100.0),
-                                        eq(Style.Unit.PCT));
+        verify(dataGrid).setColumnWidth(eq(column1), eq(100.0), eq(Style.Unit.PCT));
 
         columnPicker.addColumns(Collections.singletonList(meta2));
 
-        verify(dataGrid).setColumnWidth(eq(column1),
-                                        eq("100px"));
-        verify(dataGrid).setColumnWidth(eq(column2),
-                                        eq(100.0),
-                                        eq(Style.Unit.PCT));
+        verify(dataGrid).setColumnWidth(eq(column1), eq("100px"));
+        verify(dataGrid).setColumnWidth(eq(column2), eq(100.0), eq(Style.Unit.PCT));
+    }
+
+    @Test
+    public void testDataGridMinWidthCalculation() {
+        int defaultColumnWidthSize = 150;
+        int fixedColumn1Width = 38;
+        final Column column1 = createColumn("col1", "col1");
+        final ColumnMeta meta1 = new ColumnMeta(column1, "caption1", true, 1);
+        final Column column2 = createColumn("col2", "col2");
+        final ColumnMeta meta2 = new ColumnMeta(column2, "caption2", true, 0);
+        final Column column3 = createColumn("col3", "col3");
+        final ColumnMeta meta3 = new ColumnMeta(column3, "caption3", false, 2);
+
+        when(dataGrid.getColumn(0)).thenReturn(column1);
+        when(dataGrid.getColumn(1)).thenReturn(column2);
+        when(dataGrid.getColumnWidth(column1)).thenReturn(fixedColumn1Width + Style.Unit.PX.getType());
+        when(dataGrid.getColumnWidth(column2)).thenReturn(100 + Style.Unit.PC.getType());
+        when(dataGrid.getColumnWidth(column3)).thenReturn(57 + Style.Unit.PX.getType());
+
+        columnPicker.addColumns(Arrays.asList(meta1, meta2, meta3));
+        assertEquals(fixedColumn1Width + ColumnPicker.DETAULT_COLUMN_WIDTH, columnPicker.getDataGridMinWidth());
+
+        columnPicker.setDefaultColumnWidthSize(defaultColumnWidthSize);
+        columnPicker.adjustColumnWidths();
+        assertEquals(fixedColumn1Width + defaultColumnWidthSize, columnPicker.getDataGridMinWidth());
     }
 }

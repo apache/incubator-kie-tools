@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,8 @@
 
 package org.uberfire.ext.widgets.common.client.tables;
 
-import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -58,11 +59,9 @@ public class PagedTableTest {
         pagedTable.dataGrid = spy(pagedTable.dataGrid);
         when(pagedTable.dataGrid.getRowCount()).thenReturn(ROWS);
 
-        verify(pagedTable.dataGrid,
-               times(0)).setHeight(anyString());
+        verify(pagedTable.dataGrid, times(0)).setHeight(anyString());
         pagedTable.loadPageSizePreferences();
-        verify(pagedTable.dataGrid,
-               times(1)).setHeight(eq(EXPECTED_HEIGHT_PX + "px"));
+        verify(pagedTable.dataGrid, times(1)).setHeight(eq(EXPECTED_HEIGHT_PX + "px"));
     }
 
     @Test
@@ -74,11 +73,9 @@ public class PagedTableTest {
         pagedTable.dataGrid = spy(pagedTable.dataGrid);
         when(pagedTable.dataGrid.getRowCount()).thenReturn(ROWS);
 
-        verify(pagedTable.dataGrid,
-               times(0)).setHeight(anyString());
+        verify(pagedTable.dataGrid, times(0)).setHeight(anyString());
         pagedTable.loadPageSizePreferences();
-        verify(pagedTable.dataGrid,
-               times(1)).setHeight(eq(EXPECTED_HEIGHT_PX + "px"));
+        verify(pagedTable.dataGrid, times(1)).setHeight(eq(EXPECTED_HEIGHT_PX + "px"));
     }
 
     @Test
@@ -88,14 +85,11 @@ public class PagedTableTest {
         PagedTable pagedTable = new PagedTable(PAGE_SIZE);
         pagedTable.dataGrid = spy(pagedTable.dataGrid);
 
-        verify(pagedTable.dataGrid,
-               times(0)).setPageStart(0);
+        verify(pagedTable.dataGrid, times(0)).setPageStart(0);
 
         pagedTable.loadPageSizePreferences();
-        verify(pagedTable.dataGrid,
-               times(1)).setPageStart(0);
+        verify(pagedTable.dataGrid, times(1)).setPageStart(0);
     }
-
 
     @Test
     public void testPageSizeSelectStartValue() throws Exception {
@@ -113,5 +107,61 @@ public class PagedTableTest {
 
         verify(select).setValue(String.valueOf(DEFAULT_PAGE_SIZE));
         verify(select).addValueChangeHandler(any());
+    }
+
+    @Test
+    public void testDataGridMinWidthNotSetByDefault() throws Exception {
+        final int PAGE_SIZE = 10;
+        Element mockElement = mock(Element.class);
+        final int minWidth = 800;
+        PagedTable pagedTable = new PagedTable(PAGE_SIZE, null, null, false, false, false);
+        ColumnPicker columnPickerMock = mock(ColumnPicker.class);
+
+        when(pagedTable.dataGridContainer.getElement()).thenReturn(mockElement);
+        when(columnPickerMock.getDataGridMinWidth()).thenReturn(minWidth);
+
+        pagedTable.setColumnPicker(columnPickerMock);
+        pagedTable.setTableHeight();
+
+        verify(mockElement, never()).setAttribute(eq("style"), anyString());
+    }
+
+    @Test
+    public void testEnableDataGridMinWidth() throws Exception {
+        final int PAGE_SIZE = 10;
+        Element mockElement = mock(Element.class);
+        final int minWidth = 800;
+        PagedTable pagedTable = new PagedTable(PAGE_SIZE, null, null, false, false, false);
+        ColumnPicker columnPickerMock = mock(ColumnPicker.class);
+
+        when(pagedTable.dataGridContainer.getElement()).thenReturn(mockElement);
+        when(columnPickerMock.getDataGridMinWidth()).thenReturn(minWidth);
+
+        pagedTable.setColumnPicker(columnPickerMock);
+        pagedTable.enableDataGridMinWidth(true);
+        pagedTable.setTableHeight();
+
+        verify(columnPickerMock, never()).setDefaultColumnWidthSize(anyInt());
+        verify(mockElement).setAttribute("style", "min-width:" + minWidth + Style.Unit.PX.getType());
+    }
+
+    @Test
+    public void testDefaultColumnWidth() throws Exception {
+        final int PAGE_SIZE = 10;
+        Element mockElement = mock(Element.class);
+        final int minWidth = 800;
+        PagedTable pagedTable = new PagedTable(PAGE_SIZE, null, null, false, false, false);
+        ColumnPicker columnPickerMock = mock(ColumnPicker.class);
+
+        when(pagedTable.dataGridContainer.getElement()).thenReturn(mockElement);
+        when(columnPickerMock.getDataGridMinWidth()).thenReturn(minWidth);
+
+        pagedTable.setColumnPicker(columnPickerMock);
+        pagedTable.setDefaultColumWidthSize(150);
+        pagedTable.enableDataGridMinWidth(true);
+        pagedTable.setTableHeight();
+
+        verify(columnPickerMock).setDefaultColumnWidthSize(150);
+        verify(mockElement).setAttribute("style", "min-width:" + minWidth + Style.Unit.PX.getType());
     }
 }

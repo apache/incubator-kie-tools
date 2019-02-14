@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 JBoss, by Red Hat, Inc
+ * Copyright 2019 JBoss, by Red Hat, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,11 +52,15 @@ public class PagedTable<T>
     public Select pageSizesSelector;
 
     @UiField
+    public Column dataGridContainer;
+
+    @UiField
     public Column topToolbar;
 
     protected boolean showPageSizesSelector = false;
     private int pageSize;
     private AbstractDataProvider<T> dataProvider;
+    private boolean dataGridMinWidthEnabled = false;
 
     public PagedTable() {
         this(DEFAULT_PAGE_SIZE);
@@ -171,6 +175,21 @@ public class PagedTable<T>
             this.dataGrid.setHeight(height);
             this.dataGrid.redraw();
         }
+        if (isDataGridMinWidthEnabled()) {
+            dataGridContainer.getElement().setAttribute("style", "min-width:" + super.columnPicker.getDataGridMinWidth() + Style.Unit.PX.getType());
+        }
+    }
+
+    public boolean isDataGridMinWidthEnabled() {
+        return dataGridMinWidthEnabled;
+    }
+
+    public void enableDataGridMinWidth(boolean enabled) {
+        this.dataGridMinWidthEnabled = enabled;
+    }
+
+    public void setDefaultColumWidthSize(int defaultColumWidthSize) {
+        super.columnPicker.setDefaultColumnWidthSize(defaultColumWidthSize);
     }
 
     public void setShowLastPagerButton(boolean showLastPagerButton) {
@@ -216,6 +235,10 @@ public class PagedTable<T>
 
     public HasWidgets getTopToolbar() {
         return topToolbar;
+    }
+
+    protected void setColumnPicker(ColumnPicker columnPicker) {
+        super.columnPicker = columnPicker;
     }
 
     interface Binder

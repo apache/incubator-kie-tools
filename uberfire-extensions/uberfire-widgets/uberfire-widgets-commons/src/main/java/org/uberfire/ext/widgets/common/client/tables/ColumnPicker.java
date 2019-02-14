@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 JBoss, by Red Hat, Inc
+ * Copyright 2019 JBoss, by Red Hat, Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,8 +36,11 @@ import org.uberfire.ext.widgets.table.client.UberfireColumnPicker;
 
 public class ColumnPicker<T> extends UberfireColumnPicker<T> {
 
+    public static int DETAULT_COLUMN_WIDTH = 120;
     private GridPreferencesStore gridPreferences;
     private Optional<String> columnZeroWidth = Optional.empty();
+    private int dataGridMinWidth = 0;
+    private int defaultColumnWidthSize = DETAULT_COLUMN_WIDTH;
 
     public ColumnPicker(DataGrid<T> dataGrid,
                         GridPreferencesStore gridPreferences) {
@@ -159,6 +162,7 @@ public class ColumnPicker<T> extends UberfireColumnPicker<T> {
             dataGrid.setColumnWidth(dataGrid.getColumn(0),
                                     100,
                                     Style.Unit.PCT);
+            dataGridMinWidth = defaultColumnWidthSize;
             return;
         }
 
@@ -213,5 +217,15 @@ public class ColumnPicker<T> extends UberfireColumnPicker<T> {
                 }
             }
         }
+        dataGridMinWidth = fixedColumnsWidth + columnsToCalculate.size() * defaultColumnWidthSize;
     }
+
+    public int getDataGridMinWidth() {
+        return this.dataGridMinWidth;
+    }
+
+    public void setDefaultColumnWidthSize(int defaultColumnSize) {
+        this.defaultColumnWidthSize = defaultColumnSize;
+    }
+
 }
