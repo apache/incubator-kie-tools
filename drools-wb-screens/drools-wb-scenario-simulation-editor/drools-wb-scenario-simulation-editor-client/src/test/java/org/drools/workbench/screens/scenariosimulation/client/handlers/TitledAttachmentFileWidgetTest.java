@@ -66,7 +66,8 @@ public class TitledAttachmentFileWidgetTest extends AbstractNewScenarioTest {
     private TitledAttachmentFileWidget titledAttachmentFileWidget;
 
     @Before
-    public void setup() {
+    public void setup() throws Exception {
+        super.setup();
         titledAttachmentFileWidget = spy(new TitledAttachmentFileWidget(ScenarioSimulationEditorConstants.INSTANCE.chooseDMN(), libraryPlacesMock, assetQueryServiceMock) {
             {
                 this.fields = fieldsMock;
@@ -84,7 +85,7 @@ public class TitledAttachmentFileWidgetTest extends AbstractNewScenarioTest {
 
     @Test
     public void clearStatus() {
-        titledAttachmentFileWidget.selectedPath ="SELECTED_PATH";
+        titledAttachmentFileWidget.selectedPath = "SELECTED_PATH";
         assertNotNull(titledAttachmentFileWidget.selectedPath);
         titledAttachmentFileWidget.clearStatus();
         verify(comboBoxMock, times(1)).setText(eq(null));

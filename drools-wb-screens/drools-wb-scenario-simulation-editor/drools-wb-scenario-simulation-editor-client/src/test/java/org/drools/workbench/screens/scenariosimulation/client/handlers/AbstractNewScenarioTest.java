@@ -39,7 +39,7 @@ public abstract class AbstractNewScenarioTest {
     protected AssetQueryService.Invoker<AssetQueryResult> invokerMock;
 
     @Before
-    public void setUp() throws Exception {
+    public void setup() throws Exception {
         when(assetQueryServiceMock.getAssets(isA(ProjectAssetsQuery.class))).thenReturn(invokerMock);
         when(libraryPlacesMock.getActiveWorkspace()).thenReturn(workspaceProjectMock);
     }

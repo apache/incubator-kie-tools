@@ -77,7 +77,6 @@ import static org.mockito.Mockito.when;
 @RunWith(GwtMockitoTestRunner.class)
 public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimulationEditorTest {
 
-
     private ScenarioSimulationEditorPresenter presenter;
 
     private ScenarioSimulationEditorPresenter presenterSpy;

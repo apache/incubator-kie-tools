@@ -25,7 +25,6 @@ import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.screens.library.client.screens.assets.AssetQueryService;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.mockito.ArgumentCaptor;
@@ -74,8 +73,6 @@ public class NewScenarioSimulationHandlerTest extends AbstractNewScenarioTest {
     private AuthorizationManager authorizationManagerMock;
     @Mock
     private SessionInfo sessionInfoMock;
-    @Mock
-    private AssetQueryService assetQueryServiceMock;
 
     @Mock
     private User userMock;
@@ -94,7 +91,8 @@ public class NewScenarioSimulationHandlerTest extends AbstractNewScenarioTest {
     private CallerMock<ScenarioSimulationService> scenarioSimulationServiceCallerMock;
 
     @Before
-    public void setUp() throws Exception {
+    public void setup() throws Exception {
+        super.setup();
         scenarioSimulationServiceCallerMock = new CallerMock<>(scenarioSimulationServiceMock);
         handler = spy(new NewScenarioSimulationHandler(resourceTypeMock,
                                                        busyIndicatorViewMock,

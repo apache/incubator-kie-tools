@@ -24,6 +24,7 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.screens.scenariosimulation.client.editor.ScenarioSimulationEditorPresenter;
+import org.drools.workbench.screens.scenariosimulation.client.popup.CustomBusyPopup;
 import org.drools.workbench.screens.scenariosimulation.client.resources.ScenarioSimulationEditorResources;
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.drools.workbench.screens.scenariosimulation.client.type.ScenarioSimulationResourceType;
@@ -39,7 +40,6 @@ import org.kie.workbench.common.widgets.client.handlers.NewResourceSuccessEvent;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.commons.data.Pair;
-import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.mvp.Command;
 import org.uberfire.rpc.SessionInfo;
@@ -140,14 +140,15 @@ public class NewScenarioSimulationHandler
                 value = "default";
         }
         busyIndicatorView.showBusyIndicator(CommonConstants.INSTANCE.Saving());
+        CustomBusyPopup.showMessage(CommonConstants.INSTANCE.Saving());
         scenarioSimulationService.call(getSuccessCallback(presenter),
-                                       new HasBusyIndicatorDefaultErrorCallback(busyIndicatorView)).create(pkg.getPackageTestResourcesPath(),
-                                                                                                           buildFileName(baseFileName,
+                                       new ScenarioSimulationHasBusyIndicatorDefaultErrorCallback(busyIndicatorView)).create(pkg.getPackageTestResourcesPath(),
+                                                                                                                         buildFileName(baseFileName,
                                                                                                                          resourceType),
-                                                                                                           new ScenarioSimulationModel(),
-                                                                                                           "",
-                                                                                                           selectedType,
-                                                                                                           value);
+                                                                                                                         new ScenarioSimulationModel(),
+                                                                                                                         "",
+                                                                                                                         selectedType,
+                                                                                                                         value);
     }
 
     @PostConstruct
@@ -162,5 +163,6 @@ public class NewScenarioSimulationHandler
         uploadWidget.clearStatus();
         newResourcePresenter.show(NewScenarioSimulationHandler.this);
     }
+
 
 }
