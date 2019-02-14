@@ -510,10 +510,10 @@ public class DecisionTableGridTest {
 
         assertEquals(1,
                      header.size());
-        assertTrue(header.get(0) instanceof BaseHeaderMetaData);
+        assertTrue(header.get(0) instanceof OutputClauseColumnHeaderMetaData);
 
-        final BaseHeaderMetaData md = (BaseHeaderMetaData) header.get(0);
-        assertEquals(DMNEditorConstants.DecisionTableEditor_OutputClauseHeader,
+        final OutputClauseColumnHeaderMetaData md = (OutputClauseColumnHeaderMetaData) header.get(0);
+        assertEquals(DecisionTableDefaultValueUtilities.OUTPUT_CLAUSE_PREFIX + "1",
                      md.getTitle());
     }
 

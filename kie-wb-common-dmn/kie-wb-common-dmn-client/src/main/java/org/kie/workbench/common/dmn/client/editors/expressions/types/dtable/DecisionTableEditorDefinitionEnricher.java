@@ -27,15 +27,20 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
+import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.HasTypeRef;
+import org.kie.workbench.common.dmn.api.definition.HasVariable;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ContextEntry;
+import org.kie.workbench.common.dmn.api.definition.v1_1.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionRule;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTableOrientation;
 import org.kie.workbench.common.dmn.api.definition.v1_1.Definitions;
 import org.kie.workbench.common.dmn.api.definition.v1_1.HitPolicy;
+import org.kie.workbench.common.dmn.api.definition.v1_1.InformationItem;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InputClause;
 import org.kie.workbench.common.dmn.api.definition.v1_1.InputData;
+import org.kie.workbench.common.dmn.api.definition.v1_1.IsInformationItem;
 import org.kie.workbench.common.dmn.api.definition.v1_1.ItemDefinition;
 import org.kie.workbench.common.dmn.api.definition.v1_1.LiteralExpression;
 import org.kie.workbench.common.dmn.api.definition.v1_1.OutputClause;
@@ -97,6 +102,8 @@ public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorMo
 
             final OutputClause outputClause = new OutputClause();
             outputClause.setName(DecisionTableDefaultValueUtilities.getNewOutputClauseName(dtable));
+            final HasTypeRef hasTypeRef = TypeRefUtils.getTypeRefOfExpression(dtable, hasExpression);
+            outputClause.setTypeRef(!Objects.isNull(hasTypeRef) ? hasTypeRef.getTypeRef() : BuiltInType.UNDEFINED.asQName());
             dtable.getOutput().add(outputClause);
 
             final DecisionRule decisionRule = new DecisionRule();
@@ -126,13 +133,6 @@ public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorMo
                 enrichInputClauses(nodeUUID.get(), dtable);
             } else {
                 enrichOutputClauses(dtable);
-            }
-
-            if (dtable.getOutput().size() > 0) {
-                final HasTypeRef hasTypeRef = TypeRefUtils.getTypeRefOfExpression(dtable, hasExpression);
-                if (!Objects.isNull(hasTypeRef)) {
-                    dtable.getOutput().get(0).setTypeRef(hasTypeRef.getTypeRef());
-                }
             }
         });
     }
@@ -237,7 +237,8 @@ public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorMo
             dtable.getRule().stream().forEach(decisionRule -> decisionRule.getOutputEntry().clear());
 
             final OutputClause outputClause = new OutputClause();
-            outputClause.setName(contextEntry.getVariable().getName().getValue());
+            outputClause.setName(getOutputClauseName(contextEntry).orElse(DecisionTableDefaultValueUtilities.getNewOutputClauseName(dtable)));
+            outputClause.setTypeRef(getOutputClauseTypeRef(contextEntry).orElse(BuiltInType.UNDEFINED.asQName()));
             dtable.getOutput().add(outputClause);
 
             dtable.getRule().stream().forEach(decisionRule -> {
@@ -249,5 +250,39 @@ public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorMo
 
             outputClause.setParent(dtable);
         }
+    }
+
+    private Optional<String> getOutputClauseName(final HasVariable hasVariable) {
+        final IsInformationItem variable = hasVariable.getVariable();
+        if (variable instanceof InformationItem) {
+            return Optional.ofNullable(((InformationItem) variable).getName().getValue());
+        }
+
+        final DMNModelInstrumentedBase base = hasVariable.asDMNModelInstrumentedBase().getParent();
+        final DMNModelInstrumentedBase parent = base.getParent();
+        if (parent instanceof HasName) {
+            return Optional.ofNullable(((HasName) parent).getName().getValue());
+        }
+        if (parent instanceof HasVariable) {
+            return getOutputClauseName((HasVariable) parent);
+        }
+        return Optional.empty();
+    }
+
+    private Optional<QName> getOutputClauseTypeRef(final HasVariable hasVariable) {
+        final IsInformationItem variable = hasVariable.getVariable();
+        if (Objects.nonNull(variable)) {
+            return Optional.ofNullable(variable.getTypeRef());
+        }
+
+        final DMNModelInstrumentedBase base = hasVariable.asDMNModelInstrumentedBase().getParent();
+        final DMNModelInstrumentedBase parent = base.getParent();
+        if (parent instanceof HasTypeRef) {
+            return Optional.ofNullable(((HasTypeRef) parent).getTypeRef());
+        }
+        if (parent instanceof HasVariable) {
+            return getOutputClauseTypeRef((HasVariable) parent);
+        }
+        return Optional.empty();
     }
 }

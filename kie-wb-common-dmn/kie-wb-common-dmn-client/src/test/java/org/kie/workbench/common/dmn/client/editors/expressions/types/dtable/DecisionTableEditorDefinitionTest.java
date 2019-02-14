@@ -54,7 +54,7 @@ public class DecisionTableEditorDefinitionTest extends BaseDecisionTableEditorDe
     @Test
     public void testModelEnrichment() {
         final Optional<DecisionTable> oModel = definition.getModelClass();
-        definition.enrich(Optional.empty(), hasExpression, oModel);
+        definition.enrich(Optional.empty(), decision, oModel);
 
         final DecisionTable model = oModel.get();
         assertBasicEnrichment(model);
@@ -68,7 +68,7 @@ public class DecisionTableEditorDefinitionTest extends BaseDecisionTableEditorDe
     public void testEditor() {
         final Optional<BaseExpressionGrid<? extends Expression, ? extends GridData, ? extends BaseUIModelMapper>> oEditor = definition.getEditor(parent,
                                                                                                                                                  Optional.empty(),
-                                                                                                                                                 hasExpression,
+                                                                                                                                                 decision,
                                                                                                                                                  hasName,
                                                                                                                                                  0);
 

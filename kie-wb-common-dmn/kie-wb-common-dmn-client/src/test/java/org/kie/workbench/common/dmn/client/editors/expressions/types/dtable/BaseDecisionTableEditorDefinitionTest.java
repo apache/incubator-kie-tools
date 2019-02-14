@@ -21,8 +21,8 @@ import java.util.Optional;
 
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
-import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
+import org.kie.workbench.common.dmn.api.definition.v1_1.Decision;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionRule;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTable;
 import org.kie.workbench.common.dmn.api.definition.v1_1.DecisionTableOrientation;
@@ -118,8 +118,7 @@ public abstract class BaseDecisionTableEditorDefinitionTest {
     @Mock
     protected GridCellTuple parent;
 
-    @Mock
-    protected HasExpression hasExpression;
+    protected Decision decision = new Decision();
 
     protected Optional<HasName> hasName = Optional.of(HasName.NOP);
 

@@ -259,7 +259,14 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
                                                                                     headerEditor,
                                                                                     Optional.of(translationService.getTranslation(DMNEditorConstants.DecisionTableEditor_EditOutputClause))));
                 } else {
-                    metaData.add(new BaseHeaderMetaData(translationService.format(DMNEditorConstants.DecisionTableEditor_OutputClauseHeader)));
+                    metaData.add(new OutputClauseColumnHeaderMetaData(wrapOutputClauseIntoHasName(oc),
+                                                                      oc,
+                                                                      clearDisplayNameConsumer(false),
+                                                                      setDisplayNameConsumer(false),
+                                                                      setTypeRefConsumer(),
+                                                                      cellEditorControls,
+                                                                      headerEditor,
+                                                                      Optional.of(translationService.getTranslation(DMNEditorConstants.DecisionTableEditor_EditOutputClause))));
                 }
                 if (dtable.getOutput().size() > 1) {
                     metaData.add(new OutputClauseColumnHeaderMetaData(wrapOutputClauseIntoHasName(oc),
