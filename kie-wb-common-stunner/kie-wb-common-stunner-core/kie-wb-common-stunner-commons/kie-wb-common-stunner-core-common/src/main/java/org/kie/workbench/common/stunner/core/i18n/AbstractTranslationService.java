@@ -64,11 +64,12 @@ public abstract class AbstractTranslationService implements StunnerTranslationSe
 
     @Override
     public String getPropertyCaption(String propId) {
-        PortablePreconditions.checkNotNull("propId",
-                                           propId);
+        PortablePreconditions.checkNotNull("propId", propId);
         return Optional
                 .ofNullable(getValue(propId + I18N_SEPARATOR + CAPTION_SUFFIX))
-                .orElse(getValue(propId + I18N_SEPARATOR + LABEL_SUFFIX));
+                .orElseGet(() -> Optional.ofNullable(getValue(propId + I18N_SEPARATOR + LABEL_SUFFIX))
+                        .orElseGet(() -> Optional.ofNullable(getDefinitionTitle(propId))
+                                .orElse(propId)));
     }
 
     @Override

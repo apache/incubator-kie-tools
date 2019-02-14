@@ -36,6 +36,7 @@
         }
 
         .elementIcon {
+            width: 20px;
             background: transparent !important;
             vertical-align: top;
         }
@@ -53,6 +54,11 @@
         #pagecontainer {
             margin-left: 20px;
         }
+
+        .textContent{
+            white-space:pre; /* or pre-wrap if you want wrapping to still work. */
+        }
+
     </style>
 </head>
 <body>
@@ -75,7 +81,7 @@
         {{#general}}
         <p id="processinfocontent">
         <table class="table table-inverse">
-            <tbody>
+            <tbody class="textContent">
             <tr>
                 <td><b>ID</b></td>
                 <td>{{id}}</td>
@@ -102,7 +108,11 @@
             </tr>
             <tr>
                 <td><b>Documentation</b></td>
-                <td>{{documentation}}</td>
+                <td>{{&documentation}}</td>
+            </tr>
+            <tr>
+                <td><b>Description</b></td>
+                <td>{{&description}}</td>
             </tr>
             </tbody>
         </table>
@@ -135,7 +145,6 @@
                 <th>#</th>
                 <th>Name</th>
                 <th>Type</th>
-                <th>KPI</th>
             </tr>
             </thead>
             <tbody>
@@ -145,7 +154,6 @@
                 <td></td>
                 <td>{{key}}</td>
                 <td>{{value}}</td>
-                <td>0</td>
             </tr>
             {{/variables}}
 
@@ -205,10 +213,10 @@
 
                 <thead class="panel-heading">
                 <tr>
-                    <th width="5%" class="elementIcon">
+                    <th class="elementIcon">
                         {{&icon}}
                     </th>
-                    <th width="45%">
+                    <th width="50%">
                         <b>Name:</b> {{name}}
                     </th>
                     <th width="50%">
@@ -223,16 +231,11 @@
                     <th>Property Value</th>
                 </tr>
                 </thead>
-                <tbody>
-                <tr>
-                    <td colspan="2">Name</td>
-                    <td>{{name}}</td>
-                </tr>
-
+                <tbody class="textContent">
                 {{#properties}}
                 <tr>
                     <td colspan="2">{{key}}</td>
-                    <td>{{value}}</td>
+                    <td>{{&value}}</td>
                 </tr>
                 {{/properties}}
 

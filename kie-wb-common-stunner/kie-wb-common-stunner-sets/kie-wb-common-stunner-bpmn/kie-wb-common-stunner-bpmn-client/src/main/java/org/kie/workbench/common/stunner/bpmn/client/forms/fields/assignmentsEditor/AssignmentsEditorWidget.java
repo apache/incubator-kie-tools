@@ -19,8 +19,6 @@ package org.kie.workbench.common.stunner.bpmn.client.forms.fields.assignmentsEdi
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -46,29 +44,21 @@ import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.i18n.StunnerFormsClientFieldsConstants;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.AssignmentData;
+import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.AssignmentParser;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Variable;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils;
+import org.kie.workbench.common.stunner.bpmn.client.util.VariableUtils;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
-import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
-import org.kie.workbench.common.stunner.bpmn.definition.BaseAdHocSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseTask;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseUserTask;
-import org.kie.workbench.common.stunner.bpmn.definition.EmbeddedSubprocess;
-import org.kie.workbench.common.stunner.bpmn.definition.EventSubprocess;
-import org.kie.workbench.common.stunner.bpmn.definition.MultipleInstanceSubprocess;
-import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseFileVariables;
-import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseManagementSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOModel;
-import org.kie.workbench.common.stunner.bpmn.definition.property.variables.BaseProcessVariables;
 import org.kie.workbench.common.stunner.bpmn.service.DataTypesService;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
-import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.workbench.events.NotificationEvent;
@@ -77,6 +67,7 @@ import org.uberfire.workbench.events.NotificationEvent;
 @Templated
 public class AssignmentsEditorWidget extends Composite implements HasValue<String> {
 
+    public static final String DEFAULT_IGNORED_PROPERTY_NAMES = "GroupId,Skippable,Comment,Description,Priority,Content,TaskName,Locale,CreatedBy,NotCompletedReassign,NotStartedReassign,NotCompletedNotify,NotStartedNotify";
     @Inject
     protected ActivityDataIOEditor activityDataIOEditor;
     @Inject
@@ -171,13 +162,13 @@ public class AssignmentsEditorWidget extends Composite implements HasValue<Strin
     }
 
     protected void initTextBox() {
-        Map<String, String> assignmentsProperties = parseAssignmentsInfo();
-        String variableCountsString = getVariableCountsString(assignmentsProperties.get("datainput"),
-                                                              assignmentsProperties.get("datainputset"),
-                                                              assignmentsProperties.get("dataoutput"),
-                                                              assignmentsProperties.get("dataoutputset"),
+        Map<String, String> assignmentsProperties = AssignmentParser.parseAssignmentsInfo(assignmentsInfo);
+        String variableCountsString = getVariableCountsString(assignmentsProperties.get(AssignmentParser.DATAINPUT),
+                                                              assignmentsProperties.get(AssignmentParser.DATAINPUTSET),
+                                                              assignmentsProperties.get(AssignmentParser.DATAOUTPUT),
+                                                              assignmentsProperties.get(AssignmentParser.DATAOUTPUTSET),
                                                               getProcessVariables(),
-                                                              assignmentsProperties.get("assignments"),
+                                                              assignmentsProperties.get(AssignmentParser.ASSIGNMENTS),
                                                               getDisallowedPropertyNames());
         assignmentsTextBox.setText(variableCountsString);
     }
@@ -225,12 +216,12 @@ public class AssignmentsEditorWidget extends Composite implements HasValue<Strin
         String taskName = getTaskName();
         String processvars = getProcessVariables();
 
-        Map<String, String> assignmentsProperties = parseAssignmentsInfo();
-        String datainput = assignmentsProperties.get("datainput");
-        String datainputset = assignmentsProperties.get("datainputset");
-        String dataoutput = assignmentsProperties.get("dataoutput");
-        String dataoutputset = assignmentsProperties.get("dataoutputset");
-        String assignments = assignmentsProperties.get("assignments");
+        Map<String, String> assignmentsProperties = AssignmentParser.parseAssignmentsInfo(assignmentsInfo);
+        String datainput = assignmentsProperties.get(AssignmentParser.DATAINPUT);
+        String datainputset = assignmentsProperties.get(AssignmentParser.DATAINPUTSET);
+        String dataoutput = assignmentsProperties.get(AssignmentParser.DATAINPUT);
+        String dataoutputset = assignmentsProperties.get(AssignmentParser.DATAOUTPUTSET);
+        String assignments = assignmentsProperties.get(AssignmentParser.ASSIGNMENTS);
 
         String disallowedpropertynames = getDisallowedPropertyNames();
 
@@ -305,63 +296,7 @@ public class AssignmentsEditorWidget extends Composite implements HasValue<Strin
     protected String getProcessVariables() {
         Diagram diagram = canvasSessionManager.getCurrentSession().getCanvasHandler().getDiagram();
         Node selectedElement = getSelectedElement();
-        Element parent = null;
-        if (selectedElement != null) {
-            parent = GraphUtils.getParent(selectedElement);
-        }
-        Iterator<Element> it = diagram.getGraph().nodes().iterator();
-        StringBuffer variables = new StringBuffer();
-        while (it.hasNext()) {
-            Element element = it.next();
-            if (element.getContent() instanceof View) {
-                Object oDefinition = ((View) element.getContent()).getDefinition();
-                if ((oDefinition instanceof BPMNDiagram)) {
-                    BPMNDiagram bpmnDiagram = (BPMNDiagram) oDefinition;
-                    BaseProcessVariables processVariables = bpmnDiagram.getProcessData().getProcessVariables();
-                    if (processVariables != null) {
-                        if (variables.length() > 0) {
-                            variables.append(",");
-                        }
-                        variables.append(processVariables.getValue());
-                    }
-                    CaseManagementSet caseManagementSet = bpmnDiagram.getCaseManagementSet();
-                    if (caseManagementSet != null) {
-                        CaseFileVariables caseFileVariables = caseManagementSet.getCaseFileVariables();
-                        if (caseFileVariables != null) {
-                            if (variables.length() > 0) {
-                                variables.append(",");
-                            }
-                            variables.append(caseFileVariables.getRawValue());
-                        }
-                    }
-                }
-                if (parent != null) {
-                    if (parent.equals(element)) {
-                        BaseProcessVariables subprocessVariables = null;
-                        if (oDefinition instanceof EventSubprocess) {
-                            EventSubprocess subprocess = (EventSubprocess) oDefinition;
-                            subprocessVariables = subprocess.getProcessData().getProcessVariables();
-                        } else if (oDefinition instanceof BaseAdHocSubprocess) {
-                            BaseAdHocSubprocess subprocess = (BaseAdHocSubprocess) oDefinition;
-                            subprocessVariables = subprocess.getProcessData().getProcessVariables();
-                        } else if (oDefinition instanceof MultipleInstanceSubprocess) {
-                            MultipleInstanceSubprocess subprocess = (MultipleInstanceSubprocess) oDefinition;
-                            subprocessVariables = subprocess.getProcessData().getProcessVariables();
-                        } else if (oDefinition instanceof EmbeddedSubprocess) {
-                            EmbeddedSubprocess subprocess = (EmbeddedSubprocess) oDefinition;
-                            subprocessVariables = subprocess.getProcessData().getProcessVariables();
-                        }
-                        if (subprocessVariables != null) {
-                            if (variables.length() > 0) {
-                                variables.append(",");
-                            }
-                            variables.append(subprocessVariables.getValue());
-                        }
-                    }
-                }
-            }
-        }
-        return variables.toString();
+        return VariableUtils.encodeProcessVariables(diagram, selectedElement);
     }
 
     protected Node getSelectedElement() {
@@ -402,34 +337,6 @@ public class AssignmentsEditorWidget extends Composite implements HasValue<Strin
             sb.setLength(sb.length() - 1);
         }
         return sb.toString();
-    }
-
-    protected Map<String, String> parseAssignmentsInfo() {
-        Map<String, String> properties = new HashMap<String, String>();
-        if (assignmentsInfo != null) {
-            String[] parts = assignmentsInfo.split("\\|");
-            if (parts.length > 0 && parts[0] != null && parts[0].length() > 0) {
-                properties.put("datainput",
-                               parts[0]);
-            }
-            if (parts.length > 1 && parts[1] != null && parts[1].length() > 0) {
-                properties.put("datainputset",
-                               parts[1]);
-            }
-            if (parts.length > 2 && parts[2] != null && parts[2].length() > 0) {
-                properties.put("dataoutput",
-                               parts[2]);
-            }
-            if (parts.length > 3 && parts[3] != null && parts[3].length() > 0) {
-                properties.put("dataoutputset",
-                               parts[3]);
-            }
-            if (parts.length > 4 && parts[4] != null && parts[4].length() > 0) {
-                properties.put("assignments",
-                               parts[4]);
-            }
-        }
-        return properties;
     }
 
     protected String createAssignmentsInfoString(final AssignmentData assignmentData) {
@@ -493,7 +400,7 @@ public class AssignmentsEditorWidget extends Composite implements HasValue<Strin
 
     protected String getDisallowedPropertyNames() {
         if (bpmnModel instanceof BaseUserTask) {
-            return "GroupId,Skippable,Comment,Description,Priority,Content,TaskName,Locale,CreatedBy,NotCompletedReassign,NotStartedReassign,NotCompletedNotify,NotStartedNotify";
+            return DEFAULT_IGNORED_PROPERTY_NAMES;
         } else {
             return "";
         }

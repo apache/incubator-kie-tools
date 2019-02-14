@@ -29,6 +29,7 @@ public class General {
     String isAdhoc;
     String version;
     String documentation;
+    String description;
 
     public General() {
     }
@@ -42,6 +43,7 @@ public class General {
         private String isAdhoc;
         private String version;
         private String documentation;
+        private String description;
 
         public Builder id(String id) {
             this.id = id;
@@ -78,6 +80,11 @@ public class General {
             return this;
         }
 
+        public Builder description(String description) {
+            this.description = description;
+            return this;
+        }
+
         public General build() {
             General general = new General();
             general.id = id;
@@ -87,6 +94,7 @@ public class General {
             general.isAdhoc = isAdhoc;
             general.version = version;
             general.documentation = documentation;
+            general.description = description;
             return general;
         }
     }

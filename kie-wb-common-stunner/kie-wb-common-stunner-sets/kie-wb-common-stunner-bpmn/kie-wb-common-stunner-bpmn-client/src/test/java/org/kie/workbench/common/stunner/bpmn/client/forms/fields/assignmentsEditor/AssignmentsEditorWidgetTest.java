@@ -28,6 +28,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.AssignmentBaseTest;
+import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.AssignmentParser;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
@@ -131,7 +132,6 @@ public class AssignmentsEditorWidgetTest extends AssignmentBaseTest {
         GwtMockito.initMocks(this);
         widget.activityDataIOEditor = activityDataIOEditor;
         activityDataIOEditor.view = activityDataIOEditorView;
-        doCallRealMethod().when(widget).parseAssignmentsInfo();
         doCallRealMethod().when(widget).getVariableCountsString(anyString(),
                                                                 anyString(),
                                                                 anyString(),
@@ -189,8 +189,7 @@ public class AssignmentsEditorWidgetTest extends AssignmentBaseTest {
 
     @Test
     public void testParseAssignmentsInfo() {
-        widget.assignmentsInfo = ASSIGNMENTS_INFO;
-        Map<String, String> assignmentsProperties = widget.parseAssignmentsInfo();
+        Map<String, String> assignmentsProperties = AssignmentParser.parseAssignmentsInfo(ASSIGNMENTS_INFO);
         assertEquals(DATA_INPUT_SET,
                      assignmentsProperties.get("datainputset"));
         assertEquals(DATA_OUTPUT_SET,
@@ -216,7 +215,7 @@ public class AssignmentsEditorWidgetTest extends AssignmentBaseTest {
     public void testShowAssignmentsDialog() {
         widget.setBPMNModel(userTask);
         widget.assignmentsInfo = ASSIGNMENTS_INFO;
-        Map<String, String> assignmentsProperties = widget.parseAssignmentsInfo();
+        Map<String, String> assignmentsProperties = AssignmentParser.parseAssignmentsInfo(ASSIGNMENTS_INFO);
 
         widget.showAssignmentsDialog();
 

@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.bpmn.documentation.model.element;
 
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Map;
 
 import jsinterop.annotations.JsOverlay;
@@ -46,6 +48,7 @@ public class Element {
         instance.title = title;
         instance.icon = icon;
         instance.properties = JsConverter.fromMap(properties);
+        Arrays.sort(instance.properties, Comparator.comparing(k -> String.valueOf(k.getKey())));
         return instance;
     }
 

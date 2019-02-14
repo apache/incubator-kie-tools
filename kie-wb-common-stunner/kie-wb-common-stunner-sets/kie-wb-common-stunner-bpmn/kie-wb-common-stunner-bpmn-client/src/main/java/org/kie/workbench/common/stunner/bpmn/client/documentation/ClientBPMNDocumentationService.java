@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.bpmn.client.documentation;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -35,6 +36,8 @@ import org.jboss.errai.common.client.api.IsElement;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.stunner.bpmn.client.components.palette.BPMNCategoryDefinitionProvider;
+import org.kie.workbench.common.stunner.bpmn.client.documentation.decorator.PropertyDecorator;
+import org.kie.workbench.common.stunner.bpmn.client.documentation.decorator.PropertyDecorators;
 import org.kie.workbench.common.stunner.bpmn.client.documentation.template.BPMNDocumentationTemplateSource;
 import org.kie.workbench.common.stunner.bpmn.client.shape.factory.BPMNShapeFactory;
 import org.kie.workbench.common.stunner.bpmn.client.workitem.WorkItemDefinitionClientRegistry;
@@ -44,7 +47,6 @@ import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BgColor;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BorderColor;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BorderSize;
-import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.AssignmentsInfo;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.AdHoc;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.DiagramSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Executable;
@@ -61,6 +63,20 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontFamily
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSize;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Documentation;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
+import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.Currency;
+import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.DistributionType;
+import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.Max;
+import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.Mean;
+import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.Min;
+import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.Quantity;
+import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.StandardDeviation;
+import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.TimeUnit;
+import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.UnitCost;
+import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.WorkingHours;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.DecisionName;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.DmnModelName;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.IsMultipleInstance;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.Namespace;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessData;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessVariableSerializer;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessVariables;
@@ -93,6 +109,7 @@ import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
+import org.kie.workbench.common.stunner.core.util.StringUtils;
 import org.uberfire.ext.editor.commons.client.template.mustache.ClientMustacheTemplateRenderer;
 
 @Dependent
@@ -113,6 +130,8 @@ public class ClientBPMNDocumentationService implements BPMNDocumentationService 
     private final ClientTranslationService translationService;
     private final WorkItemDefinitionClientRegistry workItemDefinitionClientRegistry;
     private final DefinitionHelper definitionHelper;
+    @Inject
+    private PropertyDecorators propertyDecorators;
 
     @Inject
     public ClientBPMNDocumentationService(final ClientMustacheTemplateRenderer mustacheTemplateRenderer,
@@ -172,6 +191,7 @@ public class ClientBPMNDocumentationService implements BPMNDocumentationService 
         final String documentation = diagramSet
                 .map(DiagramSet::getDocumentation)
                 .map(Documentation::getValue)
+                .map(this::encodeLineBreak)
                 .orElse(null);
 
         final String version = diagramSet
@@ -206,6 +226,12 @@ public class ClientBPMNDocumentationService implements BPMNDocumentationService 
                 .map(Name::getValue)
                 .orElse(null);
 
+        final String description = diagramSet
+                .map(DiagramSet::getProcessInstanceDescription)
+                .map(d -> d.getValue())
+                .map(this::encodeLineBreak)
+                .orElse(null);
+
         return new General.Builder()
                 .id(id)
                 .name(name)
@@ -214,6 +240,7 @@ public class ClientBPMNDocumentationService implements BPMNDocumentationService 
                 .documentation(documentation)
                 .version(version)
                 .pkg(pkg)
+                .description(description)
                 .build();
     }
 
@@ -238,12 +265,14 @@ public class ClientBPMNDocumentationService implements BPMNDocumentationService 
                                            getDefinitionIcon(def),
                                            getElementProperties(def))
                 )
+                .sorted(Comparator.comparing(Element::getTitle))
                 .collect(Collectors.groupingBy(Element::getType))
                 .entrySet()
                 .stream()
                 .map(entry -> ElementTotal.create(entry.getValue(),
                                                   getCategoryName(entry.getKey()),
                                                   getCategoryIcon(entry.getKey())))
+                .sorted(Comparator.comparing(ElementTotal::getType))
                 .collect(Collectors.toList());
 
         return ElementDetails.create(elementsTotals);
@@ -267,7 +296,7 @@ public class ClientBPMNDocumentationService implements BPMNDocumentationService 
 
     private String getCategoryName(String category) {
         return Optional.ofNullable(translationService.getValue(BPMNCategories.class.getName() + "." + category))
-                .filter(cat -> !cat.trim().isEmpty())
+                .filter(StringUtils::nonEmpty)
                 .orElse(category);
     }
 
@@ -304,22 +333,39 @@ public class ClientBPMNDocumentationService implements BPMNDocumentationService 
         final Set<?> properties = definitionManager.adapters().forDefinition().getProperties(definition);
         return properties.stream()
                 .filter(prop -> !ignoredPropertiesIds.containsKey(propertyAdapter.getId(prop)))
-                .filter(prop -> isNotEmpty(propertyAdapter.getCaption(prop)))
+                .filter(prop -> StringUtils.nonEmpty(propertyAdapter.getCaption(prop)))
+                .filter(prop -> Objects.nonNull(propertyAdapter.getValue(prop)))
                 .collect(Collectors.toMap(propertyAdapter::getCaption, this::getElementValue));
     }
 
-    private static boolean isNotEmpty(String value) {
-        return null != value && value.trim().length() > 0;
+    private String getElementValue(Object prop) {
+        return Optional.ofNullable(
+                propertyDecorators.getDecorator(prop)
+                        .map(PropertyDecorator::getValue)
+                        .orElse(String.valueOf(definitionManager.adapters().forProperty().getValue(prop))))
+                .map(this::encodeLineBreak)
+                .orElse(null);
     }
 
-    private String getElementValue(Object prop) {
-        return String.valueOf(definitionManager.adapters().forProperty().getValue(prop));
+    /**
+     * Basically replace all \n with <br> html tag.
+     * @param input
+     * @return
+     */
+    private String encodeLineBreak(String input) {
+        return Optional.ofNullable(input)
+                .map(str -> str.replaceAll("(\r\n|\n)", "<br/>"))
+                .orElse(input);
     }
 
     private String getDiagramImage(Optional<AbstractCanvasHandler> canvasHandler) {
         return canvasHandler.map(canvasFileExport::exportToSvg).orElse(null);
     }
 
+    /**
+     * Properties that should be ignored on the documentation
+     * @return
+     */
     private static Map<String, Boolean> buildIgnoredPropertiesIds() {
         return Stream.of(BindableAdapterUtils.getPropertyId(FontColor.class),
                          BindableAdapterUtils.getPropertyId(FontBorderColor.class),
@@ -333,7 +379,20 @@ public class ClientBPMNDocumentationService implements BPMNDocumentationService 
                          BindableAdapterUtils.getPropertyId(Height.class),
                          BindableAdapterUtils.getPropertyId(Width.class),
                          BindableAdapterUtils.getPropertyId(ProcessVariables.class),
-                         BindableAdapterUtils.getPropertyId(AssignmentsInfo.class))
+                         BindableAdapterUtils.getPropertyId(DmnModelName.class),
+                         BindableAdapterUtils.getPropertyId(DecisionName.class),
+                         BindableAdapterUtils.getPropertyId(Namespace.class),
+                         BindableAdapterUtils.getPropertyId(IsMultipleInstance.class),
+                         BindableAdapterUtils.getPropertyId(Min.class),
+                         BindableAdapterUtils.getPropertyId(Max.class),
+                         BindableAdapterUtils.getPropertyId(Mean.class),
+                         BindableAdapterUtils.getPropertyId(Currency.class),
+                         BindableAdapterUtils.getPropertyId(DistributionType.class),
+                         BindableAdapterUtils.getPropertyId(Quantity.class),
+                         BindableAdapterUtils.getPropertyId(StandardDeviation.class),
+                         BindableAdapterUtils.getPropertyId(TimeUnit.class),
+                         BindableAdapterUtils.getPropertyId(UnitCost.class),
+                         BindableAdapterUtils.getPropertyId(WorkingHours.class))
                 .collect(Collectors.toMap(id -> id, id -> Boolean.TRUE));
     }
 

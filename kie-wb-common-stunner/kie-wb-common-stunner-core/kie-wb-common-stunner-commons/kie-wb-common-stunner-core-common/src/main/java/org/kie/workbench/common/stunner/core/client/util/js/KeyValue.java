@@ -37,4 +37,14 @@ public class KeyValue {
         instance.value = value;
         return instance;
     }
+
+    @JsOverlay
+    public final Object getKey() {
+        return key;
+    }
+
+    @JsOverlay
+    public final Object getValue() {
+        return value;
+    }
 }

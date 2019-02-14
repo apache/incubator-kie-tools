@@ -43,4 +43,9 @@ public class ElementTotal {
         instance.typeIcon = typeIcon;
         return instance;
     }
+
+    @JsOverlay
+    public final String getType() {
+        return type;
+    }
 }
